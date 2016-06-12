@@ -1,0 +1,24 @@
+TODO:
+  matrix_type.h:
+    ☐ make it same type
+      [[/home/alex/Projects/framework/src/math/matrix_type.h]] ":1338"
+
+    ☐ simplify
+      [[/home/alex/Projects/framework/src/math/matrix_type.h]] ":1340"
+
+
+  matrix_func.h:
+    ☐ add type guards
+      [[/home/alex/Projects/framework/src/math/matrix_func.h]] ":10"
+
+
+  main.cpp:
+    ☐ add vector bool access
+      [[/home/alex/Projects/framework/test/002_vector_operators/main.cpp]] ":41"
+
+
+  main.cpp:
+    ☐ add vector bool pointer access
+      [[/home/alex/Projects/framework/test/001_vector_constructor/main.cpp]] ":100"
+
+

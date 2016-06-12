@@ -1,0 +1,15 @@
+set (EXECUTABLE_OUTPUT_PATH ${TEST_OUTPUT_PATH}/${TEST_NAME})
+set (TEST_EXECUTABLE ${EXECUTABLE_OUTPUT_PATH}/run.py)
+
+add_executable (${TEST_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+add_custom_command (OUTPUT ${TEST_EXECUTABLE}
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/run.py ${TEST_EXECUTABLE}
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/run.py
+    COMMENT "Create ${TEST_EXECUTABLE}")
+
+add_custom_target (${TEST_NAME}_executable DEPENDS ${TEST_EXECUTABLE})
+add_dependencies (${TEST_NAME} ${TEST_NAME}_executable)
+
+add_test (${TEST_NAME} ${TEST_EXECUTABLE})
+

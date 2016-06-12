@@ -1,0 +1,54 @@
+{
+    "folders":
+    [
+        {
+            "path": "."
+        }
+    ],
+
+    "SublimeLinter":
+    {
+        "linters":
+        {
+            "clang": {
+                "include_dirs": ["${project_folder}/src"]
+            },
+        }
+    },
+
+    "build_systems":
+    [
+        {
+            "name": "Project Make",
+            "cmd": ["make"],
+            "working_dir" : "${project_path}/build",
+            "file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? ?(.*)$",
+            // "target": "ansi_color_build",
+            // "syntax": "Packages/ANSIescape/ANSI.tmLanguage",
+            "variants": [
+                {
+                    "name": "Run tests",
+                    "cmd": ["make", "test"],
+                },
+                {
+                    "name": "Run tests verbose",
+                    "cmd": ["make", "test_verbose"],
+                    "file_regex": "^\\d*:? ?(~?\/..[^:]*):([0-9]+):? ?([0-9]+)?:? ?(.*)$"
+                },
+                {
+                    "name": "Clean",
+                    "cmd": ["make", "clean"],
+                },
+                {
+                    "name": "Cmake",
+                    "cmd": ["cmake", "../"],
+                },
+                {
+                    "name": "TODO Parsing",
+                    "working_dir" : "${project_path}",
+                    "cmd": ["./todoparser.py", "src", "test"]
+                }
+            ]
+        }
+    ]
+}

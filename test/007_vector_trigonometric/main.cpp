@@ -1,0 +1,48 @@
+#include <debug.h>
+
+#include <math/fmath.h>
+
+using namespace framework::math;
+
+int main()
+{
+
+    // vector trigonometric functions
+    {
+        vec4d v4d(180.0, 360.0, 90.0, 45.0);
+
+        vec3d v3d(45.0, 60.0, 180.0);
+
+        assert_msg(radians(v4d) == vec4d(PI, TAU, PI / 2, PI / 4), "radians failed");
+
+        assert_msg(degrees(radians(v4d)) == v4d, "degrees failed");
+
+        assert_msg(almost_equal(sin(radians(v4d)), vec4d(sin(PI), sin(TAU), sin(PI / 2), sin(PI / 4))), "sin failed");
+
+        assert_msg(almost_equal(cos(radians(v4d)), vec4d(cos(PI), cos(TAU), cos(PI / 2), cos(PI / 4))), "cos failed");
+
+        assert_msg(almost_equal(tan(radians(v3d)), sin(radians(v3d)) / cos(radians(v3d))), "tan failed");
+
+        assert_msg(almost_equal(asin(sin(radians(v4d))), vec4d(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4), 1), "asin failed");
+
+        assert_msg(almost_equal(acos(cos(radians(v4d))), vec4d(PI, 0, PI / 2, PI / 4)), "acos failed");
+
+        assert_msg(almost_equal(atan(tan(radians(v3d))), vec3d(PI / 4, PI / 3, atan(tan(PI)))), "atan from tan failed");
+
+        assert_msg(almost_equal(atan(sin(radians(v3d)), cos(radians(v3d))), vec3d(PI / 4, PI / 3, PI)), "atan from sin failed");
+
+        assert_msg(almost_equal(sinh(radians(v3d)), vec3d(0.86867096148600953, 1.2493670505239751, 11.548739357257748)), "sinh failed");
+
+        assert_msg(almost_equal(cosh(radians(v3d)), vec3d(1.3246090892520057, 1.6002868577023861, 11.591953275521519)), "cosh failed");
+
+        assert_msg(almost_equal(tanh(radians(v3d)), (sinh(radians(v3d)) / cosh(radians(v3d))), 1), "tanh failed");
+
+        assert_msg(almost_equal(asinh(sinh(radians(v3d))), vec3d(PI / 4, PI / 3, PI), 1), "asinh failed");
+
+        assert_msg(almost_equal(acosh(cosh(radians(v3d))), vec3d(PI / 4, PI / 3, PI), 1), "acosh failed");
+
+        assert_msg(almost_equal(atanh(tanh(radians(v3d))), vec3d(PI / 4, PI / 3, PI), 4), "atanh failed");
+    }
+
+    return 0;
+}

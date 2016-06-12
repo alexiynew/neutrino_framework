@@ -1,0 +1,889 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"in",
+				"inverse_transpose"
+			],
+			[
+				"af",
+				"affine_inverse"
+			],
+			[
+				"cr",
+				"croscomponent_multiplication_test"
+			],
+			[
+				"tr",
+				"transpose_test"
+			],
+			[
+				"Vec",
+				"Vector"
+			],
+			[
+				"re",
+				"result"
+			],
+			[
+				"tra",
+				"transpose	(matrix_func.h)"
+			],
+			[
+				"ass",
+				"assert_msg"
+			],
+			[
+				"base",
+				"base_type::data"
+			],
+			[
+				"colum",
+				"column_type"
+			],
+			[
+				"todo",
+				"todo_list"
+			],
+			[
+				"to",
+				"todo_list"
+			],
+			[
+				"all",
+				"all_files"
+			],
+			[
+				"rege",
+				"regexes"
+			],
+			[
+				"reg",
+				"regexes"
+			],
+			[
+				"file",
+				"file_extension"
+			],
+			[
+				"fil",
+				"file_regex"
+			],
+			[
+				"cons",
+				"constexpr"
+			],
+			[
+				"fra",
+				"framework::math	(main.cpp)"
+			],
+			[
+				"fr",
+				"framework	(exponential_func.h)"
+			],
+			[
+				"pro",
+				"project_folder"
+			],
+			[
+				"ct",
+				"ctags	(CTags.sublime-settings)"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "src/math/matrix_func.h",
+			"settings":
+			{
+				"buffer_size": 6623,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "test/015_matrix_func/main.cpp",
+			"settings":
+			{
+				"buffer_size": 7342,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "Project Make",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Makefile/Make.sublime-build",
+					""
+				],
+				[
+					"Packages/Makefile/Make.sublime-build",
+					"Clean"
+				]
+			],
+			[
+				"Packages/Makefile/Make.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Project Make",
+					""
+				],
+				[
+					"Project Make",
+					"Make"
+				],
+				[
+					"Project Make",
+					"Word Count (current file)"
+				],
+				[
+					"Project Make",
+					"Run"
+				]
+			],
+			[
+				"Project Make",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Project Make",
+					""
+				],
+				[
+					"Project Make",
+					"Run tests"
+				],
+				[
+					"Project Make",
+					"Clean"
+				],
+				[
+					"Project Make",
+					"Cmake"
+				]
+			],
+			[
+				"Project Make",
+				"Run tests"
+			]
+		],
+		[
+			[
+				[
+					"Project Make",
+					""
+				],
+				[
+					"Project Make",
+					"Run tests"
+				],
+				[
+					"Project Make",
+					"Cmake"
+				]
+			],
+			[
+				"Project Make",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Project Make",
+					""
+				],
+				[
+					"Project Make",
+					"Run tests"
+				],
+				[
+					"Project Make",
+					"Run tests verbose"
+				],
+				[
+					"Project Make",
+					"Clean"
+				],
+				[
+					"Project Make",
+					"Cmake"
+				]
+			],
+			[
+				"Project Make",
+				"Run tests verbose"
+			]
+		],
+		[
+			[
+				[
+					"Project Make",
+					""
+				],
+				[
+					"Project Make",
+					"Run tests"
+				],
+				[
+					"Project Make",
+					"Run tests verbose"
+				],
+				[
+					"Project Make",
+					"Clean"
+				],
+				[
+					"Project Make",
+					"Cmake"
+				],
+				[
+					"Project Make",
+					"TODO Parsing"
+				]
+			],
+			[
+				"Project Make",
+				"Run tests verbose"
+			]
+		],
+		[
+			[
+				[
+					"Project Make",
+					""
+				],
+				[
+					"Project Make",
+					"Run tests"
+				],
+				[
+					"Project Make",
+					"Run tests verbose"
+				],
+				[
+					"Project Make",
+					"Clean"
+				],
+				[
+					"Project Make",
+					"Cmake"
+				],
+				[
+					"Project Make",
+					"TODO Parsing"
+				],
+				[
+					"Project Make",
+					"test"
+				]
+			],
+			[
+				"Project Make",
+				"test"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 375.0,
+		"last_filter": "pcins",
+		"selected_items":
+		[
+			[
+				"pcins",
+				"Package Control: Install Package"
+			],
+			[
+				"pcremp",
+				"Package Control: Remove Package"
+			],
+			[
+				"glue ",
+				"Glue - Launch"
+			],
+			[
+				"glue",
+				"Glue - Launch"
+			],
+			[
+				"pcrmp",
+				"Package Control: Remove Package"
+			],
+			[
+				"todo",
+				"TodoReview: Project Files"
+			],
+			[
+				"pcinsp",
+				"Package Control: Install Package"
+			],
+			[
+				"pkins",
+				"Package Control: Install Package"
+			],
+			[
+				"pkremp",
+				"Package Control: Remove Package"
+			],
+			[
+				"packremp",
+				"Package Control: Remove Package"
+			],
+			[
+				"packins",
+				"Package Control: Install Package"
+			],
+			[
+				"pactrlrep",
+				"Package Control: Remove Package"
+			],
+			[
+				"inspl",
+				"Package Control: Install Package"
+			],
+			[
+				"insp",
+				"Package Control: Install Package"
+			],
+			[
+				"inspa",
+				"Package Control: Install Package"
+			],
+			[
+				"instp",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 507.0
+	},
+	"console":
+	{
+		"height": 126.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/alex/Projects/framework",
+		"/home/alex/Projects/framework/src",
+		"/home/alex/Projects/framework/src/math",
+		"/home/alex/Projects/framework/test",
+		"/home/alex/Projects/framework/test/001_vector_constructor",
+		"/home/alex/Projects/framework/test/002_vector_operators",
+		"/home/alex/Projects/framework/test/003_vector_common",
+		"/home/alex/Projects/framework/test/011_matrix_with_scalar",
+		"/home/alex/Projects/framework/test/012_matrix_plus_minus",
+		"/home/alex/Projects/framework/test/013_matrix_multipliction",
+		"/home/alex/Projects/framework/test/015_matrix_func"
+	],
+	"file_history":
+	[
+		"/home/alex/Projects/framework/src/math/vector_type.h",
+		"/home/alex/Projects/framework/src/math/common_func.h",
+		"/home/alex/Projects/framework/test/003_vector_common/main.cpp",
+		"/home/alex/Projects/framework/framework.todo",
+		"/home/alex/Projects/framework/filestodo.todo",
+		"/home/alex/Projects/framework/src/math/matrix_func.h",
+		"/home/alex/Projects/framework/src/common_types.h",
+		"/home/alex/Projects/framework/test/015_matrix_func/main.cpp",
+		"/home/alex/Projects/framework/src/math/matrix_type.h",
+		"/home/alex/Games/IGG-Dont.Starve.Build.20151218.Incl.2DLCs/data/shaders/font.ksh",
+		"/home/alex/Projects/framework/test/011_matrix_with_scalar/main.cpp",
+		"/home/alex/Projects/framework/src/math/geometric_func.h",
+		"/home/alex/Projects/framework/src/math/utils.h",
+		"/home/alex/.config/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
+		"/home/alex/.config/sublime-text-3/Packages/User/MakeBuild.sublime-syntax",
+		"/home/alex/Projects/framework/test/014_matrix_multiplication2/run.py",
+		"/home/alex/Projects/framework/framework.sublime-project",
+		"/home/alex/Projects/framework/src/math/fmath.h",
+		"/home/alex/Projects/framework/test/014_matrix_multiplication2/main.cpp",
+		"/home/alex/.config/sublime-text-3/Packages/User/ANSIescape/ansi.tmTheme",
+		"/home/alex/.config/sublime-text-3/Packages/ANSIescape/ansi.sublime-settings",
+		"/home/alex/Projects/framework/test/015_matrix_func/main",
+		"/home/alex/Projects/framework/test/010_matrix_access/main.cpp",
+		"/home/alex/Projects/framework/test/008_matrix_constructor/main.cpp",
+		"/home/alex/Projects/framework/test/010_matrix_access_operator/main.cpp",
+		"/home/alex/Projects/framework/src/math/trigonometric_func.h",
+		"/home/alex/Projects/framework/src/math/relational_func.h",
+		"/home/alex/Projects/framework/src/math/exponential_func.h",
+		"/home/alex/Projects/framework/test/002_vector_operators/main.cpp",
+		"/home/alex/Projects/framework/test/013_matrix_multipliction/main.cpp",
+		"/home/alex/Projects/framework/test/001_vector_constructor/main.cpp",
+		"/home/alex/Projects/framework/test/007_vector_trigonometric/main.cpp",
+		"/home/alex/Projects/framework/test/005_vector_relational/main.cpp",
+		"/home/alex/Projects/framework/todoparser.py",
+		"/home/alex/Projects/framework/src/debug.h",
+		"/home/alex/Projects/framework/filestodo.todolist",
+		"/home/alex/.config/sublime-text-3/Packages/PlainTasks/messages/install.txt",
+		"/home/alex/Projects/framework/framework.todolist",
+		"/home/alex/.config/sublime-text-3/Packages/PlainTasks/PlainTasks (Linux).sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/Glue/keymaps/Default (Linux).sublime-keymap",
+		"/home/alex/.config/sublime-text-3/Packages/User/Glue.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/Glue/Glue.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/User/SideBarEnhancements/Open With/Side Bar.sublime-menu",
+		"/home/alex/Projects/framework/.todolist",
+		"/home/alex/.config/sublime-text-3/Packages/Highlight Build Errors/HighlightBuildErrors.sublime-settings",
+		"/home/alex/Projects/framework/build/2: /home/alex/Projects/framework/test/002_vector_operators/main.cpp",
+		"/home/alex/Projects/framework/CMakeLists.txt",
+		"/home/alex/Projects/framework/test/004_vector_exponential/main.cpp",
+		"/home/alex/Projects/framework/test/006_vector_geometric/main.cpp",
+		"/home/alex/Projects/framework/test/009_matrix_assign/main.cpp",
+		"/home/alex/Projects/framework/test/012_matrix_plus_minus/main.cpp",
+		"/home/alex/Projects/framework/src/math/constants.h",
+		"/home/alex/.config/sublime-text-3/Packages/Default/Default (Linux).sublime-keymap",
+		"/home/alex/.config/sublime-text-3/Packages/TodoReview/TodoReview.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/User/TodoReview.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/TodoReview/Default.sublime-mousemap",
+		"/home/alex/.config/sublime-text-3/Packages/TodoReview/Default.sublime-keymap",
+		"/home/alex/.config/sublime-text-3/Packages/User/Error.sublime-syntax",
+		"/home/alex/.config/sublime-text-3/Packages/SublimeLinter/Default (Linux).sublime-keymap",
+		"/home/alex/.config/sublime-text-3/Packages/User/bh_core.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/BracketHighlighter/bh_core.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/CTags/Default.sublime-mousemap",
+		"/home/alex/.config/sublime-text-3/Packages/User/CTags.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/CTags/CTags.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/CTags/Default.sublime-keymap",
+		"/home/alex/.config/sublime-text-3/Packages/Package Control/Package Control.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/User/Side Bar.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/SideBarEnhancements/Side Bar.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/User/SublimeLinter.sublime-settings",
+		"/home/alex/Projects/framework/build/cmake_install.cmake",
+		"/home/alex/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
+		"/home/alex/Projects/framework/.clang-format",
+		"/home/alex/.config/sublime-text-3/Packages/C++NamespaceTool/C++NamespaceTool.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings"
+	],
+	"find":
+	{
+		"height": 36.0
+	},
+	"find_in_files":
+	{
+		"height": 92.0,
+		"where_history":
+		[
+			"/home/alex/Projects/framework/",
+			"/home/alex/Projects/framework/test"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"mm",
+			"p",
+			"o",
+			"n",
+			"m",
+			"l",
+			"k",
+			"j",
+			"i",
+			"h",
+			"g",
+			"f",
+			"e",
+			"d",
+			"c",
+			"b",
+			"a",
+			"s20",
+			"s19",
+			"s18",
+			"s17",
+			"s16",
+			"s15",
+			"s14",
+			"s13",
+			"s12",
+			"s11",
+			"s10",
+			"s09",
+			"s07",
+			"h",
+			"h k n",
+			"i",
+			"h",
+			"g",
+			"f",
+			"e",
+			"d",
+			"c",
+			"b",
+			"a",
+			"1",
+			"xCompMult",
+			"outerProduct",
+			"create",
+			"make",
+			"column",
+			"vector_impl::",
+			"vec",
+			"RT",
+			"cout",
+			"TODO",
+			"any",
+			"slime::math",
+			"RT",
+			"slime"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"m",
+			"mm[3][3]",
+			"mm[2][3]",
+			"mm[1][3]",
+			"mm[0][3]",
+			"mm[3][2]",
+			"mm[2][2]",
+			"mm[1][2]",
+			"mm[0][2]",
+			"mm[3][1]",
+			"mm[2][1]",
+			"mm[1][1]",
+			"mm[0][1]",
+			"mm[3][0]",
+			"mm[2][0]",
+			"mm[1][0]",
+			"mm[0][0]",
+			"s18",
+			"s17",
+			"s16",
+			"s15",
+			"s14",
+			"s13",
+			"s12",
+			"s11",
+			"s10",
+			"s09",
+			"s08",
+			"s07",
+			"s06",
+			"mm[2][2]",
+			"mm[2][1]",
+			"mm[2][0]",
+			"mm[1][2]",
+			"mm[1][1]",
+			"mm[1][0]",
+			"mm[0][2]",
+			"mm[0][1]",
+			"mm[0][0]",
+			"5",
+			"xcomp_mult",
+			"outer_product",
+			"row",
+			"utils::",
+			"TVec",
+			"TResult",
+			"framework::math",
+			"TResult",
+			"FRAMEWORK",
+			"framework"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "src/math/matrix_func.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6623,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6377,
+								6377
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"syntax": "Packages/C++11/C++11.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2250.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "test/015_matrix_func/main.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7342,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7282,
+								7282
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
+							],
+							"syntax": "Packages/C++11/C++11.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2520.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 394.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Project Make",
+	"project": "framework.sublime-project",
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 375.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 1002.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 266.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
