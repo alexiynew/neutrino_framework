@@ -2,8 +2,8 @@
 #define FRAMEWORK_MATH_RELATIONAL_FTNC_H
 
 #include <cmath>
-#include <type_traits>
 #include <limits>
+#include <type_traits>
 
 #include <math/vector_type.h>
 
@@ -15,7 +15,7 @@ namespace math {
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> less(const TVec<N, T>& l, const TVec<N, T>& r)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(l, r, [](const T& a, const T& b) { return a < b; });
 }
 
@@ -23,7 +23,7 @@ inline TVec<N, bool> less(const TVec<N, T>& l, const TVec<N, T>& r)
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> less_equal(const TVec<N, T>& l, const TVec<N, T>& r)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(l, r, [](const T& a, const T& b) { return a <= b; });
 }
 
@@ -31,7 +31,7 @@ inline TVec<N, bool> less_equal(const TVec<N, T>& l, const TVec<N, T>& r)
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> greater(const TVec<N, T>& l, const TVec<N, T>& r)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(l, r, [](const T& a, const T& b) { return a > b; });
 }
 
@@ -39,7 +39,7 @@ inline TVec<N, bool> greater(const TVec<N, T>& l, const TVec<N, T>& r)
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> greater_equal(const TVec<N, T>& l, const TVec<N, T>& r)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(l, r, [](const T& a, const T& b) { return a >= b; });
 }
 

@@ -84,15 +84,20 @@ int main()
         mat3x2d m32(data2);
         mat2x2d m22(data2);
 
-        assert_msg(m44 == mat4x4d(vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3)), "matrix4x4 from pointer constructor");
-        assert_msg(m34 == mat3x4d(vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3)), "matrix3x4 from pointer constructor");
+        assert_msg(m44 == mat4x4d(vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3)),
+                   "matrix4x4 from pointer constructor");
+        assert_msg(m34 == mat3x4d(vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3)), "matrix3x4 from pointer "
+                                                                                            "constructor");
         assert_msg(m24 == mat2x4d(vec4d(0, 1, 2, 3), vec4d(0, 1, 2, 3)), "matrix2x4 from pointer constructor");
 
-        assert_msg(m43 == mat4x3d(vec3d(0, 1, 2), vec3d(0, 1, 2), vec3d(0, 1, 2), vec3d(0, 1, 2)), "matrix4x3 from pointer constructor");
-        assert_msg(m33 == mat3x3d(vec3d(0, 1, 2), vec3d(0, 1, 2), vec3d(0, 1, 2)), "matrix3x3 from pointer constructor");
+        assert_msg(m43 == mat4x3d(vec3d(0, 1, 2), vec3d(0, 1, 2), vec3d(0, 1, 2), vec3d(0, 1, 2)),
+                   "matrix4x3 from pointer constructor");
+        assert_msg(m33 == mat3x3d(vec3d(0, 1, 2), vec3d(0, 1, 2), vec3d(0, 1, 2)), "matrix3x3 from pointer "
+                                                                                   "constructor");
         assert_msg(m23 == mat2x3d(vec3d(0, 1, 2), vec3d(0, 1, 2)), "matrix2x3 from pointer constructor");
 
-        assert_msg(m42 == mat4x2d(vec2d(0, 1), vec2d(0, 1), vec2d(0, 1), vec2d(0, 1)), "matrix4x3 from pointer constructor");
+        assert_msg(m42 == mat4x2d(vec2d(0, 1), vec2d(0, 1), vec2d(0, 1), vec2d(0, 1)), "matrix4x3 from pointer "
+                                                                                       "constructor");
         assert_msg(m32 == mat3x2d(vec2d(0, 1), vec2d(0, 1), vec2d(0, 1)), "matrix3x3 from pointer constructor");
         assert_msg(m22 == mat2x2d(vec2d(0, 1), vec2d(0, 1)), "matrix2x3 from pointer constructor");
 
@@ -108,35 +113,17 @@ int main()
         F64* p32 = m32.data();
         F64* p22 = m22.data();
 
-        assert_msg(p44[0]  == 0.0 && p44[1]  == 1.0 && p44[2]  == 2.0 && p44[3]  == 3.0 &&
-                   p44[4]  == 0.0 && p44[5]  == 1.0 && p44[6]  == 2.0 && p44[7]  == 3.0 &&
-                   p44[8]  == 0.0 && p44[9]  == 1.0 && p44[10] == 2.0 && p44[11] == 3.0 &&
-                   p44[12] == 0.0 && p44[13] == 1.0 && p44[14] == 2.0 && p44[15] == 3.0, "matrix4x4 pointer access");
-        assert_msg(p34[0]  == 0.0 && p34[1]  == 1.0 && p34[2]  == 2.0 && p34[3]  == 3.0 &&
-                   p34[4]  == 0.0 && p34[5]  == 1.0 && p34[6]  == 2.0 && p34[7]  == 3.0 &&
-                   p34[8]  == 0.0 && p34[9]  == 1.0 && p34[10] == 2.0 && p34[11] == 3.0, "matrix3x4 pointer access");
-        assert_msg(p24[0]  == 0.0 && p24[1]  == 1.0 && p24[2]  == 2.0 && p24[3]  == 3.0 &&
-                   p24[4]  == 0.0 && p24[5]  == 1.0 && p24[6]  == 2.0 && p24[7]  == 3.0, "matrix2x4 pointer access");
+        assert_msg(p44[0] == 0.0 && p44[1] == 1.0 && p44[2] == 2.0 && p44[3] == 3.0 && p44[4] == 0.0 && p44[5] == 1.0 && p44[6] == 2.0 && p44[7] == 3.0 && p44[8] == 0.0 && p44[9] == 1.0 && p44[10] == 2.0 && p44[11] == 3.0 && p44[12] == 0.0 && p44[13] == 1.0 && p44[14] == 2.0 && p44[15] == 3.0, "matrix4x4 pointer access");
+        assert_msg(p34[0] == 0.0 && p34[1] == 1.0 && p34[2] == 2.0 && p34[3] == 3.0 && p34[4] == 0.0 && p34[5] == 1.0 && p34[6] == 2.0 && p34[7] == 3.0 && p34[8] == 0.0 && p34[9] == 1.0 && p34[10] == 2.0 && p34[11] == 3.0, "matrix3x4 pointer access");
+        assert_msg(p24[0] == 0.0 && p24[1] == 1.0 && p24[2] == 2.0 && p24[3] == 3.0 && p24[4] == 0.0 && p24[5] == 1.0 && p24[6] == 2.0 && p24[7] == 3.0, "matrix2x4 pointer access");
 
-        assert_msg(p43[0] == 0.0 && p43[1]  == 1.0 && p43[2]  == 2.0 &&
-                   p43[3] == 0.0 && p43[4]  == 1.0 && p43[5]  == 2.0 &&
-                   p43[6] == 0.0 && p43[7]  == 1.0 && p43[8]  == 2.0 &&
-                   p43[9] == 0.0 && p43[10] == 1.0 && p43[11] == 2.0, "matrix4x3 pointer access");
-        assert_msg(p33[0] == 0.0 && p33[1]  == 1.0 && p33[2]  == 2.0 &&
-                   p33[3] == 0.0 && p33[4]  == 1.0 && p33[5]  == 2.0 &&
-                   p33[6] == 0.0 && p33[7]  == 1.0 && p33[8]  == 2.0, "matrix3x3 pointer access");
-        assert_msg(p23[0] == 0.0 && p23[1]  == 1.0 && p23[2]  == 2.0 &&
-                   p23[3] == 0.0 && p23[4]  == 1.0 && p23[5]  == 2.0, "matrix2x3 pointer access");
+        assert_msg(p43[0] == 0.0 && p43[1] == 1.0 && p43[2] == 2.0 && p43[3] == 0.0 && p43[4] == 1.0 && p43[5] == 2.0 && p43[6] == 0.0 && p43[7] == 1.0 && p43[8] == 2.0 && p43[9] == 0.0 && p43[10] == 1.0 && p43[11] == 2.0, "matrix4x3 pointer access");
+        assert_msg(p33[0] == 0.0 && p33[1] == 1.0 && p33[2] == 2.0 && p33[3] == 0.0 && p33[4] == 1.0 && p33[5] == 2.0 && p33[6] == 0.0 && p33[7] == 1.0 && p33[8] == 2.0, "matrix3x3 pointer access");
+        assert_msg(p23[0] == 0.0 && p23[1] == 1.0 && p23[2] == 2.0 && p23[3] == 0.0 && p23[4] == 1.0 && p23[5] == 2.0, "matrix2x3 pointer access");
 
-        assert_msg(p42[0] == 0.0 && p42[1] == 1.0 &&
-                   p42[2] == 0.0 && p42[3] == 1.0 &&
-                   p42[4] == 0.0 && p42[5] == 1.0 &&
-                   p42[6] == 0.0 && p42[7] == 1.0, "matrix4x2 pointer access");
-        assert_msg(p32[0] == 0.0 && p32[1] == 1.0 &&
-                   p32[2] == 0.0 && p32[3] == 1.0 &&
-                   p32[4] == 0.0 && p32[5] == 1.0, "matrix3x2 pointer access");
-        assert_msg(p22[0] == 0.0 && p22[1] == 1.0 &&
-                   p22[2] == 0.0 && p22[3] == 1.0, "matrix2x2 pointer access");
+        assert_msg(p42[0] == 0.0 && p42[1] == 1.0 && p42[2] == 0.0 && p42[3] == 1.0 && p42[4] == 0.0 && p42[5] == 1.0 && p42[6] == 0.0 && p42[7] == 1.0, "matrix4x2 pointer access");
+        assert_msg(p32[0] == 0.0 && p32[1] == 1.0 && p32[2] == 0.0 && p32[3] == 1.0 && p32[4] == 0.0 && p32[5] == 1.0, "matrix3x2 pointer access");
+        assert_msg(p22[0] == 0.0 && p22[1] == 1.0 && p22[2] == 0.0 && p22[3] == 1.0, "matrix2x2 pointer access");
     }
 
     // mat4f from vectors constructor

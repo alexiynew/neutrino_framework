@@ -1,8 +1,8 @@
-#include <iostream>
-#include <string>
-#include <sstream>
 #include <iomanip>
+#include <iostream>
 #include <math/fmath.h>
+#include <sstream>
+#include <string>
 
 using namespace framework::math;
 

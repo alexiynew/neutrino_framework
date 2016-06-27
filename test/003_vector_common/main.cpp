@@ -66,7 +66,6 @@ int main()
 
         vec2f v2f(0.00001f, 1.0f);
         assert_msg(almost_equal(v2f, vec2f(0.00001f, 0.99999999999999f)), "almost_equal failed");
-
     }
 
     return 0;

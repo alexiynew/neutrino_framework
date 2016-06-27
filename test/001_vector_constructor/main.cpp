@@ -97,7 +97,7 @@ int main()
         assert_msg(v2u == vec2u(0, 0), "vec2u zero constructor");
 
         assert_msg(p[0] == 1.0 && p[1] == 2.0 && p[2] == 3.0 && p[3] == 4.0, "pointer data access");
-// TODO: add vector bool pointer access
+        // TODO: add vector bool pointer access
     }
 
     // vector to vector bool cast
@@ -134,11 +134,19 @@ int main()
         constexpr vec3i v3i = vec3i(v2i);
         constexpr vec4i v4i = vec4i(v2i);
 
-        assert_msg(almost_equal(v4d.x, v3d.x) && almost_equal(v3d.x, v2d.x) && almost_equal(v2d.x, 1.1) && almost_equal(v4d.y, v3d.y) && almost_equal(v3d.y, v2d.y) && almost_equal(v2d.y, 2.2) && almost_equal(v4d.z, v3d.z) && almost_equal(v3d.z, 3.3), "different size constructor");
+        assert_msg(almost_equal(v4d.x, v3d.x) && almost_equal(v3d.x, v2d.x) && almost_equal(v2d.x, 1.1) &&
+                   almost_equal(v4d.y, v3d.y) && almost_equal(v3d.y, v2d.y) && almost_equal(v2d.y, 2.2) &&
+                   almost_equal(v4d.z, v3d.z) && almost_equal(v3d.z, 3.3),
+                   "different size constructor");
 
-        assert_msg(almost_equal(v4f.x, v3f.x) && almost_equal(v4f.x, v2f.x) && almost_equal(v2f.x, 5.5f) && almost_equal(v4f.y, v3f.y) && almost_equal(v4f.y, v2f.y) && almost_equal(v2f.y, 6.6f) && almost_equal(v4f.z, v3f.z) && almost_equal(v4f.z, 7.7f) && almost_equal(v4f.w, 1.0f), "different size constructor");
+        assert_msg(almost_equal(v4f.x, v3f.x) && almost_equal(v4f.x, v2f.x) && almost_equal(v2f.x, 5.5f) &&
+                   almost_equal(v4f.y, v3f.y) && almost_equal(v4f.y, v2f.y) && almost_equal(v2f.y, 6.6f) &&
+                   almost_equal(v4f.z, v3f.z) && almost_equal(v4f.z, 7.7f) && almost_equal(v4f.w, 1.0f),
+                   "different size constructor");
 
-        assert_msg((v4i.x == v3i.x) && (v3i.x == v2i.x) && (v3i.x == 1) && (v4i.y == v3i.y) && (v3i.y == v2i.y) && (v3i.y == 2) && (v4i.z == v3i.z) && (v3i.z == 0) && (v4i.w == 1), "different size constructor");
+        assert_msg((v4i.x == v3i.x) && (v3i.x == v2i.x) && (v3i.x == 1) && (v4i.y == v3i.y) && (v3i.y == v2i.y) && (v3i.y == 2) &&
+                   (v4i.z == v3i.z) && (v3i.z == 0) && (v4i.w == 1),
+                   "different size constructor");
     }
 
     // vector different size constructor with addition scalar

@@ -23,13 +23,15 @@ int main()
 
         assert_msg(almost_equal(tan(radians(v3d)), sin(radians(v3d)) / cos(radians(v3d))), "tan failed");
 
-        assert_msg(almost_equal(asin(sin(radians(v4d))), vec4d(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4), 1), "asin failed");
+        assert_msg(
+        almost_equal(asin(sin(radians(v4d))), vec4d(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4), 1), "asin failed");
 
         assert_msg(almost_equal(acos(cos(radians(v4d))), vec4d(PI, 0, PI / 2, PI / 4)), "acos failed");
 
         assert_msg(almost_equal(atan(tan(radians(v3d))), vec3d(PI / 4, PI / 3, atan(tan(PI)))), "atan from tan failed");
 
-        assert_msg(almost_equal(atan(sin(radians(v3d)), cos(radians(v3d))), vec3d(PI / 4, PI / 3, PI)), "atan from sin failed");
+        assert_msg(almost_equal(atan(sin(radians(v3d)), cos(radians(v3d))), vec3d(PI / 4, PI / 3, PI)), "atan from sin "
+                                                                                                        "failed");
 
         assert_msg(almost_equal(sinh(radians(v3d)), vec3d(0.86867096148600953, 1.2493670505239751, 11.548739357257748)), "sinh failed");
 

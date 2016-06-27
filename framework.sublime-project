@@ -20,7 +20,7 @@
     [
         {
             "name": "Project Make",
-            "cmd": ["make"],
+            "cmd": ["make", "-j4"],
             "working_dir" : "${project_path}/build",
             "file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? ?(.*)$",
             // "target": "ansi_color_build",
@@ -40,8 +40,12 @@
                     "cmd": ["make", "clean"],
                 },
                 {
-                    "name": "Cmake",
+                    "name": "CMake",
                     "cmd": ["cmake", "../"],
+                },
+                {
+                    "name": "Clang Format",
+                    "cmd": ["make", "clangformat"],
                 },
                 {
                     "name": "TODO Parsing",
@@ -50,5 +54,9 @@
                 }
             ]
         }
-    ]
+    ],
+    "settings":
+    {
+      "clang_flags": ["-I${project_folder}/src"]
+    }
 }

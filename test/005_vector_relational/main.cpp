@@ -27,7 +27,6 @@ int main()
         assert_msg(equal(v2i1, v2i2) == vec2b(false, true), "equal_to failed");
 
         assert_msg(not_equal(v2i2, v2i1) == vec2b(true, false), "not_equal_to failed");
-
     }
 
     // vector bool logic aperations

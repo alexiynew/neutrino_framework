@@ -3,16 +3,16 @@
 
 #include <common_types.h>
 
-#include <math/vector_type.h>
 #include <math/matrix_type.h>
+#include <math/vector_type.h>
 
-#include <math/constants.h>
 #include <math/common_func.h>
-#include <math/relational_func.h>
+#include <math/constants.h>
 #include <math/exponential_func.h>
 #include <math/geometric_func.h>
-#include <math/trigonometric_func.h>
 #include <math/matrix_func.h>
+#include <math/relational_func.h>
+#include <math/trigonometric_func.h>
 
 namespace framework {
 

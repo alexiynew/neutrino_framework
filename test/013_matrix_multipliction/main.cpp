@@ -69,7 +69,8 @@ int main()
 
         mat2f m22f(1, 2, 4, 1);
 
-        assert_msg(m44f * m44f == mat4f(26, 28, 26, 20, 20, 26, 28, 26, 26, 20, 26, 28, 28, 26, 20, 26), "matrix m44f * m44f failed");
+        assert_msg(m44f * m44f == mat4f(26, 28, 26, 20, 20, 26, 28, 26, 26, 20, 26, 28, 28, 26, 20, 26),
+                   "matrix m44f * m44f failed");
 
         assert_msg(m44f * m34f == mat3x4f(26, 28, 26, 20, 20, 26, 28, 26, 26, 20, 26, 28), "matrix m44f * m34f failed");
 
@@ -87,7 +88,8 @@ int main()
 
         assert_msg(m42f * m24f == mat2f(16, 14, 14, 16), "matrix m42f * m24f failed");
 
-        assert_msg(m34f * m43f == mat4f(18, 16, 10, 16, 13, 15, 13, 19, 17, 11, 13, 19, 18, 16, 10, 16), "matrix m34f * m43f failed");
+        assert_msg(m34f * m43f == mat4f(18, 16, 10, 16, 13, 15, 13, 19, 17, 11, 13, 19, 18, 16, 10, 16),
+                   "matrix m34f * m43f failed");
 
         assert_msg(m34f * m33f == mat3x4f(18, 16, 10, 16, 13, 15, 13, 19, 17, 11, 13, 19), "matrix m34f * m33f failed");
 
@@ -105,7 +107,8 @@ int main()
 
         assert_msg(m32f * m23f == mat2f(8, 10, 8, 13), "matrix m32f * m23f failed");
 
-        assert_msg(m24f * m42f == mat4f(9, 4, 7, 10, 6, 5, 8, 11, 9, 4, 7, 10, 6, 5, 8, 11), "matrix m24f * m42f failed");
+        assert_msg(m24f * m42f == mat4f(9, 4, 7, 10, 6, 5, 8, 11, 9, 4, 7, 10, 6, 5, 8, 11), "matrix m24f * m42f "
+                                                                                             "failed");
 
         assert_msg(m24f * m32f == mat3x4f(9, 4, 7, 10, 6, 5, 8, 11, 9, 4, 7, 10), "matrix m24f * m32f failed");
 

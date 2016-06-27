@@ -3,8 +3,8 @@
 
 #include <cmath>
 
-#include <math/vector_type.h>
 #include <math/constants.h>
+#include <math/vector_type.h>
 
 namespace framework {
 
@@ -14,14 +14,14 @@ namespace math {
 template <typename T>
 inline T radians(const T& degrees)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return DEGTORAD * degrees;
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> radians(const TVec<N, T>& a)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, [](const T& degrees) { return static_cast<T>(DEGTORAD * degrees); });
 }
 
@@ -29,14 +29,14 @@ inline TVec<N, T> radians(const TVec<N, T>& a)
 template <typename T>
 inline T degrees(const T& radians)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return RADTODEG * radians;
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> degrees(const TVec<N, T>& a)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, [](const T& radians) { return static_cast<T>(RADTODEG * radians); });
 }
 

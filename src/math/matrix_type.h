@@ -1,12 +1,12 @@
 #ifndef FRAMEWORK_MATH_MATRIX_TYPE_H
 #define FRAMEWORK_MATH_MATRIX_TYPE_H
 
-#include <type_traits>
 #include <functional>
+#include <type_traits>
 
 #include <debug.h>
-#include <math/vector_type.h>
 #include <math/geometric_func.h>
+#include <math/vector_type.h>
 
 namespace framework {
 
@@ -32,7 +32,7 @@ struct matrix : public matrix_base<C, R, T>
     constexpr matrix();
 
     constexpr matrix(const matrix<C, R, T>&) = default;
-    constexpr matrix(matrix<C, R, T>&&) = default;
+    constexpr matrix(matrix<C, R, T>&&)      = default;
 
     // import constructors from matrix_base<C, R, T>
     using base_type::matrix_base;
@@ -88,7 +88,8 @@ struct matrix_base<4, 4, T>
 
     explicit constexpr matrix_base(const T& v)
     : data{column_type(v, 0, 0, 0), column_type(0, v, 0, 0), column_type(0, 0, v, 0), column_type(0, 0, 0, v)}
-    {}
+    {
+    }
 
     constexpr matrix_base() : matrix_base(T(1))
     {
@@ -96,7 +97,7 @@ struct matrix_base<4, 4, T>
 
     template <typename U>
     explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 4), column_type(p + 8), column_type(p + 12)}
+    : data{column_type(p), column_type(p + 4), column_type(p + 8), column_type(p + 12)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -232,7 +233,7 @@ struct matrix_base<4, 3, T>
 
     template <typename U>
     explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 3), column_type(p + 6), column_type(p + 9)}
+    : data{column_type(p), column_type(p + 3), column_type(p + 6), column_type(p + 9)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -350,7 +351,7 @@ struct matrix_base<4, 2, T>
 
     template <typename U>
     explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 2), column_type(p + 4), column_type(p + 6)}
+    : data{column_type(p), column_type(p + 2), column_type(p + 4), column_type(p + 6)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -461,8 +462,7 @@ struct matrix_base<3, 4, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 4), column_type(p + 8)}
+    explicit constexpr matrix_base(const U* const p) : data{column_type(p), column_type(p + 4), column_type(p + 8)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -596,8 +596,7 @@ struct matrix_base<3, 3, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 3), column_type(p + 6)}
+    explicit constexpr matrix_base(const U* const p) : data{column_type(p), column_type(p + 3), column_type(p + 6)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -713,8 +712,7 @@ struct matrix_base<3, 2, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 2), column_type(p + 4)}
+    explicit constexpr matrix_base(const U* const p) : data{column_type(p), column_type(p + 2), column_type(p + 4)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -824,8 +822,7 @@ struct matrix_base<2, 4, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 4)}
+    explicit constexpr matrix_base(const U* const p) : data{column_type(p), column_type(p + 4)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -884,8 +881,7 @@ struct matrix_base<2, 4, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<4, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
@@ -902,8 +898,7 @@ struct matrix_base<2, 4, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<3, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
@@ -920,8 +915,7 @@ struct matrix_base<2, 4, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<2, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
@@ -959,8 +953,7 @@ struct matrix_base<2, 3, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 3)}
+    explicit constexpr matrix_base(const U* const p) : data{column_type(p), column_type(p + 3)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -1001,14 +994,12 @@ struct matrix_base<2, 3, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<4, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<4, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<4, 3, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
@@ -1019,14 +1010,12 @@ struct matrix_base<2, 3, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<3, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<3, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<3, 3, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
@@ -1037,14 +1026,12 @@ struct matrix_base<2, 3, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<2, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<2, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<2, 3, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
@@ -1076,8 +1063,7 @@ struct matrix_base<2, 2, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const U* const p)
-        : data{column_type(p), column_type(p + 2)}
+    explicit constexpr matrix_base(const U* const p) : data{column_type(p), column_type(p + 2)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -1112,56 +1098,47 @@ struct matrix_base<2, 2, T>
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<4, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<4, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<4, 3, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<4, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<4, 2, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<3, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<3, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<3, 3, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<3, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<3, 2, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<2, 4, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<2, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<2, 3, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
     template <typename U>
-    explicit constexpr matrix_base(const matrix<2, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    explicit constexpr matrix_base(const matrix<2, 2, U>& other) : data{column_type(other[0]), column_type(other[1])}
     {
     }
 
@@ -1171,9 +1148,9 @@ struct matrix_base<2, 2, T>
 
 // default constructor
 template <U32 C, U32 R, typename T>
-constexpr matrix<C, R, T>::matrix()
-    : base_type()
-{}
+constexpr matrix<C, R, T>::matrix() : base_type()
+{
+}
 
 // matrix methods
 template <U32 C, U32 R, typename T>
@@ -1206,8 +1183,7 @@ inline typename matrix<C, R, T>::row_type matrix<C, R, T>::row(U32 index) const
 {
     assert_msg(index < R, "Wrong index");
     return utils::type_creator<C>::template create<typename matrix<C, R, T>::row_type>(
-            [this, index](U32 col){ return base_type::data[col][index]; }
-        );
+    [this, index](U32 col) { return base_type::data[col][index]; });
 }
 
 // access operator
@@ -1631,13 +1607,15 @@ inline const TVec<2, T> operator*(const TVec<R, T>& v, const matrix<2, R, T>& m)
 template <U32 R, typename T, template <U32, typename> class TVec>
 inline const TVec<R, T> operator*(const matrix<4, R, T>& m, const TVec<4, T>& v)
 {
-    return utils::type_creator<R>::template create<TVec<R, T>>([&m, &v](U32 r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z + m[3][r] * v.w; });
+    return utils::type_creator<R>::template create<TVec<R, T>>(
+    [&m, &v](U32 r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z + m[3][r] * v.w; });
 }
 
 template <U32 R, typename T, template <U32, typename> class TVec>
 inline const TVec<R, T> operator*(const matrix<3, R, T>& m, const TVec<3, T>& v)
 {
-    return utils::type_creator<R>::template create<TVec<R, T>>([&m, &v](U32 r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z; });
+    return utils::type_creator<R>::template create<TVec<R, T>>(
+    [&m, &v](U32 r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z; });
 }
 
 template <U32 R, typename T, template <U32, typename> class TVec>
@@ -1650,50 +1628,58 @@ inline const TVec<R, T> operator*(const matrix<2, R, T>& m, const TVec<2, T>& v)
 template <U32 C, U32 R, typename T>
 inline matrix<C, R, T> operator+(const matrix<C, R, T>& m, const T& scalar)
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>([&m, &scalar](U32 index) { return m[index] + scalar; });
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
+    [&m, &scalar](U32 index) { return m[index] + scalar; });
 }
 
 template <U32 C, U32 R, typename T>
 inline matrix<C, R, T> operator-(const matrix<C, R, T>& m, const T& scalar)
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>([&m, &scalar](U32 index) { return m[index] - scalar; });
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
+    [&m, &scalar](U32 index) { return m[index] - scalar; });
 }
 
 template <U32 C, U32 R, typename T>
 inline matrix<C, R, T> operator*(const matrix<C, R, T>& m, const T& scalar)
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>([&m, &scalar](U32 index) { return m[index] * scalar; });
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
+    [&m, &scalar](U32 index) { return m[index] * scalar; });
 }
 
 template <U32 C, U32 R, typename T>
 inline matrix<C, R, T> operator/(const matrix<C, R, T>& m, const T& scalar)
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>([&m, &scalar](U32 index) { return m[index] / scalar; });
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
+    [&m, &scalar](U32 index) { return m[index] / scalar; });
 }
 
 // scalar * matrix
 template <U32 C, U32 R, typename T>
 inline matrix<C, R, T> operator+(const T& scalar, const matrix<C, R, T>& m)
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>([&m, &scalar](U32 index) { return scalar + m[index]; });
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
+    [&m, &scalar](U32 index) { return scalar + m[index]; });
 }
 
 template <U32 C, U32 R, typename T>
 inline matrix<C, R, T> operator-(const T& scalar, const matrix<C, R, T>& m)
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>([&m, &scalar](U32 index) { return scalar - m[index]; });
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
+    [&m, &scalar](U32 index) { return scalar - m[index]; });
 }
 
 template <U32 C, U32 R, typename T>
 inline matrix<C, R, T> operator*(const T& scalar, const matrix<C, R, T>& m)
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>([&m, &scalar](U32 index) { return scalar * m[index]; });
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
+    [&m, &scalar](U32 index) { return scalar * m[index]; });
 }
 
 template <U32 C, U32 R, typename T>
 inline matrix<C, R, T> operator/(const T& scalar, const matrix<C, R, T>& m)
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>([&m, &scalar](U32 index) { return scalar / m[index]; });
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
+    [&m, &scalar](U32 index) { return scalar / m[index]; });
 }
 
 // matrix equality

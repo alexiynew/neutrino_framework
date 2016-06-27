@@ -3,8 +3,8 @@
 
 #include <limits>
 
-#include <math/vector_type.h>
 #include <math/relational_func.h>
+#include <math/vector_type.h>
 
 namespace framework {
 
@@ -14,7 +14,8 @@ namespace common_impl {
 
 template <typename T, bool B>
 struct abs_impl
-{};
+{
+};
 
 template <typename T>
 struct abs_impl<T, true>
@@ -88,14 +89,14 @@ struct sign_vector_impl<N, false>
 template <typename T>
 inline T abs(const T& v)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>()(v);
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> abs(const TVec<N, T>& v)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(v, common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>());
 }
 
@@ -103,14 +104,14 @@ inline TVec<N, T> abs(const TVec<N, T>& v)
 template <typename T>
 inline T sign(const T& v)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return common_impl::sign_impl<T, std::numeric_limits<T>::is_signed>()(v);
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> sign(const TVec<N, T>& v)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return common_impl::sign_vector_impl<N, std::numeric_limits<T>::is_signed>()(v);
 }
 
@@ -158,14 +159,14 @@ inline TVec<N, T> ceil(const TVec<N, T>& v)
 template <typename T>
 inline T fract(const T& v)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return v - floor(v);
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> fract(const TVec<N, T>& v)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(v, [](const T& a) { return fract(a); });
 }
 
@@ -174,21 +175,21 @@ inline TVec<N, T> fract(const TVec<N, T>& v)
 template <typename T>
 inline T mod(const T& a, const T& b)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return a - b * floor(a / b);
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> mod(const TVec<N, T>& v, const T& scalar)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(v, [&scalar](const T& a) { return mod(a, scalar); });
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> mod(const TVec<N, T>& a, const TVec<N, T>& b)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return mod(l, r); });
 }
 
@@ -228,21 +229,21 @@ inline TVec<2, T> modf(const TVec<2, T>& a, TVec<2, T>& b)
 template <typename T>
 inline T min(const T& a, const T& b)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return a < b ? a : b;
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> min(const TVec<N, T>& a, const T& scalar)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, [&scalar](const T& l) { return min(l, scalar); });
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> min(const TVec<N, T>& a, const TVec<N, T>& b)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return min(l, r); });
 }
 
@@ -250,21 +251,21 @@ inline TVec<N, T> min(const TVec<N, T>& a, const TVec<N, T>& b)
 template <typename T>
 inline T max(const T& a, const T& b)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return a > b ? a : b;
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> max(const TVec<N, T>& a, const T& scalar)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, [&scalar](const T& l) { return max(l, scalar); });
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> max(const TVec<N, T>& a, const TVec<N, T>& b)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return max(l, r); });
 }
 
@@ -273,21 +274,21 @@ inline TVec<N, T> max(const TVec<N, T>& a, const TVec<N, T>& b)
 template <typename T>
 inline T clamp(const T& a, const T& minv, const T& maxv)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return min(max(a, minv), maxv);
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> clamp(const TVec<N, T>& a, const T& minv, const T& maxv)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return min(max(a, minv), maxv);
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> clamp(const TVec<N, T>& a, const TVec<N, T>& minv, const TVec<N, T>& maxv)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return min(max(a, minv), maxv);
 }
 
@@ -307,7 +308,8 @@ inline TVec<N, T> clamp(const TVec<N, T>& a, const TVec<N, T>& minv, const TVec<
 template <typename T, typename U>
 inline T mix(const T& a, const T& b, const U& t)
 {
-    static_assert(utils::floating_point_or_integer<T>::value && utils::floating_point_or_integer<U>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value && utils::is_floating_point_or_integer<U>::value,
+                  "expected floating-point or integer type");
     return static_cast<T>(a + t * (b - a));
 }
 
@@ -320,7 +322,8 @@ inline T mix(const T& a, const T& b, const bool& t)
 template <U32 N, typename T, typename U, template <U32, typename> class TVec>
 inline TVec<N, T> mix(const TVec<N, T>& a, const TVec<N, T>& b, const U& t)
 {
-    static_assert(utils::floating_point_or_integer<T>::value && utils::floating_point_or_integer<U>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value && utils::is_floating_point_or_integer<U>::value,
+                  "expected floating-point or integer type");
     return TVec<N, T>(a + t * (b - a));
 }
 
@@ -353,21 +356,21 @@ inline TVec<2, T> mix(const TVec<2, T>& a, const TVec<2, T>& b, const TVec<2, U>
 template <typename T>
 inline T step(const T& a, const T& edge)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return a < edge ? T(0) : T(1);
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> step(const TVec<N, T>& a, const T& edge)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, [&edge](const T& l) { return step(l, edge); });
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> step(const TVec<N, T>& a, const TVec<N, T>& b)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return step(l, r); });
 }
 
@@ -383,7 +386,7 @@ inline TVec<N, T> step(const TVec<N, T>& a, const TVec<N, T>& b)
 template <typename T>
 inline T smoothstep(const T& a, const T& edge0, const T& edge1)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     T t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
     return t * t * (T(3) - T(2) * t);
 }
@@ -391,7 +394,7 @@ inline T smoothstep(const T& a, const T& edge0, const T& edge1)
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> smoothstep(const TVec<N, T>& a, const T& edge0, const T& edge1)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
     return t * t * (T(3) - T(2) * t);
 }
@@ -399,7 +402,7 @@ inline TVec<N, T> smoothstep(const TVec<N, T>& a, const T& edge0, const T& edge1
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> smoothstep(const TVec<N, T>& a, const TVec<N, T>& edge0, const TVec<N, T>& edge1)
 {
-    static_assert(utils::floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
     return t * t * (T(3) - T(2) * t);
 }
@@ -514,7 +517,8 @@ TResult almost_equal(T x, T y, I32 ulp = 0)
 template <typename T, template <U32, typename> class TVec, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
 TResult almost_equal(const TVec<4, T>& lhs, const TVec<4, T>& rhs, I32 ulp = 0)
 {
-    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp) && almost_equal(lhs.w, rhs.w, ulp);
+    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp) &&
+           almost_equal(lhs.w, rhs.w, ulp);
 }
 
 template <typename T, template <U32, typename> class TVec, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>

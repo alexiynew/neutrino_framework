@@ -3,25 +3,13 @@
 
 using namespace framework::math;
 
-template<U32 N, typename T, template<U32, typename> class TVec>
-std::ostream& operator<<(std::ostream& os, const TVec<N, T>& v)
-{
-    os << "[";
-    for (U32 i = 0; i < N; ++i) {
-        os << v[i];
-    }
-    os << "]";
-    return os;
-}
-
-
 int main()
 {
     // vector assign
     {
-        const vec4d v4d(1.1, 2.2, 3.3, 4);
-        const vec3f v3f(5.5f, 6.6f, 7.7f);
-        const vec2i v2i(1, 2.0);
+        vec4d v4d(1.1, 2.2, 3.3, 4);
+        vec3f v3f(5.5f, 6.6f, 7.7f);
+        vec2i v2i(1, 2.0);
 
         vec4d v4d2;
         vec3f v3f2;
@@ -38,22 +26,68 @@ int main()
         v4i = v4d;
         v3d = v3f;
         v2f = v2i;
-// TODO : add vector bool access
+
         assert_msg(v4i == vec4i(1, 2, 3, 4) && v4d2 == vec4d(1.1, 2.2, 3.3, 4), "assign failed");
         assert_msg(v3d == vec3d(static_cast<F64>(5.5f), static_cast<F64>(6.6f), static_cast<F64>(7.7f)) && v3f2 == vec3f(5.5f, 6.6f, 7.7f), "assign failed");
         assert_msg(v2f == vec2f(1, 2) && v2i2 == vec2i(1, 2.0), "assign failed");
+    }
 
-        assert_msg(almost_equal(v4d[0], v4d2[0]) && almost_equal(v4d[1], v4d2[1]) && almost_equal(v4d[2], v4d2[2]) && almost_equal(v4d[3], v4d2[3]), "access filed");
-        assert_msg(almost_equal(v3f[0], v3f2[0]) && almost_equal(v3f[1], v3f2[1]) && almost_equal(v3f[2], v3f2[2]), "assign failed");
+    // bool vector assing
+    {
+        vec4b v4b(true, false, true, false);
+        vec3b v3b(true, false, true);
+        vec2b v2b(true, false);
 
-        assert_msg(v2i[0] == v2i2[0] && v2i[1] == v2i2[1], "assign failed");
+        vec4d v4d(-1.1, 0.0, 3.3, 0.0);
+        vec3f v3f(5.5f, 0.0, -7.7f);
+        vec2i v2i(1, 0);
+
+        vec4b v4b2;
+        vec3b v3b2;
+        vec2b v2b2;
+
+        v4b2 = v4b;
+        v3b2 = v3b;
+        v2b2 = v2b;
+
+        vec4b v4b3;
+        vec3b v3b3;
+        vec2b v2b3;
+
+        v4b3 = v4d;
+        v3b3 = v3f;
+        v2b3 = v2i;
+
+        assert_msg(v4b == v4b2 && v4b == v4b3, "assign failed");
+        assert_msg(v3b == v3b2 && v3b == v3b3, "assign failed");
+        assert_msg(v2b == v2b2 && v2b == v2b3, "assign failed");
+    }
+
+    // vector access
+    {
+        vec4d v4d(1.1, 2.2, 3.3, 4.4);
+        vec3f v3f(5.5f, 6.6f, 7.7f);
+        vec2i v2i(1, 2);
+
+        vec4b v4b(true, false, true, false);
+        vec3b v3b(true, false, true);
+        vec2b v2b(true, false);
+
+        assert_msg(almost_equal(v4d[0], 1.1) && almost_equal(v4d[1], 2.2) && almost_equal(v4d[2], 3.3) && almost_equal(v4d[3], 4.4), "access filed");
+        assert_msg(almost_equal(v3f[0], 5.5f) && almost_equal(v3f[1], 6.6f) && almost_equal(v3f[2], 7.7f), "access "
+                                                                                                           "failed");
+        assert_msg(v2i[0] == 1 && v2i[1] == 2, "access failed");
+
+        assert_msg(v4b[0] == true && v4b[1] == false && v4b[2] == true && v4b[3] == false, "access filed");
+        assert_msg(v3b[0] == true && v3b[1] == false && v3b[2] == true, "access failed");
+        assert_msg(v2b[0] == true && v2b[1] == false, "access failed");
     }
 
     // vector inverse vector and unary plus
     {
-        constexpr vec4d v4d(1.4);
-        constexpr vec3f v3f(2.4f);
-        constexpr vec2i v2i(3);
+        vec4d v4d(1.4);
+        vec3f v3f(2.4f);
+        vec2i v2i(3);
 
         assert_msg(-v4d == vec4d(-1.4, -1.4, -1.4, -1.4), "inverse vector");
         assert_msg(-v3f == vec3f(-2.4f, -2.4f, -2.4f), "inverse vector");

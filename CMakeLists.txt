@@ -38,7 +38,7 @@ add_subdirectory (${TESTS_DIR})
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND})
 
 add_custom_target (clangformat
-    COMMAND clang-format-3.7 -style=file -i ${ALL_SOURCES} )
+    COMMAND clang-format-3.8 -style=file -i ${ALL_SOURCES} )
 
 
 add_custom_target (cppcheck

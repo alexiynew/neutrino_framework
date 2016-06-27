@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"type",
+				"type_creator"
+			],
+			[
 				"in",
 				"inverse_transpose"
 			],
@@ -96,18 +100,63 @@
 	"buffers":
 	[
 		{
-			"file": "src/math/matrix_func.h",
+			"file": "src/common_types.h",
 			"settings":
 			{
-				"buffer_size": 6623,
+				"buffer_size": 1173,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "test/015_matrix_func/main.cpp",
+			"file": "src/math/utils.h",
 			"settings":
 			{
-				"buffer_size": 7342,
+				"buffer_size": 4229,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "diff --git a/src/math/constants.h b/src/math/constants.h\nindex 4f7f002..d3629eb 100644\n--- a/src/math/constants.h\n+++ b/src/math/constants.h\n@@ -7,8 +7,8 @@ namespace framework {\n \n namespace math {\n \n-constexpr F64 DEGTORAD          = 0.017453292519943295769236907684886127134428718885417254560;\n-constexpr F64 RADTODEG          = 57.29577951308232087679815481410517033240547246656432154916;\n+constexpr F64 DEGTORAD = 0.017453292519943295769236907684886127134428718885417254560;\n+constexpr F64 RADTODEG = 57.29577951308232087679815481410517033240547246656432154916;\n \n constexpr F64 PI                = 3.141592653589793238462643383279502884197169399375105820974;\n constexpr F64 TAU               = 6.283185307179586476925286766559005768394338798750211641949;\n@@ -25,21 +25,21 @@ constexpr F64 ROOT_HALF_PI      = 1.25331413731550025120788264240552262650349337\n constexpr F64 ROOT_TWO_PI       = 2.506628274631000502415765284811045253006986740609938316629;\n constexpr F64 ROOT_PI           = 1.772453850905516027298167483341145182797549456122387128213;\n \n-constexpr F64 ROOT_TWO          = 1.414213562373095048801688724209698078569671875376948073176;\n-constexpr F64 ROOT_THREE        = 1.732050807568877293527446341505872366942805253810380628055;\n-constexpr F64 ROOT_FIVE         = 2.236067977499789696409173668731276235440618359611525724270;\n+constexpr F64 ROOT_TWO   = 1.414213562373095048801688724209698078569671875376948073176;\n+constexpr F64 ROOT_THREE = 1.732050807568877293527446341505872366942805253810380628055;\n+constexpr F64 ROOT_FIVE  = 2.236067977499789696409173668731276235440618359611525724270;\n \n-constexpr F64 LN_TWO            = 0.693147180559945309417232121458176568075500134360255254120;\n-constexpr F64 LN_TEN            = 2.302585092994045684017991454684364207601101488628772976033;\n-constexpr F64 LN_LN_TWO         = -0.36651292058166432701243915823266946945426344783710526305;\n-constexpr F64 ROOT_LN_FOUR      = 1.177410022515474691011569326459699637747385689385820538522;\n+constexpr F64 LN_TWO       = 0.693147180559945309417232121458176568075500134360255254120;\n+constexpr F64 LN_TEN       = 2.302585092994045684017991454684364207601101488628772976033;\n+constexpr F64 LN_LN_TWO    = -0.36651292058166432701243915823266946945426344783710526305;\n+constexpr F64 ROOT_LN_FOUR = 1.177410022515474691011569326459699637747385689385820538522;\n \n-constexpr F64 THIRD             = 0.333333333333333333333333333333333333333333333333333333333;\n-constexpr F64 TWO_THIRDS        = 0.666666666666666666666666666666666666666666666666666666666;\n-constexpr F64 GOLDEN_RATIO      = 1.618033988749894848204586834365638117720309179805762862135;\n+constexpr F64 THIRD        = 0.333333333333333333333333333333333333333333333333333333333;\n+constexpr F64 TWO_THIRDS   = 0.666666666666666666666666666666666666666666666666666666666;\n+constexpr F64 GOLDEN_RATIO = 1.618033988749894848204586834365638117720309179805762862135;\n \n-constexpr F64 E                 = 2.718281828459045235360287471352662497757247093699959574966;\n-constexpr F64 EULER             = 0.577215664901532860606512090082402431042159335939923598805;\n+constexpr F64 E     = 2.718281828459045235360287471352662497757247093699959574966;\n+constexpr F64 EULER = 0.577215664901532860606512090082402431042159335939923598805;\n \n } // namespace math\n \n",
+			"settings":
+			{
+				"buffer_size": 3311,
+				"line_ending": "Unix",
+				"name": "Git Diff",
+				"read_only": true,
+				"scratch": true
+			}
+		},
+		{
+			"contents": "Searching 1 file for \"floating_point_or_integer\" (case sensitive)\n\n/home/alex/Projects/framework/math:\n    ERROR: Unable to open file\n\n0 matches\n\nSearching 1 file for \"floating_point_or_integer\" (case sensitive)\n\n/home/alex/Projects/framework/math:\n    ERROR: Unable to open file\n\n0 matches\n\nSearching 1 file for \"floating_point_or_integer\" (case sensitive)\n\n/home/alex/Projects/framework/math/:\n    ERROR: Unable to open file\n\n0 matches\n\nSearching 244 files for \"floating_point_or_integer\" (case sensitive)\n\n/home/alex/Projects/framework/src/math/common_func.h:\n   90  inline T abs(const T& v)\n   91  {\n   92:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   93      return common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>()(v);\n   94  }\n   ..\n   97  inline TVec<N, T> abs(const TVec<N, T>& v)\n   98  {\n   99:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  100      return utils::vec_helper<N>::apply(v, common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>());\n  101  }\n  ...\n  105  inline T sign(const T& v)\n  106  {\n  107:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  108      return common_impl::sign_impl<T, std::numeric_limits<T>::is_signed>()(v);\n  109  }\n  ...\n  112  inline TVec<N, T> sign(const TVec<N, T>& v)\n  113  {\n  114:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  115      return common_impl::sign_vector_impl<N, std::numeric_limits<T>::is_signed>()(v);\n  116  }\n  ...\n  160  inline T fract(const T& v)\n  161  {\n  162:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  163      return v - floor(v);\n  164  }\n  ...\n  167  inline TVec<N, T> fract(const TVec<N, T>& v)\n  168  {\n  169:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  170      return utils::vec_helper<N>::apply(v, [](const T& a) { return fract(a); });\n  171  }\n  ...\n  176  inline T mod(const T& a, const T& b)\n  177  {\n  178:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  179      return a - b * floor(a / b);\n  180  }\n  ...\n  183  inline TVec<N, T> mod(const TVec<N, T>& v, const T& scalar)\n  184  {\n  185:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  186      return utils::vec_helper<N>::apply(v, [&scalar](const T& a) { return mod(a, scalar); });\n  187  }\n  ...\n  190  inline TVec<N, T> mod(const TVec<N, T>& a, const TVec<N, T>& b)\n  191  {\n  192:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  193      return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return mod(l, r); });\n  194  }\n  ...\n  230  inline T min(const T& a, const T& b)\n  231  {\n  232:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  233      return a < b ? a : b;\n  234  }\n  ...\n  237  inline TVec<N, T> min(const TVec<N, T>& a, const T& scalar)\n  238  {\n  239:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  240      return utils::vec_helper<N>::apply(a, [&scalar](const T& l) { return min(l, scalar); });\n  241  }\n  ...\n  244  inline TVec<N, T> min(const TVec<N, T>& a, const TVec<N, T>& b)\n  245  {\n  246:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  247      return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return min(l, r); });\n  248  }\n  ...\n  252  inline T max(const T& a, const T& b)\n  253  {\n  254:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  255      return a > b ? a : b;\n  256  }\n  ...\n  259  inline TVec<N, T> max(const TVec<N, T>& a, const T& scalar)\n  260  {\n  261:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  262      return utils::vec_helper<N>::apply(a, [&scalar](const T& l) { return max(l, scalar); });\n  263  }\n  ...\n  266  inline TVec<N, T> max(const TVec<N, T>& a, const TVec<N, T>& b)\n  267  {\n  268:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  269      return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return max(l, r); });\n  270  }\n  ...\n  275  inline T clamp(const T& a, const T& minv, const T& maxv)\n  276  {\n  277:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  278      return min(max(a, minv), maxv);\n  279  }\n  ...\n  282  inline TVec<N, T> clamp(const TVec<N, T>& a, const T& minv, const T& maxv)\n  283  {\n  284:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  285      return min(max(a, minv), maxv);\n  286  }\n  ...\n  289  inline TVec<N, T> clamp(const TVec<N, T>& a, const TVec<N, T>& minv, const TVec<N, T>& maxv)\n  290  {\n  291:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  292      return min(max(a, minv), maxv);\n  293  }\n  ...\n  309  inline T mix(const T& a, const T& b, const U& t)\n  310  {\n  311:     static_assert(utils::floating_point_or_integer<T>::value && utils::floating_point_or_integer<U>::value,\n  312                    \"expected floating-point or integer type\");\n  313      return static_cast<T>(a + t * (b - a));\n  ...\n  323  inline TVec<N, T> mix(const TVec<N, T>& a, const TVec<N, T>& b, const U& t)\n  324  {\n  325:     static_assert(utils::floating_point_or_integer<T>::value && utils::floating_point_or_integer<U>::value,\n  326                    \"expected floating-point or integer type\");\n  327      return TVec<N, T>(a + t * (b - a));\n  ...\n  357  inline T step(const T& a, const T& edge)\n  358  {\n  359:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  360      return a < edge ? T(0) : T(1);\n  361  }\n  ...\n  364  inline TVec<N, T> step(const TVec<N, T>& a, const T& edge)\n  365  {\n  366:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  367      return utils::vec_helper<N>::apply(a, [&edge](const T& l) { return step(l, edge); });\n  368  }\n  ...\n  371  inline TVec<N, T> step(const TVec<N, T>& a, const TVec<N, T>& b)\n  372  {\n  373:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  374      return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return step(l, r); });\n  375  }\n  ...\n  387  inline T smoothstep(const T& a, const T& edge0, const T& edge1)\n  388  {\n  389:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  390      T t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));\n  391      return t * t * (T(3) - T(2) * t);\n  ...\n  395  inline TVec<N, T> smoothstep(const TVec<N, T>& a, const T& edge0, const T& edge1)\n  396  {\n  397:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  398      TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));\n  399      return t * t * (T(3) - T(2) * t);\n  ...\n  403  inline TVec<N, T> smoothstep(const TVec<N, T>& a, const TVec<N, T>& edge0, const TVec<N, T>& edge1)\n  404  {\n  405:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  406      TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));\n  407      return t * t * (T(3) - T(2) * t);\n\n/home/alex/Projects/framework/src/math/geometric_func.h:\n   66  inline T distance(const T& a, const T& b)\n   67  {\n   68:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   69      return length(b - a);\n   70  }\n   ..\n   73  inline T distance(const TVec<N, T>& a, const TVec<N, T>& b)\n   74  {\n   75:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   76      return length(b - a);\n   77  }\n   ..\n   81  inline T dot(const T& a, const T& b)\n   82  {\n   83:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   84      return a * b;\n   85  }\n   ..\n   88  inline T dot(const TVec<N, T>& a, const TVec<N, T>& b)\n   89  {\n   90:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   91      return gemetric_impl::dot_impl<N>()(a, b);\n   92  }\n   ..\n   96  inline TVec<3, T> cross(const TVec<3, T>& a, const TVec<3, T>& b)\n   97  {\n   98:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   99      return TVec<3, T>(a.y * b.z - b.y * a.z, a.z * b.x - b.z * a.x, a.x * b.y - b.x * a.y);\n  100  }\n  ...\n  105  inline T normalize(const T& a)\n  106  {\n  107:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  108      return T(0) > a ? T(1) : T(-1);\n  109  }\n  ...\n  112  inline TVec<N, T> normalize(const TVec<N, T>& a)\n  113  {\n  114:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  115      return a * invsqrt(dot(a, a));\n  116  }\n  ...\n  120  inline T faceforward(const T& n, const T& v, const T& nref)\n  121  {\n  122:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  123      return dot(nref, v) < T(0) ? n : -n;\n  124  }\n  ...\n  127  inline TVec<N, T> faceforward(const TVec<N, T>& n, const TVec<N, T>& v, const TVec<N, T>& nref)\n  128  {\n  129:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  130      return dot(nref, v) < T(0) ? n : -n;\n  131  }\n  ...\n  136  inline T reflection(const T& v, const T& n)\n  137  {\n  138:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  139      return v - T(2) * dot(n, v) * n;\n  140  }\n  ...\n  143  inline TVec<N, T> reflection(const TVec<N, T>& v, const TVec<N, T>& n)\n  144  {\n  145:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  146      return v - T(2) * dot(n, v) * n;\n  147  }\n  ...\n  153  inline T refraction(const T& v, const T& n, const T& eta)\n  154  {\n  155:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  156      T dot_value = dot(n, v);\n  157      T k = T(1) - eta * eta * (T(1) - dot_value * dot_value);\n  ...\n  162  inline TVec<N, T> refraction(const TVec<N, T>& v, const TVec<N, T>& n, const T& eta)\n  163  {\n  164:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n  165      T dot_value = dot(n, v);\n  166      T k = T(1) - eta * eta * (T(1) - dot_value * dot_value);\n\n/home/alex/Projects/framework/src/math/relational_func.h:\n   16  inline TVec<N, bool> less(const TVec<N, T>& l, const TVec<N, T>& r)\n   17  {\n   18:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   19      return utils::vec_helper<N>::apply(l, r, [](const T& a, const T& b) { return a < b; });\n   20  }\n   ..\n   24  inline TVec<N, bool> less_equal(const TVec<N, T>& l, const TVec<N, T>& r)\n   25  {\n   26:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   27      return utils::vec_helper<N>::apply(l, r, [](const T& a, const T& b) { return a <= b; });\n   28  }\n   ..\n   32  inline TVec<N, bool> greater(const TVec<N, T>& l, const TVec<N, T>& r)\n   33  {\n   34:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   35      return utils::vec_helper<N>::apply(l, r, [](const T& a, const T& b) { return a > b; });\n   36  }\n   ..\n   40  inline TVec<N, bool> greater_equal(const TVec<N, T>& l, const TVec<N, T>& r)\n   41  {\n   42:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   43      return utils::vec_helper<N>::apply(l, r, [](const T& a, const T& b) { return a >= b; });\n   44  }\n\n/home/alex/Projects/framework/src/math/trigonometric_func.h:\n   15  inline T radians(const T& degrees)\n   16  {\n   17:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   18      return DEGTORAD * degrees;\n   19  }\n   ..\n   22  inline TVec<N, T> radians(const TVec<N, T>& a)\n   23  {\n   24:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   25      return utils::vec_helper<N>::apply(a, [](const T& degrees) { return static_cast<T>(DEGTORAD * degrees); });\n   26  }\n   ..\n   30  inline T degrees(const T& radians)\n   31  {\n   32:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   33      return RADTODEG * radians;\n   34  }\n   ..\n   37  inline TVec<N, T> degrees(const TVec<N, T>& a)\n   38  {\n   39:     static_assert(utils::floating_point_or_integer<T>::value, \"expected floating-point or integer type\");\n   40      return utils::vec_helper<N>::apply(a, [](const T& radians) { return static_cast<T>(RADTODEG * radians); });\n   41  }\n\n/home/alex/Projects/framework/src/math/utils.h:\n   27  \n   28  template <typename T>\n   29: struct is_floating_point_or_integer\n   30  {\n   31      constexpr const static bool value = std::is_arithmetic<T>::value && !std::is_same<bool, T>::value;\n\n50 matches across 5 files\n\n\nSearching 246 files for \"default_init\" (case sensitive)\n\n/home/alex/Projects/framework/bin/test/002_vector_operators:\n    <binary>\n\n/home/alex/Projects/framework/bin/test/003_vector_common:\n    <binary>\n\n/home/alex/Projects/framework/bin/test/014_matrix_multiplication_random/014_matrix_multiplication_random:\n    <binary>\n\n/home/alex/Projects/framework/build/CMakeFiles/3.5.1/CMakeCXXCompiler.cmake:\n    5  set(CMAKE_CXX_COMPILER_WRAPPER \"\")\n    6  set(CMAKE_CXX_STANDARD_COMPUTED_DEFAULT \"98\")\n    7: set(CMAKE_CXX_COMPILE_FEATURES \"cxx_template_template_parameters;cxx_alias_templates;cxx_alignas;cxx_alignof;cxx_attributes;cxx_auto_type;cxx_constexpr;cxx_decltype;cxx_decltype_incomplete_return_types;cxx_default_function_template_args;cxx_defaulted_functions;cxx_defaulted_move_initializers;cxx_delegating_constructors;cxx_deleted_functions;cxx_enum_forward_declarations;cxx_explicit_conversions;cxx_extended_friend_declarations;cxx_extern_templates;cxx_final;cxx_func_identifier;cxx_generalized_initializers;cxx_inheriting_constructors;cxx_inline_namespaces;cxx_lambdas;cxx_local_type_template_args;cxx_long_long_type;cxx_noexcept;cxx_nonstatic_member_init;cxx_nullptr;cxx_override;cxx_range_for;cxx_raw_string_literals;cxx_reference_qualified_functions;cxx_right_angle_brackets;cxx_rvalue_references;cxx_sizeof_member;cxx_static_assert;cxx_strong_enums;cxx_thread_local;cxx_trailing_return_types;cxx_unicode_literals;cxx_uniform_initialization;cxx_unrestricted_unions;cxx_user_literals;cxx_variadic_macros;cxx_variadic_templates;cxx_aggregate_default_initializers;cxx_attribute_deprecated;cxx_binary_literals;cxx_contextual_conversions;cxx_decltype_auto;cxx_digit_separators;cxx_generic_lambdas;cxx_lambda_init_captures;cxx_relaxed_constexpr;cxx_return_type_deduction;cxx_variable_templates\")\n    8  set(CMAKE_CXX98_COMPILE_FEATURES \"cxx_template_template_parameters\")\n    9  set(CMAKE_CXX11_COMPILE_FEATURES \"cxx_alias_templates;cxx_alignas;cxx_alignof;cxx_attributes;cxx_auto_type;cxx_constexpr;cxx_decltype;cxx_decltype_incomplete_return_types;cxx_default_function_template_args;cxx_defaulted_functions;cxx_defaulted_move_initializers;cxx_delegating_constructors;cxx_deleted_functions;cxx_enum_forward_declarations;cxx_explicit_conversions;cxx_extended_friend_declarations;cxx_extern_templates;cxx_final;cxx_func_identifier;cxx_generalized_initializers;cxx_inheriting_constructors;cxx_inline_namespaces;cxx_lambdas;cxx_local_type_template_args;cxx_long_long_type;cxx_noexcept;cxx_nonstatic_member_init;cxx_nullptr;cxx_override;cxx_range_for;cxx_raw_string_literals;cxx_reference_qualified_functions;cxx_right_angle_brackets;cxx_rvalue_references;cxx_sizeof_member;cxx_static_assert;cxx_strong_enums;cxx_thread_local;cxx_trailing_return_types;cxx_unicode_literals;cxx_uniform_initialization;cxx_unrestricted_unions;cxx_user_literals;cxx_variadic_macros;cxx_variadic_templates\")\n   10: set(CMAKE_CXX14_COMPILE_FEATURES \"cxx_aggregate_default_initializers;cxx_attribute_deprecated;cxx_binary_literals;cxx_contextual_conversions;cxx_decltype_auto;cxx_digit_separators;cxx_generic_lambdas;cxx_lambda_init_captures;cxx_relaxed_constexpr;cxx_return_type_deduction;cxx_variable_templates\")\n   11  \n   12  set(CMAKE_CXX_PLATFORM_ID \"Linux\")\n\n/home/alex/Projects/framework/build/CMakeFiles/CMakeOutput.log:\n  353  \n  354  \n  355:     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers\n  356      Feature record: CXX_FEATURE:1cxx_alias_templates\n  357      Feature record: CXX_FEATURE:1cxx_alignas\n  ...\n  426  \n  427  \n  428:     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers\n  429      Feature record: CXX_FEATURE:1cxx_alias_templates\n  430      Feature record: CXX_FEATURE:1cxx_alignas\n  ...\n  499  \n  500  \n  501:     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers\n  502      Feature record: CXX_FEATURE:0cxx_alias_templates\n  503      Feature record: CXX_FEATURE:0cxx_alignas\n\n/home/alex/Projects/framework/build/CMakeFiles/feature_tests.bin:\n    <binary>\n\n/home/alex/Projects/framework/build/CMakeFiles/feature_tests.cxx:\n    7  \"0\"\n    8  #endif\n    9: \"cxx_aggregate_default_initializers\\n\"\n   10  \"CXX_FEATURE:\"\n   11  #if ((__clang_major__ * 100) + __clang_minor__) >= 304 && __has_feature(cxx_alias_templates)\n\n/home/alex/Projects/framework/src/math/vector_type.h:\n  111  \n  112      constexpr vec_base()\n  113:         : x{0}, y{0}, z{0}, w{utils::default_init<value_type>::value}\n  114      {}\n  115  \n  ...\n  136      template <typename U>\n  137      explicit constexpr vec_base(const vec<3, U>& v)\n  138:         : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(utils::default_init<value_type>::value)\n  139      {}\n  140  \n  ...\n  151      template <typename U>\n  152      explicit constexpr vec_base(const vec<2, U>& v)\n  153:         : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0), w(utils::default_init<value_type>::value)\n  154      {}\n  155  \n\n20 matches across 8 files\n\n\nSearching 1 file for \"default_init\" (case sensitive)\n\n/home/alex/Projects/framework/math:\n    ERROR: Unable to open file\n\n0 matches\n\nSearching 1 file for \"default_init\" (case sensitive)\n\n/home/alex/Projects/framework/math/:\n    ERROR: Unable to open file\n\n0 matches\n\nSearching 246 files for \"default_init\" (case sensitive)\n\n/home/alex/Projects/framework/bin/test/002_vector_operators:\n    <binary>\n\n/home/alex/Projects/framework/bin/test/003_vector_common:\n    <binary>\n\n/home/alex/Projects/framework/bin/test/014_matrix_multiplication_random/014_matrix_multiplication_random:\n    <binary>\n\n/home/alex/Projects/framework/build/CMakeFiles/3.5.1/CMakeCXXCompiler.cmake:\n    5  set(CMAKE_CXX_COMPILER_WRAPPER \"\")\n    6  set(CMAKE_CXX_STANDARD_COMPUTED_DEFAULT \"98\")\n    7: set(CMAKE_CXX_COMPILE_FEATURES \"cxx_template_template_parameters;cxx_alias_templates;cxx_alignas;cxx_alignof;cxx_attributes;cxx_auto_type;cxx_constexpr;cxx_decltype;cxx_decltype_incomplete_return_types;cxx_default_function_template_args;cxx_defaulted_functions;cxx_defaulted_move_initializers;cxx_delegating_constructors;cxx_deleted_functions;cxx_enum_forward_declarations;cxx_explicit_conversions;cxx_extended_friend_declarations;cxx_extern_templates;cxx_final;cxx_func_identifier;cxx_generalized_initializers;cxx_inheriting_constructors;cxx_inline_namespaces;cxx_lambdas;cxx_local_type_template_args;cxx_long_long_type;cxx_noexcept;cxx_nonstatic_member_init;cxx_nullptr;cxx_override;cxx_range_for;cxx_raw_string_literals;cxx_reference_qualified_functions;cxx_right_angle_brackets;cxx_rvalue_references;cxx_sizeof_member;cxx_static_assert;cxx_strong_enums;cxx_thread_local;cxx_trailing_return_types;cxx_unicode_literals;cxx_uniform_initialization;cxx_unrestricted_unions;cxx_user_literals;cxx_variadic_macros;cxx_variadic_templates;cxx_aggregate_default_initializers;cxx_attribute_deprecated;cxx_binary_literals;cxx_contextual_conversions;cxx_decltype_auto;cxx_digit_separators;cxx_generic_lambdas;cxx_lambda_init_captures;cxx_relaxed_constexpr;cxx_return_type_deduction;cxx_variable_templates\")\n    8  set(CMAKE_CXX98_COMPILE_FEATURES \"cxx_template_template_parameters\")\n    9  set(CMAKE_CXX11_COMPILE_FEATURES \"cxx_alias_templates;cxx_alignas;cxx_alignof;cxx_attributes;cxx_auto_type;cxx_constexpr;cxx_decltype;cxx_decltype_incomplete_return_types;cxx_default_function_template_args;cxx_defaulted_functions;cxx_defaulted_move_initializers;cxx_delegating_constructors;cxx_deleted_functions;cxx_enum_forward_declarations;cxx_explicit_conversions;cxx_extended_friend_declarations;cxx_extern_templates;cxx_final;cxx_func_identifier;cxx_generalized_initializers;cxx_inheriting_constructors;cxx_inline_namespaces;cxx_lambdas;cxx_local_type_template_args;cxx_long_long_type;cxx_noexcept;cxx_nonstatic_member_init;cxx_nullptr;cxx_override;cxx_range_for;cxx_raw_string_literals;cxx_reference_qualified_functions;cxx_right_angle_brackets;cxx_rvalue_references;cxx_sizeof_member;cxx_static_assert;cxx_strong_enums;cxx_thread_local;cxx_trailing_return_types;cxx_unicode_literals;cxx_uniform_initialization;cxx_unrestricted_unions;cxx_user_literals;cxx_variadic_macros;cxx_variadic_templates\")\n   10: set(CMAKE_CXX14_COMPILE_FEATURES \"cxx_aggregate_default_initializers;cxx_attribute_deprecated;cxx_binary_literals;cxx_contextual_conversions;cxx_decltype_auto;cxx_digit_separators;cxx_generic_lambdas;cxx_lambda_init_captures;cxx_relaxed_constexpr;cxx_return_type_deduction;cxx_variable_templates\")\n   11  \n   12  set(CMAKE_CXX_PLATFORM_ID \"Linux\")\n\n/home/alex/Projects/framework/build/CMakeFiles/CMakeOutput.log:\n  353  \n  354  \n  355:     Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers\n  356      Feature record: CXX_FEATURE:1cxx_alias_templates\n  357      Feature record: CXX_FEATURE:1cxx_alignas\n  ...\n  426  \n  427  \n  428:     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers\n  429      Feature record: CXX_FEATURE:1cxx_alias_templates\n  430      Feature record: CXX_FEATURE:1cxx_alignas\n  ...\n  499  \n  500  \n  501:     Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers\n  502      Feature record: CXX_FEATURE:0cxx_alias_templates\n  503      Feature record: CXX_FEATURE:0cxx_alignas\n\n/home/alex/Projects/framework/build/CMakeFiles/feature_tests.bin:\n    <binary>\n\n/home/alex/Projects/framework/build/CMakeFiles/feature_tests.cxx:\n    7  \"0\"\n    8  #endif\n    9: \"cxx_aggregate_default_initializers\\n\"\n   10  \"CXX_FEATURE:\"\n   11  #if ((__clang_major__ * 100) + __clang_minor__) >= 304 && __has_feature(cxx_alias_templates)\n\n/home/alex/Projects/framework/src/math/vector_type.h:\n  111  \n  112      constexpr vec_base()\n  113:         : x{0}, y{0}, z{0}, w{utils::default_init<value_type>::value}\n  114      {}\n  115  \n  ...\n  136      template <typename U>\n  137      explicit constexpr vec_base(const vec<3, U>& v)\n  138:         : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(utils::default_init<value_type>::value)\n  139      {}\n  140  \n  ...\n  151      template <typename U>\n  152      explicit constexpr vec_base(const vec<2, U>& v)\n  153:         : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0), w(utils::default_init<value_type>::value)\n  154      {}\n  155  \n\n20 matches across 8 files\n",
+			"settings":
+			{
+				"buffer_size": 24184,
+				"line_ending": "Unix",
+				"name": "Find Results",
+				"scratch": true
+			}
+		},
+		{
+			"file": "src/math/vector_type.h",
+			"settings":
+			{
+				"buffer_size": 15660,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "CMakeLists.txt",
+			"settings":
+			{
+				"buffer_size": 1415,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "framework.sublime-project",
+			"settings":
+			{
+				"buffer_size": 1642,
 				"line_ending": "Unix"
 			}
 		}
@@ -219,6 +268,74 @@
 				],
 				[
 					"Project Make",
+					"CMake"
+				],
+				[
+					"Project Make",
+					"Clang Format"
+				],
+				[
+					"Project Make",
+					"TODO Parsing"
+				]
+			],
+			[
+				"Project Make",
+				"Clang Format"
+			]
+		],
+		[
+			[
+				[
+					"Project Make",
+					""
+				],
+				[
+					"Project Make",
+					"Run tests"
+				],
+				[
+					"Project Make",
+					"Run tests verbose"
+				],
+				[
+					"Project Make",
+					"Clean"
+				],
+				[
+					"Project Make",
+					"CMake"
+				],
+				[
+					"Project Make",
+					"TODO Parsing"
+				]
+			],
+			[
+				"Project Make",
+				"CMake"
+			]
+		],
+		[
+			[
+				[
+					"Project Make",
+					""
+				],
+				[
+					"Project Make",
+					"Run tests"
+				],
+				[
+					"Project Make",
+					"Run tests verbose"
+				],
+				[
+					"Project Make",
+					"Clean"
+				],
+				[
+					"Project Make",
 					"Cmake"
 				]
 			],
@@ -256,7 +373,7 @@
 			],
 			[
 				"Project Make",
-				"Run tests verbose"
+				""
 			]
 		],
 		[
@@ -300,12 +417,64 @@
 	"command_palette":
 	{
 		"height": 375.0,
-		"last_filter": "pcins",
+		"last_filter": "gitsta",
 		"selected_items":
 		[
 			[
+				"gitsta",
+				"Git: Status"
+			],
+			[
+				"gitst",
+				"Git: Status"
+			],
+			[
 				"pcins",
 				"Package Control: Install Package"
+			],
+			[
+				"pkr",
+				"Package Control: Remove Package"
+			],
+			[
+				"githi",
+				"Github: History"
+			],
+			[
+				"gitre",
+				"Github: Repository"
+			],
+			[
+				"pckins",
+				"Package Control: Install Package"
+			],
+			[
+				"clan",
+				"Clang Format: Format Selection"
+			],
+			[
+				"packins",
+				"Package Control: Install Package"
+			],
+			[
+				"glue",
+				"Glue - Launch"
+			],
+			[
+				"PACKCON",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"pkins",
+				"Package Control: Install Package"
+			],
+			[
+				"clang",
+				"Clang Format: Format Selection"
+			],
+			[
+				"slin",
+				"SublimeLinter: Lint This View"
 			],
 			[
 				"pcremp",
@@ -313,10 +482,6 @@
 			],
 			[
 				"glue ",
-				"Glue - Launch"
-			],
-			[
-				"glue",
 				"Glue - Launch"
 			],
 			[
@@ -332,20 +497,12 @@
 				"Package Control: Install Package"
 			],
 			[
-				"pkins",
-				"Package Control: Install Package"
-			],
-			[
 				"pkremp",
 				"Package Control: Remove Package"
 			],
 			[
 				"packremp",
 				"Package Control: Remove Package"
-			],
-			[
-				"packins",
-				"Package Control: Install Package"
 			],
 			[
 				"pactrlrep",
@@ -390,36 +547,47 @@
 	"expanded_folders":
 	[
 		"/home/alex/Projects/framework",
-		"/home/alex/Projects/framework/src",
+		"/home/alex/Projects/framework/bin/test",
 		"/home/alex/Projects/framework/src/math",
-		"/home/alex/Projects/framework/test",
 		"/home/alex/Projects/framework/test/001_vector_constructor",
-		"/home/alex/Projects/framework/test/002_vector_operators",
-		"/home/alex/Projects/framework/test/003_vector_common",
-		"/home/alex/Projects/framework/test/011_matrix_with_scalar",
-		"/home/alex/Projects/framework/test/012_matrix_plus_minus",
-		"/home/alex/Projects/framework/test/013_matrix_multipliction",
-		"/home/alex/Projects/framework/test/015_matrix_func"
+		"/home/alex/Projects/framework/test/002_vector_operators"
 	],
 	"file_history":
 	[
-		"/home/alex/Projects/framework/src/math/vector_type.h",
+		"/home/alex/Projects/framework/terminal.glue",
+		"/home/alex/Projects/framework/test/002_vector_operators/main.cpp",
+		"/home/alex/Projects/framework/src/math/trigonometric_func.h",
 		"/home/alex/Projects/framework/src/math/common_func.h",
-		"/home/alex/Projects/framework/test/003_vector_common/main.cpp",
-		"/home/alex/Projects/framework/framework.todo",
-		"/home/alex/Projects/framework/filestodo.todo",
+		"/home/alex/Projects/framework/src/math/relational_func.h",
+		"/home/alex/Projects/framework/src/math/geometric_func.h",
+		"/home/alex/Projects/framework/src/math/vector_type.h",
+		"/home/alex/.config/sublime-text-3/Packages/EasyClangComplete/EasyClangComplete.sublime-settings",
+		"/home/alex/Projects/framework/src/debug.h",
+		"/home/alex/Projects/framework/.clang-format",
+		"/home/alex/.config/sublime-text-3/Packages/User/clang_format.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/Clang Format/clang_format.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/Clang Format/Default (Linux).sublime-keymap",
+		"/home/alex/.config/sublime-text-3/Packages/User/clang_format_custom.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/Clang Format/clang_format_custom.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/C++11/messages/install.txt",
+		"/home/alex/.config/sublime-text-3/Packages/C++11/C++11.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+		"/home/alex/.config/sublime-text-3/Packages/User/MakeBuild.sublime-syntax",
+		"/home/alex/Projects/framework/framework.sublime-project",
+		"/home/alex/.config/sublime-text-3/Packages/User/TodoReview.sublime-settings",
 		"/home/alex/Projects/framework/src/math/matrix_func.h",
-		"/home/alex/Projects/framework/src/common_types.h",
-		"/home/alex/Projects/framework/test/015_matrix_func/main.cpp",
 		"/home/alex/Projects/framework/src/math/matrix_type.h",
+		"/home/alex/Projects/framework/test/015_matrix_func/main.cpp",
+		"/home/alex/Projects/framework/framework.todo",
+		"/home/alex/.config/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
+		"/home/alex/Projects/framework/test/003_vector_common/main.cpp",
+		"/home/alex/Projects/framework/filestodo.todo",
+		"/home/alex/Projects/framework/src/common_types.h",
 		"/home/alex/Games/IGG-Dont.Starve.Build.20151218.Incl.2DLCs/data/shaders/font.ksh",
 		"/home/alex/Projects/framework/test/011_matrix_with_scalar/main.cpp",
-		"/home/alex/Projects/framework/src/math/geometric_func.h",
 		"/home/alex/Projects/framework/src/math/utils.h",
-		"/home/alex/.config/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
-		"/home/alex/.config/sublime-text-3/Packages/User/MakeBuild.sublime-syntax",
 		"/home/alex/Projects/framework/test/014_matrix_multiplication2/run.py",
-		"/home/alex/Projects/framework/framework.sublime-project",
 		"/home/alex/Projects/framework/src/math/fmath.h",
 		"/home/alex/Projects/framework/test/014_matrix_multiplication2/main.cpp",
 		"/home/alex/.config/sublime-text-3/Packages/User/ANSIescape/ansi.tmTheme",
@@ -428,16 +596,12 @@
 		"/home/alex/Projects/framework/test/010_matrix_access/main.cpp",
 		"/home/alex/Projects/framework/test/008_matrix_constructor/main.cpp",
 		"/home/alex/Projects/framework/test/010_matrix_access_operator/main.cpp",
-		"/home/alex/Projects/framework/src/math/trigonometric_func.h",
-		"/home/alex/Projects/framework/src/math/relational_func.h",
 		"/home/alex/Projects/framework/src/math/exponential_func.h",
-		"/home/alex/Projects/framework/test/002_vector_operators/main.cpp",
 		"/home/alex/Projects/framework/test/013_matrix_multipliction/main.cpp",
 		"/home/alex/Projects/framework/test/001_vector_constructor/main.cpp",
 		"/home/alex/Projects/framework/test/007_vector_trigonometric/main.cpp",
 		"/home/alex/Projects/framework/test/005_vector_relational/main.cpp",
 		"/home/alex/Projects/framework/todoparser.py",
-		"/home/alex/Projects/framework/src/debug.h",
 		"/home/alex/Projects/framework/filestodo.todolist",
 		"/home/alex/.config/sublime-text-3/Packages/PlainTasks/messages/install.txt",
 		"/home/alex/Projects/framework/framework.todolist",
@@ -457,7 +621,6 @@
 		"/home/alex/Projects/framework/src/math/constants.h",
 		"/home/alex/.config/sublime-text-3/Packages/Default/Default (Linux).sublime-keymap",
 		"/home/alex/.config/sublime-text-3/Packages/TodoReview/TodoReview.sublime-settings",
-		"/home/alex/.config/sublime-text-3/Packages/User/TodoReview.sublime-settings",
 		"/home/alex/.config/sublime-text-3/Packages/TodoReview/Default.sublime-mousemap",
 		"/home/alex/.config/sublime-text-3/Packages/TodoReview/Default.sublime-keymap",
 		"/home/alex/.config/sublime-text-3/Packages/User/Error.sublime-syntax",
@@ -473,11 +636,8 @@
 		"/home/alex/.config/sublime-text-3/Packages/SideBarEnhancements/Side Bar.sublime-settings",
 		"/home/alex/.config/sublime-text-3/Packages/User/SublimeLinter.sublime-settings",
 		"/home/alex/Projects/framework/build/cmake_install.cmake",
-		"/home/alex/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
 		"/home/alex/.config/sublime-text-3/Packages/SublimeLinter/SublimeLinter.sublime-settings",
-		"/home/alex/Projects/framework/.clang-format",
-		"/home/alex/.config/sublime-text-3/Packages/C++NamespaceTool/C++NamespaceTool.sublime-settings",
-		"/home/alex/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings"
+		"/home/alex/.config/sublime-text-3/Packages/C++NamespaceTool/C++NamespaceTool.sublime-settings"
 	],
 	"find":
 	{
@@ -489,6 +649,12 @@
 		"where_history":
 		[
 			"/home/alex/Projects/framework/",
+			"/home/alex/Projects/framework/math/",
+			"/home/alex/Projects/framework/math",
+			"/home/alex/Projects/framework/",
+			"/home/alex/Projects/framework/math/",
+			"/home/alex/Projects/framework/math",
+			"/home/alex/Projects/framework/",
 			"/home/alex/Projects/framework/test"
 		]
 	},
@@ -497,6 +663,9 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"default_init",
+			"floating_point_or_integer",
+			"default_init",
 			"mm",
 			"p",
 			"o",
@@ -560,6 +729,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"is_floating_point_or_integer",
 			"m",
 			"mm[3][3]",
 			"mm[2][3]",
@@ -620,61 +790,60 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "src/math/matrix_func.h",
+					"file": "src/common_types.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6623,
+						"buffer_size": 1173,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6377,
-								6377
+								66,
+								66
 							]
 						],
 						"settings":
 						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"open":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
 							[
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
@@ -685,63 +854,202 @@
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content"
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
 							],
 							"syntax": "Packages/C++11/C++11.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2250.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/math/utils.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4229,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1889,
+								1889
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										3577,
+										3578
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										190,
+										191
+									]
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content"
+							],
+							"syntax": "Packages/C++11/C++11.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 662.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "test/015_matrix_func/main.cpp",
+					"buffer": 2,
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7342,
+						"buffer_size": 3311,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7282,
-								7282
+								3311,
+								3311
 							]
 						],
 						"settings":
 						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"open":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
 							[
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
 								"bh_regex_close",
 								"bh_regex_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -752,16 +1060,11 @@
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
 								"bh_double_quote",
 								"bh_double_quote_center",
 								"bh_double_quote_open",
@@ -772,29 +1075,734 @@
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content"
+							],
+							"default_dir": "/home/alex/Projects/framework",
+							"git_root_dir": "/home/alex/Projects/framework",
+							"syntax": "Packages/Diff/Diff.tmLanguage",
+							"word_wrap": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 24184,
+						"regions":
+						{
+							"match":
+							{
+								"flags": 112,
+								"regions":
+								[
+									[
+										636,
+										661
+									],
+									[
+										907,
+										932
+									],
+									[
+										1190,
+										1215
+									],
+									[
+										1463,
+										1488
+									],
+									[
+										1726,
+										1751
+									],
+									[
+										1947,
+										1972
+									],
+									[
+										2215,
+										2240
+									],
+									[
+										2459,
+										2484
+									],
+									[
+										2767,
+										2792
+									],
+									[
+										3051,
+										3076
+									],
+									[
+										3288,
+										3313
+									],
+									[
+										3596,
+										3621
+									],
+									[
+										3880,
+										3905
+									],
+									[
+										4117,
+										4142
+									],
+									[
+										4425,
+										4450
+									],
+									[
+										4729,
+										4754
+									],
+									[
+										4991,
+										5016
+									],
+									[
+										5271,
+										5296
+									],
+									[
+										5507,
+										5532
+									],
+									[
+										5553,
+										5578
+									],
+									[
+										5840,
+										5865
+									],
+									[
+										5886,
+										5911
+									],
+									[
+										6134,
+										6159
+									],
+									[
+										6379,
+										6404
+									],
+									[
+										6685,
+										6710
+									],
+									[
+										6997,
+										7022
+									],
+									[
+										7326,
+										7351
+									],
+									[
+										7682,
+										7707
+									],
+									[
+										8032,
+										8057
+									],
+									[
+										8269,
+										8294
+									],
+									[
+										8483,
+										8508
+									],
+									[
+										8707,
+										8732
+									],
+									[
+										8971,
+										8996
+									],
+									[
+										9245,
+										9270
+									],
+									[
+										9481,
+										9506
+									],
+									[
+										9727,
+										9752
+									],
+									[
+										10015,
+										10040
+									],
+									[
+										10251,
+										10276
+									],
+									[
+										10510,
+										10535
+									],
+									[
+										10756,
+										10781
+									],
+									[
+										11080,
+										11105
+									],
+									[
+										11440,
+										11465
+									],
+									[
+										11757,
+										11782
+									],
+									[
+										12072,
+										12097
+									],
+									[
+										12392,
+										12417
+									],
+									[
+										12727,
+										12752
+									],
+									[
+										12956,
+										12981
+									],
+									[
+										13254,
+										13279
+									],
+									[
+										13483,
+										13508
+									],
+									[
+										13795,
+										13820
+									],
+									[
+										15519,
+										15531
+									],
+									[
+										16911,
+										16923
+									],
+									[
+										17346,
+										17358
+									],
+									[
+										17555,
+										17567
+									],
+									[
+										17764,
+										17776
+									],
+									[
+										18091,
+										18103
+									],
+									[
+										18376,
+										18388
+									],
+									[
+										18627,
+										18639
+									],
+									[
+										18860,
+										18872
+									],
+									[
+										20761,
+										20773
+									],
+									[
+										22153,
+										22165
+									],
+									[
+										22588,
+										22600
+									],
+									[
+										22797,
+										22809
+									],
+									[
+										23006,
+										23018
+									],
+									[
+										23333,
+										23345
+									],
+									[
+										23618,
+										23630
+									],
+									[
+										23869,
+										23881
+									],
+									[
+										24102,
+										24114
+									]
+								],
+								"scope": ""
+							}
+						},
+						"selection":
+						[
+							[
+								23624,
+								23624
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										23649,
+										23650
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										23610,
+										23611
+									]
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
 								"bh_round",
 								"bh_round_center",
 								"bh_round_open",
 								"bh_round_close",
 								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
 								"bh_unmatched_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
+							],
+							"default_dir": "/home/alex/Projects/framework",
+							"detect_indentation": false,
+							"line_numbers": false,
+							"output_tag": 8,
+							"result_base_dir": "",
+							"result_file_regex": "^([^ 	].*):$",
+							"result_line_regex": "^ +([0-9]+):",
+							"scroll_past_end": true,
+							"syntax": "Packages/Default/Find Results.hidden-tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 6750.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/math/vector_type.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15660,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2707,
+								2707
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										2706,
+										2707
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										2666,
+										2667
+									]
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
 								"bh_angle",
 								"bh_angle_center",
 								"bh_angle_open",
 								"bh_angle_close",
-								"bh_angle_content"
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
 							],
 							"syntax": "Packages/C++11/C++11.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2520.0,
+						"translation.y": 1485.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "CMakeLists.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1415,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1042,
+								1042
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										1102,
+										1103
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1030,
+										1031
+									]
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
+							],
+							"syntax": "Packages/CMake/CMake.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "framework.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1642,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1312,
+								1312
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										1312,
+										1313
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1300,
+										1301
+									]
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content"
+							],
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -838,6 +1846,10 @@
 	"output.find_results":
 	{
 		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 395.0
 	},
 	"pinned_build_system": "Project Make",
 	"project": "framework.sublime-project",

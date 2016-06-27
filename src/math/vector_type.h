@@ -1,9 +1,9 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_H
 #define FRAMEWORK_MATH_VECTOR_TYPE_H
 
-#include <math/utils.h>
 #include <common_types.h>
 #include <debug.h>
+#include <math/utils.h>
 
 namespace framework {
 
@@ -14,7 +14,8 @@ namespace vector_impl {
 // base classes for vectors of different size
 template <U32 N, typename T>
 struct vec_base
-{};
+{
+};
 
 // vector interface
 template <U32 N, typename T>
@@ -26,7 +27,7 @@ struct vec : public vec_base<N, T>
     constexpr vec();
 
     constexpr vec(const vec<N, T>&) = default;
-    constexpr vec(vec<N, T>&&) = default;
+    constexpr vec(vec<N, T>&&)      = default;
 
     // import constructors from vec_base<N, T>
     using base_type::base_type;
@@ -80,7 +81,7 @@ struct vec<N, bool> : public vec_base<N, bool>
     constexpr vec();
 
     constexpr vec(const vec<N, bool>&) = default;
-    constexpr vec(vec<N, bool>&&) = default;
+    constexpr vec(vec<N, bool>&&)      = default;
 
     constexpr U32 size() const;
 
@@ -109,54 +110,59 @@ struct vec_base<4, T>
 
     T x, y, z, w;
 
-    constexpr vec_base()
-        : x{0}, y{0}, z{0}, w{utils::default_init<value_type>::value}
-    {}
+    constexpr vec_base() : x{0}, y{0}, z{0}, w{utils::default_value<value_type>::value}
+    {
+    }
 
-    constexpr vec_base(const T& xx, const T& yy, const T& zz, const T& ww)
-        : x{xx}, y{yy}, z{zz}, w{ww}
-    {}
+    constexpr vec_base(const T& xx, const T& yy, const T& zz, const T& ww) : x{xx}, y{yy}, z{zz}, w{ww}
+    {
+    }
 
-    explicit constexpr vec_base(const T& v)
-        : x{v}, y{v}, z{v}, w{v}
-    {}
+    explicit constexpr vec_base(const T& v) : x{v}, y{v}, z{v}, w{v}
+    {
+    }
 
     template <typename U>
-    explicit constexpr vec_base(const U* const p)
-        : x{*p}, y{*(p + 1)}, z{*(p + 2)}, w{*(p + 3)}
+    explicit constexpr vec_base(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}, w{*(p + 3)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
 
     template <typename U>
     explicit constexpr vec_base(const vec<4, U>& v)
-        : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(static_cast<T>(v.w))
-    {}
+    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(static_cast<T>(v.w))
+    {
+    }
 
     template <typename U>
     explicit constexpr vec_base(const vec<3, U>& v)
-        : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(utils::default_init<value_type>::value)
-    {}
+    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(utils::default_value<value_type>::value)
+    {
+    }
 
     template <typename U, typename S>
     constexpr vec_base(const S& s, const vec<3, U>& v)
-        : x(static_cast<T>(s)), y(static_cast<T>(v.x)), z(static_cast<T>(v.y)), w(static_cast<T>(v.z))
-    {}
+    : x(static_cast<T>(s)), y(static_cast<T>(v.x)), z(static_cast<T>(v.y)), w(static_cast<T>(v.z))
+    {
+    }
 
     template <typename U, typename S>
     constexpr vec_base(const vec<3, U>& v, const S& s)
-        : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(static_cast<T>(s))
-    {}
+    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(static_cast<T>(s))
+    {
+    }
 
     template <typename U>
     explicit constexpr vec_base(const vec<2, U>& v)
-        : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0), w(utils::default_init<value_type>::value)
-    {}
+    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0), w(utils::default_value<value_type>::value)
+    {
+    }
 
     template <typename U1, typename U2>
     constexpr vec_base(const vec<2, U1>& v1, const vec<2, U2>& v2)
-        : x(static_cast<T>(v1.x)), y(static_cast<T>(v1.y)), z(static_cast<T>(v2.x)), w(static_cast<T>(v2.y))
-    {}
+    : x(static_cast<T>(v1.x)), y(static_cast<T>(v1.y)), z(static_cast<T>(v2.x)), w(static_cast<T>(v2.y))
+    {
+    }
 
     template <typename U, typename S1, typename S2>
     constexpr vec_base(const S1& xx, const S2& yy, const vec<2, U>& v)
@@ -198,8 +204,7 @@ struct vec_base<3, T>
     }
 
     template <typename U>
-    explicit constexpr vec_base(const U* const p)
-    : x{*p}, y{*(p + 1)}, z{*(p + 2)}
+    explicit constexpr vec_base(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
@@ -217,8 +222,7 @@ struct vec_base<3, T>
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<2, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0)
+    explicit constexpr vec_base(const vec<2, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0)
     {
     }
 
@@ -256,51 +260,38 @@ struct vec_base<2, T>
     }
 
     template <typename U>
-    explicit constexpr vec_base(const U* p)
-    : x{*p}, y{*(p + 1)}
+    explicit constexpr vec_base(const U* p) : x{*p}, y{*(p + 1)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<4, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr vec_base(const vec<4, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<3, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr vec_base(const vec<3, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<2, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr vec_base(const vec<2, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
     {
     }
 };
 
+// vector<N, T> implementation
+
 // default constructor
 template <U32 N, typename T>
-constexpr vec<N, T>::vec()
-    : base_type()
-{}
-
-template <U32 N>
-constexpr vec<N, bool>::vec()
-    : base_type()
-{}
+constexpr vec<N, T>::vec() : base_type()
+{
+}
 
 // vector methods
 template <U32 N, typename T>
 inline constexpr U32 vec<N, T>::size() const
-{
-    return N;
-}
-
-template <U32 N>
-inline constexpr U32 vec<N, bool>::size() const
 {
     return N;
 }
@@ -339,7 +330,61 @@ inline vec<N, T>& vec<N, T>::operator=(const vec<N, U>& other)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] = static_cast<T>(other[i]);
-    };
+    }
+    return *this;
+}
+
+
+// vector<N, bool> implementation
+
+// default constructor
+template <U32 N>
+constexpr vec<N, bool>::vec() : base_type()
+{
+}
+
+// vector methods
+template <U32 N>
+inline constexpr U32 vec<N, bool>::size() const
+{
+    return N;
+}
+
+template <U32 N>
+inline typename vec<N, bool>::value_type* vec<N, bool>::data()
+{
+    return &(this->x);
+}
+
+template <U32 N>
+inline const typename vec<N, bool>::value_type* vec<N, bool>::data() const
+{
+    return &(this->x);
+}
+
+// access operator
+template <U32 N>
+inline typename vec<N, bool>::value_type& vec<N, bool>::operator[](U32 index)
+{
+    assert_msg(index >= 0 && index < N, "Worng index");
+    return data()[index];
+}
+
+template <U32 N>
+const typename vec<N, bool>::value_type& vec<N, bool>::operator[](U32 index) const
+{
+    assert_msg(index >= 0 && index < N, "Wrong index");
+    return data()[index];
+}
+
+// assignment operator
+template <U32 N>
+template <typename U>
+inline vec<N, bool>& vec<N, bool>::operator=(const vec<N, U>& other)
+{
+    for (U32 i = 0; i < N; ++i) {
+        (*this)[i] = static_cast<bool>(other[i]);
+    }
     return *this;
 }
 
