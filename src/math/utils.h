@@ -76,48 +76,6 @@ struct vec_helper
     }
 };
 
-// template <>
-// template <typename T, typename F, typename TResult, template<U32, typename> class TVec>
-// inline TVec<4, TResult> vec_helper<4>::apply(const TVec<4, T>& v, F&& opp)
-// {
-//     return TVec<4, TResult>(opp(v.x), opp(v.y), opp(v.z), opp(v.w));
-// }
-
-// template <>
-// template <typename T, typename F, typename TResult, template<U32, typename> class TVec>
-// inline TVec<3, TResult> vec_helper<3>::apply(const TVec<3, T>& v, F&& opp)
-// {
-//     return TVec<3, TResult>(opp(v.x), opp(v.y), opp(v.z));
-// }
-
-// template <>
-// template <typename T, typename F, typename TResult, template<U32, typename> class TVec>
-// inline TVec<2, TResult> vec_helper<2>::apply(const TVec<2, T>& v, F&& opp)
-// {
-//     return TVec<2, TResult>(opp(v.x), opp(v.y));
-// }
-
-// template <>
-// template <typename T, typename U, typename F, typename TResult, template<U32, typename> class TVec>
-// inline TVec<4, TResult> vec_helper<4>::apply(const TVec<4, T>& l, const TVec<4, U>& r, F&& opp)
-// {
-//     return TVec<4, TResult>(opp(l.x, r.x), opp(l.y, r.y), opp(l.z, r.z), opp(l.w, r.w));
-// }
-
-// template <>
-// template <typename T, typename U, typename F, typename TResult, template<U32, typename> class TVec>
-// inline TVec<3, TResult> vec_helper<3>::apply(const TVec<3, T>& l, const TVec<3, U>& r, F&& opp)
-// {
-//     return TVec<3, TResult>(opp(l.x, r.x), opp(l.y, r.y), opp(l.z, r.z));
-// }
-
-// template <>
-// template <typename T, typename U, typename F, typename TResult, template<U32, typename> class TVec>
-// inline TVec<2, TResult> vec_helper<2>::apply(const TVec<2, T>& l, const TVec<2, U>& r, F&& opp)
-// {
-//     return TVec<2, TResult>(opp(l.x, r.x), opp(l.y, r.y));
-// }
-
 } // namespace utils
 
 template <U32 N, typename T, template <U32, typename> class TVec>

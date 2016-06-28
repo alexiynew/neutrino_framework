@@ -7,17 +7,17 @@ namespace framework {
 
 namespace math {
 
-// TODO add type guards
-
 template <U32 C, U32 R, typename T, template <U32, U32, typename> class TMat>
 inline TMat<R, C, T> transpose(const TMat<C, R, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::type_creator<R>::template create<TMat<R, C, T>>([&m](U32 index) { return m.row(index); });
 }
 
 template <U32 C, U32 R, typename T, template <U32, U32, typename> class TMat>
 inline TMat<C, R, T> xcomp_mult(const TMat<C, R, T>& lhs, const TMat<C, R, T>& rhs)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::type_creator<C>::template create<TMat<C, R, T>>(
     [&lhs, &rhs](U32 index) { return lhs[index] * rhs[index]; });
 }
@@ -25,6 +25,7 @@ inline TMat<C, R, T> xcomp_mult(const TMat<C, R, T>& lhs, const TMat<C, R, T>& r
 template <U32 C, U32 R, typename T, template <U32, typename> class TVec>
 inline matrix_impl::matrix<C, R, T> outer_product(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::type_creator<C>::template create<matrix_impl::matrix<C, R, T>>(
     [&lhs, &rhs](U32 index) { return lhs * rhs[index]; });
 }
@@ -32,18 +33,22 @@ inline matrix_impl::matrix<C, R, T> outer_product(const TVec<R, T>& lhs, const T
 template <typename T, template <U32, U32, typename> class TMat>
 inline T determinant(const TMat<2, 2, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return m[0][0] * m[1][1] - m[1][0] * m[0][1];
 }
 
 template <typename T, template <U32, U32, typename> class TMat>
 inline T determinant(const TMat<3, 3, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return +m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2]) + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
 }
 
 template <typename T, template <U32, U32, typename> class TMat>
 inline T determinant(const TMat<4, 4, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     T s01 = (m[2][2] * m[3][3] - m[3][2] * m[2][3]);
     T s02 = (m[2][1] * m[3][3] - m[3][1] * m[2][3]);
     T s03 = (m[2][1] * m[3][2] - m[3][1] * m[2][2]);
@@ -58,6 +63,8 @@ inline T determinant(const TMat<4, 4, T>& m)
 template <typename T, template <U32, U32, typename> class TMat>
 inline TMat<2, 2, T> inverse(const TMat<2, 2, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     T det = determinant(m);
     assert_msg(F64(det) != 0.0, "matrix has no inverse");
 
@@ -68,6 +75,8 @@ inline TMat<2, 2, T> inverse(const TMat<2, 2, T>& m)
 template <typename T, template <U32, U32, typename> class TMat>
 inline TMat<3, 3, T> inverse(const TMat<3, 3, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     T det = determinant(m);
     assert_msg(F64(det) != 0.0, "matrix has no inverse");
 
@@ -84,6 +93,8 @@ inline TMat<3, 3, T> inverse(const TMat<3, 3, T>& m)
 template <typename T, template <U32, U32, typename> class TMat>
 inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     T s01 = (m[3][1] * m[2][2] - m[2][1] * m[3][2]);
     T s02 = (m[3][1] * m[1][2] - m[1][1] * m[3][2]);
     T s03 = (m[2][1] * m[1][2] - m[1][1] * m[2][2]);
@@ -123,6 +134,8 @@ inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
 template <typename T, template <U32, U32, typename> class TMat>
 inline TMat<3, 3, T> affine_inverse(const TMat<3, 3, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     using TVec3 = typename TMat<3, 3, T>::column_type;
     using TVec2 = typename TMat<2, 2, T>::column_type;
 
@@ -135,6 +148,8 @@ inline TMat<3, 3, T> affine_inverse(const TMat<3, 3, T>& m)
 template <typename T, template <U32, U32, typename> class TMat>
 inline TMat<4, 4, T> affine_inverse(const TMat<4, 4, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     using TVec4 = typename TMat<4, 4, T>::column_type;
     using TVec3 = typename TMat<3, 3, T>::column_type;
 
@@ -147,6 +162,8 @@ inline TMat<4, 4, T> affine_inverse(const TMat<4, 4, T>& m)
 template <typename T, template <U32, U32, typename> class TMat>
 inline TMat<2, 2, T> inverse_transpose(const TMat<2, 2, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     T det = determinant(m);
     assert_msg(F64(det) != 0.0, "matrix has no inverse");
 
@@ -157,6 +174,8 @@ inline TMat<2, 2, T> inverse_transpose(const TMat<2, 2, T>& m)
 template <typename T, template <U32, U32, typename> class TMat>
 inline TMat<3, 3, T> inverse_transpose(const TMat<3, 3, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     T det = determinant(m);
     assert_msg(F64(det) != 0.0, "matrix has no inverse");
 
@@ -173,6 +192,8 @@ inline TMat<3, 3, T> inverse_transpose(const TMat<3, 3, T>& m)
 template <typename T, template <U32, U32, typename> class TMat>
 inline TMat<4, 4, T> inverse_transpose(const TMat<4, 4, T>& m)
 {
+    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+
     T s01 = (m[3][1] * m[2][2] - m[2][1] * m[3][2]);
     T s02 = (m[3][1] * m[1][2] - m[1][1] * m[3][2]);
     T s03 = (m[2][1] * m[1][2] - m[1][1] * m[2][2]);
