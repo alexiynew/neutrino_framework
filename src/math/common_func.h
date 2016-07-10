@@ -97,7 +97,7 @@ template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> abs(const TVec<N, T>& v)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(v, common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>());
+    return utils::createVector(v, common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>());
 }
 
 /// Returns 1.0 if x > 0, 0.0 if x == 0, or -1.0 if x < 0.
@@ -122,7 +122,7 @@ using ::std::floor;
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> floor(const TVec<N, T>& v)
 {
-    return utils::vec_helper<N>::apply(v, [](const T& a) { return static_cast<T>(floor(a)); });
+    return utils::createVector(v, [](const T& a) { return static_cast<T>(floor(a)); });
 }
 
 /// Returns a value equal to the nearest integer to x
@@ -133,7 +133,7 @@ using ::std::trunc;
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> trunc(const TVec<N, T>& v)
 {
-    return utils::vec_helper<N>::apply(v, [](const T& a) { return static_cast<T>(trunc(a)); });
+    return utils::createVector(v, [](const T& a) { return static_cast<T>(trunc(a)); });
 }
 
 /// Returns a value equal to the nearest integer to x.
@@ -142,7 +142,7 @@ using ::std::round;
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> round(const TVec<N, T>& v)
 {
-    return utils::vec_helper<N>::apply(v, [](const T& a) { return static_cast<T>(round(a)); });
+    return utils::createVector(v, [](const T& a) { return static_cast<T>(round(a)); });
 }
 
 /// Returns a value equal to the nearest integer
@@ -152,7 +152,7 @@ using ::std::ceil;
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> ceil(const TVec<N, T>& v)
 {
-    return utils::vec_helper<N>::apply(v, [](const T& a) { return static_cast<T>(ceil(a)); });
+    return utils::createVector(v, [](const T& a) { return static_cast<T>(ceil(a)); });
 }
 
 /// Return fractional patr of floating point number
@@ -167,7 +167,7 @@ template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> fract(const TVec<N, T>& v)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(v, [](const T& a) { return fract(a); });
+    return utils::createVector(v, [](const T& a) { return fract(a); });
 }
 
 /// Modulus. Returns x - y * floor(x / y)
@@ -183,14 +183,14 @@ template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> mod(const TVec<N, T>& v, const T& scalar)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(v, [&scalar](const T& a) { return mod(a, scalar); });
+    return utils::createVector(v, [&scalar](const T& a) { return mod(a, scalar); });
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> mod(const TVec<N, T>& a, const TVec<N, T>& b)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return mod(l, r); });
+    return utils::createVector(a, b, [](const T& l, const T& r) { return mod(l, r); });
 }
 
 /// Returns the fractional part of x and sets i to the integer
@@ -237,14 +237,14 @@ template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> min(const TVec<N, T>& a, const T& scalar)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, [&scalar](const T& l) { return min(l, scalar); });
+    return utils::createVector(a, [&scalar](const T& l) { return min(l, scalar); });
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> min(const TVec<N, T>& a, const TVec<N, T>& b)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return min(l, r); });
+    return utils::createVector(a, b, [](const T& l, const T& r) { return min(l, r); });
 }
 
 /// Returns a if a > b; otherwise, it returns b.
@@ -259,14 +259,14 @@ template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> max(const TVec<N, T>& a, const T& scalar)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, [&scalar](const T& l) { return max(l, scalar); });
+    return utils::createVector(a, [&scalar](const T& l) { return max(l, scalar); });
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> max(const TVec<N, T>& a, const TVec<N, T>& b)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return max(l, r); });
+    return utils::createVector(a, b, [](const T& l, const T& r) { return max(l, r); });
 }
 
 /// Returns min(max(a, minv), maxv) for each component in a
@@ -364,14 +364,14 @@ template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> step(const TVec<N, T>& a, const T& edge)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, [&edge](const T& l) { return step(l, edge); });
+    return utils::createVector(a, [&edge](const T& l) { return step(l, edge); });
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> step(const TVec<N, T>& a, const TVec<N, T>& b)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, b, [](const T& l, const T& r) { return step(l, r); });
+    return utils::createVector(a, b, [](const T& l, const T& r) { return step(l, r); });
 }
 
 /// Returns 0.0 if x <= edge0 and 1.0 if x >= edge1 and
@@ -417,7 +417,7 @@ using ::std::isnan;
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> isnan(const TVec<N, T>& v)
 {
-    return utils::vec_helper<N>::apply(v, [](const T& a) { return isnan(a); });
+    return utils::createVector(v, [](const T& a) { return isnan(a); });
 }
 
 /// Returns true if x holds a positive infinity or negative
@@ -430,7 +430,7 @@ using ::std::isinf;
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> isinf(const TVec<N, T>& v)
 {
-    return utils::vec_helper<N>::apply(v, [](const T& a) { return isinf(a); });
+    return utils::createVector(v, [](const T& a) { return isinf(a); });
 }
 
 /// Computes and returns a * b + c.
@@ -484,7 +484,7 @@ using ::std::ldexp;
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> ldexp(const TVec<N, T>& vector, const I32 exp)
 {
-    return utils::vec_helper<N>::apply(vector, [&exp](const T& v) { return ldexp(v, exp); });
+    return utils::createVector(vector, [&exp](const T& v) { return ldexp(v, exp); });
 }
 
 template <typename T, template <U32, typename> class TVec>

@@ -476,7 +476,7 @@ inline Vector<N, T>& Vector<N, T>::operator/=(const U& scalar)
 template <U32 N, typename T>
 inline Vector<N, T> operator-(const Vector<N, T>& v)
 {
-    return utils::vec_helper<N>::apply(v, [](const T& a) { return -a; });
+    return utils::createVector(v, [](const T& a) { return -a; });
 }
 
 // unary plus
@@ -491,25 +491,25 @@ inline Vector<N, T> operator+(const Vector<N, T>& v)
 template <U32 N, typename T>
 inline const Vector<N, T> operator+(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
-    return utils::vec_helper<N>::apply(lhs, rhs, [](const T& a, const T& b) { return a + b; });
+    return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a + b; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator-(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
-    return utils::vec_helper<N>::apply(lhs, rhs, [](const T& a, const T& b) { return a - b; });
+    return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a - b; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator*(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
-    return utils::vec_helper<N>::apply(lhs, rhs, [](const T& a, const T& b) { return a * b; });
+    return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a * b; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator/(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
-    return utils::vec_helper<N>::apply(lhs, rhs, [](const T& a, const T& b) { return a / b; });
+    return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a / b; });
 }
 
 // binary operators
@@ -517,25 +517,25 @@ inline const Vector<N, T> operator/(const Vector<N, T>& lhs, const Vector<N, T>&
 template <U32 N, typename T>
 inline const Vector<N, T> operator+(const Vector<N, T>& vector, const T& scalar)
 {
-    return utils::vec_helper<N>::apply(vector, [&scalar](const T& a) { return a + scalar; });
+    return utils::createVector(vector, [&scalar](const T& a) { return a + scalar; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator-(const Vector<N, T>& vector, const T& scalar)
 {
-    return utils::vec_helper<N>::apply(vector, [&scalar](const T& a) { return a - scalar; });
+    return utils::createVector(vector, [&scalar](const T& a) { return a - scalar; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator*(const Vector<N, T>& vector, const T& scalar)
 {
-    return utils::vec_helper<N>::apply(vector, [&scalar](const T& a) { return a * scalar; });
+    return utils::createVector(vector, [&scalar](const T& a) { return a * scalar; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator/(const Vector<N, T>& vector, const T& scalar)
 {
-    return utils::vec_helper<N>::apply(vector, [&scalar](const T& a) { return a / scalar; });
+    return utils::createVector(vector, [&scalar](const T& a) { return a / scalar; });
 }
 
 // binary operators
@@ -543,25 +543,25 @@ inline const Vector<N, T> operator/(const Vector<N, T>& vector, const T& scalar)
 template <U32 N, typename T>
 inline const Vector<N, T> operator+(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::vec_helper<N>::apply(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a + b; });
+    return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a + b; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator-(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::vec_helper<N>::apply(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a - b; });
+    return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a - b; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator*(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::vec_helper<N>::apply(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a * b; });
+    return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a * b; });
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator/(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::vec_helper<N>::apply(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a / b; });
+    return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a / b; });
 }
 
 #pragma clang diagnostic push

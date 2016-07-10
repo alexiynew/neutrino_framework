@@ -12,6 +12,8 @@ namespace math {
 
 namespace utils {
 
+// TODO rename it all, to with names conventions
+
 // helpers
 template <typename T>
 struct default_value
@@ -59,23 +61,18 @@ inline TResult type_creator<2>::create(F&& opp)
     return TResult(opp(0), opp(1));
 }
 
-// TODO remane it to createVector
-template <U32 N>
-struct vec_helper
+template <U32 N, typename T, typename F, typename TResult = typename std::result_of<F(T)>::type, template <U32, typename> class TVec>
+inline TVec<N, TResult> createVector(const TVec<N, T>& v, F&& opp)
 {
-    template <typename T, typename F, typename TResult = typename std::result_of<F(T)>::type, template <U32, typename> class TVec>
-    static inline TVec<N, TResult> apply(const TVec<N, T>& v, F&& opp)
-    {
-        return type_creator<N>::template create<TVec<N, TResult>>([&](const U32 index) { return opp(v[index]); });
-    }
+    return type_creator<N>::template create<TVec<N, TResult>>([&](const U32 index) { return opp(v[index]); });
+}
 
-    template <typename T, typename U, typename F, typename TResult = typename std::result_of<F(T, U)>::type, template <U32, typename> class TVec>
-    static inline TVec<N, TResult> apply(const TVec<N, T>& lhs, const TVec<N, U>& rhs, F&& opp)
-    {
-        return type_creator<N>::template create<TVec<N, TResult>>(
-        [&](const U32 index) { return opp(lhs[index], rhs[index]); });
-    }
-};
+template <U32 N, typename T, typename U, typename F, typename TResult = typename std::result_of<F(T, U)>::type, template <U32, typename> class TVec>
+static inline TVec<N, TResult> createVector(const TVec<N, T>& lhs, const TVec<N, U>& rhs, F&& opp)
+{
+    return type_creator<N>::template create<TVec<N, TResult>>(
+    [&](const U32 index) { return opp(lhs[index], rhs[index]); });
+}
 
 } // namespace utils
 

@@ -22,7 +22,7 @@ template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> radians(const TVec<N, T>& a)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, [](const T& degrees) { return static_cast<T>(DEGTORAD * degrees); });
+    return utils::createVector(a, [](const T& degrees) { return static_cast<T>(DEGTORAD * degrees); });
 }
 
 /// Converts radians to degrees and returns the result.
@@ -37,7 +37,7 @@ template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, T> degrees(const TVec<N, T>& a)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::vec_helper<N>::apply(a, [](const T& radians) { return static_cast<T>(RADTODEG * radians); });
+    return utils::createVector(a, [](const T& radians) { return static_cast<T>(RADTODEG * radians); });
 }
 
 /// The standard trigonometric sine function.
