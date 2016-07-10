@@ -19,60 +19,60 @@ namespace framework {
 namespace math {
 
 template <U32 N, typename T>
-using vec = vector_impl::vec<N, T>;
+using Vector = vector_impl::Vector<N, T>;
 
-using vec2d = vec<2, F64>;
-using vec3d = vec<3, F64>;
-using vec4d = vec<4, F64>;
+using Vector2D = Vector<2, F64>;
+using Vector3D = Vector<3, F64>;
+using Vector4D = Vector<4, F64>;
 
-using vec2f = vec<2, F32>;
-using vec3f = vec<3, F32>;
-using vec4f = vec<4, F32>;
+using Vector2F = Vector<2, F32>;
+using Vector3F = Vector<3, F32>;
+using Vector4F = Vector<4, F32>;
 
-using vec2i = vec<2, I32>;
-using vec3i = vec<3, I32>;
-using vec4i = vec<4, I32>;
+using Vector2I = Vector<2, I32>;
+using Vector3I = Vector<3, I32>;
+using Vector4I = Vector<4, I32>;
 
-using vec2u = vec<2, U32>;
-using vec3u = vec<3, U32>;
-using vec4u = vec<4, U32>;
+using Vector2U = Vector<2, U32>;
+using Vector3U = Vector<3, U32>;
+using Vector4U = Vector<4, U32>;
 
-using vec2b = vec<2, bool>;
-using vec3b = vec<3, bool>;
-using vec4b = vec<4, bool>;
+using Vector2B = Vector<2, bool>;
+using Vector3B = Vector<3, bool>;
+using Vector4B = Vector<4, bool>;
 
 template <U32 C, U32 R, typename T>
-using mat = matrix_impl::matrix<C, R, T>;
+using Matrix = matrix_impl::Matrix<C, R, T>;
 
-using mat2d   = mat<2, 2, F64>;
-using mat2x2d = mat<2, 2, F64>;
-using mat2x3d = mat<2, 3, F64>;
-using mat2x4d = mat<2, 4, F64>;
+using Matrix2D   = Matrix<2, 2, F64>;
+using Matrix2x2D = Matrix<2, 2, F64>;
+using Matrix2x3D = Matrix<2, 3, F64>;
+using Matrix2x4D = Matrix<2, 4, F64>;
 
-using mat3d   = mat<3, 3, F64>;
-using mat3x3d = mat<3, 3, F64>;
-using mat3x2d = mat<3, 2, F64>;
-using mat3x4d = mat<3, 4, F64>;
+using Matrix3D   = Matrix<3, 3, F64>;
+using Matrix3x3D = Matrix<3, 3, F64>;
+using Matrix3x2D = Matrix<3, 2, F64>;
+using Matrix3x4D = Matrix<3, 4, F64>;
 
-using mat4d   = mat<4, 4, F64>;
-using mat4x4d = mat<4, 4, F64>;
-using mat4x2d = mat<4, 2, F64>;
-using mat4x3d = mat<4, 3, F64>;
+using Matrix4D   = Matrix<4, 4, F64>;
+using Matrix4x4D = Matrix<4, 4, F64>;
+using Matrix4x2D = Matrix<4, 2, F64>;
+using Matrix4x3D = Matrix<4, 3, F64>;
 
-using mat2f   = mat<2, 2, F32>;
-using mat2x2f = mat<2, 2, F32>;
-using mat2x3f = mat<2, 3, F32>;
-using mat2x4f = mat<2, 4, F32>;
+using Matrix2F   = Matrix<2, 2, F32>;
+using Matrix2x2F = Matrix<2, 2, F32>;
+using Matrix2x3F = Matrix<2, 3, F32>;
+using Matrix2x4F = Matrix<2, 4, F32>;
 
-using mat3f   = mat<3, 3, F32>;
-using mat3x3f = mat<3, 3, F32>;
-using mat3x2f = mat<3, 2, F32>;
-using mat3x4f = mat<3, 4, F32>;
+using Matrix3F   = Matrix<3, 3, F32>;
+using Matrix3x3F = Matrix<3, 3, F32>;
+using Matrix3x2F = Matrix<3, 2, F32>;
+using Matrix3x4F = Matrix<3, 4, F32>;
 
-using mat4f   = mat<4, 4, F32>;
-using mat4x4f = mat<4, 4, F32>;
-using mat4x2f = mat<4, 2, F32>;
-using mat4x3f = mat<4, 3, F32>;
+using Matrix4F   = Matrix<4, 4, F32>;
+using Matrix4x4F = Matrix<4, 4, F32>;
+using Matrix4x2F = Matrix<4, 2, F32>;
+using Matrix4x3F = Matrix<4, 3, F32>;
 
 } // namespace math
 

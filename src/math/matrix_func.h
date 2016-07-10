@@ -23,10 +23,10 @@ inline TMat<C, R, T> xcomp_mult(const TMat<C, R, T>& lhs, const TMat<C, R, T>& r
 }
 
 template <U32 C, U32 R, typename T, template <U32, typename> class TVec>
-inline matrix_impl::matrix<C, R, T> outer_product(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
+inline matrix_impl::Matrix<C, R, T> outer_product(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
-    return utils::type_creator<C>::template create<matrix_impl::matrix<C, R, T>>(
+    return utils::type_creator<C>::template create<matrix_impl::Matrix<C, R, T>>(
     [&lhs, &rhs](U32 index) { return lhs * rhs[index]; });
 }
 
@@ -136,8 +136,8 @@ inline TMat<3, 3, T> affine_inverse(const TMat<3, 3, T>& m)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
-    using TVec3 = typename TMat<3, 3, T>::column_type;
-    using TVec2 = typename TMat<2, 2, T>::column_type;
+    using TVec3 = typename TMat<3, 3, T>::ColumnType;
+    using TVec2 = typename TMat<2, 2, T>::ColumnType;
 
     TMat<2, 2, T> const inv = inverse(TMat<2, 2, T>(m));
 
@@ -150,8 +150,8 @@ inline TMat<4, 4, T> affine_inverse(const TMat<4, 4, T>& m)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
-    using TVec4 = typename TMat<4, 4, T>::column_type;
-    using TVec3 = typename TMat<3, 3, T>::column_type;
+    using TVec4 = typename TMat<4, 4, T>::ColumnType;
+    using TVec3 = typename TMat<3, 3, T>::ColumnType;
 
     TMat<3, 3, T> const inv(inverse(TMat<3, 3, T>(m)));
 

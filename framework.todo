@@ -25,9 +25,14 @@ Framework:
 
     ☐ Make the simple framework for tests, to make them clean and easy maintainable
 
-    ☐ Write type names in CamelCase, to make it convenient
+    ✔ Write type names in CamelCase, to make it convenient @started(16-07-01 22:42) @done (16-07-10 13:46) @lasted(8 days, 15:04)
+
+    ☐ Write function names in camelCase, to make it convenient
 
     ☐ Write all error messages with big first letter
+
+    ✔ Make assert working like standart c++ asserts @started(16-07-02 11:00) @done (16-07-10 12:35) @lasted(8 days, 1:35)
+
 --- ✄ -----------------------
 
   Build:

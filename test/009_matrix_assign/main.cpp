@@ -9,26 +9,26 @@ int main()
 
     // matrix assign
     {
-        mat4f m44f(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3);
+        Matrix4F m44f(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3);
 
-        mat4x3f m43f(m44f);
-        mat4x2f m42f(m44f);
-        mat3x4f m34f(m44f);
-        mat3f m33f(m44f);
-        mat3x2f m32f(m44f);
-        mat2x4f m24f(m44f);
-        mat2x3f m23f(m44f);
-        mat2f m22f(m44f);
+        Matrix4x3F m43f(m44f);
+        Matrix4x2F m42f(m44f);
+        Matrix3x4F m34f(m44f);
+        Matrix3F m33f(m44f);
+        Matrix3x2F m32f(m44f);
+        Matrix2x4F m24f(m44f);
+        Matrix2x3F m23f(m44f);
+        Matrix2F m22f(m44f);
 
-        mat4x2f n42f;
-        mat4x3f n43f;
-        mat4f n44f;
-        mat3x2f n32f;
-        mat3f n33f;
-        mat3x4f n34f;
-        mat2f n22f;
-        mat2x3f n23f;
-        mat2x4f n24f;
+        Matrix4x2F n42f;
+        Matrix4x3F n43f;
+        Matrix4F n44f;
+        Matrix3x2F n32f;
+        Matrix3F n33f;
+        Matrix3x4F n34f;
+        Matrix2F n22f;
+        Matrix2x3F n23f;
+        Matrix2x4F n24f;
 
         n44f = m44f;
         n43f = m43f;
@@ -50,15 +50,15 @@ int main()
         assert_msg(n23f == m23f, "matrix assign n23f == m23f failed");
         assert_msg(n22f == m22f, "matrix assign n22f == m22f failed");
 
-        mat4x2d n42d;
-        mat4x3d n43d;
-        mat4d n44d;
-        mat3x2d n32d;
-        mat3d n33d;
-        mat3x4d n34d;
-        mat2d n22d;
-        mat2x3d n23d;
-        mat2x4d n24d;
+        Matrix4x2D n42d;
+        Matrix4x3D n43d;
+        Matrix4D n44d;
+        Matrix3x2D n32d;
+        Matrix3D n33d;
+        Matrix3x4D n34d;
+        Matrix2D n22d;
+        Matrix2x3D n23d;
+        Matrix2x4D n24d;
 
         n44d = m44f;
         n43d = m43f;
@@ -70,15 +70,15 @@ int main()
         n23d = m23f;
         n22d = m22f;
 
-        assert_msg(n44d == mat4d(m44f), "matrix assign n44d == m44f failed");
-        assert_msg(n43d == mat4x3d(m43f), "matrix assign n43d == m43f failed");
-        assert_msg(n42d == mat4x2d(m42f), "matrix assign n42d == m42f failed");
-        assert_msg(n34d == mat3x4d(m34f), "matrix assign n34d == m34f failed");
-        assert_msg(n33d == mat3d(m33f), "matrix assign n33d == m33f failed");
-        assert_msg(n32d == mat3x2d(m32f), "matrix assign n32d == m32f failed");
-        assert_msg(n24d == mat2x4d(m24f), "matrix assign n24d == m24f failed");
-        assert_msg(n23d == mat2x3d(m23f), "matrix assign n23d == m23f failed");
-        assert_msg(n22d == mat2d(m22f), "matrix assign n22d == m22f failed");
+        assert_msg(n44d == Matrix4D(m44f), "matrix assign n44d == m44f failed");
+        assert_msg(n43d == Matrix4x3D(m43f), "matrix assign n43d == m43f failed");
+        assert_msg(n42d == Matrix4x2D(m42f), "matrix assign n42d == m42f failed");
+        assert_msg(n34d == Matrix3x4D(m34f), "matrix assign n34d == m34f failed");
+        assert_msg(n33d == Matrix3D(m33f), "matrix assign n33d == m33f failed");
+        assert_msg(n32d == Matrix3x2D(m32f), "matrix assign n32d == m32f failed");
+        assert_msg(n24d == Matrix2x4D(m24f), "matrix assign n24d == m24f failed");
+        assert_msg(n23d == Matrix2x3D(m23f), "matrix assign n23d == m23f failed");
+        assert_msg(n22d == Matrix2D(m22f), "matrix assign n22d == m22f failed");
     }
     return 0;
 }

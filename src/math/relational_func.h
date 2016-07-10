@@ -79,33 +79,33 @@ inline TVec<N, bool> logical_or(const TVec<N, bool>& l, const TVec<N, bool>& r)
 }
 
 /// Returns true if any component of v is true.
-inline bool any(const vector_impl::vec<4, bool>& v)
+inline bool any(const vector_impl::Vector<4, bool>& v)
 {
     return v.x || v.y || v.z || v.w;
 }
 
-inline bool any(const vector_impl::vec<3, bool>& v)
+inline bool any(const vector_impl::Vector<3, bool>& v)
 {
     return v.x || v.y || v.z;
 }
 
-inline bool any(const vector_impl::vec<2, bool>& v)
+inline bool any(const vector_impl::Vector<2, bool>& v)
 {
     return v.x || v.y;
 }
 
 /// Returns true if all components of v are true.
-inline bool all(const vector_impl::vec<4, bool>& v)
+inline bool all(const vector_impl::Vector<4, bool>& v)
 {
     return v.x && v.y && v.z && v.w;
 }
 
-inline bool all(const vector_impl::vec<3, bool>& v)
+inline bool all(const vector_impl::Vector<3, bool>& v)
 {
     return v.x && v.y && v.z;
 }
 
-inline bool all(const vector_impl::vec<2, bool>& v)
+inline bool all(const vector_impl::Vector<2, bool>& v)
 {
     return v.x && v.y;
 }

@@ -13,270 +13,270 @@ namespace vector_impl {
 
 // base classes for vectors of different size
 template <U32 N, typename T>
-struct vec_base
+struct VectorBase
 {
 };
 
 // vector interface
 template <U32 N, typename T>
-struct vec : public vec_base<N, T>
+struct Vector : public VectorBase<N, T>
 {
-    using base_type  = vec_base<N, T>;
-    using value_type = typename base_type::value_type;
+    using BaseType  = VectorBase<N, T>;
+    using ValueType = typename BaseType::ValueType;
 
-    constexpr vec();
+    constexpr Vector();
 
-    constexpr vec(const vec<N, T>&) = default;
-    constexpr vec(vec<N, T>&&)      = default;
+    constexpr Vector(const Vector<N, T>&) = default;
+    constexpr Vector(Vector<N, T>&&)      = default;
 
-    // import constructors from vec_base<N, T>
-    using base_type::base_type;
+    // import constructors from VectorBase<N, T>
+    using BaseType::BaseType;
 
     constexpr U32 size() const;
 
     T* data();
     const T* data() const;
 
-    vec<N, T>& operator=(const vec<N, T>&) = default;
-    vec<N, T>& operator=(vec<N, T>&&) = default;
+    Vector<N, T>& operator=(const Vector<N, T>&) = default;
+    Vector<N, T>& operator=(Vector<N, T>&&) = default;
 
     template <typename U>
-    vec<N, T>& operator=(const vec<N, U>& other);
+    Vector<N, T>& operator=(const Vector<N, U>& other);
 
     template <typename U>
-    vec<N, T>& operator+=(const vec<N, U>& other);
+    Vector<N, T>& operator+=(const Vector<N, U>& other);
 
     template <typename U>
-    vec<N, T>& operator-=(const vec<N, U>& other);
+    Vector<N, T>& operator-=(const Vector<N, U>& other);
 
     template <typename U>
-    vec<N, T>& operator*=(const vec<N, U>& other);
+    Vector<N, T>& operator*=(const Vector<N, U>& other);
 
     template <typename U>
-    vec<N, T>& operator/=(const vec<N, U>& other);
+    Vector<N, T>& operator/=(const Vector<N, U>& other);
 
     template <typename U>
-    vec<N, T>& operator+=(const U& scalar);
+    Vector<N, T>& operator+=(const U& scalar);
 
     template <typename U>
-    vec<N, T>& operator-=(const U& scalar);
+    Vector<N, T>& operator-=(const U& scalar);
 
     template <typename U>
-    vec<N, T>& operator*=(const U& scalar);
+    Vector<N, T>& operator*=(const U& scalar);
 
     template <typename U>
-    vec<N, T>& operator/=(const U& scalar);
+    Vector<N, T>& operator/=(const U& scalar);
 
-    value_type& operator[](U32 index);
-    const value_type& operator[](U32 index) const;
+    ValueType& operator[](U32 index);
+    const ValueType& operator[](U32 index) const;
 };
 
 // vector of bool specialization
 template <U32 N>
-struct vec<N, bool> : public vec_base<N, bool>
+struct Vector<N, bool> : public VectorBase<N, bool>
 {
-    using base_type  = vec_base<N, bool>;
-    using value_type = typename base_type::value_type;
+    using BaseType  = VectorBase<N, bool>;
+    using ValueType = typename BaseType::ValueType;
 
-    constexpr vec();
+    constexpr Vector();
 
-    constexpr vec(const vec<N, bool>&) = default;
-    constexpr vec(vec<N, bool>&&)      = default;
+    constexpr Vector(const Vector<N, bool>&) = default;
+    constexpr Vector(Vector<N, bool>&&)      = default;
 
     constexpr U32 size() const;
 
-    value_type* data();
-    const value_type* data() const;
+    ValueType* data();
+    const ValueType* data() const;
 
-    // import constructors from vec_base<N, bool>
-    using base_type::base_type;
+    // import constructors from VectorBase<N, bool>
+    using BaseType::BaseType;
 
-    vec<N, bool>& operator=(const vec<N, bool>&) = default;
-    vec<N, bool>& operator=(vec<N, bool>&&) = default;
+    Vector<N, bool>& operator=(const Vector<N, bool>&) = default;
+    Vector<N, bool>& operator=(Vector<N, bool>&&) = default;
 
     template <typename U>
-    vec<N, bool>& operator=(const vec<N, U>& other);
+    Vector<N, bool>& operator=(const Vector<N, U>& other);
 
-    value_type& operator[](U32 index);
-    const value_type& operator[](U32 index) const;
+    ValueType& operator[](U32 index);
+    const ValueType& operator[](U32 index) const;
 };
 
 // vector base
 template <typename T>
-struct vec_base<4, T>
+struct VectorBase<4, T>
 {
     static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
-    using value_type = T;
+    using ValueType = T;
 
     T x, y, z, w;
 
-    constexpr vec_base() : x{0}, y{0}, z{0}, w{utils::default_value<value_type>::value}
+    constexpr VectorBase() : x{0}, y{0}, z{0}, w{utils::default_value<ValueType>::value}
     {
     }
 
-    constexpr vec_base(const T& xx, const T& yy, const T& zz, const T& ww) : x{xx}, y{yy}, z{zz}, w{ww}
+    constexpr VectorBase(const T& xx, const T& yy, const T& zz, const T& ww) : x{xx}, y{yy}, z{zz}, w{ww}
     {
     }
 
-    explicit constexpr vec_base(const T& v) : x{v}, y{v}, z{v}, w{v}
+    explicit constexpr VectorBase(const T& v) : x{v}, y{v}, z{v}, w{v}
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}, w{*(p + 3)}
+    explicit constexpr VectorBase(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}, w{*(p + 3)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<4, U>& v)
+    explicit constexpr VectorBase(const Vector<4, U>& v)
     : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(static_cast<T>(v.w))
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<3, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(utils::default_value<value_type>::value)
+    explicit constexpr VectorBase(const Vector<3, U>& v)
+    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(utils::default_value<ValueType>::value)
     {
     }
 
     template <typename U, typename S>
-    constexpr vec_base(const S& s, const vec<3, U>& v)
+    constexpr VectorBase(const S& s, const Vector<3, U>& v)
     : x(static_cast<T>(s)), y(static_cast<T>(v.x)), z(static_cast<T>(v.y)), w(static_cast<T>(v.z))
     {
     }
 
     template <typename U, typename S>
-    constexpr vec_base(const vec<3, U>& v, const S& s)
+    constexpr VectorBase(const Vector<3, U>& v, const S& s)
     : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(static_cast<T>(s))
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<2, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0), w(utils::default_value<value_type>::value)
+    explicit constexpr VectorBase(const Vector<2, U>& v)
+    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0), w(utils::default_value<ValueType>::value)
     {
     }
 
     template <typename U1, typename U2>
-    constexpr vec_base(const vec<2, U1>& v1, const vec<2, U2>& v2)
+    constexpr VectorBase(const Vector<2, U1>& v1, const Vector<2, U2>& v2)
     : x(static_cast<T>(v1.x)), y(static_cast<T>(v1.y)), z(static_cast<T>(v2.x)), w(static_cast<T>(v2.y))
     {
     }
 
     template <typename U, typename S1, typename S2>
-    constexpr vec_base(const S1& xx, const S2& yy, const vec<2, U>& v)
+    constexpr VectorBase(const S1& xx, const S2& yy, const Vector<2, U>& v)
     : x(static_cast<T>(xx)), y(static_cast<T>(yy)), z(static_cast<T>(v.x)), w(static_cast<T>(v.y))
     {
     }
 
     template <typename U, typename S1, typename S2>
-    constexpr vec_base(const S1& xx, const vec<2, U>& v, const S2& ww)
+    constexpr VectorBase(const S1& xx, const Vector<2, U>& v, const S2& ww)
     : x(static_cast<T>(xx)), y(static_cast<T>(v.x)), z(static_cast<T>(v.y)), w(static_cast<T>(ww))
     {
     }
 
     template <typename U, typename S1, typename S2>
-    constexpr vec_base(const vec<2, U>& v, const S1& zz, const S2& ww)
+    constexpr VectorBase(const Vector<2, U>& v, const S1& zz, const S2& ww)
     : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(zz)), w(static_cast<T>(ww))
     {
     }
 };
 
 template <typename T>
-struct vec_base<3, T>
+struct VectorBase<3, T>
 {
     static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
-    using value_type = T;
+    using ValueType = T;
 
     T x, y, z;
 
-    constexpr vec_base() : x{0}, y{0}, z{0}
+    constexpr VectorBase() : x{0}, y{0}, z{0}
     {
     }
 
-    constexpr vec_base(const T& xx, const T& yy, const T& zz) : x{xx}, y{yy}, z{zz}
+    constexpr VectorBase(const T& xx, const T& yy, const T& zz) : x{xx}, y{yy}, z{zz}
     {
     }
 
-    explicit constexpr vec_base(const T& v) : x{v}, y{v}, z{v}
+    explicit constexpr VectorBase(const T& v) : x{v}, y{v}, z{v}
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}
+    explicit constexpr VectorBase(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<4, U>& v)
+    explicit constexpr VectorBase(const Vector<4, U>& v)
     : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z))
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<3, U>& v)
+    explicit constexpr VectorBase(const Vector<3, U>& v)
     : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z))
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<2, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0)
+    explicit constexpr VectorBase(const Vector<2, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0)
     {
     }
 
     template <typename U, typename S>
-    constexpr vec_base(const S& xx, const vec<2, U>& v)
+    constexpr VectorBase(const S& xx, const Vector<2, U>& v)
     : x(static_cast<T>(xx)), y(static_cast<T>(v.x)), z(static_cast<T>(v.y))
     {
     }
 
     template <typename U, typename S>
-    constexpr vec_base(const vec<2, U>& v, const S& zz)
+    constexpr VectorBase(const Vector<2, U>& v, const S& zz)
     : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(zz))
     {
     }
 };
 
 template <typename T>
-struct vec_base<2, T>
+struct VectorBase<2, T>
 {
     static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
-    using value_type = T;
+    using ValueType = T;
 
     T x, y;
 
-    constexpr vec_base() : x{0}, y{0}
+    constexpr VectorBase() : x{0}, y{0}
     {
     }
 
-    constexpr vec_base(const T& xx, const T& yy) : x{xx}, y{yy}
+    constexpr VectorBase(const T& xx, const T& yy) : x{xx}, y{yy}
     {
     }
 
-    explicit constexpr vec_base(const T& v) : x{v}, y{v}
+    explicit constexpr VectorBase(const T& v) : x{v}, y{v}
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const U* p) : x{*p}, y{*(p + 1)}
+    explicit constexpr VectorBase(const U* p) : x{*p}, y{*(p + 1)}
     {
         static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<4, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr VectorBase(const Vector<4, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<3, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr VectorBase(const Vector<3, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
     {
     }
 
     template <typename U>
-    explicit constexpr vec_base(const vec<2, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr VectorBase(const Vector<2, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
     {
     }
 };
@@ -285,39 +285,39 @@ struct vec_base<2, T>
 
 // default constructor
 template <U32 N, typename T>
-constexpr vec<N, T>::vec() : base_type()
+constexpr Vector<N, T>::Vector() : BaseType()
 {
 }
 
 // vector methods
 template <U32 N, typename T>
-inline constexpr U32 vec<N, T>::size() const
+inline constexpr U32 Vector<N, T>::size() const
 {
     return N;
 }
 
 template <U32 N, typename T>
-inline T* vec<N, T>::data()
+inline T* Vector<N, T>::data()
 {
     return &(this->x);
 }
 
 template <U32 N, typename T>
-inline const T* vec<N, T>::data() const
+inline const T* Vector<N, T>::data() const
 {
     return &(this->x);
 }
 
 // access operator
 template <U32 N, typename T>
-inline typename vec<N, T>::value_type& vec<N, T>::operator[](U32 index)
+inline typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index)
 {
     assert_msg(index >= 0 && index < N, "Worng index");
     return data()[index];
 }
 
 template <U32 N, typename T>
-const typename vec<N, T>::value_type& vec<N, T>::operator[](U32 index) const
+const typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index) const
 {
     assert_msg(index >= 0 && index < N, "Wrong index");
     return data()[index];
@@ -326,7 +326,7 @@ const typename vec<N, T>::value_type& vec<N, T>::operator[](U32 index) const
 // assignment operator
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator=(const vec<N, U>& other)
+inline Vector<N, T>& Vector<N, T>::operator=(const Vector<N, U>& other)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] = static_cast<T>(other[i]);
@@ -339,39 +339,39 @@ inline vec<N, T>& vec<N, T>::operator=(const vec<N, U>& other)
 
 // default constructor
 template <U32 N>
-constexpr vec<N, bool>::vec() : base_type()
+constexpr Vector<N, bool>::Vector() : BaseType()
 {
 }
 
 // vector methods
 template <U32 N>
-inline constexpr U32 vec<N, bool>::size() const
+inline constexpr U32 Vector<N, bool>::size() const
 {
     return N;
 }
 
 template <U32 N>
-inline typename vec<N, bool>::value_type* vec<N, bool>::data()
+inline typename Vector<N, bool>::ValueType* Vector<N, bool>::data()
 {
     return &(this->x);
 }
 
 template <U32 N>
-inline const typename vec<N, bool>::value_type* vec<N, bool>::data() const
+inline const typename Vector<N, bool>::ValueType* Vector<N, bool>::data() const
 {
     return &(this->x);
 }
 
 // access operator
 template <U32 N>
-inline typename vec<N, bool>::value_type& vec<N, bool>::operator[](U32 index)
+inline typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 index)
 {
     assert_msg(index >= 0 && index < N, "Worng index");
     return data()[index];
 }
 
 template <U32 N>
-const typename vec<N, bool>::value_type& vec<N, bool>::operator[](U32 index) const
+const typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 index) const
 {
     assert_msg(index >= 0 && index < N, "Wrong index");
     return data()[index];
@@ -380,7 +380,7 @@ const typename vec<N, bool>::value_type& vec<N, bool>::operator[](U32 index) con
 // assignment operator
 template <U32 N>
 template <typename U>
-inline vec<N, bool>& vec<N, bool>::operator=(const vec<N, U>& other)
+inline Vector<N, bool>& Vector<N, bool>::operator=(const Vector<N, U>& other)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] = static_cast<bool>(other[i]);
@@ -392,7 +392,7 @@ inline vec<N, bool>& vec<N, bool>::operator=(const vec<N, U>& other)
 // vector - vector
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator+=(const vec<N, U>& other)
+inline Vector<N, T>& Vector<N, T>::operator+=(const Vector<N, U>& other)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] += static_cast<T>(other[i]);
@@ -402,7 +402,7 @@ inline vec<N, T>& vec<N, T>::operator+=(const vec<N, U>& other)
 
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator-=(const vec<N, U>& other)
+inline Vector<N, T>& Vector<N, T>::operator-=(const Vector<N, U>& other)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] -= static_cast<T>(other[i]);
@@ -412,7 +412,7 @@ inline vec<N, T>& vec<N, T>::operator-=(const vec<N, U>& other)
 
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator*=(const vec<N, U>& other)
+inline Vector<N, T>& Vector<N, T>::operator*=(const Vector<N, U>& other)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] *= static_cast<T>(other[i]);
@@ -422,7 +422,7 @@ inline vec<N, T>& vec<N, T>::operator*=(const vec<N, U>& other)
 
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator/=(const vec<N, U>& other)
+inline Vector<N, T>& Vector<N, T>::operator/=(const Vector<N, U>& other)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] /= static_cast<T>(other[i]);
@@ -434,7 +434,7 @@ inline vec<N, T>& vec<N, T>::operator/=(const vec<N, U>& other)
 // vector - scalar
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator+=(const U& scalar)
+inline Vector<N, T>& Vector<N, T>::operator+=(const U& scalar)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] += static_cast<T>(scalar);
@@ -444,7 +444,7 @@ inline vec<N, T>& vec<N, T>::operator+=(const U& scalar)
 
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator-=(const U& scalar)
+inline Vector<N, T>& Vector<N, T>::operator-=(const U& scalar)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] -= static_cast<T>(scalar);
@@ -454,7 +454,7 @@ inline vec<N, T>& vec<N, T>::operator-=(const U& scalar)
 
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator*=(const U& scalar)
+inline Vector<N, T>& Vector<N, T>::operator*=(const U& scalar)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] *= static_cast<T>(scalar);
@@ -464,7 +464,7 @@ inline vec<N, T>& vec<N, T>::operator*=(const U& scalar)
 
 template <U32 N, typename T>
 template <typename U>
-inline vec<N, T>& vec<N, T>::operator/=(const U& scalar)
+inline Vector<N, T>& Vector<N, T>::operator/=(const U& scalar)
 {
     for (U32 i = 0; i < N; ++i) {
         (*this)[i] /= static_cast<T>(scalar);
@@ -474,14 +474,14 @@ inline vec<N, T>& vec<N, T>::operator/=(const U& scalar)
 
 // unary minus
 template <U32 N, typename T>
-inline vec<N, T> operator-(const vec<N, T>& v)
+inline Vector<N, T> operator-(const Vector<N, T>& v)
 {
     return utils::vec_helper<N>::apply(v, [](const T& a) { return -a; });
 }
 
 // unary plus
 template <U32 N, typename T>
-inline vec<N, T> operator+(const vec<N, T>& v)
+inline Vector<N, T> operator+(const Vector<N, T>& v)
 {
     return v;
 }
@@ -489,25 +489,25 @@ inline vec<N, T> operator+(const vec<N, T>& v)
 // binary operators
 // vector - vector
 template <U32 N, typename T>
-inline const vec<N, T> operator+(const vec<N, T>& lhs, const vec<N, T>& rhs)
+inline const Vector<N, T> operator+(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
     return utils::vec_helper<N>::apply(lhs, rhs, [](const T& a, const T& b) { return a + b; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator-(const vec<N, T>& lhs, const vec<N, T>& rhs)
+inline const Vector<N, T> operator-(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
     return utils::vec_helper<N>::apply(lhs, rhs, [](const T& a, const T& b) { return a - b; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator*(const vec<N, T>& lhs, const vec<N, T>& rhs)
+inline const Vector<N, T> operator*(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
     return utils::vec_helper<N>::apply(lhs, rhs, [](const T& a, const T& b) { return a * b; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator/(const vec<N, T>& lhs, const vec<N, T>& rhs)
+inline const Vector<N, T> operator/(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
     return utils::vec_helper<N>::apply(lhs, rhs, [](const T& a, const T& b) { return a / b; });
 }
@@ -515,25 +515,25 @@ inline const vec<N, T> operator/(const vec<N, T>& lhs, const vec<N, T>& rhs)
 // binary operators
 // vector - scalar
 template <U32 N, typename T>
-inline const vec<N, T> operator+(const vec<N, T>& vector, const T& scalar)
+inline const Vector<N, T> operator+(const Vector<N, T>& vector, const T& scalar)
 {
     return utils::vec_helper<N>::apply(vector, [&scalar](const T& a) { return a + scalar; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator-(const vec<N, T>& vector, const T& scalar)
+inline const Vector<N, T> operator-(const Vector<N, T>& vector, const T& scalar)
 {
     return utils::vec_helper<N>::apply(vector, [&scalar](const T& a) { return a - scalar; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator*(const vec<N, T>& vector, const T& scalar)
+inline const Vector<N, T> operator*(const Vector<N, T>& vector, const T& scalar)
 {
     return utils::vec_helper<N>::apply(vector, [&scalar](const T& a) { return a * scalar; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator/(const vec<N, T>& vector, const T& scalar)
+inline const Vector<N, T> operator/(const Vector<N, T>& vector, const T& scalar)
 {
     return utils::vec_helper<N>::apply(vector, [&scalar](const T& a) { return a / scalar; });
 }
@@ -541,27 +541,27 @@ inline const vec<N, T> operator/(const vec<N, T>& vector, const T& scalar)
 // binary operators
 // scalar - vector
 template <U32 N, typename T>
-inline const vec<N, T> operator+(const T& scalar, const vec<N, T>& vector)
+inline const Vector<N, T> operator+(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::vec_helper<N>::apply(vec<N, T>(scalar), vector, [](const T& a, const T& b) { return a + b; });
+    return utils::vec_helper<N>::apply(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a + b; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator-(const T& scalar, const vec<N, T>& vector)
+inline const Vector<N, T> operator-(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::vec_helper<N>::apply(vec<N, T>(scalar), vector, [](const T& a, const T& b) { return a - b; });
+    return utils::vec_helper<N>::apply(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a - b; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator*(const T& scalar, const vec<N, T>& vector)
+inline const Vector<N, T> operator*(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::vec_helper<N>::apply(vec<N, T>(scalar), vector, [](const T& a, const T& b) { return a * b; });
+    return utils::vec_helper<N>::apply(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a * b; });
 }
 
 template <U32 N, typename T>
-inline const vec<N, T> operator/(const T& scalar, const vec<N, T>& vector)
+inline const Vector<N, T> operator/(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::vec_helper<N>::apply(vec<N, T>(scalar), vector, [](const T& a, const T& b) { return a / b; });
+    return utils::vec_helper<N>::apply(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a / b; });
 }
 
 #pragma clang diagnostic push
@@ -569,37 +569,37 @@ inline const vec<N, T> operator/(const T& scalar, const vec<N, T>& vector)
 
 // vectors equality
 template <typename T>
-inline constexpr bool operator==(const vec<4, T>& a, const vec<4, T>& b)
+inline constexpr bool operator==(const Vector<4, T>& a, const Vector<4, T>& b)
 {
     return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
 }
 
 template <typename T>
-inline constexpr bool operator==(const vec<3, T>& a, const vec<3, T>& b)
+inline constexpr bool operator==(const Vector<3, T>& a, const Vector<3, T>& b)
 {
     return a.x == b.x && a.y == b.y && a.z == b.z;
 }
 
 template <typename T>
-inline constexpr bool operator==(const vec<2, T>& a, const vec<2, T>& b)
+inline constexpr bool operator==(const Vector<2, T>& a, const Vector<2, T>& b)
 {
     return a.x == b.x && a.y == b.y;
 }
 
 template <typename T>
-inline constexpr bool operator!=(const vec<4, T>& a, const vec<4, T>& b)
+inline constexpr bool operator!=(const Vector<4, T>& a, const Vector<4, T>& b)
 {
     return (a.x != b.x) || (a.y != b.y) || (a.z != b.z) || (a.w != b.w);
 }
 
 template <typename T>
-inline constexpr bool operator!=(const vec<3, T>& a, const vec<3, T>& b)
+inline constexpr bool operator!=(const Vector<3, T>& a, const Vector<3, T>& b)
 {
     return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
 }
 
 template <typename T>
-inline constexpr bool operator!=(const vec<2, T>& a, const vec<2, T>& b)
+inline constexpr bool operator!=(const Vector<2, T>& a, const Vector<2, T>& b)
 {
     return (a.x != b.x) || (a.y != b.y);
 }

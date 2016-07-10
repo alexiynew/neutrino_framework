@@ -9,15 +9,15 @@ int main()
 
     // matrix +=, -=, *=, /= scalar
     {
-        mat4x4f m44f;
-        mat4x3f m43f;
-        mat4x2f m42f;
-        mat3x4f m34f;
-        mat3x3f m33f;
-        mat3x2f m32f;
-        mat2x4f m24f;
-        mat2x3f m23f;
-        mat2x2f m22f;
+        Matrix4x4F m44f;
+        Matrix4x3F m43f;
+        Matrix4x2F m42f;
+        Matrix3x4F m34f;
+        Matrix3x3F m33f;
+        Matrix3x2F m32f;
+        Matrix2x4F m24f;
+        Matrix2x3F m23f;
+        Matrix2x2F m22f;
 
         m44f += 1;
         m43f += 1;
@@ -29,17 +29,17 @@ int main()
         m23f += 1;
         m22f += 1;
 
-        assert_msg(m44f == mat4x4f(2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2), "matrix m44f += 1 failed");
-        assert_msg(m43f == mat4x3f(2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1), "matrix m43f += 1 failed");
-        assert_msg(m42f == mat4x2f(2, 1, 1, 2, 1, 1, 1, 1), "matrix m42f += 1 failed");
+        assert_msg(m44f == Matrix4x4F(2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2), "matrix m44f += 1 failed");
+        assert_msg(m43f == Matrix4x3F(2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1), "matrix m43f += 1 failed");
+        assert_msg(m42f == Matrix4x2F(2, 1, 1, 2, 1, 1, 1, 1), "matrix m42f += 1 failed");
 
-        assert_msg(m34f == mat3x4f(2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1), "matrix m34f += 1 failed");
-        assert_msg(m33f == mat3x3f(2, 1, 1, 1, 2, 1, 1, 1, 2), "matrix m33f += 1 failed");
-        assert_msg(m32f == mat3x2f(2, 1, 1, 2, 1, 1), "matrix m32f += 1 failed");
+        assert_msg(m34f == Matrix3x4F(2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1), "matrix m34f += 1 failed");
+        assert_msg(m33f == Matrix3x3F(2, 1, 1, 1, 2, 1, 1, 1, 2), "matrix m33f += 1 failed");
+        assert_msg(m32f == Matrix3x2F(2, 1, 1, 2, 1, 1), "matrix m32f += 1 failed");
 
-        assert_msg(m24f == mat2x4f(2, 1, 1, 1, 1, 2, 1, 1), "matrix m24f += 1 failed");
-        assert_msg(m23f == mat2x3f(2, 1, 1, 1, 2, 1), "matrix m23f += 1 failed");
-        assert_msg(m22f == mat2x2f(2, 1, 1, 2), "matrix m22f += 1 failed");
+        assert_msg(m24f == Matrix2x4F(2, 1, 1, 1, 1, 2, 1, 1), "matrix m24f += 1 failed");
+        assert_msg(m23f == Matrix2x3F(2, 1, 1, 1, 2, 1), "matrix m23f += 1 failed");
+        assert_msg(m22f == Matrix2x2F(2, 1, 1, 2), "matrix m22f += 1 failed");
 
         m44f -= 1;
         m43f -= 1;
@@ -51,15 +51,15 @@ int main()
         m23f -= 1;
         m22f -= 1;
 
-        assert_msg(m44f == mat4x4f(), "matrix m44f -= 1 failed");
-        assert_msg(m43f == mat4x3f(), "matrix m43f -= 1 failed");
-        assert_msg(m42f == mat4x2f(), "matrix m42f -= 1 failed");
-        assert_msg(m34f == mat3x4f(), "matrix m34f -= 1 failed");
-        assert_msg(m33f == mat3x3f(), "matrix m33f -= 1 failed");
-        assert_msg(m32f == mat3x2f(), "matrix m32f -= 1 failed");
-        assert_msg(m24f == mat2x4f(), "matrix m24f -= 1 failed");
-        assert_msg(m23f == mat2x3f(), "matrix m23f -= 1 failed");
-        assert_msg(m22f == mat2x2f(), "matrix m22f -= 1 failed");
+        assert_msg(m44f == Matrix4x4F(), "matrix m44f -= 1 failed");
+        assert_msg(m43f == Matrix4x3F(), "matrix m43f -= 1 failed");
+        assert_msg(m42f == Matrix4x2F(), "matrix m42f -= 1 failed");
+        assert_msg(m34f == Matrix3x4F(), "matrix m34f -= 1 failed");
+        assert_msg(m33f == Matrix3x3F(), "matrix m33f -= 1 failed");
+        assert_msg(m32f == Matrix3x2F(), "matrix m32f -= 1 failed");
+        assert_msg(m24f == Matrix2x4F(), "matrix m24f -= 1 failed");
+        assert_msg(m23f == Matrix2x3F(), "matrix m23f -= 1 failed");
+        assert_msg(m22f == Matrix2x2F(), "matrix m22f -= 1 failed");
 
         m44f *= 10;
         m43f *= 10;
@@ -71,15 +71,15 @@ int main()
         m23f *= 10;
         m22f *= 10;
 
-        assert_msg(m44f == mat4x4f(10), "matrix m44f *= 10 failed");
-        assert_msg(m43f == mat4x3f(10), "matrix m43f *= 10 failed");
-        assert_msg(m42f == mat4x2f(10), "matrix m42f *= 10 failed");
-        assert_msg(m34f == mat3x4f(10), "matrix m34f *= 10 failed");
-        assert_msg(m33f == mat3x3f(10), "matrix m33f *= 10 failed");
-        assert_msg(m32f == mat3x2f(10), "matrix m32f *= 10 failed");
-        assert_msg(m24f == mat2x4f(10), "matrix m24f *= 10 failed");
-        assert_msg(m23f == mat2x3f(10), "matrix m23f *= 10 failed");
-        assert_msg(m22f == mat2x2f(10), "matrix m22f *= 10 failed");
+        assert_msg(m44f == Matrix4x4F(10), "matrix m44f *= 10 failed");
+        assert_msg(m43f == Matrix4x3F(10), "matrix m43f *= 10 failed");
+        assert_msg(m42f == Matrix4x2F(10), "matrix m42f *= 10 failed");
+        assert_msg(m34f == Matrix3x4F(10), "matrix m34f *= 10 failed");
+        assert_msg(m33f == Matrix3x3F(10), "matrix m33f *= 10 failed");
+        assert_msg(m32f == Matrix3x2F(10), "matrix m32f *= 10 failed");
+        assert_msg(m24f == Matrix2x4F(10), "matrix m24f *= 10 failed");
+        assert_msg(m23f == Matrix2x3F(10), "matrix m23f *= 10 failed");
+        assert_msg(m22f == Matrix2x2F(10), "matrix m22f *= 10 failed");
 
         m44f /= 2;
         m43f /= 2;
@@ -91,37 +91,37 @@ int main()
         m23f /= 2;
         m22f /= 2;
 
-        assert_msg(m44f == mat4x4f(5), "matrix m44f /= 2 failed");
-        assert_msg(m43f == mat4x3f(5), "matrix m43f /= 2 failed");
-        assert_msg(m42f == mat4x2f(5), "matrix m42f /= 2 failed");
-        assert_msg(m34f == mat3x4f(5), "matrix m34f /= 2 failed");
-        assert_msg(m33f == mat3x3f(5), "matrix m33f /= 2 failed");
-        assert_msg(m32f == mat3x2f(5), "matrix m32f /= 2 failed");
-        assert_msg(m24f == mat2x4f(5), "matrix m24f /= 2 failed");
-        assert_msg(m23f == mat2x3f(5), "matrix m23f /= 2 failed");
-        assert_msg(m22f == mat2x2f(5), "matrix m22f /= 2 failed");
+        assert_msg(m44f == Matrix4x4F(5), "matrix m44f /= 2 failed");
+        assert_msg(m43f == Matrix4x3F(5), "matrix m43f /= 2 failed");
+        assert_msg(m42f == Matrix4x2F(5), "matrix m42f /= 2 failed");
+        assert_msg(m34f == Matrix3x4F(5), "matrix m34f /= 2 failed");
+        assert_msg(m33f == Matrix3x3F(5), "matrix m33f /= 2 failed");
+        assert_msg(m32f == Matrix3x2F(5), "matrix m32f /= 2 failed");
+        assert_msg(m24f == Matrix2x4F(5), "matrix m24f /= 2 failed");
+        assert_msg(m23f == Matrix2x3F(5), "matrix m23f /= 2 failed");
+        assert_msg(m22f == Matrix2x2F(5), "matrix m22f /= 2 failed");
     }
 
     {
-        mat4x4f m44f(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-        mat4x3f m43f(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-        mat4x2f m42f(1, 1, 1, 1, 1, 1, 1, 1);
-        mat3x4f m34f(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-        mat3x3f m33f(1, 1, 1, 1, 1, 1, 1, 1, 1);
-        mat3x2f m32f(1, 1, 1, 1, 1, 1);
-        mat2x4f m24f(1, 1, 1, 1, 1, 1, 1, 1);
-        mat2x3f m23f(1, 1, 1, 1, 1, 1);
-        mat2x2f m22f(1, 1, 1, 1);
+        Matrix4x4F m44f(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+        Matrix4x3F m43f(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+        Matrix4x2F m42f(1, 1, 1, 1, 1, 1, 1, 1);
+        Matrix3x4F m34f(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+        Matrix3x3F m33f(1, 1, 1, 1, 1, 1, 1, 1, 1);
+        Matrix3x2F m32f(1, 1, 1, 1, 1, 1);
+        Matrix2x4F m24f(1, 1, 1, 1, 1, 1, 1, 1);
+        Matrix2x3F m23f(1, 1, 1, 1, 1, 1);
+        Matrix2x2F m22f(1, 1, 1, 1);
 
-        mat4x4f r44f(5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
-        mat4x3f r43f(5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
-        mat4x2f r42f(5, 5, 5, 5, 5, 5, 5, 5);
-        mat3x4f r34f(5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
-        mat3x3f r33f(5, 5, 5, 5, 5, 5, 5, 5, 5);
-        mat3x2f r32f(5, 5, 5, 5, 5, 5);
-        mat2x4f r24f(5, 5, 5, 5, 5, 5, 5, 5);
-        mat2x3f r23f(5, 5, 5, 5, 5, 5);
-        mat2x2f r22f(5, 5, 5, 5);
+        Matrix4x4F r44f(5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
+        Matrix4x3F r43f(5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
+        Matrix4x2F r42f(5, 5, 5, 5, 5, 5, 5, 5);
+        Matrix3x4F r34f(5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5);
+        Matrix3x3F r33f(5, 5, 5, 5, 5, 5, 5, 5, 5);
+        Matrix3x2F r32f(5, 5, 5, 5, 5, 5);
+        Matrix2x4F r24f(5, 5, 5, 5, 5, 5, 5, 5);
+        Matrix2x3F r23f(5, 5, 5, 5, 5, 5);
+        Matrix2x2F r22f(5, 5, 5, 5);
 
         assert_msg(m44f + 4.0f == r44f, "matrix + scalar failed");
         assert_msg(m43f + 4.0f == r43f, "matrix + scalar failed");

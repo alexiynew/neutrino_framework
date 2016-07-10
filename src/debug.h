@@ -18,7 +18,7 @@
 #ifdef NEED_ASSERT
 
 #define assert(EXPR) \
-    ((EXPR) || (std::abort(), false))
+    ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (#EXPR) << std::endl, std::abort(), false))
 
 #define assert_msg(EXPR, MSG) \
     ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (MSG) << std::endl, std::abort(), false))

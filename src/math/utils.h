@@ -59,6 +59,7 @@ inline TResult type_creator<2>::create(F&& opp)
     return TResult(opp(0), opp(1));
 }
 
+// TODO remane it to createVector
 template <U32 N>
 struct vec_helper
 {

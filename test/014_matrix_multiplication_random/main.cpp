@@ -56,19 +56,19 @@ Any* multiply_impl(const T&, const U&)
 }
 
 template <U32 R, U32 C>
-Any* multiply_impl(const vec<R, F32>& lhs, const mat<C, R, F32>& rhs)
+Any* multiply_impl(const Vector<R, F32>& lhs, const Matrix<C, R, F32>& rhs)
 {
     return make_any(lhs * rhs);
 }
 
 template <U32 R, U32 C>
-Any* multiply_impl(const mat<C, R, F32>& lhs, const vec<C, F32>& rhs)
+Any* multiply_impl(const Matrix<C, R, F32>& lhs, const Vector<C, F32>& rhs)
 {
     return make_any(lhs * rhs);
 }
 
 template <U32 C, U32 R, U32 K>
-Any* multiply_impl(const mat<C, R, F32>& lhs, const mat<K, C, F32>& rhs)
+Any* multiply_impl(const Matrix<C, R, F32>& lhs, const Matrix<K, C, F32>& rhs)
 {
     return make_any(lhs * rhs);
 }
@@ -79,21 +79,21 @@ struct Any
 
     virtual Any* multiply(Any* other) = 0;
 
-    virtual Any* multiply(const vec<2, F32>& v) = 0;
-    virtual Any* multiply(const vec<3, F32>& v) = 0;
-    virtual Any* multiply(const vec<4, F32>& v) = 0;
+    virtual Any* multiply(const Vector<2, F32>& v) = 0;
+    virtual Any* multiply(const Vector<3, F32>& v) = 0;
+    virtual Any* multiply(const Vector<4, F32>& v) = 0;
 
-    virtual Any* multiply(const mat<2, 2, F32>& m) = 0;
-    virtual Any* multiply(const mat<2, 3, F32>& m) = 0;
-    virtual Any* multiply(const mat<2, 4, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<2, 2, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<2, 3, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<2, 4, F32>& m) = 0;
 
-    virtual Any* multiply(const mat<3, 2, F32>& m) = 0;
-    virtual Any* multiply(const mat<3, 3, F32>& m) = 0;
-    virtual Any* multiply(const mat<3, 4, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<3, 2, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<3, 3, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<3, 4, F32>& m) = 0;
 
-    virtual Any* multiply(const mat<4, 2, F32>& m) = 0;
-    virtual Any* multiply(const mat<4, 3, F32>& m) = 0;
-    virtual Any* multiply(const mat<4, 4, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<4, 2, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<4, 3, F32>& m) = 0;
+    virtual Any* multiply(const Matrix<4, 4, F32>& m) = 0;
 
     virtual ~Any()
     {
@@ -118,71 +118,71 @@ struct TAny : public Any
         return other->multiply(value);
     }
 
-    Any* multiply(const vec<2, F32>& v) override
+    Any* multiply(const Vector<2, F32>& v) override
     {
         return multiply_impl(v, value);
     }
 
-    Any* multiply(const vec<3, F32>& v) override
+    Any* multiply(const Vector<3, F32>& v) override
     {
         return multiply_impl(v, value);
     }
 
-    Any* multiply(const vec<4, F32>& v) override
+    Any* multiply(const Vector<4, F32>& v) override
     {
         return multiply_impl(v, value);
     }
 
-    Any* multiply(const mat<2, 2, F32>& m) override
+    Any* multiply(const Matrix<2, 2, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 
-    Any* multiply(const mat<2, 3, F32>& m) override
+    Any* multiply(const Matrix<2, 3, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 
-    Any* multiply(const mat<2, 4, F32>& m) override
+    Any* multiply(const Matrix<2, 4, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 
-    Any* multiply(const mat<3, 2, F32>& m) override
+    Any* multiply(const Matrix<3, 2, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 
-    Any* multiply(const mat<3, 3, F32>& m) override
+    Any* multiply(const Matrix<3, 3, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 
-    Any* multiply(const mat<3, 4, F32>& m) override
+    Any* multiply(const Matrix<3, 4, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 
-    Any* multiply(const mat<4, 2, F32>& m) override
+    Any* multiply(const Matrix<4, 2, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 
-    Any* multiply(const mat<4, 3, F32>& m) override
+    Any* multiply(const Matrix<4, 3, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 
-    Any* multiply(const mat<4, 4, F32>& m) override
+    Any* multiply(const Matrix<4, 4, F32>& m) override
     {
         return multiply_impl(m, value);
     }
 };
 
 template <U32 N>
-vec<N, F32> read_vec()
+Vector<N, F32> readVector()
 {
-    vec<N, F32> value;
+    Vector<N, F32> value;
     for (U32 i = 0; i < N; ++i) {
         std::cin >> value[i];
     }
@@ -190,23 +190,23 @@ vec<N, F32> read_vec()
 }
 
 template <U32 C, U32 R>
-Any* read_impl()
+Any* readVectorImpl()
 {
-    mat<R, C, F32> m;
+    Matrix<R, C, F32> m;
     for (U32 i = 0; i < R; ++i) {
-        m[i] = read_vec<C>();
+        m[i] = readVector<C>();
     }
-    return new TAny<mat<C, R, F32>>(transpose(m));
+    return new TAny<Matrix<C, R, F32>>(transpose(m));
 }
 
 template <U32 R>
 Any* read(int col)
 {
     switch (col) {
-        case 1: return new TAny<vec<R, F32>>(read_vec<R>());
-        case 2: return read_impl<2, R>();
-        case 3: return read_impl<3, R>();
-        case 4: return read_impl<4, R>();
+        case 1: return new TAny<Vector<R, F32>>(readVector<R>());
+        case 2: return readVectorImpl<2, R>();
+        case 3: return readVectorImpl<3, R>();
+        case 4: return readVectorImpl<4, R>();
         default: throw "Zero cols";
     }
 }
@@ -219,9 +219,9 @@ Any* read()
     switch (row) {
         case 1: {
             switch (col) {
-                case 2: return new TAny<vec<2, F32>>(read_vec<2>());
-                case 3: return new TAny<vec<3, F32>>(read_vec<3>());
-                case 4: return new TAny<vec<4, F32>>(read_vec<4>());
+                case 2: return new TAny<Vector<2, F32>>(readVector<2>());
+                case 3: return new TAny<Vector<3, F32>>(readVector<3>());
+                case 4: return new TAny<Vector<4, F32>>(readVector<4>());
                 default: throw "Zero cols";
             }
         }

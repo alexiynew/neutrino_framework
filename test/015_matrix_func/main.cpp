@@ -7,15 +7,15 @@ using namespace framework::math;
 int main()
 {
     {
-        mat4x4f m44;
-        mat4x3f m43;
-        mat4x2f m42;
-        mat3x4f m34;
-        mat3x3f m33;
-        mat3x2f m32;
-        mat2x4f m24;
-        mat2x3f m23;
-        mat2x2f m22;
+        Matrix4x4F m44;
+        Matrix4x3F m43;
+        Matrix4x2F m42;
+        Matrix3x4F m34;
+        Matrix3x3F m33;
+        Matrix3x2F m32;
+        Matrix2x4F m24;
+        Matrix2x3F m23;
+        Matrix2x2F m22;
 
         assert_msg(transpose(m44) == m44, "transpose m44 failed");
         assert_msg(transpose(m43) == m34, "transpose m43 failed");
@@ -31,27 +31,27 @@ int main()
     }
 
     {
-        mat4x4f m44(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4);
+        Matrix4x4F m44(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4);
 
-        mat4x3f m43(m44);
-        mat4x2f m42(m44);
-        mat3x4f m34(m44);
-        mat3x3f m33(m44);
-        mat3x2f m32(m44);
-        mat2x4f m24(m44);
-        mat2x3f m23(m44);
-        mat2x2f m22(m44);
+        Matrix4x3F m43(m44);
+        Matrix4x2F m42(m44);
+        Matrix3x4F m34(m44);
+        Matrix3x3F m33(m44);
+        Matrix3x2F m32(m44);
+        Matrix2x4F m24(m44);
+        Matrix2x3F m23(m44);
+        Matrix2x2F m22(m44);
 
-        mat4x4f r44(1, 4, 9, 16, 1, 4, 9, 16, 1, 4, 9, 16, 1, 4, 9, 16);
+        Matrix4x4F r44(1, 4, 9, 16, 1, 4, 9, 16, 1, 4, 9, 16, 1, 4, 9, 16);
 
-        mat4x3f r43(r44);
-        mat4x2f r42(r44);
-        mat3x4f r34(r44);
-        mat3x3f r33(r44);
-        mat3x2f r32(r44);
-        mat2x4f r24(r44);
-        mat2x3f r23(r44);
-        mat2x2f r22(r44);
+        Matrix4x3F r43(r44);
+        Matrix4x2F r42(r44);
+        Matrix3x4F r34(r44);
+        Matrix3x3F r33(r44);
+        Matrix3x2F r32(r44);
+        Matrix2x4F r24(r44);
+        Matrix2x3F r23(r44);
+        Matrix2x2F r22(r44);
 
         assert_msg(xcomp_mult(m44, m44) == r44, "xcomp_mult m44 failed");
         assert_msg(xcomp_mult(m43, m43) == r43, "xcomp_mult m43 failed");
@@ -65,34 +65,34 @@ int main()
     }
 
     {
-        vec2f v2(1, 2);
-        vec3f v3(1, 2, 3);
-        vec4f v4(1, 2, 3, 4);
+        Vector2F v2(1, 2);
+        Vector3F v3(1, 2, 3);
+        Vector4F v4(1, 2, 3, 4);
 
-        assert_msg(outer_product(v2, v2) == mat2x2f(1, 2, 2, 4), "outer_product(v2, v2) failed");
-        assert_msg(outer_product(v2, v3) == mat3x2f(1, 2, 2, 4, 3, 6), "outer_product(v2, v3) failed");
-        assert_msg(outer_product(v2, v4) == mat4x2f(1, 2, 2, 4, 3, 6, 4, 8), "outer_product(v2, v4) failed");
+        assert_msg(outer_product(v2, v2) == Matrix2x2F(1, 2, 2, 4), "outer_product(v2, v2) failed");
+        assert_msg(outer_product(v2, v3) == Matrix3x2F(1, 2, 2, 4, 3, 6), "outer_product(v2, v3) failed");
+        assert_msg(outer_product(v2, v4) == Matrix4x2F(1, 2, 2, 4, 3, 6, 4, 8), "outer_product(v2, v4) failed");
 
-        assert_msg(outer_product(v3, v2) == mat2x3f(1, 2, 3, 2, 4, 6), "outer_product(v3, v2) failed");
-        assert_msg(outer_product(v3, v3) == mat3x3f(1, 2, 3, 2, 4, 6, 3, 6, 9), "outer_product(v3, v3) failed");
-        assert_msg(outer_product(v3, v4) == mat4x3f(1, 2, 3, 2, 4, 6, 3, 6, 9, 4, 8, 12), "outer_product(v3, v4) "
+        assert_msg(outer_product(v3, v2) == Matrix2x3F(1, 2, 3, 2, 4, 6), "outer_product(v3, v2) failed");
+        assert_msg(outer_product(v3, v3) == Matrix3x3F(1, 2, 3, 2, 4, 6, 3, 6, 9), "outer_product(v3, v3) failed");
+        assert_msg(outer_product(v3, v4) == Matrix4x3F(1, 2, 3, 2, 4, 6, 3, 6, 9, 4, 8, 12), "outer_product(v3, v4) "
                                                                                           "failed");
 
-        assert_msg(outer_product(v4, v2) == mat2x4f(1, 2, 3, 4, 2, 4, 6, 8), "outer_product(v4, v2) failed");
-        assert_msg(outer_product(v4, v3) == mat3x4f(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12), "outer_product(v4, v3) "
+        assert_msg(outer_product(v4, v2) == Matrix2x4F(1, 2, 3, 4, 2, 4, 6, 8), "outer_product(v4, v2) failed");
+        assert_msg(outer_product(v4, v3) == Matrix3x4F(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12), "outer_product(v4, v3) "
                                                                                           "failed");
-        assert_msg(outer_product(v4, v4) == mat4x4f(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12, 4, 8, 12, 16),
+        assert_msg(outer_product(v4, v4) == Matrix4x4F(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12, 4, 8, 12, 16),
                    "outer_product(v4, v4) failed");
     }
 
     {
-        mat2f m2(1, 2, 1, 2);
-        mat3f m3(1, 2, 3, 1, 2, 3, 1, 2, 3);
-        mat4f m4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4);
+        Matrix2F m2(1, 2, 1, 2);
+        Matrix3F m3(1, 2, 3, 1, 2, 3, 1, 2, 3);
+        Matrix4F m4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4);
 
-        assert_msg(almost_equal(determinant(mat2f()), 1.0f), "determinant faled");
-        assert_msg(almost_equal(determinant(mat3f()), 1.0f), "determinant faled");
-        assert_msg(almost_equal(determinant(mat4f()), 1.0f), "determinant faled");
+        assert_msg(almost_equal(determinant(Matrix2F()), 1.0f), "determinant faled");
+        assert_msg(almost_equal(determinant(Matrix3F()), 1.0f), "determinant faled");
+        assert_msg(almost_equal(determinant(Matrix4F()), 1.0f), "determinant faled");
 
         assert_msg(almost_equal(determinant(m2), 0.0f), "determinant faled");
         assert_msg(almost_equal(determinant(m3), 0.0f), "determinant faled");
@@ -100,17 +100,17 @@ int main()
     }
 
     {
-        mat2f m2(4, 2, 2, 3);
-        mat3f m3(8, 6, 7, 4, 2, 3, 1, 5, 2);
-        mat4f m4(1, 2, 1, 1, 2, 1, 2, 0, 0, 0, 1, 1, 0, 1, 0, 1);
+        Matrix2F m2(4, 2, 2, 3);
+        Matrix3F m3(8, 6, 7, 4, 2, 3, 1, 5, 2);
+        Matrix4F m4(1, 2, 1, 1, 2, 1, 2, 0, 0, 0, 1, 1, 0, 1, 0, 1);
 
         assert_msg(almost_equal(determinant(m2), 8.0f), "determinant faled");
         assert_msg(almost_equal(determinant(m3), 8.0f), "determinant faled");
         assert_msg(almost_equal(determinant(m4), -1.0f), "determinant faled");
 
-        assert_msg(inverse(m2) * m2 == mat2x2f(), "inverse failed");
-        assert_msg(inverse(m3) * m3 == mat3x3f(), "inverse failed");
-        assert_msg(inverse(m4) * m4 == mat4x4f(), "inverse failed");
+        assert_msg(inverse(m2) * m2 == Matrix2x2F(), "inverse failed");
+        assert_msg(inverse(m3) * m3 == Matrix3x3F(), "inverse failed");
+        assert_msg(inverse(m4) * m4 == Matrix4x4F(), "inverse failed");
 
         assert_msg(almost_equal(determinant(inverse(m3)), 1.0f / determinant(m3)), "inverse determinant failed");
         assert_msg(almost_equal(determinant(inverse(m4)), 1.0f / determinant(m4)), "inverse determinant failed");
@@ -118,13 +118,13 @@ int main()
     }
 
     {
-        mat3f m3(0, -1, 0, -1, 0, 0, 5, 5, 1);
+        Matrix3F m3(0, -1, 0, -1, 0, 0, 5, 5, 1);
 
         assert_msg(affine_inverse(m3) == inverse(m3), "matrix 3f affine inverse failed");
     }
 
     {
-        mat4f m4(0.707f, 0.0f, -0.707f, 0.0f, 0.354f, 0.866f, 0.354f, 0.0f, 0.612f, -0.5f, 0.612f, 0.0f, 1.0f, 1.0f, 4.0f, 1.0f);
+        Matrix4F m4(0.707f, 0.0f, -0.707f, 0.0f, 0.354f, 0.866f, 0.354f, 0.0f, 0.612f, -0.5f, 0.612f, 0.0f, 1.0f, 1.0f, 4.0f, 1.0f);
 
         auto a = affine_inverse(m4);
         auto b = inverse(m4);
@@ -133,9 +133,9 @@ int main()
     }
 
     {
-        mat2f m2(4, 2, 2, 3);
-        mat3f m3(8, 6, 7, 4, 2, 3, 1, 5, 2);
-        mat4f m4(1, 2, 1, 1, 2, 1, 2, 0, 0, 0, 1, 1, 0, 1, 0, 1);
+        Matrix2F m2(4, 2, 2, 3);
+        Matrix3F m3(8, 6, 7, 4, 2, 3, 1, 5, 2);
+        Matrix4F m4(1, 2, 1, 1, 2, 1, 2, 0, 0, 0, 1, 1, 0, 1, 0, 1);
 
         assert_msg(transpose(inverse(m2)) == inverse_transpose(m2), "mat2 inverse_transpose failed");
         assert_msg(transpose(inverse(m3)) == inverse_transpose(m3), "mat3 inverse_transpose failed");
