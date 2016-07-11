@@ -17,17 +17,17 @@
 
 #ifdef NEED_ASSERT
 
-#define assert(EXPR) \
+#define ASSERT(EXPR) \
     ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (#EXPR) << std::endl, std::abort(), false))
 
-#define assert_msg(EXPR, MSG) \
+#define ASSERT_MSG(EXPR, MSG) \
     ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (MSG) << std::endl, std::abort(), false))
 
 #else
 
-#define assert(EXPR) true
+#define ASSERT(EXPR) true
 
-#define assert_msg(EXPR, MSG) true
+#define ASSERT_MSG(EXPR, MSG) true
 
 #endif
 

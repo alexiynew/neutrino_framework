@@ -1201,14 +1201,14 @@ inline const typename Matrix<C, R, T>::ValueType* Matrix<C, R, T>::data() const
 template <U32 C, U32 R, typename T>
 inline typename Matrix<C, R, T>::ColumnType Matrix<C, R, T>::column(U32 index) const
 {
-    assert_msg(index < C, "Wrong index");
+    ASSERT_MSG(index < C, "Wrong index");
     return BaseType::data[index];
 }
 
 template <U32 C, U32 R, typename T>
 inline typename Matrix<C, R, T>::RowType Matrix<C, R, T>::row(U32 index) const
 {
-    assert_msg(index < R, "Wrong index");
+    ASSERT_MSG(index < R, "Wrong index");
     return utils::type_creator<C>::template create<typename Matrix<C, R, T>::RowType>(
     [this, index](U32 col) { return BaseType::data[col][index]; });
 }
@@ -1217,14 +1217,14 @@ inline typename Matrix<C, R, T>::RowType Matrix<C, R, T>::row(U32 index) const
 template <U32 C, U32 R, typename T>
 inline typename Matrix<C, R, T>::ColumnType& Matrix<C, R, T>::operator[](U32 index)
 {
-    assert_msg(index < C, "Wrong index");
+    ASSERT_MSG(index < C, "Wrong index");
     return BaseType::data[index];
 }
 
 template <U32 C, U32 R, typename T>
 inline const typename Matrix<C, R, T>::ColumnType& Matrix<C, R, T>::operator[](U32 index) const
 {
-    assert_msg(index < C, "Wrong index");
+    ASSERT_MSG(index < C, "Wrong index");
     return BaseType::data[index];
 }
 

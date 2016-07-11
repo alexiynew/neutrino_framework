@@ -66,7 +66,7 @@ inline TMat<2, 2, T> inverse(const TMat<2, 2, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
     T det = determinant(m);
-    assert_msg(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
 
     return TMat<2, 2, T>(m[1][1] / det, -m[0][1] / det, -m[1][0] / det, m[0][0] / det);
 }
@@ -78,7 +78,7 @@ inline TMat<3, 3, T> inverse(const TMat<3, 3, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
     T det = determinant(m);
-    assert_msg(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
 
     TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1], m[0][2] * m[2][1] - m[0][1] * m[2][2], m[0][1] * m[1][2] - m[0][2] * m[1][1],
 
@@ -125,7 +125,7 @@ inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
                          m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15, -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17, m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18, -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
 
     T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
-    assert_msg(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
 
     return result / det;
 }
@@ -165,7 +165,7 @@ inline TMat<2, 2, T> inverse_transpose(const TMat<2, 2, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
     T det = determinant(m);
-    assert_msg(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
 
     return TMat<2, 2, T>(m[1][1] / det, -m[1][0] / det, -m[0][1] / det, m[0][0] / det);
 }
@@ -177,7 +177,7 @@ inline TMat<3, 3, T> inverse_transpose(const TMat<3, 3, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
     T det = determinant(m);
-    assert_msg(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
 
     TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1], m[1][2] * m[2][0] - m[1][0] * m[2][2], m[1][0] * m[2][1] - m[1][1] * m[2][0],
 
@@ -224,7 +224,7 @@ inline TMat<4, 4, T> inverse_transpose(const TMat<4, 4, T>& m)
                          m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06, -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12, m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18, -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
 
     T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
-    assert_msg(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
 
     return result / det;
 }

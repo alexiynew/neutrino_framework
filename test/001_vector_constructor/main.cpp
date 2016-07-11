@@ -91,12 +91,12 @@ int main()
 
         double* p = v4d.data();
 
-        assert_msg(v4d == Vector4D(1.0, 2.0, 3.0, 4.0), "Vector4D pointer constructor");
-        assert_msg(v4f == Vector4F(1.0f, 2.0f, 3.0f, 4.0f), "Vector4F pointer constructor");
-        assert_msg(v2i == Vector2I(0, 0), "Vector2I zero constructor");
-        assert_msg(v2u == Vector2U(0, 0), "Vector2U zero constructor");
+        ASSERT_MSG(v4d == Vector4D(1.0, 2.0, 3.0, 4.0), "Vector4D pointer constructor");
+        ASSERT_MSG(v4f == Vector4F(1.0f, 2.0f, 3.0f, 4.0f), "Vector4F pointer constructor");
+        ASSERT_MSG(v2i == Vector2I(0, 0), "Vector2I zero constructor");
+        ASSERT_MSG(v2u == Vector2U(0, 0), "Vector2U zero constructor");
 
-        assert_msg(p[0] == 1.0 && p[1] == 2.0 && p[2] == 3.0 && p[3] == 4.0, "pointer data access");
+        ASSERT_MSG(p[0] == 1.0 && p[1] == 2.0 && p[2] == 3.0 && p[3] == 4.0, "pointer data access");
         // TODO: add vector bool pointer access
     }
 
@@ -134,17 +134,17 @@ int main()
         constexpr Vector3I v3i = Vector3I(v2i);
         constexpr Vector4I v4i = Vector4I(v2i);
 
-        assert_msg(almost_equal(v4d.x, v3d.x) && almost_equal(v3d.x, v2d.x) && almost_equal(v2d.x, 1.1) &&
+        ASSERT_MSG(almost_equal(v4d.x, v3d.x) && almost_equal(v3d.x, v2d.x) && almost_equal(v2d.x, 1.1) &&
                    almost_equal(v4d.y, v3d.y) && almost_equal(v3d.y, v2d.y) && almost_equal(v2d.y, 2.2) &&
                    almost_equal(v4d.z, v3d.z) && almost_equal(v3d.z, 3.3),
                    "different size constructor");
 
-        assert_msg(almost_equal(v4f.x, v3f.x) && almost_equal(v4f.x, v2f.x) && almost_equal(v2f.x, 5.5f) &&
+        ASSERT_MSG(almost_equal(v4f.x, v3f.x) && almost_equal(v4f.x, v2f.x) && almost_equal(v2f.x, 5.5f) &&
                    almost_equal(v4f.y, v3f.y) && almost_equal(v4f.y, v2f.y) && almost_equal(v2f.y, 6.6f) &&
                    almost_equal(v4f.z, v3f.z) && almost_equal(v4f.z, 7.7f) && almost_equal(v4f.w, 1.0f),
                    "different size constructor");
 
-        assert_msg((v4i.x == v3i.x) && (v3i.x == v2i.x) && (v3i.x == 1) && (v4i.y == v3i.y) && (v3i.y == v2i.y) && (v3i.y == 2) &&
+        ASSERT_MSG((v4i.x == v3i.x) && (v3i.x == v2i.x) && (v3i.x == 1) && (v4i.y == v3i.y) && (v3i.y == v2i.y) && (v3i.y == 2) &&
                    (v4i.z == v3i.z) && (v3i.z == 0) && (v4i.w == 1),
                    "different size constructor");
     }

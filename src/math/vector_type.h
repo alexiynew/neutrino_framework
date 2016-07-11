@@ -312,14 +312,14 @@ inline const T* Vector<N, T>::data() const
 template <U32 N, typename T>
 inline typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index)
 {
-    assert_msg(index >= 0 && index < N, "Worng index");
+    ASSERT_MSG(index >= 0 && index < N, "Worng index");
     return data()[index];
 }
 
 template <U32 N, typename T>
 const typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index) const
 {
-    assert_msg(index >= 0 && index < N, "Wrong index");
+    ASSERT_MSG(index >= 0 && index < N, "Wrong index");
     return data()[index];
 }
 
@@ -366,14 +366,14 @@ inline const typename Vector<N, bool>::ValueType* Vector<N, bool>::data() const
 template <U32 N>
 inline typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 index)
 {
-    assert_msg(index >= 0 && index < N, "Worng index");
+    ASSERT_MSG(index >= 0 && index < N, "Worng index");
     return data()[index];
 }
 
 template <U32 N>
 const typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 index) const
 {
-    assert_msg(index >= 0 && index < N, "Wrong index");
+    ASSERT_MSG(index >= 0 && index < N, "Wrong index");
     return data()[index];
 }
 
