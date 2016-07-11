@@ -27,7 +27,7 @@ Framework:
 
     ✔ Write type names in CamelCase, to make it convenient @started(16-07-01 22:42) @done (16-07-10 13:46) @lasted(8 days, 15:04)
 
-    ☐ Write function names in camelCase, to make it convenient
+    ✔ Write function names in camelCase, to make it convenient @done (16-07-11 23:31)
 
     ☐ Write all error messages with big first letter
 
