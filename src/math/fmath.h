@@ -3,11 +3,12 @@
 
 #include <common_types.h>
 
+#include <math/constants.h>
+
 #include <math/matrix_type.h>
 #include <math/vector_type.h>
 
 #include <math/common_func.h>
-#include <math/constants.h>
 #include <math/exponential_func.h>
 #include <math/geometric_func.h>
 #include <math/matrix_func.h>

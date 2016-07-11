@@ -509,28 +509,28 @@ inline TVec<2, T> ldexp(const TVec<2, T>& vector, TVec<2, I32>& exp)
 // and multiplied by the desired precision in ULPs (units in the last place)
 // unless the result is subnormal
 template <typename T, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(T x, T y, I32 ulp = 0)
+TResult almostEqual(T x, T y, I32 ulp = 0)
 {
     return std::abs(x - y) < std::numeric_limits<T>::epsilon() * std::abs(x + y) * ulp || std::abs(x - y) < std::numeric_limits<T>::min();
 }
 
 template <typename T, template <U32, typename> class TVec, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TVec<4, T>& lhs, const TVec<4, T>& rhs, I32 ulp = 0)
+TResult almostEqual(const TVec<4, T>& lhs, const TVec<4, T>& rhs, I32 ulp = 0)
 {
-    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp) &&
-           almost_equal(lhs.w, rhs.w, ulp);
+    return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp) && almostEqual(lhs.z, rhs.z, ulp) &&
+           almostEqual(lhs.w, rhs.w, ulp);
 }
 
 template <typename T, template <U32, typename> class TVec, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TVec<3, T>& lhs, const TVec<3, T>& rhs, I32 ulp = 0)
+TResult almostEqual(const TVec<3, T>& lhs, const TVec<3, T>& rhs, I32 ulp = 0)
 {
-    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp);
+    return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp) && almostEqual(lhs.z, rhs.z, ulp);
 }
 
 template <typename T, template <U32, typename> class TVec, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TVec<2, T>& lhs, const TVec<2, T>& rhs, I32 ulp = 0)
+TResult almostEqual(const TVec<2, T>& lhs, const TVec<2, T>& rhs, I32 ulp = 0)
 {
-    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp);
+    return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp);
 }
 
 

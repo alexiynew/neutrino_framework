@@ -15,7 +15,7 @@ inline TMat<R, C, T> transpose(const TMat<C, R, T>& m)
 }
 
 template <U32 C, U32 R, typename T, template <U32, U32, typename> class TMat>
-inline TMat<C, R, T> xcomp_mult(const TMat<C, R, T>& lhs, const TMat<C, R, T>& rhs)
+inline TMat<C, R, T> crossComponentMultiplication(const TMat<C, R, T>& lhs, const TMat<C, R, T>& rhs)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::type_creator<C>::template create<TMat<C, R, T>>(
@@ -23,7 +23,7 @@ inline TMat<C, R, T> xcomp_mult(const TMat<C, R, T>& lhs, const TMat<C, R, T>& r
 }
 
 template <U32 C, U32 R, typename T, template <U32, typename> class TVec>
-inline matrix_impl::Matrix<C, R, T> outer_product(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
+inline matrix_impl::Matrix<C, R, T> outerProduct(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::type_creator<C>::template create<matrix_impl::Matrix<C, R, T>>(
@@ -132,7 +132,7 @@ inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
 
 /// Result are undefined if determinant(m) == 0
 template <typename T, template <U32, U32, typename> class TMat>
-inline TMat<3, 3, T> affine_inverse(const TMat<3, 3, T>& m)
+inline TMat<3, 3, T> affineInverse(const TMat<3, 3, T>& m)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
@@ -146,7 +146,7 @@ inline TMat<3, 3, T> affine_inverse(const TMat<3, 3, T>& m)
 
 /// Result are undefined if determinant(m) == 0
 template <typename T, template <U32, U32, typename> class TMat>
-inline TMat<4, 4, T> affine_inverse(const TMat<4, 4, T>& m)
+inline TMat<4, 4, T> affineInverse(const TMat<4, 4, T>& m)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
@@ -160,24 +160,24 @@ inline TMat<4, 4, T> affine_inverse(const TMat<4, 4, T>& m)
 
 /// Result are undefined if determinant(m) == 0
 template <typename T, template <U32, U32, typename> class TMat>
-inline TMat<2, 2, T> inverse_transpose(const TMat<2, 2, T>& m)
+inline TMat<2, 2, T> inverseTranspose(const TMat<2, 2, T>& m)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
     T det = determinant(m);
-    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse, result is udefined");
 
     return TMat<2, 2, T>(m[1][1] / det, -m[1][0] / det, -m[0][1] / det, m[0][0] / det);
 }
 
 /// Result are undefined if determinant(m) == 0
 template <typename T, template <U32, U32, typename> class TMat>
-inline TMat<3, 3, T> inverse_transpose(const TMat<3, 3, T>& m)
+inline TMat<3, 3, T> inverseTranspose(const TMat<3, 3, T>& m)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
     T det = determinant(m);
-    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse, result is udefined");
 
     TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1], m[1][2] * m[2][0] - m[1][0] * m[2][2], m[1][0] * m[2][1] - m[1][1] * m[2][0],
 
@@ -190,7 +190,7 @@ inline TMat<3, 3, T> inverse_transpose(const TMat<3, 3, T>& m)
 
 /// Result are undefined if determinant(m) == 0
 template <typename T, template <U32, U32, typename> class TMat>
-inline TMat<4, 4, T> inverse_transpose(const TMat<4, 4, T>& m)
+inline TMat<4, 4, T> inverseTranspose(const TMat<4, 4, T>& m)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
 
@@ -224,7 +224,7 @@ inline TMat<4, 4, T> inverse_transpose(const TMat<4, 4, T>& m)
                          m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06, -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12, m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18, -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
 
     T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
-    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse");
+    ASSERT_MSG(F64(det) != 0.0, "matrix has no inverse, result is udefined");
 
     return result / det;
 }

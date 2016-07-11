@@ -53,15 +53,15 @@ int main()
         Matrix2x3F r23(r44);
         Matrix2x2F r22(r44);
 
-        ASSERT_MSG(xcomp_mult(m44, m44) == r44, "xcomp_mult m44 failed");
-        ASSERT_MSG(xcomp_mult(m43, m43) == r43, "xcomp_mult m43 failed");
-        ASSERT_MSG(xcomp_mult(m42, m42) == r42, "xcomp_mult m42 failed");
-        ASSERT_MSG(xcomp_mult(m34, m34) == r34, "xcomp_mult m34 failed");
-        ASSERT_MSG(xcomp_mult(m33, m33) == r33, "xcomp_mult m33 failed");
-        ASSERT_MSG(xcomp_mult(m32, m32) == r32, "xcomp_mult m32 failed");
-        ASSERT_MSG(xcomp_mult(m24, m24) == r24, "xcomp_mult m24 failed");
-        ASSERT_MSG(xcomp_mult(m23, m23) == r23, "xcomp_mult m23 failed");
-        ASSERT_MSG(xcomp_mult(m22, m22) == r22, "xcomp_mult m22 failed");
+        ASSERT_MSG(crossComponentMultiplication(m44, m44) == r44, "crossComponentMultiplication m44 failed");
+        ASSERT_MSG(crossComponentMultiplication(m43, m43) == r43, "crossComponentMultiplication m43 failed");
+        ASSERT_MSG(crossComponentMultiplication(m42, m42) == r42, "crossComponentMultiplication m42 failed");
+        ASSERT_MSG(crossComponentMultiplication(m34, m34) == r34, "crossComponentMultiplication m34 failed");
+        ASSERT_MSG(crossComponentMultiplication(m33, m33) == r33, "crossComponentMultiplication m33 failed");
+        ASSERT_MSG(crossComponentMultiplication(m32, m32) == r32, "crossComponentMultiplication m32 failed");
+        ASSERT_MSG(crossComponentMultiplication(m24, m24) == r24, "crossComponentMultiplication m24 failed");
+        ASSERT_MSG(crossComponentMultiplication(m23, m23) == r23, "crossComponentMultiplication m23 failed");
+        ASSERT_MSG(crossComponentMultiplication(m22, m22) == r22, "crossComponentMultiplication m22 failed");
     }
 
     {
@@ -69,20 +69,20 @@ int main()
         Vector3F v3(1, 2, 3);
         Vector4F v4(1, 2, 3, 4);
 
-        ASSERT_MSG(outer_product(v2, v2) == Matrix2x2F(1, 2, 2, 4), "outer_product(v2, v2) failed");
-        ASSERT_MSG(outer_product(v2, v3) == Matrix3x2F(1, 2, 2, 4, 3, 6), "outer_product(v2, v3) failed");
-        ASSERT_MSG(outer_product(v2, v4) == Matrix4x2F(1, 2, 2, 4, 3, 6, 4, 8), "outer_product(v2, v4) failed");
+        ASSERT_MSG(outerProduct(v2, v2) == Matrix2x2F(1, 2, 2, 4), "outerProduct(v2, v2) failed");
+        ASSERT_MSG(outerProduct(v2, v3) == Matrix3x2F(1, 2, 2, 4, 3, 6), "outerProduct(v2, v3) failed");
+        ASSERT_MSG(outerProduct(v2, v4) == Matrix4x2F(1, 2, 2, 4, 3, 6, 4, 8), "outerProduct(v2, v4) failed");
 
-        ASSERT_MSG(outer_product(v3, v2) == Matrix2x3F(1, 2, 3, 2, 4, 6), "outer_product(v3, v2) failed");
-        ASSERT_MSG(outer_product(v3, v3) == Matrix3x3F(1, 2, 3, 2, 4, 6, 3, 6, 9), "outer_product(v3, v3) failed");
-        ASSERT_MSG(outer_product(v3, v4) == Matrix4x3F(1, 2, 3, 2, 4, 6, 3, 6, 9, 4, 8, 12), "outer_product(v3, v4) "
+        ASSERT_MSG(outerProduct(v3, v2) == Matrix2x3F(1, 2, 3, 2, 4, 6), "outerProduct(v3, v2) failed");
+        ASSERT_MSG(outerProduct(v3, v3) == Matrix3x3F(1, 2, 3, 2, 4, 6, 3, 6, 9), "outerProduct(v3, v3) failed");
+        ASSERT_MSG(outerProduct(v3, v4) == Matrix4x3F(1, 2, 3, 2, 4, 6, 3, 6, 9, 4, 8, 12), "outerProduct(v3, v4) "
                                                                                           "failed");
 
-        ASSERT_MSG(outer_product(v4, v2) == Matrix2x4F(1, 2, 3, 4, 2, 4, 6, 8), "outer_product(v4, v2) failed");
-        ASSERT_MSG(outer_product(v4, v3) == Matrix3x4F(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12), "outer_product(v4, v3) "
+        ASSERT_MSG(outerProduct(v4, v2) == Matrix2x4F(1, 2, 3, 4, 2, 4, 6, 8), "outerProduct(v4, v2) failed");
+        ASSERT_MSG(outerProduct(v4, v3) == Matrix3x4F(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12), "outerProduct(v4, v3) "
                                                                                           "failed");
-        ASSERT_MSG(outer_product(v4, v4) == Matrix4x4F(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12, 4, 8, 12, 16),
-                   "outer_product(v4, v4) failed");
+        ASSERT_MSG(outerProduct(v4, v4) == Matrix4x4F(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12, 4, 8, 12, 16),
+                   "outerProduct(v4, v4) failed");
     }
 
     {
@@ -90,13 +90,13 @@ int main()
         Matrix3F m3(1, 2, 3, 1, 2, 3, 1, 2, 3);
         Matrix4F m4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4);
 
-        ASSERT_MSG(almost_equal(determinant(Matrix2F()), 1.0f), "determinant faled");
-        ASSERT_MSG(almost_equal(determinant(Matrix3F()), 1.0f), "determinant faled");
-        ASSERT_MSG(almost_equal(determinant(Matrix4F()), 1.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(Matrix2F()), 1.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(Matrix3F()), 1.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(Matrix4F()), 1.0f), "determinant faled");
 
-        ASSERT_MSG(almost_equal(determinant(m2), 0.0f), "determinant faled");
-        ASSERT_MSG(almost_equal(determinant(m3), 0.0f), "determinant faled");
-        ASSERT_MSG(almost_equal(determinant(m3), 0.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(m2), 0.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(m3), 0.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(m3), 0.0f), "determinant faled");
     }
 
     {
@@ -104,32 +104,32 @@ int main()
         Matrix3F m3(8, 6, 7, 4, 2, 3, 1, 5, 2);
         Matrix4F m4(1, 2, 1, 1, 2, 1, 2, 0, 0, 0, 1, 1, 0, 1, 0, 1);
 
-        ASSERT_MSG(almost_equal(determinant(m2), 8.0f), "determinant faled");
-        ASSERT_MSG(almost_equal(determinant(m3), 8.0f), "determinant faled");
-        ASSERT_MSG(almost_equal(determinant(m4), -1.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(m2), 8.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(m3), 8.0f), "determinant faled");
+        ASSERT_MSG(almostEqual(determinant(m4), -1.0f), "determinant faled");
 
         ASSERT_MSG(inverse(m2) * m2 == Matrix2x2F(), "inverse failed");
         ASSERT_MSG(inverse(m3) * m3 == Matrix3x3F(), "inverse failed");
         ASSERT_MSG(inverse(m4) * m4 == Matrix4x4F(), "inverse failed");
 
-        ASSERT_MSG(almost_equal(determinant(inverse(m3)), 1.0f / determinant(m3)), "inverse determinant failed");
-        ASSERT_MSG(almost_equal(determinant(inverse(m4)), 1.0f / determinant(m4)), "inverse determinant failed");
-        ASSERT_MSG(almost_equal(determinant(inverse(m2)), 1.0f / determinant(m2)), "inverse determinant failed");
+        ASSERT_MSG(almostEqual(determinant(inverse(m3)), 1.0f / determinant(m3)), "inverse determinant failed");
+        ASSERT_MSG(almostEqual(determinant(inverse(m4)), 1.0f / determinant(m4)), "inverse determinant failed");
+        ASSERT_MSG(almostEqual(determinant(inverse(m2)), 1.0f / determinant(m2)), "inverse determinant failed");
     }
 
     {
         Matrix3F m3(0, -1, 0, -1, 0, 0, 5, 5, 1);
 
-        ASSERT_MSG(affine_inverse(m3) == inverse(m3), "matrix 3f affine inverse failed");
+        ASSERT_MSG(affineInverse(m3) == inverse(m3), "matrix 3f affine inverse failed");
     }
 
     {
         Matrix4F m4(0.707f, 0.0f, -0.707f, 0.0f, 0.354f, 0.866f, 0.354f, 0.0f, 0.612f, -0.5f, 0.612f, 0.0f, 1.0f, 1.0f, 4.0f, 1.0f);
 
-        auto a = affine_inverse(m4);
+        auto a = affineInverse(m4);
         auto b = inverse(m4);
 
-        ASSERT_MSG(almost_equal(a[0], b[0]) && almost_equal(a[1], b[1]) && almost_equal(a[2], b[2]) && almost_equal(a[3], b[3]), "matrix 4f affine inverse failed");
+        ASSERT_MSG(almostEqual(a[0], b[0]) && almostEqual(a[1], b[1]) && almostEqual(a[2], b[2]) && almostEqual(a[3], b[3]), "matrix 4f affine inverse failed");
     }
 
     {
@@ -137,9 +137,9 @@ int main()
         Matrix3F m3(8, 6, 7, 4, 2, 3, 1, 5, 2);
         Matrix4F m4(1, 2, 1, 1, 2, 1, 2, 0, 0, 0, 1, 1, 0, 1, 0, 1);
 
-        ASSERT_MSG(transpose(inverse(m2)) == inverse_transpose(m2), "mat2 inverse_transpose failed");
-        ASSERT_MSG(transpose(inverse(m3)) == inverse_transpose(m3), "mat3 inverse_transpose failed");
-        ASSERT_MSG(transpose(inverse(m4)) == inverse_transpose(m4), "mat4 inverse_transpose failed");
+        ASSERT_MSG(transpose(inverse(m2)) == inverseTranspose(m2), "mat2 inverseTranspose failed");
+        ASSERT_MSG(transpose(inverse(m3)) == inverseTranspose(m3), "mat3 inverseTranspose failed");
+        ASSERT_MSG(transpose(inverse(m4)) == inverseTranspose(m4), "mat4 inverseTranspose failed");
     }
 
     return 0;

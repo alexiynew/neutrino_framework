@@ -2,9 +2,6 @@
 #define DEBUG_H
 
 #include <iostream>
-#include <type_traits>
-
-#include <iostream>
 
 #ifndef NDEBUG
 #define NEED_ASSERT true

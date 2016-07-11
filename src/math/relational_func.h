@@ -21,7 +21,7 @@ inline TVec<N, bool> less(const TVec<N, T>& l, const TVec<N, T>& r)
 
 /// Returns the component-wise comparison of result l <= r.
 template <U32 N, typename T, template <U32, typename> class TVec>
-inline TVec<N, bool> less_equal(const TVec<N, T>& l, const TVec<N, T>& r)
+inline TVec<N, bool> lessEqual(const TVec<N, T>& l, const TVec<N, T>& r)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::createVector(l, r, [](const T& a, const T& b) { return a <= b; });
@@ -37,7 +37,7 @@ inline TVec<N, bool> greater(const TVec<N, T>& l, const TVec<N, T>& r)
 
 /// Returns the component-wise comparison of result l >= r.
 template <U32 N, typename T, template <U32, typename> class TVec>
-inline TVec<N, bool> greater_equal(const TVec<N, T>& l, const TVec<N, T>& r)
+inline TVec<N, bool> greaterEqual(const TVec<N, T>& l, const TVec<N, T>& r)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
     return utils::createVector(l, r, [](const T& a, const T& b) { return a >= b; });
@@ -52,28 +52,28 @@ inline TVec<N, bool> equal(const TVec<N, T>& l, const TVec<N, T>& r)
 
 /// Returns the component-wise comparison of result l != r.
 template <U32 N, typename T, template <U32, typename> class TVec>
-inline TVec<N, bool> not_equal(const TVec<N, T>& l, const TVec<N, T>& r)
+inline TVec<N, bool> notEqual(const TVec<N, T>& l, const TVec<N, T>& r)
 {
     return utils::createVector(l, r, [](const T& a, const T& b) { return a != b; });
 }
 
 /// Returns the component-wise logical not of v.
 template <U32 N, template <U32, typename> class TVec>
-inline TVec<N, bool> logical_not(const TVec<N, bool>& v)
+inline TVec<N, bool> logicalNot(const TVec<N, bool>& v)
 {
     return utils::createVector(v, [](const bool a) { return !a; });
 }
 
 /// Returns the component-wise comparison of result l && r.
 template <U32 N, template <U32, typename> class TVec>
-inline TVec<N, bool> logical_and(const TVec<N, bool>& l, const TVec<N, bool>& r)
+inline TVec<N, bool> logicalAnd(const TVec<N, bool>& l, const TVec<N, bool>& r)
 {
     return utils::createVector(l, r, [](const bool a, const bool b) { return a && b; });
 }
 
 /// Returns the component-wise comparison of result l || r.
 template <U32 N, template <U32, typename> class TVec>
-inline TVec<N, bool> logical_or(const TVec<N, bool>& l, const TVec<N, bool>& r)
+inline TVec<N, bool> logicalOr(const TVec<N, bool>& l, const TVec<N, bool>& r)
 {
     return utils::createVector(l, r, [](const bool a, const bool b) { return a || b; });
 }

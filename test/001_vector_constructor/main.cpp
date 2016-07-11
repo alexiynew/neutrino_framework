@@ -134,14 +134,14 @@ int main()
         constexpr Vector3I v3i = Vector3I(v2i);
         constexpr Vector4I v4i = Vector4I(v2i);
 
-        ASSERT_MSG(almost_equal(v4d.x, v3d.x) && almost_equal(v3d.x, v2d.x) && almost_equal(v2d.x, 1.1) &&
-                   almost_equal(v4d.y, v3d.y) && almost_equal(v3d.y, v2d.y) && almost_equal(v2d.y, 2.2) &&
-                   almost_equal(v4d.z, v3d.z) && almost_equal(v3d.z, 3.3),
+        ASSERT_MSG(almostEqual(v4d.x, v3d.x) && almostEqual(v3d.x, v2d.x) && almostEqual(v2d.x, 1.1) &&
+                   almostEqual(v4d.y, v3d.y) && almostEqual(v3d.y, v2d.y) && almostEqual(v2d.y, 2.2) &&
+                   almostEqual(v4d.z, v3d.z) && almostEqual(v3d.z, 3.3),
                    "different size constructor");
 
-        ASSERT_MSG(almost_equal(v4f.x, v3f.x) && almost_equal(v4f.x, v2f.x) && almost_equal(v2f.x, 5.5f) &&
-                   almost_equal(v4f.y, v3f.y) && almost_equal(v4f.y, v2f.y) && almost_equal(v2f.y, 6.6f) &&
-                   almost_equal(v4f.z, v3f.z) && almost_equal(v4f.z, 7.7f) && almost_equal(v4f.w, 1.0f),
+        ASSERT_MSG(almostEqual(v4f.x, v3f.x) && almostEqual(v4f.x, v2f.x) && almostEqual(v2f.x, 5.5f) &&
+                   almostEqual(v4f.y, v3f.y) && almostEqual(v4f.y, v2f.y) && almostEqual(v2f.y, 6.6f) &&
+                   almostEqual(v4f.z, v3f.z) && almostEqual(v4f.z, 7.7f) && almostEqual(v4f.w, 1.0f),
                    "different size constructor");
 
         ASSERT_MSG((v4i.x == v3i.x) && (v3i.x == v2i.x) && (v3i.x == 1) && (v4i.y == v3i.y) && (v3i.y == v2i.y) && (v3i.y == 2) &&
