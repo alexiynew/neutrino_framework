@@ -67,7 +67,8 @@ inline TVec<N, TResult> createVector(const TVec<N, T>& v, F&& opp)
     return type_creator<N>::template create<TVec<N, TResult>>([&](const U32 index) { return opp(v[index]); });
 }
 
-template <U32 N, typename T, typename U, typename F, typename TResult = typename std::result_of<F(T, U)>::type, template <U32, typename> class TVec>
+template <U32 N, typename T, typename U, typename F, typename TResult = typename std::result_of<F(T, U)>::type,
+          template <U32, typename> class TVec>
 static inline TVec<N, TResult> createVector(const TVec<N, T>& lhs, const TVec<N, U>& rhs, F&& opp)
 {
     return type_creator<N>::template create<TVec<N, TResult>>(
