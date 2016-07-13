@@ -105,7 +105,7 @@ struct Vector<N, bool> : public VectorBase<N, bool>
 template <typename T>
 struct VectorBase<4, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
 
     T x, y, z, w;
@@ -125,7 +125,7 @@ struct VectorBase<4, T>
     template <typename U>
     explicit constexpr VectorBase(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}, w{*(p + 3)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     template <typename U>
@@ -186,7 +186,7 @@ struct VectorBase<4, T>
 template <typename T>
 struct VectorBase<3, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
 
     T x, y, z;
@@ -206,7 +206,7 @@ struct VectorBase<3, T>
     template <typename U>
     explicit constexpr VectorBase(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     template <typename U>
@@ -242,7 +242,7 @@ struct VectorBase<3, T>
 template <typename T>
 struct VectorBase<2, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
 
     T x, y;
@@ -262,7 +262,7 @@ struct VectorBase<2, T>
     template <typename U>
     explicit constexpr VectorBase(const U* p) : x{*p}, y{*(p + 1)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     template <typename U>
@@ -312,14 +312,14 @@ inline const T* Vector<N, T>::data() const
 template <U32 N, typename T>
 inline typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index)
 {
-    ASSERT_MSG(index >= 0 && index < N, "Worng index");
+    ASSERT_MSG(index >= 0 && index < N, "Worng index.");
     return data()[index];
 }
 
 template <U32 N, typename T>
 const typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index) const
 {
-    ASSERT_MSG(index >= 0 && index < N, "Wrong index");
+    ASSERT_MSG(index >= 0 && index < N, "Wrong index.");
     return data()[index];
 }
 
@@ -366,14 +366,14 @@ inline const typename Vector<N, bool>::ValueType* Vector<N, bool>::data() const
 template <U32 N>
 inline typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 index)
 {
-    ASSERT_MSG(index >= 0 && index < N, "Worng index");
+    ASSERT_MSG(index >= 0 && index < N, "Worng index.");
     return data()[index];
 }
 
 template <U32 N>
 const typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 index) const
 {
-    ASSERT_MSG(index >= 0 && index < N, "Wrong index");
+    ASSERT_MSG(index >= 0 && index < N, "Wrong index.");
     return data()[index];
 }
 

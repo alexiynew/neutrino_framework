@@ -80,7 +80,7 @@ struct Matrix : public MatrixBase<C, R, T>
 template <typename T>
 struct MatrixBase<4, 4, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -102,7 +102,7 @@ struct MatrixBase<4, 4, T>
     explicit constexpr MatrixBase(const U* const p)
     : data{ColumnType(p), ColumnType(p + 4), ColumnType(p + 8), ColumnType(p + 12)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v02, const T& v03, const T& v10, const T& v11, const T& v12, const T& v13, const T& v20, const T& v21, const T& v22, const T& v23, const T& v30, const T& v31, const T& v32, const T& v33)
@@ -219,7 +219,7 @@ struct MatrixBase<4, 4, T>
 template <typename T>
 struct MatrixBase<4, 3, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -241,7 +241,7 @@ struct MatrixBase<4, 3, T>
     explicit constexpr MatrixBase(const U* const p)
     : data{ColumnType(p), ColumnType(p + 3), ColumnType(p + 6), ColumnType(p + 9)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v02, const T& v10, const T& v11, const T& v12, const T& v20, const T& v21, const T& v22, const T& v30, const T& v31, const T& v32)
@@ -340,7 +340,7 @@ struct MatrixBase<4, 3, T>
 template <typename T>
 struct MatrixBase<4, 2, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -362,7 +362,7 @@ struct MatrixBase<4, 2, T>
     explicit constexpr MatrixBase(const U* const p)
     : data{ColumnType(p), ColumnType(p + 2), ColumnType(p + 4), ColumnType(p + 6)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v10, const T& v11, const T& v20, const T& v21, const T& v30, const T& v31)
@@ -455,7 +455,7 @@ struct MatrixBase<4, 2, T>
 template <typename T>
 struct MatrixBase<3, 4, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -476,7 +476,7 @@ struct MatrixBase<3, 4, T>
     template <typename U>
     explicit constexpr MatrixBase(const U* const p) : data{ColumnType(p), ColumnType(p + 4), ColumnType(p + 8)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v02, const T& v03, const T& v10, const T& v11, const T& v12, const T& v13, const T& v20, const T& v21, const T& v22, const T& v23)
@@ -593,7 +593,7 @@ struct MatrixBase<3, 4, T>
 template <typename T>
 struct MatrixBase<3, 3, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -613,7 +613,7 @@ struct MatrixBase<3, 3, T>
     template <typename U>
     explicit constexpr MatrixBase(const U* const p) : data{ColumnType(p), ColumnType(p + 3), ColumnType(p + 6)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v02, const T& v10, const T& v11, const T& v12, const T& v20, const T& v21, const T& v22)
@@ -712,7 +712,7 @@ struct MatrixBase<3, 3, T>
 template <typename T>
 struct MatrixBase<3, 2, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -732,7 +732,7 @@ struct MatrixBase<3, 2, T>
     template <typename U>
     explicit constexpr MatrixBase(const U* const p) : data{ColumnType(p), ColumnType(p + 2), ColumnType(p + 4)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v10, const T& v11, const T& v20, const T& v21)
@@ -825,7 +825,7 @@ struct MatrixBase<3, 2, T>
 template <typename T>
 struct MatrixBase<2, 4, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -845,7 +845,7 @@ struct MatrixBase<2, 4, T>
     template <typename U>
     explicit constexpr MatrixBase(const U* const p) : data{ColumnType(p), ColumnType(p + 4)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v02, const T& v03, const T& v10, const T& v11, const T& v12, const T& v13)
@@ -959,7 +959,7 @@ struct MatrixBase<2, 4, T>
 template <typename T>
 struct MatrixBase<2, 3, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -979,7 +979,7 @@ struct MatrixBase<2, 3, T>
     template <typename U>
     explicit constexpr MatrixBase(const U* const p) : data{ColumnType(p), ColumnType(p + 3)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v02, const T& v10, const T& v11, const T& v12)
@@ -1072,7 +1072,7 @@ struct MatrixBase<2, 3, T>
 template <typename T>
 struct MatrixBase<2, 2, T>
 {
-    static_assert(std::is_arithmetic<T>::value, "integral or floating point type required");
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     template <U32 N, typename U>
     using Vector = vector_impl::Vector<N, U>;
@@ -1092,7 +1092,7 @@ struct MatrixBase<2, 2, T>
     template <typename U>
     explicit constexpr MatrixBase(const U* const p) : data{ColumnType(p), ColumnType(p + 2)}
     {
-        static_assert(std::is_same<T, U>::value, "only valid pointer type is acceptable");
+        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v10, const T& v11)
@@ -1201,14 +1201,14 @@ inline const typename Matrix<C, R, T>::ValueType* Matrix<C, R, T>::data() const
 template <U32 C, U32 R, typename T>
 inline typename Matrix<C, R, T>::ColumnType Matrix<C, R, T>::column(U32 index) const
 {
-    ASSERT_MSG(index < C, "Wrong index");
+    ASSERT_MSG(index < C, "Wrong column index.");
     return BaseType::data[index];
 }
 
 template <U32 C, U32 R, typename T>
 inline typename Matrix<C, R, T>::RowType Matrix<C, R, T>::row(U32 index) const
 {
-    ASSERT_MSG(index < R, "Wrong index");
+    ASSERT_MSG(index < R, "Wrong row index.");
     return utils::type_creator<C>::template create<typename Matrix<C, R, T>::RowType>(
     [this, index](U32 col) { return BaseType::data[col][index]; });
 }
@@ -1217,14 +1217,14 @@ inline typename Matrix<C, R, T>::RowType Matrix<C, R, T>::row(U32 index) const
 template <U32 C, U32 R, typename T>
 inline typename Matrix<C, R, T>::ColumnType& Matrix<C, R, T>::operator[](U32 index)
 {
-    ASSERT_MSG(index < C, "Wrong index");
+    ASSERT_MSG(index < C, "Wrong column index.");
     return BaseType::data[index];
 }
 
 template <U32 C, U32 R, typename T>
 inline const typename Matrix<C, R, T>::ColumnType& Matrix<C, R, T>::operator[](U32 index) const
 {
-    ASSERT_MSG(index < C, "Wrong index");
+    ASSERT_MSG(index < C, "Wrong column index.");
     return BaseType::data[index];
 }
 

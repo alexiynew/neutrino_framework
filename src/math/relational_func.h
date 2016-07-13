@@ -15,7 +15,7 @@ namespace math {
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> less(const TVec<N, T>& l, const TVec<N, T>& r)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return utils::createVector(l, r, [](const T& a, const T& b) { return a < b; });
 }
 
@@ -23,7 +23,7 @@ inline TVec<N, bool> less(const TVec<N, T>& l, const TVec<N, T>& r)
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> lessEqual(const TVec<N, T>& l, const TVec<N, T>& r)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return utils::createVector(l, r, [](const T& a, const T& b) { return a <= b; });
 }
 
@@ -31,7 +31,7 @@ inline TVec<N, bool> lessEqual(const TVec<N, T>& l, const TVec<N, T>& r)
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> greater(const TVec<N, T>& l, const TVec<N, T>& r)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return utils::createVector(l, r, [](const T& a, const T& b) { return a > b; });
 }
 
@@ -39,7 +39,7 @@ inline TVec<N, bool> greater(const TVec<N, T>& l, const TVec<N, T>& r)
 template <U32 N, typename T, template <U32, typename> class TVec>
 inline TVec<N, bool> greaterEqual(const TVec<N, T>& l, const TVec<N, T>& r)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "expected floating-point or integer type");
+    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return utils::createVector(l, r, [](const T& a, const T& b) { return a >= b; });
 }
 
