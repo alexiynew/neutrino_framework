@@ -38,6 +38,9 @@ PenaltyBreakString: '0'
 PenaltyExcessCharacter: '0'
 PenaltyReturnTypeOnItsOwnLine: '0'
 PointerAlignment: Left
+PenaltyBreakBeforeFirstCallParameter: '999'
+PenaltyBreakString: '99'
+PenaltyExcessCharacter: '3'
 SpaceAfterCStyleCast: 'false'
 SpaceBeforeAssignmentOperators: 'true'
 SpaceBeforeParens: ControlStatements
