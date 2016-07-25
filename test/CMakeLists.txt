@@ -9,6 +9,8 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFORCE_ASSERT")
 
 include_directories (${ROOT_DIR})
 
+file (GLOB_RECURSE UNITTEST_SOURCES ${SOURCE_DIR}/unittest/*.cpp)
+
 file (GLOB SUBDIR_LIST RELATIVE ${ROOT_DIR} ${ROOT_DIR}/*)
 list (SORT SUBDIR_LIST)
 
@@ -21,7 +23,7 @@ foreach (SUBDIR ${SUBDIR_LIST})
         if (EXISTS ${TEST_DIR}/CMakeLists.txt)
             add_subdirectory (${TEST_DIR})
         else ()
-            add_executable (${TEST_NAME} ${TEST_DIR}/main.cpp)
+            add_executable (${TEST_NAME} ${TEST_DIR}/main.cpp ${UNITTEST_SOURCES})
             add_test (${TEST_NAME} ${EXECUTABLE_OUTPUT_PATH}/${TEST_NAME})
         endif ()
     endif ()
