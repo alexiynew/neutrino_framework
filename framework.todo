@@ -35,6 +35,7 @@ Framework:
 
     ☐ Think about replacing type_creator with for loop. Check inlining in both cases.
 
+    ☐ Sart to use The Clang Static Analyzer and fcatch-undefined-behavior -ftrapv
 --- ✄ -----------------------
 
   Build:
