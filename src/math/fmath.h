@@ -11,9 +11,11 @@
 #include <math/common_func.h>
 #include <math/exponential_func.h>
 #include <math/geometric_func.h>
-#include <math/matrix_func.h>
 #include <math/relational_func.h>
 #include <math/trigonometric_func.h>
+
+#include <math/matrix_func.h>
+#include <math/matrix_transform.h>
 
 namespace framework {
 
