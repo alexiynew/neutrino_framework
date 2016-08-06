@@ -6,10 +6,10 @@ Framework:
     ✔ Add access  with row and columns for matrices @done (16-05-02 10:28)
       https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_access.hpp
 
-    ✔ Add affineInverse. inverseTranspose @@started(16-05-15 14:39) @done (16-06-12 23:05) @lasted(28 days, 8:26)
+    ✔ Add affineInverse. inverseTranspose @started(16-05-15 14:39) @done (16-06-12 23:05) @lasted(28 days, 8:26)
       https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_inverse.hpp
 
-    ☐ Add matrix transform
+    ☐ Add matrix transform @started(16-08-06 12:31)
       https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_transform.hpp
 
     ✔ Add matrix functions @started(16-05-02 10:31) @done (16-05-15 14:38) @lasted(13 days, 4:07)
@@ -23,7 +23,7 @@ Framework:
 
     ☐ Add doxigen description comments to all functions
 
-    ☐ Make the simple framework for tests, to make them clean and easy maintainable
+    ✔ Make the simple framework for tests, to make them clean and easy maintainable @done (16-08-06 12:12)
 
     ✔ Write type names in CamelCase, to make it convenient @started(16-07-01 22:42) @done (16-07-10 13:46) @lasted(8 days, 15:04)
 
@@ -36,7 +36,15 @@ Framework:
     ☐ Think about replacing type_creator with for loop. Check inlining in both cases.
 
     ☐ Sart to use The Clang Static Analyzer and fcatch-undefined-behavior -ftrapv
---- ✄ -----------------------
+
+    ☐ Rewrite all tests with new test Suite class.
+
+    ☐ Rename all headers with hpp extention.
+
+    ☐ Rename all lockal variables in camelCase.
+
+
+---- ✄ -----------------------
 
   Build:
     ✔ Make TODO comments parsing @done (16-05-02 10:02)
