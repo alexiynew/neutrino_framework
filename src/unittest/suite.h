@@ -1,14 +1,14 @@
 #ifndef FRAMEWORK_UNITTEST_SUITE_H
 #define FRAMEWORK_UNITTEST_SUITE_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace test {
 
 class Suite
 {
-public:
+    public:
     Suite();
 
     virtual ~Suite() = default;
@@ -17,8 +17,8 @@ public:
 
     bool isSuccessed();
 
-protected:
-    using TestFunction = void(Suite::*)();
+    protected:
+    using TestFunction = void (Suite::*)();
 
     virtual void setup();
     virtual void tearDown();
@@ -27,7 +27,7 @@ protected:
 
     void testFailed(const std::string& file, int line, const std::string& message);
 
-private:
+    private:
     struct TestData
     {
         TestFunction function;
@@ -56,7 +56,6 @@ private:
 } // namspace test
 
 
-#define ADD_TEST(FUNC) \
-    addTest(static_cast<TestFunction>(&FUNC), #FUNC)
+#define ADD_TEST(FUNC) addTest(static_cast<TestFunction>(&FUNC), #FUNC)
 
 #endif

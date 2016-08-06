@@ -72,11 +72,13 @@ int main()
         ASSERT_MSG(m44f * m44f == Matrix4F(26, 28, 26, 20, 20, 26, 28, 26, 26, 20, 26, 28, 28, 26, 20, 26),
                    "matrix m44f * m44f failed");
 
-        ASSERT_MSG(m44f * m34f == Matrix3x4F(26, 28, 26, 20, 20, 26, 28, 26, 26, 20, 26, 28), "matrix m44f * m34f failed");
+        ASSERT_MSG(m44f * m34f == Matrix3x4F(26, 28, 26, 20, 20, 26, 28, 26, 26, 20, 26, 28),
+                   "matrix m44f * m34f failed");
 
         ASSERT_MSG(m44f * m24f == Matrix2x4F(26, 28, 26, 20, 20, 26, 28, 26), "matrix m44f * m24f failed");
 
-        ASSERT_MSG(m43f * m44f == Matrix4x3F(17, 21, 22, 14, 21, 25, 19, 17, 24, 20, 21, 19), "matrix m43f * m44f failed");
+        ASSERT_MSG(m43f * m44f == Matrix4x3F(17, 21, 22, 14, 21, 25, 19, 17, 24, 20, 21, 19),
+                   "matrix m43f * m44f failed");
 
         ASSERT_MSG(m43f * m34f == Matrix3F(17, 21, 22, 14, 21, 25, 19, 17, 24), "matrix m43f * m34f failed");
 
@@ -91,11 +93,13 @@ int main()
         ASSERT_MSG(m34f * m43f == Matrix4F(18, 16, 10, 16, 13, 15, 13, 19, 17, 11, 13, 19, 18, 16, 10, 16),
                    "matrix m34f * m43f failed");
 
-        ASSERT_MSG(m34f * m33f == Matrix3x4F(18, 16, 10, 16, 13, 15, 13, 19, 17, 11, 13, 19), "matrix m34f * m33f failed");
+        ASSERT_MSG(m34f * m33f == Matrix3x4F(18, 16, 10, 16, 13, 15, 13, 19, 17, 11, 13, 19),
+                   "matrix m34f * m33f failed");
 
         ASSERT_MSG(m34f * m23f == Matrix2x4F(18, 16, 10, 16, 14, 17, 16, 23), "matrix m34f * m23f failed");
 
-        ASSERT_MSG(m33f * m43f == Matrix4x3F(13, 13, 10, 10, 13, 13, 13, 10, 13, 13, 13, 10), "matrix m33f * m43f failed");
+        ASSERT_MSG(m33f * m43f == Matrix4x3F(13, 13, 10, 10, 13, 13, 13, 10, 13, 13, 13, 10),
+                   "matrix m33f * m43f failed");
 
         ASSERT_MSG(m33f * m33f == Matrix3F(13, 13, 10, 10, 13, 13, 13, 10, 13), "matrix m33f * m33f failed");
 
@@ -108,7 +112,7 @@ int main()
         ASSERT_MSG(m32f * m23f == Matrix2F(8, 10, 8, 13), "matrix m32f * m23f failed");
 
         ASSERT_MSG(m24f * m42f == Matrix4F(9, 4, 7, 10, 6, 5, 8, 11, 9, 4, 7, 10, 6, 5, 8, 11), "matrix m24f * m42f "
-                                                                                             "failed");
+                                                                                                "failed");
 
         ASSERT_MSG(m24f * m32f == Matrix3x4F(9, 4, 7, 10, 6, 5, 8, 11, 9, 4, 7, 10), "matrix m24f * m32f failed");
 

@@ -64,8 +64,11 @@ class VectorTest : public test::Suite
         Vector3F v3f = {5.5f, 6.6f, 7.7f};
         Vector2I v2i = {1, 2};
 
-        TEST_ASSERT(almostEqual(v4d[0], 1.1) && almostEqual(v4d[1], 2.2) && almostEqual(v4d[2], 3.3) && almostEqual(v4d[3], 4.4), "Vector4D non-def constructor failed.");
-        TEST_ASSERT(almostEqual(v3f[0], 5.5f) && almostEqual(v3f[1], 6.6f) && almostEqual(v3f[2], 7.7f) , "Vector3F non-def constructor failed.");
+        TEST_ASSERT(almostEqual(v4d[0], 1.1) && almostEqual(v4d[1], 2.2) && almostEqual(v4d[2], 3.3) &&
+                    almostEqual(v4d[3], 4.4),
+                    "Vector4D non-def constructor failed.");
+        TEST_ASSERT(almostEqual(v3f[0], 5.5f) && almostEqual(v3f[1], 6.6f) && almostEqual(v3f[2], 7.7f),
+                    "Vector3F non-def constructor failed.");
         TEST_ASSERT(v2i[0] == 1 && v2i[1] == 2, "Vector2I non-def constructor failed.");
     }
 
