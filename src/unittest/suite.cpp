@@ -11,6 +11,8 @@ Suite::Suite() : m_success{true}, m_name{}, m_tests{}, m_current_test{m_tests.en
 
 void Suite::run()
 {
+    std::cout << m_name << std::endl;
+
     m_success      = true;
     m_current_test = m_tests.end();
 
