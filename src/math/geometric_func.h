@@ -3,7 +3,6 @@
 
 #include <math/common_func.h>
 #include <math/exponential_func.h>
-#include <math/vector_type.h>
 
 namespace framework {
 

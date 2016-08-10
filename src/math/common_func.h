@@ -2,9 +2,10 @@
 #define FRAMEWORK_MATH_COMMON_FUNC_H
 
 #include <limits>
+#include <cmath>
 
+#include <math/utils.h>
 #include <math/relational_func.h>
-#include <math/vector_type.h>
 
 namespace framework {
 
@@ -538,6 +539,28 @@ template <typename T, template <U32, typename> class TVec,
 TResult almostEqual(const TVec<2, T>& lhs, const TVec<2, T>& rhs, I32 ulp = 0)
 {
     return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp);
+}
+
+template <U32 R, typename T, template <U32, U32, typename> class TMat,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+TResult almostEqual(const TMat<4, R, T>& m, const TMat<4, R, T>& m1, I32 ulp = 0)
+{
+    return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp) && almostEqual(m[2], m1[2], ulp) &&
+           almostEqual(m[3], m1[3], ulp);
+}
+
+template <U32 R, typename T, template <U32, U32, typename> class TMat,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+TResult almostEqual(const TMat<3, R, T>& m, const TMat<3, R, T>& m1, I32 ulp = 0)
+{
+    return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp) && almostEqual(m[2], m1[2], ulp);
+}
+
+template <U32 R, typename T, template <U32, U32, typename> class TMat,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+TResult almostEqual(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, I32 ulp = 0)
+{
+    return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp);
 }
 
 } // namespace math

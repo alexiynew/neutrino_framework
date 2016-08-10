@@ -15,7 +15,7 @@ template <typename T>
 inline T radians(const T& degrees)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return DEGTORAD * degrees;
+    return static_cast<T>(DEGTORAD) * degrees;
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>
@@ -30,7 +30,7 @@ template <typename T>
 inline T degrees(const T& radians)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return RADTODEG * radians;
+    return static_cast<T>(RADTODEG) * radians;
 }
 
 template <U32 N, typename T, template <U32, typename> class TVec>

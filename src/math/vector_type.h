@@ -3,6 +3,7 @@
 
 #include <common_types.h>
 #include <debug.h>
+
 #include <math/utils.h>
 
 namespace framework {

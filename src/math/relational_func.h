@@ -1,11 +1,11 @@
 #ifndef FRAMEWORK_MATH_RELATIONAL_FTNC_H
 #define FRAMEWORK_MATH_RELATIONAL_FTNC_H
 
-#include <cmath>
-#include <limits>
 #include <type_traits>
 
-#include <math/vector_type.h>
+#include <common_types.h>
+
+#include <math/utils.h>
 
 namespace framework {
 
@@ -79,33 +79,39 @@ inline TVec<N, bool> logicalOr(const TVec<N, bool>& l, const TVec<N, bool>& r)
 }
 
 /// Returns true if any component of v is true.
-inline bool any(const vector_impl::Vector<4, bool>& v)
+template <template <U32, typename> class TVec>
+inline bool any(const TVec<4, bool>& v)
 {
     return v.x || v.y || v.z || v.w;
 }
 
-inline bool any(const vector_impl::Vector<3, bool>& v)
+template <template <U32, typename> class TVec>
+inline bool any(const TVec<3, bool>& v)
 {
     return v.x || v.y || v.z;
 }
 
-inline bool any(const vector_impl::Vector<2, bool>& v)
+template <template <U32, typename> class TVec>
+inline bool any(const TVec<2, bool>& v)
 {
     return v.x || v.y;
 }
 
 /// Returns true if all components of v are true.
-inline bool all(const vector_impl::Vector<4, bool>& v)
+template <template <U32, typename> class TVec>
+inline bool all(const TVec<4, bool>& v)
 {
     return v.x && v.y && v.z && v.w;
 }
 
-inline bool all(const vector_impl::Vector<3, bool>& v)
+template <template <U32, typename> class TVec>
+inline bool all(const TVec<3, bool>& v)
 {
     return v.x && v.y && v.z;
 }
 
-inline bool all(const vector_impl::Vector<2, bool>& v)
+template <template <U32, typename> class TVec>
+inline bool all(const TVec<2, bool>& v)
 {
     return v.x && v.y;
 }
