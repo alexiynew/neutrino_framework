@@ -39,6 +39,8 @@ Framework:
 
     ☐ Rewrite all tests with new test Suite class.
 
+    ☐ Rename test folders and add subfolders.
+
     ☐ Rename all headers with hpp extention.
 
     ☐ Rename all lockal variables in camelCase.

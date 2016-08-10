@@ -104,6 +104,8 @@ int main()
 
         Vector2F v2f(0.00001f, 1.0f);
         ASSERT_MSG(almostEqual(v2f, Vector2F(0.00001f, 0.99999999999999f)), "almostEqual failed");
+
+//TODO add tests for matrix
     }
 
     return 0;
