@@ -1,9 +1,7 @@
 #ifndef FRAMEWORK_MATH_TRANSFORM_TYPE_H
 #define FRAMEWORK_MATH_TRANSFORM_TYPE_H
 
-#include <math/matrix_type.h>
-#include <math/vector_type.h>
-
+#include <math/trigonometric_func.h>
 
 namespace framework {
 
@@ -22,6 +20,18 @@ inline TMat<3, 3, T> translate(const TMat<3, 3, T>& m, const TVec<2, T>& v)
     return TMat<3, 3, T>(m[0], m[1], m[0] * v[0] + m[1] * v[1] + m[2]);
 }
 
+/// Builds a rotation 3 * 3 matrix created from an angle.
+///
+/// @param m Input matrix multiplied by this translation matrix.
+/// @param angle Rotation angle expressed in radians.
+template <typename T, template <U32, U32, typename> class TMat>
+inline TMat<3, 3, T> rotate(const TMat<3, 3, T>& m, const T angle)
+{
+    T const c = cos(angle);
+    T const s = sin(angle);
+
+    return TMat<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
+}
 
 } // namespace math
 
@@ -31,25 +41,6 @@ inline TMat<3, 3, T> translate(const TMat<3, 3, T>& m, const TVec<2, T>& v)
 
 
 /*
-
-
-    /// Builds a translation 3 * 3 matrix created from a vector of 2 components.
-    ///
-    /// @param m Input matrix multiplied by this translation matrix.
-    /// @param v Coordinates of a translation vector.
-    template <typename T, precision P>
-    GLM_FUNC_QUALIFIER tmat3x3<T, P> translate(
-        tmat3x3<T, P> const & m,
-        tvec2<T, P> const & v);
-
-    /// Builds a rotation 3 * 3 matrix created from an angle.
-    ///
-    /// @param m Input matrix multiplied by this translation matrix.
-    /// @param angle Rotation angle expressed in radians if GLM_FORCE_RADIANS is defined or degrees otherwise.
-    template <typename T, precision P>
-    GLM_FUNC_QUALIFIER tmat3x3<T, P> rotate(
-        tmat3x3<T, P> const & m,
-        T angle);
 
     /// Builds a scale 3 * 3 matrix created from a vector of 2 components.
     ///
