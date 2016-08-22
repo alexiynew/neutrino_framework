@@ -33,6 +33,16 @@ inline TMat<3, 3, T> rotate(const TMat<3, 3, T>& m, const T angle)
     return TMat<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
 }
 
+/// Builds a scale 3 * 3 matrix created from a vector of 2 components.
+///
+/// @param m Input matrix multiplied by this translation matrix.
+/// @param v Coordinates of a scale vector.
+template <typename T, template <U32, U32, typename> class TMat, template <U32, typename> class TVec>
+inline TMat<3, 3, T> scale(const TMat<3, 3, T>& m, const TVec<2, T>& v)
+{
+    return TMat<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
+}
+
 } // namespace math
 
 } // namespace framework
@@ -42,14 +52,6 @@ inline TMat<3, 3, T> rotate(const TMat<3, 3, T>& m, const T angle)
 
 /*
 
-    /// Builds a scale 3 * 3 matrix created from a vector of 2 components.
-    ///
-    /// @param m Input matrix multiplied by this translation matrix.
-    /// @param v Coordinates of a scale vector.
-    template <typename T, precision P>
-    GLM_FUNC_QUALIFIER tmat3x3<T, P> scale(
-        tmat3x3<T, P> const & m,
-        tvec2<T, P> const & v);
 
     /// Builds an horizontal (parallel to the x axis) shear 3 * 3 matrix.
     ///

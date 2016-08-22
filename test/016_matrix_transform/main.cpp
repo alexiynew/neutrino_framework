@@ -14,6 +14,7 @@ class Transform2DTest : public test::Suite
     {
         ADD_TEST(Transform2DTest::translate);
         ADD_TEST(Transform2DTest::rotate);
+        ADD_TEST(Transform2DTest::scale);
     }
 
     private:
@@ -58,6 +59,27 @@ class Transform2DTest : public test::Suite
 
         TEST_ASSERT(almostEqual(::rotate(m, radians(0.0f)), m, 1), "Rotate by 0 deg failed.");
         TEST_ASSERT(almostEqual(::rotate(m, radians(360.0f)), m, 2), "Rotate by 360 deg failed.");
+    }
+
+    void scale()
+    {
+        Matrix3F m = {1, 4, 7, 2, 5, 8, 3, 6, 9};
+
+        Matrix3F m11 = {1, 4, 7, 2, 5, 8, 3, 6, 9};
+        Matrix3F m55 = {5, 20, 35, 10, 25, 40, 3, 6, 9};
+        Matrix3F m12 = {1, 4, 7, 4, 10, 16, 3, 6, 9};
+        Matrix3F m21 = {2, 8, 14, 2, 5, 8, 3, 6, 9};
+        Matrix3F m01 = {0, 0, 0, 2, 5, 8, 3, 6, 9};
+        Matrix3F m10 = {1, 4, 7, 0, 0, 0, 3, 6, 9};
+        Matrix3F m00 = {0, 0, 0, 0, 0, 0, 3, 6, 9};
+
+        TEST_ASSERT(::scale(m, Vector2F(1, 1)) == m11, "Scale by (1, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector2F(5, 5)) == m55, "Scale by (5, 5) failed.");
+        TEST_ASSERT(::scale(m, Vector2F(1, 2)) == m12, "Scale by (1, 2) failed.");
+        TEST_ASSERT(::scale(m, Vector2F(2, 1)) == m21, "Scale by (2, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector2F(0, 1)) == m01, "Scale by (0, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector2F(1, 0)) == m10, "Scale by (1, 0) failed.");
+        TEST_ASSERT(::scale(m, Vector2F(0, 0)) == m00, "Scale by (0, 0) failed.");
     }
 };
 
