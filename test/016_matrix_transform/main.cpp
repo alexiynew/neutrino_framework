@@ -15,6 +15,8 @@ class Transform2DTest : public test::Suite
         ADD_TEST(Transform2DTest::translate);
         ADD_TEST(Transform2DTest::rotate);
         ADD_TEST(Transform2DTest::scale);
+        ADD_TEST(Transform2DTest::shearX);
+        ADD_TEST(Transform2DTest::shearY);
     }
 
     private:
@@ -80,6 +82,32 @@ class Transform2DTest : public test::Suite
         TEST_ASSERT(::scale(m, Vector2F(0, 1)) == m01, "Scale by (0, 1) failed.");
         TEST_ASSERT(::scale(m, Vector2F(1, 0)) == m10, "Scale by (1, 0) failed.");
         TEST_ASSERT(::scale(m, Vector2F(0, 0)) == m00, "Scale by (0, 0) failed.");
+    }
+
+    void shearX()
+    {
+        Matrix3F m = {1, 4, 7, 2, 5, 8, 3, 6, 9};
+
+        Matrix3F m1 = {3, 9, 15, 2, 5, 8, 3, 6, 9};
+        Matrix3F m2 = {-3, -6, -9, 2, 5, 8, 3, 6, 9};
+
+        // std::cout << ::shearX(m, -2.0f);
+
+        TEST_ASSERT(::shearX(m, 0.0f) == m, "ShearX by 0 failed.");
+        TEST_ASSERT(::shearX(m, 1.0f) == m1, "ShearX by 1 failed.");
+        TEST_ASSERT(::shearX(m, -2.0f) == m2, "ShearX by -2 failed.");
+    }
+
+    void shearY()
+    {
+        Matrix3F m = {1, 4, 7, 2, 5, 8, 3, 6, 9};
+
+        Matrix3F m1 = {1, 4, 7, 3, 9, 15, 3, 6, 9};
+        Matrix3F m2 = {1, 4, 7, 0, -3, -6, 3, 6, 9};
+
+        TEST_ASSERT(::shearY(m, 0.0f) == m, "ShearY by 0 failed.");
+        TEST_ASSERT(::shearY(m, 1.0f) == m1, "ShearY by 1 failed.");
+        TEST_ASSERT(::shearY(m, -2.0f) == m2, "ShearY by -2 failed.");
     }
 };
 

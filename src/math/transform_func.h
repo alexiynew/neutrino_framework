@@ -43,38 +43,37 @@ inline TMat<3, 3, T> scale(const TMat<3, 3, T>& m, const TVec<2, T>& v)
     return TMat<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
 }
 
+/// Builds an horizontal (parallel to the x axis) shear 3 * 3 matrix.
+///
+/// @param m Input matrix multiplied by this translation matrix.
+/// @param s Shear factor.
+template <typename T, template <U32, U32, typename> class TMat>
+inline TMat<3, 3, T> shearX(const TMat<3, 3, T>& m, const T& s)
+{
+    TMat<3, 3, T> shear;
+    shear[0][1] = s;
+
+    return m * shear;
+}
+
+/// Builds a vertical (parallel to the y axis) shear 3 * 3 matrix.
+///
+/// @param m Input matrix multiplied by this translation matrix.
+/// @param s Shear factor.
+template <typename T, template <U32, U32, typename> class TMat>
+inline TMat<3, 3, T> shearY(const TMat<3, 3, T>& m, const T& s)
+{
+    TMat<3, 3, T> shear;
+    shear[1][0] = s;
+
+    return m * shear;
+}
+
 } // namespace math
 
 } // namespace framework
 
 #endif
-
-
-/*
-
-
-    /// Builds an horizontal (parallel to the x axis) shear 3 * 3 matrix.
-    ///
-    /// @param m Input matrix multiplied by this translation matrix.
-    /// @param y Shear factor.
-    template <typename T, precision P>
-    GLM_FUNC_QUALIFIER tmat3x3<T, P> shearX(
-        tmat3x3<T, P> const & m,
-        T y);
-
-    /// Builds a vertical (parallel to the y axis) shear 3 * 3 matrix.
-    ///
-    /// @param m Input matrix multiplied by this translation matrix.
-    /// @param x Shear factor.
-    template <typename T, precision P>
-    GLM_FUNC_QUALIFIER tmat3x3<T, P> shearY(
-        tmat3x3<T, P> const & m,
-        T x);
-
-
-
-        */
-
 
 /*
 
