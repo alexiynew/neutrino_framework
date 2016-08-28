@@ -1,11 +1,11 @@
 #ifndef FRAMEWORK_MATH_COMMON_FUNC_H
 #define FRAMEWORK_MATH_COMMON_FUNC_H
 
-#include <limits>
 #include <cmath>
+#include <limits>
 
-#include <math/utils.h>
 #include <math/relational_func.h>
+#include <math/utils.h>
 
 namespace framework {
 
