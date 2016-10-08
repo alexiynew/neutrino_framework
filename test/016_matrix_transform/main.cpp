@@ -111,12 +111,120 @@ class Transform2DTest : public test::Suite
     }
 };
 
+class Transform3DTest : public test::Suite
+{
+    public:
+    Transform3DTest()
+    {
+        ADD_TEST(Transform3DTest::createTranslate);
+        ADD_TEST(Transform3DTest::createRotate);
+    }
+
+    private:
+    void createTranslate()
+    {
+        Matrix4F m = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 2, 3, 1};
+
+        TEST_ASSERT(createTranslateMatrix(Vector3F(1, 2, 3)) == m, "Create translate matrix from (1, 2, 3) failed.");
+    }
+
+    void createRotate()
+    {
+        Matrix4F mx = {1.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       0.000000000000000061232342629f,
+                       1.0f,
+                       0.0f,
+                       0.0f,
+                       -1.0f,
+                       0.000000000000000061232342629f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       1.0f};
+
+        Matrix4F my = {0.000000000000000061232342629f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+                       0.000000000000000061232342629f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f};
+
+        Matrix4F mz = {0.000000000000000061232342629f,
+                       1.0f,
+                       0.0f,
+                       0.0f,
+                       -1.0f,
+                       0.000000000000000061232342629f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       1.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       1.0f};
+
+        Matrix4F m1 = {1.0f,
+                       0.207911690818f,
+                       0.0218523992662f,
+                       0.0f,
+                       -0.207911690818f,
+                       0.978147600734f,
+                       0.207911690818f,
+                       0.0f,
+                       0.0218523992662f,
+                       -0.207911690818f,
+                       1.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       1.0f};
+        Matrix4F m2 = {-0.190808995377f, 0.0f, 0.981627183448f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                       -0.981627183448f, 0.0f, -0.190808995377f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+        Matrix4F m3 = {1.0f,
+                       -0.410768609213f,
+                       1.09865055123f,
+                       0.0f,
+                       1.09865055123f,
+                       1.0f,
+                       -0.410768609213f,
+                       0.0f,
+                       -0.410768609213f,
+                       1.09865055123f,
+                       1.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       0.0f,
+                       1.0f};
+
+        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(1, 0, 0), HALF_PI), mx),
+                    "Create rotate matirx from (1, 0, 0) by 90 degrees failed.");
+        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(0, 1, 0), HALF_PI), my),
+                    "Create rotate matirx from (0, 1, 0) by 90 degrees failed.");
+        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(0, 0, 1), HALF_PI), mz),
+                    "Create rotate matirx from (0, 0, 1) by 90 degrees failed.");
+
+        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(1, 0, 1), radians(12.0f)), m1, 6),
+                    "Create rotate matirx from (1, 0, 1) by 12 degrees failed.");
+        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(0, 1, 0), radians(259.0f)), m2, 4),
+                    "Create rotate matirx from (0, 1, 0) by 259 degrees failed.");
+        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(1, 1, 1), radians(-49.0f)), m3, 1),
+                    "Create rotate matirx from (1, 1, 1) by -49 degrees failed.");
+    }
+};
+
 int main()
 {
 
     std::vector<std::unique_ptr<test::Suite>> tests;
 
     tests.emplace_back(new Transform2DTest());
+    tests.emplace_back(new Transform3DTest());
 
     bool all_successed = true;
 

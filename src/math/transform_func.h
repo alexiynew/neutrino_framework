@@ -1,6 +1,7 @@
 #ifndef FRAMEWORK_MATH_TRANSFORM_TYPE_H
 #define FRAMEWORK_MATH_TRANSFORM_TYPE_H
 
+#include <math/matrix_type.h>
 #include <math/trigonometric_func.h>
 
 namespace framework {
@@ -8,7 +9,6 @@ namespace framework {
 namespace math {
 
 // 2d transform
-
 
 /// Builds a translation 3 * 3 matrix created from a vector of 2 components.
 ///
@@ -69,6 +69,36 @@ inline TMat<3, 3, T> shearY(const TMat<3, 3, T>& m, const T& s)
     return m * shear;
 }
 
+// 3d transform
+
+/// Create a translation 4 * 4 matrix from 3 scalars.
+template <typename T, template <U32, typename> class TVec>
+inline matrix_impl::Matrix<4, 4, T> createTranslateMatrix(const TVec<3, T>& v)
+{
+    return matrix_impl::Matrix<4, 4, T>(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, v[0], v[1], v[2], 1);
+}
+
+/// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle epressed in radians.
+template <typename T, typename U, template <U32, typename> class TVec>
+inline matrix_impl::Matrix<4, 4, T> createRotateMatrix(const TVec<3, T>& v, U angle)
+{
+    auto c = cos(angle);
+    auto s = sin(angle);
+
+    auto c_1 = 1 - c;
+
+    auto xc = v[0] * c_1;
+    auto yc = v[1] * c_1;
+    auto zc = v[2] * c_1;
+
+    auto xs = v[0] * s;
+    auto ys = v[1] * s;
+    auto zs = v[2] * s;
+
+    return matrix_impl::Matrix<4, 4, T>(v[0] * xc + c, v[1] * xc + zs, v[2] * xc - ys, 0, v[0] * yc - zs, v[1] * yc + c,
+                                        v[2] * yc + xs, 0, v[0] * zc + ys, v[1] * zc - xs, v[2] * zc + c, 0, 0, 0, 0, 1);
+}
+
 } // namespace math
 
 } // namespace framework
@@ -77,20 +107,6 @@ inline TMat<3, 3, T> shearY(const TMat<3, 3, T>& m, const T& s)
 
 /*
 
-/// Transforms a matrix with a translation 4 * 4 matrix created from 3 scalars.
-/// @see gtc_matrix_transform
-/// @see gtx_transform
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> translate(
-tvec3<T, P> const & v);
-
-/// Builds a rotation 4 * 4 matrix created from an axis of 3 scalars and an angle expressed in radians.
-/// @see gtc_matrix_transform
-/// @see gtx_transform
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> rotate(
-T angle,
-tvec3<T, P> const & v);
 
 /// Transforms a matrix with a scale 4 * 4 matrix created from a vector of 3 components.
 /// @see gtc_matrix_transform
