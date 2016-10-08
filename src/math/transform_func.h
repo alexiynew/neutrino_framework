@@ -79,12 +79,11 @@ inline matrix_impl::Matrix<4, 4, T> createTranslateMatrix(const TVec<3, T>& v)
 }
 
 /// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle epressed in radians.
-template <typename T, typename U, template <U32, typename> class TVec>
-inline matrix_impl::Matrix<4, 4, T> createRotateMatrix(const TVec<3, T>& v, U angle)
+template <typename T, template <U32, typename> class TVec>
+inline matrix_impl::Matrix<4, 4, T> createRotateMatrix(const TVec<3, T>& v, T angle)
 {
-    auto c = cos(angle);
-    auto s = sin(angle);
-
+    auto c   = cos(angle);
+    auto s   = sin(angle);
     auto c_1 = 1 - c;
 
     auto xc = v[0] * c_1;

@@ -130,32 +130,19 @@ class Transform3DTest : public test::Suite
 
     void createRotate()
     {
-        Matrix4F mx = {1.0f,
-                       0.0f,
-                       0.0f,
-                       0.0f,
-                       0.0f,
-                       0.000000000000000061232342629f,
+        Matrix4F mx =
+        {1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.000000043711388286f, 1.0f, 0.0f, 0.0f, -1.0f, -0.000000043711388286f,
+         0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+
+        Matrix4F my = {-0.000000043711388286f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+                       -0.000000043711388286f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f};
+
+        Matrix4F mz = {-0.000000043711388286f,
                        1.0f,
                        0.0f,
                        0.0f,
                        -1.0f,
-                       0.000000000000000061232342629f,
-                       0.0f,
-                       0.0f,
-                       0.0f,
-                       0.0f,
-                       1.0f};
-
-        Matrix4F my = {0.000000000000000061232342629f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-                       0.000000000000000061232342629f, 0.0f, 0.0f,  0.0f, 0.0f, 1.0f};
-
-        Matrix4F mz = {0.000000000000000061232342629f,
-                       1.0f,
-                       0.0f,
-                       0.0f,
-                       -1.0f,
-                       0.000000000000000061232342629f,
+                       -0.000000043711388286f,
                        0.0f,
                        0.0f,
                        0.0f,
@@ -202,18 +189,18 @@ class Transform3DTest : public test::Suite
                        0.0f,
                        1.0f};
 
-        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(1, 0, 0), HALF_PI), mx),
+        TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(1, 0, 0), radians(90.0f)), mx, 1),
                     "Create rotate matirx from (1, 0, 0) by 90 degrees failed.");
-        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(0, 1, 0), HALF_PI), my),
+        TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(0, 1, 0), radians(90.0f)), my, 1),
                     "Create rotate matirx from (0, 1, 0) by 90 degrees failed.");
-        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(0, 0, 1), HALF_PI), mz),
+        TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(0, 0, 1), radians(90.0f)), mz, 1),
                     "Create rotate matirx from (0, 0, 1) by 90 degrees failed.");
 
-        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(1, 0, 1), radians(12.0f)), m1, 6),
+        TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(1, 0, 1), radians(12.0f)), m1, 6),
                     "Create rotate matirx from (1, 0, 1) by 12 degrees failed.");
-        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(0, 1, 0), radians(259.0f)), m2, 4),
+        TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(0, 1, 0), radians(259.0f)), m2, 4),
                     "Create rotate matirx from (0, 1, 0) by 259 degrees failed.");
-        TEST_ASSERT(almostEqual(::createRotateMatrix(Vector3F(1, 1, 1), radians(-49.0f)), m3, 1),
+        TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(1, 1, 1), radians(-49.0f)), m3, 1),
                     "Create rotate matirx from (1, 1, 1) by -49 degrees failed.");
     }
 };
