@@ -1,6 +1,6 @@
 ﻿---
 AccessModifierOffset: '-4'
-AlignAfterOpenBracket: DontAlign
+AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: 'true'
 AlignConsecutiveDeclarations: 'false'
 AlignEscapedNewlinesLeft: 'true'
@@ -39,7 +39,7 @@ ObjCSpaceBeforeProtocolList: 'false'
 PenaltyBreakComment: '999'
 PenaltyReturnTypeOnItsOwnLine: '0'
 PointerAlignment: Left
-PenaltyBreakBeforeFirstCallParameter: '999'
+PenaltyBreakBeforeFirstCallParameter: '9'
 PenaltyBreakString: '99'
 PenaltyExcessCharacter: '3'
 SpaceAfterCStyleCast: 'false'

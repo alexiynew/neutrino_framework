@@ -146,8 +146,8 @@ int main()
         Vector3F v3f2 = ((2.0f + v3f) * (4.3f / v3f)) - 1.0f;
         Vector2I v2i2 = (((3 - v2i) * 9) + 1) / 2;
 
-        ASSERT_MSG(
-        v4d == Vector4D(1.0, 1.1, 1.2, 1.3) && almostEqual(v4d2, Vector4D(2.1666666666666665, 2.1200000000000001, 2.076923076923076, 2.037037037037037), 1), "math-4 failed");
+        ASSERT_MSG(v4d == Vector4D(1.0, 1.1, 1.2, 1.3) && almostEqual(v4d2, Vector4D(2.1666666666666665, 2.1200000000000001, 2.076923076923076, 2.037037037037037), 1),
+                   "math-4 failed");
         ASSERT_MSG(v3f == Vector3F(1.0f, 1.1f, 1.2f) && v3f2 == Vector3F(11.90000057220459, 11.118182182312012, 10.466666221618652), "math-5 failed");
         ASSERT_MSG(v2i == Vector2I(1, 5) && v2i2 == Vector2I(9, -8), "math-6 failed");
     }

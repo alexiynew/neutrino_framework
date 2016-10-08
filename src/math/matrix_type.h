@@ -107,42 +107,42 @@ struct MatrixBase<4, 4, T>
     }
 
     constexpr MatrixBase(const T& v00,
-    const T& v01,
-    const T& v02,
-    const T& v03,
-    const T& v10,
-    const T& v11,
-    const T& v12,
-    const T& v13,
-    const T& v20,
-    const T& v21,
-    const T& v22,
-    const T& v23,
-    const T& v30,
-    const T& v31,
-    const T& v32,
-    const T& v33)
+                         const T& v01,
+                         const T& v02,
+                         const T& v03,
+                         const T& v10,
+                         const T& v11,
+                         const T& v12,
+                         const T& v13,
+                         const T& v20,
+                         const T& v21,
+                         const T& v22,
+                         const T& v23,
+                         const T& v30,
+                         const T& v31,
+                         const T& v32,
+                         const T& v33)
         : data{ColumnType(v00, v01, v02, v03), ColumnType(v10, v11, v12, v13), ColumnType(v20, v21, v22, v23), ColumnType(v30, v31, v32, v33)}
     {
     }
 
     template <typename X00, typename Y01, typename Z02, typename W03, typename X10, typename Y11, typename Z12, typename W13, typename X20, typename Y21, typename Z22, typename W23, typename X30, typename Y31, typename Z32, typename W33>
     constexpr MatrixBase(const X00& v00,
-    const Y01& v01,
-    const Z02& v02,
-    const W03& v03,
-    const X10& v10,
-    const Y11& v11,
-    const Z12& v12,
-    const W13& v13,
-    const X20& v20,
-    const Y21& v21,
-    const Z22& v22,
-    const W23& v23,
-    const X30& v30,
-    const Y31& v31,
-    const Z32& v32,
-    const W33& v33)
+                         const Y01& v01,
+                         const Z02& v02,
+                         const W03& v03,
+                         const X10& v10,
+                         const Y11& v11,
+                         const Z12& v12,
+                         const W13& v13,
+                         const X20& v20,
+                         const Y21& v21,
+                         const Z22& v22,
+                         const W23& v23,
+                         const X30& v30,
+                         const Y31& v31,
+                         const Z32& v32,
+                         const W33& v33)
         : data{ColumnType(v00, v01, v02, v03), ColumnType(v10, v11, v12, v13), ColumnType(v20, v21, v22, v23), ColumnType(v30, v31, v32, v33)}
     {
     }
@@ -167,64 +167,64 @@ struct MatrixBase<4, 4, T>
 
     template <typename U00, typename U01, typename U10, typename U11, typename U20, typename U21, typename U30, typename U31>
     constexpr MatrixBase(const Vector<2, U00>& v00,
-    const Vector<2, U01>& v01,
-    const Vector<2, U10>& v10,
-    const Vector<2, U11>& v11,
-    const Vector<2, U20>& v20,
-    const Vector<2, U21>& v21,
-    const Vector<2, U30>& v30,
-    const Vector<2, U31>& v31)
+                         const Vector<2, U01>& v01,
+                         const Vector<2, U10>& v10,
+                         const Vector<2, U11>& v11,
+                         const Vector<2, U20>& v20,
+                         const Vector<2, U21>& v21,
+                         const Vector<2, U30>& v30,
+                         const Vector<2, U31>& v31)
         : data{ColumnType(v00, v01), ColumnType(v10, v11), ColumnType(v20, v21), ColumnType(v30, v31)}
     {
     }
 
     template <typename U00, typename S01, typename S02, typename U10, typename S11, typename S12, typename U20, typename S21, typename S22, typename U30, typename S31, typename S32>
     constexpr MatrixBase(const Vector<2, U00>& v00,
-    const S01& s01,
-    const S02& s02,
-    const Vector<2, U10>& v10,
-    const S11& s11,
-    const S12& s12,
-    const Vector<2, U20>& v20,
-    const S21& s21,
-    const S22& s22,
-    const Vector<2, U30>& v30,
-    const S31& s31,
-    const S32& s32)
+                         const S01& s01,
+                         const S02& s02,
+                         const Vector<2, U10>& v10,
+                         const S11& s11,
+                         const S12& s12,
+                         const Vector<2, U20>& v20,
+                         const S21& s21,
+                         const S22& s22,
+                         const Vector<2, U30>& v30,
+                         const S31& s31,
+                         const S32& s32)
         : data{ColumnType(v00, s01, s02), ColumnType(v10, s11, s12), ColumnType(v20, s21, s22), ColumnType(v30, s31, s32)}
     {
     }
 
     template <typename S00, typename U01, typename S02, typename S10, typename U11, typename S12, typename S20, typename U21, typename S22, typename S30, typename U31, typename S32>
     constexpr MatrixBase(const S00& s00,
-    const Vector<2, U01>& v01,
-    const S02& s02,
-    const S10& s10,
-    const Vector<2, U11>& v11,
-    const S12& s12,
-    const S20& s20,
-    const Vector<2, U21>& v21,
-    const S22& s22,
-    const S30& s30,
-    const Vector<2, U31>& v31,
-    const S32& s32)
+                         const Vector<2, U01>& v01,
+                         const S02& s02,
+                         const S10& s10,
+                         const Vector<2, U11>& v11,
+                         const S12& s12,
+                         const S20& s20,
+                         const Vector<2, U21>& v21,
+                         const S22& s22,
+                         const S30& s30,
+                         const Vector<2, U31>& v31,
+                         const S32& s32)
         : data{ColumnType(s00, v01, s02), ColumnType(s10, v11, s12), ColumnType(s20, v21, s22), ColumnType(s30, v31, s32)}
     {
     }
 
     template <typename S00, typename S01, typename U02, typename S10, typename S11, typename U12, typename S20, typename S21, typename U22, typename S30, typename S31, typename U32>
     constexpr MatrixBase(const S00& s00,
-    const S01& s01,
-    const Vector<2, U02>& v02,
-    const S10& s10,
-    const S11& s11,
-    const Vector<2, U12>& v12,
-    const S20& s20,
-    const S21& s21,
-    const Vector<2, U22>& v22,
-    const S30& s30,
-    const S31& s31,
-    const Vector<2, U32>& v32)
+                         const S01& s01,
+                         const Vector<2, U02>& v02,
+                         const S10& s10,
+                         const S11& s11,
+                         const Vector<2, U12>& v12,
+                         const S20& s20,
+                         const S21& s21,
+                         const Vector<2, U22>& v22,
+                         const S30& s30,
+                         const S31& s31,
+                         const Vector<2, U32>& v32)
         : data{ColumnType(s00, s01, v02), ColumnType(s10, s11, v12), ColumnType(s20, s21, v22), ColumnType(s30, s31, v32)}
     {
     }
@@ -323,17 +323,17 @@ struct MatrixBase<4, 3, T>
 
     template <typename X00, typename Y01, typename Z02, typename X10, typename Y11, typename Z12, typename X20, typename Y21, typename Z22, typename X30, typename Y31, typename Z32>
     constexpr MatrixBase(const X00& v00,
-    const Y01& v01,
-    const Z02& v02,
-    const X10& v10,
-    const Y11& v11,
-    const Z12& v12,
-    const X20& v20,
-    const Y21& v21,
-    const Z22& v22,
-    const X30& v30,
-    const Y31& v31,
-    const Z32& v32)
+                         const Y01& v01,
+                         const Z02& v02,
+                         const X10& v10,
+                         const Y11& v11,
+                         const Z12& v12,
+                         const X20& v20,
+                         const Y21& v21,
+                         const Z22& v22,
+                         const X30& v30,
+                         const Y31& v31,
+                         const Z32& v32)
         : data{ColumnType(v00, v01, v02), ColumnType(v10, v11, v12), ColumnType(v20, v21, v22), ColumnType(v30, v31, v32)}
     {
     }
@@ -572,17 +572,17 @@ struct MatrixBase<3, 4, T>
 
     template <typename X00, typename Y01, typename Z02, typename W03, typename X10, typename Y11, typename Z12, typename W13, typename X20, typename Y21, typename Z22, typename W23>
     constexpr MatrixBase(const X00& v00,
-    const Y01& v01,
-    const Z02& v02,
-    const W03& v03,
-    const X10& v10,
-    const Y11& v11,
-    const Z12& v12,
-    const W13& v13,
-    const X20& v20,
-    const Y21& v21,
-    const Z22& v22,
-    const W23& v23)
+                         const Y01& v01,
+                         const Z02& v02,
+                         const W03& v03,
+                         const X10& v10,
+                         const Y11& v11,
+                         const Z12& v12,
+                         const W13& v13,
+                         const X20& v20,
+                         const Y21& v21,
+                         const Z22& v22,
+                         const W23& v23)
         : data{ColumnType(v00, v01, v02, v03), ColumnType(v10, v11, v12, v13), ColumnType(v20, v21, v22, v23)}
     {
     }
@@ -625,14 +625,14 @@ struct MatrixBase<3, 4, T>
 
     template <typename S00, typename S01, typename U02, typename S10, typename S11, typename U12, typename S20, typename S21, typename U22>
     constexpr MatrixBase(const S00& s00,
-    const S01& s01,
-    const Vector<2, U02>& v02,
-    const S10& s10,
-    const S11& s11,
-    const Vector<2, U12>& v12,
-    const S20& s20,
-    const S21& s21,
-    const Vector<2, U22>& v22)
+                         const S01& s01,
+                         const Vector<2, U02>& v02,
+                         const S10& s10,
+                         const S11& s11,
+                         const Vector<2, U12>& v12,
+                         const S20& s20,
+                         const S21& s21,
+                         const Vector<2, U22>& v22)
         : data{ColumnType(s00, s01, v02), ColumnType(s10, s11, v12), ColumnType(s20, s21, v22)}
     {
     }
@@ -1483,432 +1483,432 @@ template <typename T, typename U, typename RT = decltype(std::declval<T>() * std
 inline const Matrix<4, 4, RT> operator*(const Matrix<4, 4, T>& lhs, const Matrix<4, 4, U>& rhs)
 {
     return Matrix<4, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
-    lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2] + lhs[3][3] * rhs[2][3],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
+                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2] + lhs[3][3] * rhs[2][3],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3],
-    lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2] + lhs[3][2] * rhs[3][3],
-    lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1] + lhs[2][3] * rhs[3][2] + lhs[3][3] * rhs[3][3]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3],
+                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2] + lhs[3][2] * rhs[3][3],
+                            lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1] + lhs[2][3] * rhs[3][2] + lhs[3][3] * rhs[3][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 4, RT> operator*(const Matrix<4, 4, T>& lhs, const Matrix<3, 4, U>& rhs)
 {
     return Matrix<3, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
-    lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2] + lhs[3][3] * rhs[2][3]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
+                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2] + lhs[3][3] * rhs[2][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 4, RT> operator*(const Matrix<4, 4, T>& lhs, const Matrix<2, 4, U>& rhs)
 {
     return Matrix<2, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 3, RT> operator*(const Matrix<4, 3, T>& lhs, const Matrix<4, 4, U>& rhs)
 {
     return Matrix<4, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3],
-    lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2] + lhs[3][2] * rhs[3][3]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3],
+                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2] + lhs[3][2] * rhs[3][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 3, RT> operator*(const Matrix<4, 3, T>& lhs, const Matrix<3, 4, U>& rhs)
 {
     return Matrix<3, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 3, RT> operator*(const Matrix<4, 3, T>& lhs, const Matrix<2, 4, U>& rhs)
 {
     return Matrix<2, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 2, RT> operator*(const Matrix<4, 2, T>& lhs, const Matrix<4, 4, U>& rhs)
 {
     return Matrix<4, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 2, RT> operator*(const Matrix<4, 2, T>& lhs, const Matrix<3, 4, U>& rhs)
 {
     return Matrix<3, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 2, RT> operator*(const Matrix<4, 2, T>& lhs, const Matrix<2, 4, U>& rhs)
 {
     return Matrix<2, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 4, RT> operator*(const Matrix<3, 4, T>& lhs, const Matrix<4, 3, U>& rhs)
 {
     return Matrix<4, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
-    lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
+                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2],
-    lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2],
-    lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1] + lhs[2][3] * rhs[3][2]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2],
+                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2],
+                            lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1] + lhs[2][3] * rhs[3][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 4, RT> operator*(const Matrix<3, 4, T>& lhs, const Matrix<3, 3, U>& rhs)
 {
     return Matrix<3, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
-    lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
+                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 4, RT> operator*(const Matrix<3, 4, T>& lhs, const Matrix<2, 3, U>& rhs)
 {
     return Matrix<2, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 3, RT> operator*(const Matrix<3, 3, T>& lhs, const Matrix<4, 3, U>& rhs)
 {
     return Matrix<4, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2],
-    lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2],
+                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 3, RT> operator*(const Matrix<3, 3, T>& lhs, const Matrix<3, 3, U>& rhs)
 {
     return Matrix<3, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 3, RT> operator*(const Matrix<3, 3, T>& lhs, const Matrix<2, 3, U>& rhs)
 {
     return Matrix<2, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 2, RT> operator*(const Matrix<3, 2, T>& lhs, const Matrix<4, 3, U>& rhs)
 {
     return Matrix<4, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 2, RT> operator*(const Matrix<3, 2, T>& lhs, const Matrix<3, 3, U>& rhs)
 {
     return Matrix<3, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 2, RT> operator*(const Matrix<3, 2, T>& lhs, const Matrix<2, 3, U>& rhs)
 {
     return Matrix<2, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 4, RT> operator*(const Matrix<2, 4, T>& lhs, const Matrix<4, 2, U>& rhs)
 {
     return Matrix<4, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
-    lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
+                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1],
-    lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1],
-    lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1],
+                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1],
+                            lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 4, RT> operator*(const Matrix<2, 4, T>& lhs, const Matrix<3, 2, U>& rhs)
 {
     return Matrix<3, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
-    lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
+                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 4, RT> operator*(const Matrix<2, 4, T>& lhs, const Matrix<2, 2, U>& rhs)
 {
     return Matrix<2, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
+                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
+                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 3, RT> operator*(const Matrix<2, 3, T>& lhs, const Matrix<4, 2, U>& rhs)
 {
     return Matrix<4, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1],
-    lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1],
+                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 3, RT> operator*(const Matrix<2, 3, T>& lhs, const Matrix<3, 2, U>& rhs)
 {
     return Matrix<3, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
+                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 3, RT> operator*(const Matrix<2, 3, T>& lhs, const Matrix<2, 2, U>& rhs)
 {
     return Matrix<2, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
+                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 2, RT> operator*(const Matrix<2, 2, T>& lhs, const Matrix<4, 2, U>& rhs)
 {
     return Matrix<4, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
 
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1]);
+                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
+                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<3, 2, RT> operator*(const Matrix<2, 2, T>& lhs, const Matrix<3, 2, U>& rhs)
 {
     return Matrix<3, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
 
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1]);
+                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
+                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1]);
 }
 
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<2, 2, RT> operator*(const Matrix<2, 2, T>& lhs, const Matrix<2, 2, U>& rhs)
 {
     return Matrix<2, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
+                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
 
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1]);
+                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
+                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1]);
 }
 
 // vec * matrix

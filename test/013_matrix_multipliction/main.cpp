@@ -106,8 +106,8 @@ int main()
         ASSERT_MSG(m32f * m23f == Matrix2F(8, 10, 8, 13), "matrix m32f * m23f failed");
 
         ASSERT_MSG(m24f * m42f == Matrix4F(9, 4, 7, 10, 6, 5, 8, 11, 9, 4, 7, 10, 6, 5, 8, 11),
-        "matrix m24f * m42f "
-        "failed");
+                   "matrix m24f * m42f "
+                   "failed");
 
         ASSERT_MSG(m24f * m32f == Matrix3x4F(9, 4, 7, 10, 6, 5, 8, 11, 9, 4, 7, 10), "matrix m24f * m32f failed");
 

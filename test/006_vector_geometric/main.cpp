@@ -15,7 +15,7 @@ int main()
 
         ASSERT_MSG(almostEqual(distance(Vector3F(3.0f, 3.0f, 5.0f), Vector3F(2.0f, 1.0f, 2.0f)), length(v3f)) &&
                    almostEqual(distance(Vector3F(2.0f, 1.0f, 2.0f), Vector3F(3.0f, 3.0f, 5.0f)), length(v3f)),
-        "distance failed");
+                   "distance failed");
 
         ASSERT_MSG(almostEqual(dot(v3f, v3f), 14.0f), "dot failed");
 
@@ -28,8 +28,8 @@ int main()
         ASSERT_MSG(almostEqual(reflection(v3f, normalize(v3f)), -v3f, 1), "reflection failed");
 
         ASSERT_MSG(almostEqual(refraction(v3f, normalize(v3f), 1.0f), reflection(v3f, normalize(v3f))),
-        "refraction "
-        "failed");
+                   "refraction "
+                   "failed");
     }
 
     return 0;

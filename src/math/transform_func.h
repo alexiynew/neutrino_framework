@@ -82,8 +82,9 @@ inline matrix_impl::Matrix<4, 4, T> createTranslateMatrix(const TVec<3, T>& v)
 template <typename T, template <U32, typename> class TVec>
 inline matrix_impl::Matrix<4, 4, T> createRotateMatrix(const TVec<3, T>& v, T angle)
 {
-    auto c   = cos(angle);
-    auto s   = sin(angle);
+    auto c = cos(angle);
+    auto s = sin(angle);
+
     auto c_1 = 1 - c;
 
     auto xc = v[0] * c_1;

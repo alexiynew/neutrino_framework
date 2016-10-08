@@ -76,13 +76,13 @@ int main()
         ASSERT_MSG(outerProduct(v3, v2) == Matrix2x3F(1, 2, 3, 2, 4, 6), "outerProduct(v3, v2) failed");
         ASSERT_MSG(outerProduct(v3, v3) == Matrix3x3F(1, 2, 3, 2, 4, 6, 3, 6, 9), "outerProduct(v3, v3) failed");
         ASSERT_MSG(outerProduct(v3, v4) == Matrix4x3F(1, 2, 3, 2, 4, 6, 3, 6, 9, 4, 8, 12),
-        "outerProduct(v3, v4) "
-        "failed");
+                   "outerProduct(v3, v4) "
+                   "failed");
 
         ASSERT_MSG(outerProduct(v4, v2) == Matrix2x4F(1, 2, 3, 4, 2, 4, 6, 8), "outerProduct(v4, v2) failed");
         ASSERT_MSG(outerProduct(v4, v3) == Matrix3x4F(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12),
-        "outerProduct(v4, v3) "
-        "failed");
+                   "outerProduct(v4, v3) "
+                   "failed");
         ASSERT_MSG(outerProduct(v4, v4) == Matrix4x4F(1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12, 4, 8, 12, 16), "outerProduct(v4, v4) failed");
     }
 
