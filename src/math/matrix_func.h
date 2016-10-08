@@ -18,16 +18,14 @@ template <U32 C, U32 R, typename T, template <U32, U32, typename> class TMat>
 inline TMat<C, R, T> crossComponentMultiplication(const TMat<C, R, T>& lhs, const TMat<C, R, T>& rhs)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::type_creator<C>::template create<TMat<C, R, T>>(
-    [&lhs, &rhs](U32 index) { return lhs[index] * rhs[index]; });
+    return utils::type_creator<C>::template create<TMat<C, R, T>>([&lhs, &rhs](U32 index) { return lhs[index] * rhs[index]; });
 }
 
 template <U32 C, U32 R, typename T, template <U32, typename> class TVec>
 inline matrix_impl::Matrix<C, R, T> outerProduct(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::type_creator<C>::template create<matrix_impl::Matrix<C, R, T>>(
-    [&lhs, &rhs](U32 index) { return lhs * rhs[index]; });
+    return utils::type_creator<C>::template create<matrix_impl::Matrix<C, R, T>>([&lhs, &rhs](U32 index) { return lhs * rhs[index]; });
 }
 
 template <typename T, template <U32, U32, typename> class TMat>
@@ -41,8 +39,7 @@ template <typename T, template <U32, U32, typename> class TMat>
 inline T determinant(const TMat<3, 3, T>& m)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return +m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2]) +
-           m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
+    return +m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2]) + m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
 }
 
 template <typename T, template <U32, U32, typename> class TMat>
@@ -57,10 +54,8 @@ inline T determinant(const TMat<4, 4, T>& m)
     T s05 = (m[2][0] * m[3][2] - m[3][0] * m[2][2]);
     T s06 = (m[2][0] * m[3][1] - m[3][0] * m[2][1]);
 
-    return +m[0][0] * (m[1][1] * s01 - m[1][2] * s02 + m[1][3] * s03) -
-           m[0][1] * (m[1][0] * s01 - m[1][2] * s04 + m[1][3] * s05) +
-           m[0][2] * (m[1][0] * s02 - m[1][1] * s04 + m[1][3] * s06) -
-           m[0][3] * (m[1][0] * s03 - m[1][1] * s05 + m[1][2] * s06);
+    return +m[0][0] * (m[1][1] * s01 - m[1][2] * s02 + m[1][3] * s03) - m[0][1] * (m[1][0] * s01 - m[1][2] * s04 + m[1][3] * s05) +
+           m[0][2] * (m[1][0] * s02 - m[1][1] * s04 + m[1][3] * s06) - m[0][3] * (m[1][0] * s03 - m[1][1] * s05 + m[1][2] * s06);
 }
 
 /// Result are undefined if determinant(m) == 0
@@ -84,14 +79,17 @@ inline TMat<3, 3, T> inverse(const TMat<3, 3, T>& m)
     T det = determinant(m);
     ASSERT_MSG(F64(det) != 0.0, "Matrix has no inverse, result is undefined.");
 
-    TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1], m[0][2] * m[2][1] - m[0][1] * m[2][2],
-                         m[0][1] * m[1][2] - m[0][2] * m[1][1],
+    TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
+    m[0][2] * m[2][1] - m[0][1] * m[2][2],
+    m[0][1] * m[1][2] - m[0][2] * m[1][1],
 
-                         m[1][2] * m[2][0] - m[1][0] * m[2][2], m[0][0] * m[2][2] - m[0][2] * m[2][0],
-                         m[0][2] * m[1][0] - m[0][0] * m[1][2],
+    m[1][2] * m[2][0] - m[1][0] * m[2][2],
+    m[0][0] * m[2][2] - m[0][2] * m[2][0],
+    m[0][2] * m[1][0] - m[0][0] * m[1][2],
 
-                         m[1][0] * m[2][1] - m[1][1] * m[2][0], m[0][1] * m[2][0] - m[0][0] * m[2][1],
-                         m[0][0] * m[1][1] - m[0][1] * m[1][0]);
+    m[1][0] * m[2][1] - m[1][1] * m[2][0],
+    m[0][1] * m[2][0] - m[0][0] * m[2][1],
+    m[0][0] * m[1][1] - m[0][1] * m[1][0]);
 
     return result / det;
 }
@@ -123,17 +121,25 @@ inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
     T s17 = (m[2][0] * m[0][1] - m[0][0] * m[2][1]);
     T s18 = (m[1][0] * m[0][1] - m[0][0] * m[1][1]);
 
-    TMat<4, 4, T> result(-m[1][3] * s01 + m[2][3] * s02 - m[3][3] * s03, m[0][3] * s01 - m[2][3] * s04 + m[3][3] * s05,
-                         -m[0][3] * s02 + m[1][3] * s04 - m[3][3] * s06, m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06,
+    TMat<4, 4, T> result(-m[1][3] * s01 + m[2][3] * s02 - m[3][3] * s03,
+    m[0][3] * s01 - m[2][3] * s04 + m[3][3] * s05,
+    -m[0][3] * s02 + m[1][3] * s04 - m[3][3] * s06,
+    m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06,
 
-                         m[1][3] * s07 - m[2][3] * s08 + m[3][3] * s09, -m[0][3] * s07 + m[2][3] * s10 - m[3][3] * s11,
-                         m[0][3] * s08 - m[1][3] * s10 + m[3][3] * s12, -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12,
+    m[1][3] * s07 - m[2][3] * s08 + m[3][3] * s09,
+    -m[0][3] * s07 + m[2][3] * s10 - m[3][3] * s11,
+    m[0][3] * s08 - m[1][3] * s10 + m[3][3] * s12,
+    -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12,
 
-                         -m[1][3] * s13 + m[2][3] * s14 - m[3][3] * s15, m[0][3] * s13 - m[2][3] * s16 + m[3][3] * s17,
-                         -m[0][3] * s14 + m[1][3] * s16 - m[3][3] * s18, m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18,
+    -m[1][3] * s13 + m[2][3] * s14 - m[3][3] * s15,
+    m[0][3] * s13 - m[2][3] * s16 + m[3][3] * s17,
+    -m[0][3] * s14 + m[1][3] * s16 - m[3][3] * s18,
+    m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18,
 
-                         m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15, -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17,
-                         m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18, -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
+    m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15,
+    -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17,
+    m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18,
+    -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
 
     T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
     ASSERT_MSG(F64(det) != 0.0, "Matrix has no inverse, result is undefined.");
@@ -190,14 +196,17 @@ inline TMat<3, 3, T> inverseTranspose(const TMat<3, 3, T>& m)
     T det = determinant(m);
     ASSERT_MSG(F64(det) != 0.0, "Matrix has no inverse, result is undefined.,");
 
-    TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1], m[1][2] * m[2][0] - m[1][0] * m[2][2],
-                         m[1][0] * m[2][1] - m[1][1] * m[2][0],
+    TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
+    m[1][2] * m[2][0] - m[1][0] * m[2][2],
+    m[1][0] * m[2][1] - m[1][1] * m[2][0],
 
-                         m[0][2] * m[2][1] - m[0][1] * m[2][2], m[0][0] * m[2][2] - m[0][2] * m[2][0],
-                         m[0][1] * m[2][0] - m[0][0] * m[2][1],
+    m[0][2] * m[2][1] - m[0][1] * m[2][2],
+    m[0][0] * m[2][2] - m[0][2] * m[2][0],
+    m[0][1] * m[2][0] - m[0][0] * m[2][1],
 
-                         m[0][1] * m[1][2] - m[0][2] * m[1][1], m[0][2] * m[1][0] - m[0][0] * m[1][2],
-                         m[0][0] * m[1][1] - m[0][1] * m[1][0]);
+    m[0][1] * m[1][2] - m[0][2] * m[1][1],
+    m[0][2] * m[1][0] - m[0][0] * m[1][2],
+    m[0][0] * m[1][1] - m[0][1] * m[1][0]);
 
     return result / det;
 }
@@ -229,17 +238,25 @@ inline TMat<4, 4, T> inverseTranspose(const TMat<4, 4, T>& m)
     T s17 = (m[2][0] * m[0][1] - m[0][0] * m[2][1]);
     T s18 = (m[1][0] * m[0][1] - m[0][0] * m[1][1]);
 
-    TMat<4, 4, T> result(-m[1][3] * s01 + m[2][3] * s02 - m[3][3] * s03, m[1][3] * s07 - m[2][3] * s08 + m[3][3] * s09,
-                         -m[1][3] * s13 + m[2][3] * s14 - m[3][3] * s15, m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15,
+    TMat<4, 4, T> result(-m[1][3] * s01 + m[2][3] * s02 - m[3][3] * s03,
+    m[1][3] * s07 - m[2][3] * s08 + m[3][3] * s09,
+    -m[1][3] * s13 + m[2][3] * s14 - m[3][3] * s15,
+    m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15,
 
-                         m[0][3] * s01 - m[2][3] * s04 + m[3][3] * s05, -m[0][3] * s07 + m[2][3] * s10 - m[3][3] * s11,
-                         m[0][3] * s13 - m[2][3] * s16 + m[3][3] * s17, -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17,
+    m[0][3] * s01 - m[2][3] * s04 + m[3][3] * s05,
+    -m[0][3] * s07 + m[2][3] * s10 - m[3][3] * s11,
+    m[0][3] * s13 - m[2][3] * s16 + m[3][3] * s17,
+    -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17,
 
-                         -m[0][3] * s02 + m[1][3] * s04 - m[3][3] * s06, m[0][3] * s08 - m[1][3] * s10 + m[3][3] * s12,
-                         -m[0][3] * s14 + m[1][3] * s16 - m[3][3] * s18, m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18,
+    -m[0][3] * s02 + m[1][3] * s04 - m[3][3] * s06,
+    m[0][3] * s08 - m[1][3] * s10 + m[3][3] * s12,
+    -m[0][3] * s14 + m[1][3] * s16 - m[3][3] * s18,
+    m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18,
 
-                         m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06, -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12,
-                         m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18, -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
+    m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06,
+    -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12,
+    m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18,
+    -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
 
     T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
     ASSERT_MSG(F64(det) != 0.0, "Matrix has no inverse, result is undefined.");

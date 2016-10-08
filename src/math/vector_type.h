@@ -111,75 +111,118 @@ struct VectorBase<4, T>
 
     T x, y, z, w;
 
-    constexpr VectorBase() : x{0}, y{0}, z{0}, w{utils::default_value<ValueType>::value}
+    constexpr VectorBase()
+        : x{0}
+        , y{0}
+        , z{0}
+        , w{utils::default_value<ValueType>::value}
     {
     }
 
-    constexpr VectorBase(const T& xx, const T& yy, const T& zz, const T& ww) : x{xx}, y{yy}, z{zz}, w{ww}
+    constexpr VectorBase(const T& xx, const T& yy, const T& zz, const T& ww)
+        : x{xx}
+        , y{yy}
+        , z{zz}
+        , w{ww}
     {
     }
 
-    explicit constexpr VectorBase(const T& v) : x{v}, y{v}, z{v}, w{v}
+    explicit constexpr VectorBase(const T& v)
+        : x{v}
+        , y{v}
+        , z{v}
+        , w{v}
     {
     }
 
     template <typename U>
-    explicit constexpr VectorBase(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}, w{*(p + 3)}
+    explicit constexpr VectorBase(const U* const p)
+        : x{*p}
+        , y{*(p + 1)}
+        , z{*(p + 2)}
+        , w{*(p + 3)}
     {
         static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     template <typename U>
     explicit constexpr VectorBase(const Vector<4, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(static_cast<T>(v.w))
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(static_cast<T>(v.z))
+        , w(static_cast<T>(v.w))
     {
     }
 
     template <typename U>
     explicit constexpr VectorBase(const Vector<3, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(utils::default_value<ValueType>::value)
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(static_cast<T>(v.z))
+        , w(utils::default_value<ValueType>::value)
     {
     }
 
     template <typename U, typename S>
     constexpr VectorBase(const S& s, const Vector<3, U>& v)
-    : x(static_cast<T>(s)), y(static_cast<T>(v.x)), z(static_cast<T>(v.y)), w(static_cast<T>(v.z))
+        : x(static_cast<T>(s))
+        , y(static_cast<T>(v.x))
+        , z(static_cast<T>(v.y))
+        , w(static_cast<T>(v.z))
     {
     }
 
     template <typename U, typename S>
     constexpr VectorBase(const Vector<3, U>& v, const S& s)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z)), w(static_cast<T>(s))
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(static_cast<T>(v.z))
+        , w(static_cast<T>(s))
     {
     }
 
     template <typename U>
     explicit constexpr VectorBase(const Vector<2, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0), w(utils::default_value<ValueType>::value)
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(0)
+        , w(utils::default_value<ValueType>::value)
     {
     }
 
     template <typename U1, typename U2>
     constexpr VectorBase(const Vector<2, U1>& v1, const Vector<2, U2>& v2)
-    : x(static_cast<T>(v1.x)), y(static_cast<T>(v1.y)), z(static_cast<T>(v2.x)), w(static_cast<T>(v2.y))
+        : x(static_cast<T>(v1.x))
+        , y(static_cast<T>(v1.y))
+        , z(static_cast<T>(v2.x))
+        , w(static_cast<T>(v2.y))
     {
     }
 
     template <typename U, typename S1, typename S2>
     constexpr VectorBase(const S1& xx, const S2& yy, const Vector<2, U>& v)
-    : x(static_cast<T>(xx)), y(static_cast<T>(yy)), z(static_cast<T>(v.x)), w(static_cast<T>(v.y))
+        : x(static_cast<T>(xx))
+        , y(static_cast<T>(yy))
+        , z(static_cast<T>(v.x))
+        , w(static_cast<T>(v.y))
     {
     }
 
     template <typename U, typename S1, typename S2>
     constexpr VectorBase(const S1& xx, const Vector<2, U>& v, const S2& ww)
-    : x(static_cast<T>(xx)), y(static_cast<T>(v.x)), z(static_cast<T>(v.y)), w(static_cast<T>(ww))
+        : x(static_cast<T>(xx))
+        , y(static_cast<T>(v.x))
+        , z(static_cast<T>(v.y))
+        , w(static_cast<T>(ww))
     {
     }
 
     template <typename U, typename S1, typename S2>
     constexpr VectorBase(const Vector<2, U>& v, const S1& zz, const S2& ww)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(zz)), w(static_cast<T>(ww))
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(static_cast<T>(zz))
+        , w(static_cast<T>(ww))
     {
     }
 };
@@ -192,50 +235,73 @@ struct VectorBase<3, T>
 
     T x, y, z;
 
-    constexpr VectorBase() : x{0}, y{0}, z{0}
+    constexpr VectorBase()
+        : x{0}
+        , y{0}
+        , z{0}
     {
     }
 
-    constexpr VectorBase(const T& xx, const T& yy, const T& zz) : x{xx}, y{yy}, z{zz}
+    constexpr VectorBase(const T& xx, const T& yy, const T& zz)
+        : x{xx}
+        , y{yy}
+        , z{zz}
     {
     }
 
-    explicit constexpr VectorBase(const T& v) : x{v}, y{v}, z{v}
+    explicit constexpr VectorBase(const T& v)
+        : x{v}
+        , y{v}
+        , z{v}
     {
     }
 
     template <typename U>
-    explicit constexpr VectorBase(const U* const p) : x{*p}, y{*(p + 1)}, z{*(p + 2)}
+    explicit constexpr VectorBase(const U* const p)
+        : x{*p}
+        , y{*(p + 1)}
+        , z{*(p + 2)}
     {
         static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     template <typename U>
     explicit constexpr VectorBase(const Vector<4, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z))
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(static_cast<T>(v.z))
     {
     }
 
     template <typename U>
     explicit constexpr VectorBase(const Vector<3, U>& v)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(v.z))
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(static_cast<T>(v.z))
     {
     }
 
     template <typename U>
-    explicit constexpr VectorBase(const Vector<2, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(0)
+    explicit constexpr VectorBase(const Vector<2, U>& v)
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(0)
     {
     }
 
     template <typename U, typename S>
     constexpr VectorBase(const S& xx, const Vector<2, U>& v)
-    : x(static_cast<T>(xx)), y(static_cast<T>(v.x)), z(static_cast<T>(v.y))
+        : x(static_cast<T>(xx))
+        , y(static_cast<T>(v.x))
+        , z(static_cast<T>(v.y))
     {
     }
 
     template <typename U, typename S>
     constexpr VectorBase(const Vector<2, U>& v, const S& zz)
-    : x(static_cast<T>(v.x)), y(static_cast<T>(v.y)), z(static_cast<T>(zz))
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
+        , z(static_cast<T>(zz))
     {
     }
 };
@@ -248,36 +314,50 @@ struct VectorBase<2, T>
 
     T x, y;
 
-    constexpr VectorBase() : x{0}, y{0}
+    constexpr VectorBase()
+        : x{0}
+        , y{0}
     {
     }
 
-    constexpr VectorBase(const T& xx, const T& yy) : x{xx}, y{yy}
+    constexpr VectorBase(const T& xx, const T& yy)
+        : x{xx}
+        , y{yy}
     {
     }
 
-    explicit constexpr VectorBase(const T& v) : x{v}, y{v}
+    explicit constexpr VectorBase(const T& v)
+        : x{v}
+        , y{v}
     {
     }
 
     template <typename U>
-    explicit constexpr VectorBase(const U* p) : x{*p}, y{*(p + 1)}
+    explicit constexpr VectorBase(const U* p)
+        : x{*p}
+        , y{*(p + 1)}
     {
         static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
     }
 
     template <typename U>
-    explicit constexpr VectorBase(const Vector<4, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr VectorBase(const Vector<4, U>& v)
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
     {
     }
 
     template <typename U>
-    explicit constexpr VectorBase(const Vector<3, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr VectorBase(const Vector<3, U>& v)
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
     {
     }
 
     template <typename U>
-    explicit constexpr VectorBase(const Vector<2, U>& v) : x(static_cast<T>(v.x)), y(static_cast<T>(v.y))
+    explicit constexpr VectorBase(const Vector<2, U>& v)
+        : x(static_cast<T>(v.x))
+        , y(static_cast<T>(v.y))
     {
     }
 };
@@ -286,7 +366,8 @@ struct VectorBase<2, T>
 
 // default constructor
 template <U32 N, typename T>
-constexpr Vector<N, T>::Vector() : BaseType()
+constexpr Vector<N, T>::Vector()
+    : BaseType()
 {
 }
 
@@ -340,7 +421,8 @@ inline Vector<N, T>& Vector<N, T>::operator=(const Vector<N, U>& other)
 
 // default constructor
 template <U32 N>
-constexpr Vector<N, bool>::Vector() : BaseType()
+constexpr Vector<N, bool>::Vector()
+    : BaseType()
 {
 }
 

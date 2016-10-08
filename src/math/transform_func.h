@@ -94,8 +94,8 @@ inline matrix_impl::Matrix<4, 4, T> createRotateMatrix(const TVec<3, T>& v, T an
     auto ys = v[1] * s;
     auto zs = v[2] * s;
 
-    return matrix_impl::Matrix<4, 4, T>(v[0] * xc + c, v[1] * xc + zs, v[2] * xc - ys, 0, v[0] * yc - zs, v[1] * yc + c,
-                                        v[2] * yc + xs, 0, v[0] * zc + ys, v[1] * zc - xs, v[2] * zc + c, 0, 0, 0, 0, 1);
+    return matrix_impl::Matrix<4, 4, T>(
+    v[0] * xc + c, v[1] * xc + zs, v[2] * xc - ys, 0, v[0] * yc - zs, v[1] * yc + c, v[2] * yc + xs, 0, v[0] * zc + ys, v[1] * zc - xs, v[2] * zc + c, 0, 0, 0, 0, 1);
 }
 
 } // namespace math

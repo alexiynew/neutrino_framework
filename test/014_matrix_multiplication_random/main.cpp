@@ -103,7 +103,8 @@ struct Any
 template <typename T>
 struct TAny : public Any
 {
-    explicit TAny(const T& v) : value(v)
+    explicit TAny(const T& v)
+        : value(v)
     {
     }
     T value;

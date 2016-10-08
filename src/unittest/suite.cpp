@@ -5,7 +5,11 @@
 
 namespace test {
 
-Suite::Suite() : m_success{true}, m_name{}, m_tests{}, m_current_test{m_tests.end()}
+Suite::Suite()
+    : m_success{true}
+    , m_name{}
+    , m_tests{}
+    , m_current_test{m_tests.end()}
 {
 }
 

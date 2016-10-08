@@ -8,7 +8,7 @@ namespace test {
 
 class Suite
 {
-    public:
+public:
     Suite();
 
     virtual ~Suite() = default;
@@ -17,7 +17,7 @@ class Suite
 
     bool isSuccessed();
 
-    protected:
+protected:
     using TestFunction = void (Suite::*)();
 
     virtual void setup();
@@ -27,7 +27,7 @@ class Suite
 
     void testFailed(const std::string& file, int line, const std::string& message);
 
-    private:
+private:
     struct TestData
     {
         TestFunction function;

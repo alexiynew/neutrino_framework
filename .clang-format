@@ -1,7 +1,8 @@
 ﻿---
-AccessModifierOffset: '0'
-AlignAfterOpenBracket: 'true'
+AccessModifierOffset: '-4'
+AlignAfterOpenBracket: DontAlign
 AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'false'
 AlignEscapedNewlinesLeft: 'true'
 AlignOperands: 'true'
 AlignTrailingComments: 'true'
@@ -11,13 +12,16 @@ AllowShortCaseLabelsOnASingleLine: 'true'
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: 'false'
 AllowShortLoopsOnASingleLine: 'false'
-AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: 'true'
+BinPackArguments: 'false'
+BinPackParameters: 'false'
+BreakConstructorInitializersBeforeComma: 'true'
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Mozilla
-ColumnLimit: '120'
-ConstructorInitializerAllOnOneLineOrOnePerLine: 'true'
-ConstructorInitializerIndentWidth: '0'
+ColumnLimit: '180'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
+ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: '0'
 Cpp11BracedListStyle: 'true'
 DerivePointerAlignment: 'false'
@@ -32,10 +36,7 @@ NamespaceIndentation: None
 ObjCBlockIndentWidth: '0'
 ObjCSpaceAfterProperty: 'false'
 ObjCSpaceBeforeProtocolList: 'false'
-PenaltyBreakBeforeFirstCallParameter: '0'
-PenaltyBreakComment: '0'
-PenaltyBreakString: '0'
-PenaltyExcessCharacter: '0'
+PenaltyBreakComment: '999'
 PenaltyReturnTypeOnItsOwnLine: '0'
 PointerAlignment: Left
 PenaltyBreakBeforeFirstCallParameter: '999'
