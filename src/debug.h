@@ -11,7 +11,6 @@
 #define NEED_ASSERT true
 #endif
 
-
 #ifdef NEED_ASSERT
 
 #define ASSERT(EXPR) ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (#EXPR) << std::endl, std::abort(), false))

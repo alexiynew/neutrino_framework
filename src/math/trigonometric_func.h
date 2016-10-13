@@ -10,7 +10,8 @@ namespace framework {
 
 namespace math {
 
-// TODO make like in std lib:: A set of overloads or a function template accepting an argument of any integral type.
+// TODO make like in std lib:: A set of overloads or a function template
+// accepting an argument of any integral type.
 // Equivalent to 2) (the argument is cast to double).
 
 /// Converts degrees to radians and returns the result.

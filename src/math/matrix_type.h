@@ -1475,7 +1475,6 @@ inline Matrix<C, R, T> operator+(const Matrix<C, R, T>& m)
     return m;
 }
 
-
 // TODO make it same type
 // binary operators
 // TODO: simplify

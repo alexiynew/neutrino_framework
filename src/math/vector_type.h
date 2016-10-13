@@ -416,7 +416,6 @@ inline Vector<N, T>& Vector<N, T>::operator=(const Vector<N, U>& other)
     return *this;
 }
 
-
 // vector<N, bool> implementation
 
 // default constructor

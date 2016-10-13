@@ -55,7 +55,6 @@ private:
 
 } // namspace test
 
-
 #define ADD_TEST(FUNC) addTest(static_cast<TestFunction>(&FUNC), #FUNC)
 
 #endif

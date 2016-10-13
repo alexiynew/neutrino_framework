@@ -14,8 +14,7 @@ int main()
         Vector3I v3i(1, -5, 0);
         Vector2U v2u(10, 0);
 
-        ASSERT_MSG(abs(v4d) == Vector4D(1.1, 1.5, 0.0, 1.8) && abs(v3f) == Vector3F(1.6f, 1.5f, 0.0f) && abs(v3i) == Vector3I(1, 5, 0) && abs(v2u) == Vector2U(10, 0),
-                   "abs failed");
+        ASSERT_MSG(abs(v4d) == Vector4D(1.1, 1.5, 0.0, 1.8) && abs(v3f) == Vector3F(1.6f, 1.5f, 0.0f) && abs(v3i) == Vector3I(1, 5, 0) && abs(v2u) == Vector2U(10, 0), "abs failed");
 
         ASSERT_MSG(sign(v4d) == Vector4D(1.0, -1.0, 0.0, -1.0) && sign(v3f) == Vector3F(1.0f, -1.0f, 0.0f) && sign(v3i) == Vector3I(1, -1, 0) && sign(v2u) == Vector2U(1, 0),
                    "sign failed");
@@ -51,8 +50,7 @@ int main()
                    max(v3i, Vector3I(2, 5, 0)) == Vector3I(2, 5, 0),
                    "max failed");
 
-        ASSERT_MSG(clamp(v4d, Vector4D(1.1, -1.1, 2.5, -2), Vector4D(1.1, -0.5, 2.6, -1.9)) == Vector4D(1.1, -1.1, 2.5, -1.9) && clamp(v3i, -1, 0) == Vector3I(0, -1, 0),
-                   "clamp failed");
+        ASSERT_MSG(clamp(v4d, Vector4D(1.1, -1.1, 2.5, -2), Vector4D(1.1, -0.5, 2.6, -1.9)) == Vector4D(1.1, -1.1, 2.5, -1.9) && clamp(v3i, -1, 0) == Vector3I(0, -1, 0), "clamp failed");
 
         ASSERT_MSG(mix(Vector4D(1.0), Vector4D(10.0), 0.5) == Vector4D(5.5) && mix(Vector4D(1.0), Vector4D(10.0), false) == Vector4D(1.0) &&
                    mix(Vector4D(1.0), Vector4D(10.0), true) == Vector4D(10.0) && mix(Vector4D(1.0), Vector4D(10.0), Vector4D(0.25, 0.5, -3, 3)) == Vector4D(3.25, 5.5, -26, 28) &&
@@ -80,8 +78,7 @@ int main()
                    v2i_tmp == Vector2I(4, 0),
                    "frexp failed");
 
-        ASSERT_MSG(ldexp(frexp(v4d, v4i_tmp), v4i_tmp) == v4d && ldexp(frexp(v3f, v3i_tmp), v3i_tmp) == v3f && ldexp(frexp(v2u, v2i_tmp), v2i_tmp) == Vector2D(v2u),
-                   "ldexp failed");
+        ASSERT_MSG(ldexp(frexp(v4d, v4i_tmp), v4i_tmp) == v4d && ldexp(frexp(v3f, v3i_tmp), v3i_tmp) == v3f && ldexp(frexp(v2u, v2i_tmp), v2i_tmp) == Vector2D(v2u), "ldexp failed");
 
         ASSERT_MSG(almostEqual(v4d, Vector4D(1.1, -1.5, 0.0, -1.8)), "almostEqual failed");
         ASSERT_MSG(almostEqual(v3f, Vector3F(1.6f, -1.5f, 0.0f)), "almostEqual failed");

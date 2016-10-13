@@ -163,8 +163,6 @@ int main()
         ASSERT_MSG(r23f / 5.0f == m23f, "matrix / scalar failed");
         ASSERT_MSG(r22f / 5.0f == m22f, "matrix / scalar failed");
 
-
-
         ASSERT_MSG(4.0f + m44f == r44f, "scalar + matrix failed");
         ASSERT_MSG(4.0f + m43f == r43f, "scalar + matrix failed");
         ASSERT_MSG(4.0f + m42f == r42f, "scalar + matrix failed");
