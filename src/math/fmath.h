@@ -20,6 +20,7 @@ namespace framework {
 
 namespace math {
 
+#pragma mark - Vector Type
 template <U32 N, typename T>
 using Vector = vector_impl::Vector<N, T>;
 
@@ -43,6 +44,7 @@ using Vector2B = Vector<2, bool>;
 using Vector3B = Vector<3, bool>;
 using Vector4B = Vector<4, bool>;
 
+#pragma mark - Matrix Type
 template <U32 C, U32 R, typename T>
 using Matrix = matrix_impl::Matrix<C, R, T>;
 

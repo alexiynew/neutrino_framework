@@ -1,4 +1,3 @@
-build/*
-bin/*
-filestodo.todo
-framework.sublime-workspace
+.idea/
+bin/
+

@@ -8,7 +8,7 @@ namespace framework {
 
 namespace math {
 
-// 2d transform
+#pragma mark - 2d transform
 
 /// Builds a translation 3 * 3 matrix created from a vector of 2 components.
 ///
@@ -69,7 +69,7 @@ inline TMat<3, 3, T> shearY(const TMat<3, 3, T>& m, const T& s)
     return m * shear;
 }
 
-// 3d transform
+#pragma mark - 3d transform
 
 /// Create a translation 4 * 4 matrix from 3 scalars.
 template <typename T, template <U32, typename> class TVec>

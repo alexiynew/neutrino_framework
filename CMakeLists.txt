@@ -1,57 +1,58 @@
-cmake_minimum_required (VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-set(CMAKE_CXX_COMPILER clang++-4.0)
+SET(CMAKE_CXX_COMPILER clang++-4.0)
 
-project (framework)
+PROJECT(framework)
 
-set (CMAKE_CTEST_COMMAND ctest -V)
+SET(CMAKE_CTEST_COMMAND ctest -V)
 
-set (SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
-set (TESTS_DIR ${CMAKE_SOURCE_DIR}/test)
-set (COMPILE_FLAGS "-Weverything -std=c++14 -Wno-c++98-compat -Wno-padded")
+SET(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+SET(TESTS_DIR ${CMAKE_SOURCE_DIR}/test)
+SET(COMPILE_FLAGS "-Weverything -std=c++14 -Wno-c++98-compat -Wno-padded")
 
-file (GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
-file (GLOB_RECURSE HEADERS ${SOURCE_DIR}/*.h)
-file (GLOB_RECURSE TEST_SOURCES ${TESTS_DIR}/*.cpp ${TESTS_DIR}/*.h)
+FILE(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
+FILE(GLOB_RECURSE HEADERS ${SOURCE_DIR}/*.h)
+FILE(GLOB_RECURSE TEST_SOURCES ${TESTS_DIR}/*.cpp ${TESTS_DIR}/*.h)
 
-set (ALL_SOURCES ${SOURCES} ${HEADERS} ${TEST_SOURCES})
+SET(ALL_SOURCES ${SOURCES} ${HEADERS} ${TEST_SOURCES})
 
-set (INCLUDE_DIR ${SOURCE_DIR})
+SET(INCLUDE_DIR ${SOURCE_DIR})
 
-set (LIBRARIES "")
+SET(LIBRARIES "")
 
-set (CMAKE_VERBOSE_MAKEFILE OFF)
+SET(CMAKE_VERBOSE_MAKEFILE OFF)
 
-set (CMAKE_CXX_FLAGS_DEBUG "-g")
-set (CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+SET(CMAKE_CXX_FLAGS_DEBUG "-g")
+SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG -DFORCE_ASSERT")
 
-set (CMAKE_BUILD_TYPE Debug)
+SET(CMAKE_BUILD_TYPE Release)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
-set (EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 
-include_directories (${INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${INCLUDE_DIR})
 
 #add_executable (${PROJECT_NAME} ${SOURCES})
 #target_link_libraries (${PROJECT_NAME} ${LIBRARIES})
 
-enable_testing ()
-add_subdirectory (${TESTS_DIR})
+ENABLE_TESTING()
+ADD_SUBDIRECTORY(${TESTS_DIR})
 
-add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND})
+ADD_CUSTOM_TARGET(test_verbose COMMAND ${CMAKE_CTEST_COMMAND})
 
-add_custom_target (clangformat
-    COMMAND clang-format-4.0 -style=file -i ${ALL_SOURCES} )
+ADD_CUSTOM_TARGET(clangformat
+                  COMMAND clang-format-4.0 -style=file -i ${ALL_SOURCES})
 
 
-add_custom_target (cppcheck
-    COMMAND cppcheck
-    --force
-    --enable=warning,performance,portability,information
-    --suppress=missingIncludeSystem
-    --std=c++14
-    --quiet
-    --template="{file}:{line}:\\n[{severity}:{id}]:{message}\\n\\t{callstack}"
-    ${ALL_SOURCES}
-    COMMENT "Run cppcheck")
+ADD_CUSTOM_TARGET(cppcheck
+                  COMMAND cppcheck
+                  --force
+                  --enable=warning,performance,portability,information
+                  --suppress=missingIncludeSystem
+                  --std=c++14
+                  --quiet
+                  --template="{file}:{line}:\\n[{severity}:{id}]:{message}\\n\\t{callstack}"
+                  ${ALL_SOURCES}
+                  COMMENT "Run cppcheck")
 
