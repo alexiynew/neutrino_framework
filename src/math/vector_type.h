@@ -12,20 +12,16 @@ namespace math {
 
 namespace vector_impl {
 
-// base classes for vectors of different size
+#pragma mark - VectorBase declaration
 template <U32 N, typename T>
-struct VectorBase
-{
-};
+struct VectorBase;
 
-// vector interface
+#pragma mark - Vector<N, T> type
 template <U32 N, typename T>
-struct Vector : public VectorBase<N, T>
+struct Vector final : public VectorBase<N, T>
 {
     using BaseType  = VectorBase<N, T>;
     using ValueType = typename BaseType::ValueType;
-
-    constexpr Vector();
 
     constexpr Vector(const Vector<N, T>&) = default;
     constexpr Vector(Vector<N, T>&&)      = default;
@@ -72,14 +68,12 @@ struct Vector : public VectorBase<N, T>
     const ValueType& operator[](U32 index) const;
 };
 
-// vector of bool specialization
+#pragma mark - Vector<N, bool> specialization
 template <U32 N>
-struct Vector<N, bool> : public VectorBase<N, bool>
+struct Vector<N, bool> final : public VectorBase<N, bool>
 {
     using BaseType  = VectorBase<N, bool>;
     using ValueType = typename BaseType::ValueType;
-
-    constexpr Vector();
 
     constexpr Vector(const Vector<N, bool>&) = default;
     constexpr Vector(Vector<N, bool>&&)      = default;
@@ -102,7 +96,7 @@ struct Vector<N, bool> : public VectorBase<N, bool>
     const ValueType& operator[](U32 index) const;
 };
 
-// vector base
+#pragma mark - VectorBase implementation
 template <typename T>
 struct VectorBase<4, T>
 {
@@ -362,15 +356,7 @@ struct VectorBase<2, T>
     }
 };
 
-// vector<N, T> implementation
-
-// default constructor
-template <U32 N, typename T>
-constexpr Vector<N, T>::Vector()
-    : BaseType()
-{
-}
-
+#pragma mark - Vector<N, T> implementation
 // vector methods
 template <U32 N, typename T>
 inline constexpr U32 Vector<N, T>::size() const
@@ -394,12 +380,12 @@ inline const T* Vector<N, T>::data() const
 template <U32 N, typename T>
 inline typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index)
 {
-    ASSERT_MSG(index >= 0 && index < N, "Worng index.");
+    ASSERT_MSG(index >= 0 && index < N, "Wrong index.");
     return data()[index];
 }
 
 template <U32 N, typename T>
-const typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index) const
+inline const typename Vector<N, T>::ValueType &Vector<N, T>::operator[](U32 index) const
 {
     ASSERT_MSG(index >= 0 && index < N, "Wrong index.");
     return data()[index];
@@ -416,15 +402,7 @@ inline Vector<N, T>& Vector<N, T>::operator=(const Vector<N, U>& other)
     return *this;
 }
 
-// vector<N, bool> implementation
-
-// default constructor
-template <U32 N>
-constexpr Vector<N, bool>::Vector()
-    : BaseType()
-{
-}
-
+#pragma mark - Vector<N, bool> implementation
 // vector methods
 template <U32 N>
 inline constexpr U32 Vector<N, bool>::size() const
@@ -453,7 +431,7 @@ inline typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 inde
 }
 
 template <U32 N>
-const typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 index) const
+inline const typename Vector<N, bool>::ValueType &Vector<N, bool>::operator[](U32 index) const
 {
     ASSERT_MSG(index >= 0 && index < N, "Wrong index.");
     return data()[index];
@@ -470,8 +448,7 @@ inline Vector<N, bool>& Vector<N, bool>::operator=(const Vector<N, U>& other)
     return *this;
 }
 
-// unary operators
-// vector - vector
+#pragma mark - unary operators: vector - vector
 template <U32 N, typename T>
 template <typename U>
 inline Vector<N, T>& Vector<N, T>::operator+=(const Vector<N, U>& other)
@@ -512,8 +489,7 @@ inline Vector<N, T>& Vector<N, T>::operator/=(const Vector<N, U>& other)
     return *this;
 }
 
-// unary operators
-// vector - scalar
+#pragma mark - unary operators: vector - scalar
 template <U32 N, typename T>
 template <typename U>
 inline Vector<N, T>& Vector<N, T>::operator+=(const U& scalar)
@@ -554,7 +530,7 @@ inline Vector<N, T>& Vector<N, T>::operator/=(const U& scalar)
     return *this;
 }
 
-// unary minus
+#pragma mark - unary minus
 template <U32 N, typename T>
 inline Vector<N, T> operator-(const Vector<N, T>& v)
 {
@@ -568,8 +544,7 @@ inline Vector<N, T> operator+(const Vector<N, T>& v)
     return v;
 }
 
-// binary operators
-// vector - vector
+#pragma mark - binary operators: vector - vector
 template <U32 N, typename T>
 inline const Vector<N, T> operator+(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
 {
@@ -594,8 +569,7 @@ inline const Vector<N, T> operator/(const Vector<N, T>& lhs, const Vector<N, T>&
     return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a / b; });
 }
 
-// binary operators
-// vector - scalar
+#pragma mark - binary operators: vector - scalar
 template <U32 N, typename T>
 inline const Vector<N, T> operator+(const Vector<N, T>& vector, const T& scalar)
 {
@@ -620,8 +594,7 @@ inline const Vector<N, T> operator/(const Vector<N, T>& vector, const T& scalar)
     return utils::createVector(vector, [&scalar](const T& a) { return a / scalar; });
 }
 
-// binary operators
-// scalar - vector
+#pragma mark - binary operators: scalar - vector
 template <U32 N, typename T>
 inline const Vector<N, T> operator+(const T& scalar, const Vector<N, T>& vector)
 {
@@ -646,10 +619,11 @@ inline const Vector<N, T> operator/(const T& scalar, const Vector<N, T>& vector)
     return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a / b; });
 }
 
+#pragma mark - vectors equality
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wfloat-equal"
 
-// vectors equality
 template <typename T>
 inline constexpr bool operator==(const Vector<4, T>& a, const Vector<4, T>& b)
 {
