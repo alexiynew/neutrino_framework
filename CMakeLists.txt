@@ -33,26 +33,4 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
 
 INCLUDE_DIRECTORIES(${INCLUDE_DIR})
 
-#add_executable (${PROJECT_NAME} ${SOURCES})
-#target_link_libraries (${PROJECT_NAME} ${LIBRARIES})
-
-ENABLE_TESTING()
 ADD_SUBDIRECTORY(${TESTS_DIR})
-
-ADD_CUSTOM_TARGET(test_verbose COMMAND ${CMAKE_CTEST_COMMAND})
-
-ADD_CUSTOM_TARGET(clangformat
-                  COMMAND clang-format-4.0 -style=file -i ${ALL_SOURCES})
-
-
-ADD_CUSTOM_TARGET(cppcheck
-                  COMMAND cppcheck
-                  --force
-                  --enable=warning,performance,portability,information
-                  --suppress=missingIncludeSystem
-                  --std=c++14
-                  --quiet
-                  --template="{file}:{line}:\\n[{severity}:{id}]:{message}\\n\\t{callstack}"
-                  ${ALL_SOURCES}
-                  COMMENT "Run cppcheck")
-
