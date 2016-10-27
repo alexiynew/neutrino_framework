@@ -13,9 +13,13 @@
 
 #ifdef NEED_ASSERT
 
-#define ASSERT(EXPR) ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (#EXPR) << std::endl, std::abort(), false))
+#define ASSERT(EXPR) \
+    ((EXPR) ||       \
+     (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (#EXPR) << std::endl, std::abort(), false))
 
-#define ASSERT_MSG(EXPR, MSG) ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (MSG) << std::endl, std::abort(), false))
+#define ASSERT_MSG(EXPR, MSG) \
+    ((EXPR) ||                \
+     (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (MSG) << std::endl, std::abort(), false))
 
 #else
 

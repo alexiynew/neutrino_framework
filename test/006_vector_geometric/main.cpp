@@ -23,7 +23,8 @@ int main()
 
         ASSERT_MSG(almostEqual(length(normalize(v3f)), 1.0f, 1), "normalize failed");
 
-        ASSERT_MSG(faceforward(v3f, v3f, Vector3F(1.0f, 2.0f, -3.0f)) == v3f && faceforward(v3f, v3f, v3f) == -v3f, "faceforward failed");
+        ASSERT_MSG(faceforward(v3f, v3f, Vector3F(1.0f, 2.0f, -3.0f)) == v3f && faceforward(v3f, v3f, v3f) == -v3f,
+                   "faceforward failed");
 
         ASSERT_MSG(almostEqual(reflection(v3f, normalize(v3f)), -v3f, 1), "reflection failed");
 

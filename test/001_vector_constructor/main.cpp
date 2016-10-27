@@ -64,8 +64,10 @@ private:
         Vector3F v3f = {5.5f, 6.6f, 7.7f};
         Vector2I v2i = {1, 2};
 
-        TEST_ASSERT(almostEqual(v4d[0], 1.1) && almostEqual(v4d[1], 2.2) && almostEqual(v4d[2], 3.3) && almostEqual(v4d[3], 4.4), "Vector4D non-def constructor failed.");
-        TEST_ASSERT(almostEqual(v3f[0], 5.5f) && almostEqual(v3f[1], 6.6f) && almostEqual(v3f[2], 7.7f), "Vector3F non-def constructor failed.");
+        TEST_ASSERT(almostEqual(v4d[0], 1.1) && almostEqual(v4d[1], 2.2) && almostEqual(v4d[2], 3.3) &&
+                    almostEqual(v4d[3], 4.4), "Vector4D non-def constructor failed.");
+        TEST_ASSERT(almostEqual(v3f[0], 5.5f) && almostEqual(v3f[1], 6.6f) && almostEqual(v3f[2], 7.7f),
+                    "Vector3F non-def constructor failed.");
         TEST_ASSERT(v2i[0] == 1 && v2i[1] == 2, "Vector2I non-def constructor failed.");
     }
 
@@ -233,7 +235,8 @@ private:
         Vector3B v3b = Vector3B(false, true, false);
         Vector2B v2b = Vector2B(false, true);
 
-        TEST_ASSERT(v4b[0] == false && v4b[1] == true && v4b[2] == false && v4b[3] == true, "Vector4B non-def constructor failed.");
+        TEST_ASSERT(v4b[0] == false && v4b[1] == true && v4b[2] == false && v4b[3] == true,
+                    "Vector4B non-def constructor failed.");
         TEST_ASSERT(v3b[0] == false && v3b[1] == true && v3b[2] == false, "Vector3B non-def constructor failed.");
         TEST_ASSERT(v2b[0] == false && v2b[1] == true, "Vector2B non-def constructor failed.");
     }

@@ -20,7 +20,7 @@ BreakConstructorInitializersBeforeComma: 'true'
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Mozilla
 BreakStringLiterals: 'false'
-ColumnLimit: '180'
+ColumnLimit: '120'
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
 ConstructorInitializerIndentWidth: '4'
 ContinuationIndentWidth: '0'

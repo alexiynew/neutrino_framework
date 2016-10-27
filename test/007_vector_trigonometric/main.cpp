@@ -23,7 +23,8 @@ int main()
 
         ASSERT_MSG(almostEqual(tan(radians(v3d)), sin(radians(v3d)) / cos(radians(v3d))), "tan failed");
 
-        ASSERT_MSG(almostEqual(asin(sin(radians(v4d))), Vector4D(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4), 1), "asin failed");
+        ASSERT_MSG(almostEqual(asin(sin(radians(v4d))), Vector4D(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4), 1),
+                   "asin failed");
 
         ASSERT_MSG(almostEqual(acos(cos(radians(v4d))), Vector4D(PI, 0, PI / 2, PI / 4)), "acos failed");
 
@@ -33,9 +34,13 @@ int main()
                    "atan from sin "
                    "failed");
 
-        ASSERT_MSG(almostEqual(sinh(radians(v3d)), Vector3D(0.86867096148600953, 1.2493670505239751, 11.548739357257748)), "sinh failed");
+        ASSERT_MSG(
+                almostEqual(sinh(radians(v3d)), Vector3D(0.86867096148600953, 1.2493670505239751, 11.548739357257748)),
+                "sinh failed");
 
-        ASSERT_MSG(almostEqual(cosh(radians(v3d)), Vector3D(1.3246090892520057, 1.6002868577023861, 11.591953275521519)), "cosh failed");
+        ASSERT_MSG(
+                almostEqual(cosh(radians(v3d)), Vector3D(1.3246090892520057, 1.6002868577023861, 11.591953275521519)),
+                "cosh failed");
 
         ASSERT_MSG(almostEqual(tanh(radians(v3d)), (sinh(radians(v3d)) / cosh(radians(v3d))), 1), "tanh failed");
 
