@@ -19,7 +19,7 @@ inline TMat<C, R, T> crossComponentMultiplication(const TMat<C, R, T>& lhs, cons
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return utils::type_creator<C>::template create<TMat<C, R, T>>(
-            [&lhs, &rhs](U32 index) { return lhs[index] * rhs[index]; });
+    [&lhs, &rhs](U32 index) { return lhs[index] * rhs[index]; });
 }
 
 template <U32 C, U32 R, typename T, template <U32, typename> class TVec>
@@ -27,7 +27,7 @@ inline matrix_impl::Matrix<C, R, T> outerProduct(const TVec<R, T>& lhs, const TV
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return utils::type_creator<C>::template create<matrix_impl::Matrix<C, R, T>>(
-            [&lhs, &rhs](U32 index) { return lhs * rhs[index]; });
+    [&lhs, &rhs](U32 index) { return lhs * rhs[index]; });
 }
 
 template <typename T, template <U32, U32, typename> class TMat>

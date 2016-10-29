@@ -126,14 +126,14 @@ int main()
     }
 
     {
-        Matrix4F m4(0.707f, 0.0f, -0.707f, 0.0f, 0.354f, 0.866f, 0.354f, 0.0f, 0.612f, -0.5f, 0.612f, 0.0f, 1.0f, 1.0f,
-                    4.0f, 1.0f);
+        Matrix4F m4(
+        0.707f, 0.0f, -0.707f, 0.0f, 0.354f, 0.866f, 0.354f, 0.0f, 0.612f, -0.5f, 0.612f, 0.0f, 1.0f, 1.0f, 4.0f, 1.0f);
 
         auto a = affineInverse(m4);
         auto b = inverse(m4);
 
-        ASSERT_MSG(almostEqual(a[0], b[0]) && almostEqual(a[1], b[1]) && almostEqual(a[2], b[2]) &&
-                   almostEqual(a[3], b[3]), "matrix 4f affine inverse failed");
+        ASSERT_MSG(almostEqual(a[0], b[0]) && almostEqual(a[1], b[1]) && almostEqual(a[2], b[2]) && almostEqual(a[3], b[3]),
+                   "matrix 4f affine inverse failed");
     }
 
     {

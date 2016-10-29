@@ -385,7 +385,7 @@ inline typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index)
 }
 
 template <U32 N, typename T>
-inline const typename Vector<N, T>::ValueType &Vector<N, T>::operator[](U32 index) const
+inline const typename Vector<N, T>::ValueType& Vector<N, T>::operator[](U32 index) const
 {
     ASSERT_MSG(index >= 0 && index < N, "Wrong index.");
     return data()[index];
@@ -431,7 +431,7 @@ inline typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 inde
 }
 
 template <U32 N>
-inline const typename Vector<N, bool>::ValueType &Vector<N, bool>::operator[](U32 index) const
+inline const typename Vector<N, bool>::ValueType& Vector<N, bool>::operator[](U32 index) const
 {
     ASSERT_MSG(index >= 0 && index < N, "Wrong index.");
     return data()[index];

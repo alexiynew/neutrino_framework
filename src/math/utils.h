@@ -71,7 +71,7 @@ template <U32 N, typename T, typename U, typename F, typename TResult = typename
 static inline TVec<N, TResult> createVector(const TVec<N, T>& lhs, const TVec<N, U>& rhs, F&& opp)
 {
     return type_creator<N>::template create<TVec<N, TResult>>(
-            [&](const U32 index) { return opp(lhs[index], rhs[index]); });
+    [&](const U32 index) { return opp(lhs[index], rhs[index]); });
 }
 
 } // namespace utils

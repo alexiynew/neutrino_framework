@@ -459,22 +459,25 @@ inline TResult frexp(const T& a, I32& exp)
     return std::frexp(a, &exp);
 }
 
-template<typename T, template<U32, typename> class TVec, typename TResult = decltype(std::frexp(
-        std::declval<const T &>(), std::declval<I32 *>()))>
+template <typename T,
+          template <U32, typename> class TVec,
+          typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<I32*>()))>
 inline TVec<4, TResult> frexp(const TVec<4, T>& a, TVec<4, I32>& exp)
 {
     return TVec<4, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y), frexp(a.z, exp.z), frexp(a.w, exp.w));
 }
 
-template<typename T, template<U32, typename> class TVec, typename TResult = decltype(std::frexp(
-        std::declval<const T &>(), std::declval<I32 *>()))>
+template <typename T,
+          template <U32, typename> class TVec,
+          typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<I32*>()))>
 inline TVec<3, TResult> frexp(const TVec<3, T>& a, TVec<3, I32>& exp)
 {
     return TVec<3, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y), frexp(a.z, exp.z));
 }
 
-template<typename T, template<U32, typename> class TVec, typename TResult = decltype(std::frexp(
-        std::declval<const T &>(), std::declval<I32 *>()))>
+template <typename T,
+          template <U32, typename> class TVec,
+          typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<I32*>()))>
 inline TVec<2, TResult> frexp(const TVec<2, T>& a, TVec<2, I32>& exp)
 {
     return TVec<2, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y));
@@ -538,20 +541,29 @@ TResult almostEqual(const TVec<2, T>& lhs, const TVec<2, T>& rhs, I32 ulp = 0)
     return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp);
 }
 
-template<U32 R, typename T, template<U32, U32, typename> class TMat, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+template <U32 R,
+          typename T,
+          template <U32, U32, typename> class TMat,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
 TResult almostEqual(const TMat<4, R, T>& m, const TMat<4, R, T>& m1, I32 ulp = 0)
 {
     return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp) && almostEqual(m[2], m1[2], ulp) &&
            almostEqual(m[3], m1[3], ulp);
 }
 
-template<U32 R, typename T, template<U32, U32, typename> class TMat, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+template <U32 R,
+          typename T,
+          template <U32, U32, typename> class TMat,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
 TResult almostEqual(const TMat<3, R, T>& m, const TMat<3, R, T>& m1, I32 ulp = 0)
 {
     return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp) && almostEqual(m[2], m1[2], ulp);
 }
 
-template<U32 R, typename T, template<U32, U32, typename> class TMat, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+template <U32 R,
+          typename T,
+          template <U32, U32, typename> class TMat,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
 TResult almostEqual(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, I32 ulp = 0)
 {
     return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp);
