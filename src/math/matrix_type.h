@@ -2209,7 +2209,7 @@ inline constexpr bool operator!=(const Matrix<2, R, T>& lhs, const Matrix<2, R, 
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]);
 }
 
-} // namespace matrix_imp
+} // namespace matrix_impl
 
 } // namespace math
 

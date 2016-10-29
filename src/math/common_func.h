@@ -489,7 +489,7 @@ inline TVec<2, TResult> frexp(const TVec<2, T>& a, TVec<2, I32>& exp)
 using ::std::ldexp;
 
 template <U32 N, typename T, template <U32, typename> class TVec>
-inline TVec<N, T> ldexp(const TVec<N, T>& vector, const I32 exp)
+inline TVec<N, T> ldexp(const TVec<N, T>& vector, I32 exp)
 {
     return utils::createVector(vector, [&exp](const T& v) { return ldexp(v, exp); });
 }

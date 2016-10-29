@@ -3,18 +3,18 @@
 
 #include <cstdint>
 
-typedef std::int8_t I8;
-typedef std::int16_t I16;
-typedef std::int32_t I32;
-typedef std::int64_t I64;
+using I8 = std::int8_t;
+using I16 = std::int16_t;
+using I32 = std::int32_t;
+using I64 = std::int64_t;
 
-typedef std::uint8_t U8;
-typedef std::uint16_t U16;
-typedef std::uint32_t U32;
-typedef std::uint64_t U64;
+using U8 = std::uint8_t;
+using U16 = std::uint16_t;
+using U32 = std::uint32_t;
+using U64 = std::uint64_t;
 
-typedef float F32;
-typedef double F64;
+using F32 = float;
+using F64 = double;
 
 static_assert(sizeof(I8) == 1, "Size of I8 type is not 1 byte on this platform.");
 static_assert(sizeof(I16) == 2, "Size of I16 type is not 2 byte on this platform.");

@@ -1,8 +1,6 @@
 #include <iomanip>
 #include <iostream>
 #include <math/fmath.h>
-#include <sstream>
-#include <string>
 
 using namespace framework::math;
 
@@ -49,7 +47,7 @@ Any* make_any(const T& v)
 }
 
 template <typename T, typename U>
-Any* multiply_impl(const T&, const U&)
+Any* multiply_impl(const T& /*unused*/, const U& /*unused*/)
 {
     throw "Wrong parameters";
     return nullptr;
@@ -95,16 +93,14 @@ struct Any
     virtual Any* multiply(const Matrix<4, 3, F32>& m) = 0;
     virtual Any* multiply(const Matrix<4, 4, F32>& m) = 0;
 
-    virtual ~Any()
-    {
-    }
+    virtual ~Any() = default;
 };
 
 template <typename T>
 struct TAny : public Any
 {
-    explicit TAny(const T& v)
-        : value(v)
+    explicit TAny(T  v)
+        : value(std::move(v)
     {
     }
     T value;
@@ -232,7 +228,8 @@ Any* read()
         default: throw "Zero rows";
     }
 }
-}
+
+} // namespace
 
 int main()
 {

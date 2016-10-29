@@ -236,10 +236,9 @@ private:
         Vector3B v3b = Vector3B(false, true, false);
         Vector2B v2b = Vector2B(false, true);
 
-        TEST_ASSERT(v4b[0] == false && v4b[1] == true && v4b[2] == false && v4b[3] == true,
-                    "Vector4B non-def constructor failed.");
-        TEST_ASSERT(v3b[0] == false && v3b[1] == true && v3b[2] == false, "Vector3B non-def constructor failed.");
-        TEST_ASSERT(v2b[0] == false && v2b[1] == true, "Vector2B non-def constructor failed.");
+        TEST_ASSERT(!v4b[0] && v4b[1] && !v4b[2] && v4b[3], "Vector4B non-def constructor failed.");
+        TEST_ASSERT(!v3b[0] && v3b[1] && !v3b[2], "Vector3B non-def constructor failed.");
+        TEST_ASSERT(!v2b[0] && v2b[1], "Vector2B non-def constructor failed.");
     }
 
     void typeCastConstructor()
@@ -277,12 +276,12 @@ int main()
     tests.emplace_back(new VectorTest());
     tests.emplace_back(new BoolVectorTest());
 
-    bool all_successed = true;
+    bool all_succeeded = true;
 
     for (auto& test : tests) {
         test->run();
-        all_successed &= test->isSuccessed();
+        all_succeeded = all_succeeded && test->isSuccessed();
     }
 
-    return all_successed ? 0 : 1;
+    return all_succeeded ? 0 : 1;
 }

@@ -325,7 +325,7 @@ int main()
 
     for (auto& test : tests) {
         test->run();
-        all_succeeded &= test->isSuccessed();
+        all_succeeded = all_succeeded && test->isSuccessed();
     }
 
     return all_succeeded ? 0 : 1;

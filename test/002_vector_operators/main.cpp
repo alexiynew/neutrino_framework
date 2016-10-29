@@ -86,9 +86,9 @@ int main()
         ASSERT_MSG(almostEqual(v3f[0], 5.5f) && almostEqual(v3f[1], 6.6f) && almostEqual(v3f[2], 7.7f), "access failed");
         ASSERT_MSG(v2i[0] == 1 && v2i[1] == 2, "access failed");
 
-        ASSERT_MSG(v4b[0] == true && v4b[1] == false && v4b[2] == true && v4b[3] == false, "access filed");
-        ASSERT_MSG(v3b[0] == true && v3b[1] == false && v3b[2] == true, "access failed");
-        ASSERT_MSG(v2b[0] == true && v2b[1] == false, "access failed");
+        ASSERT_MSG(v4b[0] && !v4b[1] && v4b[2] && !v4b[3], "access filed");
+        ASSERT_MSG(v3b[0] && !v3b[1] && v3b[2], "access failed");
+        ASSERT_MSG(v2b[0] && !v2b[1], "access failed");
     }
 
     // vector inverse vector and unary plus
