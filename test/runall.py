@@ -1,9 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import os
 from subprocess import Popen, PIPE
+import sys, getopt
 
 test_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'test')
 folder_test_script = 'run.py'
+
+verbose = False
 
 
 class Test:
@@ -61,5 +64,26 @@ def get_tests(path):
     files.sort()
     return files
 
+
+def show_help():
+    print("-v Verbose output")
+
+
+def parse_args(argv):
+    try:
+        opts, args = getopt.getopt(argv, "hv")
+    except getopt.GetoptError:
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt == '-h':
+            show_help()
+            sys.exit(0)
+        elif opt == '-v':
+            global verbose
+            verbose = True
+
+
+parse_args(sys.argv[1:])
 
 run_tests(get_tests(test_dir))

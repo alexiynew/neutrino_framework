@@ -8,49 +8,55 @@ namespace framework {
 
 namespace math {
 
+template <U32 C, U32 R, typename T>
+using Matrix = matrix_impl::Matrix<C, R, T>;
+
+template <U32 N, typename T>
+using Vector = vector_impl::Vector<N, T>;
+
 #pragma mark - 2d transform
 
 /// Builds a translation 3 * 3 matrix created from a vector of 2 components.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a translation vector.
-template <typename T, template <U32, U32, typename> class TMat, template <U32, typename> class TVec>
-inline TMat<3, 3, T> translate(const TMat<3, 3, T>& m, const TVec<2, T>& v)
+template <typename T>
+inline Matrix<3, 3, T> translate(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
 {
-    return TMat<3, 3, T>(m[0], m[1], m[0] * v[0] + m[1] * v[1] + m[2]);
+    return Matrix<3, 3, T>(m[0], m[1], m[0] * v[0] + m[1] * v[1] + m[2]);
 }
 
 /// Builds a rotation 3 * 3 matrix created from an angle.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param angle Rotation angle expressed in radians.
-template <typename T, template <U32, U32, typename> class TMat>
-inline TMat<3, 3, T> rotate(const TMat<3, 3, T>& m, const T angle)
+template <typename T>
+inline Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& m, const T angle)
 {
     T const c = cos(angle);
     T const s = sin(angle);
 
-    return TMat<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
+    return Matrix<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
 }
 
 /// Builds a scale 3 * 3 matrix created from a vector of 2 components.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a scale vector.
-template <typename T, template <U32, U32, typename> class TMat, template <U32, typename> class TVec>
-inline TMat<3, 3, T> scale(const TMat<3, 3, T>& m, const TVec<2, T>& v)
+template <typename T>
+inline Matrix<3, 3, T> scale(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
 {
-    return TMat<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
+    return Matrix<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
 }
 
 /// Builds an horizontal (parallel to the x axis) shear 3 * 3 matrix.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param s Shear factor.
-template <typename T, template <U32, U32, typename> class TMat>
-inline TMat<3, 3, T> shearX(const TMat<3, 3, T>& m, const T& s)
+template <typename T>
+inline Matrix<3, 3, T> shearX(const Matrix<3, 3, T>& m, const T& s)
 {
-    TMat<3, 3, T> shear;
+    Matrix<3, 3, T> shear;
     shear[0][1] = s;
 
     return m * shear;
@@ -60,10 +66,10 @@ inline TMat<3, 3, T> shearX(const TMat<3, 3, T>& m, const T& s)
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param s Shear factor.
-template <typename T, template <U32, U32, typename> class TMat>
-inline TMat<3, 3, T> shearY(const TMat<3, 3, T>& m, const T& s)
+template <typename T>
+inline Matrix<3, 3, T> shearY(const Matrix<3, 3, T>& m, const T& s)
 {
-    TMat<3, 3, T> shear;
+    Matrix<3, 3, T> shear;
     shear[1][0] = s;
 
     return m * shear;
@@ -72,16 +78,21 @@ inline TMat<3, 3, T> shearY(const TMat<3, 3, T>& m, const T& s)
 #pragma mark - 3d transform
 
 /// Create a translation 4 * 4 matrix from 3 scalars.
-template <typename T, template <U32, typename> class TVec>
-inline matrix_impl::Matrix<4, 4, T> createTranslateMatrix(const TVec<3, T>& v)
+template <typename T>
+inline Matrix<4, 4, T> createTranslateMatrix(const Vector<3, T>& v)
 {
-    return matrix_impl::Matrix<4, 4, T>(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, v[0], v[1], v[2], 1);
+    // clang-format off
+    return Matrix<4, 4, T>(1,    0,    0,    0,
+                           0,    1,    0,    0,
+                           0,    0,    1,    0,
+                           v[0], v[1], v[2], 1);
+    // clang-format on
 }
 
 /// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle
 /// epressed in radians.
-template <typename T, template <U32, typename> class TVec>
-inline matrix_impl::Matrix<4, 4, T> createRotateMatrix(const TVec<3, T>& v, T angle)
+template <typename T>
+inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, T angle)
 {
     auto c = cos(angle);
     auto s = sin(angle);
@@ -96,9 +107,46 @@ inline matrix_impl::Matrix<4, 4, T> createRotateMatrix(const TVec<3, T>& v, T an
     auto ys = v[1] * s;
     auto zs = v[2] * s;
 
-    return matrix_impl::Matrix<4, 4, T>(v[0] * xc + c, v[1] * xc + zs, v[2] * xc - ys, 0, v[0] * yc - zs, v[1] * yc + c,
-                                        v[2] * yc + xs, 0, v[0] * zc + ys, v[1] * zc - xs, v[2] * zc + c, 0, 0, 0, 0,
-                                        1);
+    // clang-format off
+    return matrix_impl::Matrix<4, 4, T>(
+            v[0] * xc + c, v[1] * xc + zs, v[2] * xc - ys, 0,
+            v[0] * yc - zs, v[1] * yc + c, v[2] * yc + xs, 0,
+            v[0] * zc + ys, v[1] * zc - xs, v[2] * zc + c, 0,
+            0,              0,              0,             1);
+    // clang-format on
+}
+
+/// Create a scale 4 * 4 matrix from a vector of 3 components.
+template <typename T>
+inline Matrix<4, 4, T> createScaleMatrix(const Vector<3, T>& v)
+{
+    // clang-format off
+    return Matrix<4, 4, T>(v[0], 0,    0,    0,
+                           0,    v[1], 0,    0,
+                           0,    0,    v[2], 0,
+                           0,    0,    0,    1);
+    // clang-format on
+}
+
+/// Builds a translation 4 * 4 matrix created from a vector of 3 components.
+///
+/// @param m Input matrix multiplied by this translation matrix.
+/// @param v Coordinates of a translation vector.
+template <typename T>
+inline Matrix<4, 4, T> translate(const Matrix<4, 4, T>& m, const Vector<3, T>& v)
+{
+    return m * createTranslateMatrix(v);
+}
+
+/// Builds a scale 4 * 4 matrix created from a vector of 3 components.
+///
+/// @param m Input matrix multiplied by this scale matrix.
+/// @param v Ratio of scaling for each axis.
+/// @tparam T Value type used to build the matrix
+template <typename T>
+inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const Vector<3, T>& v)
+{
+    return m * createScaleMatrix(v);
 }
 
 } // namespace math
@@ -109,44 +157,6 @@ inline matrix_impl::Matrix<4, 4, T> createRotateMatrix(const TVec<3, T>& v, T an
 
 /*
 
-
-/// Transforms a matrix with a scale 4 * 4 matrix created from a vector of 3
-components.
-/// @see gtc_matrix_transform
-/// @see gtx_transform
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> scale(
-tvec3<T, P> const & v);
-
-*/
-
-/*
-/// @addtogroup gtc_matrix_transform
-/// @{
-
-/// Builds a translation 4 * 4 matrix created from a vector of 3 components.
-///
-/// @param m Input matrix multiplied by this translation matrix.
-/// @param v Coordinates of a translation vector.
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @code
-/// #include <glm/glm.hpp>
-/// #include <glm/gtc/matrix_transform.hpp>
-/// ...
-/// glm::mat4 m = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f));
-/// // m[0][0] == 1.0f, m[0][1] == 0.0f, m[0][2] == 0.0f, m[0][3] == 0.0f
-/// // m[1][0] == 0.0f, m[1][1] == 1.0f, m[1][2] == 0.0f, m[1][3] == 0.0f
-/// // m[2][0] == 0.0f, m[2][1] == 0.0f, m[2][2] == 1.0f, m[2][3] == 0.0f
-/// // m[3][0] == 1.0f, m[3][1] == 1.0f, m[3][2] == 1.0f, m[3][3] == 1.0f
-/// @endcode
-/// @see gtc_matrix_transform
-/// @see - translate(tmat4x4<T, P> const & m, T x, T y, T z)
-/// @see - translate(tvec3<T, P> const & v)
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> translate(
-tmat4x4<T, P> const & m,
-tvec3<T, P> const & v);
 
 /// Builds a rotation 4 * 4 matrix created from an axis vector and an angle.
 ///
@@ -164,19 +174,6 @@ tmat4x4<T, P> const & m,
 T angle,
 tvec3<T, P> const & axis);
 
-/// Builds a scale 4 * 4 matrix created from 3 scalars.
-///
-/// @param m Input matrix multiplied by this scale matrix.
-/// @param v Ratio of scaling for each axis.
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-/// @see - scale(tmat4x4<T, P> const & m, T x, T y, T z)
-/// @see - scale(tvec3<T, P> const & v)
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> scale(
-tmat4x4<T, P> const & m,
-tvec3<T, P> const & v);
 
 /// Creates a matrix for an orthographic parallel viewing volume, using the
 default handedness.

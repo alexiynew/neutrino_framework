@@ -135,6 +135,9 @@ public:
     {
         ADD_TEST(Transform3DTest::createTranslate);
         ADD_TEST(Transform3DTest::createRotate);
+        ADD_TEST(Transform3DTest::createScale);
+        ADD_TEST(Transform3DTest::translate);
+        ADD_TEST(Transform3DTest::scale);
     }
 
 private:
@@ -198,22 +201,88 @@ private:
         TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(1, 1, 1), radians(-49.0f)), m3, 1),
                     "Create rotate matirx from (1, 1, 1) by -49 degrees failed.");
     }
+
+    void createScale()
+    {
+        // clang-format off
+        Matrix4F m = {4, 0, 0, 0,
+                      0, 3, 0, 0,
+                      0, 0, 2, 0,
+                      0, 0, 0, 1};
+        // clang-format on
+
+        TEST_ASSERT(createScaleMatrix(Vector3F(4, 3, 2)) == m, "Create scale matrix from (4, 3, 2) failed.");
+    }
+
+    void translate()
+    {
+        // clang-format off
+        Matrix4F m = {1, 2, 3, 4,
+                      4, 1, 2, 3,
+                      3, 4, 1, 2,
+                      2, 3, 4, 1};
+
+        Matrix4F m1 = {1, 2, 3, 4,
+                       4, 1, 2, 3,
+                       3, 4, 1, 2,
+                       3, 5, 7, 5};
+
+        Matrix4F m2 = {1, 2, 3, 4,
+                       4, 1, 2, 3,
+                       3, 4, 1, 2,
+                       6, 4, 6, 4};
+
+        Matrix4F m3 = {1, 2, 3, 4,
+                       4, 1, 2, 3,
+                       3, 4, 1, 2,
+                       5, 7, 5, 3};
+
+        Matrix4F m4 = {1,  2,  3,  4,
+                       4,  1,  2,  3,
+                       3,  4,  1,  2,
+                       20, 19, 14, 17};
+        // clang-format on
+
+        TEST_ASSERT(::translate(m, Vector3F(0, 0, 0)) == m, "Translate matrix to (0, 0, 0) failed.");
+        TEST_ASSERT(::translate(m, Vector3F(1, 0, 0)) == m1, "Translate matrix to (1, 0, 0) failed.");
+        TEST_ASSERT(::translate(m, Vector3F(0, 1, 0)) == m2, "Translate matrix to (0, 1, 0) failed.");
+        TEST_ASSERT(::translate(m, Vector3F(0, 0, 1)) == m3, "Translate matrix to (0, 0, 1) failed.");
+        TEST_ASSERT(::translate(m, Vector3F(1, 2, 3)) == m4, "Translate matrix to (1, 2, 3) failed.");
+    }
+
+    void scale()
+    {
+        //  clang-format off
+        Matrix4F m = {1, 2, 3, 4, 4, 1, 2, 3, 3, 4, 1, 2, 2, 3, 4, 1};
+
+        Matrix4F m1 = {2, 4, 6, 8, 4, 1, 2, 3, 3, 4, 1, 2, 2, 3, 4, 1};
+
+        Matrix4F m2 = {1, 2, 3, 4, 8, 2, 4, 6, 3, 4, 1, 2, 2, 3, 4, 1};
+
+        Matrix4F m3 = {1, 2, 3, 4, 4, 1, 2, 3, 6, 8, 2, 4, 2, 3, 4, 1};
+        // clang-format on
+
+        TEST_ASSERT(::scale(m, Vector3F(1, 1, 1)) == m, "Translate matrix to (1, 1, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector3F(2, 1, 1)) == m1, "Translate matrix to (2, 1, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector3F(1, 2, 1)) == m2, "Translate matrix to (1, 2, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector3F(1, 1, 2)) == m3, "Translate matrix to (1, 1, 2) failed.");
+    }
 };
 
 int main()
 {
-
+    std::vector<std::unique_ptr<test::Suite>> tests;
     std::vector<std::unique_ptr<test::Suite>> tests;
 
     tests.emplace_back(new Transform2DTest());
     tests.emplace_back(new Transform3DTest());
 
-    bool all_successed = true;
+    bool all_succeeded = true;
 
     for (auto& test : tests) {
         test->run();
-        all_successed &= test->isSuccessed();
+        all_succeeded &= test->isSuccessed();
     }
 
-    return all_successed ? 0 : 1;
+    return all_succeeded ? 0 : 1;
 }
