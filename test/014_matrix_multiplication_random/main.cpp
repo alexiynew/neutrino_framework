@@ -100,7 +100,7 @@ template <typename T>
 struct TAny : public Any
 {
     explicit TAny(T  v)
-        : value(std::move(v)
+        : value(std::move(v))
     {
     }
     T value;
