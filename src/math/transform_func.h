@@ -92,7 +92,7 @@ inline Matrix<4, 4, T> createTranslateMatrix(const Vector<3, T>& v)
 /// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle
 /// epressed in radians.
 template <typename T>
-inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, T angle)
+inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, const T angle)
 {
     auto c = cos(angle);
     auto s = sin(angle);
@@ -109,10 +109,10 @@ inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, T angle)
 
     // clang-format off
     return matrix_impl::Matrix<4, 4, T>(
-            v[0] * xc + c, v[1] * xc + zs, v[2] * xc - ys, 0,
-            v[0] * yc - zs, v[1] * yc + c, v[2] * yc + xs, 0,
-            v[0] * zc + ys, v[1] * zc - xs, v[2] * zc + c, 0,
-            0,              0,              0,             1);
+            v[0] * xc + c,  v[1] * xc + zs, v[2] * xc - ys, 0,
+            v[0] * yc - zs, v[1] * yc + c,  v[2] * yc + xs, 0,
+            v[0] * zc + ys, v[1] * zc - xs, v[2] * zc + c,  0,
+            0,              0,              0,              1);
     // clang-format on
 }
 
@@ -149,6 +149,18 @@ inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const Vector<3, T>& v)
     return m * createScaleMatrix(v);
 }
 
+/// Builds a rotation 4 * 4 matrix created from an axis vector and an angle.
+///
+/// @param m Input matrix multiplied by this rotation matrix.
+/// @param angle Rotation angle expressed in radians.
+/// @param v Rotation axis, recommended to be normalized.
+/// @tparam T Value type used to build the matrix.
+template <typename T>
+inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const Vector<3, T>& v, const T angle)
+{
+    return m * createRotateMatrix(v, angle);
+}
+
 } // namespace math
 
 } // namespace framework
@@ -156,24 +168,6 @@ inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const Vector<3, T>& v)
 #endif
 
 /*
-
-
-/// Builds a rotation 4 * 4 matrix created from an axis vector and an angle.
-///
-/// @param m Input matrix multiplied by this rotation matrix.
-/// @param angle Rotation angle expressed in radians.
-/// @param axis Rotation axis, recommended to be normalized.
-/// @tparam T Value type used to build the matrix. Supported: half, float or
-double.
-/// @see gtc_matrix_transform
-/// @see - rotate(tmat4x4<T, P> const & m, T angle, T x, T y, T z)
-/// @see - rotate(T angle, tvec3<T, P> const & v)
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> rotate(
-tmat4x4<T, P> const & m,
-T angle,
-tvec3<T, P> const & axis);
-
 
 /// Creates a matrix for an orthographic parallel viewing volume, using the
 default handedness.

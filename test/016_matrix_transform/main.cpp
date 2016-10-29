@@ -138,6 +138,7 @@ public:
         ADD_TEST(Transform3DTest::createScale);
         ADD_TEST(Transform3DTest::translate);
         ADD_TEST(Transform3DTest::scale);
+        ADD_TEST(Transform3DTest::rotate);
     }
 
 private:
@@ -188,18 +189,18 @@ private:
         // clang-format on
 
         TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(1, 0, 0), radians(90.0f)), mx, 1),
-                    "Create rotate matirx from (1, 0, 0) by 90 degrees failed.");
+                    "Create rotate matrix from (1, 0, 0) by 90 degrees failed.");
         TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(0, 1, 0), radians(90.0f)), my, 1),
-                    "Create rotate matirx from (0, 1, 0) by 90 degrees failed.");
+                    "Create rotate matrix from (0, 1, 0) by 90 degrees failed.");
         TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(0, 0, 1), radians(90.0f)), mz, 1),
-                    "Create rotate matirx from (0, 0, 1) by 90 degrees failed.");
+                    "Create rotate matrix from (0, 0, 1) by 90 degrees failed.");
 
         TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(1, 0, 1), radians(12.0f)), m1, 6),
-                    "Create rotate matirx from (1, 0, 1) by 12 degrees failed.");
+                    "Create rotate matrix from (1, 0, 1) by 12 degrees failed.");
         TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(0, 1, 0), radians(259.0f)), m2, 4),
-                    "Create rotate matirx from (0, 1, 0) by 259 degrees failed.");
+                    "Create rotate matrix from (0, 1, 0) by 259 degrees failed.");
         TEST_ASSERT(almostEqual(createRotateMatrix(Vector3F(1, 1, 1), radians(-49.0f)), m3, 1),
-                    "Create rotate matirx from (1, 1, 1) by -49 degrees failed.");
+                    "Create rotate matrix from (1, 1, 1) by -49 degrees failed.");
     }
 
     void createScale()
@@ -252,26 +253,69 @@ private:
 
     void scale()
     {
-        //  clang-format off
-        Matrix4F m = {1, 2, 3, 4, 4, 1, 2, 3, 3, 4, 1, 2, 2, 3, 4, 1};
+        // clang-format off
+        Matrix4F m = {1, 2, 3, 4,
+                      4, 1, 2, 3,
+                      3, 4, 1, 2,
+                      2, 3, 4, 1};
 
-        Matrix4F m1 = {2, 4, 6, 8, 4, 1, 2, 3, 3, 4, 1, 2, 2, 3, 4, 1};
+        Matrix4F m1 = {2, 4, 6, 8,
+                       4, 1, 2, 3,
+                       3, 4, 1, 2,
+                       2, 3, 4, 1};
 
-        Matrix4F m2 = {1, 2, 3, 4, 8, 2, 4, 6, 3, 4, 1, 2, 2, 3, 4, 1};
+        Matrix4F m2 = {1, 2, 3, 4,
+                       8, 2, 4, 6,
+                       3, 4, 1, 2,
+                       2, 3, 4, 1};
 
-        Matrix4F m3 = {1, 2, 3, 4, 4, 1, 2, 3, 6, 8, 2, 4, 2, 3, 4, 1};
+        Matrix4F m3 = {1, 2, 3, 4,
+                       4, 1, 2, 3,
+                       6, 8, 2, 4,
+                       2, 3, 4, 1};
         // clang-format on
 
-        TEST_ASSERT(::scale(m, Vector3F(1, 1, 1)) == m, "Translate matrix to (1, 1, 1) failed.");
-        TEST_ASSERT(::scale(m, Vector3F(2, 1, 1)) == m1, "Translate matrix to (2, 1, 1) failed.");
-        TEST_ASSERT(::scale(m, Vector3F(1, 2, 1)) == m2, "Translate matrix to (1, 2, 1) failed.");
-        TEST_ASSERT(::scale(m, Vector3F(1, 1, 2)) == m3, "Translate matrix to (1, 1, 2) failed.");
+        TEST_ASSERT(::scale(m, Vector3F(1, 1, 1)) == m, "Scale matrix to (1, 1, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector3F(2, 1, 1)) == m1, "Scale matrix to (2, 1, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector3F(1, 2, 1)) == m2, "Scale matrix to (1, 2, 1) failed.");
+        TEST_ASSERT(::scale(m, Vector3F(1, 1, 2)) == m3, "Scale matrix to (1, 1, 2) failed.");
+    }
+
+    void rotate()
+    {
+        // clang-format off
+        Matrix4F m = {1, 2, 3, 4,
+                      4, 1, 2, 3,
+                      3, 4, 1, 2,
+                      2, 3, 4, 1};
+
+        Matrix4F mx = {1,  2,  3,  4,
+                       3,  4,  1,  2,
+                       -4, -1, -2, -3,
+                       2,  3,  4,  1};
+
+        Matrix4F my = {-3, -4, -1, -2,
+                        4, 1,  2,  3,
+                        1, 2,  3,  4,
+                        2, 3,  4,  1};
+
+        Matrix4F mz = {4,  1,  2,  3,
+                       -1, -2, -3, -4,
+                       3,  4,  1,  2,
+                       2,  3,  4,  1};
+        // clang-format on
+
+        TEST_ASSERT(almostEqual(::rotate(m, Vector3F(1, 0, 0), radians(90.0f)), mx, 1),
+                    "Rotate matrix from (1, 0, 0) by 90 degrees failed.");
+        TEST_ASSERT(almostEqual(::rotate(m, Vector3F(0, 1, 0), radians(90.0f)), my, 1),
+                    "Rotate matrix from (0, 1, 0) by 90 degrees failed.");
+        TEST_ASSERT(almostEqual(::rotate(m, Vector3F(0, 0, 1), radians(90.0f)), mz, 1),
+                    "Rotate matrix from (0, 0, 1) by 90 degrees failed.");
     }
 };
 
 int main()
 {
-    std::vector<std::unique_ptr<test::Suite>> tests;
     std::vector<std::unique_ptr<test::Suite>> tests;
 
     tests.emplace_back(new Transform2DTest());
