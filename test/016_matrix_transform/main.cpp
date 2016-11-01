@@ -314,12 +314,52 @@ private:
     }
 };
 
+class ProjectionTest : public test::Suite
+{
+public:
+    ProjectionTest()
+    {
+        ADD_TEST(ProjectionTest::orthogonalProjection);
+    }
+
+private:
+    void orthogonalProjection()
+    {
+        float left   = -2;
+        float right  = 2;
+        float bottom = -2;
+        float top    = 2;
+        float near   = 2;
+        float far    = -2;
+
+        // clang-format off
+        Matrix4F right_hand = {
+                2 / (right - left),               0,                                0,                            0,
+                0,                                2 / (top - bottom),               0,                            0,
+                0,                                0,                                -2 / (far - near),            0,
+                -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
+        };
+        // clang-format on
+
+        Matrix4F left_hand = right_hand;
+        left_hand[2][2] *= -1;
+
+        TEST_ASSERT(::ortho(left, right, bottom, top, near, far) == right_hand,
+                    "Default orthogonal projection matrix is not correct.");
+        TEST_ASSERT(::orthoRH(left, right, bottom, top, near, far) == right_hand,
+                    "Right-hand orthogonal projection matrix is not correct.");
+        TEST_ASSERT(::orthoLH(left, right, bottom, top, near, far) == left_hand,
+                    "Left-hand orthogonal projection matrix is not correct.");
+    }
+};
+
 int main()
 {
     std::vector<std::unique_ptr<test::Suite>> tests;
 
     tests.emplace_back(new Transform2DTest());
     tests.emplace_back(new Transform3DTest());
+    tests.emplace_back(new ProjectionTest());
 
     bool all_succeeded = true;
 
