@@ -68,10 +68,10 @@ int main()
     // vector access
     {
 
-        // TODO add data access test
+        // TODO:0 add data access test id:6
         // double* p = v4d.data();
         // ASSERT_MSG(p[0] == 1.0 && p[1] == 2.0 && p[2] == 3.0 && p[3] == 4.0, "pointer data access");
-        // TODO: add vector bool pointer access
+        // TODO:0 add vector bool pointer access id:7
         Vector4D v4d(1.1, 2.2, 3.3, 4.4);
         Vector3F v3f(5.5f, 6.6f, 7.7f);
         Vector2I v2i(1, 2);

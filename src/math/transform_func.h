@@ -221,6 +221,20 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
     return orthoRH(left, right, bottom, top, near, far);
 }
 
+/// Creates a matrix for projecting two-dimensional coordinates onto the screen.
+///
+/// @param left Left clipping plane.
+/// @param right Right clipping plane.
+/// @param bottom Bottom clipping plane.
+/// @param top Top clipping plane.
+/// @tparam T Value type used to build the matrix
+template <typename T>
+inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const T top)
+{
+    // Right-handedness hand is default.
+    return orthoRH(left, right, bottom, top, T(1), T(-1));
+}
+
 } // namespace math
 
 } // namespace framework
@@ -228,23 +242,6 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
 #endif
 
 /*
-/// Creates a matrix for projecting two-dimensional coordinates onto the screen.
-///
-/// @param left
-/// @param right
-/// @param bottom
-/// @param top
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-/// @see - glm::ortho(T const & left, T const & right, T const & bottom, T const
-& top, T const & zNear, T const & zFar)
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> ortho(
-T left,
-T right,
-T bottom,
-T top);
 
 /// Creates a frustum matrix with default handedness.
 ///

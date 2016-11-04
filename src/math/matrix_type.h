@@ -1633,9 +1633,9 @@ inline Matrix<C, R, T> operator+(const Matrix<C, R, T>& m)
     return m;
 }
 
-// TODO make it same type
+// TODO:0 make it same type id:0
 // binary operators
-// TODO: simplify
+// TODO:0 simplify id:1
 template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
 inline const Matrix<4, 4, RT> operator*(const Matrix<4, 4, T>& lhs, const Matrix<4, 4, U>& rhs)
 {

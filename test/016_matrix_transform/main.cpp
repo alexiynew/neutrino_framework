@@ -344,12 +344,18 @@ private:
         Matrix4F left_hand = right_hand;
         left_hand[2][2] *= -1;
 
+        Matrix4F ortho2D = right_hand;
+        ortho2D[2][2]    = 1;
+        ortho2D[3][2]    = 0;
+
         TEST_ASSERT(::ortho(left, right, bottom, top, near, far) == right_hand,
                     "Default orthogonal projection matrix is not correct.");
         TEST_ASSERT(::orthoRH(left, right, bottom, top, near, far) == right_hand,
                     "Right-hand orthogonal projection matrix is not correct.");
         TEST_ASSERT(::orthoLH(left, right, bottom, top, near, far) == left_hand,
                     "Left-hand orthogonal projection matrix is not correct.");
+
+        TEST_ASSERT(::ortho(left, right, bottom, top) == ortho2D, "2D orthogonal projection matrix is not correct.");
     }
 };
 

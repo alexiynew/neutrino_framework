@@ -4,8 +4,6 @@ SET(CMAKE_CXX_COMPILER clang++-4.0)
 
 PROJECT(framework)
 
-SET(CMAKE_CTEST_COMMAND ctest -V)
-
 SET(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 SET(TESTS_DIR ${CMAKE_SOURCE_DIR}/test)
 SET(COMPILE_FLAGS "-Weverything -std=c++14 -Wno-c++98-compat -Wno-padded")

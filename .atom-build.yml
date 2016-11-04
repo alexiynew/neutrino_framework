@@ -1,0 +1,10 @@
+cmd: "{PROJECT_PATH}/bin/Release/test/run_all_tests.py"
+name: "Run"
+errorMatch: "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):?(?<col>\\d+)?\\s+(?<message>.+)"
+targets:
+    Configure:
+        cmd: "mkdir -p {PROJECT_PATH}/build && cd {PROJECT_PATH}/build && cmake -DCMAKE_BUILD_TYPE=Release ../"
+
+    Build:
+        cmd: "make all && make CreateTestSuiteExecutable"
+        cwd: "{PROJECT_PATH}/build"

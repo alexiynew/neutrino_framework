@@ -1,61 +1,27 @@
-
 Framework:
   Math:
-    ☐ Add qunterions
+    // TODO Add qunterions
 
-    ✔ Add access  with row and columns for matrices @done (16-05-02 10:28)
-      https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_access.hpp
-
-    ✔ Add affineInverse. inverseTranspose @started(16-05-15 14:39) @done (16-06-12 23:05) @lasted(28 days, 8:26)
-      https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_inverse.hpp
-
-    ☐ Add matrix transform @started(16-08-06 12:31)
+    // TODO Add matrix transform @started(16-08-06 12:31)
       https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_transform.hpp
 
-    ✔ Add matrix functions @started(16-05-02 10:31) @done (16-05-15 14:38) @lasted(13 days, 4:07)
-      https://github.com/g-truc/glm/blob/66b714c418df19f072e08a08e4f22669ad7df5ba/glm/detail/func_matrix.hpp
+    // TODO  Add doxigen description comments to all functions
 
-    ✔ Create constants file @done (16-05-01 12:28)
+    // TODO  Write all error messages with big first letter
 
-    ✘ Rename matrix template paramert C, R to N, M. N for columns, M for rows  @cancelled (16-05-07 11:37)
+    // TODO  Think about replacing type_creator with for loop. Check inlining in both cases.
 
-    ✔ Add matrix from pinter constrctor @started(16-05-01 22:16) @done (16-05-02 10:02) @lasted(11:46)
+    // TODO  Sart to use The Clang Static Analyzer and fcatch-undefined-behavior -ftrapv
 
-    ☐ Add doxigen description comments to all functions
+    // TODO  Rewrite all tests with new test Suite class.
 
-    ✔ Make the simple framework for tests, to make them clean and easy maintainable @done (16-08-06 12:12)
+    // TODO  Rename test folders and add subfolders.
 
-    ✔ Write type names in CamelCase, to make it convenient @started(16-07-01 22:42) @done (16-07-10 13:46) @lasted(8 days, 15:04)
+    // TODO  Rename all headers with hpp extention.
 
-    ✔ Write function names in camelCase, to make it convenient @done (16-07-11 23:31)
+    // TODO  Rename all lockal variables in snake_case.
 
-    ☐ Write all error messages with big first letter
+    // TODO  Add test for test utils.
 
-    ✔ Make assert working like standart c++ asserts @started(16-07-02 11:00) @done (16-07-10 12:35) @lasted(8 days, 1:35)
-
-    ☐ Think about replacing type_creator with for loop. Check inlining in both cases.
-
-    ☐ Sart to use The Clang Static Analyzer and fcatch-undefined-behavior -ftrapv
-
-    ☐ Rewrite all tests with new test Suite class.
-
-    ☐ Rename test folders and add subfolders.
-
-    ☐ Rename all headers with hpp extention.
-
-    ☐ Rename all lockal variables in camelCase.
-
-    ☐ Add test for test utils.
-
-
----- ✄ -----------------------
-
-  Build:
-    ✔ Make TODO comments parsing @done (16-05-02 10:02)
-
-    ☐ Add docs generation
-
-
-
-
-
+Build:
+    // TODO  Add docs generation
