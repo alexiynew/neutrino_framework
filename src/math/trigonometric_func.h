@@ -10,7 +10,7 @@ namespace framework {
 
 namespace math {
 
-// TODO:0 make like in std lib:: A set of overloads or a function template id:2
+// TODO: make like in std lib:: A set of overloads or a function template id:2
 // accepting an argument of any integral type.
 // Equivalent to 2) (the argument is cast to double).
 
