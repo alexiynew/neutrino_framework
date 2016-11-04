@@ -8,6 +8,8 @@ namespace framework {
 
 namespace math {
 
+#pragma mark - Types declarations
+
 template <U32 C, U32 R, typename T>
 using Matrix = matrix_impl::Matrix<C, R, T>;
 
@@ -161,6 +163,8 @@ inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const Vector<3, T>& v, c
     return m * createRotateMatrix(v, angle);
 }
 
+#pragma mark - Projection
+
 /// Creates a matrix for an orthographic parallel viewing volume, using left-handedness.
 ///
 /// @param left Left clipping plane.
@@ -235,6 +239,69 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
     return orthoRH(left, right, bottom, top, T(1), T(-1));
 }
 
+/// Creates a left handed frustum matrix.
+///
+/// @param left Left clipping plane.
+/// @param right Right clipping plane.
+/// @param bottom Bottom clipping plane.
+/// @param top Top clipping plane.
+/// @param near Near clipping plane.
+/// @param far Far clipping plane.
+/// @tparam T Value type used to build the matrix
+template <typename T>
+inline Matrix<4, 4, T> frustumLH(const T left, const T right, const T bottom, const T top, const T near, const T far)
+{
+
+    // clang-format off
+    return Matrix<4, 4, T> (
+        2 * near / (right - left),       0,                               0,                              0,
+        0,                               2 * near / (top - bottom),       0,                              0,
+        (right + left) / (right - left), (top + bottom) / (top - bottom), (far + near) / (far - near),   -1,
+        0,                               0,                               -2 * far * near / (far - near), 0
+    );
+    // clang-format on
+}
+
+/// Creates a right handed frustum matrix.
+///
+/// @param left Left clipping plane.
+/// @param right Right clipping plane.
+/// @param bottom Bottom clipping plane.
+/// @param top Top clipping plane.
+/// @param near Near clipping plane.
+/// @param far Far clipping plane.
+/// @tparam T Value type used to build the matrix
+template <typename T>
+inline Matrix<4, 4, T> frustumRH(const T left, const T right, const T bottom, const T top, const T near, const T far)
+{
+
+    // clang-format off
+    return Matrix<4, 4, T> (
+        2 * near / (right - left),       0,                               0,                              0,
+        0,                               2 * near / (top - bottom),       0,                              0,
+        (right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near),  -1,
+        0,                               0,                               -2 * far * near / (far - near), 0
+    );
+    // clang-format on
+}
+
+/// Creates a frustum matrix with default handedness.
+///
+/// @param left Left clipping plane.
+/// @param right Right clipping plane.
+/// @param bottom Bottom clipping plane.
+/// @param top Top clipping plane.
+/// @param near Near clipping plane.
+/// @param far Far clipping plane.
+/// @tparam T Value type used to build the matrix
+template <typename T>
+inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near, const T far)
+{
+    // Right-handedness hand is default.
+    return frustumRH(left, right, bottom, top, near, far);
+}
+
+
 } // namespace math
 
 } // namespace framework
@@ -243,65 +310,6 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
 
 /*
 
-/// Creates a frustum matrix with default handedness.
-///
-/// @param left
-/// @param right
-/// @param bottom
-/// @param top
-/// @param near
-/// @param far
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> frustum(
-T left,
-T right,
-T bottom,
-T top,
-T near,
-T far);
-
-/// Creates a left handed frustum matrix.
-///
-/// @param left
-/// @param right
-/// @param bottom
-/// @param top
-/// @param near
-/// @param far
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> frustumLH(
-T left,
-T right,
-T bottom,
-T top,
-T near,
-T far);
-
-/// Creates a right handed frustum matrix.
-///
-/// @param left
-/// @param right
-/// @param bottom
-/// @param top
-/// @param near
-/// @param far
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> frustumRH(
-T left,
-T right,
-T bottom,
-T top,
-T near,
-T far);
 
 /// Creates a matrix for a symetric perspective-view frustum based on the
 default handedness.

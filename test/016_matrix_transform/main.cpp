@@ -320,6 +320,7 @@ public:
     ProjectionTest()
     {
         ADD_TEST(ProjectionTest::orthogonalProjection);
+        ADD_TEST(ProjectionTest::perspectiveProjection);
     }
 
 private:
@@ -356,6 +357,36 @@ private:
                     "Left-hand orthogonal projection matrix is not correct.");
 
         TEST_ASSERT(::ortho(left, right, bottom, top) == ortho2D, "2D orthogonal projection matrix is not correct.");
+    }
+
+    void perspectiveProjection()
+    {
+        float left   = -2;
+        float right  = 2;
+        float bottom = -2;
+        float top    = 2;
+        float near   = 2;
+        float far    = -2;
+
+        // clang-format off
+        Matrix4F right_hand = {
+            2 * near / (right - left),       0,                               0,                              0,
+            0,                               2 * near / (top - bottom),       0,                              0,
+            (right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near),  -1,
+            0,                               0,                               -2 * far * near / (far - near), 0
+        };
+        // clang-format on
+
+        Matrix4F left_hand = right_hand;
+        left_hand[2][2] *= -1;
+
+
+        TEST_ASSERT(::frustum(left, right, bottom, top, near, far) == right_hand,
+                    "Default perspective projection matrix is not correct.");
+        TEST_ASSERT(::frustumRH(left, right, bottom, top, near, far) == right_hand,
+                    "Right-hand perspective projection matrix is not correct.");
+        TEST_ASSERT(::frustumLH(left, right, bottom, top, near, far) == right_hand,
+                    "Left-hand perspective projection matrix is not correct.");
     }
 };
 

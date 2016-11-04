@@ -1,5 +1,5 @@
 cmd: "{PROJECT_PATH}/bin/Release/test/run_all_tests.py"
-name: "Run"
+name: Run
 errorMatch: "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):?(?<col>\\d+)?\\s+(?<message>.+)"
 targets:
     Configure:
@@ -8,3 +8,13 @@ targets:
     Build:
         cmd: "make all && make CreateTestSuiteExecutable"
         cwd: "{PROJECT_PATH}/build"
+        atomCommandName: Build
+
+    BuilAndRun:
+        cmd: "make all && make CreateTestSuiteExecutable && {PROJECT_PATH}/bin/Release/test/run_all_tests.py"
+        cwd: "{PROJECT_PATH}/build"
+        atomCommandName: BuildAndRun
+
+    RunVerbose:
+        cmd: "{PROJECT_PATH}/bin/Release/test/run_all_tests.py -v"
+        atomCommandName: RunVerbose
