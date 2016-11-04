@@ -1,27 +1,29 @@
 Framework:
   Math:
-    // TODO Add qunterions
 
-    // TODO Add matrix transform @started(16-08-06 12:31)
-      https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_transform.hpp
+    ☐ Add qunterions
 
-    // TODO  Add doxigen description comments to all functions
+    ☐ Add matrix transform @started(16-08-06 12:31)
+        https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_transform.hpp
 
-    // TODO  Write all error messages with big first letter
+    ☐ Add doxigen description comments to all functions
 
-    // TODO  Think about replacing type_creator with for loop. Check inlining in both cases.
+    ☐ Write all error messages with big first letter
 
-    // TODO  Sart to use The Clang Static Analyzer and fcatch-undefined-behavior -ftrapv
+    ☐ Think about replacing type_creator with for loop. Check inlining in both cases.
 
-    // TODO  Rewrite all tests with new test Suite class.
+    ☐ Sart to use The Clang Static Analyzer and fcatch-undefined-behavior -ftrapv
 
-    // TODO  Rename test folders and add subfolders.
+    ☐ Rewrite all tests with new test Suite class.
 
-    // TODO  Rename all headers with hpp extention.
+    ☐ Rename test folders and add subfolders.
 
-    // TODO  Rename all lockal variables in snake_case.
+    ☐ Rename all headers with hpp extention.
 
-    // TODO  Add test for test utils.
+    ☐ Rename all lockal variables in snake_case.
+
+    ☐ Add test for test utils.
 
 Build:
-    // TODO  Add docs generation
+
+    ☐ Add docs generation
