@@ -319,19 +319,20 @@ class ProjectionTest : public test::Suite
 public:
     ProjectionTest()
     {
-        ADD_TEST(ProjectionTest::orthogonalProjection);
-        ADD_TEST(ProjectionTest::perspectiveProjection);
+        ADD_TEST(ProjectionTest::orthogonal);
+        ADD_TEST(ProjectionTest::frustum);
+        ADD_TEST(ProjectionTest::perspective);
     }
 
 private:
-    void orthogonalProjection()
+    void orthogonal()
     {
-        float left   = -2;
-        float right  = 2;
-        float bottom = -2;
-        float top    = 2;
-        float near   = 2;
-        float far    = -2;
+        F32 left   = -2;
+        F32 right  = 2;
+        F32 bottom = -2;
+        F32 top    = 2;
+        F32 near   = 2;
+        F32 far    = -2;
 
         // clang-format off
         Matrix4F right_hand = {
@@ -359,14 +360,14 @@ private:
         TEST_ASSERT(::ortho(left, right, bottom, top) == ortho2D, "2D orthogonal projection matrix is not correct.");
     }
 
-    void perspectiveProjection()
+    void frustum()
     {
-        float left   = -2;
-        float right  = 2;
-        float bottom = -2;
-        float top    = 2;
-        float near   = 2;
-        float far    = -2;
+        F32 left   = -2;
+        F32 right  = 2;
+        F32 bottom = -2;
+        F32 top    = 2;
+        F32 near   = 2;
+        F32 far    = -2;
 
         // clang-format off
         Matrix4F right_hand = {
@@ -386,6 +387,35 @@ private:
         TEST_ASSERT(::frustumRH(left, right, bottom, top, near, far) == right_hand,
                     "Right-hand perspective projection matrix is not correct.");
         TEST_ASSERT(::frustumLH(left, right, bottom, top, near, far) == right_hand,
+                    "Left-hand perspective projection matrix is not correct.");
+    }
+
+    void perspective()
+    {
+        F32 fovy   = F32(HALF_PI);
+        F32 aspect = 2;
+        F32 near   = 0;
+        F32 far    = -10;
+
+        F32 tan_half_fovy = tan(fovy / 2);
+
+        // clang-format off
+        Matrix4F right_hand = {
+           1 / (aspect * tan_half_fovy), 0,                 0,                              0,
+           0,                            1 / tan_half_fovy, 0,                              0,
+           0,                            0,                 -(far + near) / (far - near),   -1,
+           0,                            0,                 -2 * far * near / (far - near), 0
+       };
+        // clang-format on
+
+        Matrix4F left_hand = right_hand;
+        left_hand[2][2] *= -1;
+
+        TEST_ASSERT(::perspective(fovy, aspect, near, far) == right_hand,
+                    "Default perspective projection matrix is not correct.");
+        TEST_ASSERT(::perspectiveRH(fovy, aspect, near, far) == right_hand,
+                    "Right-hand perspective projection matrix is not correct.");
+        TEST_ASSERT(::perspectiveLH(fovy, aspect, near, far) == left_hand,
                     "Left-hand perspective projection matrix is not correct.");
     }
 };

@@ -179,9 +179,9 @@ inline Matrix<4, 4, T> orthoLH(const T left, const T right, const T bottom, cons
 {
     // clang-format off
     return Matrix<4, 4, T> (
-        2 / (right - left),               0,                                0,                            0,
-        0,                                2 / (top - bottom),               0,                            0,
-        0,                                0,                                2 / (far - near),             0,
+        T(2) / (right - left),            0,                                0,                            0,
+        0,                                T(2) / (top - bottom),            0,                            0,
+        0,                                0,                                T(2) / (far - near),          0,
         -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
     );
     // clang-format on
@@ -201,9 +201,9 @@ inline Matrix<4, 4, T> orthoRH(const T left, const T right, const T bottom, cons
 {
     // clang-format off
     return Matrix<4, 4, T> (
-            2 / (right - left),               0,                                0,                            0,
-            0,                                2 / (top - bottom),               0,                            0,
-            0,                                0,                                -2 / (far - near),            0,
+            T(2) / (right - left),            0,                                0,                            0,
+            0,                                T(2) / (top - bottom),            0,                            0,
+            0,                                0,                                T(-2) / (far - near),         0,
             -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
     );
     // clang-format on
@@ -251,13 +251,12 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
 template <typename T>
 inline Matrix<4, 4, T> frustumLH(const T left, const T right, const T bottom, const T top, const T near, const T far)
 {
-
     // clang-format off
     return Matrix<4, 4, T> (
-        2 * near / (right - left),       0,                               0,                              0,
-        0,                               2 * near / (top - bottom),       0,                              0,
-        (right + left) / (right - left), (top + bottom) / (top - bottom), (far + near) / (far - near),   -1,
-        0,                               0,                               -2 * far * near / (far - near), 0
+        T(2) * near / (right - left),    0,                               0,                                 0,
+        0,                               T(2) * near / (top - bottom),    0,                                 0,
+        (right + left) / (right - left), (top + bottom) / (top - bottom), (far + near) / (far - near),       -1,
+        0,                               0,                               T(-2) * far * near / (far - near), 0
     );
     // clang-format on
 }
@@ -274,13 +273,12 @@ inline Matrix<4, 4, T> frustumLH(const T left, const T right, const T bottom, co
 template <typename T>
 inline Matrix<4, 4, T> frustumRH(const T left, const T right, const T bottom, const T top, const T near, const T far)
 {
-
     // clang-format off
     return Matrix<4, 4, T> (
-        2 * near / (right - left),       0,                               0,                              0,
-        0,                               2 * near / (top - bottom),       0,                              0,
-        (right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near),  -1,
-        0,                               0,                               -2 * far * near / (far - near), 0
+        T(2) * near / (right - left),    0,                               0,                                 0,
+        0,                               T(2) * near / (top - bottom),    0,                                 0,
+        (right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near),      -1,
+        0,                               0,                               T(-2) * far * near / (far - near), 0
     );
     // clang-format on
 }
@@ -301,6 +299,70 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
     return frustumRH(left, right, bottom, top, near, far);
 }
 
+/// Creates a matrix for a left handed, symetric perspective-view frustum.
+///
+/// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
+/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
+///        The aspect ratio is the ratio of x (width) to y (height).
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+/// @tparam T Value type used to build the matrix
+template <typename T>
+inline Matrix<4, 4, T> perspectiveLH(T fovy, T aspect, T near, T far)
+{
+    ASSERT(abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+
+    T const tan_half_fovy = tan(fovy / T(2));
+
+    // clang-format off
+    return Matrix<4, 4, T> (
+        T(1) / (aspect * tan_half_fovy), 0,                    0,                                 0,
+        0,                               T(1) / tan_half_fovy, 0,                                 0,
+        0,                               0,                    (far + near) / (far - near),       -1,
+        0,                               0,                    T(-2) * far * near / (far - near), 0
+    );
+    // clang-format on
+}
+
+/// Creates a matrix for a right handed, symetric perspective-view frustum.
+///
+/// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
+/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
+///        The aspect ratio is the ratio of x (width) to y (height).
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+/// @tparam T Value type used to build the matrix
+template <typename T>
+inline Matrix<4, 4, T> perspectiveRH(T fovy, T aspect, T near, T far)
+{
+    ASSERT(abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+
+    T const tan_half_fovy = tan(fovy / T(2));
+
+    // clang-format off
+    return Matrix<4, 4, T> (
+        T(1) / (aspect * tan_half_fovy), 0,                    0,                                 0,
+        0,                               T(1) / tan_half_fovy, 0,                                 0,
+        0,                               0,                    -(far + near) / (far - near),      -1,
+        0,                               0,                    T(-2) * far * near / (far - near), 0
+    );
+    // clang-format on
+}
+
+/// Creates a matrix for a default handedness, symetric perspective-view frustum.
+///
+/// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
+/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
+///        The aspect ratio is the ratio of x (width) to y (height).
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+/// @tparam T Value type used to build the matrix
+template <typename T>
+inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
+{
+    // Right-handedness hand is default.
+    return perspectiveRH(fovy, aspect, near, far);
+}
 
 } // namespace math
 
@@ -309,71 +371,6 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 #endif
 
 /*
-
-
-/// Creates a matrix for a symetric perspective-view frustum based on the
-default handedness.
-///
-/// @param fovy Specifies the field of view angle in the y direction. Expressed
-in radians.
-/// @param aspect Specifies the aspect ratio that determines the field of view
-in the x direction. The aspect ratio is
-the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping
-plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane
-(always positive).
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> perspective(
-T fovy,
-T aspect,
-T near,
-T far);
-
-/// Creates a matrix for a right handed, symetric perspective-view frustum.
-///
-/// @param fovy Specifies the field of view angle, in degrees, in the y
-direction. Expressed in radians.
-/// @param aspect Specifies the aspect ratio that determines the field of view
-in the x direction. The aspect ratio is
-the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping
-plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane
-(always positive).
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> perspectiveRH(
-T fovy,
-T aspect,
-T near,
-T far);
-
-/// Creates a matrix for a left handed, symetric perspective-view frustum.
-///
-/// @param fovy Specifies the field of view angle, in degrees, in the y
-direction. Expressed in radians.
-/// @param aspect Specifies the aspect ratio that determines the field of view
-in the x direction. The aspect ratio is
-the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping
-plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane
-(always positive).
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> perspectiveLH(
-T fovy,
-T aspect,
-T near,
-T far);
 
 /// Builds a perspective projection matrix based on a field of view and the
 default handedness.
@@ -487,43 +484,6 @@ plane (always positive).
 template <typename T>
 GLM_FUNC_DECL tmat4x4<T, defaultp> infinitePerspectiveRH(
 T fovy, T aspect, T near);
-
-/// Creates a matrix for a symmetric perspective-view frustum with far plane at
-infinite for graphics hardware that
-doesn't support depth clamping.
-///
-/// @param fovy Specifies the field of view angle, in degrees, in the y
-direction. Expressed in radians.
-/// @param aspect Specifies the aspect ratio that determines the field of view
-in the x direction. The aspect ratio is
-the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping
-plane (always positive).
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> tweakedInfinitePerspective(
-T fovy, T aspect, T near);
-
-/// Creates a matrix for a symmetric perspective-view frustum with far plane at
-infinite for graphics hardware that
-doesn't support depth clamping.
-///
-/// @param fovy Specifies the field of view angle, in degrees, in the y
-direction. Expressed in radians.
-/// @param aspect Specifies the aspect ratio that determines the field of view
-in the x direction. The aspect ratio is
-the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping
-plane (always positive).
-/// @param ep
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> tweakedInfinitePerspective(
-T fovy, T aspect, T near, T ep);
 
 /// Map the specified object coordinates (obj.x, obj.y, obj.z) into window
 coordinates.
