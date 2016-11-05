@@ -35,8 +35,8 @@ inline Matrix<3, 3, T> translate(const Matrix<3, 3, T>& m, const Vector<2, T>& v
 template <typename T>
 inline Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& m, const T angle)
 {
-    T const c = cos(angle);
-    T const s = sin(angle);
+    T const c = math::cos(angle);
+    T const s = math::sin(angle);
 
     return Matrix<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
 }
@@ -96,8 +96,8 @@ inline Matrix<4, 4, T> createTranslateMatrix(const Vector<3, T>& v)
 template <typename T>
 inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, const T angle)
 {
-    auto c = cos(angle);
-    auto s = sin(angle);
+    auto c = math::cos(angle);
+    auto s = math::sin(angle);
 
     auto c_1 = 1 - c;
 
@@ -233,7 +233,7 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
 /// @param top Top clipping plane.
 /// @tparam T Value type used to build the matrix
 template <typename T>
-inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const T top)
+inline Matrix<4, 4, T> ortho2D(const T left, const T right, const T bottom, const T top)
 {
     // Right-handedness hand is default.
     return orthoRH(left, right, bottom, top, T(1), T(-1));
@@ -310,9 +310,9 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 template <typename T>
 inline Matrix<4, 4, T> perspectiveLH(T fovy, T aspect, T near, T far)
 {
-    ASSERT(abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
 
-    T const tan_half_fovy = tan(fovy / T(2));
+    T const tan_half_fovy = math::tan(fovy / T(2));
 
     // clang-format off
     return Matrix<4, 4, T> (
@@ -335,9 +335,9 @@ inline Matrix<4, 4, T> perspectiveLH(T fovy, T aspect, T near, T far)
 template <typename T>
 inline Matrix<4, 4, T> perspectiveRH(T fovy, T aspect, T near, T far)
 {
-    ASSERT(abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
 
-    T const tan_half_fovy = tan(fovy / T(2));
+    T const tan_half_fovy = math::tan(fovy / T(2));
 
     // clang-format off
     return Matrix<4, 4, T> (
@@ -364,6 +364,77 @@ inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
     return perspectiveRH(fovy, aspect, near, far);
 }
 
+/// Builds a left handed perspective projection matrix based on a field of view.
+///
+/// @param fov Expressed in radians.
+/// @param width Width of the plane
+/// @param height Height of the plane
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive)
+/// @param far Specifies the distance from the viewer to the far clipping plane (always positive)
+/// @tparam T Value type used to build the matrix.
+template <typename T>
+inline Matrix<4, 4, T> perspectiveFovLH(T fov, T width, T height, T near, T far)
+{
+    ASSERT(width > T(0));
+    ASSERT(height > T(0));
+    ASSERT(fov > T(0));
+
+    const T h = math::cos(fov / T(2)) / math::sin(fov / T(2));
+    const T w = h * height / width;
+
+    // clang-format off
+    return Matrix<4, 4, T> (
+        w, 0, 0,                                 0,
+        0, h, 0,                                 0,
+        0, 0, (far + near) / (far - near),       -1,
+        0, 0, T(-2) * far * near / (far - near), 0
+    );
+    // clang-format on
+}
+
+/// Builds a right handed perspective projection matrix based on a field of
+///
+/// @param fov Expressed in radians.
+/// @param width Width of the plane
+/// @param height Height of the plane
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive)
+/// @param far Specifies the distance from the viewer to the far clipping plane (always positive)
+/// @tparam T Value type used to build the matrix.
+template <typename T>
+inline Matrix<4, 4, T> perspectiveFovRH(T fov, T width, T height, T near, T far)
+{
+    ASSERT(width > T(0));
+    ASSERT(height > T(0));
+    ASSERT(fov > T(0));
+
+    const T h = math::cos(fov / T(2)) / math::sin(fov / T(2));
+    const T w = h * height / width;
+
+    // clang-format off
+    return Matrix<4, 4, T> (
+        w, 0, 0,                                 0,
+        0, h, 0,                                 0,
+        0, 0, -(far + near) / (far - near),      -1,
+        0, 0, T(-2) * far * near / (far - near), 0
+    );
+    // clang-format on
+}
+
+/// Builds a perspective projection matrix based on a field of view and the default handedness.
+///
+/// @param fov Expressed in radians.
+/// @param width Width of the plane
+/// @param height Height of the plane
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive)
+/// @param far Specifies the distance from the viewer to the far clipping plane (always positive)
+/// @tparam T Value type used to build the matrix.
+template <typename T>
+inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
+{
+    // Right-handedness hand is default.
+    return perspectiveFovRH(fov, width, height, near, far);
+}
+
 } // namespace math
 
 } // namespace framework
@@ -371,68 +442,6 @@ inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
 #endif
 
 /*
-
-/// Builds a perspective projection matrix based on a field of view and the
-default handedness.
-///
-/// @param fov Expressed in radians.
-/// @param width
-/// @param height
-/// @param near Specifies the distance from the viewer to the near clipping
-plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane
-(always positive).
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> perspectiveFov(
-T fov,
-T width,
-T height,
-T near,
-T far);
-
-/// Builds a right handed perspective projection matrix based on a field of
-view.
-///
-/// @param fov Expressed in radians.
-/// @param width
-/// @param height
-/// @param near Specifies the distance from the viewer to the near clipping
-plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane
-(always positive).
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> perspectiveFovRH(
-T fov,
-T width,
-T height,
-T near,
-T far);
-
-/// Builds a left handed perspective projection matrix based on a field of view.
-///
-/// @param fov Expressed in radians.
-/// @param width
-/// @param height
-/// @param near Specifies the distance from the viewer to the near clipping
-plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane
-(always positive).
-/// @tparam T Value type used to build the matrix. Currently supported: half
-(not recommanded), float or double.
-/// @see gtc_matrix_transform
-template <typename T>
-GLM_FUNC_DECL tmat4x4<T, defaultp> perspectiveFovLH(
-T fov,
-T width,
-T height,
-T near,
-T far);
 
 /// Creates a matrix for a symmetric perspective-view frustum with far plane at
 infinite with default handedness.
