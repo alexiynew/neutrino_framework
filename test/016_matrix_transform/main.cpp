@@ -323,6 +323,7 @@ public:
         ADD_TEST(ProjectionTest::frustum);
         ADD_TEST(ProjectionTest::perspective);
         ADD_TEST(ProjectionTest::perspectiveFov);
+        ADD_TEST(ProjectionTest::infinitePerspective);
     }
 
 private:
@@ -350,6 +351,8 @@ private:
         Matrix4F ortho2D = right_hand;
         ortho2D[2][2]    = 1;
         ortho2D[3][2]    = 0;
+
+        // TODO: Add tests with vector clamped in [-1:1]
 
         TEST_ASSERT(::ortho(left, right, bottom, top, near, far) == right_hand,
                     "Default orthogonal projection matrix is not correct.");
@@ -382,6 +385,7 @@ private:
         Matrix4F left_hand = right_hand;
         left_hand[2][2] *= -1;
 
+        // TODO: Add tests with vector clamped in [-1:1]
 
         TEST_ASSERT(::frustum(left, right, bottom, top, near, far) == right_hand,
                     "Default perspective projection matrix is not correct.");
@@ -411,6 +415,8 @@ private:
 
         Matrix4F left_hand = right_hand;
         left_hand[2][2] *= -1;
+
+        // TODO: Add tests with vector clamped in [-1:1]
 
         TEST_ASSERT(::perspective(fovy, aspect, near, far) == right_hand,
                     "Default perspective projection matrix is not correct.");
@@ -443,12 +449,49 @@ private:
         Matrix4F left_hand = right_hand;
         left_hand[2][2] *= -1;
 
+        // TODO: Add tests with vector clamped in [-1:1]
+
         TEST_ASSERT(::perspectiveFov(fov, width, height, near, far) == right_hand,
                     "Default perspectiveFov projection matrix is not correct.");
         TEST_ASSERT(::perspectiveFovRH(fov, width, height, near, far) == right_hand,
                     "Right-hand perspectiveFov projection matrix is not correct.");
         TEST_ASSERT(::perspectiveFovLH(fov, width, height, near, far) == left_hand,
                     "Left-hand perspectiveFov projection matrix is not correct.");
+    }
+
+    void infinitePerspective()
+    {
+        F32 fovy   = F32(QUARTER_PI);
+        F32 aspect = 2;
+        F32 near   = 0.000001f;
+
+        F32 range  = tan(fovy / 2) * near;
+        F32 left   = -range * aspect;
+        F32 right  = range * aspect;
+        F32 bottom = -range;
+        F32 top    = range;
+
+        // clang-format off
+        Matrix4F right_hand = {
+            (2 * near) / (right - left), 0,                           0,         0,
+            0,                           (2 * near) / (top - bottom), 0,         0,
+            0,                           0,                           -1,        -1,
+            0,                           0,                           -2 * near, 0
+        };
+        // clang-format on
+
+        Matrix4F left_hand = right_hand;
+        left_hand[2][2] *= -1;
+        left_hand[2][3] *= -1;
+
+        // TODO: Add tests with vector clamped in [-1:1]
+
+        TEST_ASSERT(::infinitePerspective(fovy, aspect, near) == right_hand,
+                    "Default infinite perspective projection matrix is not correct.");
+        TEST_ASSERT(::infinitePerspectiveRH(fovy, aspect, near) == right_hand,
+                    "Right-hand infinite perspective projection matrix is not correct.");
+        TEST_ASSERT(::infinitePerspectiveLH(fovy, aspect, near) == left_hand,
+                    "Left-hand infinite perspective projection matrix is not correct.");
     }
 };
 
