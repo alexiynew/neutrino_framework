@@ -337,7 +337,7 @@ private:
         F32 far    = -2;
 
         // clang-format off
-        Matrix4F right_hand = {
+        Matrix4F proj = {
                 2 / (right - left),               0,                                0,                            0,
                 0,                                2 / (top - bottom),               0,                            0,
                 0,                                0,                                -2 / (far - near),            0,
@@ -345,23 +345,15 @@ private:
         };
         // clang-format on
 
-        Matrix4F left_hand = right_hand;
-        left_hand[2][2] *= -1;
-
-        Matrix4F ortho2D = right_hand;
-        ortho2D[2][2]    = 1;
-        ortho2D[3][2]    = 0;
+        Matrix4F proj2D = proj;
+        proj2D[2][2]    = 1;
+        proj2D[3][2]    = 0;
 
         // TODO: Add tests with vector clamped in [-1:1]
 
-        TEST_ASSERT(::ortho(left, right, bottom, top, near, far) == right_hand,
-                    "Default orthogonal projection matrix is not correct.");
-        TEST_ASSERT(::orthoRH(left, right, bottom, top, near, far) == right_hand,
-                    "Right-hand orthogonal projection matrix is not correct.");
-        TEST_ASSERT(::orthoLH(left, right, bottom, top, near, far) == left_hand,
-                    "Left-hand orthogonal projection matrix is not correct.");
+        TEST_ASSERT(::ortho(left, right, bottom, top, near, far) == proj, "Orthogonal projection matrix is not correct.");
 
-        TEST_ASSERT(::ortho2D(left, right, bottom, top) == ortho2D, "2D orthogonal projection matrix is not correct.");
+        TEST_ASSERT(::ortho2D(left, right, bottom, top) == proj2D, "2D orthogonal projection matrix is not correct.");
     }
 
     void frustum()
@@ -374,7 +366,7 @@ private:
         F32 far    = -2;
 
         // clang-format off
-        Matrix4F right_hand = {
+        Matrix4F proj = {
             2 * near / (right - left),       0,                               0,                              0,
             0,                               2 * near / (top - bottom),       0,                              0,
             (right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near),  -1,
@@ -382,17 +374,9 @@ private:
         };
         // clang-format on
 
-        Matrix4F left_hand = right_hand;
-        left_hand[2][2] *= -1;
-
         // TODO: Add tests with vector clamped in [-1:1]
 
-        TEST_ASSERT(::frustum(left, right, bottom, top, near, far) == right_hand,
-                    "Default perspective projection matrix is not correct.");
-        TEST_ASSERT(::frustumRH(left, right, bottom, top, near, far) == right_hand,
-                    "Right-hand perspective projection matrix is not correct.");
-        TEST_ASSERT(::frustumLH(left, right, bottom, top, near, far) == right_hand,
-                    "Left-hand perspective projection matrix is not correct.");
+        TEST_ASSERT(::frustum(left, right, bottom, top, near, far) == proj, "Frustum projection matrix is not correct.");
     }
 
     void perspective()
@@ -405,7 +389,7 @@ private:
         F32 tan_half_fovy = tan(fovy / 2);
 
         // clang-format off
-        Matrix4F right_hand = {
+        Matrix4F proj = {
            1 / (aspect * tan_half_fovy), 0,                 0,                              0,
            0,                            1 / tan_half_fovy, 0,                              0,
            0,                            0,                 -(far + near) / (far - near),   -1,
@@ -413,17 +397,9 @@ private:
         };
         // clang-format on
 
-        Matrix4F left_hand = right_hand;
-        left_hand[2][2] *= -1;
-
         // TODO: Add tests with vector clamped in [-1:1]
 
-        TEST_ASSERT(::perspective(fovy, aspect, near, far) == right_hand,
-                    "Default perspective projection matrix is not correct.");
-        TEST_ASSERT(::perspectiveRH(fovy, aspect, near, far) == right_hand,
-                    "Right-hand perspective projection matrix is not correct.");
-        TEST_ASSERT(::perspectiveLH(fovy, aspect, near, far) == left_hand,
-                    "Left-hand perspective projection matrix is not correct.");
+        TEST_ASSERT(::perspective(fovy, aspect, near, far) == proj, "Perspective projection matrix is not correct.");
     }
 
     void perspectiveFov()
@@ -438,7 +414,7 @@ private:
         F32 w = h * height / width;
 
         // clang-format off
-        Matrix4F right_hand = {
+        Matrix4F proj = {
             w, 0, 0,                              0,
             0, h, 0,                              0,
             0, 0, -(far + near) / (far - near),   -1,
@@ -446,17 +422,10 @@ private:
         };
         // clang-format on
 
-        Matrix4F left_hand = right_hand;
-        left_hand[2][2] *= -1;
-
         // TODO: Add tests with vector clamped in [-1:1]
 
-        TEST_ASSERT(::perspectiveFov(fov, width, height, near, far) == right_hand,
-                    "Default perspectiveFov projection matrix is not correct.");
-        TEST_ASSERT(::perspectiveFovRH(fov, width, height, near, far) == right_hand,
-                    "Right-hand perspectiveFov projection matrix is not correct.");
-        TEST_ASSERT(::perspectiveFovLH(fov, width, height, near, far) == left_hand,
-                    "Left-hand perspectiveFov projection matrix is not correct.");
+        TEST_ASSERT(::perspectiveFov(fov, width, height, near, far) == proj,
+                    "PerspectiveFov projection matrix is not correct.");
     }
 
     void infinitePerspective()
@@ -465,33 +434,88 @@ private:
         F32 aspect = 2;
         F32 near   = 0.000001f;
 
-        F32 range  = tan(fovy / 2) * near;
-        F32 left   = -range * aspect;
-        F32 right  = range * aspect;
-        F32 bottom = -range;
-        F32 top    = range;
+        F32 tan_half_fovy = tan(fovy / 2);
 
         // clang-format off
-        Matrix4F right_hand = {
-            (2 * near) / (right - left), 0,                           0,         0,
-            0,                           (2 * near) / (top - bottom), 0,         0,
-            0,                           0,                           -1,        -1,
-            0,                           0,                           -2 * near, 0
+        Matrix4F proj = {
+            1 / (tan_half_fovy * aspect), 0,                 0,         0,
+            0,                            1 / tan_half_fovy, 0,         0,
+            0,                            0,                 -1,       -1,
+            0,                            0,                 -2 * near, 0
         };
         // clang-format on
 
-        Matrix4F left_hand = right_hand;
-        left_hand[2][2] *= -1;
-        left_hand[2][3] *= -1;
-
         // TODO: Add tests with vector clamped in [-1:1]
 
-        TEST_ASSERT(::infinitePerspective(fovy, aspect, near) == right_hand,
-                    "Default infinite perspective projection matrix is not correct.");
-        TEST_ASSERT(::infinitePerspectiveRH(fovy, aspect, near) == right_hand,
-                    "Right-hand infinite perspective projection matrix is not correct.");
-        TEST_ASSERT(::infinitePerspectiveLH(fovy, aspect, near) == left_hand,
-                    "Left-hand infinite perspective projection matrix is not correct.");
+        TEST_ASSERT(almostEqual(::infinitePerspective(fovy, aspect, near), proj, 1),
+                    "Infinite perspective projection matrix is not correct.");
+    }
+};
+
+class HelpersTest : public test::Suite
+{
+public:
+    HelpersTest()
+    {
+        ADD_TEST(HelpersTest::project);
+    }
+
+private:
+    void project()
+    {
+        // F32 near = 100.0f;
+        // F32 far  = -100.0f;
+        //
+        // F32 width  = 480;
+        // F32 height = 320;
+        //
+        // Matrix4F model;
+        // Matrix4F proj = perspective(F32(QUARTER_PI), height / width, near, far);
+        //
+        // Vector4F viewport{0, 0, width, height};
+        //
+        // Vector3F obj1{0, 0, -1};
+        // Vector3F obj2{0, 0, -100};
+        // Vector3F obj3{0, 32, 1};
+        // Vector3F obj4{1, 0, -100};
+        // Vector3F obj5{0, 0, -1};
+        //
+        // Vector3F projected1{240, 160, 0.99999f};
+        // Vector3F projected2{240, 160, 0.9999998f};
+        // Vector3F projected3 = ::project(obj3, model, proj, viewport);
+        // Vector3F projected4 = ::project(obj4, model, proj, viewport);
+        // Vector3F projected5 = ::project(obj5, model, proj, viewport);
+        //
+        // //    Vector3F up = ::unProject(p, model, proj, viewport);
+        // std::cout.precision(20);
+        // std::cout << ::project(obj3, model, proj, viewport) << std::endl;
+        // // std::cout << ::project(obj4, model, proj, viewport) << std::endl;
+        // // std::cout << ::project(obj5, model, proj, viewport) << std::endl;
+        //
+        // TEST_ASSERT(almostEqual(::project(obj1, model, proj, viewport), projected1, 1),
+        //             "Projection of (0, 0, -1) is not correct.");
+        // TEST_ASSERT(almostEqual(::project(obj2, model, proj, viewport), projected2, 1),
+        //             "Projection of (0, 0, -100) is not correct.");
+        // TEST_ASSERT(almostEqual(::project(obj3, model, proj, viewport), projected3), "Projection of () is not
+        // correct.");
+        // TEST_ASSERT(almostEqual(::project(obj4, model, proj, viewport), projected4), "Projection of () is not
+        // correct.");
+        // TEST_ASSERT(almostEqual(::project(obj5, model, proj, viewport), projected5), "Projection of () is not
+        // correct.");
+        //
+        //
+        // TEST_ASSERT(almostEqual(::unProject(projected1, model, proj, viewport), obj1),
+        //             "UnProjection of (0, 0, -1) is not correct.");
+        // TEST_ASSERT(almostEqual(::unProject(projected2, model, proj, viewport), obj2),
+        //             "UnProjection of (0, 0, -1) is not correct.");
+        // TEST_ASSERT(almostEqual(::unProject(projected3, model, proj, viewport), obj3),
+        //             "UnProjection of (0, 0, -1) is not correct.");
+        // TEST_ASSERT(almostEqual(::unProject(projected4, model, proj, viewport), obj4),
+        //             "UnProjection of (0, 0, -1) is not correct.");
+        // TEST_ASSERT(almostEqual(::unProject(projected5, model, proj, viewport), obj5),
+        //             "UnProjection of (0, 0, -1) is not correct.");
+
+        TEST_FAIL("init");
     }
 };
 
@@ -502,6 +526,7 @@ int main()
     tests.emplace_back(new Transform2DTest());
     tests.emplace_back(new Transform3DTest());
     tests.emplace_back(new ProjectionTest());
+    tests.emplace_back(new HelpersTest());
 
     bool all_succeeded = true;
 
