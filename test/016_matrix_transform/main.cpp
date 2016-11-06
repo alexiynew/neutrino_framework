@@ -320,6 +320,7 @@ public:
     ProjectionTest()
     {
         ADD_TEST(ProjectionTest::orthogonal);
+        ADD_TEST(ProjectionTest::orthogonal2D);
         ADD_TEST(ProjectionTest::frustum);
         ADD_TEST(ProjectionTest::perspective);
         ADD_TEST(ProjectionTest::perspectiveFov);
@@ -329,31 +330,37 @@ public:
 private:
     void orthogonal()
     {
-        F32 left   = -2;
-        F32 right  = 2;
-        F32 bottom = -2;
-        F32 top    = 2;
-        F32 near   = 2;
-        F32 far    = -2;
-
         // clang-format off
         Matrix4F proj = {
-                2 / (right - left),               0,                                0,                            0,
-                0,                                2 / (top - bottom),               0,                            0,
-                0,                                0,                                -2 / (far - near),            0,
-                -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
+                0.5f, 0,    0,    0,
+                0,    0.5f, 0,    0,
+                0,    0,    0.5f, 0,
+                0,    0,    0,    1
         };
         // clang-format on
 
-        Matrix4F proj2D = proj;
-        proj2D[2][2]    = 1;
-        proj2D[3][2]    = 0;
+        Vector4F v1{0, 0, 0, 1};
+        Vector4F v2{1, 1, 1, 1};
+        Vector4F v3{2, 2, 2, 1};
 
-        // TODO: Add tests with vector clamped in [-1:1]
+        TEST_ASSERT(::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f) == proj, "Orthogonal projection matrix is not correct.");
+        TEST_ASSERT(proj * v1 == Vector4F(0, 0, 0, 1), "Projection of (0, 0, 0, 1) is not correct.");
+        TEST_ASSERT(proj * v2 == Vector4F(0.5, 0.5, 0.5, 1), "Projection of (1, 1, 1, 1) is not correct.");
+        TEST_ASSERT(proj * v3 == Vector4F(1, 1, 1, 1), "Projection of (2, 2, 2, 1) is not correct.");
+    }
 
-        TEST_ASSERT(::ortho(left, right, bottom, top, near, far) == proj, "Orthogonal projection matrix is not correct.");
+    void orthogonal2D()
+    {
+        // clang-format off
+        Matrix4F proj2D = {
+                0.5f, 0,    0, 0,
+                0,    0.5f, 0, 0,
+                0,    0,    1, 0,
+                0,    0,    0, 1
+        };
+        // clang-format on
 
-        TEST_ASSERT(::ortho2D(left, right, bottom, top) == proj2D, "2D orthogonal projection matrix is not correct.");
+        TEST_ASSERT(::ortho2D(-2.0f, 2.0f, -2.0f, 2.0f) == proj2D, "2D orthogonal projection matrix is not correct.");
     }
 
     void frustum()

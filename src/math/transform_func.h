@@ -4,6 +4,8 @@
 #include <math/matrix_type.h>
 #include <math/trigonometric_func.h>
 
+// TODO: Ensure only float type for all functions.
+
 namespace framework {
 
 namespace math {
