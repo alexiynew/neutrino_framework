@@ -177,12 +177,20 @@ inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const Vector<3, T>& v, c
 template <typename T>
 inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const T top, const T near, const T far)
 {
+    const T width  = right - left;
+    const T height = top - bottom;
+    const T depth  = far - near;
+
+    ASSERT(math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+
     // clang-format off
     return Matrix<4, 4, T> (
-            T(2) / (right - left),            0,                                0,                            0,
-            0,                                T(2) / (top - bottom),            0,                            0,
-            0,                                0,                                -T(2) / (far - near),         0,
-            -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1
+            T(2) / width,            0,                        0,                     0,
+            0,                       T(2) / height,            0,                     0,
+            0,                       0,                        -T(2) / depth,         0,
+            -(right + left) / width, -(top + bottom) / height, -(far + near) / depth, 1
     );
     // clang-format on
 }
@@ -213,12 +221,19 @@ inline Matrix<4, 4, T> ortho2D(const T left, const T right, const T bottom, cons
 template <typename T>
 inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near, const T far)
 {
+    const T width  = right - left;
+    const T height = top - bottom;
+    const T depth  = far - near;
+
+    ASSERT(math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
     // clang-format off
     return Matrix<4, 4, T> (
-        (T(2) * near) / (right - left),  0,                               0,                                   0,
-        0,                               (T(2) * near) / (top - bottom),  0,                                   0,
-        (right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near),        -1,
-        0,                               0,                               -(T(2) * far * near) / (far - near), 0
+        (T(2) * near) / width,  0,                       0,                            0,
+        0,                      (T(2) * near) / height,  0,                            0,
+        (right + left) / width, (top + bottom) / height, -(far + near) / depth,        -1,
+        0,                      0,                       -(T(2) * far * near) / depth, 0
     );
     // clang-format on
 }
@@ -228,53 +243,47 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 /// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
 /// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
 ///        The aspect ratio is the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
-/// @tparam T Value type used to build the matrix
+/// @param near Specifies the distance from the viewer to the near clipping plane.
+/// @param far Specifies the distance from the viewer to the far clipping plane.
+/// @tparam T Value type used to build the matrix.
 template <typename T>
 inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
 {
-    ASSERT(math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+    const T depth   = far - near;
+    const T tangent = tan(fovy / T(2));
 
-    T const tan_half_fovy = math::tan(fovy / T(2));
+    ASSERT(math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
+
+    const T cotangent = T(1) / tangent;
 
     // clang-format off
     return Matrix<4, 4, T> (
-        T(1) / (aspect * tan_half_fovy), 0,                    0,                                   0,
-        0,                               T(1) / tan_half_fovy, 0,                                   0,
-        0,                               0,                    -(far + near) / (far - near),        -1,
-        0,                               0,                    -(T(2) * far * near) / (far - near), 0
+        cotangent / aspect, 0,         0,                            0,
+        0,                  cotangent, 0,                            0,
+        0,                  0,         -(far + near) / depth,        -1,
+        0,                  0,         -(T(2) * far * near) / depth, 0
     );
     // clang-format on
 }
 
 
-/// Builds a right handed perspective projection matrix based on a field of
+/// Builds a right handed perspective projection matrix based on a field of view.
 ///
 /// @param fov Expressed in radians.
-/// @param width Width of the plane
-/// @param height Height of the plane
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive)
-/// @param far Specifies the distance from the viewer to the far clipping plane (always positive)
+/// @param width Width of the plane.
+/// @param height Height of the plane.
+/// @param near Specifies the distance from the viewer to the near clipping plane.
+/// @param far Specifies the distance from the viewer to the far clipping plane.
 /// @tparam T Value type used to build the matrix.
 template <typename T>
 inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
 {
     ASSERT(width > T(0));
     ASSERT(height > T(0));
-    ASSERT(fov > T(0));
 
-    const T h = math::cos(fov / T(2)) / math::sin(fov / T(2));
-    const T w = h * height / width;
-
-    // clang-format off
-    return Matrix<4, 4, T> (
-        w, 0, 0,                                   0,
-        0, h, 0,                                   0,
-        0, 0, -(far + near) / (far - near),        -1,
-        0, 0, -(T(2) * far * near) / (far - near), 0
-    );
-    // clang-format on
+    return perspective(fov, width / height, near, far);
 }
 
 /// Creates a matrix for a right handed, symmetric perspective-view frustum with far plane at infinite.
@@ -282,22 +291,27 @@ inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
 /// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
 /// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
 ///        The aspect ratio is the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param near Specifies the distance from the viewer to the near clipping plane.
 /// @tparam T Value type used to build the matrix
 template <typename T>
 inline Matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
 {
     ASSERT(near > T(0));
+    ASSERT(math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
 
-    const T tan_half_fovy = math::tan(fovy / T(2));
-    const T epsilon       = std::numeric_limits<T>::epsilon();
+    const T tangent = math::tan(fovy / T(2));
+
+    ASSERT(math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
+
+    const T cotangent = T(1) / tangent;
+    const T epsilon   = std::numeric_limits<T>::epsilon();
 
     // clang-format off
     return Matrix<4, 4, T> (
-        1 / (tan_half_fovy * aspect), 0,                 0,                       0,
-        0,                            1 / tan_half_fovy, 0,                       0,
-        0,                            0,                 epsilon - 1,             -1,
-        0,                            0,                 (epsilon - T(2)) * near, 0
+        cotangent / aspect, 0,         0,                       0,
+        0,                  cotangent, 0,                       0,
+        0,                  0,         epsilon - 1,             -1,
+        0,                  0,         (epsilon - T(2)) * near, 0
     );
     // clang-format on
 }

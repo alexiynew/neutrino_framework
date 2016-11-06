@@ -383,7 +383,7 @@ private:
     {
         F32 fovy   = F32(QUARTER_PI);
         F32 aspect = 2;
-        F32 near   = 0;
+        F32 near   = 0.000001f;
         F32 far    = -10;
 
         F32 tan_half_fovy = tan(fovy / 2);
@@ -407,7 +407,7 @@ private:
         F32 fov    = F32(QUARTER_PI);
         F32 height = 480;
         F32 width  = 320;
-        F32 near   = 0;
+        F32 near   = 0.000001f;
         F32 far    = -10;
 
         F32 h = cos(fov / 2) / sin(fov / 2);
