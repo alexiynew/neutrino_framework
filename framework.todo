@@ -24,7 +24,9 @@ Framework:
 
     ☐ Add test for test utils.
 
-    ☐ Add script to simplefy building and testing
+    ☐ Add script to simplefy building and testing.
+
+    ☐ Add tests with axioms and theorems for vectors and matrices.
 
 Build:
 

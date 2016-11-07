@@ -217,12 +217,15 @@ inline Matrix<4, 4, T> ortho2D(const T left, const T right, const T bottom, cons
 /// @param right Right clipping plane.
 /// @param bottom Bottom clipping plane.
 /// @param top Top clipping plane.
-/// @param near Near clipping plane.
-/// @param far Far clipping plane.
+/// @param near Distance to the near clipping plane (always positive).
+/// @param far Distance to the far clipping plane (always positive).
 /// @tparam T Value type used to build the matrix
 template <typename T>
 inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near, const T far)
 {
+    ASSERT(near > T(0));
+    ASSERT(far > T(0));
+
     const T width  = right - left;
     const T height = top - bottom;
     const T depth  = far - near;
@@ -230,6 +233,7 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
     ASSERT(math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
     ASSERT(math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
     ASSERT(math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+
     // clang-format off
     return Matrix<4, 4, T> (
         (T(2) * near) / width,  0,                       0,                            0,

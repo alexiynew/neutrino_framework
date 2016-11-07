@@ -344,6 +344,7 @@ private:
         Vector4F v3{2, 2, 2, 1};
 
         TEST_ASSERT(::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f) == proj, "Orthogonal projection matrix is not correct.");
+
         TEST_ASSERT(proj * v1 == Vector4F(0, 0, 0, 1), "Projection of (0, 0, 0, 1) is not correct.");
         TEST_ASSERT(proj * v2 == Vector4F(0.5, 0.5, 0.5, 1), "Projection of (1, 1, 1, 1) is not correct.");
         TEST_ASSERT(proj * v3 == Vector4F(1, 1, 1, 1), "Projection of (2, 2, 2, 1) is not correct.");
@@ -369,21 +370,26 @@ private:
         F32 right  = 2;
         F32 bottom = -2;
         F32 top    = 2;
-        F32 near   = 2;
-        F32 far    = -2;
+        F32 near   = 1;
+        F32 far    = 2;
 
         // clang-format off
         Matrix4F proj = {
-            2 * near / (right - left),       0,                               0,                              0,
-            0,                               2 * near / (top - bottom),       0,                              0,
-            (right + left) / (right - left), (top + bottom) / (top - bottom), -(far + near) / (far - near),  -1,
-            0,                               0,                               -2 * far * near / (far - near), 0
+            0.5f, 0,    0,  0,
+            0,    0.5f, 0,  0,
+            0,    0,    -3, -1,
+            0,    0,    -4, 0
         };
         // clang-format on
-
-        // TODO: Add tests with vector clamped in [-1:1]
-
         TEST_ASSERT(::frustum(left, right, bottom, top, near, far) == proj, "Frustum projection matrix is not correct.");
+
+        Vector4F v1{2, 2, -1, 1};
+        Vector4F v2{2, 2, -1.5f, 1};
+        Vector4F v3{2, 2, -2, 1};
+
+        TEST_ASSERT(proj * v1 == Vector4F(1, 1, -1, 1), "Projection of (2, 2, -1, 1) is not correct.");
+        TEST_ASSERT(proj * v2 == Vector4F(1, 1, 0.5f, 1.5f), "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(proj * v3 == Vector4F(1, 1, 2, 2), "Projection of (2, 2, -2, 1) is not correct.");
     }
 
     void perspective()
