@@ -34,11 +34,11 @@ inline Matrix<3, 3, T> translate(const Matrix<3, 3, T>& m, const Vector<2, T>& v
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param angle Rotation angle expressed in radians.
-template <typename T>
-inline Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& m, const T angle)
+template <typename T, typename U>
+inline Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& m, const U angle)
 {
-    T const c = math::cos(angle);
-    T const s = math::sin(angle);
+    const T c = static_cast<T>(math::cos(angle));
+    const T s = static_cast<T>(math::sin(angle));
 
     return Matrix<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
 }
@@ -53,28 +53,16 @@ inline Matrix<3, 3, T> scale(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
     return Matrix<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
 }
 
-/// Builds an horizontal (parallel to the x axis) shear 3 * 3 matrix.
+/// Builds shear 3 * 3 matrix.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
-/// @param s Shear factor.
+/// @param v Shear factor.
 template <typename T>
-inline Matrix<3, 3, T> shearX(const Matrix<3, 3, T>& m, const T& s)
+inline Matrix<3, 3, T> shear(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
 {
     Matrix<3, 3, T> shear;
-    shear[0][1] = s;
-
-    return m * shear;
-}
-
-/// Builds a vertical (parallel to the y axis) shear 3 * 3 matrix.
-///
-/// @param m Input matrix multiplied by this translation matrix.
-/// @param s Shear factor.
-template <typename T>
-inline Matrix<3, 3, T> shearY(const Matrix<3, 3, T>& m, const T& s)
-{
-    Matrix<3, 3, T> shear;
-    shear[1][0] = s;
+    shear[0][1] = v.x;
+    shear[1][0] = v.y;
 
     return m * shear;
 }
@@ -95,21 +83,21 @@ inline Matrix<4, 4, T> createTranslateMatrix(const Vector<3, T>& v)
 
 /// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle
 /// epressed in radians.
-template <typename T>
-inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, const T angle)
+template <typename T, typename U>
+inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, const U angle)
 {
-    auto c = math::cos(angle);
-    auto s = math::sin(angle);
+    const T c = static_cast<T>(math::cos(angle));
+    const T s = static_cast<T>(math::sin(angle));
 
-    auto c_1 = 1 - c;
+    const auto c_1 = 1 - c;
 
-    auto xc = v[0] * c_1;
-    auto yc = v[1] * c_1;
-    auto zc = v[2] * c_1;
+    const auto xc = v[0] * c_1;
+    const auto yc = v[1] * c_1;
+    const auto zc = v[2] * c_1;
 
-    auto xs = v[0] * s;
-    auto ys = v[1] * s;
-    auto zs = v[2] * s;
+    const auto xs = v[0] * s;
+    const auto ys = v[1] * s;
+    const auto zs = v[2] * s;
 
     // clang-format off
     return matrix_impl::Matrix<4, 4, T>(

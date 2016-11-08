@@ -15,8 +15,7 @@ public:
         ADD_TEST(Transform2DTest::translate);
         ADD_TEST(Transform2DTest::rotate);
         ADD_TEST(Transform2DTest::scale);
-        ADD_TEST(Transform2DTest::shearX);
-        ADD_TEST(Transform2DTest::shearY);
+        ADD_TEST(Transform2DTest::shear);
     }
 
 private:
@@ -103,28 +102,20 @@ private:
         TEST_ASSERT(::scale(m, Vector2F(0, 0)) == m00, "Scale by (0, 0) failed.");
     }
 
-    void shearX()
+    void shear()
     {
         Matrix3F m = {1, 4, 7, 2, 5, 8, 3, 6, 9};
 
         Matrix3F m1 = {3, 9, 15, 2, 5, 8, 3, 6, 9};
         Matrix3F m2 = {-3, -6, -9, 2, 5, 8, 3, 6, 9};
+        Matrix3F m3 = {1, 4, 7, 3, 9, 15, 3, 6, 9};
+        Matrix3F m4 = {1, 4, 7, 0, -3, -6, 3, 6, 9};
 
-        TEST_ASSERT(::shearX(m, 0.0f) == m, "ShearX by 0 failed.");
-        TEST_ASSERT(::shearX(m, 1.0f) == m1, "ShearX by 1 failed.");
-        TEST_ASSERT(::shearX(m, -2.0f) == m2, "ShearX by -2 failed.");
-    }
-
-    void shearY()
-    {
-        Matrix3F m = {1, 4, 7, 2, 5, 8, 3, 6, 9};
-
-        Matrix3F m1 = {1, 4, 7, 3, 9, 15, 3, 6, 9};
-        Matrix3F m2 = {1, 4, 7, 0, -3, -6, 3, 6, 9};
-
-        TEST_ASSERT(::shearY(m, 0.0f) == m, "ShearY by 0 failed.");
-        TEST_ASSERT(::shearY(m, 1.0f) == m1, "ShearY by 1 failed.");
-        TEST_ASSERT(::shearY(m, -2.0f) == m2, "ShearY by -2 failed.");
+        TEST_ASSERT(::shear(m, Vector2F(0.0f, 0.0f)) == m, "Shear by (0, 0) failed.");
+        TEST_ASSERT(::shear(m, Vector2F(1.0f, 0.0f)) == m1, "Shear by (1, 0) failed.");
+        TEST_ASSERT(::shear(m, Vector2F(-2.0f, 0.0f)) == m2, "Shear by (-2, 0) failed.");
+        TEST_ASSERT(::shear(m, Vector2F(0.0f, 1.0f)) == m3, "Shear by (0, 1) failed.");
+        TEST_ASSERT(::shear(m, Vector2F(0.0f, -2.0f)) == m4, "Shear by (0, -2) failed.");
     }
 };
 
@@ -366,13 +357,6 @@ private:
 
     void frustum()
     {
-        F32 left   = -2;
-        F32 right  = 2;
-        F32 bottom = -2;
-        F32 top    = 2;
-        F32 near   = 1;
-        F32 far    = 2;
-
         // clang-format off
         Matrix4F proj = {
             0.5f, 0,    0,  0,
@@ -381,7 +365,7 @@ private:
             0,    0,    -4, 0
         };
         // clang-format on
-        TEST_ASSERT(::frustum(left, right, bottom, top, near, far) == proj, "Frustum projection matrix is not correct.");
+        TEST_ASSERT(::frustum(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 2.0f) == proj, "Frustum projection matrix is not correct.");
 
         Vector4F v1{2, 2, -1, 1};
         Vector4F v2{2, 2, -1.5f, 1};
