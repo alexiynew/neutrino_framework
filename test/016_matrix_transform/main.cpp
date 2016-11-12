@@ -322,11 +322,11 @@ private:
     void orthogonal()
     {
         // clang-format off
-        Matrix4F proj = {
-                0.5f, 0,    0,    0,
-                0,    0.5f, 0,    0,
-                0,    0,    0.5f, 0,
-                0,    0,    0,    1
+        Matrix4F target = {
+            0.5f, 0,    0,    0,
+            0,    0.5f, 0,    0,
+            0,    0,    0.5f, 0,
+            0,    0,    0,    1
         };
         // clang-format on
 
@@ -334,7 +334,9 @@ private:
         Vector4F v2{1, 1, 1, 1};
         Vector4F v3{2, 2, 2, 1};
 
-        TEST_ASSERT(::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f) == proj, "Orthogonal projection matrix is not correct.");
+        Matrix4F proj = ::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f);
+
+        TEST_ASSERT(proj == target, "Orthogonal projection matrix is not correct.");
 
         TEST_ASSERT(proj * v1 == Vector4F(0, 0, 0, 1), "Projection of (0, 0, 0, 1) is not correct.");
         TEST_ASSERT(proj * v2 == Vector4F(0.5, 0.5, 0.5, 1), "Projection of (1, 1, 1, 1) is not correct.");
@@ -345,10 +347,10 @@ private:
     {
         // clang-format off
         Matrix4F proj2D = {
-                0.5f, 0,    0, 0,
-                0,    0.5f, 0, 0,
-                0,    0,    1, 0,
-                0,    0,    0, 1
+            0.5f, 0,    0, 0,
+            0,    0.5f, 0, 0,
+            0,    0,    1, 0,
+            0,    0,    0, 1
         };
         // clang-format on
 
@@ -358,94 +360,81 @@ private:
     void frustum()
     {
         // clang-format off
-        Matrix4F proj = {
-            0.5f, 0,    0,  0,
-            0,    0.5f, 0,  0,
-            0,    0,    -3, -1,
-            0,    0,    -4, 0
+        Matrix4F target = {
+            1, 0, 0,  0,
+            0, 1, 0,  0,
+            0, 0, -3, -1,
+            0, 0, -4, 0
         };
         // clang-format on
-        TEST_ASSERT(::frustum(-2.0f, 2.0f, -2.0f, 2.0f, 1.0f, 2.0f) == proj, "Frustum projection matrix is not correct.");
+
+        Matrix4F proj = ::frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 2.0f);
+
+        TEST_ASSERT(proj == target, "Frustum projection matrix is not correct.");
 
         Vector4F v1{2, 2, -1, 1};
         Vector4F v2{2, 2, -1.5f, 1};
         Vector4F v3{2, 2, -2, 1};
 
-        TEST_ASSERT(proj * v1 == Vector4F(1, 1, -1, 1), "Projection of (2, 2, -1, 1) is not correct.");
-        TEST_ASSERT(proj * v2 == Vector4F(1, 1, 0.5f, 1.5f), "Projection of (2, 2, -1.5, 1) is not correct.");
-        TEST_ASSERT(proj * v3 == Vector4F(1, 1, 2, 2), "Projection of (2, 2, -2, 1) is not correct.");
+        TEST_ASSERT(proj * v1 == Vector4F(2, 2, -1, 1), "Projection of (2, 2, -1, 1) is not correct.");
+        TEST_ASSERT(proj * v2 == Vector4F(2, 2, 0.5f, 1.5f), "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(proj * v3 == Vector4F(2, 2, 2, 2), "Projection of (2, 2, -2, 1) is not correct.");
     }
 
     void perspective()
     {
-        F32 fovy   = F32(QUARTER_PI);
-        F32 aspect = 2;
-        F32 near   = 0.000001f;
-        F32 far    = -10;
-
-        F32 tan_half_fovy = tan(fovy / 2);
-
         // clang-format off
-        Matrix4F proj = {
-           1 / (aspect * tan_half_fovy), 0,                 0,                              0,
-           0,                            1 / tan_half_fovy, 0,                              0,
-           0,                            0,                 -(far + near) / (far - near),   -1,
-           0,                            0,                 -2 * far * near / (far - near), 0
+        Matrix4F target = {
+            1, 0, 0,  0,
+            0, 1, 0,  0,
+            0, 0, -3, -1,
+            0, 0, -4, 0
         };
         // clang-format on
 
-        // TODO: Add tests with vector clamped in [-1:1]
+        Matrix4F proj = ::perspective(F32(HALF_PI), 1.0f, 1.0f, 2.0f);
 
-        TEST_ASSERT(::perspective(fovy, aspect, near, far) == proj, "Perspective projection matrix is not correct.");
+        TEST_ASSERT(proj == target, "Perspective projection matrix is not correct.");
+
+        Vector4F v1{2, 2, -1, 1};
+        Vector4F v2{2, 2, -1.5f, 1};
+        Vector4F v3{2, 2, -2, 1};
+
+        TEST_ASSERT(proj * v1 == Vector4F(2, 2, -1, 1), "Projection of (2, 2, -1, 1) is not correct.");
+        TEST_ASSERT(proj * v2 == Vector4F(2, 2, 0.5f, 1.5f), "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(proj * v3 == Vector4F(2, 2, 2, 2), "Projection of (2, 2, -2, 1) is not correct.");
     }
 
     void perspectiveFov()
     {
-        F32 fov    = F32(QUARTER_PI);
-        F32 height = 480;
-        F32 width  = 320;
-        F32 near   = 0.000001f;
-        F32 far    = -10;
+        Matrix4F target = ::perspective(F32(HALF_PI), 1.0f, 1.0f, 2.0f);
+        Matrix4F proj   = ::perspectiveFov(F32(HALF_PI), 1.0f, 1.0f, 1.0f, 2.0f);
 
-        F32 h = cos(fov / 2) / sin(fov / 2);
-        F32 w = h * height / width;
-
-        // clang-format off
-        Matrix4F proj = {
-            w, 0, 0,                              0,
-            0, h, 0,                              0,
-            0, 0, -(far + near) / (far - near),   -1,
-            0, 0, -2 * far * near / (far - near), 0
-        };
-        // clang-format on
-
-        // TODO: Add tests with vector clamped in [-1:1]
-
-        TEST_ASSERT(::perspectiveFov(fov, width, height, near, far) == proj,
-                    "PerspectiveFov projection matrix is not correct.");
+        TEST_ASSERT(proj == target, "PerspectiveFov projection matrix is not correct.");
     }
 
     void infinitePerspective()
     {
-        F32 fovy   = F32(QUARTER_PI);
-        F32 aspect = 2;
-        F32 near   = 0.000001f;
-
-        F32 tan_half_fovy = tan(fovy / 2);
-
         // clang-format off
-        Matrix4F proj = {
-            1 / (tan_half_fovy * aspect), 0,                 0,         0,
-            0,                            1 / tan_half_fovy, 0,         0,
-            0,                            0,                 -1,       -1,
-            0,                            0,                 -2 * near, 0
+        Matrix4F target = {
+            1, 0, 0,  0,
+            0, 1, 0,  0,
+            0, 0, -1, -1,
+            0, 0, -2, 0
         };
         // clang-format on
 
-        // TODO: Add tests with vector clamped in [-1:1]
+        Matrix4F proj = ::infinitePerspective(F32(HALF_PI), 1.0f, 1.0f);
 
-        TEST_ASSERT(almostEqual(::infinitePerspective(fovy, aspect, near), proj, 1),
-                    "Infinite perspective projection matrix is not correct.");
+        TEST_ASSERT(almostEqual(proj, target, 1), "Infinite perspective projection matrix is not correct.");
+
+        Vector4F v1{2, 2, -1, 1};
+        Vector4F v2{2, 2, -1.5f, 1};
+        Vector4F v3{2, 2, -2, 1};
+
+        TEST_ASSERT(almostEqual(proj * v1, Vector4F(2, 2, -1, 1)), "Projection of (2, 2, -1, 1) is not correct.");
+        TEST_ASSERT(almostEqual(proj * v2, Vector4F(2, 2, -0.5f, 1.5f), 1), "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(almostEqual(proj * v3, Vector4F(2, 2, -0.0000001192092895f, 2), 1), "Projection of (2, 2, -2, 1) is not correct.");
     }
 };
 

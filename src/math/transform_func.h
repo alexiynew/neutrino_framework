@@ -237,12 +237,15 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 /// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
 /// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
 ///        The aspect ratio is the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping plane.
-/// @param far Specifies the distance from the viewer to the far clipping plane.
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 /// @tparam T Value type used to build the matrix.
 template <typename T>
 inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
 {
+    ASSERT(near > T(0));
+    ASSERT(far > T(0));
+
     const T depth   = far - near;
     const T tangent = tan(fovy / T(2));
 
@@ -266,16 +269,18 @@ inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
 /// Builds a right handed perspective projection matrix based on a field of view.
 ///
 /// @param fov Expressed in radians.
-/// @param width Width of the plane.
-/// @param height Height of the plane.
-/// @param near Specifies the distance from the viewer to the near clipping plane.
-/// @param far Specifies the distance from the viewer to the far clipping plane.
+/// @param width Width of the plane (always positive).
+/// @param height Height of the plane (always positive).
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
 /// @tparam T Value type used to build the matrix.
 template <typename T>
 inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
 {
     ASSERT(width > T(0));
     ASSERT(height > T(0));
+    ASSERT(near > T(0));
+    ASSERT(far > T(0));
 
     return perspective(fov, width / height, near, far);
 }
@@ -285,7 +290,7 @@ inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
 /// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
 /// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
 ///        The aspect ratio is the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping plane.
+/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
 /// @tparam T Value type used to build the matrix
 template <typename T>
 inline Matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
