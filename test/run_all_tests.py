@@ -66,6 +66,7 @@ def run_folder_test(test: Test) -> bool:
 def run_tests(test_list):
     start = time.time()
     passed_count = 0
+    test_count = len(test_list);
     for test_name in test_list:
         test_name = test_name.strip()
         executable = os.path.join(test_dir, test_name.strip())
@@ -79,8 +80,10 @@ def run_tests(test_list):
     elapsed = end - start
     print()
     print('-' * 60)
-    passed_string = "    Passed {}/{}".format(passed_count, len(test_list))
+    passed_string = "    Passed {}/{}".format(passed_count, test_count)
     print("{:<50} {:.2f}s".format(passed_string, elapsed))
+
+    return test_count - passed_count
 
 
 def get_tests(path):
@@ -112,4 +115,4 @@ def parse_args(argv):
 
 parse_args(sys.argv[1:])
 
-run_tests(get_tests(test_dir))
+exit(run_tests(get_tests(test_dir)))

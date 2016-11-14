@@ -449,59 +449,52 @@ public:
 private:
     void project()
     {
-        // F32 near = 100.0f;
-        // F32 far  = -100.0f;
-        //
-        // F32 width  = 480;
-        // F32 height = 320;
-        //
-        // Matrix4F model;
-        // Matrix4F proj = perspective(F32(QUARTER_PI), height / width, near, far);
-        //
-        // Vector4F viewport{0, 0, width, height};
-        //
-        // Vector3F obj1{0, 0, -1};
-        // Vector3F obj2{0, 0, -100};
-        // Vector3F obj3{0, 32, 1};
-        // Vector3F obj4{1, 0, -100};
-        // Vector3F obj5{0, 0, -1};
-        //
-        // Vector3F projected1{240, 160, 0.99999f};
-        // Vector3F projected2{240, 160, 0.9999998f};
-        // Vector3F projected3 = ::project(obj3, model, proj, viewport);
-        // Vector3F projected4 = ::project(obj4, model, proj, viewport);
-        // Vector3F projected5 = ::project(obj5, model, proj, viewport);
-        //
-        // //    Vector3F up = ::unProject(p, model, proj, viewport);
-        // std::cout.precision(20);
-        // std::cout << ::project(obj3, model, proj, viewport) << std::endl;
-        // // std::cout << ::project(obj4, model, proj, viewport) << std::endl;
-        // // std::cout << ::project(obj5, model, proj, viewport) << std::endl;
-        //
-        // TEST_ASSERT(almostEqual(::project(obj1, model, proj, viewport), projected1, 1),
-        //             "Projection of (0, 0, -1) is not correct.");
-        // TEST_ASSERT(almostEqual(::project(obj2, model, proj, viewport), projected2, 1),
-        //             "Projection of (0, 0, -100) is not correct.");
-        // TEST_ASSERT(almostEqual(::project(obj3, model, proj, viewport), projected3), "Projection of () is not
-        // correct.");
-        // TEST_ASSERT(almostEqual(::project(obj4, model, proj, viewport), projected4), "Projection of () is not
-        // correct.");
-        // TEST_ASSERT(almostEqual(::project(obj5, model, proj, viewport), projected5), "Projection of () is not
-        // correct.");
-        //
-        //
-        // TEST_ASSERT(almostEqual(::unProject(projected1, model, proj, viewport), obj1),
-        //             "UnProjection of (0, 0, -1) is not correct.");
-        // TEST_ASSERT(almostEqual(::unProject(projected2, model, proj, viewport), obj2),
-        //             "UnProjection of (0, 0, -1) is not correct.");
-        // TEST_ASSERT(almostEqual(::unProject(projected3, model, proj, viewport), obj3),
-        //             "UnProjection of (0, 0, -1) is not correct.");
-        // TEST_ASSERT(almostEqual(::unProject(projected4, model, proj, viewport), obj4),
-        //             "UnProjection of (0, 0, -1) is not correct.");
-        // TEST_ASSERT(almostEqual(::unProject(projected5, model, proj, viewport), obj5),
-        //             "UnProjection of (0, 0, -1) is not correct.");
+        F32 near = 1.0f;
+        F32 far  = 10.0f;
 
-        TEST_FAIL("init");
+        F32 width  = 480.0f;
+        F32 height = 320.0f;
+
+        Matrix4F model;
+        Matrix4F proj = perspectiveFov(F32(HALF_PI), width, height, near, far);
+
+        Vector4F viewport{0, 0, width, height};
+
+        Vector3F obj1{0, 0, -1};
+        Vector3F obj2{0, 1, -1};
+        Vector3F obj3{1.5, 0, -1};
+        Vector3F obj4{-1.5, -1, -1};
+        Vector3F obj5{0, 0, -10};
+
+        Vector3F projected1{width / 2, height / 2, -0.0000000596046447f};
+        Vector3F projected2{width / 2, height, -0.0000000596046447f};
+        Vector3F projected3{width, height / 2, -0.0000000596046447f};
+        Vector3F projected4{0, 0, -0.0000000596046447f};
+        Vector3F projected5{width / 2, height / 2, 1};
+
+        Vector3F project1 = ::project(obj1, model, proj, viewport);
+        Vector3F project2 = ::project(obj2, model, proj, viewport);
+        Vector3F project3 = ::project(obj3, model, proj, viewport);
+        Vector3F project4 = ::project(obj4, model, proj, viewport);
+        Vector3F project5 = ::project(obj5, model, proj, viewport);
+
+        TEST_ASSERT(almostEqual(project1, projected1), "Projection of (0, 0, -1) is not correct.");
+        TEST_ASSERT(almostEqual(project2, projected2), "Projection of (0, 1, -1) is not correct.");
+        TEST_ASSERT(almostEqual(project3, projected3), "Projection of (1.5, 0, -1) is not correct.");
+        TEST_ASSERT(almostEqual(project4, projected4), "Projection of (-1.5, -1, -1) is not correct.");
+        TEST_ASSERT(almostEqual(project5, projected5), "Projection of (0, 0, -10) is not correct.");
+
+        Vector3F unproject1 = ::unProject(project1, model, proj, viewport);
+        Vector3F unproject2 = ::unProject(project2, model, proj, viewport);
+        Vector3F unproject3 = ::unProject(project3, model, proj, viewport);
+        Vector3F unproject4 = ::unProject(project4, model, proj, viewport);
+        Vector3F unproject5 = ::unProject(project5, model, proj, viewport);
+
+        TEST_ASSERT(almostEqual(unproject1, obj1), "UnProjection of (0, 0, -1) is not correct.");
+        TEST_ASSERT(almostEqual(unproject2, obj2), "UnProjection of (0, 1, -1) is not correct.");
+        TEST_ASSERT(almostEqual(unproject3, obj3), "UnProjection of (1.5, 0, -1) is not correct.");
+        TEST_ASSERT(almostEqual(unproject4, obj4), "UnProjection of (-1.5, -1, -1) is not correct.");
+        TEST_ASSERT(almostEqual(unproject5, obj5, 2), "UnProjection of (0, 0, -10) is not correct.");
     }
 };
 
