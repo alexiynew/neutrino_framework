@@ -444,6 +444,7 @@ public:
     HelpersTest()
     {
         ADD_TEST(HelpersTest::project);
+        ADD_TEST(HelpersTest::pickRegion);
     }
 
 private:
@@ -495,6 +496,27 @@ private:
         TEST_ASSERT(almostEqual(unproject3, obj3), "UnProjection of (1.5, 0, -1) is not correct.");
         TEST_ASSERT(almostEqual(unproject4, obj4), "UnProjection of (-1.5, -1, -1) is not correct.");
         TEST_ASSERT(almostEqual(unproject5, obj5, 2), "UnProjection of (0, 0, -10) is not correct.");
+    }
+
+    void pickRegion()
+    {
+        // clang-format off
+        Matrix4F region = {
+            2, 0, 0, 0,
+            0, 2, 0, 0,
+            0, 0, 1, 0,
+            2, 2, 0, 1
+        };
+        // clang-format on
+
+        F32 width  = 480.0f;
+        F32 height = 320.0f;
+
+        Vector4F viewport{0, 0, width, height};
+
+        Matrix4F result = ::pickMatrix(Vector2F(0, 0), Vector2F(width / 2, height / 2), viewport);
+
+        TEST_ASSERT(result == region, "Pick region matrix is not correct");
     }
 };
 

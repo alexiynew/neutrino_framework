@@ -147,8 +147,9 @@ inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const Vector<3, T>& v)
 /// @param angle Rotation angle expressed in radians.
 /// @param v Rotation axis, recommended to be normalized.
 /// @tparam T Value type used to build the matrix.
-template <typename T>
-inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const Vector<3, T>& v, const T angle)
+/// @tparam U Value type of angle.
+template <typename T, typename U>
+inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const Vector<3, T>& v, const U angle)
 {
     return m * createRotateMatrix(v, angle);
 }
@@ -325,6 +326,7 @@ inline Matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
 /// @param viewport Specifies the current viewport
 /// @return Return the computed window coordinates.
 /// @tparam T Native type used for the computation.
+/// @tparam U Value type of viewport.
 template <typename T, typename U>
 inline Vector<3, T>
 project(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const Vector<4, U>& viewport)
@@ -351,6 +353,7 @@ project(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, 
 /// @param viewport Specifies the viewport
 /// @return Returns the computed object coordinates.
 /// @tparam T Native type used for the computation.
+/// @tparam U Value type of viewport.
 template <typename T, typename U>
 inline Vector<3, T>
 unProject(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const Vector<4, U>& viewport)
@@ -370,6 +373,35 @@ unProject(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4
 }
 
 
+/// Define a picking region
+///
+/// @param center Center of region.
+/// @param delta Width and height of region.
+/// @param viewport Specifies the viewport.
+/// @tparam T Native type used for the computation.
+/// @tparam U Value type of viewport.
+template <typename T, typename U>
+inline Matrix<4, 4, T> pickMatrix(const Vector<2, T>& center, const Vector<2, T>& delta, const Vector<4, U>& viewport)
+{
+    ASSERT(delta.x > T(0) && delta.y > T(0));
+
+    Vector<3, T> translate_tmp = {
+        (static_cast<T>(viewport[2]) - T(2) * (center.x - static_cast<T>(viewport[0]))) / delta.x,
+        (static_cast<T>(viewport[3]) - T(2) * (center.y - static_cast<T>(viewport[1]))) / delta.y,
+        T(0)
+    };
+
+    Vector<3, T> scale_tmp = {
+        static_cast<T>(viewport[2]) / delta.x,
+        static_cast<T>(viewport[3]) / delta.y,
+        T(1)
+    };
+
+    // Translate and scale the picked region to the entire window
+    Matrix<4, 4, T> result = createTranslateMatrix(translate_tmp);
+    return scale(result, scale_tmp);
+}
+
 } // namespace math
 
 } // namespace framework
@@ -378,22 +410,9 @@ unProject(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4
 
 /*
 
-/// Define a picking region
-///
-/// @param center
-/// @param delta
-/// @param viewport
-/// @tparam T Native type used for the computation. Currently supported: half
-(not recommanded), float or double.
-/// @tparam U Currently supported: Floating-point types and integer types.
-/// @see gtc_matrix_transform
-template <typename T, precision P, typename U>
-GLM_FUNC_DECL tmat4x4<T, P> pickMatrix(
-tvec2<T, P> const & center,
-tvec2<T, P> const & delta,
-tvec4<U, P> const & viewport);
 
-/// Build a look at view matrix based on the default handedness.
+
+/// Build a right handed look at view matrix.
 ///
 /// @param eye Position of the camera
 /// @param center Position where the camera is looking at
@@ -410,39 +429,6 @@ tvec3<T, P> const & eye,
 tvec3<T, P> const & center,
 tvec3<T, P> const & up);
 
-/// Build a right handed look at view matrix.
-///
-/// @param eye Position of the camera
-/// @param center Position where the camera is looking at
-/// @param up Normalized up vector, how the camera is oriented. Typically (0, 0,
-1)
-/// @see gtc_matrix_transform
-/// @see - frustum(T const & left, T const & right, T const & bottom, T const &
-top, T const & nearVal, T const &
-farVal) frustum(T const & left, T const & right, T const & bottom, T const &
-top, T const & nearVal, T const & farVal)
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> lookAtRH(
-tvec3<T, P> const & eye,
-tvec3<T, P> const & center,
-tvec3<T, P> const & up);
-
-/// Build a left handed look at view matrix.
-///
-/// @param eye Position of the camera
-/// @param center Position where the camera is looking at
-/// @param up Normalized up vector, how the camera is oriented. Typically (0, 0,
-1)
-/// @see gtc_matrix_transform
-/// @see - frustum(T const & left, T const & right, T const & bottom, T const &
-top, T const & nearVal, T const &
-farVal) frustum(T const & left, T const & right, T const & bottom, T const &
-top, T const & nearVal, T const & farVal)
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> lookAtLH(
-tvec3<T, P> const & eye,
-tvec3<T, P> const & center,
-tvec3<T, P> const & up);
 
 /// @}
 
