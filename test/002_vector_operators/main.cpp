@@ -93,6 +93,7 @@ int main()
         ASSERT_MSG(v2b[0] && !v2b[1], "access failed");
     }
 
+    // TODO: test for vector of bool matematics
     // vector inverse vector and unary plus
     {
         Vector4D v4d(1.4);
