@@ -73,7 +73,7 @@ private:
         TEST_ASSERT(almostEqual(::rotate(m, radians(270.0f)), r270, 1), "Rotate by 270 deg failed.");
         TEST_ASSERT(almostEqual(::rotate(m, radians(300.0f)), r300, 2), "Rotate by 300 deg failed.");
 
-        TEST_ASSERT(almostEqual(::rotate(m, radians(-90.0f)), r270, 1), "Rotate by -180 deg failed.");
+        TEST_ASSERT(almostEqual(::rotate(m, radians(-90.0f)), r270, 1), "Rotate by -90 deg failed.");
         TEST_ASSERT(almostEqual(::rotate(m, radians(-180.0f)), r180, 1), "Rotate by -180 deg failed.");
         TEST_ASSERT(almostEqual(::rotate(m, radians(-270.0f)), r90, 1), "Rotate by -270 deg failed.");
 
@@ -433,8 +433,10 @@ private:
         Vector4F v3{2, 2, -2, 1};
 
         TEST_ASSERT(almostEqual(proj * v1, Vector4F(2, 2, -1, 1)), "Projection of (2, 2, -1, 1) is not correct.");
-        TEST_ASSERT(almostEqual(proj * v2, Vector4F(2, 2, -0.5f, 1.5f), 1), "Projection of (2, 2, -1.5, 1) is not correct.");
-        TEST_ASSERT(almostEqual(proj * v3, Vector4F(2, 2, -0.0000001192092895f, 2), 1), "Projection of (2, 2, -2, 1) is not correct.");
+        TEST_ASSERT(almostEqual(proj * v2, Vector4F(2, 2, -0.5f, 1.5f), 1),
+                    "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(almostEqual(proj * v3, Vector4F(2, 2, -0.0000001192092895f, 2), 1),
+                    "Projection of (2, 2, -2, 1) is not correct.");
     }
 };
 
@@ -445,6 +447,7 @@ public:
     {
         ADD_TEST(HelpersTest::project);
         ADD_TEST(HelpersTest::pickRegion);
+        ADD_TEST(HelpersTest::lookAt);
     }
 
 private:
@@ -517,6 +520,11 @@ private:
         Matrix4F result = ::pickMatrix(Vector2F(0, 0), Vector2F(width / 2, height / 2), viewport);
 
         TEST_ASSERT(result == region, "Pick region matrix is not correct");
+    }
+
+    void lookAt()
+    {
+        TEST_FAIL("init");
     }
 };
 

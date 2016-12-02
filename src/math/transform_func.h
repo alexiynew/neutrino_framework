@@ -156,7 +156,8 @@ inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const Vector<3, T>& v, c
 
 #pragma mark - Projection
 
-/// Creates a matrix for an orthographic parallel viewing volume, using right-handedness.
+/// Creates a matrix for an orthographic parallel viewing volume, using
+/// right-handedness.
 ///
 /// @param left Left clipping plane.
 /// @param right Right clipping plane.
@@ -235,11 +236,15 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 
 /// Creates a matrix for a right handed, symetric perspective-view frustum.
 ///
-/// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
-/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
+/// @param fovy Specifies the field of view angle in the y direction. Expressed
+/// in radians.
+/// @param aspect Specifies the aspect ratio that determines the field of view
+/// in the x direction.
 ///        The aspect ratio is the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+/// @param near Specifies the distance from the viewer to the near clipping
+/// plane (always positive).
+/// @param far Specifies the distance from the viewer to the far clipping plane
+/// (always positive).
 /// @tparam T Value type used to build the matrix.
 template <typename T>
 inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
@@ -266,14 +271,16 @@ inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
     // clang-format on
 }
 
-
-/// Builds a right handed perspective projection matrix based on a field of view.
+/// Builds a right handed perspective projection matrix based on a field of
+/// view.
 ///
 /// @param fov Expressed in radians.
 /// @param width Width of the plane (always positive).
 /// @param height Height of the plane (always positive).
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+/// @param near Specifies the distance from the viewer to the near clipping
+/// plane (always positive).
+/// @param far Specifies the distance from the viewer to the far clipping plane
+/// (always positive).
 /// @tparam T Value type used to build the matrix.
 template <typename T>
 inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
@@ -286,12 +293,16 @@ inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
     return perspective(fov, width / height, near, far);
 }
 
-/// Creates a matrix for a right handed, symmetric perspective-view frustum with far plane at infinite.
+/// Creates a matrix for a right handed, symmetric perspective-view frustum with
+/// far plane at infinite.
 ///
-/// @param fovy Specifies the field of view angle in the y direction. Expressed in radians.
-/// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
+/// @param fovy Specifies the field of view angle in the y direction. Expressed
+/// in radians.
+/// @param aspect Specifies the aspect ratio that determines the field of view
+/// in the x direction.
 ///        The aspect ratio is the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param near Specifies the distance from the viewer to the near clipping
+/// plane (always positive).
 /// @tparam T Value type used to build the matrix
 template <typename T>
 inline Matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
@@ -335,17 +346,25 @@ project(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, 
     tmp = model * tmp;
     tmp = proj * tmp;
 
+    ASSERT(math::abs(tmp.w - std::numeric_limits<T>::epsilon()) > T(0));
+
     tmp /= tmp.w;
 
     tmp = tmp * T(0.5) + T(0.5);
 
-    tmp[0] = tmp[0] * T(viewport[2]) + T(viewport[0]);
-    tmp[1] = tmp[1] * T(viewport[3]) + T(viewport[1]);
+    const T x      = static_cast<T>(viewport[0]);
+    const T y      = static_cast<T>(viewport[1]);
+    const T width  = static_cast<T>(viewport[2]);
+    const T height = static_cast<T>(viewport[3]);
+
+    tmp[0] = tmp[0] * width + x;
+    tmp[1] = tmp[1] * height + y;
 
     return Vector<3, T>(tmp);
 }
 
-/// Map the specified window coordinates (v.x, v.y, v.z) into object coordinates.
+/// Map the specified window coordinates (v.x, v.y, v.z) into object
+/// coordinates.
 ///
 /// @param v Specify the window coordinates to be mapped.
 /// @param model Specifies the modelview matrix
@@ -358,20 +377,30 @@ template <typename T, typename U>
 inline Vector<3, T>
 unProject(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const Vector<4, U>& viewport)
 {
+    const T x      = static_cast<T>(viewport[0]);
+    const T y      = static_cast<T>(viewport[1]);
+    const T width  = static_cast<T>(viewport[2]);
+    const T height = static_cast<T>(viewport[3]);
+
+    ASSERT(math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
+    ASSERT(math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
+
     const Matrix<4, 4, T> inv = inverse(proj * model);
 
     Vector<4, T> tmp(v, T(1));
-    tmp.x = (tmp.x - T(viewport[0])) / T(viewport[2]);
-    tmp.y = (tmp.y - T(viewport[1])) / T(viewport[3]);
+    tmp.x = (tmp.x - x) / width;
+    tmp.y = (tmp.y - y) / height;
 
     tmp = tmp * T(2) - T(1);
 
     Vector<4, T> obj = inv * tmp;
+
+    ASSERT(math::abs(tmp.w - std::numeric_limits<T>::epsilon()) > T(0));
+
     obj /= obj.w;
 
     return Vector<3, T>(obj);
 }
-
 
 /// Define a picking region
 ///
@@ -383,23 +412,45 @@ unProject(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4
 template <typename T, typename U>
 inline Matrix<4, 4, T> pickMatrix(const Vector<2, T>& center, const Vector<2, T>& delta, const Vector<4, U>& viewport)
 {
-    ASSERT(delta.x > T(0) && delta.y > T(0));
+    ASSERT(delta.x > T(0));
+    ASSERT(delta.y > T(0));
 
-    Vector<3, T> translate_tmp = {
-        (static_cast<T>(viewport[2]) - T(2) * (center.x - static_cast<T>(viewport[0]))) / delta.x,
-        (static_cast<T>(viewport[3]) - T(2) * (center.y - static_cast<T>(viewport[1]))) / delta.y,
-        T(0)
-    };
+    const T x      = static_cast<T>(viewport[0]);
+    const T y      = static_cast<T>(viewport[1]);
+    const T width  = static_cast<T>(viewport[2]);
+    const T height = static_cast<T>(viewport[3]);
 
-    Vector<3, T> scale_tmp = {
-        static_cast<T>(viewport[2]) / delta.x,
-        static_cast<T>(viewport[3]) / delta.y,
-        T(1)
-    };
+    const Vector<3, T> translate_tmp = {
+    (width - T(2) * (center.x - x)) / delta.x, (height - T(2) * (center.y - y)) / delta.y, T(0)};
+
+    const Vector<3, T> scale_tmp = {width / delta.x, height / delta.y, T(1)};
 
     // Translate and scale the picked region to the entire window
-    Matrix<4, 4, T> result = createTranslateMatrix(translate_tmp);
+    const Matrix<4, 4, T> result = createTranslateMatrix(translate_tmp);
     return scale(result, scale_tmp);
+}
+
+/// Build a right handed look at view matrix.
+///
+/// @param eye Position of the camera
+/// @param center Position where the camera is looking at
+/// @param up Normalized up vector, how the camera is oriented. Typically (0, 0,
+/// 1)
+template <typename T>
+inline Matrix<4, 4, T> lookAt(const Vector<3, T>& eye, const Vector<3, T>& center, const Vector<3, T>& up)
+{
+    const Vector<3, T> forward = normalize(center - eye);
+    const Vector<3, T> side    = normalize(cross(forward, up));
+    const Vector<3, T> new_up  = cross(side, forward);
+
+    // clang-format off
+    return Matrix<4, 4, T> {
+        side.x,          new_up.x,          -forward.x,        0,
+        side.y,          new_up.y,          -forward.y,        0,
+        side.z,          new_up.z,          -forward.z,        0,
+        -dot(side, eye), -dot(new_up, eye), dot(forward, eye), 1
+    };
+    // clang-format on
 }
 
 } // namespace math
@@ -407,29 +458,3 @@ inline Matrix<4, 4, T> pickMatrix(const Vector<2, T>& center, const Vector<2, T>
 } // namespace framework
 
 #endif
-
-/*
-
-
-
-/// Build a right handed look at view matrix.
-///
-/// @param eye Position of the camera
-/// @param center Position where the camera is looking at
-/// @param up Normalized up vector, how the camera is oriented. Typically (0, 0,
-1)
-/// @see gtc_matrix_transform
-/// @see - frustum(T const & left, T const & right, T const & bottom, T const &
-top, T const & nearVal, T const &
-farVal) frustum(T const & left, T const & right, T const & bottom, T const &
-top, T const & nearVal, T const & farVal)
-template <typename T, precision P>
-GLM_FUNC_DECL tmat4x4<T, P> lookAt(
-tvec3<T, P> const & eye,
-tvec3<T, P> const & center,
-tvec3<T, P> const & up);
-
-
-/// @}
-
-*/
