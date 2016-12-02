@@ -17,7 +17,8 @@ int main()
 
         ASSERT_MSG(log(exp(v4d)) == v4d, "log failed");
 
-        ASSERT_MSG(exp2(v4d) == Vector4D(2.1435469250725863, 0.35355339059327379, 1, 0.28717458874925872), "exp2 failed");
+        ASSERT_MSG(exp2(v4d) == Vector4D(2.1435469250725863, 0.35355339059327379, 1, 0.28717458874925872),
+                   "exp2 failed");
 
         ASSERT_MSG(log2(exp2(v4d)) == Vector4D(1.0999999999999999, -1.5, 0, -1.8000000000000003), "log2 failed");
 

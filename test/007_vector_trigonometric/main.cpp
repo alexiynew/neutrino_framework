@@ -28,7 +28,8 @@ int main()
 
         ASSERT_MSG(almostEqual(acos(cos(radians(v4d))), Vector4D(PI, 0, PI / 2, PI / 4)), "acos failed");
 
-        ASSERT_MSG(almostEqual(atan(tan(radians(v3d))), Vector3D(PI / 4, PI / 3, atan(tan(PI)))), "atan from tan failed");
+        ASSERT_MSG(almostEqual(atan(tan(radians(v3d))), Vector3D(PI / 4, PI / 3, atan(tan(PI)))),
+                   "atan from tan failed");
 
         ASSERT_MSG(almostEqual(atan(sin(radians(v3d)), cos(radians(v3d))), Vector3D(PI / 4, PI / 3, PI)),
                    "atan from sin "

@@ -99,7 +99,8 @@ int main()
         ASSERT_MSG(m42 == Matrix4x2D(Vector2D(0, 1), Vector2D(0, 1), Vector2D(0, 1), Vector2D(0, 1)),
                    "matrix4x3 from pointer "
                    "constructor");
-        ASSERT_MSG(m32 == Matrix3x2D(Vector2D(0, 1), Vector2D(0, 1), Vector2D(0, 1)), "matrix3x3 from pointer constructor");
+        ASSERT_MSG(m32 == Matrix3x2D(Vector2D(0, 1), Vector2D(0, 1), Vector2D(0, 1)),
+                   "matrix3x3 from pointer constructor");
         ASSERT_MSG(m22 == Matrix2x2D(Vector2D(0, 1), Vector2D(0, 1)), "matrix2x3 from pointer constructor");
 
         F64* p44 = m44.data();
@@ -247,11 +248,14 @@ int main()
         ASSERT_MSG(Matrix3F(Vector4I(0, 1, 2, 3), Vector4D(0, 1, 2, 3), Vector4F(0, 1, 2, 3)) == m,
                    "matrix3 vector constructor");
 
-        ASSERT_MSG(Matrix3F(Vector3F(0, 1, 2), Vector3I(0, 1, 2), Vector3D(0, 1, 2)) == m, "matrix3 vector constructor");
+        ASSERT_MSG(Matrix3F(Vector3F(0, 1, 2), Vector3I(0, 1, 2), Vector3D(0, 1, 2)) == m,
+                   "matrix3 vector constructor");
 
-        ASSERT_MSG(Matrix3F(Vector2I(0, 1), 2, Vector2D(0, 1), 2, Vector2F(0, 1), 2) == m, "matrix3 vector constructor");
+        ASSERT_MSG(Matrix3F(Vector2I(0, 1), 2, Vector2D(0, 1), 2, Vector2F(0, 1), 2) == m,
+                   "matrix3 vector constructor");
 
-        ASSERT_MSG(Matrix3F(0, Vector2D(1, 2), 0, Vector2I(1, 2), 0, Vector2F(1, 2)) == m, "matrix3 vector constructor");
+        ASSERT_MSG(Matrix3F(0, Vector2D(1, 2), 0, Vector2I(1, 2), 0, Vector2F(1, 2)) == m,
+                   "matrix3 vector constructor");
     }
 
     // Matrix3x2F from vectors constructor
@@ -262,7 +266,8 @@ int main()
                    "matrix3x2 vector "
                    "constructor");
 
-        ASSERT_MSG(Matrix3x2F(Vector3I(0, 1, 2), Vector3D(0, 1, 2), Vector3F(0, 1, 2)) == m, "matrix3x2 vector constructor");
+        ASSERT_MSG(Matrix3x2F(Vector3I(0, 1, 2), Vector3D(0, 1, 2), Vector3F(0, 1, 2)) == m,
+                   "matrix3x2 vector constructor");
     }
 
     // Matrix2x4F from vectors constructor
@@ -362,23 +367,32 @@ int main()
                    "matrix4d Matrix2F constructor");
 
         // mat 4x3
-        ASSERT_MSG(Matrix4x3D(m44f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2), "matrix4x3d Matrix4F constructor");
+        ASSERT_MSG(Matrix4x3D(m44f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2),
+                   "matrix4x3d Matrix4F constructor");
 
-        ASSERT_MSG(Matrix4x3D(m43f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2), "matrix4x3d Matrix4x3F constructor");
+        ASSERT_MSG(Matrix4x3D(m43f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2),
+                   "matrix4x3d Matrix4x3F constructor");
 
-        ASSERT_MSG(Matrix4x3D(m42f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0), "matrix4x3d Matrix4x2F constructor");
+        ASSERT_MSG(Matrix4x3D(m42f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
+                   "matrix4x3d Matrix4x2F constructor");
 
-        ASSERT_MSG(Matrix4x3D(m34f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 0), "matrix4x3d Matrix3x4F constructor");
+        ASSERT_MSG(Matrix4x3D(m34f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 0),
+                   "matrix4x3d Matrix3x4F constructor");
 
-        ASSERT_MSG(Matrix4x3D(m33f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 0), "matrix4x3d Matrix3F constructor");
+        ASSERT_MSG(Matrix4x3D(m33f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 0),
+                   "matrix4x3d Matrix3F constructor");
 
-        ASSERT_MSG(Matrix4x3D(m32f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0), "matrix4x3d Matrix3x2F constructor");
+        ASSERT_MSG(Matrix4x3D(m32f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0),
+                   "matrix4x3d Matrix3x2F constructor");
 
-        ASSERT_MSG(Matrix4x3D(m24f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 0), "matrix4x3d Matrix2x4F constructor");
+        ASSERT_MSG(Matrix4x3D(m24f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 0),
+                   "matrix4x3d Matrix2x4F constructor");
 
-        ASSERT_MSG(Matrix4x3D(m23f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 0), "matrix4x3d Matrix2x3F constructor");
+        ASSERT_MSG(Matrix4x3D(m23f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 0),
+                   "matrix4x3d Matrix2x3F constructor");
 
-        ASSERT_MSG(Matrix4x3D(m22f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0), "matrix4x3d Matrix2F constructor");
+        ASSERT_MSG(Matrix4x3D(m22f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0),
+                   "matrix4x3d Matrix2F constructor");
 
         // mat 4x2
         ASSERT_MSG(Matrix4x2D(m44f) == Matrix4x2D(0, 1, 0, 1, 0, 1, 0, 1), "matrix4x2d Matrix4F constructor");
@@ -400,23 +414,32 @@ int main()
         ASSERT_MSG(Matrix4x2D(m22f) == Matrix4x2D(0, 1, 0, 1, 0, 0, 0, 0), "matrix4x2d Matrix2F constructor");
 
         // mat 3x4
-        ASSERT_MSG(Matrix3x4D(m44f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3), "matrix3x4d Matrix4F constructor");
+        ASSERT_MSG(Matrix3x4D(m44f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
+                   "matrix3x4d Matrix4F constructor");
 
-        ASSERT_MSG(Matrix3x4D(m43f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0), "matrix3x4d Matrix4x3F constructor");
+        ASSERT_MSG(Matrix3x4D(m43f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0),
+                   "matrix3x4d Matrix4x3F constructor");
 
-        ASSERT_MSG(Matrix3x4D(m42f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0), "matrix3x4d Matrix4x2F constructor");
+        ASSERT_MSG(Matrix3x4D(m42f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0),
+                   "matrix3x4d Matrix4x2F constructor");
 
-        ASSERT_MSG(Matrix3x4D(m34f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3), "matrix3x4d Matrix3x4F constructor");
+        ASSERT_MSG(Matrix3x4D(m34f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
+                   "matrix3x4d Matrix3x4F constructor");
 
-        ASSERT_MSG(Matrix3x4D(m33f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0), "matrix3x4d Matrix3F constructor");
+        ASSERT_MSG(Matrix3x4D(m33f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0),
+                   "matrix3x4d Matrix3F constructor");
 
-        ASSERT_MSG(Matrix3x4D(m32f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0), "matrix3x4d Matrix3x2F constructor");
+        ASSERT_MSG(Matrix3x4D(m32f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0),
+                   "matrix3x4d Matrix3x2F constructor");
 
-        ASSERT_MSG(Matrix3x4D(m24f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 1, 0), "matrix3x4d Matrix2x4F constructor");
+        ASSERT_MSG(Matrix3x4D(m24f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 1, 0),
+                   "matrix3x4d Matrix2x4F constructor");
 
-        ASSERT_MSG(Matrix3x4D(m23f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0), "matrix3x4d Matrix2x3F constructor");
+        ASSERT_MSG(Matrix3x4D(m23f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0),
+                   "matrix3x4d Matrix2x3F constructor");
 
-        ASSERT_MSG(Matrix3x4D(m22f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0), "matrix3x4d Matrix2F constructor");
+        ASSERT_MSG(Matrix3x4D(m22f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0),
+                   "matrix3x4d Matrix2F constructor");
 
         // mat 3
         ASSERT_MSG(Matrix3D(m44f) == Matrix3D(0, 1, 2, 0, 1, 2, 0, 1, 2), "matrix3d Matrix4F constructor");

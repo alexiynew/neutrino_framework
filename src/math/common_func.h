@@ -522,20 +522,26 @@ TResult almostEqual(T x, T y, I32 ulp = 0)
            std::abs(x - y) < std::numeric_limits<T>::min();
 }
 
-template <typename T, template <U32, typename> class TVec, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+template <typename T,
+          template <U32, typename> class TVec,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
 TResult almostEqual(const TVec<4, T>& lhs, const TVec<4, T>& rhs, I32 ulp = 0)
 {
     return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp) && almostEqual(lhs.z, rhs.z, ulp) &&
            almostEqual(lhs.w, rhs.w, ulp);
 }
 
-template <typename T, template <U32, typename> class TVec, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+template <typename T,
+          template <U32, typename> class TVec,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
 TResult almostEqual(const TVec<3, T>& lhs, const TVec<3, T>& rhs, I32 ulp = 0)
 {
     return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp) && almostEqual(lhs.z, rhs.z, ulp);
 }
 
-template <typename T, template <U32, typename> class TVec, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
+template <typename T,
+          template <U32, typename> class TVec,
+          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
 TResult almostEqual(const TVec<2, T>& lhs, const TVec<2, T>& rhs, I32 ulp = 0)
 {
     return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp);

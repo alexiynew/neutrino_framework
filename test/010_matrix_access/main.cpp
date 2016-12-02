@@ -34,7 +34,8 @@ int main()
 
     ASSERT_MSG(m42[0] == Vector2F(1, 0) && m42[1] == Vector2F(0, 1) && m42[2] == Vector2F(0, 0) && m42[3] == Vector2F(0, 0),
                "matrix 42f access failed");
-    ASSERT_MSG(m32[0] == Vector2F(1, 0) && m32[1] == Vector2F(0, 1) && m32[2] == Vector2F(0, 0), "matrix 32f access failed");
+    ASSERT_MSG(m32[0] == Vector2F(1, 0) && m32[1] == Vector2F(0, 1) && m32[2] == Vector2F(0, 0),
+               "matrix 32f access failed");
     ASSERT_MSG(m22[0] == Vector2F(1, 0) && m22[1] == Vector2F(0, 1), "matrix 2f access failed");
 
     ASSERT_MSG(m44.column(0) == Vector4F(1, 0, 0, 0) && m44.column(1) == Vector4F(0, 1, 0, 0) &&
@@ -43,7 +44,8 @@ int main()
     ASSERT_MSG(m34.column(0) == Vector4F(1, 0, 0, 0) && m34.column(1) == Vector4F(0, 1, 0, 0) &&
                m34.column(2) == Vector4F(0, 0, 1, 0),
                "matrix 34f access failed");
-    ASSERT_MSG(m24.column(0) == Vector4F(1, 0, 0, 0) && m24.column(1) == Vector4F(0, 1, 0, 0), "matrix 24f access failed");
+    ASSERT_MSG(m24.column(0) == Vector4F(1, 0, 0, 0) && m24.column(1) == Vector4F(0, 1, 0, 0),
+               "matrix 24f access failed");
 
     ASSERT_MSG(m43.column(0) == Vector3F(1, 0, 0) && m43.column(1) == Vector3F(0, 1, 0) &&
                m43.column(2) == Vector3F(0, 0, 1) && m43.column(3) == Vector3F(0, 0, 0),
