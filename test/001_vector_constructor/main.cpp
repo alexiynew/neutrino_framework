@@ -173,7 +173,8 @@ private:
 
         static_assert(v4d1 == Vector4D(1.1, 2.2, 0.0, 1.0), "Vector4D from Vector2D constructor failed.");
         static_assert(v4d2 == Vector4D(1.1, 2.2, 3.3, 4.4), "Vector4D from Vector2D and 2 scalars constructor failed.");
-        static_assert(v4d3 == Vector4D(3.3, 1.1, 2.2, 4.4), "Vector4D from scalar, Vector2D and scalar constructor failed.");
+        static_assert(v4d3 == Vector4D(3.3, 1.1, 2.2, 4.4),
+                      "Vector4D from scalar, Vector2D and scalar constructor failed.");
         static_assert(v4d4 == Vector4D(3.3, 4.4, 1.1, 2.2), "Vector4D from 2 scalars and Vector2D constructor failed.");
         static_assert(v4d5 == Vector4D(1.1, 2.2, 1.1, 2.2), "Vector4D from 2 Vector2D constructor failed.");
 

@@ -70,7 +70,8 @@ int main()
 
         // TODO: add data access test id:6
         // double* p = v4d.data();
-        // ASSERT_MSG(p[0] == 1.0 && p[1] == 2.0 && p[2] == 3.0 && p[3] == 4.0, "pointer data access");
+        // ASSERT_MSG(p[0] == 1.0 && p[1] == 2.0 && p[2] == 3.0 && p[3] == 4.0,
+        // "pointer data access");
         // TODO: add vector bool pointer access id:7
         Vector4D v4d(1.1, 2.2, 3.3, 4.4);
         Vector3F v3f(5.5f, 6.6f, 7.7f);
@@ -83,7 +84,8 @@ int main()
         ASSERT_MSG(almostEqual(v4d[0], 1.1) && almostEqual(v4d[1], 2.2) && almostEqual(v4d[2], 3.3) &&
                    almostEqual(v4d[3], 4.4),
                    "access filed");
-        ASSERT_MSG(almostEqual(v3f[0], 5.5f) && almostEqual(v3f[1], 6.6f) && almostEqual(v3f[2], 7.7f), "access failed");
+        ASSERT_MSG(almostEqual(v3f[0], 5.5f) && almostEqual(v3f[1], 6.6f) && almostEqual(v3f[2], 7.7f),
+                   "access failed");
         ASSERT_MSG(v2i[0] == 1 && v2i[1] == 2, "access failed");
 
         ASSERT_MSG(v4b[0] && !v4b[1] && v4b[2] && !v4b[3], "access filed");
@@ -91,6 +93,7 @@ int main()
         ASSERT_MSG(v2b[0] && !v2b[1], "access failed");
     }
 
+    // TODO: test for vector of bool matematics
     // vector inverse vector and unary plus
     {
         Vector4D v4d(1.4);

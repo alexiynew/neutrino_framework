@@ -15,7 +15,7 @@ targets:
 
         errorMatch:
             - "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):?(?<col>\\d+)?:?\\s?error:\\s+(?<message>.+)"
-            - "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):?(?<col>\\d+)?\\s+(?<message>.+)"
+            - "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+)\\s(?<message>.+)"
         warningMatch: "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):?(?<col>\\d+)?:?\\s?warning:\\s+(?<message>.+)"
 
     BuilAndRunVerbose:
@@ -26,7 +26,7 @@ targets:
 
         errorMatch:
             - "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):?(?<col>\\d+)?:?\\s?error:\\s+(?<message>.+)"
-            - "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):?(?<col>\\d+)?\\s+(?<message>.+)"
+            - "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+)\\s(?<message>.+)"
         warningMatch: "\\s*(?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\\d+):?(?<col>\\d+)?:?\\s?warning:\\s+(?<message>.+)"
 
     Clean:

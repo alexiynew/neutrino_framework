@@ -19,7 +19,7 @@ BinPackParameters: 'false'
 BreakConstructorInitializersBeforeComma: 'true'
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Mozilla
-BreakStringLiterals: 'false'
+# BreakStringLiterals: 'false'
 ColumnLimit: '120'
 ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
 ConstructorInitializerIndentWidth: '4'
@@ -46,7 +46,7 @@ PenaltyExcessCharacter: '3'
 ReflowComments: 'true'
 SortIncludes: 'true'
 SpaceAfterCStyleCast: 'false'
-SpaceAfterTemplateKeyword: 'true'
+#SpaceAfterTemplateKeyword: 'true'
 SpaceBeforeAssignmentOperators: 'true'
 SpaceBeforeParens: ControlStatements
 SpaceInEmptyParentheses: 'false'
