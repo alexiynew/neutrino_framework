@@ -386,16 +386,11 @@ inline Matrix<4, 4, T> pickMatrix(const Vector<2, T>& center, const Vector<2, T>
     ASSERT(delta.x > T(0) && delta.y > T(0));
 
     Vector<3, T> translate_tmp = {
-        (static_cast<T>(viewport[2]) - T(2) * (center.x - static_cast<T>(viewport[0]))) / delta.x,
-        (static_cast<T>(viewport[3]) - T(2) * (center.y - static_cast<T>(viewport[1]))) / delta.y,
-        T(0)
-    };
+    (static_cast<T>(viewport[2]) - T(2) * (center.x - static_cast<T>(viewport[0]))) / delta.x,
+    (static_cast<T>(viewport[3]) - T(2) * (center.y - static_cast<T>(viewport[1]))) / delta.y,
+    T(0)};
 
-    Vector<3, T> scale_tmp = {
-        static_cast<T>(viewport[2]) / delta.x,
-        static_cast<T>(viewport[3]) / delta.y,
-        T(1)
-    };
+    Vector<3, T> scale_tmp = {static_cast<T>(viewport[2]) / delta.x, static_cast<T>(viewport[3]) / delta.y, T(1)};
 
     // Translate and scale the picked region to the entire window
     Matrix<4, 4, T> result = createTranslateMatrix(translate_tmp);

@@ -433,8 +433,10 @@ private:
         Vector4F v3{2, 2, -2, 1};
 
         TEST_ASSERT(almostEqual(proj * v1, Vector4F(2, 2, -1, 1)), "Projection of (2, 2, -1, 1) is not correct.");
-        TEST_ASSERT(almostEqual(proj * v2, Vector4F(2, 2, -0.5f, 1.5f), 1), "Projection of (2, 2, -1.5, 1) is not correct.");
-        TEST_ASSERT(almostEqual(proj * v3, Vector4F(2, 2, -0.0000001192092895f, 2), 1), "Projection of (2, 2, -2, 1) is not correct.");
+        TEST_ASSERT(almostEqual(proj * v2, Vector4F(2, 2, -0.5f, 1.5f), 1),
+                    "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(almostEqual(proj * v3, Vector4F(2, 2, -0.0000001192092895f, 2), 1),
+                    "Projection of (2, 2, -2, 1) is not correct.");
     }
 };
 
