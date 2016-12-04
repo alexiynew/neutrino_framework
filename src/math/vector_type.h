@@ -251,8 +251,12 @@ struct Vector<2, T> final
 // constructors
 template <typename T>
 inline constexpr Vector<4, T>::Vector()
-    : x{0}, y{0}, z{0}, w{T(not std::is_same<T, bool>::value)}
-{}
+    : x{0}
+    , y{0}
+    , z{0}
+    , w{T(not std::is_same<T, bool>::value)}
+{
+}
 
 template <typename T>
 inline constexpr Vector<4, T>::Vector(const T& xx, const T& yy, const T& zz, const T& ww)
@@ -260,7 +264,8 @@ inline constexpr Vector<4, T>::Vector(const T& xx, const T& yy, const T& zz, con
     , y{yy}
     , z{zz}
     , w{ww}
-{}
+{
+}
 
 template <typename T>
 inline constexpr Vector<4, T>::Vector(const T& v)
@@ -268,7 +273,8 @@ inline constexpr Vector<4, T>::Vector(const T& v)
     , y{v}
     , z{v}
     , w{v}
-{}
+{
+}
 
 template <typename T>
 template <typename U>
@@ -288,7 +294,8 @@ inline constexpr Vector<4, T>::Vector(const Vector<4, U>& v)
     , y{static_cast<T>(v.y)}
     , z{static_cast<T>(v.z)}
     , w{static_cast<T>(v.w)}
-{}
+{
+}
 
 template <typename T>
 template <typename U>
@@ -297,7 +304,8 @@ inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v)
     , y{static_cast<T>(v.y)}
     , z{static_cast<T>(v.z)}
     , w{T(1)}
-{}
+{
+}
 
 template <typename T>
 template <typename U, typename S>
@@ -306,7 +314,8 @@ inline constexpr Vector<4, T>::Vector(const S& s, const Vector<3, U>& v)
     , y{static_cast<T>(v.x)}
     , z{static_cast<T>(v.y)}
     , w{static_cast<T>(v.z)}
-{}
+{
+}
 
 template <typename T>
 template <typename U, typename S>
@@ -315,7 +324,8 @@ inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v, const S& s)
     , y{static_cast<T>(v.y)}
     , z{static_cast<T>(v.z)}
     , w{static_cast<T>(s)}
-{}
+{
+}
 
 template <typename T>
 template <typename U>
@@ -324,7 +334,8 @@ inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v)
     , y{static_cast<T>(v.y)}
     , z{T(0)}
     , w{T(1)}
-{}
+{
+}
 
 template <typename T>
 template <typename U1, typename U2>
@@ -333,7 +344,8 @@ inline constexpr Vector<4, T>::Vector(const Vector<2, U1>& v1, const Vector<2, U
     , y{static_cast<T>(v1.y)}
     , z{static_cast<T>(v2.x)}
     , w{static_cast<T>(v2.y)}
-{}
+{
+}
 
 template <typename T>
 template <typename U, typename S1, typename S2>
@@ -342,7 +354,8 @@ inline constexpr Vector<4, T>::Vector(const S1& xx, const S2& yy, const Vector<2
     , y{static_cast<T>(yy)}
     , z{static_cast<T>(v.x)}
     , w{static_cast<T>(v.y)}
-{}
+{
+}
 
 template <typename T>
 template <typename U, typename S1, typename S2>
@@ -351,7 +364,8 @@ inline constexpr Vector<4, T>::Vector(const S1& xx, const Vector<2, U>& v, const
     , y{static_cast<T>(v.x)}
     , z{static_cast<T>(v.y)}
     , w{static_cast<T>(ww)}
-{}
+{
+}
 
 template <typename T>
 template <typename U, typename S1, typename S2>
@@ -360,7 +374,8 @@ inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v, const S1& zz, const
     , y{static_cast<T>(v.y)}
     , z{static_cast<T>(zz)}
     , w{static_cast<T>(ww)}
-{}
+{
+}
 
 // operators
 template <typename T>
@@ -513,14 +528,16 @@ inline constexpr Vector<3, T>::Vector()
     : x{0}
     , y{0}
     , z{0}
-{}
+{
+}
 
 template <typename T>
 inline constexpr Vector<3, T>::Vector(const T& xx, const T& yy, const T& zz)
     : x{xx}
     , y{yy}
     , z{zz}
-{}
+{
+}
 
 template <typename T>
 inline constexpr Vector<3, T>::Vector(const T& v)
@@ -902,92 +919,99 @@ inline const typename Vector<2, T>::ValueType* Vector<2, T>::data() const
 
 
 #pragma mark - unary minus
+
 template <U32 N, typename T>
-inline Vector<N, T> operator-(const Vector<N, T>& v)
+inline Vector<N, T> operator-(Vector<N, T> vector)
 {
-    return utils::createVector(v, [](const T& a) { return -a; });
+    return vector *= -T(1);
 }
 
 // unary plus
 template <U32 N, typename T>
-inline Vector<N, T> operator+(const Vector<N, T>& v)
+inline Vector<N, T> operator+(const Vector<N, T>& vector)
 {
-    return v;
+    return vector;
 }
 
 #pragma mark - binary operators: vector - vector
+
 template <U32 N, typename T>
-inline const Vector<N, T> operator+(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
+inline const Vector<N, T> operator+(Vector<N, T> lhs, const Vector<N, T>& rhs)
 {
-    return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a + b; });
+    return lhs += rhs;
 }
 
 template <U32 N, typename T>
-inline const Vector<N, T> operator-(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
+inline const Vector<N, T> operator-(Vector<N, T> lhs, const Vector<N, T>& rhs)
 {
-    return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a - b; });
+    return lhs -= rhs;
 }
 
 template <U32 N, typename T>
-inline const Vector<N, T> operator*(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
+inline const Vector<N, T> operator*(Vector<N, T> lhs, const Vector<N, T>& rhs)
 {
-    return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a * b; });
+    return lhs *= rhs;
 }
 
 template <U32 N, typename T>
-inline const Vector<N, T> operator/(const Vector<N, T>& lhs, const Vector<N, T>& rhs)
+inline const Vector<N, T> operator/(Vector<N, T> lhs, const Vector<N, T>& rhs)
 {
-    return utils::createVector(lhs, rhs, [](const T& a, const T& b) { return a / b; });
+    return lhs /= rhs;
 }
 
 #pragma mark - binary operators: vector - scalar
 template <U32 N, typename T>
-inline const Vector<N, T> operator+(const Vector<N, T>& vector, const T& scalar)
+inline const Vector<N, T> operator+(Vector<N, T> vector, const T& scalar)
 {
-    return utils::createVector(vector, [&scalar](const T& a) { return a + scalar; });
+    return vector += scalar;
 }
 
 template <U32 N, typename T>
-inline const Vector<N, T> operator-(const Vector<N, T>& vector, const T& scalar)
+inline const Vector<N, T> operator-(Vector<N, T> vector, const T& scalar)
 {
-    return utils::createVector(vector, [&scalar](const T& a) { return a - scalar; });
+    return vector -= scalar;
 }
 
 template <U32 N, typename T>
-inline const Vector<N, T> operator*(const Vector<N, T>& vector, const T& scalar)
+inline const Vector<N, T> operator*(Vector<N, T> vector, const T& scalar)
 {
-    return utils::createVector(vector, [&scalar](const T& a) { return a * scalar; });
+    return vector *= scalar;
 }
 
 template <U32 N, typename T>
-inline const Vector<N, T> operator/(const Vector<N, T>& vector, const T& scalar)
+inline const Vector<N, T> operator/(Vector<N, T> vector, const T& scalar)
 {
-    return utils::createVector(vector, [&scalar](const T& a) { return a / scalar; });
+    return vector /= scalar;
 }
 
 #pragma mark - binary operators: scalar - vector
+
 template <U32 N, typename T>
 inline const Vector<N, T> operator+(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a + b; });
+    Vector<N, T> tmp{scalar};
+    return tmp += vector;
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator-(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a - b; });
+    Vector<N, T> tmp{scalar};
+    return tmp -= vector;
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator*(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a * b; });
+    Vector<N, T> tmp{scalar};
+    return tmp *= vector;
 }
 
 template <U32 N, typename T>
 inline const Vector<N, T> operator/(const T& scalar, const Vector<N, T>& vector)
 {
-    return utils::createVector(Vector<N, T>(scalar), vector, [](const T& a, const T& b) { return a / b; });
+    Vector<N, T> tmp{scalar};
+    return tmp /= vector;
 }
 
 #pragma mark - vectors equality
