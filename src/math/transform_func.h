@@ -363,8 +363,7 @@ project(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, 
     return Vector<3, T>(tmp);
 }
 
-/// Map the specified window coordinates (v.x, v.y, v.z) into object
-/// coordinates.
+/// Map the specified window coordinates (v.x, v.y, v.z) into object coordinates.
 ///
 /// @param v Specify the window coordinates to be mapped.
 /// @param model Specifies the modelview matrix
@@ -434,8 +433,7 @@ inline Matrix<4, 4, T> pickMatrix(const Vector<2, T>& center, const Vector<2, T>
 ///
 /// @param eye Position of the camera
 /// @param center Position where the camera is looking at
-/// @param up Normalized up vector, how the camera is oriented. Typically (0, 0,
-/// 1)
+/// @param up Normalized up vector, how the camera is oriented. Typically (0, 0, 1)
 template <typename T>
 inline Matrix<4, 4, T> lookAt(const Vector<3, T>& eye, const Vector<3, T>& center, const Vector<3, T>& up)
 {
