@@ -3,7 +3,7 @@ Framework:
 
     ☐ Add qunterions
 
-    ☐ Add matrix transform @started(16-08-06 12:31)
+    ✔ Add matrix transform @started(16-08-06 12:31) @done(2016-12-05 23:16)
         https://github.com/g-truc/glm/blob/93d09e0e93ca6fe3d9dc6398489a54a3f9cf76db/glm/gtc/matrix_transform.hpp
 
     ☐ Add doxigen description comments to all functions
@@ -14,9 +14,9 @@ Framework:
 
     ☐ Sart to use The Clang Static Analyzer and fcatch-undefined-behavior -ftrapv
 
-    ☐ Rewrite all tests with new test Suite class.
+    ☐ Rewrite all tests with new test Suite class. @started(16-12-06 23:04)
 
-    ☐ Rename test folders and add subfolders.
+    ✔ Rename test folders and add subfolders. @done(2016-12-09 23:41)
 
     ☐ Rename all headers with hpp extention.
 
