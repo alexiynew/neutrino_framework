@@ -22,7 +22,7 @@ Framework:
 
     ☐ Rename all lockal variables in snake_case.
 
-    ☐ Add test for test utils.
+    ✔ Add test for test utils. @done(2016-12-10 22:12)
 
     ☐ Add script to simplefy building and testing.
 
