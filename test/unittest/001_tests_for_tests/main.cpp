@@ -1,5 +1,5 @@
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 #include <unittest/test.h>
 
@@ -9,9 +9,10 @@ class ShouldFailTest : public test::Suite
 {
 public:
     ShouldFailTest()
+        : Suite("ShouldFailTest")
     {
-        ADD_TEST(ShouldFailTest::testAssert);
-        ADD_TEST(ShouldFailTest::testFail);
+        add_test([this]() { testAssert(); }, "testAssert");
+        add_test([this]() { testFail(); }, "testFail");
     }
 
 private:
@@ -30,8 +31,9 @@ class ShouldPassTest : public test::Suite
 {
 public:
     ShouldPassTest()
+        : Suite("ShouldPassTest")
     {
-        ADD_TEST(ShouldPassTest::testAssert);
+        add_test([this]() { testAssert(); }, "testAssert");
     }
 
 private:
@@ -47,9 +49,10 @@ class TestForTest : public test::Suite
 {
 public:
     TestForTest()
+        : Suite("TestForTest")
     {
-        ADD_TEST(TestForTest::shouldFail);
-        ADD_TEST(TestForTest::shouldPass);
+        add_test([this]() { shouldFail(); }, "shouldFail");
+        add_test([this]() { shouldPass(); }, "shouldPass");
     }
 
 private:
@@ -59,7 +62,7 @@ private:
 
         runSuite(should_fail);
 
-        TEST_ASSERT(!should_fail.isSuccessed(), "This test should fail.");
+        TEST_ASSERT(!should_fail.is_successed(), "This test should fail.");
     }
 
     void shouldPass()
@@ -68,7 +71,7 @@ private:
 
         runSuite(should_pass);
 
-        TEST_ASSERT(should_pass.isSuccessed(), "This test should pass.");
+        TEST_ASSERT(should_pass.is_successed(), "This test should pass.");
     }
 
     void runSuite(test::Suite& test)
@@ -87,7 +90,5 @@ private:
 
 int main()
 {
-    TestForTest test;
-    test.run();
-    return test.isSuccessed() ? 0 : 1;
+    return run_tests(TestForTest());
 }

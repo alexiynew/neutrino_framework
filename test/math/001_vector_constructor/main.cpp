@@ -1,6 +1,3 @@
-#include <memory>
-#include <vector>
-
 #include <math/fmath.h>
 #include <unittest/test.h>
 
@@ -10,18 +7,19 @@ class VectorTest : public test::Suite
 {
 public:
     VectorTest()
+        : Suite("VectorTest")
     {
-        ADD_TEST(VectorTest::sizeCheck);
-        ADD_TEST(VectorTest::defaultConstructor);
-        ADD_TEST(VectorTest::oneArgConstructor);
-        ADD_TEST(VectorTest::nonDefConstructor);
-        ADD_TEST(VectorTest::typeCastConstructor);
-        ADD_TEST(VectorTest::fromVectorOfBoolConstructor);
-        ADD_TEST(VectorTest::pointerConstructor);
-        ADD_TEST(VectorTest::integerZeroConstructor);
-        ADD_TEST(VectorTest::fromVector4DConstructor);
-        ADD_TEST(VectorTest::fromVector3DConstructor);
-        ADD_TEST(VectorTest::fromVector2DConstructor);
+        add_test([this]() { sizeCheck(); }, "sizeCheck");
+        add_test([this]() { defaultConstructor(); }, "defaultConstructor");
+        add_test([this]() { oneArgConstructor(); }, "oneArgConstructor");
+        add_test([this]() { nonDefConstructor(); }, "nonDefConstructor");
+        add_test([this]() { typeCastConstructor(); }, "typeCastConstructor");
+        add_test([this]() { fromVectorOfBoolConstructor(); }, "fromVectorOfBoolConstructor");
+        add_test([this]() { pointerConstructor(); }, "pointerConstructor");
+        add_test([this]() { integerZeroConstructor(); }, "integerZeroConstructor");
+        add_test([this]() { fromVector4DConstructor(); }, "fromVector4DConstructor");
+        add_test([this]() { fromVector3DConstructor(); }, "fromVector3DConstructor");
+        add_test([this]() { fromVector2DConstructor(); }, "fromVector2DConstructor");
     }
 
 private:
@@ -188,13 +186,14 @@ class BoolVectorTest : public test::Suite
 {
 public:
     BoolVectorTest()
+        : Suite("BoolVectorTest")
     {
-        ADD_TEST(BoolVectorTest::sizeCheck);
-        ADD_TEST(BoolVectorTest::defaultConstructor);
-        ADD_TEST(BoolVectorTest::oneArgConstructor);
-        ADD_TEST(BoolVectorTest::nonDefConstructor);
-        ADD_TEST(BoolVectorTest::typeCastConstructor);
-        ADD_TEST(BoolVectorTest::pointerConstructor);
+        add_test([this]() { sizeCheck(); }, "sizeCheck");
+        add_test([this]() { defaultConstructor(); }, "defaultConstructor");
+        add_test([this]() { oneArgConstructor(); }, "oneArgConstructor");
+        add_test([this]() { nonDefConstructor(); }, "nonDefConstructor");
+        add_test([this]() { typeCastConstructor(); }, "typeCastConstructor");
+        add_test([this]() { pointerConstructor(); }, "pointerConstructor");
     }
 
 private:
@@ -271,18 +270,5 @@ private:
 
 int main()
 {
-
-    std::vector<std::unique_ptr<test::Suite>> tests;
-
-    tests.emplace_back(new VectorTest());
-    tests.emplace_back(new BoolVectorTest());
-
-    bool all_succeeded = true;
-
-    for (auto& test : tests) {
-        test->run();
-        all_succeeded = all_succeeded && test->isSuccessed();
-    }
-
-    return all_succeeded ? 0 : 1;
+    return run_tests(VectorTest(), BoolVectorTest());
 }

@@ -5,9 +5,9 @@
 
 namespace test {
 
-Suite::Suite()
+Suite::Suite(const std::string& name)
     : m_success{true}
-    , m_name{}
+    , m_name{name}
     , m_tests{}
     , m_current_test{m_tests.end()}
 {
@@ -22,59 +22,52 @@ void Suite::run()
 
     for (auto iter = m_tests.begin(); iter != m_tests.end(); iter++) {
         m_current_test = iter;
-        setup();
-        ((this)->*(m_current_test->function))();
-        tearDown();
+
+        m_current_test->function();
 
         if (m_current_test->success) {
-            outputSuccess(*m_current_test);
+            output_success(*m_current_test);
         }
     }
 }
 
-bool Suite::isSuccessed()
+bool Suite::is_successed()
 {
     return m_success;
 }
 
-void Suite::setup()
+void Suite::add_test(TestFunction&& function, const std::string& name)
 {
+    m_tests.emplace_back(std::forward<TestFunction>(function), name);
 }
 
-void Suite::tearDown()
-{
-}
-
-void Suite::addTest(TestFunction func, const std::string& name)
-{
-    std::size_t pos = name.find(':');
-
-    std::string suite_name = name.substr(0, pos);
-    std::string test_name  = name.substr(pos + 2);
-
-    m_name = suite_name;
-
-    m_tests.push_back({func, test_name, true});
-}
-
-void Suite::testFailed(const std::string& file, int line, const std::string& message)
+void Suite::test_failed(const std::string& file, int line, const std::string& message)
 {
     m_success = false;
     if (m_current_test != m_tests.end()) {
         m_current_test->success = false;
-        outputFail({file, line, message, *m_current_test});
+        m_current_test->status  = {file, message, line};
+        output_fail(*m_current_test);
     }
 }
 
-void Suite::outputFail(const Status& status)
+void Suite::output_fail(const TestData& test)
 {
-    std::cout << "    " << std::setw(40) << std::left << status.test.name << " FAIL" << std::endl;
-    std::cout << "        " << status.file << ":" << status.line << " " << status.message << std::endl;
+    std::cout << "    " << std::setw(40) << std::left << test.name << " FAIL" << std::endl;
+    std::cout << "        " << test.status.file << ":" << test.status.line << " " << test.status.message << std::endl;
 }
 
-void Suite::outputSuccess(const TestData& test)
+void Suite::output_success(const TestData& test)
 {
     std::cout << "    " << std::setw(40) << std::left << test.name << " OK" << std::endl;
+}
+
+Suite::TestData::TestData(TestFunction&& function_to_call, const std::string& test_name)
+    : status{"", "", -1}
+    , name(test_name)
+    , function(std::forward<TestFunction>(function_to_call))
+    , success(true)
+{
 }
 
 } // namespace test

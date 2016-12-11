@@ -1,7 +1,3 @@
-#include <iostream>
-#include <memory>
-#include <vector>
-
 #include <math/fmath.h>
 #include <unittest/test.h>
 
@@ -11,11 +7,12 @@ class Transform2DTest : public test::Suite
 {
 public:
     Transform2DTest()
+        : Suite("Transform2DTest")
     {
-        ADD_TEST(Transform2DTest::translate);
-        ADD_TEST(Transform2DTest::rotate);
-        ADD_TEST(Transform2DTest::scale);
-        ADD_TEST(Transform2DTest::shear);
+        add_test([this]() { translate(); }, "translate");
+        add_test([this]() { rotate(); }, "rotate");
+        add_test([this]() { scale(); }, "scale");
+        add_test([this]() { shear(); }, "shear");
     }
 
 private:
@@ -215,13 +212,14 @@ class Transform3DTest : public test::Suite
 {
 public:
     Transform3DTest()
+        : Suite("Transform3DTest")
     {
-        ADD_TEST(Transform3DTest::createTranslate);
-        ADD_TEST(Transform3DTest::createRotate);
-        ADD_TEST(Transform3DTest::createScale);
-        ADD_TEST(Transform3DTest::translate);
-        ADD_TEST(Transform3DTest::scale);
-        ADD_TEST(Transform3DTest::rotate);
+        add_test([this]() { createTranslate(); }, "createTranslate");
+        add_test([this]() { createRotate(); }, "createRotate");
+        add_test([this]() { createScale(); }, "createScale");
+        add_test([this]() { translate(); }, "translate");
+        add_test([this]() { scale(); }, "scale");
+        add_test([this]() { rotate(); }, "rotate");
     }
 
 private:
@@ -446,13 +444,14 @@ class ProjectionTest : public test::Suite
 {
 public:
     ProjectionTest()
+        : Suite("ProjectionTest")
     {
-        ADD_TEST(ProjectionTest::orthogonal);
-        ADD_TEST(ProjectionTest::orthogonal2D);
-        ADD_TEST(ProjectionTest::frustum);
-        ADD_TEST(ProjectionTest::perspective);
-        ADD_TEST(ProjectionTest::perspectiveFov);
-        ADD_TEST(ProjectionTest::infinitePerspective);
+        add_test([this]() { orthogonal(); }, "orthogonal");
+        add_test([this]() { orthogonal2D(); }, "orthogonal2D");
+        add_test([this]() { frustum(); }, "frustum");
+        add_test([this]() { perspective(); }, "perspective");
+        add_test([this]() { perspectiveFov(); }, "perspectiveFov");
+        add_test([this]() { infinitePerspective(); }, "infinitePerspective");
     }
 
 private:
@@ -583,10 +582,11 @@ class HelpersTest : public test::Suite
 {
 public:
     HelpersTest()
+        : Suite("HelpersTest")
     {
-        ADD_TEST(HelpersTest::project);
-        ADD_TEST(HelpersTest::pickRegion);
-        ADD_TEST(HelpersTest::lookAt);
+        add_test([this]() { project(); }, "project");
+        add_test([this]() { pickRegion(); }, "pickRegion");
+        add_test([this]() { lookAt(); }, "lookAt");
     }
 
 private:
@@ -684,19 +684,5 @@ private:
 
 int main()
 {
-    std::vector<std::unique_ptr<test::Suite>> tests;
-
-    tests.emplace_back(new Transform2DTest());
-    tests.emplace_back(new Transform3DTest());
-    tests.emplace_back(new ProjectionTest());
-    tests.emplace_back(new HelpersTest());
-
-    bool all_succeeded = true;
-
-    for (auto& test : tests) {
-        test->run();
-        all_succeeded = all_succeeded && test->isSuccessed();
-    }
-
-    return all_succeeded ? 0 : 1;
+    return run_tests(Transform2DTest(), Transform3DTest(), ProjectionTest(), HelpersTest());
 }

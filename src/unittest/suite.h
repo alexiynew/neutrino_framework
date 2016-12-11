@@ -1,6 +1,7 @@
 #ifndef FRAMEWORK_UNITTEST_SUITE_H
 #define FRAMEWORK_UNITTEST_SUITE_H
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -9,43 +10,40 @@ namespace test {
 class Suite
 {
 public:
-    Suite();
-
-    virtual ~Suite() = default;
+    Suite(const std::string& name);
 
     void run();
 
-    bool isSuccessed();
+    bool is_successed();
 
 protected:
-    using TestFunction = void (Suite::*)();
+    using TestFunction = std::function<void()>;
 
-    virtual void setup();
-    virtual void tearDown();
+    void add_test(TestFunction&& function, const std::string& name);
 
-    void addTest(TestFunction func, const std::string& name);
-
-    void testFailed(const std::string& file, int line, const std::string& message);
+    void test_failed(const std::string& file, int line, const std::string& message);
 
 private:
     struct TestData
     {
-        TestFunction function;
+        struct Status
+        {
+            std::string file;
+            std::string message;
+            int line;
+        };
+
+        Status status;
         std::string name;
+        TestFunction function;
         bool success;
+
+        TestData(TestFunction&& function, const std::string& name);
     };
 
-    struct Status
-    {
-        std::string file;
-        int line;
-        std::string message;
-        const TestData& test;
-    };
+    void output_fail(const TestData& test);
 
-    void outputFail(const Status& status);
-
-    void outputSuccess(const TestData& test);
+    void output_success(const TestData& test);
 
     bool m_success;
     std::string m_name;
@@ -53,8 +51,23 @@ private:
     std::vector<TestData>::iterator m_current_test;
 };
 
-} // namspace test
 
-#define ADD_TEST(FUNC) addTest(static_cast<TestFunction>(&FUNC), #FUNC)
+template <typename... Args>
+int run_tests(Args&&... tests)
+{
+    int count  = sizeof...(tests);
+    int passed = 0;
+
+    std::vector<test::Suite*> tests_container{&tests...};
+
+    for (auto* test : tests_container) {
+        test->run();
+        passed += test->is_successed() ? 1 : 0;
+    }
+
+    return count - passed;
+}
+
+} // namspace test
 
 #endif
