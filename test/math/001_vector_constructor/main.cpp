@@ -1,13 +1,13 @@
 #include <math/fmath.h>
-#include <unittest/test.h>
+#include <unit_test/test.h>
 
 using namespace framework::math;
 
-class VectorTest : public test::Suite
+class VectorTest : public test::suite
 {
 public:
     VectorTest()
-        : Suite("VectorTest")
+        : suite("VectorTest")
     {
         add_test([this]() { sizeCheck(); }, "sizeCheck");
         add_test([this]() { defaultConstructor(); }, "defaultConstructor");
@@ -182,11 +182,11 @@ private:
     }
 };
 
-class BoolVectorTest : public test::Suite
+class BoolVectorTest : public test::suite
 {
 public:
     BoolVectorTest()
-        : Suite("BoolVectorTest")
+        : suite("BoolVectorTest")
     {
         add_test([this]() { sizeCheck(); }, "sizeCheck");
         add_test([this]() { defaultConstructor(); }, "defaultConstructor");

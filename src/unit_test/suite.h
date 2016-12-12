@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_UNITTEST_SUITE_H
-#define FRAMEWORK_UNITTEST_SUITE_H
+#ifndef FRAMEWORK_UNIT_TEST_SUITE_H
+#define FRAMEWORK_UNIT_TEST_SUITE_H
 
 #include <functional>
 #include <string>
@@ -7,24 +7,24 @@
 
 namespace test {
 
-class Suite
+class suite
 {
 public:
-    Suite(const std::string& name);
+    suite(const std::string& name);
 
     void run();
 
-    bool is_successed();
+    bool is_succeeded();
 
 protected:
-    using TestFunction = std::function<void()>;
+    using function_type = std::function<void()>;
 
-    void add_test(TestFunction&& function, const std::string& name);
+    void add_test(function_type&& function, const std::string& name);
 
     void test_failed(const std::string& file, int line, const std::string& message);
 
 private:
-    struct TestData
+    struct test_data
     {
         struct Status
         {
@@ -35,20 +35,20 @@ private:
 
         Status status;
         std::string name;
-        TestFunction function;
+        function_type function;
         bool success;
 
-        TestData(TestFunction&& function, const std::string& name);
+        test_data(function_type&& function, const std::string& name);
     };
 
-    void output_fail(const TestData& test);
+    void output_fail(const test_data& test);
 
-    void output_success(const TestData& test);
+    void output_success(const test_data& test);
 
     bool m_success;
     std::string m_name;
-    std::vector<TestData> m_tests;
-    std::vector<TestData>::iterator m_current_test;
+    std::vector<test_data> m_tests;
+    std::vector<test_data>::iterator m_current_test;
 };
 
 
@@ -58,16 +58,16 @@ int run_tests(Args&&... tests)
     int count  = sizeof...(tests);
     int passed = 0;
 
-    std::vector<test::Suite*> tests_container{&tests...};
+    std::vector<test::suite*> tests_container{&tests...};
 
     for (auto* test : tests_container) {
         test->run();
-        passed += test->is_successed() ? 1 : 0;
+        passed += test->is_succeeded() ? 1 : 0;
     }
 
     return count - passed;
 }
 
-} // namspace test
+} // namespace test
 
 #endif

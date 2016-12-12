@@ -1,13 +1,13 @@
 #include <math/fmath.h>
-#include <unittest/test.h>
+#include <unit_test/test.h>
 
 using namespace framework::math;
 
-class Transform2DTest : public test::Suite
+class Transform2DTest : public test::suite
 {
 public:
     Transform2DTest()
-        : Suite("Transform2DTest")
+        : suite("Transform2DTest")
     {
         add_test([this]() { translate(); }, "translate");
         add_test([this]() { rotate(); }, "rotate");
@@ -208,11 +208,11 @@ private:
     }
 };
 
-class Transform3DTest : public test::Suite
+class Transform3DTest : public test::suite
 {
 public:
     Transform3DTest()
-        : Suite("Transform3DTest")
+        : suite("Transform3DTest")
     {
         add_test([this]() { createTranslate(); }, "createTranslate");
         add_test([this]() { createRotate(); }, "createRotate");
@@ -440,11 +440,11 @@ private:
     }
 };
 
-class ProjectionTest : public test::Suite
+class ProjectionTest : public test::suite
 {
 public:
     ProjectionTest()
-        : Suite("ProjectionTest")
+        : suite("ProjectionTest")
     {
         add_test([this]() { orthogonal(); }, "orthogonal");
         add_test([this]() { orthogonal2D(); }, "orthogonal2D");
@@ -578,11 +578,11 @@ private:
     }
 };
 
-class HelpersTest : public test::Suite
+class HelpersTest : public test::suite
 {
 public:
     HelpersTest()
-        : Suite("HelpersTest")
+        : suite("HelpersTest")
     {
         add_test([this]() { project(); }, "project");
         add_test([this]() { pickRegion(); }, "pickRegion");

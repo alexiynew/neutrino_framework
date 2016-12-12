@@ -1,11 +1,11 @@
 #include <iomanip>
 #include <iostream>
 
-#include <unittest/suite.h>
+#include <unit_test/suite.h>
 
 namespace test {
 
-Suite::Suite(const std::string& name)
+suite::suite(const std::string& name)
     : m_success{true}
     , m_name{name}
     , m_tests{}
@@ -13,15 +13,15 @@ Suite::Suite(const std::string& name)
 {
 }
 
-void Suite::run()
+void suite::run()
 {
     std::cout << m_name << std::endl;
 
     m_success      = true;
     m_current_test = m_tests.end();
 
-    for (auto iter = m_tests.begin(); iter != m_tests.end(); iter++) {
-        m_current_test = iter;
+    for (auto iterator = m_tests.begin(); iterator != m_tests.end(); iterator++) {
+        m_current_test = iterator;
 
         m_current_test->function();
 
@@ -31,17 +31,17 @@ void Suite::run()
     }
 }
 
-bool Suite::is_successed()
+bool suite::is_succeeded()
 {
     return m_success;
 }
 
-void Suite::add_test(TestFunction&& function, const std::string& name)
+void suite::add_test(function_type&& function, const std::string& name)
 {
-    m_tests.emplace_back(std::forward<TestFunction>(function), name);
+    m_tests.emplace_back(std::forward<function_type>(function), name);
 }
 
-void Suite::test_failed(const std::string& file, int line, const std::string& message)
+void suite::test_failed(const std::string& file, int line, const std::string& message)
 {
     m_success = false;
     if (m_current_test != m_tests.end()) {
@@ -51,21 +51,21 @@ void Suite::test_failed(const std::string& file, int line, const std::string& me
     }
 }
 
-void Suite::output_fail(const TestData& test)
+void suite::output_fail(const test_data& test)
 {
     std::cout << "    " << std::setw(40) << std::left << test.name << " FAIL" << std::endl;
     std::cout << "        " << test.status.file << ":" << test.status.line << " " << test.status.message << std::endl;
 }
 
-void Suite::output_success(const TestData& test)
+void suite::output_success(const test_data& test)
 {
     std::cout << "    " << std::setw(40) << std::left << test.name << " OK" << std::endl;
 }
 
-Suite::TestData::TestData(TestFunction&& function_to_call, const std::string& test_name)
+suite::test_data::test_data(function_type&& function_to_call, const std::string& test_name)
     : status{"", "", -1}
     , name(test_name)
-    , function(std::forward<TestFunction>(function_to_call))
+    , function(std::forward<function_type>(function_to_call))
     , success(true)
 {
 }
