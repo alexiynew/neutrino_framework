@@ -64,9 +64,9 @@ void suite::output_success(const test_data& test)
 
 suite::test_data::test_data(function_type&& function_to_call, const std::string& test_name)
     : status{"", "", -1}
-    , name(test_name)
-    , function(std::forward<function_type>(function_to_call))
-    , success(true)
+    , name{test_name}
+    , function{std::forward<function_type>(function_to_call)}
+    , success{true}
 {
 }
 

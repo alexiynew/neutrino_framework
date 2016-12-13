@@ -52,8 +52,8 @@ private:
 };
 
 
-template <typename... Args>
-int run_tests(Args&&... tests)
+template <typename... Arguments>
+int run_tests(Arguments&&... tests)
 {
     int count  = sizeof...(tests);
     int passed = 0;
