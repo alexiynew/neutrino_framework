@@ -66,9 +66,9 @@ int main()
 
     // matrix from pinter costructor
     {
-        F64 data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-        F64 data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
-        F64 data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
+        double data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+        double data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
+        double data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
 
         Matrix4x4D m44(data4);
         Matrix3x4D m34(data4);
@@ -103,17 +103,17 @@ int main()
                    "matrix3x3 from pointer constructor");
         ASSERT_MSG(m22 == Matrix2x2D(Vector2D(0, 1), Vector2D(0, 1)), "matrix2x3 from pointer constructor");
 
-        F64* p44 = m44.data();
-        F64* p34 = m34.data();
-        F64* p24 = m24.data();
+        double* p44 = m44.data();
+        double* p34 = m34.data();
+        double* p24 = m24.data();
 
-        F64* p43 = m43.data();
-        F64* p33 = m33.data();
-        F64* p23 = m23.data();
+        double* p43 = m43.data();
+        double* p33 = m33.data();
+        double* p23 = m23.data();
 
-        F64* p42 = m42.data();
-        F64* p32 = m32.data();
-        F64* p22 = m22.data();
+        double* p42 = m42.data();
+        double* p32 = m32.data();
+        double* p22 = m22.data();
 
         ASSERT_MSG(p44[0] == 0.0 && p44[1] == 1.0 && p44[2] == 2.0 && p44[3] == 3.0 && p44[4] == 0.0 && p44[5] == 1.0 &&
                    p44[6] == 2.0 && p44[7] == 3.0 && p44[8] == 0.0 && p44[9] == 1.0 && p44[10] == 2.0 &&

@@ -28,7 +28,7 @@ int main()
         v2f = v2i;
 
         ASSERT_MSG(v4i == Vector4I(1, 2, 3, 4) && v4d2 == Vector4D(1.1, 2.2, 3.3, 4), "assign failed");
-        ASSERT_MSG(v3d == Vector3D(static_cast<F64>(5.5f), static_cast<F64>(6.6f), static_cast<F64>(7.7f)) &&
+        ASSERT_MSG(v3d == Vector3D(static_cast<double>(5.5f), static_cast<double>(6.6f), static_cast<double>(7.7f)) &&
                    v3f2 == Vector3F(5.5f, 6.6f, 7.7f),
                    "assign failed");
         ASSERT_MSG(v2f == Vector2F(1, 2) && v2i2 == Vector2I(1, 2.0), "assign failed");

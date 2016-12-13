@@ -102,10 +102,10 @@ private:
 
     void pointerConstructor()
     {
-        F64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
-        F32 data_f[3] = {1.0f, 2.0f, 3.0f};
-        I32 data_i[2] = {1, 2};
-        U32 data_u[2] = {1, 2};
+        double data_d[4] = {1.0, 2.0, 3.0, 4.0};
+        float data_f[3]  = {1.0f, 2.0f, 3.0f};
+        int data_i[2] = {1, 2};
+        unsigned int data_u[2] = {1, 2};
 
         Vector4D v4d(data_d);
         Vector3F v3f(data_f);

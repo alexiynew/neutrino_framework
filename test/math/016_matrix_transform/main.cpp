@@ -528,7 +528,7 @@ private:
         };
         // clang-format on
 
-        const Matrix4F proj = ::perspective(F32(HALF_PI), 1.0f, 1.0f, 2.0f);
+        const Matrix4F proj = ::perspective(float(HALF_PI), 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(proj == target, "Perspective projection matrix is not correct.");
 
@@ -543,8 +543,8 @@ private:
 
     void perspectiveFov()
     {
-        const Matrix4F target = ::perspective(F32(HALF_PI), 1.0f, 1.0f, 2.0f);
-        const Matrix4F proj   = ::perspectiveFov(F32(HALF_PI), 1.0f, 1.0f, 1.0f, 2.0f);
+        const Matrix4F target = ::perspective(float(HALF_PI), 1.0f, 1.0f, 2.0f);
+        const Matrix4F proj   = ::perspectiveFov(float(HALF_PI), 1.0f, 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(proj == target, "PerspectiveFov projection matrix is not correct.");
     }
@@ -560,7 +560,7 @@ private:
         };
         // clang-format on
 
-        const Matrix4F proj = ::infinitePerspective(F32(HALF_PI), 1.0f, 1.0f);
+        const Matrix4F proj = ::infinitePerspective(float(HALF_PI), 1.0f, 1.0f);
 
         TEST_ASSERT(almostEqual(proj, target, 1), "Infinite perspective projection matrix is not correct.");
 
@@ -592,14 +592,14 @@ public:
 private:
     void project()
     {
-        const F32 near = 1.0f;
-        const F32 far  = 10.0f;
+        const float near = 1.0f;
+        const float far  = 10.0f;
 
-        const F32 width  = 480.0f;
-        const F32 height = 320.0f;
+        const float width  = 480.0f;
+        const float height = 320.0f;
 
         const Matrix4F model;
-        const Matrix4F proj = perspectiveFov(F32(HALF_PI), width, height, near, far);
+        const Matrix4F proj = perspectiveFov(float(HALF_PI), width, height, near, far);
 
         const Vector4F viewport{0, 0, width, height};
 
@@ -651,8 +651,8 @@ private:
         };
         // clang-format on
 
-        const F32 width  = 480.0f;
-        const F32 height = 320.0f;
+        const float width  = 480.0f;
+        const float height = 320.0f;
 
         const Vector4F viewport{0, 0, width, height};
 

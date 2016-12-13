@@ -15,12 +15,12 @@ namespace math {
 namespace matrix_impl {
 
 // base classes for matrices of different size
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 struct MatrixBase
 {
 };
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 struct Matrix : public MatrixBase<C, R, T>
 {
     using BaseType   = MatrixBase<C, R, T>;
@@ -37,13 +37,13 @@ struct Matrix : public MatrixBase<C, R, T>
     // import constructors from MatrixBase<C, R, T>
     using BaseType::MatrixBase;
 
-    constexpr U32 size() const;
+    constexpr unsigned int size() const;
 
     ValueType* data();
     const ValueType* data() const;
 
-    ColumnType column(U32 index) const;
-    RowType row(U32 index) const;
+    ColumnType column(unsigned int index) const;
+    RowType row(unsigned int index) const;
 
     Matrix<C, R, T>& operator=(const Matrix<C, R, T>&) = default;
     Matrix<C, R, T>& operator=(Matrix<C, R, T>&&) = default;
@@ -72,8 +72,8 @@ struct Matrix : public MatrixBase<C, R, T>
     template <typename U>
     Matrix<C, R, T>& operator/=(const U& scalar);
 
-    ColumnType& operator[](U32 index);
-    const ColumnType& operator[](U32 index) const;
+    ColumnType& operator[](unsigned int index);
+    const ColumnType& operator[](unsigned int index) const;
 };
 
 // matrix base types
@@ -82,7 +82,7 @@ struct MatrixBase<4, 4, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -327,7 +327,7 @@ struct MatrixBase<4, 3, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -485,7 +485,7 @@ struct MatrixBase<4, 2, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -608,7 +608,7 @@ struct MatrixBase<3, 4, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -809,7 +809,7 @@ struct MatrixBase<3, 3, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -957,7 +957,7 @@ struct MatrixBase<3, 2, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -1073,7 +1073,7 @@ struct MatrixBase<2, 4, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -1235,7 +1235,7 @@ struct MatrixBase<2, 3, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -1357,7 +1357,7 @@ struct MatrixBase<2, 2, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <U32 N, typename U>
+    template <unsigned int N, typename U>
     using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
@@ -1469,67 +1469,67 @@ protected:
 };
 
 // default constructor
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 constexpr Matrix<C, R, T>::Matrix()
     : BaseType()
 {
 }
 
 // matrix methods
-template <U32 C, U32 R, typename T>
-inline constexpr U32 Matrix<C, R, T>::size() const
+template <unsigned int C, unsigned int R, typename T>
+inline constexpr unsigned int Matrix<C, R, T>::size() const
 {
     return C;
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline typename Matrix<C, R, T>::ValueType* Matrix<C, R, T>::data()
 {
     return BaseType::data[0].data();
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline const typename Matrix<C, R, T>::ValueType* Matrix<C, R, T>::data() const
 {
     return BaseType::data[0].data();
 }
 
-template <U32 C, U32 R, typename T>
-inline typename Matrix<C, R, T>::ColumnType Matrix<C, R, T>::column(U32 index) const
+template <unsigned int C, unsigned int R, typename T>
+inline typename Matrix<C, R, T>::ColumnType Matrix<C, R, T>::column(unsigned int index) const
 {
     ASSERT_MSG(index < C, "Wrong column index.");
     return BaseType::data[index];
 }
 
-template <U32 C, U32 R, typename T>
-inline typename Matrix<C, R, T>::RowType Matrix<C, R, T>::row(U32 index) const
+template <unsigned int C, unsigned int R, typename T>
+inline typename Matrix<C, R, T>::RowType Matrix<C, R, T>::row(unsigned int index) const
 {
     ASSERT_MSG(index < R, "Wrong row index.");
     return utils::type_creator<C>::template create<typename Matrix<C, R, T>::RowType>(
-    [this, index](U32 col) { return BaseType::data[col][index]; });
+    [this, index](unsigned int col) { return BaseType::data[col][index]; });
 }
 
 // access operator
-template <U32 C, U32 R, typename T>
-inline typename Matrix<C, R, T>::ColumnType& Matrix<C, R, T>::operator[](U32 index)
+template <unsigned int C, unsigned int R, typename T>
+inline typename Matrix<C, R, T>::ColumnType& Matrix<C, R, T>::operator[](unsigned int index)
 {
     ASSERT_MSG(index < C, "Wrong column index.");
     return BaseType::data[index];
 }
 
-template <U32 C, U32 R, typename T>
-inline const typename Matrix<C, R, T>::ColumnType& Matrix<C, R, T>::operator[](U32 index) const
+template <unsigned int C, unsigned int R, typename T>
+inline const typename Matrix<C, R, T>::ColumnType& Matrix<C, R, T>::operator[](unsigned int index) const
 {
     ASSERT_MSG(index < C, "Wrong column index.");
     return BaseType::data[index];
 }
 
 // assignment operator
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 template <typename U>
 inline Matrix<C, R, T>& Matrix<C, R, T>::operator=(const Matrix<C, R, U>& other)
 {
-    for (U32 i = 0; i < C; ++i) {
+    for (unsigned int i = 0; i < C; ++i) {
         BaseType::data[i] = static_cast<ColumnType>(other[i]);
     }
     return *this;
@@ -1537,27 +1537,27 @@ inline Matrix<C, R, T>& Matrix<C, R, T>::operator=(const Matrix<C, R, U>& other)
 
 // unary operators
 // matrix - matrix
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 template <typename U>
 inline Matrix<C, R, T>& Matrix<C, R, T>::operator+=(const Matrix<C, R, U>& other)
 {
-    for (U32 i = 0; i < C; ++i) {
+    for (unsigned int i = 0; i < C; ++i) {
         BaseType::data[i] += other[i];
     }
     return *this;
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 template <typename U>
 inline Matrix<C, R, T>& Matrix<C, R, T>::operator-=(const Matrix<C, R, U>& other)
 {
-    for (U32 i = 0; i < C; ++i) {
+    for (unsigned int i = 0; i < C; ++i) {
         BaseType::data[i] -= other[i];
     }
     return *this;
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 template <typename U>
 inline Matrix<C, R, T>& Matrix<C, R, T>::operator*=(const Matrix<C, C, U>& other)
 {
@@ -1567,67 +1567,67 @@ inline Matrix<C, R, T>& Matrix<C, R, T>::operator*=(const Matrix<C, C, U>& other
 // unary operators
 // matrix - scalar
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 template <typename U>
 inline Matrix<C, R, T>& Matrix<C, R, T>::operator+=(const U& scalar)
 {
-    for (U32 i = 0; i < C; ++i) {
+    for (unsigned int i = 0; i < C; ++i) {
         BaseType::data[i] += scalar;
     }
     return *this;
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 template <typename U>
 inline Matrix<C, R, T>& Matrix<C, R, T>::operator-=(const U& scalar)
 {
-    for (U32 i = 0; i < C; ++i) {
+    for (unsigned int i = 0; i < C; ++i) {
         BaseType::data[i] -= scalar;
     }
     return *this;
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 template <typename U>
 inline Matrix<C, R, T>& Matrix<C, R, T>::operator*=(const U& scalar)
 {
-    for (U32 i = 0; i < C; ++i) {
+    for (unsigned int i = 0; i < C; ++i) {
         BaseType::data[i] *= scalar;
     }
     return *this;
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 template <typename U>
 inline Matrix<C, R, T>& Matrix<C, R, T>::operator/=(const U& scalar)
 {
-    for (U32 i = 0; i < C; ++i) {
+    for (unsigned int i = 0; i < C; ++i) {
         BaseType::data[i] /= scalar;
     }
     return *this;
 }
 
 // unary minus
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline Matrix<4, R, T> operator-(const Matrix<4, R, T>& m)
 {
     return Matrix<4, R, T>(-m[0], -m[1], -m[2], -m[3]);
 }
 
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline Matrix<3, R, T> operator-(const Matrix<3, R, T>& m)
 {
     return Matrix<3, R, T>(-m[0], -m[1], -m[2]);
 }
 
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline Matrix<2, R, T> operator-(const Matrix<2, R, T>& m)
 {
     return Matrix<2, R, T>(-m[0], -m[1]);
 }
 
 // unary plus
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator+(const Matrix<C, R, T>& m)
 {
     return m;
@@ -2075,135 +2075,136 @@ inline const Matrix<2, 2, RT> operator*(const Matrix<2, 2, T>& lhs, const Matrix
 }
 
 // vec * matrix
-template <U32 R, typename T, template <U32, typename> class TVec>
+template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
 inline const TVec<4, T> operator*(const TVec<R, T>& v, const Matrix<4, R, T>& m)
 {
     return TVec<4, T>(dot(v, m[0]), dot(v, m[1]), dot(v, m[2]), dot(v, m[3]));
 }
 
-template <U32 R, typename T, template <U32, typename> class TVec>
+template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
 inline const TVec<3, T> operator*(const TVec<R, T>& v, const Matrix<3, R, T>& m)
 {
     return TVec<3, T>(dot(v, m[0]), dot(v, m[1]), dot(v, m[2]));
 }
 
-template <U32 R, typename T, template <U32, typename> class TVec>
+template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
 inline const TVec<2, T> operator*(const TVec<R, T>& v, const Matrix<2, R, T>& m)
 {
     return TVec<2, T>(dot(v, m[0]), dot(v, m[1]));
 }
 
 // matrix * vec
-template <U32 R, typename T, template <U32, typename> class TVec>
+template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
 inline const TVec<R, T> operator*(const Matrix<4, R, T>& m, const TVec<4, T>& v)
 {
     return utils::type_creator<R>::template create<TVec<R, T>>(
-    [&m, &v](U32 r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z + m[3][r] * v.w; });
+    [&m, &v](unsigned int r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z + m[3][r] * v.w; });
 }
 
-template <U32 R, typename T, template <U32, typename> class TVec>
+template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
 inline const TVec<R, T> operator*(const Matrix<3, R, T>& m, const TVec<3, T>& v)
 {
     return utils::type_creator<R>::template create<TVec<R, T>>(
-    [&m, &v](U32 r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z; });
+    [&m, &v](unsigned int r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z; });
 }
 
-template <U32 R, typename T, template <U32, typename> class TVec>
+template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
 inline const TVec<R, T> operator*(const Matrix<2, R, T>& m, const TVec<2, T>& v)
 {
-    return utils::type_creator<R>::template create<TVec<R, T>>([&m, &v](U32 r) { return m[0][r] * v.x + m[1][r] * v.y; });
+    return utils::type_creator<R>::template create<TVec<R, T>>(
+    [&m, &v](unsigned int r) { return m[0][r] * v.x + m[1][r] * v.y; });
 }
 
 // matrix * scalar
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator+(const Matrix<C, R, T>& m, const T& scalar)
 {
     return utils::type_creator<C>::template create<Matrix<C, R, T>>(
-    [&m, &scalar](U32 index) { return m[index] + scalar; });
+    [&m, &scalar](unsigned int index) { return m[index] + scalar; });
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator-(const Matrix<C, R, T>& m, const T& scalar)
 {
     return utils::type_creator<C>::template create<Matrix<C, R, T>>(
-    [&m, &scalar](U32 index) { return m[index] - scalar; });
+    [&m, &scalar](unsigned int index) { return m[index] - scalar; });
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator*(const Matrix<C, R, T>& m, const T& scalar)
 {
     return utils::type_creator<C>::template create<Matrix<C, R, T>>(
-    [&m, &scalar](U32 index) { return m[index] * scalar; });
+    [&m, &scalar](unsigned int index) { return m[index] * scalar; });
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator/(const Matrix<C, R, T>& m, const T& scalar)
 {
     return utils::type_creator<C>::template create<Matrix<C, R, T>>(
-    [&m, &scalar](U32 index) { return m[index] / scalar; });
+    [&m, &scalar](unsigned int index) { return m[index] / scalar; });
 }
 
 // scalar * matrix
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator+(const T& scalar, const Matrix<C, R, T>& m)
 {
     return utils::type_creator<C>::template create<Matrix<C, R, T>>(
-    [&m, &scalar](U32 index) { return scalar + m[index]; });
+    [&m, &scalar](unsigned int index) { return scalar + m[index]; });
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator-(const T& scalar, const Matrix<C, R, T>& m)
 {
     return utils::type_creator<C>::template create<Matrix<C, R, T>>(
-    [&m, &scalar](U32 index) { return scalar - m[index]; });
+    [&m, &scalar](unsigned int index) { return scalar - m[index]; });
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator*(const T& scalar, const Matrix<C, R, T>& m)
 {
     return utils::type_creator<C>::template create<Matrix<C, R, T>>(
-    [&m, &scalar](U32 index) { return scalar * m[index]; });
+    [&m, &scalar](unsigned int index) { return scalar * m[index]; });
 }
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 inline Matrix<C, R, T> operator/(const T& scalar, const Matrix<C, R, T>& m)
 {
     return utils::type_creator<C>::template create<Matrix<C, R, T>>(
-    [&m, &scalar](U32 index) { return scalar / m[index]; });
+    [&m, &scalar](unsigned int index) { return scalar / m[index]; });
 }
 
 // matrix equality
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline constexpr bool operator==(const Matrix<4, R, T>& lhs, const Matrix<4, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] == rhs[2] && lhs[3] == rhs[3];
 }
 
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline constexpr bool operator==(const Matrix<3, R, T>& lhs, const Matrix<3, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] == rhs[2];
 }
 
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline constexpr bool operator==(const Matrix<2, R, T>& lhs, const Matrix<2, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1];
 }
 
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline constexpr bool operator!=(const Matrix<4, R, T>& lhs, const Matrix<4, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]) || (lhs[2] != rhs[2]) || (lhs[3] != rhs[3]);
 }
 
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline constexpr bool operator!=(const Matrix<3, R, T>& lhs, const Matrix<3, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]) || (lhs[2] != rhs[2]);
 }
 
-template <U32 R, typename T>
+template <unsigned int R, typename T>
 inline constexpr bool operator!=(const Matrix<2, R, T>& lhs, const Matrix<2, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]);

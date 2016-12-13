@@ -1,8 +1,6 @@
 #ifndef FRAMEWORK_MATH_HPP
 #define FRAMEWORK_MATH_HPP
 
-#include <common_types.hpp>
-
 #include <math/constants.hpp>
 
 #include <math/matrix_type.hpp>
@@ -21,62 +19,62 @@ namespace framework {
 namespace math {
 
 #pragma mark - Vector Type
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 using Vector = vector_impl::Vector<N, T>;
 
-using Vector2D = Vector<2, F64>;
-using Vector3D = Vector<3, F64>;
-using Vector4D = Vector<4, F64>;
+using Vector2D = Vector<2, double>;
+using Vector3D = Vector<3, double>;
+using Vector4D = Vector<4, double>;
 
-using Vector2F = Vector<2, F32>;
-using Vector3F = Vector<3, F32>;
-using Vector4F = Vector<4, F32>;
+using Vector2F = Vector<2, float>;
+using Vector3F = Vector<3, float>;
+using Vector4F = Vector<4, float>;
 
-using Vector2I = Vector<2, I32>;
-using Vector3I = Vector<3, I32>;
-using Vector4I = Vector<4, I32>;
+using Vector2I = Vector<2, int>;
+using Vector3I = Vector<3, int>;
+using Vector4I = Vector<4, int>;
 
-using Vector2U = Vector<2, U32>;
-using Vector3U = Vector<3, U32>;
-using Vector4U = Vector<4, U32>;
+using Vector2U = Vector<2, unsigned int>;
+using Vector3U = Vector<3, unsigned int>;
+using Vector4U = Vector<4, unsigned int>;
 
 using Vector2B = Vector<2, bool>;
 using Vector3B = Vector<3, bool>;
 using Vector4B = Vector<4, bool>;
 
 #pragma mark - Matrix Type
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 using Matrix = matrix_impl::Matrix<C, R, T>;
 
-using Matrix2D   = Matrix<2, 2, F64>;
-using Matrix2x2D = Matrix<2, 2, F64>;
-using Matrix2x3D = Matrix<2, 3, F64>;
-using Matrix2x4D = Matrix<2, 4, F64>;
+using Matrix2D   = Matrix<2, 2, double>;
+using Matrix2x2D = Matrix<2, 2, double>;
+using Matrix2x3D = Matrix<2, 3, double>;
+using Matrix2x4D = Matrix<2, 4, double>;
 
-using Matrix3D   = Matrix<3, 3, F64>;
-using Matrix3x3D = Matrix<3, 3, F64>;
-using Matrix3x2D = Matrix<3, 2, F64>;
-using Matrix3x4D = Matrix<3, 4, F64>;
+using Matrix3D   = Matrix<3, 3, double>;
+using Matrix3x3D = Matrix<3, 3, double>;
+using Matrix3x2D = Matrix<3, 2, double>;
+using Matrix3x4D = Matrix<3, 4, double>;
 
-using Matrix4D   = Matrix<4, 4, F64>;
-using Matrix4x4D = Matrix<4, 4, F64>;
-using Matrix4x2D = Matrix<4, 2, F64>;
-using Matrix4x3D = Matrix<4, 3, F64>;
+using Matrix4D   = Matrix<4, 4, double>;
+using Matrix4x4D = Matrix<4, 4, double>;
+using Matrix4x2D = Matrix<4, 2, double>;
+using Matrix4x3D = Matrix<4, 3, double>;
 
-using Matrix2F   = Matrix<2, 2, F32>;
-using Matrix2x2F = Matrix<2, 2, F32>;
-using Matrix2x3F = Matrix<2, 3, F32>;
-using Matrix2x4F = Matrix<2, 4, F32>;
+using Matrix2F   = Matrix<2, 2, float>;
+using Matrix2x2F = Matrix<2, 2, float>;
+using Matrix2x3F = Matrix<2, 3, float>;
+using Matrix2x4F = Matrix<2, 4, float>;
 
-using Matrix3F   = Matrix<3, 3, F32>;
-using Matrix3x3F = Matrix<3, 3, F32>;
-using Matrix3x2F = Matrix<3, 2, F32>;
-using Matrix3x4F = Matrix<3, 4, F32>;
+using Matrix3F   = Matrix<3, 3, float>;
+using Matrix3x3F = Matrix<3, 3, float>;
+using Matrix3x2F = Matrix<3, 2, float>;
+using Matrix3x4F = Matrix<3, 4, float>;
 
-using Matrix4F   = Matrix<4, 4, F32>;
-using Matrix4x4F = Matrix<4, 4, F32>;
-using Matrix4x2F = Matrix<4, 2, F32>;
-using Matrix4x3F = Matrix<4, 3, F32>;
+using Matrix4F   = Matrix<4, 4, float>;
+using Matrix4x4F = Matrix<4, 4, float>;
+using Matrix4x2F = Matrix<4, 2, float>;
+using Matrix4x3F = Matrix<4, 3, float>;
 
 } // namespace math
 

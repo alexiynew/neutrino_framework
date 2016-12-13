@@ -1,7 +1,6 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
-#include <common_types.hpp>
 #include <debug.hpp>
 
 #include <math/utils.hpp>
@@ -13,7 +12,7 @@ namespace math {
 namespace vector_impl {
 
 #pragma mark - Vector template declaration
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 struct Vector;
 
 #pragma mark - Vector<4, T> type specialization
@@ -91,10 +90,10 @@ struct Vector<4, T> final
     template <typename U>
     Vector<4, ValueType>& operator/=(const U& scalar);
 
-    ValueType& operator[](U32 index);
-    const ValueType& operator[](U32 index) const;
+    ValueType& operator[](unsigned int index);
+    const ValueType& operator[](unsigned int index) const;
 
-    constexpr U32 size() const;
+    constexpr unsigned int size() const;
 
     ValueType* data();
     const ValueType* data() const;
@@ -166,10 +165,10 @@ struct Vector<3, T> final
     template <typename U>
     Vector<3, ValueType>& operator/=(const U& scalar);
 
-    ValueType& operator[](U32 index);
-    const ValueType& operator[](U32 index) const;
+    ValueType& operator[](unsigned int index);
+    const ValueType& operator[](unsigned int index) const;
 
-    constexpr U32 size() const;
+    constexpr unsigned int size() const;
 
     ValueType* data();
     const ValueType* data() const;
@@ -235,10 +234,10 @@ struct Vector<2, T> final
     template <typename U>
     Vector<2, ValueType>& operator/=(const U& scalar);
 
-    ValueType& operator[](U32 index);
-    const ValueType& operator[](U32 index) const;
+    ValueType& operator[](unsigned int index);
+    const ValueType& operator[](unsigned int index) const;
 
-    constexpr U32 size() const;
+    constexpr unsigned int size() const;
 
     ValueType* data();
     const ValueType* data() const;
@@ -488,14 +487,14 @@ inline Vector<4, T>& Vector<4, T>::operator/=(const U& scalar)
 
 // access operator
 template <typename T>
-inline typename Vector<4, T>::ValueType& Vector<4, T>::operator[](U32 index)
+inline typename Vector<4, T>::ValueType& Vector<4, T>::operator[](unsigned int index)
 {
     ASSERT_MSG(index >= 0 && index < 4, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
-inline const typename Vector<4, T>::ValueType& Vector<4, T>::operator[](U32 index) const
+inline const typename Vector<4, T>::ValueType& Vector<4, T>::operator[](unsigned int index) const
 {
     ASSERT_MSG(index >= 0 && index < 4, "Wrong index.");
     return data()[index];
@@ -503,7 +502,7 @@ inline const typename Vector<4, T>::ValueType& Vector<4, T>::operator[](U32 inde
 
 // methods
 template <typename T>
-inline constexpr U32 Vector<4, T>::size() const
+inline constexpr unsigned int Vector<4, T>::size() const
 {
     return 4;
 }
@@ -704,14 +703,14 @@ inline Vector<3, T>& Vector<3, T>::operator/=(const U& scalar)
 
 // access operator
 template <typename T>
-inline typename Vector<3, T>::ValueType& Vector<3, T>::operator[](U32 index)
+inline typename Vector<3, T>::ValueType& Vector<3, T>::operator[](unsigned int index)
 {
     ASSERT_MSG(index >= 0 && index < 3, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
-inline const typename Vector<3, T>::ValueType& Vector<3, T>::operator[](U32 index) const
+inline const typename Vector<3, T>::ValueType& Vector<3, T>::operator[](unsigned int index) const
 {
     ASSERT_MSG(index >= 0 && index < 3, "Wrong index.");
     return data()[index];
@@ -719,7 +718,7 @@ inline const typename Vector<3, T>::ValueType& Vector<3, T>::operator[](U32 inde
 
 // methods
 template <typename T>
-inline constexpr U32 Vector<3, T>::size() const
+inline constexpr unsigned int Vector<3, T>::size() const
 {
     return 3;
 }
@@ -885,14 +884,14 @@ inline Vector<2, T>& Vector<2, T>::operator/=(const U& scalar)
 
 // access operator
 template <typename T>
-inline typename Vector<2, T>::ValueType& Vector<2, T>::operator[](U32 index)
+inline typename Vector<2, T>::ValueType& Vector<2, T>::operator[](unsigned int index)
 {
     ASSERT_MSG(index >= 0 && index < 2, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
-inline const typename Vector<2, T>::ValueType& Vector<2, T>::operator[](U32 index) const
+inline const typename Vector<2, T>::ValueType& Vector<2, T>::operator[](unsigned int index) const
 {
     ASSERT_MSG(index >= 0 && index < 2, "Wrong index.");
     return data()[index];
@@ -900,7 +899,7 @@ inline const typename Vector<2, T>::ValueType& Vector<2, T>::operator[](U32 inde
 
 // methods
 template <typename T>
-inline constexpr U32 Vector<2, T>::size() const
+inline constexpr unsigned int Vector<2, T>::size() const
 {
     return 2;
 }
@@ -920,14 +919,14 @@ inline const typename Vector<2, T>::ValueType* Vector<2, T>::data() const
 
 #pragma mark - unary minus
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline Vector<N, T> operator-(Vector<N, T> vector)
 {
     return vector *= -T(1);
 }
 
 // unary plus
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline Vector<N, T> operator+(const Vector<N, T>& vector)
 {
     return vector;
@@ -935,50 +934,50 @@ inline Vector<N, T> operator+(const Vector<N, T>& vector)
 
 #pragma mark - binary operators: vector - vector
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator+(Vector<N, T> lhs, const Vector<N, T>& rhs)
 {
     return lhs += rhs;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator-(Vector<N, T> lhs, const Vector<N, T>& rhs)
 {
     return lhs -= rhs;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator*(Vector<N, T> lhs, const Vector<N, T>& rhs)
 {
     return lhs *= rhs;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator/(Vector<N, T> lhs, const Vector<N, T>& rhs)
 {
     return lhs /= rhs;
 }
 
 #pragma mark - binary operators: vector - scalar
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator+(Vector<N, T> vector, const T& scalar)
 {
     return vector += scalar;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator-(Vector<N, T> vector, const T& scalar)
 {
     return vector -= scalar;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator*(Vector<N, T> vector, const T& scalar)
 {
     return vector *= scalar;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator/(Vector<N, T> vector, const T& scalar)
 {
     return vector /= scalar;
@@ -986,28 +985,28 @@ inline const Vector<N, T> operator/(Vector<N, T> vector, const T& scalar)
 
 #pragma mark - binary operators: scalar - vector
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator+(const T& scalar, const Vector<N, T>& vector)
 {
     Vector<N, T> tmp{scalar};
     return tmp += vector;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator-(const T& scalar, const Vector<N, T>& vector)
 {
     Vector<N, T> tmp{scalar};
     return tmp -= vector;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator*(const T& scalar, const Vector<N, T>& vector)
 {
     Vector<N, T> tmp{scalar};
     return tmp *= vector;
 }
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 inline const Vector<N, T> operator/(const T& scalar, const Vector<N, T>& vector)
 {
     Vector<N, T> tmp{scalar};

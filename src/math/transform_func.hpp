@@ -12,10 +12,10 @@ namespace math {
 
 #pragma mark - Types declarations
 
-template <U32 C, U32 R, typename T>
+template <unsigned int C, unsigned int R, typename T>
 using Matrix = matrix_impl::Matrix<C, R, T>;
 
-template <U32 N, typename T>
+template <unsigned int N, typename T>
 using Vector = vector_impl::Vector<N, T>;
 
 #pragma mark - 2d transform
