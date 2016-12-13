@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_MATRIX_FUNC_H
-#define FRAMEWORK_MATH_MATRIX_FUNC_H
+#ifndef FRAMEWORK_MATH_MATRIX_FUNC_HPP
+#define FRAMEWORK_MATH_MATRIX_FUNC_HPP
 
 #include <math/matrix_type.hpp>
 
@@ -273,4 +273,4 @@ inline TMat<4, 4, T> inverseTranspose(const TMat<4, 4, T>& m)
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_MATRIX_FUNC_H
+#endif

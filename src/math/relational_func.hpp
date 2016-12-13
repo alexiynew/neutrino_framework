@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_RELATIONAL_FTNC_H
-#define FRAMEWORK_MATH_RELATIONAL_FTNC_H
+#ifndef FRAMEWORK_MATH_RELATIONAL_FTNC_HPP
+#define FRAMEWORK_MATH_RELATIONAL_FTNC_HPP
 
 #include <type_traits>
 
@@ -120,4 +120,4 @@ inline bool all(const TVec<2, bool>& v)
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_RELATIONAL_FTNC_H
+#endif

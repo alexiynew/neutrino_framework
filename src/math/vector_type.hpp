@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_VECTOR_TYPE_H
-#define FRAMEWORK_MATH_VECTOR_TYPE_H
+#ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
+#define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
 #include <common_types.hpp>
 #include <debug.hpp>
@@ -1063,4 +1063,4 @@ inline constexpr bool operator!=(const Vector<2, T>& a, const Vector<2, T>& b)
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_VECTOR_TYPE_H
+#endif

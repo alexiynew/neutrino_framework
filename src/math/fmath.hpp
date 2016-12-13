@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_H
-#define FRAMEWORK_MATH_H
+#ifndef FRAMEWORK_MATH_HPP
+#define FRAMEWORK_MATH_HPP
 
 #include <common_types.hpp>
 
@@ -82,4 +82,4 @@ using Matrix4x3F = Matrix<4, 3, F32>;
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_H
+#endif

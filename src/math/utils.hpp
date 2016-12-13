@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_UTILS_H
-#define FRAMEWORK_MATH_UTILS_H
+#ifndef FRAMEWORK_MATH_UTILS_HPP
+#define FRAMEWORK_MATH_UTILS_HPP
 
 #include <ostream>
 
@@ -102,4 +102,4 @@ std::ostream& operator<<(std::ostream& os, const TMat<C, R, T>& m)
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_UTILS_H
+#endif

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_TRANSFORM_TYPE_H
-#define FRAMEWORK_MATH_TRANSFORM_TYPE_H
+#ifndef FRAMEWORK_MATH_TRANSFORM_TYPE_HPP
+#define FRAMEWORK_MATH_TRANSFORM_TYPE_HPP
 
 #include <math/matrix_type.hpp>
 #include <math/trigonometric_func.hpp>

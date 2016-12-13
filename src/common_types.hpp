@@ -1,5 +1,5 @@
-#ifndef COMMON_TYPES_H
-#define COMMON_TYPES_H
+#ifndef FRAMEWORK_COMMON_TYPES_HPP
+#define FRAMEWORK_COMMON_TYPES_HPP
 
 #include <cstdint>
 

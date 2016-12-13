@@ -1,5 +1,5 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef FRAMEWORK_DEBUG_HPP
+#define FRAMEWORK_DEBUG_HPP
 
 #include <iostream>
 
@@ -13,19 +13,19 @@
 
 #ifdef NEED_ASSERT
 
-#define ASSERT(EXPR) \
-    ((EXPR) ||       \
-     (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (#EXPR) << std::endl, std::abort(), false))
+#define ASSERT(EXPRESSION) \
+    ((EXPRESSION) ||       \
+     (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (#EXPRESSION) << std::endl, std::abort(), false))
 
-#define ASSERT_MSG(EXPR, MSG) \
-    ((EXPR) ||                \
+#define ASSERT_MSG(EXPRESSION, MSG) \
+    ((EXPRESSION) ||                \
      (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (MSG) << std::endl, std::abort(), false))
 
 #else
 
-#define ASSERT(EXPR) true
+#define ASSERT(EXPRESSION) true
 
-#define ASSERT_MSG(EXPR, MSG) true
+#define ASSERT_MSG(EXPRESSION, MSG) true
 
 #endif
 

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_MATRIX_TYPE_H
-#define FRAMEWORK_MATH_MATRIX_TYPE_H
+#ifndef FRAMEWORK_MATH_MATRIX_TYPE_HPP
+#define FRAMEWORK_MATH_MATRIX_TYPE_HPP
 
 #include <functional>
 #include <type_traits>
@@ -2215,4 +2215,4 @@ inline constexpr bool operator!=(const Matrix<2, R, T>& lhs, const Matrix<2, R, 
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_MATRIX_TYPE_H
+#endif

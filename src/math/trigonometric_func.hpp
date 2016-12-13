@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_H
-#define FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_H
+#ifndef FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_HPP
+#define FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_HPP
 
 #include <cmath>
 
@@ -338,4 +338,4 @@ inline TVec<2, T> atanh(TVec<2, T> const& a)
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_H
+#endif

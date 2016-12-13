@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_EXPONENTIAL_FUNC_H
-#define FRAMEWORK_MATH_EXPONENTIAL_FUNC_H
+#ifndef FRAMEWORK_MATH_EXPONENTIAL_FUNC_HPP
+#define FRAMEWORK_MATH_EXPONENTIAL_FUNC_HPP
 
 #include <cmath>
 
@@ -167,4 +167,4 @@ inline TVec<2, T> invsqrt(const TVec<2, T>& a)
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_EXPONENTIAL_FUNC_H
+#endif

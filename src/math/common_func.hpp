@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_COMMON_FUNC_H
-#define FRAMEWORK_MATH_COMMON_FUNC_H
+#ifndef FRAMEWORK_MATH_COMMON_FUNC_HPP
+#define FRAMEWORK_MATH_COMMON_FUNC_HPP
 
 #include <cmath>
 #include <limits>
@@ -579,4 +579,4 @@ TResult almostEqual(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, I32 ulp = 0
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_COMMON_FUNC_H
+#endif

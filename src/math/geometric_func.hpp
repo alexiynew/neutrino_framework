@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_GEOMETRIC_FUNC_H
-#define FRAMEWORK_MATH_GEOMETRIC_FUNC_H
+#ifndef FRAMEWORK_MATH_GEOMETRIC_FUNC_HPP
+#define FRAMEWORK_MATH_GEOMETRIC_FUNC_HPP
 
 #include <math/common_func.hpp>
 #include <math/exponential_func.hpp>
@@ -170,4 +170,4 @@ inline TVec<N, T> refraction(const TVec<N, T>& v, const TVec<N, T>& n, const T& 
 
 } // namespace framework
 
-#endif // FRAMEWORK_MATH_GEOMETRIC_FUNC_H
+#endif
