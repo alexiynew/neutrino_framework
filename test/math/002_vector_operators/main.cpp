@@ -1,5 +1,5 @@
 #include <debug.hpp>
-#include <math/fmath.hpp>
+#include <math/math.hpp>
 
 using namespace framework::math;
 
