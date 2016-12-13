@@ -1,10 +1,10 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_H
 #define FRAMEWORK_MATH_VECTOR_TYPE_H
 
-#include <common_types.h>
-#include <debug.h>
+#include <common_types.hpp>
+#include <debug.hpp>
 
-#include <math/utils.h>
+#include <math/utils.hpp>
 
 namespace framework {
 

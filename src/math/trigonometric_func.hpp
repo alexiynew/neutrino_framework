@@ -3,8 +3,8 @@
 
 #include <cmath>
 
-#include <math/constants.h>
-#include <math/vector_type.h>
+#include <math/constants.hpp>
+#include <math/vector_type.hpp>
 
 namespace framework {
 

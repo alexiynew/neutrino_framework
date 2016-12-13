@@ -1,7 +1,7 @@
 #include <iomanip>
 #include <iostream>
 
-#include <unit_test/suite.h>
+#include <unit_test/suite.hpp>
 
 namespace test {
 

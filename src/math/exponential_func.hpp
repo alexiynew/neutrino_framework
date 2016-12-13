@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-#include <common_types.h>
+#include <common_types.hpp>
 
 namespace framework {
 

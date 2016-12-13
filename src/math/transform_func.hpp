@@ -1,8 +1,8 @@
 #ifndef FRAMEWORK_MATH_TRANSFORM_TYPE_H
 #define FRAMEWORK_MATH_TRANSFORM_TYPE_H
 
-#include <math/matrix_type.h>
-#include <math/trigonometric_func.h>
+#include <math/matrix_type.hpp>
+#include <math/trigonometric_func.hpp>
 
 // TODO: Ensure only float type for all functions.
 

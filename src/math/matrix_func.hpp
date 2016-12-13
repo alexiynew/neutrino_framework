@@ -1,7 +1,7 @@
 #ifndef FRAMEWORK_MATH_MATRIX_FUNC_H
 #define FRAMEWORK_MATH_MATRIX_FUNC_H
 
-#include <math/matrix_type.h>
+#include <math/matrix_type.hpp>
 
 namespace framework {
 

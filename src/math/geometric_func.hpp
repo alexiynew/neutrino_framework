@@ -1,8 +1,8 @@
 #ifndef FRAMEWORK_MATH_GEOMETRIC_FUNC_H
 #define FRAMEWORK_MATH_GEOMETRIC_FUNC_H
 
-#include <math/common_func.h>
-#include <math/exponential_func.h>
+#include <math/common_func.hpp>
+#include <math/exponential_func.hpp>
 
 namespace framework {
 

@@ -4,9 +4,9 @@
 #include <functional>
 #include <type_traits>
 
-#include <debug.h>
-#include <math/geometric_func.h>
-#include <math/vector_type.h>
+#include <debug.hpp>
+#include <math/geometric_func.hpp>
+#include <math/vector_type.hpp>
 
 namespace framework {
 

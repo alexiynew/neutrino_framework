@@ -4,8 +4,8 @@
 #include <cmath>
 #include <limits>
 
-#include <math/relational_func.h>
-#include <math/utils.h>
+#include <math/relational_func.hpp>
+#include <math/utils.hpp>
 
 namespace framework {
 

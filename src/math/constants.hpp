@@ -1,7 +1,7 @@
 #ifndef FRAMEWORK_MATH_CONSTANTS_H
 #define FRAMEWORK_MATH_CONSTANTS_H
 
-#include <common_types.h>
+#include <common_types.hpp>
 
 namespace framework {
 

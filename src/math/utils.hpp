@@ -3,7 +3,7 @@
 
 #include <ostream>
 
-#include <common_types.h>
+#include <common_types.hpp>
 #include <type_traits>
 
 namespace framework {

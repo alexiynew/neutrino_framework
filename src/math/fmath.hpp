@@ -1,20 +1,20 @@
 #ifndef FRAMEWORK_MATH_H
 #define FRAMEWORK_MATH_H
 
-#include <common_types.h>
+#include <common_types.hpp>
 
-#include <math/constants.h>
+#include <math/constants.hpp>
 
-#include <math/matrix_type.h>
-#include <math/vector_type.h>
+#include <math/matrix_type.hpp>
+#include <math/vector_type.hpp>
 
-#include <math/common_func.h>
-#include <math/exponential_func.h>
-#include <math/geometric_func.h>
-#include <math/matrix_func.h>
-#include <math/relational_func.h>
-#include <math/transform_func.h>
-#include <math/trigonometric_func.h>
+#include <math/common_func.hpp>
+#include <math/exponential_func.hpp>
+#include <math/geometric_func.hpp>
+#include <math/matrix_func.hpp>
+#include <math/relational_func.hpp>
+#include <math/transform_func.hpp>
+#include <math/trigonometric_func.hpp>
 
 namespace framework {
 

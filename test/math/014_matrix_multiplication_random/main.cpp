@@ -1,6 +1,6 @@
 #include <iomanip>
 #include <iostream>
-#include <math/fmath.h>
+#include <math/fmath.hpp>
 
 using namespace framework::math;
 

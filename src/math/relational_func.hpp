@@ -3,9 +3,9 @@
 
 #include <type_traits>
 
-#include <common_types.h>
+#include <common_types.hpp>
 
-#include <math/utils.h>
+#include <math/utils.hpp>
 
 namespace framework {
 
