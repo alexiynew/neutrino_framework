@@ -99,11 +99,11 @@ int main()
                    ldexp(frexp(v2u, v2i_tmp), v2i_tmp) == Vector2D(v2u),
                    "ldexp failed");
 
-        ASSERT_MSG(almostEqual(v4d, Vector4D(1.1, -1.5, 0.0, -1.8)), "almostEqual failed");
-        ASSERT_MSG(almostEqual(v3f, Vector3F(1.6f, -1.5f, 0.0f)), "almostEqual failed");
+        ASSERT_MSG(almost_equal(v4d, Vector4D(1.1, -1.5, 0.0, -1.8)), "almost_equal failed");
+        ASSERT_MSG(almost_equal(v3f, Vector3F(1.6f, -1.5f, 0.0f)), "almost_equal failed");
 
         Vector2F v2f(0.00001f, 1.0f);
-        ASSERT_MSG(almostEqual(v2f, Vector2F(0.00001f, 0.99999999999999f)), "almostEqual failed");
+        ASSERT_MSG(almost_equal(v2f, Vector2F(0.00001f, 0.99999999999999f)), "almost_equal failed");
 
         // TODO: add tests for matrix id:8
     }

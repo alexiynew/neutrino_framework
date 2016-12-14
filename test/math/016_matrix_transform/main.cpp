@@ -89,20 +89,20 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(almostEqual(::rotate(m, radians(30.0f)), r30, 1), "Rotate by 30 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(45.0f)), r45, 2), "Rotate by 45 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(60.0f)), r60, 4), "Rotate by 60 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(90.0f)), r90, 1), "Rotate by 90 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(180.0f)), r180, 1), "Rotate by 180 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(270.0f)), r270, 1), "Rotate by 270 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(300.0f)), r300, 2), "Rotate by 300 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(30.0f)), r30, 1), "Rotate by 30 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(45.0f)), r45, 2), "Rotate by 45 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(60.0f)), r60, 4), "Rotate by 60 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(90.0f)), r90, 1), "Rotate by 90 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(180.0f)), r180, 1), "Rotate by 180 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(270.0f)), r270, 1), "Rotate by 270 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(300.0f)), r300, 2), "Rotate by 300 deg failed.");
 
-        TEST_ASSERT(almostEqual(::rotate(m, radians(-90.0f)), r270, 1), "Rotate by -90 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(-180.0f)), r180, 1), "Rotate by -180 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(-270.0f)), r90, 1), "Rotate by -270 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(-90.0f)), r270, 1), "Rotate by -90 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(-180.0f)), r180, 1), "Rotate by -180 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(-270.0f)), r90, 1), "Rotate by -270 deg failed.");
 
-        TEST_ASSERT(almostEqual(::rotate(m, radians(0.0f)), m, 1), "Rotate by 0 deg failed.");
-        TEST_ASSERT(almostEqual(::rotate(m, radians(360.0f)), m, 2), "Rotate by 360 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(0.0f)), m, 1), "Rotate by 0 deg failed.");
+        TEST_ASSERT(almost_equal(::rotate(m, radians(360.0f)), m, 2), "Rotate by 360 deg failed.");
     }
 
     void scale()
@@ -291,13 +291,13 @@ private:
         const Matrix4F result2 = createRotateMatrix(Vector3F(0, 1, 0), radians(259.0f));
         const Matrix4F result3 = createRotateMatrix(Vector3F(1, 1, 1), radians(-49.0f));
 
-        TEST_ASSERT(almostEqual(resultx, mx, 1), "Create rotate matrix from (1, 0, 0) by 90 degrees failed.");
-        TEST_ASSERT(almostEqual(resulty, my, 1), "Create rotate matrix from (0, 1, 0) by 90 degrees failed.");
-        TEST_ASSERT(almostEqual(resultz, mz, 1), "Create rotate matrix from (0, 0, 1) by 90 degrees failed.");
+        TEST_ASSERT(almost_equal(resultx, mx, 1), "Create rotate matrix from (1, 0, 0) by 90 degrees failed.");
+        TEST_ASSERT(almost_equal(resulty, my, 1), "Create rotate matrix from (0, 1, 0) by 90 degrees failed.");
+        TEST_ASSERT(almost_equal(resultz, mz, 1), "Create rotate matrix from (0, 0, 1) by 90 degrees failed.");
 
-        TEST_ASSERT(almostEqual(result1, m1, 6), "Create rotate matrix from (1, 0, 1) by 12 degrees failed.");
-        TEST_ASSERT(almostEqual(result2, m2, 4), "Create rotate matrix from (0, 1, 0) by 259 degrees failed.");
-        TEST_ASSERT(almostEqual(result3, m3, 1), "Create rotate matrix from (1, 1, 1) by -49 degrees failed.");
+        TEST_ASSERT(almost_equal(result1, m1, 6), "Create rotate matrix from (1, 0, 1) by 12 degrees failed.");
+        TEST_ASSERT(almost_equal(result2, m2, 4), "Create rotate matrix from (0, 1, 0) by 259 degrees failed.");
+        TEST_ASSERT(almost_equal(result3, m3, 1), "Create rotate matrix from (1, 1, 1) by -49 degrees failed.");
     }
 
     void createScale()
@@ -434,9 +434,9 @@ private:
         const Matrix4F resulty = ::rotate(m, Vector3F(0, 1, 0), radians(90.0f));
         const Matrix4F resultz = ::rotate(m, Vector3F(0, 0, 1), radians(90.0f));
 
-        TEST_ASSERT(almostEqual(resultx, mx, 1), "Rotate matrix from (1, 0, 0) by 90 degrees failed.");
-        TEST_ASSERT(almostEqual(resulty, my, 1), "Rotate matrix from (0, 1, 0) by 90 degrees failed.");
-        TEST_ASSERT(almostEqual(resultz, mz, 1), "Rotate matrix from (0, 0, 1) by 90 degrees failed.");
+        TEST_ASSERT(almost_equal(resultx, mx, 1), "Rotate matrix from (1, 0, 0) by 90 degrees failed.");
+        TEST_ASSERT(almost_equal(resulty, my, 1), "Rotate matrix from (0, 1, 0) by 90 degrees failed.");
+        TEST_ASSERT(almost_equal(resultz, mz, 1), "Rotate matrix from (0, 0, 1) by 90 degrees failed.");
     }
 };
 
@@ -562,7 +562,7 @@ private:
 
         const Matrix4F proj = ::infinitePerspective(float(HALF_PI), 1.0f, 1.0f);
 
-        TEST_ASSERT(almostEqual(proj, target, 1), "Infinite perspective projection matrix is not correct.");
+        TEST_ASSERT(almost_equal(proj, target, 1), "Infinite perspective projection matrix is not correct.");
 
         const Vector4F v1{2, 2, -1, 1};
         const Vector4F v2{2, 2, -1.5f, 1};
@@ -572,9 +572,9 @@ private:
         const Vector4F test2 = Vector4F(2, 2, -0.5f, 1.5f);
         const Vector4F test3 = Vector4F(2, 2, -0.0000001192092895f, 2);
 
-        TEST_ASSERT(almostEqual(proj * v1, test1), "Projection of (2, 2, -1, 1) is not correct.");
-        TEST_ASSERT(almostEqual(proj * v2, test2, 1), "Projection of (2, 2, -1.5, 1) is not correct.");
-        TEST_ASSERT(almostEqual(proj * v3, test3, 1), "Projection of (2, 2, -2, 1) is not correct.");
+        TEST_ASSERT(almost_equal(proj * v1, test1), "Projection of (2, 2, -1, 1) is not correct.");
+        TEST_ASSERT(almost_equal(proj * v2, test2, 1), "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(almost_equal(proj * v3, test3, 1), "Projection of (2, 2, -2, 1) is not correct.");
     }
 };
 
@@ -621,11 +621,11 @@ private:
         const Vector3F project4 = ::project(obj4, model, proj, viewport);
         const Vector3F project5 = ::project(obj5, model, proj, viewport);
 
-        TEST_ASSERT(almostEqual(project1, projected1), "Projection of (0, 0, -1) is not correct.");
-        TEST_ASSERT(almostEqual(project2, projected2), "Projection of (0, 1, -1) is not correct.");
-        TEST_ASSERT(almostEqual(project3, projected3), "Projection of (1.5, 0, -1) is not correct.");
-        TEST_ASSERT(almostEqual(project4, projected4), "Projection of (-1.5, -1, -1) is not correct.");
-        TEST_ASSERT(almostEqual(project5, projected5), "Projection of (0, 0, -10) is not correct.");
+        TEST_ASSERT(almost_equal(project1, projected1), "Projection of (0, 0, -1) is not correct.");
+        TEST_ASSERT(almost_equal(project2, projected2), "Projection of (0, 1, -1) is not correct.");
+        TEST_ASSERT(almost_equal(project3, projected3), "Projection of (1.5, 0, -1) is not correct.");
+        TEST_ASSERT(almost_equal(project4, projected4), "Projection of (-1.5, -1, -1) is not correct.");
+        TEST_ASSERT(almost_equal(project5, projected5), "Projection of (0, 0, -10) is not correct.");
 
         const Vector3F unproject1 = ::unProject(project1, model, proj, viewport);
         const Vector3F unproject2 = ::unProject(project2, model, proj, viewport);
@@ -633,11 +633,11 @@ private:
         const Vector3F unproject4 = ::unProject(project4, model, proj, viewport);
         const Vector3F unproject5 = ::unProject(project5, model, proj, viewport);
 
-        TEST_ASSERT(almostEqual(unproject1, obj1), "UnProjection of (0, 0, -1) is not correct.");
-        TEST_ASSERT(almostEqual(unproject2, obj2), "UnProjection of (0, 1, -1) is not correct.");
-        TEST_ASSERT(almostEqual(unproject3, obj3), "UnProjection of (1.5, 0, -1) is not correct.");
-        TEST_ASSERT(almostEqual(unproject4, obj4), "UnProjection of (-1.5, -1, -1) is not correct.");
-        TEST_ASSERT(almostEqual(unproject5, obj5, 2), "UnProjection of (0, 0, -10) is not correct.");
+        TEST_ASSERT(almost_equal(unproject1, obj1), "UnProjection of (0, 0, -1) is not correct.");
+        TEST_ASSERT(almost_equal(unproject2, obj2), "UnProjection of (0, 1, -1) is not correct.");
+        TEST_ASSERT(almost_equal(unproject3, obj3), "UnProjection of (1.5, 0, -1) is not correct.");
+        TEST_ASSERT(almost_equal(unproject4, obj4), "UnProjection of (-1.5, -1, -1) is not correct.");
+        TEST_ASSERT(almost_equal(unproject5, obj5, 2), "UnProjection of (0, 0, -10) is not correct.");
     }
 
     void pickRegion()

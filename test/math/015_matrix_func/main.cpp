@@ -92,13 +92,13 @@ int main()
         Matrix3F m3(1, 2, 3, 1, 2, 3, 1, 2, 3);
         Matrix4F m4(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4);
 
-        ASSERT_MSG(almostEqual(determinant(Matrix2F()), 1.0f), "determinant faled");
-        ASSERT_MSG(almostEqual(determinant(Matrix3F()), 1.0f), "determinant faled");
-        ASSERT_MSG(almostEqual(determinant(Matrix4F()), 1.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(Matrix2F()), 1.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(Matrix3F()), 1.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(Matrix4F()), 1.0f), "determinant faled");
 
-        ASSERT_MSG(almostEqual(determinant(m2), 0.0f), "determinant faled");
-        ASSERT_MSG(almostEqual(determinant(m3), 0.0f), "determinant faled");
-        ASSERT_MSG(almostEqual(determinant(m3), 0.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(m2), 0.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(m3), 0.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(m3), 0.0f), "determinant faled");
     }
 
     {
@@ -106,17 +106,17 @@ int main()
         Matrix3F m3(8, 6, 7, 4, 2, 3, 1, 5, 2);
         Matrix4F m4(1, 2, 1, 1, 2, 1, 2, 0, 0, 0, 1, 1, 0, 1, 0, 1);
 
-        ASSERT_MSG(almostEqual(determinant(m2), 8.0f), "determinant faled");
-        ASSERT_MSG(almostEqual(determinant(m3), 8.0f), "determinant faled");
-        ASSERT_MSG(almostEqual(determinant(m4), -1.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(m2), 8.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(m3), 8.0f), "determinant faled");
+        ASSERT_MSG(almost_equal(determinant(m4), -1.0f), "determinant faled");
 
         ASSERT_MSG(inverse(m2) * m2 == Matrix2x2F(), "inverse failed");
         ASSERT_MSG(inverse(m3) * m3 == Matrix3x3F(), "inverse failed");
         ASSERT_MSG(inverse(m4) * m4 == Matrix4x4F(), "inverse failed");
 
-        ASSERT_MSG(almostEqual(determinant(inverse(m3)), 1.0f / determinant(m3)), "inverse determinant failed");
-        ASSERT_MSG(almostEqual(determinant(inverse(m4)), 1.0f / determinant(m4)), "inverse determinant failed");
-        ASSERT_MSG(almostEqual(determinant(inverse(m2)), 1.0f / determinant(m2)), "inverse determinant failed");
+        ASSERT_MSG(almost_equal(determinant(inverse(m3)), 1.0f / determinant(m3)), "inverse determinant failed");
+        ASSERT_MSG(almost_equal(determinant(inverse(m4)), 1.0f / determinant(m4)), "inverse determinant failed");
+        ASSERT_MSG(almost_equal(determinant(inverse(m2)), 1.0f / determinant(m2)), "inverse determinant failed");
     }
 
     {
@@ -132,7 +132,8 @@ int main()
         auto a = affineInverse(m4);
         auto b = inverse(m4);
 
-        ASSERT_MSG(almostEqual(a[0], b[0]) && almostEqual(a[1], b[1]) && almostEqual(a[2], b[2]) && almostEqual(a[3], b[3]),
+        ASSERT_MSG(almost_equal(a[0], b[0]) && almost_equal(a[1], b[1]) && almost_equal(a[2], b[2]) &&
+                   almost_equal(a[3], b[3]),
                    "matrix 4f affine inverse failed");
     }
 

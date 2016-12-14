@@ -516,7 +516,7 @@ inline TVec<2, T> ldexp(const TVec<2, T>& vector, TVec<2, int>& exp)
 // and multiplied by the desired precision in ULPs (units in the last place)
 // unless the result is subnormal
 template <typename T, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almostEqual(T x, T y, int ulp = 0)
+TResult almost_equal(T x, T y, int ulp = 0)
 {
     return std::abs(x - y) < std::numeric_limits<T>::epsilon() * std::abs(x + y) * ulp ||
            std::abs(x - y) < std::numeric_limits<T>::min();
@@ -525,54 +525,54 @@ TResult almostEqual(T x, T y, int ulp = 0)
 template <typename T,
           template <unsigned int, typename> class TVec,
           typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almostEqual(const TVec<4, T>& lhs, const TVec<4, T>& rhs, int ulp = 0)
+TResult almost_equal(const TVec<4, T>& lhs, const TVec<4, T>& rhs, int ulp = 0)
 {
-    return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp) && almostEqual(lhs.z, rhs.z, ulp) &&
-           almostEqual(lhs.w, rhs.w, ulp);
+    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp) &&
+           almost_equal(lhs.w, rhs.w, ulp);
 }
 
 template <typename T,
           template <unsigned int, typename> class TVec,
           typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almostEqual(const TVec<3, T>& lhs, const TVec<3, T>& rhs, int ulp = 0)
+TResult almost_equal(const TVec<3, T>& lhs, const TVec<3, T>& rhs, int ulp = 0)
 {
-    return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp) && almostEqual(lhs.z, rhs.z, ulp);
+    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp);
 }
 
 template <typename T,
           template <unsigned int, typename> class TVec,
           typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almostEqual(const TVec<2, T>& lhs, const TVec<2, T>& rhs, int ulp = 0)
+TResult almost_equal(const TVec<2, T>& lhs, const TVec<2, T>& rhs, int ulp = 0)
 {
-    return almostEqual(lhs.x, rhs.x, ulp) && almostEqual(lhs.y, rhs.y, ulp);
+    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp);
 }
 
 template <unsigned int R,
           typename T,
           template <unsigned int, unsigned int, typename> class TMat,
           typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almostEqual(const TMat<4, R, T>& m, const TMat<4, R, T>& m1, int ulp = 0)
+TResult almost_equal(const TMat<4, R, T>& m, const TMat<4, R, T>& m1, int ulp = 0)
 {
-    return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp) && almostEqual(m[2], m1[2], ulp) &&
-           almostEqual(m[3], m1[3], ulp);
+    return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp) && almost_equal(m[2], m1[2], ulp) &&
+           almost_equal(m[3], m1[3], ulp);
 }
 
 template <unsigned int R,
           typename T,
           template <unsigned int, unsigned int, typename> class TMat,
           typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almostEqual(const TMat<3, R, T>& m, const TMat<3, R, T>& m1, int ulp = 0)
+TResult almost_equal(const TMat<3, R, T>& m, const TMat<3, R, T>& m1, int ulp = 0)
 {
-    return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp) && almostEqual(m[2], m1[2], ulp);
+    return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp) && almost_equal(m[2], m1[2], ulp);
 }
 
 template <unsigned int R,
           typename T,
           template <unsigned int, unsigned int, typename> class TMat,
           typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almostEqual(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, int ulp = 0)
+TResult almost_equal(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, int ulp = 0)
 {
-    return almostEqual(m[0], m1[0], ulp) && almostEqual(m[1], m1[1], ulp);
+    return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp);
 }
 
 } // namespace math
