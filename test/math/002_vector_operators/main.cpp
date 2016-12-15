@@ -1,69 +1,87 @@
-#include <debug.hpp>
 #include <math/math.hpp>
+#include <unit_test/test.hpp>
 
 using namespace framework::math;
 
+class operator_test : public test::suite
+{
+public:
+    operator_test()
+        : suite("operator_test")
+    {
+        add_test([this]() { vector_assign(); }, "vector_assign");
+        add_test([this]() { bool_vector_assign(); }, "bool_vector_assign");
+    }
+
+private:
+    void vector_assign()
+    {
+        const Vector4D v4d(1.1, 2.2, 3.3, 4);
+        const Vector3F v3f(5.5f, 6.6f, 7.7f);
+        const Vector2I v2i(1, 2.0);
+
+        Vector4D v4d_result;
+        Vector3F v3f_result;
+        Vector2I v2i_result;
+
+        Vector4I v4i_result;
+        Vector3D v3d_result;
+        Vector2F v2f_result;
+
+        v4d_result = v4d;
+        v3f_result = v3f;
+        v2i_result = v2i;
+
+        v4i_result = v4d;
+        v3d_result = v3f;
+        v2f_result = v2i;
+
+        ASSERT_MSG(v4i_result == Vector4I(1, 2, 3, 4), "Assign operator failed.");
+        ASSERT_MSG(v4d_result == Vector4D(1.1, 2.2, 3.3, 4), "Assign operator failed.");
+
+        ASSERT_MSG(v3d_result == Vector3D(double(5.5f), double(6.6f), double(7.7f)), "Assign operator failed.");
+        ASSERT_MSG(v3f_result == Vector3F(5.5f, 6.6f, 7.7f), "Assign operator failed.");
+
+        ASSERT_MSG(v2f_result == Vector2F(1, 2), "Assign operator failed.");
+        ASSERT_MSG(v2i_result == Vector2I(1, 2.0), "Assign operator failed.");
+    }
+
+    void bool_vector_assign()
+    {
+        const Vector4B v4b(true, false, true, false);
+        const Vector3B v3b(true, false, true);
+        const Vector2B v2b(true, false);
+
+        const Vector4D v4d(-1.1, 0.0, 3.3, 0.0);
+        const Vector3F v3f(5.5f, 0.0, -7.7f);
+        const Vector2I v2i(1, 0);
+
+        Vector4B v4b_result;
+        Vector3B v3b_result;
+        Vector2B v2b_result;
+
+        v4b_result = v4b;
+        v3b_result = v3b;
+        v2b_result = v2b;
+
+        ASSERT_MSG(v4b_result == v4b, "Assign to bool vector failed.");
+        ASSERT_MSG(v3b_result == v3b, "Assign to bool vector failed.");
+        ASSERT_MSG(v2b_result == v2b, "Assign to bool vector failed.");
+
+        v4b_result = v4d;
+        v3b_result = v3f;
+        v2b_result = v2i;
+
+        ASSERT_MSG(v4b_result == v4b, "Assign to bool vector failed.");
+        ASSERT_MSG(v3b_result == v3b, "Assign to bool vector failed.");
+        ASSERT_MSG(v2b_result == v2b, "Assign to bool vector failed.");
+    }
+};
+
+
 int main()
 {
-    // vector assign
-    {
-        Vector4D v4d(1.1, 2.2, 3.3, 4);
-        Vector3F v3f(5.5f, 6.6f, 7.7f);
-        Vector2I v2i(1, 2.0);
-
-        Vector4D v4d2;
-        Vector3F v3f2;
-        Vector2I v2i2;
-
-        Vector4I v4i;
-        Vector3D v3d;
-        Vector2F v2f;
-
-        v4d2 = v4d;
-        v3f2 = v3f;
-        v2i2 = v2i;
-
-        v4i = v4d;
-        v3d = v3f;
-        v2f = v2i;
-
-        ASSERT_MSG(v4i == Vector4I(1, 2, 3, 4) && v4d2 == Vector4D(1.1, 2.2, 3.3, 4), "assign failed");
-        ASSERT_MSG(v3d == Vector3D(static_cast<double>(5.5f), static_cast<double>(6.6f), static_cast<double>(7.7f)) &&
-                   v3f2 == Vector3F(5.5f, 6.6f, 7.7f),
-                   "assign failed");
-        ASSERT_MSG(v2f == Vector2F(1, 2) && v2i2 == Vector2I(1, 2.0), "assign failed");
-    }
-
-    // bool vector assing
-    {
-        Vector4B v4b(true, false, true, false);
-        Vector3B v3b(true, false, true);
-        Vector2B v2b(true, false);
-
-        Vector4D v4d(-1.1, 0.0, 3.3, 0.0);
-        Vector3F v3f(5.5f, 0.0, -7.7f);
-        Vector2I v2i(1, 0);
-
-        Vector4B v4b2;
-        Vector3B v3b2;
-        Vector2B v2b2;
-
-        v4b2 = v4b;
-        v3b2 = v3b;
-        v2b2 = v2b;
-
-        Vector4B v4b3;
-        Vector3B v3b3;
-        Vector2B v2b3;
-
-        v4b3 = v4d;
-        v3b3 = v3f;
-        v2b3 = v2i;
-
-        ASSERT_MSG(v4b == v4b2 && v4b == v4b3, "assign failed");
-        ASSERT_MSG(v3b == v3b2 && v3b == v3b3, "assign failed");
-        ASSERT_MSG(v2b == v2b2 && v2b == v2b3, "assign failed");
-    }
+    return run_tests(operator_test());
 
     // vector access
     {
