@@ -11,6 +11,12 @@ namespace math {
 
 namespace vector_impl {
 
+template <typename T>
+struct is_arithmetic_and_not_bool
+{
+    static constexpr bool value = std::is_arithmetic<T>::value and not std::is_same<T, bool>::value;
+};
+
 #pragma mark - Vector template declaration
 template <unsigned int N, typename T>
 struct Vector;
@@ -66,29 +72,29 @@ struct Vector<4, T> final
     template <typename U>
     Vector<4, ValueType>& operator=(const Vector<4, U>& other);
 
-    template <typename U>
-    Vector<4, ValueType>& operator+=(const Vector<4, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<4, Result>& operator+=(const Vector<4, U>& other);
 
-    template <typename U>
-    Vector<4, ValueType>& operator-=(const Vector<4, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<4, Result>& operator-=(const Vector<4, U>& other);
 
-    template <typename U>
-    Vector<4, ValueType>& operator*=(const Vector<4, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<4, Result>& operator*=(const Vector<4, U>& other);
 
-    template <typename U>
-    Vector<4, ValueType>& operator/=(const Vector<4, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<4, Result>& operator/=(const Vector<4, U>& other);
 
-    template <typename U>
-    Vector<4, ValueType>& operator+=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<4, Result>& operator+=(const U& scalar);
 
-    template <typename U>
-    Vector<4, ValueType>& operator-=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<4, Result>& operator-=(const U& scalar);
 
-    template <typename U>
-    Vector<4, ValueType>& operator*=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<4, Result>& operator*=(const U& scalar);
 
-    template <typename U>
-    Vector<4, ValueType>& operator/=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<4, Result>& operator/=(const U& scalar);
 
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
@@ -141,29 +147,29 @@ struct Vector<3, T> final
     template <typename U>
     Vector<3, ValueType>& operator=(const Vector<3, U>& other);
 
-    template <typename U>
-    Vector<3, ValueType>& operator+=(const Vector<3, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<3, Result>& operator+=(const Vector<3, U>& other);
 
-    template <typename U>
-    Vector<3, ValueType>& operator-=(const Vector<3, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<3, Result>& operator-=(const Vector<3, U>& other);
 
-    template <typename U>
-    Vector<3, ValueType>& operator*=(const Vector<3, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<3, Result>& operator*=(const Vector<3, U>& other);
 
-    template <typename U>
-    Vector<3, ValueType>& operator/=(const Vector<3, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<3, Result>& operator/=(const Vector<3, U>& other);
 
-    template <typename U>
-    Vector<3, ValueType>& operator+=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<3, Result>& operator+=(const U& scalar);
 
-    template <typename U>
-    Vector<3, ValueType>& operator-=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<3, Result>& operator-=(const U& scalar);
 
-    template <typename U>
-    Vector<3, ValueType>& operator*=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<3, Result>& operator*=(const U& scalar);
 
-    template <typename U>
-    Vector<3, ValueType>& operator/=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<3, Result>& operator/=(const U& scalar);
 
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
@@ -210,29 +216,29 @@ struct Vector<2, T> final
     template <typename U>
     Vector<2, ValueType>& operator=(const Vector<2, U>& other);
 
-    template <typename U>
-    Vector<2, ValueType>& operator+=(const Vector<2, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<2, Result>& operator+=(const Vector<2, U>& other);
 
-    template <typename U>
-    Vector<2, ValueType>& operator-=(const Vector<2, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<2, Result>& operator-=(const Vector<2, U>& other);
 
-    template <typename U>
-    Vector<2, ValueType>& operator*=(const Vector<2, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<2, Result>& operator*=(const Vector<2, U>& other);
 
-    template <typename U>
-    Vector<2, ValueType>& operator/=(const Vector<2, U>& other);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<2, Result>& operator/=(const Vector<2, U>& other);
 
-    template <typename U>
-    Vector<2, ValueType>& operator+=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<2, Result>& operator+=(const U& scalar);
 
-    template <typename U>
-    Vector<2, ValueType>& operator-=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<2, Result>& operator-=(const U& scalar);
 
-    template <typename U>
-    Vector<2, ValueType>& operator*=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<2, Result>& operator*=(const U& scalar);
 
-    template <typename U>
-    Vector<2, ValueType>& operator/=(const U& scalar);
+    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
+    Vector<2, Result>& operator/=(const U& scalar);
 
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
@@ -390,8 +396,8 @@ inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator+=(const Vector<4, U>& other)
+template <typename U, typename Result>
+inline Vector<4, Result>& Vector<4, T>::operator+=(const Vector<4, U>& other)
 {
     x += static_cast<T>(other.x);
     y += static_cast<T>(other.y);
@@ -402,8 +408,8 @@ inline Vector<4, T>& Vector<4, T>::operator+=(const Vector<4, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator-=(const Vector<4, U>& other)
+template <typename U, typename Result>
+inline Vector<4, Result>& Vector<4, T>::operator-=(const Vector<4, U>& other)
 {
     x -= static_cast<T>(other.x);
     y -= static_cast<T>(other.y);
@@ -414,8 +420,8 @@ inline Vector<4, T>& Vector<4, T>::operator-=(const Vector<4, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator*=(const Vector<4, U>& other)
+template <typename U, typename Result>
+inline Vector<4, Result>& Vector<4, T>::operator*=(const Vector<4, U>& other)
 {
     x *= static_cast<T>(other.x);
     y *= static_cast<T>(other.y);
@@ -426,8 +432,8 @@ inline Vector<4, T>& Vector<4, T>::operator*=(const Vector<4, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator/=(const Vector<4, U>& other)
+template <typename U, typename Result>
+inline Vector<4, Result>& Vector<4, T>::operator/=(const Vector<4, U>& other)
 {
     x /= static_cast<T>(other.x);
     y /= static_cast<T>(other.y);
@@ -438,8 +444,8 @@ inline Vector<4, T>& Vector<4, T>::operator/=(const Vector<4, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator+=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<4, Result>& Vector<4, T>::operator+=(const U& scalar)
 {
     x += static_cast<T>(scalar);
     y += static_cast<T>(scalar);
@@ -450,8 +456,8 @@ inline Vector<4, T>& Vector<4, T>::operator+=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator-=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<4, Result>& Vector<4, T>::operator-=(const U& scalar)
 {
     x -= static_cast<T>(scalar);
     y -= static_cast<T>(scalar);
@@ -462,8 +468,8 @@ inline Vector<4, T>& Vector<4, T>::operator-=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator*=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<4, Result>& Vector<4, T>::operator*=(const U& scalar)
 {
     x *= static_cast<T>(scalar);
     y *= static_cast<T>(scalar);
@@ -474,8 +480,8 @@ inline Vector<4, T>& Vector<4, T>::operator*=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator/=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<4, Result>& Vector<4, T>::operator/=(const U& scalar)
 {
     x /= static_cast<T>(scalar);
     y /= static_cast<T>(scalar);
@@ -614,8 +620,8 @@ inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator+=(const Vector<3, U>& other)
+template <typename U, typename Result>
+inline Vector<3, Result>& Vector<3, T>::operator+=(const Vector<3, U>& other)
 {
     x += static_cast<T>(other.x);
     y += static_cast<T>(other.y);
@@ -625,8 +631,8 @@ inline Vector<3, T>& Vector<3, T>::operator+=(const Vector<3, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator-=(const Vector<3, U>& other)
+template <typename U, typename Result>
+inline Vector<3, Result>& Vector<3, T>::operator-=(const Vector<3, U>& other)
 {
     x -= static_cast<T>(other.x);
     y -= static_cast<T>(other.y);
@@ -636,8 +642,8 @@ inline Vector<3, T>& Vector<3, T>::operator-=(const Vector<3, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator*=(const Vector<3, U>& other)
+template <typename U, typename Result>
+inline Vector<3, Result>& Vector<3, T>::operator*=(const Vector<3, U>& other)
 {
     x *= static_cast<T>(other.x);
     y *= static_cast<T>(other.y);
@@ -647,8 +653,8 @@ inline Vector<3, T>& Vector<3, T>::operator*=(const Vector<3, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator/=(const Vector<3, U>& other)
+template <typename U, typename Result>
+inline Vector<3, Result>& Vector<3, T>::operator/=(const Vector<3, U>& other)
 {
     x /= static_cast<T>(other.x);
     y /= static_cast<T>(other.y);
@@ -658,8 +664,8 @@ inline Vector<3, T>& Vector<3, T>::operator/=(const Vector<3, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator+=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<3, Result>& Vector<3, T>::operator+=(const U& scalar)
 {
     x += static_cast<T>(scalar);
     y += static_cast<T>(scalar);
@@ -669,8 +675,8 @@ inline Vector<3, T>& Vector<3, T>::operator+=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator-=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<3, Result>& Vector<3, T>::operator-=(const U& scalar)
 {
     x -= static_cast<T>(scalar);
     y -= static_cast<T>(scalar);
@@ -680,8 +686,8 @@ inline Vector<3, T>& Vector<3, T>::operator-=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator*=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<3, Result>& Vector<3, T>::operator*=(const U& scalar)
 {
     x *= static_cast<T>(scalar);
     y *= static_cast<T>(scalar);
@@ -691,8 +697,8 @@ inline Vector<3, T>& Vector<3, T>::operator*=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator/=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<3, Result>& Vector<3, T>::operator/=(const U& scalar)
 {
     x /= static_cast<T>(scalar);
     y /= static_cast<T>(scalar);
@@ -803,8 +809,8 @@ inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator+=(const Vector<2, U>& other)
+template <typename U, typename Result>
+inline Vector<2, Result>& Vector<2, T>::operator+=(const Vector<2, U>& other)
 {
     x += static_cast<T>(other.x);
     y += static_cast<T>(other.y);
@@ -813,8 +819,8 @@ inline Vector<2, T>& Vector<2, T>::operator+=(const Vector<2, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator-=(const Vector<2, U>& other)
+template <typename U, typename Result>
+inline Vector<2, Result>& Vector<2, T>::operator-=(const Vector<2, U>& other)
 {
     x -= static_cast<T>(other.x);
     y -= static_cast<T>(other.y);
@@ -823,8 +829,8 @@ inline Vector<2, T>& Vector<2, T>::operator-=(const Vector<2, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator*=(const Vector<2, U>& other)
+template <typename U, typename Result>
+inline Vector<2, Result>& Vector<2, T>::operator*=(const Vector<2, U>& other)
 {
     x *= static_cast<T>(other.x);
     y *= static_cast<T>(other.y);
@@ -833,8 +839,8 @@ inline Vector<2, T>& Vector<2, T>::operator*=(const Vector<2, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator/=(const Vector<2, U>& other)
+template <typename U, typename Result>
+inline Vector<2, Result>& Vector<2, T>::operator/=(const Vector<2, U>& other)
 {
     x /= static_cast<T>(other.x);
     y /= static_cast<T>(other.y);
@@ -843,8 +849,8 @@ inline Vector<2, T>& Vector<2, T>::operator/=(const Vector<2, U>& other)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator+=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<2, Result>& Vector<2, T>::operator+=(const U& scalar)
 {
     x += static_cast<T>(scalar);
     y += static_cast<T>(scalar);
@@ -853,8 +859,8 @@ inline Vector<2, T>& Vector<2, T>::operator+=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator-=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<2, Result>& Vector<2, T>::operator-=(const U& scalar)
 {
     x -= static_cast<T>(scalar);
     y -= static_cast<T>(scalar);
@@ -863,8 +869,8 @@ inline Vector<2, T>& Vector<2, T>::operator-=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator*=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<2, Result>& Vector<2, T>::operator*=(const U& scalar)
 {
     x *= static_cast<T>(scalar);
     y *= static_cast<T>(scalar);
@@ -873,8 +879,8 @@ inline Vector<2, T>& Vector<2, T>::operator*=(const U& scalar)
 }
 
 template <typename T>
-template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator/=(const U& scalar)
+template <typename U, typename Result>
+inline Vector<2, Result>& Vector<2, T>::operator/=(const U& scalar)
 {
     x /= static_cast<T>(scalar);
     y /= static_cast<T>(scalar);
