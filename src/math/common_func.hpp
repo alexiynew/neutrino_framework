@@ -126,17 +126,6 @@ inline TVec<N, T> floor(const TVec<N, T>& v)
     return utils::createVector(v, [](const T& a) { return static_cast<T>(floor(a)); });
 }
 
-/// Returns a value equal to the nearest integer to x
-/// whose absolute value is not larger than the absolute vfractional patr of
-/// float-point numberalue of x.
-using ::std::trunc;
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> trunc(const TVec<N, T>& v)
-{
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(trunc(a)); });
-}
-
 /// Returns a value equal to the nearest integer to x.
 using ::std::round;
 
@@ -156,12 +145,23 @@ inline TVec<N, T> ceil(const TVec<N, T>& v)
     return utils::createVector(v, [](const T& a) { return static_cast<T>(ceil(a)); });
 }
 
+/// Returns a value equal to the nearest integer to x
+/// whose absolute value is not larger than the absolute vfractional patr of
+/// float-point numberalue of x.
+using ::std::trunc;
+
+template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
+inline TVec<N, T> trunc(const TVec<N, T>& v)
+{
+    return utils::createVector(v, [](const T& a) { return static_cast<T>(trunc(a)); });
+}
+
 /// Return fractional patr of floating point number
 template <typename T>
 inline T fract(const T& v)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return v - floor(v);
+    return static_cast<T>(v - floor(v));
 }
 
 template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
@@ -385,7 +385,7 @@ inline TVec<N, T> step(const TVec<N, T>& a, const TVec<N, T>& b)
 /// return t * t * (3 - 2 * t);
 /// Results are undefined if edge0 >= edge1.
 template <typename T>
-inline T smoothstep(const T& a, const T& edge0, const T& edge1)
+inline T smooth_step(const T& a, const T& edge0, const T& edge1)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     T t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
@@ -393,7 +393,7 @@ inline T smoothstep(const T& a, const T& edge0, const T& edge1)
 }
 
 template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> smoothstep(const TVec<N, T>& a, const T& edge0, const T& edge1)
+inline TVec<N, T> smooth_step(const TVec<N, T>& a, const T& edge0, const T& edge1)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
@@ -401,7 +401,7 @@ inline TVec<N, T> smoothstep(const TVec<N, T>& a, const T& edge0, const T& edge1
 }
 
 template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> smoothstep(const TVec<N, T>& a, const TVec<N, T>& edge0, const TVec<N, T>& edge1)
+inline TVec<N, T> smooth_step(const TVec<N, T>& a, const TVec<N, T>& edge0, const TVec<N, T>& edge1)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
@@ -515,62 +515,53 @@ inline TVec<2, T> ldexp(const TVec<2, T>& vector, TVec<2, int>& exp)
 // the machine epsilon has to be scaled to the magnitude of the values used
 // and multiplied by the desired precision in ULPs (units in the last place)
 // unless the result is subnormal
-template <typename T, typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(T x, T y, int ulp = 0)
+template <typename T, typename std::enable_if<std::is_floating_point<T>::value, void>::type* = nullptr>
+inline bool almost_equal(T x, T y, int ulp = 0)
 {
     return std::abs(x - y) < std::numeric_limits<T>::epsilon() * std::abs(x + y) * ulp ||
            std::abs(x - y) < std::numeric_limits<T>::min();
 }
 
-template <typename T,
-          template <unsigned int, typename> class TVec,
-          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TVec<4, T>& lhs, const TVec<4, T>& rhs, int ulp = 0)
+template <typename T, typename std::enable_if<std::is_integral<T>::value, void>::type* = nullptr>
+inline bool almost_equal(T x, T y, int)
+{
+    return x == y;
+}
+
+template <typename T, template <unsigned int, typename> class TVec>
+inline bool almost_equal(const TVec<4, T>& lhs, const TVec<4, T>& rhs, int ulp = 0)
 {
     return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp) &&
            almost_equal(lhs.w, rhs.w, ulp);
 }
 
-template <typename T,
-          template <unsigned int, typename> class TVec,
-          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TVec<3, T>& lhs, const TVec<3, T>& rhs, int ulp = 0)
+template <typename T, template <unsigned int, typename> class TVec>
+inline bool almost_equal(const TVec<3, T>& lhs, const TVec<3, T>& rhs, int ulp = 0)
 {
     return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp);
 }
 
-template <typename T,
-          template <unsigned int, typename> class TVec,
-          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TVec<2, T>& lhs, const TVec<2, T>& rhs, int ulp = 0)
+template <typename T, template <unsigned int, typename> class TVec>
+inline bool almost_equal(const TVec<2, T>& lhs, const TVec<2, T>& rhs, int ulp = 0)
 {
     return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp);
 }
 
-template <unsigned int R,
-          typename T,
-          template <unsigned int, unsigned int, typename> class TMat,
-          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TMat<4, R, T>& m, const TMat<4, R, T>& m1, int ulp = 0)
+template <unsigned int R, typename T, template <unsigned int, unsigned int, typename> class TMat>
+inline bool almost_equal(const TMat<4, R, T>& m, const TMat<4, R, T>& m1, int ulp = 0)
 {
     return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp) && almost_equal(m[2], m1[2], ulp) &&
            almost_equal(m[3], m1[3], ulp);
 }
 
-template <unsigned int R,
-          typename T,
-          template <unsigned int, unsigned int, typename> class TMat,
-          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TMat<3, R, T>& m, const TMat<3, R, T>& m1, int ulp = 0)
+template <unsigned int R, typename T, template <unsigned int, unsigned int, typename> class TMat>
+inline bool almost_equal(const TMat<3, R, T>& m, const TMat<3, R, T>& m1, int ulp = 0)
 {
     return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp) && almost_equal(m[2], m1[2], ulp);
 }
 
-template <unsigned int R,
-          typename T,
-          template <unsigned int, unsigned int, typename> class TMat,
-          typename TResult = typename std::enable_if<std::is_floating_point<T>::value, bool>::type>
-TResult almost_equal(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, int ulp = 0)
+template <unsigned int R, typename T, template <unsigned int, unsigned int, typename> class TMat>
+inline bool almost_equal(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, int ulp = 0)
 {
     return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp);
 }
