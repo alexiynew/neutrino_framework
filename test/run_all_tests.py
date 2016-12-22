@@ -99,19 +99,20 @@ def get_tests(path):
     test_list = {}
     for pack in packs:
         pack_dir = os.path.join(path, pack)
-        test_files = os.listdir(pack_dir)
-        test_files.sort()
+        if (os.path.isdir(pack_dir)):
+            test_files = os.listdir(pack_dir)
+            test_files.sort()
 
-        test_list[pack] = []
+            test_list[pack] = []
 
-        for test_name in test_files:
-            test_name = test_name.strip()
-            executable = os.path.join(test_dir, pack_dir, test_name)
+            for test_name in test_files:
+                test_name = test_name.strip()
+                executable = os.path.join(test_dir, pack_dir, test_name)
 
-            if os.path.isdir(executable):
-                executable = os.path.join(executable, folder_test_script)
+                if os.path.isdir(executable):
+                    executable = os.path.join(executable, folder_test_script)
 
-            test_list[pack].append(Test(test_name, executable))
+                test_list[pack].append(Test(test_name, executable))
 
     return test_list
 

@@ -28,6 +28,8 @@ Framework:
 
     ☐ Add tests with axioms and theorems for vectors and matrices.
 
+    ☐ Add test for test suite with eror handling.
+
 Build:
 
     ☐ Add docs generation
