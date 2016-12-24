@@ -1,56 +1,120 @@
-#include <debug.hpp>
-
 #include <math/math.hpp>
+#include <unit_test/test.hpp>
 
 using namespace framework::math;
 
-int main()
+class trigonometric_function_tests : public test::suite
 {
-
-    // vector trigonometric functions
+public:
+    trigonometric_function_tests()
+        : suite("trigonometric_function_tests")
     {
-        Vector4D v4d(180.0, 360.0, 90.0, 45.0);
+        add_test([this]() { radians_function(); }, "radians_function");
+        add_test([this]() { degrees_function(); }, "degrees_function");
+        add_test([this]() { sin_function(); }, "sin_function");
+        add_test([this]() { cos_function(); }, "cos_function");
+        add_test([this]() { tan_function(); }, "tan_function");
+        add_test([this]() { asin_function(); }, "asin_function");
+        add_test([this]() { acos_function(); }, "acos_function");
+        add_test([this]() { atan_function(); }, "atan_function");
+        add_test([this]() { sinh_function(); }, "sinh_function");
+        add_test([this]() { cosh_function(); }, "cosh_function");
+        add_test([this]() { tanh_function(); }, "tanh_function");
+        add_test([this]() { asinh_function(); }, "asinh_function");
+        add_test([this]() { acosh_function(); }, "acosh_function");
+        add_test([this]() { atanh_function(); }, "atanh_function");
 
-        Vector3D v3d(45.0, 60.0, 180.0);
-
-        ASSERT_MSG(radians(v4d) == Vector4D(PI, TAU, PI / 2, PI / 4), "radians failed");
-
-        ASSERT_MSG(degrees(radians(v4d)) == v4d, "degrees failed");
-
-        ASSERT_MSG(almost_equal(sin(radians(v4d)), Vector4D(sin(PI), sin(TAU), sin(PI / 2), sin(PI / 4))),
-                   "sin failed");
-
-        ASSERT_MSG(almost_equal(cos(radians(v4d)), Vector4D(cos(PI), cos(TAU), cos(PI / 2), cos(PI / 4))),
-                   "cos failed");
-
-        ASSERT_MSG(almost_equal(tan(radians(v3d)), sin(radians(v3d)) / cos(radians(v3d))), "tan failed");
-
-        ASSERT_MSG(almost_equal(asin(sin(radians(v4d))), Vector4D(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4), 1),
-                   "asin failed");
-
-        ASSERT_MSG(almost_equal(acos(cos(radians(v4d))), Vector4D(PI, 0, PI / 2, PI / 4)), "acos failed");
-
-        ASSERT_MSG(almost_equal(atan(tan(radians(v3d))), Vector3D(PI / 4, PI / 3, atan(tan(PI)))),
-                   "atan from tan failed");
-
-        ASSERT_MSG(almost_equal(atan(sin(radians(v3d)), cos(radians(v3d))), Vector3D(PI / 4, PI / 3, PI)),
-                   "atan from sin "
-                   "failed");
-
-        ASSERT_MSG(almost_equal(sinh(radians(v3d)), Vector3D(0.86867096148600953, 1.2493670505239751, 11.548739357257748)),
-                   "sinh failed");
-
-        ASSERT_MSG(almost_equal(cosh(radians(v3d)), Vector3D(1.3246090892520057, 1.6002868577023861, 11.591953275521519)),
-                   "cosh failed");
-
-        ASSERT_MSG(almost_equal(tanh(radians(v3d)), (sinh(radians(v3d)) / cosh(radians(v3d))), 1), "tanh failed");
-
-        ASSERT_MSG(almost_equal(asinh(sinh(radians(v3d))), Vector3D(PI / 4, PI / 3, PI), 1), "asinh failed");
-
-        ASSERT_MSG(almost_equal(acosh(cosh(radians(v3d))), Vector3D(PI / 4, PI / 3, PI), 1), "acosh failed");
-
-        ASSERT_MSG(almost_equal(atanh(tanh(radians(v3d))), Vector3D(PI / 4, PI / 3, PI), 4), "atanh failed");
+        v4d = {180.0, 360.0, 90.0, 45.0};
+        v3d = {45.0, 60.0, 180.0};
     }
 
-    return 0;
+private:
+    void radians_function()
+    {
+        TEST_ASSERT(radians(v4d) == Vector4D(PI, TAU, PI / 2, PI / 4), "Radians function failed.");
+    }
+
+    void degrees_function()
+    {
+        TEST_ASSERT(degrees(radians(v4d)) == v4d, "Degrees function failed.");
+    }
+
+    void sin_function()
+    {
+        const Vector4D sin_vector(sin(PI), sin(TAU), sin(PI / 2), sin(PI / 4));
+        TEST_ASSERT(almost_equal(sin(radians(v4d)), sin_vector), "Sin function failed.");
+    }
+
+    void cos_function()
+    {
+        const Vector4D cos_vector(cos(PI), cos(TAU), cos(PI / 2), cos(PI / 4));
+        TEST_ASSERT(almost_equal(cos(radians(v4d)), cos_vector), "Cos function failed.");
+    }
+
+    void tan_function()
+    {
+        TEST_ASSERT(almost_equal(tan(radians(v3d)), sin(radians(v3d)) / cos(radians(v3d))), "Tan function failed.");
+    }
+
+    void asin_function()
+    {
+        const Vector4D asin_vector(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4);
+        TEST_ASSERT(almost_equal(asin(sin(radians(v4d))), asin_vector, 1), "Asin function failed.");
+    }
+
+    void acos_function()
+    {
+        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), Vector4D(PI, 0, PI / 2, PI / 4)), "Acos function failed.");
+    }
+
+    void atan_function()
+    {
+        const Vector3D result1 = atan(tan(radians(v3d)));
+        const Vector3D result2 = atan(sin(radians(v3d)), cos(radians(v3d)));
+
+        TEST_ASSERT(almost_equal(result1, Vector3D(PI / 4, PI / 3, atan(tan(PI)))), "Atan from tan failed.");
+        TEST_ASSERT(almost_equal(result2, Vector3D(PI / 4, PI / 3, PI)), "Atan from sin failed.");
+    }
+
+    void sinh_function()
+    {
+        const Vector3D sinh_vector(0.86867096148600953, 1.2493670505239751, 11.548739357257748);
+        TEST_ASSERT(almost_equal(sinh(radians(v3d)), sinh_vector), "Sinh function failed.");
+    }
+
+    void cosh_function()
+    {
+        const Vector3D cosh_vector(1.3246090892520057, 1.6002868577023861, 11.591953275521519);
+        TEST_ASSERT(almost_equal(cosh(radians(v3d)), cosh_vector), "Cosh function failed.");
+    }
+
+    void tanh_function()
+    {
+        const Vector3D tanh_vector = sinh(radians(v3d)) / cosh(radians(v3d));
+        TEST_ASSERT(almost_equal(tanh(radians(v3d)), tanh_vector, 1), "Tanh function failed.");
+    }
+
+    void asinh_function()
+    {
+        TEST_ASSERT(almost_equal(asinh(sinh(radians(v3d))), Vector3D(PI / 4, PI / 3, PI), 1), "Asinh function failed.");
+    }
+
+    void acosh_function()
+    {
+        TEST_ASSERT(almost_equal(acosh(cosh(radians(v3d))), Vector3D(PI / 4, PI / 3, PI), 1), "Acosh function failed.");
+    }
+
+    void atanh_function()
+    {
+        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), Vector3D(PI / 4, PI / 3, PI), 4), "Atanh function failed.");
+    }
+
+    Vector4D v4d;
+    Vector3D v3d;
+};
+
+
+int main()
+{
+    return run_tests(trigonometric_function_tests());
 }
