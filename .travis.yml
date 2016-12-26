@@ -1,11 +1,15 @@
 language: cpp
 
 addons:
-  apt:
-    packages:
-        - cmake
-        - g++-4.8
-        - clang-3.8
+    apt:
+        sources:
+            - sourceline: 'ppa:ubuntu-toolchain-r/test'
+            - sourceline: 'http://archive.ubuntu.com/ubuntu/ precise main restricted'
+
+        packages:
+            - cmake
+            - g++
+            - clang-3.8
 
 compiler:
     - gcc
