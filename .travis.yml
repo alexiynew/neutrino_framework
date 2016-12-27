@@ -1,20 +1,28 @@
 language: cpp
 
 before_install:
+    - test -n $CC  && unset CC
+    - test -n $CXX && unset CXX
     - sudo add-apt-repository "ppa:ubuntu-toolchain-r/test" -y
     - echo "deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.8 main" | sudo tee -a /etc/apt/sources.list
-    - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 15CF4D18AF4F7421
     - sudo apt-get update -q
 
 install:
-    - sudo apt-get install clang-3.8 -y
-    - sudo apt-get install gcc-4.8 -y
-    - sudo apt-get install cmake -y
+    - sudo apt-get install --allow-unauthenticated -y clang-3.8
+    - sudo apt-get install --allow-unauthenticated -y gcc-4.8
+    - sudo apt-get install -y cmake
+
+before_script:
+    # gcc 4.8
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
+    - if [ "$CC" = "gcc" ]; then export CXX="gcc-4.8"; fi
+
+    # clang 3.4
+    - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
+    - if [ "$CC" == "clang" ]; then export CXX="clang-3.4"; fi
 
 script:
-    - pwd
-    - mkdir build
-    - cd ./build
+    - mkdir build && cd ./build
     - cmake ../
     - make
 
