@@ -1,7 +1,7 @@
 sudo: required
 dist: trusty
 
-language: cpp
+language: generic
 
 addons:
     apt:
@@ -28,10 +28,6 @@ matrix:
             packages:
                 - clang-3.8
       env: CXX=clang++-3.8
-
-before_install:
-    - test -n $CC  && unset CC
-    - test -n $CXX && unset CXX
 
 script:
     - mkdir build && cd ./build
