@@ -8,13 +8,11 @@ addons:
 
 before_install:
     - sudo add-apt-repository "ppa:ubuntu-toolchain-r/test" -y
-    - sudo apt-add-repository "deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.8 main" -y
-    - sudo tee -a /etc/apt/sources.list
+    - echo "deb http://repo.varnish-cache.org/ubuntu/ precise varnish-3.0" | sudo tee -a /etc/apt/sources.list
     - sudo apt-get update -q
 
-
 install:
-    - sudo -E apt-get install clang-3.8 -y
+    - sudo apt-get install clang-3.8 -y
 
 compiler:
     - gcc
