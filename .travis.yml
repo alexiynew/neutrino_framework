@@ -8,6 +8,15 @@ before_install:
 
 install:
     - sudo apt-get install clang-3.8 -y
+    - sudo apt-get install gcc-4.8 -y
+    - sudo apt-get inatall cmake -y
+
+script:
+    - pwd
+    - mkdir build
+    - cd ./build
+    - cmake ../
+    - make
 
 compiler:
     - gcc
