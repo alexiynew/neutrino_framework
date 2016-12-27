@@ -4,9 +4,9 @@ dist: trusty
 language: cpp
 
 addons:
-  apt:
-    packages:
-      - cmake
+    apt:
+        packages:
+            - cmake
 
 matrix:
     include:
@@ -16,8 +16,8 @@ matrix:
             sources:
                 - ubuntu-toolchain-r-test
             packages:
-                - g++-4.8
-      env: CXX=g++-4.8
+                - g++-4.9
+      env: CXX=g++-4.9
 
     - compiler: clang
       addons:
@@ -29,8 +29,12 @@ matrix:
                 - clang-3.8
       env: CXX=clang++-3.8
 
+before_install:
+    - test -n $CC  && unset CC
+    - test -n $CXX && unset CXX
+
 script:
-    - rm -rf ./build && mkdir build && cd ./build
+    - mkdir build && cd ./build
     - cmake ../
     - make
 
