@@ -12,5 +12,3 @@ install:
 compiler:
     - gcc
     - clang
-
-install: true
