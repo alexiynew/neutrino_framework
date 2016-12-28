@@ -3,7 +3,7 @@ job_clang:
 
     script: 
         - echo "Run clang job."
-        - clang++ --verion
+        - clang++ --version
         - echo ${CXX} 
         - echo ${CC}
 
