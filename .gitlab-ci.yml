@@ -1,6 +1,11 @@
 job_clang:
+    image: rsmmr/install-clang
+
     script: 
         - echo "Run clang job."
+        - clang++ --verion
+        - echo ${CXX} 
+        - echo ${CC}
 
 job_gcc:
     script: 
