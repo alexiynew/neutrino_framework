@@ -1,5 +1,5 @@
 job_clang:
-    image: rsmmr/install-clang
+    image: hub.docker.com/r/rsmmr/clang
 
     script: 
         - echo "Run clang job."
