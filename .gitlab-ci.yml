@@ -1,5 +1,5 @@
 job_clang:
-    image: hub.docker.com/r/rsmmr/clang
+    image: hub.docker.com/r/alexiynew/docker_image
 
     script: 
         - echo "Run clang job."
