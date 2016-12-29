@@ -4,16 +4,21 @@
         - cmake ../
         - make
 
-build_with_clang:
-    image: alexiynew/docker_image
 
+image: alexiynew/docker_image
+
+
+build_with_clang:
     before_script:
         - export CXX=clang++
         - export CC=clang
         
     script: *build_commands
-        
+
 
 build_with_gcc:
-    script: 
-        - echo "Run gcc job."
+    before_script:
+        - export CXX=g++
+        - export CC=gcc
+
+    script: *build_commands
