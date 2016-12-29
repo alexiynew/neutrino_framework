@@ -1,16 +1,18 @@
-job_clang:
+.build_template: &build_commands
+    script:
+        - mkdir build && cd ./build
+        - cmake ../
+        - make
+
+build_with_clang:
     image: alexiynew/docker_image
 
     before_script:
         - export CXX=clang++
         - export CC=clang
 
-    script: 
-        - echo "Run clang job."
-        - clang++ --version
-        - echo ${CXX} 
-        - echo ${CC}
+    <<: &build_commands
 
-job_gcc:
+build_with_gcc:
     script: 
         - echo "Run gcc job."
