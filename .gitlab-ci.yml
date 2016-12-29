@@ -2,7 +2,7 @@
     script: &build_commands
         - mkdir build && cd ./build
         - cmake ../
-        - make
+        - nice make
 
 
 image: alexiynew/docker_image
