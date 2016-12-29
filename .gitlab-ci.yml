@@ -1,6 +1,10 @@
 job_clang:
     image: alexiynew/docker_image
 
+    before_script:
+        export CXX=clang++
+        export CC=clang
+
     script: 
         - echo "Run clang job."
         - clang++ --version
