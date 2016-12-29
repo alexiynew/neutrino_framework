@@ -1,5 +1,5 @@
-.build_template: &build_commands
-    script:
+.build_template: 
+    script: &build_commands
         - mkdir build && cd ./build
         - cmake ../
         - make
@@ -10,8 +10,9 @@ build_with_clang:
     before_script:
         - export CXX=clang++
         - export CC=clang
-
-    <<: &build_commands
+        
+    script: *build_commands
+        
 
 build_with_gcc:
     script: 
