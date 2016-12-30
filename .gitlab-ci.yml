@@ -12,7 +12,8 @@ stages:
     - build
     - test
 
-build_with_clang:
+# Clang 
+build:clang:
     stage: build
 
     before_script:
@@ -21,8 +22,16 @@ build_with_clang:
         
     script: *build_commands
 
+test:clang:
+    stage: test
+    
+    script: *test_commands 
+    
+    dependencies:
+        - build:clang
 
-build_with_gcc:
+# Gcc
+build:gcc:
     stage: build
 
     before_script:
@@ -30,3 +39,12 @@ build_with_gcc:
         - export CC=gcc
 
     script: *build_commands
+    
+
+test:gcc:
+    stage: test
+    
+    script: *test_commands 
+    
+    dependencies:
+        - build:gcc
