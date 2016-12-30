@@ -1,14 +1,20 @@
 .build_template: 
     script: &build_commands
-        - mkdir build && cd ./build
-        - cmake ../
-        - nice make
-
+        - ./build.sh
+        
+.test_template:
+    script: &test_commands
+        - ./bin/Release/test/run_all_tests.py 
 
 image: alexiynew/docker_image
 
+stages:
+    - build
+    - test
 
 build_with_clang:
+    stage: build
+
     before_script:
         - export CXX=clang++
         - export CC=clang
@@ -17,6 +23,8 @@ build_with_clang:
 
 
 build_with_gcc:
+    stage: build
+
     before_script:
         - export CXX=g++
         - export CC=gcc
