@@ -4,7 +4,7 @@ PROJECT(framework)
 
 SET(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 SET(TESTS_DIR ${CMAKE_SOURCE_DIR}/test)
-SET(COMPILE_FLAGS "-Weverything -std=c++14 -Wno-c++98-compat -Wno-padded")
+SET(COMPILE_FLAGS "-Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror -std=c++14")
 
 FILE(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
 FILE(GLOB_RECURSE HEADERS ${SOURCE_DIR}/*.hpp)
