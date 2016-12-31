@@ -1,14 +1,14 @@
-.build_template: 
+.build_template:
     script: &build_commands
         - $CI_PROJECT_DIR/build.sh
-        - $CI_PROJECT_DIR/bin/Release/test/run_all_tests.py 
-        
+        - $CI_PROJECT_DIR/bin/Release/test/run_all_tests.py
+
 image: alexiynew/docker_image
 
 stages:
     - build
-    
-# Clang 
+
+# Clang
 # ============================
 build:clang:
     stage: build
@@ -16,7 +16,7 @@ build:clang:
     before_script:
         - export CXX=clang++
         - export CC=clang
-        
+
     script: *build_commands
 
 # Gcc
@@ -28,4 +28,7 @@ build:gcc:
         - export CXX=g++
         - export CC=gcc
 
-    script: *build_commands
+    # diasble it for now
+    # script: *build_commands
+    script:
+        - echo "Gcc compilation is disabled."
