@@ -26,9 +26,7 @@ test:clang:
     stage: test
     
     script: *test_commands 
-    
-    dependencies:
-        - build:clang
+  
 
 # Gcc
 build:gcc:
@@ -45,6 +43,4 @@ test:gcc:
     stage: test
     
     script: *test_commands 
-    
-    dependencies:
-        - build:gcc
+
