@@ -1,0 +1,31 @@
+.build_template: 
+    script: &build_commands
+        - ./build.sh
+        - ./bin/Release/test/run_all_tests.py 
+        
+image: alexiynew/docker_image
+
+stages:
+    - build
+    
+# Clang 
+# ============================
+build:clang:
+    stage: build
+
+    before_script:
+        - export CXX=clang++
+        - export CC=clang
+        
+    script: *build_commands
+
+# Gcc
+# ===========================
+build:gcc:
+    stage: build
+
+    before_script:
+        - export CXX=g++
+        - export CC=gcc
+
+    script: *build_commands
