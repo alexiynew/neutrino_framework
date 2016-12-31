@@ -1,18 +1,15 @@
 .build_template: 
     script: &build_commands
         - ./build.sh
-        
-.test_template:
-    script: &test_commands
         - ./bin/Release/test/run_all_tests.py 
-
+        
 image: alexiynew/docker_image
 
 stages:
     - build
-    - test
-
+    
 # Clang 
+# ============================
 build:clang:
     stage: build
 
@@ -22,13 +19,8 @@ build:clang:
         
     script: *build_commands
 
-test:clang:
-    stage: test
-    
-    script: *test_commands 
-  
-
 # Gcc
+# ===========================
 build:gcc:
     stage: build
 
@@ -37,10 +29,3 @@ build:gcc:
         - export CC=gcc
 
     script: *build_commands
-    
-
-test:gcc:
-    stage: test
-    
-    script: *test_commands 
-
