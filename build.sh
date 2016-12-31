@@ -1,10 +1,9 @@
 #!/bin/bash
 
-echo "Start build in "$(pwd) 
-mkdir -p build
-cd ./build 
-echo $(pwd)
+echo "Start build in "$(pwd)
+mkdir -p build && cd ./build
 
-cmake ../
-make all 
+cmake -DCMAKE_BUILD_TYPE=Release ../
+
+make -j4 all
 make CreateTestSuiteExecutable
