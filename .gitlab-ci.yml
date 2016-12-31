@@ -1,7 +1,7 @@
 .build_template: 
     script: &build_commands
-        - ./build.sh
-        - ./bin/Release/test/run_all_tests.py 
+        - $CI_PROJECT_DIR/build.sh
+        - $CI_PROJECT_DIR/bin/Release/test/run_all_tests.py 
         
 image: alexiynew/docker_image
 
@@ -20,7 +20,7 @@ build:clang:
     script: *build_commands
 
 # Gcc
-# ===========================
+# ============================
 build:gcc:
     stage: build
 
