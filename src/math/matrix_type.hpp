@@ -129,45 +129,6 @@ struct MatrixBase<4, 4, T>
     {
     }
 
-    template <typename X00,
-              typename Y01,
-              typename Z02,
-              typename W03,
-              typename X10,
-              typename Y11,
-              typename Z12,
-              typename W13,
-              typename X20,
-              typename Y21,
-              typename Z22,
-              typename W23,
-              typename X30,
-              typename Y31,
-              typename Z32,
-              typename W33>
-    constexpr MatrixBase(const X00& v00,
-                         const Y01& v01,
-                         const Z02& v02,
-                         const W03& v03,
-                         const X10& v10,
-                         const Y11& v11,
-                         const Z12& v12,
-                         const W13& v13,
-                         const X20& v20,
-                         const Y21& v21,
-                         const Z22& v22,
-                         const W23& v23,
-                         const X30& v30,
-                         const Y31& v31,
-                         const Z32& v32,
-                         const W33& v33)
-        : data{ColumnType(v00, v01, v02, v03),
-               ColumnType(v10, v11, v12, v13),
-               ColumnType(v20, v21, v22, v23),
-               ColumnType(v30, v31, v32, v33)}
-    {
-    }
-
     template <typename U0, typename U1, typename U2, typename U3>
     constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2, const Vector<4, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
@@ -367,23 +328,6 @@ struct MatrixBase<4, 3, T>
     {
     }
 
-    template <typename X00, typename Y01, typename Z02, typename X10, typename Y11, typename Z12, typename X20, typename Y21, typename Z22, typename X30, typename Y31, typename Z32>
-    constexpr MatrixBase(const X00& v00,
-                         const Y01& v01,
-                         const Z02& v02,
-                         const X10& v10,
-                         const Y11& v11,
-                         const Z12& v12,
-                         const X20& v20,
-                         const Y21& v21,
-                         const Z22& v22,
-                         const X30& v30,
-                         const Y31& v31,
-                         const Z32& v32)
-        : data{ColumnType(v00, v01, v02), ColumnType(v10, v11, v12), ColumnType(v20, v21, v22), ColumnType(v30, v31, v32)}
-    {
-    }
-
     template <typename U0, typename U1, typename U2, typename U3>
     constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2, const Vector<4, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
@@ -514,19 +458,6 @@ struct MatrixBase<4, 2, T>
     {
     }
 
-    template <typename X00, typename Y01, typename X10, typename Y11, typename X20, typename Y21, typename X30, typename Y31>
-    constexpr MatrixBase(const X00& v00,
-                         const Y01& v01,
-                         const X10& v10,
-                         const Y11& v11,
-                         const X20& v20,
-                         const Y21& v21,
-                         const X30& v30,
-                         const Y31& v31)
-        : data{ColumnType(v00, v01), ColumnType(v10, v11), ColumnType(v20, v21), ColumnType(v30, v31)}
-    {
-    }
-
     template <typename U0, typename U1, typename U2, typename U3>
     constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2, const Vector<4, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
@@ -644,23 +575,6 @@ struct MatrixBase<3, 4, T>
                          const T& v21,
                          const T& v22,
                          const T& v23)
-        : data{ColumnType(v00, v01, v02, v03), ColumnType(v10, v11, v12, v13), ColumnType(v20, v21, v22, v23)}
-    {
-    }
-
-    template <typename X00, typename Y01, typename Z02, typename W03, typename X10, typename Y11, typename Z12, typename W13, typename X20, typename Y21, typename Z22, typename W23>
-    constexpr MatrixBase(const X00& v00,
-                         const Y01& v01,
-                         const Z02& v02,
-                         const W03& v03,
-                         const X10& v10,
-                         const Y11& v11,
-                         const Z12& v12,
-                         const W13& v13,
-                         const X20& v20,
-                         const Y21& v21,
-                         const Z22& v22,
-                         const W23& v23)
         : data{ColumnType(v00, v01, v02, v03), ColumnType(v10, v11, v12, v13), ColumnType(v20, v21, v22, v23)}
     {
     }
@@ -846,20 +760,6 @@ struct MatrixBase<3, 3, T>
     {
     }
 
-    template <typename X00, typename Y01, typename Z02, typename X10, typename Y11, typename Z12, typename X20, typename Y21, typename Z22>
-    constexpr MatrixBase(const X00& v00,
-                         const Y01& v01,
-                         const Z02& v02,
-                         const X10& v10,
-                         const Y11& v11,
-                         const Z12& v12,
-                         const X20& v20,
-                         const Y21& v21,
-                         const Z22& v22)
-        : data{ColumnType(v00, v01, v02), ColumnType(v10, v11, v12), ColumnType(v20, v21, v22)}
-    {
-    }
-
     template <typename U0, typename U1, typename U2>
     constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2)}
@@ -986,12 +886,6 @@ struct MatrixBase<3, 2, T>
     {
     }
 
-    template <typename X00, typename Y01, typename X10, typename Y11, typename X20, typename Y21>
-    constexpr MatrixBase(const X00& v00, const Y01& v01, const X10& v10, const Y11& v11, const X20& v20, const Y21& v21)
-        : data{ColumnType(v00, v01), ColumnType(v10, v11), ColumnType(v20, v21)}
-    {
-    }
-
     template <typename U0, typename U1, typename U2>
     constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2)}
@@ -1098,19 +992,6 @@ struct MatrixBase<2, 4, T>
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v02, const T& v03, const T& v10, const T& v11, const T& v12, const T& v13)
-        : data{ColumnType(v00, v01, v02, v03), ColumnType(v10, v11, v12, v13)}
-    {
-    }
-
-    template <typename X00, typename Y01, typename Z02, typename W03, typename X10, typename Y11, typename Z12, typename W13>
-    constexpr MatrixBase(const X00& v00,
-                         const Y01& v01,
-                         const Z02& v02,
-                         const W03& v03,
-                         const X10& v10,
-                         const Y11& v11,
-                         const Z12& v12,
-                         const W13& v13)
         : data{ColumnType(v00, v01, v02, v03), ColumnType(v10, v11, v12, v13)}
     {
     }
@@ -1264,12 +1145,6 @@ struct MatrixBase<2, 3, T>
     {
     }
 
-    template <typename X00, typename Y01, typename Z02, typename X10, typename Y11, typename Z12>
-    constexpr MatrixBase(const X00& v00, const Y01& v01, const Z02& v02, const X10& v10, const Y11& v11, const Z12& v12)
-        : data{ColumnType(v00, v01, v02), ColumnType(v10, v11, v12)}
-    {
-    }
-
     template <typename U0, typename U1>
     constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1)
         : data{ColumnType(v0), ColumnType(v1)}
@@ -1382,12 +1257,6 @@ struct MatrixBase<2, 2, T>
     }
 
     constexpr MatrixBase(const T& v00, const T& v01, const T& v10, const T& v11)
-        : data{ColumnType(v00, v01), ColumnType(v10, v11)}
-    {
-    }
-
-    template <typename X00, typename Y01, typename X10, typename Y11>
-    constexpr MatrixBase(const X00& v00, const Y01& v01, const X10& v10, const Y11& v11)
         : data{ColumnType(v00, v01), ColumnType(v10, v11)}
     {
     }

@@ -83,5 +83,63 @@ int main()
     ASSERT_MSG(m32.row(0) == Vector3F(1, 0, 0) && m32.row(1) == Vector3F(0, 1, 0), "matrix 32f access failed");
     ASSERT_MSG(m22.row(0) == Vector2F(1, 0) && m22.row(1) == Vector2F(0, 1), "matrix 22f access failed");
 
+    // TODO add pointer access
+    /*
+
+                double* p44 = m44.data();
+                double* p34 = m34.data();
+                double* p24 = m24.data();
+
+                double* p43 = m43.data();
+                double* p33 = m33.data();
+                double* p23 = m23.data();
+
+                double* p42 = m42.data();
+                double* p32 = m32.data();
+                double* p22 = m22.data();
+
+                TEST_ASSERT(p44[0] == 0.0 && p44[1] == 1.0 && p44[2] == 2.0 && p44[3] == 3.0 && p44[4] == 0.0 && p44[5]
+       ==
+           1.0 &&
+                            p44[6] == 2.0 && p44[7] == 3.0 && p44[8] == 0.0 && p44[9] == 1.0 && p44[10] == 2.0 &&
+                            p44[11] == 3.0 && p44[12] == 0.0 && p44[13] == 1.0 && p44[14] == 2.0 && p44[15] == 3.0,
+                            "matrix4x4 pointer access");
+                TEST_ASSERT(p34[0] == 0.0 && p34[1] == 1.0 && p34[2] == 2.0 && p34[3] == 3.0 && p34[4] == 0.0 && p34[5]
+       ==
+           1.0 &&
+                            p34[6] == 2.0 && p34[7] == 3.0 && p34[8] == 0.0 && p34[9] == 1.0 && p34[10] == 2.0 &&
+       p34[11] ==
+           3.0,
+                            "matrix3x4 pointer access");
+                TEST_ASSERT(p24[0] == 0.0 && p24[1] == 1.0 && p24[2] == 2.0 && p24[3] == 3.0 && p24[4] == 0.0 &&
+                            p24[5] == 1.0 && p24[6] == 2.0 && p24[7] == 3.0,
+                            "matrix2x4 pointer access");
+
+                TEST_ASSERT(p43[0] == 0.0 && p43[1] == 1.0 && p43[2] == 2.0 && p43[3] == 0.0 && p43[4] == 1.0 && p43[5]
+       ==
+           2.0 &&
+                            p43[6] == 0.0 && p43[7] == 1.0 && p43[8] == 2.0 && p43[9] == 0.0 && p43[10] == 1.0 &&
+       p43[11] ==
+           2.0,
+                            "matrix4x3 pointer access");
+                TEST_ASSERT(p33[0] == 0.0 && p33[1] == 1.0 && p33[2] == 2.0 && p33[3] == 0.0 && p33[4] == 1.0 &&
+                            p33[5] == 2.0 && p33[6] == 0.0 && p33[7] == 1.0 && p33[8] == 2.0,
+                            "matrix3x3 pointer access");
+                TEST_ASSERT(p23[0] == 0.0 && p23[1] == 1.0 && p23[2] == 2.0 && p23[3] == 0.0 && p23[4] == 1.0 && p23[5]
+       ==
+           2.0,
+                            "matrix2x3 pointer access");
+
+                TEST_ASSERT(p42[0] == 0.0 && p42[1] == 1.0 && p42[2] == 0.0 && p42[3] == 1.0 && p42[4] == 0.0 &&
+                            p42[5] == 1.0 && p42[6] == 0.0 && p42[7] == 1.0,
+                            "matrix4x2 pointer access");
+                TEST_ASSERT(p32[0] == 0.0 && p32[1] == 1.0 && p32[2] == 0.0 && p32[3] == 1.0 && p32[4] == 0.0 && p32[5]
+       ==
+           1.0,
+                            "matrix3x2 pointer access");
+                TEST_ASSERT(p22[0] == 0.0 && p22[1] == 1.0 && p22[2] == 0.0 && p22[3] == 1.0, "matrix2x2 pointer
+       access");
+        */
+
     return 0;
 }
