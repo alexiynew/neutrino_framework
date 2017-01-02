@@ -582,237 +582,302 @@ private:
     Matrix4x4F matrix44;
 };
 
+class matrix_from_matrix_test : public test::suite
+{
+public:
+    matrix_from_matrix_test()
+        : suite("matrix_from_matrix_test")
+    {
+
+        add_test([this]() { matrix4x4_constructors(); }, "matrix4x4_constructors");
+        add_test([this]() { matrix4x3_constructors(); }, "matrix4x3_constructors");
+        add_test([this]() { matrix4x2_constructors(); }, "matrix4x2_constructors");
+        add_test([this]() { matrix3x4_constructors(); }, "matrix3x4_constructors");
+        add_test([this]() { matrix3x3_constructors(); }, "matrix3x3_constructors");
+        add_test([this]() { matrix3x2_constructors(); }, "matrix3x2_constructors");
+        add_test([this]() { matrix2x4_constructors(); }, "matrix2x4_constructors");
+        add_test([this]() { matrix2x3_constructors(); }, "matrix2x3_constructors");
+        add_test([this]() { matrix2x2_constructors(); }, "matrix2x2_constructors");
+
+        // clang-format off
+        matrix44 = {
+            0, 1, 2, 3,
+            0, 1, 2, 3,
+            0, 1, 2, 3,
+            0, 1, 2, 3
+        };
+
+        matrix43 = {
+            0, 1, 2,
+            0, 1, 2,
+            0, 1, 2,
+            0, 1, 2
+        };
+
+        matrix42 = {
+            0, 1,
+            0, 1,
+            0, 1,
+            0, 1
+        };
+
+        matrix34 = {
+            0, 1, 2, 3,
+            0, 1, 2, 3,
+            0, 1, 2, 3
+        };
+
+        matrix33 = {
+            0, 1, 2,
+            0, 1, 2,
+            0, 1, 2
+        };
+
+        matrix32 = {
+            0, 1,
+            0, 1,
+            0, 1
+        };
+
+        matrix24 = {
+            0, 1, 2, 3,
+            0, 1, 2, 3
+        };
+
+        matrix23 = {
+            0, 1, 2,
+            0, 1, 2
+        };
+
+        matrix22 = {
+            0, 1,
+            0, 1
+        };
+        // clang-format on
+    }
+
+private:
+    void matrix4x4_constructors()
+    {
+        TEST_ASSERT(Matrix4F(matrix44) == Matrix4F(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
+                    "Matrix4x4 from Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix4F(matrix43) == Matrix4F(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 1),
+                    "Matrix4x4 from Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix4F(matrix42) == Matrix4F(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1),
+                    "Matrix4x4 from Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix4F(matrix34) == Matrix4F(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 0, 1),
+                    "Matrix4x4 from Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix4F(matrix33) == Matrix4F(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 0, 1),
+                    "Matrix4x4 from Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix4F(matrix32) == Matrix4F(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1),
+                    "Matrix4x4 from Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix4F(matrix24) == Matrix4F(0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 1, 0, 0, 0, 0, 1),
+                    "Matrix4x4 from Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix4F(matrix23) == Matrix4F(0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1),
+                    "Matrix4x4 from Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix4F(matrix22) == Matrix4F(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),
+                    "Matrix4x4 from Matrix2x2 constructor failed.");
+    }
+
+    void matrix4x3_constructors()
+    {
+        TEST_ASSERT(Matrix4x3F(matrix44) == Matrix4x3F(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2),
+                    "Matrix4x3 form Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix4x3F(matrix43) == Matrix4x3F(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2),
+                    "Matrix4x3 form Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix4x3F(matrix42) == Matrix4x3F(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
+                    "Matrix4x3 form Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix4x3F(matrix34) == Matrix4x3F(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 0),
+                    "Matrix4x3 form Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix4x3F(matrix33) == Matrix4x3F(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 0),
+                    "Matrix4x3 form Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix4x3F(matrix32) == Matrix4x3F(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0),
+                    "Matrix4x3 form Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix4x3F(matrix24) == Matrix4x3F(0, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 0),
+                    "Matrix4x3 form Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix4x3F(matrix23) == Matrix4x3F(0, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 0),
+                    "Matrix4x3 form Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix4x3F(matrix22) == Matrix4x3F(0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0),
+                    "Matrix4x3 form Matrix2x2 constructor failed.");
+    }
+
+    void matrix4x2_constructors()
+    {
+        TEST_ASSERT(Matrix4x2F(matrix44) == Matrix4x2F(0, 1, 0, 1, 0, 1, 0, 1),
+                    "Matrix4x2 from Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix4x2F(matrix43) == Matrix4x2F(0, 1, 0, 1, 0, 1, 0, 1),
+                    "Matrix4x2 from Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix4x2F(matrix42) == Matrix4x2F(0, 1, 0, 1, 0, 1, 0, 1),
+                    "Matrix4x2 from Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix4x2F(matrix34) == Matrix4x2F(0, 1, 0, 1, 0, 1, 0, 0),
+                    "Matrix4x2 from Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix4x2F(matrix33) == Matrix4x2F(0, 1, 0, 1, 0, 1, 0, 0),
+                    "Matrix4x2 from Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix4x2F(matrix32) == Matrix4x2F(0, 1, 0, 1, 0, 1, 0, 0),
+                    "Matrix4x2 from Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix4x2F(matrix24) == Matrix4x2F(0, 1, 0, 1, 0, 0, 0, 0),
+                    "Matrix4x2 from Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix4x2F(matrix23) == Matrix4x2F(0, 1, 0, 1, 0, 0, 0, 0),
+                    "Matrix4x2 from Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix4x2F(matrix22) == Matrix4x2F(0, 1, 0, 1, 0, 0, 0, 0),
+                    "Matrix4x2 from Matrix2x2 constructor failed.");
+    }
+
+    void matrix3x4_constructors()
+    {
+        TEST_ASSERT(Matrix3x4F(matrix44) == Matrix3x4F(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
+                    "Matrix3x4 from Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix3x4F(matrix43) == Matrix3x4F(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0),
+                    "Matrix3x4 from Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix3x4F(matrix42) == Matrix3x4F(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0),
+                    "Matrix3x4 from Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix3x4F(matrix34) == Matrix3x4F(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
+                    "Matrix3x4 from Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix3x4F(matrix33) == Matrix3x4F(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0),
+                    "Matrix3x4 from Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix3x4F(matrix32) == Matrix3x4F(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0),
+                    "Matrix3x4 from Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix3x4F(matrix24) == Matrix3x4F(0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 1, 0),
+                    "Matrix3x4 from Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix3x4F(matrix23) == Matrix3x4F(0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0),
+                    "Matrix3x4 from Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix3x4F(matrix22) == Matrix3x4F(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0),
+                    "Matrix3x4 from Matrix2x2 constructor failed.");
+    }
+
+    void matrix3x3_constructors()
+    {
+        TEST_ASSERT(Matrix3F(matrix44) == Matrix3F(0, 1, 2, 0, 1, 2, 0, 1, 2),
+                    "Matrix3x3 from Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix3F(matrix43) == Matrix3F(0, 1, 2, 0, 1, 2, 0, 1, 2),
+                    "Matrix3x3 from Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix3F(matrix42) == Matrix3F(0, 1, 0, 0, 1, 0, 0, 1, 1),
+                    "Matrix3x3 from Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix3F(matrix34) == Matrix3F(0, 1, 2, 0, 1, 2, 0, 1, 2),
+                    "Matrix3x3 from Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix3F(matrix33) == Matrix3F(0, 1, 2, 0, 1, 2, 0, 1, 2),
+                    "Matrix3x3 from Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix3F(matrix32) == Matrix3F(0, 1, 0, 0, 1, 0, 0, 1, 1),
+                    "Matrix3x3 from Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix3F(matrix24) == Matrix3F(0, 1, 2, 0, 1, 2, 0, 0, 1),
+                    "Matrix3x3 from Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix3F(matrix23) == Matrix3F(0, 1, 2, 0, 1, 2, 0, 0, 1),
+                    "Matrix3x3 from Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix3F(matrix22) == Matrix3F(0, 1, 0, 0, 1, 0, 0, 0, 1),
+                    "Matrix3x3 from Matrix2x2 constructor failed.");
+    }
+
+    void matrix3x2_constructors()
+    {
+        TEST_ASSERT(Matrix3x2F(matrix44) == Matrix3x2F(0, 1, 0, 1, 0, 1),
+                    "Matrix3x2 from Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix3x2F(matrix43) == Matrix3x2F(0, 1, 0, 1, 0, 1),
+                    "Matrix3x2 from Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix3x2F(matrix42) == Matrix3x2F(0, 1, 0, 1, 0, 1),
+                    "Matrix3x2 from Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix3x2F(matrix34) == Matrix3x2F(0, 1, 0, 1, 0, 1),
+                    "Matrix3x2 from Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix3x2F(matrix33) == Matrix3x2F(0, 1, 0, 1, 0, 1),
+                    "Matrix3x2 from Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix3x2F(matrix32) == Matrix3x2F(0, 1, 0, 1, 0, 1),
+                    "Matrix3x2 from Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix3x2F(matrix24) == Matrix3x2F(0, 1, 0, 1, 0, 0),
+                    "Matrix3x2 from Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix3x2F(matrix23) == Matrix3x2F(0, 1, 0, 1, 0, 0),
+                    "Matrix3x2 from Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix3x2F(matrix22) == Matrix3x2F(0, 1, 0, 1, 0, 0),
+                    "Matrix3x2 from Matrix2x2 constructor failed.");
+    }
+
+    void matrix2x4_constructors()
+    {
+        TEST_ASSERT(Matrix2x4F(matrix44) == Matrix2x4F(0, 1, 2, 3, 0, 1, 2, 3),
+                    "Matrix2x4 form Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix2x4F(matrix43) == Matrix2x4F(0, 1, 2, 0, 0, 1, 2, 0),
+                    "Matrix2x4 form Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix2x4F(matrix42) == Matrix2x4F(0, 1, 0, 0, 0, 1, 0, 0),
+                    "Matrix2x4 form Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix2x4F(matrix34) == Matrix2x4F(0, 1, 2, 3, 0, 1, 2, 3),
+                    "Matrix2x4 form Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix2x4F(matrix33) == Matrix2x4F(0, 1, 2, 0, 0, 1, 2, 0),
+                    "Matrix2x4 form Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix2x4F(matrix32) == Matrix2x4F(0, 1, 0, 0, 0, 1, 0, 0),
+                    "Matrix2x4 form Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix2x4F(matrix24) == Matrix2x4F(0, 1, 2, 3, 0, 1, 2, 3),
+                    "Matrix2x4 form Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix2x4F(matrix23) == Matrix2x4F(0, 1, 2, 0, 0, 1, 2, 0),
+                    "Matrix2x4 form Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix2x4F(matrix22) == Matrix2x4F(0, 1, 0, 0, 0, 1, 0, 0),
+                    "Matrix2x4 form Matrix2x2 constructor failed.");
+    }
+
+    void matrix2x3_constructors()
+    {
+        TEST_ASSERT(Matrix2x3F(matrix44) == Matrix2x3F(0, 1, 2, 0, 1, 2),
+                    "Matrix2x3 form Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix2x3F(matrix43) == Matrix2x3F(0, 1, 2, 0, 1, 2),
+                    "Matrix2x3 form Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix2x3F(matrix42) == Matrix2x3F(0, 1, 0, 0, 1, 0),
+                    "Matrix2x3 form Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix2x3F(matrix34) == Matrix2x3F(0, 1, 2, 0, 1, 2),
+                    "Matrix2x3 form Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix2x3F(matrix33) == Matrix2x3F(0, 1, 2, 0, 1, 2),
+                    "Matrix2x3 form Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix2x3F(matrix32) == Matrix2x3F(0, 1, 0, 0, 1, 0),
+                    "Matrix2x3 form Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix2x3F(matrix24) == Matrix2x3F(0, 1, 2, 0, 1, 2),
+                    "Matrix2x3 form Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix2x3F(matrix23) == Matrix2x3F(0, 1, 2, 0, 1, 2),
+                    "Matrix2x3 form Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix2x3F(matrix22) == Matrix2x3F(0, 1, 0, 0, 1, 0),
+                    "Matrix2x3 form Matrix2x2 constructor failed.");
+    }
+
+    void matrix2x2_constructors()
+    {
+        TEST_ASSERT(Matrix2F(matrix44) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix4x4 constructor failed.");
+        TEST_ASSERT(Matrix2F(matrix43) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix4x3 constructor failed.");
+        TEST_ASSERT(Matrix2F(matrix42) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix4x2 constructor failed.");
+
+        TEST_ASSERT(Matrix2F(matrix34) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix3x4 constructor failed.");
+        TEST_ASSERT(Matrix2F(matrix33) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix3x3 constructor failed.");
+        TEST_ASSERT(Matrix2F(matrix32) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix3x2 constructor failed.");
+
+        TEST_ASSERT(Matrix2F(matrix24) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix2x4 constructor failed.");
+        TEST_ASSERT(Matrix2F(matrix23) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix2x3 constructor failed.");
+        TEST_ASSERT(Matrix2F(matrix22) == Matrix2F(0, 1, 0, 1), "Matrix2x2 form Matrix2x2 constructor failed.");
+    }
+
+    Matrix4x4F matrix44;
+    Matrix4x3F matrix43;
+    Matrix4x2F matrix42;
+
+    Matrix3x4F matrix34;
+    Matrix3x3F matrix33;
+    Matrix3x2F matrix32;
+
+    Matrix2x4F matrix24;
+    Matrix2x3F matrix23;
+    Matrix2x2F matrix22;
+};
 
 int main()
 {
-    return run_tests(matrix_test());
-    /*
-
-        // matrix from matrix constructor
-        {
-            constexpr Matrix4F m44f(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3);
-
-            constexpr Matrix4x3F m43f(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2);
-
-            constexpr Matrix4x2F m42f(0, 1, 0, 1, 0, 1, 0, 1);
-
-            constexpr Matrix3x4F m34f(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3);
-
-            constexpr Matrix3F m33f(0, 1, 2, 0, 1, 2, 0, 1, 2);
-
-            constexpr Matrix3x2F m32f(0, 1, 0, 1, 0, 1);
-
-            constexpr Matrix2x4F m24f(0, 1, 2, 3, 0, 1, 2, 3);
-
-            constexpr Matrix2x3F m23f(0, 1, 2, 0, 1, 2);
-
-            constexpr Matrix2F m22f(0, 1, 0, 1);
-
-            // mat 4x4
-            TEST_ASSERT(Matrix4D(m44f) == Matrix4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
-                        "matrix4d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix4D(m43f) == Matrix4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 1),
-                        "matrix4d Matrix4x3F "
-                        "constructor");
-
-            TEST_ASSERT(Matrix4D(m42f) == Matrix4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1),
-                        "matrix4d Matrix4x2F "
-                        "constructor");
-
-            TEST_ASSERT(Matrix4D(m34f) == Matrix4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 0, 1),
-                        "matrix4d Matrix3x4F "
-                        "constructor");
-
-            TEST_ASSERT(Matrix4D(m33f) == Matrix4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 0, 1),
-                        "matrix4d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix4D(m32f) == Matrix4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1),
-                        "matrix4d Matrix3x2F "
-                        "constructor");
-
-            TEST_ASSERT(Matrix4D(m24f) == Matrix4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 1, 0, 0, 0, 0, 1),
-                        "matrix4d Matrix2x4F "
-                        "constructor");
-
-            TEST_ASSERT(Matrix4D(m23f) == Matrix4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0, 0, 0, 1),
-                        "matrix4d Matrix2x3F "
-                        "constructor");
-
-            TEST_ASSERT(Matrix4D(m22f) == Matrix4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),
-                        "matrix4d Matrix2F constructor");
-
-            // mat 4x3
-            TEST_ASSERT(Matrix4x3D(m44f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2),
-                        "matrix4x3d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix4x3D(m43f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2),
-                        "matrix4x3d Matrix4x3F constructor");
-
-            TEST_ASSERT(Matrix4x3D(m42f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0),
-                        "matrix4x3d Matrix4x2F constructor");
-
-            TEST_ASSERT(Matrix4x3D(m34f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 0),
-                        "matrix4x3d Matrix3x4F constructor");
-
-            TEST_ASSERT(Matrix4x3D(m33f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 0),
-                        "matrix4x3d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix4x3D(m32f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0),
-                        "matrix4x3d Matrix3x2F constructor");
-
-            TEST_ASSERT(Matrix4x3D(m24f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 0),
-                        "matrix4x3d Matrix2x4F constructor");
-
-            TEST_ASSERT(Matrix4x3D(m23f) == Matrix4x3D(0, 1, 2, 0, 1, 2, 0, 0, 1, 0, 0, 0),
-                        "matrix4x3d Matrix2x3F constructor");
-
-            TEST_ASSERT(Matrix4x3D(m22f) == Matrix4x3D(0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0),
-                        "matrix4x3d Matrix2F constructor");
-
-            // mat 4x2
-            TEST_ASSERT(Matrix4x2D(m44f) == Matrix4x2D(0, 1, 0, 1, 0, 1, 0, 1), "matrix4x2d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix4x2D(m43f) == Matrix4x2D(0, 1, 0, 1, 0, 1, 0, 1), "matrix4x2d Matrix4x3F constructor");
-
-            TEST_ASSERT(Matrix4x2D(m42f) == Matrix4x2D(0, 1, 0, 1, 0, 1, 0, 1), "matrix4x2d Matrix4x2F constructor");
-
-            TEST_ASSERT(Matrix4x2D(m34f) == Matrix4x2D(0, 1, 0, 1, 0, 1, 0, 0), "matrix4x2d Matrix3x4F constructor");
-
-            TEST_ASSERT(Matrix4x2D(m33f) == Matrix4x2D(0, 1, 0, 1, 0, 1, 0, 0), "matrix4x2d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix4x2D(m32f) == Matrix4x2D(0, 1, 0, 1, 0, 1, 0, 0), "matrix4x2d Matrix3x2F constructor");
-
-            TEST_ASSERT(Matrix4x2D(m24f) == Matrix4x2D(0, 1, 0, 1, 0, 0, 0, 0), "matrix4x2d Matrix2x4F constructor");
-
-            TEST_ASSERT(Matrix4x2D(m23f) == Matrix4x2D(0, 1, 0, 1, 0, 0, 0, 0), "matrix4x2d Matrix2x3F constructor");
-
-            TEST_ASSERT(Matrix4x2D(m22f) == Matrix4x2D(0, 1, 0, 1, 0, 0, 0, 0), "matrix4x2d Matrix2F constructor");
-
-            // mat 3x4
-            TEST_ASSERT(Matrix3x4D(m44f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
-                        "matrix3x4d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix3x4D(m43f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0),
-                        "matrix3x4d Matrix4x3F constructor");
-
-            TEST_ASSERT(Matrix3x4D(m42f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0),
-                        "matrix3x4d Matrix4x2F constructor");
-
-            TEST_ASSERT(Matrix3x4D(m34f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3),
-                        "matrix3x4d Matrix3x4F constructor");
-
-            TEST_ASSERT(Matrix3x4D(m33f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0),
-                        "matrix3x4d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix3x4D(m32f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0),
-                        "matrix3x4d Matrix3x2F constructor");
-
-            TEST_ASSERT(Matrix3x4D(m24f) == Matrix3x4D(0, 1, 2, 3, 0, 1, 2, 3, 0, 0, 1, 0),
-                        "matrix3x4d Matrix2x4F constructor");
-
-            TEST_ASSERT(Matrix3x4D(m23f) == Matrix3x4D(0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0),
-                        "matrix3x4d Matrix2x3F constructor");
-
-            TEST_ASSERT(Matrix3x4D(m22f) == Matrix3x4D(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0),
-                        "matrix3x4d Matrix2F constructor");
-
-            // mat 3
-            TEST_ASSERT(Matrix3D(m44f) == Matrix3D(0, 1, 2, 0, 1, 2, 0, 1, 2), "matrix3d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix3D(m43f) == Matrix3D(0, 1, 2, 0, 1, 2, 0, 1, 2), "matrix3d Matrix4x3F constructor");
-
-            TEST_ASSERT(Matrix3D(m42f) == Matrix3D(0, 1, 0, 0, 1, 0, 0, 1, 1), "matrix3d Matrix4x2F constructor");
-
-            TEST_ASSERT(Matrix3D(m34f) == Matrix3D(0, 1, 2, 0, 1, 2, 0, 1, 2), "matrix3d Matrix3x4F constructor");
-
-            TEST_ASSERT(Matrix3D(m33f) == Matrix3D(0, 1, 2, 0, 1, 2, 0, 1, 2), "matrix3d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix3D(m32f) == Matrix3D(0, 1, 0, 0, 1, 0, 0, 1, 1), "matrix3d Matrix3x2F constructor");
-
-            TEST_ASSERT(Matrix3D(m24f) == Matrix3D(0, 1, 2, 0, 1, 2, 0, 0, 1), "matrix3d Matrix2x4F constructor");
-
-            TEST_ASSERT(Matrix3D(m23f) == Matrix3D(0, 1, 2, 0, 1, 2, 0, 0, 1), "matrix3d Matrix2x3F constructor");
-
-            TEST_ASSERT(Matrix3D(m22f) == Matrix3D(0, 1, 0, 0, 1, 0, 0, 0, 1), "matrix3d Matrix2F constructor");
-
-            // mat 3x2
-            TEST_ASSERT(Matrix3x2D(m44f) == Matrix3x2D(0, 1, 0, 1, 0, 1), "matrix3x2d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix3x2D(m43f) == Matrix3x2D(0, 1, 0, 1, 0, 1), "matrix3x2d Matrix4x3F constructor");
-
-            TEST_ASSERT(Matrix3x2D(m42f) == Matrix3x2D(0, 1, 0, 1, 0, 1), "matrix3x2d Matrix4x2F constructor");
-
-            TEST_ASSERT(Matrix3x2D(m34f) == Matrix3x2D(0, 1, 0, 1, 0, 1), "matrix3x2d Matrix3x4F constructor");
-
-            TEST_ASSERT(Matrix3x2D(m33f) == Matrix3x2D(0, 1, 0, 1, 0, 1), "matrix3x2d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix3x2D(m32f) == Matrix3x2D(0, 1, 0, 1, 0, 1), "matrix3x2d Matrix3x2F constructor");
-
-            TEST_ASSERT(Matrix3x2D(m24f) == Matrix3x2D(0, 1, 0, 1, 0, 0), "matrix3x2d Matrix2x4F constructor");
-
-            TEST_ASSERT(Matrix3x2D(m23f) == Matrix3x2D(0, 1, 0, 1, 0, 0), "matrix3x2d Matrix2x3F constructor");
-
-            TEST_ASSERT(Matrix3x2D(m22f) == Matrix3x2D(0, 1, 0, 1, 0, 0), "matrix3x2d Matrix2F constructor");
-
-            // mat 2x4
-            TEST_ASSERT(Matrix2x4D(m44f) == Matrix2x4D(0, 1, 2, 3, 0, 1, 2, 3), "matrix2x4d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix2x4D(m43f) == Matrix2x4D(0, 1, 2, 0, 0, 1, 2, 0), "matrix2x4d Matrix4x3F constructor");
-
-            TEST_ASSERT(Matrix2x4D(m42f) == Matrix2x4D(0, 1, 0, 0, 0, 1, 0, 0), "matrix2x4d Matrix4x2F constructor");
-
-            TEST_ASSERT(Matrix2x4D(m34f) == Matrix2x4D(0, 1, 2, 3, 0, 1, 2, 3), "matrix2x4d Matrix3x4F constructor");
-
-            TEST_ASSERT(Matrix2x4D(m33f) == Matrix2x4D(0, 1, 2, 0, 0, 1, 2, 0), "matrix2x4d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix2x4D(m32f) == Matrix2x4D(0, 1, 0, 0, 0, 1, 0, 0), "matrix2x4d Matrix3x2F constructor");
-
-            TEST_ASSERT(Matrix2x4D(m24f) == Matrix2x4D(0, 1, 2, 3, 0, 1, 2, 3), "matrix2x4d Matrix2x4F constructor");
-
-            TEST_ASSERT(Matrix2x4D(m23f) == Matrix2x4D(0, 1, 2, 0, 0, 1, 2, 0), "matrix2x4d Matrix2x3F constructor");
-
-            TEST_ASSERT(Matrix2x4D(m22f) == Matrix2x4D(0, 1, 0, 0, 0, 1, 0, 0), "matrix2x4d Matrix2F constructor");
-
-            // mat 2x3
-            TEST_ASSERT(Matrix2x3D(m44f) == Matrix2x3D(0, 1, 2, 0, 1, 2), "matrix2x3d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix2x3D(m43f) == Matrix2x3D(0, 1, 2, 0, 1, 2), "matrix2x3d Matrix4x3F constructor");
-
-            TEST_ASSERT(Matrix2x3D(m42f) == Matrix2x3D(0, 1, 0, 0, 1, 0), "matrix2x3d Matrix4x2F constructor");
-
-            TEST_ASSERT(Matrix2x3D(m34f) == Matrix2x3D(0, 1, 2, 0, 1, 2), "matrix2x3d Matrix3x4F constructor");
-
-            TEST_ASSERT(Matrix2x3D(m33f) == Matrix2x3D(0, 1, 2, 0, 1, 2), "matrix2x3d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix2x3D(m32f) == Matrix2x3D(0, 1, 0, 0, 1, 0), "matrix2x3d Matrix3x2F constructor");
-
-            TEST_ASSERT(Matrix2x3D(m24f) == Matrix2x3D(0, 1, 2, 0, 1, 2), "matrix2x3d Matrix2x4F constructor");
-
-            TEST_ASSERT(Matrix2x3D(m23f) == Matrix2x3D(0, 1, 2, 0, 1, 2), "matrix2x3d Matrix2x3F constructor");
-
-            TEST_ASSERT(Matrix2x3D(m22f) == Matrix2x3D(0, 1, 0, 0, 1, 0), "matrix2x3d Matrix2F constructor");
-
-            // mat 2
-            TEST_ASSERT(Matrix2D(m44f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix4F constructor");
-
-            TEST_ASSERT(Matrix2D(m43f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix4x3F constructor");
-
-            TEST_ASSERT(Matrix2D(m42f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix4x2F constructor");
-
-            TEST_ASSERT(Matrix2D(m34f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix3x4F constructor");
-
-            TEST_ASSERT(Matrix2D(m33f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix3F constructor");
-
-            TEST_ASSERT(Matrix2D(m32f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix3x2F constructor");
-
-            TEST_ASSERT(Matrix2D(m24f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix2x4F constructor");
-
-            TEST_ASSERT(Matrix2D(m23f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix2x3F constructor");
-
-            TEST_ASSERT(Matrix2D(m22f) == Matrix2D(0, 1, 0, 1), "matrix2d Matrix2F constructor");
-        }
-
-        return 0;
-    */
+    return run_tests(matrix_test(), matrix_from_matrix_test());
 }
