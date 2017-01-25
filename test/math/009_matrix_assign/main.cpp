@@ -9,6 +9,7 @@ public:
     matrix_assign_test()
         : suite("matrix_assign_test")
     {
+        add_test([this]() { assign_operator(); }, "assign_operator");
     }
 
 private:

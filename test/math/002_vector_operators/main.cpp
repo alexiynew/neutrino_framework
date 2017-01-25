@@ -11,7 +11,7 @@ public:
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
         add_test([this]() { access_operator(); }, "access_operator");
-        add_test([this]() { data_access(); }, "data_access");
+        add_test([this]() { data_function(); }, "data_function");
         add_test([this]() { unary_minus_operator(); }, "unary_minus_operator");
         add_test([this]() { unary_plus_operator(); }, "unary_plus_operator");
         add_test([this]() { plus_operator(); }, "plus_operator");
@@ -43,14 +43,14 @@ private:
         v3d_result = v3f;
         v2f_result = v2i;
 
-        ASSERT_MSG(v4i_result == Vector4I(1, 2, 3, 4), "Assign to vector4i failed.");
-        ASSERT_MSG(v4d_result == Vector4D(1.1, 2.2, 3.3, 4), "Assign to vector4d failed.");
+        TEST_ASSERT(v4i_result == Vector4I(1, 2, 3, 4), "Assign to vector4i failed.");
+        TEST_ASSERT(v4d_result == Vector4D(1.1, 2.2, 3.3, 4), "Assign to vector4d failed.");
 
-        ASSERT_MSG(v3d_result == Vector3D(double(5.5f), double(6.6f), double(7.7f)), "Assign to vector3d failed.");
-        ASSERT_MSG(v3f_result == Vector3F(5.5f, 6.6f, 7.7f), "Assign to vector3f failed.");
+        TEST_ASSERT(v3d_result == Vector3D(double(5.5f), double(6.6f), double(7.7f)), "Assign to vector3d failed.");
+        TEST_ASSERT(v3f_result == Vector3F(5.5f, 6.6f, 7.7f), "Assign to vector3f failed.");
 
-        ASSERT_MSG(v2f_result == Vector2F(1, 2), "Assign to vector2f failed.");
-        ASSERT_MSG(v2i_result == Vector2I(1, 2.0), "Assign to vector2i failed.");
+        TEST_ASSERT(v2f_result == Vector2F(1, 2), "Assign to vector2f failed.");
+        TEST_ASSERT(v2i_result == Vector2I(1, 2.0), "Assign to vector2i failed.");
     }
 
     void access_operator()
@@ -60,22 +60,22 @@ private:
         const Vector2I v2i(1, 2);
 
         // clang-format off
-        ASSERT_MSG(almost_equal(v4d[0], 1.1) &&
-                   almost_equal(v4d[1], 2.2) &&
-                   almost_equal(v4d[2], 3.3) &&
-                   almost_equal(v4d[3], 4.4),
-                   "Access to vector4d filed.");
+        TEST_ASSERT(almost_equal(v4d[0], 1.1) &&
+                    almost_equal(v4d[1], 2.2) &&
+                    almost_equal(v4d[2], 3.3) &&
+                    almost_equal(v4d[3], 4.4),
+                    "Access to vector4d filed.");
 
-        ASSERT_MSG(almost_equal(v3f[0], 5.5f) &&
-                   almost_equal(v3f[1], 6.6f) &&
-                   almost_equal(v3f[2], 7.7f),
-                   "Access to vector3f failed.");
+        TEST_ASSERT(almost_equal(v3f[0], 5.5f) &&
+                    almost_equal(v3f[1], 6.6f) &&
+                    almost_equal(v3f[2], 7.7f),
+                    "Access to vector3f failed.");
 
-        ASSERT_MSG(v2i[0] == 1 && v2i[1] == 2, "Access to vector2i failed.");
+        TEST_ASSERT(v2i[0] == 1 && v2i[1] == 2, "Access to vector2i failed.");
         // clang-format on
     }
 
-    void data_access()
+    void data_function()
     {
         const Vector4D v4d(1.1, 2.2, 3.3, 4.4);
         const Vector3F v3f(5.5f, 6.6f, 7.7f);
@@ -86,18 +86,18 @@ private:
         const int* int_pointer       = v2i.data();
 
         // clang-format off
-        ASSERT_MSG(almost_equal(double_pointer[0], 1.1) &&
-                   almost_equal(double_pointer[1], 2.2) &&
-                   almost_equal(double_pointer[2], 3.3) &&
-                   almost_equal(double_pointer[3], 4.4),
-                   "Access to data of vector4d filed.");
+        TEST_ASSERT(almost_equal(double_pointer[0], 1.1) &&
+                    almost_equal(double_pointer[1], 2.2) &&
+                    almost_equal(double_pointer[2], 3.3) &&
+                    almost_equal(double_pointer[3], 4.4),
+                    "Access to data of vector4d filed.");
 
-        ASSERT_MSG(almost_equal(float_pointer[0], 5.5f) &&
-                   almost_equal(float_pointer[1], 6.6f) &&
-                   almost_equal(float_pointer[2], 7.7f),
-                   "Access to data of vector3f failed.");
+        TEST_ASSERT(almost_equal(float_pointer[0], 5.5f) &&
+                    almost_equal(float_pointer[1], 6.6f) &&
+                    almost_equal(float_pointer[2], 7.7f),
+                    "Access to data of vector3f failed.");
 
-        ASSERT_MSG(int_pointer[0] == 1 && int_pointer[1] == 2, "Access to data of vector2i failed.");
+        TEST_ASSERT(int_pointer[0] == 1 && int_pointer[1] == 2, "Access to data of vector2i failed.");
         // clang-format on
     }
 
@@ -107,9 +107,9 @@ private:
         const Vector3F v3f(2.4f);
         const Vector2I v2i(3);
 
-        ASSERT_MSG(-v4d == Vector4D(-1.4, -1.4, -1.4, -1.4), "Inverse of vector4d failed.");
-        ASSERT_MSG(-v3f == Vector3F(-2.4f, -2.4f, -2.4f), "Inverse of vector3f failed.");
-        ASSERT_MSG(-v2i == Vector2I(-3, -3), "Inverse of vector2i failed.");
+        TEST_ASSERT(-v4d == Vector4D(-1.4, -1.4, -1.4, -1.4), "Inverse of vector4d failed.");
+        TEST_ASSERT(-v3f == Vector3F(-2.4f, -2.4f, -2.4f), "Inverse of vector3f failed.");
+        TEST_ASSERT(-v2i == Vector2I(-3, -3), "Inverse of vector2i failed.");
     }
 
     void unary_plus_operator()
@@ -118,9 +118,9 @@ private:
         const Vector3F v3f(2.4f);
         const Vector2I v2i(3);
 
-        ASSERT_MSG(+v4d == Vector4D(1.4, 1.4, 1.4, 1.4), "Unary plus of vector4d failed.");
-        ASSERT_MSG(+v3f == Vector3F(2.4f, 2.4f, 2.4f), "Unary plus of vector3f failed.");
-        ASSERT_MSG(+v2i == Vector2I(3, 3), "Unary plus of vector2i failed.");
+        TEST_ASSERT(+v4d == Vector4D(1.4, 1.4, 1.4, 1.4), "Unary plus of vector4d failed.");
+        TEST_ASSERT(+v3f == Vector3F(2.4f, 2.4f, 2.4f), "Unary plus of vector3f failed.");
+        TEST_ASSERT(+v2i == Vector2I(3, 3), "Unary plus of vector2i failed.");
     }
 
     void plus_operator()
@@ -230,17 +230,17 @@ private:
         v3b_result = v3b;
         v2b_result = v2b;
 
-        ASSERT_MSG(v4b_result == v4b, "Assign to vector4b failed.");
-        ASSERT_MSG(v3b_result == v3b, "Assign to vector3b failed.");
-        ASSERT_MSG(v2b_result == v2b, "Assign to vector2b failed.");
+        TEST_ASSERT(v4b_result == v4b, "Assign to vector4b failed.");
+        TEST_ASSERT(v3b_result == v3b, "Assign to vector3b failed.");
+        TEST_ASSERT(v2b_result == v2b, "Assign to vector2b failed.");
 
         v4b_result = v4d;
         v3b_result = v3f;
         v2b_result = v2i;
 
-        ASSERT_MSG(v4b_result == v4b, "Assign to vector4b failed.");
-        ASSERT_MSG(v3b_result == v3b, "Assign to vector3b failed.");
-        ASSERT_MSG(v2b_result == v2b, "Assign to vector2b failed.");
+        TEST_ASSERT(v4b_result == v4b, "Assign to vector4b failed.");
+        TEST_ASSERT(v3b_result == v3b, "Assign to vector3b failed.");
+        TEST_ASSERT(v2b_result == v2b, "Assign to vector2b failed.");
     }
 
     void access_operator()
@@ -249,9 +249,9 @@ private:
         const Vector3B v3b(true, false, true);
         const Vector2B v2b(true, false);
 
-        ASSERT_MSG(v4b[0] && !v4b[1] && v4b[2] && !v4b[3], "Access to vector4b failed.");
-        ASSERT_MSG(v3b[0] && !v3b[1] && v3b[2], "Access to vector3b failed.");
-        ASSERT_MSG(v2b[0] && !v2b[1], "Access to vector2b failed.");
+        TEST_ASSERT(v4b[0] && !v4b[1] && v4b[2] && !v4b[3], "Access to vector4b failed.");
+        TEST_ASSERT(v3b[0] && !v3b[1] && v3b[2], "Access to vector3b failed.");
+        TEST_ASSERT(v2b[0] && !v2b[1], "Access to vector2b failed.");
     }
 
     void data_access()
@@ -264,9 +264,9 @@ private:
         const bool* bool3 = v3b.data();
         const bool* bool2 = v2b.data();
 
-        ASSERT_MSG(bool4[0] && !bool4[1] && bool4[2] && !bool4[3], "Access to data of vector4b failed.");
-        ASSERT_MSG(bool3[0] && !bool3[1] && bool3[2], "Access to data of vector3b failed.");
-        ASSERT_MSG(bool2[0] && !bool2[1], "Access to data of vector2b failed.");
+        TEST_ASSERT(bool4[0] && !bool4[1] && bool4[2] && !bool4[3], "Access to data of vector4b failed.");
+        TEST_ASSERT(bool3[0] && !bool3[1] && bool3[2], "Access to data of vector3b failed.");
+        TEST_ASSERT(bool2[0] && !bool2[1], "Access to data of vector2b failed.");
     }
 };
 
