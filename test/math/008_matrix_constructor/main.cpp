@@ -22,7 +22,6 @@ public:
         add_test([this]() { matrix2x4_constructors(); }, "matrix2x4_constructors");
         add_test([this]() { matrix2x3_constructors(); }, "matrix2x3_constructors");
         add_test([this]() { matrix2x2_constructors(); }, "matrix2x2_constructors");
-        add_test([this]() { matrix4x4_matrix_constructors(); }, "matrix4x4_matrix_constructors");
 
         matrix22 = Matrix2x2F();
         matrix23 = Matrix2x3F();
@@ -562,11 +561,6 @@ private:
         TEST_ASSERT(m1 == m2, "Matrix2x2F constructor failed.");
         TEST_ASSERT(m1 == m3, "Matrix2x2F constructor failed.");
         TEST_ASSERT(m1 == m4, "Matrix2x2F constructor failed.");
-    }
-
-    void matrix4x4_matrix_constructors()
-    {
-        // TODO implement
     }
 
     Matrix2x2F matrix22;
