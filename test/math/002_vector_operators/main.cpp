@@ -151,10 +151,10 @@ private:
 
         TEST_ASSERT((v4d -= Vector4D(1.0)) == Vector4D(2.0), "Subtract_assign operator failed.");
         TEST_ASSERT((v4d -= 1.0) == Vector4D(1.0), "Subtract_assign operator failed.");
-        
+
         TEST_ASSERT((v3f -= Vector3F(1.0f)) == Vector3F(2.0f), "Subtract_assign operator failed.");
         TEST_ASSERT((v3f -= 1.0f) == Vector3F(1.0f), "Subtract_assign operator failed.");
-        
+
         TEST_ASSERT((v2i -= Vector2I(1)) == Vector2I(2), "Subtract_assign operator failed.");
         TEST_ASSERT((v2i -= 1) == Vector2I(1), "Subtract_assign operator failed.");
     }
@@ -167,10 +167,10 @@ private:
 
         TEST_ASSERT((v4d *= Vector4D(2.0)) == Vector4D(2.0), "Multiplies_assign operator failed.");
         TEST_ASSERT((v4d *= 2.0) == Vector4D(4.0), "Multiplies_assign operator failed.");
-       
+
         TEST_ASSERT((v3f *= Vector3F(2.0f)) == Vector3F(2.0f), "Multiplies_assign operator failed.");
         TEST_ASSERT((v3f *= 2.0f) == Vector3F(4.0f), "Multiplies_assign operator failed.");
-      
+
         TEST_ASSERT((v2i *= Vector2I(2)) == Vector2I(2), "Multiplies_assign operator failed.");
         TEST_ASSERT((v2i *= 2) == Vector2I(4), "Multiplies_assign operator failed.");
     }
@@ -181,9 +181,11 @@ private:
         Vector2I v2i(4);
 
         TEST_ASSERT((v4d /= Vector4D(2.0)) == Vector4D(2.0), "Divides_assign operator failed.");
-        TEST_ASSERT((v4d /= 2.0) == Vector4D(1.0), "Divides_assign operator failed.");       
+        TEST_ASSERT((v4d /= 2.0) == Vector4D(1.0), "Divides_assign operator failed.");
+
         TEST_ASSERT((v3f /= Vector3F(2.0f)) == Vector3F(2.0f), "Divides_assign operator failed.");
-        TEST_ASSERT((v3f /= 2.0f) == Vector3F(1.0f), "Divides_assign operator failed.");      
+        TEST_ASSERT((v3f /= 2.0f) == Vector3F(1.0f), "Divides_assign operator failed.");
+
         TEST_ASSERT((v2i /= Vector2I(2)) == Vector2I(2), "Divides_assign operator failed.");
         TEST_ASSERT((v2i /= 2) == Vector2I(1), "Divides_assign operator failed.");
     }
