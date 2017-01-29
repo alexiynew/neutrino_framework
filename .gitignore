@@ -1,4 +1,5 @@
 build/
 bin/
+nbproject/
 .idea/
 .atom-build.yml
