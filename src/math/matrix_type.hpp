@@ -1502,6 +1502,18 @@ inline Matrix<C, R, T> operator+(const Matrix<C, R, T>& m)
     return m;
 }
 
+template <unsigned int C, unsigned int R, typename T>
+inline const Matrix<C, R, T> operator+(Matrix<C, R, T> lhs, const Matrix<C, R, T>& rhs)
+{
+    return lhs += rhs;
+}
+
+template <unsigned int C, unsigned int R, typename T>
+inline const Matrix<C, R, T> operator-(Matrix<C, R, T> lhs, const Matrix<C, R, T>& rhs)
+{
+    return lhs -= rhs;
+}
+
 // TODO: make it same type id:0
 // binary operators
 // TODO: simplify id:1
