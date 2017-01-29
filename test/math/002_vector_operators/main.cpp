@@ -12,8 +12,8 @@ public:
         add_test([this]() { assign_operator(); }, "assign_operator");
         add_test([this]() { access_operator(); }, "access_operator");
         add_test([this]() { data_function(); }, "data_function");
-        add_test([this]() { unary_subtract_operator(); }, "unary_subtract_operator");
-        add_test([this]() { unary_add_operator(); }, "unary_add_operator");
+        add_test([this]() { unary_minus_operator(); }, "unary_minus_operator");
+        add_test([this]() { unary_plus_operator(); }, "unary_plus_operator");
         add_test([this]() { add_assign_operator(); }, "add_assign_operator");
         add_test([this]() { subtract_assign_operator(); }, "subtract_assign_operator");
         add_test([this]() { multiplies_assign_operator(); }, "multiplies_assign_operator");
@@ -105,7 +105,7 @@ private:
         // clang-format on
     }
 
-    void unary_subtract_operator()
+    void unary_minus_operator()
     {
         const Vector4D v4d(1.4);
         const Vector3F v3f(2.4f);
@@ -116,7 +116,7 @@ private:
         TEST_ASSERT(-v2i == Vector2I(-3, -3), "Inverse of vector2i failed.");
     }
 
-    void unary_add_operator()
+    void unary_plus_operator()
     {
         const Vector4D v4d(1.4);
         const Vector3F v3f(2.4f);
