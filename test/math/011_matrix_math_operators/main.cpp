@@ -605,27 +605,4 @@ private:
 int main()
 {
     return run_tests(matrix_operators_test());
-    /*
-        TEST_ASSERT(r44f / 5.0f == m44f, "matrix / scalar failed");
-        TEST_ASSERT(r43f / 5.0f == m43f, "matrix / scalar failed");
-        TEST_ASSERT(r42f / 5.0f == m42f, "matrix / scalar failed");
-        TEST_ASSERT(r34f / 5.0f == m34f, "matrix / scalar failed");
-        TEST_ASSERT(r33f / 5.0f == m33f, "matrix / scalar failed");
-        TEST_ASSERT(r32f / 5.0f == m32f, "matrix / scalar failed");
-        TEST_ASSERT(r24f / 5.0f == m24f, "matrix / scalar failed");
-        TEST_ASSERT(r23f / 5.0f == m23f, "matrix / scalar failed");
-        TEST_ASSERT(r22f / 5.0f == m22f, "matrix / scalar failed");
-
-        TEST_ASSERT(5.0f / r44f == m44f, "scalar / matrix failed");
-        TEST_ASSERT(5.0f / r43f == m43f, "scalar / matrix failed");
-        TEST_ASSERT(5.0f / r42f == m42f, "scalar / matrix failed");
-        TEST_ASSERT(5.0f / r34f == m34f, "scalar / matrix failed");
-        TEST_ASSERT(5.0f / r33f == m33f, "scalar / matrix failed");
-        TEST_ASSERT(5.0f / r32f == m32f, "scalar / matrix failed");
-        TEST_ASSERT(5.0f / r24f == m24f, "scalar / matrix failed");
-        TEST_ASSERT(5.0f / r23f == m23f, "scalar / matrix failed");
-        TEST_ASSERT(5.0f / r22f == m22f, "scalar / matrix failed");
-    }
-
-    return 0;*/
 }
