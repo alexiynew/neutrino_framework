@@ -6,6 +6,7 @@ services:
   - docker
   
 before_install:
-  docker pull alexiynew/docker_image
-  docker run alexiynew/docker_image bash -c "echo Hello"
+  - docker pull alexiynew/docker_image
+  - docker run alexiynew/docker_image bash -c "echo Hello"
+  - docker ps -l
 
