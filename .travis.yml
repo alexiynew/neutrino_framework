@@ -13,4 +13,6 @@ before_install:
   - cd /home/alexiynew/game_framework
   - pwd
   - ls -al
+  - exit
+  - docker rm roller
 
