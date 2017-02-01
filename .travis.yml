@@ -8,10 +8,8 @@ services:
 before_install:
   - pwd
   - docker pull alexiynew/docker_image
-  - docker run --name roller -it -d
+  - docker run --name roller -it -d alexiynew/docker_image
   - pwd
-  - exit
-  - docker rm roller
 
 script:
   - build.sh -c clang
