@@ -7,7 +7,7 @@ services:
   
 before_install:
   - docker pull alexiynew/docker_image
-  - docker run --name roller --rm -it -d -v alexiynew/game_framework:/home/alexiynew/game_framework alexiynew/docker_image
+  - docker run --name roller -it -d -v alexiynew/game_framework:/home/alexiynew/game_framework alexiynew/docker_image
   - docker attach roller
   - cd /home/alexiynew/game_framework
   - pwd
