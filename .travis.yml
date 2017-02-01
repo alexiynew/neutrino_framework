@@ -8,8 +8,10 @@ services:
 before_install:
   - pwd
   - docker pull alexiynew/docker_image
-  - docker run --name roller -it -d -v $(pwd):/home/alexiynew/game_framework alexiynew/docker_image bash
+  - docker run --name roller -it -d
   - pwd
   - exit
   - docker rm roller
 
+script:
+  - build.sh -c clang
