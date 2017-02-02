@@ -4,13 +4,14 @@ language: generic
 
 services:
   - docker
-  
+
 before_install:
   - pwd
   - docker pull alexiynew/docker_image
-  - docker run --name roller -it -d alexiynew/docker_image
-  - pwd
+
+install: true
 
 script:
-  - ls -al
-  - ./build.sh -c clang
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_imagels bash -c "ls -al /home/framework;"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_imagels bash -c "/home/framework/build.sh -c clang"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_imagels bash -c "/home/framework/bin/Release/test/run_all_tests.py"
