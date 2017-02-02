@@ -12,6 +12,6 @@ before_install:
 install: true
 
 script:
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_imagels bash -c "ls -al /home/framework;"
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_imagels bash -c "/home/framework/build.sh -c clang"
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_imagels bash -c "/home/framework/bin/Release/test/run_all_tests.py"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "ls -al /home/framework;"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c clang"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/bin/Release/test/run_all_tests.py"
