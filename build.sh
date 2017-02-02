@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 set -e
 
 CC_COMPILER=gcc
@@ -41,11 +43,13 @@ while getopts ":c:" opt; do
     esac
 done
 
-echo "Start build in "$(pwd)
+
+cd $SCRIPT_DIR
+echo "Start build in $(pwd)"
+
 mkdir -p build && cd ./build
 
 cmake -DCMAKE_BUILD_TYPE=Release ../
 
 make -j4 all
 make CreateTestSuiteExecutable
-
