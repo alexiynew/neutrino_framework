@@ -2,7 +2,7 @@
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
 #include <debug.hpp>
-
+#include <math/common_func.hpp>
 #include <math/utils.hpp>
 
 namespace framework {
@@ -1021,46 +1021,47 @@ inline const Vector<N, T> operator/(const T& scalar, const Vector<N, T>& vector)
 
 #pragma mark - vectors equality
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wfloat-equal"
-
 template <typename T>
 inline constexpr bool operator==(const Vector<4, T>& a, const Vector<4, T>& b)
 {
-    return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
+    const auto& abs = ::framework::math::abs<T>;
+    return abs(a.x - b.x) <= 0 && abs(a.y - b.y) <= 0 && abs(a.z - b.z) <= 0 && abs(a.w - b.w) <= 0;
 }
 
 template <typename T>
 inline constexpr bool operator==(const Vector<3, T>& a, const Vector<3, T>& b)
 {
-    return a.x == b.x && a.y == b.y && a.z == b.z;
+    const auto& abs = ::framework::math::abs<T>;
+    return abs(a.x - b.x) <= 0 && abs(a.y - b.y) <= 0 && abs(a.z - b.z) <= 0;
 }
 
 template <typename T>
 inline constexpr bool operator==(const Vector<2, T>& a, const Vector<2, T>& b)
 {
-    return a.x == b.x && a.y == b.y;
+    const auto& abs = ::framework::math::abs<T>;
+    return abs(a.x - b.x) <= 0 && abs(a.y - b.y) <= 0;
 }
 
 template <typename T>
 inline constexpr bool operator!=(const Vector<4, T>& a, const Vector<4, T>& b)
 {
-    return (a.x != b.x) || (a.y != b.y) || (a.z != b.z) || (a.w != b.w);
+    const auto& abs = ::framework::math::abs<T>;
+    return abs(a.x - b.x) > 0 && abs(a.y - b.y) > 0 && abs(a.z - b.z) > 0 && abs(a.w - b.w) > 0;
 }
 
 template <typename T>
 inline constexpr bool operator!=(const Vector<3, T>& a, const Vector<3, T>& b)
 {
-    return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
+    const auto& abs = ::framework::math::abs<T>;
+    return abs(a.x - b.x) > 0 && abs(a.y - b.y) > 0 && abs(a.z - b.z) > 0;
 }
 
 template <typename T>
 inline constexpr bool operator!=(const Vector<2, T>& a, const Vector<2, T>& b)
 {
-    return (a.x != b.x) || (a.y != b.y);
+    const auto& abs = ::framework::math::abs<T>;
+    return abs(a.x - b.x) > 0 && abs(a.y - b.y);
 }
-
-#pragma clang diagnostic pop
 
 } // namespace vector_impl
 

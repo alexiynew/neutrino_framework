@@ -22,6 +22,8 @@ public:
         add_test([this]() { subtract_operator(); }, "subtract_operator");
         add_test([this]() { multiply_operator(); }, "multiply_operator");
         add_test([this]() { divide_operator(); }, "divide_operator");
+        add_test([this]() { equality_operator(); }, "equality_operator");
+        add_test([this]() { inequality_operator(); }, "inequality_operator");
     }
 
 private:
@@ -29,7 +31,7 @@ private:
     {
         const Vector4D v4d(1.1, 2.2, 3.3, 4);
         const Vector3F v3f(5.5f, 6.6f, 7.7f);
-        const Vector2I v2i(1, 2.0);
+        const Vector2I v2i(1, 2);
 
         Vector4D v4d_result;
         Vector3F v3f_result;
@@ -54,7 +56,7 @@ private:
         TEST_ASSERT(v3f_result == Vector3F(5.5f, 6.6f, 7.7f), "Assign to vector3f failed.");
 
         TEST_ASSERT(v2f_result == Vector2F(1, 2), "Assign to vector2f failed.");
-        TEST_ASSERT(v2i_result == Vector2I(1, 2.0), "Assign to vector2i failed.");
+        TEST_ASSERT(v2i_result == Vector2I(1, 2), "Assign to vector2i failed.");
     }
 
     void access_operator()
@@ -174,6 +176,7 @@ private:
         TEST_ASSERT((v2i *= Vector2I(2)) == Vector2I(2), "Multiplies_assign operator failed.");
         TEST_ASSERT((v2i *= 2) == Vector2I(4), "Multiplies_assign operator failed.");
     }
+
     void divides_assign_operator()
     {
         Vector4D v4d(4.0);
@@ -264,6 +267,32 @@ private:
         TEST_ASSERT(v2i / v2i == Vector2I(1), "Divide operator failed.");
         TEST_ASSERT(v2i / 2 == Vector2I(1), "Divide operator failed.");
         TEST_ASSERT(2 / v2i == Vector2I(1), "Divide operator failed.");
+    }
+
+    void equality_operator()
+    {
+        const Vector4D v4d(1.1, 2.2, 3.3, 4);
+        const Vector3F v3f(5.5f, 6.6f, 7.7f);
+        const Vector2I v2i(1, -2);
+        const Vector2U v2u(1, 2);
+
+        TEST_ASSERT(v4d == v4d, "Equality operator for Vector4D failed.");
+        TEST_ASSERT(v3f == v3f, "Equality operator for Vector3F failed.");
+        TEST_ASSERT(v2i == v2i, "Equality operator for Vector2I failed.");
+        TEST_ASSERT(v2u == v2u, "Equality operator for Vector2U failed.");
+    }
+
+    void inequality_operator()
+    {
+        const Vector4D v4d(1.1, 2.2, 3.3, 4);
+        const Vector3F v3f(5.5f, 6.6f, 7.7f);
+        const Vector2I v2i(1, -2);
+        const Vector2U v2u(1, 2);
+
+        TEST_ASSERT(Vector4D() != v4d, "Equality operator for Vector4D failed.");
+        TEST_ASSERT(Vector3F() != v3f, "Equality operator for Vector3F failed.");
+        TEST_ASSERT(Vector2I() != v2i, "Equality operator for Vector2I failed.");
+        TEST_ASSERT(Vector2U() != v2u, "Equality operator for Vector2U failed.");
     }
 };
 

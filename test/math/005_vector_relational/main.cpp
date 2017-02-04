@@ -3,6 +3,8 @@
 
 using namespace framework::math;
 
+// TODO add test for float and double
+
 class relational_function_tests : public test::suite
 {
 public:

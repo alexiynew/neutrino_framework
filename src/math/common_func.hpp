@@ -21,7 +21,7 @@ struct abs_impl
 template <typename T>
 struct abs_impl<T, true>
 {
-    T operator()(const T& v)
+    constexpr T operator()(const T& v)
     {
         return v < T(0) ? -v : v;
     }
@@ -30,7 +30,7 @@ struct abs_impl<T, true>
 template <typename T>
 struct abs_impl<T, false>
 {
-    T operator()(const T& v)
+    constexpr T operator()(const T& v)
     {
         return v;
     }
@@ -86,31 +86,31 @@ struct sign_vector_impl<N, false>
 
 } // namespace common_impl
 
+// TODO think about abs of bool and sign of bool
+
 /// Returns x if x >= 0; otherwise, it returns -x.
 template <typename T>
-inline T abs(const T& v)
+inline constexpr T abs(const T& v)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>()(v);
 }
 
 template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> abs(const TVec<N, T>& v)
+inline constexpr TVec<N, T> abs(const TVec<N, T>& v)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return utils::createVector(v, common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>());
 }
 
 /// Returns 1.0 if x > 0, 0.0 if x == 0, or -1.0 if x < 0.
 template <typename T>
-inline T sign(const T& v)
+inline constexpr T sign(const T& v)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return common_impl::sign_impl<T, std::numeric_limits<T>::is_signed>()(v);
 }
 
 template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> sign(const TVec<N, T>& v)
+inline constexpr TVec<N, T> sign(const TVec<N, T>& v)
 {
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return common_impl::sign_vector_impl<N, std::numeric_limits<T>::is_signed>()(v);
@@ -518,8 +518,7 @@ inline TVec<2, T> ldexp(const TVec<2, T>& vector, TVec<2, int>& exp)
 template <typename T, typename std::enable_if<std::is_floating_point<T>::value, void>::type* = nullptr>
 inline bool almost_equal(T x, T y, int ulp = 0)
 {
-    return std::abs(x - y) < std::numeric_limits<T>::epsilon() * std::abs(x + y) * ulp ||
-           std::abs(x - y) < std::numeric_limits<T>::min();
+    return abs(x - y) < std::numeric_limits<T>::epsilon() * abs(x + y) * ulp || abs(x - y) < std::numeric_limits<T>::min();
 }
 
 template <typename T, typename std::enable_if<std::is_integral<T>::value, void>::type* = nullptr>

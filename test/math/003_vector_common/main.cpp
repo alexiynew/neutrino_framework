@@ -45,6 +45,7 @@ private:
         TEST_ASSERT(abs(v3f) == Vector3F(1.6f, 1.5f, 0.0f), "Abs function failed.");
         TEST_ASSERT(abs(v3i) == Vector3I(1, 5, 0), "Abs function failed.");
         TEST_ASSERT(abs(v2u) == Vector2U(10, 0), "Abs function failed.");
+        TEST_ASSERT(abs(Vector2B(true, false)) == Vector2B(true, false), "Abs function failed.");
     }
 
     void sign_function()
