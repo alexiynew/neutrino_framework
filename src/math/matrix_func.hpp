@@ -199,7 +199,7 @@ inline TMat<3, 3, T> inverseTranspose(const TMat<3, 3, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
 
     T det = determinant(m);
-    ASSERT_MSG(double(det) != 0.0, "Matrix has no inverse, result is undefined.,");
+    ASSERT_MSG(double(det) != 0.0, "Matrix has no inverse, result is undefined.");
 
     TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
                          m[1][2] * m[2][0] - m[1][0] * m[2][2],
