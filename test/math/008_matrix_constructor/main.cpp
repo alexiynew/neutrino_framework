@@ -156,9 +156,9 @@ private:
         TEST_ASSERT(m33 == Matrix3x3F(tmp3f, tmp3f, tmp3f), "Matrix3x3 from pointer constructor failed.");
         TEST_ASSERT(m23 == Matrix2x3F(tmp3f, tmp3f), "Matrix2x3 from pointer constructor failed.");
 
-        TEST_ASSERT(m42 == Matrix4x2F(tmp2f, tmp2f, tmp2f, tmp2f), "matrix4x3 from pointer constructor");
-        TEST_ASSERT(m32 == Matrix3x2F(tmp2f, tmp2f, tmp2f), "matrix3x3 from pointer constructor");
-        TEST_ASSERT(m22 == Matrix2x2F(tmp2f, tmp2f), "matrix2x3 from pointer constructor");
+        TEST_ASSERT(m42 == Matrix4x2F(tmp2f, tmp2f, tmp2f, tmp2f), "Matrix4x3 from pointer constructor.");
+        TEST_ASSERT(m32 == Matrix3x2F(tmp2f, tmp2f, tmp2f), "Matrix3x3 from pointer constructor.");
+        TEST_ASSERT(m22 == Matrix2x2F(tmp2f, tmp2f), "Matrix2x3 from pointer constructor.");
     }
 
     void matrix4x4_constructors()
