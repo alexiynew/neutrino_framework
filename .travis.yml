@@ -2,12 +2,12 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      compiler: clang
+      env: COMPILLER=clang
       sudo: required
       
     - os: linux
       dist: trusty
-      compiler: gcc
+      env: COMPILLER=gcc
       sudo: required
   
 language: generic
@@ -27,5 +27,5 @@ install: true
 
 script:
   - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "ls -al /home/framework"
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c clang"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER"
   - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/bin/Release/test/run_all_tests.py"
