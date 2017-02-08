@@ -1,3 +1,3 @@
 # My Own Game Framework
 
-[![Build Status](https://travis-ci.org/alexiynew/game_framework.svg?branch=master)](https://travis-ci.org/alexiynew/game_framework)
+[![Linux build](https://img.shields.io/travis/alexiynew/game_framework/master.svg?branch=master&style=plastic)](https://travis-ci.org/alexiynew/game_framework)
