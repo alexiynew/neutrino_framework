@@ -518,7 +518,8 @@ inline TVec<2, T> ldexp(const TVec<2, T>& vector, TVec<2, int>& exp)
 template <typename T, typename std::enable_if<std::is_floating_point<T>::value, void>::type* = nullptr>
 inline bool almost_equal(T x, T y, int ulp = 0)
 {
-    return abs(x - y) < std::numeric_limits<T>::epsilon() * abs(x + y) * ulp || abs(x - y) < std::numeric_limits<T>::min();
+    return abs(x - y) < std::numeric_limits<T>::epsilon() * abs(x + y) * static_cast<T>(ulp) ||
+           abs(x - y) < std::numeric_limits<T>::min();
 }
 
 template <typename T, typename std::enable_if<std::is_integral<T>::value, void>::type* = nullptr>

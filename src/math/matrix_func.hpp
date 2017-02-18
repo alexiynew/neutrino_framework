@@ -57,7 +57,7 @@ inline T determinant(const TMat<4, 4, T>& m)
     T s05 = (m[2][0] * m[3][2] - m[3][0] * m[2][2]);
     T s06 = (m[2][0] * m[3][1] - m[3][0] * m[2][1]);
 
-    return +m[0][0] * (m[1][1] * s01 - m[1][2] * s02 + m[1][3] * s03) -
+    return m[0][0] * (m[1][1] * s01 - m[1][2] * s02 + m[1][3] * s03) -
            m[0][1] * (m[1][0] * s01 - m[1][2] * s04 + m[1][3] * s05) +
            m[0][2] * (m[1][0] * s02 - m[1][1] * s04 + m[1][3] * s06) -
            m[0][3] * (m[1][0] * s03 - m[1][1] * s05 + m[1][2] * s06);
@@ -70,7 +70,7 @@ inline TMat<2, 2, T> inverse(const TMat<2, 2, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
 
     T det = determinant(m);
-    ASSERT_MSG(double(det) != 0.0, "Matrix has no inverse, result is undefined.");
+    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
 
     return TMat<2, 2, T>(m[1][1] / det, -m[0][1] / det, -m[1][0] / det, m[0][0] / det);
 }
@@ -82,7 +82,7 @@ inline TMat<3, 3, T> inverse(const TMat<3, 3, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
 
     T det = determinant(m);
-    ASSERT_MSG(double(det) != 0.0, "Matrix has no inverse, result is undefined.");
+    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
 
     TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
                          m[0][2] * m[2][1] - m[0][1] * m[2][2],
@@ -147,7 +147,7 @@ inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
                          -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
 
     T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
-    ASSERT_MSG(double(det) != 0.0, "Matrix has no inverse, result is undefined.");
+    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
 
     return result / det;
 }
@@ -187,7 +187,7 @@ inline TMat<2, 2, T> inverseTranspose(const TMat<2, 2, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
 
     T det = determinant(m);
-    ASSERT_MSG(double(det) != 0.0, "Matrix has no inverse, result is undefined.");
+    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
 
     return TMat<2, 2, T>(m[1][1] / det, -m[1][0] / det, -m[0][1] / det, m[0][0] / det);
 }
@@ -199,7 +199,7 @@ inline TMat<3, 3, T> inverseTranspose(const TMat<3, 3, T>& m)
     static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
 
     T det = determinant(m);
-    ASSERT_MSG(double(det) != 0.0, "Matrix has no inverse, result is undefined.");
+    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
 
     TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
                          m[1][2] * m[2][0] - m[1][0] * m[2][2],
@@ -264,7 +264,7 @@ inline TMat<4, 4, T> inverseTranspose(const TMat<4, 4, T>& m)
                          -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
 
     T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
-    ASSERT_MSG(double(det) != 0.0, "Matrix has no inverse, result is undefined.");
+    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
 
     return result / det;
 }

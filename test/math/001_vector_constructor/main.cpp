@@ -52,7 +52,7 @@ private:
         constexpr Vector2I v2i = Vector2I(3);
 
         static_assert(v4d == Vector4D(1.4, 1.4, 1.4, 1.4), "Vector4D one argument constructor failed.");
-        static_assert(v3f == Vector3F(2.4, 2.4, 2.4), "Vector3F one argument constructor failed.");
+        static_assert(v3f == Vector3F(2.4f, 2.4f, 2.4f), "Vector3F one argument constructor failed.");
         static_assert(v2i == Vector2I(3, 3), "Vector2I one argument constructor failed.");
     }
 

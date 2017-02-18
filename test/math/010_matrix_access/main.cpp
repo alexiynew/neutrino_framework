@@ -235,50 +235,52 @@ private:
         float* p32 = matrix32.data();
         float* p22 = matrix22.data();
 
+        auto check = [](const float a, const float b) { return framework::math::abs(a - b) <= 0; };
+
         // clang-format off
-        TEST_ASSERT(p44[0]  == 0.0f &&  p44[1] == 1.0f && p44[2]  == 2.0f && p44[3]  == 3.0f &&
-                    p44[4]  == 0.0f &&  p44[5] == 1.0f && p44[6]  == 2.0f && p44[7]  == 3.0f &&
-                    p44[8]  == 0.0f &&  p44[9] == 1.0f && p44[10] == 2.0f && p44[11] == 3.0f &&
-                    p44[12] == 0.0f && p44[13] == 1.0f && p44[14] == 2.0f && p44[15] == 3.0f,
+        TEST_ASSERT(check(p44[0],  0.0f) && check(p44[1], 1.0f)  && check(p44[2], 2.0f)  && check(p44[3], 3.0f)  &&
+                    check(p44[4],  0.0f) && check(p44[5], 1.0f)  && check(p44[6], 2.0f)  && check(p44[7], 3.0f)  &&
+                    check(p44[8],  0.0f) && check(p44[9], 1.0f)  && check(p44[10], 2.0f) && check(p44[11], 3.0f) &&
+                    check(p44[12], 0.0f) && check(p44[13], 1.0f) && check(p44[14], 2.0f) && check(p44[15], 3.0f),
                     "Matrix4x4 pointer data access failed.");
 
-        TEST_ASSERT(p43[0] == 0.0f && p43[1]  == 1.0f && p43[2]  == 2.0f &&
-                    p43[3] == 0.0f && p43[4]  == 1.0f && p43[5]  == 2.0f &&
-                    p43[6] == 0.0f && p43[7]  == 1.0f && p43[8]  == 2.0f &&
-                    p43[9] == 0.0f && p43[10] == 1.0f && p43[11] == 2.0f,
+        TEST_ASSERT(check(p43[0], 0.0f) && check(p43[1],  1.0f) && check(p43[2],  2.0f) &&
+                    check(p43[3], 0.0f) && check(p43[4],  1.0f) && check(p43[5],  2.0f) &&
+                    check(p43[6], 0.0f) && check(p43[7],  1.0f) && check(p43[8],  2.0f) &&
+                    check(p43[9], 0.0f) && check(p43[10], 1.0f) && check(p43[11], 2.0f),
                     "Matrix4x3 pointer data access failed.");
 
-        TEST_ASSERT(p42[0] == 0.0f && p42[1] == 1.0f &&
-                    p42[2] == 0.0f && p42[3] == 1.0f &&
-                    p42[4] == 0.0f && p42[5] == 1.0f &&
-                    p42[6] == 0.0f && p42[7] == 1.0f,
+        TEST_ASSERT(check(p42[0], 0.0f) && check(p42[1], 1.0f) &&
+                    check(p42[2], 0.0f) && check(p42[3], 1.0f) &&
+                    check(p42[4], 0.0f) && check(p42[5], 1.0f) &&
+                    check(p42[6], 0.0f) && check(p42[7], 1.0f),
                     "Matrix4x2 pointer data access failed.");
 
-        TEST_ASSERT(p34[0] == 0.0f && p34[1] == 1.0f && p34[2]  == 2.0f && p34[3]  == 3.0f &&
-                    p34[4] == 0.0f && p34[5] == 1.0f && p34[6]  == 2.0f && p34[7]  == 3.0f &&
-                    p34[8] == 0.0f && p34[9] == 1.0f && p34[10] == 2.0f && p34[11] == 3.0f,
+        TEST_ASSERT(check(p34[0], 0.0f) && check(p34[1], 1.0f) && check(p34[2],  2.0f) && check(p34[3],  3.0f) &&
+                    check(p34[4], 0.0f) && check(p34[5], 1.0f) && check(p34[6],  2.0f) && check(p34[7],  3.0f) &&
+                    check(p34[8], 0.0f) && check(p34[9], 1.0f) && check(p34[10], 2.0f) && check(p34[11], 3.0f),
                     "Matrix3x4 pointer data access failed.");
 
-        TEST_ASSERT(p33[0] == 0.0f && p33[1] == 1.0f && p33[2] == 2.0f &&
-                    p33[3] == 0.0f && p33[4] == 1.0f && p33[5] == 2.0f &&
-                    p33[6] == 0.0f && p33[7] == 1.0f && p33[8] == 2.0f,
+        TEST_ASSERT(check(p33[0], 0.0f) && check(p33[1], 1.0f) && check(p33[2], 2.0f) &&
+                    check(p33[3], 0.0f) && check(p33[4], 1.0f) && check(p33[5], 2.0f) &&
+                    check(p33[6], 0.0f) && check(p33[7], 1.0f) && check(p33[8], 2.0f),
                     "Matrix3x3 pointer data access failed.");
 
-        TEST_ASSERT(p32[0] == 0.0f && p32[1] == 1.0f &&
-                    p32[2] == 0.0f && p32[3] == 1.0f &&
-                    p32[4] == 0.0f && p32[5] == 1.0f,
+        TEST_ASSERT(check(p32[0], 0.0f) && check(p32[1], 1.0f) &&
+                    check(p32[2], 0.0f) && check(p32[3], 1.0f) &&
+                    check(p32[4], 0.0f) && check(p32[5], 1.0f),
                     "Matrix3x2 pointer data access failed.");
 
-        TEST_ASSERT(p24[0] == 0.0f && p24[1] == 1.0f && p24[2] == 2.0f && p24[3] == 3.0f &&
-                    p24[4] == 0.0f && p24[5] == 1.0f && p24[6] == 2.0f && p24[7] == 3.0f,
+        TEST_ASSERT(check(p24[0], 0.0f) && check(p24[1], 1.0f) && check(p24[2], 2.0f) && check(p24[3], 3.0f) &&
+                    check(p24[4], 0.0f) && check(p24[5], 1.0f) && check(p24[6], 2.0f) && check(p24[7], 3.0f),
                     "Matrix2x4 pointer data access failed.");
 
-        TEST_ASSERT(p23[0] == 0.0f && p23[1] == 1.0f && p23[2] == 2.0f &&
-                    p23[3] == 0.0f && p23[4] == 1.0f && p23[5] == 2.0f,
+        TEST_ASSERT(check(p23[0], 0.0f) && check(p23[1], 1.0f) && check(p23[2], 2.0f) &&
+                    check(p23[3], 0.0f) && check(p23[4], 1.0f) && check(p23[5], 2.0f),
                     "Matrix2x3 pointer data access failed.");
 
-        TEST_ASSERT(p22[0] == 0.0f && p22[1] == 1.0f &&
-                    p22[2] == 0.0f && p22[3] == 1.0f,
+        TEST_ASSERT(check(p22[0], 0.0f) && check(p22[1], 1.0f) &&
+                    check(p22[2], 0.0f) && check(p22[3], 1.0f),
                     "Matrix2x2 pointer data access failed.");
         // clang-format on
     }

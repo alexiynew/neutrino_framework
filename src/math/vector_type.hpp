@@ -17,11 +17,33 @@ struct is_arithmetic_and_not_bool
     static constexpr bool value = std::is_arithmetic<T>::value and not std::is_same<T, bool>::value;
 };
 
+template <typename T>
+struct create_value_of_type
+{
+    template <typename U>
+    inline static constexpr T from(const U& value)
+    {
+        return static_cast<T>(value);
+    }
+};
+
+template <>
+struct create_value_of_type<bool>
+{
+    template <typename U>
+    inline static constexpr bool from(const U& value)
+    {
+        return ::framework::math::abs(value) > 0;
+    }
+};
+
 #pragma mark - Vector template declaration
+
 template <unsigned int N, typename T>
 struct Vector;
 
 #pragma mark - Vector<4, T> type specialization
+
 template <typename T>
 struct Vector<4, T> final
 {
@@ -108,6 +130,7 @@ struct Vector<4, T> final
 };
 
 #pragma mark - Vector<3, T> type specialization
+
 template <typename T>
 struct Vector<3, T> final
 {
@@ -183,6 +206,7 @@ struct Vector<3, T> final
 };
 
 #pragma mark - Vector<2, T> type specialization
+
 template <typename T>
 struct Vector<2, T> final
 {
@@ -259,7 +283,7 @@ inline constexpr Vector<4, T>::Vector()
     : x{0}
     , y{0}
     , z{0}
-    , w{T(not std::is_same<T, bool>::value)}
+    , w{static_cast<T>(not std::is_same<T, bool>::value)}
 {
 }
 
@@ -295,90 +319,90 @@ inline constexpr Vector<4, T>::Vector(const U* const p)
 template <typename T>
 template <typename U>
 inline constexpr Vector<4, T>::Vector(const Vector<4, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
-    , z{static_cast<T>(v.z)}
-    , w{static_cast<T>(v.w)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
+    , z{create_value_of_type<T>::from(v.z)}
+    , w{create_value_of_type<T>::from(v.w)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
-    , z{static_cast<T>(v.z)}
-    , w{T(1)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
+    , z{create_value_of_type<T>::from(v.z)}
+    , w{static_cast<T>(not std::is_same<T, bool>::value)} // TODO add test for this
 {
 }
 
 template <typename T>
 template <typename U, typename S>
 inline constexpr Vector<4, T>::Vector(const S& s, const Vector<3, U>& v)
-    : x{static_cast<T>(s)}
-    , y{static_cast<T>(v.x)}
-    , z{static_cast<T>(v.y)}
-    , w{static_cast<T>(v.z)}
+    : x{create_value_of_type<T>::from(s)}
+    , y{create_value_of_type<T>::from(v.x)}
+    , z{create_value_of_type<T>::from(v.y)}
+    , w{create_value_of_type<T>::from(v.z)}
 {
 }
 
 template <typename T>
 template <typename U, typename S>
 inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v, const S& s)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
-    , z{static_cast<T>(v.z)}
-    , w{static_cast<T>(s)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
+    , z{create_value_of_type<T>::from(v.z)}
+    , w{create_value_of_type<T>::from(s)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
     , z{T(0)}
-    , w{T(1)}
+    , w{static_cast<T>(not std::is_same<T, bool>::value)} // TODO add test for this
 {
 }
 
 template <typename T>
 template <typename U1, typename U2>
 inline constexpr Vector<4, T>::Vector(const Vector<2, U1>& v1, const Vector<2, U2>& v2)
-    : x{static_cast<T>(v1.x)}
-    , y{static_cast<T>(v1.y)}
-    , z{static_cast<T>(v2.x)}
-    , w{static_cast<T>(v2.y)}
+    : x{create_value_of_type<T>::from(v1.x)}
+    , y{create_value_of_type<T>::from(v1.y)}
+    , z{create_value_of_type<T>::from(v2.x)}
+    , w{create_value_of_type<T>::from(v2.y)}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
 inline constexpr Vector<4, T>::Vector(const S1& xx, const S2& yy, const Vector<2, U>& v)
-    : x{static_cast<T>(xx)}
-    , y{static_cast<T>(yy)}
-    , z{static_cast<T>(v.x)}
-    , w{static_cast<T>(v.y)}
+    : x{create_value_of_type<T>::from(xx)}
+    , y{create_value_of_type<T>::from(yy)}
+    , z{create_value_of_type<T>::from(v.x)}
+    , w{create_value_of_type<T>::from(v.y)}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
 inline constexpr Vector<4, T>::Vector(const S1& xx, const Vector<2, U>& v, const S2& ww)
-    : x{static_cast<T>(xx)}
-    , y{static_cast<T>(v.x)}
-    , z{static_cast<T>(v.y)}
-    , w{static_cast<T>(ww)}
+    : x{create_value_of_type<T>::from(xx)}
+    , y{create_value_of_type<T>::from(v.x)}
+    , z{create_value_of_type<T>::from(v.y)}
+    , w{create_value_of_type<T>::from(ww)}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
 inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v, const S1& zz, const S2& ww)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
-    , z{static_cast<T>(zz)}
-    , w{static_cast<T>(ww)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
+    , z{create_value_of_type<T>::from(zz)}
+    , w{create_value_of_type<T>::from(ww)}
 {
 }
 
@@ -387,10 +411,10 @@ template <typename T>
 template <typename U>
 inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other)
 {
-    x = static_cast<T>(other.x);
-    y = static_cast<T>(other.y);
-    z = static_cast<T>(other.z);
-    w = static_cast<T>(other.w);
+    x = create_value_of_type<T>::from(other.x);
+    y = create_value_of_type<T>::from(other.y);
+    z = create_value_of_type<T>::from(other.z);
+    w = create_value_of_type<T>::from(other.w);
 
     return *this;
 }
@@ -399,10 +423,10 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<4, Result>& Vector<4, T>::operator+=(const Vector<4, U>& other)
 {
-    x += static_cast<T>(other.x);
-    y += static_cast<T>(other.y);
-    z += static_cast<T>(other.z);
-    w += static_cast<T>(other.w);
+    x += create_value_of_type<T>::from(other.x);
+    y += create_value_of_type<T>::from(other.y);
+    z += create_value_of_type<T>::from(other.z);
+    w += create_value_of_type<T>::from(other.w);
 
     return *this;
 }
@@ -411,10 +435,10 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<4, Result>& Vector<4, T>::operator-=(const Vector<4, U>& other)
 {
-    x -= static_cast<T>(other.x);
-    y -= static_cast<T>(other.y);
-    z -= static_cast<T>(other.z);
-    w -= static_cast<T>(other.w);
+    x -= create_value_of_type<T>::from(other.x);
+    y -= create_value_of_type<T>::from(other.y);
+    z -= create_value_of_type<T>::from(other.z);
+    w -= create_value_of_type<T>::from(other.w);
 
     return *this;
 }
@@ -423,10 +447,10 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<4, Result>& Vector<4, T>::operator*=(const Vector<4, U>& other)
 {
-    x *= static_cast<T>(other.x);
-    y *= static_cast<T>(other.y);
-    z *= static_cast<T>(other.z);
-    w *= static_cast<T>(other.w);
+    x *= create_value_of_type<T>::from(other.x);
+    y *= create_value_of_type<T>::from(other.y);
+    z *= create_value_of_type<T>::from(other.z);
+    w *= create_value_of_type<T>::from(other.w);
 
     return *this;
 }
@@ -435,10 +459,10 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<4, Result>& Vector<4, T>::operator/=(const Vector<4, U>& other)
 {
-    x /= static_cast<T>(other.x);
-    y /= static_cast<T>(other.y);
-    z /= static_cast<T>(other.z);
-    w /= static_cast<T>(other.w);
+    x /= create_value_of_type<T>::from(other.x);
+    y /= create_value_of_type<T>::from(other.y);
+    z /= create_value_of_type<T>::from(other.z);
+    w /= create_value_of_type<T>::from(other.w);
 
     return *this;
 }
@@ -447,10 +471,10 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<4, Result>& Vector<4, T>::operator+=(const U& scalar)
 {
-    x += static_cast<T>(scalar);
-    y += static_cast<T>(scalar);
-    z += static_cast<T>(scalar);
-    w += static_cast<T>(scalar);
+    x += create_value_of_type<T>::from(scalar);
+    y += create_value_of_type<T>::from(scalar);
+    z += create_value_of_type<T>::from(scalar);
+    w += create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -459,10 +483,10 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<4, Result>& Vector<4, T>::operator-=(const U& scalar)
 {
-    x -= static_cast<T>(scalar);
-    y -= static_cast<T>(scalar);
-    z -= static_cast<T>(scalar);
-    w -= static_cast<T>(scalar);
+    x -= create_value_of_type<T>::from(scalar);
+    y -= create_value_of_type<T>::from(scalar);
+    z -= create_value_of_type<T>::from(scalar);
+    w -= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -471,10 +495,10 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<4, Result>& Vector<4, T>::operator*=(const U& scalar)
 {
-    x *= static_cast<T>(scalar);
-    y *= static_cast<T>(scalar);
-    z *= static_cast<T>(scalar);
-    w *= static_cast<T>(scalar);
+    x *= create_value_of_type<T>::from(scalar);
+    y *= create_value_of_type<T>::from(scalar);
+    z *= create_value_of_type<T>::from(scalar);
+    w *= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -483,10 +507,10 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<4, Result>& Vector<4, T>::operator/=(const U& scalar)
 {
-    x /= static_cast<T>(scalar);
-    y /= static_cast<T>(scalar);
-    z /= static_cast<T>(scalar);
-    w /= static_cast<T>(scalar);
+    x /= create_value_of_type<T>::from(scalar);
+    y /= create_value_of_type<T>::from(scalar);
+    z /= create_value_of_type<T>::from(scalar);
+    w /= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -565,26 +589,26 @@ inline constexpr Vector<3, T>::Vector(const U* const p)
 template <typename T>
 template <typename U>
 inline constexpr Vector<3, T>::Vector(const Vector<4, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
-    , z{static_cast<T>(v.z)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
+    , z{create_value_of_type<T>::from(v.z)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<3, T>::Vector(const Vector<3, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
-    , z{static_cast<T>(v.z)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
+    , z{create_value_of_type<T>::from(v.z)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
     , z{T(0)}
 {
 }
@@ -592,18 +616,18 @@ inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v)
 template <typename T>
 template <typename U, typename S>
 inline constexpr Vector<3, T>::Vector(const S& xx, const Vector<2, U>& v)
-    : x{static_cast<T>(xx)}
-    , y{static_cast<T>(v.x)}
-    , z{static_cast<T>(v.y)}
+    : x{create_value_of_type<T>::from(xx)}
+    , y{create_value_of_type<T>::from(v.x)}
+    , z{create_value_of_type<T>::from(v.y)}
 {
 }
 
 template <typename T>
 template <typename U, typename S>
 inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v, const S& zz)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
-    , z{static_cast<T>(zz)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
+    , z{create_value_of_type<T>::from(zz)}
 {
 }
 
@@ -612,9 +636,9 @@ template <typename T>
 template <typename U>
 inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other)
 {
-    x = static_cast<T>(other.x);
-    y = static_cast<T>(other.y);
-    z = static_cast<T>(other.z);
+    x = create_value_of_type<T>::from(other.x);
+    y = create_value_of_type<T>::from(other.y);
+    z = create_value_of_type<T>::from(other.z);
 
     return *this;
 }
@@ -623,9 +647,9 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<3, Result>& Vector<3, T>::operator+=(const Vector<3, U>& other)
 {
-    x += static_cast<T>(other.x);
-    y += static_cast<T>(other.y);
-    z += static_cast<T>(other.z);
+    x += create_value_of_type<T>::from(other.x);
+    y += create_value_of_type<T>::from(other.y);
+    z += create_value_of_type<T>::from(other.z);
 
     return *this;
 }
@@ -634,9 +658,9 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<3, Result>& Vector<3, T>::operator-=(const Vector<3, U>& other)
 {
-    x -= static_cast<T>(other.x);
-    y -= static_cast<T>(other.y);
-    z -= static_cast<T>(other.z);
+    x -= create_value_of_type<T>::from(other.x);
+    y -= create_value_of_type<T>::from(other.y);
+    z -= create_value_of_type<T>::from(other.z);
 
     return *this;
 }
@@ -645,9 +669,9 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<3, Result>& Vector<3, T>::operator*=(const Vector<3, U>& other)
 {
-    x *= static_cast<T>(other.x);
-    y *= static_cast<T>(other.y);
-    z *= static_cast<T>(other.z);
+    x *= create_value_of_type<T>::from(other.x);
+    y *= create_value_of_type<T>::from(other.y);
+    z *= create_value_of_type<T>::from(other.z);
 
     return *this;
 }
@@ -656,9 +680,9 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<3, Result>& Vector<3, T>::operator/=(const Vector<3, U>& other)
 {
-    x /= static_cast<T>(other.x);
-    y /= static_cast<T>(other.y);
-    z /= static_cast<T>(other.z);
+    x /= create_value_of_type<T>::from(other.x);
+    y /= create_value_of_type<T>::from(other.y);
+    z /= create_value_of_type<T>::from(other.z);
 
     return *this;
 }
@@ -667,9 +691,9 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<3, Result>& Vector<3, T>::operator+=(const U& scalar)
 {
-    x += static_cast<T>(scalar);
-    y += static_cast<T>(scalar);
-    z += static_cast<T>(scalar);
+    x += create_value_of_type<T>::from(scalar);
+    y += create_value_of_type<T>::from(scalar);
+    z += create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -678,9 +702,9 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<3, Result>& Vector<3, T>::operator-=(const U& scalar)
 {
-    x -= static_cast<T>(scalar);
-    y -= static_cast<T>(scalar);
-    z -= static_cast<T>(scalar);
+    x -= create_value_of_type<T>::from(scalar);
+    y -= create_value_of_type<T>::from(scalar);
+    z -= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -689,9 +713,9 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<3, Result>& Vector<3, T>::operator*=(const U& scalar)
 {
-    x *= static_cast<T>(scalar);
-    y *= static_cast<T>(scalar);
-    z *= static_cast<T>(scalar);
+    x *= create_value_of_type<T>::from(scalar);
+    y *= create_value_of_type<T>::from(scalar);
+    z *= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -700,9 +724,9 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<3, Result>& Vector<3, T>::operator/=(const U& scalar)
 {
-    x /= static_cast<T>(scalar);
-    y /= static_cast<T>(scalar);
-    z /= static_cast<T>(scalar);
+    x /= create_value_of_type<T>::from(scalar);
+    y /= create_value_of_type<T>::from(scalar);
+    z /= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -777,23 +801,23 @@ inline constexpr Vector<2, T>::Vector(const U* p)
 template <typename T>
 template <typename U>
 inline constexpr Vector<2, T>::Vector(const Vector<4, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<2, T>::Vector(const Vector<3, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
 {
 }
 template <typename T>
 template <typename U>
 inline constexpr Vector<2, T>::Vector(const Vector<2, U>& v)
-    : x{static_cast<T>(v.x)}
-    , y{static_cast<T>(v.y)}
+    : x{create_value_of_type<T>::from(v.x)}
+    , y{create_value_of_type<T>::from(v.y)}
 {
 }
 
@@ -802,8 +826,8 @@ template <typename T>
 template <typename U>
 inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other)
 {
-    x = static_cast<T>(other.x);
-    y = static_cast<T>(other.y);
+    x = create_value_of_type<T>::from(other.x);
+    y = create_value_of_type<T>::from(other.y);
 
     return *this;
 }
@@ -812,8 +836,8 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<2, Result>& Vector<2, T>::operator+=(const Vector<2, U>& other)
 {
-    x += static_cast<T>(other.x);
-    y += static_cast<T>(other.y);
+    x += create_value_of_type<T>::from(other.x);
+    y += create_value_of_type<T>::from(other.y);
 
     return *this;
 }
@@ -822,8 +846,8 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<2, Result>& Vector<2, T>::operator-=(const Vector<2, U>& other)
 {
-    x -= static_cast<T>(other.x);
-    y -= static_cast<T>(other.y);
+    x -= create_value_of_type<T>::from(other.x);
+    y -= create_value_of_type<T>::from(other.y);
 
     return *this;
 }
@@ -832,8 +856,8 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<2, Result>& Vector<2, T>::operator*=(const Vector<2, U>& other)
 {
-    x *= static_cast<T>(other.x);
-    y *= static_cast<T>(other.y);
+    x *= create_value_of_type<T>::from(other.x);
+    y *= create_value_of_type<T>::from(other.y);
 
     return *this;
 }
@@ -842,8 +866,8 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<2, Result>& Vector<2, T>::operator/=(const Vector<2, U>& other)
 {
-    x /= static_cast<T>(other.x);
-    y /= static_cast<T>(other.y);
+    x /= create_value_of_type<T>::from(other.x);
+    y /= create_value_of_type<T>::from(other.y);
 
     return *this;
 }
@@ -852,8 +876,8 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<2, Result>& Vector<2, T>::operator+=(const U& scalar)
 {
-    x += static_cast<T>(scalar);
-    y += static_cast<T>(scalar);
+    x += create_value_of_type<T>::from(scalar);
+    y += create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -862,8 +886,8 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<2, Result>& Vector<2, T>::operator-=(const U& scalar)
 {
-    x -= static_cast<T>(scalar);
-    y -= static_cast<T>(scalar);
+    x -= create_value_of_type<T>::from(scalar);
+    y -= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -872,8 +896,8 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<2, Result>& Vector<2, T>::operator*=(const U& scalar)
 {
-    x *= static_cast<T>(scalar);
-    y *= static_cast<T>(scalar);
+    x *= create_value_of_type<T>::from(scalar);
+    y *= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -882,8 +906,8 @@ template <typename T>
 template <typename U, typename Result>
 inline Vector<2, Result>& Vector<2, T>::operator/=(const U& scalar)
 {
-    x /= static_cast<T>(scalar);
-    y /= static_cast<T>(scalar);
+    x /= create_value_of_type<T>::from(scalar);
+    y /= create_value_of_type<T>::from(scalar);
 
     return *this;
 }
@@ -923,7 +947,7 @@ inline const typename Vector<2, T>::ValueType* Vector<2, T>::data() const
 }
 
 
-#pragma mark - unary minus
+#pragma mark - unary operators
 
 template <unsigned int N, typename T>
 inline Vector<N, T> operator-(Vector<N, T> vector)
@@ -931,7 +955,6 @@ inline Vector<N, T> operator-(Vector<N, T> vector)
     return vector *= -T(1);
 }
 
-// unary plus
 template <unsigned int N, typename T>
 inline Vector<N, T> operator+(const Vector<N, T>& vector)
 {
@@ -965,6 +988,7 @@ inline const Vector<N, T> operator/(Vector<N, T> lhs, const Vector<N, T>& rhs)
 }
 
 #pragma mark - binary operators: vector - scalar
+
 template <unsigned int N, typename T>
 inline const Vector<N, T> operator+(Vector<N, T> vector, const T& scalar)
 {
