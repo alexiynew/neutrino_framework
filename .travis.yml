@@ -4,12 +4,12 @@ matrix:
       dist: trusty
       env: COMPILLER=clang
       sudo: required
-      
+
     - os: linux
       dist: trusty
       env: COMPILLER=gcc
       sudo: required
-  
+
 language: generic
 
 branches:
@@ -28,4 +28,4 @@ install: true
 script:
   - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "ls -al /home/framework"
   - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER"
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/bin/Release/test/run_all_tests.py"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "cd /home/framework/build && make run_all_tests"
