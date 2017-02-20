@@ -45,11 +45,15 @@ done
 
 
 cd $SCRIPT_DIR
-echo "Start build in $(pwd)"
-
+echo "==== Start build in $(pwd) ===="
 mkdir -p build && cd ./build
-
 cmake -DCMAKE_BUILD_TYPE=Release ../
 
-make -j4 all
-make CreateTestSuiteExecutable
+echo ""
+echo "==== Build framework ===="
+make -j4
+make install
+
+echo ""
+echo "==== Build framework tests ===="
+make -j4 framework_tests

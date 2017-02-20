@@ -1,46 +1,61 @@
-SET(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+project(framework_tests)
 
-SET(TEST_OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}/test)
+set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(TEST_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/test)
 
+set(FRAMEWORK_TESTS_DEPENDENCIES "")
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DFORCE_ASSERT")
+message("Search tests...")
+subdirlist(TEST_PACK_LIST ${TESTS_DIR})
+list(SORT TEST_PACK_LIST)
 
-INCLUDE_DIRECTORIES(${ROOT_DIR})
+foreach (TEST_PACK_NAME ${TEST_PACK_LIST})
+    set(TEST_PACK_DIR ${TESTS_DIR}/${TEST_PACK_NAME})
 
-FILE(GLOB_RECURSE UNIT_TEST_SOURCES ${SOURCE_DIR}/unit_test/*.cpp)
+    message("Search tests in ${TEST_PACK_DIR}")
 
-FILE(GLOB PACK_LIST RELATIVE ${ROOT_DIR} ${ROOT_DIR}/*)
-LIST(SORT PACK_LIST)
+    subdirlist(TEST_LIST ${TEST_PACK_DIR})
+    list(SORT TEST_LIST)
 
-FOREACH (PACK ${PACK_LIST})
-    SET(TEST_PACK_DIR ${ROOT_DIR}/${PACK})
-    SET(TEST_OUTPUT_PATH ${TEST_OUTPUT_PATH_BASE}/${PACK})
-    SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH})
+    foreach (TEST_DIR ${TEST_LIST})
+        set(TEST_DIR ${TEST_PACK_DIR}/${TEST_DIR})
 
-    FILE(GLOB TEST_LIST RELATIVE ${TEST_PACK_DIR} ${TEST_PACK_DIR}/*)
-    LIST(SORT TEST_LIST)
+        get_filename_component(TEST_NAME ${TEST_DIR} NAME)
+        string(REPLACE " " "_" TEST_NAME ${TEST_NAME})
 
-    FOREACH (TEST_DIR ${TEST_LIST})
-        SET(TEST_DIR ${TEST_PACK_DIR}/${TEST_DIR})
-        IF (IS_DIRECTORY ${TEST_DIR})
-            GET_FILENAME_COMPONENT(TEST_NAME ${TEST_DIR} NAME)
-            STRING(REPLACE " " "_" TEST_NAME ${TEST_NAME})
+        if (EXISTS ${TEST_DIR}/CMakeLists.txt)
+            message("\tAdd test: ${TEST_NAME}")
 
-            IF (EXISTS ${TEST_DIR}/CMakeLists.txt)
-                ADD_SUBDIRECTORY(${TEST_DIR})
-            ELSE ()
-                ADD_EXECUTABLE(${TEST_NAME} ${TEST_DIR}/main.cpp ${UNIT_TEST_SOURCES})
-            ENDIF ()
-        ENDIF ()
-    ENDFOREACH ()
-ENDFOREACH ()
+            set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
+            add_subdirectory(${TEST_DIR})
+            set(FRAMEWORK_TESTS_DEPENDENCIES ${FRAMEWORK_TESTS_DEPENDENCIES} ${TEST_NAME})
 
-SET(TESTSUITE_EXECUTABLE ${TEST_OUTPUT_PATH_BASE}/run_all_tests.py)
-SET(TESTSUITE_EXECUTABLE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/run_all_tests.py)
+        else ()
+            message(FATAL_ERROR "There is no CMakeLists.txt in ${TEST_DIR}")
+        endif ()
 
-ADD_CUSTOM_COMMAND(OUTPUT ${TESTSUITE_EXECUTABLE}
+    endforeach ()
+endforeach ()
+
+message("Add custom commnad to run all tests")
+set(TESTSUITE_EXECUTABLE ${TEST_OUTPUT_PATH}/run_all_tests.py)
+set(TESTSUITE_EXECUTABLE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/run_all_tests.py)
+
+add_custom_command(OUTPUT ${TESTSUITE_EXECUTABLE}
                    COMMAND ${CMAKE_COMMAND} -E copy ${TESTSUITE_EXECUTABLE_SRC} ${TESTSUITE_EXECUTABLE}
                    DEPENDS ${TESTSUITE_EXECUTABLE_SRC}
                    COMMENT "Create ${TESTSUITE_EXECUTABLE}")
 
-ADD_CUSTOM_TARGET(CreateTestSuiteExecutable DEPENDS ${TESTSUITE_EXECUTABLE})
+
+message("Add custom targets to run all tests")
+add_custom_target(run_all_tests
+   COMMAND ${TESTSUITE_EXECUTABLE}
+   DEPENDS ${PROJECT_NAME}
+)
+
+add_custom_target(run_all_tests_verbose
+   COMMAND ${TESTSUITE_EXECUTABLE} -v
+   DEPENDS ${PROJECT_NAME}
+)
+
+add_custom_target(${PROJECT_NAME} DEPENDS ${FRAMEWORK_TESTS_DEPENDENCIES} ${TESTSUITE_EXECUTABLE})

@@ -4,7 +4,7 @@
 #include <functional>
 #include <type_traits>
 
-#include <debug.hpp>
+#include <log/log.hpp>
 #include <math/geometric_func.hpp>
 #include <math/vector_type.hpp>
 

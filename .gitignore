@@ -1,5 +1,5 @@
 build/
-bin/
+output/
 nbproject/
 .idea/
 .atom-build.yml

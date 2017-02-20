@@ -90,6 +90,21 @@ def run_tests(test_list):
     return tests_count - passed_count
 
 
+def find_executable(path):
+    if (os.path.isfile(path)):
+        return path
+    elif (os.path.isdir(path)):
+        executable_name = os.path.basename(path)
+        if (os.path.isfile(os.path.join(path, executable_name))):
+            return os.path.join(path, executable_name)
+        elif (os.path.isfile(os.path.join(path, folder_test_script))):
+            return os.path.join(path, folder_test_script)
+        else:
+            return ''
+    else:
+        return ''
+
+
 def get_tests(path):
     packs = os.listdir(path)
     this_file = os.path.basename(__file__)
@@ -107,10 +122,9 @@ def get_tests(path):
 
             for test_name in test_files:
                 test_name = test_name.strip()
-                executable = os.path.join(test_dir, pack_dir, test_name)
+                test_executable_path = os.path.join(test_dir, pack_dir, test_name)
 
-                if os.path.isdir(executable):
-                    executable = os.path.join(executable, folder_test_script)
+                executable = find_executable(test_executable_path)
 
                 test_list[pack].append(Test(test_name, executable))
 

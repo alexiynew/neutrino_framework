@@ -1,7 +1,7 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
-#include <debug.hpp>
+#include <log/log.hpp>
 #include <math/common_func.hpp>
 #include <math/utils.hpp>
 
