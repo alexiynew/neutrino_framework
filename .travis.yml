@@ -27,5 +27,5 @@ install: true
 
 script:
   - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "ls -al /home/framework"
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER"
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "cd /home/framework/build && make run_all_tests"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER -t build"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -t test"
