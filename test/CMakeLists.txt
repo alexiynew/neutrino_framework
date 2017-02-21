@@ -49,13 +49,15 @@ add_custom_command(OUTPUT ${TESTSUITE_EXECUTABLE}
 
 message("Add custom targets to run all tests")
 add_custom_target(run_all_tests
-   COMMAND ${TESTSUITE_EXECUTABLE}
-   DEPENDS ${PROJECT_NAME}
+    COMMAND ${TESTSUITE_EXECUTABLE}
+    DEPENDS ${PROJECT_NAME}
 )
 
 add_custom_target(run_all_tests_verbose
-   COMMAND ${TESTSUITE_EXECUTABLE} -v
-   DEPENDS ${PROJECT_NAME}
+    COMMAND ${TESTSUITE_EXECUTABLE} -v
+    DEPENDS ${PROJECT_NAME}
 )
 
-add_custom_target(${PROJECT_NAME} DEPENDS ${FRAMEWORK_TESTS_DEPENDENCIES} ${TESTSUITE_EXECUTABLE})
+add_custom_target(${PROJECT_NAME} 
+    DEPENDS ${FRAMEWORK_TESTS_DEPENDENCIES} ${TESTSUITE_EXECUTABLE}
+)
