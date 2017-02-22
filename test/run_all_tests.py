@@ -106,32 +106,30 @@ def find_executable(path):
 
 
 def get_tests(path):
-    packs = os.listdir(path)
     this_file = os.path.basename(__file__)
-    packs = [elem for elem in packs if elem != this_file]
-    packs.sort()
+
+    packs = os.listdir(path)
+    packs = list(filter(lambda pack: pack != this_file, packs))
+    packs = list(map(lambda pack: {"name": pack, "path" : os.path.join(path, pack)}, packs))
+    packs = list(filter(lambda pack: os.path.isdir(pack["path"]), packs))
+    packs = list(map(lambda pack: {"name": pack["name"], "path" : pack["path"], "tests" : os.listdir(pack["path"])}, packs))
 
     test_list = {}
     for pack in packs:
-        pack_dir = os.path.join(path, pack)
-        if (os.path.isdir(pack_dir)):
-            test_files = os.listdir(pack_dir)
-            test_files.sort()
+        pack_path = pack["path"]
+        pack_name = pack["name"]
+        
+        pack_tests = list(filter(lambda test_name: os.path.isdir(os.path.join(pack_path, test_name)), pack["tests"]))
+        pack_tests = list(map(lambda test_name: test_name.strip(), pack_tests))
+        pack_tests = list(map(lambda test_name: Test(test_name, find_executable(os.path.join(pack_path, test_name))), pack_tests))
 
-            test_list[pack] = []
-
-            for test_name in test_files:
-                test_name = test_name.strip()
-                test_executable_path = os.path.join(test_dir, pack_dir, test_name)
-
-                executable = find_executable(test_executable_path)
-
-                test_list[pack].append(Test(test_name, executable))
+        test_list[pack_name] = pack_tests
 
     return test_list
 
 
 def show_help():
+    print("-h Show this help")
     print("-v Verbose output")
 
 
