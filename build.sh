@@ -64,12 +64,13 @@ function run_tests_verbose {
 
 function clean_all {
     cd $SCRIPT_DIR
+    echo "==== Clear all ===="
     rm -rf ./output ./build
 }
 
 function print_help {
     echo -e "=== Help ==="
-    echo -e "./build.sh [OPTION VALUE] [OPTION VALUE]"
+    echo -e "./build.sh [OPTION VALUE[,VALUE]]"
     echo -e "OPTIONS:"
     echo -e "\t -t : Specify task to run."
     echo -e "\t VALUES:"
@@ -105,13 +106,24 @@ function run_task {
     esac
 }
 
-while getopts "t:c:" opt; do
+function execute {
+    IFS=', ' read -r -a array <<< "$1"
+    for task in "${array[@]}"; do
+        run_task "$task"
+    done
+}
+
+while getopts "t:c:h" opt; do
     case $opt in
         c)
             set_compiler $OPTARG
         ;;
         t)
             TASK_TO_RUN=$OPTARG
+        ;;
+        h)
+            print_help
+            exit 0
         ;;
         \?)
             echo "Invalid option -$OPTARG."
@@ -126,4 +138,4 @@ while getopts "t:c:" opt; do
     esac
 done
 
-run_task $TASK_TO_RUN
+execute $TASK_TO_RUN
