@@ -43,7 +43,6 @@ function build {
     echo ""
     echo "==== Build framework tests ===="
     make -j4 framework_tests
-    cd $SCRIPT_DIR
 }
 
 function run_tests {
@@ -51,7 +50,6 @@ function run_tests {
     echo "==== Run framework tests ===="
     cd ./build
     make run_all_tests
-    cd $SCRIPT_DIR
 }
 
 function run_tests_verbose {
@@ -59,7 +57,13 @@ function run_tests_verbose {
     echo "==== Run framework tests verbose ===="
     cd ./build
     make run_all_tests_verbose
+}
+
+function build_documentation {
     cd $SCRIPT_DIR
+    echo "==== Run framework tests verbose ===="
+    cd ./build
+    make documentation
 }
 
 function clean_all {
@@ -77,6 +81,7 @@ function print_help {
     echo -e "\t\t build        : Build and install framework, also build tests."
     echo -e "\t\t test         : Run all tests."
     echo -e "\t\t test_verbose : Run all tests with verbose logging."
+    echo -e "\t\t docs         : Build documentation."
     echo -e "\t\t clean        : Clean build results."
     echo -e "\t -c : Specify compiller to use."
     echo -e "\t VALUES:"
@@ -94,6 +99,9 @@ function run_task {
         ;;
         "test_verbose" )
             run_tests_verbose
+        ;;
+        "docs" )
+            build_documentation
         ;;
         "clean" )
             clean_all
