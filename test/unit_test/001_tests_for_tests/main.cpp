@@ -1,7 +1,7 @@
 #include <iomanip>
 #include <iostream>
 
-#include <unit_test/test.hpp>
+#include <unit_test/suite.hpp>
 
 #pragma mark - tests to be tested
 

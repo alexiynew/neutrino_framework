@@ -31,7 +31,7 @@ void suite::run()
     }
 }
 
-bool suite::is_succeeded()
+bool suite::is_succeeded() const
 {
     return m_success;
 }
@@ -46,7 +46,7 @@ void suite::test_failed(const std::string& file, int line, const std::string& me
     m_success = false;
     if (m_current_test != m_tests.end()) {
         m_current_test->success = false;
-        m_current_test->status  = {file, message, line};
+        m_current_test->status  = {message, file, line};
         output_fail(*m_current_test);
     }
 }
