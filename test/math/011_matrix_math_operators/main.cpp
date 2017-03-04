@@ -1,8 +1,6 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-#include "unit_test/assertions.hpp"
-
 using namespace framework::math;
 
 class matrix_operators_test : public test::suite
