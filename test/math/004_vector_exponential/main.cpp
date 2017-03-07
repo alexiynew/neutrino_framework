@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class exponential_function_tests : public test::suite
+class exponential_function_tests : public framework::unit_test::suite
 {
 public:
     exponential_function_tests()

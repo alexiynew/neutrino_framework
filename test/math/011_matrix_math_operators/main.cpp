@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class matrix_operators_test : public test::suite
+class matrix_operators_test : public framework::unit_test::suite
 {
 public:
     matrix_operators_test()

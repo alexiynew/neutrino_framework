@@ -5,7 +5,7 @@ using namespace framework::math;
 
 // TODO add test for float and double
 
-class relational_function_tests : public test::suite
+class relational_function_tests : public framework::unit_test::suite
 {
 public:
     relational_function_tests()

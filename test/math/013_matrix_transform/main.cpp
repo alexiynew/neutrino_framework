@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class transform_2d_function_tests : public test::suite
+class transform_2d_function_tests : public framework::unit_test::suite
 {
 public:
     transform_2d_function_tests()
@@ -208,7 +208,7 @@ private:
     }
 };
 
-class transform_3d_function_tests : public test::suite
+class transform_3d_function_tests : public framework::unit_test::suite
 {
 public:
     transform_3d_function_tests()
@@ -443,7 +443,7 @@ private:
     }
 };
 
-class projection_function_tests : public test::suite
+class projection_function_tests : public framework::unit_test::suite
 {
 public:
     projection_function_tests()
@@ -581,7 +581,7 @@ private:
     }
 };
 
-class helpers_function_test : public test::suite
+class helpers_function_test : public framework::unit_test::suite
 {
 public:
     helpers_function_test()

@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class vector_operators_test : public test::suite
+class vector_operators_test : public framework::unit_test::suite
 {
 public:
     vector_operators_test()
@@ -296,7 +296,7 @@ private:
     }
 };
 
-class bool_vector_operators_test : public test::suite
+class bool_vector_operators_test : public framework::unit_test::suite
 {
 public:
     bool_vector_operators_test()

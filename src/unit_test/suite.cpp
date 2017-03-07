@@ -1,9 +1,18 @@
+/**
+ * \file suite.cpp
+ * \brief Base class for tests.
+ * \author Fedorov Alexey
+ * \date 04.03.2017
+ */
+
 #include <iomanip>
 #include <iostream>
 
 #include <unit_test/suite.hpp>
 
-namespace test {
+namespace framework {
+
+namespace unit_test {
 
 suite::suite(const std::string& name)
     : m_success{true}
@@ -51,6 +60,8 @@ void suite::test_failed(const std::string& file, int line, const std::string& me
     }
 }
 
+#pragma mark - internal members
+
 void suite::output_fail(const test_data& test)
 {
     std::cout << "    " << std::setw(40) << std::left << test.name << " FAIL" << std::endl;
@@ -70,4 +81,6 @@ suite::test_data::test_data(function_type&& function_to_call, const std::string&
 {
 }
 
-} // namespace test
+} // namespace unit_test
+
+} // namespace framework

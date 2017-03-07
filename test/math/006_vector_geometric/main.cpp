@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class geometric_function_tests : public test::suite
+class geometric_function_tests : public framework::unit_test::suite
 {
 public:
     geometric_function_tests()

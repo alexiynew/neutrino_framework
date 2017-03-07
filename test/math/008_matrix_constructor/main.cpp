@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class matrix_test : public test::suite
+class matrix_test : public framework::unit_test::suite
 {
 public:
     matrix_test()
@@ -576,7 +576,7 @@ private:
     Matrix4x4F matrix44;
 };
 
-class matrix_from_matrix_test : public test::suite
+class matrix_from_matrix_test : public framework::unit_test::suite
 {
 public:
     matrix_from_matrix_test()

@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class matrix_assign_test : public test::suite
+class matrix_assign_test : public framework::unit_test::suite
 {
 public:
     matrix_assign_test()

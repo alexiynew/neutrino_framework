@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class matrix_function_tests : public test::suite
+class matrix_function_tests : public framework::unit_test::suite
 {
 public:
     matrix_function_tests()

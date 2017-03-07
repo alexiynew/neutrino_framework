@@ -5,7 +5,7 @@
 
 #pragma mark - tests to be tested
 
-class should_fail_test : public test::suite
+class should_fail_test : public framework::unit_test::suite
 {
 public:
     should_fail_test()
@@ -27,7 +27,7 @@ private:
     }
 };
 
-class should_pass_test : public test::suite
+class should_pass_test : public framework::unit_test::suite
 {
 public:
     should_pass_test()
@@ -45,7 +45,7 @@ private:
 
 #pragma mark - test suite for tests
 
-class test_for_test : public test::suite
+class test_for_test : public framework::unit_test::suite
 {
 public:
     test_for_test()
@@ -74,7 +74,7 @@ private:
         TEST_ASSERT(should_pass.is_succeeded(), "This test should pass.");
     }
 
-    void run_suite(test::suite& test)
+    void run_suite(framework::unit_test::suite& test)
     {
         std::streambuf* buffer = std::cout.rdbuf();
         std::cout.rdbuf(nullptr);

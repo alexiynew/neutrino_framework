@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-class vector_test : public test::suite
+class vector_test : public framework::unit_test::suite
 {
 public:
     vector_test()
@@ -190,7 +190,7 @@ private:
     }
 };
 
-class bool_vector_test : public test::suite
+class bool_vector_test : public framework::unit_test::suite
 {
 public:
     bool_vector_test()
