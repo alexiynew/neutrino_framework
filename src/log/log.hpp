@@ -28,20 +28,53 @@ class logger_implementation;
 
 #pragma mark - log class
 
+/**
+ * @brief Logger functions.
+ *
+ * Class holds logger implementation. And uses it.
+ */
 class log
 {
 public:
+    /*
+     * @brief Logs messages for debugging purposes.
+     *
+     * @param tag Message tag.
+     * @param message Message for logging.
+     *
+     * @note Works only in debug mode.
+     */
     static void debug(const std::string& tag, const std::string& message);
+
+    /*
+     * @brief Logs information messages.
+     *
+     * @param tag Message tag.
+     * @param message Message for logging.
+     */
     static void info(const std::string& tag, const std::string& message);
+
+    /*
+     * @brief Logs warning messages.
+     *
+     * @param tag Message tag.
+     * @param message Message for logging.
+     */
     static void warning(const std::string& tag, const std::string& message);
+
+    /*
+     * @brief Logs error messages.
+     *
+     * @param tag Message tag.
+     * @param message Message for logging.
+     */
     static void error(const std::string& tag, const std::string& message);
 
-    static void set_logger(std::unique_ptr<logger_implementation> impl);
+    static void set_logger(std::unique_ptr<logger_implementation> implementation);
     static logger_implementation* get_logger();
 
 private:
-
-    static std::unique_ptr<logger_implementation> m_impl;
+    static std::unique_ptr<logger_implementation> m_logger;
 };
 
 #pragma mark - base logger_implementation class
@@ -80,30 +113,21 @@ inline void log::error(const std::string& tag, const std::string& message)
     get_logger()->add_message(tag, message);
 }
 
-inline void log::set_logger(std::unique_ptr<logger_implementation> impl)
+inline void log::set_logger(std::unique_ptr<logger_implementation> implementation)
 {
-    m_impl = std::move(impl);
+    m_logger = std::move(implementation);
 }
 
 inline logger_implementation* log::get_logger()
 {
-    if (!m_impl) {
-        m_impl.reset(new logger_implementation());
+    if (!m_logger) {
+        m_logger.reset(new logger_implementation());
     }
 
-    return m_impl.get();
+    return m_logger.get();
 }
 
-
 } // namespace logger
-
-/**
- * @}
- */
-
-} // namespace framework
-
-
 
 #ifndef NDEBUG
 #define NEED_ASSERT true
@@ -115,11 +139,14 @@ inline logger_implementation* log::get_logger()
 
 #ifdef NEED_ASSERT
 
-#define ASSERT(EXPR) \
-    ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (#EXPR) << std::endl))
+#define STRINGIZE_DETAIL(x) #x
+#define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
-#define ASSERT_MSG(EXPR, MSG) \
-    ((EXPR) || (std::cout << __FILE__ << ":" << __LINE__ << " ASSERTION FAILED: " << (MSG) << std::endl))
+#define ASSERT(EXPR) \
+    ((EXPR) || (log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPR)))
+
+#define ASSERT_MSG(EXPR, MESSAGE) \
+    ((EXPR) || (log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)))
 
 #else
 
@@ -130,5 +157,11 @@ inline logger_implementation* log::get_logger()
 #endif
 
 #undef NEED_ASSERT
+
+/**
+ * @}
+ */
+
+} // namespace framework
 
 #endif

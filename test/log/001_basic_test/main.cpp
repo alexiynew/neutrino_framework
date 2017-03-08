@@ -1,17 +1,15 @@
-#include <unit_test/suite.hpp>
 #include <log/log.hpp>
+#include <unit_test/suite.hpp>
 
 #pragma mark - tests for logger
-
-std::unique_ptr<framework::logger::logger_implementation> framework::logger::log::m_impl = std::unique_ptr<framework::logger::logger_implementation>();
 
 class basic_logger_test : public framework::unit_test::suite
 {
 public:
-    basic_logger_test() :
-        suite("basic_logger_test")
+    basic_logger_test()
+        : suite("basic_logger_test")
     {
-        add_test([this](){ first_test();}, "first_test");
+        add_test([this]() { first_test(); }, "first_test");
     }
 
 private:

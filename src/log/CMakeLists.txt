@@ -1,9 +1,13 @@
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 get_filename_component(LIB_NAME ${SOURCE_DIR} NAME)
 
+file(GLOB_RECURSE LIB_SOURCES ${SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
 
 message("\tAdd library: ${LIB_NAME}")
-add_library(${LIB_NAME} INTERFACE)
+add_library(${LIB_NAME} SHARED ${LIB_SOURCES})
 
+target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
+
+install(TARGETS ${LIB_NAME} DESTINATION lib/${LIB_NAME})
 install(FILES ${LIB_HEADERS} DESTINATION lib/${LIB_NAME})
