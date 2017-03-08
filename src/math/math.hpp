@@ -103,7 +103,7 @@ using Matrix4F   = matrix_impl::Matrix<4, 4, float>;
 using Matrix4x4F = matrix_impl::Matrix<4, 4, float>;
 using Matrix4x2F = matrix_impl::Matrix<4, 2, float>;
 using Matrix4x3F = matrix_impl::Matrix<4, 3, float>;
-/** 
+/**
  * @}
  */
 
