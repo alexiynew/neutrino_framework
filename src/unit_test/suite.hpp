@@ -60,6 +60,7 @@ class suite
 public:
     /**
      * @brief Creates test suite with provided name.
+     *
      * @param name Name of the test suite.
      */
     suite(const std::string& name);
@@ -71,6 +72,7 @@ public:
 
     /**
      * @brief Checks if all tests finished successfully.
+     *
      * @return @b true if all tests were successful.
      */
     bool is_succeeded() const;
@@ -81,6 +83,7 @@ protected:
 
     /**
      * @brief Adds function to test suite.
+     *
      * @param function Member function of the derived class.
      * @param name Name of the current test function.
      */
@@ -88,6 +91,7 @@ protected:
 
     /**
      * @brief Fails current test.
+     *
      * @param file Path to the source file.
      * @param line Line number in the file.
      * @param message Error description.
@@ -129,6 +133,7 @@ private:
 
 /**
  * @brief Runs test in all test suites.
+ *
  * @param tests Test suites to run.
  * @return Count of suites were failed.
  */
@@ -150,12 +155,14 @@ int run_tests(Arguments&&... tests)
 
 /**
  * @brief Unconditionally fails current test.
+ *
  * @param MESSAGE Error description.
  */
 #define TEST_FAIL(MESSAGE) test_failed(__FILE__, __LINE__, (MESSAGE) != 0 ? #MESSAGE : "")
 
 /**
  * @brief Fails current test if EXPRESSION evaluates to @b false.
+ *
  * @param EXPRESSION Expression to check as test condition.
  * @param MESSAGE Error description.
  */
