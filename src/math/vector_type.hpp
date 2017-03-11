@@ -94,30 +94,6 @@ struct Vector<4, T> final
     template <typename U>
     Vector<4, ValueType>& operator=(const Vector<4, U>& other);
 
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<4, Result>& operator+=(const Vector<4, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<4, Result>& operator-=(const Vector<4, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<4, Result>& operator*=(const Vector<4, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<4, Result>& operator/=(const Vector<4, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<4, Result>& operator+=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<4, Result>& operator-=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<4, Result>& operator*=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<4, Result>& operator/=(const U& scalar);
-
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
 
@@ -170,30 +146,6 @@ struct Vector<3, T> final
     template <typename U>
     Vector<3, ValueType>& operator=(const Vector<3, U>& other);
 
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<3, Result>& operator+=(const Vector<3, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<3, Result>& operator-=(const Vector<3, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<3, Result>& operator*=(const Vector<3, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<3, Result>& operator/=(const Vector<3, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<3, Result>& operator+=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<3, Result>& operator-=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<3, Result>& operator*=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<3, Result>& operator/=(const U& scalar);
-
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
 
@@ -239,30 +191,6 @@ struct Vector<2, T> final
 
     template <typename U>
     Vector<2, ValueType>& operator=(const Vector<2, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<2, Result>& operator+=(const Vector<2, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<2, Result>& operator-=(const Vector<2, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<2, Result>& operator*=(const Vector<2, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<2, Result>& operator/=(const Vector<2, U>& other);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<2, Result>& operator+=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<2, Result>& operator-=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<2, Result>& operator*=(const U& scalar);
-
-    template <typename U, typename Result = typename std::enable_if<is_arithmetic_and_not_bool<U>::value, ValueType>::type>
-    Vector<2, Result>& operator/=(const U& scalar);
 
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
@@ -419,102 +347,6 @@ inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other)
     return *this;
 }
 
-template <typename T>
-template <typename U, typename Result>
-inline Vector<4, Result>& Vector<4, T>::operator+=(const Vector<4, U>& other)
-{
-    x += create_value_of_type<T>::from(other.x);
-    y += create_value_of_type<T>::from(other.y);
-    z += create_value_of_type<T>::from(other.z);
-    w += create_value_of_type<T>::from(other.w);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<4, Result>& Vector<4, T>::operator-=(const Vector<4, U>& other)
-{
-    x -= create_value_of_type<T>::from(other.x);
-    y -= create_value_of_type<T>::from(other.y);
-    z -= create_value_of_type<T>::from(other.z);
-    w -= create_value_of_type<T>::from(other.w);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<4, Result>& Vector<4, T>::operator*=(const Vector<4, U>& other)
-{
-    x *= create_value_of_type<T>::from(other.x);
-    y *= create_value_of_type<T>::from(other.y);
-    z *= create_value_of_type<T>::from(other.z);
-    w *= create_value_of_type<T>::from(other.w);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<4, Result>& Vector<4, T>::operator/=(const Vector<4, U>& other)
-{
-    x /= create_value_of_type<T>::from(other.x);
-    y /= create_value_of_type<T>::from(other.y);
-    z /= create_value_of_type<T>::from(other.z);
-    w /= create_value_of_type<T>::from(other.w);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<4, Result>& Vector<4, T>::operator+=(const U& scalar)
-{
-    x += create_value_of_type<T>::from(scalar);
-    y += create_value_of_type<T>::from(scalar);
-    z += create_value_of_type<T>::from(scalar);
-    w += create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<4, Result>& Vector<4, T>::operator-=(const U& scalar)
-{
-    x -= create_value_of_type<T>::from(scalar);
-    y -= create_value_of_type<T>::from(scalar);
-    z -= create_value_of_type<T>::from(scalar);
-    w -= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<4, Result>& Vector<4, T>::operator*=(const U& scalar)
-{
-    x *= create_value_of_type<T>::from(scalar);
-    y *= create_value_of_type<T>::from(scalar);
-    z *= create_value_of_type<T>::from(scalar);
-    w *= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<4, Result>& Vector<4, T>::operator/=(const U& scalar)
-{
-    x /= create_value_of_type<T>::from(scalar);
-    y /= create_value_of_type<T>::from(scalar);
-    z /= create_value_of_type<T>::from(scalar);
-    w /= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
 // access operator
 template <typename T>
 inline typename Vector<4, T>::ValueType& Vector<4, T>::operator[](unsigned int index)
@@ -643,94 +475,6 @@ inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other)
     return *this;
 }
 
-template <typename T>
-template <typename U, typename Result>
-inline Vector<3, Result>& Vector<3, T>::operator+=(const Vector<3, U>& other)
-{
-    x += create_value_of_type<T>::from(other.x);
-    y += create_value_of_type<T>::from(other.y);
-    z += create_value_of_type<T>::from(other.z);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<3, Result>& Vector<3, T>::operator-=(const Vector<3, U>& other)
-{
-    x -= create_value_of_type<T>::from(other.x);
-    y -= create_value_of_type<T>::from(other.y);
-    z -= create_value_of_type<T>::from(other.z);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<3, Result>& Vector<3, T>::operator*=(const Vector<3, U>& other)
-{
-    x *= create_value_of_type<T>::from(other.x);
-    y *= create_value_of_type<T>::from(other.y);
-    z *= create_value_of_type<T>::from(other.z);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<3, Result>& Vector<3, T>::operator/=(const Vector<3, U>& other)
-{
-    x /= create_value_of_type<T>::from(other.x);
-    y /= create_value_of_type<T>::from(other.y);
-    z /= create_value_of_type<T>::from(other.z);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<3, Result>& Vector<3, T>::operator+=(const U& scalar)
-{
-    x += create_value_of_type<T>::from(scalar);
-    y += create_value_of_type<T>::from(scalar);
-    z += create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<3, Result>& Vector<3, T>::operator-=(const U& scalar)
-{
-    x -= create_value_of_type<T>::from(scalar);
-    y -= create_value_of_type<T>::from(scalar);
-    z -= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<3, Result>& Vector<3, T>::operator*=(const U& scalar)
-{
-    x *= create_value_of_type<T>::from(scalar);
-    y *= create_value_of_type<T>::from(scalar);
-    z *= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<3, Result>& Vector<3, T>::operator/=(const U& scalar)
-{
-    x /= create_value_of_type<T>::from(scalar);
-    y /= create_value_of_type<T>::from(scalar);
-    z /= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
 // access operator
 template <typename T>
 inline typename Vector<3, T>::ValueType& Vector<3, T>::operator[](unsigned int index)
@@ -832,86 +576,6 @@ inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other)
     return *this;
 }
 
-template <typename T>
-template <typename U, typename Result>
-inline Vector<2, Result>& Vector<2, T>::operator+=(const Vector<2, U>& other)
-{
-    x += create_value_of_type<T>::from(other.x);
-    y += create_value_of_type<T>::from(other.y);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<2, Result>& Vector<2, T>::operator-=(const Vector<2, U>& other)
-{
-    x -= create_value_of_type<T>::from(other.x);
-    y -= create_value_of_type<T>::from(other.y);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<2, Result>& Vector<2, T>::operator*=(const Vector<2, U>& other)
-{
-    x *= create_value_of_type<T>::from(other.x);
-    y *= create_value_of_type<T>::from(other.y);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<2, Result>& Vector<2, T>::operator/=(const Vector<2, U>& other)
-{
-    x /= create_value_of_type<T>::from(other.x);
-    y /= create_value_of_type<T>::from(other.y);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<2, Result>& Vector<2, T>::operator+=(const U& scalar)
-{
-    x += create_value_of_type<T>::from(scalar);
-    y += create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<2, Result>& Vector<2, T>::operator-=(const U& scalar)
-{
-    x -= create_value_of_type<T>::from(scalar);
-    y -= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<2, Result>& Vector<2, T>::operator*=(const U& scalar)
-{
-    x *= create_value_of_type<T>::from(scalar);
-    y *= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
-template <typename T>
-template <typename U, typename Result>
-inline Vector<2, Result>& Vector<2, T>::operator/=(const U& scalar)
-{
-    x /= create_value_of_type<T>::from(scalar);
-    y /= create_value_of_type<T>::from(scalar);
-
-    return *this;
-}
-
 // access operator
 template <typename T>
 inline typename Vector<2, T>::ValueType& Vector<2, T>::operator[](unsigned int index)
@@ -959,6 +623,89 @@ template <unsigned int N, typename T>
 inline Vector<N, T> operator+(const Vector<N, T>& vector)
 {
     return vector;
+}
+
+
+template <unsigned int N, typename T, typename U>
+inline Vector<N, T>& operator+=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
+{
+    for (unsigned int i = 0; i < N; ++i) {
+        lhs[i] += create_value_of_type<T>::from(rhs[i]);
+    }
+
+    return lhs;
+}
+
+template <unsigned int N, typename T, typename U>
+inline Vector<N, T>& operator-=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
+{
+    for (unsigned int i = 0; i < N; ++i) {
+        lhs[i] -= create_value_of_type<T>::from(rhs[i]);
+    }
+
+    return lhs;
+}
+
+
+template <unsigned int N, typename T, typename U>
+inline Vector<N, T>& operator*=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
+{
+    for (unsigned int i = 0; i < N; ++i) {
+        lhs[i] *= create_value_of_type<T>::from(rhs[i]);
+    }
+
+    return lhs;
+}
+
+template <unsigned int N, typename T, typename U>
+inline Vector<N, T>& operator/=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
+{
+    for (unsigned int i = 0; i < N; ++i) {
+        lhs[i] /= create_value_of_type<T>::from(rhs[i]);
+    }
+
+    return lhs;
+}
+
+
+template <unsigned int N, typename T, typename U>
+inline Vector<N, T>& operator+=(Vector<N, T>& lhs, const U& rhs)
+{
+    for (unsigned int i = 0; i < N; ++i) {
+        lhs[i] += create_value_of_type<T>::from(rhs);
+    }
+
+    return lhs;
+}
+
+template <unsigned int N, typename T, typename U>
+inline Vector<N, T>& operator-=(Vector<N, T>& lhs, const U& rhs)
+{
+    for (unsigned int i = 0; i < N; ++i) {
+        lhs[i] -= create_value_of_type<T>::from(rhs);
+    }
+
+    return lhs;
+}
+
+template <unsigned int N, typename T, typename U>
+inline Vector<N, T>& operator*=(Vector<N, T>& lhs, const U& rhs)
+{
+    for (unsigned int i = 0; i < N; ++i) {
+        lhs[i] *= create_value_of_type<T>::from(rhs);
+    }
+
+    return lhs;
+}
+
+template <unsigned int N, typename T, typename U>
+inline Vector<N, T>& operator/=(Vector<N, T>& lhs, const U& rhs)
+{
+    for (unsigned int i = 0; i < N; ++i) {
+        lhs[i] /= create_value_of_type<T>::from(rhs);
+    }
+
+    return lhs;
 }
 
 #pragma mark - binary operators: vector - vector
