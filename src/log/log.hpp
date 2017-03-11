@@ -197,13 +197,15 @@ inline logger_implementation* log::get_logger()
  * @brief Prints error message if EXPRESSION evaluates to @b false.
  */
 #define ASSERT(EXPRESSION) \
-    ((EXPRESSION) || (log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPR)))
+    ((EXPRESSION) ||       \
+     (::framework::logger::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPR)), false))
 
 /**
  * @brief Prints provided MESSAGE as error if EXPRESSION evaluates to @b false.
  */
 #define ASSERT_MSG(EXPRESSION, MESSAGE) \
-    ((EXPRESSION) || (log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)))
+    ((EXPRESSION) ||                    \
+     (::framework::logger::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)), false))
 
 #else
 

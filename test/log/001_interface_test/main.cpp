@@ -5,6 +5,8 @@
 
 #pragma mark - helper functions
 
+// TODO Add test for assertions
+
 std::string to_string(const framework::logger::logger_implementation::level level)
 {
     using framework::logger::logger_implementation;
