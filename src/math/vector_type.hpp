@@ -2,7 +2,7 @@
  * @file vector_type.hpp
  * @brief Implementation of geometric vector.
  * @author Fedorov Alexey
- * @date 08.03.2017
+ * @date 12.03.2017
  */
 
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
@@ -13,6 +13,13 @@
 namespace framework {
 
 namespace math {
+
+
+/**
+ * @defgroup vector_implementation Vector type implementation
+ * @ingroup math_module
+ * @{
+ */
 
 /**
  * @brief Contains vector type implementation details.
@@ -53,12 +60,21 @@ struct create_value_of_type<bool>
 
 /**
  * @brief Base template declaration.
+ * @see vector<4, T>, vector<3, T>, vector<2, T>
  */
 template <unsigned int N, typename T>
 struct vector;
 
+/**
+ * @name Vector specializations.
+ * @{
+ */
+
 #pragma mark - vector<4, T> type specialization
 
+/**
+ * @brief Vector<4, T> type specialization.
+ */
 template <typename T>
 struct vector<4, T> final
 {
@@ -123,9 +139,11 @@ struct vector<4, T> final
     T x, y, z, w;
 };
 
-
 #pragma mark - vector<3, T> type specialization
 
+/**
+ * @brief Vector<3, T> type specialization.
+ */
 template <typename T>
 struct vector<3, T> final
 {
@@ -180,6 +198,9 @@ struct vector<3, T> final
 
 #pragma mark - vector<2, T> type specialization
 
+/**
+ * @brief Vector<2, T> type specialization.
+ */
 template <typename T>
 struct vector<2, T> final
 {
@@ -226,9 +247,16 @@ struct vector<2, T> final
     T x, y;
 };
 
+/**
+ * @}
+ */
+
 #pragma mark - vector<4, T> implementation
 
-// constructors
+/**
+ * @name Vector<4, T> constructors.
+ * @{
+ */
 template <typename T>
 inline constexpr vector<4, T>::vector() noexcept : x{T(0)},
                                                    y{T(0)},
@@ -321,7 +349,15 @@ inline constexpr vector<4, T>::vector(const vector<2, U>& v, const S1& zz, const
 {
 }
 
-// operators
+/**
+ * @}
+ */
+
+/**
+ * @name Vector<4, T> operators.
+ * @{
+ */
+
 template <typename T>
 template <typename U>
 inline vector<4, T>& vector<4, T>::operator=(const vector<4, U>& other) noexcept
@@ -347,7 +383,15 @@ inline const typename vector<4, T>::value_type& vector<4, T>::operator[](unsigne
     return data()[index];
 }
 
-// methods
+/**
+ * @}
+ */
+
+/**
+ * @name Vector<4, T> methods.
+ * @{
+ */
+
 template <typename T>
 inline constexpr unsigned int vector<4, T>::size() const noexcept
 {
@@ -366,9 +410,16 @@ inline const typename vector<4, T>::value_type* vector<4, T>::data() const noexc
     return &(this->x);
 }
 
+/**
+ * @}
+ */
+
 #pragma mark - vector<3, T> implementation
 
-// constructors
+/**
+ * @name Vector<3, T> constructors.
+ * @{
+ */
 template <typename T>
 inline constexpr vector<3, T>::vector() noexcept : x{T(0)}, y{T(0)}, z{T(0)}
 {
@@ -426,7 +477,15 @@ inline constexpr vector<3, T>::vector(const vector<2, U>& v, const S& zz) noexce
 {
 }
 
-// operators
+/**
+ * @}
+ */
+
+/**
+ * @name Vector<3, T> operators.
+ * @{
+ */
+
 template <typename T>
 template <typename U>
 inline vector<3, T>& vector<3, T>::operator=(const vector<3, U>& other) noexcept
@@ -451,7 +510,15 @@ inline const typename vector<3, T>::value_type& vector<3, T>::operator[](unsigne
     return data()[index];
 }
 
-// methods
+/**
+ * @}
+ */
+
+/**
+ * @name Vector<3, T> methods.
+ * @{
+ */
+
 template <typename T>
 inline constexpr unsigned int vector<3, T>::size() const noexcept
 {
@@ -470,9 +537,17 @@ inline const typename vector<3, T>::value_type* vector<3, T>::data() const noexc
     return &(this->x);
 }
 
+/**
+ * @}
+ */
+
 #pragma mark - vector<2, T> implementation
 
-// constructors
+/**
+ * @name Vector<2, T> constructors.
+ * @{
+ */
+
 template <typename T>
 inline constexpr vector<2, T>::vector() noexcept : x{T(0)}, y{T(0)}
 {
@@ -516,7 +591,15 @@ inline constexpr vector<2, T>::vector(const vector<2, U>& v) noexcept : vector{v
 {
 }
 
-// operators
+/**
+ * @}
+ */
+
+/**
+ * @name Vector<2, T> operators.
+ * @{
+ */
+
 template <typename T>
 template <typename U>
 inline vector<2, T>& vector<2, T>::operator=(const vector<2, U>& other) noexcept
@@ -540,7 +623,15 @@ inline const typename vector<2, T>::value_type& vector<2, T>::operator[](unsigne
     return data()[index];
 }
 
-// methods
+/**
+ * @}
+ */
+
+/**
+ * @name Vector<2, T> methods.
+ * @{
+ */
+
 template <typename T>
 inline constexpr unsigned int vector<2, T>::size() const noexcept
 {
@@ -559,7 +650,16 @@ inline const typename vector<2, T>::value_type* vector<2, T>::data() const noexc
     return &(this->x);
 }
 
+/**
+ * @}
+ */
+
 #pragma mark - unary operators
+
+/**
+ * @name Common unary operators.
+ * @{
+ */
 
 template <unsigned int N, typename T>
 inline vector<N, T> operator-(vector<N, T> vector)
@@ -572,7 +672,6 @@ inline vector<N, T> operator+(const vector<N, T>& vector)
 {
     return vector;
 }
-
 
 template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator+=(vector<N, T>& lhs, const vector<N, U>& rhs)
@@ -655,7 +754,16 @@ inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs)
     return lhs;
 }
 
+/**
+ * @}
+ */
+
 #pragma mark - binary operators: vector - vector
+
+/**
+ * @name Common binary operators for vector and vector.
+ * @{
+ */
 
 template <unsigned int N, typename T>
 inline const vector<N, T> operator+(vector<N, T> lhs, const vector<N, T>& rhs)
@@ -681,7 +789,16 @@ inline const vector<N, T> operator/(vector<N, T> lhs, const vector<N, T>& rhs)
     return lhs /= rhs;
 }
 
+/**
+ * @}
+ */
+
 #pragma mark - binary operators: vector - scalar
+
+/**
+ * @name Common binary operators for vector and scalar.
+ * @{
+ */
 
 template <unsigned int N, typename T>
 inline const vector<N, T> operator+(vector<N, T> v, const T& scalar)
@@ -707,7 +824,16 @@ inline const vector<N, T> operator/(vector<N, T> v, const T& scalar)
     return v /= scalar;
 }
 
+/**
+ * @}
+ */
+
 #pragma mark - binary operators: scalar - vector
+
+/**
+ * @name Common binary operators for scalar and vector.
+ * @{
+ */
 
 template <unsigned int N, typename T>
 inline const vector<N, T> operator+(const T& scalar, const vector<N, T>& v)
@@ -737,7 +863,16 @@ inline const vector<N, T> operator/(const T& scalar, const vector<N, T>& v)
     return tmp /= v;
 }
 
+/**
+ * @}
+ */
+
 #pragma mark - vectors equality
+
+/**
+ * @name Common equality operators.
+ * @{
+ */
 
 template <typename T>
 inline constexpr bool operator==(const vector<4, T>& a, const vector<4, T>& b)
@@ -780,6 +915,14 @@ inline constexpr bool operator!=(const vector<2, T>& a, const vector<2, T>& b)
     const auto& abs = ::framework::math::abs<T>;
     return abs(a.x - b.x) > 0 && abs(a.y - b.y);
 }
+
+/**
+ * @}
+ */
+
+/**
+ * @}
+ */
 
 } // namespace math
 
