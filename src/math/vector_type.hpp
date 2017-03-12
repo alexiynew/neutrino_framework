@@ -12,12 +12,6 @@ namespace math {
 namespace vector_impl {
 
 template <typename T>
-struct is_arithmetic_and_not_bool
-{
-    static constexpr bool value = std::is_arithmetic<T>::value and not std::is_same<T, bool>::value;
-};
-
-template <typename T>
 struct create_value_of_type
 {
     template <typename U>
@@ -48,12 +42,12 @@ template <typename T>
 struct Vector<4, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
-    using ValueType = T;
+    using value_type = T;
 
     constexpr Vector() noexcept;
 
-    constexpr Vector(const Vector<4, ValueType>&) noexcept = default;
-    constexpr Vector(Vector<4, ValueType>&&) noexcept      = default;
+    constexpr Vector(const Vector<4, value_type>&) noexcept = default;
+    constexpr Vector(Vector<4, value_type>&&) noexcept      = default;
 
     template <typename X, typename Y, typename Z, typename W>
     constexpr Vector(const X& xx, const Y& yy, const Z& zz, const W& ww) noexcept;
@@ -91,19 +85,19 @@ struct Vector<4, T> final
     template <typename U, typename S1, typename S2>
     constexpr Vector(const Vector<2, U>& v, const S1& zz, const S2& ww) noexcept;
 
-    Vector<4, ValueType>& operator=(const Vector<4, ValueType>&) noexcept = default;
-    Vector<4, ValueType>& operator=(Vector<4, ValueType>&&) noexcept = default;
+    Vector<4, value_type>& operator=(const Vector<4, value_type>&) noexcept = default;
+    Vector<4, value_type>& operator=(Vector<4, value_type>&&) noexcept = default;
 
     template <typename U>
-    Vector<4, ValueType>& operator=(const Vector<4, U>& other) noexcept;
+    Vector<4, value_type>& operator=(const Vector<4, U>& other) noexcept;
 
-    ValueType& operator[](unsigned int index);
-    const ValueType& operator[](unsigned int index) const;
+    value_type& operator[](unsigned int index);
+    const value_type& operator[](unsigned int index) const;
 
     constexpr unsigned int size() const noexcept;
 
-    ValueType* data() noexcept;
-    const ValueType* data() const noexcept;
+    value_type* data() noexcept;
+    const value_type* data() const noexcept;
 
     T x, y, z, w;
 };
@@ -115,12 +109,12 @@ template <typename T>
 struct Vector<3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
-    using ValueType = T;
+    using value_type = T;
 
     constexpr Vector() noexcept;
 
-    constexpr Vector(const Vector<3, ValueType>&) noexcept = default;
-    constexpr Vector(Vector<3, ValueType>&&) noexcept      = default;
+    constexpr Vector(const Vector<3, value_type>&) noexcept = default;
+    constexpr Vector(Vector<3, value_type>&&) noexcept      = default;
 
     template <typename X, typename Y, typename Z>
     constexpr Vector(const X& xx, const Y& yy, const Z& zz) noexcept;
@@ -146,19 +140,19 @@ struct Vector<3, T> final
     template <typename U, typename S>
     constexpr Vector(const Vector<2, U>& v, const S& zz) noexcept;
 
-    Vector<3, ValueType>& operator=(const Vector<3, ValueType>&) noexcept = default;
-    Vector<3, ValueType>& operator=(Vector<3, ValueType>&&) noexcept = default;
+    Vector<3, value_type>& operator=(const Vector<3, value_type>&) noexcept = default;
+    Vector<3, value_type>& operator=(Vector<3, value_type>&&) noexcept = default;
 
     template <typename U>
-    Vector<3, ValueType>& operator=(const Vector<3, U>& other) noexcept;
+    Vector<3, value_type>& operator=(const Vector<3, U>& other) noexcept;
 
-    ValueType& operator[](unsigned int index);
-    const ValueType& operator[](unsigned int index) const;
+    value_type& operator[](unsigned int index);
+    const value_type& operator[](unsigned int index) const;
 
     constexpr unsigned int size() const noexcept;
 
-    ValueType* data() noexcept;
-    const ValueType* data() const noexcept;
+    value_type* data() noexcept;
+    const value_type* data() const noexcept;
 
     T x, y, z;
 };
@@ -169,12 +163,12 @@ template <typename T>
 struct Vector<2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
-    using ValueType = T;
+    using value_type = T;
 
     constexpr Vector() noexcept;
 
-    constexpr Vector(const Vector<2, ValueType>&) noexcept = default;
-    constexpr Vector(Vector<2, ValueType>&&) noexcept      = default;
+    constexpr Vector(const Vector<2, value_type>&) noexcept = default;
+    constexpr Vector(Vector<2, value_type>&&) noexcept      = default;
 
     template <typename X, typename Y>
     constexpr Vector(const X& xx, const Y& yy) noexcept;
@@ -194,19 +188,19 @@ struct Vector<2, T> final
     template <typename U>
     explicit constexpr Vector(const Vector<2, U>& v) noexcept;
 
-    Vector<2, ValueType>& operator=(const Vector<2, ValueType>&) noexcept = default;
-    Vector<2, ValueType>& operator=(Vector<2, ValueType>&&) noexcept = default;
+    Vector<2, value_type>& operator=(const Vector<2, value_type>&) noexcept = default;
+    Vector<2, value_type>& operator=(Vector<2, value_type>&&) noexcept = default;
 
     template <typename U>
-    Vector<2, ValueType>& operator=(const Vector<2, U>& other) noexcept;
+    Vector<2, value_type>& operator=(const Vector<2, U>& other) noexcept;
 
-    ValueType& operator[](unsigned int index);
-    const ValueType& operator[](unsigned int index) const;
+    value_type& operator[](unsigned int index);
+    const value_type& operator[](unsigned int index) const;
 
     constexpr unsigned int size() const noexcept;
 
-    ValueType* data() noexcept;
-    const ValueType* data() const noexcept;
+    value_type* data() noexcept;
+    const value_type* data() const noexcept;
 
     T x, y;
 };
@@ -321,14 +315,14 @@ inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other) noexcept
 
 // access operator
 template <typename T>
-inline typename Vector<4, T>::ValueType& Vector<4, T>::operator[](unsigned int index)
+inline typename Vector<4, T>::value_type& Vector<4, T>::operator[](unsigned int index)
 {
     ASSERT_MSG(index >= 0 && index < 4, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
-inline const typename Vector<4, T>::ValueType& Vector<4, T>::operator[](unsigned int index) const
+inline const typename Vector<4, T>::value_type& Vector<4, T>::operator[](unsigned int index) const
 {
     ASSERT_MSG(index >= 0 && index < 4, "Wrong index.");
     return data()[index];
@@ -342,13 +336,13 @@ inline constexpr unsigned int Vector<4, T>::size() const noexcept
 }
 
 template <typename T>
-inline typename Vector<4, T>::ValueType* Vector<4, T>::data() noexcept
+inline typename Vector<4, T>::value_type* Vector<4, T>::data() noexcept
 {
     return &(this->x);
 }
 
 template <typename T>
-inline const typename Vector<4, T>::ValueType* Vector<4, T>::data() const noexcept
+inline const typename Vector<4, T>::value_type* Vector<4, T>::data() const noexcept
 {
     return &(this->x);
 }
@@ -427,14 +421,14 @@ inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other) noexcept
 
 // access operator
 template <typename T>
-inline typename Vector<3, T>::ValueType& Vector<3, T>::operator[](unsigned int index)
+inline typename Vector<3, T>::value_type& Vector<3, T>::operator[](unsigned int index)
 {
     ASSERT_MSG(index >= 0 && index < 3, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
-inline const typename Vector<3, T>::ValueType& Vector<3, T>::operator[](unsigned int index) const
+inline const typename Vector<3, T>::value_type& Vector<3, T>::operator[](unsigned int index) const
 {
     ASSERT_MSG(index >= 0 && index < 3, "Wrong index.");
     return data()[index];
@@ -448,13 +442,13 @@ inline constexpr unsigned int Vector<3, T>::size() const noexcept
 }
 
 template <typename T>
-inline typename Vector<3, T>::ValueType* Vector<3, T>::data() noexcept
+inline typename Vector<3, T>::value_type* Vector<3, T>::data() noexcept
 {
     return &(this->x);
 }
 
 template <typename T>
-inline const typename Vector<3, T>::ValueType* Vector<3, T>::data() const noexcept
+inline const typename Vector<3, T>::value_type* Vector<3, T>::data() const noexcept
 {
     return &(this->x);
 }
@@ -517,14 +511,14 @@ inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other) noexcept
 
 // access operator
 template <typename T>
-inline typename Vector<2, T>::ValueType& Vector<2, T>::operator[](unsigned int index)
+inline typename Vector<2, T>::value_type& Vector<2, T>::operator[](unsigned int index)
 {
     ASSERT_MSG(index >= 0 && index < 2, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
-inline const typename Vector<2, T>::ValueType& Vector<2, T>::operator[](unsigned int index) const
+inline const typename Vector<2, T>::value_type& Vector<2, T>::operator[](unsigned int index) const
 {
     ASSERT_MSG(index >= 0 && index < 2, "Wrong index.");
     return data()[index];
@@ -538,13 +532,13 @@ inline constexpr unsigned int Vector<2, T>::size() const noexcept
 }
 
 template <typename T>
-inline typename Vector<2, T>::ValueType* Vector<2, T>::data() noexcept
+inline typename Vector<2, T>::value_type* Vector<2, T>::data() noexcept
 {
     return &(this->x);
 }
 
 template <typename T>
-inline const typename Vector<2, T>::ValueType* Vector<2, T>::data() const noexcept
+inline const typename Vector<2, T>::value_type* Vector<2, T>::data() const noexcept
 {
     return &(this->x);
 }
@@ -583,7 +577,6 @@ inline Vector<N, T>& operator-=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
 
     return lhs;
 }
-
 
 template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator*=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
