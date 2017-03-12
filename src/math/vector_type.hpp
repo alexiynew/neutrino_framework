@@ -50,60 +50,60 @@ struct Vector<4, T> final
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
 
-    constexpr Vector();
+    constexpr Vector() noexcept;
 
-    constexpr Vector(const Vector<4, ValueType>&) = default;
-    constexpr Vector(Vector<4, ValueType>&&)      = default;
+    constexpr Vector(const Vector<4, ValueType>&) noexcept = default;
+    constexpr Vector(Vector<4, ValueType>&&) noexcept      = default;
 
     template <typename X, typename Y, typename Z, typename W>
-    constexpr Vector(const X& xx, const Y& yy, const Z& zz, const W& ww);
+    constexpr Vector(const X& xx, const Y& yy, const Z& zz, const W& ww) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const U& v);
+    explicit constexpr Vector(const U& v) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const U* const p);
+    explicit constexpr Vector(const U* const p) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<4, U>& v);
+    explicit constexpr Vector(const Vector<4, U>& v) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<3, U>& v);
+    explicit constexpr Vector(const Vector<3, U>& v) noexcept;
 
     template <typename U, typename S>
-    constexpr Vector(const S& s, const Vector<3, U>& v);
+    constexpr Vector(const S& s, const Vector<3, U>& v) noexcept;
 
     template <typename U, typename S>
-    constexpr Vector(const Vector<3, U>& v, const S& s);
+    constexpr Vector(const Vector<3, U>& v, const S& s) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<2, U>& v);
+    explicit constexpr Vector(const Vector<2, U>& v) noexcept;
 
     template <typename U1, typename U2>
-    constexpr Vector(const Vector<2, U1>& v1, const Vector<2, U2>& v2);
+    constexpr Vector(const Vector<2, U1>& v1, const Vector<2, U2>& v2) noexcept;
 
     template <typename U, typename S1, typename S2>
-    constexpr Vector(const S1& xx, const S2& yy, const Vector<2, U>& v);
+    constexpr Vector(const S1& xx, const S2& yy, const Vector<2, U>& v) noexcept;
 
     template <typename U, typename S1, typename S2>
-    constexpr Vector(const S1& xx, const Vector<2, U>& v, const S2& ww);
+    constexpr Vector(const S1& xx, const Vector<2, U>& v, const S2& ww) noexcept;
 
     template <typename U, typename S1, typename S2>
-    constexpr Vector(const Vector<2, U>& v, const S1& zz, const S2& ww);
+    constexpr Vector(const Vector<2, U>& v, const S1& zz, const S2& ww) noexcept;
 
-    Vector<4, ValueType>& operator=(const Vector<4, ValueType>&) = default;
-    Vector<4, ValueType>& operator=(Vector<4, ValueType>&&) = default;
+    Vector<4, ValueType>& operator=(const Vector<4, ValueType>&) noexcept = default;
+    Vector<4, ValueType>& operator=(Vector<4, ValueType>&&) noexcept = default;
 
     template <typename U>
-    Vector<4, ValueType>& operator=(const Vector<4, U>& other);
+    Vector<4, ValueType>& operator=(const Vector<4, U>& other) noexcept;
 
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
 
-    constexpr unsigned int size() const;
+    constexpr unsigned int size() const noexcept;
 
-    ValueType* data();
-    const ValueType* data() const;
+    ValueType* data() noexcept;
+    const ValueType* data() const noexcept;
 
     T x, y, z, w;
 };
@@ -117,48 +117,48 @@ struct Vector<3, T> final
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
 
-    constexpr Vector();
+    constexpr Vector() noexcept;
 
-    constexpr Vector(const Vector<3, ValueType>&) = default;
-    constexpr Vector(Vector<3, ValueType>&&)      = default;
+    constexpr Vector(const Vector<3, ValueType>&) noexcept = default;
+    constexpr Vector(Vector<3, ValueType>&&) noexcept      = default;
 
     template <typename X, typename Y, typename Z>
-    constexpr Vector(const X& xx, const Y& yy, const Z& zz);
+    constexpr Vector(const X& xx, const Y& yy, const Z& zz) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const U& v);
+    explicit constexpr Vector(const U& v) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const U* const p);
+    explicit constexpr Vector(const U* const p) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<4, U>& v);
+    explicit constexpr Vector(const Vector<4, U>& v) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<3, U>& v);
+    explicit constexpr Vector(const Vector<3, U>& v) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<2, U>& v);
+    explicit constexpr Vector(const Vector<2, U>& v) noexcept;
 
     template <typename U, typename S>
-    constexpr Vector(const S& xx, const Vector<2, U>& v);
+    constexpr Vector(const S& xx, const Vector<2, U>& v) noexcept;
 
     template <typename U, typename S>
-    constexpr Vector(const Vector<2, U>& v, const S& zz);
+    constexpr Vector(const Vector<2, U>& v, const S& zz) noexcept;
 
-    Vector<3, ValueType>& operator=(const Vector<3, ValueType>&) = default;
-    Vector<3, ValueType>& operator=(Vector<3, ValueType>&&) = default;
+    Vector<3, ValueType>& operator=(const Vector<3, ValueType>&) noexcept = default;
+    Vector<3, ValueType>& operator=(Vector<3, ValueType>&&) noexcept = default;
 
     template <typename U>
-    Vector<3, ValueType>& operator=(const Vector<3, U>& other);
+    Vector<3, ValueType>& operator=(const Vector<3, U>& other) noexcept;
 
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
 
-    constexpr unsigned int size() const;
+    constexpr unsigned int size() const noexcept;
 
-    ValueType* data();
-    const ValueType* data() const;
+    ValueType* data() noexcept;
+    const ValueType* data() const noexcept;
 
     T x, y, z;
 };
@@ -171,42 +171,42 @@ struct Vector<2, T> final
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
 
-    constexpr Vector();
+    constexpr Vector() noexcept;
 
-    constexpr Vector(const Vector<2, ValueType>&) = default;
-    constexpr Vector(Vector<2, ValueType>&&)      = default;
+    constexpr Vector(const Vector<2, ValueType>&) noexcept = default;
+    constexpr Vector(Vector<2, ValueType>&&) noexcept      = default;
 
     template <typename X, typename Y>
-    constexpr Vector(const X& xx, const Y& yy);
+    constexpr Vector(const X& xx, const Y& yy) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const U& v);
+    explicit constexpr Vector(const U& v) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const U* p);
+    explicit constexpr Vector(const U* p) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<4, U>& v);
+    explicit constexpr Vector(const Vector<4, U>& v) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<3, U>& v);
+    explicit constexpr Vector(const Vector<3, U>& v) noexcept;
 
     template <typename U>
-    explicit constexpr Vector(const Vector<2, U>& v);
+    explicit constexpr Vector(const Vector<2, U>& v) noexcept;
 
-    Vector<2, ValueType>& operator=(const Vector<2, ValueType>&) = default;
-    Vector<2, ValueType>& operator=(Vector<2, ValueType>&&) = default;
+    Vector<2, ValueType>& operator=(const Vector<2, ValueType>&) noexcept = default;
+    Vector<2, ValueType>& operator=(Vector<2, ValueType>&&) noexcept = default;
 
     template <typename U>
-    Vector<2, ValueType>& operator=(const Vector<2, U>& other);
+    Vector<2, ValueType>& operator=(const Vector<2, U>& other) noexcept;
 
     ValueType& operator[](unsigned int index);
     const ValueType& operator[](unsigned int index) const;
 
-    constexpr unsigned int size() const;
+    constexpr unsigned int size() const noexcept;
 
-    ValueType* data();
-    const ValueType* data() const;
+    ValueType* data() noexcept;
+    const ValueType* data() const noexcept;
 
     T x, y;
 };
@@ -215,32 +215,32 @@ struct Vector<2, T> final
 
 // constructors
 template <typename T>
-inline constexpr Vector<4, T>::Vector()
-    : Vector{0, 0, 0, static_cast<T>(not std::is_same<T, bool>::value)}
+inline constexpr Vector<4, T>::Vector() noexcept : x{T(0)},
+                                                   y{T(0)},
+                                                   z{T(0)},
+                                                   w{T(static_cast<T>(not std::is_same<T, bool>::value))}
 {
 }
 
 template <typename T>
 template <typename X, typename Y, typename Z, typename W>
-inline constexpr Vector<4, T>::Vector(const X& xx, const Y& yy, const Z& zz, const W& ww)
-    : x{create_value_of_type<T>::from(xx)}
-    , y{create_value_of_type<T>::from(yy)}
-    , z{create_value_of_type<T>::from(zz)}
-    , w{create_value_of_type<T>::from(ww)}
+inline constexpr Vector<4, T>::Vector(const X& xx, const Y& yy, const Z& zz, const W& ww) noexcept
+: x{create_value_of_type<T>::from(xx)},
+  y{create_value_of_type<T>::from(yy)},
+  z{create_value_of_type<T>::from(zz)},
+  w{create_value_of_type<T>::from(ww)}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<4, T>::Vector(const U& v)
-    : Vector{v, v, v, v}
+inline constexpr Vector<4, T>::Vector(const U& v) noexcept : Vector{v, v, v, v}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<4, T>::Vector(const U* const p)
-    : Vector{*p, *(p + 1), *(p + 2), *(p + 3)}
+inline constexpr Vector<4, T>::Vector(const U* const p) noexcept : Vector{*p, *(p + 1), *(p + 2), *(p + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -248,73 +248,68 @@ inline constexpr Vector<4, T>::Vector(const U* const p)
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<4, T>::Vector(const Vector<4, U>& v)
-    : Vector{v.x, v.y, v.z, v.w}
+inline constexpr Vector<4, T>::Vector(const Vector<4, U>& v) noexcept : Vector{v.x, v.y, v.z, v.w}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v)
-    : Vector{v.x, v.y, v.z, static_cast<T>(not std::is_same<T, bool>::value)}
+inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v) noexcept
+: Vector{v.x, v.y, v.z, static_cast<T>(not std::is_same<T, bool>::value)}
 // TODO add test for this
 {
 }
 
 template <typename T>
 template <typename U, typename S>
-inline constexpr Vector<4, T>::Vector(const S& s, const Vector<3, U>& v)
-    : Vector{s, v.x, v.y, v.z}
+inline constexpr Vector<4, T>::Vector(const S& s, const Vector<3, U>& v) noexcept : Vector{s, v.x, v.y, v.z}
 {
 }
 
 template <typename T>
 template <typename U, typename S>
-inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v, const S& s)
-    : Vector{v.x, v.y, v.z, s}
+inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v, const S& s) noexcept : Vector{v.x, v.y, v.z, s}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v)
-    : Vector{v.x, v.y, T(0), static_cast<T>(not std::is_same<T, bool>::value)}
+inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v) noexcept
+: Vector{v.x, v.y, T(0), static_cast<T>(not std::is_same<T, bool>::value)}
 // TODO add test for this
 {
 }
 
 template <typename T>
 template <typename U1, typename U2>
-inline constexpr Vector<4, T>::Vector(const Vector<2, U1>& v1, const Vector<2, U2>& v2)
-    : Vector{v1.x, v1.y, v2.x, v2.y}
+inline constexpr Vector<4, T>::Vector(const Vector<2, U1>& v1, const Vector<2, U2>& v2) noexcept
+: Vector{v1.x, v1.y, v2.x, v2.y}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
-inline constexpr Vector<4, T>::Vector(const S1& xx, const S2& yy, const Vector<2, U>& v)
-    : Vector{xx, yy, v.x, v.y}
+inline constexpr Vector<4, T>::Vector(const S1& xx, const S2& yy, const Vector<2, U>& v) noexcept
+: Vector{xx, yy, v.x, v.y}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
-inline constexpr Vector<4, T>::Vector(const S1& xx, const Vector<2, U>& v, const S2& ww)
-    : Vector{xx, v.x, v.y, ww}
+inline constexpr Vector<4, T>::Vector(const S1& xx, const Vector<2, U>& v, const S2& ww) noexcept : Vector{xx, v.x, v.y, ww}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
-inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v, const S1& zz, const S2& ww)
-    : Vector{v.x, v.y, zz, ww}
+inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v, const S1& zz, const S2& ww) noexcept : Vector{v.x, v.y, zz, ww}
 {
 }
 
 // operators
 template <typename T>
 template <typename U>
-inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other)
+inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other) noexcept
 {
     x = create_value_of_type<T>::from(other.x);
     y = create_value_of_type<T>::from(other.y);
@@ -341,19 +336,19 @@ inline const typename Vector<4, T>::ValueType& Vector<4, T>::operator[](unsigned
 
 // methods
 template <typename T>
-inline constexpr unsigned int Vector<4, T>::size() const
+inline constexpr unsigned int Vector<4, T>::size() const noexcept
 {
     return 4;
 }
 
 template <typename T>
-inline typename Vector<4, T>::ValueType* Vector<4, T>::data()
+inline typename Vector<4, T>::ValueType* Vector<4, T>::data() noexcept
 {
     return &(this->x);
 }
 
 template <typename T>
-inline const typename Vector<4, T>::ValueType* Vector<4, T>::data() const
+inline const typename Vector<4, T>::ValueType* Vector<4, T>::data() const noexcept
 {
     return &(this->x);
 }
@@ -362,74 +357,66 @@ inline const typename Vector<4, T>::ValueType* Vector<4, T>::data() const
 
 // constructors
 template <typename T>
-inline constexpr Vector<3, T>::Vector()
-    : Vector{0, 0, 0}
+inline constexpr Vector<3, T>::Vector() noexcept : x{T(0)}, y{T(0)}, z{T(0)}
 {
 }
 
 template <typename T>
 template <typename X, typename Y, typename Z>
-inline constexpr Vector<3, T>::Vector(const X& xx, const Y& yy, const Z& zz)
-    : x{create_value_of_type<T>::from(xx)}
-    , y{create_value_of_type<T>::from(yy)}
-    , z{create_value_of_type<T>::from(zz)}
+inline constexpr Vector<3, T>::Vector(const X& xx, const Y& yy, const Z& zz) noexcept
+: x{create_value_of_type<T>::from(xx)},
+  y{create_value_of_type<T>::from(yy)},
+  z{create_value_of_type<T>::from(zz)}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<3, T>::Vector(const U& v)
-    : Vector{v, v, v}
+inline constexpr Vector<3, T>::Vector(const U& v) noexcept : Vector{v, v, v}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<3, T>::Vector(const U* const p)
-    : Vector{*p, *(p + 1), *(p + 2)}
+inline constexpr Vector<3, T>::Vector(const U* const p) noexcept : Vector{*p, *(p + 1), *(p + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<3, T>::Vector(const Vector<4, U>& v)
-    : Vector{v.x, v.y, v.z}
+inline constexpr Vector<3, T>::Vector(const Vector<4, U>& v) noexcept : Vector{v.x, v.y, v.z}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<3, T>::Vector(const Vector<3, U>& v)
-    : Vector{v.x, v.y, v.z}
+inline constexpr Vector<3, T>::Vector(const Vector<3, U>& v) noexcept : Vector{v.x, v.y, v.z}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v)
-    : Vector{v.x, v.y, T(0)}
+inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v) noexcept : Vector{v.x, v.y, T(0)}
 {
 }
 
 template <typename T>
 template <typename U, typename S>
-inline constexpr Vector<3, T>::Vector(const S& xx, const Vector<2, U>& v)
-    : Vector{xx, v.x, v.y}
+inline constexpr Vector<3, T>::Vector(const S& xx, const Vector<2, U>& v) noexcept : Vector{xx, v.x, v.y}
 {
 }
 
 template <typename T>
 template <typename U, typename S>
-inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v, const S& zz)
-    : Vector{v.x, v.y, zz}
+inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v, const S& zz) noexcept : Vector{v.x, v.y, zz}
 {
 }
 
 // operators
 template <typename T>
 template <typename U>
-inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other)
+inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other) noexcept
 {
     x = create_value_of_type<T>::from(other.x);
     y = create_value_of_type<T>::from(other.y);
@@ -455,19 +442,19 @@ inline const typename Vector<3, T>::ValueType& Vector<3, T>::operator[](unsigned
 
 // methods
 template <typename T>
-inline constexpr unsigned int Vector<3, T>::size() const
+inline constexpr unsigned int Vector<3, T>::size() const noexcept
 {
     return 3;
 }
 
 template <typename T>
-inline typename Vector<3, T>::ValueType* Vector<3, T>::data()
+inline typename Vector<3, T>::ValueType* Vector<3, T>::data() noexcept
 {
     return &(this->x);
 }
 
 template <typename T>
-inline const typename Vector<3, T>::ValueType* Vector<3, T>::data() const
+inline const typename Vector<3, T>::ValueType* Vector<3, T>::data() const noexcept
 {
     return &(this->x);
 }
@@ -476,59 +463,51 @@ inline const typename Vector<3, T>::ValueType* Vector<3, T>::data() const
 
 // constructors
 template <typename T>
-inline constexpr Vector<2, T>::Vector()
-
-    : Vector{0, 0}
+inline constexpr Vector<2, T>::Vector() noexcept : x{T(0)}, y{T(0)}
 {
 }
 
 template <typename T>
 template <typename X, typename Y>
-inline constexpr Vector<2, T>::Vector(const X& xx, const Y& yy)
-    : x{create_value_of_type<T>::from(xx)}
-    , y{create_value_of_type<T>::from(yy)}
+inline constexpr Vector<2, T>::Vector(const X& xx, const Y& yy) noexcept : x{create_value_of_type<T>::from(xx)},
+                                                                           y{create_value_of_type<T>::from(yy)}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<2, T>::Vector(const U& v)
-    : Vector{v, v}
+inline constexpr Vector<2, T>::Vector(const U& v) noexcept : Vector{v, v}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<2, T>::Vector(const U* p)
-    : Vector{*p, *(p + 1)}
+inline constexpr Vector<2, T>::Vector(const U* p) noexcept : Vector{*p, *(p + 1)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<2, T>::Vector(const Vector<4, U>& v)
-    : Vector{v.x, v.y}
+inline constexpr Vector<2, T>::Vector(const Vector<4, U>& v) noexcept : Vector{v.x, v.y}
 {
 }
 
 template <typename T>
 template <typename U>
-inline constexpr Vector<2, T>::Vector(const Vector<3, U>& v)
-    : Vector{v.x, v.y}
+inline constexpr Vector<2, T>::Vector(const Vector<3, U>& v) noexcept : Vector{v.x, v.y}
 {
 }
 template <typename T>
 template <typename U>
-inline constexpr Vector<2, T>::Vector(const Vector<2, U>& v)
-    : Vector{v.x, v.y}
+inline constexpr Vector<2, T>::Vector(const Vector<2, U>& v) noexcept : Vector{v.x, v.y}
 {
 }
 
 // operators
 template <typename T>
 template <typename U>
-inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other)
+inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other) noexcept
 {
     x = create_value_of_type<T>::from(other.x);
     y = create_value_of_type<T>::from(other.y);
@@ -553,19 +532,19 @@ inline const typename Vector<2, T>::ValueType& Vector<2, T>::operator[](unsigned
 
 // methods
 template <typename T>
-inline constexpr unsigned int Vector<2, T>::size() const
+inline constexpr unsigned int Vector<2, T>::size() const noexcept
 {
     return 2;
 }
 
 template <typename T>
-inline typename Vector<2, T>::ValueType* Vector<2, T>::data()
+inline typename Vector<2, T>::ValueType* Vector<2, T>::data() noexcept
 {
     return &(this->x);
 }
 
 template <typename T>
-inline const typename Vector<2, T>::ValueType* Vector<2, T>::data() const
+inline const typename Vector<2, T>::ValueType* Vector<2, T>::data() const noexcept
 {
     return &(this->x);
 }
