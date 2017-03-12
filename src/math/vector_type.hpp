@@ -1,3 +1,10 @@
+/**
+ * @file vector_type.hpp
+ * @brief Implementation of geometric vector.
+ * @author Fedorov Alexey
+ * @date 08.03.2017
+ */
+
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
@@ -12,6 +19,10 @@ namespace math {
  */
 namespace vector_impl {
 
+/**
+ * @brief Used to cast float numbers to boolean without warnings.
+ * @{
+ */
 template <typename T>
 struct create_value_of_type
 {
@@ -32,10 +43,17 @@ struct create_value_of_type<bool>
     }
 };
 
+/**
+ * @}
+ */
+
 } // namespace vector_impl
 
-#pragma mark - Vector template declaration
+#pragma mark - vector template declaration
 
+/**
+ * @brief Base template declaration.
+ */
 template <unsigned int N, typename T>
 struct Vector;
 
