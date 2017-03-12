@@ -82,9 +82,6 @@ struct MatrixBase<4, 4, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
-
     using ValueType  = T;
     using ColumnType = Vector<4, T>;
     using RowType    = Vector<4, T>;
@@ -288,9 +285,6 @@ struct MatrixBase<4, 3, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
-
     using ValueType  = T;
     using ColumnType = Vector<3, T>;
     using RowType    = Vector<4, T>;
@@ -429,9 +423,6 @@ struct MatrixBase<4, 2, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
-
     using ValueType  = T;
     using ColumnType = Vector<2, T>;
     using RowType    = Vector<4, T>;
@@ -538,9 +529,6 @@ template <typename T>
 struct MatrixBase<3, 4, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
-
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
     using ColumnType = Vector<4, T>;
@@ -723,9 +711,6 @@ struct MatrixBase<3, 3, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
-
     using ValueType  = T;
     using ColumnType = Vector<3, T>;
     using RowType    = Vector<3, T>;
@@ -857,9 +842,6 @@ struct MatrixBase<3, 2, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
-
     using ValueType  = T;
     using ColumnType = Vector<2, T>;
     using RowType    = Vector<3, T>;
@@ -966,9 +948,6 @@ template <typename T>
 struct MatrixBase<2, 4, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
-
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
     using ColumnType = Vector<4, T>;
@@ -1116,9 +1095,6 @@ struct MatrixBase<2, 3, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
-
     using ValueType  = T;
     using ColumnType = Vector<3, T>;
     using RowType    = Vector<2, T>;
@@ -1231,9 +1207,6 @@ template <typename T>
 struct MatrixBase<2, 2, T>
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
-
-    template <unsigned int N, typename U>
-    using Vector = vector_impl::Vector<N, U>;
 
     using ValueType  = T;
     using ColumnType = Vector<2, T>;

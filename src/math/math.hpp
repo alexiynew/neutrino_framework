@@ -44,25 +44,25 @@ namespace math {
  * @ingroup math_module
  * @{
  */
-using Vector2D = vector_impl::Vector<2, double>;
-using Vector3D = vector_impl::Vector<3, double>;
-using Vector4D = vector_impl::Vector<4, double>;
+using Vector2D = Vector<2, double>;
+using Vector3D = Vector<3, double>;
+using Vector4D = Vector<4, double>;
 
-using Vector2F = vector_impl::Vector<2, float>;
-using Vector3F = vector_impl::Vector<3, float>;
-using Vector4F = vector_impl::Vector<4, float>;
+using Vector2F = Vector<2, float>;
+using Vector3F = Vector<3, float>;
+using Vector4F = Vector<4, float>;
 
-using Vector2I = vector_impl::Vector<2, int>;
-using Vector3I = vector_impl::Vector<3, int>;
-using Vector4I = vector_impl::Vector<4, int>;
+using Vector2I = Vector<2, int>;
+using Vector3I = Vector<3, int>;
+using Vector4I = Vector<4, int>;
 
-using Vector2U = vector_impl::Vector<2, unsigned int>;
-using Vector3U = vector_impl::Vector<3, unsigned int>;
-using Vector4U = vector_impl::Vector<4, unsigned int>;
+using Vector2U = Vector<2, unsigned int>;
+using Vector3U = Vector<3, unsigned int>;
+using Vector4U = Vector<4, unsigned int>;
 
-using Vector2B = vector_impl::Vector<2, bool>;
-using Vector3B = vector_impl::Vector<3, bool>;
-using Vector4B = vector_impl::Vector<4, bool>;
+using Vector2B = Vector<2, bool>;
+using Vector3B = Vector<3, bool>;
+using Vector4B = Vector<4, bool>;
 /**
  * @}
  */

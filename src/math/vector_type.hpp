@@ -7,6 +7,9 @@ namespace framework {
 
 namespace math {
 
+/**
+ * @brief Contains vector type implementation details.
+ */
 namespace vector_impl {
 
 template <typename T>
@@ -28,6 +31,8 @@ struct create_value_of_type<bool>
         return ::framework::math::abs(value) > 0;
     }
 };
+
+} // namespace vector_impl
 
 #pragma mark - Vector template declaration
 
@@ -217,10 +222,10 @@ inline constexpr Vector<4, T>::Vector() noexcept : x{T(0)},
 template <typename T>
 template <typename X, typename Y, typename Z, typename W>
 inline constexpr Vector<4, T>::Vector(const X& xx, const Y& yy, const Z& zz, const W& ww) noexcept
-: x{create_value_of_type<T>::from(xx)},
-  y{create_value_of_type<T>::from(yy)},
-  z{create_value_of_type<T>::from(zz)},
-  w{create_value_of_type<T>::from(ww)}
+: x{vector_impl::create_value_of_type<T>::from(xx)},
+  y{vector_impl::create_value_of_type<T>::from(yy)},
+  z{vector_impl::create_value_of_type<T>::from(zz)},
+  w{vector_impl::create_value_of_type<T>::from(ww)}
 {
 }
 
@@ -303,10 +308,10 @@ template <typename T>
 template <typename U>
 inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other) noexcept
 {
-    x = create_value_of_type<T>::from(other.x);
-    y = create_value_of_type<T>::from(other.y);
-    z = create_value_of_type<T>::from(other.z);
-    w = create_value_of_type<T>::from(other.w);
+    x = vector_impl::create_value_of_type<T>::from(other.x);
+    y = vector_impl::create_value_of_type<T>::from(other.y);
+    z = vector_impl::create_value_of_type<T>::from(other.z);
+    w = vector_impl::create_value_of_type<T>::from(other.w);
 
     return *this;
 }
@@ -354,9 +359,9 @@ inline constexpr Vector<3, T>::Vector() noexcept : x{T(0)}, y{T(0)}, z{T(0)}
 template <typename T>
 template <typename X, typename Y, typename Z>
 inline constexpr Vector<3, T>::Vector(const X& xx, const Y& yy, const Z& zz) noexcept
-: x{create_value_of_type<T>::from(xx)},
-  y{create_value_of_type<T>::from(yy)},
-  z{create_value_of_type<T>::from(zz)}
+: x{vector_impl::create_value_of_type<T>::from(xx)},
+  y{vector_impl::create_value_of_type<T>::from(yy)},
+  z{vector_impl::create_value_of_type<T>::from(zz)}
 {
 }
 
@@ -408,9 +413,9 @@ template <typename T>
 template <typename U>
 inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other) noexcept
 {
-    x = create_value_of_type<T>::from(other.x);
-    y = create_value_of_type<T>::from(other.y);
-    z = create_value_of_type<T>::from(other.z);
+    x = vector_impl::create_value_of_type<T>::from(other.x);
+    y = vector_impl::create_value_of_type<T>::from(other.y);
+    z = vector_impl::create_value_of_type<T>::from(other.z);
 
     return *this;
 }
@@ -457,8 +462,9 @@ inline constexpr Vector<2, T>::Vector() noexcept : x{T(0)}, y{T(0)}
 
 template <typename T>
 template <typename X, typename Y>
-inline constexpr Vector<2, T>::Vector(const X& xx, const Y& yy) noexcept : x{create_value_of_type<T>::from(xx)},
-                                                                           y{create_value_of_type<T>::from(yy)}
+inline constexpr Vector<2, T>::Vector(const X& xx, const Y& yy) noexcept
+: x{vector_impl::create_value_of_type<T>::from(xx)},
+  y{vector_impl::create_value_of_type<T>::from(yy)}
 {
 }
 
@@ -497,8 +503,8 @@ template <typename T>
 template <typename U>
 inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other) noexcept
 {
-    x = create_value_of_type<T>::from(other.x);
-    y = create_value_of_type<T>::from(other.y);
+    x = vector_impl::create_value_of_type<T>::from(other.x);
+    y = vector_impl::create_value_of_type<T>::from(other.y);
 
     return *this;
 }
@@ -554,7 +560,7 @@ template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator+=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] += create_value_of_type<T>::from(rhs[i]);
+        lhs[i] += vector_impl::create_value_of_type<T>::from(rhs[i]);
     }
 
     return lhs;
@@ -564,7 +570,7 @@ template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator-=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] -= create_value_of_type<T>::from(rhs[i]);
+        lhs[i] -= vector_impl::create_value_of_type<T>::from(rhs[i]);
     }
 
     return lhs;
@@ -574,7 +580,7 @@ template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator*=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] *= create_value_of_type<T>::from(rhs[i]);
+        lhs[i] *= vector_impl::create_value_of_type<T>::from(rhs[i]);
     }
 
     return lhs;
@@ -584,7 +590,7 @@ template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator/=(Vector<N, T>& lhs, const Vector<N, U>& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] /= create_value_of_type<T>::from(rhs[i]);
+        lhs[i] /= vector_impl::create_value_of_type<T>::from(rhs[i]);
     }
 
     return lhs;
@@ -595,7 +601,7 @@ template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator+=(Vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] += create_value_of_type<T>::from(rhs);
+        lhs[i] += vector_impl::create_value_of_type<T>::from(rhs);
     }
 
     return lhs;
@@ -605,7 +611,7 @@ template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator-=(Vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] -= create_value_of_type<T>::from(rhs);
+        lhs[i] -= vector_impl::create_value_of_type<T>::from(rhs);
     }
 
     return lhs;
@@ -615,7 +621,7 @@ template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator*=(Vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] *= create_value_of_type<T>::from(rhs);
+        lhs[i] *= vector_impl::create_value_of_type<T>::from(rhs);
     }
 
     return lhs;
@@ -625,7 +631,7 @@ template <unsigned int N, typename T, typename U>
 inline Vector<N, T>& operator/=(Vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] /= create_value_of_type<T>::from(rhs);
+        lhs[i] /= vector_impl::create_value_of_type<T>::from(rhs);
     }
 
     return lhs;
@@ -756,8 +762,6 @@ inline constexpr bool operator!=(const Vector<2, T>& a, const Vector<2, T>& b)
     const auto& abs = ::framework::math::abs<T>;
     return abs(a.x - b.x) > 0 && abs(a.y - b.y);
 }
-
-} // namespace vector_impl
 
 } // namespace math
 

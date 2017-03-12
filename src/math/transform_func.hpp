@@ -15,9 +15,6 @@ namespace math {
 template <unsigned int C, unsigned int R, typename T>
 using Matrix = matrix_impl::Matrix<C, R, T>;
 
-template <unsigned int N, typename T>
-using Vector = vector_impl::Vector<N, T>;
-
 #pragma mark - 2d transform
 
 /// Builds a translation 3 * 3 matrix created from a vector of 2 components.
