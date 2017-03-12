@@ -37,52 +37,6 @@ struct create_value_of_type<bool>
     }
 };
 
-template <unsigned int N, typename T>
-struct vector_base
-{
-};
-
-template <typename T>
-struct vector_base<4, T>
-{
-    template <typename T1, typename T2, typename T3, typename T4>
-    constexpr vector_base(T1 xx, T2 yy, T3 zz, T4 ww) noexcept : x{create_value_of_type<T>::from(xx)},
-                                                                 y{create_value_of_type<T>::from(yy)},
-                                                                 z{create_value_of_type<T>::from(zz)},
-                                                                 w{create_value_of_type<T>::from(ww)}
-    {
-    }
-
-    T x, y, z, w;
-};
-
-template <typename T>
-struct vector_base<3, T>
-{
-    template <typename T1, typename T2, typename T3>
-    constexpr vector_base(T1 xx, T2 yy, T3 zz) noexcept : x{create_value_of_type<T>::from(xx)},
-                                                          y{create_value_of_type<T>::from(yy)},
-                                                          z{create_value_of_type<T>::from(zz)}
-    {
-    }
-
-    T x, y, z;
-};
-
-template <typename T>
-struct vector_base<2, T>
-{
-    template <typename T1, typename T2>
-    constexpr vector_base(T1 xx, T2 yy) noexcept : x{create_value_of_type<T>::from(xx)},
-                                                   y{create_value_of_type<T>::from(yy)}
-    {
-    }
-
-    T x, y;
-};
-
-
-
 #pragma mark - Vector template declaration
 
 template <unsigned int N, typename T>
@@ -91,19 +45,21 @@ struct Vector;
 #pragma mark - Vector<4, T> type specialization
 
 template <typename T>
-struct Vector<4, T> final : public vector_base<4, T>
+struct Vector<4, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
-    using base_type = vector_base<4, T>;
 
     constexpr Vector();
 
     constexpr Vector(const Vector<4, ValueType>&) = default;
     constexpr Vector(Vector<4, ValueType>&&)      = default;
 
-    constexpr Vector(const ValueType& xx, const ValueType& yy, const ValueType& zz, const ValueType& ww);
-    explicit constexpr Vector(const ValueType& v);
+    template <typename X, typename Y, typename Z, typename W>
+    constexpr Vector(const X& xx, const Y& yy, const Z& zz, const W& ww);
+
+    template <typename U>
+    explicit constexpr Vector(const U& v);
 
     template <typename U>
     explicit constexpr Vector(const U* const p);
@@ -148,26 +104,29 @@ struct Vector<4, T> final : public vector_base<4, T>
 
     ValueType* data();
     const ValueType* data() const;
+
+    T x, y, z, w;
 };
 
 
 #pragma mark - Vector<3, T> type specialization
 
 template <typename T>
-struct Vector<3, T> final : public vector_base<3, T>
+struct Vector<3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
-    using base_type = vector_base<3, T>;
 
     constexpr Vector();
 
     constexpr Vector(const Vector<3, ValueType>&) = default;
     constexpr Vector(Vector<3, ValueType>&&)      = default;
 
-    constexpr Vector(const ValueType& xx, const ValueType& yy, const ValueType& zz);
+    template <typename X, typename Y, typename Z>
+    constexpr Vector(const X& xx, const Y& yy, const Z& zz);
 
-    explicit constexpr Vector(const ValueType& v);
+    template <typename U>
+    explicit constexpr Vector(const U& v);
 
     template <typename U>
     explicit constexpr Vector(const U* const p);
@@ -200,25 +159,28 @@ struct Vector<3, T> final : public vector_base<3, T>
 
     ValueType* data();
     const ValueType* data() const;
+
+    T x, y, z;
 };
 
 #pragma mark - Vector<2, T> type specialization
 
 template <typename T>
-struct Vector<2, T> final : public vector_base<2, T>
+struct Vector<2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
     using ValueType = T;
-    using base_type = vector_base<2, T>;
 
     constexpr Vector();
 
     constexpr Vector(const Vector<2, ValueType>&) = default;
     constexpr Vector(Vector<2, ValueType>&&)      = default;
 
-    constexpr Vector(const ValueType& xx, const ValueType& yy);
+    template <typename X, typename Y>
+    constexpr Vector(const X& xx, const Y& yy);
 
-    explicit constexpr Vector(const ValueType& v);
+    template <typename U>
+    explicit constexpr Vector(const U& v);
 
     template <typename U>
     explicit constexpr Vector(const U* p);
@@ -245,6 +207,8 @@ struct Vector<2, T> final : public vector_base<2, T>
 
     ValueType* data();
     const ValueType* data() const;
+
+    T x, y;
 };
 
 #pragma mark - Vector<4, T> implementation
@@ -252,26 +216,31 @@ struct Vector<2, T> final : public vector_base<2, T>
 // constructors
 template <typename T>
 inline constexpr Vector<4, T>::Vector()
-    : base_type{0, 0, 0, static_cast<T>(not std::is_same<T, bool>::value)}
+    : Vector{0, 0, 0, static_cast<T>(not std::is_same<T, bool>::value)}
 {
 }
 
 template <typename T>
-inline constexpr Vector<4, T>::Vector(const T& xx, const T& yy, const T& zz, const T& ww)
-    : base_type{xx, yy, zz, ww}
+template <typename X, typename Y, typename Z, typename W>
+inline constexpr Vector<4, T>::Vector(const X& xx, const Y& yy, const Z& zz, const W& ww)
+    : x{create_value_of_type<T>::from(xx)}
+    , y{create_value_of_type<T>::from(yy)}
+    , z{create_value_of_type<T>::from(zz)}
+    , w{create_value_of_type<T>::from(ww)}
 {
 }
 
 template <typename T>
-inline constexpr Vector<4, T>::Vector(const T& v)
-    : base_type{v, v, v, v}
+template <typename U>
+inline constexpr Vector<4, T>::Vector(const U& v)
+    : Vector{v, v, v, v}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<4, T>::Vector(const U* const p)
-    : base_type{*p, *(p + 1), *(p + 2), *(p + 3)}
+    : Vector{*p, *(p + 1), *(p + 2), *(p + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -280,14 +249,14 @@ inline constexpr Vector<4, T>::Vector(const U* const p)
 template <typename T>
 template <typename U>
 inline constexpr Vector<4, T>::Vector(const Vector<4, U>& v)
-    : base_type{v.x, v.y, v.z, v.w}
+    : Vector{v.x, v.y, v.z, v.w}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v)
-    : base_type{v.x, v.y, v.z, static_cast<T>(not std::is_same<T, bool>::value)}
+    : Vector{v.x, v.y, v.z, static_cast<T>(not std::is_same<T, bool>::value)}
 // TODO add test for this
 {
 }
@@ -295,21 +264,21 @@ inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v)
 template <typename T>
 template <typename U, typename S>
 inline constexpr Vector<4, T>::Vector(const S& s, const Vector<3, U>& v)
-    : base_type{s, v.x, v.y, v.z}
+    : Vector{s, v.x, v.y, v.z}
 {
 }
 
 template <typename T>
 template <typename U, typename S>
 inline constexpr Vector<4, T>::Vector(const Vector<3, U>& v, const S& s)
-    : base_type{v.x, v.y, v.z, s}
+    : Vector{v.x, v.y, v.z, s}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v)
-    : base_type{v.x, v.y, T(0), static_cast<T>(not std::is_same<T, bool>::value)}
+    : Vector{v.x, v.y, T(0), static_cast<T>(not std::is_same<T, bool>::value)}
 // TODO add test for this
 {
 }
@@ -317,28 +286,28 @@ inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v)
 template <typename T>
 template <typename U1, typename U2>
 inline constexpr Vector<4, T>::Vector(const Vector<2, U1>& v1, const Vector<2, U2>& v2)
-    : base_type{v1.x, v1.y, v2.x, v2.y}
+    : Vector{v1.x, v1.y, v2.x, v2.y}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
 inline constexpr Vector<4, T>::Vector(const S1& xx, const S2& yy, const Vector<2, U>& v)
-    : base_type{xx, yy, v.x, v.y}
+    : Vector{xx, yy, v.x, v.y}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
 inline constexpr Vector<4, T>::Vector(const S1& xx, const Vector<2, U>& v, const S2& ww)
-    : base_type{xx, v.x, v.y, ww}
+    : Vector{xx, v.x, v.y, ww}
 {
 }
 
 template <typename T>
 template <typename U, typename S1, typename S2>
 inline constexpr Vector<4, T>::Vector(const Vector<2, U>& v, const S1& zz, const S2& ww)
-    : base_type{v.x, v.y, zz, ww}
+    : Vector{v.x, v.y, zz, ww}
 {
 }
 
@@ -347,10 +316,10 @@ template <typename T>
 template <typename U>
 inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other)
 {
-    base_type::x = create_value_of_type<T>::from(other.x);
-    base_type::y = create_value_of_type<T>::from(other.y);
-    base_type::z = create_value_of_type<T>::from(other.z);
-    base_type::w = create_value_of_type<T>::from(other.w);
+    x = create_value_of_type<T>::from(other.x);
+    y = create_value_of_type<T>::from(other.y);
+    z = create_value_of_type<T>::from(other.z);
+    w = create_value_of_type<T>::from(other.w);
 
     return *this;
 }
@@ -394,26 +363,30 @@ inline const typename Vector<4, T>::ValueType* Vector<4, T>::data() const
 // constructors
 template <typename T>
 inline constexpr Vector<3, T>::Vector()
-    : base_type{0, 0, 0}
+    : Vector{0, 0, 0}
 {
 }
 
 template <typename T>
-inline constexpr Vector<3, T>::Vector(const T& xx, const T& yy, const T& zz)
-    : base_type{xx, yy, zz}
+template <typename X, typename Y, typename Z>
+inline constexpr Vector<3, T>::Vector(const X& xx, const Y& yy, const Z& zz)
+    : x{create_value_of_type<T>::from(xx)}
+    , y{create_value_of_type<T>::from(yy)}
+    , z{create_value_of_type<T>::from(zz)}
 {
 }
 
 template <typename T>
-inline constexpr Vector<3, T>::Vector(const T& v)
-    : base_type{v, v, v}
+template <typename U>
+inline constexpr Vector<3, T>::Vector(const U& v)
+    : Vector{v, v, v}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<3, T>::Vector(const U* const p)
-    : base_type{*p, *(p + 1), *(p + 2)}
+    : Vector{*p, *(p + 1), *(p + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -421,35 +394,35 @@ inline constexpr Vector<3, T>::Vector(const U* const p)
 template <typename T>
 template <typename U>
 inline constexpr Vector<3, T>::Vector(const Vector<4, U>& v)
-    : base_type{v.x, v.y, v.z}
+    : Vector{v.x, v.y, v.z}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<3, T>::Vector(const Vector<3, U>& v)
-    : base_type{v.x, v.y, v.z}
+    : Vector{v.x, v.y, v.z}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v)
-    : base_type{v.x, v.y, T(0)}
+    : Vector{v.x, v.y, T(0)}
 {
 }
 
 template <typename T>
 template <typename U, typename S>
 inline constexpr Vector<3, T>::Vector(const S& xx, const Vector<2, U>& v)
-    : base_type{xx, v.x, v.y}
+    : Vector{xx, v.x, v.y}
 {
 }
 
 template <typename T>
 template <typename U, typename S>
 inline constexpr Vector<3, T>::Vector(const Vector<2, U>& v, const S& zz)
-    : base_type{v.x, v.y, zz}
+    : Vector{v.x, v.y, zz}
 {
 }
 
@@ -458,9 +431,9 @@ template <typename T>
 template <typename U>
 inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other)
 {
-    base_type::x = create_value_of_type<T>::from(other.x);
-    base_type::y = create_value_of_type<T>::from(other.y);
-    base_type::z = create_value_of_type<T>::from(other.z);
+    x = create_value_of_type<T>::from(other.x);
+    y = create_value_of_type<T>::from(other.y);
+    z = create_value_of_type<T>::from(other.z);
 
     return *this;
 }
@@ -505,26 +478,29 @@ inline const typename Vector<3, T>::ValueType* Vector<3, T>::data() const
 template <typename T>
 inline constexpr Vector<2, T>::Vector()
 
-    : base_type{0, 0}
+    : Vector{0, 0}
 {
 }
 
 template <typename T>
-inline constexpr Vector<2, T>::Vector(const T& xx, const T& yy)
-    : base_type{xx, yy}
+template <typename X, typename Y>
+inline constexpr Vector<2, T>::Vector(const X& xx, const Y& yy)
+    : x{create_value_of_type<T>::from(xx)}
+    , y{create_value_of_type<T>::from(yy)}
 {
 }
 
 template <typename T>
-inline constexpr Vector<2, T>::Vector(const T& v)
-    : base_type{v, v}
+template <typename U>
+inline constexpr Vector<2, T>::Vector(const U& v)
+    : Vector{v, v}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<2, T>::Vector(const U* p)
-    : base_type{*p, *(p + 1)}
+    : Vector{*p, *(p + 1)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -532,20 +508,20 @@ inline constexpr Vector<2, T>::Vector(const U* p)
 template <typename T>
 template <typename U>
 inline constexpr Vector<2, T>::Vector(const Vector<4, U>& v)
-    : base_type{v.x, v.y}
+    : Vector{v.x, v.y}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr Vector<2, T>::Vector(const Vector<3, U>& v)
-    : base_type{v.x, v.y}
+    : Vector{v.x, v.y}
 {
 }
 template <typename T>
 template <typename U>
 inline constexpr Vector<2, T>::Vector(const Vector<2, U>& v)
-    : base_type{v.x, v.y}
+    : Vector{v.x, v.y}
 {
 }
 
@@ -554,8 +530,8 @@ template <typename T>
 template <typename U>
 inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other)
 {
-    base_type::x = create_value_of_type<T>::from(other.x);
-    base_type::y = create_value_of_type<T>::from(other.y);
+    x = create_value_of_type<T>::from(other.x);
+    y = create_value_of_type<T>::from(other.y);
 
     return *this;
 }
@@ -593,7 +569,6 @@ inline const typename Vector<2, T>::ValueType* Vector<2, T>::data() const
 {
     return &(this->x);
 }
-
 
 #pragma mark - unary operators
 
