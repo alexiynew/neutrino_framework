@@ -1,9 +1,7 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
-#include <log/log.hpp>
 #include <math/common_func.hpp>
-#include <math/utils.hpp>
 
 namespace framework {
 
@@ -317,14 +315,12 @@ inline Vector<4, T>& Vector<4, T>::operator=(const Vector<4, U>& other) noexcept
 template <typename T>
 inline typename Vector<4, T>::value_type& Vector<4, T>::operator[](unsigned int index)
 {
-    ASSERT_MSG(index >= 0 && index < 4, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
 inline const typename Vector<4, T>::value_type& Vector<4, T>::operator[](unsigned int index) const
 {
-    ASSERT_MSG(index >= 0 && index < 4, "Wrong index.");
     return data()[index];
 }
 
@@ -423,14 +419,12 @@ inline Vector<3, T>& Vector<3, T>::operator=(const Vector<3, U>& other) noexcept
 template <typename T>
 inline typename Vector<3, T>::value_type& Vector<3, T>::operator[](unsigned int index)
 {
-    ASSERT_MSG(index >= 0 && index < 3, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
 inline const typename Vector<3, T>::value_type& Vector<3, T>::operator[](unsigned int index) const
 {
-    ASSERT_MSG(index >= 0 && index < 3, "Wrong index.");
     return data()[index];
 }
 
@@ -513,14 +507,12 @@ inline Vector<2, T>& Vector<2, T>::operator=(const Vector<2, U>& other) noexcept
 template <typename T>
 inline typename Vector<2, T>::value_type& Vector<2, T>::operator[](unsigned int index)
 {
-    ASSERT_MSG(index >= 0 && index < 2, "Wrong index.");
     return data()[index];
 }
 
 template <typename T>
 inline const typename Vector<2, T>::value_type& Vector<2, T>::operator[](unsigned int index) const
 {
-    ASSERT_MSG(index >= 0 && index < 2, "Wrong index.");
     return data()[index];
 }
 
