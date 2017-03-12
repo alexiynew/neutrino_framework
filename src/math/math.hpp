@@ -37,32 +37,32 @@ namespace framework {
  */
 namespace math {
 
-#pragma mark - Vector Type
+#pragma mark - vector Type
 
 /**
  * @defgroup common_vectors Common vector types
  * @ingroup math_module
  * @{
  */
-using Vector2D = Vector<2, double>;
-using Vector3D = Vector<3, double>;
-using Vector4D = Vector<4, double>;
+using vector2D = vector<2, double>;
+using vector3D = vector<3, double>;
+using vector4D = vector<4, double>;
 
-using Vector2F = Vector<2, float>;
-using Vector3F = Vector<3, float>;
-using Vector4F = Vector<4, float>;
+using vector2F = vector<2, float>;
+using vector3F = vector<3, float>;
+using vector4F = vector<4, float>;
 
-using Vector2I = Vector<2, int>;
-using Vector3I = Vector<3, int>;
-using Vector4I = Vector<4, int>;
+using vector2I = vector<2, int>;
+using vector3I = vector<3, int>;
+using vector4I = vector<4, int>;
 
-using Vector2U = Vector<2, unsigned int>;
-using Vector3U = Vector<3, unsigned int>;
-using Vector4U = Vector<4, unsigned int>;
+using vector2U = vector<2, unsigned int>;
+using vector3U = vector<3, unsigned int>;
+using vector4U = vector<4, unsigned int>;
 
-using Vector2B = Vector<2, bool>;
-using Vector3B = Vector<3, bool>;
-using Vector4B = Vector<4, bool>;
+using vector2B = vector<2, bool>;
+using vector3B = vector<3, bool>;
+using vector4B = vector<4, bool>;
 /**
  * @}
  */

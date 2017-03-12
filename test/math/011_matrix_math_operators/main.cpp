@@ -431,33 +431,33 @@ private:
         Matrix2x3F temp23(temp44);
         Matrix2x2F temp22(temp44);
 
-        Vector4F vector4(1, 2, 3, 4);
-        Vector3F vector3(1, 2, 3);
-        Vector2F vector2(1, 2);
+        vector4F vector4(1, 2, 3, 4);
+        vector3F vector3(1, 2, 3);
+        vector2F vector2(1, 2);
 
-        TEST_ASSERT(vector4 * temp44 == Vector4F(30, 30, 30, 30), "Matrix4x4 multiply with vector operator failed.");
-        TEST_ASSERT(vector3 * temp43 == Vector4F(14, 14, 14, 14), "Matrix4x3 multiply with vector operator failed.");
-        TEST_ASSERT(vector2 * temp42 == Vector4F(5, 5, 5, 5), "Matrix4x2 multiply with vector operator failed.");
+        TEST_ASSERT(vector4 * temp44 == vector4F(30, 30, 30, 30), "Matrix4x4 multiply with vector operator failed.");
+        TEST_ASSERT(vector3 * temp43 == vector4F(14, 14, 14, 14), "Matrix4x3 multiply with vector operator failed.");
+        TEST_ASSERT(vector2 * temp42 == vector4F(5, 5, 5, 5), "Matrix4x2 multiply with vector operator failed.");
 
-        TEST_ASSERT(vector4 * temp34 == Vector3F(30, 30, 30), "Matrix3x4 multiply with vector operator failed.");
-        TEST_ASSERT(vector3 * temp33 == Vector3F(14, 14, 14), "Matrix3x3 multiply with vector operator failed.");
-        TEST_ASSERT(vector2 * temp32 == Vector3F(5, 5, 5), "Matrix3x2 multiply with vector operator failed.");
+        TEST_ASSERT(vector4 * temp34 == vector3F(30, 30, 30), "Matrix3x4 multiply with vector operator failed.");
+        TEST_ASSERT(vector3 * temp33 == vector3F(14, 14, 14), "Matrix3x3 multiply with vector operator failed.");
+        TEST_ASSERT(vector2 * temp32 == vector3F(5, 5, 5), "Matrix3x2 multiply with vector operator failed.");
 
-        TEST_ASSERT(vector4 * temp24 == Vector2F(30, 30), "Matrix2x4 multiply with vector operator failed.");
-        TEST_ASSERT(vector3 * temp23 == Vector2F(14, 14), "Matrix2x3 multiply with vector operator failed.");
-        TEST_ASSERT(vector2 * temp22 == Vector2F(5, 5), "Matrix2x2 multiply with vector operator failed.");
+        TEST_ASSERT(vector4 * temp24 == vector2F(30, 30), "Matrix2x4 multiply with vector operator failed.");
+        TEST_ASSERT(vector3 * temp23 == vector2F(14, 14), "Matrix2x3 multiply with vector operator failed.");
+        TEST_ASSERT(vector2 * temp22 == vector2F(5, 5), "Matrix2x2 multiply with vector operator failed.");
 
-        TEST_ASSERT(temp44 * vector4 == Vector4F(10, 20, 30, 40), "Matrix4x4 multiply with vector operator failed.");
-        TEST_ASSERT(temp43 * vector4 == Vector3F(10, 20, 30), "Matrix4x3 multiply with vector operator failed.");
-        TEST_ASSERT(temp42 * vector4 == Vector2F(10, 20), "Matrix4x2 multiply with vector operator failed.");
+        TEST_ASSERT(temp44 * vector4 == vector4F(10, 20, 30, 40), "Matrix4x4 multiply with vector operator failed.");
+        TEST_ASSERT(temp43 * vector4 == vector3F(10, 20, 30), "Matrix4x3 multiply with vector operator failed.");
+        TEST_ASSERT(temp42 * vector4 == vector2F(10, 20), "Matrix4x2 multiply with vector operator failed.");
 
-        TEST_ASSERT(temp34 * vector3 == Vector4F(6, 12, 18, 24), "Matrix3x4 multiply with vector operator failed.");
-        TEST_ASSERT(temp33 * vector3 == Vector3F(6, 12, 18), "Matrix3x3 multiply with vector operator failed.");
-        TEST_ASSERT(temp32 * vector3 == Vector2F(6, 12), "Matrix3x2 multiply with vector operator failed.");
+        TEST_ASSERT(temp34 * vector3 == vector4F(6, 12, 18, 24), "Matrix3x4 multiply with vector operator failed.");
+        TEST_ASSERT(temp33 * vector3 == vector3F(6, 12, 18), "Matrix3x3 multiply with vector operator failed.");
+        TEST_ASSERT(temp32 * vector3 == vector2F(6, 12), "Matrix3x2 multiply with vector operator failed.");
 
-        TEST_ASSERT(temp24 * vector2 == Vector4F(3, 6, 9, 12), "Matrix2x4 multiply with vector operator failed.");
-        TEST_ASSERT(temp23 * vector2 == Vector3F(3, 6, 9), "Matrix2x3 multiply with vector operator failed.");
-        TEST_ASSERT(temp22 * vector2 == Vector2F(3, 6), "Matrix2x2 multiply with vector operator failed.");
+        TEST_ASSERT(temp24 * vector2 == vector4F(3, 6, 9, 12), "Matrix2x4 multiply with vector operator failed.");
+        TEST_ASSERT(temp23 * vector2 == vector3F(3, 6, 9), "Matrix2x3 multiply with vector operator failed.");
+        TEST_ASSERT(temp22 * vector2 == vector2F(3, 6), "Matrix2x2 multiply with vector operator failed.");
     }
 
     void multiply_with_matrix_operator()

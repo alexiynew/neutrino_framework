@@ -22,7 +22,7 @@ using Matrix = matrix_impl::Matrix<C, R, T>;
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a translation vector.
 template <typename T>
-inline Matrix<3, 3, T> translate(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
+inline Matrix<3, 3, T> translate(const Matrix<3, 3, T>& m, const vector<2, T>& v)
 {
     return Matrix<3, 3, T>(m[0], m[1], m[0] * v[0] + m[1] * v[1] + m[2]);
 }
@@ -45,7 +45,7 @@ inline Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& m, const U angle)
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a scale vector.
 template <typename T>
-inline Matrix<3, 3, T> scale(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
+inline Matrix<3, 3, T> scale(const Matrix<3, 3, T>& m, const vector<2, T>& v)
 {
     return Matrix<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
 }
@@ -55,7 +55,7 @@ inline Matrix<3, 3, T> scale(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Shear factor.
 template <typename T>
-inline Matrix<3, 3, T> shear(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
+inline Matrix<3, 3, T> shear(const Matrix<3, 3, T>& m, const vector<2, T>& v)
 {
     Matrix<3, 3, T> shear;
     shear[0][1] = v.x;
@@ -68,7 +68,7 @@ inline Matrix<3, 3, T> shear(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
 
 /// Create a translation 4 * 4 matrix from 3 scalars.
 template <typename T>
-inline Matrix<4, 4, T> createTranslateMatrix(const Vector<3, T>& v)
+inline Matrix<4, 4, T> createTranslateMatrix(const vector<3, T>& v)
 {
     // clang-format off
     return Matrix<4, 4, T>(1,    0,    0,    0,
@@ -81,7 +81,7 @@ inline Matrix<4, 4, T> createTranslateMatrix(const Vector<3, T>& v)
 /// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle
 /// epressed in radians.
 template <typename T, typename U>
-inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, const U angle)
+inline Matrix<4, 4, T> createRotateMatrix(const vector<3, T>& v, const U angle)
 {
     const T c = static_cast<T>(math::cos(angle));
     const T s = static_cast<T>(math::sin(angle));
@@ -107,7 +107,7 @@ inline Matrix<4, 4, T> createRotateMatrix(const Vector<3, T>& v, const U angle)
 
 /// Create a scale 4 * 4 matrix from a vector of 3 components.
 template <typename T>
-inline Matrix<4, 4, T> createScaleMatrix(const Vector<3, T>& v)
+inline Matrix<4, 4, T> createScaleMatrix(const vector<3, T>& v)
 {
     // clang-format off
     return Matrix<4, 4, T>(v[0], 0,    0,    0,
@@ -122,7 +122,7 @@ inline Matrix<4, 4, T> createScaleMatrix(const Vector<3, T>& v)
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a translation vector.
 template <typename T>
-inline Matrix<4, 4, T> translate(const Matrix<4, 4, T>& m, const Vector<3, T>& v)
+inline Matrix<4, 4, T> translate(const Matrix<4, 4, T>& m, const vector<3, T>& v)
 {
     return m * createTranslateMatrix(v);
 }
@@ -133,7 +133,7 @@ inline Matrix<4, 4, T> translate(const Matrix<4, 4, T>& m, const Vector<3, T>& v
 /// @param v Ratio of scaling for each axis.
 /// @tparam T Value type used to build the matrix
 template <typename T>
-inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const Vector<3, T>& v)
+inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const vector<3, T>& v)
 {
     return m * createScaleMatrix(v);
 }
@@ -146,7 +146,7 @@ inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const Vector<3, T>& v)
 /// @tparam T Value type used to build the matrix.
 /// @tparam U Value type of angle.
 template <typename T, typename U>
-inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const Vector<3, T>& v, const U angle)
+inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const vector<3, T>& v, const U angle)
 {
     return m * createRotateMatrix(v, angle);
 }
@@ -336,10 +336,10 @@ inline Matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
 /// @tparam T Native type used for the computation.
 /// @tparam U Value type of viewport.
 template <typename T, typename U>
-inline Vector<3, T>
-project(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const Vector<4, U>& viewport)
+inline vector<3, T>
+project(const vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const vector<4, U>& viewport)
 {
-    Vector<4, T> tmp(v, T(1));
+    vector<4, T> tmp(v, T(1));
     tmp = model * tmp;
     tmp = proj * tmp;
 
@@ -357,7 +357,7 @@ project(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, 
     tmp[0] = tmp[0] * width + x;
     tmp[1] = tmp[1] * height + y;
 
-    return Vector<3, T>(tmp);
+    return vector<3, T>(tmp);
 }
 
 /// Map the specified window coordinates (v.x, v.y, v.z) into object coordinates.
@@ -370,8 +370,8 @@ project(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, 
 /// @tparam T Native type used for the computation.
 /// @tparam U Value type of viewport.
 template <typename T, typename U>
-inline Vector<3, T>
-unProject(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const Vector<4, U>& viewport)
+inline vector<3, T>
+unProject(const vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const vector<4, U>& viewport)
 {
     const T x      = static_cast<T>(viewport[0]);
     const T y      = static_cast<T>(viewport[1]);
@@ -383,19 +383,19 @@ unProject(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4
 
     const Matrix<4, 4, T> inv = inverse(proj * model);
 
-    Vector<4, T> tmp(v, T(1));
+    vector<4, T> tmp(v, T(1));
     tmp.x = (tmp.x - x) / width;
     tmp.y = (tmp.y - y) / height;
 
     tmp = tmp * T(2) - T(1);
 
-    Vector<4, T> obj = inv * tmp;
+    vector<4, T> obj = inv * tmp;
 
     ASSERT(math::abs(tmp.w - std::numeric_limits<T>::epsilon()) > T(0));
 
     obj /= obj.w;
 
-    return Vector<3, T>(obj);
+    return vector<3, T>(obj);
 }
 
 /// Define a picking region
@@ -406,7 +406,7 @@ unProject(const Vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4
 /// @tparam T Native type used for the computation.
 /// @tparam U Value type of viewport.
 template <typename T, typename U>
-inline Matrix<4, 4, T> pickMatrix(const Vector<2, T>& center, const Vector<2, T>& delta, const Vector<4, U>& viewport)
+inline Matrix<4, 4, T> pickMatrix(const vector<2, T>& center, const vector<2, T>& delta, const vector<4, U>& viewport)
 {
     ASSERT(delta.x > T(0));
     ASSERT(delta.y > T(0));
@@ -416,10 +416,10 @@ inline Matrix<4, 4, T> pickMatrix(const Vector<2, T>& center, const Vector<2, T>
     const T width  = static_cast<T>(viewport[2]);
     const T height = static_cast<T>(viewport[3]);
 
-    const Vector<3, T> translate_tmp = {
+    const vector<3, T> translate_tmp = {
     (width - T(2) * (center.x - x)) / delta.x, (height - T(2) * (center.y - y)) / delta.y, T(0)};
 
-    const Vector<3, T> scale_tmp = {width / delta.x, height / delta.y, T(1)};
+    const vector<3, T> scale_tmp = {width / delta.x, height / delta.y, T(1)};
 
     // Translate and scale the picked region to the entire window
     const Matrix<4, 4, T> result = createTranslateMatrix(translate_tmp);
@@ -432,11 +432,11 @@ inline Matrix<4, 4, T> pickMatrix(const Vector<2, T>& center, const Vector<2, T>
 /// @param center Position where the camera is looking at
 /// @param up Normalized up vector, how the camera is oriented. Typically (0, 0, 1)
 template <typename T>
-inline Matrix<4, 4, T> lookAt(const Vector<3, T>& eye, const Vector<3, T>& center, const Vector<3, T>& up)
+inline Matrix<4, 4, T> lookAt(const vector<3, T>& eye, const vector<3, T>& center, const vector<3, T>& up)
 {
-    const Vector<3, T> forward = normalize(center - eye);
-    const Vector<3, T> side    = normalize(cross(forward, up));
-    const Vector<3, T> new_up  = cross(side, forward);
+    const vector<3, T> forward = normalize(center - eye);
+    const vector<3, T> side    = normalize(cross(forward, up));
+    const vector<3, T> new_up  = cross(side, forward);
 
     // clang-format off
     return Matrix<4, 4, T> {

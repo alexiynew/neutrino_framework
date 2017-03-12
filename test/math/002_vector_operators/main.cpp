@@ -29,17 +29,17 @@ public:
 private:
     void assign_operator()
     {
-        const Vector4D v4d(1.1, 2.2, 3.3, 4);
-        const Vector3F v3f(5.5f, 6.6f, 7.7f);
-        const Vector2I v2i(1, 2);
+        const vector4D v4d(1.1, 2.2, 3.3, 4);
+        const vector3F v3f(5.5f, 6.6f, 7.7f);
+        const vector2I v2i(1, 2);
 
-        Vector4D v4d_result;
-        Vector3F v3f_result;
-        Vector2I v2i_result;
+        vector4D v4d_result;
+        vector3F v3f_result;
+        vector2I v2i_result;
 
-        Vector4I v4i_result;
-        Vector3D v3d_result;
-        Vector2F v2f_result;
+        vector4I v4i_result;
+        vector3D v3d_result;
+        vector2F v2f_result;
 
         v4d_result = v4d;
         v3f_result = v3f;
@@ -49,21 +49,21 @@ private:
         v3d_result = v3f;
         v2f_result = v2i;
 
-        TEST_ASSERT(v4i_result == Vector4I(1, 2, 3, 4), "Assign to vector4i failed.");
-        TEST_ASSERT(v4d_result == Vector4D(1.1, 2.2, 3.3, 4), "Assign to vector4d failed.");
+        TEST_ASSERT(v4i_result == vector4I(1, 2, 3, 4), "Assign to vector4i failed.");
+        TEST_ASSERT(v4d_result == vector4D(1.1, 2.2, 3.3, 4), "Assign to vector4d failed.");
 
-        TEST_ASSERT(v3d_result == Vector3D(double(5.5f), double(6.6f), double(7.7f)), "Assign to vector3d failed.");
-        TEST_ASSERT(v3f_result == Vector3F(5.5f, 6.6f, 7.7f), "Assign to vector3f failed.");
+        TEST_ASSERT(v3d_result == vector3D(double(5.5f), double(6.6f), double(7.7f)), "Assign to vector3d failed.");
+        TEST_ASSERT(v3f_result == vector3F(5.5f, 6.6f, 7.7f), "Assign to vector3f failed.");
 
-        TEST_ASSERT(v2f_result == Vector2F(1, 2), "Assign to vector2f failed.");
-        TEST_ASSERT(v2i_result == Vector2I(1, 2), "Assign to vector2i failed.");
+        TEST_ASSERT(v2f_result == vector2F(1, 2), "Assign to vector2f failed.");
+        TEST_ASSERT(v2i_result == vector2I(1, 2), "Assign to vector2i failed.");
     }
 
     void access_operator()
     {
-        const Vector4D v4d(1.1, 2.2, 3.3, 4.4);
-        const Vector3F v3f(5.5f, 6.6f, 7.7f);
-        const Vector2I v2i(1, 2);
+        const vector4D v4d(1.1, 2.2, 3.3, 4.4);
+        const vector3F v3f(5.5f, 6.6f, 7.7f);
+        const vector2I v2i(1, 2);
 
         // clang-format off
         TEST_ASSERT(almost_equal(v4d[0], 1.1) &&
@@ -83,9 +83,9 @@ private:
 
     void data_function()
     {
-        const Vector4D v4d(1.1, 2.2, 3.3, 4.4);
-        const Vector3F v3f(5.5f, 6.6f, 7.7f);
-        const Vector2I v2i(1, 2);
+        const vector4D v4d(1.1, 2.2, 3.3, 4.4);
+        const vector3F v3f(5.5f, 6.6f, 7.7f);
+        const vector2I v2i(1, 2);
 
         const double* double_pointer = v4d.data();
         const float* float_pointer   = v3f.data();
@@ -109,190 +109,190 @@ private:
 
     void unary_minus_operator()
     {
-        const Vector4D v4d(1.4);
-        const Vector3F v3f(2.4f);
-        const Vector2I v2i(3);
+        const vector4D v4d(1.4);
+        const vector3F v3f(2.4f);
+        const vector2I v2i(3);
 
-        TEST_ASSERT(-v4d == Vector4D(-1.4, -1.4, -1.4, -1.4), "Inverse of vector4d failed.");
-        TEST_ASSERT(-v3f == Vector3F(-2.4f, -2.4f, -2.4f), "Inverse of vector3f failed.");
-        TEST_ASSERT(-v2i == Vector2I(-3, -3), "Inverse of vector2i failed.");
+        TEST_ASSERT(-v4d == vector4D(-1.4, -1.4, -1.4, -1.4), "Inverse of vector4d failed.");
+        TEST_ASSERT(-v3f == vector3F(-2.4f, -2.4f, -2.4f), "Inverse of vector3f failed.");
+        TEST_ASSERT(-v2i == vector2I(-3, -3), "Inverse of vector2i failed.");
     }
 
     void unary_plus_operator()
     {
-        const Vector4D v4d(1.4);
-        const Vector3F v3f(2.4f);
-        const Vector2I v2i(3);
+        const vector4D v4d(1.4);
+        const vector3F v3f(2.4f);
+        const vector2I v2i(3);
 
-        TEST_ASSERT(+v4d == Vector4D(1.4, 1.4, 1.4, 1.4), "Unary add of vector4d failed.");
-        TEST_ASSERT(+v3f == Vector3F(2.4f, 2.4f, 2.4f), "Unary add of vector3f failed.");
-        TEST_ASSERT(+v2i == Vector2I(3, 3), "Unary add of vector2i failed.");
+        TEST_ASSERT(+v4d == vector4D(1.4, 1.4, 1.4, 1.4), "Unary add of vector4d failed.");
+        TEST_ASSERT(+v3f == vector3F(2.4f, 2.4f, 2.4f), "Unary add of vector3f failed.");
+        TEST_ASSERT(+v2i == vector2I(3, 3), "Unary add of vector2i failed.");
     }
 
     void add_assign_operator()
     {
-        Vector4D v4d(1.0);
-        Vector3F v3f(1.0f);
-        Vector2I v2i(1);
+        vector4D v4d(1.0);
+        vector3F v3f(1.0f);
+        vector2I v2i(1);
 
-        TEST_ASSERT((v4d += Vector4D(1.0)) == Vector4D(2.0), "Add_assign operator failed.");
-        TEST_ASSERT((v4d += 1.0) == Vector4D(3.0), "Add_assign operator failed.");
+        TEST_ASSERT((v4d += vector4D(1.0)) == vector4D(2.0), "Add_assign operator failed.");
+        TEST_ASSERT((v4d += 1.0) == vector4D(3.0), "Add_assign operator failed.");
 
-        TEST_ASSERT((v3f += Vector3F(1.0f)) == Vector3F(2.0f), "Add_assign operator failed.");
-        TEST_ASSERT((v3f += 1.0f) == Vector3F(3.0f), "Add_assign operator failed.");
+        TEST_ASSERT((v3f += vector3F(1.0f)) == vector3F(2.0f), "Add_assign operator failed.");
+        TEST_ASSERT((v3f += 1.0f) == vector3F(3.0f), "Add_assign operator failed.");
 
-        TEST_ASSERT((v2i += Vector2I(1)) == Vector2I(2), "Add_assign operator failed.");
-        TEST_ASSERT((v2i += 1) == Vector2I(3), "Add_assign operator failed.");
+        TEST_ASSERT((v2i += vector2I(1)) == vector2I(2), "Add_assign operator failed.");
+        TEST_ASSERT((v2i += 1) == vector2I(3), "Add_assign operator failed.");
     }
 
     void subtract_assign_operator()
     {
-        Vector4D v4d(3.0);
-        Vector3F v3f(3.0f);
-        Vector2I v2i(3);
+        vector4D v4d(3.0);
+        vector3F v3f(3.0f);
+        vector2I v2i(3);
 
-        TEST_ASSERT((v4d -= Vector4D(1.0)) == Vector4D(2.0), "Subtract_assign operator failed.");
-        TEST_ASSERT((v4d -= 1.0) == Vector4D(1.0), "Subtract_assign operator failed.");
+        TEST_ASSERT((v4d -= vector4D(1.0)) == vector4D(2.0), "Subtract_assign operator failed.");
+        TEST_ASSERT((v4d -= 1.0) == vector4D(1.0), "Subtract_assign operator failed.");
 
-        TEST_ASSERT((v3f -= Vector3F(1.0f)) == Vector3F(2.0f), "Subtract_assign operator failed.");
-        TEST_ASSERT((v3f -= 1.0f) == Vector3F(1.0f), "Subtract_assign operator failed.");
+        TEST_ASSERT((v3f -= vector3F(1.0f)) == vector3F(2.0f), "Subtract_assign operator failed.");
+        TEST_ASSERT((v3f -= 1.0f) == vector3F(1.0f), "Subtract_assign operator failed.");
 
-        TEST_ASSERT((v2i -= Vector2I(1)) == Vector2I(2), "Subtract_assign operator failed.");
-        TEST_ASSERT((v2i -= 1) == Vector2I(1), "Subtract_assign operator failed.");
+        TEST_ASSERT((v2i -= vector2I(1)) == vector2I(2), "Subtract_assign operator failed.");
+        TEST_ASSERT((v2i -= 1) == vector2I(1), "Subtract_assign operator failed.");
     }
 
     void multiplies_assign_operator()
     {
-        Vector4D v4d(1.0);
-        Vector3F v3f(1.0f);
-        Vector2I v2i(1);
+        vector4D v4d(1.0);
+        vector3F v3f(1.0f);
+        vector2I v2i(1);
 
-        TEST_ASSERT((v4d *= Vector4D(2.0)) == Vector4D(2.0), "Multiplies_assign operator failed.");
-        TEST_ASSERT((v4d *= 2.0) == Vector4D(4.0), "Multiplies_assign operator failed.");
+        TEST_ASSERT((v4d *= vector4D(2.0)) == vector4D(2.0), "Multiplies_assign operator failed.");
+        TEST_ASSERT((v4d *= 2.0) == vector4D(4.0), "Multiplies_assign operator failed.");
 
-        TEST_ASSERT((v3f *= Vector3F(2.0f)) == Vector3F(2.0f), "Multiplies_assign operator failed.");
-        TEST_ASSERT((v3f *= 2.0f) == Vector3F(4.0f), "Multiplies_assign operator failed.");
+        TEST_ASSERT((v3f *= vector3F(2.0f)) == vector3F(2.0f), "Multiplies_assign operator failed.");
+        TEST_ASSERT((v3f *= 2.0f) == vector3F(4.0f), "Multiplies_assign operator failed.");
 
-        TEST_ASSERT((v2i *= Vector2I(2)) == Vector2I(2), "Multiplies_assign operator failed.");
-        TEST_ASSERT((v2i *= 2) == Vector2I(4), "Multiplies_assign operator failed.");
+        TEST_ASSERT((v2i *= vector2I(2)) == vector2I(2), "Multiplies_assign operator failed.");
+        TEST_ASSERT((v2i *= 2) == vector2I(4), "Multiplies_assign operator failed.");
     }
 
     void divides_assign_operator()
     {
-        Vector4D v4d(4.0);
-        Vector3F v3f(4.0f);
-        Vector2I v2i(4);
+        vector4D v4d(4.0);
+        vector3F v3f(4.0f);
+        vector2I v2i(4);
 
-        TEST_ASSERT((v4d /= Vector4D(2.0)) == Vector4D(2.0), "Divides_assign operator failed.");
-        TEST_ASSERT((v4d /= 2.0) == Vector4D(1.0), "Divides_assign operator failed.");
+        TEST_ASSERT((v4d /= vector4D(2.0)) == vector4D(2.0), "Divides_assign operator failed.");
+        TEST_ASSERT((v4d /= 2.0) == vector4D(1.0), "Divides_assign operator failed.");
 
-        TEST_ASSERT((v3f /= Vector3F(2.0f)) == Vector3F(2.0f), "Divides_assign operator failed.");
-        TEST_ASSERT((v3f /= 2.0f) == Vector3F(1.0f), "Divides_assign operator failed.");
+        TEST_ASSERT((v3f /= vector3F(2.0f)) == vector3F(2.0f), "Divides_assign operator failed.");
+        TEST_ASSERT((v3f /= 2.0f) == vector3F(1.0f), "Divides_assign operator failed.");
 
-        TEST_ASSERT((v2i /= Vector2I(2)) == Vector2I(2), "Divides_assign operator failed.");
-        TEST_ASSERT((v2i /= 2) == Vector2I(1), "Divides_assign operator failed.");
+        TEST_ASSERT((v2i /= vector2I(2)) == vector2I(2), "Divides_assign operator failed.");
+        TEST_ASSERT((v2i /= 2) == vector2I(1), "Divides_assign operator failed.");
     }
 
     void add_operator()
     {
-        const Vector4D v4d(1.0);
-        const Vector3F v3f(1.0f);
-        const Vector2I v2i(1);
+        const vector4D v4d(1.0);
+        const vector3F v3f(1.0f);
+        const vector2I v2i(1);
 
-        TEST_ASSERT(v4d + v4d == Vector4D(2.0), "Add operator failed.");
-        TEST_ASSERT(v4d + 1.0 == Vector4D(2.0), "Add operator failed.");
-        TEST_ASSERT(1.0 + v4d == Vector4D(2.0), "Add operator failed.");
+        TEST_ASSERT(v4d + v4d == vector4D(2.0), "Add operator failed.");
+        TEST_ASSERT(v4d + 1.0 == vector4D(2.0), "Add operator failed.");
+        TEST_ASSERT(1.0 + v4d == vector4D(2.0), "Add operator failed.");
 
-        TEST_ASSERT(v3f + v3f == Vector3F(2.0f), "Add operator failed.");
-        TEST_ASSERT(v3f + 1.0f == Vector3F(2.0f), "Add operator failed.");
-        TEST_ASSERT(1.0f + v3f == Vector3F(2.0f), "Add operator failed.");
+        TEST_ASSERT(v3f + v3f == vector3F(2.0f), "Add operator failed.");
+        TEST_ASSERT(v3f + 1.0f == vector3F(2.0f), "Add operator failed.");
+        TEST_ASSERT(1.0f + v3f == vector3F(2.0f), "Add operator failed.");
 
-        TEST_ASSERT(v2i + v2i == Vector2I(2), "Add operator failed.");
-        TEST_ASSERT(v2i + 1 == Vector2I(2), "Add operator failed.");
-        TEST_ASSERT(1 + v2i == Vector2I(2), "Add operator failed.");
+        TEST_ASSERT(v2i + v2i == vector2I(2), "Add operator failed.");
+        TEST_ASSERT(v2i + 1 == vector2I(2), "Add operator failed.");
+        TEST_ASSERT(1 + v2i == vector2I(2), "Add operator failed.");
     }
 
     void subtract_operator()
     {
-        const Vector4D v4d(1.0);
-        const Vector3F v3f(1.0f);
-        const Vector2I v2i(1);
+        const vector4D v4d(1.0);
+        const vector3F v3f(1.0f);
+        const vector2I v2i(1);
 
-        TEST_ASSERT(v4d - v4d == Vector4D(0.0), "Subtract operator failed.");
-        TEST_ASSERT(v4d - 1.0 == Vector4D(0.0), "Subtract operator failed.");
-        TEST_ASSERT(1.0 - v4d == Vector4D(0.0), "Subtract operator failed.");
+        TEST_ASSERT(v4d - v4d == vector4D(0.0), "Subtract operator failed.");
+        TEST_ASSERT(v4d - 1.0 == vector4D(0.0), "Subtract operator failed.");
+        TEST_ASSERT(1.0 - v4d == vector4D(0.0), "Subtract operator failed.");
 
-        TEST_ASSERT(v3f - v3f == Vector3F(0.0f), "Subtract operator failed.");
-        TEST_ASSERT(v3f - 1.0f == Vector3F(0.0f), "Subtract operator failed.");
-        TEST_ASSERT(1.0f - v3f == Vector3F(0.0f), "Subtract operator failed.");
+        TEST_ASSERT(v3f - v3f == vector3F(0.0f), "Subtract operator failed.");
+        TEST_ASSERT(v3f - 1.0f == vector3F(0.0f), "Subtract operator failed.");
+        TEST_ASSERT(1.0f - v3f == vector3F(0.0f), "Subtract operator failed.");
 
-        TEST_ASSERT(v2i - v2i == Vector2I(0), "Subtract operator failed.");
-        TEST_ASSERT(v2i - 1 == Vector2I(0), "Subtract operator failed.");
-        TEST_ASSERT(1 - v2i == Vector2I(0), "Subtract operator failed.");
+        TEST_ASSERT(v2i - v2i == vector2I(0), "Subtract operator failed.");
+        TEST_ASSERT(v2i - 1 == vector2I(0), "Subtract operator failed.");
+        TEST_ASSERT(1 - v2i == vector2I(0), "Subtract operator failed.");
     }
 
     void multiply_operator()
     {
-        const Vector4D v4d(2.0);
-        const Vector3F v3f(2.0f);
-        const Vector2I v2i(2);
+        const vector4D v4d(2.0);
+        const vector3F v3f(2.0f);
+        const vector2I v2i(2);
 
-        TEST_ASSERT(v4d * v4d == Vector4D(4.0), "Multiply operator failed.");
-        TEST_ASSERT(v4d * 2.0 == Vector4D(4.0), "Multiply operator failed.");
-        TEST_ASSERT(2.0 * v4d == Vector4D(4.0), "Multiply operator failed.");
+        TEST_ASSERT(v4d * v4d == vector4D(4.0), "Multiply operator failed.");
+        TEST_ASSERT(v4d * 2.0 == vector4D(4.0), "Multiply operator failed.");
+        TEST_ASSERT(2.0 * v4d == vector4D(4.0), "Multiply operator failed.");
 
-        TEST_ASSERT(v3f * v3f == Vector3F(4.0f), "Multiply operator failed.");
-        TEST_ASSERT(v3f * 2.0f == Vector3F(4.0f), "Multiply operator failed.");
-        TEST_ASSERT(2.0f * v3f == Vector3F(4.0f), "Multiply operator failed.");
+        TEST_ASSERT(v3f * v3f == vector3F(4.0f), "Multiply operator failed.");
+        TEST_ASSERT(v3f * 2.0f == vector3F(4.0f), "Multiply operator failed.");
+        TEST_ASSERT(2.0f * v3f == vector3F(4.0f), "Multiply operator failed.");
 
-        TEST_ASSERT(v2i * v2i == Vector2I(4), "Multiply operator failed.");
-        TEST_ASSERT(v2i * 2 == Vector2I(4), "Multiply operator failed.");
-        TEST_ASSERT(2 * v2i == Vector2I(4), "Multiply operator failed.");
+        TEST_ASSERT(v2i * v2i == vector2I(4), "Multiply operator failed.");
+        TEST_ASSERT(v2i * 2 == vector2I(4), "Multiply operator failed.");
+        TEST_ASSERT(2 * v2i == vector2I(4), "Multiply operator failed.");
     }
 
     void divide_operator()
     {
-        const Vector4D v4d(2.0);
-        const Vector3F v3f(2.0f);
-        const Vector2I v2i(2);
+        const vector4D v4d(2.0);
+        const vector3F v3f(2.0f);
+        const vector2I v2i(2);
 
-        TEST_ASSERT(v4d / v4d == Vector4D(1.0), "Divide operator failed.");
-        TEST_ASSERT(v4d / 2.0 == Vector4D(1.0), "Divide operator failed.");
-        TEST_ASSERT(2.0 / v4d == Vector4D(1.0), "Divide operator failed.");
+        TEST_ASSERT(v4d / v4d == vector4D(1.0), "Divide operator failed.");
+        TEST_ASSERT(v4d / 2.0 == vector4D(1.0), "Divide operator failed.");
+        TEST_ASSERT(2.0 / v4d == vector4D(1.0), "Divide operator failed.");
 
-        TEST_ASSERT(v3f / v3f == Vector3F(1.0f), "Divide operator failed.");
-        TEST_ASSERT(v3f / 2.0f == Vector3F(1.0f), "Divide operator failed.");
-        TEST_ASSERT(2.0f / v3f == Vector3F(1.0f), "Divide operator failed.");
+        TEST_ASSERT(v3f / v3f == vector3F(1.0f), "Divide operator failed.");
+        TEST_ASSERT(v3f / 2.0f == vector3F(1.0f), "Divide operator failed.");
+        TEST_ASSERT(2.0f / v3f == vector3F(1.0f), "Divide operator failed.");
 
-        TEST_ASSERT(v2i / v2i == Vector2I(1), "Divide operator failed.");
-        TEST_ASSERT(v2i / 2 == Vector2I(1), "Divide operator failed.");
-        TEST_ASSERT(2 / v2i == Vector2I(1), "Divide operator failed.");
+        TEST_ASSERT(v2i / v2i == vector2I(1), "Divide operator failed.");
+        TEST_ASSERT(v2i / 2 == vector2I(1), "Divide operator failed.");
+        TEST_ASSERT(2 / v2i == vector2I(1), "Divide operator failed.");
     }
 
     void equality_operator()
     {
-        const Vector4D v4d(1.1, 2.2, 3.3, 4);
-        const Vector3F v3f(5.5f, 6.6f, 7.7f);
-        const Vector2I v2i(1, -2);
-        const Vector2U v2u(1, 2);
+        const vector4D v4d(1.1, 2.2, 3.3, 4);
+        const vector3F v3f(5.5f, 6.6f, 7.7f);
+        const vector2I v2i(1, -2);
+        const vector2U v2u(1, 2);
 
-        TEST_ASSERT(v4d == v4d, "Equality operator for Vector4D failed.");
-        TEST_ASSERT(v3f == v3f, "Equality operator for Vector3F failed.");
-        TEST_ASSERT(v2i == v2i, "Equality operator for Vector2I failed.");
-        TEST_ASSERT(v2u == v2u, "Equality operator for Vector2U failed.");
+        TEST_ASSERT(v4d == v4d, "Equality operator for vector4D failed.");
+        TEST_ASSERT(v3f == v3f, "Equality operator for vector3F failed.");
+        TEST_ASSERT(v2i == v2i, "Equality operator for vector2I failed.");
+        TEST_ASSERT(v2u == v2u, "Equality operator for vector2U failed.");
     }
 
     void inequality_operator()
     {
-        const Vector4D v4d(1.1, 2.2, 3.3, 4);
-        const Vector3F v3f(5.5f, 6.6f, 7.7f);
-        const Vector2I v2i(1, -2);
-        const Vector2U v2u(1, 2);
+        const vector4D v4d(1.1, 2.2, 3.3, 4);
+        const vector3F v3f(5.5f, 6.6f, 7.7f);
+        const vector2I v2i(1, -2);
+        const vector2U v2u(1, 2);
 
-        TEST_ASSERT(Vector4D() != v4d, "Equality operator for Vector4D failed.");
-        TEST_ASSERT(Vector3F() != v3f, "Equality operator for Vector3F failed.");
-        TEST_ASSERT(Vector2I() != v2i, "Equality operator for Vector2I failed.");
-        TEST_ASSERT(Vector2U() != v2u, "Equality operator for Vector2U failed.");
+        TEST_ASSERT(vector4D() != v4d, "Equality operator for vector4D failed.");
+        TEST_ASSERT(vector3F() != v3f, "Equality operator for vector3F failed.");
+        TEST_ASSERT(vector2I() != v2i, "Equality operator for vector2I failed.");
+        TEST_ASSERT(vector2U() != v2u, "Equality operator for vector2U failed.");
     }
 };
 
@@ -310,17 +310,17 @@ public:
 private:
     void assign_operator()
     {
-        const Vector4B v4b(true, false, true, false);
-        const Vector3B v3b(true, false, true);
-        const Vector2B v2b(true, false);
+        const vector4B v4b(true, false, true, false);
+        const vector3B v3b(true, false, true);
+        const vector2B v2b(true, false);
 
-        const Vector4D v4d(-1.1, 0.0, 3.3, 0.0);
-        const Vector3F v3f(5.5f, 0.0, -7.7f);
-        const Vector2I v2i(1, 0);
+        const vector4D v4d(-1.1, 0.0, 3.3, 0.0);
+        const vector3F v3f(5.5f, 0.0, -7.7f);
+        const vector2I v2i(1, 0);
 
-        Vector4B v4b_result;
-        Vector3B v3b_result;
-        Vector2B v2b_result;
+        vector4B v4b_result;
+        vector3B v3b_result;
+        vector2B v2b_result;
 
         v4b_result = v4b;
         v3b_result = v3b;
@@ -341,9 +341,9 @@ private:
 
     void access_operator()
     {
-        const Vector4B v4b(true, false, true, false);
-        const Vector3B v3b(true, false, true);
-        const Vector2B v2b(true, false);
+        const vector4B v4b(true, false, true, false);
+        const vector3B v3b(true, false, true);
+        const vector2B v2b(true, false);
 
         TEST_ASSERT(v4b[0] && !v4b[1] && v4b[2] && !v4b[3], "Access to vector4b failed.");
         TEST_ASSERT(v3b[0] && !v3b[1] && v3b[2], "Access to vector3b failed.");
@@ -352,9 +352,9 @@ private:
 
     void data_access()
     {
-        const Vector4B v4b(true, false, true, false);
-        const Vector3B v3b(true, false, true);
-        const Vector2B v2b(true, false);
+        const vector4B v4b(true, false, true, false);
+        const vector3B v3b(true, false, true);
+        const vector2B v2b(true, false);
 
         const bool* bool4 = v4b.data();
         const bool* bool3 = v3b.data();

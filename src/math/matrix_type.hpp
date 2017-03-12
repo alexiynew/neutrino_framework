@@ -83,8 +83,8 @@ struct MatrixBase<4, 4, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<4, T>;
-    using RowType    = Vector<4, T>;
+    using ColumnType = vector<4, T>;
+    using RowType    = vector<4, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0, 0, 0), ColumnType(0, v, 0, 0), ColumnType(0, 0, v, 0), ColumnType(0, 0, 0, v)}
@@ -127,19 +127,19 @@ struct MatrixBase<4, 4, T>
     }
 
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2, const Vector<4, U3>& v3)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2, const vector<4, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
     {
     }
 
     template <typename U0, typename U1, typename U2, typename U3, typename X, typename Y, typename Z, typename W>
-    constexpr MatrixBase(const Vector<3, U0>& v0,
+    constexpr MatrixBase(const vector<3, U0>& v0,
                          const X& s0,
-                         const Vector<3, U1>& v1,
+                         const vector<3, U1>& v1,
                          const Y& s1,
-                         const Vector<3, U2>& v2,
+                         const vector<3, U2>& v2,
                          const Z& s2,
-                         const Vector<3, U3>& v3,
+                         const vector<3, U3>& v3,
                          const W& s3)
         : data{ColumnType(v0, s0), ColumnType(v1, s1), ColumnType(v2, s2), ColumnType(v3, s3)}
     {
@@ -147,41 +147,41 @@ struct MatrixBase<4, 4, T>
 
     template <typename U0, typename U1, typename U2, typename U3, typename X, typename Y, typename Z, typename W>
     constexpr MatrixBase(const X& s0,
-                         const Vector<3, U0>& v0,
+                         const vector<3, U0>& v0,
                          const Y& s1,
-                         const Vector<3, U1>& v1,
+                         const vector<3, U1>& v1,
                          const Z& s2,
-                         const Vector<3, U2>& v2,
+                         const vector<3, U2>& v2,
                          const W& s3,
-                         const Vector<3, U3>& v3)
+                         const vector<3, U3>& v3)
         : data{ColumnType(s0, v0), ColumnType(s1, v1), ColumnType(s2, v2), ColumnType(s3, v3)}
     {
     }
 
     template <typename U00, typename U01, typename U10, typename U11, typename U20, typename U21, typename U30, typename U31>
-    constexpr MatrixBase(const Vector<2, U00>& v00,
-                         const Vector<2, U01>& v01,
-                         const Vector<2, U10>& v10,
-                         const Vector<2, U11>& v11,
-                         const Vector<2, U20>& v20,
-                         const Vector<2, U21>& v21,
-                         const Vector<2, U30>& v30,
-                         const Vector<2, U31>& v31)
+    constexpr MatrixBase(const vector<2, U00>& v00,
+                         const vector<2, U01>& v01,
+                         const vector<2, U10>& v10,
+                         const vector<2, U11>& v11,
+                         const vector<2, U20>& v20,
+                         const vector<2, U21>& v21,
+                         const vector<2, U30>& v30,
+                         const vector<2, U31>& v31)
         : data{ColumnType(v00, v01), ColumnType(v10, v11), ColumnType(v20, v21), ColumnType(v30, v31)}
     {
     }
 
     template <typename U00, typename S01, typename S02, typename U10, typename S11, typename S12, typename U20, typename S21, typename S22, typename U30, typename S31, typename S32>
-    constexpr MatrixBase(const Vector<2, U00>& v00,
+    constexpr MatrixBase(const vector<2, U00>& v00,
                          const S01& s01,
                          const S02& s02,
-                         const Vector<2, U10>& v10,
+                         const vector<2, U10>& v10,
                          const S11& s11,
                          const S12& s12,
-                         const Vector<2, U20>& v20,
+                         const vector<2, U20>& v20,
                          const S21& s21,
                          const S22& s22,
-                         const Vector<2, U30>& v30,
+                         const vector<2, U30>& v30,
                          const S31& s31,
                          const S32& s32)
         : data{ColumnType(v00, s01, s02), ColumnType(v10, s11, s12), ColumnType(v20, s21, s22), ColumnType(v30, s31, s32)}
@@ -190,16 +190,16 @@ struct MatrixBase<4, 4, T>
 
     template <typename S00, typename U01, typename S02, typename S10, typename U11, typename S12, typename S20, typename U21, typename S22, typename S30, typename U31, typename S32>
     constexpr MatrixBase(const S00& s00,
-                         const Vector<2, U01>& v01,
+                         const vector<2, U01>& v01,
                          const S02& s02,
                          const S10& s10,
-                         const Vector<2, U11>& v11,
+                         const vector<2, U11>& v11,
                          const S12& s12,
                          const S20& s20,
-                         const Vector<2, U21>& v21,
+                         const vector<2, U21>& v21,
                          const S22& s22,
                          const S30& s30,
-                         const Vector<2, U31>& v31,
+                         const vector<2, U31>& v31,
                          const S32& s32)
         : data{ColumnType(s00, v01, s02), ColumnType(s10, v11, s12), ColumnType(s20, v21, s22), ColumnType(s30, v31, s32)}
     {
@@ -208,16 +208,16 @@ struct MatrixBase<4, 4, T>
     template <typename S00, typename S01, typename U02, typename S10, typename S11, typename U12, typename S20, typename S21, typename U22, typename S30, typename S31, typename U32>
     constexpr MatrixBase(const S00& s00,
                          const S01& s01,
-                         const Vector<2, U02>& v02,
+                         const vector<2, U02>& v02,
                          const S10& s10,
                          const S11& s11,
-                         const Vector<2, U12>& v12,
+                         const vector<2, U12>& v12,
                          const S20& s20,
                          const S21& s21,
-                         const Vector<2, U22>& v22,
+                         const vector<2, U22>& v22,
                          const S30& s30,
                          const S31& s31,
-                         const Vector<2, U32>& v32)
+                         const vector<2, U32>& v32)
         : data{ColumnType(s00, s01, v02), ColumnType(s10, s11, v12), ColumnType(s20, s21, v22), ColumnType(s30, s31, v32)}
     {
     }
@@ -286,8 +286,8 @@ struct MatrixBase<4, 3, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<3, T>;
-    using RowType    = Vector<4, T>;
+    using ColumnType = vector<3, T>;
+    using RowType    = vector<4, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0, 0), ColumnType(0, v, 0), ColumnType(0, 0, v), ColumnType(0, 0, 0)}
@@ -323,25 +323,25 @@ struct MatrixBase<4, 3, T>
     }
 
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2, const Vector<4, U3>& v3)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2, const vector<4, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
     {
     }
 
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr MatrixBase(const Vector<3, U0>& v0, const Vector<3, U1>& v1, const Vector<3, U2>& v2, const Vector<3, U3>& v3)
+    constexpr MatrixBase(const vector<3, U0>& v0, const vector<3, U1>& v1, const vector<3, U2>& v2, const vector<3, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
     {
     }
 
     template <typename U00, typename S01, typename U10, typename S11, typename U20, typename S21, typename U30, typename S31>
-    constexpr MatrixBase(const Vector<2, U00>& v00,
+    constexpr MatrixBase(const vector<2, U00>& v00,
                          const S01& s01,
-                         const Vector<2, U10>& v10,
+                         const vector<2, U10>& v10,
                          const S11& s11,
-                         const Vector<2, U20>& v20,
+                         const vector<2, U20>& v20,
                          const S21& s21,
-                         const Vector<2, U30>& v30,
+                         const vector<2, U30>& v30,
                          const S31& s31)
         : data{ColumnType(v00, s01), ColumnType(v10, s11), ColumnType(v20, s21), ColumnType(v30, s31)}
     {
@@ -349,13 +349,13 @@ struct MatrixBase<4, 3, T>
 
     template <typename S00, typename U01, typename S10, typename U11, typename S20, typename U21, typename S30, typename U31>
     constexpr MatrixBase(const S00& s00,
-                         const Vector<2, U01>& v01,
+                         const vector<2, U01>& v01,
                          const S10& s10,
-                         const Vector<2, U11>& v11,
+                         const vector<2, U11>& v11,
                          const S20& s20,
-                         const Vector<2, U21>& v21,
+                         const vector<2, U21>& v21,
                          const S30& s30,
-                         const Vector<2, U31>& v31)
+                         const vector<2, U31>& v31)
         : data{ColumnType(s00, v01), ColumnType(s10, v11), ColumnType(s20, v21), ColumnType(s30, v31)}
     {
     }
@@ -424,8 +424,8 @@ struct MatrixBase<4, 2, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<2, T>;
-    using RowType    = Vector<4, T>;
+    using ColumnType = vector<2, T>;
+    using RowType    = vector<4, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0), ColumnType(0, v), ColumnType(0, 0), ColumnType(0, 0)}
@@ -450,19 +450,19 @@ struct MatrixBase<4, 2, T>
     }
 
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2, const Vector<4, U3>& v3)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2, const vector<4, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
     {
     }
 
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr MatrixBase(const Vector<3, U0>& v0, const Vector<3, U1>& v1, const Vector<3, U2>& v2, const Vector<3, U3>& v3)
+    constexpr MatrixBase(const vector<3, U0>& v0, const vector<3, U1>& v1, const vector<3, U2>& v2, const vector<3, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
     {
     }
 
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr MatrixBase(const Vector<2, U0>& v0, const Vector<2, U1>& v1, const Vector<2, U2>& v2, const Vector<2, U3>& v3)
+    constexpr MatrixBase(const vector<2, U0>& v0, const vector<2, U1>& v1, const vector<2, U2>& v2, const vector<2, U3>& v3)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2), ColumnType(v3)}
     {
     }
@@ -531,8 +531,8 @@ struct MatrixBase<3, 4, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<4, T>;
-    using RowType    = Vector<3, T>;
+    using ColumnType = vector<4, T>;
+    using RowType    = vector<3, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0, 0, 0), ColumnType(0, v, 0, 0), ColumnType(0, 0, v, 0)}
@@ -568,17 +568,17 @@ struct MatrixBase<3, 4, T>
     }
 
     template <typename U0, typename U1, typename U2>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2)}
     {
     }
 
     template <typename U0, typename U1, typename U2, typename X, typename Y, typename Z>
-    constexpr MatrixBase(const Vector<3, U0>& v0,
+    constexpr MatrixBase(const vector<3, U0>& v0,
                          const X& s0,
-                         const Vector<3, U1>& v1,
+                         const vector<3, U1>& v1,
                          const Y& s1,
-                         const Vector<3, U2>& v2,
+                         const vector<3, U2>& v2,
                          const Z& s2)
         : data{ColumnType(v0, s0), ColumnType(v1, s1), ColumnType(v2, s2)}
     {
@@ -586,34 +586,34 @@ struct MatrixBase<3, 4, T>
 
     template <typename U0, typename U1, typename U2, typename X, typename Y, typename Z>
     constexpr MatrixBase(const X& s0,
-                         const Vector<3, U0>& v0,
+                         const vector<3, U0>& v0,
                          const Y& s1,
-                         const Vector<3, U1>& v1,
+                         const vector<3, U1>& v1,
                          const Z& s2,
-                         const Vector<3, U2>& v2)
+                         const vector<3, U2>& v2)
         : data{ColumnType(s0, v0), ColumnType(s1, v1), ColumnType(s2, v2)}
     {
     }
 
     template <typename U00, typename U01, typename U10, typename U11, typename U20, typename U21>
-    constexpr MatrixBase(const Vector<2, U00>& v00,
-                         const Vector<2, U01>& v01,
-                         const Vector<2, U10>& v10,
-                         const Vector<2, U11>& v11,
-                         const Vector<2, U20>& v20,
-                         const Vector<2, U21>& v21)
+    constexpr MatrixBase(const vector<2, U00>& v00,
+                         const vector<2, U01>& v01,
+                         const vector<2, U10>& v10,
+                         const vector<2, U11>& v11,
+                         const vector<2, U20>& v20,
+                         const vector<2, U21>& v21)
         : data{ColumnType(v00, v01), ColumnType(v10, v11), ColumnType(v20, v21)}
     {
     }
 
     template <typename U00, typename S01, typename S02, typename U10, typename S11, typename S12, typename U20, typename S21, typename S22>
-    constexpr MatrixBase(const Vector<2, U00>& v00,
+    constexpr MatrixBase(const vector<2, U00>& v00,
                          const S01& s01,
                          const S02& s02,
-                         const Vector<2, U10>& v10,
+                         const vector<2, U10>& v10,
                          const S11& s11,
                          const S12& s12,
-                         const Vector<2, U20>& v20,
+                         const vector<2, U20>& v20,
                          const S21& s21,
                          const S22& s22)
         : data{ColumnType(v00, s01, s02), ColumnType(v10, s11, s12), ColumnType(v20, s21, s22)}
@@ -622,13 +622,13 @@ struct MatrixBase<3, 4, T>
 
     template <typename S00, typename U01, typename S02, typename S10, typename U11, typename S12, typename S20, typename U21, typename S22>
     constexpr MatrixBase(const S00& s00,
-                         const Vector<2, U01>& v01,
+                         const vector<2, U01>& v01,
                          const S02& s02,
                          const S10& s10,
-                         const Vector<2, U11>& v11,
+                         const vector<2, U11>& v11,
                          const S12& s12,
                          const S20& s20,
-                         const Vector<2, U21>& v21,
+                         const vector<2, U21>& v21,
                          const S22& s22)
         : data{ColumnType(s00, v01, s02), ColumnType(s10, v11, s12), ColumnType(s20, v21, s22)}
     {
@@ -637,13 +637,13 @@ struct MatrixBase<3, 4, T>
     template <typename S00, typename S01, typename U02, typename S10, typename S11, typename U12, typename S20, typename S21, typename U22>
     constexpr MatrixBase(const S00& s00,
                          const S01& s01,
-                         const Vector<2, U02>& v02,
+                         const vector<2, U02>& v02,
                          const S10& s10,
                          const S11& s11,
-                         const Vector<2, U12>& v12,
+                         const vector<2, U12>& v12,
                          const S20& s20,
                          const S21& s21,
-                         const Vector<2, U22>& v22)
+                         const vector<2, U22>& v22)
         : data{ColumnType(s00, s01, v02), ColumnType(s10, s11, v12), ColumnType(s20, s21, v22)}
     {
     }
@@ -712,8 +712,8 @@ struct MatrixBase<3, 3, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<3, T>;
-    using RowType    = Vector<3, T>;
+    using ColumnType = vector<3, T>;
+    using RowType    = vector<3, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0, 0), ColumnType(0, v, 0), ColumnType(0, 0, v)}
@@ -746,23 +746,23 @@ struct MatrixBase<3, 3, T>
     }
 
     template <typename U0, typename U1, typename U2>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2)}
     {
     }
 
     template <typename U0, typename U1, typename U2>
-    constexpr MatrixBase(const Vector<3, U0>& v0, const Vector<3, U1>& v1, const Vector<3, U2>& v2)
+    constexpr MatrixBase(const vector<3, U0>& v0, const vector<3, U1>& v1, const vector<3, U2>& v2)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2)}
     {
     }
 
     template <typename U00, typename S01, typename U10, typename S11, typename U20, typename S21>
-    constexpr MatrixBase(const Vector<2, U00>& v00,
+    constexpr MatrixBase(const vector<2, U00>& v00,
                          const S01& s01,
-                         const Vector<2, U10>& v10,
+                         const vector<2, U10>& v10,
                          const S11& s11,
-                         const Vector<2, U20>& v20,
+                         const vector<2, U20>& v20,
                          const S21& s21)
         : data{ColumnType(v00, s01), ColumnType(v10, s11), ColumnType(v20, s21)}
     {
@@ -770,11 +770,11 @@ struct MatrixBase<3, 3, T>
 
     template <typename S00, typename U01, typename S10, typename U11, typename S20, typename U21>
     constexpr MatrixBase(const S00& s00,
-                         const Vector<2, U01>& v01,
+                         const vector<2, U01>& v01,
                          const S10& s10,
-                         const Vector<2, U11>& v11,
+                         const vector<2, U11>& v11,
                          const S20& s20,
-                         const Vector<2, U21>& v21)
+                         const vector<2, U21>& v21)
         : data{ColumnType(s00, v01), ColumnType(s10, v11), ColumnType(s20, v21)}
     {
     }
@@ -843,8 +843,8 @@ struct MatrixBase<3, 2, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<2, T>;
-    using RowType    = Vector<3, T>;
+    using ColumnType = vector<2, T>;
+    using RowType    = vector<3, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0), ColumnType(0, v), ColumnType(0, 0)}
@@ -869,19 +869,19 @@ struct MatrixBase<3, 2, T>
     }
 
     template <typename U0, typename U1, typename U2>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1, const Vector<4, U2>& v2)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2)}
     {
     }
 
     template <typename U0, typename U1, typename U2>
-    constexpr MatrixBase(const Vector<3, U0>& v0, const Vector<3, U1>& v1, const Vector<3, U2>& v2)
+    constexpr MatrixBase(const vector<3, U0>& v0, const vector<3, U1>& v1, const vector<3, U2>& v2)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2)}
     {
     }
 
     template <typename U0, typename U1, typename U2>
-    constexpr MatrixBase(const Vector<2, U0>& v0, const Vector<2, U1>& v1, const Vector<2, U2>& v2)
+    constexpr MatrixBase(const vector<2, U0>& v0, const vector<2, U1>& v1, const vector<2, U2>& v2)
         : data{ColumnType(v0), ColumnType(v1), ColumnType(v2)}
     {
     }
@@ -950,8 +950,8 @@ struct MatrixBase<2, 4, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<4, T>;
-    using RowType    = Vector<2, T>;
+    using ColumnType = vector<4, T>;
+    using RowType    = vector<2, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0, 0, 0), ColumnType(0, v, 0, 0)}
@@ -976,34 +976,34 @@ struct MatrixBase<2, 4, T>
     }
 
     template <typename U0, typename U1>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1)
         : data{ColumnType(v0), ColumnType(v1)}
     {
     }
 
     template <typename U0, typename U1, typename X, typename Y>
-    constexpr MatrixBase(const Vector<3, U0>& v0, const X& s0, const Vector<3, U1>& v1, const Y& s1)
+    constexpr MatrixBase(const vector<3, U0>& v0, const X& s0, const vector<3, U1>& v1, const Y& s1)
         : data{ColumnType(v0, s0), ColumnType(v1, s1)}
     {
     }
 
     template <typename U0, typename U1, typename X, typename Y>
-    constexpr MatrixBase(const X& s0, const Vector<3, U0>& v0, const Y& s1, const Vector<3, U1>& v1)
+    constexpr MatrixBase(const X& s0, const vector<3, U0>& v0, const Y& s1, const vector<3, U1>& v1)
         : data{ColumnType(s0, v0), ColumnType(s1, v1)}
     {
     }
 
     template <typename U00, typename U01, typename U10, typename U11>
-    constexpr MatrixBase(const Vector<2, U00>& v00, const Vector<2, U01>& v01, const Vector<2, U10>& v10, const Vector<2, U11>& v11)
+    constexpr MatrixBase(const vector<2, U00>& v00, const vector<2, U01>& v01, const vector<2, U10>& v10, const vector<2, U11>& v11)
         : data{ColumnType(v00, v01), ColumnType(v10, v11)}
     {
     }
 
     template <typename U00, typename S01, typename S02, typename U10, typename S11, typename S12>
-    constexpr MatrixBase(const Vector<2, U00>& v00,
+    constexpr MatrixBase(const vector<2, U00>& v00,
                          const S01& s01,
                          const S02& s02,
-                         const Vector<2, U10>& v10,
+                         const vector<2, U10>& v10,
                          const S11& s11,
                          const S12& s12)
         : data{ColumnType(v00, s01, s02), ColumnType(v10, s11, s12)}
@@ -1012,10 +1012,10 @@ struct MatrixBase<2, 4, T>
 
     template <typename S00, typename U01, typename S02, typename S10, typename U11, typename S12>
     constexpr MatrixBase(const S00& s00,
-                         const Vector<2, U01>& v01,
+                         const vector<2, U01>& v01,
                          const S02& s02,
                          const S10& s10,
-                         const Vector<2, U11>& v11,
+                         const vector<2, U11>& v11,
                          const S12& s12)
         : data{ColumnType(s00, v01, s02), ColumnType(s10, v11, s12)}
     {
@@ -1024,10 +1024,10 @@ struct MatrixBase<2, 4, T>
     template <typename S00, typename S01, typename U02, typename S10, typename S11, typename U12>
     constexpr MatrixBase(const S00& s00,
                          const S01& s01,
-                         const Vector<2, U02>& v02,
+                         const vector<2, U02>& v02,
                          const S10& s10,
                          const S11& s11,
-                         const Vector<2, U12>& v12)
+                         const vector<2, U12>& v12)
         : data{ColumnType(s00, s01, v02), ColumnType(s10, s11, v12)}
     {
     }
@@ -1096,8 +1096,8 @@ struct MatrixBase<2, 3, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<3, T>;
-    using RowType    = Vector<2, T>;
+    using ColumnType = vector<3, T>;
+    using RowType    = vector<2, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0, 0), ColumnType(0, v, 0)}
@@ -1122,25 +1122,25 @@ struct MatrixBase<2, 3, T>
     }
 
     template <typename U0, typename U1>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1)
         : data{ColumnType(v0), ColumnType(v1)}
     {
     }
 
     template <typename U0, typename U1>
-    constexpr MatrixBase(const Vector<3, U0>& v0, const Vector<3, U1>& v1)
+    constexpr MatrixBase(const vector<3, U0>& v0, const vector<3, U1>& v1)
         : data{ColumnType(v0), ColumnType(v1)}
     {
     }
 
     template <typename U00, typename S01, typename U10, typename S11>
-    constexpr MatrixBase(const Vector<2, U00>& v00, const S01& s01, const Vector<2, U10>& v10, const S11& s11)
+    constexpr MatrixBase(const vector<2, U00>& v00, const S01& s01, const vector<2, U10>& v10, const S11& s11)
         : data{ColumnType(v00, s01), ColumnType(v10, s11)}
     {
     }
 
     template <typename S00, typename U01, typename S10, typename U11>
-    constexpr MatrixBase(const S00& s00, const Vector<2, U01>& v01, const S10& s10, const Vector<2, U11>& v11)
+    constexpr MatrixBase(const S00& s00, const vector<2, U01>& v01, const S10& s10, const vector<2, U11>& v11)
         : data{ColumnType(s00, v01), ColumnType(s10, v11)}
     {
     }
@@ -1209,8 +1209,8 @@ struct MatrixBase<2, 2, T>
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
     using ValueType  = T;
-    using ColumnType = Vector<2, T>;
-    using RowType    = Vector<2, T>;
+    using ColumnType = vector<2, T>;
+    using RowType    = vector<2, T>;
 
     explicit constexpr MatrixBase(const T& v)
         : data{ColumnType(v, 0), ColumnType(0, v)}
@@ -1235,19 +1235,19 @@ struct MatrixBase<2, 2, T>
     }
 
     template <typename U0, typename U1>
-    constexpr MatrixBase(const Vector<4, U0>& v0, const Vector<4, U1>& v1)
+    constexpr MatrixBase(const vector<4, U0>& v0, const vector<4, U1>& v1)
         : data{ColumnType(v0), ColumnType(v1)}
     {
     }
 
     template <typename U0, typename U1>
-    constexpr MatrixBase(const Vector<3, U0>& v0, const Vector<3, U1>& v1)
+    constexpr MatrixBase(const vector<3, U0>& v0, const vector<3, U1>& v1)
         : data{ColumnType(v0), ColumnType(v1)}
     {
     }
 
     template <typename U0, typename U1>
-    constexpr MatrixBase(const Vector<2, U0>& v0, const Vector<2, U1>& v1)
+    constexpr MatrixBase(const vector<2, U0>& v0, const vector<2, U1>& v1)
         : data{ColumnType(v0), ColumnType(v1)}
     {
     }

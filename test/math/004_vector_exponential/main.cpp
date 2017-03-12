@@ -23,13 +23,13 @@ public:
 private:
     void pow_function()
     {
-        const Vector4D result = {1.2100000000000002, 2.25, 0, 3.2400000000000002};
-        TEST_ASSERT(pow(v4d, Vector4D(2)) == result, "Pow function failed.");
+        const vector4D result = {1.2100000000000002, 2.25, 0, 3.2400000000000002};
+        TEST_ASSERT(pow(v4d, vector4D(2)) == result, "Pow function failed.");
     }
 
     void exp_function()
     {
-        const Vector4D result = {3.0041660239464334, 0.22313016014842982, 1, 0.16529888822158653};
+        const vector4D result = {3.0041660239464334, 0.22313016014842982, 1, 0.16529888822158653};
         TEST_ASSERT(exp(v4d) == result, "Exp function failed.");
     }
 
@@ -40,29 +40,29 @@ private:
 
     void exp2_function()
     {
-        const Vector4D result = {2.1435469250725863, 0.35355339059327379, 1, 0.28717458874925872};
+        const vector4D result = {2.1435469250725863, 0.35355339059327379, 1, 0.28717458874925872};
         TEST_ASSERT(exp2(v4d) == result, "Exp2 function failed.");
     }
 
     void log2_function()
     {
-        const Vector4D result = {1.0999999999999999, -1.5, 0, -1.8000000000000003};
+        const vector4D result = {1.0999999999999999, -1.5, 0, -1.8000000000000003};
         TEST_ASSERT(log2(exp2(v4d)) == result, "Log2 function failed.");
     }
 
     void sqrt_function()
     {
-        const Vector4D result = {3, 10, 1.4142135623730951, 1.772004514666935};
-        TEST_ASSERT(sqrt(Vector4D(9.0, 100.0, 2.0, 3.14)) == result, "Sqrt function failed.");
+        const vector4D result = {3, 10, 1.4142135623730951, 1.772004514666935};
+        TEST_ASSERT(sqrt(vector4D(9.0, 100.0, 2.0, 3.14)) == result, "Sqrt function failed.");
     }
 
     void invsqrt_function()
     {
-        const Vector4D result = {0.33333333333333331, 0.10000000000000001, 0.70710678118654746, 0.56433264798310034};
-        TEST_ASSERT(invsqrt(Vector4D(9.0, 100.0, 2.0, 3.14)) == result, "Invsqrt function failed.");
+        const vector4D result = {0.33333333333333331, 0.10000000000000001, 0.70710678118654746, 0.56433264798310034};
+        TEST_ASSERT(invsqrt(vector4D(9.0, 100.0, 2.0, 3.14)) == result, "Invsqrt function failed.");
     }
 
-    Vector4D v4d;
+    vector4D v4d;
 };
 
 int main()
