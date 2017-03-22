@@ -3,3 +3,4 @@ output/
 nbproject/
 .idea/
 .atom-build.yml
+.vimrc
