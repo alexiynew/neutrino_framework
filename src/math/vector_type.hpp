@@ -142,7 +142,7 @@ struct vector<4, T> final
     /**
      * @brief Initializes vector from other one.
      *
-     * @param other Vector to initialize x, y, and z components.
+     * @param other Vector to initialize x, y and z components.
      *
      * @note The w component will be initialized with default value.
      */
@@ -153,7 +153,7 @@ struct vector<4, T> final
      * @brief Initializes vector from scalar value and other vector.
      *
      * @param x_value Value for x component.
-     * @param other Vector to initialize y, z, and w components.
+     * @param other Vector to initialize y, z and w components.
      */
     template <typename U, typename X>
     constexpr vector(const X& x_value, const vector<3, U>& other) noexcept;
@@ -161,7 +161,7 @@ struct vector<4, T> final
     /**
      * @brief Initializes vector from vector and scalar value.
      *
-     * @param other Vector to initialize x, y, and z components.
+     * @param other Vector to initialize x, y and z components.
      * @param w_value Value for w component.
      */
     template <typename U, typename W>
@@ -286,52 +286,158 @@ template <typename T>
 struct vector<3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
+    /**
+     * @brief Values type.
+     */
     using value_type = T;
 
+    /**
+     * @brief Default constructor.
+     *
+     * Initializes vector as {0, 0, 0}
+     */
     constexpr vector() noexcept;
 
+    /**
+     * @brief Default copy constructor
+     */
     constexpr vector(const vector<3, value_type>&) noexcept = default;
-    constexpr vector(vector<3, value_type>&&) noexcept      = default;
 
+    /**
+     * @brief Default move constructor
+     */
+    constexpr vector(vector<3, value_type>&&) noexcept = default;
+
+    /**
+     * @brief Initializes vector with provided values.
+     *
+     * @param x_value Value for x component.
+     * @param y_value Value for y component.
+     * @param z_value Value for z component.
+     */
     template <typename X, typename Y, typename Z>
-    constexpr vector(const X& xx, const Y& yy, const Z& zz) noexcept;
+    constexpr vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept;
 
+    /**
+     * @brief Initializes all components of vector with same value.
+     *
+     * @param value Value for x, y and z components.
+     */
     template <typename U>
-    explicit constexpr vector(const U& v) noexcept;
+    explicit constexpr vector(const U& value) noexcept;
 
+    /**
+     * @brief Initializes all components of vector from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr vector(const U* const p);
+    explicit constexpr vector(const U* const pointer);
 
+    /**
+     * @brief Initializes vector from other one.
+     *
+     * @param other Vector to initialize x, y and z components.
+     */
     template <typename U>
-    explicit constexpr vector(const vector<4, U>& v) noexcept;
+    explicit constexpr vector(const vector<4, U>& other) noexcept;
 
+    /**
+     * @brief Initializes vector from other one.
+     *
+     * @param other Vector to initialize x, y and z components.
+     */
     template <typename U>
-    explicit constexpr vector(const vector<3, U>& v) noexcept;
+    explicit constexpr vector(const vector<3, U>& other) noexcept;
 
+    /**
+     * @brief Initializes vector from other one.
+     *
+     * @param other Vector to initialize x and y components.
+     *
+     * @note The z compnent will be initialized with default value.
+     */
     template <typename U>
-    explicit constexpr vector(const vector<2, U>& v) noexcept;
+    explicit constexpr vector(const vector<2, U>& other) noexcept;
 
-    template <typename U, typename S>
-    constexpr vector(const S& xx, const vector<2, U>& v) noexcept;
+    /**
+     * @brief Initializes vector from scalar value and other vector.
+     *
+     * @param x_value Value for x component.
+     * @param other Vector to initialize y and z components.
+     */
+    template <typename U, typename X>
+    constexpr vector(const X& x_value, const vector<2, U>& other) noexcept;
 
-    template <typename U, typename S>
-    constexpr vector(const vector<2, U>& v, const S& zz) noexcept;
+    /**
+     * @brief Initializes vector from vector and scalar value.
+     *
+     * @param other Vector to initialize x and y components.
+     * @param z_value Value for z component.
+     */
+    template <typename U, typename Z>
+    constexpr vector(const vector<2, U>& v, const Z& z_value) noexcept;
 
+    /**
+     * @brief Default assignment operator.
+     */
     vector<3, value_type>& operator=(const vector<3, value_type>&) noexcept = default;
+
+    /**
+     * @brief Default move assignment operator.
+     */
     vector<3, value_type>& operator=(vector<3, value_type>&&) noexcept = default;
 
+    /**
+     * @brief Assignment operator.
+     */
     template <typename U>
     vector<3, value_type>& operator=(const vector<3, U>& other) noexcept;
 
+    /**
+     * @brief Access operator.
+     *
+     * @return Reference to component of vector.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
     value_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @return Reference to constant component of vector.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
     const value_type& operator[](unsigned int index) const;
 
+    /**
+     * @brief Size of vector.
+     *
+     * @return Count of components in vector.
+     */
     constexpr unsigned int size() const noexcept;
 
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component.
+     */
     value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component.
+     */
     const value_type* data() const noexcept;
 
-    value_type x, y, z;
+    value_type x; /**< The x component */
+    value_type y; /**< The y component */
+    value_type z; /**< The z component */
 };
 
 #pragma mark - vector<2, T> type specialization
