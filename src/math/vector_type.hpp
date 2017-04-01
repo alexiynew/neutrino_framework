@@ -1023,103 +1023,181 @@ inline const typename vector<2, T>::value_type* vector<2, T>::data() const noexc
  * @{
  */
 
+/**
+ * @brief Unary minus operator.
+ *
+ * @param vector Vector to invert.
+ *
+ * @return Inverted version of vector.
+ */
 template <unsigned int N, typename T>
 inline vector<N, T> operator-(vector<N, T> vector)
 {
     return vector *= -T(1);
 }
 
+/**
+ * @brief Unary plus operator.
+ *
+ * @param vector Vector to return.
+ *
+ * @return The same vector.
+ */
 template <unsigned int N, typename T>
 inline vector<N, T> operator+(const vector<N, T>& vector)
 {
     return vector;
 }
 
+/**
+ * @brief Addition assignment operator.
+ *
+ * @param left First addend.
+ * @param right Second addend.
+ *
+ * @return Reference to sum of two vectors.
+ */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator+=(vector<N, T>& lhs, const vector<N, U>& rhs)
+inline vector<N, T>& operator+=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] += vector_impl::create_value_of_type<T>::from(rhs[i]);
+        left[i] += vector_impl::create_value_of_type<T>::from(right[i]);
     }
 
-    return lhs;
+    return left;
 }
 
+/**
+ * @brief Subtractions assignment operator.
+ *
+ * @param left Vector to subtract from.
+ * @param right Vector to subtract.
+ *
+ * @return Reference to difference of two vectors.
+ */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator-=(vector<N, T>& lhs, const vector<N, U>& rhs)
+inline vector<N, T>& operator-=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] -= vector_impl::create_value_of_type<T>::from(rhs[i]);
+        left[i] -= vector_impl::create_value_of_type<T>::from(right[i]);
     }
 
-    return lhs;
+    return left;
 }
 
+/**
+ * @brief Multiplication assignment operator.
+ *
+ * @param left First multiplier.
+ * @param right Second multiplier.
+ *
+ * @return Reference to product of two vectors.
+ */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator*=(vector<N, T>& lhs, const vector<N, U>& rhs)
+inline vector<N, T>& operator*=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] *= vector_impl::create_value_of_type<T>::from(rhs[i]);
+        left[i] *= vector_impl::create_value_of_type<T>::from(right[i]);
     }
 
-    return lhs;
+    return left;
 }
 
+/**
+ * @brief Division assignment operator.
+ *
+ * @param left Dividend vector.
+ * @param right Divider vector.
+ *
+ * @return Reference to quotient of two vectors.
+ */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator/=(vector<N, T>& lhs, const vector<N, U>& rhs)
+inline vector<N, T>& operator/=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] /= vector_impl::create_value_of_type<T>::from(rhs[i]);
+        left[i] /= vector_impl::create_value_of_type<T>::from(right[i]);
     }
 
-    return lhs;
+    return left;
 }
 
-
+/**
+ * @brief Addition assignment operator.
+ *
+ * @param left First addend.
+ * @param right Second addend.
+ *
+ * @return Reference to sum of vector and scalar value.
+ */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator+=(vector<N, T>& lhs, const U& rhs)
+inline vector<N, T>& operator+=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] += vector_impl::create_value_of_type<T>::from(rhs);
+        left[i] += vector_impl::create_value_of_type<T>::from(right);
     }
 
-    return lhs;
+    return left;
 }
 
+/**
+ * @brief Subtractions assignment operator.
+ *
+ * @param left Vector to subtract from.
+ * @param right Scalar value to subtract.
+ *
+ * @return Reference to difference of vector and scalar value.
+ */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator-=(vector<N, T>& lhs, const U& rhs)
+inline vector<N, T>& operator-=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] -= vector_impl::create_value_of_type<T>::from(rhs);
+        left[i] -= vector_impl::create_value_of_type<T>::from(right);
     }
 
-    return lhs;
+    return left;
 }
 
+/**
+ * @brief Multiplication assignment operator.
+ *
+ * @param left First multiplier.
+ * @param right Second multiplier.
+ *
+ * @return Reference to product of vector and scalar value.
+ */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator*=(vector<N, T>& lhs, const U& rhs)
+inline vector<N, T>& operator*=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] *= vector_impl::create_value_of_type<T>::from(rhs);
+        left[i] *= vector_impl::create_value_of_type<T>::from(right);
     }
 
-    return lhs;
+    return left;
 }
 
+/**
+ * @brief Division assignment operator.
+ *
+ * @param left Dividend vector.
+ * @param right Divider scalar value.
+ *
+ * @return Reference to quotient of vector and scalar value.
+ */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs)
+inline vector<N, T>& operator/=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        lhs[i] /= vector_impl::create_value_of_type<T>::from(rhs);
+        left[i] /= vector_impl::create_value_of_type<T>::from(right);
     }
 
-    return lhs;
+    return left;
 }
 
 /**
  * @}
  */
 
+// TODO Make this operators for different types of operands
 #pragma mark - binary operators: vector - vector
 
 /**
@@ -1127,28 +1205,60 @@ inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs)
  * @{
  */
 
+/**
+ * @brief Addition operator.
+ *
+ * @param left First addend.
+ * @param right Second addend.
+ *
+ * @return Sum of two vectors.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator+(vector<N, T> lhs, const vector<N, T>& rhs)
+inline const vector<N, T> operator+(vector<N, T> left, const vector<N, T>& right)
 {
-    return lhs += rhs;
+    return left += right;
 }
 
+/**
+ * @brief Subtraction operator.
+ *
+ * @param left Vector to subtract from.
+ * @param right Scalar value to subtract.
+ *
+ * @return Difference of two vectors.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator-(vector<N, T> lhs, const vector<N, T>& rhs)
+inline const vector<N, T> operator-(vector<N, T> left, const vector<N, T>& right)
 {
-    return lhs -= rhs;
+    return left -= right;
 }
 
+/**
+ * @brief Multiplication operator.
+ *
+ * @param left First multiplier.
+ * @param right Second multiplier.
+ *
+ * @return Product of two vectors.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator*(vector<N, T> lhs, const vector<N, T>& rhs)
+inline const vector<N, T> operator*(vector<N, T> left, const vector<N, T>& right)
 {
-    return lhs *= rhs;
+    return left *= right;
 }
 
+/**
+ * @brief Division operator.
+ *
+ * @param left Dividend vector.
+ * @param right Divider vector.
+ *
+ * @return Quotient of two vectors.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator/(vector<N, T> lhs, const vector<N, T>& rhs)
+inline const vector<N, T> operator/(vector<N, T> left, const vector<N, T>& right)
 {
-    return lhs /= rhs;
+    return left /= right;
 }
 
 /**
@@ -1162,28 +1272,60 @@ inline const vector<N, T> operator/(vector<N, T> lhs, const vector<N, T>& rhs)
  * @{
  */
 
+/**
+ * @brief Addition operator.
+ *
+ * @param left First addend.
+ * @param right Second addend.
+ *
+ * @return Sum of vector and scalar value.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator+(vector<N, T> v, const T& scalar)
+inline const vector<N, T> operator+(vector<N, T> left, const T& right)
 {
-    return v += scalar;
+    return left += right;
 }
 
+/**
+ * @brief Subtractions operator.
+ *
+ * @param left Vector to subtract from.
+ * @param right Scalar value to subtract.
+ *
+ * @return Difference of vector and scalar value.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator-(vector<N, T> v, const T& scalar)
+inline const vector<N, T> operator-(vector<N, T> left, const T& right)
 {
-    return v -= scalar;
+    return left -= right;
 }
 
+/**
+ * @brief Multiplication operator.
+ *
+ * @param left First multiplier.
+ * @param right Second multiplier.
+ *
+ * @return Product of vector and scalar value.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator*(vector<N, T> v, const T& scalar)
+inline const vector<N, T> operator*(vector<N, T> left, const T& right)
 {
-    return v *= scalar;
+    return left *= right;
 }
 
+/**
+ * @brief Division operator.
+ *
+ * @param left Dividend vector.
+ * @param right Divider scalar value.
+ *
+ * @return Quotient of vector and scalar value.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator/(vector<N, T> v, const T& scalar)
+inline const vector<N, T> operator/(vector<N, T> left, const T& right)
 {
-    return v /= scalar;
+    return left /= right;
 }
 
 /**
@@ -1197,32 +1339,64 @@ inline const vector<N, T> operator/(vector<N, T> v, const T& scalar)
  * @{
  */
 
+/**
+ * @brief Addition operator.
+ *
+ * @param left First addend.
+ * @param right Second addend.
+ *
+ * @return Sum of scalar value and vector.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator+(const T& scalar, const vector<N, T>& v)
+inline const vector<N, T> operator+(const T& left, const vector<N, T>& right)
 {
-    vector<N, T> tmp{scalar};
-    return tmp += v;
+    vector<N, T> temp{left};
+    return temp += right;
 }
 
+/**
+ * @brief Subtractions operator.
+ *
+ * @param left Scalar value to subtract from.
+ * @param right Vector to subtract.
+ *
+ * @return Difference of scalar value and vector.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator-(const T& scalar, const vector<N, T>& v)
+inline const vector<N, T> operator-(const T& left, const vector<N, T>& right)
 {
-    vector<N, T> tmp{scalar};
-    return tmp -= v;
+    vector<N, T> temp{left};
+    return temp -= right;
 }
 
+/**
+ * @brief Multiplication operator.
+ *
+ * @param left First multiplier.
+ * @param right Second multiplier.
+ *
+ * @return Product of scalar value and vector.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator*(const T& scalar, const vector<N, T>& v)
+inline const vector<N, T> operator*(const T& left, const vector<N, T>& right)
 {
-    vector<N, T> tmp{scalar};
-    return tmp *= v;
+    vector<N, T> temp{left};
+    return temp *= right;
 }
 
+/**
+ * @brief Division operator.
+ *
+ * @param left Dividend scalar value.
+ * @param right Divider vector.
+ *
+ * @return Quotient of scalar value and vector.
+ */
 template <unsigned int N, typename T>
-inline const vector<N, T> operator/(const T& scalar, const vector<N, T>& v)
+inline const vector<N, T> operator/(const T& left, const vector<N, T>& right)
 {
-    vector<N, T> tmp{scalar};
-    return tmp /= v;
+    vector<N, T> temp{left};
+    return temp /= right;
 }
 
 /**
@@ -1236,46 +1410,95 @@ inline const vector<N, T> operator/(const T& scalar, const vector<N, T>& v)
  * @{
  */
 
+/**
+ * @brief Equality operator.
+ *
+ * @param left Vector to test.
+ * @param right Vector to test.
+ *
+ * @return @b true if left equals right, otherwise @b false.
+ */
 template <typename T>
-inline constexpr bool operator==(const vector<4, T>& a, const vector<4, T>& b)
+inline constexpr bool operator==(const vector<4, T>& left, const vector<4, T>& right)
 {
     const auto& abs = ::framework::math::abs<T>;
-    return abs(a.x - b.x) <= 0 && abs(a.y - b.y) <= 0 && abs(a.z - b.z) <= 0 && abs(a.w - b.w) <= 0;
+    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0 && abs(left.z - right.z) <= 0 &&
+           abs(left.w - right.w) <= 0;
 }
 
+/**
+ * @brief Equality operator.
+ *
+ * @param left Vector to test.
+ * @param right Vector to test.
+ *
+ * @return @b true if left equals right, otherwise @b false.
+ */
 template <typename T>
-inline constexpr bool operator==(const vector<3, T>& a, const vector<3, T>& b)
+inline constexpr bool operator==(const vector<3, T>& left, const vector<3, T>& right)
 {
     const auto& abs = ::framework::math::abs<T>;
-    return abs(a.x - b.x) <= 0 && abs(a.y - b.y) <= 0 && abs(a.z - b.z) <= 0;
+    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0 && abs(left.z - right.z) <= 0;
 }
 
+/**
+ * @brief Equality operator.
+ *
+ * @param left Vector to test.
+ * @param right Vector to test.
+ *
+ * @return @b true if left equals right, otherwise @b false.
+ */
 template <typename T>
-inline constexpr bool operator==(const vector<2, T>& a, const vector<2, T>& b)
+inline constexpr bool operator==(const vector<2, T>& left, const vector<2, T>& right)
 {
     const auto& abs = ::framework::math::abs<T>;
-    return abs(a.x - b.x) <= 0 && abs(a.y - b.y) <= 0;
+    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0;
 }
 
+/**
+ * @brief Inequality operator.
+ *
+ * @param left Vector to test.
+ * @param right Vector to test.
+ *
+ * @return @b true if left isn't equal right, otherwise @b false.
+ */
 template <typename T>
-inline constexpr bool operator!=(const vector<4, T>& a, const vector<4, T>& b)
+inline constexpr bool operator!=(const vector<4, T>& left, const vector<4, T>& right)
 {
     const auto& abs = ::framework::math::abs<T>;
-    return abs(a.x - b.x) > 0 && abs(a.y - b.y) > 0 && abs(a.z - b.z) > 0 && abs(a.w - b.w) > 0;
+    return abs(left.x - right.x) > 0 && abs(left.y - right.y) > 0 && abs(left.z - right.z) > 0 && abs(left.w - right.w) > 0;
 }
 
+/**
+ * @brief Inequality operator.
+ *
+ * @param left Vector to test.
+ * @param right Vector to test.
+ *
+ * @return @b true if left isn't equal right, otherwise @b false.
+ */
 template <typename T>
-inline constexpr bool operator!=(const vector<3, T>& a, const vector<3, T>& b)
+inline constexpr bool operator!=(const vector<3, T>& left, const vector<3, T>& right)
 {
     const auto& abs = ::framework::math::abs<T>;
-    return abs(a.x - b.x) > 0 && abs(a.y - b.y) > 0 && abs(a.z - b.z) > 0;
+    return abs(left.x - right.x) > 0 && abs(left.y - right.y) > 0 && abs(left.z - right.z) > 0;
 }
 
+/**
+ * @brief Inequality operator.
+ *
+ * @param left Vector to test.
+ * @param right Vector to test.
+ *
+ * @return @b true if left isn't equal right, otherwise @b false.
+ */
 template <typename T>
-inline constexpr bool operator!=(const vector<2, T>& a, const vector<2, T>& b)
+inline constexpr bool operator!=(const vector<2, T>& left, const vector<2, T>& right)
 {
     const auto& abs = ::framework::math::abs<T>;
-    return abs(a.x - b.x) > 0 && abs(a.y - b.y);
+    return abs(left.x - right.x) > 0 && abs(left.y - right.y);
 }
 
 /**
