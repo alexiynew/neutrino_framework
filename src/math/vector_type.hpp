@@ -360,7 +360,7 @@ struct vector<3, T> final
      *
      * @param other Vector to initialize x and y components.
      *
-     * @note The z compnent will be initialized with default value.
+     * @note The z component will be initialized with default value.
      */
     template <typename U>
     explicit constexpr vector(const vector<2, U>& other) noexcept;
@@ -1196,7 +1196,6 @@ inline vector<N, T>& operator/=(vector<N, T>& left, const U& right)
  * @}
  */
 
-// TODO Make this operators for different types of operands
 #pragma mark - binary operators: vector - vector
 
 /**
@@ -1212,10 +1211,11 @@ inline vector<N, T>& operator/=(vector<N, T>& left, const U& right)
  *
  * @return Sum of two vectors.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator+(vector<N, T> left, const vector<N, T>& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator+(const vector<N, T>& left, const vector<N, U>& right)
 {
-    return left += right;
+    vector<N, R> temp{left};
+    return temp += right;
 }
 
 /**
@@ -1226,10 +1226,11 @@ inline const vector<N, T> operator+(vector<N, T> left, const vector<N, T>& right
  *
  * @return Difference of two vectors.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator-(vector<N, T> left, const vector<N, T>& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator-(const vector<N, T>& left, const vector<N, U>& right)
 {
-    return left -= right;
+    vector<N, R> temp{left};
+    return temp -= right;
 }
 
 /**
@@ -1240,10 +1241,12 @@ inline const vector<N, T> operator-(vector<N, T> left, const vector<N, T>& right
  *
  * @return Product of two vectors.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator*(vector<N, T> left, const vector<N, T>& right)
+
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator*(const vector<N, T>& left, const vector<N, U>& right)
 {
-    return left *= right;
+    vector<N, R> temp{left};
+    return temp *= right;
 }
 
 /**
@@ -1254,10 +1257,12 @@ inline const vector<N, T> operator*(vector<N, T> left, const vector<N, T>& right
  *
  * @return Quotient of two vectors.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator/(vector<N, T> left, const vector<N, T>& right)
+
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator/(const vector<N, T>& left, const vector<N, U>& right)
 {
-    return left /= right;
+    vector<N, R> temp{left};
+    return temp /= right;
 }
 
 /**
@@ -1279,10 +1284,11 @@ inline const vector<N, T> operator/(vector<N, T> left, const vector<N, T>& right
  *
  * @return Sum of vector and scalar value.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator+(vector<N, T> left, const T& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator+(const vector<N, T>& left, const U& right)
 {
-    return left += right;
+    vector<N, R> temp{left};
+    return temp += right;
 }
 
 /**
@@ -1293,10 +1299,11 @@ inline const vector<N, T> operator+(vector<N, T> left, const T& right)
  *
  * @return Difference of vector and scalar value.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator-(vector<N, T> left, const T& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator-(const vector<N, T>& left, const U& right)
 {
-    return left -= right;
+    vector<N, R> temp{left};
+    return temp -= right;
 }
 
 /**
@@ -1307,10 +1314,11 @@ inline const vector<N, T> operator-(vector<N, T> left, const T& right)
  *
  * @return Product of vector and scalar value.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator*(vector<N, T> left, const T& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator*(const vector<N, T>& left, const U& right)
 {
-    return left *= right;
+    vector<N, R> temp{left};
+    return temp *= right;
 }
 
 /**
@@ -1321,10 +1329,11 @@ inline const vector<N, T> operator*(vector<N, T> left, const T& right)
  *
  * @return Quotient of vector and scalar value.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator/(vector<N, T> left, const T& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator/(const vector<N, T>& left, const U& right)
 {
-    return left /= right;
+    vector<N, R> temp{left};
+    return temp /= right;
 }
 
 /**
@@ -1346,10 +1355,10 @@ inline const vector<N, T> operator/(vector<N, T> left, const T& right)
  *
  * @return Sum of scalar value and vector.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator+(const T& left, const vector<N, T>& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator+(const T& left, const vector<N, U>& right)
 {
-    vector<N, T> temp{left};
+    vector<N, R> temp{left};
     return temp += right;
 }
 
@@ -1361,10 +1370,10 @@ inline const vector<N, T> operator+(const T& left, const vector<N, T>& right)
  *
  * @return Difference of scalar value and vector.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator-(const T& left, const vector<N, T>& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator-(const T& left, const vector<N, U>& right)
 {
-    vector<N, T> temp{left};
+    vector<N, R> temp{left};
     return temp -= right;
 }
 
@@ -1376,10 +1385,10 @@ inline const vector<N, T> operator-(const T& left, const vector<N, T>& right)
  *
  * @return Product of scalar value and vector.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator*(const T& left, const vector<N, T>& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator*(const T& left, const vector<N, U>& right)
 {
-    vector<N, T> temp{left};
+    vector<N, R> temp{left};
     return temp *= right;
 }
 
@@ -1391,10 +1400,10 @@ inline const vector<N, T> operator*(const T& left, const vector<N, T>& right)
  *
  * @return Quotient of scalar value and vector.
  */
-template <unsigned int N, typename T>
-inline const vector<N, T> operator/(const T& left, const vector<N, T>& right)
+template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+inline const vector<N, R> operator/(const T& left, const vector<N, U>& right)
 {
-    vector<N, T> temp{left};
+    vector<N, R> temp{left};
     return temp /= right;
 }
 
