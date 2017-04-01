@@ -31,6 +31,11 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/test)
 # Generate Doxyfile
 configure_file(Doxyfile.in Doxyfile @ONLY)
 
+add_custom_target(install_${PROJECT_NAME}
+        $(MAKE) install
+        DEPENDS ${PROJECT_NAME}
+        COMMENT "Installing ${PROJECT_NAME}")
+
 add_custom_target(documentation
     COMMAND mkdir -p ${DOCS_OUTPUT_PATH}
     COMMAND doxygen ${CMAKE_BINARY_DIR}/Doxyfile
