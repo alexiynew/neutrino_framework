@@ -90,6 +90,7 @@ struct vector<4, T> final
      * @brief Default constructor.
      *
      * Initializes vector as {0, 0, 0, 1}
+     * For bool vector initializes as {false, false, false, false}
      */
     constexpr vector() noexcept;
 
@@ -599,7 +600,7 @@ inline constexpr vector<4, T>::vector() noexcept
     : x{T(0)}
     , y{T(0)}
     , z{T(0)}
-    , w{T(static_cast<T>(not std::is_same<T, bool>::value))}
+    , w{std::is_same<T, bool>::value ? T(0) : T(1)}
 {
 }
 
@@ -639,8 +640,7 @@ inline constexpr vector<4, T>::vector(const vector<4, U>& other) noexcept
 template <typename T>
 template <typename U>
 inline constexpr vector<4, T>::vector(const vector<3, U>& other) noexcept
-    : vector{other.x, other.y, other.z, static_cast<T>(not std::is_same<T, bool>::value)}
-// TODO add test for this
+    : vector{other.x, other.y, other.z, std::is_same<T, bool>::value ? T(0) : T(1)}
 {
 }
 
@@ -661,8 +661,7 @@ inline constexpr vector<4, T>::vector(const vector<3, U>& other, const W& w_valu
 template <typename T>
 template <typename U>
 inline constexpr vector<4, T>::vector(const vector<2, U>& other) noexcept
-    : vector{other.x, other.y, T(0), static_cast<T>(not std::is_same<T, bool>::value)}
-// TODO add test for this
+    : vector{other.x, other.y, T(0), std::is_same<T, bool>::value ? T(0) : T(1)}
 {
 }
 

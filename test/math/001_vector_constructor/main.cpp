@@ -202,6 +202,9 @@ public:
         add_test([this]() { non_default_constructor(); }, "non_default_constructor");
         add_test([this]() { type_cast_constructor(); }, "type_cast_constructor");
         add_test([this]() { pointer_constructor(); }, "pointer_constructor");
+        add_test([this]() { from_vector4b_constructor(); }, "from_vector4b_constructor");
+        add_test([this]() { from_vector3b_constructor(); }, "from_vector3b_constructor");
+        add_test([this]() { from_vector2b_constructor(); }, "from_vector2b_constructor");
     }
 
 private:
@@ -273,6 +276,62 @@ private:
         TEST_ASSERT(v4b == vector4B(false, true, false, true), "Vector4B pointer constructor failed.");
         TEST_ASSERT(v3b == vector3B(false, true, false), "Vector3B pointer constructor failed.");
         TEST_ASSERT(v2b == vector2B(false, true), "Vector2B pointer constructor failed.");
+    }
+
+    void from_vector4b_constructor()
+    {
+        constexpr vector4B v4b = {true, false, true, false};
+
+        constexpr vector3B v3b = vector3B(v4b);
+        constexpr vector2B v2b = vector2B(v4b);
+
+        static_assert(v3b == vector3B(true, false, true), "Vector3B from vector4B constructor failed.");
+        static_assert(v2b == vector2B(true, false), "Vector2B from vector4B constructor failed.");
+    }
+
+    void from_vector3b_constructor()
+    {
+        constexpr vector3B v3b = {true, false, true};
+
+        constexpr vector4B v4b1 = vector4B(v3b);
+        constexpr vector4B v4b2 = vector4B(v3b, true);
+        constexpr vector4B v4b3 = vector4B(true, v3b);
+
+        constexpr vector2B v2b = vector2B(v3b);
+
+        static_assert(v4b1 == vector4B(true, false, true, false), "Vector4B from vector3B constructor failed.");
+        static_assert(v4b2 == vector4B(true, false, true, true),
+                      "Vector4B from vector3B and scalar constructor failed.");
+        static_assert(v4b3 == vector4B(true, true, false, true),
+                      "Vector4B from scalar and vector3B constructor failed.");
+
+        static_assert(v2b == vector2B(true, false), "Vector2B from vector3B constructor failed.");
+    }
+
+    void from_vector2b_constructor()
+    {
+        constexpr vector2B v2b = {true, false};
+
+        constexpr vector4B v4b1 = vector4B(v2b);
+        constexpr vector4B v4b2 = vector4B(v2b, true, false);
+        constexpr vector4B v4b3 = vector4B(true, v2b, false);
+        constexpr vector4B v4b4 = vector4B(true, false, v2b);
+        constexpr vector4B v4b5 = vector4B(v2b, v2b);
+
+        constexpr vector3B v3b1 = vector3B(v2b);
+        constexpr vector3B v3b2 = vector3B(v2b, true);
+        constexpr vector3B v3b3 = vector3B(true, v2b);
+
+        static_assert(v4b1 == vector4B(true, false, false, false), "Vector4B from vector2B constructor failed.");
+        static_assert(v4b2 == vector4B(true, false, true, false), "Vector4B from vector2B and 2 scalars constructor failed.");
+        static_assert(v4b3 == vector4B(true, true, false, false),
+                      "Vector4B from scalar, vector2B and scalar constructor failed.");
+        static_assert(v4b4 == vector4B(true, false, true, false), "Vector4B from 2 scalars and vector2B constructor failed.");
+        static_assert(v4b5 == vector4B(true, false, true, false), "Vector4B from 2 vector2B constructor failed.");
+
+        static_assert(v3b1 == vector3B(true, false, false), "Vector3B from vector2B constructor faileb.");
+        static_assert(v3b2 == vector3B(true, false, true), "Vector3B from vector2B and scalar constructor failed.");
+        static_assert(v3b3 == vector3B(true, true, false), "Vector3B from scalar and vector2B constructor failed.");
     }
 };
 
