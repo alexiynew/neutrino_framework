@@ -98,9 +98,9 @@ private:
 
     void outer_product_function()
     {
-        const vector2F v2(1, 2);
-        const vector3F v3(1, 2, 3);
-        const vector4F v4(1, 2, 3, 4);
+        const vector2f v2(1, 2);
+        const vector3f v3(1, 2, 3);
+        const vector4f v4(1, 2, 3, 4);
 
         const Matrix4x4F result44 = {1, 2, 3, 4, 2, 4, 6, 8, 3, 6, 9, 12, 4, 8, 12, 16};
         const Matrix4x3F result43 = {1, 2, 3, 2, 4, 6, 3, 6, 9, 4, 8, 12};

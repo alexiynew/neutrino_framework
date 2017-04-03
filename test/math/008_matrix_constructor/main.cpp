@@ -144,9 +144,9 @@ private:
         const Matrix3x2F m32(data2);
         const Matrix2x2F m22(data2);
 
-        const vector4F tmp4f = {0, 1, 2, 3};
-        const vector3F tmp3f = {0, 1, 2};
-        const vector2F tmp2f = {0, 1};
+        const vector4f tmp4f = {0, 1, 2, 3};
+        const vector3f tmp3f = {0, 1, 2};
+        const vector2f tmp2f = {0, 1};
 
         TEST_ASSERT(m44 == Matrix4x4F(tmp4f, tmp4f, tmp4f, tmp4f), "Matrix4x4 from pointer constructor failed.");
         TEST_ASSERT(m34 == Matrix3x4F(tmp4f, tmp4f, tmp4f), "Matrix3x4 from pointer constructor failed.");
@@ -172,52 +172,52 @@ private:
         };
 
         const Matrix4x4F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4),
-            vector4I(1, 2, 3, 4),
-            vector4F(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4),
+            vector4i(1, 2, 3, 4),
+            vector4f(1, 2, 3, 4)
         };
 
         const Matrix4x4F m3 = {
-            vector3F(1, 2, 3), 4,
-            vector3D(1, 2, 3), 4,
-            vector3I(1, 2, 3), 4,
-            vector3F(1, 2, 3), 4
+            vector3f(1, 2, 3), 4,
+            vector3d(1, 2, 3), 4,
+            vector3i(1, 2, 3), 4,
+            vector3f(1, 2, 3), 4
         };
 
         const Matrix4x4F m4 = {
-            1, vector3F(2, 3, 4),
-            1, vector3D(2, 3, 4),
-            1, vector3I(2, 3, 4),
-            1, vector3F(2, 3, 4)
+            1, vector3f(2, 3, 4),
+            1, vector3d(2, 3, 4),
+            1, vector3i(2, 3, 4),
+            1, vector3f(2, 3, 4)
         };
 
         const Matrix4x4F m5 = {
-            vector2F(1, 2), vector2F(3, 4),
-            vector2D(1, 2), vector2D(3, 4),
-            vector2I(1, 2), vector2I(3, 4),
-            vector2F(1, 2), vector2F(3, 4)
+            vector2f(1, 2), vector2f(3, 4),
+            vector2d(1, 2), vector2d(3, 4),
+            vector2i(1, 2), vector2i(3, 4),
+            vector2f(1, 2), vector2f(3, 4)
         };
 
         const Matrix4x4F m6 = {
-            vector2F(1, 2), 3, 4,
-            vector2D(1, 2), 3, 4,
-            vector2I(1, 2), 3, 4,
-            vector2F(1, 2), 3, 4
+            vector2f(1, 2), 3, 4,
+            vector2d(1, 2), 3, 4,
+            vector2i(1, 2), 3, 4,
+            vector2f(1, 2), 3, 4
         };
 
         const Matrix4x4F m7 = {
-            1, vector2F(2, 3), 4,
-            1, vector2D(2, 3), 4,
-            1, vector2I(2, 3), 4,
-            1, vector2F(2, 3), 4
+            1, vector2f(2, 3), 4,
+            1, vector2d(2, 3), 4,
+            1, vector2i(2, 3), 4,
+            1, vector2f(2, 3), 4
         };
 
         const Matrix4x4F m8 = {
-            1, 2, vector2F(3, 4),
-            1, 2, vector2D(3, 4),
-            1, 2, vector2I(3, 4),
-            1, 2, vector2F(3, 4)
+            1, 2, vector2f(3, 4),
+            1, 2, vector2d(3, 4),
+            1, 2, vector2i(3, 4),
+            1, 2, vector2f(3, 4)
         };
         // clang-format on
 
@@ -241,31 +241,31 @@ private:
         };
 
         const Matrix4x3F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4),
-            vector4I(1, 2, 3, 4),
-            vector4F(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4),
+            vector4i(1, 2, 3, 4),
+            vector4f(1, 2, 3, 4)
         };
 
         const Matrix4x3F m3 = {
-            vector3F(1, 2, 3),
-            vector3D(1, 2, 3),
-            vector3I(1, 2, 3),
-            vector3F(1, 2, 3)
+            vector3f(1, 2, 3),
+            vector3d(1, 2, 3),
+            vector3i(1, 2, 3),
+            vector3f(1, 2, 3)
         };
 
         const Matrix4x3F m4 = {
-            vector2F(1, 2), 3,
-            vector2D(1, 2), 3,
-            vector2I(1, 2), 3,
-            vector2F(1, 2), 3
+            vector2f(1, 2), 3,
+            vector2d(1, 2), 3,
+            vector2i(1, 2), 3,
+            vector2f(1, 2), 3
         };
 
         const Matrix4x3F m5 = {
-            1, vector2F(2, 3),
-            1, vector2D(2, 3),
-            1, vector2I(2, 3),
-            1, vector2F(2, 3)
+            1, vector2f(2, 3),
+            1, vector2d(2, 3),
+            1, vector2i(2, 3),
+            1, vector2f(2, 3)
         };
         // clang-format on
 
@@ -286,24 +286,24 @@ private:
         };
 
         const Matrix4x2F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4),
-            vector4I(1, 2, 3, 4),
-            vector4F(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4),
+            vector4i(1, 2, 3, 4),
+            vector4f(1, 2, 3, 4)
         };
 
         const Matrix4x2F m3 = {
-            vector3F(1, 2, 3),
-            vector3D(1, 2, 3),
-            vector3I(1, 2, 3),
-            vector3F(1, 2, 3)
+            vector3f(1, 2, 3),
+            vector3d(1, 2, 3),
+            vector3i(1, 2, 3),
+            vector3f(1, 2, 3)
         };
 
         const Matrix4x2F m4 = {
-            vector2F(1, 2),
-            vector2D(1, 2),
-            vector2I(1, 2),
-            vector2F(1, 2)
+            vector2f(1, 2),
+            vector2d(1, 2),
+            vector2i(1, 2),
+            vector2f(1, 2)
         };
         // clang-format on
 
@@ -322,45 +322,45 @@ private:
         };
 
         const Matrix3x4F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4),
-            vector4I(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4),
+            vector4i(1, 2, 3, 4)
         };
 
         const Matrix3x4F m3 = {
-            vector3F(1, 2, 3), 4,
-            vector3D(1, 2, 3), 4,
-            vector3I(1, 2, 3), 4
+            vector3f(1, 2, 3), 4,
+            vector3d(1, 2, 3), 4,
+            vector3i(1, 2, 3), 4
         };
 
         const Matrix3x4F m4 = {
-            1, vector3F(2, 3, 4),
-            1, vector3D(2, 3, 4),
-            1, vector3I(2, 3, 4)
+            1, vector3f(2, 3, 4),
+            1, vector3d(2, 3, 4),
+            1, vector3i(2, 3, 4)
         };
 
         const Matrix3x4F m5 = {
-            vector2F(1, 2), vector2F(3, 4),
-            vector2D(1, 2), vector2D(3, 4),
-            vector2I(1, 2), vector2I(3, 4)
+            vector2f(1, 2), vector2f(3, 4),
+            vector2d(1, 2), vector2d(3, 4),
+            vector2i(1, 2), vector2i(3, 4)
         };
 
         const Matrix3x4F m6 = {
-            vector2F(1, 2), 3, 4,
-            vector2D(1, 2), 3, 4,
-            vector2I(1, 2), 3, 4
+            vector2f(1, 2), 3, 4,
+            vector2d(1, 2), 3, 4,
+            vector2i(1, 2), 3, 4
         };
 
         const Matrix3x4F m7 = {
-            1, vector2F(2, 3), 4,
-            1, vector2D(2, 3), 4,
-            1, vector2I(2, 3), 4
+            1, vector2f(2, 3), 4,
+            1, vector2d(2, 3), 4,
+            1, vector2i(2, 3), 4
         };
 
         const Matrix3x4F m8 = {
-            1, 2, vector2F(3, 4),
-            1, 2, vector2D(3, 4),
-            1, 2, vector2I(3, 4)\
+            1, 2, vector2f(3, 4),
+            1, 2, vector2d(3, 4),
+            1, 2, vector2i(3, 4)\
         };
         // clang-format on
 
@@ -383,27 +383,27 @@ private:
         };
 
         const Matrix3x3F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4),
-            vector4I(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4),
+            vector4i(1, 2, 3, 4)
         };
 
         const Matrix3x3F m3 = {
-            vector3F(1, 2, 3),
-            vector3D(1, 2, 3),
-            vector3I(1, 2, 3)
+            vector3f(1, 2, 3),
+            vector3d(1, 2, 3),
+            vector3i(1, 2, 3)
         };
 
         const Matrix3x3F m4 = {
-            vector2F(1, 2), 3,
-            vector2D(1, 2), 3,
-            vector2I(1, 2), 3
+            vector2f(1, 2), 3,
+            vector2d(1, 2), 3,
+            vector2i(1, 2), 3
         };
 
         const Matrix3x3F m5 = {
-            1, vector2F(2, 3),
-            1, vector2D(2, 3),
-            1, vector2I(2, 3)
+            1, vector2f(2, 3),
+            1, vector2d(2, 3),
+            1, vector2i(2, 3)
         };
         // clang-format on
 
@@ -423,21 +423,21 @@ private:
         };
 
         const Matrix3x2F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4),
-            vector4I(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4),
+            vector4i(1, 2, 3, 4)
         };
 
         const Matrix3x2F m3 = {
-            vector3F(1, 2, 3),
-            vector3D(1, 2, 3),
-            vector3I(1, 2, 3)
+            vector3f(1, 2, 3),
+            vector3d(1, 2, 3),
+            vector3i(1, 2, 3)
         };
 
         const Matrix3x2F m4 = {
-            vector2F(1, 2),
-            vector2D(1, 2),
-            vector2I(1, 2)
+            vector2f(1, 2),
+            vector2d(1, 2),
+            vector2i(1, 2)
         };
         // clang-format on
 
@@ -455,38 +455,38 @@ private:
         };
 
         const Matrix2x4F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4)
         };
 
         const Matrix2x4F m3 = {
-            vector3F(1, 2, 3), 4,
-            vector3D(1, 2, 3), 4
+            vector3f(1, 2, 3), 4,
+            vector3d(1, 2, 3), 4
         };
 
         const Matrix2x4F m4 = {
-            1, vector3F(2, 3, 4),
-            1, vector3D(2, 3, 4)
+            1, vector3f(2, 3, 4),
+            1, vector3d(2, 3, 4)
         };
 
         const Matrix2x4F m5 = {
-            vector2F(1, 2), vector2F(3, 4),
-            vector2D(1, 2), vector2D(3, 4)
+            vector2f(1, 2), vector2f(3, 4),
+            vector2d(1, 2), vector2d(3, 4)
         };
 
         const Matrix2x4F m6 = {
-            vector2F(1, 2), 3, 4,
-            vector2D(1, 2), 3, 4
+            vector2f(1, 2), 3, 4,
+            vector2d(1, 2), 3, 4
         };
 
         const Matrix2x4F m7 = {
-            1, vector2F(2, 3), 4,
-            1, vector2D(2, 3), 4
+            1, vector2f(2, 3), 4,
+            1, vector2d(2, 3), 4
         };
 
         const Matrix2x4F m8 = {
-            1, 2, vector2F(3, 4),
-            1, 2, vector2D(3, 4)
+            1, 2, vector2f(3, 4),
+            1, 2, vector2d(3, 4)
         };
         // clang-format on
 
@@ -508,23 +508,23 @@ private:
         };
 
         const Matrix2x3F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4)
         };
 
         const Matrix2x3F m3 = {
-            vector3F(1, 2, 3),
-            vector3D(1, 2, 3)
+            vector3f(1, 2, 3),
+            vector3d(1, 2, 3)
         };
 
         const Matrix2x3F m4 = {
-            vector2F(1, 2), 3,
-            vector2D(1, 2), 3
+            vector2f(1, 2), 3,
+            vector2d(1, 2), 3
         };
 
         const Matrix2x3F m5 = {
-            1, vector2F(2, 3),
-            1, vector2D(2, 3)
+            1, vector2f(2, 3),
+            1, vector2d(2, 3)
         };
         // clang-format on
 
@@ -543,18 +543,18 @@ private:
         };
 
         const Matrix2x2F m2 = {
-            vector4F(1, 2, 3, 4),
-            vector4D(1, 2, 3, 4)
+            vector4f(1, 2, 3, 4),
+            vector4d(1, 2, 3, 4)
         };
 
         const Matrix2x2F m3 = {
-            vector3F(1, 2, 3),
-            vector3D(1, 2, 3)
+            vector3f(1, 2, 3),
+            vector3d(1, 2, 3)
         };
 
         const Matrix2x2F m4 = {
-            vector2F(1, 2),
-            vector2D(1, 2)
+            vector2f(1, 2),
+            vector2d(1, 2)
         };
         // clang-format on
 

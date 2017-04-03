@@ -32,9 +32,9 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(translate(m, vector2F(10, 10)) == m1, "Translate by (10, 10) failed.");
-        TEST_ASSERT(translate(m1, vector2F(-10, -10)) == m, "Translate by (-10, -10) failed.");
-        TEST_ASSERT(translate(m, vector2F(0, 0)) == m, "Translate by (0, 0) failed.");
+        TEST_ASSERT(translate(m, vector2f(10, 10)) == m1, "Translate by (10, 10) failed.");
+        TEST_ASSERT(translate(m1, vector2f(-10, -10)) == m, "Translate by (-10, -10) failed.");
+        TEST_ASSERT(translate(m, vector2f(0, 0)) == m, "Translate by (0, 0) failed.");
     }
 
     void rotate_function()
@@ -157,13 +157,13 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(scale(m, vector2F(1, 1)) == m11, "Scale by (1, 1) failed.");
-        TEST_ASSERT(scale(m, vector2F(5, 5)) == m55, "Scale by (5, 5) failed.");
-        TEST_ASSERT(scale(m, vector2F(1, 2)) == m12, "Scale by (1, 2) failed.");
-        TEST_ASSERT(scale(m, vector2F(2, 1)) == m21, "Scale by (2, 1) failed.");
-        TEST_ASSERT(scale(m, vector2F(0, 1)) == m01, "Scale by (0, 1) failed.");
-        TEST_ASSERT(scale(m, vector2F(1, 0)) == m10, "Scale by (1, 0) failed.");
-        TEST_ASSERT(scale(m, vector2F(0, 0)) == m00, "Scale by (0, 0) failed.");
+        TEST_ASSERT(scale(m, vector2f(1, 1)) == m11, "Scale by (1, 1) failed.");
+        TEST_ASSERT(scale(m, vector2f(5, 5)) == m55, "Scale by (5, 5) failed.");
+        TEST_ASSERT(scale(m, vector2f(1, 2)) == m12, "Scale by (1, 2) failed.");
+        TEST_ASSERT(scale(m, vector2f(2, 1)) == m21, "Scale by (2, 1) failed.");
+        TEST_ASSERT(scale(m, vector2f(0, 1)) == m01, "Scale by (0, 1) failed.");
+        TEST_ASSERT(scale(m, vector2f(1, 0)) == m10, "Scale by (1, 0) failed.");
+        TEST_ASSERT(scale(m, vector2f(0, 0)) == m00, "Scale by (0, 0) failed.");
     }
 
     void shear_function()
@@ -200,11 +200,11 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(shear(m, vector2F(0.0f, 0.0f)) == m, "Shear by (0, 0) failed.");
-        TEST_ASSERT(shear(m, vector2F(1.0f, 0.0f)) == m1, "Shear by (1, 0) failed.");
-        TEST_ASSERT(shear(m, vector2F(-2.0f, 0.0f)) == m2, "Shear by (-2, 0) failed.");
-        TEST_ASSERT(shear(m, vector2F(0.0f, 1.0f)) == m3, "Shear by (0, 1) failed.");
-        TEST_ASSERT(shear(m, vector2F(0.0f, -2.0f)) == m4, "Shear by (0, -2) failed.");
+        TEST_ASSERT(shear(m, vector2f(0.0f, 0.0f)) == m, "Shear by (0, 0) failed.");
+        TEST_ASSERT(shear(m, vector2f(1.0f, 0.0f)) == m1, "Shear by (1, 0) failed.");
+        TEST_ASSERT(shear(m, vector2f(-2.0f, 0.0f)) == m2, "Shear by (-2, 0) failed.");
+        TEST_ASSERT(shear(m, vector2f(0.0f, 1.0f)) == m3, "Shear by (0, 1) failed.");
+        TEST_ASSERT(shear(m, vector2f(0.0f, -2.0f)) == m4, "Shear by (0, -2) failed.");
     }
 };
 
@@ -234,7 +234,7 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(createTranslateMatrix(vector3F(1, 2, 3)) == m,
+        TEST_ASSERT(createTranslateMatrix(vector3f(1, 2, 3)) == m,
                     "Create_translate_matrix function from (1, 2, 3) failed.");
     }
 
@@ -284,13 +284,13 @@ private:
         };
         // clang-format on
 
-        const Matrix4F resultx = createRotateMatrix(vector3F(1, 0, 0), radians(90.0f));
-        const Matrix4F resulty = createRotateMatrix(vector3F(0, 1, 0), radians(90.0f));
-        const Matrix4F resultz = createRotateMatrix(vector3F(0, 0, 1), radians(90.0f));
+        const Matrix4F resultx = createRotateMatrix(vector3f(1, 0, 0), radians(90.0f));
+        const Matrix4F resulty = createRotateMatrix(vector3f(0, 1, 0), radians(90.0f));
+        const Matrix4F resultz = createRotateMatrix(vector3f(0, 0, 1), radians(90.0f));
 
-        const Matrix4F result1 = createRotateMatrix(vector3F(1, 0, 1), radians(12.0f));
-        const Matrix4F result2 = createRotateMatrix(vector3F(0, 1, 0), radians(259.0f));
-        const Matrix4F result3 = createRotateMatrix(vector3F(1, 1, 1), radians(-49.0f));
+        const Matrix4F result1 = createRotateMatrix(vector3f(1, 0, 1), radians(12.0f));
+        const Matrix4F result2 = createRotateMatrix(vector3f(0, 1, 0), radians(259.0f));
+        const Matrix4F result3 = createRotateMatrix(vector3f(1, 1, 1), radians(-49.0f));
 
         TEST_ASSERT(almost_equal(resultx, mx, 1), "Create_rotate_matrix function from (1, 0, 0) by 90 degrees failed.");
         TEST_ASSERT(almost_equal(resulty, my, 1), "Create_rotate_matrix function from (0, 1, 0) by 90 degrees failed.");
@@ -314,7 +314,7 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(createScaleMatrix(vector3F(4, 3, 2)) == m, "Create_scale_matrix function from (4, 3, 2) failed.");
+        TEST_ASSERT(createScaleMatrix(vector3f(4, 3, 2)) == m, "Create_scale_matrix function from (4, 3, 2) failed.");
     }
 
     void translate_function()
@@ -356,11 +356,11 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(translate(m, vector3F(0, 0, 0)) == m, "Translate matrix to (0, 0, 0) failed.");
-        TEST_ASSERT(translate(m, vector3F(1, 0, 0)) == m1, "Translate matrix to (1, 0, 0) failed.");
-        TEST_ASSERT(translate(m, vector3F(0, 1, 0)) == m2, "Translate matrix to (0, 1, 0) failed.");
-        TEST_ASSERT(translate(m, vector3F(0, 0, 1)) == m3, "Translate matrix to (0, 0, 1) failed.");
-        TEST_ASSERT(translate(m, vector3F(1, 2, 3)) == m4, "Translate matrix to (1, 2, 3) failed.");
+        TEST_ASSERT(translate(m, vector3f(0, 0, 0)) == m, "Translate matrix to (0, 0, 0) failed.");
+        TEST_ASSERT(translate(m, vector3f(1, 0, 0)) == m1, "Translate matrix to (1, 0, 0) failed.");
+        TEST_ASSERT(translate(m, vector3f(0, 1, 0)) == m2, "Translate matrix to (0, 1, 0) failed.");
+        TEST_ASSERT(translate(m, vector3f(0, 0, 1)) == m3, "Translate matrix to (0, 0, 1) failed.");
+        TEST_ASSERT(translate(m, vector3f(1, 2, 3)) == m4, "Translate matrix to (1, 2, 3) failed.");
     }
 
     void scale_function()
@@ -395,10 +395,10 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(scale(m, vector3F(1, 1, 1)) == m, "Scale matrix to (1, 1, 1) failed.");
-        TEST_ASSERT(scale(m, vector3F(2, 1, 1)) == m1, "Scale matrix to (2, 1, 1) failed.");
-        TEST_ASSERT(scale(m, vector3F(1, 2, 1)) == m2, "Scale matrix to (1, 2, 1) failed.");
-        TEST_ASSERT(scale(m, vector3F(1, 1, 2)) == m3, "Scale matrix to (1, 1, 2) failed.");
+        TEST_ASSERT(scale(m, vector3f(1, 1, 1)) == m, "Scale matrix to (1, 1, 1) failed.");
+        TEST_ASSERT(scale(m, vector3f(2, 1, 1)) == m1, "Scale matrix to (2, 1, 1) failed.");
+        TEST_ASSERT(scale(m, vector3f(1, 2, 1)) == m2, "Scale matrix to (1, 2, 1) failed.");
+        TEST_ASSERT(scale(m, vector3f(1, 1, 2)) == m3, "Scale matrix to (1, 1, 2) failed.");
     }
 
     void rotate_function()
@@ -433,9 +433,9 @@ private:
         };
         // clang-format on
 
-        const Matrix4F resultx = rotate(m, vector3F(1, 0, 0), radians(90.0f));
-        const Matrix4F resulty = rotate(m, vector3F(0, 1, 0), radians(90.0f));
-        const Matrix4F resultz = rotate(m, vector3F(0, 0, 1), radians(90.0f));
+        const Matrix4F resultx = rotate(m, vector3f(1, 0, 0), radians(90.0f));
+        const Matrix4F resulty = rotate(m, vector3f(0, 1, 0), radians(90.0f));
+        const Matrix4F resultz = rotate(m, vector3f(0, 0, 1), radians(90.0f));
 
         TEST_ASSERT(almost_equal(resultx, mx, 1), "Rotate matrix from (1, 0, 0) by 90 degrees failed.");
         TEST_ASSERT(almost_equal(resulty, my, 1), "Rotate matrix from (0, 1, 0) by 90 degrees failed.");
@@ -469,17 +469,17 @@ private:
         };
         // clang-format on
 
-        const vector4F v1{0, 0, 0, 1};
-        const vector4F v2{1, 1, 1, 1};
-        const vector4F v3{2, 2, 2, 1};
+        const vector4f v1{0, 0, 0, 1};
+        const vector4f v2{1, 1, 1, 1};
+        const vector4f v3{2, 2, 2, 1};
 
         const Matrix4F projection = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f);
 
         TEST_ASSERT(projection == target, "Orthogonal projection matrix is not correct.");
 
-        TEST_ASSERT(projection * v1 == vector4F(0, 0, 0, 1), "Projection of (0, 0, 0, 1) is not correct.");
-        TEST_ASSERT(projection * v2 == vector4F(0.5, 0.5, 0.5, 1), "Projection of (1, 1, 1, 1) is not correct.");
-        TEST_ASSERT(projection * v3 == vector4F(1, 1, 1, 1), "Projection of (2, 2, 2, 1) is not correct.");
+        TEST_ASSERT(projection * v1 == vector4f(0, 0, 0, 1), "Projection of (0, 0, 0, 1) is not correct.");
+        TEST_ASSERT(projection * v2 == vector4f(0.5, 0.5, 0.5, 1), "Projection of (1, 1, 1, 1) is not correct.");
+        TEST_ASSERT(projection * v3 == vector4f(1, 1, 1, 1), "Projection of (2, 2, 2, 1) is not correct.");
     }
 
     void ortho2d_function()
@@ -511,13 +511,13 @@ private:
 
         TEST_ASSERT(projection == target, "Frustum projection matrix is not correct.");
 
-        const vector4F v1{2, 2, -1, 1};
-        const vector4F v2{2, 2, -1.5f, 1};
-        const vector4F v3{2, 2, -2, 1};
+        const vector4f v1{2, 2, -1, 1};
+        const vector4f v2{2, 2, -1.5f, 1};
+        const vector4f v3{2, 2, -2, 1};
 
-        TEST_ASSERT(projection * v1 == vector4F(2, 2, -1, 1), "Projection of (2, 2, -1, 1) is not correct.");
-        TEST_ASSERT(projection * v2 == vector4F(2, 2, 0.5f, 1.5f), "Projection of (2, 2, -1.5, 1) is not correct.");
-        TEST_ASSERT(projection * v3 == vector4F(2, 2, 2, 2), "Projection of (2, 2, -2, 1) is not correct.");
+        TEST_ASSERT(projection * v1 == vector4f(2, 2, -1, 1), "Projection of (2, 2, -1, 1) is not correct.");
+        TEST_ASSERT(projection * v2 == vector4f(2, 2, 0.5f, 1.5f), "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(projection * v3 == vector4f(2, 2, 2, 2), "Projection of (2, 2, -2, 1) is not correct.");
     }
 
     void perspective_function()
@@ -535,13 +535,13 @@ private:
 
         TEST_ASSERT(projection == target, "Perspective projection matrix is not correct.");
 
-        const vector4F v1{2, 2, -1, 1};
-        const vector4F v2{2, 2, -1.5f, 1};
-        const vector4F v3{2, 2, -2, 1};
+        const vector4f v1{2, 2, -1, 1};
+        const vector4f v2{2, 2, -1.5f, 1};
+        const vector4f v3{2, 2, -2, 1};
 
-        TEST_ASSERT(projection * v1 == vector4F(2, 2, -1, 1), "Projection of (2, 2, -1, 1) is not correct.");
-        TEST_ASSERT(projection * v2 == vector4F(2, 2, 0.5f, 1.5f), "Projection of (2, 2, -1.5, 1) is not correct.");
-        TEST_ASSERT(projection * v3 == vector4F(2, 2, 2, 2), "Projection of (2, 2, -2, 1) is not correct.");
+        TEST_ASSERT(projection * v1 == vector4f(2, 2, -1, 1), "Projection of (2, 2, -1, 1) is not correct.");
+        TEST_ASSERT(projection * v2 == vector4f(2, 2, 0.5f, 1.5f), "Projection of (2, 2, -1.5, 1) is not correct.");
+        TEST_ASSERT(projection * v3 == vector4f(2, 2, 2, 2), "Projection of (2, 2, -2, 1) is not correct.");
     }
 
     void perspective_fov_function()
@@ -567,13 +567,13 @@ private:
 
         TEST_ASSERT(almost_equal(projection, target, 1), "Infinite perspective projection matrix is not correct.");
 
-        const vector4F v1{2, 2, -1, 1};
-        const vector4F v2{2, 2, -1.5f, 1};
-        const vector4F v3{2, 2, -2, 1};
+        const vector4f v1{2, 2, -1, 1};
+        const vector4f v2{2, 2, -1.5f, 1};
+        const vector4f v3{2, 2, -2, 1};
 
-        const vector4F test1 = vector4F(2, 2, -1, 1);
-        const vector4F test2 = vector4F(2, 2, -0.5f, 1.5f);
-        const vector4F test3 = vector4F(2, 2, -0.0000001192092895f, 2);
+        const vector4f test1 = vector4f(2, 2, -1, 1);
+        const vector4f test2 = vector4f(2, 2, -0.5f, 1.5f);
+        const vector4f test3 = vector4f(2, 2, -0.0000001192092895f, 2);
 
         TEST_ASSERT(almost_equal(projection * v1, test1), "Projection of (2, 2, -1, 1) is not correct.");
         TEST_ASSERT(almost_equal(projection * v2, test2, 1), "Projection of (2, 2, -1.5, 1) is not correct.");
@@ -605,25 +605,25 @@ private:
         const Matrix4F model;
         const Matrix4F projection = perspectiveFov(float(HALF_PI), width, height, near, far);
 
-        const vector4F viewport{0, 0, width, height};
+        const vector4f viewport{0, 0, width, height};
 
-        const vector3F obj1{0, 0, -1};
-        const vector3F obj2{0, 1, -1};
-        const vector3F obj3{1.5, 0, -1};
-        const vector3F obj4{-1.5, -1, -1};
-        const vector3F obj5{0, 0, -10};
+        const vector3f obj1{0, 0, -1};
+        const vector3f obj2{0, 1, -1};
+        const vector3f obj3{1.5, 0, -1};
+        const vector3f obj4{-1.5, -1, -1};
+        const vector3f obj5{0, 0, -10};
 
-        const vector3F projected1{width / 2, height / 2, -0.0000000596046447f};
-        const vector3F projected2{width / 2, height, -0.0000000596046447f};
-        const vector3F projected3{width, height / 2, -0.0000000596046447f};
-        const vector3F projected4{0, 0, -0.0000000596046447f};
-        const vector3F projected5{width / 2, height / 2, 1};
+        const vector3f projected1{width / 2, height / 2, -0.0000000596046447f};
+        const vector3f projected2{width / 2, height, -0.0000000596046447f};
+        const vector3f projected3{width, height / 2, -0.0000000596046447f};
+        const vector3f projected4{0, 0, -0.0000000596046447f};
+        const vector3f projected5{width / 2, height / 2, 1};
 
-        const vector3F project1 = project(obj1, model, projection, viewport);
-        const vector3F project2 = project(obj2, model, projection, viewport);
-        const vector3F project3 = project(obj3, model, projection, viewport);
-        const vector3F project4 = project(obj4, model, projection, viewport);
-        const vector3F project5 = project(obj5, model, projection, viewport);
+        const vector3f project1 = project(obj1, model, projection, viewport);
+        const vector3f project2 = project(obj2, model, projection, viewport);
+        const vector3f project3 = project(obj3, model, projection, viewport);
+        const vector3f project4 = project(obj4, model, projection, viewport);
+        const vector3f project5 = project(obj5, model, projection, viewport);
 
         TEST_ASSERT(almost_equal(project1, projected1), "Projection of (0, 0, -1) is not correct.");
         TEST_ASSERT(almost_equal(project2, projected2), "Projection of (0, 1, -1) is not correct.");
@@ -643,25 +643,25 @@ private:
         const Matrix4F model;
         const Matrix4F projection = perspectiveFov(float(HALF_PI), width, height, near, far);
 
-        const vector4F viewport{0, 0, width, height};
+        const vector4f viewport{0, 0, width, height};
 
-        const vector3F obj1{0, 0, -1};
-        const vector3F obj2{0, 1, -1};
-        const vector3F obj3{1.5, 0, -1};
-        const vector3F obj4{-1.5, -1, -1};
-        const vector3F obj5{0, 0, -10};
+        const vector3f obj1{0, 0, -1};
+        const vector3f obj2{0, 1, -1};
+        const vector3f obj3{1.5, 0, -1};
+        const vector3f obj4{-1.5, -1, -1};
+        const vector3f obj5{0, 0, -10};
 
-        const vector3F project1 = project(obj1, model, projection, viewport);
-        const vector3F project2 = project(obj2, model, projection, viewport);
-        const vector3F project3 = project(obj3, model, projection, viewport);
-        const vector3F project4 = project(obj4, model, projection, viewport);
-        const vector3F project5 = project(obj5, model, projection, viewport);
+        const vector3f project1 = project(obj1, model, projection, viewport);
+        const vector3f project2 = project(obj2, model, projection, viewport);
+        const vector3f project3 = project(obj3, model, projection, viewport);
+        const vector3f project4 = project(obj4, model, projection, viewport);
+        const vector3f project5 = project(obj5, model, projection, viewport);
 
-        const vector3F unproject1 = unProject(project1, model, projection, viewport);
-        const vector3F unproject2 = unProject(project2, model, projection, viewport);
-        const vector3F unproject3 = unProject(project3, model, projection, viewport);
-        const vector3F unproject4 = unProject(project4, model, projection, viewport);
-        const vector3F unproject5 = unProject(project5, model, projection, viewport);
+        const vector3f unproject1 = unProject(project1, model, projection, viewport);
+        const vector3f unproject2 = unProject(project2, model, projection, viewport);
+        const vector3f unproject3 = unProject(project3, model, projection, viewport);
+        const vector3f unproject4 = unProject(project4, model, projection, viewport);
+        const vector3f unproject5 = unProject(project5, model, projection, viewport);
 
         TEST_ASSERT(almost_equal(unproject1, obj1), "UnProjection of (0, 0, -1) is not correct.");
         TEST_ASSERT(almost_equal(unproject2, obj2), "UnProjection of (0, 1, -1) is not correct.");
@@ -684,9 +684,9 @@ private:
         const float width  = 480.0f;
         const float height = 320.0f;
 
-        const vector4F viewport{0, 0, width, height};
+        const vector4f viewport{0, 0, width, height};
 
-        const Matrix4F result = pickMatrix(vector2F(0, 0), vector2F(width / 2, height / 2), viewport);
+        const Matrix4F result = pickMatrix(vector2f(0, 0), vector2f(width / 2, height / 2), viewport);
 
         TEST_ASSERT(result == region, "Pick region matrix is not correct.");
     }
@@ -702,9 +702,9 @@ private:
         };
         // clang-format on
 
-        const vector3F eye(0, 0, 0);
-        const vector3F center(1, 0, 0);
-        const vector3F up(0, 1, 0);
+        const vector3f eye(0, 0, 0);
+        const vector3f center(1, 0, 0);
+        const vector3f up(0, 1, 0);
 
         const Matrix4F result = lookAt(eye, center, up);
 

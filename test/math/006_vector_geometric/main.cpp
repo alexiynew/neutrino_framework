@@ -29,8 +29,8 @@ private:
 
     void distance_function()
     {
-        const vector3F v3f1 = {3.0f, 3.0f, 5.0f};
-        const vector3F v3f2 = {2.0f, 1.0f, 2.0f};
+        const vector3f v3f1 = {3.0f, 3.0f, 5.0f};
+        const vector3f v3f2 = {2.0f, 1.0f, 2.0f};
 
         TEST_ASSERT(almost_equal(distance(v3f1, v3f2), length(v3f)), "Distance function failed.");
         TEST_ASSERT(almost_equal(distance(v3f1, v3f2), length(v3f)), "Distance function failed.");
@@ -43,7 +43,7 @@ private:
 
     void cross_function()
     {
-        TEST_ASSERT(cross(vector3F(3.0f, 2.0f, 1.0f), v3f) == vector3F(4, -8, 4), "Cross function failed.");
+        TEST_ASSERT(cross(vector3f(3.0f, 2.0f, 1.0f), v3f) == vector3f(4, -8, 4), "Cross function failed.");
     }
 
     void normalize_function()
@@ -53,7 +53,7 @@ private:
 
     void faceforward_function()
     {
-        TEST_ASSERT(faceforward(v3f, v3f, vector3F(1.0f, 2.0f, -3.0f)) == v3f, "Faceforward function failed.");
+        TEST_ASSERT(faceforward(v3f, v3f, vector3f(1.0f, 2.0f, -3.0f)) == v3f, "Faceforward function failed.");
         TEST_ASSERT(faceforward(v3f, v3f, v3f) == -v3f, "Faceforward function failed.");
     }
 
@@ -64,12 +64,12 @@ private:
 
     void refraction_function()
     {
-        const vector3F result = refraction(v3f, normalize(v3f), 1.0f);
+        const vector3f result = refraction(v3f, normalize(v3f), 1.0f);
 
         TEST_ASSERT(almost_equal(result, reflection(v3f, normalize(v3f))), "Refraction function failed.");
     }
 
-    vector3F v3f;
+    vector3f v3f;
 };
 
 

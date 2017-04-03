@@ -31,7 +31,7 @@ public:
 private:
     void radians_function()
     {
-        TEST_ASSERT(radians(v4d) == vector4D(PI, TAU, PI / 2, PI / 4), "Radians function failed.");
+        TEST_ASSERT(radians(v4d) == vector4d(PI, TAU, PI / 2, PI / 4), "Radians function failed.");
     }
 
     void degrees_function()
@@ -41,13 +41,13 @@ private:
 
     void sin_function()
     {
-        const vector4D sin_vector(sin(PI), sin(TAU), sin(PI / 2), sin(PI / 4));
+        const vector4d sin_vector(sin(PI), sin(TAU), sin(PI / 2), sin(PI / 4));
         TEST_ASSERT(almost_equal(sin(radians(v4d)), sin_vector), "Sin function failed.");
     }
 
     void cos_function()
     {
-        const vector4D cos_vector(cos(PI), cos(TAU), cos(PI / 2), cos(PI / 4));
+        const vector4d cos_vector(cos(PI), cos(TAU), cos(PI / 2), cos(PI / 4));
         TEST_ASSERT(almost_equal(cos(radians(v4d)), cos_vector), "Cos function failed.");
     }
 
@@ -58,59 +58,59 @@ private:
 
     void asin_function()
     {
-        const vector4D asin_vector(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4);
+        const vector4d asin_vector(asin(sin(PI)), asin(sin(TAU)), PI / 2, PI / 4);
         TEST_ASSERT(almost_equal(asin(sin(radians(v4d))), asin_vector, 1), "Asin function failed.");
     }
 
     void acos_function()
     {
-        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), vector4D(PI, 0, PI / 2, PI / 4)), "Acos function failed.");
+        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), vector4d(PI, 0, PI / 2, PI / 4)), "Acos function failed.");
     }
 
     void atan_function()
     {
-        const vector3D result1 = atan(tan(radians(v3d)));
-        const vector3D result2 = atan(sin(radians(v3d)), cos(radians(v3d)));
+        const vector3d result1 = atan(tan(radians(v3d)));
+        const vector3d result2 = atan(sin(radians(v3d)), cos(radians(v3d)));
 
-        TEST_ASSERT(almost_equal(result1, vector3D(PI / 4, PI / 3, atan(tan(PI)))), "Atan from tan failed.");
-        TEST_ASSERT(almost_equal(result2, vector3D(PI / 4, PI / 3, PI)), "Atan from sin failed.");
+        TEST_ASSERT(almost_equal(result1, vector3d(PI / 4, PI / 3, atan(tan(PI)))), "Atan from tan failed.");
+        TEST_ASSERT(almost_equal(result2, vector3d(PI / 4, PI / 3, PI)), "Atan from sin failed.");
     }
 
     void sinh_function()
     {
-        const vector3D sinh_vector(0.86867096148600953, 1.2493670505239751, 11.548739357257748);
+        const vector3d sinh_vector(0.86867096148600953, 1.2493670505239751, 11.548739357257748);
         TEST_ASSERT(almost_equal(sinh(radians(v3d)), sinh_vector), "Sinh function failed.");
     }
 
     void cosh_function()
     {
-        const vector3D cosh_vector(1.3246090892520057, 1.6002868577023861, 11.591953275521519);
+        const vector3d cosh_vector(1.3246090892520057, 1.6002868577023861, 11.591953275521519);
         TEST_ASSERT(almost_equal(cosh(radians(v3d)), cosh_vector), "Cosh function failed.");
     }
 
     void tanh_function()
     {
-        const vector3D tanh_vector = sinh(radians(v3d)) / cosh(radians(v3d));
+        const vector3d tanh_vector = sinh(radians(v3d)) / cosh(radians(v3d));
         TEST_ASSERT(almost_equal(tanh(radians(v3d)), tanh_vector, 1), "Tanh function failed.");
     }
 
     void asinh_function()
     {
-        TEST_ASSERT(almost_equal(asinh(sinh(radians(v3d))), vector3D(PI / 4, PI / 3, PI), 1), "Asinh function failed.");
+        TEST_ASSERT(almost_equal(asinh(sinh(radians(v3d))), vector3d(PI / 4, PI / 3, PI), 1), "Asinh function failed.");
     }
 
     void acosh_function()
     {
-        TEST_ASSERT(almost_equal(acosh(cosh(radians(v3d))), vector3D(PI / 4, PI / 3, PI), 1), "Acosh function failed.");
+        TEST_ASSERT(almost_equal(acosh(cosh(radians(v3d))), vector3d(PI / 4, PI / 3, PI), 1), "Acosh function failed.");
     }
 
     void atanh_function()
     {
-        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), vector3D(PI / 4, PI / 3, PI), 4), "Atanh function failed.");
+        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), vector3d(PI / 4, PI / 3, PI), 4), "Atanh function failed.");
     }
 
-    vector4D v4d;
-    vector3D v3d;
+    vector4d v4d;
+    vector3d v3d;
 };
 
 
