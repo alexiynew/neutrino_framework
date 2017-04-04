@@ -37,7 +37,7 @@ namespace framework {
  */
 namespace math {
 
-#pragma mark - vector Type
+#pragma mark - vector type
 
 /**
  * @defgroup common_vectors Common vector types
@@ -67,7 +67,7 @@ using vector4b = vector<4, bool>;
  * @}
  */
 
-#pragma mark - Matrix Type
+#pragma mark - matrix type
 
 /**
  * @defgroup common_matrices Common matrix types
