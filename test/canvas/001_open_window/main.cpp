@@ -1,4 +1,6 @@
 #include <canvas/canvas.hpp>
+#include <chrono>
+#include <thread>
 #include <unit_test/suite.hpp>
 
 #pragma mark - test for canvas
@@ -18,7 +20,10 @@ private:
         framework::canvas canvas(640, 480);
         canvas.show();
 
-        TEST_FAIL("Test fail.");
+        std::chrono::seconds timespan(1);
+        std::this_thread::sleep_for(timespan);
+
+        canvas.hide();
     }
 };
 

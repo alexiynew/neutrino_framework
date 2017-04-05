@@ -9,5 +9,7 @@ add_library(${LIB_NAME} SHARED ${LIB_SOURCES})
 
 target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
 
+target_link_libraries(${LIB_NAME} X11)
+
 install(TARGETS ${LIB_NAME} DESTINATION lib/${LIB_NAME})
 install(FILES ${LIB_HEADERS} DESTINATION lib/${LIB_NAME})

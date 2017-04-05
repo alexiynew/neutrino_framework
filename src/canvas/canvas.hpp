@@ -2,23 +2,28 @@
  * @file canvas.hpp
  * @brief Canvas class.
  * @author Fedorov Alexey
- * @date 08.03.2017
+ * @date 04.04.2017
  */
 
 #ifndef FRAMEWORK_CANVAS_HPP
 #define FRAMEWORK_CANVAS_HPP
 
+#include <canvas/canvas_implementation.hpp>
+#include <memory>
+
 namespace framework {
+
 class canvas
 {
 public:
-    canvas(unsigned int widht, unsigned int height);
+    canvas(unsigned int width, unsigned int height);
+    ~canvas();
 
     void show();
+    void hide();
 
 private:
-    unsigned int m_width;
-    unsigned int m_height;
+    std::unique_ptr<canvas_implementation> m_implementation;
 };
 }
 
