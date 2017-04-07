@@ -26,11 +26,11 @@ namespace math {
 namespace vector_impl {
 
 /**
- * @brief Used to cast float numbers to boolean without warnings.
+ * @brief Workaround to cast float numbers to boolean without warnings.
  * @{
  */
 template <typename T>
-struct create_value_of_type
+struct cast_to
 {
     template <typename U>
     inline static constexpr T from(const U& value)
@@ -40,7 +40,7 @@ struct create_value_of_type
 };
 
 template <>
-struct create_value_of_type<bool>
+struct cast_to<bool>
 {
     template <typename U>
     inline static constexpr bool from(const U& value)
@@ -52,6 +52,59 @@ struct create_value_of_type<bool>
 /**
  * @}
  */
+
+/**
+ * @brief Helper that checks if all presented types are arithmetic.
+ * @{
+ */
+template <typename T, typename... Args>
+struct are_all_arithmetic
+{
+    static constexpr bool value = std::is_arithmetic<T>::value && are_all_arithmetic<Args...>::value;
+};
+
+template <typename T>
+struct are_all_arithmetic<T>
+{
+    static constexpr bool value = std::is_arithmetic<T>::value;
+};
+
+/**
+ * @}
+ */
+
+/**
+ * @brief Helper that give common type for all presented types.
+ * @{
+ */
+template <bool C, typename... Args>
+struct common_type_impl
+{
+};
+
+template <typename T, typename... Args>
+struct common_type_impl<true, T, Args...>
+{
+    using type = typename std::common_type<T, typename common_type_impl<true, Args...>::type>::type;
+};
+
+template <typename T>
+struct common_type_impl<true, T>
+{
+    using type = T;
+};
+
+/**
+ * @}
+ */
+
+/**
+ * @brief Shortcut to get the common type.
+ * Also used for SFINAE to get correct overload of vector operators.
+ */
+template <typename... Args>
+using common_type = common_type_impl<are_all_arithmetic<Args...>::value, Args...>;
+
 
 } // namespace vector_impl
 
@@ -607,10 +660,10 @@ inline constexpr vector<4, T>::vector() noexcept
 template <typename T>
 template <typename X, typename Y, typename Z, typename W>
 inline constexpr vector<4, T>::vector(const X& x_value, const Y& y_value, const Z& z_value, const W& w_value) noexcept
-    : x{vector_impl::create_value_of_type<T>::from(x_value)}
-    , y{vector_impl::create_value_of_type<T>::from(y_value)}
-    , z{vector_impl::create_value_of_type<T>::from(z_value)}
-    , w{vector_impl::create_value_of_type<T>::from(w_value)}
+    : x{vector_impl::cast_to<T>::from(x_value)}
+    , y{vector_impl::cast_to<T>::from(y_value)}
+    , z{vector_impl::cast_to<T>::from(z_value)}
+    , w{vector_impl::cast_to<T>::from(w_value)}
 {
 }
 
@@ -706,10 +759,10 @@ template <typename T>
 template <typename U>
 inline vector<4, T>& vector<4, T>::operator=(const vector<4, U>& other) noexcept
 {
-    x = vector_impl::create_value_of_type<T>::from(other.x);
-    y = vector_impl::create_value_of_type<T>::from(other.y);
-    z = vector_impl::create_value_of_type<T>::from(other.z);
-    w = vector_impl::create_value_of_type<T>::from(other.w);
+    x = vector_impl::cast_to<T>::from(other.x);
+    y = vector_impl::cast_to<T>::from(other.y);
+    z = vector_impl::cast_to<T>::from(other.z);
+    w = vector_impl::cast_to<T>::from(other.w);
 
     return *this;
 }
@@ -775,9 +828,9 @@ inline constexpr vector<3, T>::vector() noexcept
 template <typename T>
 template <typename X, typename Y, typename Z>
 inline constexpr vector<3, T>::vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept
-    : x{vector_impl::create_value_of_type<T>::from(x_value)}
-    , y{vector_impl::create_value_of_type<T>::from(y_value)}
-    , z{vector_impl::create_value_of_type<T>::from(z_value)}
+    : x{vector_impl::cast_to<T>::from(x_value)}
+    , y{vector_impl::cast_to<T>::from(y_value)}
+    , z{vector_impl::cast_to<T>::from(z_value)}
 {
 }
 
@@ -818,15 +871,15 @@ inline constexpr vector<3, T>::vector(const vector<2, U>& other) noexcept
 }
 
 template <typename T>
-template <typename U, typename S>
-inline constexpr vector<3, T>::vector(const S& x_value, const vector<2, U>& other) noexcept
+template <typename U, typename X>
+inline constexpr vector<3, T>::vector(const X& x_value, const vector<2, U>& other) noexcept
     : vector{x_value, other.x, other.y}
 {
 }
 
 template <typename T>
-template <typename U, typename S>
-inline constexpr vector<3, T>::vector(const vector<2, U>& other, const S& z_value) noexcept
+template <typename U, typename Z>
+inline constexpr vector<3, T>::vector(const vector<2, U>& other, const Z& z_value) noexcept
     : vector{other.x, other.y, z_value}
 {
 }
@@ -844,9 +897,9 @@ template <typename T>
 template <typename U>
 inline vector<3, T>& vector<3, T>::operator=(const vector<3, U>& other) noexcept
 {
-    x = vector_impl::create_value_of_type<T>::from(other.x);
-    y = vector_impl::create_value_of_type<T>::from(other.y);
-    z = vector_impl::create_value_of_type<T>::from(other.z);
+    x = vector_impl::cast_to<T>::from(other.x);
+    y = vector_impl::cast_to<T>::from(other.y);
+    z = vector_impl::cast_to<T>::from(other.z);
 
     return *this;
 }
@@ -912,8 +965,8 @@ inline constexpr vector<2, T>::vector() noexcept
 template <typename T>
 template <typename X, typename Y>
 inline constexpr vector<2, T>::vector(const X& x_value, const Y& y_value) noexcept
-    : x{vector_impl::create_value_of_type<T>::from(x_value)}
-    , y{vector_impl::create_value_of_type<T>::from(y_value)}
+    : x{vector_impl::cast_to<T>::from(x_value)}
+    , y{vector_impl::cast_to<T>::from(y_value)}
 {
 }
 
@@ -965,8 +1018,8 @@ template <typename T>
 template <typename U>
 inline vector<2, T>& vector<2, T>::operator=(const vector<2, U>& other) noexcept
 {
-    x = vector_impl::create_value_of_type<T>::from(other.x);
-    y = vector_impl::create_value_of_type<T>::from(other.y);
+    x = vector_impl::cast_to<T>::from(other.x);
+    y = vector_impl::cast_to<T>::from(other.y);
 
     return *this;
 }
@@ -1060,7 +1113,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator+=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] += vector_impl::create_value_of_type<T>::from(right[i]);
+        left[i] += vector_impl::cast_to<T>::from(right[i]);
     }
 
     return left;
@@ -1078,7 +1131,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator-=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] -= vector_impl::create_value_of_type<T>::from(right[i]);
+        left[i] -= vector_impl::cast_to<T>::from(right[i]);
     }
 
     return left;
@@ -1096,7 +1149,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator*=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] *= vector_impl::create_value_of_type<T>::from(right[i]);
+        left[i] *= vector_impl::cast_to<T>::from(right[i]);
     }
 
     return left;
@@ -1114,7 +1167,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator/=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] /= vector_impl::create_value_of_type<T>::from(right[i]);
+        left[i] /= vector_impl::cast_to<T>::from(right[i]);
     }
 
     return left;
@@ -1132,7 +1185,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator+=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] += vector_impl::create_value_of_type<T>::from(right);
+        left[i] += vector_impl::cast_to<T>::from(right);
     }
 
     return left;
@@ -1150,7 +1203,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator-=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] -= vector_impl::create_value_of_type<T>::from(right);
+        left[i] -= vector_impl::cast_to<T>::from(right);
     }
 
     return left;
@@ -1168,7 +1221,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator*=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] *= vector_impl::create_value_of_type<T>::from(right);
+        left[i] *= vector_impl::cast_to<T>::from(right);
     }
 
     return left;
@@ -1186,7 +1239,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator/=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] /= vector_impl::create_value_of_type<T>::from(right);
+        left[i] /= vector_impl::cast_to<T>::from(right);
     }
 
     return left;
@@ -1284,7 +1337,7 @@ inline const vector<N, R> operator/(const vector<N, T>& left, const vector<N, U>
  *
  * @return Sum of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
 inline const vector<N, R> operator+(const vector<N, T>& left, const U& right)
 {
     vector<N, R> temp{left};
@@ -1299,7 +1352,7 @@ inline const vector<N, R> operator+(const vector<N, T>& left, const U& right)
  *
  * @return Difference of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
 inline const vector<N, R> operator-(const vector<N, T>& left, const U& right)
 {
     vector<N, R> temp{left};
@@ -1314,7 +1367,7 @@ inline const vector<N, R> operator-(const vector<N, T>& left, const U& right)
  *
  * @return Product of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
 inline const vector<N, R> operator*(const vector<N, T>& left, const U& right)
 {
     vector<N, R> temp{left};
@@ -1329,7 +1382,7 @@ inline const vector<N, R> operator*(const vector<N, T>& left, const U& right)
  *
  * @return Quotient of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
 inline const vector<N, R> operator/(const vector<N, T>& left, const U& right)
 {
     vector<N, R> temp{left};
@@ -1355,7 +1408,7 @@ inline const vector<N, R> operator/(const vector<N, T>& left, const U& right)
  *
  * @return Sum of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
 inline const vector<N, R> operator+(const T& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1370,7 +1423,7 @@ inline const vector<N, R> operator+(const T& left, const vector<N, U>& right)
  *
  * @return Difference of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
 inline const vector<N, R> operator-(const T& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1385,7 +1438,7 @@ inline const vector<N, R> operator-(const T& left, const vector<N, U>& right)
  *
  * @return Product of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
 inline const vector<N, R> operator*(const T& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1400,7 +1453,7 @@ inline const vector<N, R> operator*(const T& left, const vector<N, U>& right)
  *
  * @return Quotient of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
 inline const vector<N, R> operator/(const T& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
