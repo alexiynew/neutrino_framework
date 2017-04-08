@@ -4,12 +4,12 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 set -e
 
-CC_COMPILER=gcc
-CXX_COMILLER=g++
-
 TASK_TO_RUN=none
 
 function set_compiler {
+    local CC_COMPILER=
+    local CXX_COMILLER=
+
     if [ "$1" == "gcc" ]
     then
         CC_COMPILER=gcc
