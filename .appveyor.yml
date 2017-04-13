@@ -55,6 +55,12 @@ build:
   parallel: true                           # enable MSBuild parallel builds
   verbosity: detailed                      # MSBuild verbosity level (quiet|minimal|normal|detailed)
 
+build_script:
+  - cmd: cd C:\projects\game_framework
+  - cmd: dir /A
+  - cmd: dir ".\build"/A
+  
+
 test: off
 #test_script:
 #  - cmd: ctest --build-config %configuration% --parallel 4 --output-on-failure
