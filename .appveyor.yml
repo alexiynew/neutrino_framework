@@ -2,7 +2,7 @@
 version: "{build}"
 
 # Operating system (build VM template)
-os: 
+image:
   - Visual Studio 2015
   - Visual Studio 2017
 
@@ -40,12 +40,13 @@ before_build:
   - cmd: cd C:\projects\game_framework
   - cmd: md build
   - cmd: cd build
-  - cmd: if "%platform%"=="Win32" (if "%os%"=="Visual Studio 2015" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015)
-  - cmd: if "%platform%"=="x64"   (if "%os%"=="Visual Studio 2015" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015 Win64)
-  - cmd: if "%platform%"=="Win32" (if "%os%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
-  - cmd: if "%platform%"=="x64"   (if "%os%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
+  - cmd: if "%platform%"=="Win32" (if "%image%"=="Visual Studio 2015" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015)
+  - cmd: if "%platform%"=="x64"   (if "%image%"=="Visual Studio 2015" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015 Win64)
+  - cmd: if "%platform%"=="Win32" (if "%image%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
+  - cmd: if "%platform%"=="x64"   (if "%image%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
   - echo %platform%
   - echo %os%
+  - echo %image%
   - echo %configuration%
   - echo %CMAKE_GENERATOR_NAME%
   - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration%
