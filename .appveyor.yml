@@ -12,7 +12,7 @@ platform:
   - x64
 
 # specify custom environment variables
-environment:
+#environment:
 
 # build configuration, i.e. Debug, Release, etc.
 configuration:
@@ -33,7 +33,7 @@ branches:
     - master
 
 # scripts that run after cloning repository
-install:
+#install:
 
 # scripts to run before build
 before_build:
