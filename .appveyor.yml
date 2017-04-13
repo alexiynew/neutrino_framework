@@ -49,7 +49,7 @@ before_build:
   - echo %APPVEYOR_BUILD_WORKER_IMAGE%
   - echo %configuration%
   - echo %CMAKE_GENERATOR_NAME%
-  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration%
+  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% ../
 
 build:
   parallel: true                           # enable MSBuild parallel builds
