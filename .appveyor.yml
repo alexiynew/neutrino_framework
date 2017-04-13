@@ -56,10 +56,13 @@ build:
   verbosity: detailed                      # MSBuild verbosity level (quiet|minimal|normal|detailed)
 
 build_script:
-  - cmd: cd C:\projects\game_framework
+  - cmd: cd C:\projects\game_framework\build
   - cmd: dir /A
-  - cmd: dir ".\build"/A
-  
+  - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild ALL_BUILD.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild install_framework.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild ZERO_CHECK.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test: off
 #test_script:
