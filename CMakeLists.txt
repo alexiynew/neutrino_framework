@@ -21,7 +21,8 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
   # using Intel C++
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   # using Visual Studio C++
-  set(COMPILE_FLAGS "-Wall -std=c++14")
+  set(COMPILE_FLAGS "/Wall /wd4514")
+  # function' : unreferenced inline function has been removed
   set(CMAKE_CXX_FLAGS_DEBUG "/Od")
 endif()
 
