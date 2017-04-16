@@ -9,7 +9,8 @@ set(DOCS_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/output/doc)
 set(FRAMEWORK_SOURCES ${CMAKE_SOURCE_DIR}/src)
 get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
 
-set(COMPILE_FLAGS "-Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror -std=c++14")
+#set(COMPILE_FLAGS "-Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror -std=c++14")
+set(COMPILE_FLAGS "-Wall -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror -std=c++14")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
 
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
