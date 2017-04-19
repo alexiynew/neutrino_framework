@@ -1,28 +1,33 @@
 /**
- * @file linux_canvas.cpp
- * @brief Canvas implementation for linux.
+ * @file x11_window.cpp
+ * @brief Window implementation for linux.
  * @author Fedorov Alexey
  * @date 05.04.2017
  */
 
-#include <canvas/linux/linux_canvas.hpp>
+#include <window/linux/x11_window.hpp>
 
 namespace framework {
 
-linux_canvas::linux_canvas(unsigned int width, unsigned int height)
-    : m_width{width}
-    , m_height{height}
+std::unique_ptr<window_implementation> get_implementation()
+{
+    return std::make_unique<x11_window>();
+}
+
+x11_window::x11_window()
+    : m_width{640}
+    , m_height{480}
     , m_display{nullptr}
     , m_window{0}
 {
 }
 
-linux_canvas::~linux_canvas()
+x11_window::~x11_window()
 {
     hide();
 }
 
-void linux_canvas::show()
+void x11_window::show()
 {
     m_display = XOpenDisplay(nullptr);
 
@@ -47,7 +52,7 @@ void linux_canvas::show()
     XFlush(m_display);
 }
 
-void linux_canvas::hide()
+void x11_window::hide()
 {
     /* Уничтожаем окно */
     if (m_display && m_window) {
