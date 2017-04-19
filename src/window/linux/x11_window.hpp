@@ -29,7 +29,6 @@ private:
     Display* m_display;
     XID m_window;
 };
-
 }
 
 #endif

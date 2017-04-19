@@ -11,7 +11,7 @@ get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	message("Using Clang compiller settings")
-	set(COMPILE_FLAGS "-Weverything -Werror -std=c++14 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions -Wno-weak-vtables")
+	set(COMPILE_FLAGS "-Weverything -Werror -std=c++14 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions -Wno-covered-switch-default -Wno-missing-prototypes -Wno-weak-vtables -Wno-exit-time-destructors")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	message("Using GNU compiller settings")
@@ -34,6 +34,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Import usefull macros
 include(${CMAKE_SOURCE_DIR}/cmake/Macros.cmake)
+
+# Get platform
+detect_platform_name(PLATFORM_NAME)
 
 # Assemble framework
 add_subdirectory(${CMAKE_SOURCE_DIR}/src)

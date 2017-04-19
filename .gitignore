@@ -4,3 +4,4 @@ nbproject/
 .idea/
 .atom-build.yml
 .vimrc
+.DS_Store

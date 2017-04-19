@@ -39,8 +39,11 @@ class log
 public:
     log(const log&) = delete;
     log(log&&)      = default;
+
     log& operator=(const log&) = delete;
     log& operator=(log&&) = default;
+
+    ~log() = default;
 
     /**
      * @brief Logs messages for debugging purposes.

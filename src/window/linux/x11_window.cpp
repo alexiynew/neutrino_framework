@@ -5,6 +5,7 @@
  * @date 05.04.2017
  */
 
+#include <memory>
 #include <window/linux/x11_window.hpp>
 
 namespace framework {

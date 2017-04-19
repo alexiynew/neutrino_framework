@@ -1,7 +1,7 @@
-#include <window/window.hpp>
 #include <chrono>
 #include <thread>
 #include <unit_test/suite.hpp>
+#include <window/window.hpp>
 
 #pragma mark - test for window
 
@@ -17,7 +17,7 @@ public:
 private:
     void open_window()
     {
-        framework::window window(640, 480);
+        framework::window window;
         window.show();
 
         std::chrono::seconds timespan(1);

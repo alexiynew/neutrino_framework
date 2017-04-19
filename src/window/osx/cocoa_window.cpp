@@ -5,6 +5,7 @@
  * @date 19.04.2017
  */
 
+#include <memory>
 #include <window/osx/cocoa_window.hpp>
 
 namespace framework {
@@ -20,7 +21,6 @@ cocoa_window::cocoa_window()
 
 cocoa_window::~cocoa_window()
 {
-    hide();
 }
 
 void cocoa_window::show()

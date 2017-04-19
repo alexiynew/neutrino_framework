@@ -8,6 +8,8 @@
 #ifndef FRAMEWORK_WINDOW_WINDOW_IMPLEMENTATION_HPP
 #define FRAMEWORK_WINDOW_WINDOW_IMPLEMENTATION_HPP
 
+#include <memory>
+
 namespace framework {
 
 class window_implementation
@@ -20,7 +22,6 @@ public:
 };
 
 std::unique_ptr<window_implementation> get_implementation();
-
 }
 
 #endif

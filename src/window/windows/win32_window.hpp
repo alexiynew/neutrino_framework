@@ -20,7 +20,6 @@ public:
 
     void show() override;
     void hide() override;
-
 };
 }
 

@@ -27,8 +27,8 @@ log::log()
 
 log& log::instance()
 {
-    static log temp;
-    return temp;
+    static log log_instance;
+    return log_instance;
 }
 
 void log::debug(const std::string& tag, const std::string& message)

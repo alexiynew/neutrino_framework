@@ -1,6 +1,6 @@
 /**
  * @file window.hpp
- * @brief Window class.
+ * @brief Window interface class.
  * @author Fedorov Alexey
  * @date 04.04.2017
  */
@@ -17,7 +17,7 @@ class window_implementation;
 class window
 {
 public:
-    window(unsigned int width, unsigned int height);
+    window();
     ~window();
 
     void show();

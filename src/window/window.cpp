@@ -1,17 +1,18 @@
 /**
  * @file window.cpp
- * @brief Window class.
+ * @brief Window interface class.
  * @author Fedorov Alexey
  * @date 04.04.2017
  */
 
+#include <memory>
 #include <window/window.hpp>
 #include <window/window_implementation.hpp>
 
 namespace framework {
 
-window::window(unsigned int width, unsigned int height)
-    : m_implementation(std::make_unique<window_implementation>(width, height))
+window::window()
+    : m_implementation(get_implementation())
 {
 }
 
