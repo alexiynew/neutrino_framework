@@ -11,7 +11,7 @@ get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	message("Using Clang compiller settings")
-	set(COMPILE_FLAGS "-Weverything -Werror -std=c++14 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions ")
+	set(COMPILE_FLAGS "-Weverything -Werror -std=c++14 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions -Wno-weak-vtables")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	message("Using GNU compiller settings")

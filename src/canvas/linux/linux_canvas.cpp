@@ -33,9 +33,9 @@ void linux_canvas::show()
     }
 
     /* Получим предварительные сведения */
-    XID screen      = DefaultScreen(m_display);
-    XID root_window = RootWindow(m_display, screen);
-    XID color       = WhitePixel(m_display, screen);
+    XID screen      = static_cast<XID>(DefaultScreen(m_display));
+    XID root_window = static_cast<XID>(RootWindow(m_display, screen));
+    XID color       = static_cast<XID>(WhitePixel(m_display, screen));
 
     /* Открываем окно */
     m_window = XCreateSimpleWindow(m_display, root_window, 100, 100, m_width, m_height, 0, 0, color);

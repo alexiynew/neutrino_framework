@@ -18,11 +18,53 @@ void logger::add_message(const logger::level, const std::string&, const std::str
     // nothing to do.
 }
 
+#pragma mark - implementation of log class
+
+log::log()
+    : m_logger(nullptr)
+{
+}
+
+log& log::instance()
+{
+    static log temp;
+    return temp;
+}
+
+void log::debug(const std::string& tag, const std::string& message)
+{
+    get_logger()->add_message(logger::level::debug, tag, message);
+}
+
+void log::info(const std::string& tag, const std::string& message)
+{
+    get_logger()->add_message(logger::level::info, tag, message);
+}
+
+void log::warning(const std::string& tag, const std::string& message)
+{
+    get_logger()->add_message(logger::level::warning, tag, message);
+}
+
+void log::error(const std::string& tag, const std::string& message)
+{
+    get_logger()->add_message(logger::level::error, tag, message);
+}
+
+void log::set_logger(std::unique_ptr<logger> implementation)
+{
+    instance().m_logger = std::move(implementation);
+}
+
+logger* log::get_logger()
+{
+    if (!instance().m_logger) {
+        instance().m_logger.reset(new logger());
+    }
+
+    return instance().m_logger.get();
+}
+
 } // namespace logging
 
 } // namespace framework
-
-using framework::logging::logger;
-using framework::logging::log;
-
-std::unique_ptr<logger> log::m_logger = std::unique_ptr<logger>();

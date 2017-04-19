@@ -37,6 +37,11 @@ class logger;
 class log
 {
 public:
+    log(const log&) = delete;
+    log(log&&)      = default;
+    log& operator=(const log&) = delete;
+    log& operator=(log&&) = default;
+
     /**
      * @brief Logs messages for debugging purposes.
      *
@@ -94,7 +99,11 @@ public:
     static logger* get_logger();
 
 private:
-    static std::unique_ptr<logger> m_logger;
+    log();
+
+    static log& instance();
+
+    std::unique_ptr<logger> m_logger;
 };
 
 #pragma mark - base logger class
@@ -130,42 +139,6 @@ public:
      */
     virtual void add_message(const logger::level level, const std::string& tag, const std::string& message);
 };
-
-#pragma mark - implementation of log class
-
-inline void log::debug(const std::string& tag, const std::string& message)
-{
-    get_logger()->add_message(logger::level::debug, tag, message);
-}
-
-inline void log::info(const std::string& tag, const std::string& message)
-{
-    get_logger()->add_message(logger::level::info, tag, message);
-}
-
-inline void log::warning(const std::string& tag, const std::string& message)
-{
-    get_logger()->add_message(logger::level::warning, tag, message);
-}
-
-inline void log::error(const std::string& tag, const std::string& message)
-{
-    get_logger()->add_message(logger::level::error, tag, message);
-}
-
-inline void log::set_logger(std::unique_ptr<logger> implementation)
-{
-    m_logger = std::move(implementation);
-}
-
-inline logger* log::get_logger()
-{
-    if (!m_logger) {
-        m_logger.reset(new logger());
-    }
-
-    return m_logger.get();
-}
 
 } // namespace logger
 
