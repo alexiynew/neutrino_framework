@@ -7,7 +7,22 @@
 
 #include <log/log.hpp>
 
-using framework::logger::logger_implementation;
-using framework::logger::log;
+namespace framework {
 
-std::unique_ptr<logger_implementation> log::m_logger = std::unique_ptr<logger_implementation>();
+namespace logging {
+
+#pragma mark - implementation of logger class
+
+void logger::add_message(const logger::level, const std::string&, const std::string&)
+{
+    // nothing to do.
+}
+
+} // namespace logging
+
+} // namespace framework
+
+using framework::logging::logger;
+using framework::logging::log;
+
+std::unique_ptr<logger> log::m_logger = std::unique_ptr<logger>();

@@ -9,10 +9,23 @@ set(DOCS_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/output/doc)
 set(FRAMEWORK_SOURCES ${CMAKE_SOURCE_DIR}/src)
 get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
 
-set(COMPILE_FLAGS "-Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror -std=c++14")
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+	message("Using Clang compiller settings")
+	set(COMPILE_FLAGS "-Weverything -Werror -std=c++14 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions ")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	message("Using GNU compiller settings")
+	set(COMPILE_FLAGS "-Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror -std=c++14")
+	set(CMAKE_CXX_FLAGS_DEBUG "-g")
+elseif (MAKE_CXX_COMPILER_ID MATCHES "MSVC")
+	message("Using Visual Studio C++ compiller settings")
+	set(COMPILE_FLAGS "/Wall /wd4514")
+	# function' : unreferenced inline function has been removed
+	set(CMAKE_CXX_FLAGS_DEBUG "/Od")
+endif()
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG -DFORCE_ASSERT")
 

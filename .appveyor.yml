@@ -1,0 +1,69 @@
+# Specify version format
+version: "{build}"
+
+# Operating system (build VM template)
+image:
+  - Visual Studio 2015
+  - Visual Studio 2017
+
+# build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
+platform: 
+  - Win32
+  - x64
+
+# specify custom environment variables
+#environment:
+
+# build configuration, i.e. Debug, Release, etc.
+configuration:
+  - Release
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - cmd: cmake --version
+  - cmd: msbuild /version
+
+# clone directory
+clone_folder: C:\projects\game_framework
+
+# branches to build
+branches:
+  only: 
+    - master
+    - dev
+
+# scripts that run after cloning repository
+#install:
+
+# scripts to run before build
+before_build:
+  - cmd: cd C:\projects\game_framework
+  - cmd: md build
+  - cmd: cd build
+  - cmd: if "%platform%"=="Win32" (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015)
+  - cmd: if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015 Win64)
+  - cmd: if "%platform%"=="Win32" (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
+  - cmd: if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
+  - echo %platform%
+  - echo %os%
+  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
+  - echo %configuration%
+  - echo %CMAKE_GENERATOR_NAME%
+  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% ../
+
+build:
+  parallel: true                           # enable MSBuild parallel builds
+  verbosity: detailed                      # MSBuild verbosity level (quiet|minimal|normal|detailed)
+
+build_script:
+  - cmd: cd C:\projects\game_framework\build
+  - cmd: dir /A
+#  - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild ALL_BUILD.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+#  - cmd: msbuild INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+#  - cmd: msbuild install_framework.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+#  - cmd: msbuild ZERO_CHECK.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+test: off
+#test_script:
+#  - cmd: ctest --build-config %configuration% --parallel 4 --output-on-failure

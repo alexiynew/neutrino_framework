@@ -72,14 +72,15 @@ private:
         const vector3d result1 = atan(tan(radians(v3d)));
         const vector3d result2 = atan(sin(radians(v3d)), cos(radians(v3d)));
 
-        TEST_ASSERT(almost_equal(result1, vector3d(PI / 4, PI / 3, atan(tan(PI)))), "Atan from tan failed.");
-        TEST_ASSERT(almost_equal(result2, vector3d(PI / 4, PI / 3, PI)), "Atan from sin failed.");
+        TEST_ASSERT(almost_equal(result1, vector3D(QUARTER_PI, PI / 3, atan(tan(PI)))), "Atan from tan failed.");
+        TEST_ASSERT(almost_equal(result2, vector3D(QUARTER_PI, PI / 3, PI), 1), "Atan from sin and cos failed.");
     }
 
     void sinh_function()
     {
-        const vector3d sinh_vector(0.86867096148600953, 1.2493670505239751, 11.548739357257748);
-        TEST_ASSERT(almost_equal(sinh(radians(v3d)), sinh_vector), "Sinh function failed.");
+        const vector3D sinh_vector(0.86867096148600953, 1.2493670505239751, 11.548739357257748);
+
+        TEST_ASSERT(almost_equal(sinh(radians(v3d)), sinh_vector, 2), "Sinh function failed.");
     }
 
     void cosh_function()
