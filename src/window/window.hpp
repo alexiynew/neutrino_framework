@@ -1,33 +1,35 @@
 /**
- * @file canvas.hpp
- * @brief Canvas class.
+ * @file window.hpp
+ * @brief Window interface class.
  * @author Fedorov Alexey
  * @date 04.04.2017
  */
 
-#ifndef FRAMEWORK_CANVAS_HPP
-#define FRAMEWORK_CANVAS_HPP
+#ifndef FRAMEWORK_WINDOW_HPP
+#define FRAMEWORK_WINDOW_HPP
 
-#include <canvas/canvas_implementation.hpp>
 #include <memory>
 
 namespace framework {
 
-class canvas
+class window_implementation;
+
+class window
 {
 public:
-    canvas(unsigned int width, unsigned int height);
-    ~canvas();
+    window();
+    ~window();
 
     void show();
     void hide();
 
 private:
-    std::unique_ptr<canvas_implementation> m_implementation;
+    std::unique_ptr<window_implementation> m_implementation;
 };
 }
 
 #endif
+
 
 /*
 

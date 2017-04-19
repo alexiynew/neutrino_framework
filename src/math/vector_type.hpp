@@ -434,7 +434,7 @@ struct vector<3, T> final
      * @param z_value Value for z component.
      */
     template <typename U, typename Z>
-    constexpr vector(const vector<2, U>& v, const Z& z_value) noexcept;
+    constexpr vector(const vector<2, U>& other, const Z& z_value) noexcept;
 
     /**
      * @brief Default assignment operator.

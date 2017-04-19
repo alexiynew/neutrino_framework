@@ -15,28 +15,36 @@
 namespace framework {
 
 /**
- * @defgroup logger_module Logger module
+ * @defgroup logging_module Logger module
  * @{
  */
 
 /**
  * @brief Contains classes related to logging.
  */
-namespace logger {
+namespace logging {
 
-class logger_implementation;
+class logger;
 
 #pragma mark - log class
 
 /**
  * @brief Logger interface.
  *
- * This is facade for logger_implementation.
+ * This is facade for @ref logger.
  * It holds current logger instance, and provides interface to use it.
  */
 class log
 {
 public:
+    log(const log&) = delete;
+    log(log&&)      = default;
+
+    log& operator=(const log&) = delete;
+    log& operator=(log&&) = default;
+
+    ~log() = default;
+
     /**
      * @brief Logs messages for debugging purposes.
      *
@@ -45,7 +53,7 @@ public:
      *
      * @note Works only in debug mode.
      *
-     * @see logger_implementation::add_message
+     * @see logger::add_message
      */
     static void debug(const std::string& tag, const std::string& message);
 
@@ -55,7 +63,7 @@ public:
      * @param tag Message tag.
      * @param message Message for logging.
      *
-     * @see logger_implementation::add_message
+     * @see logger::add_message
      */
     static void info(const std::string& tag, const std::string& message);
 
@@ -65,7 +73,7 @@ public:
      * @param tag Message tag.
      * @param message Message for logging.
      *
-     * @see logger_implementation::add_message
+     * @see logger::add_message
      */
     static void warning(const std::string& tag, const std::string& message);
 
@@ -75,7 +83,7 @@ public:
      * @param tag Message tag.
      * @param message Message for logging.
      *
-     * @see logger_implementation::add_message
+     * @see logger::add_message
      */
     static void error(const std::string& tag, const std::string& message);
 
@@ -84,27 +92,31 @@ public:
      *
      * @param implementation Pointer to new logger.
      */
-    static void set_logger(std::unique_ptr<logger_implementation> implementation);
+    static void set_logger(std::unique_ptr<logger> implementation);
 
     /**
      * @brief Returns current logger instance.
      *
-     * @return Pointer to current logger instance or base logger_implementation if no logger is set.
+     * @return Pointer to current logger instance or base logger implementation if no logger is set.
      */
-    static logger_implementation* get_logger();
+    static logger* get_logger();
 
 private:
-    static std::unique_ptr<logger_implementation> m_logger;
+    log();
+
+    static log& instance();
+
+    std::unique_ptr<logger> m_logger;
 };
 
-#pragma mark - base logger_implementation class
+#pragma mark - base logger class
 
 /**
  * @brief Base class for logger implementations.
  *
  * Describes logger implementation methods.
  */
-class logger_implementation
+class logger
 {
 public:
     /**
@@ -118,65 +130,18 @@ public:
         error
     };
 
-    virtual ~logger_implementation();
+    virtual ~logger() = default;
 
     /**
      * @brief Add message to the log.
+     * In base implementation, does nothing
      *
      * @param level The message @ref level
      * @param tag Message tag. Describes message domain.
      * @param message Message itself.
      */
-    virtual void add_message(const logger_implementation::level level, const std::string& tag, const std::string& message);
+    virtual void add_message(const logger::level level, const std::string& tag, const std::string& message);
 };
-
-#pragma mark - implementation of logger_implementation class
-
-inline void logger_implementation::add_message(const logger_implementation::level, const std::string&, const std::string&)
-{
-    // nothing to do.
-}
-
-inline logger_implementation::~logger_implementation()
-{
-    // nothing to do.
-}
-
-#pragma mark - implementation of log class
-
-inline void log::debug(const std::string& tag, const std::string& message)
-{
-    get_logger()->add_message(logger_implementation::level::debug, tag, message);
-}
-
-inline void log::info(const std::string& tag, const std::string& message)
-{
-    get_logger()->add_message(logger_implementation::level::info, tag, message);
-}
-
-inline void log::warning(const std::string& tag, const std::string& message)
-{
-    get_logger()->add_message(logger_implementation::level::warning, tag, message);
-}
-
-inline void log::error(const std::string& tag, const std::string& message)
-{
-    get_logger()->add_message(logger_implementation::level::error, tag, message);
-}
-
-inline void log::set_logger(std::unique_ptr<logger_implementation> implementation)
-{
-    m_logger = std::move(implementation);
-}
-
-inline logger_implementation* log::get_logger()
-{
-    if (!m_logger) {
-        m_logger.reset(new logger_implementation());
-    }
-
-    return m_logger.get();
-}
 
 } // namespace logger
 
@@ -198,14 +163,14 @@ inline logger_implementation* log::get_logger()
  */
 #define ASSERT(EXPRESSION) \
     ((EXPRESSION) ||       \
-     (::framework::logger::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPR)), false))
+     (::framework::logging::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPR)), false))
 
 /**
  * @brief Prints provided MESSAGE as error if EXPRESSION evaluates to @b false.
  */
 #define ASSERT_MSG(EXPRESSION, MESSAGE) \
     ((EXPRESSION) ||                    \
-     (::framework::logger::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)), false))
+     (::framework::logging::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)), false))
 
 #else
 
