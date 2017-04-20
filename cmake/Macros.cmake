@@ -1,5 +1,4 @@
-# TODO add documentation
-
+# Get list of all directories in current directory
 macro(subdirlist RESULT_LIST CURDIR)
     file(GLOB CHILDREN RELATIVE ${CURDIR} ${CURDIR}/*)
     set(DIRLIST "")
@@ -11,7 +10,7 @@ macro(subdirlist RESULT_LIST CURDIR)
     set(${RESULT_LIST} ${DIRLIST})
 endmacro()
 
-# TODO Add platform detection
+# Detect platform and set platform name
 macro(detect_platform_name PLATFORM_NAME)
     if(${UNIX})
         if(${APPLE})
