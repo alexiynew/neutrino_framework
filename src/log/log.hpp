@@ -8,7 +8,6 @@
 #ifndef FRAMEWORK_LOG_HPP
 #define FRAMEWORK_LOG_HPP
 
-#include <iostream>
 #include <memory>
 #include <string>
 
@@ -134,6 +133,7 @@ public:
 
     /**
      * @brief Add message to the log.
+     *
      * In base implementation, does nothing
      *
      * @param level The message @ref level
@@ -145,6 +145,11 @@ public:
 
 } // namespace logger
 
+/**
+ * @def NEED_ASSERT
+ * @brief Indicates that its need to define assert macros.
+ */
+
 #ifndef NDEBUG
 #define NEED_ASSERT true
 #endif
@@ -155,7 +160,14 @@ public:
 
 #ifdef NEED_ASSERT
 
+/**
+ * @brief @ref STRINGIZE implementation details.
+ */
 #define STRINGIZE_DETAIL(x) #x
+
+/**
+ * @brief Turns parameter into string.
+ */
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
 /**
@@ -163,7 +175,7 @@ public:
  */
 #define ASSERT(EXPRESSION) \
     ((EXPRESSION) ||       \
-     (::framework::logging::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPR)), false))
+     (::framework::logging::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPRESSION)), false))
 
 /**
  * @brief Prints provided MESSAGE as error if EXPRESSION evaluates to @b false.
