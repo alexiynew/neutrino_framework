@@ -8,7 +8,7 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
-#include <math/common_func.hpp>
+#include <functional>
 
 namespace framework {
 
@@ -23,7 +23,7 @@ namespace math {
 /**
  * @brief Contains vector type implementation details.
  */
-namespace vector_impl {
+namespace details {
 
 /**
  * @brief Workaround to cast float numbers to boolean without warnings.
@@ -45,7 +45,7 @@ struct cast_to<bool>
     template <typename U>
     inline static constexpr bool from(const U& value)
     {
-        return ::framework::math::abs(value) > 0;
+        return std::not_equal_to<U>(value, U{0});
     }
 };
 
@@ -660,10 +660,10 @@ inline constexpr vector<4, T>::vector() noexcept
 template <typename T>
 template <typename X, typename Y, typename Z, typename W>
 inline constexpr vector<4, T>::vector(const X& x_value, const Y& y_value, const Z& z_value, const W& w_value) noexcept
-    : x{vector_impl::cast_to<T>::from(x_value)}
-    , y{vector_impl::cast_to<T>::from(y_value)}
-    , z{vector_impl::cast_to<T>::from(z_value)}
-    , w{vector_impl::cast_to<T>::from(w_value)}
+    : x{details::cast_to<T>::from(x_value)}
+    , y{details::cast_to<T>::from(y_value)}
+    , z{details::cast_to<T>::from(z_value)}
+    , w{details::cast_to<T>::from(w_value)}
 {
 }
 
@@ -759,10 +759,10 @@ template <typename T>
 template <typename U>
 inline vector<4, T>& vector<4, T>::operator=(const vector<4, U>& other) noexcept
 {
-    x = vector_impl::cast_to<T>::from(other.x);
-    y = vector_impl::cast_to<T>::from(other.y);
-    z = vector_impl::cast_to<T>::from(other.z);
-    w = vector_impl::cast_to<T>::from(other.w);
+    x = details::cast_to<T>::from(other.x);
+    y = details::cast_to<T>::from(other.y);
+    z = details::cast_to<T>::from(other.z);
+    w = details::cast_to<T>::from(other.w);
 
     return *this;
 }
@@ -828,9 +828,9 @@ inline constexpr vector<3, T>::vector() noexcept
 template <typename T>
 template <typename X, typename Y, typename Z>
 inline constexpr vector<3, T>::vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept
-    : x{vector_impl::cast_to<T>::from(x_value)}
-    , y{vector_impl::cast_to<T>::from(y_value)}
-    , z{vector_impl::cast_to<T>::from(z_value)}
+    : x{details::cast_to<T>::from(x_value)}
+    , y{details::cast_to<T>::from(y_value)}
+    , z{details::cast_to<T>::from(z_value)}
 {
 }
 
@@ -897,9 +897,9 @@ template <typename T>
 template <typename U>
 inline vector<3, T>& vector<3, T>::operator=(const vector<3, U>& other) noexcept
 {
-    x = vector_impl::cast_to<T>::from(other.x);
-    y = vector_impl::cast_to<T>::from(other.y);
-    z = vector_impl::cast_to<T>::from(other.z);
+    x = details::cast_to<T>::from(other.x);
+    y = details::cast_to<T>::from(other.y);
+    z = details::cast_to<T>::from(other.z);
 
     return *this;
 }
@@ -965,8 +965,8 @@ inline constexpr vector<2, T>::vector() noexcept
 template <typename T>
 template <typename X, typename Y>
 inline constexpr vector<2, T>::vector(const X& x_value, const Y& y_value) noexcept
-    : x{vector_impl::cast_to<T>::from(x_value)}
-    , y{vector_impl::cast_to<T>::from(y_value)}
+    : x{details::cast_to<T>::from(x_value)}
+    , y{details::cast_to<T>::from(y_value)}
 {
 }
 
@@ -1018,8 +1018,8 @@ template <typename T>
 template <typename U>
 inline vector<2, T>& vector<2, T>::operator=(const vector<2, U>& other) noexcept
 {
-    x = vector_impl::cast_to<T>::from(other.x);
-    y = vector_impl::cast_to<T>::from(other.y);
+    x = details::cast_to<T>::from(other.x);
+    y = details::cast_to<T>::from(other.y);
 
     return *this;
 }
@@ -1113,7 +1113,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator+=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] += vector_impl::cast_to<T>::from(right[i]);
+        left[i] += details::cast_to<T>::from(right[i]);
     }
 
     return left;
@@ -1131,7 +1131,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator-=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] -= vector_impl::cast_to<T>::from(right[i]);
+        left[i] -= details::cast_to<T>::from(right[i]);
     }
 
     return left;
@@ -1149,7 +1149,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator*=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] *= vector_impl::cast_to<T>::from(right[i]);
+        left[i] *= details::cast_to<T>::from(right[i]);
     }
 
     return left;
@@ -1167,7 +1167,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator/=(vector<N, T>& left, const vector<N, U>& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] /= vector_impl::cast_to<T>::from(right[i]);
+        left[i] /= details::cast_to<T>::from(right[i]);
     }
 
     return left;
@@ -1185,7 +1185,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator+=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] += vector_impl::cast_to<T>::from(right);
+        left[i] += details::cast_to<T>::from(right);
     }
 
     return left;
@@ -1203,7 +1203,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator-=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] -= vector_impl::cast_to<T>::from(right);
+        left[i] -= details::cast_to<T>::from(right);
     }
 
     return left;
@@ -1221,7 +1221,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator*=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] *= vector_impl::cast_to<T>::from(right);
+        left[i] *= details::cast_to<T>::from(right);
     }
 
     return left;
@@ -1239,7 +1239,7 @@ template <unsigned int N, typename T, typename U>
 inline vector<N, T>& operator/=(vector<N, T>& left, const U& right)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] /= vector_impl::cast_to<T>::from(right);
+        left[i] /= details::cast_to<T>::from(right);
     }
 
     return left;
@@ -1264,7 +1264,7 @@ inline vector<N, T>& operator/=(vector<N, T>& left, const U& right)
  *
  * @return Sum of two vectors.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const vector<N, T>& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1279,7 +1279,7 @@ inline const vector<N, R> operator+(const vector<N, T>& left, const vector<N, U>
  *
  * @return Difference of two vectors.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const vector<N, T>& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1295,7 +1295,7 @@ inline const vector<N, R> operator-(const vector<N, T>& left, const vector<N, U>
  * @return Product of two vectors.
  */
 
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const vector<N, T>& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1311,7 +1311,7 @@ inline const vector<N, R> operator*(const vector<N, T>& left, const vector<N, U>
  * @return Quotient of two vectors.
  */
 
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const vector<N, T>& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1337,7 +1337,7 @@ inline const vector<N, R> operator/(const vector<N, T>& left, const vector<N, U>
  *
  * @return Sum of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const vector<N, T>& left, const U& right)
 {
     vector<N, R> temp{left};
@@ -1352,7 +1352,7 @@ inline const vector<N, R> operator+(const vector<N, T>& left, const U& right)
  *
  * @return Difference of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const vector<N, T>& left, const U& right)
 {
     vector<N, R> temp{left};
@@ -1367,7 +1367,7 @@ inline const vector<N, R> operator-(const vector<N, T>& left, const U& right)
  *
  * @return Product of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const vector<N, T>& left, const U& right)
 {
     vector<N, R> temp{left};
@@ -1382,7 +1382,7 @@ inline const vector<N, R> operator*(const vector<N, T>& left, const U& right)
  *
  * @return Quotient of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const vector<N, T>& left, const U& right)
 {
     vector<N, R> temp{left};
@@ -1408,7 +1408,7 @@ inline const vector<N, R> operator/(const vector<N, T>& left, const U& right)
  *
  * @return Sum of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const T& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1423,7 +1423,7 @@ inline const vector<N, R> operator+(const T& left, const vector<N, U>& right)
  *
  * @return Difference of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const T& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1438,7 +1438,7 @@ inline const vector<N, R> operator-(const T& left, const vector<N, U>& right)
  *
  * @return Product of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const T& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1453,7 +1453,7 @@ inline const vector<N, R> operator*(const T& left, const vector<N, U>& right)
  *
  * @return Quotient of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
+template <unsigned int N, typename T, typename U, typename R = typename details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const T& left, const vector<N, U>& right)
 {
     vector<N, R> temp{left};
@@ -1482,9 +1482,8 @@ inline const vector<N, R> operator/(const T& left, const vector<N, U>& right)
 template <typename T>
 inline constexpr bool operator==(const vector<4, T>& left, const vector<4, T>& right)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0 && abs(left.z - right.z) <= 0 &&
-           abs(left.w - right.w) <= 0;
+    constexpr auto equal = std::equal_to<T>();
+    return equal(left.x, right.x) && equal(left.y, right.y) && equal(left.z, right.z) && equal(left.w, right.w);
 }
 
 /**
@@ -1498,8 +1497,8 @@ inline constexpr bool operator==(const vector<4, T>& left, const vector<4, T>& r
 template <typename T>
 inline constexpr bool operator==(const vector<3, T>& left, const vector<3, T>& right)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0 && abs(left.z - right.z) <= 0;
+    constexpr auto equal = std::equal_to<T>();
+    return equal(left.x, right.x) && equal(left.y, right.y) && equal(left.z, right.z);
 }
 
 /**
@@ -1513,8 +1512,8 @@ inline constexpr bool operator==(const vector<3, T>& left, const vector<3, T>& r
 template <typename T>
 inline constexpr bool operator==(const vector<2, T>& left, const vector<2, T>& right)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0;
+    constexpr auto equal = std::equal_to<T>();
+    return equal(left.x, right.x) && equal(left.y, right.y);
 }
 
 /**
@@ -1528,8 +1527,8 @@ inline constexpr bool operator==(const vector<2, T>& left, const vector<2, T>& r
 template <typename T>
 inline constexpr bool operator!=(const vector<4, T>& left, const vector<4, T>& right)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) > 0 && abs(left.y - right.y) > 0 && abs(left.z - right.z) > 0 && abs(left.w - right.w) > 0;
+    constexpr auto not_equal = std::not_equal_to<T>();
+    return not_equal(left.x, right.x) && not_equal(left.y, right.y) && not_equal(left.z, right.z) && not_equal(left.w, right.w);
 }
 
 /**
@@ -1543,8 +1542,8 @@ inline constexpr bool operator!=(const vector<4, T>& left, const vector<4, T>& r
 template <typename T>
 inline constexpr bool operator!=(const vector<3, T>& left, const vector<3, T>& right)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) > 0 && abs(left.y - right.y) > 0 && abs(left.z - right.z) > 0;
+    constexpr auto not_equal = std::not_equal_to<T>();
+    return not_equal(left.x, right.x) && not_equal(left.y, right.y) && not_equal(left.z, right.z);
 }
 
 /**
@@ -1558,8 +1557,8 @@ inline constexpr bool operator!=(const vector<3, T>& left, const vector<3, T>& r
 template <typename T>
 inline constexpr bool operator!=(const vector<2, T>& left, const vector<2, T>& right)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) > 0 && abs(left.y - right.y);
+    constexpr auto not_equal = std::not_equal_to<T>();
+    return not_equal(left.x, right.x) && not_equal(left.y, right.y);
 }
 
 /**
