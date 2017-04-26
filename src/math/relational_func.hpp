@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_RELATIONAL_FTNC_HPP
-#define FRAMEWORK_MATH_RELATIONAL_FTNC_HPP
+#ifndef FRAMEWORK_MATH_RELATIONAL_FUNC_HPP
+#define FRAMEWORK_MATH_RELATIONAL_FUNC_HPP
 
 #include <math/vector_type.hpp>
 
@@ -87,44 +87,45 @@ inline vector<2, bool> greater_equal(const vector<2, T>& lhs, const vector<2, T>
 template <typename T>
 inline vector<4, bool> equal(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    constexpr auto impl = std::equal_to<T>();
-    return vector<4, bool>(impl(lhs.x, rhs.x), impl(lhs.y, rhs.y), impl(lhs.z, rhs.z), impl(lhs.w, rhs.w));
+    constexpr auto equal_to = std::equal_to<T>();
+    return vector<4, bool>(equal_to(lhs.x, rhs.x), equal_to(lhs.y, rhs.y), equal_to(lhs.z, rhs.z), equal_to(lhs.w, rhs.w));
 }
 
 template <typename T>
 inline vector<3, bool> equal(const vector<3, T>& lhs, const vector<3, T>& rhs)
 {
-    constexpr auto impl = std::equal_to<T>();
-    return vector<3, bool>(impl(lhs.x, rhs.x), impl(lhs.y, rhs.y), impl(lhs.z, rhs.z));
+    constexpr auto equal_to = std::equal_to<T>();
+    return vector<3, bool>(equal_to(lhs.x, rhs.x), equal_to(lhs.y, rhs.y), equal_to(lhs.z, rhs.z));
 }
 
 template <typename T>
 inline vector<2, bool> equal(const vector<2, T>& lhs, const vector<2, T>& rhs)
 {
-    constexpr auto impl = std::equal_to<T>();
-    return vector<2, bool>(impl(lhs.x, rhs.x), impl(lhs.y, rhs.y));
+    constexpr auto equal_to = std::equal_to<T>();
+    return vector<2, bool>(equal_to(lhs.x, rhs.x), equal_to(lhs.y, rhs.y));
 }
 
 /// Returns the component-wise comparison of result l != r.
 template <typename T>
 inline vector<4, bool> not_equal(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    constexpr auto impl = std::not_equal_to<T>();
-    return vector<4, bool>(impl(lhs.x, rhs.x), impl(lhs.y, rhs.y), impl(lhs.z, rhs.z), impl(lhs.w, rhs.w));
+    constexpr auto not_equal_to = std::not_equal_to<T>();
+    return vector<4, bool>(
+    not_equal_to(lhs.x, rhs.x), not_equal_to(lhs.y, rhs.y), not_equal_to(lhs.z, rhs.z), not_equal_to(lhs.w, rhs.w));
 }
 
 template <typename T>
 inline vector<3, bool> not_equal(const vector<3, T>& lhs, const vector<3, T>& rhs)
 {
-    constexpr auto impl = std::not_equal_to<T>();
-    return vector<3, bool>(impl(lhs.x, rhs.x), impl(lhs.y, rhs.y), impl(lhs.z, rhs.z));
+    constexpr auto not_equal_to = std::not_equal_to<T>();
+    return vector<3, bool>(not_equal_to(lhs.x, rhs.x), not_equal_to(lhs.y, rhs.y), not_equal_to(lhs.z, rhs.z));
 }
 
 template <typename T>
 inline vector<2, bool> not_equal(const vector<2, T>& lhs, const vector<2, T>& rhs)
 {
-    constexpr auto impl = std::not_equal_to<T>();
-    return vector<2, bool>(impl(lhs.x, rhs.x), impl(lhs.y, rhs.y));
+    constexpr auto not_equal_to = std::not_equal_to<T>();
+    return vector<2, bool>(not_equal_to(lhs.x, rhs.x), not_equal_to(lhs.y, rhs.y));
 }
 
 /// Returns the component-wise logical not of v.

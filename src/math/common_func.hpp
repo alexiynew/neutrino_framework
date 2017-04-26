@@ -9,15 +9,15 @@ namespace framework {
 
 namespace math {
 
-namespace common_impl {
+namespace details {
 
 template <typename T, bool B>
-struct abs_impl
+struct abs_details
 {
 };
 
 template <typename T>
-struct abs_impl<T, true>
+struct abs_details<T, true>
 {
     constexpr T operator()(const T& v)
     {
@@ -26,7 +26,7 @@ struct abs_impl<T, true>
 };
 
 template <typename T>
-struct abs_impl<T, false>
+struct abs_details<T, false>
 {
     constexpr T operator()(const T& v)
     {
@@ -35,12 +35,12 @@ struct abs_impl<T, false>
 };
 
 template <typename T, bool B>
-struct sign_impl
+struct sign_details
 {
 };
 
 template <typename T>
-struct sign_impl<T, true>
+struct sign_details<T, true>
 {
     T operator()(const T& v)
     {
@@ -49,96 +49,143 @@ struct sign_impl<T, true>
 };
 
 template <typename T>
-struct sign_impl<T, false>
+struct sign_details<T, false>
 {
     T operator()(const T& v)
     {
         return (T(0) < v);
     }
 };
-
-template <unsigned int N, bool B>
-struct sign_vector_impl
-{
-};
-
-template <unsigned int N>
-struct sign_vector_impl<N, true>
-{
-    template <typename T, template <unsigned int, typename> class TVec>
-    TVec<N, T> operator()(const TVec<N, T>& v)
-    {
-        return TVec<N, T>(less(TVec<N, T>(T(0)), v)) - TVec<N, T>(less(v, TVec<N, T>(T(0))));
-    }
-};
-
-template <unsigned int N>
-struct sign_vector_impl<N, false>
-{
-    template <typename T, template <unsigned int, typename> class TVec>
-    TVec<N, T> operator()(const TVec<N, T>& v)
-    {
-        return TVec<N, T>(less(TVec<N, T>(T(0)), v));
-    }
-};
-
-} // namespace common_impl
-
-// TODO think about abs of bool and sign of bool
+}
 
 /// Returns x if x >= 0; otherwise, it returns -x.
 template <typename T>
-inline constexpr T abs(const T& v)
+inline constexpr T abs(const T& value)
 {
-    return common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>()(v);
+    return details::abs_details<T, std::numeric_limits<T>::is_signed>()(value);
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline constexpr TVec<N, T> abs(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, T> abs(const vector<4, T>& value)
 {
-    return utils::createVector(v, common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>());
+    using ::framework::math::abs;
+    return vector<4, T>(abs(value.x), abs(value.y), abs(value.z), abs(value.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> abs(const vector<3, T>& value)
+{
+    using ::framework::math::abs;
+    return vector<3, T>(abs(value.x), abs(value.y), abs(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, T> abs(const vector<2, T>& value)
+{
+    using ::framework::math::abs;
+    return vector<2, T>(abs(value.x), abs(value.y));
 }
 
 /// Returns 1.0 if x > 0, 0.0 if x == 0, or -1.0 if x < 0.
 template <typename T>
-inline constexpr T sign(const T& v)
+inline constexpr T sign(const T& value)
 {
-    return common_impl::sign_impl<T, std::numeric_limits<T>::is_signed>()(v);
+    return details::sign_details<T, std::numeric_limits<T>::is_signed>()(value);
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline constexpr TVec<N, T> sign(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, T> sign(const vector<4, T>& value)
 {
-    return common_impl::sign_vector_impl<N, std::numeric_limits<T>::is_signed>()(v);
+    using ::framework::math::sign;
+    return vector<4, T>(sign(value.x), sign(value.y), sign(value.z), sign(value.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> sign(const vector<3, T>& value)
+{
+    using ::framework::math::sign;
+    return vector<3, T>(sign(value.x), sign(value.y), sign(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, T> sign(const vector<2, T>& value)
+{
+    using ::framework::math::sign;
+    return vector<2, T>(sign(value.x), sign(value.y));
 }
 
 /// Returns a value equal to the nearest integer that is less then or equal to
 /// x.
 using ::std::floor;
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> floor(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, T> floor(const vector<4, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(floor(a)); });
+    using ::framework::math::floor;
+    return vector<4, T>(floor(value.x), floor(value.y), floor(value.z), floor(value.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> floor(const vector<3, T>& value)
+{
+    using ::framework::math::floor;
+    return vector<3, T>(floor(value.x), floor(value.y), floor(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, T> floor(const vector<2, T>& value)
+{
+    using ::framework::math::floor;
+    return vector<2, T>(floor(value.x), floor(value.y));
 }
 
 /// Returns a value equal to the nearest integer to x.
 using ::std::round;
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> round(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, T> round(const vector<4, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(round(a)); });
+    using ::framework::math::round;
+    return vector<4, T>(round(value.x), round(value.y), round(value.z), round(value.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> round(const vector<3, T>& value)
+{
+    using ::framework::math::round;
+    return vector<3, T>(round(value.x), round(value.y), round(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, T> round(const vector<2, T>& value)
+{
+    using ::framework::math::round;
+    return vector<2, T>(round(value.x), round(value.y));
 }
 
 /// Returns a value equal to the nearest integer
 /// that is greater than or equal to x.
 using ::std::ceil;
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> ceil(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, T> ceil(const vector<4, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(ceil(a)); });
+    using ::framework::math::ceil;
+    return vector<4, T>(ceil(value.x), ceil(value.y), ceil(value.z), ceil(value.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> ceil(const vector<3, T>& value)
+{
+    using ::framework::math::ceil;
+    return vector<3, T>(ceil(value.x), ceil(value.y), ceil(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, T> ceil(const vector<2, T>& value)
+{
+    using ::framework::math::ceil;
+    return vector<2, T>(ceil(value.x), ceil(value.y));
 }
 
 /// Returns a value equal to the nearest integer to x
@@ -146,23 +193,53 @@ inline TVec<N, T> ceil(const TVec<N, T>& v)
 /// float-point numberalue of x.
 using ::std::trunc;
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> trunc(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, T> trunc(const vector<4, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(trunc(a)); });
+    using ::framework::math::trunc;
+    return vector<4, T>(trunc(value.x), trunc(value.y), trunc(value.z), trunc(value.w));
 }
 
-/// Return fractional patr of floating point number
+template <typename T>
+inline constexpr vector<3, T> trunc(const vector<3, T>& value)
+{
+    using ::framework::math::trunc;
+    return vector<3, T>(trunc(value.x), trunc(value.y), trunc(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, T> trunc(const vector<2, T>& value)
+{
+    using ::framework::math::trunc;
+    return vector<2, T>(trunc(value.x), trunc(value.y));
+}
+
+/// Return fractional part of floating point number
 template <typename T>
 inline T fract(const T& v)
 {
     return static_cast<T>(v - floor(v));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> fract(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, T> fract(const vector<4, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return fract(a); });
+    using ::framework::math::fract;
+    return vector<4, T>(fract(value.x), fract(value.y), fract(value.z), fract(value.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> fract(const vector<3, T>& value)
+{
+    using ::framework::math::fract;
+    return vector<3, T>(fract(value.x), fract(value.y), fract(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, T> fract(const vector<2, T>& value)
+{
+    using ::framework::math::fract;
+    return vector<2, T>(fract(value.x), fract(value.y));
 }
 
 /// Modulus. Returns x - y * floor(x / y)
@@ -173,16 +250,46 @@ inline T mod(const T& a, const T& b)
     return a - b * floor(a / b);
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> mod(const TVec<N, T>& v, const T& scalar)
+template <typename T>
+inline constexpr vector<4, T> mod(const vector<4, T>& value, const T& scalar)
 {
-    return utils::createVector(v, [&scalar](const T& a) { return mod(a, scalar); });
+    using ::framework::math::mod;
+    return vector<4, T>(mod(value.x, scalar), mod(value.y, scalar), mod(value.z, scalar), mod(value.w, scalar));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> mod(const TVec<N, T>& a, const TVec<N, T>& b)
+template <typename T>
+inline constexpr vector<3, T> mod(const vector<3, T>& value, const T& scalar)
 {
-    return utils::createVector(a, b, [](const T& l, const T& r) { return mod(l, r); });
+    using ::framework::math::mod;
+    return vector<3, T>(mod(value.x, scalar), mod(value.y, scalar), mod(value.z, scalar));
+}
+
+template <typename T>
+inline constexpr vector<2, T> mod(const vector<2, T>& value, const T& scalar)
+{
+    using ::framework::math::mod;
+    return vector<2, T>(mod(value.x, scalar), mod(value.y, scalar));
+}
+
+template <typename T>
+inline constexpr vector<4, T> mod(const vector<4, T>& lhs, const vector<4, T>& rhs)
+{
+    using ::framework::math::mod;
+    return vector<4, T>(mod(lhs.x, rhs.x), mod(lhs.y, rhs.y), mod(lhs.z, rhs.z), mod(lhs.w, rhs.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> mod(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    using ::framework::math::mod;
+    return vector<3, T>(mod(lhs.x, rhs), mod(lhs.y, rhs), mod(lhs.z, rhs));
+}
+
+template <typename T>
+inline constexpr vector<2, T> mod(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    using ::framework::math::mod;
+    return vector<2, T>(mod(lhs.x, rhs.x), mod(lhs.y, rhs.y));
 }
 
 /// Returns the fractional part of x and sets i to the integer
@@ -195,22 +302,22 @@ inline T modf(const T& a, T& b)
     return std::modf(a, &b);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> modf(const TVec<4, T>& a, TVec<4, T>& b)
+template <typename T>
+inline vector<4, T> modf(const vector<4, T>& a, vector<4, T>& b)
 {
-    return TVec<4, T>(modf(a.x, b.x), modf(a.y, b.y), modf(a.z, b.z), modf(a.w, b.w));
+    return vector<4, T>(modf(a.x, b.x), modf(a.y, b.y), modf(a.z, b.z), modf(a.w, b.w));
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> modf(const TVec<3, T>& a, TVec<3, T>& b)
+template <typename T>
+inline vector<3, T> modf(const vector<3, T>& a, vector<3, T>& b)
 {
-    return TVec<3, T>(modf(a.x, b.x), modf(a.y, b.y), modf(a.z, b.z));
+    return vector<3, T>(modf(a.x, b.x), modf(a.y, b.y), modf(a.z, b.z));
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> modf(const TVec<2, T>& a, TVec<2, T>& b)
+template <typename T>
+inline vector<2, T> modf(const vector<2, T>& a, vector<2, T>& b)
 {
-    return TVec<2, T>(modf(a.x, b.x), modf(a.y, b.y));
+    return vector<2, T>(modf(a.x, b.x), modf(a.y, b.y));
 }
 
 /// Returns a if a < b; otherwise, it returns b.
@@ -220,16 +327,46 @@ inline T min(const T& a, const T& b)
     return a < b ? a : b;
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> min(const TVec<N, T>& a, const T& scalar)
+template <typename T>
+inline constexpr vector<4, T> min(const vector<4, T>& value, const T& scalar)
 {
-    return utils::createVector(a, [&scalar](const T& l) { return min(l, scalar); });
+    using ::framework::math::min;
+    return vector<4, T>(min(value.x, scalar), min(value.y, scalar), min(value.z, scalar), min(value.w, scalar));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> min(const TVec<N, T>& a, const TVec<N, T>& b)
+template <typename T>
+inline constexpr vector<3, T> min(const vector<3, T>& value, const T& scalar)
 {
-    return utils::createVector(a, b, [](const T& l, const T& r) { return min(l, r); });
+    using ::framework::math::min;
+    return vector<3, T>(min(value.x, scalar), min(value.y, scalar), min(value.z, scalar));
+}
+
+template <typename T>
+inline constexpr vector<2, T> min(const vector<2, T>& value, const T& scalar)
+{
+    using ::framework::math::min;
+    return vector<2, T>(min(value.x, scalar), min(value.y, scalar));
+}
+
+template <typename T>
+inline constexpr vector<4, T> min(const vector<4, T>& lhs, const vector<4, T>& rhs)
+{
+    using ::framework::math::min;
+    return vector<4, T>(min(lhs.x, rhs.x), min(lhs.y, rhs.y), min(lhs.z, rhs.z), min(lhs.w, rhs.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> min(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    using ::framework::math::min;
+    return vector<3, T>(min(lhs.x, rhs), min(lhs.y, rhs), min(lhs.z, rhs));
+}
+
+template <typename T>
+inline constexpr vector<2, T> min(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    using ::framework::math::min;
+    return vector<2, T>(min(lhs.x, rhs.x), min(lhs.y, rhs.y));
 }
 
 /// Returns a if a > b; otherwise, it returns b.
@@ -239,16 +376,46 @@ inline T max(const T& a, const T& b)
     return a > b ? a : b;
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> max(const TVec<N, T>& a, const T& scalar)
+template <typename T>
+inline constexpr vector<4, T> max(const vector<4, T>& value, const T& scalar)
 {
-    return utils::createVector(a, [&scalar](const T& l) { return max(l, scalar); });
+    using ::framework::math::max;
+    return vector<4, T>(max(value.x, scalar), max(value.y, scalar), max(value.z, scalar), max(value.w, scalar));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> max(const TVec<N, T>& a, const TVec<N, T>& b)
+template <typename T>
+inline constexpr vector<3, T> max(const vector<3, T>& value, const T& scalar)
 {
-    return utils::createVector(a, b, [](const T& l, const T& r) { return max(l, r); });
+    using ::framework::math::max;
+    return vector<3, T>(max(value.x, scalar), max(value.y, scalar), max(value.z, scalar));
+}
+
+template <typename T>
+inline constexpr vector<2, T> max(const vector<2, T>& value, const T& scalar)
+{
+    using ::framework::math::max;
+    return vector<2, T>(max(value.x, scalar), max(value.y, scalar));
+}
+
+template <typename T>
+inline constexpr vector<4, T> max(const vector<4, T>& lhs, const vector<4, T>& rhs)
+{
+    using ::framework::math::max;
+    return vector<4, T>(max(lhs.x, rhs.x), max(lhs.y, rhs.y), max(lhs.z, rhs.z), max(lhs.w, rhs.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> max(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    using ::framework::math::max;
+    return vector<3, T>(max(lhs.x, rhs), max(lhs.y, rhs), max(lhs.z, rhs));
+}
+
+template <typename T>
+inline constexpr vector<2, T> max(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    using ::framework::math::max;
+    return vector<2, T>(max(lhs.x, rhs.x), max(lhs.y, rhs.y));
 }
 
 /// Returns min(max(a, minv), maxv) for each component in a
@@ -259,14 +426,14 @@ inline T clamp(const T& a, const T& minv, const T& maxv)
     return min(max(a, minv), maxv);
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> clamp(const TVec<N, T>& a, const T& minv, const T& maxv)
+template <unsigned int N, typename T>
+inline vector<N, T> clamp(const vector<N, T>& a, const T& minv, const T& maxv)
 {
     return min(max(a, minv), maxv);
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> clamp(const TVec<N, T>& a, const TVec<N, T>& minv, const TVec<N, T>& maxv)
+template <unsigned int N, typename T>
+inline vector<N, T> clamp(const vector<N, T>& a, const vector<N, T>& minv, const vector<N, T>& maxv)
 {
     return min(max(a, minv), maxv);
 }
@@ -296,54 +463,83 @@ inline T mix(const T& a, const T& b, const bool& t)
     return t ? b : a;
 }
 
-template <unsigned int N, typename T, typename U, template <unsigned int, typename> class TVec>
-inline TVec<N, T> mix(const TVec<N, T>& a, const TVec<N, T>& b, const U& t)
+template <unsigned int N, typename T, typename U>
+inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const U& t)
 {
-    return TVec<N, T>(a + t * (b - a));
+    return vector<N, T>(a + t * (b - a));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> mix(const TVec<N, T>& a, const TVec<N, T>& b, const bool& t)
+template <unsigned int N, typename T>
+inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const bool& t)
 {
     return t ? b : a;
 }
 
-template <typename T, typename U, template <unsigned int, typename> class TVec>
-inline TVec<4, T> mix(const TVec<4, T>& a, const TVec<4, T>& b, const TVec<4, U>& t)
+template <typename T, typename U>
+inline vector<4, T> mix(const vector<4, T>& a, const vector<4, T>& b, const vector<4, U>& t)
 {
-    return TVec<4, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y), mix(a.z, b.z, t.z), mix(a.w, b.w, t.w));
+    return vector<4, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y), mix(a.z, b.z, t.z), mix(a.w, b.w, t.w));
 }
 
-template <typename T, typename U, template <unsigned int, typename> class TVec>
-inline TVec<3, T> mix(const TVec<3, T>& a, const TVec<3, T>& b, const TVec<3, U>& t)
+template <typename T, typename U>
+inline vector<3, T> mix(const vector<3, T>& a, const vector<3, T>& b, const vector<3, U>& t)
 {
-    return TVec<3, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y), mix(a.z, b.z, t.z));
+    return vector<3, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y), mix(a.z, b.z, t.z));
 }
 
-template <typename T, typename U, template <unsigned int, typename> class TVec>
-inline TVec<2, T> mix(const TVec<2, T>& a, const TVec<2, T>& b, const TVec<2, U>& t)
+template <typename T, typename U>
+inline vector<2, T> mix(const vector<2, T>& a, const vector<2, T>& b, const vector<2, U>& t)
 {
-    return TVec<2, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y));
+    return vector<2, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y));
 }
 
 /// Returns 0.0 if a < edge, otherwise it returns 1.0 for each component of a
-/// genType.
 template <typename T>
 inline T step(const T& a, const T& edge)
 {
     return a < edge ? T(0) : T(1);
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> step(const TVec<N, T>& a, const T& edge)
+template <typename T>
+inline constexpr vector<4, T> step(const vector<4, T>& value, const T& edge)
 {
-    return utils::createVector(a, [&edge](const T& l) { return step(l, edge); });
+    using ::framework::math::step;
+    return vector<4, T>(step(value.x, edge), step(value.y, edge), step(value.z, edge), step(value.w, edge));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> step(const TVec<N, T>& a, const TVec<N, T>& b)
+template <typename T>
+inline constexpr vector<3, T> step(const vector<3, T>& value, const T& edge)
 {
-    return utils::createVector(a, b, [](const T& l, const T& r) { return step(l, r); });
+    using ::framework::math::step;
+    return vector<3, T>(step(value.x, edge), step(value.y, edge), step(value.z, edge));
+}
+
+template <typename T>
+inline constexpr vector<2, T> step(const vector<2, T>& value, const T& edge)
+{
+    using ::framework::math::step;
+    return vector<2, T>(step(value.x, edge), step(value.y, edge));
+}
+
+template <typename T>
+inline constexpr vector<4, T> step(const vector<4, T>& value, const vector<4, T>& edge)
+{
+    using ::framework::math::step;
+    return vector<4, T>(step(value.x, edge.x), step(value.y, edge.y), step(value.z, edge.z), step(value.w, edge.w));
+}
+
+template <typename T>
+inline constexpr vector<3, T> step(const vector<3, T>& value, const vector<3, T>& edge)
+{
+    using ::framework::math::step;
+    return vector<3, T>(step(value.x, edge), step(value.y, edge), step(value.z, edge));
+}
+
+template <typename T>
+inline constexpr vector<2, T> step(const vector<2, T>& value, const vector<2, T>& edge)
+{
+    using ::framework::math::step;
+    return vector<2, T>(step(value.x, edge.x), step(value.y, edge.y));
 }
 
 /// Returns 0.0 if x <= edge0 and 1.0 if x >= edge1 and
@@ -362,17 +558,17 @@ inline T smooth_step(const T& a, const T& edge0, const T& edge1)
     return t * t * (T(3) - T(2) * t);
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> smooth_step(const TVec<N, T>& a, const T& edge0, const T& edge1)
+template <unsigned int N, typename T>
+inline vector<N, T> smooth_step(const vector<N, T>& a, const T& edge0, const T& edge1)
 {
-    TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
+    vector<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
     return t * t * (T(3) - T(2) * t);
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> smooth_step(const TVec<N, T>& a, const TVec<N, T>& edge0, const TVec<N, T>& edge1)
+template <unsigned int N, typename T>
+inline vector<N, T> smooth_step(const vector<N, T>& a, const vector<N, T>& edge0, const vector<N, T>& edge1)
 {
-    TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
+    vector<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
     return t * t * (T(3) - T(2) * t);
 }
 
@@ -383,10 +579,25 @@ inline TVec<N, T> smooth_step(const TVec<N, T>& a, const TVec<N, T>& edge0, cons
 /// representations.
 using ::std::isnan;
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> isnan(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, bool> isnan(const vector<4, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return isnan(a); });
+    using ::framework::math::isnan;
+    return vector<4, bool>(isnan(value.x), isnan(value.y), isnan(value.z), isnan(value.w));
+}
+
+template <typename T>
+inline constexpr vector<3, bool> isnan(const vector<3, T>& value)
+{
+    using ::framework::math::isnan;
+    return vector<3, bool>(isnan(value.x), isnan(value.y), isnan(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, bool> isnan(const vector<2, T>& value)
+{
+    using ::framework::math::isnan;
+    return vector<2, bool>(isnan(value.x), isnan(value.y));
 }
 
 /// Returns true if x holds a positive infinity or negative
@@ -396,17 +607,32 @@ inline TVec<N, bool> isnan(const TVec<N, T>& v)
 /// representations.
 using ::std::isinf;
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> isinf(const TVec<N, T>& v)
+template <typename T>
+inline constexpr vector<4, bool> isinf(const vector<4, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return isinf(a); });
+    using ::framework::math::isinf;
+    return vector<4, bool>(isinf(value.x), isinf(value.y), isinf(value.z), isinf(value.w));
+}
+
+template <typename T>
+inline constexpr vector<3, bool> isinf(const vector<3, T>& value)
+{
+    using ::framework::math::isinf;
+    return vector<3, bool>(isinf(value.x), isinf(value.y), isinf(value.z));
+}
+
+template <typename T>
+inline constexpr vector<2, bool> isinf(const vector<2, T>& value)
+{
+    using ::framework::math::isinf;
+    return vector<2, bool>(isinf(value.x), isinf(value.y));
 }
 
 /// Computes and returns a * b + c.
 using ::std::fma;
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> fma(const TVec<N, T>& a, const TVec<N, T>& b, const TVec<N, T>& c)
+template <unsigned int N, typename T>
+inline vector<N, T> fma(const vector<N, T>& a, const vector<N, T>& b, const vector<N, T>& c)
 {
     return a * b + c;
 }
@@ -428,27 +654,27 @@ inline TResult frexp(const T& a, int& exp)
 }
 
 template <typename T,
-          template <unsigned int, typename> class TVec,
+          template <unsigned int, typename> class vector,
           typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<int*>()))>
-inline TVec<4, TResult> frexp(const TVec<4, T>& a, TVec<4, int>& exp)
+inline vector<4, TResult> frexp(const vector<4, T>& a, vector<4, int>& exp)
 {
-    return TVec<4, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y), frexp(a.z, exp.z), frexp(a.w, exp.w));
+    return vector<4, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y), frexp(a.z, exp.z), frexp(a.w, exp.w));
 }
 
 template <typename T,
-          template <unsigned int, typename> class TVec,
+          template <unsigned int, typename> class vector,
           typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<int*>()))>
-inline TVec<3, TResult> frexp(const TVec<3, T>& a, TVec<3, int>& exp)
+inline vector<3, TResult> frexp(const vector<3, T>& a, vector<3, int>& exp)
 {
-    return TVec<3, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y), frexp(a.z, exp.z));
+    return vector<3, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y), frexp(a.z, exp.z));
 }
 
 template <typename T,
-          template <unsigned int, typename> class TVec,
+          template <unsigned int, typename> class vector,
           typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<int*>()))>
-inline TVec<2, TResult> frexp(const TVec<2, T>& a, TVec<2, int>& exp)
+inline vector<2, TResult> frexp(const vector<2, T>& a, vector<2, int>& exp)
 {
-    return TVec<2, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y));
+    return vector<2, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y));
 }
 
 /// Builds a floating-point number from x and the
@@ -456,28 +682,43 @@ inline TVec<2, TResult> frexp(const TVec<2, T>& a, TVec<2, int>& exp)
 /// significand * exp(2, exponent)
 using ::std::ldexp;
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> ldexp(const TVec<N, T>& vector, int exp)
+template <typename T>
+inline constexpr vector<4, T> step(const vector<4, T>& value, const int exp)
 {
-    return utils::createVector(vector, [&exp](const T& v) { return ldexp(v, exp); });
+    using ::framework::math::step;
+    return vector<4, T>(step(value.x, exp), step(value.y, exp), step(value.z, exp), step(value.w, exp));
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> ldexp(const TVec<4, T>& vector, TVec<4, int>& exp)
+template <typename T>
+inline constexpr vector<3, T> step(const vector<3, T>& value, const int exp)
 {
-    return TVec<4, T>(ldexp(vector.x, exp.x), ldexp(vector.y, exp.y), ldexp(vector.z, exp.z), ldexp(vector.w, exp.w));
+    using ::framework::math::step;
+    return vector<3, T>(step(value.x, exp), step(value.y, exp), step(value.z, exp));
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> ldexp(const TVec<3, T>& vector, TVec<3, int>& exp)
+template <typename T>
+inline constexpr vector<2, T> step(const vector<2, T>& value, const int exp)
 {
-    return TVec<3, T>(ldexp(vector.x, exp.x), ldexp(vector.y, exp.y), ldexp(vector.z, exp.z));
+    using ::framework::math::step;
+    return vector<2, T>(step(value.x, exp), step(value.y, exp));
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> ldexp(const TVec<2, T>& vector, TVec<2, int>& exp)
+template <typename T>
+inline vector<4, T> ldexp(const vector<4, T>& value, vector<4, int>& exp)
 {
-    return TVec<2, T>(ldexp(vector.x, exp.x), ldexp(vector.y, exp.y));
+    return vector<4, T>(ldexp(value.x, exp.x), ldexp(value.y, exp.y), ldexp(value.z, exp.z), ldexp(value.w, exp.w));
+}
+
+template <typename T>
+inline vector<3, T> ldexp(const vector<3, T>& value, vector<3, int>& exp)
+{
+    return vector<3, T>(ldexp(value.x, exp.x), ldexp(value.y, exp.y), ldexp(value.z, exp.z));
+}
+
+template <typename T>
+inline vector<2, T> ldexp(const vector<2, T>& value, vector<2, int>& exp)
+{
+    return vector<2, T>(ldexp(value.x, exp.x), ldexp(value.y, exp.y));
 }
 
 // the machine epsilon has to be scaled to the magnitude of the values used
@@ -496,21 +737,21 @@ inline bool almost_equal(T x, T y, int)
     return x == y;
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline bool almost_equal(const TVec<4, T>& lhs, const TVec<4, T>& rhs, int ulp = 0)
+template <typename T>
+inline bool almost_equal(const vector<4, T>& lhs, const vector<4, T>& rhs, int ulp = 0)
 {
     return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp) &&
            almost_equal(lhs.w, rhs.w, ulp);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline bool almost_equal(const TVec<3, T>& lhs, const TVec<3, T>& rhs, int ulp = 0)
+template <typename T>
+inline bool almost_equal(const vector<3, T>& lhs, const vector<3, T>& rhs, int ulp = 0)
 {
     return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline bool almost_equal(const TVec<2, T>& lhs, const TVec<2, T>& rhs, int ulp = 0)
+template <typename T>
+inline bool almost_equal(const vector<2, T>& lhs, const vector<2, T>& rhs, int ulp = 0)
 {
     return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp);
 }

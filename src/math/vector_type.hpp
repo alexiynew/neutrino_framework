@@ -45,7 +45,7 @@ struct cast_to<bool>
     template <typename U>
     inline static constexpr bool from(const U& value)
     {
-        return std::not_equal_to<U>(value, U{0});
+        return std::not_equal_to<U>()(value, U{0});
     }
 };
 
@@ -1528,7 +1528,8 @@ template <typename T>
 inline constexpr bool operator!=(const vector<4, T>& left, const vector<4, T>& right)
 {
     constexpr auto not_equal = std::not_equal_to<T>();
-    return not_equal(left.x, right.x) && not_equal(left.y, right.y) && not_equal(left.z, right.z) && not_equal(left.w, right.w);
+    return not_equal(left.x, right.x) && not_equal(left.y, right.y) && not_equal(left.z, right.z) &&
+           not_equal(left.w, right.w);
 }
 
 /**
