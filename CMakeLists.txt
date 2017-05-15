@@ -37,6 +37,7 @@ include(${CMAKE_SOURCE_DIR}/cmake/Macros.cmake)
 
 # Get platform
 detect_platform_name(PLATFORM_NAME)
+message("platform name: ${PLATFORM_NAME}")
 
 # Assemble framework
 add_subdirectory(${CMAKE_SOURCE_DIR}/src)

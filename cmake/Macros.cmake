@@ -1,5 +1,4 @@
-# TODO add documentation
-
+# Get list of all directories in current directory
 macro(subdirlist RESULT_LIST CURDIR)
     file(GLOB CHILDREN RELATIVE ${CURDIR} ${CURDIR}/*)
     set(DIRLIST "")
@@ -11,9 +10,17 @@ macro(subdirlist RESULT_LIST CURDIR)
     set(${RESULT_LIST} ${DIRLIST})
 endmacro()
 
-# TODO Add platform detection
+# Detect platform and set platform name
 macro(detect_platform_name PLATFORM_NAME)
-    set(PLATFORM_NAME "linux")
-    # set(PLATFORM_NAME "osx")
-    # set(PLATFORM_NAME "windows")
+    if(${UNIX})
+        if(${APPLE})
+            if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+                set(PLATFORM_NAME "osx")
+            endif()
+        else()
+            set(PLATFORM_NAME "linux")
+        endif()
+    elseif(${WIN32})
+        set(PLATFORM_NAME "windows")
+    endif()
 endmacro()

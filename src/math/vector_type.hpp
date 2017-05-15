@@ -326,10 +326,10 @@ struct vector<4, T> final
      */
     const value_type* data() const noexcept;
 
-    value_type x; /**< The x component */
-    value_type y; /**< The y component */
-    value_type z; /**< The z component */
-    value_type w; /**< The w component */
+    value_type x; /**< The x component. */
+    value_type y; /**< The y component. */
+    value_type z; /**< The z component. */
+    value_type w; /**< The w component. */
 };
 
 #pragma mark - vector<3, T> type specialization
@@ -491,9 +491,9 @@ struct vector<3, T> final
      */
     const value_type* data() const noexcept;
 
-    value_type x; /**< The x component */
-    value_type y; /**< The y component */
-    value_type z; /**< The z component */
+    value_type x; /**< The x component. */
+    value_type y; /**< The y component. */
+    value_type z; /**< The z component. */
 };
 
 #pragma mark - vector<2, T> type specialization
@@ -634,8 +634,8 @@ struct vector<2, T> final
      */
     const value_type* data() const noexcept;
 
-    value_type x; /**< The x component */
-    value_type y; /**< The y component */
+    value_type x; /**< The x component. */
+    value_type y; /**< The y component. */
 };
 
 /**
