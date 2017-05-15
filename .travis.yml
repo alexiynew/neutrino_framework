@@ -1,8 +1,3 @@
-addons:
-  apt:
-    packages:
-      - xvfb
-
 matrix:
   include:
     - os: linux
@@ -31,12 +26,11 @@ before_install:
 
 install: true
 
-before_script:
-  - export DISPLAY=:99.0
-  - bash -e /etc/init.d/xvfb start
-  - sleep 3
-
 script:
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "ls -al /home/framework"
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER -t build"
-  - docker run -it -e DISPLAY=$DISPLAY:99 -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -t test"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash
+  - pwd
+  - ls -al /home/framework
+  # - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER -t build"
+  # - docker run -it -e DISPLAY=$DISPLAY:99 -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -t test"
+  # Xvfb :1 -screen 0 1024x768x16 &> xvfb.log &
+  #  ps aux | grep X
