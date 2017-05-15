@@ -1,5 +1,5 @@
 /**
- * @file cocoa_window.hpp
+ * @file
  * @brief Window implementation for osx.
  * @author Fedorov Alexey
  * @date 19.04.2017

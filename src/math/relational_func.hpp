@@ -129,57 +129,48 @@ inline vector<2, bool> not_equal(const vector<2, T>& lhs, const vector<2, T>& rh
 }
 
 /// Returns the component-wise logical not of v.
-template <typename T>
 inline vector<4, bool> logical_not(const vector<4, bool>& value)
 {
     return vector<4, bool>(!value.x, !value.y, !value.z, !value.w);
 }
 
-template <typename T>
 inline vector<3, bool> logical_not(const vector<3, bool>& value)
 {
     return vector<3, bool>(!value.x, !value.y, !value.z);
 }
 
-template <typename T>
 inline vector<2, bool> logical_not(const vector<2, bool>& value)
 {
     return vector<2, bool>(!value.x, !value.y);
 }
 
 /// Returns the component-wise comparison of result l && r.
-template <typename T>
 inline vector<4, bool> logical_and(const vector<4, bool>& lhs, const vector<4, bool>& rhs)
 {
     return vector<4, bool>(lhs.x && rhs.x, lhs.y && rhs.y, lhs.z && rhs.z, lhs.w && rhs.w);
 }
 
-template <typename T>
 inline vector<3, bool> logical_and(const vector<3, bool>& lhs, const vector<3, bool>& rhs)
 {
     return vector<3, bool>(lhs.x && rhs.x, lhs.y && rhs.y, lhs.z && rhs.z);
 }
 
-template <typename T>
 inline vector<2, bool> logical_and(const vector<2, bool>& lhs, const vector<2, bool>& rhs)
 {
     return vector<2, bool>(lhs.x && rhs.x, lhs.y && rhs.y);
 }
 
 /// Returns the component-wise comparison of result l || r.
-template <typename T>
 inline vector<4, bool> logical_or(const vector<4, bool>& lhs, const vector<4, bool>& rhs)
 {
     return vector<4, bool>(lhs.x || rhs.x, lhs.y || rhs.y, lhs.z || rhs.z, lhs.w || rhs.w);
 }
 
-template <typename T>
 inline vector<3, bool> logical_or(const vector<3, bool>& lhs, const vector<3, bool>& rhs)
 {
     return vector<3, bool>(lhs.x || rhs.x, lhs.y || rhs.y, lhs.z || rhs.z);
 }
 
-template <typename T>
 inline vector<2, bool> logical_or(const vector<2, bool>& lhs, const vector<2, bool>& rhs)
 {
     return vector<2, bool>(lhs.x || rhs.x, lhs.y || rhs.y);

@@ -1,5 +1,5 @@
 /**
- * @file math.hpp
+ * @file
  * @brief Main file in math module.
  * @author Fedorov Alexey
  * @date 04.03.2017
@@ -28,8 +28,9 @@
 namespace framework {
 
 /**
- * @defgroup math_module Math module
  * @brief Contains all math stuff.
+ *
+ * @defgroup math_module Math module
  * @{
  */
 

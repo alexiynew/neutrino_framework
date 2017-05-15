@@ -60,8 +60,8 @@ private:
     {
         TEST_ASSERT(floor(v4d) == vector4d(1.0, -2.0, 0.0, -2.0), "Floor function failed.");
         TEST_ASSERT(floor(v3f) == vector3f(1.0f, -2.0f, 0.0f), "Floor function failed.");
-        TEST_ASSERT(floor(v3i) == vector3i(1, -5, 0), "Floor function failed.");
-        TEST_ASSERT(floor(v2u) == vector2u(10, 0), "Floor function failed.");
+        TEST_ASSERT(floor(v3i) == vector3d(1, -5, 0), "Floor function failed.");
+        TEST_ASSERT(floor(v2u) == vector2d(10, 0), "Floor function failed.");
     }
 
     void round_function()
@@ -94,8 +94,6 @@ private:
 
         TEST_ASSERT(almost_equal(fract(v4d), v4d_fract), "Fract function failed.");
         TEST_ASSERT(fract(v3f) == vector3f(0.6f, 0.5f, 0.0f), "Fract function failed.");
-        TEST_ASSERT(fract(v3i) == vector3i(0, 0, 0), "Fract function failed.");
-        TEST_ASSERT(fract(v2u) == vector2u(0, 0), "Fract function failed.");
     }
 
     void mod_function()

@@ -1,5 +1,5 @@
 /**
- * @file suite.hpp
+ * @file
  * @brief Declaration of base class for tests.
  * @author Fedorov Alexey
  * @date 04.03.2017

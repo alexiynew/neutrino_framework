@@ -1,3 +1,10 @@
+/**
+ * @file
+ * @brief Contains common math constants.
+ * @author Fedorov Alexey
+ * @date 06.05.2017
+ */
+
 #ifndef FRAMEWORK_MATH_CONSTANTS_HPP
 #define FRAMEWORK_MATH_CONSTANTS_HPP
 

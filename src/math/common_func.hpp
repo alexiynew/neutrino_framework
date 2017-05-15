@@ -1,3 +1,10 @@
+/**
+ * @file
+ * @brief Contains common math functions.
+ * @author Fedorov Alexey
+ * @date 04.05.2017
+ */
+
 #ifndef FRAMEWORK_MATH_COMMON_FUNC_HPP
 #define FRAMEWORK_MATH_COMMON_FUNC_HPP
 
@@ -9,8 +16,15 @@ namespace framework {
 
 namespace math {
 
-namespace details {
+/**
+ * @brief Contains implementation details of some functions.
+ */
+namespace common_functions_details {
 
+/**
+ * @brief Realization of abs function.
+ * @{
+ */
 template <typename T, bool B>
 struct abs_details
 {
@@ -21,7 +35,7 @@ struct abs_details<T, true>
 {
     constexpr T operator()(const T& v)
     {
-        return v < T(0) ? -v : v;
+        return (v < T{0}) ? -v : v;
     }
 };
 
@@ -34,6 +48,14 @@ struct abs_details<T, false>
     }
 };
 
+/**
+ * @}
+ */
+
+/**
+ * @brief Realization of sign function.
+ * @{
+ */
 template <typename T, bool B>
 struct sign_details
 {
@@ -42,29 +64,62 @@ struct sign_details
 template <typename T>
 struct sign_details<T, true>
 {
-    T operator()(const T& v)
+    constexpr T operator()(const T& v)
     {
-        return (T(0) < v) - (v < T(0));
+        return static_cast<T>((T{0} < v) - (v < T{0}));
     }
 };
 
 template <typename T>
 struct sign_details<T, false>
 {
-    T operator()(const T& v)
+    constexpr T operator()(const T& v)
     {
-        return (T(0) < v);
+        return static_cast<T>(T{0} < v);
     }
 };
-}
 
-/// Returns x if x >= 0; otherwise, it returns -x.
+/**
+ * @}
+ */
+
+} // namespace common_functions_details
+
+/**
+ * @brief Defines common math functions.
+ *
+ * @defgroup common_functions Common functions
+ * @ingroup math_module
+ * @{
+ */
+
+/**
+ * @name abs
+ * @{
+ */
+
+/**
+ * @brief Computes the absolute value of an argument.
+ *
+ * @param value Value of floating-point or integral type.
+ *
+ * @return Value if value >= 0, otherwise -value.
+ */
 template <typename T>
 inline constexpr T abs(const T& value)
 {
-    return details::abs_details<T, std::numeric_limits<T>::is_signed>()(value);
+    return common_functions_details::abs_details<T, std::numeric_limits<T>::is_signed>()(value);
 }
 
+/**
+ * @brief Creates a vector of the absolute values from the provided vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of the absolute values.
+ *
+ * @see abs
+ */
 template <typename T>
 inline constexpr vector<4, T> abs(const vector<4, T>& value)
 {
@@ -72,6 +127,15 @@ inline constexpr vector<4, T> abs(const vector<4, T>& value)
     return vector<4, T>(abs(value.x), abs(value.y), abs(value.z), abs(value.w));
 }
 
+/**
+ * @brief Creates a vector of the absolute values from the provided vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of the absolute values.
+ *
+ * @see abs
+ */
 template <typename T>
 inline constexpr vector<3, T> abs(const vector<3, T>& value)
 {
@@ -79,20 +143,53 @@ inline constexpr vector<3, T> abs(const vector<3, T>& value)
     return vector<3, T>(abs(value.x), abs(value.y), abs(value.z));
 }
 
+/**
+ * @brief Creates a vector of the absolute values from the provided vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of the absolute values.
+ *
+ * @see abs
+ */
 template <typename T>
 inline constexpr vector<2, T> abs(const vector<2, T>& value)
 {
+
     using ::framework::math::abs;
     return vector<2, T>(abs(value.x), abs(value.y));
 }
+/**
+ * @}
+ */
 
-/// Returns 1.0 if x > 0, 0.0 if x == 0, or -1.0 if x < 0.
+/**
+ * @name sign
+ * @{
+ */
+
+/**
+ * @brief Computes the sign of an argument.
+ *
+ * @param value Value of floating-point or integral type.
+ *
+ * @return 1.0 if value > 0, 0.0 if value == 0, or -1.0 if value < 0.
+ */
 template <typename T>
 inline constexpr T sign(const T& value)
 {
-    return details::sign_details<T, std::numeric_limits<T>::is_signed>()(value);
+    return common_functions_details::sign_details<T, std::numeric_limits<T>::is_signed>()(value);
 }
 
+/**
+ * @brief Creates a vector of the sign values from the provided vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of the sign values.
+ *
+ * @see sign
+ */
 template <typename T>
 inline constexpr vector<4, T> sign(const vector<4, T>& value)
 {
@@ -100,6 +197,15 @@ inline constexpr vector<4, T> sign(const vector<4, T>& value)
     return vector<4, T>(sign(value.x), sign(value.y), sign(value.z), sign(value.w));
 }
 
+/**
+ * @brief Creates a vector of the sign values from the provided vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of the sign values.
+ *
+ * @see sign
+ */
 template <typename T>
 inline constexpr vector<3, T> sign(const vector<3, T>& value)
 {
@@ -107,41 +213,125 @@ inline constexpr vector<3, T> sign(const vector<3, T>& value)
     return vector<3, T>(sign(value.x), sign(value.y), sign(value.z));
 }
 
+/**
+ * @brief Creates a vector of the sign values from the provided vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of the sign values.
+ *
+ * @see sign
+ */
 template <typename T>
 inline constexpr vector<2, T> sign(const vector<2, T>& value)
 {
     using ::framework::math::sign;
     return vector<2, T>(sign(value.x), sign(value.y));
 }
+/**
+ * @}
+ */
 
-/// Returns a value equal to the nearest integer that is less then or equal to
-/// x.
-using ::std::floor;
+/**
+ * @name floor
+ * @{
+ */
 
-template <typename T>
-inline constexpr vector<4, T> floor(const vector<4, T>& value)
+/**
+ * @brief Computes the largest integer value not greater than argument.
+ *
+ * @param value Value of floating-point or integral type.
+ *
+ * @return A value equal to the nearest integer that is less then or equal to the argument.
+ */
+template <typename T, typename R = decltype(::std::floor(std::declval<T>()))>
+inline R floor(const T& value)
 {
-    using ::framework::math::floor;
-    return vector<4, T>(floor(value.x), floor(value.y), floor(value.z), floor(value.w));
+    return ::std::floor(value);
 }
 
-template <typename T>
-inline constexpr vector<3, T> floor(const vector<3, T>& value)
+template <unsigned int N, typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+inline vector<N, R> floor(const vector<N, T>& value)
 {
-    using ::framework::math::floor;
-    return vector<3, T>(floor(value.x), floor(value.y), floor(value.z));
+    return transform(value, [](const T& component) { return ::framework::math::floor(component); });
 }
 
-template <typename T>
-inline constexpr vector<2, T> floor(const vector<2, T>& value)
-{
-    using ::framework::math::floor;
-    return vector<2, T>(floor(value.x), floor(value.y));
-}
 
-/// Returns a value equal to the nearest integer to x.
+//
+// /**
+//  * @brief Applies the floor function to every component of the vector.
+//  *
+//  * @param value Vector of floating-point or integral type values.
+//  *
+//  * @return A vector of values that are the largest integer value not greater than argument.
+//  *
+//  * @see floor
+//  */
+// template <typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+// inline constexpr vector<4, R> floor(const vector<4, T>& value)
+// {
+//     using ::framework::math::floor;
+//     return vector<4, R>(floor(value.x), floor(value.y), floor(value.z), floor(value.w));
+// }
+//
+// /**
+//  * @brief Applies the floor function to every component of the vector.
+//  *
+//  * @param value Vector of floating-point or integral type values.
+//  *
+//  * @return A vector of values that are the largest integer value not greater than argument.
+//  *
+//  * @see floor
+//  */
+// template <typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+// inline constexpr vector<3, R> floor(const vector<3, T>& value)
+// {
+//     using ::framework::math::floor;
+//     return vector<3, R>(floor(value.x), floor(value.y), floor(value.z));
+// }
+//
+// /**
+//  * @brief Applies the floor function to every component of the vector.
+//  *
+//  * @param value Vector of floating-point or integral type values.
+//  *
+//  * @return A vector of values that are the largest integer value not greater than argument.
+//  *
+//  * @see floor
+//  */
+// template <typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+// inline constexpr vector<2, R> floor(const vector<2, T>& value)
+// {
+//     using ::framework::math::floor;
+//     return vector<2, R>(floor(value.x), floor(value.y));
+// }
+/**
+ * @}
+ */
+
+/**
+ * @name round
+ * @{
+ */
+
+/**
+ * @brief Computes the nearest integer value to the argument.
+ *
+ * @param value Value of floating-point or integral type.
+ *
+ * @return A value equal to the nearest integer to the argument.
+ */
 using ::std::round;
 
+/**
+ * @brief Applies the round function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are equal to the nearest integer to the argument.
+ *
+ * @see std::round
+ */
 template <typename T>
 inline constexpr vector<4, T> round(const vector<4, T>& value)
 {
@@ -149,6 +339,15 @@ inline constexpr vector<4, T> round(const vector<4, T>& value)
     return vector<4, T>(round(value.x), round(value.y), round(value.z), round(value.w));
 }
 
+/**
+ * @brief Applies the round function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are equal to the nearest integer to the argument.
+ *
+ * @see std::round
+ */
 template <typename T>
 inline constexpr vector<3, T> round(const vector<3, T>& value)
 {
@@ -156,17 +355,48 @@ inline constexpr vector<3, T> round(const vector<3, T>& value)
     return vector<3, T>(round(value.x), round(value.y), round(value.z));
 }
 
+/**
+ * @brief Applies the round function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are equal to the nearest integer to the argument.
+ *
+ * @see std::round
+ */
 template <typename T>
 inline constexpr vector<2, T> round(const vector<2, T>& value)
 {
     using ::framework::math::round;
     return vector<2, T>(round(value.x), round(value.y));
 }
+/**
+ * @}
+ */
 
-/// Returns a value equal to the nearest integer
-/// that is greater than or equal to x.
+/**
+ * @name ceil
+ * @{
+ */
+
+/**
+ * @brief Computes the nearest integer that is greater than or equal to the argument.
+ *
+ * @param value Value of floating-point or integral type.
+ *
+ * @return A value that is greater than or equal to the argument.
+ */
 using ::std::ceil;
 
+/**
+ * @brief Applies the ceil function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are greater than or equal to the argument.
+ *
+ * @see std::ceil
+ */
 template <typename T>
 inline constexpr vector<4, T> ceil(const vector<4, T>& value)
 {
@@ -174,6 +404,15 @@ inline constexpr vector<4, T> ceil(const vector<4, T>& value)
     return vector<4, T>(ceil(value.x), ceil(value.y), ceil(value.z), ceil(value.w));
 }
 
+/**
+ * @brief Applies the ceil function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are greater than or equal to the argument.
+ *
+ * @see std::ceil
+ */
 template <typename T>
 inline constexpr vector<3, T> ceil(const vector<3, T>& value)
 {
@@ -181,18 +420,48 @@ inline constexpr vector<3, T> ceil(const vector<3, T>& value)
     return vector<3, T>(ceil(value.x), ceil(value.y), ceil(value.z));
 }
 
+/**
+ * @brief Applies the ceil function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are greater than or equal to the argument.
+ *
+ * @see std::ceil
+ */
 template <typename T>
 inline constexpr vector<2, T> ceil(const vector<2, T>& value)
 {
     using ::framework::math::ceil;
     return vector<2, T>(ceil(value.x), ceil(value.y));
 }
+/**
+ * @}
+ */
 
-/// Returns a value equal to the nearest integer to x
-/// whose absolute value is not larger than the absolute vfractional patr of
-/// float-point numberalue of x.
+/**
+ * @name trunc
+ * @{
+ */
+
+/**
+ * @brief Computes the nearest integer not greater in magnitude than argument.
+ *
+ * @param value Value of floating-point or integral type.
+ *
+ * @return A value that is not greater in magnitude than argument.
+ */
 using ::std::trunc;
 
+/**
+ * @brief Applies the trunc function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are not greater in magnitude than argument.
+ *
+ * @see std::trunc
+ */
 template <typename T>
 inline constexpr vector<4, T> trunc(const vector<4, T>& value)
 {
@@ -200,6 +469,15 @@ inline constexpr vector<4, T> trunc(const vector<4, T>& value)
     return vector<4, T>(trunc(value.x), trunc(value.y), trunc(value.z), trunc(value.w));
 }
 
+/**
+ * @brief Applies the trunc function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are not greater in magnitude than argument.
+ *
+ * @see std::trunc
+ */
 template <typename T>
 inline constexpr vector<3, T> trunc(const vector<3, T>& value)
 {
@@ -207,236 +485,584 @@ inline constexpr vector<3, T> trunc(const vector<3, T>& value)
     return vector<3, T>(trunc(value.x), trunc(value.y), trunc(value.z));
 }
 
+/**
+ * @brief Applies the trunc function to every component of the vector.
+ *
+ * @param value Vector of floating-point or integral type values.
+ *
+ * @return A vector of values that are not greater in magnitude than argument.
+ *
+ * @see std::trunc
+ */
 template <typename T>
 inline constexpr vector<2, T> trunc(const vector<2, T>& value)
 {
     using ::framework::math::trunc;
     return vector<2, T>(trunc(value.x), trunc(value.y));
 }
+/**
+ * @}
+ */
 
-/// Return fractional part of floating point number
-template <typename T>
-inline T fract(const T& v)
+/**
+ * @name fract
+ * @{
+ */
+
+/**
+ * @brief Computes the fractional part of a floating-point number.
+ *
+ * @param value Value of floating-point type.
+ *
+ * @return The fractional part of the argument.
+ */
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline R fract(const T& value)
 {
-    return static_cast<T>(v - floor(v));
+    return static_cast<R>(value - floor(value));
 }
 
-template <typename T>
-inline constexpr vector<4, T> fract(const vector<4, T>& value)
+/**
+ * @brief Creates a vector of the fractional parts of the argument.
+ *
+ * @param value Vector of floating-point values.
+ *
+ * @return A vector of the fractional parts.
+ */
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline constexpr vector<4, R> fract(const vector<4, T>& value)
 {
     using ::framework::math::fract;
-    return vector<4, T>(fract(value.x), fract(value.y), fract(value.z), fract(value.w));
+    return vector<4, R>(fract(value.x), fract(value.y), fract(value.z), fract(value.w));
 }
 
-template <typename T>
-inline constexpr vector<3, T> fract(const vector<3, T>& value)
+/**
+ * @brief Creates a vector of the fractional parts of the argument.
+ *
+ * @param value Vector of floating-point values.
+ *
+ * @return A vector of the fractional parts.
+ */
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline constexpr vector<3, R> fract(const vector<3, T>& value)
 {
     using ::framework::math::fract;
-    return vector<3, T>(fract(value.x), fract(value.y), fract(value.z));
+    return vector<3, R>(fract(value.x), fract(value.y), fract(value.z));
 }
 
-template <typename T>
-inline constexpr vector<2, T> fract(const vector<2, T>& value)
+/**
+ * @brief Creates a vector of the fractional parts of the argument.
+ *
+ * @param value Vector of floating-point values.
+ *
+ * @return A vector of the fractional parts.
+ */
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline constexpr vector<2, R> fract(const vector<2, T>& value)
 {
     using ::framework::math::fract;
-    return vector<2, T>(fract(value.x), fract(value.y));
+    return vector<2, R>(fract(value.x), fract(value.y));
 }
+/**
+ * @}
+ */
 
-/// Modulus. Returns x - y * floor(x / y)
-/// for each component in x using the floating point value y.
+/**
+ * @name mod
+ * @{
+ */
+
+/**
+ * @brief Modulus. Computes the floating-point remainder of the division operation.
+ *
+ * The floating-point remainder of the division operation is exactly the value:
+ * @code a - b * floor(a / b) @endcode
+ * The returned value has the same sign as a and is less than b in magnitude.
+ *
+ * @param a Value of floating-point or integral type.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return The floating-point remainder of the division operation.
+ */
 template <typename T>
 inline T mod(const T& a, const T& b)
 {
     return a - b * floor(a / b);
 }
 
+/**
+ * @brief Modulus for vector and scalar. Applies the mod function to every component of the vector.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of the floating-point remainder of the division operation.
+ *
+ * @see mod
+ */
 template <typename T>
-inline constexpr vector<4, T> mod(const vector<4, T>& value, const T& scalar)
+inline constexpr vector<4, T> mod(const vector<4, T>& a, const T& b)
 {
     using ::framework::math::mod;
-    return vector<4, T>(mod(value.x, scalar), mod(value.y, scalar), mod(value.z, scalar), mod(value.w, scalar));
+    return vector<4, T>(mod(a.x, b), mod(a.y, b), mod(a.z, b), mod(a.w, b));
 }
 
+/**
+ * @brief Modulus for vector and scalar. Applies the mod function to every component of the vector.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of the floating-point remainder of the division operation.
+ *
+ * @see mod
+ */
 template <typename T>
-inline constexpr vector<3, T> mod(const vector<3, T>& value, const T& scalar)
+inline constexpr vector<3, T> mod(const vector<3, T>& a, const T& b)
 {
     using ::framework::math::mod;
-    return vector<3, T>(mod(value.x, scalar), mod(value.y, scalar), mod(value.z, scalar));
+    return vector<3, T>(mod(a.x, b), mod(a.y, b), mod(a.z, b));
 }
 
+/**
+ * @brief Modulus for vector and scalar. Applies the mod function to every component of the vector.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of the floating-point remainder of the division operation.
+ *
+ * @see mod
+ */
 template <typename T>
-inline constexpr vector<2, T> mod(const vector<2, T>& value, const T& scalar)
+inline constexpr vector<2, T> mod(const vector<2, T>& a, const T& b)
 {
     using ::framework::math::mod;
-    return vector<2, T>(mod(value.x, scalar), mod(value.y, scalar));
+    return vector<2, T>(mod(a.x, b), mod(a.y, b));
 }
 
+/**
+ * @brief Modulus for vectors. Applies the mod function to every component of the vector.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of the floating-point remainder of the division operation.
+ *
+ * @see mod
+ */
 template <typename T>
-inline constexpr vector<4, T> mod(const vector<4, T>& lhs, const vector<4, T>& rhs)
+inline constexpr vector<4, T> mod(const vector<4, T>& a, const vector<4, T>& b)
 {
     using ::framework::math::mod;
-    return vector<4, T>(mod(lhs.x, rhs.x), mod(lhs.y, rhs.y), mod(lhs.z, rhs.z), mod(lhs.w, rhs.w));
+    return vector<4, T>(mod(a.x, b.x), mod(a.y, b.y), mod(a.z, b.z), mod(a.w, b.w));
 }
 
+/**
+ * @brief Modulus for vectors. Applies the mod function to every component of the vector.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of the floating-point remainder of the division operation.
+ *
+ * @see mod
+ */
 template <typename T>
-inline constexpr vector<3, T> mod(const vector<3, T>& lhs, const vector<3, T>& rhs)
+inline constexpr vector<3, T> mod(const vector<3, T>& a, const vector<3, T>& b)
 {
     using ::framework::math::mod;
-    return vector<3, T>(mod(lhs.x, rhs), mod(lhs.y, rhs), mod(lhs.z, rhs));
+    return vector<3, T>(mod(a.x, b), mod(a.y, b), mod(a.z, b));
 }
 
+/**
+ * @brief Modulus for vectors. Applies the mod function to every component of the vector.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of the floating-point remainder of the division operation.
+ *
+ * @see mod
+ */
 template <typename T>
-inline constexpr vector<2, T> mod(const vector<2, T>& lhs, const vector<2, T>& rhs)
+inline constexpr vector<2, T> mod(const vector<2, T>& a, const vector<2, T>& b)
 {
     using ::framework::math::mod;
-    return vector<2, T>(mod(lhs.x, rhs.x), mod(lhs.y, rhs.y));
+    return vector<2, T>(mod(a.x, b.x), mod(a.y, b.y));
 }
+/**
+ * @}
+ */
 
-/// Returns the fractional part of x and sets i to the integer
-/// part (as a whole number floating point value). Both the
-/// return value and the output parameter will have the same
-/// sign as x.
-template <typename T>
-inline T modf(const T& a, T& b)
+/**
+ * @name modf
+ * @{
+ */
+
+/**
+ * @brief Decomposes given floating-point value into integral and fractional parts.
+ * Each having the same type and sign as value.
+ * The integral part (in floating-point format) is stored in the integral parameter.
+ *
+ * @param[in] value Value of floating-point type.
+ * @param[out] integral Integral part of the value.
+ *
+ * @return The fractional part of the argument.
+ */
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline R modf(const T& value, T& integral)
 {
-    return std::modf(a, &b);
+    return std::modf(value, &integral);
 }
 
-template <typename T>
-inline vector<4, T> modf(const vector<4, T>& a, vector<4, T>& b)
+/**
+ * @brief Decomposes given floating-point vector into integral and fractional parts.
+ *
+ * @param[in] value Vector of floating-point values.
+ * @param[out] integral Vector of integral parts of the value.
+ *
+ * @return A vector of the fractional parts.
+ *
+ * @see modf
+ */
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline vector<4, R> modf(const vector<4, T>& value, vector<4, T>& integral)
 {
-    return vector<4, T>(modf(a.x, b.x), modf(a.y, b.y), modf(a.z, b.z), modf(a.w, b.w));
+    return vector<4, R>(
+    modf(value.x, integral.x), modf(value.y, integral.y), modf(value.z, integral.z), modf(value.w, integral.w));
 }
 
-template <typename T>
-inline vector<3, T> modf(const vector<3, T>& a, vector<3, T>& b)
+/**
+ * @brief Decomposes given floating-point vector into integral and fractional parts.
+ *
+ * @param[in] value Vector of floating-point values.
+ * @param[out] integral Vector of integral parts of the value.
+ *
+ * @return A vector of the fractional parts.
+ *
+ * @see modf
+ */
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline vector<3, R> modf(const vector<3, T>& value, vector<3, T>& integral)
 {
-    return vector<3, T>(modf(a.x, b.x), modf(a.y, b.y), modf(a.z, b.z));
+    return vector<3, R>(modf(value.x, integral.x), modf(value.y, integral.y), modf(value.z, integral.z));
 }
 
-template <typename T>
-inline vector<2, T> modf(const vector<2, T>& a, vector<2, T>& b)
+/**
+ * @brief Decomposes given floating-point vector into integral and fractional parts.
+ *
+ * @param[in] value Vector of floating-point values.
+ * @param[out] integral Vector of integral parts of the value.
+ *
+ * @return A vector of the fractional parts.
+ *
+ * @see modf
+ */
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline vector<2, R> modf(const vector<2, T>& value, vector<2, T>& integral)
 {
-    return vector<2, T>(modf(a.x, b.x), modf(a.y, b.y));
+    return vector<2, R>(modf(value.x, integral.x), modf(value.y, integral.y));
 }
+/**
+ * @}
+ */
 
-/// Returns a if a < b; otherwise, it returns b.
+/**
+ * @name min
+ * @{
+ */
+
+/**
+ * @brief Returns the smaller of the given values.
+ *
+ * @param a Value of floating-point or integral type.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return a if a < b; otherwise, it returns b.
+ */
 template <typename T>
 inline T min(const T& a, const T& b)
 {
-    return a < b ? a : b;
+    return (a < b) ? a : b;
 }
 
+/**
+ * @brief Compares vector with scalar value and return a vector of smaller values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of smaller values.
+ */
 template <typename T>
-inline constexpr vector<4, T> min(const vector<4, T>& value, const T& scalar)
+inline constexpr vector<4, T> min(const vector<4, T>& a, const T& b)
 {
     using ::framework::math::min;
-    return vector<4, T>(min(value.x, scalar), min(value.y, scalar), min(value.z, scalar), min(value.w, scalar));
+    return vector<4, T>(min(a.x, b), min(a.y, b), min(a.z, b), min(a.w, b));
 }
 
+/**
+ * @brief Compares vector with scalar value and return a vector of smaller values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of smaller values.
+ */
 template <typename T>
-inline constexpr vector<3, T> min(const vector<3, T>& value, const T& scalar)
+inline constexpr vector<3, T> min(const vector<3, T>& a, const T& b)
 {
     using ::framework::math::min;
-    return vector<3, T>(min(value.x, scalar), min(value.y, scalar), min(value.z, scalar));
+    return vector<3, T>(min(a.x, b), min(a.y, b), min(a.z, b));
 }
 
+
+/**
+ * @brief Compares vector with scalar value and return a vector of smaller values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of smaller values.
+ */
 template <typename T>
-inline constexpr vector<2, T> min(const vector<2, T>& value, const T& scalar)
+inline constexpr vector<2, T> min(const vector<2, T>& a, const T& b)
 {
     using ::framework::math::min;
-    return vector<2, T>(min(value.x, scalar), min(value.y, scalar));
+    return vector<2, T>(min(a.x, b), min(a.y, b));
 }
 
+/**
+ * @brief Compares two vectors by components and return a vector of smaller values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of smaller values.
+ */
 template <typename T>
-inline constexpr vector<4, T> min(const vector<4, T>& lhs, const vector<4, T>& rhs)
+inline constexpr vector<4, T> min(const vector<4, T>& a, const vector<4, T>& b)
 {
     using ::framework::math::min;
-    return vector<4, T>(min(lhs.x, rhs.x), min(lhs.y, rhs.y), min(lhs.z, rhs.z), min(lhs.w, rhs.w));
+    return vector<4, T>(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z), min(a.w, b.w));
 }
 
+/**
+ * @brief Compares two vectors by components and return a vector of smaller values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of smaller values.
+ */
 template <typename T>
-inline constexpr vector<3, T> min(const vector<3, T>& lhs, const vector<3, T>& rhs)
+inline constexpr vector<3, T> min(const vector<3, T>& a, const vector<3, T>& b)
 {
     using ::framework::math::min;
-    return vector<3, T>(min(lhs.x, rhs), min(lhs.y, rhs), min(lhs.z, rhs));
+    return vector<3, T>(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z));
 }
 
+/**
+ * @brief Compares two vectors by components and return a vector of smaller values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of smaller values.
+ */
 template <typename T>
-inline constexpr vector<2, T> min(const vector<2, T>& lhs, const vector<2, T>& rhs)
+inline constexpr vector<2, T> min(const vector<2, T>& a, const vector<2, T>& b)
 {
     using ::framework::math::min;
-    return vector<2, T>(min(lhs.x, rhs.x), min(lhs.y, rhs.y));
+    return vector<2, T>(min(a.x, b.x), min(a.y, b.y));
 }
+/**
+ * @}
+ */
 
-/// Returns a if a > b; otherwise, it returns b.
+/**
+ * @name max
+ * @{
+ */
+
+/**
+ * @brief Returns the greater of the given values.
+ *
+ * @param a Value of floating-point or integral type.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return a if a > b; otherwise, it returns b.
+ */
 template <typename T>
 inline T max(const T& a, const T& b)
 {
-    return a > b ? a : b;
+    return (a > b) ? a : b;
 }
 
+/**
+ * @brief Compares vector with scalar value and return a vector of greater values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of greater values.
+ */
 template <typename T>
-inline constexpr vector<4, T> max(const vector<4, T>& value, const T& scalar)
+inline constexpr vector<4, T> max(const vector<4, T>& a, const T& b)
 {
     using ::framework::math::max;
-    return vector<4, T>(max(value.x, scalar), max(value.y, scalar), max(value.z, scalar), max(value.w, scalar));
+    return vector<4, T>(max(a.x, b), max(a.y, b), max(a.z, b), max(a.w, b));
 }
 
+/**
+ * @brief Compares vector with scalar value and return a vector of greater values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of greater values.
+ */
 template <typename T>
-inline constexpr vector<3, T> max(const vector<3, T>& value, const T& scalar)
+inline constexpr vector<3, T> max(const vector<3, T>& a, const T& b)
 {
     using ::framework::math::max;
-    return vector<3, T>(max(value.x, scalar), max(value.y, scalar), max(value.z, scalar));
+    return vector<3, T>(max(a.x, b), max(a.y, b), max(a.z, b));
 }
 
+/**
+ * @brief Compares vector with scalar value and return a vector of greater values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Value of floating-point or integral type.
+ *
+ * @return A vector of greater values.
+ */
 template <typename T>
-inline constexpr vector<2, T> max(const vector<2, T>& value, const T& scalar)
+inline constexpr vector<2, T> max(const vector<2, T>& a, const T& b)
 {
     using ::framework::math::max;
-    return vector<2, T>(max(value.x, scalar), max(value.y, scalar));
+    return vector<2, T>(max(a.x, b), max(a.y, b));
 }
 
+/**
+ * @brief Compares two vectors by components and return a vector of greater values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of greater values.
+ */
 template <typename T>
-inline constexpr vector<4, T> max(const vector<4, T>& lhs, const vector<4, T>& rhs)
+inline constexpr vector<4, T> max(const vector<4, T>& a, const vector<4, T>& b)
 {
     using ::framework::math::max;
-    return vector<4, T>(max(lhs.x, rhs.x), max(lhs.y, rhs.y), max(lhs.z, rhs.z), max(lhs.w, rhs.w));
+    return vector<4, T>(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z), max(a.w, b.w));
 }
 
+/**
+ * @brief Compares two vectors by components and return a vector of greater values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of greater values.
+ */
 template <typename T>
-inline constexpr vector<3, T> max(const vector<3, T>& lhs, const vector<3, T>& rhs)
+inline constexpr vector<3, T> max(const vector<3, T>& a, const vector<3, T>& b)
 {
     using ::framework::math::max;
-    return vector<3, T>(max(lhs.x, rhs), max(lhs.y, rhs), max(lhs.z, rhs));
+    return vector<3, T>(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z));
 }
 
+/**
+ * @brief Compares two vectors by components and return a vector of greater values.
+ *
+ * @param a Vector of floating-point or integral type values.
+ * @param b Vector of floating-point or integral type values.
+ *
+ * @return A vector of greater values.
+ */
 template <typename T>
-inline constexpr vector<2, T> max(const vector<2, T>& lhs, const vector<2, T>& rhs)
+inline constexpr vector<2, T> max(const vector<2, T>& a, const vector<2, T>& b)
 {
     using ::framework::math::max;
-    return vector<2, T>(max(lhs.x, rhs.x), max(lhs.y, rhs.y));
+    return vector<2, T>(max(a.x, b.x), max(a.y, b.y));
 }
+/**
+ * @}
+ */
 
-/// Returns min(max(a, minv), maxv) for each component in a
-/// using the floating-point values minv and maxv.
+/**
+ * @name clamp
+ * @{
+ */
+
+/**
+ * @brief Constrain a value to lie between two defined values.
+ *
+ * The returned value is computed as:
+ * @code min(max(x, min_value), max_value) @endcode
+ *
+ * @param value Value of floating-point or integral type.
+ * @param min_value Specify the lower end of the range into which to constrain value.
+ * @param max_value Specify the upper end of the range into which to constrain value.
+ *
+ * @return A value constrained to the range from min_value to max_value.
+ */
 template <typename T>
-inline T clamp(const T& a, const T& minv, const T& maxv)
+inline T clamp(const T& value, const T& min_value, const T& max_value)
 {
-    return min(max(a, minv), maxv);
+    using ::framework::math::min;
+    using ::framework::math::max;
+    return min(max(value, min_value), max_value);
 }
 
+/**
+ * @brief Constrain each component of the value to lie between two defined values.
+ *
+ * @param value Vector of floating-point or integral type values.
+ * @param min_value Specify the lower end of the range into which to constrain value.
+ * @param max_value Specify the upper end of the range into which to constrain value.
+ *
+ * @return A vector of values constrained to the range from min_value to max_value.
+ *
+ * @see clamp
+ */
 template <unsigned int N, typename T>
-inline vector<N, T> clamp(const vector<N, T>& a, const T& minv, const T& maxv)
+inline vector<N, T> clamp(const vector<N, T>& value, const T& min_value, const T& max_value)
 {
-    return min(max(a, minv), maxv);
+    using ::framework::math::min;
+    using ::framework::math::max;
+    return min(max(value, min_value), max_value);
 }
 
+/**
+ * @brief Constrain each component of the value to lie between two defined values.
+ *
+ * @param value Vector of floating-point or integral type values.
+ * @param min_value Specify the lower end of the range into which to constrain value.
+ * @param max_value Specify the upper end of the range into which to constrain value.
+ *
+ * @return A vector of values constrained to the range from min_value to max_value.
+ *
+ * @see clamp
+ */
 template <unsigned int N, typename T>
-inline vector<N, T> clamp(const vector<N, T>& a, const vector<N, T>& minv, const vector<N, T>& maxv)
+inline vector<N, T> clamp(const vector<N, T>& value, const vector<N, T>& min_value, const vector<N, T>& max_value)
 {
-    return min(max(a, minv), maxv);
+    using ::framework::math::min;
+    using ::framework::math::max;
+    return min(max(value, min_value), max_value);
 }
+/**
+ * @}
+ */
+
+/**
+ * @name mix
+ * @{
+ */
 
 /// If genTypeU is a floating scalar or vector:
 /// Returns x * (1.0 - a) + y * a, i.e., the linear blend of
@@ -492,6 +1118,14 @@ inline vector<2, T> mix(const vector<2, T>& a, const vector<2, T>& b, const vect
 {
     return vector<2, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y));
 }
+/**
+ * @}
+ */
+
+/**
+ * @name step
+ * @{
+ */
 
 /// Returns 0.0 if a < edge, otherwise it returns 1.0 for each component of a
 template <typename T>
@@ -532,7 +1166,7 @@ template <typename T>
 inline constexpr vector<3, T> step(const vector<3, T>& value, const vector<3, T>& edge)
 {
     using ::framework::math::step;
-    return vector<3, T>(step(value.x, edge), step(value.y, edge), step(value.z, edge));
+    return vector<3, T>(step(value.x, edge.x), step(value.y, edge.y), step(value.z, edge.z));
 }
 
 template <typename T>
@@ -541,6 +1175,14 @@ inline constexpr vector<2, T> step(const vector<2, T>& value, const vector<2, T>
     using ::framework::math::step;
     return vector<2, T>(step(value.x, edge.x), step(value.y, edge.y));
 }
+/**
+ * @}
+ */
+
+/**
+ * @name smooth_step
+ * @{
+ */
 
 /// Returns 0.0 if x <= edge0 and 1.0 if x >= edge1 and
 /// performs smooth Hermite interpolation between 0 and 1
@@ -571,6 +1213,14 @@ inline vector<N, T> smooth_step(const vector<N, T>& a, const vector<N, T>& edge0
     vector<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
     return t * t * (T(3) - T(2) * t);
 }
+/**
+ * @}
+ */
+
+/**
+ * @name isnan
+ * @{
+ */
 
 /// Returns true if x holds a NaN (not a number)
 /// representation in the underlying implementation's set of
@@ -599,6 +1249,14 @@ inline constexpr vector<2, bool> isnan(const vector<2, T>& value)
     using ::framework::math::isnan;
     return vector<2, bool>(isnan(value.x), isnan(value.y));
 }
+/**
+ * @}
+ */
+
+/**
+ * @name isinf
+ * @{
+ */
 
 /// Returns true if x holds a positive infinity or negative
 /// infinity representation in the underlying implementation's
@@ -627,6 +1285,14 @@ inline constexpr vector<2, bool> isinf(const vector<2, T>& value)
     using ::framework::math::isinf;
     return vector<2, bool>(isinf(value.x), isinf(value.y));
 }
+/**
+ * @}
+ */
+
+/**
+ * @name fma
+ * @{
+ */
 
 /// Computes and returns a * b + c.
 using ::std::fma;
@@ -636,6 +1302,14 @@ inline vector<N, T> fma(const vector<N, T>& a, const vector<N, T>& b, const vect
 {
     return a * b + c;
 }
+/**
+ * @}
+ */
+
+/**
+ * @name frexp
+ * @{
+ */
 
 /// Splits x into a floating-point significand in the range
 /// [0.5, 1.0) and an integral exponent of two, such that:
@@ -676,32 +1350,19 @@ inline vector<2, TResult> frexp(const vector<2, T>& a, vector<2, int>& exp)
 {
     return vector<2, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y));
 }
+/**
+ * @}
+ */
+
+/**
+ * @name ldexp
+ * @{
+ */
 
 /// Builds a floating-point number from x and the
 /// corresponding integral exponent of two in exp, returning:
 /// significand * exp(2, exponent)
 using ::std::ldexp;
-
-template <typename T>
-inline constexpr vector<4, T> step(const vector<4, T>& value, const int exp)
-{
-    using ::framework::math::step;
-    return vector<4, T>(step(value.x, exp), step(value.y, exp), step(value.z, exp), step(value.w, exp));
-}
-
-template <typename T>
-inline constexpr vector<3, T> step(const vector<3, T>& value, const int exp)
-{
-    using ::framework::math::step;
-    return vector<3, T>(step(value.x, exp), step(value.y, exp), step(value.z, exp));
-}
-
-template <typename T>
-inline constexpr vector<2, T> step(const vector<2, T>& value, const int exp)
-{
-    using ::framework::math::step;
-    return vector<2, T>(step(value.x, exp), step(value.y, exp));
-}
 
 template <typename T>
 inline vector<4, T> ldexp(const vector<4, T>& value, vector<4, int>& exp)
@@ -720,6 +1381,14 @@ inline vector<2, T> ldexp(const vector<2, T>& value, vector<2, int>& exp)
 {
     return vector<2, T>(ldexp(value.x, exp.x), ldexp(value.y, exp.y));
 }
+/**
+ * @}
+ */
+
+/**
+ * @name almost_equal
+ * @{
+ */
 
 // the machine epsilon has to be scaled to the magnitude of the values used
 // and multiplied by the desired precision in ULPs (units in the last place)
@@ -774,6 +1443,13 @@ inline bool almost_equal(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, int ul
 {
     return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp);
 }
+/**
+ * @}
+ */
+
+/**
+ * @}
+ */
 
 } // namespace math
 
