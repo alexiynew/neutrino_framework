@@ -1,3 +1,8 @@
+addons:
+  apt:
+    packages:
+      - xvfb
+
 matrix:
   include:
     - os: linux
