@@ -27,4 +27,4 @@ before_install:
 install: true
 
 script:
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/travis_run.sh"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "export COMPILLER=COMPILLER && /home/framework/travis_run.sh"
