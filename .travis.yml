@@ -15,6 +15,7 @@ language: generic
 branches:
   only:
   - master
+  - dev
 
 services:
   - docker
@@ -25,11 +26,7 @@ before_install:
 
 install: true
 
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-
 script:
   - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "ls -al /home/framework"
   - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER -t build"
-  - docker run -it -e DISPLAY=$DISPLAY:99 -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -t test"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -t test"
