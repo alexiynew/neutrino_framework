@@ -6,4 +6,4 @@ file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
 message("\tAdd library: ${LIB_NAME}")
 add_library(${LIB_NAME} INTERFACE)
 
-install(FILES ${LIB_HEADERS} DESTINATION lib/${LIB_NAME})
+install(FILES ${LIB_HEADERS} DESTINATION ${PROJECT_NAME}/${LIB_NAME})

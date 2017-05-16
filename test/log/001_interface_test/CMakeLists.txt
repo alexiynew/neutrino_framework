@@ -4,4 +4,4 @@ add_executable(${TEST_NAME} EXCLUDE_FROM_ALL ${TEST_SOURCES})
 
 target_link_libraries(${TEST_NAME} unit_test log)
 
-target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_INSTALL_PREFIX}/lib)
+target_include_directories(${TEST_NAME} PRIVATE ${FRAMEWORK_SOURCES})

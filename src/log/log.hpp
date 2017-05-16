@@ -170,19 +170,21 @@ public:
  */
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
+#define ERROR_MESSAGE(MESSAGE) __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)
+
 /**
  * @brief Prints error message if EXPRESSION evaluates to @b false.
  */
 #define ASSERT(EXPRESSION) \
     ((EXPRESSION) ||       \
-     (::framework::logging::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPRESSION)), false))
+     (::framework::logging::log::error("ASSERTION", ERROR_MESSAGE(EXPRESSION)), false))
 
 /**
  * @brief Prints provided MESSAGE as error if EXPRESSION evaluates to @b false.
  */
 #define ASSERT_MSG(EXPRESSION, MESSAGE) \
     ((EXPRESSION) ||                    \
-     (::framework::logging::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)), false))
+     (::framework::logging::log::error("ASSERTION", ERROR_MESSAGE(MESSAGE)), false))
 
 #else
 
