@@ -105,15 +105,13 @@ struct transform_details<4, T>
 {
     template <typename Function,
               typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
-              template <unsigned int, typename> class Vector,
-              typename Argument = Vector<4, T>,
-              typename Result   = Vector<4, R>>
-    static inline constexpr Result call(const Argument& value, Function&& function)
+              template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<4, R> call(const Vector<4, T>& value, Function&& function)
     {
-        return Result(std::forward<Function>(function)(value.x),
-                      std::forward<Function>(function)(value.y),
-                      std::forward<Function>(function)(value.z),
-                      std::forward<Function>(function)(value.w));
+        return Vector<4, R>(std::forward<Function>(function)(value.x),
+                            std::forward<Function>(function)(value.y),
+                            std::forward<Function>(function)(value.z),
+                            std::forward<Function>(function)(value.w));
     }
 };
 
@@ -122,14 +120,12 @@ struct transform_details<3, T>
 {
     template <typename Function,
               typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
-              template <unsigned int, typename> class Vector,
-              typename Argument = Vector<3, T>,
-              typename Result   = Vector<3, R>>
-    static inline constexpr Result call(const Argument& value, Function&& function)
+              template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<3, R> call(const Vector<3, T>& value, Function&& function)
     {
-        return Result(std::forward<Function>(function)(value.x),
-                      std::forward<Function>(function)(value.y),
-                      std::forward<Function>(function)(value.z));
+        return Vector<3, R>(std::forward<Function>(function)(value.x),
+                            std::forward<Function>(function)(value.y),
+                            std::forward<Function>(function)(value.z));
     }
 };
 
@@ -138,12 +134,10 @@ struct transform_details<2, T>
 {
     template <typename Function,
               typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
-              template <unsigned int, typename> class Vector,
-              typename Argument = Vector<2, T>,
-              typename Result   = Vector<2, R>>
-    static inline constexpr Result call(const Argument& value, Function&& function)
+              template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<2, R> call(const Vector<2, T>& value, Function&& function)
     {
-        return Result(std::forward<Function>(function)(value.x), std::forward<Function>(function)(value.y));
+        return Vector<2, R>(std::forward<Function>(function)(value.x), std::forward<Function>(function)(value.y));
     }
 };
 
@@ -1610,8 +1604,8 @@ inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rh
  * @{
  */
 
-template <unsigned int N, typename T, typename F>
-inline constexpr decltype(auto) transform(const vector<N, T>& value, F&& func)
+template <unsigned int N, typename T, typename F, typename R = decltype(std::forward<F>(std::declval<F>())(std::declval<T>()))>
+inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& func)
 {
     return vector_details::transform_details<N, T>::call(value, std::forward<F>(func));
 }
@@ -1619,8 +1613,6 @@ inline constexpr decltype(auto) transform(const vector<N, T>& value, F&& func)
 /**
  * @}
  */
-
-
 
 /**
  * @}

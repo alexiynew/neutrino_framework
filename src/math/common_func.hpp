@@ -250,10 +250,10 @@ inline R floor(const T& value)
     return ::std::floor(value);
 }
 
-template <unsigned int N, typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+template <unsigned int N, typename T, typename R = decltype(::framework::math::floor<T>(std::declval<T>()))>
 inline vector<N, R> floor(const vector<N, T>& value)
 {
-    return transform(value, [](const T& component) { return ::framework::math::floor(component); });
+    return transform(value, ::framework::math::floor<T>);
 }
 
 
