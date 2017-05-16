@@ -2,22 +2,29 @@ cmake_minimum_required(VERSION 3.0)
 
 project(framework VERSION 0.0.1)
 
+option(BUILD_SHARED_LIBS "Build the shared or static libraries" OFF)
+option(BUILD_TESTS "Build test programs" OFF)
+
 # Settings
-set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/output/${CMAKE_BUILD_TYPE})
-set(DOCS_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/output/doc)
+set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output/)
+set(DOCS_OUTPUT_PATH $${OUTPUT_PATH_BASE}/doc)
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE} CACHE PATH "Set default install path." FORCE)
+endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 set(FRAMEWORK_SOURCES ${CMAKE_SOURCE_DIR}/src)
 get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	message("Using Clang compiller settings")
 	set(COMPILE_FLAGS "-Weverything -Werror -std=c++14 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions -Wno-covered-switch-default -Wno-missing-prototypes -Wno-weak-vtables -Wno-exit-time-destructors")
     set(CMAKE_CXX_FLAGS_DEBUG "-g")
-elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	message("Using GNU compiller settings")
 	set(COMPILE_FLAGS "-Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror -std=c++14")
 	set(CMAKE_CXX_FLAGS_DEBUG "-g")
-elseif (MAKE_CXX_COMPILER_ID MATCHES "MSVC")
+elseif(MAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	message("Using Visual Studio C++ compiller settings")
 	set(COMPILE_FLAGS "/Wall /wd4514")
 	# function' : unreferenced inline function has been removed
@@ -43,7 +50,9 @@ message("platform name: ${PLATFORM_NAME}")
 add_subdirectory(${CMAKE_SOURCE_DIR}/src)
 
 # Add tests
-add_subdirectory(${CMAKE_SOURCE_DIR}/test)
+if(BUILD_TESTS) 
+	add_subdirectory(${CMAKE_SOURCE_DIR}/test)
+endif()
 
 # Generate Doxyfile
 configure_file(Doxyfile.in Doxyfile @ONLY)

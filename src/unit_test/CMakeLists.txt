@@ -5,7 +5,7 @@ file(GLOB_RECURSE LIB_SOURCES ${SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
 
 message("\tAdd library: ${LIB_NAME}")
-add_library(${LIB_NAME} SHARED ${LIB_SOURCES})
+add_library(${LIB_NAME} ${LIB_SOURCES})
 
 target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
 

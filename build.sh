@@ -34,25 +34,35 @@ function set_compiler {
 
 # Task functions
 
-function build_all {
+function configure {
     echo -e ""
-    echo -e "==== Start build in $(pwd) ===="
+    echo -e "==== Run configuration ===="
+
     mkdir -p $BUILD_DIR
     cd $BUILD_DIR
-    cmake -DCMAKE_BUILD_TYPE=Release ../
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON ../
+}
 
+function build_framework {
     echo -e ""
     echo -e "==== Build framework ===="
-    make -j4
 
+    cd $BUILD_DIR
+    make -j4 all
+}
+
+function build_tests {
     echo -e ""
     echo -e "==== Build framework tests ===="
+
+    cd $BUILD_DIR
     make -j4 framework_tests
 }
 
 function install_all {
     echo -e ""
     echo -e "==== Install framework ===="
+
     cd $BUILD_DIR
     make install
 }
@@ -60,6 +70,7 @@ function install_all {
 function run_tests {
     echo -e ""
     echo -e "==== Run framework tests ===="
+
     cd $BUILD_DIR
     make run_all_tests
 }
@@ -67,6 +78,7 @@ function run_tests {
 function run_tests_verbose {
     echo -e ""
     echo -e "==== Run framework tests verbose ===="
+
     cd $BUILD_DIR
     make run_all_tests_verbose
 }
@@ -74,6 +86,7 @@ function run_tests_verbose {
 function build_documentation {
     echo -e ""
     echo -e "==== Run framework tests verbose ===="
+
     cd $BUILD_DIR
     make documentation
 }
@@ -81,6 +94,7 @@ function build_documentation {
 function clean_all {
     echo -e ""
     echo -e "==== Clear all ===="
+
     cd $SCRIPT_DIR
     rm -rf ./output ./build
 }
@@ -92,6 +106,7 @@ function print_help {
     echo -e "OPTIONS:"
     echo -e "\t -t : Specify task to run."
     echo -e "\t VALUES:"
+    echo -e "\t\t configure    : Just runs cmake configuration."
     echo -e "\t\t build        : Build framework and tests."
     echo -e "\t\t install      : Install framework and tests."
     echo -e "\t\t test         : Run all tests."
@@ -108,8 +123,13 @@ function print_help {
 
 function run_task {
     case "$1" in
+        "configure" )
+            configure
+        ;;
         "build" )
-            build_all
+            configure
+            build_framework
+            build_tests
         ;;
         "install" )
             install_all
@@ -121,6 +141,7 @@ function run_task {
             run_tests_verbose
         ;;
         "docs" )
+            configure
             build_documentation
         ;;
         "clean" )
