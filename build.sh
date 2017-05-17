@@ -7,6 +7,8 @@ BUILD_DIR="$SCRIPT_DIR/build"
 
 TASK_TO_RUN=none
 
+TEST_MODULES=""
+
 # Settings functions
 
 function set_compiler {
@@ -40,7 +42,7 @@ function configure {
 
     mkdir -p $BUILD_DIR
     cd $BUILD_DIR
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON ../
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
 }
 
 function build_framework {
@@ -103,6 +105,7 @@ function print_help {
     echo -e ""
     echo -e "=== Help ==="
     echo -e "./build.sh [OPTION VALUE[,VALUE]]"
+    echo -e ""
     echo -e "OPTIONS:"
     echo -e "\t -t : Specify task to run."
     echo -e "\t VALUES:"
@@ -113,10 +116,15 @@ function print_help {
     echo -e "\t\t test_verbose : Run all tests with verbose logging."
     echo -e "\t\t docs         : Build documentation."
     echo -e "\t\t clean        : Clean build results."
+    echo -e ""
     echo -e "\t -c : Specify compiller to use."
     echo -e "\t VALUES:"
     echo -e "\t\t gcc   : Use gcc compiller (default)."
     echo -e "\t\t clang : Use clang compiller."
+    echo -e ""
+    echo -e "\t -m : Specify which module you want to test."
+    echo -e "\t\t Parameters: <module>[,<module>]"
+    echo -e "\t\t If not present, all modules will be tested."
 }
 
 # Main logic
@@ -162,13 +170,16 @@ function execute {
     done
 }
 
-while getopts "t:c:h" opt; do
+while getopts "t:c:m:h" opt; do
     case $opt in
+        t)
+            TASK_TO_RUN=$OPTARG
+        ;;
         c)
             set_compiler $OPTARG
         ;;
-        t)
-            TASK_TO_RUN=$OPTARG
+        m)
+            TEST_MODULES=$OPTARG
         ;;
         h)
             print_help

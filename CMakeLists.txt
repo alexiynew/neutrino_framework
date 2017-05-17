@@ -1,9 +1,10 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 
 project(framework VERSION 0.0.1)
 
 option(BUILD_SHARED_LIBS "Build the shared or static libraries" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
+set(INCLUDED_TEST_MODULES "" CACHE STRING "Tests that will be included in the build. An empty string means all modules.")
 
 # Settings
 set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output/)
