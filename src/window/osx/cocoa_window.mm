@@ -7,9 +7,7 @@
 
 #include <memory>
 #include <window/osx/cocoa_window.hpp>
-
- 
-#import "Cocoa/Cocoa.h"
+#include <iostream>
 
 namespace framework {
 
@@ -19,36 +17,33 @@ std::unique_ptr<window_implementation> get_implementation()
 }
 
 cocoa_window::cocoa_window()
-{
-}
-
-cocoa_window::~cocoa_window()
-{
-}
-
-void cocoa_window::show()
-{
-
-	    // Autorelease Pool:
-    // Objects declared in this scope will be automatically
-    // released at the end of it, when the pool is "drained".
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-
+{   
     // Create a shared app instance.
     // This will initialize the global variable
     // 'NSApp' with the application instance.
     [NSApplication sharedApplication];
 
-    //
-    // Create a window:
-    //
+    // Autorelease Pool:
+    // Objects declared in this scope will be automatically
+    // released at the end of it, when the pool is "drained".
+    pool = [[NSAutoreleasePool alloc] init];
+}
 
+cocoa_window::~cocoa_window()
+{
+	std::cout << "~cocoa_window" << std::endl;
+    [pool drain];
+    [NSApp stop:nil];
+}
+
+void cocoa_window::show()
+{
     // Style flags:
     NSUInteger windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask;
 
     // Window bounds (x, y, width, height).
     NSRect windowRect = NSMakeRect(100, 100, 400, 400);
-    NSWindow * window = [[NSWindow alloc] initWithContentRect:windowRect
+    window = [[NSWindow alloc] initWithContentRect:windowRect
                                           styleMask:windowStyle
                                           backing:NSBackingStoreBuffered
                                           defer:NO];
@@ -58,25 +53,16 @@ void cocoa_window::show()
     NSWindowController * windowController = [[NSWindowController alloc] initWithWindow:window];
     [windowController autorelease];
 
-    // This will add a simple text view to the window,
-    // so we can write a test string on it.
-    NSTextView * textView = [[NSTextView alloc] initWithFrame:windowRect];
-    [textView autorelease];
-
-    [window setContentView:textView];
-    [textView insertText:@"Hello OSX/Cocoa world!"];
-
     // TODO: Create app delegate to handle system events.
-    // TODO: Create menus (especially Quit!)
 
     // Show window and run event loop.
     [window orderFrontRegardless];
     [NSApp run];
-
-    [pool drain];
 }
 
 void cocoa_window::hide()
 {
+	std::cout << "cocoa_window::hide" << std::endl;
+	[window orderOut:nil];
 }
 }

@@ -9,6 +9,8 @@
 #define FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP
 
 #include <window/window_implementation.hpp>
+ 
+#import "Cocoa/Cocoa.h"
 
 namespace framework {
 
@@ -20,6 +22,10 @@ public:
 
     void show() override;
     void hide() override;
+
+private:
+	NSAutoreleasePool * pool;
+	NSWindow * window;
 };
 }
 
