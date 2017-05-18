@@ -11,7 +11,7 @@ set(LIB_SOURCES ${LIB_SOURCES} ${PLATFORM_DEPENDENT_SOURCES})
 include(${SOURCE_DIR}/${PLATFORM_NAME}/libraries.cmake)
 
 message("\tAdd library: ${LIB_NAME}")
-add_library(${LIB_NAME} SHARED ${LIB_SOURCES})
+add_library(${LIB_NAME} ${LIB_SOURCES})
 
 target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
 

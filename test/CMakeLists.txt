@@ -1,14 +1,38 @@
 project(framework_tests)
 
 set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(TEST_OUTPUT_PATH ${CMAKE_INSTALL_PREFIX}/test)
+set(TEST_OUTPUT_PATH ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE}/test)
 
 set(FRAMEWORK_TESTS_DEPENDENCIES "")
 
 message("Search tests...")
+
+# Get all test modules
 subdirlist(TEST_PACK_LIST ${TESTS_DIR})
 list(SORT TEST_PACK_LIST)
 
+# Check if we need exclude some modules
+if(NOT ("${INCLUDED_TEST_MODULES}" STREQUAL ""))
+    string(REPLACE "," ";" INCLUDED_TEST_MODULES_LIST ${INCLUDED_TEST_MODULES})
+    message("Specified test modules: ${INCLUDED_TEST_MODULES_LIST}")
+
+    foreach(TEST_PACK_NAME ${INCLUDED_TEST_MODULES_LIST})
+        if(NOT (TEST_PACK_NAME IN_LIST TEST_PACK_LIST))
+            message(WARNING "Unknown test module: ${TEST_PACK_NAME}")
+        endif()
+    endforeach()
+
+    set(TEST_PACK_LIST_TEMP "")
+    foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
+        if(TEST_PACK_NAME IN_LIST INCLUDED_TEST_MODULES_LIST)
+            list(APPEND TEST_PACK_LIST_TEMP ${TEST_PACK_NAME})
+        endif()
+    endforeach()
+    set(TEST_PACK_LIST ${TEST_PACK_LIST_TEMP})
+endif()
+
+# Add tests to build
+message("Test modules to build: ${TEST_PACK_LIST}")
 foreach (TEST_PACK_NAME ${TEST_PACK_LIST})
     set(TEST_PACK_DIR ${TESTS_DIR}/${TEST_PACK_NAME})
 
