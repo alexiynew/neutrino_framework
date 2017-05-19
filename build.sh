@@ -5,7 +5,7 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BUILD_DIR="$SCRIPT_DIR/build"
 
-TASK_TO_RUN=none
+TASK_TO_RUN="none"
 
 TEST_MODULES=""
 
@@ -15,11 +15,11 @@ function set_compiler {
     local CC_COMPILER=
     local CXX_COMILLER=
 
-    if [ "$1" == "gcc" ]
+    if [[ "$1" == "gcc" ]]
     then
         CC_COMPILER=gcc
         CXX_COMILLER=g++
-    elif [ "$1" == "clang" ]
+    elif [[ "$1" == "clang" ]]
     then
         CC_COMPILER=clang
         CXX_COMILLER=clang++
@@ -28,10 +28,10 @@ function set_compiler {
     fi
 
     echo -e "Specify C compiller as $CC_COMPILER."
-    export CC=$CC_COMPILER
+    export CC="$CC_COMPILER"
 
     echo -e "Specify C++ compiller as $CXX_COMILLER."
-    export CXX=$CXX_COMILLER
+    export CXX="$CXX_COMILLER"
 }
 
 # Task functions
@@ -40,8 +40,8 @@ function configure {
     echo -e ""
     echo -e "==== Run configuration ===="
 
-    mkdir -p $BUILD_DIR
-    cd $BUILD_DIR
+    mkdir -p "$BUILD_DIR"
+    cd "$BUILD_DIR"
     cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
 }
 
@@ -49,7 +49,7 @@ function build_framework {
     echo -e ""
     echo -e "==== Build framework ===="
 
-    cd $BUILD_DIR
+    cd "$BUILD_DIR"
     make -j4 all
 }
 
@@ -57,7 +57,7 @@ function build_tests {
     echo -e ""
     echo -e "==== Build framework tests ===="
 
-    cd $BUILD_DIR
+    cd "$BUILD_DIR"
     make -j4 framework_tests
 }
 
@@ -65,7 +65,7 @@ function install_all {
     echo -e ""
     echo -e "==== Install framework ===="
 
-    cd $BUILD_DIR
+    cd "$BUILD_DIR"
     make install
 }
 
@@ -73,7 +73,7 @@ function run_tests {
     echo -e ""
     echo -e "==== Run framework tests ===="
 
-    cd $BUILD_DIR
+    cd "$BUILD_DIR"
     make run_all_tests
 }
 
@@ -81,7 +81,7 @@ function run_tests_verbose {
     echo -e ""
     echo -e "==== Run framework tests verbose ===="
 
-    cd $BUILD_DIR
+    cd "$BUILD_DIR"
     make run_all_tests_verbose
 }
 
@@ -89,7 +89,7 @@ function build_documentation {
     echo -e ""
     echo -e "==== Run framework tests verbose ===="
 
-    cd $BUILD_DIR
+    cd "$BUILD_DIR"
     make documentation
 }
 
@@ -97,7 +97,7 @@ function clean_all {
     echo -e ""
     echo -e "==== Clear all ===="
 
-    cd $SCRIPT_DIR
+    cd "$SCRIPT_DIR"
     rm -rf ./output ./build
 }
 
@@ -160,6 +160,10 @@ function run_task {
             print_help
             exit 1
         ;;
+        *) 
+            echo -e "Unknown task '$1'"
+            exit 1
+        ;;
     esac
 }
 
@@ -173,13 +177,13 @@ function execute {
 while getopts "t:c:m:h" opt; do
     case $opt in
         t)
-            TASK_TO_RUN=$OPTARG
+            TASK_TO_RUN="$OPTARG"
         ;;
         c)
-            set_compiler $OPTARG
+            set_compiler "$OPTARG"
         ;;
         m)
-            TEST_MODULES=$OPTARG
+            TEST_MODULES="$OPTARG"
         ;;
         h)
             print_help
@@ -198,4 +202,4 @@ while getopts "t:c:m:h" opt; do
     esac
 done
 
-execute $TASK_TO_RUN
+execute "$TASK_TO_RUN"
