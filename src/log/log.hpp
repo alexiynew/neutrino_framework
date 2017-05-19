@@ -118,15 +118,19 @@ private:
 class logger
 {
 public:
+
+    // TODO implement all message levels
     /**
      * @brief Level of log message.
      */
     enum class level
     {
-        debug,
-        info,
-        warning,
-        error
+        debug,   /** < Low-level information for developers. */
+        info,    /** < Generic information about system operation. */
+        warning, /** < A warning. */
+        error,   /** < A handleable error condition. */
+        fatal,   /** < An unhandleable error that results in a program crash. */
+        unknown  /** < An unknown message that should always be logged. */
     };
 
     virtual ~logger() = default;
