@@ -87,6 +87,16 @@ public:
     static void error(const std::string& tag, const std::string& message);
 
     /**
+     * @brief Logs fatal error messages.
+     *
+     * @param tag Message tag.
+     * @param message Message for logging.
+     *
+     * @see logger::add_message
+     */
+    static void fatal(const std::string& tag, const std::string& message);
+
+    /**
      * @brief Set provided class as logger.
      *
      * @param implementation Pointer to new logger.
@@ -123,10 +133,11 @@ public:
      */
     enum class level
     {
-        debug,
-        info,
-        warning,
-        error
+        debug,   /** < Low-level information for developers. */
+        info,    /** < Generic information about system operation. */
+        warning, /** < A warning. */
+        error,   /** < A handleable error condition. */
+        fatal    /** < An unhandleable error that results in a program crash. */
     };
 
     virtual ~logger() = default;
@@ -170,19 +181,19 @@ public:
  */
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
+#define ERROR_MESSAGE(MESSAGE) __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)
+
 /**
  * @brief Prints error message if EXPRESSION evaluates to @b false.
  */
 #define ASSERT(EXPRESSION) \
-    ((EXPRESSION) ||       \
-     (::framework::logging::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(EXPRESSION)), false))
+    ((EXPRESSION) || (::framework::logging::log::error("ASSERTION", ERROR_MESSAGE(EXPRESSION)), false))
 
 /**
  * @brief Prints provided MESSAGE as error if EXPRESSION evaluates to @b false.
  */
 #define ASSERT_MSG(EXPRESSION, MESSAGE) \
-    ((EXPRESSION) ||                    \
-     (::framework::logging::log::error("ASSERTION", __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)), false))
+    ((EXPRESSION) || (::framework::logging::log::error("ASSERTION", ERROR_MESSAGE(MESSAGE)), false))
 
 #else
 

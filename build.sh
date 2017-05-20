@@ -1,98 +1,146 @@
 #!/bin/bash
 
+set -eu
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BUILD_DIR="$SCRIPT_DIR/build"
 
-set -e
+TASK_TO_RUN="none"
 
-TASK_TO_RUN=none
+TEST_MODULES=""
+
+# Settings functions
 
 function set_compiler {
     local CC_COMPILER=
     local CXX_COMILLER=
 
-    if [ "$1" == "gcc" ]
+    if [[ "$1" == "gcc" ]]
     then
         CC_COMPILER=gcc
         CXX_COMILLER=g++
-    elif [ "$1" == "clang" ]
+    elif [[ "$1" == "clang" ]]
     then
         CC_COMPILER=clang
         CXX_COMILLER=clang++
     else
-        echo "Unknown compiler: $1"
+        echo -e "Unknown compiler: $1"
     fi
 
-    echo "Specify C compiller as $CC_COMPILER."
-    export CC=$CC_COMPILER
+    echo -e "Specify C compiller as $CC_COMPILER."
+    export CC="$CC_COMPILER"
 
-    echo "Specify C++ compiller as $CXX_COMILLER."
-    export CXX=$CXX_COMILLER
+    echo -e "Specify C++ compiller as $CXX_COMILLER."
+    export CXX="$CXX_COMILLER"
 }
 
-function build {
-    cd $SCRIPT_DIR
-    echo "==== Start build in $(pwd) ===="
-    mkdir -p build && cd ./build
-    cmake -DCMAKE_BUILD_TYPE=Release ../
+# Task functions
 
-    echo ""
-    echo "==== Build framework ===="
-    make -j4
-    make install
+function configure {
+    echo -e ""
+    echo -e "==== Run configuration ===="
 
-    echo ""
-    echo "==== Build framework tests ===="
+    mkdir -p "$BUILD_DIR"
+    cd "$BUILD_DIR"
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+}
+
+function build_framework {
+    echo -e ""
+    echo -e "==== Build framework ===="
+
+    cd "$BUILD_DIR"
+    make -j4 all
+}
+
+function build_tests {
+    echo -e ""
+    echo -e "==== Build framework tests ===="
+
+    cd "$BUILD_DIR"
     make -j4 framework_tests
 }
 
+function install_all {
+    echo -e ""
+    echo -e "==== Install framework ===="
+
+    cd "$BUILD_DIR"
+    make install
+}
+
 function run_tests {
-    cd $SCRIPT_DIR
-    echo "==== Run framework tests ===="
-    cd ./build
+    echo -e ""
+    echo -e "==== Run framework tests ===="
+
+    cd "$BUILD_DIR"
     make run_all_tests
 }
 
 function run_tests_verbose {
-    cd $SCRIPT_DIR
-    echo "==== Run framework tests verbose ===="
-    cd ./build
+    echo -e ""
+    echo -e "==== Run framework tests verbose ===="
+
+    cd "$BUILD_DIR"
     make run_all_tests_verbose
 }
 
 function build_documentation {
-    cd $SCRIPT_DIR
-    echo "==== Run framework tests verbose ===="
-    cd ./build
+    echo -e ""
+    echo -e "==== Run framework tests verbose ===="
+
+    cd "$BUILD_DIR"
     make documentation
 }
 
 function clean_all {
-    cd $SCRIPT_DIR
-    echo "==== Clear all ===="
+    echo -e ""
+    echo -e "==== Clear all ===="
+
+    cd "$SCRIPT_DIR"
     rm -rf ./output ./build
 }
 
 function print_help {
+    echo -e ""
     echo -e "=== Help ==="
     echo -e "./build.sh [OPTION VALUE[,VALUE]]"
+    echo -e ""
     echo -e "OPTIONS:"
     echo -e "\t -t : Specify task to run."
     echo -e "\t VALUES:"
-    echo -e "\t\t build        : Build and install framework, also build tests."
+    echo -e "\t\t configure    : Just runs cmake configuration."
+    echo -e "\t\t build        : Build framework and tests."
+    echo -e "\t\t install      : Install framework and tests."
     echo -e "\t\t test         : Run all tests."
     echo -e "\t\t test_verbose : Run all tests with verbose logging."
     echo -e "\t\t docs         : Build documentation."
     echo -e "\t\t clean        : Clean build results."
+    echo -e ""
     echo -e "\t -c : Specify compiller to use."
     echo -e "\t VALUES:"
     echo -e "\t\t gcc   : Use gcc compiller (default)."
     echo -e "\t\t clang : Use clang compiller."
+    echo -e ""
+    echo -e "\t -m : Specify which module you want to test."
+    echo -e "\t\t Parameters: <module>[,<module>]"
+    echo -e "\t\t If not present, all modules will be tested."
 }
+
+# Main logic
 
 function run_task {
     case "$1" in
+        "configure" )
+            configure
+        ;;
         "build" )
-            build
+            configure
+            build_framework
+            build_tests
+        ;;
+        "install" )
+            install_all
         ;;
         "test" )
             run_tests
@@ -101,14 +149,19 @@ function run_task {
             run_tests_verbose
         ;;
         "docs" )
+            configure
             build_documentation
         ;;
         "clean" )
             clean_all
         ;;
         "none" )
-            echo "You need to specify task."
+            echo -e "You need to specify task."
             print_help
+            exit 1
+        ;;
+        *) 
+            echo -e "Unknown task '$1'"
             exit 1
         ;;
     esac
@@ -121,29 +174,32 @@ function execute {
     done
 }
 
-while getopts "t:c:h" opt; do
+while getopts "t:c:m:h" opt; do
     case $opt in
-        c)
-            set_compiler $OPTARG
-        ;;
         t)
-            TASK_TO_RUN=$OPTARG
+            TASK_TO_RUN="$OPTARG"
+        ;;
+        c)
+            set_compiler "$OPTARG"
+        ;;
+        m)
+            TEST_MODULES="$OPTARG"
         ;;
         h)
             print_help
             exit 0
         ;;
         \?)
-            echo "Invalid option -$OPTARG."
+            echo -e "Invalid option -$OPTARG."
             print_help
             exit 1
         ;;
         :)
-            echo "Option -$OPTARG requires an argument."
+            echo -e "Option -$OPTARG requires an argument."
             print_help
             exit 1
         ;;
     esac
 done
 
-execute $TASK_TO_RUN
+execute "$TASK_TO_RUN"

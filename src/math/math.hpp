@@ -43,14 +43,14 @@ namespace math {
  * @defgroup common_vectors Common vector types
  * @ingroup math_module
  * @{
- */ 
-using vector2d = vector<2, double>; /**< Vector of 2 double values. */ 
-using vector3d = vector<3, double>; /**< Vector of 3 double values. */ 
-using vector4d = vector<4, double>; /**< Vector of 4 double values. */ 
+ */
+using vector2d = vector<2, double>; /**< Vector of 2 double values. */
+using vector3d = vector<3, double>; /**< Vector of 3 double values. */
+using vector4d = vector<4, double>; /**< Vector of 4 double values. */
 
-using vector2f = vector<2, float>; /**< Vector of 2 float values. */ 
-using vector3f = vector<3, float>; /**< Vector of 3 float values. */ 
-using vector4f = vector<4, float>; /**< Vector of 4 float values. */ 
+using vector2f = vector<2, float>; /**< Vector of 2 float values. */
+using vector3f = vector<3, float>; /**< Vector of 3 float values. */
+using vector4f = vector<4, float>; /**< Vector of 4 float values. */
 
 using vector2i = vector<2, int>; /**< Vector of 2 int values. */
 using vector3i = vector<3, int>; /**< Vector of 3 int values. */
@@ -74,10 +74,10 @@ using vector4b = vector<4, bool>; /**< Vector of 4 bool values. */
  * @ingroup math_module
  * @{
  */
-using Matrix2D   = matrix_impl::Matrix<2, 2, double>; /**< Matrix with 2 columns and 2 rows of double type values. */ 
-using Matrix2x2D = matrix_impl::Matrix<2, 2, double>; /**< Matrix with 2 columns and 2 rows of double type values. */ 
-using Matrix2x3D = matrix_impl::Matrix<2, 3, double>; /**< Matrix with 2 columns and 3 rows of double type values. */ 
-using Matrix2x4D = matrix_impl::Matrix<2, 4, double>; /**< Matrix with 2 columns and 4 rows of double type values. */ 
+using Matrix2D   = matrix_impl::Matrix<2, 2, double>; /**< Matrix with 2 columns and 2 rows of double type values. */
+using Matrix2x2D = matrix_impl::Matrix<2, 2, double>; /**< Matrix with 2 columns and 2 rows of double type values. */
+using Matrix2x3D = matrix_impl::Matrix<2, 3, double>; /**< Matrix with 2 columns and 3 rows of double type values. */
+using Matrix2x4D = matrix_impl::Matrix<2, 4, double>; /**< Matrix with 2 columns and 4 rows of double type values. */
 
 using Matrix3D   = matrix_impl::Matrix<3, 3, double>; /**< Matrix with 3 columns and 3 rows of double type values. */
 using Matrix3x3D = matrix_impl::Matrix<3, 3, double>; /**< Matrix with 3 columns and 3 rows of double type values. */
@@ -89,10 +89,10 @@ using Matrix4x4D = matrix_impl::Matrix<4, 4, double>; /**< Matrix with 4 columns
 using Matrix4x2D = matrix_impl::Matrix<4, 2, double>; /**< Matrix with 4 columns and 2 rows of double type values. */
 using Matrix4x3D = matrix_impl::Matrix<4, 3, double>; /**< Matrix with 4 columns and 4 rows of double type values. */
 
-using Matrix2F   = matrix_impl::Matrix<2, 2, float>; /**< Matrix with 2 columns and 2 rows of float type values. */ 
-using Matrix2x2F = matrix_impl::Matrix<2, 2, float>; /**< Matrix with 2 columns and 2 rows of float type values. */ 
-using Matrix2x3F = matrix_impl::Matrix<2, 3, float>; /**< Matrix with 2 columns and 3 rows of float type values. */ 
-using Matrix2x4F = matrix_impl::Matrix<2, 4, float>; /**< Matrix with 2 columns and 4 rows of float type values. */ 
+using Matrix2F   = matrix_impl::Matrix<2, 2, float>; /**< Matrix with 2 columns and 2 rows of float type values. */
+using Matrix2x2F = matrix_impl::Matrix<2, 2, float>; /**< Matrix with 2 columns and 2 rows of float type values. */
+using Matrix2x3F = matrix_impl::Matrix<2, 3, float>; /**< Matrix with 2 columns and 3 rows of float type values. */
+using Matrix2x4F = matrix_impl::Matrix<2, 4, float>; /**< Matrix with 2 columns and 4 rows of float type values. */
 
 using Matrix3F   = matrix_impl::Matrix<3, 3, float>; /**< Matrix with 3 columns and 3 rows of float type values. */
 using Matrix3x3F = matrix_impl::Matrix<3, 3, float>; /**< Matrix with 3 columns and 3 rows of float type values. */
