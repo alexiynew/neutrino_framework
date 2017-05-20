@@ -15,6 +15,7 @@ std::string to_string(const framework::logging::logger::level level)
         case logger::level::info: return "info";
         case logger::level::warning: return "warning";
         case logger::level::error: return "error";
+        case logger::level::fatal: return "fatal";
         default: return "UNKNOWN";
     }
 }
@@ -60,6 +61,7 @@ private:
         log::info(suite_name, "message_2");
         log::warning(suite_name, "message_3");
         log::error(suite_name, "message_4");
+        log::fatal(suite_name, "message_5");
 
         using level = framework::logging::logger::level;
 
@@ -68,6 +70,7 @@ private:
         to_string(level::info) + "_" + suite_name + "_message_2",
         to_string(level::warning) + "_" + suite_name + "_message_3",
         to_string(level::error) + "_" + suite_name + "_message_4",
+        to_string(level::fatal) + "_" + suite_name + "_message_5",
         };
 
         const simple_logger* logger = static_cast<simple_logger*>(log::get_logger());
