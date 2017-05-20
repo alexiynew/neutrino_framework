@@ -20,22 +20,24 @@ get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	message("Using Clang compiller settings")
 	set(COMPILE_FLAGS "-Weverything -Werror -std=c++14 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions -Wno-covered-switch-default -Wno-missing-prototypes -Wno-weak-vtables -Wno-exit-time-destructors")
-    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+	set(CMAKE_CXX_FLAGS_DEBUG "-g")
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG -DFORCE_ASSERT")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	message("Using GNU compiller settings")
-	set(COMPILE_FLAGS "-Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror -std=c++14")
+	set(COMPILE_FLAGS "-std=c++14 -Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror")
 	set(CMAKE_CXX_FLAGS_DEBUG "-g")
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG -DFORCE_ASSERT")
 elseif(MAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	message("Using Visual Studio C++ compiller settings")
-	set(COMPILE_FLAGS "/Wall /wd4514")
-	# function' : unreferenced inline function has been removed
+	set(COMPILE_FLAGS "/std:c++14 /Wall /wd4514")
 	set(CMAKE_CXX_FLAGS_DEBUG "/Od")
+        set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
+        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/O2 /DNDEBUG -DFORCE_ASSERT")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
-
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG -DFORCE_ASSERT")
 
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -59,7 +61,7 @@ endif()
 configure_file(Doxyfile.in Doxyfile @ONLY)
 
 add_custom_target(install_${PROJECT_NAME}
-        $(MAKE) install
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_install.cmake
         DEPENDS ${PROJECT_NAME}
         COMMENT "Installing ${PROJECT_NAME}")
 

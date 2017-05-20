@@ -33,7 +33,7 @@ endif()
 
 # Add tests to build
 message("Test modules to build: ${TEST_PACK_LIST}")
-foreach (TEST_PACK_NAME ${TEST_PACK_LIST})
+foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
     set(TEST_PACK_DIR ${TESTS_DIR}/${TEST_PACK_NAME})
 
     message("Search tests in ${TEST_PACK_DIR}")
@@ -41,25 +41,29 @@ foreach (TEST_PACK_NAME ${TEST_PACK_LIST})
     subdirlist(TEST_LIST ${TEST_PACK_DIR})
     list(SORT TEST_LIST)
 
-    foreach (TEST_DIR ${TEST_LIST})
+    foreach(TEST_DIR ${TEST_LIST})
         set(TEST_DIR ${TEST_PACK_DIR}/${TEST_DIR})
 
         get_filename_component(TEST_NAME ${TEST_DIR} NAME)
         string(REPLACE " " "_" TEST_NAME ${TEST_NAME})
 
-        if (EXISTS ${TEST_DIR}/CMakeLists.txt)
+        if(EXISTS ${TEST_DIR}/CMakeLists.txt)
             message("\tAdd test: ${TEST_NAME}")
 
-            set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
+	    foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                string(TOUPPER ${CONFIG} CONFIG)
+                set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG} ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
+	    endforeach()
+
             add_subdirectory(${TEST_DIR})
             set(FRAMEWORK_TESTS_DEPENDENCIES ${FRAMEWORK_TESTS_DEPENDENCIES} ${TEST_NAME})
 
-        else ()
+        else()
             message(FATAL_ERROR "There is no CMakeLists.txt in ${TEST_DIR}")
-        endif ()
+        endif()
 
-    endforeach ()
-endforeach ()
+    endforeach()
+endforeach()
 
 message("Add custom commnad to run all tests")
 set(TESTSUITE_EXECUTABLE ${TEST_OUTPUT_PATH}/run_all_tests.py)
