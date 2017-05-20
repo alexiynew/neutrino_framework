@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include <math/constants.hpp>
+#include <math/utils.hpp>
 #include <math/vector_type.hpp>
 
 namespace framework {
@@ -18,30 +19,28 @@ namespace math {
 template <typename T>
 inline T radians(const T& degrees)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return static_cast<T>(DEGTORAD) * degrees;
 }
 
 template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
 inline TVec<N, T> radians(const TVec<N, T>& a)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, [](const T& degrees) { return static_cast<T>(DEGTORAD * degrees); });
+    return utils::type_creator<N>::template create<TVec<N, T>>(
+    [a](unsigned int index) { return static_cast<T>(DEGTORAD * a[index]); });
 }
 
 /// Converts radians to degrees and returns the result.
 template <typename T>
 inline T degrees(const T& radians)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
     return static_cast<T>(RADTODEG) * radians;
 }
 
 template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
 inline TVec<N, T> degrees(const TVec<N, T>& a)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, [](const T& radians) { return static_cast<T>(RADTODEG * radians); });
+    return utils::type_creator<N>::template create<TVec<N, T>>(
+    [a](unsigned int index) { return static_cast<T>(RADTODEG * a[index]); });
 }
 
 /// The standard trigonometric sine function.

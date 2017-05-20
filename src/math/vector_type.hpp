@@ -1,5 +1,5 @@
 /**
- * @file vector_type.hpp
+ * @file
  * @brief Implementation of geometric vector.
  * @author Fedorov Alexey
  * @date 12.03.2017
@@ -8,26 +8,19 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
-#include <math/common_func.hpp>
+#include <functional>
 
 namespace framework {
 
 namespace math {
 
 /**
- * @defgroup vector_implementation Vector type implementation
- * @ingroup math_module
- * @{
- */
-
-/**
  * @brief Contains vector type implementation details.
  */
-namespace vector_impl {
+namespace vector_details {
 
 /**
- * @brief Workaround to cast float numbers to boolean without warnings.
- * @{
+ * @brief Workaround to cast float numbers to bool without warnings.
  */
 template <typename T>
 struct cast_to
@@ -39,23 +32,21 @@ struct cast_to
     }
 };
 
+/**
+ * @brief Workaround to cast float numbers to bool without warnings.
+ */
 template <>
 struct cast_to<bool>
 {
     template <typename U>
     inline static constexpr bool from(const U& value)
     {
-        return ::framework::math::abs(value) > 0;
+        return std::not_equal_to<U>()(value, U{0});
     }
 };
 
 /**
- * @}
- */
-
-/**
  * @brief Helper that checks if all presented types are arithmetic.
- * @{
  */
 template <typename T, typename... Args>
 struct are_all_arithmetic
@@ -63,6 +54,9 @@ struct are_all_arithmetic
     static constexpr bool value = std::is_arithmetic<T>::value && are_all_arithmetic<Args...>::value;
 };
 
+/**
+ * @brief Helper that checks if all presented types are arithmetic.
+ */
 template <typename T>
 struct are_all_arithmetic<T>
 {
@@ -70,59 +64,100 @@ struct are_all_arithmetic<T>
 };
 
 /**
- * @}
+ * @brief Helper that give common type for all presented types.
  */
+template <bool C, typename... Args>
+struct common_type_details
+{
+};
 
 /**
  * @brief Helper that give common type for all presented types.
- * @{
  */
-template <bool C, typename... Args>
-struct common_type_impl
-{
-};
-
 template <typename T, typename... Args>
-struct common_type_impl<true, T, Args...>
+struct common_type_details<true, T, Args...>
 {
-    using type = typename std::common_type<T, typename common_type_impl<true, Args...>::type>::type;
-};
-
-template <typename T>
-struct common_type_impl<true, T>
-{
-    using type = T;
+    using type = typename std::common_type<T, typename common_type_details<true, Args...>::type>::type;
 };
 
 /**
- * @}
+ * @brief Helper that give common type for all presented types.
  */
+template <typename T>
+struct common_type_details<true, T>
+{
+    using type = T;
+};
 
 /**
  * @brief Shortcut to get the common type.
  * Also used for SFINAE to get correct overload of vector operators.
  */
 template <typename... Args>
-using common_type = common_type_impl<are_all_arithmetic<Args...>::value, Args...>;
+using common_type = common_type_details<are_all_arithmetic<Args...>::value, Args...>;
 
 
-} // namespace vector_impl
+template <unsigned int N, typename T>
+struct transform_details;
 
-#pragma mark - vector template declaration
+template <typename T>
+struct transform_details<4, T>
+{
+    template <typename Function,
+              typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
+              template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<4, R> call(const Vector<4, T>& value, Function&& function)
+    {
+        return Vector<4, R>(std::forward<Function>(function)(value.x),
+                            std::forward<Function>(function)(value.y),
+                            std::forward<Function>(function)(value.z),
+                            std::forward<Function>(function)(value.w));
+    }
+};
+
+template <typename T>
+struct transform_details<3, T>
+{
+    template <typename Function,
+              typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
+              template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<3, R> call(const Vector<3, T>& value, Function&& function)
+    {
+        return Vector<3, R>(std::forward<Function>(function)(value.x),
+                            std::forward<Function>(function)(value.y),
+                            std::forward<Function>(function)(value.z));
+    }
+};
+
+template <typename T>
+struct transform_details<2, T>
+{
+    template <typename Function,
+              typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
+              template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<2, R> call(const Vector<2, T>& value, Function&& function)
+    {
+        return Vector<2, R>(std::forward<Function>(function)(value.x), std::forward<Function>(function)(value.y));
+    }
+};
+
+} // namespace vector_details
 
 /**
- * @brief Base template declaration.
+ * @brief Vector type implementation.
+ *
+ * @defgroup vector_implementation Vector type
+ * @ingroup math_module
+ * @{
+ */
+
+/**
+ * @brief Vector template declaration.
+ *
  * @see vector<4, T>, vector<3, T>, vector<2, T>
  */
 template <unsigned int N, typename T>
 struct vector;
-
-/**
- * @name Vector specializations.
- * @{
- */
-
-#pragma mark - vector<4, T> type specialization
 
 /**
  * @brief Vector<4, T> type specialization.
@@ -149,13 +184,17 @@ struct vector<4, T> final
 
     /**
      * @brief Default copy constructor.
+     *
+     * @param other Vector to copy from.
      */
-    constexpr vector(const vector<4, value_type>&) noexcept = default;
+    constexpr vector(const vector<4, value_type>& other) noexcept;
 
     /**
      * @brief Default move constructor.
+     *
+     * @param other Vector to move from.
      */
-    constexpr vector(vector<4, value_type>&&) noexcept = default;
+    constexpr vector(vector<4, value_type>&& other) noexcept;
 
     /**
      * @brief Initializes vector with provided values.
@@ -187,7 +226,7 @@ struct vector<4, T> final
     explicit constexpr vector(const U* const pointer);
 
     /**
-     * @brief Initializes vector from other one.
+     * @brief Initializes vector from another one.
      *
      * @param other Vector to initialize x, y, z and w components.
      */
@@ -195,7 +234,7 @@ struct vector<4, T> final
     explicit constexpr vector(const vector<4, U>& other) noexcept;
 
     /**
-     * @brief Initializes vector from other one.
+     * @brief Initializes vector from another one.
      *
      * @param other Vector to initialize x, y and z components.
      *
@@ -273,22 +312,26 @@ struct vector<4, T> final
 
     /**
      * @brief Default assignment operator.
+     *
+     * @param other Vector to copy from.
+     *
+     * @return Reference to itself.
      */
-    vector<4, value_type>& operator=(const vector<4, value_type>&) noexcept = default;
+    vector<4, value_type>& operator=(const vector<4, value_type>& other) noexcept;
 
     /**
      * @brief Default move assignment operator.
+     *
+     * @param other Vector to move from.
+     *
+     * @return Reference to itself.
      */
-    vector<4, value_type>& operator=(vector<4, value_type>&&) noexcept = default;
-
-    /**
-     * @brief Assignment operator.
-     */
-    template <typename U>
-    vector<4, value_type>& operator=(const vector<4, U>& other) noexcept;
+    vector<4, value_type>& operator=(vector<4, value_type>&& other) noexcept;
 
     /**
      * @brief Access operator.
+     *
+     * @param index Index of component.
      *
      * @return Reference to component of vector.
      *
@@ -298,6 +341,8 @@ struct vector<4, T> final
 
     /**
      * @brief Const access operator.
+     *
+     * @param index Index of component.
      *
      * @return Reference to constant component of vector.
      *
@@ -332,10 +377,10 @@ struct vector<4, T> final
     value_type w; /**< The w component. */
 };
 
-#pragma mark - vector<3, T> type specialization
-
 /**
  * @brief Vector<3, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
  */
 template <typename T>
 struct vector<3, T> final
@@ -355,14 +400,18 @@ struct vector<3, T> final
     constexpr vector() noexcept;
 
     /**
-     * @brief Default copy constructor
+     * @brief Default copy constructor.
+     *
+     * @param other Vector to copy from.
      */
-    constexpr vector(const vector<3, value_type>&) noexcept = default;
+    constexpr vector(const vector<3, value_type>& other) noexcept;
 
     /**
-     * @brief Default move constructor
+     * @brief Default move constructor.
+     *
+     * @param other Vector to move from.
      */
-    constexpr vector(vector<3, value_type>&&) noexcept = default;
+    constexpr vector(vector<3, value_type>&& other) noexcept;
 
     /**
      * @brief Initializes vector with provided values.
@@ -393,7 +442,7 @@ struct vector<3, T> final
     explicit constexpr vector(const U* const pointer);
 
     /**
-     * @brief Initializes vector from other one.
+     * @brief Initializes vector from another one.
      *
      * @param other Vector to initialize x, y and z components.
      */
@@ -401,7 +450,7 @@ struct vector<3, T> final
     explicit constexpr vector(const vector<4, U>& other) noexcept;
 
     /**
-     * @brief Initializes vector from other one.
+     * @brief Initializes vector from another one.
      *
      * @param other Vector to initialize x, y and z components.
      */
@@ -409,7 +458,7 @@ struct vector<3, T> final
     explicit constexpr vector(const vector<3, U>& other) noexcept;
 
     /**
-     * @brief Initializes vector from other one.
+     * @brief Initializes vector from another one.
      *
      * @param other Vector to initialize x and y components.
      *
@@ -438,22 +487,26 @@ struct vector<3, T> final
 
     /**
      * @brief Default assignment operator.
+     *
+     * @param other Vector to copy from.
+     *
+     * @return Reference to itself.
      */
-    vector<3, value_type>& operator=(const vector<3, value_type>&) noexcept = default;
+    vector<3, value_type>& operator=(const vector<3, value_type>& other) noexcept;
 
     /**
      * @brief Default move assignment operator.
+     *
+     * @param other Vector to move from.
+     *
+     * @return Reference to itself.
      */
-    vector<3, value_type>& operator=(vector<3, value_type>&&) noexcept = default;
-
-    /**
-     * @brief Assignment operator.
-     */
-    template <typename U>
-    vector<3, value_type>& operator=(const vector<3, U>& other) noexcept;
+    vector<3, value_type>& operator=(vector<3, value_type>&& other) noexcept;
 
     /**
      * @brief Access operator.
+     *
+     * @param index Index of component.
      *
      * @return Reference to component of vector.
      *
@@ -463,6 +516,8 @@ struct vector<3, T> final
 
     /**
      * @brief Const access operator.
+     *
+     * @param index Index of component.
      *
      * @return Reference to constant component of vector.
      *
@@ -496,10 +551,10 @@ struct vector<3, T> final
     value_type z; /**< The z component. */
 };
 
-#pragma mark - vector<2, T> type specialization
-
 /**
  * @brief Vector<2, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
  */
 template <typename T>
 struct vector<2, T> final
@@ -519,14 +574,18 @@ struct vector<2, T> final
     constexpr vector() noexcept;
 
     /**
-     * @brief Default copy constructor
+     * @brief Default copy constructor.
+     *
+     * @param other Vector to copy from.
      */
-    constexpr vector(const vector<2, value_type>&) noexcept = default;
+    constexpr vector(const vector<2, value_type>& other) noexcept;
 
     /**
-     * @brief Default move constructor
+     * @brief Default move constructor.
+     *
+     * @param other Vector to move from.
      */
-    constexpr vector(vector<2, value_type>&&) noexcept = default;
+    constexpr vector(vector<2, value_type>&& other) noexcept;
 
     /**
      * @brief Initializes vector with provided values.
@@ -556,7 +615,7 @@ struct vector<2, T> final
     explicit constexpr vector(const U* pointer);
 
     /**
-     * @brief Initializes vector from other one.
+     * @brief Initializes vector from another one.
      *
      * @param other Vector to initialize x and y components.
      */
@@ -564,7 +623,7 @@ struct vector<2, T> final
     explicit constexpr vector(const vector<4, U>& other) noexcept;
 
     /**
-     * @brief Initializes vector from other one.
+     * @brief Initializes vector from another one.
      *
      * @param other Vector to initialize x and y components.
      */
@@ -572,7 +631,7 @@ struct vector<2, T> final
     explicit constexpr vector(const vector<3, U>& other) noexcept;
 
     /**
-     * @brief Initializes vector from other one.
+     * @brief Initializes vector from another one.
      *
      * @param other Vector to initialize x and y components.
      */
@@ -581,22 +640,26 @@ struct vector<2, T> final
 
     /**
      * @brief Default assignment operator.
+     *
+     * @param other Vector to copy from.
+     *
+     * @return Reference to itself.
      */
-    vector<2, value_type>& operator=(const vector<2, value_type>&) noexcept = default;
+    vector<2, value_type>& operator=(const vector<2, value_type>& other) noexcept;
 
     /**
      * @brief Default move assignment operator.
+     *
+     * @param other Vector to move from.
+     *
+     * @return Reference to itself.
      */
-    vector<2, value_type>& operator=(vector<2, value_type>&&) noexcept = default;
-
-    /**
-     * @brief Assignment operator.
-     */
-    template <typename U>
-    vector<2, value_type>& operator=(const vector<2, U>& other) noexcept;
+    vector<2, value_type>& operator=(vector<2, value_type>&& other) noexcept;
 
     /**
      * @brief Access operator.
+     *
+     * @param index Index of component.
      *
      * @return Reference to component of vector.
      *
@@ -606,6 +669,8 @@ struct vector<2, T> final
 
     /**
      * @brief Const access operator.
+     *
+     * @param index Index of component.
      *
      * @return Reference to constant component of vector.
      *
@@ -642,10 +707,8 @@ struct vector<2, T> final
  * @}
  */
 
-#pragma mark - vector<4, T> implementation
-
 /**
- * @name Vector<4, T> constructors.
+ * @name vector<4, T> constructors.
  * @{
  */
 template <typename T>
@@ -656,14 +719,19 @@ inline constexpr vector<4, T>::vector() noexcept
     , w{std::is_same<T, bool>::value ? T(0) : T(1)}
 {
 }
+template <typename T>
+inline constexpr vector<4, T>::vector(const vector<4, T>& other) noexcept = default;
+
+template <typename T>
+inline constexpr vector<4, T>::vector(vector<4, T>&& other) noexcept = default;
 
 template <typename T>
 template <typename X, typename Y, typename Z, typename W>
 inline constexpr vector<4, T>::vector(const X& x_value, const Y& y_value, const Z& z_value, const W& w_value) noexcept
-    : x{vector_impl::cast_to<T>::from(x_value)}
-    , y{vector_impl::cast_to<T>::from(y_value)}
-    , z{vector_impl::cast_to<T>::from(z_value)}
-    , w{vector_impl::cast_to<T>::from(w_value)}
+    : x{vector_details::cast_to<T>::from(x_value)}
+    , y{vector_details::cast_to<T>::from(y_value)}
+    , z{vector_details::cast_to<T>::from(z_value)}
+    , w{vector_details::cast_to<T>::from(w_value)}
 {
 }
 
@@ -745,29 +813,20 @@ inline constexpr vector<4, T>::vector(const vector<2, U>& other, const Z& z_valu
     : vector{other.x, other.y, z_value, w_value}
 {
 }
-
 /**
  * @}
  */
 
 /**
- * @name Vector<4, T> operators.
+ * @name vector<4, T> operators.
  * @{
  */
+template <typename T>
+inline vector<4, T>& vector<4, T>::operator=(const vector<4, T>&) noexcept = default;
 
 template <typename T>
-template <typename U>
-inline vector<4, T>& vector<4, T>::operator=(const vector<4, U>& other) noexcept
-{
-    x = vector_impl::cast_to<T>::from(other.x);
-    y = vector_impl::cast_to<T>::from(other.y);
-    z = vector_impl::cast_to<T>::from(other.z);
-    w = vector_impl::cast_to<T>::from(other.w);
+inline vector<4, T>& vector<4, T>::operator=(vector<4, T>&&) noexcept = default;
 
-    return *this;
-}
-
-// access operator
 template <typename T>
 inline typename vector<4, T>::value_type& vector<4, T>::operator[](unsigned int index)
 {
@@ -779,16 +838,14 @@ inline const typename vector<4, T>::value_type& vector<4, T>::operator[](unsigne
 {
     return data()[index];
 }
-
 /**
  * @}
  */
 
 /**
- * @name Vector<4, T> methods.
+ * @name vector<4, T> methods.
  * @{
  */
-
 template <typename T>
 inline constexpr unsigned int vector<4, T>::size() const noexcept
 {
@@ -806,15 +863,12 @@ inline const typename vector<4, T>::value_type* vector<4, T>::data() const noexc
 {
     return &(this->x);
 }
-
 /**
  * @}
  */
 
-#pragma mark - vector<3, T> implementation
-
 /**
- * @name Vector<3, T> constructors.
+ * @name vector<3, T> constructors.
  * @{
  */
 template <typename T>
@@ -826,11 +880,17 @@ inline constexpr vector<3, T>::vector() noexcept
 }
 
 template <typename T>
+inline constexpr vector<3, T>::vector(const vector<3, T>& other) noexcept = default;
+
+template <typename T>
+inline constexpr vector<3, T>::vector(vector<3, T>&& other) noexcept = default;
+
+template <typename T>
 template <typename X, typename Y, typename Z>
 inline constexpr vector<3, T>::vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept
-    : x{vector_impl::cast_to<T>::from(x_value)}
-    , y{vector_impl::cast_to<T>::from(y_value)}
-    , z{vector_impl::cast_to<T>::from(z_value)}
+    : x{vector_details::cast_to<T>::from(x_value)}
+    , y{vector_details::cast_to<T>::from(y_value)}
+    , z{vector_details::cast_to<T>::from(z_value)}
 {
 }
 
@@ -883,28 +943,20 @@ inline constexpr vector<3, T>::vector(const vector<2, U>& other, const Z& z_valu
     : vector{other.x, other.y, z_value}
 {
 }
-
 /**
  * @}
  */
 
 /**
- * @name Vector<3, T> operators.
+ * @name vector<3, T> operators.
  * @{
  */
+template <typename T>
+inline vector<3, T>& vector<3, T>::operator=(const vector<3, T>&) noexcept = default;
 
 template <typename T>
-template <typename U>
-inline vector<3, T>& vector<3, T>::operator=(const vector<3, U>& other) noexcept
-{
-    x = vector_impl::cast_to<T>::from(other.x);
-    y = vector_impl::cast_to<T>::from(other.y);
-    z = vector_impl::cast_to<T>::from(other.z);
+inline vector<3, T>& vector<3, T>::operator=(vector<3, T>&&) noexcept = default;
 
-    return *this;
-}
-
-// access operator
 template <typename T>
 inline typename vector<3, T>::value_type& vector<3, T>::operator[](unsigned int index)
 {
@@ -916,16 +968,14 @@ inline const typename vector<3, T>::value_type& vector<3, T>::operator[](unsigne
 {
     return data()[index];
 }
-
 /**
  * @}
  */
 
 /**
- * @name Vector<3, T> methods.
+ * @name vector<3, T> methods.
  * @{
  */
-
 template <typename T>
 inline constexpr unsigned int vector<3, T>::size() const noexcept
 {
@@ -943,18 +993,14 @@ inline const typename vector<3, T>::value_type* vector<3, T>::data() const noexc
 {
     return &(this->x);
 }
-
 /**
  * @}
  */
 
-#pragma mark - vector<2, T> implementation
-
 /**
- * @name Vector<2, T> constructors.
+ * @name vector<2, T> constructors.
  * @{
  */
-
 template <typename T>
 inline constexpr vector<2, T>::vector() noexcept
     : x{T(0)}
@@ -963,10 +1009,17 @@ inline constexpr vector<2, T>::vector() noexcept
 }
 
 template <typename T>
+inline constexpr vector<2, T>::vector(const vector<2, T>&) noexcept = default;
+
+template <typename T>
+inline constexpr vector<2, T>::vector(vector<2, T>&&) noexcept = default;
+
+
+template <typename T>
 template <typename X, typename Y>
 inline constexpr vector<2, T>::vector(const X& x_value, const Y& y_value) noexcept
-    : x{vector_impl::cast_to<T>::from(x_value)}
-    , y{vector_impl::cast_to<T>::from(y_value)}
+    : x{vector_details::cast_to<T>::from(x_value)}
+    , y{vector_details::cast_to<T>::from(y_value)}
 {
 }
 
@@ -1004,27 +1057,20 @@ inline constexpr vector<2, T>::vector(const vector<2, U>& other) noexcept
     : vector{other.x, other.y}
 {
 }
-
 /**
  * @}
  */
 
 /**
- * @name Vector<2, T> operators.
+ * @name vector<2, T> operators.
  * @{
  */
+template <typename T>
+inline vector<2, T>& vector<2, T>::operator=(const vector<2, T>&) noexcept = default;
 
 template <typename T>
-template <typename U>
-inline vector<2, T>& vector<2, T>::operator=(const vector<2, U>& other) noexcept
-{
-    x = vector_impl::cast_to<T>::from(other.x);
-    y = vector_impl::cast_to<T>::from(other.y);
+inline vector<2, T>& vector<2, T>::operator=(vector<2, T>&&) noexcept = default;
 
-    return *this;
-}
-
-// access operator
 template <typename T>
 inline typename vector<2, T>::value_type& vector<2, T>::operator[](unsigned int index)
 {
@@ -1036,16 +1082,14 @@ inline const typename vector<2, T>::value_type& vector<2, T>::operator[](unsigne
 {
     return data()[index];
 }
-
 /**
  * @}
  */
 
 /**
- * @name Vector<2, T> methods.
+ * @name vector<2, T> methods.
  * @{
  */
-
 template <typename T>
 inline constexpr unsigned int vector<2, T>::size() const noexcept
 {
@@ -1063,12 +1107,15 @@ inline const typename vector<2, T>::value_type* vector<2, T>::data() const noexc
 {
     return &(this->x);
 }
-
 /**
  * @}
  */
 
-#pragma mark - unary operators
+/**
+ * @name Vector operators and functions.
+ * @addtogroup vector_implementation
+ * @{
+ */
 
 /**
  * @name Common unary operators.
@@ -1104,152 +1151,149 @@ inline vector<N, T> operator+(const vector<N, T>& vector)
 /**
  * @brief Addition assignment operator.
  *
- * @param left First addend.
- * @param right Second addend.
+ * @param lhs First addend.
+ * @param rhs Second addend.
  *
  * @return Reference to sum of two vectors.
  */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator+=(vector<N, T>& left, const vector<N, U>& right)
+inline vector<N, T>& operator+=(vector<N, T>& lhs, const vector<N, U>& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] += vector_impl::cast_to<T>::from(right[i]);
+        lhs[i] += vector_details::cast_to<T>::from(rhs[i]);
     }
 
-    return left;
+    return lhs;
 }
 
 /**
  * @brief Subtractions assignment operator.
  *
- * @param left Vector to subtract from.
- * @param right Vector to subtract.
+ * @param lhs Vector to subtract from.
+ * @param rhs Vector to subtract.
  *
  * @return Reference to difference of two vectors.
  */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator-=(vector<N, T>& left, const vector<N, U>& right)
+inline vector<N, T>& operator-=(vector<N, T>& lhs, const vector<N, U>& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] -= vector_impl::cast_to<T>::from(right[i]);
+        lhs[i] -= vector_details::cast_to<T>::from(rhs[i]);
     }
 
-    return left;
+    return lhs;
 }
 
 /**
  * @brief Multiplication assignment operator.
  *
- * @param left First multiplier.
- * @param right Second multiplier.
+ * @param lhs First multiplier.
+ * @param rhs Second multiplier.
  *
  * @return Reference to product of two vectors.
  */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator*=(vector<N, T>& left, const vector<N, U>& right)
+inline vector<N, T>& operator*=(vector<N, T>& lhs, const vector<N, U>& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] *= vector_impl::cast_to<T>::from(right[i]);
+        lhs[i] *= vector_details::cast_to<T>::from(rhs[i]);
     }
 
-    return left;
+    return lhs;
 }
 
 /**
  * @brief Division assignment operator.
  *
- * @param left Dividend vector.
- * @param right Divider vector.
+ * @param lhs Dividend vector.
+ * @param rhs Divider vector.
  *
  * @return Reference to quotient of two vectors.
  */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator/=(vector<N, T>& left, const vector<N, U>& right)
+inline vector<N, T>& operator/=(vector<N, T>& lhs, const vector<N, U>& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] /= vector_impl::cast_to<T>::from(right[i]);
+        lhs[i] /= vector_details::cast_to<T>::from(rhs[i]);
     }
 
-    return left;
+    return lhs;
 }
 
 /**
  * @brief Addition assignment operator.
  *
- * @param left First addend.
- * @param right Second addend.
+ * @param lhs First addend.
+ * @param rhs Second addend.
  *
  * @return Reference to sum of vector and scalar value.
  */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator+=(vector<N, T>& left, const U& right)
+inline vector<N, T>& operator+=(vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] += vector_impl::cast_to<T>::from(right);
+        lhs[i] += vector_details::cast_to<T>::from(rhs);
     }
 
-    return left;
+    return lhs;
 }
 
 /**
  * @brief Subtractions assignment operator.
  *
- * @param left Vector to subtract from.
- * @param right Scalar value to subtract.
+ * @param lhs Vector to subtract from.
+ * @param rhs Scalar value to subtract.
  *
  * @return Reference to difference of vector and scalar value.
  */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator-=(vector<N, T>& left, const U& right)
+inline vector<N, T>& operator-=(vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] -= vector_impl::cast_to<T>::from(right);
+        lhs[i] -= vector_details::cast_to<T>::from(rhs);
     }
 
-    return left;
+    return lhs;
 }
 
 /**
  * @brief Multiplication assignment operator.
  *
- * @param left First multiplier.
- * @param right Second multiplier.
+ * @param lhs First multiplier.
+ * @param rhs Second multiplier.
  *
  * @return Reference to product of vector and scalar value.
  */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator*=(vector<N, T>& left, const U& right)
+inline vector<N, T>& operator*=(vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] *= vector_impl::cast_to<T>::from(right);
+        lhs[i] *= vector_details::cast_to<T>::from(rhs);
     }
 
-    return left;
+    return lhs;
 }
 
 /**
  * @brief Division assignment operator.
  *
- * @param left Dividend vector.
- * @param right Divider scalar value.
+ * @param lhs Dividend vector.
+ * @param rhs Divider scalar value.
  *
  * @return Reference to quotient of vector and scalar value.
  */
 template <unsigned int N, typename T, typename U>
-inline vector<N, T>& operator/=(vector<N, T>& left, const U& right)
+inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
-        left[i] /= vector_impl::cast_to<T>::from(right);
+        lhs[i] /= vector_details::cast_to<T>::from(rhs);
     }
 
-    return left;
+    return lhs;
 }
-
 /**
  * @}
  */
-
-#pragma mark - binary operators: vector - vector
 
 /**
  * @name Common binary operators for vector and vector.
@@ -1259,70 +1303,67 @@ inline vector<N, T>& operator/=(vector<N, T>& left, const U& right)
 /**
  * @brief Addition operator.
  *
- * @param left First addend.
- * @param right Second addend.
+ * @param lhs First addend.
+ * @param rhs Second addend.
  *
  * @return Sum of two vectors.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
-inline const vector<N, R> operator+(const vector<N, T>& left, const vector<N, U>& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator+(const vector<N, T>& lhs, const vector<N, U>& rhs)
 {
-    vector<N, R> temp{left};
-    return temp += right;
+    vector<N, R> temp{lhs};
+    return temp += rhs;
 }
 
 /**
  * @brief Subtraction operator.
  *
- * @param left Vector to subtract from.
- * @param right Scalar value to subtract.
+ * @param lhs Vector to subtract from.
+ * @param rhs Scalar value to subtract.
  *
  * @return Difference of two vectors.
  */
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
-inline const vector<N, R> operator-(const vector<N, T>& left, const vector<N, U>& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator-(const vector<N, T>& lhs, const vector<N, U>& rhs)
 {
-    vector<N, R> temp{left};
-    return temp -= right;
+    vector<N, R> temp{lhs};
+    return temp -= rhs;
 }
 
 /**
  * @brief Multiplication operator.
  *
- * @param left First multiplier.
- * @param right Second multiplier.
+ * @param lhs First multiplier.
+ * @param rhs Second multiplier.
  *
  * @return Product of two vectors.
  */
 
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
-inline const vector<N, R> operator*(const vector<N, T>& left, const vector<N, U>& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator*(const vector<N, T>& lhs, const vector<N, U>& rhs)
 {
-    vector<N, R> temp{left};
-    return temp *= right;
+    vector<N, R> temp{lhs};
+    return temp *= rhs;
 }
 
 /**
  * @brief Division operator.
  *
- * @param left Dividend vector.
- * @param right Divider vector.
+ * @param lhs Dividend vector.
+ * @param rhs Divider vector.
  *
  * @return Quotient of two vectors.
  */
 
-template <unsigned int N, typename T, typename U, typename R = typename std::common_type<T, U>::type>
-inline const vector<N, R> operator/(const vector<N, T>& left, const vector<N, U>& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator/(const vector<N, T>& lhs, const vector<N, U>& rhs)
 {
-    vector<N, R> temp{left};
-    return temp /= right;
+    vector<N, R> temp{lhs};
+    return temp /= rhs;
 }
-
 /**
  * @}
  */
-
-#pragma mark - binary operators: vector - scalar
 
 /**
  * @name Common binary operators for vector and scalar.
@@ -1332,68 +1373,65 @@ inline const vector<N, R> operator/(const vector<N, T>& left, const vector<N, U>
 /**
  * @brief Addition operator.
  *
- * @param left First addend.
- * @param right Second addend.
+ * @param lhs First addend.
+ * @param rhs Second addend.
  *
  * @return Sum of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
-inline const vector<N, R> operator+(const vector<N, T>& left, const U& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator+(const vector<N, T>& lhs, const U& rhs)
 {
-    vector<N, R> temp{left};
-    return temp += right;
+    vector<N, R> temp{lhs};
+    return temp += rhs;
 }
 
 /**
  * @brief Subtractions operator.
  *
- * @param left Vector to subtract from.
- * @param right Scalar value to subtract.
+ * @param lhs Vector to subtract from.
+ * @param rhs Scalar value to subtract.
  *
  * @return Difference of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
-inline const vector<N, R> operator-(const vector<N, T>& left, const U& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator-(const vector<N, T>& lhs, const U& rhs)
 {
-    vector<N, R> temp{left};
-    return temp -= right;
+    vector<N, R> temp{lhs};
+    return temp -= rhs;
 }
 
 /**
  * @brief Multiplication operator.
  *
- * @param left First multiplier.
- * @param right Second multiplier.
+ * @param lhs First multiplier.
+ * @param rhs Second multiplier.
  *
  * @return Product of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
-inline const vector<N, R> operator*(const vector<N, T>& left, const U& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator*(const vector<N, T>& lhs, const U& rhs)
 {
-    vector<N, R> temp{left};
-    return temp *= right;
+    vector<N, R> temp{lhs};
+    return temp *= rhs;
 }
 
 /**
  * @brief Division operator.
  *
- * @param left Dividend vector.
- * @param right Divider scalar value.
+ * @param lhs Dividend vector.
+ * @param rhs Divider scalar value.
  *
  * @return Quotient of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
-inline const vector<N, R> operator/(const vector<N, T>& left, const U& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator/(const vector<N, T>& lhs, const U& rhs)
 {
-    vector<N, R> temp{left};
-    return temp /= right;
+    vector<N, R> temp{lhs};
+    return temp /= rhs;
 }
-
 /**
  * @}
  */
-
-#pragma mark - binary operators: scalar - vector
 
 /**
  * @name Common binary operators for scalar and vector.
@@ -1403,68 +1441,65 @@ inline const vector<N, R> operator/(const vector<N, T>& left, const U& right)
 /**
  * @brief Addition operator.
  *
- * @param left First addend.
- * @param right Second addend.
+ * @param lhs First addend.
+ * @param rhs Second addend.
  *
  * @return Sum of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
-inline const vector<N, R> operator+(const T& left, const vector<N, U>& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator+(const T& lhs, const vector<N, U>& rhs)
 {
-    vector<N, R> temp{left};
-    return temp += right;
+    vector<N, R> temp{lhs};
+    return temp += rhs;
 }
 
 /**
  * @brief Subtractions operator.
  *
- * @param left Scalar value to subtract from.
- * @param right Vector to subtract.
+ * @param lhs Scalar value to subtract from.
+ * @param rhs Vector to subtract.
  *
  * @return Difference of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
-inline const vector<N, R> operator-(const T& left, const vector<N, U>& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator-(const T& lhs, const vector<N, U>& rhs)
 {
-    vector<N, R> temp{left};
-    return temp -= right;
+    vector<N, R> temp{lhs};
+    return temp -= rhs;
 }
 
 /**
  * @brief Multiplication operator.
  *
- * @param left First multiplier.
- * @param right Second multiplier.
+ * @param lhs First multiplier.
+ * @param rhs Second multiplier.
  *
  * @return Product of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
-inline const vector<N, R> operator*(const T& left, const vector<N, U>& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator*(const T& lhs, const vector<N, U>& rhs)
 {
-    vector<N, R> temp{left};
-    return temp *= right;
+    vector<N, R> temp{lhs};
+    return temp *= rhs;
 }
 
 /**
  * @brief Division operator.
  *
- * @param left Dividend scalar value.
- * @param right Divider vector.
+ * @param lhs Dividend scalar value.
+ * @param rhs Divider vector.
  *
  * @return Quotient of scalar value and vector.
  */
-template <unsigned int N, typename T, typename U, typename R = typename vector_impl::common_type<T, U>::type>
-inline const vector<N, R> operator/(const T& left, const vector<N, U>& right)
+template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+inline const vector<N, R> operator/(const T& lhs, const vector<N, U>& rhs)
 {
-    vector<N, R> temp{left};
-    return temp /= right;
+    vector<N, R> temp{lhs};
+    return temp /= rhs;
 }
-
 /**
  * @}
  */
-
-#pragma mark - vectors equality
 
 /**
  * @name Common equality operators.
@@ -1474,92 +1509,105 @@ inline const vector<N, R> operator/(const T& left, const vector<N, U>& right)
 /**
  * @brief Equality operator.
  *
- * @param left Vector to test.
- * @param right Vector to test.
+ * @param lhs Vector to test.
+ * @param rhs Vector to test.
  *
- * @return @b true if left equals right, otherwise @b false.
+ * @return @b true if lhs equals rhs, otherwise @b false.
  */
 template <typename T>
-inline constexpr bool operator==(const vector<4, T>& left, const vector<4, T>& right)
+inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0 && abs(left.z - right.z) <= 0 &&
-           abs(left.w - right.w) <= 0;
+    constexpr auto equal = std::equal_to<T>();
+    return equal(lhs.x, rhs.x) && equal(lhs.y, rhs.y) && equal(lhs.z, rhs.z) && equal(lhs.w, rhs.w);
 }
 
 /**
  * @brief Equality operator.
  *
- * @param left Vector to test.
- * @param right Vector to test.
+ * @param lhs Vector to test.
+ * @param rhs Vector to test.
  *
- * @return @b true if left equals right, otherwise @b false.
+ * @return @b true if lhs equals rhs, otherwise @b false.
  */
 template <typename T>
-inline constexpr bool operator==(const vector<3, T>& left, const vector<3, T>& right)
+inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rhs)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0 && abs(left.z - right.z) <= 0;
+    constexpr auto equal = std::equal_to<T>();
+    return equal(lhs.x, rhs.x) && equal(lhs.y, rhs.y) && equal(lhs.z, rhs.z);
 }
 
 /**
  * @brief Equality operator.
  *
- * @param left Vector to test.
- * @param right Vector to test.
+ * @param lhs Vector to test.
+ * @param rhs Vector to test.
  *
- * @return @b true if left equals right, otherwise @b false.
+ * @return @b true if lhs equals rhs, otherwise @b false.
  */
 template <typename T>
-inline constexpr bool operator==(const vector<2, T>& left, const vector<2, T>& right)
+inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rhs)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) <= 0 && abs(left.y - right.y) <= 0;
+    constexpr auto equal = std::equal_to<T>();
+    return equal(lhs.x, rhs.x) && equal(lhs.y, rhs.y);
 }
 
 /**
  * @brief Inequality operator.
  *
- * @param left Vector to test.
- * @param right Vector to test.
+ * @param lhs Vector to test.
+ * @param rhs Vector to test.
  *
- * @return @b true if left isn't equal right, otherwise @b false.
+ * @return @b true if lhs isn't equal rhs, otherwise @b false.
  */
 template <typename T>
-inline constexpr bool operator!=(const vector<4, T>& left, const vector<4, T>& right)
+inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) > 0 && abs(left.y - right.y) > 0 && abs(left.z - right.z) > 0 && abs(left.w - right.w) > 0;
+    constexpr auto not_equal = std::not_equal_to<T>();
+    return not_equal(lhs.x, rhs.x) && not_equal(lhs.y, rhs.y) && not_equal(lhs.z, rhs.z) && not_equal(lhs.w, rhs.w);
 }
 
 /**
  * @brief Inequality operator.
  *
- * @param left Vector to test.
- * @param right Vector to test.
+ * @param lhs Vector to test.
+ * @param rhs Vector to test.
  *
- * @return @b true if left isn't equal right, otherwise @b false.
+ * @return @b true if lhs isn't equal rhs, otherwise @b false.
  */
 template <typename T>
-inline constexpr bool operator!=(const vector<3, T>& left, const vector<3, T>& right)
+inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rhs)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) > 0 && abs(left.y - right.y) > 0 && abs(left.z - right.z) > 0;
+    constexpr auto not_equal = std::not_equal_to<T>();
+    return not_equal(lhs.x, rhs.x) && not_equal(lhs.y, rhs.y) && not_equal(lhs.z, rhs.z);
 }
 
 /**
  * @brief Inequality operator.
  *
- * @param left Vector to test.
- * @param right Vector to test.
+ * @param lhs Vector to test.
+ * @param rhs Vector to test.
  *
- * @return @b true if left isn't equal right, otherwise @b false.
+ * @return @b true if lhs isn't equal rhs, otherwise @b false.
  */
 template <typename T>
-inline constexpr bool operator!=(const vector<2, T>& left, const vector<2, T>& right)
+inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rhs)
 {
-    const auto& abs = ::framework::math::abs<T>;
-    return abs(left.x - right.x) > 0 && abs(left.y - right.y);
+    constexpr auto not_equal = std::not_equal_to<T>();
+    return not_equal(lhs.x, rhs.x) && not_equal(lhs.y, rhs.y);
+}
+/**
+ * @}
+ */
+
+/**
+ * @name Helper functions
+ * @{
+ */
+
+template <unsigned int N, typename T, typename F, typename R = decltype(std::forward<F>(std::declval<F>())(std::declval<T>()))>
+inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& func)
+{
+    return vector_details::transform_details<N, T>::call(value, std::forward<F>(func));
 }
 
 /**

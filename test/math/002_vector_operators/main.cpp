@@ -45,9 +45,9 @@ private:
         v3f_result = v3f;
         v2i_result = v2i;
 
-        v4i_result = v4d;
-        v3d_result = v3f;
-        v2f_result = v2i;
+        v4i_result = static_cast<vector4i>(v4d);
+        v3d_result = static_cast<vector3d>(v3f);
+        v2f_result = static_cast<vector2f>(v2i);
 
         TEST_ASSERT(v4i_result == vector4i(1, 2, 3, 4), "Assign to vector4i failed.");
         TEST_ASSERT(v4d_result == vector4d(1.1, 2.2, 3.3, 4), "Assign to vector4d failed.");
@@ -330,9 +330,9 @@ private:
         TEST_ASSERT(v3b_result == v3b, "Assign to vector3b failed.");
         TEST_ASSERT(v2b_result == v2b, "Assign to vector2b failed.");
 
-        v4b_result = v4d;
-        v3b_result = v3f;
-        v2b_result = v2i;
+        v4b_result = static_cast<vector4b>(v4d);
+        v3b_result = static_cast<vector3b>(v3f);
+        v2b_result = static_cast<vector2b>(v2i);
 
         TEST_ASSERT(v4b_result == v4b, "Assign to vector4b failed.");
         TEST_ASSERT(v3b_result == v3b, "Assign to vector3b failed.");

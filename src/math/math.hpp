@@ -1,5 +1,5 @@
 /**
- * @file math.hpp
+ * @file
  * @brief Main file in math module.
  * @author Fedorov Alexey
  * @date 04.03.2017
@@ -28,20 +28,19 @@
 namespace framework {
 
 /**
+ * @brief Contains all math stuff.
+ *
  * @defgroup math_module Math module
+ * @{
  */
 
 /**
  * @brief Contains all math stuff.
- * @ingroup math_module
  */
 namespace math {
 
-#pragma mark - vector type
-
 /**
- * @defgroup common_vectors Common vector types
- * @ingroup math_module
+ * @name Common vector types.
  * @{
  */
 using vector2d = vector<2, double>; /**< Vector of 2 double values. */
@@ -67,11 +66,8 @@ using vector4b = vector<4, bool>; /**< Vector of 4 bool values. */
  * @}
  */
 
-#pragma mark - matrix type
-
 /**
- * @defgroup common_matrices Common matrix types
- * @ingroup math_module
+ * @name Common matrix types.
  * @{
  */
 using Matrix2D   = matrix_impl::Matrix<2, 2, double>; /**< Matrix with 2 columns and 2 rows of double type values. */

@@ -1,79 +1,179 @@
-#ifndef FRAMEWORK_MATH_RELATIONAL_FTNC_HPP
-#define FRAMEWORK_MATH_RELATIONAL_FTNC_HPP
+#ifndef FRAMEWORK_MATH_RELATIONAL_FUNC_HPP
+#define FRAMEWORK_MATH_RELATIONAL_FUNC_HPP
 
-#include <type_traits>
-
-#include <math/utils.hpp>
+#include <math/vector_type.hpp>
 
 namespace framework {
 
 namespace math {
 
 /// Returns the component-wise comparison result of l < r.
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> less(const TVec<N, T>& l, const TVec<N, T>& r)
+template <typename T>
+inline vector<4, bool> less(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(l, r, [](const T& a, const T& b) { return a < b; });
+    return vector<4, bool>(lhs.x < rhs.x, lhs.y < rhs.y, lhs.z < rhs.z, lhs.w < rhs.w);
+}
+
+template <typename T>
+inline vector<3, bool> less(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    return vector<3, bool>(lhs.x < rhs.x, lhs.y < rhs.y, lhs.z < rhs.z);
+}
+
+template <typename T>
+inline vector<2, bool> less(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    return vector<2, bool>(lhs.x < rhs.x, lhs.y < rhs.y);
 }
 
 /// Returns the component-wise comparison of result l <= r.
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> less_equal(const TVec<N, T>& l, const TVec<N, T>& r)
+template <typename T>
+inline vector<4, bool> less_equal(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(l, r, [](const T& a, const T& b) { return a <= b; });
+    return vector<4, bool>(lhs.x <= rhs.x, lhs.y <= rhs.y, lhs.z <= rhs.z, lhs.w <= rhs.w);
+}
+
+template <typename T>
+inline vector<3, bool> less_equal(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    return vector<3, bool>(lhs.x <= rhs.x, lhs.y <= rhs.y, lhs.z <= rhs.z);
+}
+
+template <typename T>
+inline vector<2, bool> less_equal(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    return vector<2, bool>(lhs.x <= rhs.x, lhs.y <= rhs.y);
 }
 
 /// Returns the component-wise comparison of result l > r.
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> greater(const TVec<N, T>& l, const TVec<N, T>& r)
+template <typename T>
+inline vector<4, bool> greater(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(l, r, [](const T& a, const T& b) { return a > b; });
+    return vector<4, bool>(lhs.x > rhs.x, lhs.y > rhs.y, lhs.z > rhs.z, lhs.w > rhs.w);
+}
+
+template <typename T>
+inline vector<3, bool> greater(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    return vector<3, bool>(lhs.x > rhs.x, lhs.y > rhs.y, lhs.z > rhs.z);
+}
+
+template <typename T>
+inline vector<2, bool> greater(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    return vector<2, bool>(lhs.x > rhs.x, lhs.y > rhs.y);
 }
 
 /// Returns the component-wise comparison of result l >= r.
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> greater_equal(const TVec<N, T>& l, const TVec<N, T>& r)
+template <typename T>
+inline vector<4, bool> greater_equal(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(l, r, [](const T& a, const T& b) { return a >= b; });
+    return vector<4, bool>(lhs.x >= rhs.x, lhs.y >= rhs.y, lhs.z >= rhs.z, lhs.w >= rhs.w);
+}
+
+template <typename T>
+inline vector<3, bool> greater_equal(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    return vector<3, bool>(lhs.x >= rhs.x, lhs.y >= rhs.y, lhs.z >= rhs.z);
+}
+
+template <typename T>
+inline vector<2, bool> greater_equal(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    return vector<2, bool>(lhs.x >= rhs.x, lhs.y >= rhs.y);
 }
 
 /// Returns the component-wise comparison of result l == r.
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> equal(const TVec<N, T>& l, const TVec<N, T>& r)
+template <typename T>
+inline vector<4, bool> equal(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    return utils::createVector(l, r, [](const T& a, const T& b) { return a == b; });
+    constexpr auto equal_to = std::equal_to<T>();
+    return vector<4, bool>(equal_to(lhs.x, rhs.x), equal_to(lhs.y, rhs.y), equal_to(lhs.z, rhs.z), equal_to(lhs.w, rhs.w));
+}
+
+template <typename T>
+inline vector<3, bool> equal(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    constexpr auto equal_to = std::equal_to<T>();
+    return vector<3, bool>(equal_to(lhs.x, rhs.x), equal_to(lhs.y, rhs.y), equal_to(lhs.z, rhs.z));
+}
+
+template <typename T>
+inline vector<2, bool> equal(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    constexpr auto equal_to = std::equal_to<T>();
+    return vector<2, bool>(equal_to(lhs.x, rhs.x), equal_to(lhs.y, rhs.y));
 }
 
 /// Returns the component-wise comparison of result l != r.
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> not_equal(const TVec<N, T>& l, const TVec<N, T>& r)
+template <typename T>
+inline vector<4, bool> not_equal(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    return utils::createVector(l, r, [](const T& a, const T& b) { return a != b; });
+    constexpr auto not_equal_to = std::not_equal_to<T>();
+    return vector<4, bool>(
+    not_equal_to(lhs.x, rhs.x), not_equal_to(lhs.y, rhs.y), not_equal_to(lhs.z, rhs.z), not_equal_to(lhs.w, rhs.w));
+}
+
+template <typename T>
+inline vector<3, bool> not_equal(const vector<3, T>& lhs, const vector<3, T>& rhs)
+{
+    constexpr auto not_equal_to = std::not_equal_to<T>();
+    return vector<3, bool>(not_equal_to(lhs.x, rhs.x), not_equal_to(lhs.y, rhs.y), not_equal_to(lhs.z, rhs.z));
+}
+
+template <typename T>
+inline vector<2, bool> not_equal(const vector<2, T>& lhs, const vector<2, T>& rhs)
+{
+    constexpr auto not_equal_to = std::not_equal_to<T>();
+    return vector<2, bool>(not_equal_to(lhs.x, rhs.x), not_equal_to(lhs.y, rhs.y));
 }
 
 /// Returns the component-wise logical not of v.
-template <unsigned int N, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> logical_not(const TVec<N, bool>& v)
+inline vector<4, bool> logical_not(const vector<4, bool>& value)
 {
-    return utils::createVector(v, [](const bool a) { return !a; });
+    return vector<4, bool>(!value.x, !value.y, !value.z, !value.w);
+}
+
+inline vector<3, bool> logical_not(const vector<3, bool>& value)
+{
+    return vector<3, bool>(!value.x, !value.y, !value.z);
+}
+
+inline vector<2, bool> logical_not(const vector<2, bool>& value)
+{
+    return vector<2, bool>(!value.x, !value.y);
 }
 
 /// Returns the component-wise comparison of result l && r.
-template <unsigned int N, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> logical_and(const TVec<N, bool>& l, const TVec<N, bool>& r)
+inline vector<4, bool> logical_and(const vector<4, bool>& lhs, const vector<4, bool>& rhs)
 {
-    return utils::createVector(l, r, [](const bool a, const bool b) { return a && b; });
+    return vector<4, bool>(lhs.x && rhs.x, lhs.y && rhs.y, lhs.z && rhs.z, lhs.w && rhs.w);
+}
+
+inline vector<3, bool> logical_and(const vector<3, bool>& lhs, const vector<3, bool>& rhs)
+{
+    return vector<3, bool>(lhs.x && rhs.x, lhs.y && rhs.y, lhs.z && rhs.z);
+}
+
+inline vector<2, bool> logical_and(const vector<2, bool>& lhs, const vector<2, bool>& rhs)
+{
+    return vector<2, bool>(lhs.x && rhs.x, lhs.y && rhs.y);
 }
 
 /// Returns the component-wise comparison of result l || r.
-template <unsigned int N, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> logical_or(const TVec<N, bool>& l, const TVec<N, bool>& r)
+inline vector<4, bool> logical_or(const vector<4, bool>& lhs, const vector<4, bool>& rhs)
 {
-    return utils::createVector(l, r, [](const bool a, const bool b) { return a || b; });
+    return vector<4, bool>(lhs.x || rhs.x, lhs.y || rhs.y, lhs.z || rhs.z, lhs.w || rhs.w);
+}
+
+inline vector<3, bool> logical_or(const vector<3, bool>& lhs, const vector<3, bool>& rhs)
+{
+    return vector<3, bool>(lhs.x || rhs.x, lhs.y || rhs.y, lhs.z || rhs.z);
+}
+
+inline vector<2, bool> logical_or(const vector<2, bool>& lhs, const vector<2, bool>& rhs)
+{
+    return vector<2, bool>(lhs.x || rhs.x, lhs.y || rhs.y);
 }
 
 /// Returns true if any component of v is true.

@@ -1,5 +1,5 @@
 /**
- * @file x11_window.hpp
+ * @file
  * @brief Window implementation for linux.
  * @author Fedorov Alexey
  * @date 05.04.2017

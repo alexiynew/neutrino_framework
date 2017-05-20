@@ -1,5 +1,5 @@
 /**
- * @file log.hpp
+ * @file
  * @brief Declaration of logger interface and basic implementation.
  * @author Fedorov Alexey
  * @date 08.03.2017

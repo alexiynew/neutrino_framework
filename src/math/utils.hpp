@@ -13,24 +13,6 @@ namespace utils {
 // TODO: rename it all, to with names conventions id:3
 
 // helpers
-template <typename T>
-struct default_value
-{
-    constexpr const static T value = T(1);
-};
-
-template <>
-struct default_value<bool>
-{
-    constexpr const static bool value = false;
-};
-
-template <typename T>
-struct is_floating_point_or_integer
-{
-    constexpr const static bool value = std::is_arithmetic<T>::value && !std::is_same<bool, T>::value;
-};
-
 template <unsigned int N>
 struct type_creator
 {
@@ -57,19 +39,6 @@ template <typename TResult, typename F>
 inline TResult type_creator<2>::create(F&& opp)
 {
     return TResult(opp(0), opp(1));
-}
-
-template <unsigned int N, typename T, typename F, typename TResult = typename std::result_of<F(T)>::type, template <unsigned int, typename> class TVec>
-inline TVec<N, TResult> createVector(const TVec<N, T>& v, F&& opp)
-{
-    return type_creator<N>::template create<TVec<N, TResult>>([&](const unsigned int index) { return opp(v[index]); });
-}
-
-template <unsigned int N, typename T, typename U, typename F, typename TResult = typename std::result_of<F(T, U)>::type, template <unsigned int, typename> class TVec>
-static inline TVec<N, TResult> createVector(const TVec<N, T>& lhs, const TVec<N, U>& rhs, F&& opp)
-{
-    return type_creator<N>::template create<TVec<N, TResult>>(
-    [&](const unsigned int index) { return opp(lhs[index], rhs[index]); });
 }
 
 } // namespace utils
