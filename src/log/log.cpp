@@ -51,6 +51,11 @@ void log::error(const std::string& tag, const std::string& message)
     get_logger()->add_message(logger::level::error, tag, message);
 }
 
+void log::fatal(const std::string& tag, const std::string& message)
+{
+    get_logger()->add_message(logger::level::fatal, tag, message);
+}
+
 void log::set_logger(std::unique_ptr<logger> implementation)
 {
     instance().m_logger = std::move(implementation);

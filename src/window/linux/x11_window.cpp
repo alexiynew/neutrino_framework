@@ -6,12 +6,12 @@
  */
 
 #include <exception>
+#include <log/log.hpp>
 #include <string>
 #include <window/linux/x11_window.hpp>
-#include <log/log.hpp>
 
 namespace {
-    const char* const log_tag = "x11_window";
+const char* const log_tag = "x11_window";
 }
 
 namespace framework {
