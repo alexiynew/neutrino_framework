@@ -97,47 +97,50 @@ template <typename... Args>
 using common_type = common_type_details<are_all_arithmetic<Args...>::value, Args...>;
 
 
-template <unsigned int N, typename T>
+template <unsigned int N>
 struct transform_details;
 
-template <typename T>
-struct transform_details<4, T>
+template <>
+struct transform_details<4>
 {
-    template <typename Function,
-              typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
+    template <typename ValueType,
+		      typename Function,
+              typename ResultType,
               template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<4, R> call(const Vector<4, T>& value, Function&& function)
+    static inline constexpr Vector<4, ResultType> call(const Vector<4, ValueType>& value, Function&& function)
     {
-        return Vector<4, R>(std::forward<Function>(function)(value.x),
-                            std::forward<Function>(function)(value.y),
-                            std::forward<Function>(function)(value.z),
-                            std::forward<Function>(function)(value.w));
+        return Vector<4, ResultType>(std::forward<Function>(function)(value.x),
+                                     std::forward<Function>(function)(value.y),
+                                     std::forward<Function>(function)(value.z),
+                                     std::forward<Function>(function)(value.w));
     }
 };
 
-template <typename T>
-struct transform_details<3, T>
+template <>
+struct transform_details<3>
 {
-    template <typename Function,
-              typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
+    template <typename ValueType,
+		      typename Function,
+              typename ResultType,
               template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<3, R> call(const Vector<3, T>& value, Function&& function)
+    static inline constexpr Vector<3, ResultType> call(const Vector<3, ValueType>& value, Function&& function)
     {
-        return Vector<3, R>(std::forward<Function>(function)(value.x),
-                            std::forward<Function>(function)(value.y),
-                            std::forward<Function>(function)(value.z));
+        return Vector<3, ResultType>(std::forward<Function>(function)(value.x),
+                                     std::forward<Function>(function)(value.y),
+                                     std::forward<Function>(function)(value.z));
     }
 };
 
-template <typename T>
-struct transform_details<2, T>
+template <>
+struct transform_details<2>
 {
-    template <typename Function,
-              typename R = decltype(std::forward<Function>(std::declval<Function>())(std::declval<T>())),
+    template <typename ValueType,
+		      typename Function,
+	          typename ResultType,
               template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<2, R> call(const Vector<2, T>& value, Function&& function)
+    static inline constexpr Vector<2, ResultType> call(const Vector<2, ValueType>& value, Function&& function)
     {
-        return Vector<2, R>(std::forward<Function>(function)(value.x), std::forward<Function>(function)(value.y));
+        return Vector<2, ResultType>(std::forward<Function>(function)(value.x), std::forward<Function>(function)(value.y));
     }
 };
 
@@ -1604,10 +1607,10 @@ inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rh
  * @{
  */
 
-template <unsigned int N, typename T, typename F, typename R = decltype(std::forward<F>(std::declval<F>())(std::declval<T>()))>
-inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& func)
+template <unsigned int N, typename ValueType, typename Function, typename ResultType = std::result_of<Function(const ValueType&)>::type>
+inline constexpr vector<N, ResultType> transform(const vector<N, ValueType>& value, Function&& func)
 {
-    return vector_details::transform_details<N, T>::call(value, std::forward<F>(func));
+    return vector_details::transform_details<N>::call<ValueType, Function, ResultType>(value, std::forward<Function>(func));
 }
 
 /**
