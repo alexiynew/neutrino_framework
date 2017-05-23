@@ -50,10 +50,11 @@ foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
         if(EXISTS ${TEST_DIR}/CMakeLists.txt)
             message("\tAdd test: ${TEST_NAME}")
 
-	    foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+            set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
+    	    foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
                 string(TOUPPER ${CONFIG} CONFIG)
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG} ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
-	    endforeach()
+    	    endforeach()
 
             add_subdirectory(${TEST_DIR})
             set(FRAMEWORK_TESTS_DEPENDENCIES ${FRAMEWORK_TESTS_DEPENDENCIES} ${TEST_NAME})
@@ -86,6 +87,6 @@ add_custom_target(run_all_tests_verbose
     DEPENDS ${PROJECT_NAME}
 )
 
-add_custom_target(${PROJECT_NAME} 
+add_custom_target(${PROJECT_NAME}
     DEPENDS ${FRAMEWORK_TESTS_DEPENDENCIES} ${TESTSUITE_EXECUTABLE}
 )
