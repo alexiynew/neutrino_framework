@@ -111,6 +111,15 @@ struct transform_details<4>
                             std::forward<F>(function)(value.z),
                             std::forward<F>(function)(value.w));
     }
+
+    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<4, R> call(const Vector<4, T>& first, const Vector<4, T>& second, F&& function)
+    {
+        return Vector<4, R>(std::forward<F>(function)(first.x, second.x),
+                            std::forward<F>(function)(first.y, second.y),
+                            std::forward<F>(function)(first.z, second.z),
+                            std::forward<F>(function)(first.w, second.w));
+    }
 };
 
 template <>
@@ -122,6 +131,14 @@ struct transform_details<3>
         return Vector<3, R>(
         std::forward<F>(function)(value.x), std::forward<F>(function)(value.y), std::forward<F>(function)(value.z));
     }
+
+    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<3, R> call(const Vector<3, T>& first, const Vector<3, T>& second, F&& function)
+    {
+        return Vector<3, R>(std::forward<F>(function)(first.x, second.x),
+                            std::forward<F>(function)(first.y, second.y),
+                            std::forward<F>(function)(first.z, second.z));
+    }
 };
 
 template <>
@@ -131,6 +148,12 @@ struct transform_details<2>
     static inline constexpr Vector<2, R> call(const Vector<2, T>& value, F&& function)
     {
         return Vector<2, R>(std::forward<F>(function)(value.x), std::forward<F>(function)(value.y));
+    }
+
+    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
+    static inline constexpr Vector<2, R> call(const Vector<2, T>& first, const Vector<2, T>& second, F&& function)
+    {
+        return Vector<2, R>(std::forward<F>(function)(first.x, second.x), std::forward<F>(function)(first.y, second.y));
     }
 };
 
@@ -1603,6 +1626,11 @@ inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& func)
     return vector_details::transform_details<N>::template call<T, F, R>(value, std::forward<F>(func));
 }
 
+template <unsigned int N, typename T, typename F, typename R = typename std::result_of<F(const T&, const T&)>::type>
+inline constexpr vector<N, R> transform(const vector<N, T>& first, const vector<N, T>& second, F&& func)
+{
+    return vector_details::transform_details<N>::template call<T, F, R>(first, second, std::forward<F>(func));
+}
 /**
  * @}
  */

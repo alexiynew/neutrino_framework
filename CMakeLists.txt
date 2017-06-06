@@ -7,8 +7,8 @@ option(BUILD_TESTS "Build test programs" OFF)
 set(INCLUDED_TEST_MODULES "" CACHE STRING "Tests that will be included in the build. An empty string means all modules.")
 
 # Settings
-set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output/)
-set(DOCS_OUTPUT_PATH $${OUTPUT_PATH_BASE}/doc)
+set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
+set(DOCS_OUTPUT_PATH ${OUTPUT_PATH_BASE}/doc)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE} CACHE PATH "Set default install path." FORCE)
@@ -53,7 +53,7 @@ message("platform name: ${PLATFORM_NAME}")
 add_subdirectory(${CMAKE_SOURCE_DIR}/src)
 
 # Add tests
-if(BUILD_TESTS) 
+if(BUILD_TESTS)
 	add_subdirectory(${CMAKE_SOURCE_DIR}/test)
 endif()
 

@@ -68,24 +68,24 @@ private:
     {
         TEST_ASSERT(round(v4d) == vector4d(1.0, -2.0, 0.0, -2.0), "Round function failed.");
         TEST_ASSERT(round(v3f) == vector3f(2.0f, -2.0f, 0.0f), "Round function failed.");
-        TEST_ASSERT(round(v3i) == vector3i(1, -5, 0), "Round function failed.");
-        TEST_ASSERT(round(v2u) == vector2u(10, 0), "Round function failed.");
+        TEST_ASSERT(round(v3i) == vector3d(1, -5, 0), "Round function failed.");
+        TEST_ASSERT(round(v2u) == vector2d(10, 0), "Round function failed.");
     }
 
     void ceil_function()
     {
         TEST_ASSERT(ceil(v4d) == vector4d(2.0, -1.0, 0.0, -1.0), "Ceil function failed.");
         TEST_ASSERT(ceil(v3f) == vector3f(2.0f, -1.0f, 0.0f), "Ceil function failed.");
-        TEST_ASSERT(ceil(v3i) == vector3i(1, -5, 0), "Ceil function failed.");
-        TEST_ASSERT(ceil(v2u) == vector2u(10, 0), "Ceil function failed.");
+        TEST_ASSERT(ceil(v3i) == vector3d(1, -5, 0), "Ceil function failed.");
+        TEST_ASSERT(ceil(v2u) == vector2d(10, 0), "Ceil function failed.");
     }
 
     void trunc_function()
     {
         TEST_ASSERT(trunc(v4d) == vector4d(1.0, -1.0, 0.0, -1.0), "Truncate function failed.");
         TEST_ASSERT(trunc(v3f) == vector3f(1.0f, -1.0f, 0.0f), "Truncate function failed.");
-        TEST_ASSERT(trunc(v3i) == vector3i(1, -5, 0), "Truncate function failed.");
-        TEST_ASSERT(trunc(v2u) == vector2u(10, 0), "Truncate function failed.");
+        TEST_ASSERT(trunc(v3i) == vector3d(1, -5, 0), "Truncate function failed.");
+        TEST_ASSERT(trunc(v2u) == vector2d(10, 0), "Truncate function failed.");
     }
 
     void fract_function()
@@ -94,12 +94,16 @@ private:
 
         TEST_ASSERT(almost_equal(fract(v4d), v4d_fract), "Fract function failed.");
         TEST_ASSERT(fract(v3f) == vector3f(0.6f, 0.5f, 0.0f), "Fract function failed.");
+        TEST_ASSERT(fract(v3i) == vector3d(0, 0, 0), "Fract function failed.");
+        TEST_ASSERT(fract(v2u) == vector2d(0, 0), "Fract function failed.");
     }
 
     void mod_function()
     {
         TEST_ASSERT(mod(v4d, 3.0) == vector4d(1.1, 1.5, 0.0, 1.2), "Mod function failed.");
         TEST_ASSERT(mod(v4d, vector4d(1.2, -2.0, 0.5, 5.8)) == vector4d(1.1, -1.5, 0.0, 4.0), "Mod function failed.");
+        TEST_ASSERT(mod(v3i, 3) == vector3d(1.0, 1.0, 0.0), "Mod function failed.");
+        TEST_ASSERT(mod(v2u, vector2u(4, 5)) == vector2d(2, 0), "Mod function failed.");
     }
 
     void modf_function()
@@ -146,16 +150,21 @@ private:
 
     void mix_function()
     {
-        const vector4d result1 = mix(vector4d(1.0), vector4d(10.0), 0.5);
-        const vector4d result2 = mix(vector4d(1.0), vector4d(10.0), false);
+        const vector4d result1 = mix(vector4d(0.0), vector4d(10.0), 0.5);
+        const vector4d result2 = mix(vector4d(0.0), vector4d(10.0), false);
         const vector4d result3 = mix(vector4d(1.0), vector4d(10.0), true);
         const vector4d result4 = mix(vector4d(1.0), vector4d(10.0), vector4d(0.25, 0.5, -3, 3));
         const vector3d result5 = mix(vector3d(1.0), vector3d(10.0), vector3b(true, false, true));
         const vector2i result6 = mix(vector2i(1), vector2i(10), vector2i(1, 0));
 
-        TEST_ASSERT(result1 == vector4d(5.5), "Mix function failed.");
-        TEST_ASSERT(result2 == vector4d(1.0), "Mix function failed.");
+        TEST_ASSERT(mix(0, 10, 0.7) == 7, "Mix function failed.");
+        TEST_ASSERT(mix(0, 10, true) == 10, "Mix function failed.");
+        TEST_ASSERT(mix(0, 10, false) == 0, "Mix function failed.");
+
+        TEST_ASSERT(result1 == vector4d(5.0), "Mix function failed.");
+        TEST_ASSERT(result2 == vector4d(0.0), "Mix function failed.");
         TEST_ASSERT(result3 == vector4d(10.0), "Mix function failed.");
+
         TEST_ASSERT(result4 == vector4d(3.25, 5.5, -26, 28), "Mix function failed.");
         TEST_ASSERT(result5 == vector3d(10.0, 1.0, 10.0), "Mix function failed.");
         TEST_ASSERT(result6 == vector2i(10, 1), "Mix function failed.");
