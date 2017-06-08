@@ -5,6 +5,8 @@ set(TEST_OUTPUT_PATH ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE}/test)
 
 set(FRAMEWORK_TESTS_DEPENDENCIES "")
 
+enable_testing()
+
 message("Search tests...")
 
 # Get all test modules
@@ -51,14 +53,16 @@ foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
             message("\tAdd test: ${TEST_NAME}")
 
             set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
-    	    foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
                 string(TOUPPER ${CONFIG} CONFIG)
                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG} ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
-    	    endforeach()
+            endforeach()
 
             add_subdirectory(${TEST_DIR})
             set(FRAMEWORK_TESTS_DEPENDENCIES ${FRAMEWORK_TESTS_DEPENDENCIES} ${TEST_NAME})
 
+            add_test(NAME "${TEST_PACK_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
+            set_tests_properties("${TEST_PACK_NAME}/${TEST_NAME}" PROPERTIES LABELS ${TEST_PACK_NAME})
         else()
             message(FATAL_ERROR "There is no CMakeLists.txt in ${TEST_DIR}")
         endif()
@@ -66,24 +70,14 @@ foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
     endforeach()
 endforeach()
 
-message("Add custom commnad to run all tests")
-set(TESTSUITE_EXECUTABLE ${TEST_OUTPUT_PATH}/run_all_tests.py)
-set(TESTSUITE_EXECUTABLE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/run_all_tests.py)
-
-add_custom_command(OUTPUT ${TESTSUITE_EXECUTABLE}
-                   COMMAND ${CMAKE_COMMAND} -E copy ${TESTSUITE_EXECUTABLE_SRC} ${TESTSUITE_EXECUTABLE}
-                   DEPENDS ${TESTSUITE_EXECUTABLE_SRC}
-                   COMMENT "Create ${TESTSUITE_EXECUTABLE}")
-
-
 message("Add custom targets to run all tests")
 add_custom_target(run_all_tests
-    COMMAND ${TESTSUITE_EXECUTABLE}
+    COMMAND ${CMAKE_CTEST_COMMAND}
     DEPENDS ${PROJECT_NAME}
 )
 
 add_custom_target(run_all_tests_verbose
-    COMMAND ${TESTSUITE_EXECUTABLE} -v
+    COMMAND ${CMAKE_CTEST_COMMAND} -V
     DEPENDS ${PROJECT_NAME}
 )
 
