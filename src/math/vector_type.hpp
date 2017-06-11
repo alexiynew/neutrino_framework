@@ -21,10 +21,14 @@ namespace vector_details {
 
 /**
  * @brief Workaround to cast float numbers to bool without warnings.
+ * @{
  */
 template <typename T>
 struct cast_to
 {
+    /**
+     * @brief Casts value to a specified type.
+     */
     template <typename U>
     inline static constexpr T from(const U& value)
     {
@@ -32,60 +36,72 @@ struct cast_to
     }
 };
 
-/**
- * @brief Workaround to cast float numbers to bool without warnings.
- */
 template <>
 struct cast_to<bool>
 {
+    /**
+     * @brief Casts value to a specified type.
+     */
     template <typename U>
     inline static constexpr bool from(const U& value)
     {
         return std::not_equal_to<U>()(value, U{0});
     }
 };
+/**
+ * @}
+ */
 
 /**
  * @brief Helper that checks if all presented types are arithmetic.
+ * @{
  */
 template <typename T, typename... Args>
 struct are_all_arithmetic
 {
+    /**
+     * @brief `true` if all provided types are arithmetic.
+     */
     static constexpr bool value = std::is_arithmetic<T>::value && are_all_arithmetic<Args...>::value;
 };
 
-/**
- * @brief Helper that checks if all presented types are arithmetic.
- */
 template <typename T>
 struct are_all_arithmetic<T>
 {
+    /**
+     * @brief `true` if provided type are arithmetic.
+     */
     static constexpr bool value = std::is_arithmetic<T>::value;
 };
 
-/**
- * @brief Helper that give common type for all presented types.
- */
+
 template <bool C, typename... Args>
 struct common_type_details
 {
 };
+/**
+ * @}
+ */
 
 /**
  * @brief Helper that give common type for all presented types.
+ * @{
  */
 template <typename T, typename... Args>
 struct common_type_details<true, T, Args...>
 {
+    /**
+     * @brief Common type for all provided types.
+     */
     using type = typename std::common_type<T, typename common_type_details<true, Args...>::type>::type;
 };
 
-/**
- * @brief Helper that give common type for all presented types.
- */
 template <typename T>
 struct common_type_details<true, T>
 {
+    /**
+     * @brief Common type is T.
+     */
     using type = T;
 };
 
@@ -96,66 +112,64 @@ struct common_type_details<true, T>
 template <typename... Args>
 using common_type = common_type_details<are_all_arithmetic<Args...>::value, Args...>;
 
+/**
+ * @}
+ */
 
+/**
+ * @brief Implementation of transform function.
+ * @{
+ */
 template <unsigned int N>
 struct transform_details;
 
 template <>
 struct transform_details<4>
 {
-    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<4, R> call(const Vector<4, T>& value, F&& function)
+    /**
+     * @brief Creates new vector of type R with provided function and arguments.
+     */
+    template <typename R, typename F, typename... Args>
+    static inline constexpr R create(F&& function, Args&&... value)
     {
-        return Vector<4, R>(std::forward<F>(function)(value.x),
-                            std::forward<F>(function)(value.y),
-                            std::forward<F>(function)(value.z),
-                            std::forward<F>(function)(value.w));
-    }
-
-    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<4, R> call(const Vector<4, T>& first, const Vector<4, T>& second, F&& function)
-    {
-        return Vector<4, R>(std::forward<F>(function)(first.x, second.x),
-                            std::forward<F>(function)(first.y, second.y),
-                            std::forward<F>(function)(first.z, second.z),
-                            std::forward<F>(function)(first.w, second.w));
+        return R(std::forward<F>(function)(std::forward<Args>(value).x...),
+                 std::forward<F>(function)(std::forward<Args>(value).y...),
+                 std::forward<F>(function)(std::forward<Args>(value).z...),
+                 std::forward<F>(function)(std::forward<Args>(value).w...));
     }
 };
 
 template <>
 struct transform_details<3>
 {
-    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<3, R> call(const Vector<3, T>& value, F&& function)
+    /**
+     * @brief Creates new vector of type R with provided function and arguments.
+     */
+    template <typename R, typename F, typename... Args>
+    static inline constexpr R create(F&& function, Args&&... value)
     {
-        return Vector<3, R>(
-        std::forward<F>(function)(value.x), std::forward<F>(function)(value.y), std::forward<F>(function)(value.z));
-    }
-
-    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<3, R> call(const Vector<3, T>& first, const Vector<3, T>& second, F&& function)
-    {
-        return Vector<3, R>(std::forward<F>(function)(first.x, second.x),
-                            std::forward<F>(function)(first.y, second.y),
-                            std::forward<F>(function)(first.z, second.z));
+        return R(std::forward<F>(function)(std::forward<Args>(value).x...),
+                 std::forward<F>(function)(std::forward<Args>(value).y...),
+                 std::forward<F>(function)(std::forward<Args>(value).z...));
     }
 };
 
 template <>
 struct transform_details<2>
 {
-    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<2, R> call(const Vector<2, T>& value, F&& function)
+    /**
+     * @brief Creates new vector of type R with provided function and arguments.
+     */
+    template <typename R, typename F, typename... Args>
+    static inline constexpr R create(F&& function, Args&&... value)
     {
-        return Vector<2, R>(std::forward<F>(function)(value.x), std::forward<F>(function)(value.y));
-    }
-
-    template <typename T, typename F, typename R, template <unsigned int, typename> class Vector>
-    static inline constexpr Vector<2, R> call(const Vector<2, T>& first, const Vector<2, T>& second, F&& function)
-    {
-        return Vector<2, R>(std::forward<F>(function)(first.x, second.x), std::forward<F>(function)(first.y, second.y));
+        return R(std::forward<F>(function)(std::forward<Args>(value).x...),
+                 std::forward<F>(function)(std::forward<Args>(value).y...));
     }
 };
+/**
+ * @}
+ */
 
 } // namespace vector_details
 
@@ -1528,7 +1542,7 @@ inline const vector<N, R> operator/(const T& lhs, const vector<N, U>& rhs)
  * @param lhs Vector to test.
  * @param rhs Vector to test.
  *
- * @return @b true if lhs equals rhs, otherwise @b false.
+ * @return `true` if lhs equals rhs, otherwise `false`.
  */
 template <typename T>
 inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rhs)
@@ -1543,7 +1557,7 @@ inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rh
  * @param lhs Vector to test.
  * @param rhs Vector to test.
  *
- * @return @b true if lhs equals rhs, otherwise @b false.
+ * @return `true` if lhs equals rhs, otherwise `false`.
  */
 template <typename T>
 inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rhs)
@@ -1558,7 +1572,7 @@ inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rh
  * @param lhs Vector to test.
  * @param rhs Vector to test.
  *
- * @return @b true if lhs equals rhs, otherwise @b false.
+ * @return `true` if lhs equals rhs, otherwise `false`.
  */
 template <typename T>
 inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rhs)
@@ -1573,7 +1587,7 @@ inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rh
  * @param lhs Vector to test.
  * @param rhs Vector to test.
  *
- * @return @b true if lhs isn't equal rhs, otherwise @b false.
+ * @return `true` if lhs isn't equal rhs, otherwise `false`.
  */
 template <typename T>
 inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rhs)
@@ -1588,7 +1602,7 @@ inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rh
  * @param lhs Vector to test.
  * @param rhs Vector to test.
  *
- * @return @b true if lhs isn't equal rhs, otherwise @b false.
+ * @return `true` if lhs isn't equal rhs, otherwise `false`.
  */
 template <typename T>
 inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rhs)
@@ -1603,7 +1617,7 @@ inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rh
  * @param lhs Vector to test.
  * @param rhs Vector to test.
  *
- * @return @b true if lhs isn't equal rhs, otherwise @b false.
+ * @return `true` if lhs isn't equal rhs, otherwise `false`.
  */
 template <typename T>
 inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rhs)
@@ -1620,16 +1634,35 @@ inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rh
  * @{
  */
 
+/**
+ * @brief Creates new vector by applying the function to every component of provided vector.
+ * New components are computed as: `x = function(value.x), y = function(value.y), ...`.
+ *
+ * @param value Vector to transform.
+ * @param function Function to apply.
+ *
+ * @return New vector.
+ */
 template <unsigned int N, typename T, typename F, typename R = typename std::result_of<F(const T&)>::type>
-inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& func)
+inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& function)
 {
-    return vector_details::transform_details<N>::template call<T, F, R>(value, std::forward<F>(func));
+    return vector_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), value);
 }
 
-template <unsigned int N, typename T, typename F, typename R = typename std::result_of<F(const T&, const T&)>::type>
-inline constexpr vector<N, R> transform(const vector<N, T>& first, const vector<N, T>& second, F&& func)
+/**
+ * @brief Creates new vector by applying the function to every component of provided vectors.
+ * New components are computed as: `x = function(first.x, second.x), y = function(first.y, second.y), ...`.
+ *
+ * @param first Vector to transform.
+ * @param second Vector to transform.
+ * @param function Function to apply.
+ *
+ * @return New vector.
+ */
+template <unsigned int N, typename T, typename U, typename F, typename R = typename std::result_of<F(const T&, const U&)>::type>
+inline constexpr vector<N, R> transform(const vector<N, T>& first, const vector<N, U>& second, F&& function)
 {
-    return vector_details::transform_details<N>::template call<T, F, R>(first, second, std::forward<F>(func));
+    return vector_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), first, second);
 }
 /**
  * @}

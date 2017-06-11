@@ -5,7 +5,6 @@
 #include <type_traits>
 
 #include <log/log.hpp>
-#include <math/geometric_func.hpp>
 #include <math/utils.hpp>
 #include <math/vector_type.hpp>
 

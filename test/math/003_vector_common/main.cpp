@@ -203,21 +203,21 @@ private:
     void frexp_function()
     {
         vector4i v4i_exponent;
-        const vector4d v4d_significand = frexp(v4d, v4i_exponent);
+        const vector4d v4d_fraction = frexp(v4d, v4i_exponent);
 
         vector3i v3i_exponent;
-        const vector3f v3f_significand = frexp(v3f, v3i_exponent);
+        const vector3f v3f_fraction = frexp(v3f, v3i_exponent);
 
         vector2i v2i_exponent;
-        const vector2d v2d_significand = frexp(v2u, v2i_exponent);
+        const vector2d v2d_fraction = frexp(v2u, v2i_exponent);
 
-        TEST_ASSERT(v4d_significand == vector4d(0.55, -0.75, 0, -0.9), "Frexp function failed.");
+        TEST_ASSERT(v4d_fraction == vector4d(0.55, -0.75, 0, -0.9), "Frexp function failed.");
         TEST_ASSERT(v4i_exponent == vector4i(1, 1, 0, 1), "Frexp function failed.");
 
-        TEST_ASSERT(v3f_significand == vector3f(0.80000001192092896, -0.75, 0), "Frexp function failed.");
+        TEST_ASSERT(v3f_fraction == vector3f(0.80000001192092896, -0.75, 0), "Frexp function failed.");
         TEST_ASSERT(v3i_exponent == vector3i(1, 1, 0), "Frexp function failed.");
 
-        TEST_ASSERT(v2d_significand == vector2d(0.625, 0), "Frexp function failed.");
+        TEST_ASSERT(v2d_fraction == vector2d(0.625, 0), "Frexp function failed.");
         TEST_ASSERT(v2i_exponent == vector2i(4, 0), "Frexp function failed.");
     }
 

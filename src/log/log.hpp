@@ -181,6 +181,9 @@ public:
  */
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
+/**
+ * @brief Generates error message.
+ */
 #define ERROR_MESSAGE(MESSAGE) __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)
 
 /**
