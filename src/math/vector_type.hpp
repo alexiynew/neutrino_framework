@@ -220,13 +220,6 @@ struct vector<4, T> final
     constexpr vector(const vector<4, value_type>& other) noexcept;
 
     /**
-     * @brief Default move constructor.
-     *
-     * @param other Vector to move from.
-     */
-    constexpr vector(vector<4, value_type>&& other) noexcept;
-
-    /**
      * @brief Initializes vector with provided values.
      *
      * @param x_value Value for x component.
@@ -350,15 +343,6 @@ struct vector<4, T> final
     vector<4, value_type>& operator=(const vector<4, value_type>& other) noexcept;
 
     /**
-     * @brief Default move assignment operator.
-     *
-     * @param other Vector to move from.
-     *
-     * @return Reference to itself.
-     */
-    vector<4, value_type>& operator=(vector<4, value_type>&& other) noexcept;
-
-    /**
      * @brief Access operator.
      *
      * @param index Index of component.
@@ -435,13 +419,6 @@ struct vector<3, T> final
      * @param other Vector to copy from.
      */
     constexpr vector(const vector<3, value_type>& other) noexcept;
-
-    /**
-     * @brief Default move constructor.
-     *
-     * @param other Vector to move from.
-     */
-    constexpr vector(vector<3, value_type>&& other) noexcept;
 
     /**
      * @brief Initializes vector with provided values.
@@ -525,15 +502,6 @@ struct vector<3, T> final
     vector<3, value_type>& operator=(const vector<3, value_type>& other) noexcept;
 
     /**
-     * @brief Default move assignment operator.
-     *
-     * @param other Vector to move from.
-     *
-     * @return Reference to itself.
-     */
-    vector<3, value_type>& operator=(vector<3, value_type>&& other) noexcept;
-
-    /**
      * @brief Access operator.
      *
      * @param index Index of component.
@@ -611,13 +579,6 @@ struct vector<2, T> final
     constexpr vector(const vector<2, value_type>& other) noexcept;
 
     /**
-     * @brief Default move constructor.
-     *
-     * @param other Vector to move from.
-     */
-    constexpr vector(vector<2, value_type>&& other) noexcept;
-
-    /**
      * @brief Initializes vector with provided values.
      *
      * @param x_value Value for x component.
@@ -676,15 +637,6 @@ struct vector<2, T> final
      * @return Reference to itself.
      */
     vector<2, value_type>& operator=(const vector<2, value_type>& other) noexcept;
-
-    /**
-     * @brief Default move assignment operator.
-     *
-     * @param other Vector to move from.
-     *
-     * @return Reference to itself.
-     */
-    vector<2, value_type>& operator=(vector<2, value_type>&& other) noexcept;
 
     /**
      * @brief Access operator.
@@ -751,9 +703,6 @@ inline constexpr vector<4, T>::vector() noexcept
 }
 template <typename T>
 inline constexpr vector<4, T>::vector(const vector<4, T>& other) noexcept = default;
-
-template <typename T>
-inline constexpr vector<4, T>::vector(vector<4, T>&& other) noexcept = default;
 
 template <typename T>
 template <typename X, typename Y, typename Z, typename W>
@@ -855,9 +804,6 @@ template <typename T>
 inline vector<4, T>& vector<4, T>::operator=(const vector<4, T>&) noexcept = default;
 
 template <typename T>
-inline vector<4, T>& vector<4, T>::operator=(vector<4, T>&&) noexcept = default;
-
-template <typename T>
 inline typename vector<4, T>::value_type& vector<4, T>::operator[](unsigned int index)
 {
     return data()[index];
@@ -911,9 +857,6 @@ inline constexpr vector<3, T>::vector() noexcept
 
 template <typename T>
 inline constexpr vector<3, T>::vector(const vector<3, T>& other) noexcept = default;
-
-template <typename T>
-inline constexpr vector<3, T>::vector(vector<3, T>&& other) noexcept = default;
 
 template <typename T>
 template <typename X, typename Y, typename Z>
@@ -985,9 +928,6 @@ template <typename T>
 inline vector<3, T>& vector<3, T>::operator=(const vector<3, T>&) noexcept = default;
 
 template <typename T>
-inline vector<3, T>& vector<3, T>::operator=(vector<3, T>&&) noexcept = default;
-
-template <typename T>
 inline typename vector<3, T>::value_type& vector<3, T>::operator[](unsigned int index)
 {
     return data()[index];
@@ -1042,10 +982,6 @@ template <typename T>
 inline constexpr vector<2, T>::vector(const vector<2, T>&) noexcept = default;
 
 template <typename T>
-inline constexpr vector<2, T>::vector(vector<2, T>&&) noexcept = default;
-
-
-template <typename T>
 template <typename X, typename Y>
 inline constexpr vector<2, T>::vector(const X& x_value, const Y& y_value) noexcept
     : x{vector_details::cast_to<T>::from(x_value)}
@@ -1097,9 +1033,6 @@ inline constexpr vector<2, T>::vector(const vector<2, U>& other) noexcept
  */
 template <typename T>
 inline vector<2, T>& vector<2, T>::operator=(const vector<2, T>&) noexcept = default;
-
-template <typename T>
-inline vector<2, T>& vector<2, T>::operator=(vector<2, T>&&) noexcept = default;
 
 template <typename T>
 inline typename vector<2, T>::value_type& vector<2, T>::operator[](unsigned int index)
