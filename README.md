@@ -15,4 +15,4 @@
  
 | Windows |
 |---------|
-| https://ci.appveyor.com/api/projects/status/github/alexiynew?branch=master&svg=true |
+| [![Build Linux](https://ci.appveyor.com/api/projects/status/github/alexiynew?branch=master&svg=true)](https://ci.appveyor.com/project/alexiynew/game-framework) |
