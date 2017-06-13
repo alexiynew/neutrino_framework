@@ -1,5 +1,6 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
+#include <iostream>
 
 using namespace framework::math;
 
@@ -53,7 +54,7 @@ private:
 
     void tan_function()
     {
-        TEST_ASSERT(almost_equal(tan(radians(v3d)), sin(radians(v3d)) / cos(radians(v3d))), "Tan function failed.");
+        TEST_ASSERT(almost_equal(tan(radians(v3d)), sin(radians(v3d)) / cos(radians(v3d)), 1), "Tan function failed.");
     }
 
     void asin_function()
@@ -86,7 +87,7 @@ private:
     void cosh_function()
     {
         const vector3d cosh_vector(1.3246090892520057, 1.6002868577023861, 11.591953275521519);
-        TEST_ASSERT(almost_equal(cosh(radians(v3d)), cosh_vector), "Cosh function failed.");
+        TEST_ASSERT(almost_equal(cosh(radians(v3d)), cosh_vector, 1), "Cosh function failed.");
     }
 
     void tanh_function()

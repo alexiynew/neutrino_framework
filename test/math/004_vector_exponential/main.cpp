@@ -41,13 +41,13 @@ private:
     void exp2_function()
     {
         const vector4d result = {2.1435469250725863, 0.35355339059327379, 1, 0.28717458874925872};
-        TEST_ASSERT(exp2(v4d) == result, "Exp2 function failed.");
+        TEST_ASSERT(almost_equal(exp2(v4d), result, 1), "Exp2 function failed.");
     }
 
     void log2_function()
     {
         const vector4d result = {1.0999999999999999, -1.5, 0, -1.8000000000000003};
-        TEST_ASSERT(log2(exp2(v4d)) == result, "Log2 function failed.");
+        TEST_ASSERT(almost_equal(log2(exp2(v4d)), result, 1), "Log2 function failed.");
     }
 
     void sqrt_function()
