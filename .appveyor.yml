@@ -50,7 +50,7 @@ before_build:
   - echo %APPVEYOR_BUILD_WORKER_IMAGE%
   - echo %configuration%
   - echo %CMAKE_GENERATOR_NAME%
-  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% ../
+  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_TESTS=ON ../
 
 build:
   parallel: true                           # enable MSBuild parallel builds
@@ -60,9 +60,9 @@ build_script:
   - cmd: cd C:\projects\game_framework\build
   - cmd: dir /A
   - cmd: echo =============== Build Framework =============== 
-  - cmd: msbuild framework.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
   - cmd: echo =============== Build Framework =============== 
-  - cmd: msbuild framework_tests.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild framework_tests.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test_script:
   - cmd: echo =============== Run All Tests =============== 
