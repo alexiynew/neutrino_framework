@@ -61,8 +61,6 @@ build_script:
   - cmd: dir /A
   - cmd: echo =============== Build Framework =============== 
   - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - cmd: echo =============== Build Framework =============== 
-  - cmd: msbuild framework_tests.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test_script:
   - cmd: echo =============== Run All Tests =============== 
