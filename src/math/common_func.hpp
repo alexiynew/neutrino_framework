@@ -814,7 +814,7 @@ inline T step(const T& value, const T& edge)
  * @param value Specify the value to be used to generate the step function.
  * @param edge Specifies the location of the edge of the step function.
  *
- * @return For each component in value return 0 if a < edge, and 1 otherwise.
+ * @return For each component in value return 0 if value < edge, and 1 otherwise.
  */
 template <unsigned int N, typename T>
 inline vector<N, T> step(const vector<N, T>& value, const T& edge)
@@ -825,10 +825,10 @@ inline vector<N, T> step(const vector<N, T>& value, const T& edge)
 /**
  * @brief Generate a step function by comparing two values.
  *
- * @param a Specify the value to be used to generate the step function.
+ * @param value Specify the value to be used to generate the step function.
  * @param edge Specifies the location of the edge of the step function.
  *
- * @return For each i return 0 if a[i] < edge[i], and 1 otherwise.
+ * @return For each i return 0 if value[i] < edge[i], and 1 otherwise.
  */
 template <unsigned int N, typename T>
 inline vector<N, T> step(const vector<N, T>& value, const vector<N, T>& edge)
@@ -856,23 +856,23 @@ inline vector<N, T> step(const vector<N, T>& value, const vector<N, T>& edge)
  * @endcode
  * Results are undefined if edge0 ≥ edge1.
  *
- * @param a Specifies the source value for interpolation.
+ * @param value Specifies the source value for interpolation.
  * @param edge0 Specifies the value of the lower edge of the Hermite function.
  * @param edge1 Specifies the value of the upper edge of the Hermite function.
  *
  * @return Interpolated value.
  */
 template <typename T>
-inline T smooth_step(const T& a, const T& edge0, const T& edge1)
+inline T smooth_step(const T& value, const T& edge0, const T& edge1)
 {
-    T temp = clamp((a - edge0) / (edge1 - edge0), T{0}, T{1});
+    T temp = clamp((value - edge0) / (edge1 - edge0), T{0}, T{1});
     return temp * temp * (T{3} - T{2} * temp);
 }
 
 /**
  * @brief Performs Hermite interpolation between two values.
  *
- * @param a Specifies the source value for interpolation.
+ * @param value Specifies the source value for interpolation.
  * @param edge0 Specifies the value of the lower edge of the Hermite function.
  * @param edge1 Specifies the value of the upper edge of the Hermite function.
  *
@@ -881,16 +881,16 @@ inline T smooth_step(const T& a, const T& edge0, const T& edge1)
  * @see smooth_step
  */
 template <unsigned int N, typename T>
-inline vector<N, T> smooth_step(const vector<N, T>& a, const T& edge0, const T& edge1)
+inline vector<N, T> smooth_step(const vector<N, T>& value, const T& edge0, const T& edge1)
 {
-    vector<N, T> temp = clamp((a - edge0) / (edge1 - edge0), T{0}, T{1});
+    vector<N, T> temp = clamp((value - edge0) / (edge1 - edge0), T{0}, T{1});
     return temp * temp * (T{3} - T{2} * temp);
 }
 
 /**
  * @brief Performs Hermite interpolation between two values.
  *
- * @param a Specifies the source value for interpolation.
+ * @param value Specifies the source value for interpolation.
  * @param edge0 Specifies the value of the lower edge of the Hermite function.
  * @param edge1 Specifies the value of the upper edge of the Hermite function.
  *
@@ -899,9 +899,9 @@ inline vector<N, T> smooth_step(const vector<N, T>& a, const T& edge0, const T& 
  * @see smooth_step
  */
 template <unsigned int N, typename T>
-inline vector<N, T> smooth_step(const vector<N, T>& a, const vector<N, T>& edge0, const vector<N, T>& edge1)
+inline vector<N, T> smooth_step(const vector<N, T>& value, const vector<N, T>& edge0, const vector<N, T>& edge1)
 {
-    vector<N, T> temp = clamp((a - edge0) / (edge1 - edge0), T{0}, T{1});
+    vector<N, T> temp = clamp((value - edge0) / (edge1 - edge0), T{0}, T{1});
     return temp * temp * (T{3} - T{2} * temp);
 }
 /**
