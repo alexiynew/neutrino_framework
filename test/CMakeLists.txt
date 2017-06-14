@@ -72,15 +72,10 @@ endforeach()
 
 message("Add custom targets to run all tests")
 add_custom_target(run_all_tests
-    COMMAND ${CMAKE_CTEST_COMMAND}
-    DEPENDS ${PROJECT_NAME}
-)
-
-add_custom_target(run_all_tests_verbose
-    COMMAND ${CMAKE_CTEST_COMMAND} -V
+    COMMAND ${CMAKE_CTEST_COMMAND} --build-config ${CMAKE_BUILD_TYPE} --parallel 4 --output-on-failure
     DEPENDS ${PROJECT_NAME}
 )
 
 add_custom_target(${PROJECT_NAME}
-    DEPENDS ${FRAMEWORK_TESTS_DEPENDENCIES} ${TESTSUITE_EXECUTABLE}
+    DEPENDS ${FRAMEWORK_TESTS_DEPENDENCIES}
 )
