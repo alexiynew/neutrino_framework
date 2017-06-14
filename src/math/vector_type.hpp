@@ -1547,8 +1547,8 @@ inline const vector<N, R> operator/(const T& lhs, const vector<N, U>& rhs)
 template <typename T>
 inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    constexpr auto equal = std::equal_to<T>();
-    return equal(lhs.x, rhs.x) && equal(lhs.y, rhs.y) && equal(lhs.z, rhs.z) && equal(lhs.w, rhs.w);
+    using equal = std::equal_to<T>;
+    return equal()(lhs.x, rhs.x) && equal()(lhs.y, rhs.y) && equal()(lhs.z, rhs.z) && equal()(lhs.w, rhs.w);
 }
 
 /**
@@ -1562,8 +1562,8 @@ inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rh
 template <typename T>
 inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rhs)
 {
-    constexpr auto equal = std::equal_to<T>();
-    return equal(lhs.x, rhs.x) && equal(lhs.y, rhs.y) && equal(lhs.z, rhs.z);
+    using equal = std::equal_to<T>;
+    return equal()(lhs.x, rhs.x) && equal()(lhs.y, rhs.y) && equal()(lhs.z, rhs.z);
 }
 
 /**
@@ -1577,8 +1577,8 @@ inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rh
 template <typename T>
 inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rhs)
 {
-    constexpr auto equal = std::equal_to<T>();
-    return equal(lhs.x, rhs.x) && equal(lhs.y, rhs.y);
+    using equal = std::equal_to<T>;
+    return equal()(lhs.x, rhs.x) && equal()(lhs.y, rhs.y);
 }
 
 /**
@@ -1592,8 +1592,8 @@ inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rhs)
 {
-    constexpr auto not_equal = std::not_equal_to<T>();
-    return not_equal(lhs.x, rhs.x) && not_equal(lhs.y, rhs.y) && not_equal(lhs.z, rhs.z) && not_equal(lhs.w, rhs.w);
+    using not_equal = std::not_equal_to<T>;
+    return not_equal()(lhs.x, rhs.x) && not_equal()(lhs.y, rhs.y) && not_equal()(lhs.z, rhs.z) && not_equal()(lhs.w, rhs.w);
 }
 
 /**
@@ -1607,8 +1607,8 @@ inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rhs)
 {
-    constexpr auto not_equal = std::not_equal_to<T>();
-    return not_equal(lhs.x, rhs.x) && not_equal(lhs.y, rhs.y) && not_equal(lhs.z, rhs.z);
+    using not_equal = std::not_equal_to<T>;
+    return not_equal()(lhs.x, rhs.x) && not_equal()(lhs.y, rhs.y) && not_equal()(lhs.z, rhs.z);
 }
 
 /**
@@ -1622,8 +1622,8 @@ inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rhs)
 {
-    constexpr auto not_equal = std::not_equal_to<T>();
-    return not_equal(lhs.x, rhs.x) && not_equal(lhs.y, rhs.y);
+    using not_equal = std::not_equal_to<T>;
+    return not_equal()(lhs.x, rhs.x) && not_equal()(lhs.y, rhs.y);
 }
 /**
  * @}
