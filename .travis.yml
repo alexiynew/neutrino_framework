@@ -42,4 +42,4 @@ before_install:
 install: true
 
 script:
-  - travis_run.sh
+  - ./travis_run.sh
