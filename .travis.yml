@@ -6,21 +6,21 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      env: 
+      env:
         - COMPILLER=clang
         - TASK="clean,build,test"
       sudo: required
 
     - os: linux
       dist: trusty
-      env: 
+      env:
         - COMPILLER=gcc
         - TASK="clean,build,test"
       sudo: required
 
-    - os: linux      
+    - os: linux
       dist: trusty
-      env: 
+      env:
         - COMPILLER=gcc
         - TASK="clean,coverage"
       sudo: required
@@ -42,4 +42,4 @@ before_install:
 install: true
 
 script:
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "export COMPILLER=$COMPILLER TASK=$TASK CODECOV_TOKEN=$CODECOV_TOKEN && /home/framework/travis_run.sh"
+  - /home/framework/travis_run.sh
