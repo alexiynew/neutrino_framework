@@ -9,6 +9,18 @@ TASK_TO_RUN="none"
 
 TEST_MODULES=""
 
+RED='\033[0;31m' # Red
+BLUE='\033[0;34m'  # Blue
+NC='\033[0m' # No Color
+
+function info {
+    echo -e "${BLUE}$1${NC}";
+}
+
+function error {
+    echo -e "${RED}$1${NC}";
+}
+
 # Settings functions
 
 function set_compiler {
@@ -24,20 +36,19 @@ function set_compiler {
         CC_COMPILER=clang
         CXX_COMILLER=clang++
     else
-        echo -e "Unknown compiler: $1"
+        error "Unknown compiler: $1"
     fi
 
-    echo -e "Specify C compiller as $CC_COMPILER."
+    info "Specify C compiller as $CC_COMPILER."
     export CC="$CC_COMPILER"
 
-    echo -e "Specify C++ compiller as $CXX_COMILLER."
+    info "Specify C++ compiller as $CXX_COMILLER."
     export CXX="$CXX_COMILLER"
 }
 
 # Task functions
 function configure {
-    echo -e ""
-    echo -e "==== Run configuration ===="
+    info "==== Run configuration ===="
 
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
@@ -45,48 +56,42 @@ function configure {
 }
 
 function build_framework {
-    echo -e ""
-    echo -e "==== Build framework ===="
+    info "==== Build framework ===="
 
     cd "$BUILD_DIR"
     make -j4 all
 }
 
 function build_tests {
-    echo -e ""
-    echo -e "==== Build framework tests ===="
+    info "==== Build framework tests ===="
 
     cd "$BUILD_DIR"
     make -j4 framework_tests
 }
 
 function install_all {
-    echo -e ""
-    echo -e "==== Install framework ===="
+    info "==== Install framework ===="
 
     cd "$BUILD_DIR"
     make install
 }
 
 function run_tests {
-    echo -e ""
-    echo -e "==== Run framework tests ===="
+    info "==== Run framework tests ===="
 
     cd "$BUILD_DIR"
     make run_all_tests
 }
 
 function run_tests_verbose {
-    echo -e ""
-    echo -e "==== Run framework tests verbose ===="
+    info "==== Run framework tests verbose ===="
 
     cd "$BUILD_DIR"
     make run_all_tests_verbose
 }
 
 function coverage_scan {
-    echo -e ""
-    echo -e "==== Run test coverage scan ===="
+    info "==== Run test coverage scan ===="
 
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
@@ -102,21 +107,20 @@ function coverage_scan {
     lcov --remove coverage.info '/usr/*' --output-file coverage.info        # filter out system
     lcov --list coverage.info                                               # debug info
 
-    echo -e "==== Uploading report to CodeCov ===="
-    bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+    info "==== Uploading report to CodeCov ===="
+    #curl --tlsv1 -kv https://codecov.io/bash -o "upload.sh"
+    bash <(curl -s https://codecov.io/bash) || info "Codecov did not collect coverage reports"
 }
 
 function build_documentation {
-    echo -e ""
-    echo -e "==== Run framework tests verbose ===="
+    info "==== Run framework tests verbose ===="
 
     cd "$BUILD_DIR"
     make documentation
 }
 
 function clean_all {
-    echo -e ""
-    echo -e "==== Clear all ===="
+    info "==== Clear all ===="
 
     cd "$SCRIPT_DIR"
     rm -rf ./output ./build
@@ -181,12 +185,12 @@ function run_task {
             clean_all
         ;;
         "none" )
-            echo -e "You need to specify task."
+            error "You need to specify task."
             print_help
             exit 1
         ;;
         *) 
-            echo -e "Unknown task '$1'"
+            error "Unknown task '$1'"
             exit 1
         ;;
     esac
@@ -215,12 +219,12 @@ while getopts "t:c:m:h" opt; do
             exit 0
         ;;
         \?)
-            echo -e "Invalid option -$OPTARG."
+            error "Invalid option -$OPTARG."
             print_help
             exit 1
         ;;
         :)
-            echo -e "Option -$OPTARG requires an argument."
+            error "Option -$OPTARG requires an argument."
             print_help
             exit 1
         ;;
