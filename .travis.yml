@@ -3,11 +3,19 @@ matrix:
     - os: linux
       dist: trusty
       env: COMPILLER=clang
+      env: TASK="clean,build,test"
       sudo: required
 
     - os: linux
       dist: trusty
       env: COMPILLER=gcc
+      env: TASK="clean,build,test"
+      sudo: required
+
+    - os: linux      
+      dist: trusty
+      env: COMPILLER=gcc
+      env: TASK="clean,coverage"
       sudo: required
 
 language: generic
@@ -27,4 +35,4 @@ before_install:
 install: true
 
 script:
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "export COMPILLER=$COMPILLER && /home/framework/travis_run.sh"
+  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "export COMPILLER=$COMPILLER TASK=$TASK && /home/framework/travis_run.sh"

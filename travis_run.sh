@@ -12,4 +12,4 @@ Xvfb :1 -screen 0 1024x768x16 &> xvfb.log &
 export DISPLAY=:1.0
 
 # Run build and tests
-./build.sh -c $COMPILLER -t clean,build,test
+./build.sh -c $COMPILLER -t $TASK

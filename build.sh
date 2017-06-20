@@ -35,7 +35,6 @@ function set_compiler {
 }
 
 # Task functions
-
 function configure {
     echo -e ""
     echo -e "==== Run configuration ===="
@@ -85,6 +84,28 @@ function run_tests_verbose {
     make run_all_tests_verbose
 }
 
+function coverage_scan {
+    echo -e ""
+    echo -e "==== Run test coverage scan ===="
+
+    mkdir -p "$BUILD_DIR"
+    cd "$BUILD_DIR"
+    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DENABLE_TEST_COVERAGE=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+
+    make -j4 all
+
+    make -j4 framework_tests
+
+    make run_all_tests
+
+    lcov --directory . --capture --output-file coverage.info                # capture coverage info
+    lcov --remove coverage.info '/usr/*' --output-file coverage.info        # filter out system
+    lcov --list coverage.info                                               # debug info
+
+    echo -e "==== Uploading report to CodeCov ===="
+    bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+}
+
 function build_documentation {
     echo -e ""
     echo -e "==== Run framework tests verbose ===="
@@ -114,6 +135,7 @@ function print_help {
     echo -e "\t\t install      : Install framework and tests."
     echo -e "\t\t test         : Run all tests."
     echo -e "\t\t test_verbose : Run all tests with verbose logging."
+    echo -e "\t\t coverage     : Run test coverage scan."
     echo -e "\t\t docs         : Build documentation."
     echo -e "\t\t clean        : Clean build results."
     echo -e ""
@@ -147,6 +169,9 @@ function run_task {
         ;;
         "test_verbose" )
             run_tests_verbose
+        ;;
+        "coverage" )
+            coverage_scan
         ;;
         "docs" )
             configure
