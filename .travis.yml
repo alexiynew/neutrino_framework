@@ -2,28 +2,31 @@ matrix:
   include:
     - os: linux
       dist: trusty
-      env: COMPILLER=clang
-      env: TASK="clean,build,test"
+      env: 
+        - COMPILLER=clang
+        - TASK="clean,build,test"
       sudo: required
 
     - os: linux
       dist: trusty
-      env: COMPILLER=gcc
-      env: TASK="clean,build,test"
+      env: 
+        - COMPILLER=clang
+        - TASK="clean,build,test"
       sudo: required
 
     - os: linux      
       dist: trusty
-      env: COMPILLER=gcc
-      env: TASK="clean,coverage"
+      env: 
+        - COMPILLER=gcc
+        - TASK="clean,coverage"
       sudo: required
 
 language: generic
 
 branches:
   only:
-  - master
-  - dev
+    - master
+    - dev
 
 services:
   - docker
