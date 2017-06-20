@@ -42,4 +42,4 @@ before_install:
 install: true
 
 script:
-  - /home/framework/travis_run.sh
+  - travis_run.sh
