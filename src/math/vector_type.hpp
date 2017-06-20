@@ -701,6 +701,7 @@ inline constexpr vector<4, T>::vector() noexcept
     , w{std::is_same<T, bool>::value ? T(0) : T(1)}
 {
 }
+
 template <typename T>
 inline constexpr vector<4, T>::vector(const vector<4, T>& other) noexcept = default;
 

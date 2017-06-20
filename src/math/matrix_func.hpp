@@ -21,9 +21,9 @@ inline TMat<C, R, T> crossComponentMultiplication(const TMat<C, R, T>& lhs, cons
 }
 
 template <unsigned int C, unsigned int R, typename T, template <unsigned int, typename> class TVec>
-inline matrix_impl::Matrix<C, R, T> outerProduct(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
+inline matrix<C, R, T> outerProduct(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
 {
-    return utils::type_creator<C>::template create<matrix_impl::Matrix<C, R, T>>(
+    return utils::type_creator<C>::template create<matrix<C, R, T>>(
     [&lhs, &rhs](unsigned int index) { return lhs * rhs[index]; });
 }
 
@@ -143,8 +143,8 @@ inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
 template <typename T, template <unsigned int, unsigned int, typename> class TMat>
 inline TMat<3, 3, T> affineInverse(const TMat<3, 3, T>& m)
 {
-    using TVec3 = typename TMat<3, 3, T>::ColumnType;
-    using TVec2 = typename TMat<2, 2, T>::ColumnType;
+    using TVec3 = typename TMat<3, 3, T>::column_type;
+    using TVec2 = typename TMat<2, 2, T>::column_type;
 
     TMat<2, 2, T> const inv = inverse(TMat<2, 2, T>(m));
 
@@ -155,8 +155,8 @@ inline TMat<3, 3, T> affineInverse(const TMat<3, 3, T>& m)
 template <typename T, template <unsigned int, unsigned int, typename> class TMat>
 inline TMat<4, 4, T> affineInverse(const TMat<4, 4, T>& m)
 {
-    using TVec4 = typename TMat<4, 4, T>::ColumnType;
-    using TVec3 = typename TMat<3, 3, T>::ColumnType;
+    using TVec4 = typename TMat<4, 4, T>::column_type;
+    using TVec3 = typename TMat<3, 3, T>::column_type;
 
     TMat<3, 3, T> const inv(inverse(TMat<3, 3, T>(m)));
 

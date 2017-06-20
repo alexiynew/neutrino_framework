@@ -10,11 +10,6 @@ namespace framework {
 
 namespace math {
 
-#pragma mark - Types declarations
-
-template <unsigned int C, unsigned int R, typename T>
-using Matrix = matrix_impl::Matrix<C, R, T>;
-
 #pragma mark - 2d transform
 
 /// Builds a translation 3 * 3 matrix created from a vector of 2 components.
@@ -22,9 +17,9 @@ using Matrix = matrix_impl::Matrix<C, R, T>;
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a translation vector.
 template <typename T>
-inline Matrix<3, 3, T> translate(const Matrix<3, 3, T>& m, const vector<2, T>& v)
+inline matrix<3, 3, T> translate(const matrix<3, 3, T>& m, const vector<2, T>& v)
 {
-    return Matrix<3, 3, T>(m[0], m[1], m[0] * v[0] + m[1] * v[1] + m[2]);
+    return matrix<3, 3, T>(m[0], m[1], m[0] * v[0] + m[1] * v[1] + m[2]);
 }
 
 /// Builds a rotation 3 * 3 matrix created from an angle.
@@ -32,12 +27,12 @@ inline Matrix<3, 3, T> translate(const Matrix<3, 3, T>& m, const vector<2, T>& v
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param angle Rotation angle expressed in radians.
 template <typename T, typename U>
-inline Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& m, const U angle)
+inline matrix<3, 3, T> rotate(const matrix<3, 3, T>& m, const U angle)
 {
     const T c = static_cast<T>(math::cos(angle));
     const T s = static_cast<T>(math::sin(angle));
 
-    return Matrix<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
+    return matrix<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
 }
 
 /// Builds a scale 3 * 3 matrix created from a vector of 2 components.
@@ -45,9 +40,9 @@ inline Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& m, const U angle)
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a scale vector.
 template <typename T>
-inline Matrix<3, 3, T> scale(const Matrix<3, 3, T>& m, const vector<2, T>& v)
+inline matrix<3, 3, T> scale(const matrix<3, 3, T>& m, const vector<2, T>& v)
 {
-    return Matrix<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
+    return matrix<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
 }
 
 /// Builds shear 3 * 3 matrix.
@@ -55,9 +50,9 @@ inline Matrix<3, 3, T> scale(const Matrix<3, 3, T>& m, const vector<2, T>& v)
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Shear factor.
 template <typename T>
-inline Matrix<3, 3, T> shear(const Matrix<3, 3, T>& m, const vector<2, T>& v)
+inline matrix<3, 3, T> shear(const matrix<3, 3, T>& m, const vector<2, T>& v)
 {
-    Matrix<3, 3, T> shear;
+    matrix<3, 3, T> shear;
     shear[0][1] = v.x;
     shear[1][0] = v.y;
 
@@ -68,10 +63,10 @@ inline Matrix<3, 3, T> shear(const Matrix<3, 3, T>& m, const vector<2, T>& v)
 
 /// Create a translation 4 * 4 matrix from 3 scalars.
 template <typename T>
-inline Matrix<4, 4, T> createTranslateMatrix(const vector<3, T>& v)
+inline matrix<4, 4, T> createTranslatematrix(const vector<3, T>& v)
 {
     // clang-format off
-    return Matrix<4, 4, T>(1,    0,    0,    0,
+    return matrix<4, 4, T>(1,    0,    0,    0,
                            0,    1,    0,    0,
                            0,    0,    1,    0,
                            v[0], v[1], v[2], 1);
@@ -81,7 +76,7 @@ inline Matrix<4, 4, T> createTranslateMatrix(const vector<3, T>& v)
 /// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle
 /// epressed in radians.
 template <typename T, typename U>
-inline Matrix<4, 4, T> createRotateMatrix(const vector<3, T>& v, const U angle)
+inline matrix<4, 4, T> createRotatematrix(const vector<3, T>& v, const U angle)
 {
     const T c = static_cast<T>(math::cos(angle));
     const T s = static_cast<T>(math::sin(angle));
@@ -97,7 +92,7 @@ inline Matrix<4, 4, T> createRotateMatrix(const vector<3, T>& v, const U angle)
     const auto zs = v[2] * s;
 
     // clang-format off
-    return matrix_impl::Matrix<4, 4, T>(
+    return matrix<4, 4, T>(
             v[0] * xc + c,  v[1] * xc + zs, v[2] * xc - ys, 0,
             v[0] * yc - zs, v[1] * yc + c,  v[2] * yc + xs, 0,
             v[0] * zc + ys, v[1] * zc - xs, v[2] * zc + c,  0,
@@ -107,10 +102,10 @@ inline Matrix<4, 4, T> createRotateMatrix(const vector<3, T>& v, const U angle)
 
 /// Create a scale 4 * 4 matrix from a vector of 3 components.
 template <typename T>
-inline Matrix<4, 4, T> createScaleMatrix(const vector<3, T>& v)
+inline matrix<4, 4, T> createScalematrix(const vector<3, T>& v)
 {
     // clang-format off
-    return Matrix<4, 4, T>(v[0], 0,    0,    0,
+    return matrix<4, 4, T>(v[0], 0,    0,    0,
                            0,    v[1], 0,    0,
                            0,    0,    v[2], 0,
                            0,    0,    0,    1);
@@ -122,9 +117,9 @@ inline Matrix<4, 4, T> createScaleMatrix(const vector<3, T>& v)
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a translation vector.
 template <typename T>
-inline Matrix<4, 4, T> translate(const Matrix<4, 4, T>& m, const vector<3, T>& v)
+inline matrix<4, 4, T> translate(const matrix<4, 4, T>& m, const vector<3, T>& v)
 {
-    return m * createTranslateMatrix(v);
+    return m * createTranslatematrix(v);
 }
 
 /// Builds a scale 4 * 4 matrix created from a vector of 3 components.
@@ -133,9 +128,9 @@ inline Matrix<4, 4, T> translate(const Matrix<4, 4, T>& m, const vector<3, T>& v
 /// @param v Ratio of scaling for each axis.
 /// @tparam T Value type used to build the matrix
 template <typename T>
-inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const vector<3, T>& v)
+inline matrix<4, 4, T> scale(const matrix<4, 4, T>& m, const vector<3, T>& v)
 {
-    return m * createScaleMatrix(v);
+    return m * createScalematrix(v);
 }
 
 /// Builds a rotation 4 * 4 matrix created from an axis vector and an angle.
@@ -146,9 +141,9 @@ inline Matrix<4, 4, T> scale(const Matrix<4, 4, T>& m, const vector<3, T>& v)
 /// @tparam T Value type used to build the matrix.
 /// @tparam U Value type of angle.
 template <typename T, typename U>
-inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const vector<3, T>& v, const U angle)
+inline matrix<4, 4, T> rotate(const matrix<4, 4, T>& m, const vector<3, T>& v, const U angle)
 {
-    return m * createRotateMatrix(v, angle);
+    return m * createRotatematrix(v, angle);
 }
 
 #pragma mark - Projection
@@ -164,7 +159,7 @@ inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const vector<3, T>& v, c
 /// @param far Far clipping plane.
 /// @tparam T Value type used to build the matrix.
 template <typename T>
-inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const T top, const T near, const T far)
+inline matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const T top, const T near, const T far)
 {
     const T width  = right - left;
     const T height = top - bottom;
@@ -175,7 +170,7 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
     ASSERT(math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
 
     // clang-format off
-    return Matrix<4, 4, T> (
+    return matrix<4, 4, T> (
             T(2) / width,            0,                        0,                     0,
             0,                       T(2) / height,            0,                     0,
             0,                       0,                        -T(2) / depth,         0,
@@ -192,7 +187,7 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
 /// @param top Top clipping plane.
 /// @tparam T Value type used to build the matrix
 template <typename T>
-inline Matrix<4, 4, T> ortho2D(const T left, const T right, const T bottom, const T top)
+inline matrix<4, 4, T> ortho2D(const T left, const T right, const T bottom, const T top)
 {
     // Right-handedness matrix is default.
     return ortho(left, right, bottom, top, T(1), -T(1));
@@ -208,7 +203,7 @@ inline Matrix<4, 4, T> ortho2D(const T left, const T right, const T bottom, cons
 /// @param far Distance to the far clipping plane (always positive).
 /// @tparam T Value type used to build the matrix
 template <typename T>
-inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near, const T far)
+inline matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near, const T far)
 {
     ASSERT(near > T(0));
     ASSERT(far > T(0));
@@ -222,7 +217,7 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
     ASSERT(math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
 
     // clang-format off
-    return Matrix<4, 4, T> (
+    return matrix<4, 4, T> (
         (T(2) * near) / width,  0,                       0,                            0,
         0,                      (T(2) * near) / height,  0,                            0,
         (right + left) / width, (top + bottom) / height, -(far + near) / depth,        -1,
@@ -244,7 +239,7 @@ inline Matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 /// (always positive).
 /// @tparam T Value type used to build the matrix.
 template <typename T>
-inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
+inline matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
 {
     ASSERT(near > T(0));
     ASSERT(far > T(0));
@@ -259,7 +254,7 @@ inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
     const T cotangent = T(1) / tangent;
 
     // clang-format off
-    return Matrix<4, 4, T> (
+    return matrix<4, 4, T> (
         cotangent / aspect, 0,         0,                            0,
         0,                  cotangent, 0,                            0,
         0,                  0,         -(far + near) / depth,        -1,
@@ -280,7 +275,7 @@ inline Matrix<4, 4, T> perspective(T fovy, T aspect, T near, T far)
 /// (always positive).
 /// @tparam T Value type used to build the matrix.
 template <typename T>
-inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
+inline matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
 {
     ASSERT(width > T(0));
     ASSERT(height > T(0));
@@ -302,7 +297,7 @@ inline Matrix<4, 4, T> perspectiveFov(T fov, T width, T height, T near, T far)
 /// plane (always positive).
 /// @tparam T Value type used to build the matrix
 template <typename T>
-inline Matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
+inline matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
 {
     ASSERT(near > T(0));
     ASSERT(math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
@@ -315,7 +310,7 @@ inline Matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
     const T epsilon   = std::numeric_limits<T>::epsilon();
 
     // clang-format off
-    return Matrix<4, 4, T> (
+    return matrix<4, 4, T> (
         cotangent / aspect, 0,         0,                       0,
         0,                  cotangent, 0,                       0,
         0,                  0,         epsilon - 1,             -1,
@@ -337,7 +332,7 @@ inline Matrix<4, 4, T> infinitePerspective(T fovy, T aspect, T near)
 /// @tparam U Value type of viewport.
 template <typename T, typename U>
 inline vector<3, T>
-project(const vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const vector<4, U>& viewport)
+project(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4, T>& proj, const vector<4, U>& viewport)
 {
     vector<4, T> tmp(v, T(1));
     tmp = model * tmp;
@@ -371,7 +366,7 @@ project(const vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, 
 /// @tparam U Value type of viewport.
 template <typename T, typename U>
 inline vector<3, T>
-unProject(const vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4, T>& proj, const vector<4, U>& viewport)
+unProject(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4, T>& proj, const vector<4, U>& viewport)
 {
     const T x      = static_cast<T>(viewport[0]);
     const T y      = static_cast<T>(viewport[1]);
@@ -381,7 +376,7 @@ unProject(const vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4
     ASSERT(math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
     ASSERT(math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
 
-    const Matrix<4, 4, T> inv = inverse(proj * model);
+    const matrix<4, 4, T> inv = inverse(proj * model);
 
     vector<4, T> tmp(v, T(1));
     tmp.x = (tmp.x - x) / width;
@@ -406,7 +401,7 @@ unProject(const vector<3, T>& v, const Matrix<4, 4, T>& model, const Matrix<4, 4
 /// @tparam T Native type used for the computation.
 /// @tparam U Value type of viewport.
 template <typename T, typename U>
-inline Matrix<4, 4, T> pickMatrix(const vector<2, T>& center, const vector<2, T>& delta, const vector<4, U>& viewport)
+inline matrix<4, 4, T> pickmatrix(const vector<2, T>& center, const vector<2, T>& delta, const vector<4, U>& viewport)
 {
     ASSERT(delta.x > T(0));
     ASSERT(delta.y > T(0));
@@ -422,7 +417,7 @@ inline Matrix<4, 4, T> pickMatrix(const vector<2, T>& center, const vector<2, T>
     const vector<3, T> scale_tmp = {width / delta.x, height / delta.y, T(1)};
 
     // Translate and scale the picked region to the entire window
-    const Matrix<4, 4, T> result = createTranslateMatrix(translate_tmp);
+    const matrix<4, 4, T> result = createTranslatematrix(translate_tmp);
     return scale(result, scale_tmp);
 }
 
@@ -432,14 +427,14 @@ inline Matrix<4, 4, T> pickMatrix(const vector<2, T>& center, const vector<2, T>
 /// @param center Position where the camera is looking at
 /// @param up Normalized up vector, how the camera is oriented. Typically (0, 0, 1)
 template <typename T>
-inline Matrix<4, 4, T> lookAt(const vector<3, T>& eye, const vector<3, T>& center, const vector<3, T>& up)
+inline matrix<4, 4, T> lookAt(const vector<3, T>& eye, const vector<3, T>& center, const vector<3, T>& up)
 {
     const vector<3, T> forward = normalize(center - eye);
     const vector<3, T> side    = normalize(cross(forward, up));
     const vector<3, T> new_up  = cross(side, forward);
 
     // clang-format off
-    return Matrix<4, 4, T> {
+    return matrix<4, 4, T> {
         side.x,          new_up.x,          -forward.x,        0,
         side.y,          new_up.y,          -forward.y,        0,
         side.z,          new_up.z,          -forward.z,        0,

@@ -184,7 +184,7 @@ inline bool almost_equal_details(const vector<N, T>& a, const vector<N, T>& b, i
 }
 
 template <unsigned int C, unsigned int R, typename T>
-inline bool almost_equal_details(const matrix_impl::Matrix<C, R, T>& a, const matrix_impl::Matrix<C, R, T>& b, int ulp = 0)
+inline bool almost_equal_details(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int ulp = 0)
 {
     for (unsigned int i = 0; i < C; ++i) {
         if (!almost_equal_details(a[i], b[i], ulp)) {
@@ -1145,7 +1145,7 @@ inline bool almost_equal(const vector<N, T>& a, const vector<N, T>& b, int ulp =
  * @return `true` if provided matrices are equal, `false` otherwise.
  */
 template <unsigned int C, unsigned int R, typename T>
-inline bool almost_equal(const matrix_impl::Matrix<C, R, T>& a, const matrix_impl::Matrix<C, R, T>& b, int ulp = 0)
+inline bool almost_equal(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int ulp = 0)
 {
     return common_functions_details::almost_equal_details(a, b, ulp);
 }
