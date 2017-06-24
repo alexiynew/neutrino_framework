@@ -243,109 +243,109 @@ private:
     void almost_equal_matrix_function()
     {
         // clang-format off
-        const Matrix4x4F m44f = {
+        const matrix4x4f m44f = {
             1, 2, 3, 4,
             4, 1, 2, 3,
             3, 4, 1, 2,
             2, 3, 4, 1
         };
 
-        const Matrix4x3F m43f = {
+        const matrix4x3f m43f = {
             1, 2, 3, 3,
             1, 2, 2, 3,
             1, 1, 2, 3
         };
 
-        const Matrix4x2F m42f = {
+        const matrix4x2f m42f = {
             1, 2, 2, 1,
             1, 2, 2, 1
         };
 
-        const Matrix3x4F m34f = {
+        const matrix3x4f m34f = {
             1, 2, 3,
             4, 4, 1,
             2, 3, 3,
             4, 1, 2
         };
 
-        const Matrix3x3F m33f = {
+        const matrix3x3f m33f = {
             1, 2, 3,
             3, 1, 2,
             2, 3, 1
         };
 
-        const Matrix3x2F m32f = {
+        const matrix3x2f m32f = {
             1, 2, 2,
             1, 1, 2};
 
-        const Matrix2x4F m24f = {
+        const matrix2x4f m24f = {
             1, 2,
             3, 4,
             4, 1,
             2, 3
         };
 
-        const Matrix2x3F m23f = {
+        const matrix2x3f m23f = {
             1, 2,
             3, 4,
             1, 2
         };
 
-        const Matrix2x2F m22f = {
+        const matrix2x2f m22f = {
             1, 2,
             4, 1
         };
 
-        TEST_ASSERT(almost_equal(m44f, Matrix4x4F{
+        TEST_ASSERT(almost_equal(m44f, matrix4x4f{
             1, 2, 3, 4,
             4, 1, 2, 3,
             3, 4, 1, 2,
             2, 3, 4, 1
         }), "Almost_equal function failed.");
 
-        TEST_ASSERT(almost_equal(m43f, Matrix4x3F{
+        TEST_ASSERT(almost_equal(m43f, matrix4x3f{
             1, 2, 3, 3,
             1, 2, 2, 3,
             1, 1, 2, 3
         }), "Almost_equal function failed.");
 
-        TEST_ASSERT(almost_equal(m42f, Matrix4x2F{
+        TEST_ASSERT(almost_equal(m42f, matrix4x2f{
             1, 2, 2, 1,
             1, 2, 2, 1
         }), "Almost_equal function failed.");
 
-        TEST_ASSERT(almost_equal(m34f, Matrix3x4F{
+        TEST_ASSERT(almost_equal(m34f, matrix3x4f{
             1, 2, 3,
             4, 4, 1,
             2, 3, 3,
             4, 1, 2
         }), "Almost_equal function failed.");
 
-        TEST_ASSERT(almost_equal(m33f, Matrix3x3F{
+        TEST_ASSERT(almost_equal(m33f, matrix3x3f{
             1, 2, 3,
             3, 1, 2,
             2, 3, 1
         }), "Almost_equal function failed.");
 
-        TEST_ASSERT(almost_equal(m32f, Matrix3x2F{
+        TEST_ASSERT(almost_equal(m32f, matrix3x2f{
             1, 2, 2,
             1, 1, 2
         }), "Almost_equal function failed.");
 
-        TEST_ASSERT(almost_equal(m24f, Matrix2x4F{
+        TEST_ASSERT(almost_equal(m24f, matrix2x4f{
             1, 2,
             3, 4,
             4, 1,
             2, 3
         }), "Almost_equal function failed.");
 
-        TEST_ASSERT(almost_equal(m23f, Matrix2x3F{
+        TEST_ASSERT(almost_equal(m23f, matrix2x3f{
             1, 2,
             3, 4,
             1, 2
         }), "Almost_equal function failed.");
 
-        TEST_ASSERT(almost_equal(m22f, Matrix2x2F{
+        TEST_ASSERT(almost_equal(m22f, matrix2x2f{
             1, 2,
             4, 1
         }), "Almost_equal function failed.");

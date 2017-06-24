@@ -63,7 +63,7 @@ inline matrix<3, 3, T> shear(const matrix<3, 3, T>& m, const vector<2, T>& v)
 
 /// Create a translation 4 * 4 matrix from 3 scalars.
 template <typename T>
-inline matrix<4, 4, T> createTranslatematrix(const vector<3, T>& v)
+inline matrix<4, 4, T> createTranslateMatrix(const vector<3, T>& v)
 {
     // clang-format off
     return matrix<4, 4, T>(1,    0,    0,    0,
@@ -76,7 +76,7 @@ inline matrix<4, 4, T> createTranslatematrix(const vector<3, T>& v)
 /// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle
 /// epressed in radians.
 template <typename T, typename U>
-inline matrix<4, 4, T> createRotatematrix(const vector<3, T>& v, const U angle)
+inline matrix<4, 4, T> createRotateMatrix(const vector<3, T>& v, const U angle)
 {
     const T c = static_cast<T>(math::cos(angle));
     const T s = static_cast<T>(math::sin(angle));
@@ -102,7 +102,7 @@ inline matrix<4, 4, T> createRotatematrix(const vector<3, T>& v, const U angle)
 
 /// Create a scale 4 * 4 matrix from a vector of 3 components.
 template <typename T>
-inline matrix<4, 4, T> createScalematrix(const vector<3, T>& v)
+inline matrix<4, 4, T> createScaleMatrix(const vector<3, T>& v)
 {
     // clang-format off
     return matrix<4, 4, T>(v[0], 0,    0,    0,
@@ -119,7 +119,7 @@ inline matrix<4, 4, T> createScalematrix(const vector<3, T>& v)
 template <typename T>
 inline matrix<4, 4, T> translate(const matrix<4, 4, T>& m, const vector<3, T>& v)
 {
-    return m * createTranslatematrix(v);
+    return m * createTranslateMatrix(v);
 }
 
 /// Builds a scale 4 * 4 matrix created from a vector of 3 components.
@@ -130,7 +130,7 @@ inline matrix<4, 4, T> translate(const matrix<4, 4, T>& m, const vector<3, T>& v
 template <typename T>
 inline matrix<4, 4, T> scale(const matrix<4, 4, T>& m, const vector<3, T>& v)
 {
-    return m * createScalematrix(v);
+    return m * createScaleMatrix(v);
 }
 
 /// Builds a rotation 4 * 4 matrix created from an axis vector and an angle.
@@ -143,7 +143,7 @@ inline matrix<4, 4, T> scale(const matrix<4, 4, T>& m, const vector<3, T>& v)
 template <typename T, typename U>
 inline matrix<4, 4, T> rotate(const matrix<4, 4, T>& m, const vector<3, T>& v, const U angle)
 {
-    return m * createRotatematrix(v, angle);
+    return m * createRotateMatrix(v, angle);
 }
 
 #pragma mark - Projection
@@ -401,7 +401,7 @@ unProject(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4
 /// @tparam T Native type used for the computation.
 /// @tparam U Value type of viewport.
 template <typename T, typename U>
-inline matrix<4, 4, T> pickmatrix(const vector<2, T>& center, const vector<2, T>& delta, const vector<4, U>& viewport)
+inline matrix<4, 4, T> pickMatrix(const vector<2, T>& center, const vector<2, T>& delta, const vector<4, U>& viewport)
 {
     ASSERT(delta.x > T(0));
     ASSERT(delta.y > T(0));
@@ -417,7 +417,7 @@ inline matrix<4, 4, T> pickmatrix(const vector<2, T>& center, const vector<2, T>
     const vector<3, T> scale_tmp = {width / delta.x, height / delta.y, T(1)};
 
     // Translate and scale the picked region to the entire window
-    const matrix<4, 4, T> result = createTranslatematrix(translate_tmp);
+    const matrix<4, 4, T> result = createTranslateMatrix(translate_tmp);
     return scale(result, scale_tmp);
 }
 

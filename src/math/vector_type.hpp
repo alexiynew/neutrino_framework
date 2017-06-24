@@ -29,10 +29,10 @@ struct cast_to
     /**
      * @brief Casts value to a specified type.
      */
-    template <typename U>
-    inline static constexpr T from(const U& value)
+    template <typename U, typename R = typename std::enable_if<std::is_arithmetic<U>::value, T>::type>
+    inline static constexpr R from(const U& value)
     {
-        return static_cast<T>(value);
+        return static_cast<R>(value);
     }
 };
 
@@ -42,8 +42,8 @@ struct cast_to<bool>
     /**
      * @brief Casts value to a specified type.
      */
-    template <typename U>
-    inline static constexpr bool from(const U& value)
+    template <typename U, typename R = typename std::enable_if<std::is_arithmetic<U>::value, bool>::type>
+    inline static constexpr R from(const U& value)
     {
         return std::not_equal_to<U>()(value, U{0});
     }
@@ -1087,19 +1087,6 @@ inline const typename vector<2, T>::value_type* vector<2, T>::data() const noexc
  */
 
 /**
- * @brief Unary minus operator.
- *
- * @param vector Vector to invert.
- *
- * @return Inverted version of vector.
- */
-template <unsigned int N, typename T>
-inline vector<N, T> operator-(vector<N, T> vector)
-{
-    return vector *= -T(1);
-}
-
-/**
  * @brief Unary plus operator.
  *
  * @param vector Vector to return.
@@ -1110,6 +1097,19 @@ template <unsigned int N, typename T>
 inline vector<N, T> operator+(const vector<N, T>& vector)
 {
     return vector;
+}
+
+/**
+ * @brief Unary minus operator.
+ *
+ * @param vector Vector to invert.
+ *
+ * @return Inverted version of vector.
+ */
+template <unsigned int N, typename T>
+inline vector<N, T> operator-(vector<N, T> vector)
+{
+    return vector *= -T{1};
 }
 
 /**
@@ -1192,7 +1192,7 @@ inline vector<N, T>& operator/=(vector<N, T>& lhs, const vector<N, U>& rhs)
  *
  * @return Reference to sum of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U>
+template <unsigned int N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
 inline vector<N, T>& operator+=(vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
@@ -1210,7 +1210,7 @@ inline vector<N, T>& operator+=(vector<N, T>& lhs, const U& rhs)
  *
  * @return Reference to difference of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U>
+template <unsigned int N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
 inline vector<N, T>& operator-=(vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
@@ -1228,7 +1228,7 @@ inline vector<N, T>& operator-=(vector<N, T>& lhs, const U& rhs)
  *
  * @return Reference to product of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U>
+template <unsigned int N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
 inline vector<N, T>& operator*=(vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {
@@ -1246,7 +1246,7 @@ inline vector<N, T>& operator*=(vector<N, T>& lhs, const U& rhs)
  *
  * @return Reference to quotient of vector and scalar value.
  */
-template <unsigned int N, typename T, typename U>
+template <unsigned int N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
 inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < N; ++i) {

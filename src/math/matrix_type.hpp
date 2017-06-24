@@ -370,8 +370,82 @@ struct matrix<4, 4, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<4, 4, value_type>& operator=(const matrix<4, 4, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[4];
 };
 
 /**
@@ -604,8 +678,82 @@ struct matrix<4, 3, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<4, 3, value_type>& operator=(const matrix<4, 3, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[4];
 };
 
 /**
@@ -807,8 +955,82 @@ struct matrix<4, 2, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<4, 2, value_type>& operator=(const matrix<4, 2, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[4];
 };
 
 /**
@@ -1099,8 +1321,82 @@ struct matrix<3, 4, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<3, 4, value_type>& operator=(const matrix<3, 4, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[3];
 };
 
 /**
@@ -1313,8 +1609,82 @@ struct matrix<3, 3, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<3, 3, value_type>& operator=(const matrix<3, 3, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[3];
 };
 
 /**
@@ -1502,8 +1872,82 @@ struct matrix<3, 2, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<3, 2, value_type>& operator=(const matrix<3, 2, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[3];
 };
 
 
@@ -1762,8 +2206,82 @@ struct matrix<2, 4, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<2, 4, value_type>& operator=(const matrix<2, 4, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[2];
 };
 
 /**
@@ -1962,8 +2480,82 @@ struct matrix<2, 3, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<2, 3, value_type>& operator=(const matrix<2, 3, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[2];
 };
 
 /**
@@ -2136,8 +2728,82 @@ struct matrix<2, 2, T> final
     template <typename U>
     explicit constexpr matrix(const matrix<2, 2, U>& other);
 
+    /**
+     * @brief Default assignment operator.
+     *
+     * @param other Matrix to copy from.
+     *
+     * @return Reference to itself.
+     */
+    matrix<2, 2, value_type>& operator=(const matrix<2, 2, value_type>& other) noexcept;
+
+    /**
+     * @brief Access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type& operator[](unsigned int index);
+
+    /**
+     * @brief Const access operator.
+     *
+     * @param index Index of column.
+     *
+     * @return Reference to constant column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    const column_type& operator[](unsigned int index) const;
+
+    /**
+     * @brief Size of matrix.
+     *
+     * @return Count of columns in matrix.
+     */
+    constexpr unsigned int size() const noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    value_type* data() noexcept;
+
+    /**
+     * @brief Provides direct access to internal content.
+     *
+     * @return A pointer to the x component of first column.
+     */
+    const value_type* data() const noexcept;
+
+    /**
+     * @brief Provides access to columns of the matrix.
+     *
+     * @param index Index of column.
+     *
+     * @return Copy of column at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    column_type column(unsigned int index) const noexcept;
+
+    /**
+     * @brief Provides access to rows of the matrix.
+     *
+     * @param index Index of row.
+     *
+     * @return Copy of row at index.
+     *
+     * @warning There is no size check. May cause memory access error.
+     */
+    row_type row(unsigned int index) const noexcept;
+
 private:
-    column_type data[4];
+    column_type m_data[2];
 };
 /**
  * @}
@@ -2162,10 +2828,10 @@ inline constexpr matrix<4, 4, T>::matrix(const T& value00, const T& value01, con
                                          const T& value10, const T& value11, const T& value12, const T& value13,
                                          const T& value20, const T& value21, const T& value22, const T& value23,
                                          const T& value30, const T& value31, const T& value32, const T& value33)
-    : data{column_type(value00, value01, value02, value03),
-           column_type(value10, value11, value12, value13),
-           column_type(value20, value21, value22, value23),
-           column_type(value30, value31, value32, value33)}
+    : m_data{column_type(value00, value01, value02, value03),
+             column_type(value10, value11, value12, value13),
+             column_type(value20, value21, value22, value23),
+             column_type(value30, value31, value32, value33)}
 {
 }
 // clang-format on
@@ -2173,10 +2839,10 @@ inline constexpr matrix<4, 4, T>::matrix(const T& value00, const T& value01, con
 // clang-format off
 template <typename T>
 inline constexpr matrix<4, 4, T>::matrix(const T& value) noexcept
-    : data{column_type(value, 0, 0, 0),
-           column_type(0, value, 0, 0),
-           column_type(0, 0, value, 0),
-           column_type(0, 0, 0, value)}
+    : m_data{column_type(value, 0, 0, 0),
+             column_type(0, value, 0, 0),
+             column_type(0, 0, value, 0),
+             column_type(0, 0, 0, value)}
 {
 }
 // clang-format on
@@ -2184,7 +2850,7 @@ inline constexpr matrix<4, 4, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8), column_type(pointer + 12)}
+    : m_data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8), column_type(pointer + 12)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -2195,7 +2861,7 @@ inline constexpr matrix<4, 4, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U1>& column1,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
-    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
 {
 }
 
@@ -2209,10 +2875,10 @@ inline constexpr matrix<4, 4, T>::matrix(const vector<3, U0>& vector0, const W0&
                                          const vector<3, U1>& vector1, const W1& w1,
                                          const vector<3, U2>& vector2, const W2& w2,
                                          const vector<3, U3>& vector3, const W3& w3)
-    : data{column_type(vector0, w0),
-           column_type(vector1, w1),
-           column_type(vector2, w2),
-           column_type(vector3, w3)}
+    : m_data{column_type(vector0, w0),
+             column_type(vector1, w1),
+             column_type(vector2, w2),
+             column_type(vector3, w3)}
 {
 }
 // clang-format on
@@ -2227,10 +2893,10 @@ inline constexpr matrix<4, 4, T>::matrix(const X0& x0, const vector<3, U0>& vect
                                          const X1& x1, const vector<3, U1>& vector1,
                                          const X2& x2, const vector<3, U2>& vector2,
                                          const X3& x3, const vector<3, U3>& vector3)
-    : data{column_type(x0, vector0),
-           column_type(x1, vector1),
-           column_type(x2, vector2),
-           column_type(x3, vector3)}
+    : m_data{column_type(x0, vector0),
+             column_type(x1, vector1),
+             column_type(x2, vector2),
+             column_type(x3, vector3)}
 {
 }
 // clang-format on
@@ -2245,10 +2911,10 @@ inline constexpr matrix<4, 4, T>::matrix(const vector<2, U00>& vector00, const v
                                          const vector<2, U10>& vector10, const vector<2, U11>& vector11,
                                          const vector<2, U20>& vector20, const vector<2, U21>& vector21,
                                          const vector<2, U30>& vector30, const vector<2, U31>& vector31)
-    : data{column_type(vector00, vector01),
-           column_type(vector10, vector11),
-           column_type(vector20, vector21),
-           column_type(vector30, vector31)}
+    : m_data{column_type(vector00, vector01),
+             column_type(vector10, vector11),
+             column_type(vector20, vector21),
+             column_type(vector30, vector31)}
 {
 }
 // clang-format on
@@ -2263,10 +2929,10 @@ inline constexpr matrix<4, 4, T>::matrix(const vector<2, U0>& vector0, const Z0&
                                          const vector<2, U1>& vector1, const Z1& z1, const W1& w1,
                                          const vector<2, U2>& vector2, const Z2& z2, const W2& w2,
                                          const vector<2, U3>& vector3, const Z3& z3, const W3& w3)
-    : data{column_type(vector0, z0, w0),
-           column_type(vector1, z1, w1),
-           column_type(vector2, z2, w2),
-           column_type(vector3, z3, w3)}
+    : m_data{column_type(vector0, z0, w0),
+             column_type(vector1, z1, w1),
+             column_type(vector2, z2, w2),
+             column_type(vector3, z3, w3)}
 {
 }
 // clang-format on
@@ -2281,10 +2947,10 @@ inline constexpr matrix<4, 4, T>::matrix(const X0& x0, const vector<2, U0>& vect
                                          const X1& x1, const vector<2, U1>& vector1, const W1& w1,
                                          const X2& x2, const vector<2, U2>& vector2, const W2& w2,
                                          const X3& x3, const vector<2, U3>& vector3, const W3& w3)
-    : data{column_type(x0, vector0, w0),
-           column_type(x1, vector1, w1),
-           column_type(x2, vector2, w2),
-           column_type(x3, vector3, w3)}
+    : m_data{column_type(x0, vector0, w0),
+             column_type(x1, vector1, w1),
+             column_type(x2, vector2, w2),
+             column_type(x3, vector3, w3)}
 {
 }
 // clang-format on
@@ -2299,10 +2965,10 @@ inline constexpr matrix<4, 4, T>::matrix(const X0& x0, const Y0& y0, const vecto
                  const X1& x1, const Y1& y1, const vector<2, U1>& vector1,
                  const X2& x2, const Y2& y2, const vector<2, U2>& vector2,
                  const X3& x3, const Y3& y3, const vector<2, U3>& vector3)
-    : data{column_type(x0, y0, vector0),
-           column_type(x1, y1, vector1),
-           column_type(x2, y2, vector2),
-           column_type(x3, y3, vector3)}
+    : m_data{column_type(x0, y0, vector0),
+             column_type(x1, y1, vector1),
+             column_type(x2, y2, vector2),
+             column_type(x3, y3, vector3)}
 {
 }
 // clang-format on
@@ -2310,64 +2976,130 @@ inline constexpr matrix<4, 4, T>::matrix(const X0& x0, const Y0& y0, const vecto
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0), column_type(other[3], 1)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0), column_type(other[3], 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0), column_type(other[3], 0, 1)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0), column_type(other[3], 0, 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0, 1)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0, 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0), column_type(0, 0, 0, 1)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0), column_type(0, 0, 0, 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0), column_type(0, 0, 0, 1)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0), column_type(0, 0, 0, 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1, 0), column_type(0, 0, 0, 1)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1, 0), column_type(0, 0, 0, 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1, 0), column_type(0, 0, 0, 1)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1, 0), column_type(0, 0, 0, 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(0, 0, 1, 0), column_type(0, 0, 0, 1)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(0, 0, 1, 0), column_type(0, 0, 0, 1)}
 {
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<4, 4, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<4, 4, T>& matrix<4, 4, T>::operator=(const matrix<4, 4, T>& other) noexcept
+{
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    m_data[2] = other[2];
+    m_data[3] = other[3];
+    return *this;
+}
+
+template <typename T>
+inline typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<4, 4, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<4, 4, T>::size() const noexcept
+{
+    return 4;
+}
+
+template <typename T>
+inline typename matrix<4, 4, T>::value_type* matrix<4, 4, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<4, 4, T>::value_type* matrix<4, 4, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<4, 4, T>::column_type matrix<4, 4, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<4, 4, T>::row_type matrix<4, 4, T>::row(unsigned int index) const noexcept
+{
+    return matrix<4, 4, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
 /**
  * @}
@@ -2392,10 +3124,10 @@ inline constexpr matrix<4, 3, T>::matrix(const T& value00, const T& value01, con
                                          const T& value10, const T& value11, const T& value12,
                                          const T& value20, const T& value21, const T& value22,
                                          const T& value30, const T& value31, const T& value32)
-    : data{column_type(value00, value01, value02),
-           column_type(value10, value11, value12),
-           column_type(value20, value21, value22),
-           column_type(value30, value31, value32)}
+    : m_data{column_type(value00, value01, value02),
+             column_type(value10, value11, value12),
+             column_type(value20, value21, value22),
+             column_type(value30, value31, value32)}
 {
 }
 // clang-format on
@@ -2403,10 +3135,10 @@ inline constexpr matrix<4, 3, T>::matrix(const T& value00, const T& value01, con
 // clang-format off
 template <typename T>
 inline constexpr matrix<4, 3, T>::matrix(const T& value) noexcept
-    : data{column_type(value, 0, 0),
-           column_type(0, value, 0),
-           column_type(0, 0, value),
-           column_type(0, 0, 0)}
+    : m_data{column_type(value, 0, 0),
+             column_type(0, value, 0),
+             column_type(0, 0, value),
+             column_type(0, 0, 0)}
 {
 }
 // clang-format on
@@ -2414,7 +3146,7 @@ inline constexpr matrix<4, 3, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6), column_type(pointer + 9)}
+    : m_data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6), column_type(pointer + 9)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -2425,7 +3157,7 @@ inline constexpr matrix<4, 3, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U1>& column1,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
-    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
 {
 }
 
@@ -2435,7 +3167,7 @@ inline constexpr matrix<4, 3, T>::matrix(const vector<3, U0>& column0,
                                          const vector<3, U1>& column1,
                                          const vector<3, U2>& column2,
                                          const vector<3, U3>& column3)
-    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
 {
 }
 
@@ -2449,10 +3181,10 @@ inline constexpr matrix<4, 3, T>::matrix(const vector<2, U0>& vector0, const Z0&
                                          const vector<2, U1>& vector1, const Z1& z1,
                                          const vector<2, U2>& vector2, const Z2& z2,
                                          const vector<2, U3>& vector3, const Z3& z3)
-    : data{column_type(vector0, z0),
-           column_type(vector1, z1),
-           column_type(vector2, z2),
-           column_type(vector3, z3)}
+    : m_data{column_type(vector0, z0),
+             column_type(vector1, z1),
+             column_type(vector2, z2),
+             column_type(vector3, z3)}
 {
 }
 // clang-format on
@@ -2467,10 +3199,10 @@ inline constexpr matrix<4, 3, T>::matrix(const X0& x0, const vector<2, U0>& vect
                                          const X1& x1, const vector<2, U1>& vector1,
                                          const X2& x2, const vector<2, U2>& vector2,
                                          const X3& x3, const vector<2, U3>& vector3)
-    : data{column_type(x0, vector0),
-           column_type(x1, vector1),
-           column_type(x2, vector2),
-           column_type(x3, vector3)}
+    : m_data{column_type(x0, vector0),
+             column_type(x1, vector1),
+             column_type(x2, vector2),
+             column_type(x3, vector3)}
 {
 }
 // clang-format on
@@ -2478,64 +3210,130 @@ inline constexpr matrix<4, 3, T>::matrix(const X0& x0, const vector<2, U0>& vect
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1), column_type(other[3], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1), column_type(other[3], 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1), column_type(0, 0, 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1), column_type(0, 0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1), column_type(0, 0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1), column_type(0, 0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1), column_type(0, 0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1), column_type(0, 0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1), column_type(0, 0, 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1), column_type(0, 0, 0)}
 {
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<4, 3, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<4, 3, T>& matrix<4, 3, T>::operator=(const matrix<4, 3, T>& other) noexcept
+{
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    m_data[2] = other[2];
+    m_data[3] = other[3];
+    return *this;
+}
+
+template <typename T>
+inline typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<4, 3, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<4, 3, T>::size() const noexcept
+{
+    return 4;
+}
+
+template <typename T>
+inline typename matrix<4, 3, T>::value_type* matrix<4, 3, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<4, 3, T>::value_type* matrix<4, 3, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<4, 3, T>::column_type matrix<4, 3, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<4, 3, T>::row_type matrix<4, 3, T>::row(unsigned int index) const noexcept
+{
+    return matrix<4, 3, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
 /**
  * @}
@@ -2560,10 +3358,10 @@ inline constexpr matrix<4, 2, T>::matrix(const T& value00, const T& value01,
                                          const T& value10, const T& value11,
                                          const T& value20, const T& value21,
                                          const T& value30, const T& value31)
-    : data{column_type(value00, value01),
-           column_type(value10, value11),
-           column_type(value20, value21),
-           column_type(value30, value31)}
+    : m_data{column_type(value00, value01),
+             column_type(value10, value11),
+             column_type(value20, value21),
+             column_type(value30, value31)}
 {
 }
 // clang-format on
@@ -2571,10 +3369,10 @@ inline constexpr matrix<4, 2, T>::matrix(const T& value00, const T& value01,
 // clang-format off
 template <typename T>
 inline constexpr matrix<4, 2, T>::matrix(const T& value) noexcept
-    : data{column_type(value, 0),
-           column_type(0, value),
-           column_type(0, 0),
-           column_type(0, 0)}
+    : m_data{column_type(value, 0),
+             column_type(0, value),
+             column_type(0, 0),
+             column_type(0, 0)}
 {
 }
 // clang-format on
@@ -2582,7 +3380,7 @@ inline constexpr matrix<4, 2, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4), column_type(pointer + 6)}
+    : m_data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4), column_type(pointer + 6)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -2593,7 +3391,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U1>& column1,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
-    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
 {
 }
 
@@ -2603,7 +3401,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<3, U0>& column0,
                                          const vector<3, U1>& column1,
                                          const vector<3, U2>& column2,
                                          const vector<3, U3>& column3)
-    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
 {
 }
 
@@ -2613,71 +3411,137 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<2, U0>& column0,
                                          const vector<2, U1>& column1,
                                          const vector<2, U2>& column2,
                                          const vector<2, U3>& column3)
-    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
 {
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<4, 2, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<4, 2, T>& matrix<4, 2, T>::operator=(const matrix<4, 2, T>& other) noexcept
+{
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    m_data[2] = other[2];
+    m_data[3] = other[3];
+    return *this;
+}
+
+template <typename T>
+inline typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<4, 2, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<4, 2, T>::size() const noexcept
+{
+    return 4;
+}
+
+template <typename T>
+inline typename matrix<4, 2, T>::value_type* matrix<4, 2, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<4, 2, T>::value_type* matrix<4, 2, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<4, 2, T>::column_type matrix<4, 2, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<4, 2, T>::row_type matrix<4, 2, T>::row(unsigned int index) const noexcept
+{
+    return matrix<4, 2, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
 /**
  * @}
@@ -2701,9 +3565,9 @@ template <typename T>
 inline constexpr matrix<3, 4, T>::matrix(const T& value00, const T& value01, const T& value02, const T& value03,
                                          const T& value10, const T& value11, const T& value12, const T& value13,
                                          const T& value20, const T& value21, const T& value22, const T& value23)
-    : data{column_type(value00, value01, value02, value03),
-           column_type(value10, value11, value12, value13),
-           column_type(value20, value21, value22, value23)}
+    : m_data{column_type(value00, value01, value02, value03),
+             column_type(value10, value11, value12, value13),
+             column_type(value20, value21, value22, value23)}
 {
 }
 // clang-format on
@@ -2711,9 +3575,9 @@ inline constexpr matrix<3, 4, T>::matrix(const T& value00, const T& value01, con
 // clang-format off
 template <typename T>
 inline constexpr matrix<3, 4, T>::matrix(const T& value) noexcept
-    : data{column_type(value, 0, 0, 0),
-           column_type(0, value, 0, 0),
-           column_type(0, 0, value, 0)}
+    : m_data{column_type(value, 0, 0, 0),
+             column_type(0, value, 0, 0),
+             column_type(0, 0, value, 0)}
 {
 }
 // clang-format on
@@ -2721,7 +3585,7 @@ inline constexpr matrix<3, 4, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8)}
+    : m_data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -2732,7 +3596,7 @@ template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 4, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U1>& column1,
                                          const vector<4, U2>& column2)
-    : data{column_type(column0), column_type(column1), column_type(column2)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2)}
 {
 }
 // clang-format on
@@ -2745,9 +3609,9 @@ template <typename U0, typename W0,
 inline constexpr matrix<3, 4, T>::matrix(const vector<3, U0>& vector0, const W0& w0,
                                          const vector<3, U1>& vector1, const W1& w1,
                                          const vector<3, U2>& vector2, const W2& w2)
-    : data{column_type(vector0, w0),
-           column_type(vector1, w1),
-           column_type(vector2, w2)}
+    : m_data{column_type(vector0, w0),
+             column_type(vector1, w1),
+             column_type(vector2, w2)}
 {
 }
 // clang-format on
@@ -2760,9 +3624,9 @@ template <typename X0, typename U0,
 inline constexpr matrix<3, 4, T>::matrix(const X0& x0, const vector<3, U0>& vector0,
                                          const X1& x1, const vector<3, U1>& vector1,
                                          const X2& x2, const vector<3, U2>& vector2)
-    : data{column_type(x0, vector0),
-           column_type(x1, vector1),
-           column_type(x2, vector2)}
+    : m_data{column_type(x0, vector0),
+             column_type(x1, vector1),
+             column_type(x2, vector2)}
 {
 }
 // clang-format on
@@ -2775,9 +3639,9 @@ template <typename U00, typename U01,
 inline constexpr matrix<3, 4, T>::matrix(const vector<2, U00>& vector00, const vector<2, U01>& vector01,
                                          const vector<2, U10>& vector10, const vector<2, U11>& vector11,
                                          const vector<2, U20>& vector20, const vector<2, U21>& vector21)
-    : data{column_type(vector00, vector01),
-           column_type(vector10, vector11),
-           column_type(vector20, vector21)}
+    : m_data{column_type(vector00, vector01),
+             column_type(vector10, vector11),
+             column_type(vector20, vector21)}
 {
 }
 // clang-format on
@@ -2790,9 +3654,9 @@ template <typename U0, typename Z0, typename W0,
 inline constexpr matrix<3, 4, T>::matrix(const vector<2, U0>& vector0, const Z0& z0, const W0& w0,
                                          const vector<2, U1>& vector1, const Z1& z1, const W1& w1,
                                          const vector<2, U2>& vector2, const Z2& z2, const W2& w2)
-    : data{column_type(vector0, z0, w0),
-           column_type(vector1, z1, w1),
-           column_type(vector2, z2, w2)}
+    : m_data{column_type(vector0, z0, w0),
+             column_type(vector1, z1, w1),
+             column_type(vector2, z2, w2)}
 {
 }
 // clang-format on
@@ -2805,9 +3669,9 @@ template <typename X0, typename U0, typename W0,
 inline constexpr matrix<3, 4, T>::matrix(const X0& x0, const vector<2, U0>& vector0, const W0& w0,
                                          const X1& x1, const vector<2, U1>& vector1, const W1& w1,
                                          const X2& x2, const vector<2, U2>& vector2, const W2& w2)
-    : data{column_type(x0, vector0, w0),
-           column_type(x1, vector1, w1),
-           column_type(x2, vector2, w2)}
+    : m_data{column_type(x0, vector0, w0),
+             column_type(x1, vector1, w1),
+             column_type(x2, vector2, w2)}
 {
 }
 // clang-format on
@@ -2820,9 +3684,9 @@ template <typename X0, typename Y0, typename U0,
 inline constexpr matrix<3, 4, T>::matrix(const X0& x0, const Y0& y0, const vector<2, U0>& vector0,
                                          const X1& x1, const Y1& y1, const vector<2, U1>& vector1,
                                          const X2& x2, const Y2& y2, const vector<2, U2>& vector2)
-    : data{column_type(x0, y0, vector0),
-           column_type(x1, y1, vector1),
-           column_type(x2, y2, vector2)}
+    : m_data{column_type(x0, y0, vector0),
+             column_type(x1, y1, vector1),
+             column_type(x2, y2, vector2)}
 {
 }
 // clang-format on
@@ -2830,64 +3694,129 @@ inline constexpr matrix<3, 4, T>::matrix(const X0& x0, const Y0& y0, const vecto
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1, 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(0, 0, 1, 0)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(0, 0, 1, 0)}
 {
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 4, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<3, 4, T>& matrix<3, 4, T>::operator=(const matrix<3, 4, T>& other) noexcept
+{
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    m_data[2] = other[2];
+    return *this;
+}
+
+template <typename T>
+inline typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 4, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<3, 4, T>::size() const noexcept
+{
+    return 3;
+}
+
+template <typename T>
+inline typename matrix<3, 4, T>::value_type* matrix<3, 4, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<3, 4, T>::value_type* matrix<3, 4, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<3, 4, T>::column_type matrix<3, 4, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<3, 4, T>::row_type matrix<3, 4, T>::row(unsigned int index) const noexcept
+{
+    return matrix<3, 4, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
 /**
  * @}
@@ -2911,9 +3840,9 @@ template <typename T>
 inline constexpr matrix<3, 3, T>::matrix(const T& value00, const T& value01, const T& value02,
                                          const T& value10, const T& value11, const T& value12,
                                          const T& value20, const T& value21, const T& value22)
-    : data{column_type(value00, value01, value02),
-           column_type(value10, value11, value12),
-           column_type(value20, value21, value22)}
+    : m_data{column_type(value00, value01, value02),
+             column_type(value10, value11, value12),
+             column_type(value20, value21, value22)}
 {
 }
 // clang-format on
@@ -2921,9 +3850,9 @@ inline constexpr matrix<3, 3, T>::matrix(const T& value00, const T& value01, con
 // clang-format off
 template <typename T>
 inline constexpr matrix<3, 3, T>::matrix(const T& value) noexcept
-    : data{column_type(value, 0, 0),
-           column_type(0, value, 0),
-           column_type(0, 0, value)}
+    : m_data{column_type(value, 0, 0),
+             column_type(0, value, 0),
+             column_type(0, 0, value)}
 {
 }
 // clang-format on
@@ -2931,7 +3860,7 @@ inline constexpr matrix<3, 3, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6)}
+    : m_data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -2942,7 +3871,7 @@ template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 3, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U1>& column1,
                                          const vector<4, U2>& column2)
-    : data{column_type(column0), column_type(column1), column_type(column2)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2)}
 {
 }
 // clang-format on
@@ -2953,7 +3882,7 @@ template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 3, T>::matrix(const vector<3, U0>& column0,
                                          const vector<3, U1>& column1,
                                          const vector<3, U2>& column2)
-    : data{column_type(column0), column_type(column1), column_type(column2)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2)}
 {
 }
 // clang-format on
@@ -2966,9 +3895,9 @@ template <typename U0, typename Z0,
 inline constexpr matrix<3, 3, T>::matrix(const vector<2, U0>& vector0, const Z0& z0,
                                          const vector<2, U1>& vector1, const Z1& z1,
                                          const vector<2, U2>& vector2, const Z2& z2)
-    : data{column_type(vector0, z0),
-           column_type(vector1, z1),
-           column_type(vector2, z2)}
+    : m_data{column_type(vector0, z0),
+             column_type(vector1, z1),
+             column_type(vector2, z2)}
 {
 }
 // clang-format on
@@ -2981,9 +3910,9 @@ template <typename X0, typename U0,
 inline constexpr matrix<3, 3, T>::matrix(const X0& x0, const vector<2, U0>& vector0,
                                          const X1& x1, const vector<2, U1>& vector1,
                                          const X2& x2, const vector<2, U2>& vector2)
-    : data{column_type(x0, vector0),
-           column_type(x1, vector1),
-           column_type(x2, vector2)}
+    : m_data{column_type(x0, vector0),
+             column_type(x1, vector1),
+             column_type(x2, vector2)}
 {
 }
 // clang-format on
@@ -2991,64 +3920,129 @@ inline constexpr matrix<3, 3, T>::matrix(const X0& x0, const vector<2, U0>& vect
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1)}
 {
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 3, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<3, 3, T>& matrix<3, 3, T>::operator=(const matrix<3, 3, T>& other) noexcept
+{
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    m_data[2] = other[2];
+    return *this;
+}
+
+template <typename T>
+inline typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 3, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<3, 3, T>::size() const noexcept
+{
+    return 3;
+}
+
+template <typename T>
+inline typename matrix<3, 3, T>::value_type* matrix<3, 3, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<3, 3, T>::value_type* matrix<3, 3, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<3, 3, T>::column_type matrix<3, 3, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<3, 3, T>::row_type matrix<3, 3, T>::row(unsigned int index) const noexcept
+{
+    return matrix<3, 3, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
 /**
  * @}
@@ -3072,9 +4066,9 @@ template <typename T>
 inline constexpr matrix<3, 2, T>::matrix(const T& value00, const T& value01,
                                          const T& value10, const T& value11,
                                          const T& value20, const T& value21)
-    : data{column_type(value00, value01),
-           column_type(value10, value11),
-           column_type(value20, value21)}
+    : m_data{column_type(value00, value01),
+             column_type(value10, value11),
+             column_type(value20, value21)}
 {
 }
 // clang-format on
@@ -3082,9 +4076,9 @@ inline constexpr matrix<3, 2, T>::matrix(const T& value00, const T& value01,
 // clang-format off
  template <typename T>
  inline constexpr matrix<3, 2, T>::matrix(const T& value) noexcept
-     : data{column_type(value, 0),
-            column_type(0, value),
-            column_type(0, 0)}
+    : m_data{column_type(value, 0),
+             column_type(0, value),
+             column_type(0, 0)}
  {
  }
 // clang-format on
@@ -3092,7 +4086,7 @@ inline constexpr matrix<3, 2, T>::matrix(const T& value00, const T& value01,
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4)}
+    : m_data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -3100,85 +4094,150 @@ inline constexpr matrix<3, 2, T>::matrix(const U* const pointer)
 template <typename T>
 template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 2, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1, const vector<4, U2>& column2)
-    : data{column_type(column0), column_type(column1), column_type(column2)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2)}
 {
 }
 
 template <typename T>
 template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 2, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1, const vector<3, U2>& column2)
-    : data{column_type(column0), column_type(column1), column_type(column2)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2)}
 {
 }
 
 template <typename T>
 template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 2, T>::matrix(const vector<2, U0>& column0, const vector<2, U1>& column1, const vector<2, U2>& column2)
-    : data{column_type(column0), column_type(column1), column_type(column2)}
+    : m_data{column_type(column0), column_type(column1), column_type(column2)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
+    : m_data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
 {
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 2, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<3, 2, T>& matrix<3, 2, T>::operator=(const matrix<3, 2, T>& other) noexcept
+{
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    m_data[2] = other[2];
+    return *this;
+}
+
+template <typename T>
+inline typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 2, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<3, 2, T>::size() const noexcept
+{
+    return 3;
+}
+
+template <typename T>
+inline typename matrix<3, 2, T>::value_type* matrix<3, 2, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<3, 2, T>::value_type* matrix<3, 2, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<3, 2, T>::column_type matrix<3, 2, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<3, 2, T>::row_type matrix<3, 2, T>::row(unsigned int index) const noexcept
+{
+    return matrix<3, 2, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
 /**
  * @}
@@ -3201,8 +4260,8 @@ inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 4, T>& other) noexcept 
 template <typename T>
 inline constexpr matrix<2, 4, T>::matrix(const T& value00, const T& value01, const T& value02, const T& value03,
                                          const T& value10, const T& value11, const T& value12, const T& value13)
-    : data{column_type(value00, value01, value02, value03),
-           column_type(value10, value11, value12, value13)}
+    : m_data{column_type(value00, value01, value02, value03),
+             column_type(value10, value11, value12, value13)}
 {
 }
 // clang-format on
@@ -3210,8 +4269,8 @@ inline constexpr matrix<2, 4, T>::matrix(const T& value00, const T& value01, con
 // clang-format off
 template <typename T>
 inline constexpr matrix<2, 4, T>::matrix(const T& value) noexcept
-    : data{column_type(value, 0, 0, 0),
-           column_type(0, value, 0, 0)}
+    : m_data{column_type(value, 0, 0, 0),
+             column_type(0, value, 0, 0)}
 {
 }
 // clang-format on
@@ -3219,7 +4278,7 @@ inline constexpr matrix<2, 4, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 4)}
+    : m_data{column_type(pointer), column_type(pointer + 4)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -3227,7 +4286,7 @@ inline constexpr matrix<2, 4, T>::matrix(const U* const pointer)
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 4, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
-    : data{column_type(column0), column_type(column1)}
+    : m_data{column_type(column0), column_type(column1)}
 {
 }
 
@@ -3237,8 +4296,8 @@ template <typename U0, typename W0,
           typename U1, typename W1>
 inline constexpr matrix<2, 4, T>::matrix(const vector<3, U0>& vector0, const W0& w0,
                                          const vector<3, U1>& vector1, const W1& w1)
-    : data{column_type(vector0, w0),
-           column_type(vector1, w1)}
+    : m_data{column_type(vector0, w0),
+             column_type(vector1, w1)}
 {
 }
 // clang-format on
@@ -3249,8 +4308,8 @@ template <typename X0, typename U0,
           typename X1, typename U1>
 inline constexpr matrix<2, 4, T>::matrix(const X0& x0, const vector<3, U0>& vector0,
                                          const X1& x1, const vector<3, U1>& vector1)
-    : data{column_type(x0, vector0),
-           column_type(x1, vector1)}
+    : m_data{column_type(x0, vector0),
+             column_type(x1, vector1)}
 {
 }
 // clang-format on
@@ -3261,8 +4320,8 @@ template <typename U00, typename U01,
           typename U10, typename U11>
 inline constexpr matrix<2, 4, T>::matrix(const vector<2, U00>& vector00, const vector<2, U01>& vector01,
                                          const vector<2, U10>& vector10, const vector<2, U11>& vector11)
-    : data{column_type(vector00, vector01),
-           column_type(vector10, vector11)}
+    : m_data{column_type(vector00, vector01),
+             column_type(vector10, vector11)}
 {
 }
 // clang-format on
@@ -3273,7 +4332,7 @@ template <typename U0, typename Z0, typename W0,
           typename U1, typename Z1, typename W1>
 inline constexpr matrix<2, 4, T>::matrix(const vector<2, U0>& vector0, const Z0& z0, const W0& w0,
                                          const vector<2, U1>& vector1, const Z1& z1, const W1& w1)
-    : data{column_type(vector0, z0, w0),
+    : m_data{column_type(vector0, z0, w0),
            column_type(vector1, z1, w1)}
 {
 }
@@ -3285,8 +4344,8 @@ template <typename X0, typename U0, typename W0,
           typename X1, typename U1, typename W1>
 inline constexpr matrix<2, 4, T>::matrix(const X0& x0, const vector<2, U0>& vector0, const W0& w0,
                                          const X1& x1, const vector<2, U1>& vector1, const W1& w1)
-    : data{column_type(x0, vector0, w0),
-           column_type(x1, vector1, w1)}
+    : m_data{column_type(x0, vector0, w0),
+             column_type(x1, vector1, w1)}
 {
 }
 // clang-format on
@@ -3297,8 +4356,8 @@ template <typename X0, typename Y0, typename U0,
           typename X1, typename Y1, typename U1>
 inline constexpr matrix<2, 4, T>::matrix(const X0& x0, const Y0& y0, const vector<2, U0>& vector0,
                                          const X1& x1, const Y1& y1, const vector<2, U1>& vector1)
-    : data{column_type(x0, y0, vector0),
-           column_type(x1, y1, vector1)}
+    : m_data{column_type(x0, y0, vector0),
+             column_type(x1, y1, vector1)}
 {
 }
 // clang-format on
@@ -3306,64 +4365,128 @@ inline constexpr matrix<2, 4, T>::matrix(const X0& x0, const Y0& y0, const vecto
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
+    : m_data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
 {
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<2, 4, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<2, 4, T>& matrix<2, 4, T>::operator=(const matrix<2, 4, T>& other) noexcept
+{
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    return *this;
+}
+
+template <typename T>
+inline typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<2, 4, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<2, 4, T>::size() const noexcept
+{
+    return 2;
+}
+
+template <typename T>
+inline typename matrix<2, 4, T>::value_type* matrix<2, 4, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<2, 4, T>::value_type* matrix<2, 4, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<2, 4, T>::column_type matrix<2, 4, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<2, 4, T>::row_type matrix<2, 4, T>::row(unsigned int index) const noexcept
+{
+    return matrix<2, 4, T>::row_type(m_data[0][index], m_data[1][index]);
 }
 /**
  * @}
@@ -3386,8 +4509,8 @@ inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 3, T>& other) noexcept 
 template <typename T>
 inline constexpr matrix<2, 3, T>::matrix(const T& value00, const T& value01, const T& value02,
                                          const T& value10, const T& value11, const T& value12)
-    : data{column_type(value00, value01, value02),
-           column_type(value10, value11, value12)}
+    : m_data{column_type(value00, value01, value02),
+             column_type(value10, value11, value12)}
 {
 }
 // clang-format on
@@ -3395,8 +4518,8 @@ inline constexpr matrix<2, 3, T>::matrix(const T& value00, const T& value01, con
 // clang-format off
 template <typename T>
 inline constexpr matrix<2, 3, T>::matrix(const T& value) noexcept
-    : data{column_type(value, 0, 0),
-           column_type(0, value, 0)}
+    : m_data{column_type(value, 0, 0),
+             column_type(0, value, 0)}
 {
 }
 // clang-format on
@@ -3404,7 +4527,7 @@ inline constexpr matrix<2, 3, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 3)}
+    : m_data{column_type(pointer), column_type(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -3412,14 +4535,14 @@ inline constexpr matrix<2, 3, T>::matrix(const U* const pointer)
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 3, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
-    : data{column_type(column0), column_type(column1)}
+    : m_data{column_type(column0), column_type(column1)}
 {
 }
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 3, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1)
-    : data{column_type(column0), column_type(column1)}
+    : m_data{column_type(column0), column_type(column1)}
 {
 }
 
@@ -3429,8 +4552,8 @@ template <typename U0, typename Z0,
           typename U1, typename Z1>
 inline constexpr matrix<2, 3, T>::matrix(const vector<2, U0>& vector0, const Z0& z0,
                                          const vector<2, U1>& vector1, const Z1& z1)
-    : data{column_type(vector0, z0),
-           column_type(vector1, z1)}
+    : m_data{column_type(vector0, z0),
+             column_type(vector1, z1)}
 {
 }
 // clang-format on
@@ -3441,8 +4564,8 @@ template <typename X0, typename U0,
           typename X1, typename U1>
 inline constexpr matrix<2, 3, T>::matrix(const X0& x0, const vector<2, U0>& vector0,
                                          const X1& x1, const vector<2, U1>& vector1)
-    : data{column_type(x0, vector0),
-           column_type(x1, vector1)}
+    : m_data{column_type(x0, vector0),
+             column_type(x1, vector1)}
 {
 }
 // clang-format on
@@ -3450,64 +4573,128 @@ inline constexpr matrix<2, 3, T>::matrix(const X0& x0, const vector<2, U0>& vect
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0], 0), column_type(other[1], 0)}
+    : m_data{column_type(other[0], 0), column_type(other[1], 0)}
 {
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<2, 3, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<2, 3, T>& matrix<2, 3, T>::operator=(const matrix<2, 3, T>& other) noexcept
+{
+    m_data[0] = other[0];
+    m_data[1] = other[1];
+    return *this;
+}
+
+template <typename T>
+inline typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<2, 3, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<2, 3, T>::size() const noexcept
+{
+    return 2;
+}
+
+template <typename T>
+inline typename matrix<2, 3, T>::value_type* matrix<2, 3, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<2, 3, T>::value_type* matrix<2, 3, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<2, 3, T>::column_type matrix<2, 3, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<2, 3, T>::row_type matrix<2, 3, T>::row(unsigned int index) const noexcept
+{
+    return matrix<2, 3, T>::row_type(m_data[0][index], m_data[1][index]);
 }
 /**
  * @}
@@ -3530,8 +4717,8 @@ inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 2, T>& other) noexcept 
 template <typename T>
 inline constexpr matrix<2, 2, T>::matrix(const T& value00, const T& value01,
                                          const T& value10, const T& value11)
-    : data{column_type(value00, value01),
-           column_type(value10, value11)}
+    : m_data{column_type(value00, value01),
+             column_type(value10, value11)}
 {
 }
 // clang-format on
@@ -3539,8 +4726,8 @@ inline constexpr matrix<2, 2, T>::matrix(const T& value00, const T& value01,
 // clang-format off
 template <typename T>
 inline constexpr matrix<2, 2, T>::matrix(const T& value) noexcept
-    : data{column_type(value, 0),
-           column_type(0, value)}
+    : m_data{column_type(value, 0),
+             column_type(0, value)}
 {
 }
 // clang-format on
@@ -3548,7 +4735,7 @@ inline constexpr matrix<2, 2, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const U* const pointer)
-    : data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4)}
+    : m_data{column_type(pointer), column_type(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -3556,252 +4743,313 @@ inline constexpr matrix<2, 2, T>::matrix(const U* const pointer)
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
-    : data{column_type(column0), column_type(column1)}
+    : m_data{column_type(column0), column_type(column1)}
 {
 }
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1)
-    : data{column_type(column0), column_type(column1)}
+    : m_data{column_type(column0), column_type(column1)}
 {
 }
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<2, U0>& column0, const vector<2, U1>& column1)
-    : data{column_type(column0), column_type(column1)}
+    : m_data{column_type(column0), column_type(column1)}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<4, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<4, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<4, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<3, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<3, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<3, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 4, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 3, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 
 template <typename T>
 template <typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 2, U>& other)
-    : data{column_type(other[0]), column_type(other[1])}
+    : m_data{column_type(other[0]), column_type(other[1])}
 {
 }
 /**
  * @}
  */
 
-
-
-//////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
-
-// matrix methods
-template <unsigned int C, unsigned int R, typename T>
-inline constexpr unsigned int matrix<C, R, T>::size() const
+/**
+ * @name matrix<2, 2, T> operators.
+ * @{
+ */
+template <typename T>
+inline matrix<2, 2, T>& matrix<2, 2, T>::operator=(const matrix<2, 2, T>& other) noexcept
 {
-    return C;
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline typename matrix<C, R, T>::ValueType* matrix<C, R, T>::data()
-{
-    return BaseType::data[0].data();
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline const typename matrix<C, R, T>::ValueType* matrix<C, R, T>::data() const
-{
-    return BaseType::data[0].data();
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline typename matrix<C, R, T>::column_type matrix<C, R, T>::column(unsigned int index) const
-{
-    ASSERT_MSG(index < C, "Wrong column index.");
-    return BaseType::data[index];
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline typename matrix<C, R, T>::RowType matrix<C, R, T>::row(unsigned int index) const
-{
-    ASSERT_MSG(index < R, "Wrong row index.");
-    return utils::type_creator<C>::template create<typename matrix<C, R, T>::RowType>(
-    [this, index](unsigned int col) { return BaseType::data[col][index]; });
-}
-
-// access operator
-template <unsigned int C, unsigned int R, typename T>
-inline typename matrix<C, R, T>::column_type& matrix<C, R, T>::operator[](unsigned int index)
-{
-    ASSERT_MSG(index < C, "Wrong column index.");
-    return BaseType::data[index];
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline const typename matrix<C, R, T>::column_type& matrix<C, R, T>::operator[](unsigned int index) const
-{
-    ASSERT_MSG(index < C, "Wrong column index.");
-    return BaseType::data[index];
-}
-
-// assignment operator
-template <unsigned int C, unsigned int R, typename T>
-template <typename U>
-inline matrix<C, R, T>& matrix<C, R, T>::operator=(const matrix<C, R, U>& other)
-{
-    for (unsigned int i = 0; i < C; ++i) {
-        BaseType::data[i] = static_cast<column_type>(other[i]);
-    }
+    m_data[0] = other[0];
+    m_data[1] = other[1];
     return *this;
 }
 
-// unary operators
-// matrix - matrix
+template <typename T>
+inline typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](unsigned int index)
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline const typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](unsigned int index) const
+{
+    return m_data[index];
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<2, 2, T> methods.
+ * @{
+ */
+template <typename T>
+inline constexpr unsigned int matrix<2, 2, T>::size() const noexcept
+{
+    return 2;
+}
+
+template <typename T>
+inline typename matrix<2, 2, T>::value_type* matrix<2, 2, T>::data() noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+const typename matrix<2, 2, T>::value_type* matrix<2, 2, T>::data() const noexcept
+{
+    return m_data[0].data();
+}
+
+template <typename T>
+inline typename matrix<2, 2, T>::column_type matrix<2, 2, T>::column(unsigned int index) const noexcept
+{
+    return m_data[index];
+}
+
+template <typename T>
+inline typename matrix<2, 2, T>::row_type matrix<2, 2, T>::row(unsigned int index) const noexcept
+{
+    return matrix<2, 2, T>::row_type(m_data[0][index], m_data[1][index]);
+}
+/**
+ * @}
+ */
+
+/**
+ * @name Matrix operators and functions.
+ * @addtogroup matrix_implementation
+ * @{
+ */
+
+/**
+ * @name Common unary operators.
+ * @{
+ */
+
+/**
+ * @brief Unary plus operator.
+ *
+ * @param matrix Matrix to return.
+ *
+ * @return The same matrix.
+ */
 template <unsigned int C, unsigned int R, typename T>
-template <typename U>
-inline matrix<C, R, T>& matrix<C, R, T>::operator+=(const matrix<C, R, U>& other)
+inline matrix<C, R, T> operator+(const matrix<C, R, T>& matrix)
+{
+    return matrix;
+}
+
+/**
+ * @brief Unary minus operator.
+ *
+ * @param matrix Matrix to invert.
+ *
+ * @return Matrix witch is equal to `matrix * -1`.
+ */
+template <unsigned int C, unsigned int R, typename T>
+inline matrix<C, R, T> operator-(matrix<C, R, T> matrix)
+{
+    return matrix *= -T{1};
+}
+
+/**
+ * @brief Addition assignment operator.
+ *
+ * @param lhs First addend.
+ * @param rhs Second addend.
+ *
+ * @return Reference to component-wise sum of two matrices.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U>
+inline matrix<C, R, T>& operator+=(matrix<C, R, T>& lhs, const matrix<C, R, U>& rhs)
 {
     for (unsigned int i = 0; i < C; ++i) {
-        BaseType::data[i] += other[i];
+        lhs[i] += rhs[i];
     }
-    return *this;
+    return lhs;
 }
 
-template <unsigned int C, unsigned int R, typename T>
-template <typename U>
-inline matrix<C, R, T>& matrix<C, R, T>::operator-=(const matrix<C, R, U>& other)
+/**
+ * @brief Subtractions assignment operator.
+ *
+ * @param lhs Vector to subtract from.
+ * @param rhs Vector to subtract.
+ *
+ * @return Reference to component-wise difference of two matrices.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U>
+inline matrix<C, R, T>& operator-=(matrix<C, R, T>& lhs, const matrix<C, R, U>& rhs)
 {
     for (unsigned int i = 0; i < C; ++i) {
-        BaseType::data[i] -= other[i];
+        lhs[i] -= rhs[i];
     }
-    return *this;
+    return lhs;
 }
 
-template <unsigned int C, unsigned int R, typename T>
-template <typename U>
-inline matrix<C, R, T>& matrix<C, R, T>::operator*=(const matrix<C, C, U>& other)
+/**
+ * @brief Multiplication assignment operator.
+ *
+ * @param lhs First multiplier.
+ * @param rhs Second multiplier.
+ *
+ * @return Reference to product of two matrices.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U>
+inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const matrix<C, C, U>& rhs)
 {
-    return (*this = *this * other);
+    return (lhs = lhs * rhs);
 }
 
-// unary operators
-// matrix - scalar
-
-template <unsigned int C, unsigned int R, typename T>
-template <typename U>
-inline matrix<C, R, T>& matrix<C, R, T>::operator+=(const U& scalar)
+/**
+ * @brief Addition assignment operator.
+ *
+ * @param lhs First addend.
+ * @param rhs Second addend.
+ *
+ * @return Reference to component-wise sum of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+inline matrix<C, R, T>& operator+=(matrix<C, R, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < C; ++i) {
-        BaseType::data[i] += scalar;
+        lhs[i] += rhs;
     }
-    return *this;
+    return lhs;
 }
 
-template <unsigned int C, unsigned int R, typename T>
-template <typename U>
-inline matrix<C, R, T>& matrix<C, R, T>::operator-=(const U& scalar)
+/**
+ * @brief Subtractions assignment operator.
+ *
+ * @param lhs Vector to subtract from.
+ * @param rhs Scalar value to subtract.
+ *
+ * @return Reference to component-wise difference of the matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+inline matrix<C, R, T>& operator-=(matrix<C, R, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < C; ++i) {
-        BaseType::data[i] -= scalar;
+        lhs[i] -= rhs;
     }
-    return *this;
+    return lhs;
 }
 
-template <unsigned int C, unsigned int R, typename T>
-template <typename U>
-inline matrix<C, R, T>& matrix<C, R, T>::operator*=(const U& scalar)
+/**
+ * @brief Multiplication assignment operator.
+ *
+ * @param lhs First multiplier.
+ * @param rhs Second multiplier.
+ *
+ * @return Reference to component-wise product of the matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < C; ++i) {
-        BaseType::data[i] *= scalar;
+        lhs[i] *= rhs;
     }
-    return *this;
+    return lhs;
 }
 
-template <unsigned int C, unsigned int R, typename T>
-template <typename U>
-inline matrix<C, R, T>& matrix<C, R, T>::operator/=(const U& scalar)
+/**
+ * @brief Division assignment operator.
+ *
+ * @param lhs Dividend vector.
+ * @param rhs Divider scalar value.
+ *
+ * @return Reference to component-wise quotient of the matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+inline matrix<C, R, T>& operator/=(matrix<C, R, T>& lhs, const U& rhs)
 {
     for (unsigned int i = 0; i < C; ++i) {
-        BaseType::data[i] /= scalar;
+        lhs[i] /= rhs;
     }
-    return *this;
+    return lhs;
 }
+/**
+ * @}
+ */
 
-// unary minus
-template <unsigned int R, typename T>
-inline matrix<4, R, T> operator-(const matrix<4, R, T>& m)
-{
-    return matrix<4, R, T>(-m[0], -m[1], -m[2], -m[3]);
-}
-
-template <unsigned int R, typename T>
-inline matrix<3, R, T> operator-(const matrix<3, R, T>& m)
-{
-    return matrix<3, R, T>(-m[0], -m[1], -m[2]);
-}
-
-template <unsigned int R, typename T>
-inline matrix<2, R, T> operator-(const matrix<2, R, T>& m)
-{
-    return matrix<2, R, T>(-m[0], -m[1]);
-}
-
-// unary plus
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator+(const matrix<C, R, T>& m)
-{
-    return m;
-}
+/**
+ * @}
+ */
 
 template <unsigned int C, unsigned int R, typename T>
 inline const matrix<C, R, T> operator+(matrix<C, R, T> lhs, const matrix<C, R, T>& rhs)
@@ -4391,6 +5639,7 @@ inline constexpr bool operator!=(const matrix<2, R, T>& lhs, const matrix<2, R, 
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]);
 }
+
 
 } // namespace math
 

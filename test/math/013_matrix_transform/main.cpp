@@ -19,13 +19,13 @@ private:
     void translate_function()
     {
         // clang-format off
-        const Matrix3F m  = {
+        const matrix3f m  = {
             1, 4, 7,
             2, 5, 8,
             3, 6, 9
         };
 
-        const Matrix3F m1 = {
+        const matrix3f m1 = {
             1,  4,  7,
             2,  5,  8,
             33, 96, 159
@@ -40,49 +40,49 @@ private:
     void rotate_function()
     {
         // clang-format off
-        const Matrix3F m = {
+        const matrix3f m = {
             1, 4, 7,
             2, 5, 8,
             3, 6, 9
         };
 
-        const Matrix3F r30 = {
+        const matrix3f r30 = {
             1.8660254f,  5.96410162f, 10.06217783f,
             1.23205081f, 2.33012702f, 3.42820323f,
             3.0f,        6.0f,        9.0f
         };
 
-        const Matrix3F r45 = {
+        const matrix3f r45 = {
             2.121320340f, 6.363961030f, 10.606601720f,
             0.707106780f, 0.707106780f, 0.707106780f,
             3.0f,         6.0f,         9.0f
         };
 
-        const Matrix3F r60 = {
+        const matrix3f r60 = {
             2.232050810f, 6.330127020f,  10.428203230f,
             0.13397460f,  -0.964101620f, -2.062177830f,
             3.0f,         6.0f,          9.0f
         };
 
-        const Matrix3F r90 = {
+        const matrix3f r90 = {
             2.0f,  5.0f,  8.0f,
             -1.0f, -4.0f, -7.0f,
             3.0f,  6.0f,  9.0f
         };
 
-        const Matrix3F r180 = {
+        const matrix3f r180 = {
             -1.0f, -4.0f, -7.0f,
             -2.0f, -5.0f, -8.0f,
             3.0f,  6.0f,  9.0f
         };
 
-        const Matrix3F r300 = {
+        const matrix3f r300 = {
             -1.23205081f, -2.33012702f, -3.42820323f,
             1.8660254f,   5.96410162f,  10.06217783f,
             3.0f,         6.0f,         9.0f
         };
 
-        const Matrix3F r270 = {
+        const matrix3f r270 = {
             -2.0f, -5.0f, -8.0f,
             1.0f,  4.0f,  7.0f,
             3.0f,  6.0f,  9.0f
@@ -108,49 +108,49 @@ private:
     void scale_function()
     {
         // clang-format off
-        const Matrix3F m = {
+        const matrix3f m = {
             1, 4, 7,
             2, 5, 8,
             3, 6, 9
         };
 
-        const Matrix3F m11 = {
+        const matrix3f m11 = {
             1, 4, 7,
             2, 5, 8,
             3, 6, 9
         };
 
-        const Matrix3F m55 = {
+        const matrix3f m55 = {
             5,  20, 35,
             10, 25, 40,
             3,  6,  9
         };
 
-        const Matrix3F m12 = {
+        const matrix3f m12 = {
             1, 4,  7,
             4, 10, 16,
             3, 6,  9
         };
 
-        const Matrix3F m21 = {
+        const matrix3f m21 = {
             2, 8, 14,
             2, 5, 8,
             3, 6, 9
         };
 
-        const Matrix3F m01 = {
+        const matrix3f m01 = {
             0, 0, 0,
             2, 5, 8,
             3, 6, 9
         };
 
-        const Matrix3F m10 = {
+        const matrix3f m10 = {
             1, 4, 7,
             0, 0, 0,
             3, 6, 9
         };
 
-        const Matrix3F m00 = {
+        const matrix3f m00 = {
             0, 0, 0,
             0, 0, 0,
             3, 6, 9
@@ -169,31 +169,31 @@ private:
     void shear_function()
     {
         // clang-format off
-        const Matrix3F m = {
+        const matrix3f m = {
             1, 4, 7,
             2, 5, 8,
             3, 6, 9
         };
 
-        const Matrix3F m1 = {
+        const matrix3f m1 = {
             3, 9, 15,
             2, 5, 8,
             3, 6, 9
         };
 
-        const Matrix3F m2 = {
+        const matrix3f m2 = {
             -3, -6, -9,
             2,  5,  8,
             3,  6,  9
         };
 
-        const Matrix3F m3 = {
+        const matrix3f m3 = {
             1, 4, 7,
             3, 9, 15,
             3, 6, 9
         };
 
-        const Matrix3F m4 = {
+        const matrix3f m4 = {
             1, 4,  7,
             0, -3, -6,
             3, 6,  9
@@ -226,7 +226,7 @@ private:
     void create_translate_function()
     {
         // clang-format off
-        const Matrix4F m = {
+        const matrix4f m = {
             1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
@@ -241,42 +241,42 @@ private:
     void create_rotate_function()
     {
         // clang-format off
-        const Matrix4F mx = {
+        const matrix4f mx = {
             1.0f, 0.0f,                   0.0f,                   0.0f,
             0.0f, -0.000000043711388286f, 1.0f,                   0.0f,
             0.0f, -1.0f,                  -0.000000043711388286f, 0.0f,
             0.0f, 0.0f,                   0.0f,                   1.0f
           };
 
-        const Matrix4F my = {
+        const matrix4f my = {
             -0.000000043711388286f, 0.0f, -1.0f,                  0.0f,
             0.0f,                   1.0f, 0.0f,                   0.0f,
             1.0f,                   0.0f, -0.000000043711388286f, 0.0f,
             0.0f,                   0.0f, 0.0f,                   1.0f
         };
 
-        const Matrix4F mz = {
+        const matrix4f mz = {
             -0.000000043711388286f, 1.0f,                   0.0f, 0.0f,
             -1.0f,                  -0.000000043711388286f, 0.0f, 0.0f,
             0.0f,                   0.0f,                   1.0f, 0.0f,
             0.0f,                   0.0f,                   0.0f, 1.0f
         };
 
-        const Matrix4F m1 = {
+        const matrix4f m1 = {
             1.0f,             0.207911690818f,  0.0218523992662f,0.0f,
             -0.207911690818f, 0.978147600734f,  0.207911690818f, 0.0f,
             0.0218523992662f, -0.207911690818f, 1.0f,            0.0f,
             0.0f,             0.0f,             0.0f,            1.0f
           };
 
-        const Matrix4F m2 = {
+        const matrix4f m2 = {
             -0.190808995377f, 0.0f, 0.981627183448f,  0.0f,
             0.0f,             1.0f, 0.0f,             0.0f,
             -0.981627183448f, 0.0f, -0.190808995377f, 0.0f,
             0.0f,             0.0f, 0.0f,             1.0f
         };
 
-        const Matrix4F m3 = {
+        const matrix4f m3 = {
             1.0f,             -0.410768609213f, 1.09865055123f,   0.0f,
             1.09865055123f,   1.0f,             -0.410768609213f, 0.0f,
             -0.410768609213f, 1.09865055123f,   1.0f,             0.0f,
@@ -284,13 +284,13 @@ private:
         };
         // clang-format on
 
-        const Matrix4F resultx = createRotateMatrix(vector3f(1, 0, 0), radians(90.0f));
-        const Matrix4F resulty = createRotateMatrix(vector3f(0, 1, 0), radians(90.0f));
-        const Matrix4F resultz = createRotateMatrix(vector3f(0, 0, 1), radians(90.0f));
+        const matrix4f resultx = createRotateMatrix(vector3f(1, 0, 0), radians(90.0f));
+        const matrix4f resulty = createRotateMatrix(vector3f(0, 1, 0), radians(90.0f));
+        const matrix4f resultz = createRotateMatrix(vector3f(0, 0, 1), radians(90.0f));
 
-        const Matrix4F result1 = createRotateMatrix(vector3f(1, 0, 1), radians(12.0f));
-        const Matrix4F result2 = createRotateMatrix(vector3f(0, 1, 0), radians(259.0f));
-        const Matrix4F result3 = createRotateMatrix(vector3f(1, 1, 1), radians(-49.0f));
+        const matrix4f result1 = createRotateMatrix(vector3f(1, 0, 1), radians(12.0f));
+        const matrix4f result2 = createRotateMatrix(vector3f(0, 1, 0), radians(259.0f));
+        const matrix4f result3 = createRotateMatrix(vector3f(1, 1, 1), radians(-49.0f));
 
         TEST_ASSERT(almost_equal(resultx, mx, 1), "Create_rotate_matrix function from (1, 0, 0) by 90 degrees failed.");
         TEST_ASSERT(almost_equal(resulty, my, 1), "Create_rotate_matrix function from (0, 1, 0) by 90 degrees failed.");
@@ -306,7 +306,7 @@ private:
     void create_scale_function()
     {
         // clang-format off
-        const Matrix4F m = {
+        const matrix4f m = {
             4, 0, 0, 0,
             0, 3, 0, 0,
             0, 0, 2, 0,
@@ -320,35 +320,35 @@ private:
     void translate_function()
     {
         // clang-format off
-        const Matrix4F m = {
+        const matrix4f m = {
             1, 2, 3, 4,
             4, 1, 2, 3,
             3, 4, 1, 2,
             2, 3, 4, 1
         };
 
-        const Matrix4F m1 = {
+        const matrix4f m1 = {
             1, 2, 3, 4,
             4, 1, 2, 3,
             3, 4, 1, 2,
             3, 5, 7, 5
         };
 
-        const Matrix4F m2 = {
+        const matrix4f m2 = {
             1, 2, 3, 4,
             4, 1, 2, 3,
             3, 4, 1, 2,
             6, 4, 6, 4
         };
 
-        const Matrix4F m3 = {
+        const matrix4f m3 = {
             1, 2, 3, 4,
             4, 1, 2, 3,
             3, 4, 1, 2,
             5, 7, 5, 3
         };
 
-        const Matrix4F m4 = {
+        const matrix4f m4 = {
             1,  2,  3,  4,
             4,  1,  2,  3,
             3,  4,  1,  2,
@@ -366,28 +366,28 @@ private:
     void scale_function()
     {
         // clang-format off
-        const Matrix4F m = {
+        const matrix4f m = {
             1, 2, 3, 4,
             4, 1, 2, 3,
             3, 4, 1, 2,
             2, 3, 4, 1
         };
 
-        const Matrix4F m1 = {
+        const matrix4f m1 = {
             2, 4, 6, 8,
             4, 1, 2, 3,
             3, 4, 1, 2,
             2, 3, 4, 1
         };
 
-        const Matrix4F m2 = {
+        const matrix4f m2 = {
             1, 2, 3, 4,
             8, 2, 4, 6,
             3, 4, 1, 2,
             2, 3, 4, 1
         };
 
-        const Matrix4F m3 = {
+        const matrix4f m3 = {
             1, 2, 3, 4,
             4, 1, 2, 3,
             6, 8, 2, 4,
@@ -404,28 +404,28 @@ private:
     void rotate_function()
     {
         // clang-format off
-        const Matrix4F m = {
+        const matrix4f m = {
             1, 2, 3, 4,
             4, 1, 2, 3,
             3, 4, 1, 2,
             2, 3, 4, 1
         };
 
-        const Matrix4F mx = {
+        const matrix4f mx = {
             1,  2,  3,  4,
             3,  4,  1,  2,
             -4, -1, -2, -3,
             2,  3,  4,  1
         };
 
-        const Matrix4F my = {
+        const matrix4f my = {
             -3, -4, -1, -2,
             4, 1,  2,  3,
             1, 2,  3,  4,
             2, 3,  4,  1
         };
 
-        const Matrix4F mz = {
+        const matrix4f mz = {
             4,  1,  2,  3,
             -1, -2, -3, -4,
             3,  4,  1,  2,
@@ -433,9 +433,9 @@ private:
         };
         // clang-format on
 
-        const Matrix4F resultx = rotate(m, vector3f(1, 0, 0), radians(90.0f));
-        const Matrix4F resulty = rotate(m, vector3f(0, 1, 0), radians(90.0f));
-        const Matrix4F resultz = rotate(m, vector3f(0, 0, 1), radians(90.0f));
+        const matrix4f resultx = rotate(m, vector3f(1, 0, 0), radians(90.0f));
+        const matrix4f resulty = rotate(m, vector3f(0, 1, 0), radians(90.0f));
+        const matrix4f resultz = rotate(m, vector3f(0, 0, 1), radians(90.0f));
 
         TEST_ASSERT(almost_equal(resultx, mx, 1), "Rotate matrix from (1, 0, 0) by 90 degrees failed.");
         TEST_ASSERT(almost_equal(resulty, my, 1), "Rotate matrix from (0, 1, 0) by 90 degrees failed.");
@@ -461,7 +461,7 @@ private:
     void ortho_function()
     {
         // clang-format off
-        const Matrix4F target = {
+        const matrix4f target = {
             0.5f, 0,    0,    0,
             0,    0.5f, 0,    0,
             0,    0,    0.5f, 0,
@@ -473,7 +473,7 @@ private:
         const vector4f v2{1, 1, 1, 1};
         const vector4f v3{2, 2, 2, 1};
 
-        const Matrix4F projection = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f);
+        const matrix4f projection = ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f);
 
         TEST_ASSERT(projection == target, "Orthogonal projection matrix is not correct.");
 
@@ -485,7 +485,7 @@ private:
     void ortho2d_function()
     {
         // clang-format off
-        const Matrix4F proj2D = {
+        const matrix4f proj2D = {
             0.5f, 0,    0, 0,
             0,    0.5f, 0, 0,
             0,    0,    1, 0,
@@ -499,7 +499,7 @@ private:
     void frustum_function()
     {
         // clang-format off
-        const Matrix4F target = {
+        const matrix4f target = {
             1, 0, 0,  0,
             0, 1, 0,  0,
             0, 0, -3, -1,
@@ -507,7 +507,7 @@ private:
         };
         // clang-format on
 
-        const Matrix4F projection = frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 2.0f);
+        const matrix4f projection = frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(projection == target, "Frustum projection matrix is not correct.");
 
@@ -523,7 +523,7 @@ private:
     void perspective_function()
     {
         // clang-format off
-        const Matrix4F target = {
+        const matrix4f target = {
             1, 0, 0,  0,
             0, 1, 0,  0,
             0, 0, -3, -1,
@@ -531,7 +531,7 @@ private:
         };
         // clang-format on
 
-        const Matrix4F projection = perspective(float(HALF_PI), 1.0f, 1.0f, 2.0f);
+        const matrix4f projection = perspective(float(HALF_PI), 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(projection == target, "Perspective projection matrix is not correct.");
 
@@ -546,8 +546,8 @@ private:
 
     void perspective_fov_function()
     {
-        const Matrix4F target     = perspective(float(HALF_PI), 1.0f, 1.0f, 2.0f);
-        const Matrix4F projection = perspectiveFov(float(HALF_PI), 1.0f, 1.0f, 1.0f, 2.0f);
+        const matrix4f target     = perspective(float(HALF_PI), 1.0f, 1.0f, 2.0f);
+        const matrix4f projection = perspectiveFov(float(HALF_PI), 1.0f, 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(projection == target, "PerspectiveFov projection matrix is not correct.");
     }
@@ -555,7 +555,7 @@ private:
     void infinite_perspective_function()
     {
         // clang-format off
-        const Matrix4F target = {
+        const matrix4f target = {
             1, 0, 0,  0,
             0, 1, 0,  0,
             0, 0, -1, -1,
@@ -563,7 +563,7 @@ private:
         };
         // clang-format on
 
-        const Matrix4F projection = infinitePerspective(float(HALF_PI), 1.0f, 1.0f);
+        const matrix4f projection = infinitePerspective(float(HALF_PI), 1.0f, 1.0f);
 
         TEST_ASSERT(almost_equal(projection, target, 1), "Infinite perspective projection matrix is not correct.");
 
@@ -602,8 +602,8 @@ private:
         const float width  = 480.0f;
         const float height = 320.0f;
 
-        const Matrix4F model;
-        const Matrix4F projection = perspectiveFov(float(HALF_PI), width, height, near, far);
+        const matrix4f model;
+        const matrix4f projection = perspectiveFov(float(HALF_PI), width, height, near, far);
 
         const vector4f viewport{0, 0, width, height};
 
@@ -640,8 +640,8 @@ private:
         const float width  = 480.0f;
         const float height = 320.0f;
 
-        const Matrix4F model;
-        const Matrix4F projection = perspectiveFov(float(HALF_PI), width, height, near, far);
+        const matrix4f model;
+        const matrix4f projection = perspectiveFov(float(HALF_PI), width, height, near, far);
 
         const vector4f viewport{0, 0, width, height};
 
@@ -673,7 +673,7 @@ private:
     void pick_region_function()
     {
         // clang-format off
-        const Matrix4F region = {
+        const matrix4f region = {
             2, 0, 0, 0,
             0, 2, 0, 0,
             0, 0, 1, 0,
@@ -686,7 +686,7 @@ private:
 
         const vector4f viewport{0, 0, width, height};
 
-        const Matrix4F result = pickMatrix(vector2f(0, 0), vector2f(width / 2, height / 2), viewport);
+        const matrix4f result = pickMatrix(vector2f(0, 0), vector2f(width / 2, height / 2), viewport);
 
         TEST_ASSERT(result == region, "Pick region matrix is not correct.");
     }
@@ -694,7 +694,7 @@ private:
     void look_at_function()
     {
         // clang-format off
-        const Matrix4F look_at = {
+        const matrix4f look_at = {
             0, 0, -1, 0,
             0, 1, 0,  0,
             1, 0, 0,  0,
@@ -706,7 +706,7 @@ private:
         const vector3f center(1, 0, 0);
         const vector3f up(0, 1, 0);
 
-        const Matrix4F result = lookAt(eye, center, up);
+        const matrix4f result = lookAt(eye, center, up);
 
         TEST_ASSERT(result == look_at, "Look_at matrix is not correct.");
     }
