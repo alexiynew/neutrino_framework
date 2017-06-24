@@ -1,6 +1,5 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
-#include <iostream>
 
 using namespace framework::math;
 

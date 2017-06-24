@@ -36,7 +36,6 @@ namespace matrix_details {
  * @{
  */
 
-
 /**
  * @brief Matrix template declaration.
  *
@@ -180,7 +179,7 @@ struct matrix<4, 4, T> final
     // clang-format on
 
     /**
-     * @brief Initializes matrices with provided vectors.
+     * @brief Initializes matrices with provided vectors and values.
      *
      * @param vector00 First part for first column.
      * @param vector01 Last part for first column.
@@ -203,7 +202,7 @@ struct matrix<4, 4, T> final
     // clang-format on
 
     /**
-     * @brief Initializes matrices with provided vectors.
+     * @brief Initializes matrices with provided vectors and values.
      *
      * @param vector0 First part for first column.
      * @param z0 Z component for first column.
@@ -230,7 +229,7 @@ struct matrix<4, 4, T> final
     // clang-format on
 
     /**
-     * @brief Initializes matrices with provided vectors.
+     * @brief Initializes matrices with provided vectors and values.
      *
      * @param x0 X component for first column.
      * @param vector0 Middle part for first column.
@@ -257,7 +256,7 @@ struct matrix<4, 4, T> final
     // clang-format on
 
     /**
-     * @brief Initializes matrices with provided vectors.
+     * @brief Initializes matrices with provided vectors and values.
      *
      * @param x0 X component for first column.
      * @param y0 Y component for first column.
@@ -375,1019 +374,1774 @@ private:
     column_type data[4];
 };
 
+/**
+ * @brief matrix<4, 3, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
+ */
 template <typename T>
-struct matrix<4, 3, T>
+struct matrix<4, 3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using ValueType   = T;
-    using column_type = vector<3, T>;
-    using RowType     = vector<4, T>;
+    using value_type  = T;            /**< Value type */
+    using column_type = vector<3, T>; /**< Column type */
+    using row_type    = vector<4, T>; /**< Row type */
 
-    explicit constexpr matrix(const T& v)
-        : data{column_type(v, 0, 0), column_type(0, v, 0), column_type(0, 0, v), column_type(0, 0, 0)}
-    {
-    }
+    /**
+     * @brief Default constructor.
+     *
+     * Creates an identity matrix.
+     */
+    constexpr matrix() noexcept;
 
-    constexpr matrix()
-        : matrix(T(1))
-    {
-    }
+    /**
+     * @brief Default copy constructor.
+     *
+     * @param other Matrix to copy from.
+     */
+    constexpr matrix(const matrix<4, 3, value_type>& other) noexcept;
 
+    /**
+     * @brief Initializes matrices with provided values.
+     *
+     * @param value00 Value for first column.
+     * @param value01 Value for first column.
+     * @param value02 Value for first column.
+     * @param value10 Value for second column.
+     * @param value11 Value for second column.
+     * @param value12 Value for second column.
+     * @param value20 Value for third column.
+     * @param value21 Value for third column.
+     * @param value22 Value for third column.
+     * @param value30 Value for fourth column.
+     * @param value31 Value for fourth column.
+     * @param value32 Value for fourth column.
+     */
+    // clang-format off
+    constexpr matrix(const T& value00, const T& value01, const T& value02,
+                     const T& value10, const T& value11, const T& value12,
+                     const T& value20, const T& value21, const T& value22,
+                     const T& value30, const T& value31, const T& value32);
+    // clang-format on
+
+    /**
+     * @brief Initialize the main diagonal of matrix with provided value.
+     *
+     * @param value Floating-point or integral value.
+     */
+    explicit constexpr matrix(const T& value) noexcept;
+
+    /**
+     * @brief Initializes all components of matrix from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr matrix(const U* const p)
-        : data{column_type(p), column_type(p + 3), column_type(p + 6), column_type(p + 9)}
-    {
-        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-    }
+    explicit constexpr matrix(const U* const pointer);
 
-    constexpr matrix(const T& v00,
-                     const T& v01,
-                     const T& v02,
-                     const T& v10,
-                     const T& v11,
-                     const T& v12,
-                     const T& v20,
-                     const T& v21,
-                     const T& v22,
-                     const T& v30,
-                     const T& v31,
-                     const T& v32)
-        : data{column_type(v00, v01, v02), column_type(v10, v11, v12), column_type(v20, v21, v22), column_type(v30, v31, v32)}
-    {
-    }
-
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     * @param column3 Vector for fourth column.
+     */
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr matrix(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2, const vector<4, U3>& v3)
-        : data{column_type(v0), column_type(v1), column_type(v2), column_type(v3)}
-    {
-    }
+    constexpr matrix(const vector<4, U0>& column0,
+                     const vector<4, U1>& column1,
+                     const vector<4, U2>& column2,
+                     const vector<4, U3>& column3);
 
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     * @param column3 Vector for fourth column.
+     */
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr matrix(const vector<3, U0>& v0, const vector<3, U1>& v1, const vector<3, U2>& v2, const vector<3, U3>& v3)
-        : data{column_type(v0), column_type(v1), column_type(v2), column_type(v3)}
-    {
-    }
+    constexpr matrix(const vector<3, U0>& column0,
+                     const vector<3, U1>& column1,
+                     const vector<3, U2>& column2,
+                     const vector<3, U3>& column3);
 
-    template <typename U00, typename S01, typename U10, typename S11, typename U20, typename S21, typename U30, typename S31>
-    constexpr matrix(const vector<2, U00>& v00,
-                     const S01& s01,
-                     const vector<2, U10>& v10,
-                     const S11& s11,
-                     const vector<2, U20>& v20,
-                     const S21& s21,
-                     const vector<2, U30>& v30,
-                     const S31& s31)
-        : data{column_type(v00, s01), column_type(v10, s11), column_type(v20, s21), column_type(v30, s31)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param vector0 First part for first column.
+     * @param z0 Z component for first column.
+     * @param vector1 First part for second column.
+     * @param z1 Z component for second column.
+     * @param vector2 First part for third column.
+     * @param z2 Z component for third column.
+     * @param vector3 First part for fourth column.
+     * @param z3 Z component for fourth column.
+     */
+    // clang-format off
+    template <typename U0, typename Z0,
+              typename U1, typename Z1,
+              typename U2, typename Z2,
+              typename U3, typename Z3>
+    constexpr matrix(const vector<2, U0>& vector0, const Z0& z0,
+                     const vector<2, U1>& vector1, const Z1& z1,
+                     const vector<2, U2>& vector2, const Z2& z2,
+                     const vector<2, U3>& vector3, const Z3& z3);
+    // clang-format on
 
-    template <typename S00, typename U01, typename S10, typename U11, typename S20, typename U21, typename S30, typename U31>
-    constexpr matrix(const S00& s00,
-                     const vector<2, U01>& v01,
-                     const S10& s10,
-                     const vector<2, U11>& v11,
-                     const S20& s20,
-                     const vector<2, U21>& v21,
-                     const S30& s30,
-                     const vector<2, U31>& v31)
-        : data{column_type(s00, v01), column_type(s10, v11), column_type(s20, v21), column_type(s30, v31)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param x0 X component for first column.
+     * @param vector0 Last part for first column.
+     * @param x1 X component for second column.
+     * @param vector1 Last part for second column.
+     * @param x2 X component for third column.
+     * @param vector2 Last part for third column.
+     * @param x3 X component for fourth column.
+     * @param vector3 Last part for fourth column.
+     */
+    // clang-format off
+    template <typename X0, typename U0,
+              typename X1, typename U1,
+              typename X2, typename U2,
+              typename X3, typename U3>
+    constexpr matrix(const X0& x0, const vector<2, U0>& vector0,
+                     const X1& x1, const vector<2, U1>& vector1,
+                     const X2& x2, const vector<2, U2>& vector2,
+                     const X3& x3, const vector<2, U3>& vector3);
+    // clang-format on
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1), column_type(other[3], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1), column_type(0, 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1), column_type(0, 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1), column_type(0, 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1), column_type(0, 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 2, U>& other);
 
-protected:
+private:
     column_type data[4];
 };
 
+/**
+ * @brief matrix<4, 2, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
+ */
 template <typename T>
-struct matrix<4, 2, T>
+struct matrix<4, 2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using ValueType   = T;
-    using column_type = vector<2, T>;
-    using RowType     = vector<4, T>;
+    using value_type  = T;            /**< Value type */
+    using column_type = vector<2, T>; /**< Column type */
+    using row_type    = vector<4, T>; /**< Row type */
 
-    explicit constexpr matrix(const T& v)
-        : data{column_type(v, 0), column_type(0, v), column_type(0, 0), column_type(0, 0)}
-    {
-    }
+    /**
+     * @brief Default constructor.
+     *
+     * Creates an identity matrix.
+     */
+    constexpr matrix() noexcept;
 
-    constexpr matrix()
-        : matrix(T(1))
-    {
-    }
+    /**
+     * @brief Default copy constructor.
+     *
+     * @param other Matrix to copy from.
+     */
+    constexpr matrix(const matrix<4, 2, value_type>& other) noexcept;
 
+    /**
+     * @brief Initializes matrices with provided values.
+     *
+     * @param value00 Value for first column.
+     * @param value01 Value for first column.
+     * @param value10 Value for second column.
+     * @param value11 Value for second column.
+     * @param value20 Value for third column.
+     * @param value21 Value for third column.
+     * @param value30 Value for fourth column.
+     * @param value31 Value for fourth column.
+     */
+    // clang-format off
+    constexpr matrix(const T& value00, const T& value01,
+                     const T& value10, const T& value11,
+                     const T& value20, const T& value21,
+                     const T& value30, const T& value31);
+    // clang-format on
+
+    /**
+     * @brief Initialize the main diagonal of matrix with provided value.
+     *
+     * @param value Floating-point or integral value.
+     */
+    explicit constexpr matrix(const T& value) noexcept;
+
+    /**
+     * @brief Initializes all components of matrix from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr matrix(const U* const p)
-        : data{column_type(p), column_type(p + 2), column_type(p + 4), column_type(p + 6)}
-    {
-        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-    }
+    explicit constexpr matrix(const U* const pointer);
 
-    constexpr matrix(const T& v00, const T& v01, const T& v10, const T& v11, const T& v20, const T& v21, const T& v30, const T& v31)
-        : data{column_type(v00, v01), column_type(v10, v11), column_type(v20, v21), column_type(v30, v31)}
-    {
-    }
-
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     * @param column3 Vector for fourth column.
+     */
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr matrix(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2, const vector<4, U3>& v3)
-        : data{column_type(v0), column_type(v1), column_type(v2), column_type(v3)}
-    {
-    }
+    constexpr matrix(const vector<4, U0>& column0,
+                     const vector<4, U1>& column1,
+                     const vector<4, U2>& column2,
+                     const vector<4, U3>& column3);
 
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     * @param column3 Vector for fourth column.
+     */
     template <typename U0, typename U1, typename U2, typename U3>
-    constexpr matrix(const vector<3, U0>& v0, const vector<3, U1>& v1, const vector<3, U2>& v2, const vector<3, U3>& v3)
-        : data{column_type(v0), column_type(v1), column_type(v2), column_type(v3)}
-    {
-    }
+    constexpr matrix(const vector<3, U0>& column0,
+                     const vector<3, U1>& column1,
+                     const vector<3, U2>& column2,
+                     const vector<3, U3>& column3);
 
-    template <typename U0, typename U1, typename U2, typename U3>
-    constexpr matrix(const vector<2, U0>& v0, const vector<2, U1>& v1, const vector<2, U2>& v2, const vector<2, U3>& v3)
-        : data{column_type(v0), column_type(v1), column_type(v2), column_type(v3)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     * @param column3 Vector for fourth column.
+     */
+    // clang-format off
+    template <typename U0,
+              typename U1,
+              typename U2,
+              typename U3>
+    constexpr matrix(const vector<2, U0>& column0,
+                     const vector<2, U1>& column1,
+                     const vector<2, U2>& column2,
+                     const vector<2, U3>& column3);
+    // clang-format on
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 2, U>& other);
 
-protected:
+private:
     column_type data[4];
 };
 
+/**
+ * @brief matrix<3, 4, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
+ */
 template <typename T>
-struct matrix<3, 4, T>
+struct matrix<3, 4, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using ValueType   = T;
-    using column_type = vector<4, T>;
-    using RowType     = vector<3, T>;
+    using value_type  = T;            /**< Value type */
+    using column_type = vector<4, T>; /**< Column type */
+    using row_type    = vector<3, T>; /**< Row type */
 
-    explicit constexpr matrix(const T& v)
-        : data{column_type(v, 0, 0, 0), column_type(0, v, 0, 0), column_type(0, 0, v, 0)}
-    {
-    }
+    /**
+     * @brief Default constructor.
+     *
+     * Creates an identity matrix.
+     */
+    constexpr matrix() noexcept;
 
-    constexpr matrix()
-        : matrix(T(1))
-    {
-    }
+    /**
+     * @brief Default copy constructor.
+     *
+     * @param other Matrix to copy from.
+     */
+    constexpr matrix(const matrix<3, 4, value_type>& other) noexcept;
 
+    /**
+     * @brief Initializes matrices with provided values.
+     *
+     * @param value00 Value for first column.
+     * @param value01 Value for first column.
+     * @param value02 Value for first column.
+     * @param value03 Value for first column.
+     * @param value10 Value for second column.
+     * @param value11 Value for second column.
+     * @param value12 Value for second column.
+     * @param value13 Value for second column.
+     * @param value20 Value for third column.
+     * @param value21 Value for third column.
+     * @param value22 Value for third column.
+     * @param value23 Value for third column.
+     */
+    // clang-format off
+    constexpr matrix(const T& value00, const T& value01, const T& value02, const T& value03,
+                     const T& value10, const T& value11, const T& value12, const T& value13,
+                     const T& value20, const T& value21, const T& value22, const T& value23);
+    // clang-format on
+
+    /**
+     * @brief Initialize the main diagonal of matrix with provided value.
+     *
+     * @param value Floating-point or integral value.
+     */
+    explicit constexpr matrix(const T& value) noexcept;
+
+    /**
+     * @brief Initializes all components of matrix from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr matrix(const U* const p)
-        : data{column_type(p), column_type(p + 4), column_type(p + 8)}
-    {
-        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-    }
+    explicit constexpr matrix(const U* const pointer);
 
-    constexpr matrix(const T& v00,
-                     const T& v01,
-                     const T& v02,
-                     const T& v03,
-                     const T& v10,
-                     const T& v11,
-                     const T& v12,
-                     const T& v13,
-                     const T& v20,
-                     const T& v21,
-                     const T& v22,
-                     const T& v23)
-        : data{column_type(v00, v01, v02, v03), column_type(v10, v11, v12, v13), column_type(v20, v21, v22, v23)}
-    {
-    }
-
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     */
     template <typename U0, typename U1, typename U2>
-    constexpr matrix(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2)
-        : data{column_type(v0), column_type(v1), column_type(v2)}
-    {
-    }
+    constexpr matrix(const vector<4, U0>& column0, const vector<4, U1>& column1, const vector<4, U2>& column2);
 
-    template <typename U0, typename U1, typename U2, typename X, typename Y, typename Z>
-    constexpr matrix(const vector<3, U0>& v0, const X& s0, const vector<3, U1>& v1, const Y& s1, const vector<3, U2>& v2, const Z& s2)
-        : data{column_type(v0, s0), column_type(v1, s1), column_type(v2, s2)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and scalar values.
+     *
+     * @param vector0 First part for first column.
+     * @param w0 Last component for first column.
+     * @param vector1 First part for second column.
+     * @param w1 Last component for second column.
+     * @param vector2 First part for third column.
+     * @param w2 Last component for third column.
+     */
+    // clang-format off
+    template <typename U0, typename W0,
+              typename U1, typename W1,
+              typename U2, typename W2>
+    constexpr matrix(const vector<3, U0>& vector0, const W0& w0,
+                     const vector<3, U1>& vector1, const W1& w1,
+                     const vector<3, U2>& vector2, const W2& w2);
+    // clang-format on
 
-    template <typename U0, typename U1, typename U2, typename X, typename Y, typename Z>
-    constexpr matrix(const X& s0, const vector<3, U0>& v0, const Y& s1, const vector<3, U1>& v1, const Z& s2, const vector<3, U2>& v2)
-        : data{column_type(s0, v0), column_type(s1, v1), column_type(s2, v2)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided scalar values and vectors.
+     *
+     * @param x0 First component for first column.
+     * @param vector0 Last part for first column.
+     * @param x1 First component for second column.
+     * @param vector1 Last part for second column.
+     * @param x2 First component for third column.
+     * @param vector2 Last part for third column.
+     */
+    // clang-format off
+    template <typename X0, typename U0,
+              typename X1, typename U1,
+              typename X2, typename U2>
+    constexpr matrix(const X0& x0, const vector<3, U0>& vector0,
+                     const X1& x1, const vector<3, U1>& vector1,
+                     const X2& x2, const vector<3, U2>& vector2);
+    // clang-format on
 
-    template <typename U00, typename U01, typename U10, typename U11, typename U20, typename U21>
-    constexpr matrix(const vector<2, U00>& v00,
-                     const vector<2, U01>& v01,
-                     const vector<2, U10>& v10,
-                     const vector<2, U11>& v11,
-                     const vector<2, U20>& v20,
-                     const vector<2, U21>& v21)
-        : data{column_type(v00, v01), column_type(v10, v11), column_type(v20, v21)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param vector00 First part for first column.
+     * @param vector01 Last part for first column.
+     * @param vector10 First part for second column.
+     * @param vector11 Last part for second column.
+     * @param vector20 First part for third column.
+     * @param vector21 Last part for third column.
+     */
+    // clang-format off
+    template <typename U00, typename U01,
+              typename U10, typename U11,
+              typename U20, typename U21>
+    constexpr matrix(const vector<2, U00>& vector00, const vector<2, U01>& vector01,
+                     const vector<2, U10>& vector10, const vector<2, U11>& vector11,
+                     const vector<2, U20>& vector20, const vector<2, U21>& vector21);
+    // clang-format on
 
-    template <typename U00, typename S01, typename S02, typename U10, typename S11, typename S12, typename U20, typename S21, typename S22>
-    constexpr matrix(const vector<2, U00>& v00,
-                     const S01& s01,
-                     const S02& s02,
-                     const vector<2, U10>& v10,
-                     const S11& s11,
-                     const S12& s12,
-                     const vector<2, U20>& v20,
-                     const S21& s21,
-                     const S22& s22)
-        : data{column_type(v00, s01, s02), column_type(v10, s11, s12), column_type(v20, s21, s22)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param vector0 First part for first column.
+     * @param z0 Z component for first column.
+     * @param w0 W component for first column.
+     * @param vector1 First part for second column.
+     * @param z1 Z component for second column.
+     * @param w1 W component for second column.
+     * @param vector2 First part for third column.
+     * @param z2 Z component for third column.
+     * @param w2 W component for third column.
+     */
+    // clang-format off
+    template <typename U0, typename Z0, typename W0,
+              typename U1, typename Z1, typename W1,
+              typename U2, typename Z2, typename W2>
+    constexpr matrix(const vector<2, U0>& vector0, const Z0& z0, const W0& w0,
+                     const vector<2, U1>& vector1, const Z1& z1, const W1& w1,
+                     const vector<2, U2>& vector2, const Z2& z2, const W2& w2);
+    // clang-format on
 
-    template <typename S00, typename U01, typename S02, typename S10, typename U11, typename S12, typename S20, typename U21, typename S22>
-    constexpr matrix(const S00& s00,
-                     const vector<2, U01>& v01,
-                     const S02& s02,
-                     const S10& s10,
-                     const vector<2, U11>& v11,
-                     const S12& s12,
-                     const S20& s20,
-                     const vector<2, U21>& v21,
-                     const S22& s22)
-        : data{column_type(s00, v01, s02), column_type(s10, v11, s12), column_type(s20, v21, s22)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param x0 X component for first column.
+     * @param vector0 Middle part for first column.
+     * @param w0 W component for first column.
+     * @param x1 X component for second column.
+     * @param vector1 Middle part for second column.
+     * @param w1 W component for second column.
+     * @param x2 X component for third column.
+     * @param vector2 Middle part for third column.
+     * @param w2 W component for third column.
+     */
+    // clang-format off
+    template <typename X0, typename U0, typename W0,
+              typename X1, typename U1, typename W1,
+              typename X2, typename U2, typename W2>
+    constexpr matrix(const X0& x0, const vector<2, U0>& vector0, const W0& w0,
+                     const X1& x1, const vector<2, U1>& vector1, const W1& w1,
+                     const X2& x2, const vector<2, U2>& vector2, const W2& w2);
+    // clang-format on
 
-    template <typename S00, typename S01, typename U02, typename S10, typename S11, typename U12, typename S20, typename S21, typename U22>
-    constexpr matrix(const S00& s00,
-                     const S01& s01,
-                     const vector<2, U02>& v02,
-                     const S10& s10,
-                     const S11& s11,
-                     const vector<2, U12>& v12,
-                     const S20& s20,
-                     const S21& s21,
-                     const vector<2, U22>& v22)
-        : data{column_type(s00, s01, v02), column_type(s10, s11, v12), column_type(s20, s21, v22)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param x0 X component for first column.
+     * @param y0 Y component for first column.
+     * @param vector0 Last part for first column.
+     * @param x1 X component for second column.
+     * @param y1 Y component for second column.
+     * @param vector1 Last part for second column.
+     * @param x2 X component for third column.
+     * @param y2 Y component for third column.
+     * @param vector2 Last part for third column.
+     */
+    // clang-format off
+    template <typename X0, typename Y0, typename U0,
+              typename X1, typename Y1, typename U1,
+              typename X2, typename Y2, typename U2>
+    constexpr matrix(const X0& x0, const Y0& y0, const vector<2, U0>& vector0,
+                     const X1& x1, const Y1& y1, const vector<2, U1>& vector1,
+                     const X2& x2, const Y2& y2, const vector<2, U2>& vector2);
+    // clang-format on
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 3, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 2, U>& other)
-        : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 3, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 2, U>& other)
-        : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 3, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 2, U>& other)
-        : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(0, 0, 1, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 2, U>& other);
 
-protected:
-    column_type data[3];
+private:
+    column_type data[4];
 };
 
+/**
+ * @brief matrix<3, 3, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
+ */
 template <typename T>
-struct matrix<3, 3, T>
+struct matrix<3, 3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using ValueType   = T;
-    using column_type = vector<3, T>;
-    using RowType     = vector<3, T>;
+    using value_type  = T;            /**< Value type */
+    using column_type = vector<3, T>; /**< Column type */
+    using row_type    = vector<3, T>; /**< Row type */
 
-    explicit constexpr matrix(const T& v)
-        : data{column_type(v, 0, 0), column_type(0, v, 0), column_type(0, 0, v)}
-    {
-    }
+    /**
+     * @brief Default constructor.
+     *
+     * Creates an identity matrix.
+     */
+    constexpr matrix() noexcept;
 
-    constexpr matrix()
-        : matrix(T(1))
-    {
-    }
+    /**
+     * @brief Default copy constructor.
+     *
+     * @param other Matrix to copy from.
+     */
+    constexpr matrix(const matrix<3, 3, value_type>& other) noexcept;
 
+    /**
+     * @brief Initializes matrices with provided values.
+     *
+     * @param value00 Value for first column.
+     * @param value01 Value for first column.
+     * @param value02 Value for first column.
+     * @param value10 Value for second column.
+     * @param value11 Value for second column.
+     * @param value12 Value for second column.
+     * @param value20 Value for third column.
+     * @param value21 Value for third column.
+     * @param value22 Value for third column.
+     */
+    // clang-format off
+    constexpr matrix(const T& value00, const T& value01, const T& value02,
+                     const T& value10, const T& value11, const T& value12,
+                     const T& value20, const T& value21, const T& value22);
+    // clang-format on
+
+    /**
+     * @brief Initialize the main diagonal of matrix with provided value.
+     *
+     * @param value Floating-point or integral value.
+     */
+    explicit constexpr matrix(const T& value) noexcept;
+
+    /**
+     * @brief Initializes all components of matrix from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr matrix(const U* const p)
-        : data{column_type(p), column_type(p + 3), column_type(p + 6)}
-    {
-        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-    }
+    explicit constexpr matrix(const U* const pointer);
 
-    constexpr matrix(const T& v00,
-                     const T& v01,
-                     const T& v02,
-                     const T& v10,
-                     const T& v11,
-                     const T& v12,
-                     const T& v20,
-                     const T& v21,
-                     const T& v22)
-        : data{column_type(v00, v01, v02), column_type(v10, v11, v12), column_type(v20, v21, v22)}
-    {
-    }
-
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     */
     template <typename U0, typename U1, typename U2>
-    constexpr matrix(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2)
-        : data{column_type(v0), column_type(v1), column_type(v2)}
-    {
-    }
+    constexpr matrix(const vector<4, U0>& column0, const vector<4, U1>& column1, const vector<4, U2>& column2);
 
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     */
     template <typename U0, typename U1, typename U2>
-    constexpr matrix(const vector<3, U0>& v0, const vector<3, U1>& v1, const vector<3, U2>& v2)
-        : data{column_type(v0), column_type(v1), column_type(v2)}
-    {
-    }
+    constexpr matrix(const vector<3, U0>& column0, const vector<3, U1>& column1, const vector<3, U2>& column2);
 
-    template <typename U00, typename S01, typename U10, typename S11, typename U20, typename S21>
-    constexpr matrix(const vector<2, U00>& v00,
-                     const S01& s01,
-                     const vector<2, U10>& v10,
-                     const S11& s11,
-                     const vector<2, U20>& v20,
-                     const S21& s21)
-        : data{column_type(v00, s01), column_type(v10, s11), column_type(v20, s21)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param vector0 First part for first column.
+     * @param z0 Z component for first column.
+     * @param vector1 First part for second column.
+     * @param z1 Z component for second column.
+     * @param vector2 First part for third column.
+     * @param z2 Z component for third column.
+     */
+    // clang-format off
+    template <typename U0, typename Z0,
+              typename U1, typename Z1,
+              typename U2, typename Z2>
+    constexpr matrix(const vector<2, U0>& vector0, const Z0& z0,
+                     const vector<2, U1>& vector1, const Z1& z1,
+                     const vector<2, U2>& vector2, const Z2& z2);
+    // clang-format on
 
-    template <typename S00, typename U01, typename S10, typename U11, typename S20, typename U21>
-    constexpr matrix(const S00& s00,
-                     const vector<2, U01>& v01,
-                     const S10& s10,
-                     const vector<2, U11>& v11,
-                     const S20& s20,
-                     const vector<2, U21>& v21)
-        : data{column_type(s00, v01), column_type(s10, v11), column_type(s20, v21)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param x0 X component for first column.
+     * @param vector0 Last part for first column.
+     * @param x1 X component for second column.
+     * @param vector1 Last part for second column.
+     * @param x2 X component for third column.
+     * @param vector2 Last part for third column.
+     */
+    // clang-format off
+    template <typename X0, typename U0,
+              typename X1, typename U1,
+              typename X2, typename U2>
+    constexpr matrix(const X0& x0, const vector<2, U0>& vector0,
+                     const X1& x1, const vector<2, U1>& vector1,
+                     const X2& x2, const vector<2, U2>& vector2);
+    // clang-format on
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1)}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 2, U>& other);
 
-protected:
-    column_type data[3];
+private:
+    column_type data[4];
 };
 
+/**
+ * @brief matrix<3, 2, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
+ */
 template <typename T>
-struct matrix<3, 2, T>
+struct matrix<3, 2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using ValueType   = T;
-    using column_type = vector<2, T>;
-    using RowType     = vector<3, T>;
+    using value_type  = T;            /**< Value type */
+    using column_type = vector<2, T>; /**< Column type */
+    using row_type    = vector<3, T>; /**< Row type */
 
-    explicit constexpr matrix(const T& v)
-        : data{column_type(v, 0), column_type(0, v), column_type(0, 0)}
-    {
-    }
+    /**
+     * @brief Default constructor.
+     *
+     * Creates an identity matrix.
+     */
+    constexpr matrix() noexcept;
 
-    constexpr matrix()
-        : matrix(T(1))
-    {
-    }
+    /**
+     * @brief Default copy constructor.
+     *
+     * @param other Matrix to copy from.
+     */
+    constexpr matrix(const matrix<3, 2, value_type>& other) noexcept;
 
+    /**
+     * @brief Initializes matrices with provided values.
+     *
+     * @param value00 Value for first column.
+     * @param value01 Value for first column.
+     * @param value10 Value for second column.
+     * @param value11 Value for second column.
+     * @param value20 Value for third column.
+     * @param value21 Value for third column.
+     */
+    // clang-format off
+    constexpr matrix(const T& value00, const T& value01,
+                     const T& value10, const T& value11,
+                     const T& value20, const T& value21);
+    // clang-format on
+
+    /**
+     * @brief Initialize the main diagonal of matrix with provided value.
+     *
+     * @param value Floating-point or integral value.
+     */
+    explicit constexpr matrix(const T& value) noexcept;
+
+    /**
+     * @brief Initializes all components of matrix from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr matrix(const U* const p)
-        : data{column_type(p), column_type(p + 2), column_type(p + 4)}
-    {
-        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-    }
+    explicit constexpr matrix(const U* const pointer);
 
-    constexpr matrix(const T& v00, const T& v01, const T& v10, const T& v11, const T& v20, const T& v21)
-        : data{column_type(v00, v01), column_type(v10, v11), column_type(v20, v21)}
-    {
-    }
-
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     */
     template <typename U0, typename U1, typename U2>
-    constexpr matrix(const vector<4, U0>& v0, const vector<4, U1>& v1, const vector<4, U2>& v2)
-        : data{column_type(v0), column_type(v1), column_type(v2)}
-    {
-    }
+    constexpr matrix(const vector<4, U0>& column0, const vector<4, U1>& column1, const vector<4, U2>& column2);
 
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     */
     template <typename U0, typename U1, typename U2>
-    constexpr matrix(const vector<3, U0>& v0, const vector<3, U1>& v1, const vector<3, U2>& v2)
-        : data{column_type(v0), column_type(v1), column_type(v2)}
-    {
-    }
+    constexpr matrix(const vector<3, U0>& column0, const vector<3, U1>& column1, const vector<3, U2>& column2);
 
-    template <typename U0, typename U1, typename U2>
-    constexpr matrix(const vector<2, U0>& v0, const vector<2, U1>& v1, const vector<2, U2>& v2)
-        : data{column_type(v0), column_type(v1), column_type(v2)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     * @param column2 Vector for third column.
+     */
+    // clang-format off
+    template <typename U0,
+              typename U1,
+              typename U2>
+    constexpr matrix(const vector<2, U0>& column0,
+                     const vector<2, U1>& column1,
+                     const vector<2, U2>& column2);
+    // clang-format on
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 2, U>& other);
 
-protected:
-    column_type data[3];
+private:
+    column_type data[4];
 };
 
+
+/**
+ * @brief matrix<2, 4, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
+ */
 template <typename T>
-struct matrix<2, 4, T>
+struct matrix<2, 4, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using ValueType   = T;
-    using column_type = vector<4, T>;
-    using RowType     = vector<2, T>;
+    using value_type  = T;            /**< Value type */
+    using column_type = vector<4, T>; /**< Column type */
+    using row_type    = vector<2, T>; /**< Row type */
 
-    explicit constexpr matrix(const T& v)
-        : data{column_type(v, 0, 0, 0), column_type(0, v, 0, 0)}
-    {
-    }
+    /**
+     * @brief Default constructor.
+     *
+     * Creates an identity matrix.
+     */
+    constexpr matrix() noexcept;
 
-    constexpr matrix()
-        : matrix(T(1))
-    {
-    }
+    /**
+     * @brief Default copy constructor.
+     *
+     * @param other Matrix to copy from.
+     */
+    constexpr matrix(const matrix<2, 4, value_type>& other) noexcept;
 
+    /**
+     * @brief Initializes matrices with provided values.
+     *
+     * @param value00 Value for first column.
+     * @param value01 Value for first column.
+     * @param value02 Value for first column.
+     * @param value03 Value for first column.
+     * @param value10 Value for second column.
+     * @param value11 Value for second column.
+     * @param value12 Value for second column.
+     * @param value13 Value for second column.
+     */
+    // clang-format off
+    constexpr matrix(const T& value00, const T& value01, const T& value02, const T& value03,
+                     const T& value10, const T& value11, const T& value12, const T& value13);
+    // clang-format on
+
+    /**
+     * @brief Initialize the main diagonal of matrix with provided value.
+     *
+     * @param value Floating-point or integral value.
+     */
+    explicit constexpr matrix(const T& value) noexcept;
+
+    /**
+     * @brief Initializes all components of matrix from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr matrix(const U* const p)
-        : data{column_type(p), column_type(p + 4)}
-    {
-        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-    }
+    explicit constexpr matrix(const U* const pointer);
 
-    constexpr matrix(const T& v00, const T& v01, const T& v02, const T& v03, const T& v10, const T& v11, const T& v12, const T& v13)
-        : data{column_type(v00, v01, v02, v03), column_type(v10, v11, v12, v13)}
-    {
-    }
-
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     */
     template <typename U0, typename U1>
-    constexpr matrix(const vector<4, U0>& v0, const vector<4, U1>& v1)
-        : data{column_type(v0), column_type(v1)}
-    {
-    }
+    constexpr matrix(const vector<4, U0>& column0, const vector<4, U1>& column1);
 
-    template <typename U0, typename U1, typename X, typename Y>
-    constexpr matrix(const vector<3, U0>& v0, const X& s0, const vector<3, U1>& v1, const Y& s1)
-        : data{column_type(v0, s0), column_type(v1, s1)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and scalar values.
+     *
+     * @param vector0 First part for first column.
+     * @param w0 Last component for first column.
+     * @param vector1 First part for second column.
+     * @param w1 Last component for second column.
+     */
+    // clang-format off
+    template <typename U0, typename W0,
+              typename U1, typename W1>
+    constexpr matrix(const vector<3, U0>& vector0, const W0& w0,
+                     const vector<3, U1>& vector1, const W1& w1);
+    // clang-format on
 
-    template <typename U0, typename U1, typename X, typename Y>
-    constexpr matrix(const X& s0, const vector<3, U0>& v0, const Y& s1, const vector<3, U1>& v1)
-        : data{column_type(s0, v0), column_type(s1, v1)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided scalar values and vectors.
+     *
+     * @param x0 First component for first column.
+     * @param vector0 Last part for first column.
+     * @param x1 First component for second column.
+     * @param vector1 Last part for second column.
+     */
+    // clang-format off
+    template <typename X0, typename U0,
+              typename X1, typename U1>
+    constexpr matrix(const X0& x0, const vector<3, U0>& vector0,
+                     const X1& x1, const vector<3, U1>& vector1);
+    // clang-format on
 
-    template <typename U00, typename U01, typename U10, typename U11>
-    constexpr matrix(const vector<2, U00>& v00, const vector<2, U01>& v01, const vector<2, U10>& v10, const vector<2, U11>& v11)
-        : data{column_type(v00, v01), column_type(v10, v11)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param vector00 First part for first column.
+     * @param vector01 Last part for first column.
+     * @param vector10 First part for second column.
+     * @param vector11 Last part for second column.
+     */
+    // clang-format off
+    template <typename U00, typename U01,
+              typename U10, typename U11>
+    constexpr matrix(const vector<2, U00>& vector00, const vector<2, U01>& vector01,
+                     const vector<2, U10>& vector10, const vector<2, U11>& vector11);
+    // clang-format on
 
-    template <typename U00, typename S01, typename S02, typename U10, typename S11, typename S12>
-    constexpr matrix(const vector<2, U00>& v00, const S01& s01, const S02& s02, const vector<2, U10>& v10, const S11& s11, const S12& s12)
-        : data{column_type(v00, s01, s02), column_type(v10, s11, s12)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param vector0 First part for first column.
+     * @param z0 Z component for first column.
+     * @param w0 W component for first column.
+     * @param vector1 First part for second column.
+     * @param z1 Z component for second column.
+     * @param w1 W component for second column.
+     */
+    // clang-format off
+    template <typename U0, typename Z0, typename W0,
+              typename U1, typename Z1, typename W1>
+    constexpr matrix(const vector<2, U0>& vector0, const Z0& z0, const W0& w0,
+                     const vector<2, U1>& vector1, const Z1& z1, const W1& w1);
+    // clang-format on
 
-    template <typename S00, typename U01, typename S02, typename S10, typename U11, typename S12>
-    constexpr matrix(const S00& s00, const vector<2, U01>& v01, const S02& s02, const S10& s10, const vector<2, U11>& v11, const S12& s12)
-        : data{column_type(s00, v01, s02), column_type(s10, v11, s12)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param x0 X component for first column.
+     * @param vector0 Middle part for first column.
+     * @param w0 W component for first column.
+     * @param x1 X component for second column.
+     * @param vector1 Middle part for second column.
+     * @param w1 W component for second column.
+     */
+    // clang-format off
+    template <typename X0, typename U0, typename W0,
+              typename X1, typename U1, typename W1>
+    constexpr matrix(const X0& x0, const vector<2, U0>& vector0, const W0& w0,
+                     const X1& x1, const vector<2, U1>& vector1, const W1& w1);
+    // clang-format on
 
-    template <typename S00, typename S01, typename U02, typename S10, typename S11, typename U12>
-    constexpr matrix(const S00& s00,
-                     const S01& s01,
-                     const vector<2, U02>& v02,
-                     const S10& s10,
-                     const S11& s11,
-                     const vector<2, U12>& v12)
-        : data{column_type(s00, s01, v02), column_type(s10, s11, v12)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param x0 X component for first column.
+     * @param y0 Y component for first column.
+     * @param vector0 Last part for first column.
+     * @param x1 X component for second column.
+     * @param y1 Y component for second column.
+     * @param vector1 Last part for second column.
+     */
+    // clang-format off
+    template <typename X0, typename Y0, typename U0,
+              typename X1, typename Y1, typename U1>
+    constexpr matrix(const X0& x0, const Y0& y0, const vector<2, U0>& vector0,
+                     const X1& x1, const Y1& y1, const vector<2, U1>& vector1);
+    // clang-format on
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 3, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 2, U>& other)
-        : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 3, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 2, U>& other)
-        : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 3, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 2, U>& other)
-        : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 2, U>& other);
 
-protected:
-    column_type data[2];
+private:
+    column_type data[4];
 };
 
+/**
+ * @brief matrix<2, 3, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
+ */
 template <typename T>
-struct matrix<2, 3, T>
+struct matrix<2, 3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using ValueType   = T;
-    using column_type = vector<3, T>;
-    using RowType     = vector<2, T>;
+    using value_type  = T;            /**< Value type */
+    using column_type = vector<3, T>; /**< Column type */
+    using row_type    = vector<2, T>; /**< Row type */
 
-    explicit constexpr matrix(const T& v)
-        : data{column_type(v, 0, 0), column_type(0, v, 0)}
-    {
-    }
+    /**
+     * @brief Default constructor.
+     *
+     * Creates an identity matrix.
+     */
+    constexpr matrix() noexcept;
 
-    constexpr matrix()
-        : matrix(T(1))
-    {
-    }
+    /**
+     * @brief Default copy constructor.
+     *
+     * @param other Matrix to copy from.
+     */
+    constexpr matrix(const matrix<2, 3, value_type>& other) noexcept;
 
+    /**
+     * @brief Initializes matrices with provided values.
+     *
+     * @param value00 Value for first column.
+     * @param value01 Value for first column.
+     * @param value02 Value for first column.
+     * @param value10 Value for second column.
+     * @param value11 Value for second column.
+     * @param value12 Value for second column.
+     */
+    // clang-format off
+    constexpr matrix(const T& value00, const T& value01, const T& value02,
+                     const T& value10, const T& value11, const T& value12);
+    // clang-format on
+
+    /**
+     * @brief Initialize the main diagonal of matrix with provided value.
+     *
+     * @param value Floating-point or integral value.
+     */
+    explicit constexpr matrix(const T& value) noexcept;
+
+    /**
+     * @brief Initializes all components of matrix from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr matrix(const U* const p)
-        : data{column_type(p), column_type(p + 3)}
-    {
-        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-    }
+    explicit constexpr matrix(const U* const pointer);
 
-    constexpr matrix(const T& v00, const T& v01, const T& v02, const T& v10, const T& v11, const T& v12)
-        : data{column_type(v00, v01, v02), column_type(v10, v11, v12)}
-    {
-    }
-
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     */
     template <typename U0, typename U1>
-    constexpr matrix(const vector<4, U0>& v0, const vector<4, U1>& v1)
-        : data{column_type(v0), column_type(v1)}
-    {
-    }
+    constexpr matrix(const vector<4, U0>& column0, const vector<4, U1>& column1);
 
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     */
     template <typename U0, typename U1>
-    constexpr matrix(const vector<3, U0>& v0, const vector<3, U1>& v1)
-        : data{column_type(v0), column_type(v1)}
-    {
-    }
+    constexpr matrix(const vector<3, U0>& column0, const vector<3, U1>& column1);
 
-    template <typename U00, typename S01, typename U10, typename S11>
-    constexpr matrix(const vector<2, U00>& v00, const S01& s01, const vector<2, U10>& v10, const S11& s11)
-        : data{column_type(v00, s01), column_type(v10, s11)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param vector0 First part for first column.
+     * @param z0 Z component for first column.
+     * @param vector1 First part for second column.
+     * @param z1 Z component for second column.
+     */
+    // clang-format off
+    template <typename U0, typename Z0,
+              typename U1, typename Z1>
+    constexpr matrix(const vector<2, U0>& vector0, const Z0& z0,
+                     const vector<2, U1>& vector1, const Z1& z1);
+    // clang-format on
 
-    template <typename S00, typename U01, typename S10, typename U11>
-    constexpr matrix(const S00& s00, const vector<2, U01>& v01, const S10& s10, const vector<2, U11>& v11)
-        : data{column_type(s00, v01), column_type(s10, v11)}
-    {
-    }
+    /**
+     * @brief Initializes matrices with provided vectors and values.
+     *
+     * @param x0 X component for first column.
+     * @param vector0 Last part for first column.
+     * @param x1 X component for second column.
+     * @param vector1 Last part for second column.
+     */
+    // clang-format off
+    template <typename X0, typename U0,
+              typename X1, typename U1>
+    constexpr matrix(const X0& x0, const vector<2, U0>& vector0,
+                     const X1& x1, const vector<2, U1>& vector1);
+    // clang-format on
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 2, U>& other)
-        : data{column_type(other[0], 0), column_type(other[1], 0)}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 2, U>& other);
 
-protected:
-    column_type data[2];
+private:
+    column_type data[4];
 };
 
+/**
+ * @brief matrix<2, 2, T> type specialization.
+ *
+ * @note Can be instantiated only with arithmetic type.
+ */
 template <typename T>
-struct matrix<2, 2, T>
+struct matrix<2, 2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using ValueType   = T;
-    using column_type = vector<2, T>;
-    using RowType     = vector<2, T>;
+    using value_type  = T;            /**< Value type */
+    using column_type = vector<2, T>; /**< Column type */
+    using row_type    = vector<2, T>; /**< Row type */
 
-    explicit constexpr matrix(const T& v)
-        : data{column_type(v, 0), column_type(0, v)}
-    {
-    }
+    /**
+     * @brief Default constructor.
+     *
+     * Creates an identity matrix.
+     */
+    constexpr matrix() noexcept;
 
-    constexpr matrix()
-        : matrix(T(1))
-    {
-    }
+    /**
+     * @brief Default copy constructor.
+     *
+     * @param other Matrix to copy from.
+     */
+    constexpr matrix(const matrix<2, 2, value_type>& other) noexcept;
 
+    /**
+     * @brief Initializes matrices with provided values.
+     *
+     * @param value00 Value for first column.
+     * @param value01 Value for first column.
+     * @param value10 Value for second column.
+     * @param value11 Value for second column.
+     */
+    constexpr matrix(const T& value00, const T& value01, const T& value10, const T& value11);
+
+    /**
+     * @brief Initialize the main diagonal of matrix with provided value.
+     *
+     * @param value Floating-point or integral value.
+     */
+    explicit constexpr matrix(const T& value) noexcept;
+
+    /**
+     * @brief Initializes all components of matrix from pointer to values.
+     *
+     * @param pointer Pointer to values that should be taken.
+     *
+     * @warning May cause memory access error.
+     */
     template <typename U>
-    explicit constexpr matrix(const U* const p)
-        : data{column_type(p), column_type(p + 2)}
-    {
-        static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-    }
+    explicit constexpr matrix(const U* const pointer);
 
-    constexpr matrix(const T& v00, const T& v01, const T& v10, const T& v11)
-        : data{column_type(v00, v01), column_type(v10, v11)}
-    {
-    }
-
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     */
     template <typename U0, typename U1>
-    constexpr matrix(const vector<4, U0>& v0, const vector<4, U1>& v1)
-        : data{column_type(v0), column_type(v1)}
-    {
-    }
+    constexpr matrix(const vector<4, U0>& column0, const vector<4, U1>& column1);
 
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     */
     template <typename U0, typename U1>
-    constexpr matrix(const vector<3, U0>& v0, const vector<3, U1>& v1)
-        : data{column_type(v0), column_type(v1)}
-    {
-    }
+    constexpr matrix(const vector<3, U0>& column0, const vector<3, U1>& column1);
 
+    /**
+     * @brief Initializes matrices with provided vectors.
+     *
+     * @param column0 Vector for first column.
+     * @param column1 Vector for second column.
+     */
     template <typename U0, typename U1>
-    constexpr matrix(const vector<2, U0>& v0, const vector<2, U1>& v1)
-        : data{column_type(v0), column_type(v1)}
-    {
-    }
+    constexpr matrix(const vector<2, U0>& column0, const vector<2, U1>& column1);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<4, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<4, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<3, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<3, 2, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 4, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 4, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 3, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 3, U>& other);
 
+    /**
+     * @brief Initializes matrix from another one.
+     *
+     * @param other Matrix of integral or floating-point type.
+     *
+     * @note The remain components will be initialized as in identity matrix.
+     */
     template <typename U>
-    explicit constexpr matrix(const matrix<2, 2, U>& other)
-        : data{column_type(other[0]), column_type(other[1])}
-    {
-    }
+    explicit constexpr matrix(const matrix<2, 2, U>& other);
 
-protected:
-    column_type data[2];
+private:
+    column_type data[4];
 };
 /**
  * @}
  */
-
 
 /**
  * @name matrix<4, 4, T> constructors.
@@ -1619,13 +2373,1277 @@ inline constexpr matrix<4, 4, T>::matrix(const matrix<2, 2, U>& other)
  * @}
  */
 
-
-// default constructor
-template <unsigned int C, unsigned int R, typename T>
-constexpr matrix<C, R, T>::matrix()
-    : BaseType()
+/**
+ * @name matrix<4, 3, T> constructors.
+ * @{
+ */
+template <typename T>
+inline constexpr matrix<4, 3, T>::matrix() noexcept
+    : matrix(T{1})
 {
 }
+
+template <typename T>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 3, T>& other) noexcept = default;
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<4, 3, T>::matrix(const T& value00, const T& value01, const T& value02,
+                                         const T& value10, const T& value11, const T& value12,
+                                         const T& value20, const T& value21, const T& value22,
+                                         const T& value30, const T& value31, const T& value32)
+    : data{column_type(value00, value01, value02),
+           column_type(value10, value11, value12),
+           column_type(value20, value21, value22),
+           column_type(value30, value31, value32)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<4, 3, T>::matrix(const T& value) noexcept
+    : data{column_type(value, 0, 0),
+           column_type(0, value, 0),
+           column_type(0, 0, value),
+           column_type(0, 0, 0)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const U* const pointer)
+    : data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6), column_type(pointer + 9)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U0, typename U1, typename U2, typename U3>
+inline constexpr matrix<4, 3, T>::matrix(const vector<4, U0>& column0,
+                                         const vector<4, U1>& column1,
+                                         const vector<4, U2>& column2,
+                                         const vector<4, U3>& column3)
+    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+{
+}
+
+template <typename T>
+template <typename U0, typename U1, typename U2, typename U3>
+inline constexpr matrix<4, 3, T>::matrix(const vector<3, U0>& column0,
+                                         const vector<3, U1>& column1,
+                                         const vector<3, U2>& column2,
+                                         const vector<3, U3>& column3)
+    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+{
+}
+
+// clang-format off
+template <typename T>
+template <typename U0, typename Z0,
+          typename U1, typename Z1,
+          typename U2, typename Z2,
+          typename U3, typename Z3>
+inline constexpr matrix<4, 3, T>::matrix(const vector<2, U0>& vector0, const Z0& z0,
+                                         const vector<2, U1>& vector1, const Z1& z1,
+                                         const vector<2, U2>& vector2, const Z2& z2,
+                                         const vector<2, U3>& vector3, const Z3& z3)
+    : data{column_type(vector0, z0),
+           column_type(vector1, z1),
+           column_type(vector2, z2),
+           column_type(vector3, z3)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename U0,
+          typename X1, typename U1,
+          typename X2, typename U2,
+          typename X3, typename U3>
+inline constexpr matrix<4, 3, T>::matrix(const X0& x0, const vector<2, U0>& vector0,
+                                         const X1& x1, const vector<2, U1>& vector1,
+                                         const X2& x2, const vector<2, U2>& vector2,
+                                         const X3& x3, const vector<2, U3>& vector3)
+    : data{column_type(x0, vector0),
+           column_type(x1, vector1),
+           column_type(x2, vector2),
+           column_type(x3, vector3)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1), column_type(other[3], 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<3, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<3, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<3, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1), column_type(0, 0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<2, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1), column_type(0, 0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<2, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1), column_type(0, 0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 3, T>::matrix(const matrix<2, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1), column_type(0, 0, 0)}
+{
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<4, 2, T> constructors.
+ * @{
+ */
+template <typename T>
+inline constexpr matrix<4, 2, T>::matrix() noexcept
+    : matrix(T{1})
+{
+}
+
+template <typename T>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 2, T>& other) noexcept = default;
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<4, 2, T>::matrix(const T& value00, const T& value01,
+                                         const T& value10, const T& value11,
+                                         const T& value20, const T& value21,
+                                         const T& value30, const T& value31)
+    : data{column_type(value00, value01),
+           column_type(value10, value11),
+           column_type(value20, value21),
+           column_type(value30, value31)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<4, 2, T>::matrix(const T& value) noexcept
+    : data{column_type(value, 0),
+           column_type(0, value),
+           column_type(0, 0),
+           column_type(0, 0)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const U* const pointer)
+    : data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4), column_type(pointer + 6)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U0, typename U1, typename U2, typename U3>
+inline constexpr matrix<4, 2, T>::matrix(const vector<4, U0>& column0,
+                                         const vector<4, U1>& column1,
+                                         const vector<4, U2>& column2,
+                                         const vector<4, U3>& column3)
+    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+{
+}
+
+template <typename T>
+template <typename U0, typename U1, typename U2, typename U3>
+inline constexpr matrix<4, 2, T>::matrix(const vector<3, U0>& column0,
+                                         const vector<3, U1>& column1,
+                                         const vector<3, U2>& column2,
+                                         const vector<3, U3>& column3)
+    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+{
+}
+
+template <typename T>
+template <typename U0, typename U1, typename U2, typename U3>
+inline constexpr matrix<4, 2, T>::matrix(const vector<2, U0>& column0,
+                                         const vector<2, U1>& column1,
+                                         const vector<2, U2>& column2,
+                                         const vector<2, U3>& column3)
+    : data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(other[3])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<3, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<3, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<3, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2]), column_type(0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<2, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<2, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<4, 2, T>::matrix(const matrix<2, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0), column_type(0, 0)}
+{
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 4, T> constructors.
+ * @{
+ */
+template <typename T>
+inline constexpr matrix<3, 4, T>::matrix() noexcept
+    : matrix(T{1})
+{
+}
+
+template <typename T>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 4, T>& other) noexcept = default;
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<3, 4, T>::matrix(const T& value00, const T& value01, const T& value02, const T& value03,
+                                         const T& value10, const T& value11, const T& value12, const T& value13,
+                                         const T& value20, const T& value21, const T& value22, const T& value23)
+    : data{column_type(value00, value01, value02, value03),
+           column_type(value10, value11, value12, value13),
+           column_type(value20, value21, value22, value23)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<3, 4, T>::matrix(const T& value) noexcept
+    : data{column_type(value, 0, 0, 0),
+           column_type(0, value, 0, 0),
+           column_type(0, 0, value, 0)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const U* const pointer)
+    : data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+// clang-format off
+template <typename T>
+template <typename U0, typename U1, typename U2>
+inline constexpr matrix<3, 4, T>::matrix(const vector<4, U0>& column0,
+                                         const vector<4, U1>& column1,
+                                         const vector<4, U2>& column2)
+    : data{column_type(column0), column_type(column1), column_type(column2)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename U0, typename W0,
+          typename U1, typename W1,
+          typename U2, typename W2>
+inline constexpr matrix<3, 4, T>::matrix(const vector<3, U0>& vector0, const W0& w0,
+                                         const vector<3, U1>& vector1, const W1& w1,
+                                         const vector<3, U2>& vector2, const W2& w2)
+    : data{column_type(vector0, w0),
+           column_type(vector1, w1),
+           column_type(vector2, w2)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename U0,
+          typename X1, typename U1,
+          typename X2, typename U2>
+inline constexpr matrix<3, 4, T>::matrix(const X0& x0, const vector<3, U0>& vector0,
+                                         const X1& x1, const vector<3, U1>& vector1,
+                                         const X2& x2, const vector<3, U2>& vector2)
+    : data{column_type(x0, vector0),
+           column_type(x1, vector1),
+           column_type(x2, vector2)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename U00, typename U01,
+          typename U10, typename U11,
+          typename U20, typename U21>
+inline constexpr matrix<3, 4, T>::matrix(const vector<2, U00>& vector00, const vector<2, U01>& vector01,
+                                         const vector<2, U10>& vector10, const vector<2, U11>& vector11,
+                                         const vector<2, U20>& vector20, const vector<2, U21>& vector21)
+    : data{column_type(vector00, vector01),
+           column_type(vector10, vector11),
+           column_type(vector20, vector21)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename U0, typename Z0, typename W0,
+          typename U1, typename Z1, typename W1,
+          typename U2, typename Z2, typename W2>
+inline constexpr matrix<3, 4, T>::matrix(const vector<2, U0>& vector0, const Z0& z0, const W0& w0,
+                                         const vector<2, U1>& vector1, const Z1& z1, const W1& w1,
+                                         const vector<2, U2>& vector2, const Z2& z2, const W2& w2)
+    : data{column_type(vector0, z0, w0),
+           column_type(vector1, z1, w1),
+           column_type(vector2, z2, w2)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename U0, typename W0,
+          typename X1, typename U1, typename W1,
+          typename X2, typename U2, typename W2>
+inline constexpr matrix<3, 4, T>::matrix(const X0& x0, const vector<2, U0>& vector0, const W0& w0,
+                                         const X1& x1, const vector<2, U1>& vector1, const W1& w1,
+                                         const X2& x2, const vector<2, U2>& vector2, const W2& w2)
+    : data{column_type(x0, vector0, w0),
+           column_type(x1, vector1, w1),
+           column_type(x2, vector2, w2)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename Y0, typename U0,
+          typename X1, typename Y1, typename U1,
+          typename X2, typename Y2, typename U2>
+inline constexpr matrix<3, 4, T>::matrix(const X0& x0, const Y0& y0, const vector<2, U0>& vector0,
+                                         const X1& x1, const Y1& y1, const vector<2, U1>& vector1,
+                                         const X2& x2, const Y2& y2, const vector<2, U2>& vector2)
+    : data{column_type(x0, y0, vector0),
+           column_type(x1, y1, vector1),
+           column_type(x2, y2, vector2)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<4, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<4, 3, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<4, 2, U>& other)
+    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 3, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 2, U>& other)
+    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(other[2], 1, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<2, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<2, 3, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 4, T>::matrix(const matrix<2, 2, U>& other)
+    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0), column_type(0, 0, 1, 0)}
+{
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 3, T> constructors.
+ * @{
+ */
+template <typename T>
+inline constexpr matrix<3, 3, T>::matrix() noexcept
+    : matrix(T{1})
+{
+}
+
+template <typename T>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 3, T>& other) noexcept = default;
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<3, 3, T>::matrix(const T& value00, const T& value01, const T& value02,
+                                         const T& value10, const T& value11, const T& value12,
+                                         const T& value20, const T& value21, const T& value22)
+    : data{column_type(value00, value01, value02),
+           column_type(value10, value11, value12),
+           column_type(value20, value21, value22)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<3, 3, T>::matrix(const T& value) noexcept
+    : data{column_type(value, 0, 0),
+           column_type(0, value, 0),
+           column_type(0, 0, value)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const U* const pointer)
+    : data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+// clang-format off
+template <typename T>
+template <typename U0, typename U1, typename U2>
+inline constexpr matrix<3, 3, T>::matrix(const vector<4, U0>& column0,
+                                         const vector<4, U1>& column1,
+                                         const vector<4, U2>& column2)
+    : data{column_type(column0), column_type(column1), column_type(column2)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename U0, typename U1, typename U2>
+inline constexpr matrix<3, 3, T>::matrix(const vector<3, U0>& column0,
+                                         const vector<3, U1>& column1,
+                                         const vector<3, U2>& column2)
+    : data{column_type(column0), column_type(column1), column_type(column2)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename U0, typename Z0,
+          typename U1, typename Z1,
+          typename U2, typename Z2>
+inline constexpr matrix<3, 3, T>::matrix(const vector<2, U0>& vector0, const Z0& z0,
+                                         const vector<2, U1>& vector1, const Z1& z1,
+                                         const vector<2, U2>& vector2, const Z2& z2)
+    : data{column_type(vector0, z0),
+           column_type(vector1, z1),
+           column_type(vector2, z2)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename U0,
+          typename X1, typename U1,
+          typename X2, typename U2>
+inline constexpr matrix<3, 3, T>::matrix(const X0& x0, const vector<2, U0>& vector0,
+                                         const X1& x1, const vector<2, U1>& vector1,
+                                         const X2& x2, const vector<2, U2>& vector2)
+    : data{column_type(x0, vector0),
+           column_type(x1, vector1),
+           column_type(x2, vector2)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<4, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<4, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<4, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(other[2], 1)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<2, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<2, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0, 1)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 3, T>::matrix(const matrix<2, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0), column_type(0, 0, 1)}
+{
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<3, 2, T> constructors.
+ * @{
+ */
+template <typename T>
+inline constexpr matrix<3, 2, T>::matrix() noexcept
+    : matrix(T{1})
+{
+}
+
+template <typename T>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 2, T>& other) noexcept = default;
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<3, 2, T>::matrix(const T& value00, const T& value01,
+                                         const T& value10, const T& value11,
+                                         const T& value20, const T& value21)
+    : data{column_type(value00, value01),
+           column_type(value10, value11),
+           column_type(value20, value21)}
+{
+}
+// clang-format on
+
+// clang-format off
+ template <typename T>
+ inline constexpr matrix<3, 2, T>::matrix(const T& value) noexcept
+     : data{column_type(value, 0),
+            column_type(0, value),
+            column_type(0, 0)}
+ {
+ }
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const U* const pointer)
+    : data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U0, typename U1, typename U2>
+inline constexpr matrix<3, 2, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1, const vector<4, U2>& column2)
+    : data{column_type(column0), column_type(column1), column_type(column2)}
+{
+}
+
+template <typename T>
+template <typename U0, typename U1, typename U2>
+inline constexpr matrix<3, 2, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1, const vector<3, U2>& column2)
+    : data{column_type(column0), column_type(column1), column_type(column2)}
+{
+}
+
+template <typename T>
+template <typename U0, typename U1, typename U2>
+inline constexpr matrix<3, 2, T>::matrix(const vector<2, U0>& column0, const vector<2, U1>& column1, const vector<2, U2>& column2)
+    : data{column_type(column0), column_type(column1), column_type(column2)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<4, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<4, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<4, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(other[2])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<2, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<2, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<3, 2, T>::matrix(const matrix<2, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1]), column_type(0, 0)}
+{
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<2, 4, T> constructors.
+ * @{
+ */
+template <typename T>
+inline constexpr matrix<2, 4, T>::matrix() noexcept
+    : matrix(T{1})
+{
+}
+
+template <typename T>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 4, T>& other) noexcept = default;
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<2, 4, T>::matrix(const T& value00, const T& value01, const T& value02, const T& value03,
+                                         const T& value10, const T& value11, const T& value12, const T& value13)
+    : data{column_type(value00, value01, value02, value03),
+           column_type(value10, value11, value12, value13)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<2, 4, T>::matrix(const T& value) noexcept
+    : data{column_type(value, 0, 0, 0),
+           column_type(0, value, 0, 0)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const U* const pointer)
+    : data{column_type(pointer), column_type(pointer + 4)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U0, typename U1>
+inline constexpr matrix<2, 4, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
+    : data{column_type(column0), column_type(column1)}
+{
+}
+
+// clang-format off
+template <typename T>
+template <typename U0, typename W0,
+          typename U1, typename W1>
+inline constexpr matrix<2, 4, T>::matrix(const vector<3, U0>& vector0, const W0& w0,
+                                         const vector<3, U1>& vector1, const W1& w1)
+    : data{column_type(vector0, w0),
+           column_type(vector1, w1)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename U0,
+          typename X1, typename U1>
+inline constexpr matrix<2, 4, T>::matrix(const X0& x0, const vector<3, U0>& vector0,
+                                         const X1& x1, const vector<3, U1>& vector1)
+    : data{column_type(x0, vector0),
+           column_type(x1, vector1)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename U00, typename U01,
+          typename U10, typename U11>
+inline constexpr matrix<2, 4, T>::matrix(const vector<2, U00>& vector00, const vector<2, U01>& vector01,
+                                         const vector<2, U10>& vector10, const vector<2, U11>& vector11)
+    : data{column_type(vector00, vector01),
+           column_type(vector10, vector11)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename U0, typename Z0, typename W0,
+          typename U1, typename Z1, typename W1>
+inline constexpr matrix<2, 4, T>::matrix(const vector<2, U0>& vector0, const Z0& z0, const W0& w0,
+                                         const vector<2, U1>& vector1, const Z1& z1, const W1& w1)
+    : data{column_type(vector0, z0, w0),
+           column_type(vector1, z1, w1)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename U0, typename W0,
+          typename X1, typename U1, typename W1>
+inline constexpr matrix<2, 4, T>::matrix(const X0& x0, const vector<2, U0>& vector0, const W0& w0,
+                                         const X1& x1, const vector<2, U1>& vector1, const W1& w1)
+    : data{column_type(x0, vector0, w0),
+           column_type(x1, vector1, w1)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename Y0, typename U0,
+          typename X1, typename Y1, typename U1>
+inline constexpr matrix<2, 4, T>::matrix(const X0& x0, const Y0& y0, const vector<2, U0>& vector0,
+                                         const X1& x1, const Y1& y1, const vector<2, U1>& vector1)
+    : data{column_type(x0, y0, vector0),
+           column_type(x1, y1, vector1)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<4, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<4, 3, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<4, 2, U>& other)
+    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<3, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<3, 3, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<3, 2, U>& other)
+    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 3, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 2, U>& other)
+    : data{column_type(other[0], 0, 0), column_type(other[1], 0, 0)}
+{
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<2, 3, T> constructors.
+ * @{
+ */
+template <typename T>
+inline constexpr matrix<2, 3, T>::matrix() noexcept
+    : matrix(T{1})
+{
+}
+
+template <typename T>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 3, T>& other) noexcept = default;
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<2, 3, T>::matrix(const T& value00, const T& value01, const T& value02,
+                                         const T& value10, const T& value11, const T& value12)
+    : data{column_type(value00, value01, value02),
+           column_type(value10, value11, value12)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<2, 3, T>::matrix(const T& value) noexcept
+    : data{column_type(value, 0, 0),
+           column_type(0, value, 0)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const U* const pointer)
+    : data{column_type(pointer), column_type(pointer + 3)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U0, typename U1>
+inline constexpr matrix<2, 3, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
+    : data{column_type(column0), column_type(column1)}
+{
+}
+
+template <typename T>
+template <typename U0, typename U1>
+inline constexpr matrix<2, 3, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1)
+    : data{column_type(column0), column_type(column1)}
+{
+}
+
+// clang-format off
+template <typename T>
+template <typename U0, typename Z0,
+          typename U1, typename Z1>
+inline constexpr matrix<2, 3, T>::matrix(const vector<2, U0>& vector0, const Z0& z0,
+                                         const vector<2, U1>& vector1, const Z1& z1)
+    : data{column_type(vector0, z0),
+           column_type(vector1, z1)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+template <typename X0, typename U0,
+          typename X1, typename U1>
+inline constexpr matrix<2, 3, T>::matrix(const X0& x0, const vector<2, U0>& vector0,
+                                         const X1& x1, const vector<2, U1>& vector1)
+    : data{column_type(x0, vector0),
+           column_type(x1, vector1)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<4, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<4, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<4, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<3, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<3, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<3, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 2, U>& other)
+    : data{column_type(other[0], 0), column_type(other[1], 0)}
+{
+}
+/**
+ * @}
+ */
+
+/**
+ * @name matrix<2, 2, T> constructors.
+ * @{
+ */
+template <typename T>
+inline constexpr matrix<2, 2, T>::matrix() noexcept
+    : matrix(T{1})
+{
+}
+
+template <typename T>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 2, T>& other) noexcept = default;
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<2, 2, T>::matrix(const T& value00, const T& value01,
+                                         const T& value10, const T& value11)
+    : data{column_type(value00, value01),
+           column_type(value10, value11)}
+{
+}
+// clang-format on
+
+// clang-format off
+template <typename T>
+inline constexpr matrix<2, 2, T>::matrix(const T& value) noexcept
+    : data{column_type(value, 0),
+           column_type(0, value)}
+{
+}
+// clang-format on
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const U* const pointer)
+    : data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U0, typename U1>
+inline constexpr matrix<2, 2, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
+    : data{column_type(column0), column_type(column1)}
+{
+}
+
+template <typename T>
+template <typename U0, typename U1>
+inline constexpr matrix<2, 2, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1)
+    : data{column_type(column0), column_type(column1)}
+{
+}
+
+template <typename T>
+template <typename U0, typename U1>
+inline constexpr matrix<2, 2, T>::matrix(const vector<2, U0>& column0, const vector<2, U1>& column1)
+    : data{column_type(column0), column_type(column1)}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<4, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<4, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<4, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<3, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<3, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<3, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 4, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 3, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+
+template <typename T>
+template <typename U>
+inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 2, U>& other)
+    : data{column_type(other[0]), column_type(other[1])}
+{
+}
+/**
+ * @}
+ */
+
+
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 
 // matrix methods
 template <unsigned int C, unsigned int R, typename T>
