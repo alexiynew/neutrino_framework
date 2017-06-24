@@ -45,25 +45,18 @@ before_build:
   - cmd: if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015 Win64)
   - cmd: if "%platform%"=="Win32" (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
   - cmd: if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
-  - echo %platform%
-  - echo %os%
-  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
-  - echo %configuration%
-  - echo %CMAKE_GENERATOR_NAME%
-  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% ../
+  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_TESTS=ON ../
 
-build:
-  parallel: true                           # enable MSBuild parallel builds
-  verbosity: detailed                      # MSBuild verbosity level (quiet|minimal|normal|detailed)
+build: off
 
 build_script:
   - cmd: cd C:\projects\game_framework\build
   - cmd: dir /A
   - cmd: echo =============== Build Framework =============== 
-  - cmd: msbuild framework.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  - cmd: echo =============== Build Framework =============== 
-  - cmd: msbuild framework_tests.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
+test: off
+  
 test_script:
   - cmd: echo =============== Run All Tests =============== 
   - cmd: cd C:\projects\game_framework\build\test

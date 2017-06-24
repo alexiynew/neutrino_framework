@@ -1,12 +1,14 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 project(framework VERSION 0.0.1)
 
+# Settings
 option(BUILD_SHARED_LIBS "Build the shared or static libraries" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
-set(INCLUDED_TEST_MODULES "" CACHE STRING "Tests that will be included in the build. An empty string means all modules.")
+option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
 
-# Settings
+set(INCLUDED_TEST_MODULES "" CACHE STRING "Tests that will be included in the build. An empty string means all modules." FORCE)
+
 set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
 set(DOCS_OUTPUT_PATH ${OUTPUT_PATH_BASE}/doc)
 
@@ -14,36 +16,26 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE} CACHE PATH "Set default install path." FORCE)
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
-set(FRAMEWORK_SOURCES ${CMAKE_SOURCE_DIR}/src)
-get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-	message("Using Clang compiller settings")
-	set(COMPILE_FLAGS "-Weverything -Werror -std=c++14 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions -Wno-covered-switch-default -Wno-missing-prototypes -Wno-weak-vtables -Wno-exit-time-destructors")
-	set(CMAKE_CXX_FLAGS_DEBUG "-g")
-        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG -DFORCE_ASSERT")
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	message("Using GNU compiller settings")
-	set(COMPILE_FLAGS "-std=c++14 -Wall -Wextra -Wfloat-equal -Wshadow -Wpedantic -Wconversion -Wno-unknown-pragmas -Werror")
-	set(CMAKE_CXX_FLAGS_DEBUG "-g")
-        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG -DFORCE_ASSERT")
-elseif(MAKE_CXX_COMPILER_ID MATCHES "MSVC")
-	message("Using Visual Studio C++ compiller settings")
-	set(COMPILE_FLAGS "/std:c++14 /Wall /wd4514")
-	set(CMAKE_CXX_FLAGS_DEBUG "/Od")
-        set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
-        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/O2 /DNDEBUG -DFORCE_ASSERT")
-endif()
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMPILE_FLAGS}")
+set(CMAKE_CXX_FLAGS_COVERAGE
+    "-g -O0 --coverage -fprofile-arcs -ftest-coverage"
+    CACHE STRING "Flags used by the C++ compiler during coverage builds." FORCE)
 
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(FRAMEWORK_SOURCES ${CMAKE_SOURCE_DIR}/src)
+get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
+
 # Import usefull macros
-include(${CMAKE_SOURCE_DIR}/cmake/Macros.cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+include(Macros)
+include(CompillerSettings)
+
+# Set compiller flags
+choose_compiller_flags()
+if(ENABLE_TEST_COVERAGE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+    set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_COVERAGE})
+endif()
 
 # Get platform
 detect_platform_name(PLATFORM_NAME)
@@ -54,16 +46,16 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/src)
 
 # Add tests
 if(BUILD_TESTS)
-	add_subdirectory(${CMAKE_SOURCE_DIR}/test)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/test)
 endif()
 
 # Generate Doxyfile
 configure_file(Doxyfile.in Doxyfile @ONLY)
 
 add_custom_target(install_${PROJECT_NAME}
-        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_install.cmake
-        DEPENDS ${PROJECT_NAME}
-        COMMENT "Installing ${PROJECT_NAME}")
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_install.cmake
+    DEPENDS ${PROJECT_NAME}
+    COMMENT "Installing ${PROJECT_NAME}")
 
 add_custom_target(documentation
     COMMAND mkdir -p ${DOCS_OUTPUT_PATH}

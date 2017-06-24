@@ -5,11 +5,12 @@
 set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $SCRIPT_DIR
-
-# Setup virtual display
-Xvfb :1 -screen 0 1024x768x16 &> xvfb.log &
-export DISPLAY=:1.0
+cd "$SCRIPT_DIR"
 
 # Run build and tests
-./build.sh -c $COMPILLER -t clean,build,test
+sudo docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER -t $TASK"
+
+if [[ "${TASK}" == *"coverage"* ]]
+then
+    bash <(curl -s https://codecov.io/bash)
+fi

@@ -5,6 +5,7 @@ set(TEST_OUTPUT_PATH ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE}/test)
 
 set(FRAMEWORK_TESTS_DEPENDENCIES "")
 
+include(CTest)
 enable_testing()
 
 message("Search tests...")

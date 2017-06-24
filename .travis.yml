@@ -1,21 +1,36 @@
+env:
+  global:
+    - CODECOV_TOKEN=67a4f583-c9f2-4c56-9dc4-bf421bb11a63
+
 matrix:
   include:
     - os: linux
       dist: trusty
-      env: COMPILLER=clang
+      env:
+        - COMPILLER=clang
+        - TASK="clean,build,test"
       sudo: required
 
     - os: linux
       dist: trusty
-      env: COMPILLER=gcc
+      env:
+        - COMPILLER=gcc
+        - TASK="clean,build,test"
+      sudo: required
+
+    - os: linux
+      dist: trusty
+      env:
+        - COMPILLER=gcc
+        - TASK="clean,coverage"
       sudo: required
 
 language: generic
 
 branches:
   only:
-  - master
-  - dev
+    - master
+    - dev
 
 services:
   - docker
@@ -27,4 +42,4 @@ before_install:
 install: true
 
 script:
-  - docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "export COMPILLER=$COMPILLER && /home/framework/travis_run.sh"
+  - ./travis_run.sh
