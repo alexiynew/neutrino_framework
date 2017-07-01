@@ -1082,7 +1082,7 @@ inline const typename vector<2, T>::value_type* vector<2, T>::data() const noexc
  */
 
 /**
- * @name Common unary operators.
+ * @name Vector unary operators.
  * @{
  */
 
@@ -1464,7 +1464,7 @@ inline const vector<N, R> operator/(const T& lhs, const vector<N, U>& rhs) noexc
  */
 
 /**
- * @name Common equality operators.
+ * @name Vector equality operators.
  * @{
  */
 
@@ -1525,7 +1525,7 @@ template <typename T>
 inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rhs) noexcept
 {
     using not_equal = std::not_equal_to<T>;
-    return not_equal()(lhs.x, rhs.x) && not_equal()(lhs.y, rhs.y) && not_equal()(lhs.z, rhs.z) && not_equal()(lhs.w, rhs.w);
+    return not_equal()(lhs.x, rhs.x) || not_equal()(lhs.y, rhs.y) || not_equal()(lhs.z, rhs.z) || not_equal()(lhs.w, rhs.w);
 }
 
 /**
@@ -1540,7 +1540,7 @@ template <typename T>
 inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rhs) noexcept
 {
     using not_equal = std::not_equal_to<T>;
-    return not_equal()(lhs.x, rhs.x) && not_equal()(lhs.y, rhs.y) && not_equal()(lhs.z, rhs.z);
+    return not_equal()(lhs.x, rhs.x) || not_equal()(lhs.y, rhs.y) || not_equal()(lhs.z, rhs.z);
 }
 
 /**
@@ -1555,14 +1555,14 @@ template <typename T>
 inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rhs) noexcept
 {
     using not_equal = std::not_equal_to<T>;
-    return not_equal()(lhs.x, rhs.x) && not_equal()(lhs.y, rhs.y);
+    return not_equal()(lhs.x, rhs.x) || not_equal()(lhs.y, rhs.y);
 }
 /**
  * @}
  */
 
 /**
- * @name Helper functions
+ * @name Vector helper functions
  * @{
  */
 

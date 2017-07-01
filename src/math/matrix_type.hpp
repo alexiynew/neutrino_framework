@@ -3763,7 +3763,7 @@ inline typename matrix<2, 2, T>::row_type matrix<2, 2, T>::row(unsigned int inde
  */
 
 /**
- * @name Common unary operators.
+ * @name Matrix unary operators.
  * @{
  */
 
@@ -3913,7 +3913,7 @@ inline matrix<C, R, T>& operator/=(matrix<C, R, T>& lhs, const U& rhs)
  */
 
 /**
- * @name Common binary operators for matrix and matrix.
+ * @name Common binary operator for matrices.
  * @{
  */
 
@@ -3950,8 +3950,8 @@ inline const matrix<C, R, RT> operator-(const matrix<C, R, T>& lhs, const matrix
 /**
  * @brief Multiplication operator.
  *
- * @param lhs First multiplier.
- * @param rhs Second multiplier.
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
  *
  * @return Product of two matrices.
  */
@@ -3972,149 +3972,303 @@ inline const matrix<N, R, RT> operator*(const matrix<C, R, T>& lhs, const matrix
 }
 
 /**
- * @}
+ * @brief Multiplication operator.
+ *
+ * @param lhs Vector of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return Product of vector and matrix.
  */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const vector<C, RT> operator*(const vector<R, T>& lhs, const matrix<C, R, U>& rhs) noexcept
+{
+    vector<C, RT> temp(0);
 
+    for (unsigned int c = 0; c < C; ++c) {
+        for (unsigned int r = 0; r < R; ++r) {
+            temp[c] += lhs[r] * rhs[c][r];
+        }
+    }
+
+    return temp;
+}
+
+/**
+ * @brief Multiplication operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Vector of floating-point or integral type.
+ *
+ * @return Product of vector and matrix.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const vector<R, RT> operator*(const matrix<C, R, T>& lhs, const vector<C, U>& rhs) noexcept
+{
+    vector<R, RT> temp(0);
+
+    for (unsigned int r = 0; r < R; ++r) {
+        for (unsigned int c = 0; c < C; ++c) {
+            temp[r] += lhs[c][r] * rhs[c];
+        }
+    }
+
+    return temp;
+}
 /**
  * @}
  */
 
-// vec * matrix
-template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
-inline const TVec<4, T> operator*(const TVec<R, T>& v, const matrix<4, R, T>& m)
+/**
+ * @name Common binary operators with matrices and scalar values.
+ * @{
+ */
+
+/**
+ * @brief Addition operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Value of floating-point or integral type.
+ *
+ * @return Component-wise sum of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator+(const matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
-    return TVec<4, T>(dot(v, m[0]), dot(v, m[1]), dot(v, m[2]), dot(v, m[3]));
+    matrix<C, R, RT> temp{lhs};
+    return temp += rhs;
 }
 
-template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
-inline const TVec<3, T> operator*(const TVec<R, T>& v, const matrix<3, R, T>& m)
+/**
+ * @brief Subtractions operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Value of floating-point or integral type.
+ *
+ * @return Component-wise difference of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator-(const matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
-    return TVec<3, T>(dot(v, m[0]), dot(v, m[1]), dot(v, m[2]));
+    matrix<C, R, RT> temp{lhs};
+    return temp -= rhs;
 }
 
-template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
-inline const TVec<2, T> operator*(const TVec<R, T>& v, const matrix<2, R, T>& m)
+/**
+ * @brief Multiplication operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Value of floating-point or integral type.
+ *
+ * @return Component-wise product of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator*(const matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
-    return TVec<2, T>(dot(v, m[0]), dot(v, m[1]));
+    matrix<C, R, RT> temp{lhs};
+    return temp *= rhs;
 }
 
-// matrix * vec
-template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
-inline const TVec<R, T> operator*(const matrix<4, R, T>& m, const TVec<4, T>& v)
+/**
+ * @brief Division operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Value of floating-point or integral type.
+ *
+ * @return Component-wise quotient of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator/(const matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
-    return utils::type_creator<R>::template create<TVec<R, T>>(
-    [&m, &v](unsigned int r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z + m[3][r] * v.w; });
+    matrix<C, R, RT> temp{lhs};
+    return temp /= rhs;
+}
+/**
+ * @}
+ */
+
+/**
+ * @name Common binary operators with scalar values and matrices.
+ * @{
+ */
+
+/**
+ * @brief Addition operator.
+ *
+ * @param lhs Value of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return Component-wise sum of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator+(const T& lhs, const matrix<C, R, U>& rhs) noexcept
+{
+    matrix<C, R, RT> temp{0};
+
+    for (unsigned int i = 0; i < C; ++i) {
+        temp[i] = lhs + rhs[i];
+    }
+
+    return temp;
 }
 
-template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
-inline const TVec<R, T> operator*(const matrix<3, R, T>& m, const TVec<3, T>& v)
+/**
+ * @brief Subtractions operator.
+ *
+ * @param lhs Value of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return Component-wise difference of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator-(const T& lhs, const matrix<C, R, U>& rhs) noexcept
 {
-    return utils::type_creator<R>::template create<TVec<R, T>>(
-    [&m, &v](unsigned int r) { return m[0][r] * v.x + m[1][r] * v.y + m[2][r] * v.z; });
+    matrix<C, R, RT> temp{0};
+
+    for (unsigned int i = 0; i < C; ++i) {
+        temp[i] = lhs - rhs[i];
+    }
+
+    return temp;
 }
 
-template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
-inline const TVec<R, T> operator*(const matrix<2, R, T>& m, const TVec<2, T>& v)
+/**
+ * @brief Multiplication operator.
+ *
+ * @param lhs Value of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return Component-wise product of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator*(const T& lhs, const matrix<C, R, U>& rhs) noexcept
 {
-    return utils::type_creator<R>::template create<TVec<R, T>>(
-    [&m, &v](unsigned int r) { return m[0][r] * v.x + m[1][r] * v.y; });
+    matrix<C, R, RT> temp{0};
+
+    for (unsigned int i = 0; i < C; ++i) {
+        temp[i] = lhs * rhs[i];
+    }
+
+    return temp;
 }
 
-// matrix * scalar
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator+(const matrix<C, R, T>& m, const T& scalar)
+/**
+ * @brief Division operator.
+ *
+ * @param lhs Value of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return Component-wise quotient of matrix and scalar value.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator/(const T& lhs, const matrix<C, R, U>& rhs) noexcept
 {
-    return utils::type_creator<C>::template create<matrix<C, R, T>>(
-    [&m, &scalar](unsigned int index) { return m[index] + scalar; });
-}
+    matrix<C, R, RT> temp{0};
 
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator-(const matrix<C, R, T>& m, const T& scalar)
-{
-    return utils::type_creator<C>::template create<matrix<C, R, T>>(
-    [&m, &scalar](unsigned int index) { return m[index] - scalar; });
-}
+    for (unsigned int i = 0; i < C; ++i) {
+        temp[i] = lhs / rhs[i];
+    }
 
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator*(const matrix<C, R, T>& m, const T& scalar)
-{
-    return utils::type_creator<C>::template create<matrix<C, R, T>>(
-    [&m, &scalar](unsigned int index) { return m[index] * scalar; });
+    return temp;
 }
+/**
+ * @}
+ */
 
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator/(const matrix<C, R, T>& m, const T& scalar)
-{
-    return utils::type_creator<C>::template create<matrix<C, R, T>>(
-    [&m, &scalar](unsigned int index) { return m[index] / scalar; });
-}
+/**
+ * @name Matrix equality operators.
+ * @{
+ */
 
-// scalar * matrix
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator+(const T& scalar, const matrix<C, R, T>& m)
-{
-    return utils::type_creator<C>::template create<matrix<C, R, T>>(
-    [&m, &scalar](unsigned int index) { return scalar + m[index]; });
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator-(const T& scalar, const matrix<C, R, T>& m)
-{
-    return utils::type_creator<C>::template create<matrix<C, R, T>>(
-    [&m, &scalar](unsigned int index) { return scalar - m[index]; });
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator*(const T& scalar, const matrix<C, R, T>& m)
-{
-    return utils::type_creator<C>::template create<matrix<C, R, T>>(
-    [&m, &scalar](unsigned int index) { return scalar * m[index]; });
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline matrix<C, R, T> operator/(const T& scalar, const matrix<C, R, T>& m)
-{
-    return utils::type_creator<C>::template create<matrix<C, R, T>>(
-    [&m, &scalar](unsigned int index) { return scalar / m[index]; });
-}
-
-// matrix equality
+/**
+ * @brief Equality operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return `true` if lhs equals rhs, otherwise `false`.
+ */
 template <unsigned int R, typename T>
 inline constexpr bool operator==(const matrix<4, R, T>& lhs, const matrix<4, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] == rhs[2] && lhs[3] == rhs[3];
 }
 
+/**
+ * @brief Equality operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return `true` if lhs equals rhs, otherwise `false`.
+ */
 template <unsigned int R, typename T>
 inline constexpr bool operator==(const matrix<3, R, T>& lhs, const matrix<3, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] == rhs[2];
 }
 
+/**
+ * @brief Equality operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return `true` if lhs equals rhs, otherwise `false`.
+ */
 template <unsigned int R, typename T>
 inline constexpr bool operator==(const matrix<2, R, T>& lhs, const matrix<2, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1];
 }
 
+/**
+ * @brief Equality operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return `true` if lhs isn't equal rhs, otherwise `false`.
+ */
 template <unsigned int R, typename T>
 inline constexpr bool operator!=(const matrix<4, R, T>& lhs, const matrix<4, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]) || (lhs[2] != rhs[2]) || (lhs[3] != rhs[3]);
 }
 
+/**
+ * @brief Equality operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return `true` if lhs isn't equal rhs, otherwise `false`.
+ */
 template <unsigned int R, typename T>
 inline constexpr bool operator!=(const matrix<3, R, T>& lhs, const matrix<3, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]) || (lhs[2] != rhs[2]);
 }
 
+/**
+ * @brief Equality operator.
+ *
+ * @param lhs Matrix of floating-point or integral type.
+ * @param rhs Matrix of floating-point or integral type.
+ *
+ * @return `true` if lhs isn't equal rhs, otherwise `false`.
+ */
 template <unsigned int R, typename T>
 inline constexpr bool operator!=(const matrix<2, R, T>& lhs, const matrix<2, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]);
 }
+/**
+ * @}
+ */
 
+/**
+ * @}
+ */
 
 } // namespace math
 

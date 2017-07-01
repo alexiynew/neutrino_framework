@@ -289,10 +289,10 @@ private:
         const vector2i v2i(1, -2);
         const vector2u v2u(1, 2);
 
-        TEST_ASSERT(vector4d() != v4d, "Equality operator for vector4d failed.");
-        TEST_ASSERT(vector3f() != v3f, "Equality operator for vector3f failed.");
-        TEST_ASSERT(vector2i() != v2i, "Equality operator for vector2i failed.");
-        TEST_ASSERT(vector2u() != v2u, "Equality operator for vector2u failed.");
+        TEST_ASSERT(vector4d(1.1, 2.2, 3.3, 4.4) != v4d, "Inequality operator for vector4d failed.");
+        TEST_ASSERT(!(vector3f(5.5f, 6.6f, 7.7f) != v3f), "Inequality operator for vector3f failed.");
+        TEST_ASSERT(vector2i(-2, 1) != v2i, "Inequality operator for vector2i failed.");
+        TEST_ASSERT(!(vector2u(1, 2) != v2u), "Inequality operator for vector2u failed.");
     }
 };
 
