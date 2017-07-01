@@ -72,6 +72,14 @@ inline constexpr V get_column(M&& matrix, V&& vector) noexcept
 /**
  * @}
  */
+
+/**
+ * @brief Shortcut to get the common type.
+ * Also used for SFINAE to get correct overload of vector operators.
+ */
+template <typename... Args>
+using common_type = vector_details::common_type<Args...>;
+
 } // namespace matrix_details
 
 /**
@@ -3905,461 +3913,71 @@ inline matrix<C, R, T>& operator/=(matrix<C, R, T>& lhs, const U& rhs)
  */
 
 /**
+ * @name Common binary operators for matrix and matrix.
+ * @{
+ */
+
+/**
+ * @brief Addition operator.
+ *
+ * @param lhs First addend.
+ * @param rhs Second addend.
+ *
+ * @return Component-wise sum of two matrices.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator+(const matrix<C, R, T>& lhs, const matrix<C, R, U>& rhs) noexcept
+{
+    matrix<C, R, RT> temp{lhs};
+    return temp += rhs;
+}
+
+/**
+ * @brief Subtraction operator.
+ *
+ * @param lhs Vector to subtract from.
+ * @param rhs Scalar value to subtract.
+ *
+ * @return Component-wise difference of two matrices.
+ */
+template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<C, R, RT> operator-(const matrix<C, R, T>& lhs, const matrix<C, R, U>& rhs) noexcept
+{
+    matrix<C, R, RT> temp{lhs};
+    return temp -= rhs;
+}
+
+/**
+ * @brief Multiplication operator.
+ *
+ * @param lhs First multiplier.
+ * @param rhs Second multiplier.
+ *
+ * @return Product of two matrices.
+ */
+template <unsigned int C, unsigned int R, unsigned int N, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+inline const matrix<N, R, RT> operator*(const matrix<C, R, T>& lhs, const matrix<N, C, U>& rhs) noexcept
+{
+    matrix<N, R, RT> temp(0);
+
+    for (unsigned int n = 0; n < N; ++n) {
+        for (unsigned int c = 0; c < C; ++c) {
+            for (unsigned int r = 0; r < R; ++r) {
+                temp[n][r] += lhs[c][r] * rhs[n][c];
+            }
+        }
+    }
+
+    return temp;
+}
+
+/**
  * @}
  */
 
-template <unsigned int C, unsigned int R, typename T>
-inline const matrix<C, R, T> operator+(matrix<C, R, T> lhs, const matrix<C, R, T>& rhs)
-{
-    return lhs += rhs;
-}
-
-template <unsigned int C, unsigned int R, typename T>
-inline const matrix<C, R, T> operator-(matrix<C, R, T> lhs, const matrix<C, R, T>& rhs)
-{
-    return lhs -= rhs;
-}
-
-// TODO: make it same type id:0
-// binary operators
-// TODO: simplify id:1
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 4, RT> operator*(const matrix<4, 4, T>& lhs, const matrix<4, 4, U>& rhs)
-{
-    return matrix<4, 4, RT>(
-    lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
-
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3],
-
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
-    lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2] + lhs[3][3] * rhs[2][3],
-
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3],
-    lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2] + lhs[3][2] * rhs[3][3],
-    lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1] + lhs[2][3] * rhs[3][2] + lhs[3][3] * rhs[3][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 4, RT> operator*(const matrix<4, 4, T>& lhs, const matrix<3, 4, U>& rhs)
-{
-    return matrix<3, 4, RT>(
-    lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
-
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3],
-
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
-    lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2] + lhs[3][3] * rhs[2][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 4, RT> operator*(const matrix<4, 4, T>& lhs, const matrix<2, 4, U>& rhs)
-{
-    return matrix<2, 4, RT>(
-    lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-    lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3],
-
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
-    lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 3, RT> operator*(const matrix<4, 3, T>& lhs, const matrix<4, 4, U>& rhs)
-{
-    return matrix<4, 3, RT>(
-    lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
-
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3],
-
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3],
-    lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2] + lhs[3][2] * rhs[3][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 3, RT> operator*(const matrix<4, 3, T>& lhs, const matrix<3, 4, U>& rhs)
-{
-    return matrix<3, 3, RT>(
-    lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-    lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-    lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3],
-
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-    lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 3, RT> operator*(const matrix<4, 3, T>& lhs, const matrix<2, 4, U>& rhs)
-{
-    return matrix<2, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 2, RT> operator*(const matrix<4, 2, T>& lhs, const matrix<4, 4, U>& rhs)
-{
-    return matrix<4, 2, RT>(
-    lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-    lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-
-    lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-    lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-
-    lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-    lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3],
-
-    lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3],
-    lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 2, RT> operator*(const matrix<4, 2, T>& lhs, const matrix<3, 4, U>& rhs)
-{
-    return matrix<3, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 2, RT> operator*(const matrix<4, 2, T>& lhs, const matrix<2, 4, U>& rhs)
-{
-    return matrix<2, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 4, RT> operator*(const matrix<3, 4, T>& lhs, const matrix<4, 3, U>& rhs)
-{
-    return matrix<4, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
-                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
-                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2],
-
-                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
-                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2],
-                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2],
-                            lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1] + lhs[2][3] * rhs[3][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 4, RT> operator*(const matrix<3, 4, T>& lhs, const matrix<3, 3, U>& rhs)
-{
-    return matrix<3, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
-                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
-                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] + lhs[2][3] * rhs[2][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 4, RT> operator*(const matrix<3, 4, T>& lhs, const matrix<2, 3, U>& rhs)
-{
-    return matrix<2, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] + lhs[2][3] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
-                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] + lhs[2][3] * rhs[1][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 3, RT> operator*(const matrix<3, 3, T>& lhs, const matrix<4, 3, U>& rhs)
-{
-    return matrix<4, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2],
-
-                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
-                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2],
-                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] + lhs[2][2] * rhs[3][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 3, RT> operator*(const matrix<3, 3, T>& lhs, const matrix<3, 3, U>& rhs)
-{
-    return matrix<3, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] + lhs[2][2] * rhs[2][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 3, RT> operator*(const matrix<3, 3, T>& lhs, const matrix<2, 3, U>& rhs)
-{
-    return matrix<2, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] + lhs[2][2] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] + lhs[2][2] * rhs[1][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 2, RT> operator*(const matrix<3, 2, T>& lhs, const matrix<4, 3, U>& rhs)
-{
-    return matrix<4, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2],
-
-                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] + lhs[2][0] * rhs[3][2],
-                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] + lhs[2][1] * rhs[3][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 2, RT> operator*(const matrix<3, 2, T>& lhs, const matrix<3, 3, U>& rhs)
-{
-    return matrix<3, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] + lhs[2][0] * rhs[2][2],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] + lhs[2][1] * rhs[2][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 2, RT> operator*(const matrix<3, 2, T>& lhs, const matrix<2, 3, U>& rhs)
-{
-    return matrix<2, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] + lhs[2][0] * rhs[0][2],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] + lhs[2][1] * rhs[0][2],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] + lhs[2][0] * rhs[1][2],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] + lhs[2][1] * rhs[1][2]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 4, RT> operator*(const matrix<2, 4, T>& lhs, const matrix<4, 2, U>& rhs)
-{
-    return matrix<4, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
-                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
-                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1],
-
-                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
-                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1],
-                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1],
-                            lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 4, RT> operator*(const matrix<2, 4, T>& lhs, const matrix<3, 2, U>& rhs)
-{
-    return matrix<3, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
-                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
-                            lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 4, RT> operator*(const matrix<2, 4, T>& lhs, const matrix<2, 2, U>& rhs)
-{
-    return matrix<2, 4, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-                            lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
-                            lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 3, RT> operator*(const matrix<2, 3, T>& lhs, const matrix<4, 2, U>& rhs)
-{
-    return matrix<4, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1],
-
-                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
-                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1],
-                            lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 3, RT> operator*(const matrix<2, 3, T>& lhs, const matrix<3, 2, U>& rhs)
-{
-    return matrix<3, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-                            lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 3, RT> operator*(const matrix<2, 3, T>& lhs, const matrix<2, 2, U>& rhs)
-{
-    return matrix<2, 3, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-                            lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-                            lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<4, 2, RT> operator*(const matrix<2, 2, T>& lhs, const matrix<4, 2, U>& rhs)
-{
-    return matrix<4, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1],
-
-                            lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1],
-                            lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<3, 2, RT> operator*(const matrix<2, 2, T>& lhs, const matrix<3, 2, U>& rhs)
-{
-    return matrix<3, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1],
-
-                            lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1],
-                            lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1]);
-}
-
-template <typename T, typename U, typename RT = decltype(std::declval<T>() * std::declval<U>())>
-inline const matrix<2, 2, RT> operator*(const matrix<2, 2, T>& lhs, const matrix<2, 2, U>& rhs)
-{
-    return matrix<2, 2, RT>(lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1],
-                            lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1],
-
-                            lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1],
-                            lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1]);
-}
+/**
+ * @}
+ */
 
 // vec * matrix
 template <unsigned int R, typename T, template <unsigned int, typename> class TVec>
