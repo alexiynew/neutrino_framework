@@ -1,9 +1,7 @@
-/**
- * @file x11_window.cpp
- * @brief Window implementation for linux.
- * @author Fedorov Alexey
- * @date 05.04.2017
- */
+/// @file x11_window.cpp
+/// @brief Window implementation for linux.
+/// @author Fedorov Alexey
+/// @date 05.04.2017
 
 #include <exception>
 #include <log/log.hpp>
@@ -56,16 +54,17 @@ void x11_window::show()
 
 void x11_window::hide()
 {
-    /* Уничтожаем окно */
+    // Уничтожаем окно    
     if (m_display && m_window) {
         XDestroyWindow(m_display, m_window);
     }
     m_window = 0;
 
-    /* Закрываем соединение с сервером */
+    // Закрываем соединение с сервером    
     if (m_display) {
         XCloseDisplay(m_display);
     }
     m_display = nullptr;
 }
+
 }

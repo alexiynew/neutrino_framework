@@ -1,9 +1,7 @@
-/**
- * @file
- * @brief Window implementation for linux.
- * @author Fedorov Alexey
- * @date 05.04.2017
- */
+/// @file
+/// @brief Window implementation for linux.
+/// @author Fedorov Alexey
+/// @date 05.04.2017
 
 #ifndef FRAMEWORK_WINDOW_LINUX_X11_WINDOW_HPP
 #define FRAMEWORK_WINDOW_LINUX_X11_WINDOW_HPP

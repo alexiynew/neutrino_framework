@@ -1,9 +1,7 @@
-/**
- * @file window_implementation.hpp
- * @brief Describes interface for all canvas implementations.
- * @author Fedorov Alexey
- * @date 05.04.2017
- */
+/// @file window_implementation.hpp
+/// @brief Describes interface for all canvas implementations.
+/// @author Fedorov Alexey
+/// @date 05.04.2017
 
 #ifndef FRAMEWORK_WINDOW_WINDOW_IMPLEMENTATION_HPP
 #define FRAMEWORK_WINDOW_WINDOW_IMPLEMENTATION_HPP

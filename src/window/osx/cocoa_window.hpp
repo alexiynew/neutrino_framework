@@ -1,9 +1,7 @@
-/**
- * @file
- * @brief Window implementation for osx.
- * @author Fedorov Alexey
- * @date 19.04.2017
- */
+/// @file
+/// @brief Window implementation for osx.
+/// @author Fedorov Alexey
+/// @date 19.04.2017
 
 #ifndef FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP
 #define FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP

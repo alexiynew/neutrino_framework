@@ -12,7 +12,7 @@ namespace math {
 
 #pragma mark - 2d transform
 
-/// Builds a translation 3 * 3 matrix created from a vector of 2 components.
+/// Builds a translation 3/// 3 matrix created from a vector of 2 components.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a translation vector.
@@ -22,7 +22,7 @@ inline matrix<3, 3, T> translate(const matrix<3, 3, T>& m, const vector<2, T>& v
     return matrix<3, 3, T>(m[0], m[1], m[0] * v[0] + m[1] * v[1] + m[2]);
 }
 
-/// Builds a rotation 3 * 3 matrix created from an angle.
+/// Builds a rotation 3/// 3 matrix created from an angle.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param angle Rotation angle expressed in radians.
@@ -35,7 +35,7 @@ inline matrix<3, 3, T> rotate(const matrix<3, 3, T>& m, const U angle)
     return matrix<3, 3, T>(m[0] * c + m[1] * s, m[0] * -s + m[1] * c, m[2]);
 }
 
-/// Builds a scale 3 * 3 matrix created from a vector of 2 components.
+/// Builds a scale 3/// 3 matrix created from a vector of 2 components.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a scale vector.
@@ -45,7 +45,7 @@ inline matrix<3, 3, T> scale(const matrix<3, 3, T>& m, const vector<2, T>& v)
     return matrix<3, 3, T>(m[0] * v[0], m[1] * v[1], m[2]);
 }
 
-/// Builds shear 3 * 3 matrix.
+/// Builds shear 3/// 3 matrix.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Shear factor.
@@ -73,7 +73,7 @@ inline matrix<4, 4, T> createTranslateMatrix(const vector<3, T>& v)
     // clang-format on
 }
 
-/// Create a rotate 4 * 4 matrix from an axis of 3 scalars and an andgle
+/// Create a rotate 4/// 4 matrix from an axis of 3 scalars and an andgle
 /// epressed in radians.
 template <typename T, typename U>
 inline matrix<4, 4, T> createRotateMatrix(const vector<3, T>& v, const U angle)
@@ -112,7 +112,7 @@ inline matrix<4, 4, T> createScaleMatrix(const vector<3, T>& v)
     // clang-format on
 }
 
-/// Builds a translation 4 * 4 matrix created from a vector of 3 components.
+/// Builds a translation 4/// 4 matrix created from a vector of 3 components.
 ///
 /// @param m Input matrix multiplied by this translation matrix.
 /// @param v Coordinates of a translation vector.

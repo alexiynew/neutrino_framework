@@ -1,9 +1,7 @@
-/**
- * @file
- * @brief Window interface class.
- * @author Fedorov Alexey
- * @date 04.04.2017
- */
+/// @file
+/// @brief Window interface class.
+/// @author Fedorov Alexey
+/// @date 04.04.2017
 
 #ifndef FRAMEWORK_WINDOW_HPP
 #define FRAMEWORK_WINDOW_HPP

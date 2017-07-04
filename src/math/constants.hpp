@@ -1,9 +1,7 @@
-/**
- * @file
- * @brief Contains common math constants.
- * @author Fedorov Alexey
- * @date 06.05.2017
- */
+/// @file
+/// @brief Contains common math constants.
+/// @author Fedorov Alexey
+/// @date 06.05.2017
 
 #ifndef FRAMEWORK_MATH_CONSTANTS_HPP
 #define FRAMEWORK_MATH_CONSTANTS_HPP
@@ -12,11 +10,9 @@ namespace framework {
 
 namespace math {
 
-/**
- * @name Predefined constants.
- * @addtogroup math_module
- * @{
- */
+/// @name Predefined constants.
+/// @addtogroup math_module
+/// @{
 constexpr double DEGTORAD = 0.017453292519943295769236907684886127134428718885417254560;
 constexpr double RADTODEG = 57.29577951308232087679815481410517033240547246656432154916;
 
@@ -50,9 +46,7 @@ constexpr double GOLDEN_RATIO = 1.6180339887498948482045868343656381177203091798
 
 constexpr double E     = 2.718281828459045235360287471352662497757247093699959574966;
 constexpr double EULER = 0.577215664901532860606512090082402431042159335939923598805;
-/**
- * @}
- */
+/// @}
 
 } // namespace math
 

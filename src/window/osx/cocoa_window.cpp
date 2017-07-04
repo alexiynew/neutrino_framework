@@ -1,9 +1,7 @@
-/**
- * @file cocoa_window.cpp
- * @brief Window implementation for osx.
- * @author Fedorov Alexey
- * @date 19.04.2017
- */
+/// @file cocoa_window.cpp
+/// @brief Window implementation for osx.
+/// @author Fedorov Alexey
+/// @date 19.04.2017
 
 #include <memory>
 #include <window/osx/cocoa_window.hpp>

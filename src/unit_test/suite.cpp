@@ -1,9 +1,7 @@
-/**
- * \file suite.cpp
- * \brief Base class for tests.
- * \author Fedorov Alexey
- * \date 04.03.2017
- */
+/// @file suite.cpp
+/// @brief Base class for tests.
+/// @author Fedorov Alexey
+/// @date 04.03.2017
 
 #include <iomanip>
 #include <iostream>

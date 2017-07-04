@@ -1,9 +1,7 @@
-/**
- * @file log.cpp
- * @brief Logger implementation.
- * @author Fedorov Alexey
- * @date 08.03.2017
- */
+/// @file log.cpp
+/// @brief Logger implementation.
+/// @author Fedorov Alexey
+/// @date 08.03.2017
 
 #include <log/log.hpp>
 
