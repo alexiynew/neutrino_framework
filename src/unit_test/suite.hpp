@@ -64,7 +64,7 @@ public:
     bool is_succeeded() const;
 
 protected:
-    /// @brief Function type shortcut for internal usage    
+    /// @brief Function type shortcut for internal usage
     using function_type = std::function<void()>;
 
     /// @brief Adds function to test suite.
@@ -83,7 +83,7 @@ protected:
     void test_failed(const std::string& file, int line, const std::string& message);
 
 private:
-    /// @brief Test description.    
+    /// @brief Test description.
     struct test_data
     {
         struct Status

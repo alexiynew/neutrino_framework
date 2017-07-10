@@ -89,6 +89,8 @@ using matrix4x2f = matrix<4, 2, float>; ///< Matrix with 4 columns and 2 rows of
 using matrix4x3f = matrix<4, 3, float>; ///< Matrix with 4 columns and 4 rows of float type values.
 /// @}
 
+/// @}
+
 } // namespace math
 
 } // namespace framework

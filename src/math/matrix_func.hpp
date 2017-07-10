@@ -1,9 +1,9 @@
 #ifndef FRAMEWORK_MATH_MATRIX_FUNC_HPP
 #define FRAMEWORK_MATH_MATRIX_FUNC_HPP
 
+#include <log/log.hpp>
 #include <math/matrix_type.hpp>
 #include <math/utils.hpp>
-#include <log/log.hpp>
 
 namespace framework {
 

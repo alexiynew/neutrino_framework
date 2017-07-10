@@ -39,7 +39,7 @@ public:
     /// @brief Logs messages for debugging purposes.
     ///
     /// @param tag Message tag.
-    /// @param message Message for logging.   
+    /// @param message Message for logging.
     ///
     /// @note Works only in debug mode.
     ///
@@ -104,14 +104,14 @@ private:
 class logger
 {
 public:
-        /// @brief Level of log message.
-        enum class level
+    /// @brief Level of log message.
+    enum class level
     {
-        debug,   ///< Low-level information for developers.        
-        info,    ///< Generic information about system operation.        
-        warning, ///< A warning.        
-        error,   ///< A handleable error condition.        
-        fatal    ///< An unhandleable error that results in a program crash.    
+        debug,   ///< Low-level information for developers.
+        info,    ///< Generic information about system operation.
+        warning, ///< A warning.
+        error,   ///< A handleable error condition.
+        fatal    ///< An unhandleable error that results in a program crash.
     };
 
     virtual ~logger() = default;

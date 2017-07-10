@@ -39,6 +39,7 @@ private:
     void dot_function()
     {
         TEST_ASSERT(almost_equal(dot(v3f, v3f), 14.0f), "Dot function failed.");
+        TEST_ASSERT(almost_equal(dot(vector2f{0.0f, 1.0f}, vector2f{1.0f, 0.0f}), 0.0f), "Dot function failed.");
     }
 
     void cross_function()
@@ -59,14 +60,16 @@ private:
 
     void reflection_function()
     {
-        TEST_ASSERT(almost_equal(reflection(v3f, normalize(v3f)), -v3f, 1), "Reflection function failed.");
+        TEST_ASSERT(almost_equal(reflect(v3f, normalize(v3f)), -v3f, 1), "Reflection function failed.");
     }
 
     void refraction_function()
     {
-        const vector3f result = refraction(v3f, normalize(v3f), 1.0f);
+        const vector3f result = refract(v3f, normalize(v3f), 1.0f);
 
-        TEST_ASSERT(almost_equal(result, reflection(v3f, normalize(v3f))), "Refraction function failed.");
+        TEST_ASSERT(almost_equal(result, reflect(v3f, normalize(v3f))), "Refraction function failed.");
+        TEST_ASSERT(almost_equal(refract(vector2f{0.0f, 1.0f}, vector2f{1.0f, 0.0f}, 2.0f), vector2f{0.0f}),
+                    "Refraction function failed.");
     }
 
     vector3f v3f;

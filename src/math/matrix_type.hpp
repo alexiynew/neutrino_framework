@@ -91,10 +91,10 @@ struct matrix<4, 4, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type    
-    using column_type = vector<4, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<4, T>; ///< Column type
     using row_type    = vector<4, T>; ///< Row type
-    
+
     /// @brief Default constructor.
     ///
     /// Creates an identity matrix.
@@ -378,10 +378,10 @@ struct matrix<4, 3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type    
-    using column_type = vector<3, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<3, T>; ///< Column type
     using row_type    = vector<4, T>; ///< Row type
-    
+
     /// @brief Default constructor.
     ///
     /// Creates an identity matrix.
@@ -573,10 +573,10 @@ struct matrix<4, 2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type    
-    using column_type = vector<2, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<2, T>; ///< Column type
     using row_type    = vector<4, T>; ///< Row type
-    
+
     /// @brief Default constructor.
     ///
     /// Creates an identity matrix.
@@ -738,10 +738,10 @@ struct matrix<3, 4, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type    
-    using column_type = vector<4, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<4, T>; ///< Column type
     using row_type    = vector<3, T>; ///< Row type
-        
+
     /// @brief Default constructor.
     ///
     /// Creates an identity matrix.
@@ -989,8 +989,8 @@ struct matrix<3, 3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type    
-    using column_type = vector<3, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<3, T>; ///< Column type
     using row_type    = vector<3, T>; ///< Row type
 
     /// @brief Default constructor.
@@ -1164,8 +1164,8 @@ struct matrix<3, 2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type   
-    using column_type = vector<2, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<2, T>; ///< Column type
     using row_type    = vector<3, T>; ///< Row type
 
     /// @brief Default constructor.
@@ -1316,8 +1316,8 @@ struct matrix<2, 4, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type    
-    using column_type = vector<4, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<4, T>; ///< Column type
     using row_type    = vector<2, T>; ///< Row type
 
     /// @brief Default constructor.
@@ -1534,8 +1534,8 @@ struct matrix<2, 3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type    
-    using column_type = vector<3, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<3, T>; ///< Column type
     using row_type    = vector<2, T>; ///< Row type
 
     /// @brief Default constructor.
@@ -1695,8 +1695,8 @@ struct matrix<2, 2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type  = T;            ///< Value type    
-    using column_type = vector<2, T>; ///< Column type    
+    using value_type  = T;            ///< Value type
+    using column_type = vector<2, T>; ///< Column type
     using row_type    = vector<2, T>; ///< Row type
 
     /// @brief Default constructor.
