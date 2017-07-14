@@ -1,570 +1,945 @@
+/// @file
+/// @brief Contains common math functions.
+/// @author Fedorov Alexey
+/// @date 04.05.2017
+
 #ifndef FRAMEWORK_MATH_COMMON_FUNC_HPP
 #define FRAMEWORK_MATH_COMMON_FUNC_HPP
 
 #include <cmath>
 #include <limits>
-
-#include <math/relational_func.hpp>
-#include <math/utils.hpp>
+#include <math/matrix_type.hpp>
+#include <math/vector_type.hpp>
 
 namespace framework {
 
 namespace math {
 
-namespace common_impl {
+/// @brief Contains implementation details of some functions.
+namespace common_functions_details {
 
-template <typename T, bool B>
-struct abs_impl
+/// @brief Realization of abs function.
+/// @{
+template <typename T>
+inline constexpr T abs_details(const T& v, std::true_type)
 {
-};
+    return (v < T{0}) ? -v : v;
+}
 
 template <typename T>
-struct abs_impl<T, true>
+inline constexpr T abs_details(const T& v, std::false_type)
 {
-    constexpr T operator()(const T& v)
-    {
-        return v < T(0) ? -v : v;
-    }
-};
+    return v;
+}
+/// @}
+
+/// @brief Realization of sign function.
+/// @{
+template <typename T>
+inline constexpr T sign_details(const T& v, std::true_type)
+{
+    return static_cast<T>((T{0} < v) - (v < T{0}));
+}
 
 template <typename T>
-struct abs_impl<T, false>
+inline constexpr T sign_details(const T& v, std::false_type)
 {
-    constexpr T operator()(const T& v)
-    {
-        return v;
-    }
-};
+    return static_cast<T>(T{0} < v);
+}
+/// @}
 
-template <typename T, bool B>
-struct sign_impl
+/// @brief Realization of modf function.
+/// @{
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline vector<4, R> modf_details(const vector<4, T>& value, vector<4, T>& integral)
 {
-};
-
-template <typename T>
-struct sign_impl<T, true>
-{
-    T operator()(const T& v)
-    {
-        return (T(0) < v) - (v < T(0));
-    }
-};
-
-template <typename T>
-struct sign_impl<T, false>
-{
-    T operator()(const T& v)
-    {
-        return (T(0) < v);
-    }
-};
-
-template <unsigned int N, bool B>
-struct sign_vector_impl
-{
-};
-
-template <unsigned int N>
-struct sign_vector_impl<N, true>
-{
-    template <typename T, template <unsigned int, typename> class TVec>
-    TVec<N, T> operator()(const TVec<N, T>& v)
-    {
-        return TVec<N, T>(less(TVec<N, T>(T(0)), v)) - TVec<N, T>(less(v, TVec<N, T>(T(0))));
-    }
-};
-
-template <unsigned int N>
-struct sign_vector_impl<N, false>
-{
-    template <typename T, template <unsigned int, typename> class TVec>
-    TVec<N, T> operator()(const TVec<N, T>& v)
-    {
-        return TVec<N, T>(less(TVec<N, T>(T(0)), v));
-    }
-};
-
-} // namespace common_impl
-
-// TODO think about abs of bool and sign of bool
-
-/// Returns x if x >= 0; otherwise, it returns -x.
-template <typename T>
-inline constexpr T abs(const T& v)
-{
-    return common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>()(v);
+    return vector<4, R>(::std::modf(value.x, &integral.x),
+                        ::std::modf(value.y, &integral.y),
+                        ::std::modf(value.z, &integral.z),
+                        ::std::modf(value.w, &integral.w));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline constexpr TVec<N, T> abs(const TVec<N, T>& v)
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline vector<3, R> modf_details(const vector<3, T>& value, vector<3, T>& integral)
 {
-    return utils::createVector(v, common_impl::abs_impl<T, std::numeric_limits<T>::is_signed>());
+    return vector<3, R>(
+    ::std::modf(value.x, &integral.x), ::std::modf(value.y, &integral.y), ::std::modf(value.z, &integral.z));
 }
 
-/// Returns 1.0 if x > 0, 0.0 if x == 0, or -1.0 if x < 0.
-template <typename T>
-inline constexpr T sign(const T& v)
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline vector<2, R> modf_details(const vector<2, T>& value, vector<2, T>& integral)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return common_impl::sign_impl<T, std::numeric_limits<T>::is_signed>()(v);
+    return vector<2, R>(::std::modf(value.x, &integral.x), ::std::modf(value.y, &integral.y));
 }
+/// @}
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline constexpr TVec<N, T> sign(const TVec<N, T>& v)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return common_impl::sign_vector_impl<N, std::numeric_limits<T>::is_signed>()(v);
-}
-
-/// Returns a value equal to the nearest integer that is less then or equal to
-/// x.
-using ::std::floor;
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> floor(const TVec<N, T>& v)
-{
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(floor(a)); });
-}
-
-/// Returns a value equal to the nearest integer to x.
-using ::std::round;
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> round(const TVec<N, T>& v)
-{
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(round(a)); });
-}
-
-/// Returns a value equal to the nearest integer
-/// that is greater than or equal to x.
-using ::std::ceil;
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> ceil(const TVec<N, T>& v)
-{
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(ceil(a)); });
-}
-
-/// Returns a value equal to the nearest integer to x
-/// whose absolute value is not larger than the absolute vfractional patr of
-/// float-point numberalue of x.
-using ::std::trunc;
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> trunc(const TVec<N, T>& v)
-{
-    return utils::createVector(v, [](const T& a) { return static_cast<T>(trunc(a)); });
-}
-
-/// Return fractional patr of floating point number
-template <typename T>
-inline T fract(const T& v)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return static_cast<T>(v - floor(v));
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> fract(const TVec<N, T>& v)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(v, [](const T& a) { return fract(a); });
-}
-
-/// Modulus. Returns x - y * floor(x / y)
-/// for each component in x using the floating point value y.
-template <typename T>
-inline T mod(const T& a, const T& b)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return a - b * floor(a / b);
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> mod(const TVec<N, T>& v, const T& scalar)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(v, [&scalar](const T& a) { return mod(a, scalar); });
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> mod(const TVec<N, T>& a, const TVec<N, T>& b)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, b, [](const T& l, const T& r) { return mod(l, r); });
-}
-
-/// Returns the fractional part of x and sets i to the integer
-/// part (as a whole number floating point value). Both the
-/// return value and the output parameter will have the same
-/// sign as x.
-template <typename T>
-inline T modf(const T& a, T& b)
-{
-    static_assert(std::is_floating_point<T>::value, "Expected floating-point type.");
-    return std::modf(a, &b);
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> modf(const TVec<4, T>& a, TVec<4, T>& b)
-{
-    static_assert(std::is_floating_point<T>::value, "Expected floating-point type.");
-    return TVec<4, T>(modf(a.x, b.x), modf(a.y, b.y), modf(a.z, b.z), modf(a.w, b.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> modf(const TVec<3, T>& a, TVec<3, T>& b)
-{
-    static_assert(std::is_floating_point<T>::value, "Expected floating-point type.");
-    return TVec<3, T>(modf(a.x, b.x), modf(a.y, b.y), modf(a.z, b.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> modf(const TVec<2, T>& a, TVec<2, T>& b)
-{
-    static_assert(std::is_floating_point<T>::value, "Expected floating-point type.");
-    return TVec<2, T>(modf(a.x, b.x), modf(a.y, b.y));
-}
-
-/// Returns a if a < b; otherwise, it returns b.
-template <typename T>
-inline T min(const T& a, const T& b)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return a < b ? a : b;
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> min(const TVec<N, T>& a, const T& scalar)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, [&scalar](const T& l) { return min(l, scalar); });
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> min(const TVec<N, T>& a, const TVec<N, T>& b)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, b, [](const T& l, const T& r) { return min(l, r); });
-}
-
-/// Returns a if a > b; otherwise, it returns b.
-template <typename T>
-inline T max(const T& a, const T& b)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return a > b ? a : b;
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> max(const TVec<N, T>& a, const T& scalar)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, [&scalar](const T& l) { return max(l, scalar); });
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> max(const TVec<N, T>& a, const TVec<N, T>& b)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, b, [](const T& l, const T& r) { return max(l, r); });
-}
-
-/// Returns min(max(a, minv), maxv) for each component in a
-/// using the floating-point values minv and maxv.
-template <typename T>
-inline T clamp(const T& a, const T& minv, const T& maxv)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return min(max(a, minv), maxv);
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> clamp(const TVec<N, T>& a, const T& minv, const T& maxv)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return min(max(a, minv), maxv);
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> clamp(const TVec<N, T>& a, const TVec<N, T>& minv, const TVec<N, T>& maxv)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return min(max(a, minv), maxv);
-}
-
-/// If genTypeU is a floating scalar or vector:
-/// Returns x * (1.0 - a) + y * a, i.e., the linear blend of
-/// x and y using the floating-point value a.
-/// The value for a is not restricted to the range [0, 1].
-///
-/// If genTypeU is a boolean scalar or vector:
-/// Selects which vector each returned component comes
-/// from. For a component of a that is false, the
-/// corresponding component of x is returned. For a
-/// component of a that is true, the corresponding
-/// component of y is returned. Components of x and y that
-/// are not selected are allowed to be invalid floating point
-/// values and will have no effect on the results
+/// @brief Realization of mix function.
+/// @{
 template <typename T, typename U>
-inline T mix(const T& a, const T& b, const U& t)
+inline T mix_details(const T& a, const T& b, const U& t)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value && utils::is_floating_point_or_integer<U>::value,
-                  "Expected floating-point or integer type.");
     return static_cast<T>(a + t * (b - a));
 }
 
 template <typename T>
-inline T mix(const T& a, const T& b, const bool& t)
+inline T mix_details(const T& a, const T& b, const bool& t)
 {
     return t ? b : a;
 }
 
-template <unsigned int N, typename T, typename U, template <unsigned int, typename> class TVec>
-inline TVec<N, T> mix(const TVec<N, T>& a, const TVec<N, T>& b, const U& t)
+template <typename T, typename U>
+inline constexpr vector<4, T> mix_details(const vector<4, T>& a, const vector<4, T>& b, const vector<4, U>& t)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value && utils::is_floating_point_or_integer<U>::value,
-                  "Expected floating-point or integer type.");
-    return TVec<N, T>(a + t * (b - a));
+    return vector<4, T>(
+    mix_details(a.x, b.x, t.x), mix_details(a.y, b.y, t.y), mix_details(a.z, b.z, t.z), mix_details(a.w, b.w, t.w));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> mix(const TVec<N, T>& a, const TVec<N, T>& b, const bool& t)
+template <typename T, typename U>
+inline constexpr vector<3, T> mix_details(const vector<3, T>& a, const vector<3, T>& b, const vector<3, U>& t)
 {
-    return t ? b : a;
+    return vector<3, T>(mix_details(a.x, b.x, t.x), mix_details(a.y, b.y, t.y), mix_details(a.z, b.z, t.z));
 }
 
-template <typename T, typename U, template <unsigned int, typename> class TVec>
-inline TVec<4, T> mix(const TVec<4, T>& a, const TVec<4, T>& b, const TVec<4, U>& t)
+template <typename T, typename U>
+inline constexpr vector<2, T> mix_details(const vector<2, T>& a, const vector<2, T>& b, const vector<2, U>& t)
 {
-    return TVec<4, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y), mix(a.z, b.z, t.z), mix(a.w, b.w, t.w));
+    return vector<2, T>(mix_details(a.x, b.x, t.x), mix_details(a.y, b.y, t.y));
+}
+/// @}
+
+/// @brief Realization of frexp function.
+/// @{
+template <typename T, typename R>
+inline vector<4, R> frexp_details(const vector<4, T>& value, vector<4, int>& exp)
+{
+    return vector<4, R>(::std::frexp(value.x, &exp.x),
+                        ::std::frexp(value.y, &exp.y),
+                        ::std::frexp(value.z, &exp.z),
+                        ::std::frexp(value.w, &exp.w));
 }
 
-template <typename T, typename U, template <unsigned int, typename> class TVec>
-inline TVec<3, T> mix(const TVec<3, T>& a, const TVec<3, T>& b, const TVec<3, U>& t)
+template <typename T, typename R>
+inline vector<3, R> frexp_details(const vector<3, T>& value, vector<3, int>& exp)
 {
-    return TVec<3, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y), mix(a.z, b.z, t.z));
+    return vector<3, R>(::std::frexp(value.x, &exp.x), ::std::frexp(value.y, &exp.y), ::std::frexp(value.z, &exp.z));
 }
 
-template <typename T, typename U, template <unsigned int, typename> class TVec>
-inline TVec<2, T> mix(const TVec<2, T>& a, const TVec<2, T>& b, const TVec<2, U>& t)
+template <typename T, typename R>
+inline vector<2, R> frexp_details(const vector<2, T>& value, vector<2, int>& exp)
 {
-    return TVec<2, T>(mix(a.x, b.x, t.x), mix(a.y, b.y, t.y));
+    return vector<2, R>(::std::frexp(value.x, &exp.x), ::std::frexp(value.y, &exp.y));
 }
+/// @}
 
-/// Returns 0.0 if a < edge, otherwise it returns 1.0 for each component of a
-/// genType.
+/// @brief Realization of almost_equal function.
+/// @{
 template <typename T>
-inline T step(const T& a, const T& edge)
+inline bool almost_equal_details(const T& a, const T& b, int ulp, std::true_type)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return a < edge ? T(0) : T(1);
+    const auto scaled_epsilon =
+    std::numeric_limits<T>::epsilon() * abs_details(a + b, std::is_signed<T>{}) * static_cast<T>(ulp);
+    const auto difference = abs_details(a - b, std::is_signed<T>{});
+    return difference < scaled_epsilon || difference < std::numeric_limits<T>::min();
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> step(const TVec<N, T>& a, const T& edge)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, [&edge](const T& l) { return step(l, edge); });
-}
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> step(const TVec<N, T>& a, const TVec<N, T>& b)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, b, [](const T& l, const T& r) { return step(l, r); });
-}
-
-/// Returns 0.0 if x <= edge0 and 1.0 if x >= edge1 and
-/// performs smooth Hermite interpolation between 0 and 1
-/// when edge0 < x < edge1. This is useful in cases where
-/// you would want a threshold function with a smooth
-/// transition. This is equivalent to:
-/// genType t;
-/// t = clamp ((x - edge0) / (edge1 - edge0), 0, 1);
-/// return t * t * (3 - 2 * t);
-/// Results are undefined if edge0 >= edge1.
 template <typename T>
-inline T smooth_step(const T& a, const T& edge0, const T& edge1)
+inline bool almost_equal_details(const T& a, const T& b, int, std::false_type)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    T t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
-    return t * t * (T(3) - T(2) * t);
+    return a == b;
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> smooth_step(const TVec<N, T>& a, const T& edge0, const T& edge1)
+template <unsigned int N, typename T>
+inline bool almost_equal_details(const vector<N, T>& a, const vector<N, T>& b, int ulp = 0)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
-    return t * t * (T(3) - T(2) * t);
+    constexpr vector<N, bool> true_vector{true};
+    return true_vector == transform(a, b, [ulp](const T& component_a, const T& component_b) {
+               return almost_equal_details(component_a, component_b, ulp, std::is_floating_point<T>{});
+           });
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> smooth_step(const TVec<N, T>& a, const TVec<N, T>& edge0, const TVec<N, T>& edge1)
+template <unsigned int C, unsigned int R, typename T>
+inline bool almost_equal_details(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int ulp = 0)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    TVec<N, T> t = clamp((a - edge0) / (edge1 - edge0), T(0), T(1));
-    return t * t * (T(3) - T(2) * t);
+    for (unsigned int i = 0; i < C; ++i) {
+        if (!almost_equal_details(a[i], b[i], ulp)) {
+            return false;
+        }
+    }
+    return true;
+}
+/// @}
+
+} // namespace common_functions_details
+
+/// @brief Defines common math functions.
+///
+/// @defgroup common_functions Common functions
+/// @ingroup math_module
+/// @{
+
+/// @name abs
+/// @{
+
+/// @brief Computes the absolute value of an argument.
+///
+/// @param value Value of floating-point or integral type.
+///
+/// @return Value if value >= 0, otherwise -value.
+template <typename T>
+inline constexpr T abs(const T& value)
+{
+    return common_functions_details::abs_details(value, std::is_signed<T>{});
 }
 
-/// Returns true if x holds a NaN (not a number)
-/// representation in the underlying implementation's set of
-/// floating point representations. Returns false otherwise,
-/// including for implementations with no NaN
-/// representations.
-using ::std::isnan;
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> isnan(const TVec<N, T>& v)
+/// @brief Creates a vector of the absolute values from the provided vector.
+///
+/// @param value Vector of floating-point or integral type values.
+///
+/// @return A vector of the absolute values.
+///
+/// @see abs
+template <unsigned int N, typename T>
+inline constexpr vector<N, T> abs(const vector<N, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return isnan(a); });
+    return transform(value, ::framework::math::abs<T>);
+}
+/// @}
+
+/// @name sign
+/// @{
+
+/// @brief Computes the sign of an argument.
+///
+/// @param value Value of floating-point or integral type.
+///
+/// @return 1.0 if value > 0, 0.0 if value == 0, or -1.0 if value < 0.
+template <typename T>
+inline constexpr T sign(const T& value)
+{
+    return common_functions_details::sign_details(value, std::is_signed<T>{});
 }
 
-/// Returns true if x holds a positive infinity or negative
-/// infinity representation in the underlying implementation's
-/// set of floating point representations. Returns false
-/// otherwise, including for implementations with no infinity
-/// representations.
-using ::std::isinf;
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, bool> isinf(const TVec<N, T>& v)
+/// @brief Creates a vector of the sign values from the provided vector.
+///
+/// @param value Vector of floating-point or integral type values.
+///
+/// @return A vector of the sign values.
+///
+/// @see sign
+template <unsigned int N, typename T>
+inline constexpr vector<N, T> sign(const vector<N, T>& value)
 {
-    return utils::createVector(v, [](const T& a) { return isinf(a); });
+    return transform(value, ::framework::math::sign<T>);
+}
+/// @}
+
+/// @name floor
+/// @{
+
+/// @brief Computes the largest integer value not greater than argument.
+///
+/// @param value Value of floating-point or integral type.
+///
+/// @return A value equal to the nearest integer that is less then or equal to the argument.
+template <typename T, typename R = decltype(::std::floor(std::declval<T>()))>
+inline R floor(const T& value)
+{
+    return ::std::floor(value);
 }
 
-/// Computes and returns a * b + c.
-using ::std::fma;
+/// @brief Applies the floor function to every component of the vector.
+///
+/// @param value Vector of floating-point or integral type values.
+///
+/// @return A vector of values that are the largest integer value not greater than argument.
+///
+/// @see floor
+template <unsigned int N, typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+inline vector<N, R> floor(const vector<N, T>& value)
+{
+    return transform(value, ::framework::math::floor<T>);
+}
+/// @}
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> fma(const TVec<N, T>& a, const TVec<N, T>& b, const TVec<N, T>& c)
+/// @name round
+/// @{
+
+/// @brief Computes the nearest integer value to the argument.
+///
+/// @param value Value of floating-point or integral type.
+///
+/// @return A value equal to the nearest integer to the argument.
+template <typename T, typename R = decltype(::std::round(std::declval<T>()))>
+inline R round(const T& value)
+{
+    return ::std::round(value);
+}
+
+/// @brief Applies the round function to every component of the vector.
+///
+/// @param value Vector of floating-point or integral type values.
+///
+/// @return A vector of values that are equal to the nearest integer to the argument.
+///
+/// @see round
+template <unsigned int N, typename T, typename R = decltype(::framework::math::round(std::declval<T>()))>
+inline vector<N, R> round(const vector<N, T>& value)
+{
+    return transform(value, ::framework::math::round<T>);
+}
+/// @}
+
+/// @name ceil
+/// @{
+
+/// @brief Computes the nearest integer that is greater than or equal to the argument.
+///
+/// @param value Value of floating-point or integral type.
+///
+/// @return A value that is greater than or equal to the argument.
+template <typename T, typename R = decltype(::std::ceil(std::declval<T>()))>
+inline R ceil(const T& value)
+{
+    return ::std::ceil(value);
+}
+
+/// @brief Applies the ceil function to every component of the vector.
+///
+/// @param value Vector of floating-point or integral type values.
+///
+/// @return A vector of values that are greater than or equal to the argument.
+///
+/// @see ceil
+template <unsigned int N, typename T, typename R = decltype(::framework::math::ceil(std::declval<T>()))>
+inline vector<N, R> ceil(const vector<N, T>& value)
+{
+    return transform(value, ::framework::math::ceil<T>);
+}
+/// @}
+
+/// @name trunc
+/// @{
+
+/// @brief Computes the nearest integer not greater in magnitude than argument.
+///
+/// @param value Value of floating-point or integral type.
+///
+/// @return A value that is not greater in magnitude than argument.
+template <typename T, typename R = decltype(::std::trunc(std::declval<T>()))>
+inline R trunc(const T& value)
+{
+    return ::std::trunc(value);
+}
+
+/// @brief Applies the trunc function to every component of the vector.
+///
+/// @param value Vector of floating-point or integral type values.
+///
+/// @return A vector of values that are not greater in magnitude than argument.
+///
+/// @see trunc
+template <unsigned int N, typename T, typename R = decltype(::framework::math::trunc(std::declval<T>()))>
+inline vector<N, R> trunc(const vector<N, T>& value)
+{
+    return transform(value, ::framework::math::trunc<T>);
+}
+/// @}
+
+/// @name fract
+/// @{
+
+/// @brief Computes the fractional part of a floating-point number.
+///
+/// @param value Value of floating-point type.
+///
+/// @return The fractional part of the argument.
+template <typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+inline R fract(const T& value)
+{
+    return static_cast<R>(value) - ::framework::math::floor(value);
+}
+
+/// @brief Creates a vector of the fractional parts of the argument.
+///
+/// @param value Vector of floating-point values.
+///
+/// @return A vector of the fractional parts.
+///
+/// @see fract
+template <unsigned int N, typename T, typename R = decltype(::framework::math::fract(std::declval<T>()))>
+inline vector<N, R> fract(const vector<N, T>& value)
+{
+    return transform(value, ::framework::math::fract<T>);
+}
+/// @}
+
+/// @name mod
+/// @{
+
+/// @brief Modulus. Computes the floating-point remainder of the division operation.
+///
+/// The floating-point remainder of the division operation is exactly the value: `a - b/// floor(a / b)`
+/// The returned value has the same sign as a and is less than b in magnitude.
+///
+/// @param a Value of floating-point or integral type.
+/// @param b Value of floating-point or integral type.
+///
+/// @return The floating-point remainder of the division operation.
+template <typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+inline R mod(const T& a, const T& b)
+{
+    return static_cast<R>(a) - b * ::framework::math::floor(static_cast<R>(a) / b);
+}
+
+/// @brief Modulus for vector and scalar. Applies the mod function to every component of the vector.
+///
+/// @param a Vector of floating-point or integral type values.
+/// @param b Value of floating-point or integral type.
+///
+/// @return A vector of the floating-point remainder of the division operation.
+///
+/// @see mod
+template <unsigned int N, typename T, typename R = decltype(::framework::math::mod(std::declval<T>(), std::declval<T>()))>
+inline vector<N, R> mod(const vector<N, T>& a, const T& b)
+{
+    return transform(a, vector<N, T>{b}, ::framework::math::mod<T>);
+}
+
+/// @brief Modulus for vectors. Applies the mod function to every component of the vector.
+///
+/// @param a Vector of floating-point or integral type values.
+/// @param b Vector of floating-point or integral type values.
+///
+/// @return A vector of the floating-point remainder of the division operation.
+///
+/// @see mod
+template <unsigned int N, typename T, typename R = decltype(::framework::math::mod(std::declval<T>(), std::declval<T>()))>
+inline vector<N, R> mod(const vector<N, T>& a, const vector<N, T>& b)
+{
+    return transform(a, b, ::framework::math::mod<T>);
+}
+/// @}
+
+/// @name modf
+/// @{
+
+/// @brief Decomposes given floating-point value into integral and fractional parts.
+/// Each having the same type and sign as value.
+/// The integral part (in floating-point format) is stored in the integral parameter.
+///
+/// @param[in] value Value of floating-point type.
+/// @param[out] integral Integral part of the value.
+///
+/// @return The fractional part of the argument.
+template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline R modf(const T& value, T& integral)
+{
+    return std::modf(value, &integral);
+}
+
+/// @brief Decomposes given floating-point vector into integral and fractional parts.
+///
+/// @param[in] value Vector of floating-point values.
+/// @param[out] integral Vector of integral parts of the value.
+///
+/// @return A vector of the fractional parts.
+///
+/// @see modf
+template <unsigned int N, typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+inline vector<N, R> modf(const vector<N, T>& value, vector<N, T>& integral)
+{
+    return common_functions_details::modf_details(value, integral);
+}
+/// @}
+
+/// @name min
+/// @{
+
+/// @brief Returns the smaller of the given values.
+///
+/// @param a Value of floating-point or integral type.
+/// @param b Value of floating-point or integral type.
+///
+/// @return a if a < b; otherwise, it returns b.
+template <typename T>
+inline T min(const T& a, const T& b)
+{
+    return (a < b) ? a : b;
+}
+
+/// @brief Compares vector with scalar value and return a vector of smaller values.
+///
+/// @param a Vector of floating-point or integral type values.
+/// @param b Value of floating-point or integral type.
+///
+/// @return A vector of smaller values.
+///
+/// @see min
+template <unsigned int N, typename T>
+inline constexpr vector<N, T> min(const vector<N, T>& a, const T& b)
+{
+    return transform(a, vector<N, T>{b}, ::framework::math::min<T>);
+}
+
+/// @brief Compares two vectors by components and return a vector of smaller values.
+///
+/// @param a Vector of floating-point or integral type values.
+/// @param b Vector of floating-point or integral type values.
+///
+/// @return A vector of smaller values.
+///
+/// @see min
+template <unsigned int N, typename T>
+inline constexpr vector<N, T> min(const vector<N, T>& a, const vector<N, T>& b)
+{
+    return transform(a, b, ::framework::math::min<T>);
+}
+/// @}
+
+/// @name max
+/// @{
+
+/// @brief Returns the greater of the given values.
+///
+/// @param a Value of floating-point or integral type.
+/// @param b Value of floating-point or integral type.
+///
+/// @return a if a > b; otherwise, it returns b.
+template <typename T>
+inline T max(const T& a, const T& b)
+{
+    return (a > b) ? a : b;
+}
+
+/// @brief Compares vector with scalar value and return a vector of greater values.
+///
+/// @param a Vector of floating-point or integral type values.
+/// @param b Value of floating-point or integral type.
+///
+/// @return A vector of greater values.
+///
+/// @see max
+template <unsigned int N, typename T>
+inline constexpr vector<N, T> max(const vector<N, T>& a, const T& b)
+{
+    return transform(a, vector<N, T>{b}, ::framework::math::max<T>);
+}
+
+/// @brief Compares two vectors by components and return a vector of greater values.
+///
+/// @param a Vector of floating-point or integral type values.
+/// @param b Vector of floating-point or integral type values.
+///
+/// @return A vector of greater values.
+///
+/// @see max
+template <unsigned int N, typename T>
+inline constexpr vector<N, T> max(const vector<N, T>& a, const vector<N, T>& b)
+{
+    return transform(a, b, ::framework::math::max<T>);
+}
+/// @}
+
+/// @name clamp
+/// @{
+
+/// @brief Constrain a value to lie between two defined values.
+///
+/// The returned value is computed as:
+/// @code min(max(x, min_value), max_value) @endcode
+///
+/// @param value Value of floating-point or integral type.
+/// @param min_value Specify the lower end of the range into which to constrain value.
+/// @param max_value Specify the upper end of the range into which to constrain value.
+///
+/// @return A value constrained to the range from min_value to max_value.
+template <typename T>
+inline T clamp(const T& value, const T& min_value, const T& max_value)
+{
+    return ::framework::math::min(::framework::math::max(value, min_value), max_value);
+}
+
+/// @brief Constrain each component of the value to lie between two defined values.
+///
+/// @param value Vector of floating-point or integral type values.
+/// @param min_value Specify the lower end of the range into which to constrain value.
+/// @param max_value Specify the upper end of the range into which to constrain value.
+///
+/// @return A vector of values constrained to the range from min_value to max_value.
+///
+/// @see clamp
+template <unsigned int N, typename T>
+inline vector<N, T> clamp(const vector<N, T>& value, const T& min_value, const T& max_value)
+{
+    return ::framework::math::min(::framework::math::max(value, min_value), max_value);
+}
+
+/// @brief Constrain each component of the value to lie between two defined values.
+///
+/// @param value Vector of floating-point or integral type values.
+/// @param min_value Specify the lower end of the range into which to constrain value.
+/// @param max_value Specify the upper end of the range into which to constrain value.
+///
+/// @return A vector of values constrained to the range from min_value to max_value.
+///
+/// @see clamp
+template <unsigned int N, typename T>
+inline vector<N, T> clamp(const vector<N, T>& value, const vector<N, T>& min_value, const vector<N, T>& max_value)
+{
+    return ::framework::math::min(::framework::math::max(value, min_value), max_value);
+}
+/// @}
+
+/// @name mix
+/// @{
+
+/// @brief Linearly interpolate between two values.
+///
+/// Performs a linear interpolation between a and b using t to weight between them.
+/// If t is floating-point or integer value, return value is computed as `a + t * (b - a)`
+/// If t is boolean value, return value is computed as `t ? b : a`
+///
+/// @param a Specify the start of the range in which to interpolate.
+/// @param b Specify the end of the range in which to interpolate.
+/// @param t Specify the value to use to interpolate between a and b.
+///
+/// @return Linearly interpolated value.
+template <typename T, typename U>
+inline T mix(const T& a, const T& b, const U& t)
+{
+    return common_functions_details::mix_details(a, b, t);
+}
+
+/// @brief Linearly interpolate between two vectors.
+///
+/// Performs a linear interpolation between a and b using t to weight between them.
+/// If t is floating-point or integer value, return vector is computed as `a + t * (b - a)`
+/// If t is boolean value, return vector is computed as `t ? b : a`
+///
+/// @param a Specify the start vector to interpolate.
+/// @param b Specify the end of vector to interpolate.
+/// @param t Specify the value to use to interpolate between a and b.
+///
+/// @return Linearly interpolated vector.
+template <unsigned int N, typename T, typename U>
+inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const U& t)
+{
+    return common_functions_details::mix_details(a, b, t);
+}
+
+/// @brief Linearly interpolate each component of vectors.
+///
+/// Performs a linear interpolation between each component of a and b using corresponding component of t to weight
+/// between them.
+/// The component is computed as `a + t * (b - a)`
+///
+/// @param a Specify the start values to interpolate.
+/// @param b Specify the end values to interpolate.
+/// @param t Specify the values to use to interpolate between a and b.
+///
+/// @return Vector of linearly interpolated values.
+template <unsigned int N, typename T, typename U>
+inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const vector<N, U>& t)
+{
+    return common_functions_details::mix_details(a, b, t);
+}
+/// @}
+
+/// @name step
+/// @{
+
+/// @brief Generate a step function by comparing two values.
+///
+/// @param value Specify the value to be used to generate the step function.
+/// @param edge Specifies the location of the edge of the step function.
+///
+/// @return 0 if value < edge, and 1 otherwise.
+template <typename T>
+inline T step(const T& value, const T& edge)
+{
+    return value < edge ? T(0) : T(1);
+}
+
+/// @brief Generate a step function by comparing two values.
+///
+/// @param value Specify the value to be used to generate the step function.
+/// @param edge Specifies the location of the edge of the step function.
+///
+/// @return For each component in value return 0 if value < edge, and 1 otherwise.
+template <unsigned int N, typename T>
+inline vector<N, T> step(const vector<N, T>& value, const T& edge)
+{
+    return transform(value, vector<N, T>{edge}, ::framework::math::step<T>);
+}
+
+/// @brief Generate a step function by comparing two values.
+///
+/// @param value Specify the value to be used to generate the step function.
+/// @param edge Specifies the location of the edge of the step function.
+///
+/// @return For each i return 0 if value[i] < edge[i], and 1 otherwise.
+template <unsigned int N, typename T>
+inline vector<N, T> step(const vector<N, T>& value, const vector<N, T>& edge)
+{
+    return transform(value, edge, ::framework::math::step<T>);
+}
+/// @}
+
+/// @name smooth_step
+/// @{
+
+/// @brief Performs Hermite interpolation between two values.
+///
+/// Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
+/// This is useful in cases where a threshold function with a smooth transition is desired.
+/// Result is equivalent to:
+/// @code
+///     t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+///     return t * t * (3.0 - 2.0 * t);
+/// @endcode
+/// Results are undefined if edge0 ≥ edge1.
+///
+/// @param value Specifies the source value for interpolation.
+/// @param edge0 Specifies the value of the lower edge of the Hermite function.
+/// @param edge1 Specifies the value of the upper edge of the Hermite function.
+///
+/// @return Interpolated value.
+template <typename T>
+inline T smooth_step(const T& value, const T& edge0, const T& edge1)
+{
+    T temp = clamp((value - edge0) / (edge1 - edge0), T{0}, T{1});
+    return temp * temp * (T{3} - T{2} * temp);
+}
+
+/// @brief Performs Hermite interpolation between two values.
+///
+/// @param value Specifies the source value for interpolation.
+/// @param edge0 Specifies the value of the lower edge of the Hermite function.
+/// @param edge1 Specifies the value of the upper edge of the Hermite function.
+///
+/// @return Interpolated value.
+///
+/// @see smooth_step
+template <unsigned int N, typename T>
+inline vector<N, T> smooth_step(const vector<N, T>& value, const T& edge0, const T& edge1)
+{
+    vector<N, T> temp = clamp((value - edge0) / (edge1 - edge0), T{0}, T{1});
+    return temp * temp * (T{3} - T{2} * temp);
+}
+
+/// @brief Performs Hermite interpolation between two values.
+///
+/// @param value Specifies the source value for interpolation.
+/// @param edge0 Specifies the value of the lower edge of the Hermite function.
+/// @param edge1 Specifies the value of the upper edge of the Hermite function.
+///
+/// @return Interpolated value.
+///
+/// @see smooth_step
+template <unsigned int N, typename T>
+inline vector<N, T> smooth_step(const vector<N, T>& value, const vector<N, T>& edge0, const vector<N, T>& edge1)
+{
+    vector<N, T> temp = clamp((value - edge0) / (edge1 - edge0), T{0}, T{1});
+    return temp * temp * (T{3} - T{2} * temp);
+}
+/// @}
+
+/// @name isnan
+/// @{
+
+/// @brief Determines if the given floating-point number is a not-a-number (NaN) value.
+///
+/// @param value The floating-point value.
+///
+/// @return `true` if value is a NaN, `false` otherwise.
+template <typename T>
+inline bool isnan(const T& value)
+{
+    return ::std::isnan(value);
+}
+
+/// @brief Determines if components of given vector is a not-a-number (NaN) value.
+///
+/// @param value Vector of floating-point values.
+///
+/// @return For each component return `true` if it is a NaN, `false` otherwise.
+template <unsigned int N, typename T>
+inline vector<N, bool> isnan(const vector<N, T>& value)
+{
+    return transform(value, ::framework::math::isnan<T>);
+}
+/// @}
+
+/// @name isinf
+/// @{
+
+
+/// @brief Determines if the given floating-point number is a positive or negative infinity.
+///
+/// @param value The floating-point value.
+///
+/// @return `true` if value is infinite, `false` otherwise.
+template <typename T>
+inline bool isinf(const T& value)
+{
+    return ::std::isinf(value);
+}
+
+/// @brief Determines if components of given vector is a positive or negative infinity.
+///
+/// @param value Vector of floating-point values.
+///
+/// @return For each component return `true` if it is infinite, `false` otherwise.
+template <unsigned int N, typename T>
+inline constexpr vector<N, bool> isinf(const vector<N, T>& value)
+{
+    return transform(value, ::framework::math::isinf<T>);
+}
+/// @}
+
+/// @name fma
+/// @{
+
+/// @brief Computes `(a * b) + z` as if to infinite precision and rounded only once to fit the result type.
+///
+/// @param a Value of floating-point or integral type.
+/// @param b Value of floating-point or integral type.
+/// @param c Value of floating-point or integral type.
+///
+/// @return Value which is equivalent to `(a * b) + c`.
+template <typename T>
+inline T fma(const T& a, const T& b, const T& c)
+{
+    return ::std::fma(a, b, c);
+}
+
+/// @brief Computes `(a * b) + z` for each component of the vector.
+///
+/// @param a Vector of floating-point or integral values.
+/// @param b Vector of floating-point or integral values.
+/// @param c Vector of floating-point or integral values.
+///
+/// @return Vector which is equivalent to `(a * b) + c`.
+template <unsigned int N, typename T>
+inline vector<N, T> fma(const vector<N, T>& a, const vector<N, T>& b, const vector<N, T>& c)
 {
     return a * b + c;
 }
+/// @}
 
-/// Splits x into a floating-point significand in the range
-/// [0.5, 1.0) and an integral exponent of two, such that:
-/// x = significand * exp(2, exponent)
+/// @name frexp
+/// @{
+
+/// @brief Decomposes given floating-point value into a normalized fraction and an integral power of two.
 ///
-/// The significand is returned by the function and the
-/// exponent is returned in the parameter exp. For a
-/// floating-point value of zero, the significant and exponent
-/// are both zero. For a floating-point value that is an
-/// infinity or is not a number, the results are undefined.
-
-template <typename T, typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<int*>()))>
-inline TResult frexp(const T& a, int& exp)
+/// @param value Floating-point value.
+/// @param exp Reference to integer value to store the exponent to.
+///
+/// @return If value is zero, returns zero and stores zero in exp.
+///         Otherwise, returns the value x in the range (-1;-0.5], [0.5; 1)
+///         and stores an integer value in exp such that `x * 2 ^ exp = value`.
+template <typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int*>()))>
+inline R frexp(const T& value, int& exp)
 {
-    return std::frexp(a, &exp);
+    return ::std::frexp(value, &exp);
 }
 
-template <typename T,
-          template <unsigned int, typename> class TVec,
-          typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<int*>()))>
-inline TVec<4, TResult> frexp(const TVec<4, T>& a, TVec<4, int>& exp)
+/// @brief Decomposes each component of given vector into a normalized fraction and an integral power of two.
+///
+/// @param value Vector of floating-point values.
+/// @param exp Reference to integer vector to store the exponent to.
+///
+/// @return For each component of value, if it is zero, returns zero and stores zero in exp.
+///         Otherwise, returns the value x in the range (-1;-0.5], [0.5; 1)
+///         and stores an integer value in exp such that `x * 2 ^ exp = value`.
+template <unsigned int N, typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int*>()))>
+inline vector<N, R> frexp(const vector<N, T>& value, vector<N, int>& exp)
 {
-    return TVec<4, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y), frexp(a.z, exp.z), frexp(a.w, exp.w));
+    return common_functions_details::frexp_details<T, R>(value, exp);
+}
+/// @}
+
+/// @name ldexp
+/// @{
+
+/// @brief Multiplies a given value by the number 2 raised to the exp power.
+///
+/// @param value Floating-point value.
+/// @param exp Integer value.
+///
+/// @return Value which is equivalent to value multiplied by 2 to the power of exp: `value * 2 ^ exp`.
+template <typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int>()))>
+inline R ldexp(const T& value, const int exp)
+{
+    return ::std::ldexp(value, exp);
 }
 
-template <typename T,
-          template <unsigned int, typename> class TVec,
-          typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<int*>()))>
-inline TVec<3, TResult> frexp(const TVec<3, T>& a, TVec<3, int>& exp)
+/// @brief Multiplies each component of a given vector by the number 2 raised to the exp component power.
+///
+/// @param value Vector of floating-point values.
+/// @param exp Vector of integer values.
+///
+/// @return Vector which components are equivalent to value multiplied by 2 to the power of exp: `value * 2 ^ exp`.
+template <unsigned int N, typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int>()))>
+inline vector<N, R> ldexp(const vector<N, T>& value, const vector<N, int>& exp)
 {
-    return TVec<3, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y), frexp(a.z, exp.z));
+    return transform(value, exp, ::framework::math::ldexp<T>);
+}
+/// @}
+
+/// @name almost_equal
+/// @{
+
+/// @brief Compares two values with desired precision.
+///
+/// The machine epsilon scaled to the magnitude of the values used and
+/// multiplied by the desired precision in ULPs (units in the last place) unless the result is subnormal.
+///
+/// @param a Floating-point or integral value.
+/// @param b Floating-point or integral value.
+/// @param ulp Units in the last place.
+///
+/// @return `true` if provided values are equal, `false` otherwise.
+template <typename T>
+inline bool almost_equal(const T& a, const T& b, int ulp = 0)
+{
+    return common_functions_details::almost_equal_details(a, b, ulp, std::is_floating_point<T>{});
 }
 
-template <typename T,
-          template <unsigned int, typename> class TVec,
-          typename TResult = decltype(std::frexp(std::declval<const T&>(), std::declval<int*>()))>
-inline TVec<2, TResult> frexp(const TVec<2, T>& a, TVec<2, int>& exp)
+/// @brief Compares elements of two vectors with desired precision.
+///
+/// The machine epsilon scaled to the magnitude of the values used and
+/// multiplied by the desired precision in ULPs (units in the last place) unless the result is subnormal.
+///
+/// @param a Floating-point or integral vector.
+/// @param b Floating-point or integral vector.
+/// @param ulp Units in the last place.
+///
+/// @return `true` if provided vectors are equal, `false` otherwise.
+template <unsigned int N, typename T>
+inline bool almost_equal(const vector<N, T>& a, const vector<N, T>& b, int ulp = 0)
 {
-    return TVec<2, TResult>(frexp(a.x, exp.x), frexp(a.y, exp.y));
+    return common_functions_details::almost_equal_details(a, b, ulp);
 }
 
-/// Builds a floating-point number from x and the
-/// corresponding integral exponent of two in exp, returning:
-/// significand * exp(2, exponent)
-using ::std::ldexp;
-
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> ldexp(const TVec<N, T>& vector, int exp)
+/// @brief Compares elements of two matrices with desired precision.
+///
+/// The machine epsilon scaled to the magnitude of the values used and
+/// multiplied by the desired precision in ULPs (units in the last place) unless the result is subnormal.
+///
+/// @param a Floating-point or integral matrix.
+/// @param b Floating-point or integral matrix.
+/// @param ulp Units in the last place.
+///
+/// @return `true` if provided matrices are equal, `false` otherwise.
+template <unsigned int C, unsigned int R, typename T>
+inline bool almost_equal(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int ulp = 0)
 {
-    return utils::createVector(vector, [&exp](const T& v) { return ldexp(v, exp); });
+    return common_functions_details::almost_equal_details(a, b, ulp);
 }
+/// @}
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> ldexp(const TVec<4, T>& vector, TVec<4, int>& exp)
-{
-    return TVec<4, T>(ldexp(vector.x, exp.x), ldexp(vector.y, exp.y), ldexp(vector.z, exp.z), ldexp(vector.w, exp.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> ldexp(const TVec<3, T>& vector, TVec<3, int>& exp)
-{
-    return TVec<3, T>(ldexp(vector.x, exp.x), ldexp(vector.y, exp.y), ldexp(vector.z, exp.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> ldexp(const TVec<2, T>& vector, TVec<2, int>& exp)
-{
-    return TVec<2, T>(ldexp(vector.x, exp.x), ldexp(vector.y, exp.y));
-}
-
-// the machine epsilon has to be scaled to the magnitude of the values used
-// and multiplied by the desired precision in ULPs (units in the last place)
-// unless the result is subnormal
-template <typename T, typename std::enable_if<std::is_floating_point<T>::value, void>::type* = nullptr>
-inline bool almost_equal(T x, T y, int ulp = 0)
-{
-    return abs(x - y) < std::numeric_limits<T>::epsilon() * abs(x + y) * static_cast<T>(ulp) ||
-           abs(x - y) < std::numeric_limits<T>::min();
-}
-
-template <typename T, typename std::enable_if<std::is_integral<T>::value, void>::type* = nullptr>
-inline bool almost_equal(T x, T y, int)
-{
-    return x == y;
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline bool almost_equal(const TVec<4, T>& lhs, const TVec<4, T>& rhs, int ulp = 0)
-{
-    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp) &&
-           almost_equal(lhs.w, rhs.w, ulp);
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline bool almost_equal(const TVec<3, T>& lhs, const TVec<3, T>& rhs, int ulp = 0)
-{
-    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp) && almost_equal(lhs.z, rhs.z, ulp);
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline bool almost_equal(const TVec<2, T>& lhs, const TVec<2, T>& rhs, int ulp = 0)
-{
-    return almost_equal(lhs.x, rhs.x, ulp) && almost_equal(lhs.y, rhs.y, ulp);
-}
-
-template <unsigned int R, typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline bool almost_equal(const TMat<4, R, T>& m, const TMat<4, R, T>& m1, int ulp = 0)
-{
-    return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp) && almost_equal(m[2], m1[2], ulp) &&
-           almost_equal(m[3], m1[3], ulp);
-}
-
-template <unsigned int R, typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline bool almost_equal(const TMat<3, R, T>& m, const TMat<3, R, T>& m1, int ulp = 0)
-{
-    return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp) && almost_equal(m[2], m1[2], ulp);
-}
-
-template <unsigned int R, typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline bool almost_equal(const TMat<2, R, T>& m, const TMat<2, R, T>& m1, int ulp = 0)
-{
-    return almost_equal(m[0], m1[0], ulp) && almost_equal(m[1], m1[1], ulp);
-}
+/// @}
 
 } // namespace math
 

@@ -1,98 +1,190 @@
 #!/bin/bash
 
+set -eu
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BUILD_DIR="$SCRIPT_DIR/build"
 
-set -e
+TASK_TO_RUN="none"
 
-TASK_TO_RUN=none
+TEST_MODULES=""
+
+RED='\033[0;31m'   # Red
+BLUE='\033[0;34m'  # Blue
+NC='\033[0m'       # No Color
+
+function info {
+    echo -e "${BLUE}$1${NC}";
+}
+
+function error {
+    echo -e "${RED}$1${NC}";
+}
+
+# Settings functions
 
 function set_compiler {
     local CC_COMPILER=
     local CXX_COMILLER=
 
-    if [ "$1" == "gcc" ]
+    if [[ "$1" == "gcc" ]]
     then
         CC_COMPILER=gcc
         CXX_COMILLER=g++
-    elif [ "$1" == "clang" ]
+    elif [[ "$1" == "clang" ]]
     then
         CC_COMPILER=clang
         CXX_COMILLER=clang++
     else
-        echo "Unknown compiler: $1"
+        error "Unknown compiler: $1"
     fi
 
-    echo "Specify C compiller as $CC_COMPILER."
-    export CC=$CC_COMPILER
+    info "Specify C compiller as $CC_COMPILER."
+    export CC="$CC_COMPILER"
 
-    echo "Specify C++ compiller as $CXX_COMILLER."
-    export CXX=$CXX_COMILLER
+    info "Specify C++ compiller as $CXX_COMILLER."
+    export CXX="$CXX_COMILLER"
 }
 
-function build {
-    cd $SCRIPT_DIR
-    echo "==== Start build in $(pwd) ===="
-    mkdir -p build && cd ./build
-    cmake -DCMAKE_BUILD_TYPE=Release ../
+function check_x11_support {
+    if [[ "$(uname -s)" == "Linux" ]]
+    then
+        if [[ -n ${DISPLAY+x} ]]
+        then
+            info "==== Found existing display ===="
+        else
+            info "==== Setup virtual display ===="
 
-    echo ""
-    echo "==== Build framework ===="
-    make -j4
-    make install
+            Xvfb :1 -screen 0 1024x768x16 &> xvfb.log &
+            export DISPLAY=:1.0
+        fi
+    fi
+}
 
-    echo ""
-    echo "==== Build framework tests ===="
+# Task functions
+function configure {
+    info "==== Run configuration ===="
+
+    mkdir -p "$BUILD_DIR"
+    cd "$BUILD_DIR"
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+}
+
+function build_framework {
+    info "==== Build framework ===="
+
+    cd "$BUILD_DIR"
+    make -j4 all
+}
+
+function build_tests {
+    info "==== Build framework tests ===="
+
+    cd "$BUILD_DIR"
     make -j4 framework_tests
 }
 
+function install_all {
+    info "==== Install framework ===="
+
+    cd "$BUILD_DIR"
+    make install
+}
+
 function run_tests {
-    cd $SCRIPT_DIR
-    echo "==== Run framework tests ===="
-    cd ./build
+    info "==== Run framework tests ===="
+
+    check_x11_support
+
+    cd "$BUILD_DIR"
     make run_all_tests
 }
 
 function run_tests_verbose {
-    cd $SCRIPT_DIR
-    echo "==== Run framework tests verbose ===="
-    cd ./build
+    info "==== Run framework tests verbose ===="
+
+    check_x11_support
+
+    cd "$BUILD_DIR"
     make run_all_tests_verbose
 }
 
+function coverage_scan {
+    info "==== Run test coverage scan ===="
+
+    mkdir -p "$BUILD_DIR"
+    cd "$BUILD_DIR"
+
+    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DENABLE_TEST_COVERAGE=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+
+    build_framework
+
+    build_tests
+
+    run_tests
+
+    info "==== Get lcov report ===="
+    lcov --directory . --capture --output-file coverage.info                # capture coverage info
+    lcov --remove coverage.info '/usr/*' --output-file coverage.info        # filter out system
+    lcov --list coverage.info                                               # debug info
+}
+
 function build_documentation {
-    cd $SCRIPT_DIR
-    echo "==== Run framework tests verbose ===="
-    cd ./build
+    info "==== Run framework tests verbose ===="
+
+    cd "$BUILD_DIR"
     make documentation
 }
 
 function clean_all {
-    cd $SCRIPT_DIR
-    echo "==== Clear all ===="
+    info "==== Clear all ===="
+
+    cd "$SCRIPT_DIR"
     rm -rf ./output ./build
 }
 
 function print_help {
-    echo -e "=== Help ==="
-    echo -e "./build.sh [OPTION VALUE[,VALUE]]"
-    echo -e "OPTIONS:"
-    echo -e "\t -t : Specify task to run."
-    echo -e "\t VALUES:"
-    echo -e "\t\t build        : Build and install framework, also build tests."
-    echo -e "\t\t test         : Run all tests."
-    echo -e "\t\t test_verbose : Run all tests with verbose logging."
-    echo -e "\t\t docs         : Build documentation."
-    echo -e "\t\t clean        : Clean build results."
-    echo -e "\t -c : Specify compiller to use."
-    echo -e "\t VALUES:"
-    echo -e "\t\t gcc   : Use gcc compiller (default)."
-    echo -e "\t\t clang : Use clang compiller."
+cat << EOF
+==== Help ====
+    ./build.sh [OPTION VALUE[,VALUE]]
+
+    OPTIONS:
+        -t : Specify task to run.
+        VALUES:
+            configure    : Just runs cmake configuration.
+            build        : Build framework and tests.
+            install      : Install framework and tests.
+            test         : Run all tests.
+            test_verbose : Run all tests with verbose logging.
+            coverage     : Run test coverage scan.
+            docs         : Build documentation.
+            clean        : Clean build results.
+
+        -c : Specify compiller to use.
+        VALUES:
+            gcc   : Use gcc compiller (default).
+            clang : Use clang compiller.
+
+        -m : Specify which module you want to test.
+        Parameters: <module>[,<module>]
+            If not present, all modules will be tested.
+EOF
 }
+
+# Main logic
 
 function run_task {
     case "$1" in
+        "configure" )
+            configure
+        ;;
         "build" )
-            build
+            configure
+            build_framework
+            build_tests
+        ;;
+        "install" )
+            install_all
         ;;
         "test" )
             run_tests
@@ -100,15 +192,23 @@ function run_task {
         "test_verbose" )
             run_tests_verbose
         ;;
+        "coverage" )
+            coverage_scan
+        ;;
         "docs" )
+            configure
             build_documentation
         ;;
         "clean" )
             clean_all
         ;;
         "none" )
-            echo "You need to specify task."
+            error "You need to specify task."
             print_help
+            exit 1
+        ;;
+        *)
+            error "Unknown task '$1'"
             exit 1
         ;;
     esac
@@ -116,34 +216,39 @@ function run_task {
 
 function execute {
     IFS=', ' read -r -a array <<< "$1"
-    for task in "${array[@]}"; do
+    for task in "${array[@]}"
+    do
         run_task "$task"
     done
 }
 
-while getopts "t:c:h" opt; do
+while getopts "t:c:m:h" opt
+do
     case $opt in
-        c)
-            set_compiler $OPTARG
-        ;;
         t)
-            TASK_TO_RUN=$OPTARG
+            TASK_TO_RUN="$OPTARG"
+        ;;
+        c)
+            set_compiler "$OPTARG"
+        ;;
+        m)
+            TEST_MODULES="$OPTARG"
         ;;
         h)
             print_help
             exit 0
         ;;
         \?)
-            echo "Invalid option -$OPTARG."
+            error "Invalid option -$OPTARG."
             print_help
             exit 1
         ;;
         :)
-            echo "Option -$OPTARG requires an argument."
+            error "Option -$OPTARG requires an argument."
             print_help
             exit 1
         ;;
     esac
 done
 
-execute $TASK_TO_RUN
+execute "$TASK_TO_RUN"

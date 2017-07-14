@@ -1,9 +1,7 @@
-/**
- * \file suite.cpp
- * \brief Base class for tests.
- * \author Fedorov Alexey
- * \date 04.03.2017
- */
+/// @file suite.cpp
+/// @brief Base class for tests.
+/// @author Fedorov Alexey
+/// @date 04.03.2017
 
 #include <iomanip>
 #include <iostream>
@@ -32,7 +30,15 @@ void suite::run()
     for (auto iterator = m_tests.begin(); iterator != m_tests.end(); iterator++) {
         m_current_test = iterator;
 
-        m_current_test->function();
+        try {
+            m_current_test->function();
+        } catch (const std::exception& e) {
+            test_failed("Exception", 0, e.what());
+            throw;
+        } catch (...) {
+            test_failed("Exception", 0, "Unknown exception.");
+            throw;
+        }
 
         if (m_current_test->success) {
             output_success(*m_current_test);

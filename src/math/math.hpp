@@ -1,12 +1,10 @@
-/**
- * @file math.hpp
- * @brief Main file in math module.
- * @author Fedorov Alexey
- * @date 04.03.2017
- *
- * You should include this file only.
- * It includes all math stuff and declarations of main types for vectors and matrices.
- */
+/// @file
+/// @brief Main file in math module.
+/// @author Fedorov Alexey
+/// @date 04.03.2017
+///
+/// You should include this file only.
+/// It includes all math stuff and declarations of main types for vectors and matrices.
 
 #ifndef FRAMEWORK_MATH_HPP
 #define FRAMEWORK_MATH_HPP
@@ -27,85 +25,71 @@
 
 namespace framework {
 
-/**
- * @defgroup math_module Math module
- */
+/// @brief Contains all math stuff.
+///
+/// @defgroup math_module Math module
+/// @{
 
-/**
- * @brief Contains all math stuff.
- * @ingroup math_module
- */
+/// @brief Contains all math stuff.
 namespace math {
 
-#pragma mark - vector type
+/// @name Common vector types.
+/// @{
+using vector2d = vector<2, double>; ///< Vector of 2 double values.
+using vector3d = vector<3, double>; ///< Vector of 3 double values.
+using vector4d = vector<4, double>; ///< Vector of 4 double values.
 
-/**
- * @defgroup common_vectors Common vector types
- * @ingroup math_module
- * @{
- */
-using vector2d = vector<2, double>;
-using vector3d = vector<3, double>;
-using vector4d = vector<4, double>;
+using vector2f = vector<2, float>; ///< Vector of 2 float values.
+using vector3f = vector<3, float>; ///< Vector of 3 float values.
+using vector4f = vector<4, float>; ///< Vector of 4 float values.
 
-using vector2f = vector<2, float>;
-using vector3f = vector<3, float>;
-using vector4f = vector<4, float>;
+using vector2i = vector<2, int>; ///< Vector of 2 int values.
+using vector3i = vector<3, int>; ///< Vector of 3 int values.
+using vector4i = vector<4, int>; ///< Vector of 4 int values.
 
-using vector2i = vector<2, int>;
-using vector3i = vector<3, int>;
-using vector4i = vector<4, int>;
+using vector2u = vector<2, unsigned int>; ///< Vector of 2 unsigned int values.
+using vector3u = vector<3, unsigned int>; ///< Vector of 3 unsigned int values.
+using vector4u = vector<4, unsigned int>; ///< Vector of 4 unsigned int values.
 
-using vector2u = vector<2, unsigned int>;
-using vector3u = vector<3, unsigned int>;
-using vector4u = vector<4, unsigned int>;
+using vector2b = vector<2, bool>; ///< Vector of 2 bool values.
+using vector3b = vector<3, bool>; ///< Vector of 3 bool values.
+using vector4b = vector<4, bool>; ///< Vector of 4 bool values.
+/// @}
 
-using vector2b = vector<2, bool>;
-using vector3b = vector<3, bool>;
-using vector4b = vector<4, bool>;
-/**
- * @}
- */
+/// @name Common matrix types.
+/// @{
+using matrix2d   = matrix<2, 2, double>; ///< Matrix with 2 columns and 2 rows of double type values.
+using matrix2x2d = matrix<2, 2, double>; ///< Matrix with 2 columns and 2 rows of double type values.
+using matrix2x3d = matrix<2, 3, double>; ///< Matrix with 2 columns and 3 rows of double type values.
+using matrix2x4d = matrix<2, 4, double>; ///< Matrix with 2 columns and 4 rows of double type values.
 
-#pragma mark - matrix type
+using matrix3d   = matrix<3, 3, double>; ///< Matrix with 3 columns and 3 rows of double type values.
+using matrix3x3d = matrix<3, 3, double>; ///< Matrix with 3 columns and 3 rows of double type values.
+using matrix3x2d = matrix<3, 2, double>; ///< Matrix with 3 columns and 2 rows of double type values.
+using matrix3x4d = matrix<3, 4, double>; ///< Matrix with 3 columns and 4 rows of double type values.
 
-/**
- * @defgroup common_matrices Common matrix types
- * @ingroup math_module
- * @{
- */
-using Matrix2D   = matrix_impl::Matrix<2, 2, double>;
-using Matrix2x2D = matrix_impl::Matrix<2, 2, double>;
-using Matrix2x3D = matrix_impl::Matrix<2, 3, double>;
-using Matrix2x4D = matrix_impl::Matrix<2, 4, double>;
+using matrix4d   = matrix<4, 4, double>; ///< Matrix with 4 columns and 4 rows of double type values.
+using matrix4x4d = matrix<4, 4, double>; ///< Matrix with 4 columns and 4 rows of double type values.
+using matrix4x2d = matrix<4, 2, double>; ///< Matrix with 4 columns and 2 rows of double type values.
+using matrix4x3d = matrix<4, 3, double>; ///< Matrix with 4 columns and 4 rows of double type values.
 
-using Matrix3D   = matrix_impl::Matrix<3, 3, double>;
-using Matrix3x3D = matrix_impl::Matrix<3, 3, double>;
-using Matrix3x2D = matrix_impl::Matrix<3, 2, double>;
-using Matrix3x4D = matrix_impl::Matrix<3, 4, double>;
+using matrix2f   = matrix<2, 2, float>; ///< Matrix with 2 columns and 2 rows of float type values.
+using matrix2x2f = matrix<2, 2, float>; ///< Matrix with 2 columns and 2 rows of float type values.
+using matrix2x3f = matrix<2, 3, float>; ///< Matrix with 2 columns and 3 rows of float type values.
+using matrix2x4f = matrix<2, 4, float>; ///< Matrix with 2 columns and 4 rows of float type values.
 
-using Matrix4D   = matrix_impl::Matrix<4, 4, double>;
-using Matrix4x4D = matrix_impl::Matrix<4, 4, double>;
-using Matrix4x2D = matrix_impl::Matrix<4, 2, double>;
-using Matrix4x3D = matrix_impl::Matrix<4, 3, double>;
+using matrix3f   = matrix<3, 3, float>; ///< Matrix with 3 columns and 3 rows of float type values.
+using matrix3x3f = matrix<3, 3, float>; ///< Matrix with 3 columns and 3 rows of float type values.
+using matrix3x2f = matrix<3, 2, float>; ///< Matrix with 3 columns and 2 rows of float type values.
+using matrix3x4f = matrix<3, 4, float>; ///< Matrix with 3 columns and 4 rows of float type values.
 
-using Matrix2F   = matrix_impl::Matrix<2, 2, float>;
-using Matrix2x2F = matrix_impl::Matrix<2, 2, float>;
-using Matrix2x3F = matrix_impl::Matrix<2, 3, float>;
-using Matrix2x4F = matrix_impl::Matrix<2, 4, float>;
+using matrix4f   = matrix<4, 4, float>; ///< Matrix with 4 columns and 4 rows of float type values.
+using matrix4x4f = matrix<4, 4, float>; ///< Matrix with 4 columns and 4 rows of float type values.
+using matrix4x2f = matrix<4, 2, float>; ///< Matrix with 4 columns and 2 rows of float type values.
+using matrix4x3f = matrix<4, 3, float>; ///< Matrix with 4 columns and 4 rows of float type values.
+/// @}
 
-using Matrix3F   = matrix_impl::Matrix<3, 3, float>;
-using Matrix3x3F = matrix_impl::Matrix<3, 3, float>;
-using Matrix3x2F = matrix_impl::Matrix<3, 2, float>;
-using Matrix3x4F = matrix_impl::Matrix<3, 4, float>;
-
-using Matrix4F   = matrix_impl::Matrix<4, 4, float>;
-using Matrix4x4F = matrix_impl::Matrix<4, 4, float>;
-using Matrix4x2F = matrix_impl::Matrix<4, 2, float>;
-using Matrix4x3F = matrix_impl::Matrix<4, 3, float>;
-/**
- * @}
- */
+/// @}
 
 } // namespace math
 
