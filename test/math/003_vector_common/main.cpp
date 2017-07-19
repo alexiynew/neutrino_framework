@@ -29,8 +29,6 @@ public:
         add_test([this]() { fma_function(); }, "fma_function");
         add_test([this]() { frexp_function(); }, "frexp_function");
         add_test([this]() { ldexp_function(); }, "ldexp_function");
-        add_test([this]() { almost_equal_function(); }, "almost_equal_function");
-        add_test([this]() { almost_equal_matrix_function(); }, "almost_equal_matrix_function");
 
         v4d = {1.1, -1.5, 0.0, -1.8};
         v3f = {1.6f, -1.5f, 0.0f};
@@ -230,127 +228,6 @@ private:
         TEST_ASSERT(ldexp(frexp(v4d, v4i_exponent), v4i_exponent) == v4d, "Ldexp function failed.");
         TEST_ASSERT(ldexp(frexp(v3f, v3i_exponent), v3i_exponent) == v3f, "Ldexp function failed.");
         TEST_ASSERT(ldexp(frexp(v2u, v2i_exponent), v2i_exponent) == vector2d(v2u), "Ldexp function failed.");
-    }
-
-    void almost_equal_function()
-    {
-        TEST_ASSERT(almost_equal(v4d, vector4d(1.1, -1.5, 0.0, -1.8)), "Almost_equal function failed.");
-        TEST_ASSERT(almost_equal(v3f, vector3f(1.6f, -1.5f, 0.0f)), "Almost_equal function failed.");
-        TEST_ASSERT(almost_equal(v3i, vector3i(1, -5, 0)), "Almost_equal function failed.");
-        TEST_ASSERT(almost_equal(v2u, vector2u(10, 0)), "Almost_equal function failed.");
-    }
-
-    void almost_equal_matrix_function()
-    {
-        // clang-format off
-        const matrix4x4f m44f = {
-            1, 2, 3, 4,
-            4, 1, 2, 3,
-            3, 4, 1, 2,
-            2, 3, 4, 1
-        };
-
-        const matrix4x3f m43f = {
-            1, 2, 3, 3,
-            1, 2, 2, 3,
-            1, 1, 2, 3
-        };
-
-        const matrix4x2f m42f = {
-            1, 2, 2, 1,
-            1, 2, 2, 1
-        };
-
-        const matrix3x4f m34f = {
-            1, 2, 3,
-            4, 4, 1,
-            2, 3, 3,
-            4, 1, 2
-        };
-
-        const matrix3x3f m33f = {
-            1, 2, 3,
-            3, 1, 2,
-            2, 3, 1
-        };
-
-        const matrix3x2f m32f = {
-            1, 2, 2,
-            1, 1, 2};
-
-        const matrix2x4f m24f = {
-            1, 2,
-            3, 4,
-            4, 1,
-            2, 3
-        };
-
-        const matrix2x3f m23f = {
-            1, 2,
-            3, 4,
-            1, 2
-        };
-
-        const matrix2x2f m22f = {
-            1, 2,
-            4, 1
-        };
-
-        TEST_ASSERT(almost_equal(m44f, matrix4x4f{
-            1, 2, 3, 4,
-            4, 1, 2, 3,
-            3, 4, 1, 2,
-            2, 3, 4, 1
-        }), "Almost_equal function failed.");
-
-        TEST_ASSERT(almost_equal(m43f, matrix4x3f{
-            1, 2, 3, 3,
-            1, 2, 2, 3,
-            1, 1, 2, 3
-        }), "Almost_equal function failed.");
-
-        TEST_ASSERT(almost_equal(m42f, matrix4x2f{
-            1, 2, 2, 1,
-            1, 2, 2, 1
-        }), "Almost_equal function failed.");
-
-        TEST_ASSERT(almost_equal(m34f, matrix3x4f{
-            1, 2, 3,
-            4, 4, 1,
-            2, 3, 3,
-            4, 1, 2
-        }), "Almost_equal function failed.");
-
-        TEST_ASSERT(almost_equal(m33f, matrix3x3f{
-            1, 2, 3,
-            3, 1, 2,
-            2, 3, 1
-        }), "Almost_equal function failed.");
-
-        TEST_ASSERT(almost_equal(m32f, matrix3x2f{
-            1, 2, 2,
-            1, 1, 2
-        }), "Almost_equal function failed.");
-
-        TEST_ASSERT(almost_equal(m24f, matrix2x4f{
-            1, 2,
-            3, 4,
-            4, 1,
-            2, 3
-        }), "Almost_equal function failed.");
-
-        TEST_ASSERT(almost_equal(m23f, matrix2x3f{
-            1, 2,
-            3, 4,
-            1, 2
-        }), "Almost_equal function failed.");
-
-        TEST_ASSERT(almost_equal(m22f, matrix2x2f{
-            1, 2,
-            4, 1
-        }), "Almost_equal function failed.");
-
-        // clang-format on
     }
 
     vector4d v4d;

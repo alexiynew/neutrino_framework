@@ -17,6 +17,8 @@ public:
         add_test([this]() { greater_equal_function(); }, "greater_equal_function");
         add_test([this]() { equal_function(); }, "equal_function");
         add_test([this]() { not_equal_function(); }, "not_equal_function");
+        add_test([this]() { almost_equal_function(); }, "almost_equal_function");
+        add_test([this]() { almost_equal_matrix_function(); }, "almost_equal_matrix_function");
         add_test([this]() { logical_not_function(); }, "logical_not_function");
         add_test([this]() { logical_and_function(); }, "logical_and_function");
         add_test([this]() { logical_or_function(); }, "logical_or_function");
@@ -60,6 +62,132 @@ private:
     void not_equal_function()
     {
         TEST_ASSERT(not_equal(v2i2, v2i1) == vector2b(true, false), "Not_equal function failed.");
+    }
+
+    void almost_equal_function()
+    {
+        const vector4d v4d = {1.1, -1.5, 0.0, -1.8};
+        const vector3f v3f = {1.6f, -1.5f, 0.0f};
+        const vector3i v3i = {1, -5, 0};
+        const vector2u v2u = {10, 0};
+
+        TEST_ASSERT(almost_equal(v4d, vector4d(1.1, -1.5, 0.0, -1.8)), "Almost_equal function failed.");
+        TEST_ASSERT(almost_equal(v3f, vector3f(1.6f, -1.5f, 0.0f)), "Almost_equal function failed.");
+        TEST_ASSERT(almost_equal(v3i, vector3i(1, -5, 0)), "Almost_equal function failed.");
+        TEST_ASSERT(almost_equal(v2u, vector2u(10, 0)), "Almost_equal function failed.");
+    }
+
+    void almost_equal_matrix_function()
+    {
+        // clang-format off
+        const matrix4x4f m44f = {
+            1, 2, 3, 4,
+            4, 1, 2, 3,
+            3, 4, 1, 2,
+            2, 3, 4, 1
+        };
+
+        const matrix4x3f m43f = {
+            1, 2, 3, 3,
+            1, 2, 2, 3,
+            1, 1, 2, 3
+        };
+
+        const matrix4x2f m42f = {
+            1, 2, 2, 1,
+            1, 2, 2, 1
+        };
+
+        const matrix3x4f m34f = {
+            1, 2, 3,
+            4, 4, 1,
+            2, 3, 3,
+            4, 1, 2
+        };
+
+        const matrix3x3f m33f = {
+            1, 2, 3,
+            3, 1, 2,
+            2, 3, 1
+        };
+
+        const matrix3x2f m32f = {
+            1, 2, 2,
+            1, 1, 2};
+
+        const matrix2x4f m24f = {
+            1, 2,
+            3, 4,
+            4, 1,
+            2, 3
+        };
+
+        const matrix2x3f m23f = {
+            1, 2,
+            3, 4,
+            1, 2
+        };
+
+        const matrix2x2f m22f = {
+            1, 2,
+            4, 1
+        };
+
+        TEST_ASSERT(almost_equal(m44f, matrix4x4f{
+            1, 2, 3, 4,
+            4, 1, 2, 3,
+            3, 4, 1, 2,
+            2, 3, 4, 1
+        }), "Almost_equal function failed.");
+
+        TEST_ASSERT(almost_equal(m43f, matrix4x3f{
+            1, 2, 3, 3,
+            1, 2, 2, 3,
+            1, 1, 2, 3
+        }), "Almost_equal function failed.");
+
+        TEST_ASSERT(almost_equal(m42f, matrix4x2f{
+            1, 2, 2, 1,
+            1, 2, 2, 1
+        }), "Almost_equal function failed.");
+
+        TEST_ASSERT(almost_equal(m34f, matrix3x4f{
+            1, 2, 3,
+            4, 4, 1,
+            2, 3, 3,
+            4, 1, 2
+        }), "Almost_equal function failed.");
+
+        TEST_ASSERT(almost_equal(m33f, matrix3x3f{
+            1, 2, 3,
+            3, 1, 2,
+            2, 3, 1
+        }), "Almost_equal function failed.");
+
+        TEST_ASSERT(almost_equal(m32f, matrix3x2f{
+            1, 2, 2,
+            1, 1, 2
+        }), "Almost_equal function failed.");
+
+        TEST_ASSERT(almost_equal(m24f, matrix2x4f{
+            1, 2,
+            3, 4,
+            4, 1,
+            2, 3
+        }), "Almost_equal function failed.");
+
+        TEST_ASSERT(almost_equal(m23f, matrix2x3f{
+            1, 2,
+            3, 4,
+            1, 2
+        }), "Almost_equal function failed.");
+
+        TEST_ASSERT(almost_equal(m22f, matrix2x2f{
+            1, 2,
+            4, 1
+        }), "Almost_equal function failed.");
+
+        // clang-format on
     }
 
     void logical_not_function()
