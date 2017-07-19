@@ -76,24 +76,24 @@ private:
         const matrix2x3f result23(result44);
         const matrix2x2f result22(result44);
 
-        TEST_ASSERT(crossComponentMultiplication(test44, test44) == result44,
-                    "Cross_component_multiplication function for Matrix4x4 failed.");
-        TEST_ASSERT(crossComponentMultiplication(test43, test43) == result43,
-                    "Cross_component_multiplication function for Matrix4x3 failed.");
-        TEST_ASSERT(crossComponentMultiplication(test42, test42) == result42,
-                    "Cross_component_multiplication function for Matrix4x2 failed.");
-        TEST_ASSERT(crossComponentMultiplication(test34, test34) == result34,
-                    "Cross_component_multiplication function for Matrix3x4 failed.");
-        TEST_ASSERT(crossComponentMultiplication(test33, test33) == result33,
-                    "Cross_component_multiplication function for Matrix3x3 failed.");
-        TEST_ASSERT(crossComponentMultiplication(test32, test32) == result32,
-                    "Cross_component_multiplication function for Matrix3x2 failed.");
-        TEST_ASSERT(crossComponentMultiplication(test24, test24) == result24,
-                    "Cross_component_multiplication function for Matrix2x4 failed.");
-        TEST_ASSERT(crossComponentMultiplication(test23, test23) == result23,
-                    "Cross_component_multiplication function for Matrix2x3 failed.");
-        TEST_ASSERT(crossComponentMultiplication(test22, test22) == result22,
-                    "Cross_component_multiplication function for Matrix2x2 failed.");
+        TEST_ASSERT(component_wise_multiplication(test44, test44) == result44,
+                    "Component_wise_multiplication function for Matrix4x4 failed.");
+        TEST_ASSERT(component_wise_multiplication(test43, test43) == result43,
+                    "Component_wise_multiplication function for Matrix4x3 failed.");
+        TEST_ASSERT(component_wise_multiplication(test42, test42) == result42,
+                    "Component_wise_multiplication function for Matrix4x2 failed.");
+        TEST_ASSERT(component_wise_multiplication(test34, test34) == result34,
+                    "Component_wise_multiplication function for Matrix3x4 failed.");
+        TEST_ASSERT(component_wise_multiplication(test33, test33) == result33,
+                    "Component_wise_multiplication function for Matrix3x3 failed.");
+        TEST_ASSERT(component_wise_multiplication(test32, test32) == result32,
+                    "Component_wise_multiplication function for Matrix3x2 failed.");
+        TEST_ASSERT(component_wise_multiplication(test24, test24) == result24,
+                    "Component_wise_multiplication function for Matrix2x4 failed.");
+        TEST_ASSERT(component_wise_multiplication(test23, test23) == result23,
+                    "Component_wise_multiplication function for Matrix2x3 failed.");
+        TEST_ASSERT(component_wise_multiplication(test22, test22) == result22,
+                    "Component_wise_multiplication function for Matrix2x2 failed.");
     }
 
     void outer_product_function()
@@ -112,15 +112,15 @@ private:
         const matrix2x3f result23 = {1, 2, 3, 2, 4, 6};
         const matrix2x2f result22 = {1, 2, 2, 4};
 
-        TEST_ASSERT(outerProduct(v4, v4) == result44, "Outer_product function from (v4, v4) failed.");
-        TEST_ASSERT(outerProduct(v3, v4) == result43, "Outer_product function from (v3, v4) failed.");
-        TEST_ASSERT(outerProduct(v2, v4) == result42, "Outer_product function from (v2, v4) failed.");
-        TEST_ASSERT(outerProduct(v4, v3) == result34, "Outer_product function from (v4, v3) failed.");
-        TEST_ASSERT(outerProduct(v3, v3) == result33, "Outer_product function from (v3, v3) failed.");
-        TEST_ASSERT(outerProduct(v2, v3) == result32, "Outer_product function from (v2, v3) failed.");
-        TEST_ASSERT(outerProduct(v4, v2) == result24, "Outer_product function from (v4, v2) failed.");
-        TEST_ASSERT(outerProduct(v3, v2) == result23, "Outer_product function from (v3, v2) failed.");
-        TEST_ASSERT(outerProduct(v2, v2) == result22, "Outer_product function from (v2, v2) failed.");
+        TEST_ASSERT(outer_product(v4, v4) == result44, "Outer_product function from (v4, v4) failed.");
+        TEST_ASSERT(outer_product(v3, v4) == result43, "Outer_product function from (v3, v4) failed.");
+        TEST_ASSERT(outer_product(v2, v4) == result42, "Outer_product function from (v2, v4) failed.");
+        TEST_ASSERT(outer_product(v4, v3) == result34, "Outer_product function from (v4, v3) failed.");
+        TEST_ASSERT(outer_product(v3, v3) == result33, "Outer_product function from (v3, v3) failed.");
+        TEST_ASSERT(outer_product(v2, v3) == result32, "Outer_product function from (v2, v3) failed.");
+        TEST_ASSERT(outer_product(v4, v2) == result24, "Outer_product function from (v4, v2) failed.");
+        TEST_ASSERT(outer_product(v3, v2) == result23, "Outer_product function from (v3, v2) failed.");
+        TEST_ASSERT(outer_product(v2, v2) == result22, "Outer_product function from (v2, v2) failed.");
     }
 
     void determinant_function()
@@ -168,7 +168,7 @@ private:
     {
         const matrix3x3f test3 = {0, -1, 0, -1, 0, 0, 5, 5, 1};
 
-        TEST_ASSERT(affineInverse(test3) == inverse(test3), "Affine inverse function for matrix3x3f failed.");
+        TEST_ASSERT(affine_inverse(test3) == inverse(test3), "Affine inverse function for matrix3x3f failed.");
 
         // clang-format off
         const matrix4f test_matrix = {
@@ -179,7 +179,7 @@ private:
         };
         // clang-format on
 
-        auto test   = affineInverse(test_matrix);
+        auto test   = affine_inverse(test_matrix);
         auto result = inverse(test_matrix);
 
         TEST_ASSERT(almost_equal(test, result), "Affine inverse function for matrix4x4f failed.");
@@ -191,11 +191,11 @@ private:
         const matrix3x3f test3 = {8, 6, 7, 4, 2, 3, 1, 5, 2};
         const matrix4x4f test4 = {1, 2, 1, 1, 2, 1, 2, 0, 0, 0, 1, 1, 0, 1, 0, 1};
 
-        TEST_ASSERT(transpose(inverse(test2)) == inverseTranspose(test2),
+        TEST_ASSERT(transpose(inverse(test2)) == inverse_transpose(test2),
                     "Inverse_transpose function for matrix2x2f failed.");
-        TEST_ASSERT(transpose(inverse(test3)) == inverseTranspose(test3),
+        TEST_ASSERT(transpose(inverse(test3)) == inverse_transpose(test3),
                     "Inverse_transpose function for matrix3x3f failed.");
-        TEST_ASSERT(transpose(inverse(test4)) == inverseTranspose(test4),
+        TEST_ASSERT(transpose(inverse(test4)) == inverse_transpose(test4),
                     "Inverse_transpose function for matrix4x4f failed.");
     }
 };

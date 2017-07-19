@@ -52,7 +52,7 @@ inline constexpr T dot_details(const vector<2, T>& a, const vector<2, T>& b)
 ///
 /// @param value Vector of floating-point or integral type.
 ///
-/// @return The length of the vector, i.e., `sqrt(value * value)``.
+/// @return The length of the vector, i.e., `sqrt(value * value)`.
 template <unsigned int N, typename T>
 inline T length(const vector<N, T>& value)
 {
@@ -68,7 +68,7 @@ inline T length(const vector<N, T>& value)
 /// @param a Vector of floating-point or integral type.
 /// @param b Vector of floating-point or integral type.
 ///
-/// @return The distance between two vectors, i.e., `length(b - a)``.
+/// @return The distance between two vectors, i.e., `length(b - a)`.
 template <unsigned int N, typename T>
 inline T distance(const vector<N, T>& a, const vector<N, T>& b)
 {
