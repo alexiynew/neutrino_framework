@@ -315,7 +315,7 @@ inline vector<N, R> sinh(vector<N, T> const& value)
 
 /// @brief Computes the hyperbolic cosine of value.
 ///
-/// @param a Value of a floating-point or integral type.
+/// @param value Value of a floating-point or integral type.
 ///
 /// @return The hyperbolic cosine of value, `(e ^ value + e ^(-value)) / 2`.
 template <typename T, typename R = decltype(::std::cosh(std::declval<T>()))>
@@ -343,7 +343,7 @@ inline vector<N, R> cosh(vector<N, T> const& value)
 
 /// @brief Computes the hyperbolic tangent of value.
 ///
-/// @param a Value of a floating-point or integral type.
+/// @param value Value of a floating-point or integral type.
 ///
 /// @return The hyperbolic tangent of value.
 template <typename T, typename R = decltype(::std::tanh(std::declval<T>()))>
@@ -371,7 +371,7 @@ inline vector<N, R> tanh(vector<N, T> const& value)
 
 /// @brief Computes the inverse hyperbolic sine of value.
 ///
-/// @param a Value of a floating-point or integral type.
+/// @param value Value of a floating-point or integral type.
 ///
 /// @return The hyperbolic sine of value.
 template <typename T, typename R = decltype(::std::asinh(std::declval<T>()))>
@@ -399,7 +399,7 @@ inline vector<N, R> asinh(vector<N, T> const& value)
 
 /// @brief Computes the inverse hyperbolic cosine of value.
 ///
-/// @param a Value of a floating-point or integral type.
+/// @param value Value of a floating-point or integral type.
 ///
 /// @return The hyperbolic cosine of value.
 template <typename T, typename R = decltype(::std::acosh(std::declval<T>()))>
@@ -427,7 +427,7 @@ inline vector<N, R> acosh(vector<N, T> const& value)
 
 /// @brief Computes the inverse hyperbolic tangent of value.
 ///
-/// @param a Value of a floating-point or integral type.
+/// @param value Value of a floating-point or integral type.
 ///
 /// @return The hyperbolic tangent of value.
 template <typename T, typename R = decltype(::std::atanh(std::declval<T>()))>
