@@ -531,7 +531,7 @@ private:
         };
         // clang-format on
 
-        const matrix4f projection = perspective(float(HALF_PI), 1.0f, 1.0f, 2.0f);
+        const matrix4f projection = perspective(float(half_pi), 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(projection == target, "Perspective projection matrix is not correct.");
 
@@ -546,8 +546,8 @@ private:
 
     void perspective_fov_function()
     {
-        const matrix4f target     = perspective(float(HALF_PI), 1.0f, 1.0f, 2.0f);
-        const matrix4f projection = perspectiveFov(float(HALF_PI), 1.0f, 1.0f, 1.0f, 2.0f);
+        const matrix4f target     = perspective(float(half_pi), 1.0f, 1.0f, 2.0f);
+        const matrix4f projection = perspectiveFov(float(half_pi), 1.0f, 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(projection == target, "PerspectiveFov projection matrix is not correct.");
     }
@@ -563,7 +563,7 @@ private:
         };
         // clang-format on
 
-        const matrix4f projection = infinitePerspective(float(HALF_PI), 1.0f, 1.0f);
+        const matrix4f projection = infinitePerspective(float(half_pi), 1.0f, 1.0f);
 
         TEST_ASSERT(almost_equal(projection, target, 1), "Infinite perspective projection matrix is not correct.");
 
@@ -603,7 +603,7 @@ private:
         const float height = 320.0f;
 
         const matrix4f model;
-        const matrix4f projection = perspectiveFov(float(HALF_PI), width, height, near, far);
+        const matrix4f projection = perspectiveFov(float(half_pi), width, height, near, far);
 
         const vector4f viewport{0, 0, width, height};
 
@@ -641,7 +641,7 @@ private:
         const float height = 320.0f;
 
         const matrix4f model;
-        const matrix4f projection = perspectiveFov(float(HALF_PI), width, height, near, far);
+        const matrix4f projection = perspectiveFov(float(half_pi), width, height, near, far);
 
         const vector4f viewport{0, 0, width, height};
 

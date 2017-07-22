@@ -36,10 +36,10 @@ using common_type = vector_details::common_type<Args...>;
 /// @param degrees Value of floating-point or integral type.
 ///
 /// @return The value in radians.
-template <typename T, typename R = typename trigonometric_functions_details::common_type<decltype(DEGTORAD), T>::type>
+template <typename T, typename R = typename trigonometric_functions_details::common_type<decltype(deg_to_rad), T>::type>
 inline T radians(const T& degrees)
 {
-    return static_cast<T>(static_cast<R>(DEGTORAD) * static_cast<R>(degrees));
+    return static_cast<T>(static_cast<R>(deg_to_rad) * static_cast<R>(degrees));
 }
 
 /// @brief Perform a component-wise conversion degrees to radians.
@@ -62,10 +62,10 @@ inline vector<N, T> radians(const vector<N, T>& value)
 /// @param radians Value of floating-point or integral type.
 ///
 /// @return The value in degrees.
-template <typename T, typename R = typename trigonometric_functions_details::common_type<decltype(RADTODEG), T>::type>
+template <typename T, typename R = typename trigonometric_functions_details::common_type<decltype(rad_to_deg), T>::type>
 inline T degrees(const T& radians)
 {
-    return static_cast<T>(static_cast<R>(RADTODEG) * static_cast<R>(radians));
+    return static_cast<T>(static_cast<R>(rad_to_deg) * static_cast<R>(radians));
 }
 
 /// @brief Perform a component-wise conversion radians to degrees.
