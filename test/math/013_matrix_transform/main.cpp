@@ -214,109 +214,12 @@ public:
     transform_3d_function_tests()
         : suite("transform_3d_function_tests")
     {
-        add_test([this]() { create_translate_function(); }, "create_translate_function");
-        add_test([this]() { create_rotate_function(); }, "create_rotate_function");
-        add_test([this]() { create_scale_function(); }, "create_scale_function");
         add_test([this]() { translate_function(); }, "translate_function");
         add_test([this]() { scale_function(); }, "scale_function");
         add_test([this]() { rotate_function(); }, "rotate_function");
     }
 
 private:
-    void create_translate_function()
-    {
-        // clang-format off
-        const matrix4f m = {
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            1, 2, 3, 1
-        };
-        // clang-format on
-
-        TEST_ASSERT(createTranslateMatrix(vector3f(1, 2, 3)) == m,
-                    "Create_translate_matrix function from (1, 2, 3) failed.");
-    }
-
-    void create_rotate_function()
-    {
-        // clang-format off
-        const matrix4f mx = {
-            1.0f, 0.0f,                   0.0f,                   0.0f,
-            0.0f, -0.000000043711388286f, 1.0f,                   0.0f,
-            0.0f, -1.0f,                  -0.000000043711388286f, 0.0f,
-            0.0f, 0.0f,                   0.0f,                   1.0f
-          };
-
-        const matrix4f my = {
-            -0.000000043711388286f, 0.0f, -1.0f,                  0.0f,
-            0.0f,                   1.0f, 0.0f,                   0.0f,
-            1.0f,                   0.0f, -0.000000043711388286f, 0.0f,
-            0.0f,                   0.0f, 0.0f,                   1.0f
-        };
-
-        const matrix4f mz = {
-            -0.000000043711388286f, 1.0f,                   0.0f, 0.0f,
-            -1.0f,                  -0.000000043711388286f, 0.0f, 0.0f,
-            0.0f,                   0.0f,                   1.0f, 0.0f,
-            0.0f,                   0.0f,                   0.0f, 1.0f
-        };
-
-        const matrix4f m1 = {
-            1.0f,             0.207911690818f,  0.0218523992662f,0.0f,
-            -0.207911690818f, 0.978147600734f,  0.207911690818f, 0.0f,
-            0.0218523992662f, -0.207911690818f, 1.0f,            0.0f,
-            0.0f,             0.0f,             0.0f,            1.0f
-          };
-
-        const matrix4f m2 = {
-            -0.190808995377f, 0.0f, 0.981627183448f,  0.0f,
-            0.0f,             1.0f, 0.0f,             0.0f,
-            -0.981627183448f, 0.0f, -0.190808995377f, 0.0f,
-            0.0f,             0.0f, 0.0f,             1.0f
-        };
-
-        const matrix4f m3 = {
-            1.0f,             -0.410768609213f, 1.09865055123f,   0.0f,
-            1.09865055123f,   1.0f,             -0.410768609213f, 0.0f,
-            -0.410768609213f, 1.09865055123f,   1.0f,             0.0f,
-            0.0f,             0.0f,             0.0f,             1.0f
-        };
-        // clang-format on
-
-        const matrix4f resultx = createRotateMatrix(vector3f(1, 0, 0), radians(90.0f));
-        const matrix4f resulty = createRotateMatrix(vector3f(0, 1, 0), radians(90.0f));
-        const matrix4f resultz = createRotateMatrix(vector3f(0, 0, 1), radians(90.0f));
-
-        const matrix4f result1 = createRotateMatrix(vector3f(1, 0, 1), radians(12.0f));
-        const matrix4f result2 = createRotateMatrix(vector3f(0, 1, 0), radians(259.0f));
-        const matrix4f result3 = createRotateMatrix(vector3f(1, 1, 1), radians(-49.0f));
-
-        TEST_ASSERT(almost_equal(resultx, mx, 1), "Create_rotate_matrix function from (1, 0, 0) by 90 degrees failed.");
-        TEST_ASSERT(almost_equal(resulty, my, 1), "Create_rotate_matrix function from (0, 1, 0) by 90 degrees failed.");
-        TEST_ASSERT(almost_equal(resultz, mz, 1), "Create_rotate_matrix function from (0, 0, 1) by 90 degrees failed.");
-
-        TEST_ASSERT(almost_equal(result1, m1, 6), "Create_rotate_matrix function from (1, 0, 1) by 12 degrees failed.");
-        TEST_ASSERT(almost_equal(result2, m2, 4),
-                    "Create_rotate_matrix function from (0, 1, 0) by 259 degrees failed.");
-        TEST_ASSERT(almost_equal(result3, m3, 1),
-                    "Create_rotate_matrix function from (1, 1, 1) by -49 degrees failed.");
-    }
-
-    void create_scale_function()
-    {
-        // clang-format off
-        const matrix4f m = {
-            4, 0, 0, 0,
-            0, 3, 0, 0,
-            0, 0, 2, 0,
-            0, 0, 0, 1
-        };
-        // clang-format on
-
-        TEST_ASSERT(createScaleMatrix(vector3f(4, 3, 2)) == m, "Create_scale_matrix function from (4, 3, 2) failed.");
-    }
-
     void translate_function()
     {
         // clang-format off
@@ -493,7 +396,7 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(::ortho2D(-2.0f, 2.0f, -2.0f, 2.0f) == proj2D, "2D orthogonal projection matrix is not correct.");
+        TEST_ASSERT(::ortho2d(-2.0f, 2.0f, -2.0f, 2.0f) == proj2D, "2D orthogonal projection matrix is not correct.");
     }
 
     void frustum_function()
@@ -547,9 +450,9 @@ private:
     void perspective_fov_function()
     {
         const matrix4f target     = perspective(float(half_pi), 1.0f, 1.0f, 2.0f);
-        const matrix4f projection = perspectiveFov(float(half_pi), 1.0f, 1.0f, 1.0f, 2.0f);
+        const matrix4f projection = perspective_fov(float(half_pi), 1.0f, 1.0f, 1.0f, 2.0f);
 
-        TEST_ASSERT(projection == target, "PerspectiveFov projection matrix is not correct.");
+        TEST_ASSERT(projection == target, "Perspective_fov projection matrix is not correct.");
     }
 
     void infinite_perspective_function()
@@ -563,7 +466,7 @@ private:
         };
         // clang-format on
 
-        const matrix4f projection = infinitePerspective(float(half_pi), 1.0f, 1.0f);
+        const matrix4f projection = infinite_perspective(float(half_pi), 1.0f, 1.0f);
 
         TEST_ASSERT(almost_equal(projection, target, 1), "Infinite perspective projection matrix is not correct.");
 
@@ -603,7 +506,7 @@ private:
         const float height = 320.0f;
 
         const matrix4f model;
-        const matrix4f projection = perspectiveFov(float(half_pi), width, height, near, far);
+        const matrix4f projection = perspective_fov(float(half_pi), width, height, near, far);
 
         const vector4f viewport{0, 0, width, height};
 
@@ -641,7 +544,7 @@ private:
         const float height = 320.0f;
 
         const matrix4f model;
-        const matrix4f projection = perspectiveFov(float(half_pi), width, height, near, far);
+        const matrix4f projection = perspective_fov(float(half_pi), width, height, near, far);
 
         const vector4f viewport{0, 0, width, height};
 
@@ -657,17 +560,17 @@ private:
         const vector3f project4 = project(obj4, model, projection, viewport);
         const vector3f project5 = project(obj5, model, projection, viewport);
 
-        const vector3f unproject1 = unProject(project1, model, projection, viewport);
-        const vector3f unproject2 = unProject(project2, model, projection, viewport);
-        const vector3f unproject3 = unProject(project3, model, projection, viewport);
-        const vector3f unproject4 = unProject(project4, model, projection, viewport);
-        const vector3f unproject5 = unProject(project5, model, projection, viewport);
+        const vector3f unproject1 = unproject(project1, model, projection, viewport);
+        const vector3f unproject2 = unproject(project2, model, projection, viewport);
+        const vector3f unproject3 = unproject(project3, model, projection, viewport);
+        const vector3f unproject4 = unproject(project4, model, projection, viewport);
+        const vector3f unproject5 = unproject(project5, model, projection, viewport);
 
-        TEST_ASSERT(almost_equal(unproject1, obj1), "UnProjection of (0, 0, -1) is not correct.");
-        TEST_ASSERT(almost_equal(unproject2, obj2), "UnProjection of (0, 1, -1) is not correct.");
-        TEST_ASSERT(almost_equal(unproject3, obj3), "UnProjection of (1.5, 0, -1) is not correct.");
-        TEST_ASSERT(almost_equal(unproject4, obj4), "UnProjection of (-1.5, -1, -1) is not correct.");
-        TEST_ASSERT(almost_equal(unproject5, obj5, 2), "UnProjection of (0, 0, -10) is not correct.");
+        TEST_ASSERT(almost_equal(unproject1, obj1), "Un projection of (0, 0, -1) is not correct.");
+        TEST_ASSERT(almost_equal(unproject2, obj2), "Un projection of (0, 1, -1) is not correct.");
+        TEST_ASSERT(almost_equal(unproject3, obj3), "Un projection of (1.5, 0, -1) is not correct.");
+        TEST_ASSERT(almost_equal(unproject4, obj4), "Un projection of (-1.5, -1, -1) is not correct.");
+        TEST_ASSERT(almost_equal(unproject5, obj5, 2), "Un projection of (0, 0, -10) is not correct.");
     }
 
     void pick_region_function()
@@ -686,7 +589,7 @@ private:
 
         const vector4f viewport{0, 0, width, height};
 
-        const matrix4f result = pickMatrix(vector2f(0, 0), vector2f(width / 2, height / 2), viewport);
+        const matrix4f result = pick_matrix(vector2f(0, 0), vector2f(width / 2, height / 2), viewport);
 
         TEST_ASSERT(result == region, "Pick region matrix is not correct.");
     }
@@ -694,7 +597,7 @@ private:
     void look_at_function()
     {
         // clang-format off
-        const matrix4f look_at = {
+        const matrix4f test = {
             0, 0, -1, 0,
             0, 1, 0,  0,
             1, 0, 0,  0,
@@ -706,9 +609,9 @@ private:
         const vector3f center(1, 0, 0);
         const vector3f up(0, 1, 0);
 
-        const matrix4f result = lookAt(eye, center, up);
+        const matrix4f result = look_at(eye, center, up);
 
-        TEST_ASSERT(result == look_at, "Look_at matrix is not correct.");
+        TEST_ASSERT(result == test, "Look_at matrix is not correct.");
     }
 };
 

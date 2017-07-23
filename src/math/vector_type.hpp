@@ -1289,6 +1289,7 @@ inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rh
 /// @{
 
 /// @brief Creates new vector by applying the function to every component of provided vector.
+///
 /// New components are computed as: `x = function(value.x), y = function(value.y), ...`.
 ///
 /// @param value Vector to transform.
@@ -1302,6 +1303,7 @@ inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& function)
 }
 
 /// @brief Creates new vector by applying the function to every component of provided vectors.
+///
 /// New components are computed as: `x = function(first.x, second.x), y = function(first.y, second.y), ...`.
 ///
 /// @param first Vector to transform.
