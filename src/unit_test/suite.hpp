@@ -86,11 +86,12 @@ private:
     /// @brief Test description.
     struct test_data
     {
+        /// @brief Test status info.
         struct Status
         {
-            std::string message;
-            std::string file;
-            int line;
+            std::string message; ///< Error message.
+            std::string file;    ///< Path to test file.
+            int line;            ///< Line which cause error.
         };
 
         Status status;

@@ -277,8 +277,7 @@ inline matrix<2, 2, T> inverse_transpose_details(const matrix<2, 2, T>& m)
 
 /// @brief Defines geometric math functions.
 ///
-/// @defgroup geometric_functions Geometric functions
-/// @ingroup math_module
+/// @addtogroup matrix_functions
 /// @{
 
 /// @name transpose

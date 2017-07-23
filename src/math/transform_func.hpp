@@ -21,6 +21,7 @@ namespace math {
 namespace transform_functions_details {
 
 /// @brief Creates a rotation 4x4 matrix.
+/// @{
 template <typename T, typename U>
 inline matrix<4, 4, T> create_rotate_matrix(const vector<3, T>& v, const U angle)
 {
@@ -43,13 +44,13 @@ inline matrix<4, 4, T> create_rotate_matrix(const vector<3, T>& v, const U angle
             0,                    0,                    0,                    1);
     // clang-format on
 }
+/// @}
 
 } // namespace transform_functions_details
 
 /// @brief Defines transform functions.
 ///
-/// @defgroup transform_functions Transform functions
-/// @ingroup math_module
+/// @addtogroup transform_functions
 /// @{
 
 /// @name translate
@@ -89,7 +90,7 @@ inline matrix<4, 4, T> translate(const matrix<4, 4, T>& m, const vector<3, T>& v
 
 /// @name rotate
 /// @{
-///
+
 /// @brief Builds a rotation 3x3 matrix created from an angle.
 ///
 /// @param m Matrix multiplied by this translation matrix.

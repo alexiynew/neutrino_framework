@@ -17,6 +17,8 @@ namespace vector_details {
 
 /// @brief Workaround to cast float numbers to bool without warnings.
 /// @{
+
+/// Common template.
 template <typename T>
 struct cast_to
 {
@@ -28,6 +30,8 @@ struct cast_to
     }
 };
 
+/// @brief Workaround to cast float numbers to bool without warnings.
+/// Specialization for boolean type.
 template <>
 struct cast_to<bool>
 {
@@ -42,6 +46,8 @@ struct cast_to<bool>
 
 /// @brief Helper that checks if all presented types are arithmetic.
 /// @{
+
+/// Common template.
 template <typename T, typename... Args>
 struct are_all_arithmetic
 {
@@ -49,30 +55,31 @@ struct are_all_arithmetic
     static constexpr bool value = std::is_arithmetic<T>::value && are_all_arithmetic<Args...>::value;
 };
 
+/// @brief Helper that checks if all presented types are arithmetic.
+/// Specialization for one type.
 template <typename T>
 struct are_all_arithmetic<T>
 {
     /// @brief `true` if provided type are arithmetic.
     static constexpr bool value = std::is_arithmetic<T>::value;
 };
-
-template <bool C, typename... Args>
-struct common_type_details
-{
-};
 /// @}
 
 /// @brief Helper that give common type for all presented types.
 /// @{
+
+/// Common template.
 template <typename T, typename... Args>
-struct common_type_details<true, T, Args...>
+struct common_type_details
 {
     /// @brief Common type for all provided types.
-    using type = typename std::common_type<T, typename common_type_details<true, Args...>::type>::type;
+    using type = typename std::common_type<T, typename common_type_details<Args...>::type>::type;
 };
 
+/// @brief Helper that give common type for all presented types.
+/// Specialization for one type.
 template <typename T>
-struct common_type_details<true, T>
+struct common_type_details<T>
 {
     /// @brief Common type is T.
     using type = T;
@@ -81,8 +88,7 @@ struct common_type_details<true, T>
 /// @brief Shortcut to get the common type.
 /// Also used for SFINAE to get correct overload of vector operators.
 template <typename... Args>
-using common_type = common_type_details<are_all_arithmetic<Args...>::value, Args...>;
-
+using common_type = typename std::enable_if<are_all_arithmetic<Args...>::value, common_type_details<Args...>>::type;
 /// @}
 
 /// @brief Implementation of transform function.
@@ -90,6 +96,8 @@ using common_type = common_type_details<are_all_arithmetic<Args...>::value, Args
 template <unsigned int N>
 struct transform_details;
 
+/// @brief Implementation of transform function.
+/// Specialization for vector of 4 components.
 template <>
 struct transform_details<4>
 {
@@ -104,6 +112,8 @@ struct transform_details<4>
     }
 };
 
+/// @brief Implementation of transform function.
+/// Specialization for vector of 3 components.
 template <>
 struct transform_details<3>
 {
@@ -117,6 +127,8 @@ struct transform_details<3>
     }
 };
 
+/// @brief Implementation of transform function.
+/// Specialization for vector of 2 components.
 template <>
 struct transform_details<2>
 {
@@ -134,8 +146,7 @@ struct transform_details<2>
 
 /// @brief Vector type implementation.
 ///
-/// @defgroup vector_implementation Vector type
-/// @ingroup math_module
+/// @addtogroup vector_implementation
 /// @{
 
 /// @brief Vector template declaration.

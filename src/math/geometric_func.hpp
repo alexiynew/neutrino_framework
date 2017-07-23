@@ -41,8 +41,7 @@ inline constexpr T dot_details(const vector<2, T>& a, const vector<2, T>& b)
 
 /// @brief Defines geometric math functions.
 ///
-/// @defgroup geometric_functions Geometric functions
-/// @ingroup math_module
+/// @addtogroup geometric_functions
 /// @{
 
 /// @name length

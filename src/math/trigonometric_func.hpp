@@ -24,8 +24,7 @@ using common_type = vector_details::common_type<Args...>;
 
 /// @brief Defines trigonometric math functions.
 ///
-/// @defgroup trigonometric_functions Trigonometric functions
-/// @ingroup math_module
+/// @addtogroup trigonometric_functions
 /// @{
 
 /// @name radians

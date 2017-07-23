@@ -71,8 +71,7 @@ using common_type = vector_details::common_type<Args...>;
 
 /// @brief Matrix type implementation.
 ///
-/// @defgroup matrix_implementation Matrix type
-/// @ingroup math_module
+/// @addtogroup matrix_implementation
 /// @{
 
 /// @brief Matrix template declaration.

@@ -134,8 +134,7 @@ inline vector<2, R> frexp_details(const vector<2, T>& value, vector<2, int>& exp
 
 /// @brief Defines common math functions.
 ///
-/// @defgroup common_functions Common functions
-/// @ingroup math_module
+/// @addtogroup common_functions
 /// @{
 
 /// @name abs

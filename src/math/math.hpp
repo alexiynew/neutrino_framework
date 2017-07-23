@@ -30,6 +30,16 @@ namespace framework {
 /// @defgroup math_module Math module
 /// @{
 
+/// @defgroup vector_implementation Vector type
+/// @defgroup matrix_implementation Matrix type
+/// @defgroup common_functions Common functions
+/// @defgroup exponential_functions Exponential functions
+/// @defgroup geometric_functions Geometric functions
+/// @defgroup matrix_functions Matrix functions
+/// @defgroup relational_functions Relational functions
+/// @defgroup transform_functions Transform functions
+/// @defgroup trigonometric_functions Trigonometric functions
+
 /// @brief Contains all math stuff.
 namespace math {
 
@@ -54,6 +64,7 @@ using vector4u = vector<4, unsigned int>; ///< Vector of 4 unsigned int values.
 using vector2b = vector<2, bool>; ///< Vector of 2 bool values.
 using vector3b = vector<3, bool>; ///< Vector of 3 bool values.
 using vector4b = vector<4, bool>; ///< Vector of 4 bool values.
+
 /// @}
 
 /// @name Common matrix types.
@@ -87,6 +98,7 @@ using matrix4f   = matrix<4, 4, float>; ///< Matrix with 4 columns and 4 rows of
 using matrix4x4f = matrix<4, 4, float>; ///< Matrix with 4 columns and 4 rows of float type values.
 using matrix4x2f = matrix<4, 2, float>; ///< Matrix with 4 columns and 2 rows of float type values.
 using matrix4x3f = matrix<4, 3, float>; ///< Matrix with 4 columns and 4 rows of float type values.
+
 /// @}
 
 /// @}

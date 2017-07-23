@@ -28,11 +28,11 @@ class logger;
 class log
 {
 public:
-    log(const log&) = delete;
-    log(log&&)      = default;
+    log(const log&) = delete;  ///< No copy constructor.
+    log(log&&)      = default; ///< Default move constructor.
 
-    log& operator=(const log&) = delete;
-    log& operator=(log&&) = default;
+    log& operator=(const log&) = delete; ///< No copy assignment.
+    log& operator=(log&&) = default;     ///< Default move assignment.
 
     ~log() = default;
 

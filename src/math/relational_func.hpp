@@ -95,8 +95,7 @@ inline bool all_details(const vector<2, bool>& v)
 
 /// @brief Defines rational math functions.
 ///
-/// @defgroup rational_functions Rational functions
-/// @ingroup math_module
+/// @addtogroup relational_functions
 /// @{
 
 /// @name less
@@ -191,7 +190,7 @@ inline vector<N, bool> equal(const vector<N, T>& lhs, const vector<N, T>& rhs)
 template <unsigned int N, typename T>
 inline vector<N, bool> not_equal(const vector<N, T>& lhs, const vector<N, T>& rhs)
 {
-    return transform(lhs, rhs,  std::not_equal_to<T>{});
+    return transform(lhs, rhs, std::not_equal_to<T>{});
 }
 /// @}
 

@@ -15,8 +15,7 @@ namespace math {
 
 /// @brief Defines exponential math functions.
 ///
-/// @defgroup exponential_functions Exponential functions
-/// @ingroup math_module
+/// @addtogroup exponential_functions
 /// @{
 
 /// @name pow
