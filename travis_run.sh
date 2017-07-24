@@ -4,10 +4,18 @@
 
 set -e
 
+# Setup
+BUILD_COMMAND="./build.sh -t ${TASK}"
+
+if [[ -z "${COMPILLER}" ]]
+then
+    BUILD_COMMAND="${BUILD_COMMAND} -c ${COMPILLER}"
+fi
+
+# Run build and tests
 if [[ "${TRAVIS_OS_NAME}" == "linux" ]]
 then
-    # Run build and tests
-    sudo docker run -it -v "${TRAVIS_BUILD_DIR}:/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER -t $TASK"
+    sudo docker run -it -v "${TRAVIS_BUILD_DIR}:/home/framework" alexiynew/docker_image bash -c "cd /home/framework/ && ${BUILD_COMMAND}"
 
     if [[ "${TASK}" == *"coverage"* ]]
     then
@@ -15,5 +23,5 @@ then
     fi
 elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]
 then
-    "${TRAVIS_BUILD_DIR}"/build.sh -c $COMPILLER -t $TASK
+    cd "${TRAVIS_BUILD_DIR}" && "${BUILD_COMMAND}"
 fi
