@@ -31,11 +31,13 @@ matrix:
         - TASK="clean,build,test"
 
     - os: linux
-       dist: trusty
-       env:
-         - COMPILLER=gcc
-         - TASK="clean,coverage"
-       sudo: required
+      dist: trusty
+      env:
+        - COMPILLER=gcc
+        - TASK="clean,coverage"
+      sudo: required
+      services:
+        - docker
 
 language: generic
 
