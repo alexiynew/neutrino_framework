@@ -5,7 +5,6 @@ env:
 matrix:
   include:
     - os: linux
-      dist: trusty
       env:
         - COMPILLER=clang
         - TASK="clean,build,test"
@@ -14,7 +13,6 @@ matrix:
         - docker
 
     - os: linux
-      dist: trusty
       env:
         - COMPILLER=gcc
         - TASK="clean,build,test"
