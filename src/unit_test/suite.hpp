@@ -107,11 +107,12 @@ private:
 
     void output_success(const test_data& test);
 
-    bool m_success;
     std::string m_name;
 
     std::vector<test_data> m_tests;
     std::vector<test_data>::iterator m_current_test;
+
+    bool m_success;
 };
 
 
@@ -138,7 +139,7 @@ int run_tests(Arguments&&... tests)
 /// @brief Unconditionally fails current test.
 ///
 /// @param MESSAGE Error description.
-#define TEST_FAIL(MESSAGE) test_failed(__FILE__, __LINE__, (MESSAGE) != 0 ? #MESSAGE : "")
+#define TEST_FAIL(MESSAGE) test_failed(__FILE__, __LINE__, #MESSAGE)
 
 /// @brief Fails current test if EXPRESSION evaluates to @b false.
 ///

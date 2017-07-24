@@ -1830,7 +1830,10 @@ inline constexpr matrix<4, 4, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<4, 4, T>::matrix(const matrix<4, 4, T>& other) noexcept = default;
+inline constexpr matrix<4, 4, T>::matrix(const matrix<4, 4, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
+{
+}
 
 // clang-format off
 template <typename T>
@@ -2061,7 +2064,10 @@ inline constexpr matrix<4, 3, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 3, T>& other) noexcept = default;
+inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 3, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
+{
+}
 
 // clang-format off
 template <typename T>
@@ -2230,7 +2236,10 @@ inline constexpr matrix<4, 2, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 2, T>& other) noexcept = default;
+inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 2, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
+{
+}
 
 // clang-format off
 template <typename T>
@@ -2373,8 +2382,10 @@ inline constexpr matrix<3, 4, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 4, T>& other) noexcept = default;
-
+inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 4, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
+{
+}
 // clang-format off
 template <typename T>
 inline constexpr matrix<3, 4, T>::matrix(const T& value00, const T& value01, const T& value02, const T& value03,
@@ -2582,7 +2593,10 @@ inline constexpr matrix<3, 3, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 3, T>& other) noexcept = default;
+inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 3, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
+{
+}
 
 // clang-format off
 template <typename T>
@@ -2742,7 +2756,10 @@ inline constexpr matrix<3, 2, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 2, T>& other) noexcept = default;
+inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 2, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
+{
+}
 
 // clang-format off
 template <typename T>
@@ -2871,7 +2888,10 @@ inline constexpr matrix<2, 4, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 4, T>& other) noexcept = default;
+inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 4, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1]}
+{
+}
 
 // clang-format off
 template <typename T>
@@ -3053,7 +3073,10 @@ inline constexpr matrix<2, 3, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 3, T>& other) noexcept = default;
+inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 3, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1]}
+{
+}
 
 // clang-format off
 template <typename T>
@@ -3194,7 +3217,10 @@ inline constexpr matrix<2, 2, T>::matrix() noexcept
 }
 
 template <typename T>
-inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 2, T>& other) noexcept = default;
+inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 2, T>& other) noexcept
+    : m_data{other.m_data[0], other.m_data[1]}
+{
+}
 
 // clang-format off
 template <typename T>

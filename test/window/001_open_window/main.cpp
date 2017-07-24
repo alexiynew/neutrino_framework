@@ -3,8 +3,6 @@
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
-#pragma mark - test for window
-
 class window_test : public framework::unit_test::suite
 {
 public:

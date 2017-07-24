@@ -9,14 +9,10 @@ namespace framework {
 
 namespace logging {
 
-#pragma mark - implementation of logger class
-
 void logger::add_message(const logger::level, const std::string&, const std::string&)
 {
     // nothing to do.
 }
-
-#pragma mark - implementation of log class
 
 log::log()
     : m_logger(nullptr)
