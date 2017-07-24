@@ -1,9 +1,7 @@
-/**
- * @file log.cpp
- * @brief Logger implementation.
- * @author Fedorov Alexey
- * @date 08.03.2017
- */
+/// @file log.cpp
+/// @brief Logger implementation.
+/// @author Fedorov Alexey
+/// @date 08.03.2017
 
 #include <log/log.hpp>
 
@@ -49,6 +47,11 @@ void log::warning(const std::string& tag, const std::string& message)
 void log::error(const std::string& tag, const std::string& message)
 {
     get_logger()->add_message(logger::level::error, tag, message);
+}
+
+void log::fatal(const std::string& tag, const std::string& message)
+{
+    get_logger()->add_message(logger::level::fatal, tag, message);
 }
 
 void log::set_logger(std::unique_ptr<logger> implementation)

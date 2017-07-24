@@ -1,9 +1,7 @@
-/**
- * @file win32_window.hpp
- * @brief Window implementation for windows.
- * @author Fedorov Alexey
- * @date 19.04.2017
- */
+/// @file
+/// @brief Window implementation for windows.
+/// @author Fedorov Alexey
+/// @date 19.04.2017
 
 #ifndef FRAMEWORK_WINDOW_WINDOWS_WIN32_WINDOW_HPP
 #define FRAMEWORK_WINDOW_WINDOWS_WIN32_WINDOW_HPP

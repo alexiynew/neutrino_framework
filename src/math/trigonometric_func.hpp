@@ -1,8 +1,12 @@
+/// @file
+/// @brief Contains trigonometric math functions.
+/// @author Fedorov Alexey
+/// @date 14.07.2017
+
 #ifndef FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_HPP
 #define FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_HPP
 
 #include <cmath>
-
 #include <math/constants.hpp>
 #include <math/vector_type.hpp>
 
@@ -10,329 +14,442 @@ namespace framework {
 
 namespace math {
 
-// TODO: make like in std lib:: A set of overloads or a function template id:2
-// accepting an argument of any integral type.
-// Equivalent to 2) (the argument is cast to double).
+/// @brief Contains implementation details of some functions.
+namespace trigonometric_functions_details {
 
-/// Converts degrees to radians and returns the result.
-template <typename T>
+/// @brief Shortcut to get the common type.
+template <typename... Args>
+using common_type = vector_details::common_type<Args...>;
+}
+
+/// @brief Defines trigonometric math functions.
+///
+/// @addtogroup trigonometric_functions
+/// @{
+
+/// @name radians
+/// @{
+
+/// @brief Converts degrees to radians.
+///
+/// @param degrees Value of floating-point or integral type.
+///
+/// @return The value in radians.
+template <typename T, typename R = typename trigonometric_functions_details::common_type<decltype(deg_to_rad), T>::type>
 inline T radians(const T& degrees)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return static_cast<T>(DEGTORAD) * degrees;
+    return static_cast<T>(static_cast<R>(deg_to_rad) * static_cast<R>(degrees));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> radians(const TVec<N, T>& a)
+/// @brief Perform a component-wise conversion degrees to radians.
+///
+/// @param value Vector of floating-point or integral type.
+///
+/// @return The vector of values in radians.
+template <unsigned int N, typename T>
+inline vector<N, T> radians(const vector<N, T>& value)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, [](const T& degrees) { return static_cast<T>(DEGTORAD * degrees); });
+    return transform(value, ::framework::math::radians<T>);
 }
+/// @}
 
-/// Converts radians to degrees and returns the result.
-template <typename T>
+/// @name degrees
+/// @{
+
+/// @brief Converts radians to degrees.
+///
+/// @param radians Value of floating-point or integral type.
+///
+/// @return The value in degrees.
+template <typename T, typename R = typename trigonometric_functions_details::common_type<decltype(rad_to_deg), T>::type>
 inline T degrees(const T& radians)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return static_cast<T>(RADTODEG) * radians;
+    return static_cast<T>(static_cast<R>(rad_to_deg) * static_cast<R>(radians));
 }
 
-template <unsigned int N, typename T, template <unsigned int, typename> class TVec>
-inline TVec<N, T> degrees(const TVec<N, T>& a)
+/// @brief Perform a component-wise conversion radians to degrees.
+///
+/// @param value Vector of floating-point or integral type.
+///
+/// @return The vector of values in degrees.
+template <unsigned int N, typename T>
+inline vector<N, T> degrees(const vector<N, T>& value)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::createVector(a, [](const T& radians) { return static_cast<T>(RADTODEG * radians); });
+    return transform(value, ::framework::math::degrees<T>);
 }
+/// @}
 
-/// The standard trigonometric sine function.
-/// The values returned by this function will range from [-1, 1].
-using ::std::sin;
+/// @name sin
+/// @{
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> sin(TVec<4, T> const& a)
+/// @brief Computes the sine of value (measured in radians).
+///
+/// @param value Value representing angle in radians, of a floating-point or integral type.
+///
+/// @return The sine of value `sin(value)` in the range [-1; +1], is returned.
+template <typename T, typename R = decltype(::std::sin(std::declval<T>()))>
+inline R sin(const T& value)
 {
-    return TVec<4, T>(sin(a.x), sin(a.y), sin(a.z), sin(a.w));
+    return ::std::sin(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> sin(TVec<3, T> const& a)
+/// @brief Applies the sin function to every component of the vector.
+///
+/// @param value Vector of angles in radians, of a floating-point or integral type.
+///
+/// @return The vector of sine values.
+///
+/// @see sin
+template <unsigned int N, typename T, typename R = decltype(::framework::math::sin(std::declval<T>()))>
+inline vector<N, R> sin(vector<N, T> const& value)
 {
-    return TVec<3, T>(sin(a.x), sin(a.y), sin(a.z));
+    return transform(value, ::framework::math::sin<T>);
 }
+/// @}
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> sin(TVec<2, T> const& a)
+/// @name cos
+/// @{
+
+/// @brief Computes the cosine of value (measured in radians).
+///
+/// @param value Value representing angle in radians, of a floating-point or integral type.
+///
+/// @return The cosine of value `cos(value)` in the range [-1; +1], is returned.
+template <typename T, typename R = decltype(::std::cos(std::declval<T>()))>
+inline R cos(const T& value)
 {
-    return TVec<2, T>(sin(a.x), sin(a.y));
+    return ::std::cos(value);
 }
 
-/// The standard trigonometric cosine function.
-/// The values returned by this function will range from [-1, 1].
-using ::std::cos;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> cos(TVec<4, T> const& a)
+/// @brief Applies the cos function to every component of the vector.
+///
+/// @param value Vector of angles in radians, of a floating-point or integral type.
+///
+/// @return The vector of cosine values.
+///
+/// @see cos
+template <unsigned int N, typename T, typename R = decltype(::framework::math::cos(std::declval<T>()))>
+inline vector<N, R> cos(vector<N, T> const& value)
 {
-    return TVec<4, T>(cos(a.x), cos(a.y), cos(a.z), cos(a.w));
+    return transform(value, ::framework::math::cos<T>);
 }
+/// @}
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> cos(TVec<3, T> const& a)
+/// @name tan
+/// @{
+
+/// @brief Computes the tangent of value (measured in radians).
+///
+/// @param value Value representing angle in radians, of a floating-point or integral type.
+///
+/// @return The tangent of value `tan(value)` is returned.
+template <typename T, typename R = decltype(::std::tan(std::declval<T>()))>
+inline R tan(const T& value)
 {
-    return TVec<3, T>(cos(a.x), cos(a.y), cos(a.z));
+    return ::std::tan(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> cos(TVec<2, T> const& a)
+/// @brief Applies the tan function to every component of the vector.
+///
+/// @param value Vector of angles in radians, of a floating-point or integral type.
+///
+/// @return The vector of tangent values.
+///
+/// @see tan
+template <unsigned int N, typename T, typename R = decltype(::framework::math::tan(std::declval<T>()))>
+inline vector<N, R> tan(vector<N, T> const& value)
 {
-    return TVec<2, T>(cos(a.x), cos(a.y));
+    return transform(value, ::framework::math::tan<T>);
 }
+/// @}
 
-/// The standard trigonometric tangent function.
-using ::std::tan;
+/// @name asin
+/// @{
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> tan(TVec<4, T> const& a)
-{
-    return TVec<4, T>(tan(a.x), tan(a.y), tan(a.z), tan(a.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> tan(TVec<3, T> const& a)
-{
-    return TVec<3, T>(tan(a.x), tan(a.y), tan(a.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> tan(TVec<2, T> const& a)
-{
-    return TVec<2, T>(tan(a.x), tan(a.y));
-}
-
-/// Arc sine. Returns an angle whose sine is x.
+/// @brief Computes the principal value of the arcsine of value.
+///
+/// Returns an angle whose sine is `value`.
 /// The range of values returned by this function is [-PI/2, PI/2].
-/// Results are undefined if |x| > 1.
-using ::std::asin;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> asin(TVec<4, T> const& a)
+/// Results are undefined if `|x| > 1`.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The angle in radians in the range [-PI/2, PI/2].
+template <typename T, typename R = decltype(::std::asin(std::declval<T>()))>
+inline R asin(const T& value)
 {
-    return TVec<4, T>(asin(a.x), asin(a.y), asin(a.z), asin(a.w));
+    return ::std::asin(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> asin(TVec<3, T> const& a)
+/// @brief Applies the asin function to every component of the vector.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of angles in radians in the range [-PI/2, PI/2].
+///
+/// @see asin
+template <unsigned int N, typename T, typename R = decltype(::framework::math::asin(std::declval<T>()))>
+inline vector<N, R> asin(vector<N, T> const& value)
 {
-    return TVec<3, T>(asin(a.x), asin(a.y), asin(a.z));
+    return transform(value, ::framework::math::asin<T>);
+}
+/// @}
+
+/// @name acos
+/// @{
+
+/// @brief Computes the principal value of the arc-cosine of value.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The angle in radians in the range [0, PI].
+template <typename T, typename R = decltype(::std::acos(std::declval<T>()))>
+inline R acos(const T& value)
+{
+    return ::std::acos(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> asin(TVec<2, T> const& a)
+/// @brief Applies the acos function to every component of the vector.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of angles in radians in the range [0, PI].
+///
+/// @see acos
+template <unsigned int N, typename T, typename R = decltype(::framework::math::acos(std::declval<T>()))>
+inline vector<N, R> acos(vector<N, T> const& value)
 {
-    return TVec<2, T>(asin(a.x), asin(a.y));
+    return transform(value, ::framework::math::acos<T>);
+}
+/// @}
+
+/// @name atan
+/// @{
+
+/// @brief Computes the arc tangent of `a / b`.
+///
+/// The signs of x and y are used to determine what quadrant the angle is in.
+/// Results are undefined if a and b are both 0.
+///
+/// @param a Value of a floating-point or integral type.
+/// @param b Value of a floating-point or integral type.
+///
+/// @return The angle in radians in the range [-PI, PI].
+template <typename T, typename R = decltype(::std::atan2(std::declval<T>(), std::declval<T>()))>
+inline R atan(const T& a, const T& b)
+{
+    return ::std::atan2(a, b);
 }
 
-/// Arc cosine. Returns an angle whose sine is x.
-/// The range of values returned by this function is [0, PI].
-/// Results are undefined if |x| > 1.
-using ::std::acos;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> acos(TVec<4, T> const& a)
+/// @brief Computes the arc tangent of value.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The angle in radians in the range [-PI/2, PI/2].
+template <typename T, typename R = decltype(::std::atan(std::declval<T>()))>
+inline R atan(const T& value)
 {
-    return TVec<4, T>(acos(a.x), acos(a.y), acos(a.z), acos(a.w));
+    return ::std::atan(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> acos(TVec<3, T> const& a)
+/// @brief Applies the atan function to every component of the vectors.
+///
+/// @param a Vector of a floating-point or integral type.
+/// @param b Vector of a floating-point or integral type.
+///
+/// @return The vector of angles in radians in the range [-PI, PI].
+///
+/// @see atan
+template <unsigned int N, typename T, typename R = decltype(::framework::math::atan(std::declval<T>(), std::declval<T>()))>
+inline vector<N, R> atan(vector<N, T> const& a, vector<N, T> const& b)
 {
-    return TVec<3, T>(acos(a.x), acos(a.y), acos(a.z));
+    return transform(
+    a, b, [](const T& a_component, const T& b_component) { return ::framework::math::atan(a_component, b_component); });
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> acos(TVec<2, T> const& a)
+/// @brief Applies the atan function to every component of the vectors.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of angles in radians in the range [-PI/2, PI/2].
+///
+/// @see atan
+template <unsigned int N, typename T, typename R = decltype(::framework::math::atan(std::declval<T>()))>
+inline vector<N, R> atan(vector<N, T> const& value)
 {
-    return TVec<2, T>(acos(a.x), acos(a.y));
+    return transform(value, [](const T& value_component) { return ::framework::math::atan(value_component); });
+}
+/// @}
+
+/// @name sinh
+/// @{
+
+/// @brief Computes the hyperbolic sine of value.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The hyperbolic sine of value, `(e ^ value - e ^ value) / 2`.
+template <typename T, typename R = decltype(::std::sinh(std::declval<T>()))>
+inline R sinh(const T& value)
+{
+    return ::std::sinh(value);
 }
 
-/// Arc tangent. Returns an angle whose tangent is y/x.
-/// The signs of x and y are used to determine what
-/// quadrant the angle is in. The range of values returned
-/// by this function is [-PI, PI]. Results are undefined
-/// if x and y are both 0.
-template <typename T>
-inline T atan(const T& a, const T& b)
+/// @brief Applies the sinh function to every component of the vector.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of hyperbolic sines.
+///
+/// @see sinh
+template <unsigned int N, typename T, typename R = decltype(::framework::math::sinh(std::declval<T>()))>
+inline vector<N, R> sinh(vector<N, T> const& value)
 {
-    return std::atan2(a, b);
+    return transform(value, ::framework::math::sinh<T>);
+}
+/// @}
+
+/// @name cosh
+/// @{
+
+/// @brief Computes the hyperbolic cosine of value.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The hyperbolic cosine of value, `(e ^ value + e ^(-value)) / 2`.
+template <typename T, typename R = decltype(::std::cosh(std::declval<T>()))>
+inline R cosh(const T& value)
+{
+    return ::std::cosh(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> atan(TVec<4, T> const& a, TVec<4, T> const& b)
+/// @brief Applies the cosh function to every component of the vector.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of hyperbolic cosines.
+///
+/// @see cosh
+template <unsigned int N, typename T, typename R = decltype(::framework::math::cosh(std::declval<T>()))>
+inline vector<N, R> cosh(vector<N, T> const& value)
 {
-    return TVec<4, T>(atan(a.x, b.x), atan(a.y, b.y), atan(a.z, b.z), atan(a.w, b.w));
+    return transform(value, ::framework::math::cosh<T>);
+}
+/// @}
+
+/// @name tanh
+/// @{
+
+/// @brief Computes the hyperbolic tangent of value.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The hyperbolic tangent of value.
+template <typename T, typename R = decltype(::std::tanh(std::declval<T>()))>
+inline R tanh(const T& value)
+{
+    return ::std::tanh(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> atan(TVec<3, T> const& a, TVec<3, T> const& b)
+/// @brief Applies the tanh function to every component of the vector.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of hyperbolic tangents.
+///
+/// @see tanh
+template <unsigned int N, typename T, typename R = decltype(::framework::math::tanh(std::declval<T>()))>
+inline vector<N, R> tanh(vector<N, T> const& value)
 {
-    return TVec<3, T>(atan(a.x, b.x), atan(a.y, b.y), atan(a.z, b.z));
+    return transform(value, ::framework::math::tanh<T>);
+}
+/// @}
+
+/// @name asinh
+/// @{
+
+/// @brief Computes the inverse hyperbolic sine of value.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The hyperbolic sine of value.
+template <typename T, typename R = decltype(::std::asinh(std::declval<T>()))>
+inline R asinh(const T& value)
+{
+    return ::std::asinh(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> atan(TVec<2, T> const& a, TVec<2, T> const& b)
+/// @brief Applies the asinh function to every component of the vector.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of hyperbolic sines.
+///
+/// @see asinh
+template <unsigned int N, typename T, typename R = decltype(::framework::math::asinh(std::declval<T>()))>
+inline vector<N, R> asinh(vector<N, T> const& value)
 {
-    return TVec<2, T>(atan(a.x, b.x), atan(a.y, b.y));
+    return transform(value, ::framework::math::asinh<T>);
+}
+/// @}
+
+/// @name acosh
+/// @{
+
+/// @brief Computes the inverse hyperbolic cosine of value.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The hyperbolic cosine of value.
+template <typename T, typename R = decltype(::std::acosh(std::declval<T>()))>
+inline R acosh(const T& value)
+{
+    return ::std::acosh(value);
 }
 
-/// Arc tangent. Returns an angle whose tangent is y_over_x.
-/// The range of values returned by this function is [-PI/2, PI/2].
-using ::std::atan;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> atan(TVec<4, T> const& a)
+/// @brief Applies the acosh function to every component of the vector.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of hyperbolic cosines.
+///
+/// @see acosh
+template <unsigned int N, typename T, typename R = decltype(::framework::math::acosh(std::declval<T>()))>
+inline vector<N, R> acosh(vector<N, T> const& value)
 {
-    return TVec<4, T>(atan(a.x), atan(a.y), atan(a.z), atan(a.w));
+    return transform(value, ::framework::math::acosh<T>);
+}
+/// @}
+
+/// @name atanh
+/// @{
+
+/// @brief Computes the inverse hyperbolic tangent of value.
+///
+/// @param value Value of a floating-point or integral type.
+///
+/// @return The hyperbolic tangent of value.
+template <typename T, typename R = decltype(::std::atanh(std::declval<T>()))>
+inline R atanh(const T& value)
+{
+    return ::std::atanh(value);
 }
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> atan(TVec<3, T> const& a)
+/// @brief Applies the atanh function to every component of the vector.
+///
+/// @param value Vector of a floating-point or integral type.
+///
+/// @return The vector of hyperbolic tangents.
+///
+/// @see atanh
+template <unsigned int N, typename T, typename R = decltype(::framework::math::atanh(std::declval<T>()))>
+inline vector<N, R> atanh(vector<N, T> const& value)
 {
-    return TVec<3, T>(atan(a.x), atan(a.y), atan(a.z));
+    return transform(value, ::framework::math::atanh<T>);
 }
+/// @}
 
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> atan(TVec<2, T> const& a)
-{
-    return TVec<2, T>(atan(a.x), atan(a.y));
-}
-
-/// Returns the hyperbolic sine function, (exp(x) - exp(-x)) / 2
-using std::sinh;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> sinh(TVec<4, T> const& a)
-{
-    return TVec<4, T>(sinh(a.x), sinh(a.y), sinh(a.z), sinh(a.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> sinh(TVec<3, T> const& a)
-{
-    return TVec<3, T>(sinh(a.x), sinh(a.y), sinh(a.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> sinh(TVec<2, T> const& a)
-{
-    return TVec<2, T>(sinh(a.x), sinh(a.y));
-}
-
-/// Returns the hyperbolic cosine function, (exp(x) + exp(-x)) / 2
-using std::cosh;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> cosh(TVec<4, T> const& a)
-{
-    return TVec<4, T>(cosh(a.x), cosh(a.y), cosh(a.z), cosh(a.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> cosh(TVec<3, T> const& a)
-{
-    return TVec<3, T>(cosh(a.x), cosh(a.y), cosh(a.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> cosh(TVec<2, T> const& a)
-{
-    return TVec<2, T>(cosh(a.x), cosh(a.y));
-}
-
-/// Returns the hyperbolic tangent function, sinh(angle) / cosh(angle)
-using std::tanh;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> tanh(TVec<4, T> const& a)
-{
-    return TVec<4, T>(tanh(a.x), tanh(a.y), tanh(a.z), tanh(a.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> tanh(TVec<3, T> const& a)
-{
-    return TVec<3, T>(tanh(a.x), tanh(a.y), tanh(a.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> tanh(TVec<2, T> const& a)
-{
-    return TVec<2, T>(tanh(a.x), tanh(a.y));
-}
-
-/// Arc hyperbolic sine; returns the inverse of sinh.
-using std::asinh;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> asinh(TVec<4, T> const& a)
-{
-    return TVec<4, T>(asinh(a.x), asinh(a.y), asinh(a.z), asinh(a.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> asinh(TVec<3, T> const& a)
-{
-    return TVec<3, T>(asinh(a.x), asinh(a.y), asinh(a.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> asinh(TVec<2, T> const& a)
-{
-    return TVec<2, T>(asinh(a.x), asinh(a.y));
-}
-
-/// Arc hyperbolic cosine; returns the non-negative inverse
-/// of cosh. Results are undefined if x < 1.
-using std::acosh;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> acosh(TVec<4, T> const& a)
-{
-    return TVec<4, T>(acosh(a.x), acosh(a.y), acosh(a.z), acosh(a.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> acosh(TVec<3, T> const& a)
-{
-    return TVec<3, T>(acosh(a.x), acosh(a.y), acosh(a.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> acosh(TVec<2, T> const& a)
-{
-    return TVec<2, T>(acosh(a.x), acosh(a.y));
-}
-
-/// Arc hyperbolic tangent; returns the inverse of tanh.
-/// Results are undefined if abs(x) >= 1.
-using std::atanh;
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<4, T> atanh(TVec<4, T> const& a)
-{
-    return TVec<4, T>(atanh(a.x), atanh(a.y), atanh(a.z), atanh(a.w));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<3, T> atanh(TVec<3, T> const& a)
-{
-    return TVec<3, T>(atanh(a.x), atanh(a.y), atanh(a.z));
-}
-
-template <typename T, template <unsigned int, typename> class TVec>
-inline TVec<2, T> atanh(TVec<2, T> const& a)
-{
-    return TVec<2, T>(atanh(a.x), atanh(a.y));
-}
+/// @}
 
 } // namespace math
 

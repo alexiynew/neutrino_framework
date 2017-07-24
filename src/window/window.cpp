@@ -1,9 +1,7 @@
-/**
- * @file window.cpp
- * @brief Window interface class.
- * @author Fedorov Alexey
- * @date 04.04.2017
- */
+/// @file window.cpp
+/// @brief Window interface class.
+/// @author Fedorov Alexey
+/// @date 04.04.2017
 
 #include <memory>
 #include <window/window.hpp>

@@ -285,17 +285,17 @@ private:
         // clang-format on
     }
 
-    Matrix4x4F matrix44;
-    Matrix4x3F matrix43;
-    Matrix4x2F matrix42;
+    matrix4x4f matrix44;
+    matrix4x3f matrix43;
+    matrix4x2f matrix42;
 
-    Matrix3x4F matrix34;
-    Matrix3x3F matrix33;
-    Matrix3x2F matrix32;
+    matrix3x4f matrix34;
+    matrix3x3f matrix33;
+    matrix3x2f matrix32;
 
-    Matrix2x4F matrix24;
-    Matrix2x3F matrix23;
-    Matrix2x2F matrix22;
+    matrix2x4f matrix24;
+    matrix2x3f matrix23;
+    matrix2x2f matrix22;
 };
 
 int main()

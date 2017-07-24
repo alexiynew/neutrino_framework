@@ -7,5 +7,5 @@ add_subdirectory(${FRAMEWORK_SOURCES}/window)
 
 add_custom_target(${PROJECT_NAME}
 	ALL
-	DEPENDS log math unit_test
+	DEPENDS log math unit_test window
 )

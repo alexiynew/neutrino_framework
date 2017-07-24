@@ -45,9 +45,9 @@ private:
         v3f_result = v3f;
         v2i_result = v2i;
 
-        v4i_result = v4d;
-        v3d_result = v3f;
-        v2f_result = v2i;
+        v4i_result = static_cast<vector4i>(v4d);
+        v3d_result = static_cast<vector3d>(v3f);
+        v2f_result = static_cast<vector2f>(v2i);
 
         TEST_ASSERT(v4i_result == vector4i(1, 2, 3, 4), "Assign to vector4i failed.");
         TEST_ASSERT(v4d_result == vector4d(1.1, 2.2, 3.3, 4), "Assign to vector4d failed.");
@@ -289,10 +289,10 @@ private:
         const vector2i v2i(1, -2);
         const vector2u v2u(1, 2);
 
-        TEST_ASSERT(vector4d() != v4d, "Equality operator for vector4d failed.");
-        TEST_ASSERT(vector3f() != v3f, "Equality operator for vector3f failed.");
-        TEST_ASSERT(vector2i() != v2i, "Equality operator for vector2i failed.");
-        TEST_ASSERT(vector2u() != v2u, "Equality operator for vector2u failed.");
+        TEST_ASSERT(vector4d(1.1, 2.2, 3.3, 4.4) != v4d, "Inequality operator for vector4d failed.");
+        TEST_ASSERT(!(vector3f(5.5f, 6.6f, 7.7f) != v3f), "Inequality operator for vector3f failed.");
+        TEST_ASSERT(vector2i(-2, 1) != v2i, "Inequality operator for vector2i failed.");
+        TEST_ASSERT(!(vector2u(1, 2) != v2u), "Inequality operator for vector2u failed.");
     }
 };
 
@@ -330,9 +330,9 @@ private:
         TEST_ASSERT(v3b_result == v3b, "Assign to vector3b failed.");
         TEST_ASSERT(v2b_result == v2b, "Assign to vector2b failed.");
 
-        v4b_result = v4d;
-        v3b_result = v3f;
-        v2b_result = v2i;
+        v4b_result = static_cast<vector4b>(v4d);
+        v3b_result = static_cast<vector3b>(v3f);
+        v2b_result = static_cast<vector2b>(v2i);
 
         TEST_ASSERT(v4b_result == v4b, "Assign to vector4b failed.");
         TEST_ASSERT(v3b_result == v3b, "Assign to vector3b failed.");

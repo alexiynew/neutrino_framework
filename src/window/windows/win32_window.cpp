@@ -1,9 +1,7 @@
-/**
- * @file win32_window.cpp
- * @brief Window implementation for windows.
- * @author Fedorov Alexey
- * @date 19.04.2017
- */
+/// @file win32_window.cpp
+/// @brief Window implementation for windows.
+/// @author Fedorov Alexey
+/// @date 19.04.2017
 
 #include <memory>
 #include <window/windows/win32_window.hpp>

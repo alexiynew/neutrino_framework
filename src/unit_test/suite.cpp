@@ -1,9 +1,7 @@
-/**
- * \file suite.cpp
- * \brief Base class for tests.
- * \author Fedorov Alexey
- * \date 04.03.2017
- */
+/// @file suite.cpp
+/// @brief Base class for tests.
+/// @author Fedorov Alexey
+/// @date 04.03.2017
 
 #include <iomanip>
 #include <iostream>
@@ -35,10 +33,10 @@ void suite::run()
         try {
             m_current_test->function();
         } catch (const std::exception& e) {
-            test_failed("Exception",0, e.what());
+            test_failed("Exception", 0, e.what());
             throw;
         } catch (...) {
-            test_failed("Exception",0, "Unknown exception.");
+            test_failed("Exception", 0, "Unknown exception.");
             throw;
         }
 

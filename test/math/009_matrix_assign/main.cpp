@@ -16,7 +16,7 @@ private:
     void assign_operator()
     {
         // clang-format off
-        const Matrix4x4F temp_matrix = {
+        const matrix4x4f temp_matrix = {
             0, 1, 2, 3,
             0, 1, 2, 3,
             0, 1, 2, 3,
@@ -24,25 +24,25 @@ private:
         };
         // clang-format on
 
-        const Matrix4x4F test44(temp_matrix);
-        const Matrix4x3F test43(temp_matrix);
-        const Matrix4x2F test42(temp_matrix);
-        const Matrix3x4F test34(temp_matrix);
-        const Matrix3x3F test33(temp_matrix);
-        const Matrix3x2F test32(temp_matrix);
-        const Matrix2x4F test24(temp_matrix);
-        const Matrix2x3F test23(temp_matrix);
-        const Matrix2x2F test22(temp_matrix);
+        const matrix4x4f test44(temp_matrix);
+        const matrix4x3f test43(temp_matrix);
+        const matrix4x2f test42(temp_matrix);
+        const matrix3x4f test34(temp_matrix);
+        const matrix3x3f test33(temp_matrix);
+        const matrix3x2f test32(temp_matrix);
+        const matrix2x4f test24(temp_matrix);
+        const matrix2x3f test23(temp_matrix);
+        const matrix2x2f test22(temp_matrix);
 
-        Matrix4x4D result44;
-        Matrix4x3D result43;
-        Matrix4x2D result42;
-        Matrix3x4D result34;
-        Matrix3x3D result33;
-        Matrix3x2D result32;
-        Matrix2x4D result24;
-        Matrix2x3D result23;
-        Matrix2x2D result22;
+        matrix4x4f result44;
+        matrix4x3f result43;
+        matrix4x2f result42;
+        matrix3x4f result34;
+        matrix3x3f result33;
+        matrix3x2f result32;
+        matrix2x4f result24;
+        matrix2x3f result23;
+        matrix2x2f result22;
 
         result44 = test44;
         result43 = test43;
@@ -54,15 +54,15 @@ private:
         result23 = test23;
         result22 = test22;
 
-        TEST_ASSERT(static_cast<Matrix4x4F>(result44) == test44, "Matrix4x4 assign failed.");
-        TEST_ASSERT(static_cast<Matrix4x3F>(result43) == test43, "Matrix4x3 assign failed.");
-        TEST_ASSERT(static_cast<Matrix4x2F>(result42) == test42, "Matrix4x2 assign failed.");
-        TEST_ASSERT(static_cast<Matrix3x4F>(result34) == test34, "Matrix3x4 assign failed.");
-        TEST_ASSERT(static_cast<Matrix3x3F>(result33) == test33, "Matrix3x3 assign failed.");
-        TEST_ASSERT(static_cast<Matrix3x2F>(result32) == test32, "Matrix3x2 assign failed.");
-        TEST_ASSERT(static_cast<Matrix2x4F>(result24) == test24, "Matrix2x4 assign failed.");
-        TEST_ASSERT(static_cast<Matrix2x3F>(result23) == test23, "Matrix2x3 assign failed.");
-        TEST_ASSERT(static_cast<Matrix2x2F>(result22) == test22, "Matrix2x2 assign failed.");
+        TEST_ASSERT(result44 == test44, "Matrix4x4 assign failed.");
+        TEST_ASSERT(result43 == test43, "Matrix4x3 assign failed.");
+        TEST_ASSERT(result42 == test42, "Matrix4x2 assign failed.");
+        TEST_ASSERT(result34 == test34, "Matrix3x4 assign failed.");
+        TEST_ASSERT(result33 == test33, "Matrix3x3 assign failed.");
+        TEST_ASSERT(result32 == test32, "Matrix3x2 assign failed.");
+        TEST_ASSERT(result24 == test24, "Matrix2x4 assign failed.");
+        TEST_ASSERT(result23 == test23, "Matrix2x3 assign failed.");
+        TEST_ASSERT(result22 == test22, "Matrix2x2 assign failed.");
     }
 };
 

@@ -5,3 +5,4 @@ nbproject/
 .atom-build.yml
 .vimrc
 .DS_Store
+.xvfb.log

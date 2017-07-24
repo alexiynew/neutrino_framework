@@ -1,3 +1,8 @@
+/// @file
+/// @brief Contains matrix functions.
+/// @author Fedorov Alexey
+/// @date 05.07.2017
+
 #ifndef FRAMEWORK_MATH_MATRIX_FUNC_HPP
 #define FRAMEWORK_MATH_MATRIX_FUNC_HPP
 
@@ -7,55 +12,61 @@ namespace framework {
 
 namespace math {
 
-template <unsigned int C, unsigned int R, typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<R, C, T> transpose(const TMat<C, R, T>& m)
+namespace matrix_functions_details {
+
+/// @brief Realization of transpose function.
+/// @{
+template <unsigned int C, typename T>
+inline matrix<4, C, T> transpose_details(const matrix<C, 4, T>& value)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::type_creator<R>::template create<TMat<R, C, T>>([&m](unsigned int index) { return m.row(index); });
+    return matrix<4, C, T>{value.row(0), value.row(1), value.row(2), value.row(3)};
 }
 
-template <unsigned int C, unsigned int R, typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<C, R, T> crossComponentMultiplication(const TMat<C, R, T>& lhs, const TMat<C, R, T>& rhs)
+template <unsigned int C, typename T>
+inline matrix<3, C, T> transpose_details(const matrix<C, 3, T>& value)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::type_creator<C>::template create<TMat<C, R, T>>(
-    [&lhs, &rhs](unsigned int index) { return lhs[index] * rhs[index]; });
+    return matrix<3, C, T>{value.row(0), value.row(1), value.row(2)};
 }
 
-template <unsigned int C, unsigned int R, typename T, template <unsigned int, typename> class TVec>
-inline matrix_impl::Matrix<C, R, T> outerProduct(const TVec<R, T>& lhs, const TVec<C, T>& rhs)
+template <unsigned int C, typename T>
+inline matrix<2, C, T> transpose_details(const matrix<C, 2, T>& value)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return utils::type_creator<C>::template create<matrix_impl::Matrix<C, R, T>>(
-    [&lhs, &rhs](unsigned int index) { return lhs * rhs[index]; });
+    return matrix<2, C, T>{value.row(0), value.row(1)};
+}
+/// @}
+
+/// @brief Realization of outer_product function.
+/// @{
+template <unsigned int R, typename T>
+inline matrix<4, R, T> outer_product_details(const vector<R, T>& lhs, const vector<4, T>& rhs)
+{
+    return matrix<4, R, T>{lhs * rhs[0], lhs * rhs[1], lhs * rhs[2], lhs * rhs[3]};
 }
 
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline T determinant(const TMat<2, 2, T>& m)
+template <unsigned int R, typename T>
+inline matrix<3, R, T> outer_product_details(const vector<R, T>& lhs, const vector<3, T>& rhs)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return m[0][0] * m[1][1] - m[1][0] * m[0][1];
+    return matrix<3, R, T>{lhs * rhs[0], lhs * rhs[1], lhs * rhs[2]};
 }
 
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline T determinant(const TMat<3, 3, T>& m)
+template <unsigned int R, typename T>
+inline matrix<2, R, T> outer_product_details(const vector<R, T>& lhs, const vector<2, T>& rhs)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-    return +m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) - m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2]) +
-           m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
+    return matrix<2, R, T>{lhs * rhs[0], lhs * rhs[1]};
 }
+/// @}
 
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline T determinant(const TMat<4, 4, T>& m)
+/// @brief Realization of determinant function.
+/// @{
+template <typename T>
+inline T determinant_details(const matrix<4, 4, T>& m)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-
-    T s01 = (m[2][2] * m[3][3] - m[3][2] * m[2][3]);
-    T s02 = (m[2][1] * m[3][3] - m[3][1] * m[2][3]);
-    T s03 = (m[2][1] * m[3][2] - m[3][1] * m[2][2]);
-    T s04 = (m[2][0] * m[3][3] - m[3][0] * m[2][3]);
-    T s05 = (m[2][0] * m[3][2] - m[3][0] * m[2][2]);
-    T s06 = (m[2][0] * m[3][1] - m[3][0] * m[2][1]);
+    const T s01 = (m[2][2] * m[3][3] - m[3][2] * m[2][3]);
+    const T s02 = (m[2][1] * m[3][3] - m[3][1] * m[2][3]);
+    const T s03 = (m[2][1] * m[3][2] - m[3][1] * m[2][2]);
+    const T s04 = (m[2][0] * m[3][3] - m[3][0] * m[2][3]);
+    const T s05 = (m[2][0] * m[3][2] - m[3][0] * m[2][2]);
+    const T s06 = (m[2][0] * m[3][1] - m[3][0] * m[2][1]);
 
     return m[0][0] * (m[1][1] * s01 - m[1][2] * s02 + m[1][3] * s03) -
            m[0][1] * (m[1][0] * s01 - m[1][2] * s04 + m[1][3] * s05) +
@@ -63,48 +74,132 @@ inline T determinant(const TMat<4, 4, T>& m)
            m[0][3] * (m[1][0] * s03 - m[1][1] * s05 + m[1][2] * s06);
 }
 
-/// Result are undefined if determinant(m) == 0
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<2, 2, T> inverse(const TMat<2, 2, T>& m)
+template <typename T>
+inline T determinant_details(const matrix<3, 3, T>& m)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-
-    T det = determinant(m);
-    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
-
-    return TMat<2, 2, T>(m[1][1] / det, -m[0][1] / det, -m[1][0] / det, m[0][0] / det);
+    // clang-format off
+    return m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) -
+           m[1][0] * (m[0][1] * m[2][2] - m[2][1] * m[0][2]) +
+           m[2][0] * (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
+    // clang-format on
 }
 
-/// Result are undefined if determinant(m) == 0
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<3, 3, T> inverse(const TMat<3, 3, T>& m)
+template <typename T>
+inline T determinant_details(const matrix<2, 2, T>& m)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
+    return m[0][0] * m[1][1] - m[1][0] * m[0][1];
+}
+/// @}
 
-    T det = determinant(m);
-    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
+/// @brief Realization of inverse function.
+/// @{
+template <typename T>
+inline matrix<4, 4, T> inverse_details(const matrix<4, 4, T>& m)
+{
+    const T s01 = (m[3][1] * m[2][2] - m[2][1] * m[3][2]);
+    const T s02 = (m[3][1] * m[1][2] - m[1][1] * m[3][2]);
+    const T s03 = (m[2][1] * m[1][2] - m[1][1] * m[2][2]);
+    const T s04 = (m[3][1] * m[0][2] - m[0][1] * m[3][2]);
+    const T s05 = (m[2][1] * m[0][2] - m[0][1] * m[2][2]);
+    const T s06 = (m[1][1] * m[0][2] - m[0][1] * m[1][2]);
 
-    TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
-                         m[0][2] * m[2][1] - m[0][1] * m[2][2],
-                         m[0][1] * m[1][2] - m[0][2] * m[1][1],
+    const T s07 = (m[3][0] * m[2][2] - m[2][0] * m[3][2]);
+    const T s08 = (m[3][0] * m[1][2] - m[1][0] * m[3][2]);
+    const T s09 = (m[2][0] * m[1][2] - m[1][0] * m[2][2]);
+    const T s10 = (m[3][0] * m[0][2] - m[0][0] * m[3][2]);
+    const T s11 = (m[2][0] * m[0][2] - m[0][0] * m[2][2]);
+    const T s12 = (m[1][0] * m[0][2] - m[0][0] * m[1][2]);
 
-                         m[1][2] * m[2][0] - m[1][0] * m[2][2],
-                         m[0][0] * m[2][2] - m[0][2] * m[2][0],
-                         m[0][2] * m[1][0] - m[0][0] * m[1][2],
+    const T s13 = (m[3][0] * m[2][1] - m[2][0] * m[3][1]);
+    const T s14 = (m[3][0] * m[1][1] - m[1][0] * m[3][1]);
+    const T s15 = (m[2][0] * m[1][1] - m[1][0] * m[2][1]);
+    const T s16 = (m[3][0] * m[0][1] - m[0][0] * m[3][1]);
+    const T s17 = (m[2][0] * m[0][1] - m[0][0] * m[2][1]);
+    const T s18 = (m[1][0] * m[0][1] - m[0][0] * m[1][1]);
 
-                         m[1][0] * m[2][1] - m[1][1] * m[2][0],
-                         m[0][1] * m[2][0] - m[0][0] * m[2][1],
-                         m[0][0] * m[1][1] - m[0][1] * m[1][0]);
+    const matrix<4, 4, T> result(-m[1][3] * s01 + m[2][3] * s02 - m[3][3] * s03,
+                                 +m[0][3] * s01 - m[2][3] * s04 + m[3][3] * s05,
+                                 -m[0][3] * s02 + m[1][3] * s04 - m[3][3] * s06,
+                                 +m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06,
+
+                                 +m[1][3] * s07 - m[2][3] * s08 + m[3][3] * s09,
+                                 -m[0][3] * s07 + m[2][3] * s10 - m[3][3] * s11,
+                                 +m[0][3] * s08 - m[1][3] * s10 + m[3][3] * s12,
+                                 -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12,
+
+                                 -m[1][3] * s13 + m[2][3] * s14 - m[3][3] * s15,
+                                 +m[0][3] * s13 - m[2][3] * s16 + m[3][3] * s17,
+                                 -m[0][3] * s14 + m[1][3] * s16 - m[3][3] * s18,
+                                 +m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18,
+
+                                 +m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15,
+                                 -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17,
+                                 +m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18,
+                                 -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
+
+    const T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
 
     return result / det;
 }
 
-/// Result are undefined if determinant(m) == 0
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
+template <typename T>
+inline matrix<3, 3, T> inverse_details(const matrix<3, 3, T>& m)
 {
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
+    const matrix<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
+                                 m[0][2] * m[2][1] - m[0][1] * m[2][2],
+                                 m[0][1] * m[1][2] - m[0][2] * m[1][1],
 
+                                 m[1][2] * m[2][0] - m[1][0] * m[2][2],
+                                 m[0][0] * m[2][2] - m[0][2] * m[2][0],
+                                 m[0][2] * m[1][0] - m[0][0] * m[1][2],
+
+                                 m[1][0] * m[2][1] - m[1][1] * m[2][0],
+                                 m[0][1] * m[2][0] - m[0][0] * m[2][1],
+                                 m[0][0] * m[1][1] - m[0][1] * m[1][0]);
+
+    return result / determinant(m);
+}
+
+template <typename T>
+inline matrix<2, 2, T> inverse_details(const matrix<2, 2, T>& m)
+{
+    const matrix<2, 2, T> result(m[1][1], -m[0][1], -m[1][0], m[0][0]);
+
+    return result / determinant(m);
+}
+/// @}
+
+/// @brief Realization of affine_inverse function.
+/// @{
+template <typename T>
+inline matrix<3, 3, T> affine_inverse_details(const matrix<3, 3, T>& value)
+{
+    using vector3t = typename matrix<3, 3, T>::column_type;
+    using vector2t = typename matrix<2, 2, T>::column_type;
+
+    const matrix<2, 2, T> temp = inverse(matrix<2, 2, T>(value));
+
+    return matrix<3, 3, T>(vector3t(temp[0], T{0}), vector3t(temp[1], T{0}), vector3t(-temp * vector2t(value[2]), T{1}));
+}
+
+template <typename T>
+inline matrix<4, 4, T> affine_inverse_details(const matrix<4, 4, T>& value)
+{
+    using vector4t = typename matrix<4, 4, T>::column_type;
+    using vector3t = typename matrix<3, 3, T>::column_type;
+
+    matrix<3, 3, T> const temp = inverse(matrix<3, 3, T>(value));
+
+    return matrix<4, 4, T>(
+    vector4t(temp[0], T{0}), vector4t(temp[1], T{0}), vector4t(temp[2], T{0}), vector4t(-temp * vector3t(value[3]), T{1}));
+}
+/// @}
+
+/// @brief Realization of inverse_transpose function.
+/// @{
+template <typename T>
+inline matrix<4, 4, T> inverse_transpose_details(const matrix<4, 4, T>& m)
+{
     T s01 = (m[3][1] * m[2][2] - m[2][1] * m[3][2]);
     T s02 = (m[3][1] * m[1][2] - m[1][1] * m[3][2]);
     T s03 = (m[2][1] * m[1][2] - m[1][1] * m[2][2]);
@@ -126,148 +221,186 @@ inline TMat<4, 4, T> inverse(const TMat<4, 4, T>& m)
     T s17 = (m[2][0] * m[0][1] - m[0][0] * m[2][1]);
     T s18 = (m[1][0] * m[0][1] - m[0][0] * m[1][1]);
 
-    TMat<4, 4, T> result(-m[1][3] * s01 + m[2][3] * s02 - m[3][3] * s03,
-                         m[0][3] * s01 - m[2][3] * s04 + m[3][3] * s05,
-                         -m[0][3] * s02 + m[1][3] * s04 - m[3][3] * s06,
-                         m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06,
+    matrix<4, 4, T> result(-m[1][3] * s01 + m[2][3] * s02 - m[3][3] * s03,
+                           +m[1][3] * s07 - m[2][3] * s08 + m[3][3] * s09,
+                           -m[1][3] * s13 + m[2][3] * s14 - m[3][3] * s15,
+                           +m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15,
 
-                         m[1][3] * s07 - m[2][3] * s08 + m[3][3] * s09,
-                         -m[0][3] * s07 + m[2][3] * s10 - m[3][3] * s11,
-                         m[0][3] * s08 - m[1][3] * s10 + m[3][3] * s12,
-                         -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12,
+                           +m[0][3] * s01 - m[2][3] * s04 + m[3][3] * s05,
+                           -m[0][3] * s07 + m[2][3] * s10 - m[3][3] * s11,
+                           +m[0][3] * s13 - m[2][3] * s16 + m[3][3] * s17,
+                           -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17,
 
-                         -m[1][3] * s13 + m[2][3] * s14 - m[3][3] * s15,
-                         m[0][3] * s13 - m[2][3] * s16 + m[3][3] * s17,
-                         -m[0][3] * s14 + m[1][3] * s16 - m[3][3] * s18,
-                         m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18,
+                           -m[0][3] * s02 + m[1][3] * s04 - m[3][3] * s06,
+                           +m[0][3] * s08 - m[1][3] * s10 + m[3][3] * s12,
+                           -m[0][3] * s14 + m[1][3] * s16 - m[3][3] * s18,
+                           +m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18,
 
-                         m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15,
-                         -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17,
-                         m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18,
-                         -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
-
-    T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
-    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
-
-    return result / det;
-}
-
-/// Result are undefined if determinant(m) == 0
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<3, 3, T> affineInverse(const TMat<3, 3, T>& m)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-
-    using TVec3 = typename TMat<3, 3, T>::ColumnType;
-    using TVec2 = typename TMat<2, 2, T>::ColumnType;
-
-    TMat<2, 2, T> const inv = inverse(TMat<2, 2, T>(m));
-
-    return TMat<3, 3, T>(TVec3(inv[0], T(0)), TVec3(inv[1], T(0)), TVec3(-inv * TVec2(m[2]), T(1)));
-}
-
-/// Result are undefined if determinant(m) == 0
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<4, 4, T> affineInverse(const TMat<4, 4, T>& m)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-
-    using TVec4 = typename TMat<4, 4, T>::ColumnType;
-    using TVec3 = typename TMat<3, 3, T>::ColumnType;
-
-    TMat<3, 3, T> const inv(inverse(TMat<3, 3, T>(m)));
-
-    return TMat<4, 4, T>(TVec4(inv[0], T(0)), TVec4(inv[1], T(0)), TVec4(inv[2], T(0)), TVec4(-inv * TVec3(m[3]), T(1)));
-}
-
-/// Result are undefined if determinant(m) == 0
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<2, 2, T> inverseTranspose(const TMat<2, 2, T>& m)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-
-    T det = determinant(m);
-    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
-
-    return TMat<2, 2, T>(m[1][1] / det, -m[1][0] / det, -m[0][1] / det, m[0][0] / det);
-}
-
-/// Result are undefined if determinant(m) == 0
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<3, 3, T> inverseTranspose(const TMat<3, 3, T>& m)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-
-    T det = determinant(m);
-    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
-
-    TMat<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
-                         m[1][2] * m[2][0] - m[1][0] * m[2][2],
-                         m[1][0] * m[2][1] - m[1][1] * m[2][0],
-
-                         m[0][2] * m[2][1] - m[0][1] * m[2][2],
-                         m[0][0] * m[2][2] - m[0][2] * m[2][0],
-                         m[0][1] * m[2][0] - m[0][0] * m[2][1],
-
-                         m[0][1] * m[1][2] - m[0][2] * m[1][1],
-                         m[0][2] * m[1][0] - m[0][0] * m[1][2],
-                         m[0][0] * m[1][1] - m[0][1] * m[1][0]);
-
-    return result / det;
-}
-
-/// Result are undefined if determinant(m) == 0
-template <typename T, template <unsigned int, unsigned int, typename> class TMat>
-inline TMat<4, 4, T> inverseTranspose(const TMat<4, 4, T>& m)
-{
-    static_assert(utils::is_floating_point_or_integer<T>::value, "Expected floating-point or integer type.");
-
-    T s01 = (m[3][1] * m[2][2] - m[2][1] * m[3][2]);
-    T s02 = (m[3][1] * m[1][2] - m[1][1] * m[3][2]);
-    T s03 = (m[2][1] * m[1][2] - m[1][1] * m[2][2]);
-    T s04 = (m[3][1] * m[0][2] - m[0][1] * m[3][2]);
-    T s05 = (m[2][1] * m[0][2] - m[0][1] * m[2][2]);
-    T s06 = (m[1][1] * m[0][2] - m[0][1] * m[1][2]);
-
-    T s07 = (m[3][0] * m[2][2] - m[2][0] * m[3][2]);
-    T s08 = (m[3][0] * m[1][2] - m[1][0] * m[3][2]);
-    T s09 = (m[2][0] * m[1][2] - m[1][0] * m[2][2]);
-    T s10 = (m[3][0] * m[0][2] - m[0][0] * m[3][2]);
-    T s11 = (m[2][0] * m[0][2] - m[0][0] * m[2][2]);
-    T s12 = (m[1][0] * m[0][2] - m[0][0] * m[1][2]);
-
-    T s13 = (m[3][0] * m[2][1] - m[2][0] * m[3][1]);
-    T s14 = (m[3][0] * m[1][1] - m[1][0] * m[3][1]);
-    T s15 = (m[2][0] * m[1][1] - m[1][0] * m[2][1]);
-    T s16 = (m[3][0] * m[0][1] - m[0][0] * m[3][1]);
-    T s17 = (m[2][0] * m[0][1] - m[0][0] * m[2][1]);
-    T s18 = (m[1][0] * m[0][1] - m[0][0] * m[1][1]);
-
-    TMat<4, 4, T> result(-m[1][3] * s01 + m[2][3] * s02 - m[3][3] * s03,
-                         m[1][3] * s07 - m[2][3] * s08 + m[3][3] * s09,
-                         -m[1][3] * s13 + m[2][3] * s14 - m[3][3] * s15,
-                         m[1][2] * s13 - m[2][2] * s14 + m[3][2] * s15,
-
-                         m[0][3] * s01 - m[2][3] * s04 + m[3][3] * s05,
-                         -m[0][3] * s07 + m[2][3] * s10 - m[3][3] * s11,
-                         m[0][3] * s13 - m[2][3] * s16 + m[3][3] * s17,
-                         -m[0][2] * s13 + m[2][2] * s16 - m[3][2] * s17,
-
-                         -m[0][3] * s02 + m[1][3] * s04 - m[3][3] * s06,
-                         m[0][3] * s08 - m[1][3] * s10 + m[3][3] * s12,
-                         -m[0][3] * s14 + m[1][3] * s16 - m[3][3] * s18,
-                         m[0][2] * s14 - m[1][2] * s16 + m[3][2] * s18,
-
-                         m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06,
-                         -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12,
-                         m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18,
-                         -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
+                           +m[0][3] * s03 - m[1][3] * s05 + m[2][3] * s06,
+                           -m[0][3] * s09 + m[1][3] * s11 - m[2][3] * s12,
+                           +m[0][3] * s15 - m[1][3] * s17 + m[2][3] * s18,
+                           -m[0][2] * s15 + m[1][2] * s17 - m[2][2] * s18);
 
     T det = m[0][0] * result[0][0] + m[1][0] * result[0][1] + m[2][0] * result[0][2] + m[3][0] * result[0][3];
-    ASSERT_MSG(framework::math::abs(double(det)) > 0.0, "Matrix has no inverse, result is undefined.");
 
     return result / det;
 }
+
+template <typename T>
+inline matrix<3, 3, T> inverse_transpose_details(const matrix<3, 3, T>& m)
+{
+    matrix<3, 3, T> result(m[1][1] * m[2][2] - m[1][2] * m[2][1],
+                           m[1][2] * m[2][0] - m[1][0] * m[2][2],
+                           m[1][0] * m[2][1] - m[1][1] * m[2][0],
+
+                           m[0][2] * m[2][1] - m[0][1] * m[2][2],
+                           m[0][0] * m[2][2] - m[0][2] * m[2][0],
+                           m[0][1] * m[2][0] - m[0][0] * m[2][1],
+
+                           m[0][1] * m[1][2] - m[0][2] * m[1][1],
+                           m[0][2] * m[1][0] - m[0][0] * m[1][2],
+                           m[0][0] * m[1][1] - m[0][1] * m[1][0]);
+
+    return result / determinant(m);
+}
+
+template <typename T>
+inline matrix<2, 2, T> inverse_transpose_details(const matrix<2, 2, T>& m)
+{
+    const matrix<2, 2, T> result(m[1][1], -m[1][0], -m[0][1], m[0][0]);
+
+    return result / determinant(m);
+}
+/// @}
+
+} // namespace matrix_functions_details
+
+/// @brief Defines geometric math functions.
+///
+/// @addtogroup matrix_functions
+/// @{
+
+/// @name transpose
+/// @{
+
+/// @brief Calculate the transpose of a matrix.
+///
+/// @param value Specifies the matrix of which to take the transpose.
+///
+/// @return The transpose of the matrix.
+template <unsigned int C, unsigned int R, typename T>
+inline matrix<R, C, T> transpose(const matrix<C, R, T>& value)
+{
+    return matrix_functions_details::transpose_details(value);
+}
+/// @}
+
+/// @name component_wise_multiplication
+/// @{
+
+/// @brief Perform a component-wise multiplication of two matrices.
+///
+/// @param lhs Specifies the first matrix multiplicand.
+/// @param rhs Specifies the second matrix multiplicand.
+///
+/// @return The component-wise multiplication of two matrices.
+template <unsigned int C, unsigned int R, typename T>
+inline matrix<C, R, T> component_wise_multiplication(const matrix<C, R, T>& lhs, const matrix<C, R, T>& rhs)
+{
+    matrix<C, R, T> temp{lhs};
+
+    for (unsigned int i = 0; i < C; ++i) {
+        temp[i] *= rhs[i];
+    }
+
+    return temp;
+}
+/// @}
+
+/// @name outer_product
+/// @{
+
+/// @brief Calculate the outer product of a pair of vectors.
+///
+/// @param lhs Specifies the parameter to be treated as a column vector.
+/// @param rhs Specifies the parameter to be treated as a row vector.
+///
+/// @return The outer product of a pair of vectors.
+template <unsigned int C, unsigned int R, typename T>
+inline matrix<C, R, T> outer_product(const vector<R, T>& lhs, const vector<C, T>& rhs)
+{
+    return matrix_functions_details::outer_product_details(lhs, rhs);
+}
+/// @}
+
+/// @name determinant
+/// @{
+
+/// @brief Calculate the determinant of a matrix.
+///
+/// @param value Specifies the matrix of which to take the determinant.
+///
+/// @return The determinant of the matrix.
+template <unsigned int C, unsigned int R, typename T>
+inline T determinant(const matrix<C, R, T>& value)
+{
+    return matrix_functions_details::determinant_details(value);
+}
+/// @}
+
+/// @name inverse
+/// @{
+
+/// @brief Calculate the inverse of a matrix.
+///
+/// The values in the returned matrix are undefined if matrix is singular or poorly-conditioned (nearly singular).
+///
+/// @param value Specifies the matrix of which to take the inverse.
+///
+/// @return The inverse of a matrix.
+template <unsigned int C, unsigned int R, typename T>
+inline matrix<C, R, T> inverse(const matrix<C, R, T>& value)
+{
+    return matrix_functions_details::inverse_details(value);
+}
+/// @}
+
+/// @name affine_inverse
+/// @{
+
+/// @brief Calculate the inverse of a affine matrix.
+///
+/// The values in the returned matrix are undefined if matrix contains not affine transformations,
+/// or matrix is singular or poorly-conditioned (nearly singular).
+///
+/// @param value Specifies the matrix of which to take the inverse.
+///
+/// @return The inverse of a matrix.
+template <unsigned int C, unsigned int R, typename T>
+inline matrix<C, R, T> affine_inverse(const matrix<C, R, T>& value)
+{
+    return matrix_functions_details::affine_inverse_details(value);
+}
+/// @}
+
+/// @name inverse_transpose
+/// @{
+
+/// @brief Calculate the inverse-transpose of a matrix.
+///
+/// The values in the returned matrix are undefined if matrix is singular or poorly-conditioned (nearly singular).
+///
+/// @param value Specifies the matrix of which to take the inverse.
+///
+/// @return The matrix which is equivalent to `transpose(inverse(matrix))`.
+template <unsigned int C, unsigned int R, typename T>
+inline matrix<C, R, T> inverse_transpose(const matrix<C, R, T>& value)
+{
+    return matrix_functions_details::inverse_transpose_details(value);
+}
+/// @}
+
+/// @}
 
 } // namespace math
 
