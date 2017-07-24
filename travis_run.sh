@@ -23,5 +23,5 @@ then
     fi
 elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]
 then
-    cd "${TRAVIS_BUILD_DIR}" && "${BUILD_COMMAND}"
+    "${BUILD_COMMAND}"
 fi
