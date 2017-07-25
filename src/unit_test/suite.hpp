@@ -53,7 +53,7 @@ public:
     /// @brief Creates test suite with provided name.
     ///
     /// @param name Name of the test suite.
-    suite(const std::string& name);
+    explicit suite(const std::string& name);
 
     /// @brief Function to run all tests in the suite.
     void run();

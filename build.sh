@@ -129,6 +129,13 @@ function coverage_scan {
     lcov --list coverage.info                                               # debug info
 }
 
+function run_check {
+    info "==== Run static analizers ===="
+
+    cd "$SCRIPT_DIR"
+    cppcheck --enable=all -I./src ./src/*/*.*pp ./test/*/*/*.*pp
+}
+
 function build_documentation {
     info "==== Run framework tests verbose ===="
 
@@ -157,6 +164,7 @@ cat << EOF
             test         : Run all tests.
             test_verbose : Run all tests with verbose logging.
             coverage     : Run test coverage scan.
+            check        : Run static analizers.
             docs         : Build documentation.
             clean        : Clean build results.
 
@@ -194,6 +202,10 @@ function run_task {
         ;;
         "coverage" )
             coverage_scan
+        ;;
+        "check" )
+            configure
+            run_check
         ;;
         "docs" )
             configure
