@@ -18,8 +18,47 @@ public:
     window();
     ~window();
 
+    // actions
     void show();
     void hide();
+
+    /// Send the Window to the background.
+    void to_back();
+    /// Bring the Window to the foreground.
+    void to_front();
+
+    void request_focus();
+
+    // setters
+    void set_widht(int w);
+    void set_height(int h);
+
+    void set_max_height(int h);
+    void set_max_width(int w);
+    void set_min_height(int h);
+    void set_min_width(int w);
+
+    void set_title(const std::string& t);
+
+    // getters
+    int x();
+    int y();
+    int widht();
+    int height();
+
+    int max_height();
+    int max_width();
+    int min_height();
+    int min_width();
+
+    std::string title();
+
+    bool always_on_top();
+    bool full_screen();
+    bool iconified();
+    bool maximized();
+    bool resizable();
+    bool focused();
 
 private:
     std::unique_ptr<window_implementation> m_implementation;
@@ -27,73 +66,3 @@ private:
 }
 
 #endif
-
-
-/*
-
-focused
-Whether or not this Window has the keyboard or input focus.
-
-requestFocus()
-Requests that this Window get the input focus.
-
-height
-The height of this Stage.
-onCloseRequest
-Called when there is an external request to close this Window.
-onHidden
-Called just after the Window has been hidden.
-onHiding
-Called just prior to the Window being hidden.
-onShowing
-Called just prior to the Window being shown.
-onShown
-Called just after the Window is shown.
-showing
-Whether or not this Stage is showing (that is, open on the user's system).
-width
-The width of this Stage.
-x
-The horizontal location of this Stage on the screen.
-y
-
-
-alwaysOnTop
-Defines whether this Stage is kept on top of other windows.
-
-fullScreen
-Specifies whether this Stage should be a full-screen, undecorated window.
-iconified
-Defines whether the Stage is iconified or not.
-maxHeight
-Defines the maximum height of this Stage.
-maximized
-Defines whether the Stage is maximized or not.
-maxWidth
-Defines the maximum width of this Stage.
-minHeight
-Defines the minimum height of this Stage.
-minWidth
-Defines the minimum width of this Stage.
-resizable
-Defines whether the Stage is resizable or not by the user.
-title
-Defines the title of the Stage.
-
-
-boolean	isAlwaysOnTop()
-Gets the value of the property alwaysOnTop.
-boolean	isFullScreen()
-Gets the value of the property fullScreen.
-boolean	isIconified()
-Gets the value of the property iconified.
-boolean	isMaximized()
-Gets the value of the property maximized.
-boolean	isResizable()
-Gets the value of the property resizable.
-
-toBack()
-Send the Window to the background.
-toFront()
-Bring the Window to the foreground.
-*/
