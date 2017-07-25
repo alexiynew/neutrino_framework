@@ -130,10 +130,18 @@ function coverage_scan {
 }
 
 function run_check {
-    info "==== Run static analizers ===="
+    info "==== Run CppCheck ===="
 
-    cd "$SCRIPT_DIR"
     cppcheck --enable=all -I./src ./src/*/*.*pp ./test/*/*/*.*pp
+
+    info "==== Run clang scan-build ===="
+
+    mkdir -p "$BUILD_DIR"
+    cd "$BUILD_DIR"
+
+    scan-build cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+    scan-build make all
+    scan-build make framework_tests
 }
 
 function build_documentation {
@@ -204,7 +212,6 @@ function run_task {
             coverage_scan
         ;;
         "check" )
-            configure
             run_check
         ;;
         "docs" )
