@@ -132,7 +132,9 @@ function coverage_scan {
 function run_check {
     info "==== Run CppCheck ===="
 
-    cppcheck --enable=all -I./src ./src/*/*.*pp ./test/*/*/*.*pp
+    files=`find ./src ./test -iregex ".*\(cpp\|h\|hpp\)" -type f | sort`
+
+    cppcheck --enable=all -I./src ${files}
 
     info "==== Run clang scan-build ===="
 
