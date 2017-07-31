@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_MATH_MATRIX_FUNC_HPP
 #define FRAMEWORK_MATH_MATRIX_FUNC_HPP
 
+#include <common/common_types.hpp>
 #include <math/matrix_type.hpp>
 
 namespace framework {
@@ -16,19 +17,19 @@ namespace matrix_functions_details {
 
 /// @brief Realization of transpose function.
 /// @{
-template <unsigned int C, typename T>
+template <uint32 C, typename T>
 inline matrix<4, C, T> transpose_details(const matrix<C, 4, T>& value)
 {
     return matrix<4, C, T>{value.row(0), value.row(1), value.row(2), value.row(3)};
 }
 
-template <unsigned int C, typename T>
+template <uint32 C, typename T>
 inline matrix<3, C, T> transpose_details(const matrix<C, 3, T>& value)
 {
     return matrix<3, C, T>{value.row(0), value.row(1), value.row(2)};
 }
 
-template <unsigned int C, typename T>
+template <uint32 C, typename T>
 inline matrix<2, C, T> transpose_details(const matrix<C, 2, T>& value)
 {
     return matrix<2, C, T>{value.row(0), value.row(1)};
@@ -37,19 +38,19 @@ inline matrix<2, C, T> transpose_details(const matrix<C, 2, T>& value)
 
 /// @brief Realization of outer_product function.
 /// @{
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline matrix<4, R, T> outer_product_details(const vector<R, T>& lhs, const vector<4, T>& rhs)
 {
     return matrix<4, R, T>{lhs * rhs[0], lhs * rhs[1], lhs * rhs[2], lhs * rhs[3]};
 }
 
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline matrix<3, R, T> outer_product_details(const vector<R, T>& lhs, const vector<3, T>& rhs)
 {
     return matrix<3, R, T>{lhs * rhs[0], lhs * rhs[1], lhs * rhs[2]};
 }
 
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline matrix<2, R, T> outer_product_details(const vector<R, T>& lhs, const vector<2, T>& rhs)
 {
     return matrix<2, R, T>{lhs * rhs[0], lhs * rhs[1]};
@@ -288,7 +289,7 @@ inline matrix<2, 2, T> inverse_transpose_details(const matrix<2, 2, T>& m)
 /// @param value Specifies the matrix of which to take the transpose.
 ///
 /// @return The transpose of the matrix.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline matrix<R, C, T> transpose(const matrix<C, R, T>& value)
 {
     return matrix_functions_details::transpose_details(value);
@@ -304,12 +305,12 @@ inline matrix<R, C, T> transpose(const matrix<C, R, T>& value)
 /// @param rhs Specifies the second matrix multiplicand.
 ///
 /// @return The component-wise multiplication of two matrices.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline matrix<C, R, T> component_wise_multiplication(const matrix<C, R, T>& lhs, const matrix<C, R, T>& rhs)
 {
     matrix<C, R, T> temp{lhs};
 
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         temp[i] *= rhs[i];
     }
 
@@ -326,7 +327,7 @@ inline matrix<C, R, T> component_wise_multiplication(const matrix<C, R, T>& lhs,
 /// @param rhs Specifies the parameter to be treated as a row vector.
 ///
 /// @return The outer product of a pair of vectors.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline matrix<C, R, T> outer_product(const vector<R, T>& lhs, const vector<C, T>& rhs)
 {
     return matrix_functions_details::outer_product_details(lhs, rhs);
@@ -341,7 +342,7 @@ inline matrix<C, R, T> outer_product(const vector<R, T>& lhs, const vector<C, T>
 /// @param value Specifies the matrix of which to take the determinant.
 ///
 /// @return The determinant of the matrix.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline T determinant(const matrix<C, R, T>& value)
 {
     return matrix_functions_details::determinant_details(value);
@@ -358,7 +359,7 @@ inline T determinant(const matrix<C, R, T>& value)
 /// @param value Specifies the matrix of which to take the inverse.
 ///
 /// @return The inverse of a matrix.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline matrix<C, R, T> inverse(const matrix<C, R, T>& value)
 {
     return matrix_functions_details::inverse_details(value);
@@ -376,7 +377,7 @@ inline matrix<C, R, T> inverse(const matrix<C, R, T>& value)
 /// @param value Specifies the matrix of which to take the inverse.
 ///
 /// @return The inverse of a matrix.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline matrix<C, R, T> affine_inverse(const matrix<C, R, T>& value)
 {
     return matrix_functions_details::affine_inverse_details(value);
@@ -393,7 +394,7 @@ inline matrix<C, R, T> affine_inverse(const matrix<C, R, T>& value)
 /// @param value Specifies the matrix of which to take the inverse.
 ///
 /// @return The matrix which is equivalent to `transpose(inverse(matrix))`.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline matrix<C, R, T> inverse_transpose(const matrix<C, R, T>& value)
 {
     return matrix_functions_details::inverse_transpose_details(value);

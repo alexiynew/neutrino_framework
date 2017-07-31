@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_MATH_RELATIONAL_FUNC_HPP
 #define FRAMEWORK_MATH_RELATIONAL_FUNC_HPP
 
+#include <common/common_types.hpp>
 #include <functional>
 #include <math/common_func.hpp>
 #include <math/matrix_type.hpp>
@@ -21,7 +22,7 @@ namespace relational_functions_details {
 /// @brief Realization of almost_equal function.
 /// @{
 template <typename T>
-inline bool almost_equal_details(const T& a, const T& b, int ulp, std::true_type)
+inline bool almost_equal_details(const T& a, const T& b, int32 ulp, std::true_type)
 {
     const auto scaled_epsilon = std::numeric_limits<T>::epsilon() * ::framework::math::abs(a + b) * static_cast<T>(ulp);
     const auto difference     = ::framework::math::abs(a - b);
@@ -29,13 +30,13 @@ inline bool almost_equal_details(const T& a, const T& b, int ulp, std::true_type
 }
 
 template <typename T>
-inline bool almost_equal_details(const T& a, const T& b, int, std::false_type)
+inline bool almost_equal_details(const T& a, const T& b, int32, std::false_type)
 {
     return a == b;
 }
 
-template <unsigned int N, typename T>
-inline bool almost_equal_details(const vector<N, T>& a, const vector<N, T>& b, int ulp = 0)
+template <uint32 N, typename T>
+inline bool almost_equal_details(const vector<N, T>& a, const vector<N, T>& b, int32 ulp = 0)
 {
     constexpr vector<N, bool> true_vector{true};
     return true_vector == transform(a, b, [ulp](const T& component_a, const T& component_b) {
@@ -43,10 +44,10 @@ inline bool almost_equal_details(const vector<N, T>& a, const vector<N, T>& b, i
            });
 }
 
-template <unsigned int C, unsigned int R, typename T>
-inline bool almost_equal_details(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int ulp = 0)
+template <uint32 C, uint32 R, typename T>
+inline bool almost_equal_details(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int32 ulp = 0)
 {
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         if (!almost_equal_details(a[i], b[i], ulp)) {
             return false;
         }
@@ -107,7 +108,7 @@ inline bool all_details(const vector<2, bool>& v)
 /// @param rhs Specifies the second vector to be used in the comparison operation.
 ///
 /// @return The boolean vector in which each element i is computed as `lhs[i] < rhs[i]`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, bool> less(const vector<N, T>& lhs, const vector<N, T>& rhs)
 {
     return transform(lhs, rhs, [](const T& a, const T& b) { return a < b; });
@@ -123,7 +124,7 @@ inline vector<N, bool> less(const vector<N, T>& lhs, const vector<N, T>& rhs)
 /// @param rhs Specifies the second vector to be used in the comparison operation.
 ///
 /// @return The boolean vector in which each element i is computed as `lhs[i] <= rhs[i]`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, bool> less_equal(const vector<N, T>& lhs, const vector<N, T>& rhs)
 {
     return transform(lhs, rhs, [](const T& a, const T& b) { return a <= b; });
@@ -139,7 +140,7 @@ inline vector<N, bool> less_equal(const vector<N, T>& lhs, const vector<N, T>& r
 /// @param rhs Specifies the second vector to be used in the comparison operation.
 ///
 /// @return The boolean vector in which each element i is computed as `lhs[i] < rhs[i]`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, bool> greater(const vector<N, T>& lhs, const vector<N, T>& rhs)
 {
     return transform(lhs, rhs, [](const T& a, const T& b) { return a > b; });
@@ -155,7 +156,7 @@ inline vector<N, bool> greater(const vector<N, T>& lhs, const vector<N, T>& rhs)
 /// @param rhs Specifies the second vector to be used in the comparison operation.
 ///
 /// @return The boolean vector in which each element i is computed as `lhs[i] <= rhs[i]`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, bool> greater_equal(const vector<N, T>& lhs, const vector<N, T>& rhs)
 {
     return transform(lhs, rhs, [](const T& a, const T& b) { return a >= b; });
@@ -171,7 +172,7 @@ inline vector<N, bool> greater_equal(const vector<N, T>& lhs, const vector<N, T>
 /// @param rhs Specifies the second vector to be used in the comparison operation.
 ///
 /// @return The boolean vector in which each element i is computed as `lhs[i] == rhs[i]`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, bool> equal(const vector<N, T>& lhs, const vector<N, T>& rhs)
 {
     return transform(lhs, rhs, std::equal_to<T>{});
@@ -187,7 +188,7 @@ inline vector<N, bool> equal(const vector<N, T>& lhs, const vector<N, T>& rhs)
 /// @param rhs Specifies the second vector to be used in the comparison operation.
 ///
 /// @return The boolean vector in which each element i is computed as `lhs[i] != rhs[i]`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, bool> not_equal(const vector<N, T>& lhs, const vector<N, T>& rhs)
 {
     return transform(lhs, rhs, std::not_equal_to<T>{});
@@ -207,8 +208,8 @@ inline vector<N, bool> not_equal(const vector<N, T>& lhs, const vector<N, T>& rh
 /// @param ulp Units in the last place.
 ///
 /// @return `true` if provided values are equal, `false` otherwise.
-template <typename T, typename std::enable_if<std::is_arithmetic<T>::value, int>::type = 0>
-inline bool almost_equal(const T& a, const T& b, int ulp = 0)
+template <typename T, typename std::enable_if<std::is_arithmetic<T>::value, int32>::type = 0>
+inline bool almost_equal(const T& a, const T& b, int32 ulp = 0)
 {
     return relational_functions_details::almost_equal_details(a, b, ulp, std::is_floating_point<T>{});
 }
@@ -223,8 +224,8 @@ inline bool almost_equal(const T& a, const T& b, int ulp = 0)
 /// @param ulp Units in the last place.
 ///
 /// @return `true` if provided vectors are equal, `false` otherwise.
-template <unsigned int N, typename T>
-inline bool almost_equal(const vector<N, T>& a, const vector<N, T>& b, int ulp = 0)
+template <uint32 N, typename T>
+inline bool almost_equal(const vector<N, T>& a, const vector<N, T>& b, int32 ulp = 0)
 {
     return relational_functions_details::almost_equal_details(a, b, ulp);
 }
@@ -239,8 +240,8 @@ inline bool almost_equal(const vector<N, T>& a, const vector<N, T>& b, int ulp =
 /// @param ulp Units in the last place.
 ///
 /// @return `true` if provided matrices are equal, `false` otherwise.
-template <unsigned int C, unsigned int R, typename T>
-inline bool almost_equal(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int ulp = 0)
+template <uint32 C, uint32 R, typename T>
+inline bool almost_equal(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int32 ulp = 0)
 {
     return relational_functions_details::almost_equal_details(a, b, ulp);
 }
@@ -254,7 +255,7 @@ inline bool almost_equal(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int
 /// @param value Specifies the vector to be used in the operation.
 ///
 /// @return The boolean vector in which each element i is computed as `!value[i]`.
-template <unsigned int N>
+template <uint32 N>
 inline vector<N, bool> logical_not(const vector<N, bool>& value)
 {
     return transform(value, [](const bool a) { return !a; });
@@ -270,7 +271,7 @@ inline vector<N, bool> logical_not(const vector<N, bool>& value)
 /// @param rhs Specifies the second vector to be used in the operation.
 ///
 /// @return The boolean vector in which each element i is computed as `lhs[i] && rhs[i]`.
-template <unsigned int N>
+template <uint32 N>
 inline vector<N, bool> logical_and(const vector<N, bool>& lhs, const vector<N, bool>& rhs)
 {
     return transform(lhs, rhs, [](const bool a, const bool b) { return a && b; });
@@ -286,7 +287,7 @@ inline vector<N, bool> logical_and(const vector<N, bool>& lhs, const vector<N, b
 /// @param rhs Specifies the second vector to be used in the operation.
 ///
 /// @return The boolean vector in which each element i is computed as `lhs[i] || rhs[i]`.
-template <unsigned int N>
+template <uint32 N>
 inline vector<N, bool> logical_or(const vector<N, bool>& lhs, const vector<N, bool>& rhs)
 {
     return transform(lhs, rhs, [](const bool a, const bool b) { return a || b; });
@@ -301,7 +302,7 @@ inline vector<N, bool> logical_or(const vector<N, bool>& lhs, const vector<N, bo
 /// @param value Specifies the vector to be tested for truth.
 ///
 /// @return `true` if any component of value are true.
-template <unsigned int N>
+template <uint32 N>
 inline bool any(const vector<N, bool>& value)
 {
     return relational_functions_details::any_details(value);
@@ -316,7 +317,7 @@ inline bool any(const vector<N, bool>& value)
 /// @param value Specifies the vector to be tested for truth.
 ///
 /// @return `true` if all components of value are true.
-template <unsigned int N>
+template <uint32 N>
 inline bool all(const vector<N, bool>& value)
 {
     return relational_functions_details::all_details(value);

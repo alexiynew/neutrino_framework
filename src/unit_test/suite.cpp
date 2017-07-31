@@ -56,7 +56,7 @@ void suite::add_test(function_type&& function, const std::string& name)
     m_tests.emplace_back(std::forward<function_type>(function), name);
 }
 
-void suite::test_failed(const std::string& file, int line, const std::string& message)
+void suite::test_failed(const std::string& file, int32 line, const std::string& message)
 {
     m_success = false;
     if (m_current_test != m_tests.end()) {

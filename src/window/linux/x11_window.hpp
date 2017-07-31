@@ -7,6 +7,7 @@
 #define FRAMEWORK_WINDOW_LINUX_X11_WINDOW_HPP
 
 #include <X11/Xlib.h>
+#include <common/common_types.hpp>
 #include <window/window_implementation.hpp>
 
 namespace framework {
@@ -21,8 +22,8 @@ public:
     void hide() override;
 
 private:
-    unsigned int m_width;
-    unsigned int m_height;
+    uint32 m_width;
+    uint32 m_height;
 
     Display* m_display;
     XID m_window;

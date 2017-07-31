@@ -8,6 +8,7 @@
 
 #include <functional>
 
+#include <common/common_types.hpp>
 #include <math/vector_type.hpp>
 
 namespace framework {
@@ -43,19 +44,19 @@ inline constexpr vector<3, T> combine(const vector<2, U>& first, const vector<3,
     return vector<3, T>(first, second.z);
 }
 
-template <unsigned int N, typename M, typename V>
+template <uint32 N, typename M, typename V>
 inline constexpr V get_column_details(M&& matrix, V&& vector, std::true_type) noexcept
 {
     return combine(std::forward<M>(matrix)[N], std::forward<V>(vector));
 }
 
-template <unsigned int N, typename M, typename V>
+template <uint32 N, typename M, typename V>
 inline constexpr V get_column_details(M&&, V&& vector, std::false_type) noexcept
 {
     return std::forward<V>(vector);
 }
 
-template <unsigned int N, unsigned int C, typename M, typename V>
+template <uint32 N, uint32 C, typename M, typename V>
 inline constexpr V get_column(M&& matrix, V&& vector) noexcept
 {
     return get_column_details<N>(std::forward<M>(matrix), std::forward<V>(vector), std::integral_constant<bool, (N < C)>{});
@@ -79,7 +80,7 @@ using common_type = vector_details::common_type<Args...>;
 /// @see matrix<4, 4, T>, matrix<4, 3, T>, matrix<4, 2, T>,
 ///      matrix<3, 4, T>, matrix<3, 3, T>, matrix<3, 2, T>,
 ///      matrix<2, 4, T>, matrix<2, 3, T>, matrix<2, 2, T>
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 struct matrix;
 
 /// @brief matrix<4, 4, T> type specialization.
@@ -304,7 +305,7 @@ struct matrix<4, 4, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -321,7 +322,7 @@ struct matrix<4, 4, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -330,12 +331,12 @@ struct matrix<4, 4, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -354,7 +355,7 @@ struct matrix<4, 4, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -363,7 +364,7 @@ struct matrix<4, 4, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[4];
@@ -499,7 +500,7 @@ struct matrix<4, 3, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -516,7 +517,7 @@ struct matrix<4, 3, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -525,12 +526,12 @@ struct matrix<4, 3, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -549,7 +550,7 @@ struct matrix<4, 3, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -558,7 +559,7 @@ struct matrix<4, 3, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[4];
@@ -664,7 +665,7 @@ struct matrix<4, 2, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -681,7 +682,7 @@ struct matrix<4, 2, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -690,12 +691,12 @@ struct matrix<4, 2, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -714,7 +715,7 @@ struct matrix<4, 2, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -723,7 +724,7 @@ struct matrix<4, 2, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[4];
@@ -915,7 +916,7 @@ struct matrix<3, 4, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -932,7 +933,7 @@ struct matrix<3, 4, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -941,12 +942,12 @@ struct matrix<3, 4, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -965,7 +966,7 @@ struct matrix<3, 4, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -974,7 +975,7 @@ struct matrix<3, 4, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[3];
@@ -1090,7 +1091,7 @@ struct matrix<3, 3, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -1107,7 +1108,7 @@ struct matrix<3, 3, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -1116,12 +1117,12 @@ struct matrix<3, 3, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -1140,7 +1141,7 @@ struct matrix<3, 3, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -1149,7 +1150,7 @@ struct matrix<3, 3, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[3];
@@ -1241,7 +1242,7 @@ struct matrix<3, 2, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -1258,7 +1259,7 @@ struct matrix<3, 2, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -1267,12 +1268,12 @@ struct matrix<3, 2, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -1291,7 +1292,7 @@ struct matrix<3, 2, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -1300,7 +1301,7 @@ struct matrix<3, 2, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[3];
@@ -1460,7 +1461,7 @@ struct matrix<2, 4, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -1477,7 +1478,7 @@ struct matrix<2, 4, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -1486,12 +1487,12 @@ struct matrix<2, 4, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -1510,7 +1511,7 @@ struct matrix<2, 4, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -1519,7 +1520,7 @@ struct matrix<2, 4, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[2];
@@ -1621,7 +1622,7 @@ struct matrix<2, 3, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -1638,7 +1639,7 @@ struct matrix<2, 3, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -1647,12 +1648,12 @@ struct matrix<2, 3, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -1671,7 +1672,7 @@ struct matrix<2, 3, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -1680,7 +1681,7 @@ struct matrix<2, 3, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[2];
@@ -1755,7 +1756,7 @@ struct matrix<2, 2, T> final
     /// @param other Matrix of integral or floating-point type.
     ///
     /// @note The remain components will be initialized as in identity matrix.
-    template <unsigned int C, unsigned int R, typename U>
+    template <uint32 C, uint32 R, typename U>
     explicit constexpr matrix(const matrix<C, R, U>& other);
 
     /// @brief Default assignment operator.
@@ -1772,7 +1773,7 @@ struct matrix<2, 2, T> final
     /// @return Reference to column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type& operator[](unsigned int index);
+    column_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -1781,12 +1782,12 @@ struct matrix<2, 2, T> final
     /// @return Reference to constant column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const column_type& operator[](unsigned int index) const;
+    const column_type& operator[](uint32 index) const;
 
     /// @brief Size of matrix.
     ///
     /// @return Count of columns in matrix.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -1805,7 +1806,7 @@ struct matrix<2, 2, T> final
     /// @return Copy of column at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    column_type column(unsigned int index) const noexcept;
+    column_type column(uint32 index) const noexcept;
 
     /// @brief Provides access to rows of the matrix.
     ///
@@ -1814,7 +1815,7 @@ struct matrix<2, 2, T> final
     /// @return Copy of row at index.
     ///
     /// @warning There is no size check. May cause memory access error.
-    row_type row(unsigned int index) const noexcept;
+    row_type row(uint32 index) const noexcept;
 
 private:
     column_type m_data[2];
@@ -1987,7 +1988,7 @@ inline constexpr matrix<4, 4, T>::matrix(const X0& x0, const Y0& y0, const vecto
 // clang-format on
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0, 0)),
@@ -2010,13 +2011,13 @@ inline matrix<4, 4, T>& matrix<4, 4, T>::operator=(const matrix<4, 4, T>& other)
 }
 
 template <typename T>
-inline typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](unsigned int index)
+inline typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](unsigned int index) const
+inline const typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -2025,7 +2026,7 @@ inline const typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](
 /// @name matrix<4, 4, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<4, 4, T>::size() const noexcept
+inline constexpr uint32 matrix<4, 4, T>::size() const noexcept
 {
     return 4;
 }
@@ -2043,13 +2044,13 @@ const typename matrix<4, 4, T>::value_type* matrix<4, 4, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<4, 4, T>::column_type matrix<4, 4, T>::column(unsigned int index) const noexcept
+inline typename matrix<4, 4, T>::column_type matrix<4, 4, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<4, 4, T>::row_type matrix<4, 4, T>::row(unsigned int index) const noexcept
+inline typename matrix<4, 4, T>::row_type matrix<4, 4, T>::row(uint32 index) const noexcept
 {
     return matrix<4, 4, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
@@ -2159,7 +2160,7 @@ inline constexpr matrix<4, 3, T>::matrix(const X0& x0, const vector<2, U0>& vect
 // clang-format on
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0)),
@@ -2182,13 +2183,13 @@ inline matrix<4, 3, T>& matrix<4, 3, T>::operator=(const matrix<4, 3, T>& other)
 }
 
 template <typename T>
-inline typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](unsigned int index)
+inline typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](unsigned int index) const
+inline const typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -2197,7 +2198,7 @@ inline const typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](
 /// @name matrix<4, 3, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<4, 3, T>::size() const noexcept
+inline constexpr uint32 matrix<4, 3, T>::size() const noexcept
 {
     return 4;
 }
@@ -2215,13 +2216,13 @@ const typename matrix<4, 3, T>::value_type* matrix<4, 3, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<4, 3, T>::column_type matrix<4, 3, T>::column(unsigned int index) const noexcept
+inline typename matrix<4, 3, T>::column_type matrix<4, 3, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<4, 3, T>::row_type matrix<4, 3, T>::row(unsigned int index) const noexcept
+inline typename matrix<4, 3, T>::row_type matrix<4, 3, T>::row(uint32 index) const noexcept
 {
     return matrix<4, 3, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
@@ -2305,7 +2306,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<2, U0>& column0,
 }
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1)),
@@ -2328,13 +2329,13 @@ inline matrix<4, 2, T>& matrix<4, 2, T>::operator=(const matrix<4, 2, T>& other)
 }
 
 template <typename T>
-inline typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](unsigned int index)
+inline typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](unsigned int index) const
+inline const typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -2343,7 +2344,7 @@ inline const typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](
 /// @name matrix<4, 2, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<4, 2, T>::size() const noexcept
+inline constexpr uint32 matrix<4, 2, T>::size() const noexcept
 {
     return 4;
 }
@@ -2361,13 +2362,13 @@ const typename matrix<4, 2, T>::value_type* matrix<4, 2, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<4, 2, T>::column_type matrix<4, 2, T>::column(unsigned int index) const noexcept
+inline typename matrix<4, 2, T>::column_type matrix<4, 2, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<4, 2, T>::row_type matrix<4, 2, T>::row(unsigned int index) const noexcept
+inline typename matrix<4, 2, T>::row_type matrix<4, 2, T>::row(uint32 index) const noexcept
 {
     return matrix<4, 2, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
@@ -2518,7 +2519,7 @@ inline constexpr matrix<3, 4, T>::matrix(const X0& x0, const Y0& y0, const vecto
 // clang-format on
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0, 0)),
@@ -2539,13 +2540,13 @@ inline matrix<3, 4, T>& matrix<3, 4, T>::operator=(const matrix<3, 4, T>& other)
 }
 
 template <typename T>
-inline typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](unsigned int index)
+inline typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](unsigned int index) const
+inline const typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -2554,7 +2555,7 @@ inline const typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](
 /// @name matrix<3, 4, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<3, 4, T>::size() const noexcept
+inline constexpr uint32 matrix<3, 4, T>::size() const noexcept
 {
     return 3;
 }
@@ -2572,13 +2573,13 @@ const typename matrix<3, 4, T>::value_type* matrix<3, 4, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<3, 4, T>::column_type matrix<3, 4, T>::column(unsigned int index) const noexcept
+inline typename matrix<3, 4, T>::column_type matrix<3, 4, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<3, 4, T>::row_type matrix<3, 4, T>::row(unsigned int index) const noexcept
+inline typename matrix<3, 4, T>::row_type matrix<3, 4, T>::row(uint32 index) const noexcept
 {
     return matrix<3, 4, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
@@ -2681,7 +2682,7 @@ inline constexpr matrix<3, 3, T>::matrix(const X0& x0, const vector<2, U0>& vect
 // clang-format on
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0)),
@@ -2702,13 +2703,13 @@ inline matrix<3, 3, T>& matrix<3, 3, T>::operator=(const matrix<3, 3, T>& other)
 }
 
 template <typename T>
-inline typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](unsigned int index)
+inline typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](unsigned int index) const
+inline const typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -2717,7 +2718,7 @@ inline const typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](
 /// @name matrix<3, 3, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<3, 3, T>::size() const noexcept
+inline constexpr uint32 matrix<3, 3, T>::size() const noexcept
 {
     return 3;
 }
@@ -2735,13 +2736,13 @@ const typename matrix<3, 3, T>::value_type* matrix<3, 3, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<3, 3, T>::column_type matrix<3, 3, T>::column(unsigned int index) const noexcept
+inline typename matrix<3, 3, T>::column_type matrix<3, 3, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<3, 3, T>::row_type matrix<3, 3, T>::row(unsigned int index) const noexcept
+inline typename matrix<3, 3, T>::row_type matrix<3, 3, T>::row(uint32 index) const noexcept
 {
     return matrix<3, 3, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
@@ -2813,7 +2814,7 @@ inline constexpr matrix<3, 2, T>::matrix(const vector<2, U0>& column0, const vec
 }
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1)),
@@ -2834,13 +2835,13 @@ inline matrix<3, 2, T>& matrix<3, 2, T>::operator=(const matrix<3, 2, T>& other)
 }
 
 template <typename T>
-inline typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](unsigned int index)
+inline typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](unsigned int index) const
+inline const typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -2849,7 +2850,7 @@ inline const typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](
 /// @name matrix<3, 2, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<3, 2, T>::size() const noexcept
+inline constexpr uint32 matrix<3, 2, T>::size() const noexcept
 {
     return 3;
 }
@@ -2867,13 +2868,13 @@ const typename matrix<3, 2, T>::value_type* matrix<3, 2, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<3, 2, T>::column_type matrix<3, 2, T>::column(unsigned int index) const noexcept
+inline typename matrix<3, 2, T>::column_type matrix<3, 2, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<3, 2, T>::row_type matrix<3, 2, T>::row(unsigned int index) const noexcept
+inline typename matrix<3, 2, T>::row_type matrix<3, 2, T>::row(uint32 index) const noexcept
 {
     return matrix<3, 2, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
@@ -3000,7 +3001,7 @@ inline constexpr matrix<2, 4, T>::matrix(const X0& x0, const Y0& y0, const vecto
 // clang-format on
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0, 0))}
@@ -3019,13 +3020,13 @@ inline matrix<2, 4, T>& matrix<2, 4, T>::operator=(const matrix<2, 4, T>& other)
 }
 
 template <typename T>
-inline typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](unsigned int index)
+inline typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](unsigned int index) const
+inline const typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -3034,7 +3035,7 @@ inline const typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](
 /// @name matrix<2, 4, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<2, 4, T>::size() const noexcept
+inline constexpr uint32 matrix<2, 4, T>::size() const noexcept
 {
     return 2;
 }
@@ -3052,13 +3053,13 @@ const typename matrix<2, 4, T>::value_type* matrix<2, 4, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<2, 4, T>::column_type matrix<2, 4, T>::column(unsigned int index) const noexcept
+inline typename matrix<2, 4, T>::column_type matrix<2, 4, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<2, 4, T>::row_type matrix<2, 4, T>::row(unsigned int index) const noexcept
+inline typename matrix<2, 4, T>::row_type matrix<2, 4, T>::row(uint32 index) const noexcept
 {
     return matrix<2, 4, T>::row_type(m_data[0][index], m_data[1][index]);
 }
@@ -3144,7 +3145,7 @@ inline constexpr matrix<2, 3, T>::matrix(const X0& x0, const vector<2, U0>& vect
 // clang-format on
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0))}
@@ -3163,13 +3164,13 @@ inline matrix<2, 3, T>& matrix<2, 3, T>::operator=(const matrix<2, 3, T>& other)
 }
 
 template <typename T>
-inline typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](unsigned int index)
+inline typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](unsigned int index) const
+inline const typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -3178,7 +3179,7 @@ inline const typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](
 /// @name matrix<2, 3, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<2, 3, T>::size() const noexcept
+inline constexpr uint32 matrix<2, 3, T>::size() const noexcept
 {
     return 2;
 }
@@ -3196,13 +3197,13 @@ const typename matrix<2, 3, T>::value_type* matrix<2, 3, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<2, 3, T>::column_type matrix<2, 3, T>::column(unsigned int index) const noexcept
+inline typename matrix<2, 3, T>::column_type matrix<2, 3, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<2, 3, T>::row_type matrix<2, 3, T>::row(unsigned int index) const noexcept
+inline typename matrix<2, 3, T>::row_type matrix<2, 3, T>::row(uint32 index) const noexcept
 {
     return matrix<2, 3, T>::row_type(m_data[0][index], m_data[1][index]);
 }
@@ -3271,7 +3272,7 @@ inline constexpr matrix<2, 2, T>::matrix(const vector<2, U0>& column0, const vec
 }
 
 template <typename T>
-template <unsigned int C, unsigned int R, typename U>
+template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<C, R, U>& other)
     : m_data{static_cast<column_type>(other[0]), static_cast<column_type>(other[1])}
 {
@@ -3289,13 +3290,13 @@ inline matrix<2, 2, T>& matrix<2, 2, T>::operator=(const matrix<2, 2, T>& other)
 }
 
 template <typename T>
-inline typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](unsigned int index)
+inline typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](uint32 index)
 {
     return m_data[index];
 }
 
 template <typename T>
-inline const typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](unsigned int index) const
+inline const typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](uint32 index) const
 {
     return m_data[index];
 }
@@ -3304,7 +3305,7 @@ inline const typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](
 /// @name matrix<2, 2, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int matrix<2, 2, T>::size() const noexcept
+inline constexpr uint32 matrix<2, 2, T>::size() const noexcept
 {
     return 2;
 }
@@ -3322,13 +3323,13 @@ const typename matrix<2, 2, T>::value_type* matrix<2, 2, T>::data() const noexce
 }
 
 template <typename T>
-inline typename matrix<2, 2, T>::column_type matrix<2, 2, T>::column(unsigned int index) const noexcept
+inline typename matrix<2, 2, T>::column_type matrix<2, 2, T>::column(uint32 index) const noexcept
 {
     return m_data[index];
 }
 
 template <typename T>
-inline typename matrix<2, 2, T>::row_type matrix<2, 2, T>::row(unsigned int index) const noexcept
+inline typename matrix<2, 2, T>::row_type matrix<2, 2, T>::row(uint32 index) const noexcept
 {
     return matrix<2, 2, T>::row_type(m_data[0][index], m_data[1][index]);
 }
@@ -3346,7 +3347,7 @@ inline typename matrix<2, 2, T>::row_type matrix<2, 2, T>::row(unsigned int inde
 /// @param matrix Matrix to return.
 ///
 /// @return The same matrix.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline matrix<C, R, T> operator+(const matrix<C, R, T>& matrix)
 {
     return matrix;
@@ -3357,7 +3358,7 @@ inline matrix<C, R, T> operator+(const matrix<C, R, T>& matrix)
 /// @param matrix Matrix to invert.
 ///
 /// @return Matrix witch is equal to `matrix * -1`.
-template <unsigned int C, unsigned int R, typename T>
+template <uint32 C, uint32 R, typename T>
 inline matrix<C, R, T> operator-(matrix<C, R, T> matrix)
 {
     return matrix *= -T{1};
@@ -3369,10 +3370,10 @@ inline matrix<C, R, T> operator-(matrix<C, R, T> matrix)
 /// @param rhs Second addend.
 ///
 /// @return Reference to component-wise sum of two matrices.
-template <unsigned int C, unsigned int R, typename T, typename U>
+template <uint32 C, uint32 R, typename T, typename U>
 inline matrix<C, R, T>& operator+=(matrix<C, R, T>& lhs, const matrix<C, R, U>& rhs)
 {
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         lhs[i] += rhs[i];
     }
     return lhs;
@@ -3384,10 +3385,10 @@ inline matrix<C, R, T>& operator+=(matrix<C, R, T>& lhs, const matrix<C, R, U>& 
 /// @param rhs Vector to subtract.
 ///
 /// @return Reference to component-wise difference of two matrices.
-template <unsigned int C, unsigned int R, typename T, typename U>
+template <uint32 C, uint32 R, typename T, typename U>
 inline matrix<C, R, T>& operator-=(matrix<C, R, T>& lhs, const matrix<C, R, U>& rhs)
 {
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         lhs[i] -= rhs[i];
     }
     return lhs;
@@ -3399,7 +3400,7 @@ inline matrix<C, R, T>& operator-=(matrix<C, R, T>& lhs, const matrix<C, R, U>& 
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to product of two matrices.
-template <unsigned int C, unsigned int R, typename T, typename U>
+template <uint32 C, uint32 R, typename T, typename U>
 inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const matrix<C, C, U>& rhs)
 {
     return (lhs = lhs * rhs);
@@ -3411,10 +3412,10 @@ inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const matrix<C, C, U>& 
 /// @param rhs Second addend.
 ///
 /// @return Reference to component-wise sum of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+template <uint32 C, uint32 R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline matrix<C, R, T>& operator+=(matrix<C, R, T>& lhs, const U& rhs)
 {
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         lhs[i] += rhs;
     }
     return lhs;
@@ -3426,10 +3427,10 @@ inline matrix<C, R, T>& operator+=(matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Reference to component-wise difference of the matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+template <uint32 C, uint32 R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline matrix<C, R, T>& operator-=(matrix<C, R, T>& lhs, const U& rhs)
 {
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         lhs[i] -= rhs;
     }
     return lhs;
@@ -3441,10 +3442,10 @@ inline matrix<C, R, T>& operator-=(matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to component-wise product of the matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+template <uint32 C, uint32 R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const U& rhs)
 {
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         lhs[i] *= rhs;
     }
     return lhs;
@@ -3456,10 +3457,10 @@ inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Divider scalar value.
 ///
 /// @return Reference to component-wise quotient of the matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+template <uint32 C, uint32 R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline matrix<C, R, T>& operator/=(matrix<C, R, T>& lhs, const U& rhs)
 {
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         lhs[i] /= rhs;
     }
     return lhs;
@@ -3475,7 +3476,7 @@ inline matrix<C, R, T>& operator/=(matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Second addend.
 ///
 /// @return Component-wise sum of two matrices.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator+(const matrix<C, R, T>& lhs, const matrix<C, R, U>& rhs) noexcept
 {
     matrix<C, R, RT> temp{lhs};
@@ -3488,7 +3489,7 @@ inline const matrix<C, R, RT> operator+(const matrix<C, R, T>& lhs, const matrix
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Component-wise difference of two matrices.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator-(const matrix<C, R, T>& lhs, const matrix<C, R, U>& rhs) noexcept
 {
     matrix<C, R, RT> temp{lhs};
@@ -3501,14 +3502,14 @@ inline const matrix<C, R, RT> operator-(const matrix<C, R, T>& lhs, const matrix
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Product of two matrices.
-template <unsigned int C, unsigned int R, unsigned int N, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, uint32 N, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<N, R, RT> operator*(const matrix<C, R, T>& lhs, const matrix<N, C, U>& rhs) noexcept
 {
     matrix<N, R, RT> temp(0);
 
-    for (unsigned int n = 0; n < N; ++n) {
-        for (unsigned int c = 0; c < C; ++c) {
-            for (unsigned int r = 0; r < R; ++r) {
+    for (uint32 n = 0; n < N; ++n) {
+        for (uint32 c = 0; c < C; ++c) {
+            for (uint32 r = 0; r < R; ++r) {
                 temp[n][r] += lhs[c][r] * rhs[n][c];
             }
         }
@@ -3523,13 +3524,13 @@ inline const matrix<N, R, RT> operator*(const matrix<C, R, T>& lhs, const matrix
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Product of vector and matrix.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const vector<C, RT> operator*(const vector<R, T>& lhs, const matrix<C, R, U>& rhs) noexcept
 {
     vector<C, RT> temp(0);
 
-    for (unsigned int c = 0; c < C; ++c) {
-        for (unsigned int r = 0; r < R; ++r) {
+    for (uint32 c = 0; c < C; ++c) {
+        for (uint32 r = 0; r < R; ++r) {
             temp[c] += lhs[r] * rhs[c][r];
         }
     }
@@ -3543,13 +3544,13 @@ inline const vector<C, RT> operator*(const vector<R, T>& lhs, const matrix<C, R,
 /// @param rhs Vector of floating-point or integral type.
 ///
 /// @return Product of vector and matrix.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const vector<R, RT> operator*(const matrix<C, R, T>& lhs, const vector<C, U>& rhs) noexcept
 {
     vector<R, RT> temp(0);
 
-    for (unsigned int r = 0; r < R; ++r) {
-        for (unsigned int c = 0; c < C; ++c) {
+    for (uint32 r = 0; r < R; ++r) {
+        for (uint32 c = 0; c < C; ++c) {
             temp[r] += lhs[c][r] * rhs[c];
         }
     }
@@ -3567,7 +3568,7 @@ inline const vector<R, RT> operator*(const matrix<C, R, T>& lhs, const vector<C,
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise sum of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator+(const matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     matrix<C, R, RT> temp{lhs};
@@ -3580,7 +3581,7 @@ inline const matrix<C, R, RT> operator+(const matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise difference of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator-(const matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     matrix<C, R, RT> temp{lhs};
@@ -3593,7 +3594,7 @@ inline const matrix<C, R, RT> operator-(const matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise product of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator*(const matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     matrix<C, R, RT> temp{lhs};
@@ -3606,7 +3607,7 @@ inline const matrix<C, R, RT> operator*(const matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise quotient of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator/(const matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     matrix<C, R, RT> temp{lhs};
@@ -3623,12 +3624,12 @@ inline const matrix<C, R, RT> operator/(const matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise sum of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator+(const T& lhs, const matrix<C, R, U>& rhs) noexcept
 {
     matrix<C, R, RT> temp{0};
 
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         temp[i] = lhs + rhs[i];
     }
 
@@ -3641,12 +3642,12 @@ inline const matrix<C, R, RT> operator+(const T& lhs, const matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise difference of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator-(const T& lhs, const matrix<C, R, U>& rhs) noexcept
 {
     matrix<C, R, RT> temp{0};
 
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         temp[i] = lhs - rhs[i];
     }
 
@@ -3659,12 +3660,12 @@ inline const matrix<C, R, RT> operator-(const T& lhs, const matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise product of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator*(const T& lhs, const matrix<C, R, U>& rhs) noexcept
 {
     matrix<C, R, RT> temp{0};
 
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         temp[i] = lhs * rhs[i];
     }
 
@@ -3677,12 +3678,12 @@ inline const matrix<C, R, RT> operator*(const T& lhs, const matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise quotient of matrix and scalar value.
-template <unsigned int C, unsigned int R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
+template <uint32 C, uint32 R, typename T, typename U, typename RT = typename matrix_details::common_type<T, U>::type>
 inline const matrix<C, R, RT> operator/(const T& lhs, const matrix<C, R, U>& rhs) noexcept
 {
     matrix<C, R, RT> temp{0};
 
-    for (unsigned int i = 0; i < C; ++i) {
+    for (uint32 i = 0; i < C; ++i) {
         temp[i] = lhs / rhs[i];
     }
 
@@ -3699,7 +3700,7 @@ inline const matrix<C, R, RT> operator/(const T& lhs, const matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline constexpr bool operator==(const matrix<4, R, T>& lhs, const matrix<4, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] == rhs[2] && lhs[3] == rhs[3];
@@ -3711,7 +3712,7 @@ inline constexpr bool operator==(const matrix<4, R, T>& lhs, const matrix<4, R, 
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline constexpr bool operator==(const matrix<3, R, T>& lhs, const matrix<3, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1] && lhs[2] == rhs[2];
@@ -3723,7 +3724,7 @@ inline constexpr bool operator==(const matrix<3, R, T>& lhs, const matrix<3, R, 
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline constexpr bool operator==(const matrix<2, R, T>& lhs, const matrix<2, R, T>& rhs)
 {
     return lhs[0] == rhs[0] && lhs[1] == rhs[1];
@@ -3735,7 +3736,7 @@ inline constexpr bool operator==(const matrix<2, R, T>& lhs, const matrix<2, R, 
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return `true` if lhs isn't equal rhs, otherwise `false`.
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline constexpr bool operator!=(const matrix<4, R, T>& lhs, const matrix<4, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]) || (lhs[2] != rhs[2]) || (lhs[3] != rhs[3]);
@@ -3747,7 +3748,7 @@ inline constexpr bool operator!=(const matrix<4, R, T>& lhs, const matrix<4, R, 
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return `true` if lhs isn't equal rhs, otherwise `false`.
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline constexpr bool operator!=(const matrix<3, R, T>& lhs, const matrix<3, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]) || (lhs[2] != rhs[2]);
@@ -3759,7 +3760,7 @@ inline constexpr bool operator!=(const matrix<3, R, T>& lhs, const matrix<3, R, 
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return `true` if lhs isn't equal rhs, otherwise `false`.
-template <unsigned int R, typename T>
+template <uint32 R, typename T>
 inline constexpr bool operator!=(const matrix<2, R, T>& lhs, const matrix<2, R, T>& rhs)
 {
     return (lhs[0] != rhs[0]) || (lhs[1] != rhs[1]);

@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
+#include <common/common_types.hpp>
 #include <functional>
 
 namespace framework {
@@ -93,7 +94,7 @@ using common_type = typename std::enable_if<are_all_arithmetic<Args...>::value, 
 
 /// @brief Implementation of transform function.
 /// @{
-template <unsigned int N>
+template <uint32 N>
 struct transform_details;
 
 /// @brief Implementation of transform function.
@@ -152,7 +153,7 @@ struct transform_details<2>
 /// @brief Vector template declaration.
 ///
 /// @see vector<4, T>, vector<3, T>, vector<2, T>
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 struct vector;
 
 /// @brief Vector<4, T> type specialization.
@@ -280,7 +281,7 @@ struct vector<4, T> final
     /// @return Reference to component of vector.
     ///
     /// @warning There is no size check. May cause memory access error.
-    value_type& operator[](unsigned int index);
+    value_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -289,12 +290,12 @@ struct vector<4, T> final
     /// @return Reference to constant component of vector.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const value_type& operator[](unsigned int index) const;
+    const value_type& operator[](uint32 index) const;
 
     /// @brief Size of vector.
     ///
     /// @return Count of components in vector.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -402,7 +403,7 @@ struct vector<3, T> final
     /// @return Reference to component of vector.
     ///
     /// @warning There is no size check. May cause memory access error.
-    value_type& operator[](unsigned int index);
+    value_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -411,12 +412,12 @@ struct vector<3, T> final
     /// @return Reference to constant component of vector.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const value_type& operator[](unsigned int index) const;
+    const value_type& operator[](uint32 index) const;
 
     /// @brief Size of vector.
     ///
     /// @return Count of components in vector.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -506,7 +507,7 @@ struct vector<2, T> final
     /// @return Reference to component of vector.
     ///
     /// @warning There is no size check. May cause memory access error.
-    value_type& operator[](unsigned int index);
+    value_type& operator[](uint32 index);
 
     /// @brief Const access operator.
     ///
@@ -515,12 +516,12 @@ struct vector<2, T> final
     /// @return Reference to constant component of vector.
     ///
     /// @warning There is no size check. May cause memory access error.
-    const value_type& operator[](unsigned int index) const;
+    const value_type& operator[](uint32 index) const;
 
     /// @brief Size of vector.
     ///
     /// @return Count of components in vector.
-    constexpr unsigned int size() const noexcept;
+    constexpr uint32 size() const noexcept;
 
     /// @brief Provides direct access to internal content.
     ///
@@ -648,13 +649,13 @@ template <typename T>
 inline vector<4, T>& vector<4, T>::operator=(const vector<4, T>&) noexcept = default;
 
 template <typename T>
-inline typename vector<4, T>::value_type& vector<4, T>::operator[](unsigned int index)
+inline typename vector<4, T>::value_type& vector<4, T>::operator[](uint32 index)
 {
     return data()[index];
 }
 
 template <typename T>
-inline const typename vector<4, T>::value_type& vector<4, T>::operator[](unsigned int index) const
+inline const typename vector<4, T>::value_type& vector<4, T>::operator[](uint32 index) const
 {
     return data()[index];
 }
@@ -663,7 +664,7 @@ inline const typename vector<4, T>::value_type& vector<4, T>::operator[](unsigne
 /// @name vector<4, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int vector<4, T>::size() const noexcept
+inline constexpr uint32 vector<4, T>::size() const noexcept
 {
     return 4;
 }
@@ -760,13 +761,13 @@ template <typename T>
 inline vector<3, T>& vector<3, T>::operator=(const vector<3, T>&) noexcept = default;
 
 template <typename T>
-inline typename vector<3, T>::value_type& vector<3, T>::operator[](unsigned int index)
+inline typename vector<3, T>::value_type& vector<3, T>::operator[](uint32 index)
 {
     return data()[index];
 }
 
 template <typename T>
-inline const typename vector<3, T>::value_type& vector<3, T>::operator[](unsigned int index) const
+inline const typename vector<3, T>::value_type& vector<3, T>::operator[](uint32 index) const
 {
     return data()[index];
 }
@@ -775,7 +776,7 @@ inline const typename vector<3, T>::value_type& vector<3, T>::operator[](unsigne
 /// @name vector<3, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int vector<3, T>::size() const noexcept
+inline constexpr uint32 vector<3, T>::size() const noexcept
 {
     return 3;
 }
@@ -855,13 +856,13 @@ template <typename T>
 inline vector<2, T>& vector<2, T>::operator=(const vector<2, T>&) noexcept = default;
 
 template <typename T>
-inline typename vector<2, T>::value_type& vector<2, T>::operator[](unsigned int index)
+inline typename vector<2, T>::value_type& vector<2, T>::operator[](uint32 index)
 {
     return data()[index];
 }
 
 template <typename T>
-inline const typename vector<2, T>::value_type& vector<2, T>::operator[](unsigned int index) const
+inline const typename vector<2, T>::value_type& vector<2, T>::operator[](uint32 index) const
 {
     return data()[index];
 }
@@ -870,7 +871,7 @@ inline const typename vector<2, T>::value_type& vector<2, T>::operator[](unsigne
 /// @name vector<2, T> methods.
 /// @{
 template <typename T>
-inline constexpr unsigned int vector<2, T>::size() const noexcept
+inline constexpr uint32 vector<2, T>::size() const noexcept
 {
     return 2;
 }
@@ -900,7 +901,7 @@ inline const typename vector<2, T>::value_type* vector<2, T>::data() const noexc
 /// @param vector Vector to return.
 ///
 /// @return The same vector.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> operator+(const vector<N, T>& vector) noexcept
 {
     return vector;
@@ -911,7 +912,7 @@ inline vector<N, T> operator+(const vector<N, T>& vector) noexcept
 /// @param vector Vector to invert.
 ///
 /// @return Inverted version of vector.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> operator-(vector<N, T> vector) noexcept
 {
     return vector *= -T{1};
@@ -923,10 +924,10 @@ inline vector<N, T> operator-(vector<N, T> vector) noexcept
 /// @param rhs Second addend.
 ///
 /// @return Reference to sum of two vectors.
-template <unsigned int N, typename T, typename U>
+template <uint32 N, typename T, typename U>
 inline vector<N, T>& operator+=(vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
-    for (unsigned int i = 0; i < N; ++i) {
+    for (uint32 i = 0; i < N; ++i) {
         lhs[i] += vector_details::cast_to<T>::from(rhs[i]);
     }
 
@@ -939,10 +940,10 @@ inline vector<N, T>& operator+=(vector<N, T>& lhs, const vector<N, U>& rhs) noex
 /// @param rhs Vector to subtract.
 ///
 /// @return Reference to difference of two vectors.
-template <unsigned int N, typename T, typename U>
+template <uint32 N, typename T, typename U>
 inline vector<N, T>& operator-=(vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
-    for (unsigned int i = 0; i < N; ++i) {
+    for (uint32 i = 0; i < N; ++i) {
         lhs[i] -= vector_details::cast_to<T>::from(rhs[i]);
     }
 
@@ -955,10 +956,10 @@ inline vector<N, T>& operator-=(vector<N, T>& lhs, const vector<N, U>& rhs) noex
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to product of two vectors.
-template <unsigned int N, typename T, typename U>
+template <uint32 N, typename T, typename U>
 inline vector<N, T>& operator*=(vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
-    for (unsigned int i = 0; i < N; ++i) {
+    for (uint32 i = 0; i < N; ++i) {
         lhs[i] *= vector_details::cast_to<T>::from(rhs[i]);
     }
 
@@ -971,10 +972,10 @@ inline vector<N, T>& operator*=(vector<N, T>& lhs, const vector<N, U>& rhs) noex
 /// @param rhs Divider vector.
 ///
 /// @return Reference to quotient of two vectors.
-template <unsigned int N, typename T, typename U>
+template <uint32 N, typename T, typename U>
 inline vector<N, T>& operator/=(vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
-    for (unsigned int i = 0; i < N; ++i) {
+    for (uint32 i = 0; i < N; ++i) {
         lhs[i] /= vector_details::cast_to<T>::from(rhs[i]);
     }
 
@@ -987,10 +988,10 @@ inline vector<N, T>& operator/=(vector<N, T>& lhs, const vector<N, U>& rhs) noex
 /// @param rhs Second addend.
 ///
 /// @return Reference to sum of vector and scalar value.
-template <unsigned int N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+template <uint32 N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline vector<N, T>& operator+=(vector<N, T>& lhs, const U& rhs) noexcept
 {
-    for (unsigned int i = 0; i < N; ++i) {
+    for (uint32 i = 0; i < N; ++i) {
         lhs[i] += vector_details::cast_to<T>::from(rhs);
     }
 
@@ -1003,10 +1004,10 @@ inline vector<N, T>& operator+=(vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Reference to difference of vector and scalar value.
-template <unsigned int N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+template <uint32 N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline vector<N, T>& operator-=(vector<N, T>& lhs, const U& rhs) noexcept
 {
-    for (unsigned int i = 0; i < N; ++i) {
+    for (uint32 i = 0; i < N; ++i) {
         lhs[i] -= vector_details::cast_to<T>::from(rhs);
     }
 
@@ -1019,10 +1020,10 @@ inline vector<N, T>& operator-=(vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to product of vector and scalar value.
-template <unsigned int N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+template <uint32 N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline vector<N, T>& operator*=(vector<N, T>& lhs, const U& rhs) noexcept
 {
-    for (unsigned int i = 0; i < N; ++i) {
+    for (uint32 i = 0; i < N; ++i) {
         lhs[i] *= vector_details::cast_to<T>::from(rhs);
     }
 
@@ -1035,10 +1036,10 @@ inline vector<N, T>& operator*=(vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Divider scalar value.
 ///
 /// @return Reference to quotient of vector and scalar value.
-template <unsigned int N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int>::type = 0>
+template <uint32 N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs) noexcept
 {
-    for (unsigned int i = 0; i < N; ++i) {
+    for (uint32 i = 0; i < N; ++i) {
         lhs[i] /= vector_details::cast_to<T>::from(rhs);
     }
 
@@ -1055,7 +1056,7 @@ inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Second addend.
 ///
 /// @return Sum of two vectors.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1068,7 +1069,7 @@ inline const vector<N, R> operator+(const vector<N, T>& lhs, const vector<N, U>&
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Difference of two vectors.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1081,7 +1082,7 @@ inline const vector<N, R> operator-(const vector<N, T>& lhs, const vector<N, U>&
 /// @param rhs Second multiplier.
 ///
 /// @return Product of two vectors.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1094,7 +1095,7 @@ inline const vector<N, R> operator*(const vector<N, T>& lhs, const vector<N, U>&
 /// @param rhs Divider vector.
 ///
 /// @return Quotient of two vectors.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1111,7 +1112,7 @@ inline const vector<N, R> operator/(const vector<N, T>& lhs, const vector<N, U>&
 /// @param rhs Second addend.
 ///
 /// @return Sum of vector and scalar value.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const vector<N, T>& lhs, const U& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1124,7 +1125,7 @@ inline const vector<N, R> operator+(const vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Difference of vector and scalar value.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const vector<N, T>& lhs, const U& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1137,7 +1138,7 @@ inline const vector<N, R> operator-(const vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Second multiplier.
 ///
 /// @return Product of vector and scalar value.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const vector<N, T>& lhs, const U& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1150,7 +1151,7 @@ inline const vector<N, R> operator*(const vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Divider scalar value.
 ///
 /// @return Quotient of vector and scalar value.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const vector<N, T>& lhs, const U& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1167,7 +1168,7 @@ inline const vector<N, R> operator/(const vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Second addend.
 ///
 /// @return Sum of scalar value and vector.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const T& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1180,7 +1181,7 @@ inline const vector<N, R> operator+(const T& lhs, const vector<N, U>& rhs) noexc
 /// @param rhs Vector to subtract.
 ///
 /// @return Difference of scalar value and vector.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const T& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1193,7 +1194,7 @@ inline const vector<N, R> operator-(const T& lhs, const vector<N, U>& rhs) noexc
 /// @param rhs Second multiplier.
 ///
 /// @return Product of scalar value and vector.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const T& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1206,7 +1207,7 @@ inline const vector<N, R> operator*(const T& lhs, const vector<N, U>& rhs) noexc
 /// @param rhs Divider vector.
 ///
 /// @return Quotient of scalar value and vector.
-template <unsigned int N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const T& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1307,7 +1308,7 @@ inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rh
 /// @param function Function to apply.
 ///
 /// @return New vector.
-template <unsigned int N, typename T, typename F, typename R = typename std::result_of<F(const T&)>::type>
+template <uint32 N, typename T, typename F, typename R = typename std::result_of<F(const T&)>::type>
 inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& function) noexcept
 {
     return vector_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), value);
@@ -1322,7 +1323,7 @@ inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& function)
 /// @param function Function to apply.
 ///
 /// @return New vector.
-template <unsigned int N, typename T, typename U, typename F, typename R = typename std::result_of<F(const T&, const U&)>::type>
+template <uint32 N, typename T, typename U, typename F, typename R = typename std::result_of<F(const T&, const U&)>::type>
 inline constexpr vector<N, R> transform(const vector<N, T>& first, const vector<N, U>& second, F&& function) noexcept
 {
     return vector_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), first, second);

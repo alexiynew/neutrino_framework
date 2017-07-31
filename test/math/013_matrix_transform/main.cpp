@@ -1,6 +1,7 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
+using namespace framework;
 using namespace framework::math;
 
 class transform_2d_function_tests : public framework::unit_test::suite
@@ -434,7 +435,7 @@ private:
         };
         // clang-format on
 
-        const matrix4f projection = perspective(float(half_pi), 1.0f, 1.0f, 2.0f);
+        const matrix4f projection = perspective(real32(half_pi), 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(projection == target, "Perspective projection matrix is not correct.");
 
@@ -449,8 +450,8 @@ private:
 
     void perspective_fov_function()
     {
-        const matrix4f target     = perspective(float(half_pi), 1.0f, 1.0f, 2.0f);
-        const matrix4f projection = perspective_fov(float(half_pi), 1.0f, 1.0f, 1.0f, 2.0f);
+        const matrix4f target     = perspective(real32(half_pi), 1.0f, 1.0f, 2.0f);
+        const matrix4f projection = perspective_fov(real32(half_pi), 1.0f, 1.0f, 1.0f, 2.0f);
 
         TEST_ASSERT(projection == target, "Perspective_fov projection matrix is not correct.");
     }
@@ -466,7 +467,7 @@ private:
         };
         // clang-format on
 
-        const matrix4f projection = infinite_perspective(float(half_pi), 1.0f, 1.0f);
+        const matrix4f projection = infinite_perspective(real32(half_pi), 1.0f, 1.0f);
 
         TEST_ASSERT(almost_equal(projection, target, 1), "Infinite perspective projection matrix is not correct.");
 
@@ -499,14 +500,14 @@ public:
 private:
     void project_function()
     {
-        const float near = 1.0f;
-        const float far  = 10.0f;
+        const real32 near = 1.0f;
+        const real32 far  = 10.0f;
 
-        const float width  = 480.0f;
-        const float height = 320.0f;
+        const real32 width  = 480.0f;
+        const real32 height = 320.0f;
 
         const matrix4f model;
-        const matrix4f projection = perspective_fov(float(half_pi), width, height, near, far);
+        const matrix4f projection = perspective_fov(real32(half_pi), width, height, near, far);
 
         const vector4f viewport{0, 0, width, height};
 
@@ -537,14 +538,14 @@ private:
 
     void unproject_function()
     {
-        const float near = 1.0f;
-        const float far  = 10.0f;
+        const real32 near = 1.0f;
+        const real32 far  = 10.0f;
 
-        const float width  = 480.0f;
-        const float height = 320.0f;
+        const real32 width  = 480.0f;
+        const real32 height = 320.0f;
 
         const matrix4f model;
-        const matrix4f projection = perspective_fov(float(half_pi), width, height, near, far);
+        const matrix4f projection = perspective_fov(real32(half_pi), width, height, near, far);
 
         const vector4f viewport{0, 0, width, height};
 
@@ -584,8 +585,8 @@ private:
         };
         // clang-format on
 
-        const float width  = 480.0f;
-        const float height = 320.0f;
+        const real32 width  = 480.0f;
+        const real32 height = 320.0f;
 
         const vector4f viewport{0, 0, width, height};
 

@@ -7,6 +7,7 @@
 #define FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_HPP
 
 #include <cmath>
+#include <common/common_types.hpp>
 #include <math/constants.hpp>
 #include <math/vector_type.hpp>
 
@@ -46,7 +47,7 @@ inline T radians(const T& degrees)
 /// @param value Vector of floating-point or integral type.
 ///
 /// @return The vector of values in radians.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> radians(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::radians<T>);
@@ -72,7 +73,7 @@ inline T degrees(const T& radians)
 /// @param value Vector of floating-point or integral type.
 ///
 /// @return The vector of values in degrees.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> degrees(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::degrees<T>);
@@ -100,7 +101,7 @@ inline R sin(const T& value)
 /// @return The vector of sine values.
 ///
 /// @see sin
-template <unsigned int N, typename T, typename R = decltype(::framework::math::sin(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::sin(std::declval<T>()))>
 inline vector<N, R> sin(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::sin<T>);
@@ -128,7 +129,7 @@ inline R cos(const T& value)
 /// @return The vector of cosine values.
 ///
 /// @see cos
-template <unsigned int N, typename T, typename R = decltype(::framework::math::cos(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::cos(std::declval<T>()))>
 inline vector<N, R> cos(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::cos<T>);
@@ -156,7 +157,7 @@ inline R tan(const T& value)
 /// @return The vector of tangent values.
 ///
 /// @see tan
-template <unsigned int N, typename T, typename R = decltype(::framework::math::tan(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::tan(std::declval<T>()))>
 inline vector<N, R> tan(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::tan<T>);
@@ -188,7 +189,7 @@ inline R asin(const T& value)
 /// @return The vector of angles in radians in the range [-PI/2, PI/2].
 ///
 /// @see asin
-template <unsigned int N, typename T, typename R = decltype(::framework::math::asin(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::asin(std::declval<T>()))>
 inline vector<N, R> asin(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::asin<T>);
@@ -216,7 +217,7 @@ inline R acos(const T& value)
 /// @return The vector of angles in radians in the range [0, PI].
 ///
 /// @see acos
-template <unsigned int N, typename T, typename R = decltype(::framework::math::acos(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::acos(std::declval<T>()))>
 inline vector<N, R> acos(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::acos<T>);
@@ -260,7 +261,7 @@ inline R atan(const T& value)
 /// @return The vector of angles in radians in the range [-PI, PI].
 ///
 /// @see atan
-template <unsigned int N, typename T, typename R = decltype(::framework::math::atan(std::declval<T>(), std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::atan(std::declval<T>(), std::declval<T>()))>
 inline vector<N, R> atan(vector<N, T> const& a, vector<N, T> const& b)
 {
     return transform(
@@ -274,7 +275,7 @@ inline vector<N, R> atan(vector<N, T> const& a, vector<N, T> const& b)
 /// @return The vector of angles in radians in the range [-PI/2, PI/2].
 ///
 /// @see atan
-template <unsigned int N, typename T, typename R = decltype(::framework::math::atan(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::atan(std::declval<T>()))>
 inline vector<N, R> atan(vector<N, T> const& value)
 {
     return transform(value, [](const T& value_component) { return ::framework::math::atan(value_component); });
@@ -302,7 +303,7 @@ inline R sinh(const T& value)
 /// @return The vector of hyperbolic sines.
 ///
 /// @see sinh
-template <unsigned int N, typename T, typename R = decltype(::framework::math::sinh(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::sinh(std::declval<T>()))>
 inline vector<N, R> sinh(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::sinh<T>);
@@ -330,7 +331,7 @@ inline R cosh(const T& value)
 /// @return The vector of hyperbolic cosines.
 ///
 /// @see cosh
-template <unsigned int N, typename T, typename R = decltype(::framework::math::cosh(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::cosh(std::declval<T>()))>
 inline vector<N, R> cosh(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::cosh<T>);
@@ -358,7 +359,7 @@ inline R tanh(const T& value)
 /// @return The vector of hyperbolic tangents.
 ///
 /// @see tanh
-template <unsigned int N, typename T, typename R = decltype(::framework::math::tanh(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::tanh(std::declval<T>()))>
 inline vector<N, R> tanh(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::tanh<T>);
@@ -386,7 +387,7 @@ inline R asinh(const T& value)
 /// @return The vector of hyperbolic sines.
 ///
 /// @see asinh
-template <unsigned int N, typename T, typename R = decltype(::framework::math::asinh(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::asinh(std::declval<T>()))>
 inline vector<N, R> asinh(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::asinh<T>);
@@ -414,7 +415,7 @@ inline R acosh(const T& value)
 /// @return The vector of hyperbolic cosines.
 ///
 /// @see acosh
-template <unsigned int N, typename T, typename R = decltype(::framework::math::acosh(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::acosh(std::declval<T>()))>
 inline vector<N, R> acosh(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::acosh<T>);
@@ -442,7 +443,7 @@ inline R atanh(const T& value)
 /// @return The vector of hyperbolic tangents.
 ///
 /// @see atanh
-template <unsigned int N, typename T, typename R = decltype(::framework::math::atanh(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::atanh(std::declval<T>()))>
 inline vector<N, R> atanh(vector<N, T> const& value)
 {
     return transform(value, ::framework::math::atanh<T>);
