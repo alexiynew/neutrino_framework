@@ -3,8 +3,6 @@
 #include <unit_test/suite.hpp>
 #include <vector>
 
-#pragma mark - helper functions
-
 // TODO Add test for assertions
 
 std::string to_string(const framework::logging::logger::level level)
@@ -19,8 +17,6 @@ std::string to_string(const framework::logging::logger::level level)
         default: return "UNKNOWN";
     }
 }
-
-#pragma mark - simple logger to test interface
 
 class simple_logger : public framework::logging::logger
 {
@@ -38,8 +34,6 @@ public:
 private:
     std::vector<std::string> m_messages;
 };
-
-#pragma mark - tests for logger
 
 class logger_interface_test : public framework::unit_test::suite
 {
@@ -82,8 +76,6 @@ private:
 };
 
 const char* logger_interface_test::suite_name = "logger_interface_test";
-
-#pragma mark - main function
 
 int main()
 {

@@ -7,6 +7,7 @@
 #define FRAMEWORK_MATH_COMMON_FUNC_HPP
 
 #include <cmath>
+#include <common/common_types.hpp>
 #include <limits>
 #include <math/vector_type.hpp>
 
@@ -109,7 +110,7 @@ inline constexpr vector<2, T> mix_details(const vector<2, T>& a, const vector<2,
 /// @brief Realization of frexp function.
 /// @{
 template <typename T, typename R>
-inline vector<4, R> frexp_details(const vector<4, T>& value, vector<4, int>& exp)
+inline vector<4, R> frexp_details(const vector<4, T>& value, vector<4, int32>& exp)
 {
     return vector<4, R>(::std::frexp(value.x, &exp.x),
                         ::std::frexp(value.y, &exp.y),
@@ -118,13 +119,13 @@ inline vector<4, R> frexp_details(const vector<4, T>& value, vector<4, int>& exp
 }
 
 template <typename T, typename R>
-inline vector<3, R> frexp_details(const vector<3, T>& value, vector<3, int>& exp)
+inline vector<3, R> frexp_details(const vector<3, T>& value, vector<3, int32>& exp)
 {
     return vector<3, R>(::std::frexp(value.x, &exp.x), ::std::frexp(value.y, &exp.y), ::std::frexp(value.z, &exp.z));
 }
 
 template <typename T, typename R>
-inline vector<2, R> frexp_details(const vector<2, T>& value, vector<2, int>& exp)
+inline vector<2, R> frexp_details(const vector<2, T>& value, vector<2, int32>& exp)
 {
     return vector<2, R>(::std::frexp(value.x, &exp.x), ::std::frexp(value.y, &exp.y));
 }
@@ -158,7 +159,7 @@ inline constexpr T abs(const T& value)
 /// @return A vector of the absolute values.
 ///
 /// @see abs
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline constexpr vector<N, T> abs(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::abs<T>);
@@ -186,7 +187,7 @@ inline constexpr T sign(const T& value)
 /// @return A vector of the sign values.
 ///
 /// @see sign
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline constexpr vector<N, T> sign(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::sign<T>);
@@ -214,7 +215,7 @@ inline R floor(const T& value)
 /// @return A vector of values that are the largest integer value not greater than argument.
 ///
 /// @see floor
-template <unsigned int N, typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
 inline vector<N, R> floor(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::floor<T>);
@@ -242,7 +243,7 @@ inline R round(const T& value)
 /// @return A vector of values that are equal to the nearest integer to the argument.
 ///
 /// @see round
-template <unsigned int N, typename T, typename R = decltype(::framework::math::round(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::round(std::declval<T>()))>
 inline vector<N, R> round(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::round<T>);
@@ -270,7 +271,7 @@ inline R ceil(const T& value)
 /// @return A vector of values that are greater than or equal to the argument.
 ///
 /// @see ceil
-template <unsigned int N, typename T, typename R = decltype(::framework::math::ceil(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::ceil(std::declval<T>()))>
 inline vector<N, R> ceil(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::ceil<T>);
@@ -298,7 +299,7 @@ inline R trunc(const T& value)
 /// @return A vector of values that are not greater in magnitude than argument.
 ///
 /// @see trunc
-template <unsigned int N, typename T, typename R = decltype(::framework::math::trunc(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::trunc(std::declval<T>()))>
 inline vector<N, R> trunc(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::trunc<T>);
@@ -326,7 +327,7 @@ inline R fract(const T& value)
 /// @return A vector of the fractional parts.
 ///
 /// @see fract
-template <unsigned int N, typename T, typename R = decltype(::framework::math::fract(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::fract(std::declval<T>()))>
 inline vector<N, R> fract(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::fract<T>);
@@ -359,7 +360,7 @@ inline R mod(const T& a, const T& b)
 /// @return A vector of the floating-point remainder of the division operation.
 ///
 /// @see mod
-template <unsigned int N, typename T, typename R = decltype(::framework::math::mod(std::declval<T>(), std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::mod(std::declval<T>(), std::declval<T>()))>
 inline vector<N, R> mod(const vector<N, T>& a, const T& b)
 {
     return transform(a, vector<N, T>{b}, ::framework::math::mod<T>);
@@ -373,7 +374,7 @@ inline vector<N, R> mod(const vector<N, T>& a, const T& b)
 /// @return A vector of the floating-point remainder of the division operation.
 ///
 /// @see mod
-template <unsigned int N, typename T, typename R = decltype(::framework::math::mod(std::declval<T>(), std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(::framework::math::mod(std::declval<T>(), std::declval<T>()))>
 inline vector<N, R> mod(const vector<N, T>& a, const vector<N, T>& b)
 {
     return transform(a, b, ::framework::math::mod<T>);
@@ -405,7 +406,7 @@ inline R modf(const T& value, T& integral)
 /// @return A vector of the fractional parts.
 ///
 /// @see modf
-template <unsigned int N, typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+template <uint32 N, typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
 inline vector<N, R> modf(const vector<N, T>& value, vector<N, T>& integral)
 {
     return common_functions_details::modf_details(value, integral);
@@ -435,7 +436,7 @@ inline T min(const T& a, const T& b)
 /// @return A vector of smaller values.
 ///
 /// @see min
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline constexpr vector<N, T> min(const vector<N, T>& a, const T& b)
 {
     return transform(a, vector<N, T>{b}, ::framework::math::min<T>);
@@ -449,7 +450,7 @@ inline constexpr vector<N, T> min(const vector<N, T>& a, const T& b)
 /// @return A vector of smaller values.
 ///
 /// @see min
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline constexpr vector<N, T> min(const vector<N, T>& a, const vector<N, T>& b)
 {
     return transform(a, b, ::framework::math::min<T>);
@@ -479,7 +480,7 @@ inline T max(const T& a, const T& b)
 /// @return A vector of greater values.
 ///
 /// @see max
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline constexpr vector<N, T> max(const vector<N, T>& a, const T& b)
 {
     return transform(a, vector<N, T>{b}, ::framework::math::max<T>);
@@ -493,7 +494,7 @@ inline constexpr vector<N, T> max(const vector<N, T>& a, const T& b)
 /// @return A vector of greater values.
 ///
 /// @see max
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline constexpr vector<N, T> max(const vector<N, T>& a, const vector<N, T>& b)
 {
     return transform(a, b, ::framework::math::max<T>);
@@ -528,7 +529,7 @@ inline T clamp(const T& value, const T& min_value, const T& max_value)
 /// @return A vector of values constrained to the range from min_value to max_value.
 ///
 /// @see clamp
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> clamp(const vector<N, T>& value, const T& min_value, const T& max_value)
 {
     return ::framework::math::min(::framework::math::max(value, min_value), max_value);
@@ -543,7 +544,7 @@ inline vector<N, T> clamp(const vector<N, T>& value, const T& min_value, const T
 /// @return A vector of values constrained to the range from min_value to max_value.
 ///
 /// @see clamp
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> clamp(const vector<N, T>& value, const vector<N, T>& min_value, const vector<N, T>& max_value)
 {
     return ::framework::math::min(::framework::math::max(value, min_value), max_value);
@@ -581,7 +582,7 @@ inline T mix(const T& a, const T& b, const U& t)
 /// @param t Specify the value to use to interpolate between a and b.
 ///
 /// @return Linearly interpolated vector.
-template <unsigned int N, typename T, typename U>
+template <uint32 N, typename T, typename U>
 inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const U& t)
 {
     return common_functions_details::mix_details(a, b, t);
@@ -598,7 +599,7 @@ inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const U& t
 /// @param t Specify the values to use to interpolate between a and b.
 ///
 /// @return Vector of linearly interpolated values.
-template <unsigned int N, typename T, typename U>
+template <uint32 N, typename T, typename U>
 inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const vector<N, U>& t)
 {
     return common_functions_details::mix_details(a, b, t);
@@ -626,7 +627,7 @@ inline T step(const T& value, const T& edge)
 /// @param edge Specifies the location of the edge of the step function.
 ///
 /// @return For each component in value return 0 if value < edge, and 1 otherwise.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> step(const vector<N, T>& value, const T& edge)
 {
     return transform(value, vector<N, T>{edge}, ::framework::math::step<T>);
@@ -638,7 +639,7 @@ inline vector<N, T> step(const vector<N, T>& value, const T& edge)
 /// @param edge Specifies the location of the edge of the step function.
 ///
 /// @return For each i return 0 if value[i] < edge[i], and 1 otherwise.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> step(const vector<N, T>& value, const vector<N, T>& edge)
 {
     return transform(value, edge, ::framework::math::step<T>);
@@ -680,7 +681,7 @@ inline T smooth_step(const T& value, const T& edge0, const T& edge1)
 /// @return Interpolated value.
 ///
 /// @see smooth_step
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> smooth_step(const vector<N, T>& value, const T& edge0, const T& edge1)
 {
     vector<N, T> temp = clamp((value - edge0) / (edge1 - edge0), T{0}, T{1});
@@ -696,7 +697,7 @@ inline vector<N, T> smooth_step(const vector<N, T>& value, const T& edge0, const
 /// @return Interpolated value.
 ///
 /// @see smooth_step
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> smooth_step(const vector<N, T>& value, const vector<N, T>& edge0, const vector<N, T>& edge1)
 {
     vector<N, T> temp = clamp((value - edge0) / (edge1 - edge0), T{0}, T{1});
@@ -723,7 +724,7 @@ inline bool isnan(const T& value)
 /// @param value Vector of floating-point values.
 ///
 /// @return For each component return `true` if it is a NaN, `false` otherwise.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, bool> isnan(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::isnan<T>);
@@ -750,7 +751,7 @@ inline bool isinf(const T& value)
 /// @param value Vector of floating-point values.
 ///
 /// @return For each component return `true` if it is infinite, `false` otherwise.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline constexpr vector<N, bool> isinf(const vector<N, T>& value)
 {
     return transform(value, ::framework::math::isinf<T>);
@@ -780,7 +781,7 @@ inline T fma(const T& a, const T& b, const T& c)
 /// @param c Vector of floating-point or integral values.
 ///
 /// @return Vector which is equivalent to `(a * b) + c`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> fma(const vector<N, T>& a, const vector<N, T>& b, const vector<N, T>& c)
 {
     return a * b + c;
@@ -798,8 +799,8 @@ inline vector<N, T> fma(const vector<N, T>& a, const vector<N, T>& b, const vect
 /// @return If value is zero, returns zero and stores zero in exp.
 ///         Otherwise, returns the value x in the range (-1;-0.5], [0.5; 1)
 ///         and stores an integer value in exp such that `x * 2 ^ exp = value`.
-template <typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int*>()))>
-inline R frexp(const T& value, int& exp)
+template <typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int32*>()))>
+inline R frexp(const T& value, int32& exp)
 {
     return ::std::frexp(value, &exp);
 }
@@ -812,8 +813,8 @@ inline R frexp(const T& value, int& exp)
 /// @return For each component of value, if it is zero, returns zero and stores zero in exp.
 ///         Otherwise, returns the value x in the range (-1;-0.5], [0.5; 1)
 ///         and stores an integer value in exp such that `x * 2 ^ exp = value`.
-template <unsigned int N, typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int*>()))>
-inline vector<N, R> frexp(const vector<N, T>& value, vector<N, int>& exp)
+template <uint32 N, typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int32*>()))>
+inline vector<N, R> frexp(const vector<N, T>& value, vector<N, int32>& exp)
 {
     return common_functions_details::frexp_details<T, R>(value, exp);
 }
@@ -828,8 +829,8 @@ inline vector<N, R> frexp(const vector<N, T>& value, vector<N, int>& exp)
 /// @param exp Integer value.
 ///
 /// @return Value which is equivalent to value multiplied by 2 to the power of exp: `value * 2 ^ exp`.
-template <typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int>()))>
-inline R ldexp(const T& value, const int exp)
+template <typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int32>()))>
+inline R ldexp(const T& value, const int32 exp)
 {
     return ::std::ldexp(value, exp);
 }
@@ -840,8 +841,8 @@ inline R ldexp(const T& value, const int exp)
 /// @param exp Vector of integer values.
 ///
 /// @return Vector which components are equivalent to value multiplied by 2 to the power of exp: `value * 2 ^ exp`.
-template <unsigned int N, typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int>()))>
-inline vector<N, R> ldexp(const vector<N, T>& value, const vector<N, int>& exp)
+template <uint32 N, typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int32>()))>
+inline vector<N, R> ldexp(const vector<N, T>& value, const vector<N, int32>& exp)
 {
     return transform(value, exp, ::framework::math::ldexp<T>);
 }

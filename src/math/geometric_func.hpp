@@ -8,6 +8,7 @@
 
 #include <math/vector_type.hpp>
 
+#include <common/common_types.hpp>
 #include <math/exponential_func.hpp>
 
 namespace framework {
@@ -52,7 +53,7 @@ inline constexpr T dot_details(const vector<2, T>& a, const vector<2, T>& b)
 /// @param value Vector of floating-point or integral type.
 ///
 /// @return The length of the vector, i.e., `sqrt(value * value)`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline T length(const vector<N, T>& value)
 {
     return static_cast<T>(::framework::math::sqrt(geometric_functions_details::dot_details(value, value)));
@@ -68,7 +69,7 @@ inline T length(const vector<N, T>& value)
 /// @param b Vector of floating-point or integral type.
 ///
 /// @return The distance between two vectors, i.e., `length(b - a)`.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline T distance(const vector<N, T>& a, const vector<N, T>& b)
 {
     return length(b - a);
@@ -84,7 +85,7 @@ inline T distance(const vector<N, T>& a, const vector<N, T>& b)
 /// @param b Vector of floating-point or integral type.
 ///
 /// @return The dot product of two vectors.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline T dot(const vector<N, T>& a, const vector<N, T>& b)
 {
     return geometric_functions_details::dot_details(a, b);
@@ -119,7 +120,7 @@ inline vector<3, T> cross(const vector<3, T>& a, const vector<3, T>& b)
 /// @param value Vector of floating-point or integral type.
 ///
 /// @return The vector in the same direction as value but with length of 1.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> normalize(const vector<N, T>& value)
 {
     return value * ::framework::math::invsqrt(dot(value, value));
@@ -138,7 +139,7 @@ inline vector<N, T> normalize(const vector<N, T>& value)
 /// @param normal Specifies the normal vector.
 ///
 /// @return A vector pointing in the same direction as another.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> faceforward(const vector<N, T>& value, const vector<N, T>& incident, const vector<N, T>& normal)
 {
     return dot(normal, incident) < T{0} ? value : -value;
@@ -159,7 +160,7 @@ inline vector<N, T> faceforward(const vector<N, T>& value, const vector<N, T>& i
 /// @param normal Specifies the normal value.
 ///
 /// @return The reflection direction for an incident vector.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> reflect(const vector<N, T>& incident, const vector<N, T>& normal)
 {
     return incident - T{2} * dot(normal, incident) * normal;
@@ -190,7 +191,7 @@ inline vector<N, T> reflect(const vector<N, T>& incident, const vector<N, T>& no
 /// @param eta Specifies the ratio of indices of refraction..
 ///
 /// @return The refraction direction for an incident vector.
-template <unsigned int N, typename T>
+template <uint32 N, typename T>
 inline vector<N, T> refract(const vector<N, T>& incident, const vector<N, T>& normal, const T& eta)
 {
     const T dot_value   = dot(normal, incident);

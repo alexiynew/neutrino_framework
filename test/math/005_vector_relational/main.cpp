@@ -3,7 +3,7 @@
 
 using namespace framework::math;
 
-// TODO add test for float and double
+// TODO add test for real32 and real64
 
 class relational_function_tests : public framework::unit_test::suite
 {

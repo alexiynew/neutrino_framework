@@ -1,6 +1,7 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
+using namespace framework;
 using namespace framework::math;
 
 class matrix_access_test : public framework::unit_test::suite
@@ -225,17 +226,17 @@ private:
 
     void data_function()
     {
-        float* p44 = matrix44.data();
-        float* p34 = matrix34.data();
-        float* p24 = matrix24.data();
-        float* p43 = matrix43.data();
-        float* p33 = matrix33.data();
-        float* p23 = matrix23.data();
-        float* p42 = matrix42.data();
-        float* p32 = matrix32.data();
-        float* p22 = matrix22.data();
+        real32* p44 = matrix44.data();
+        real32* p34 = matrix34.data();
+        real32* p24 = matrix24.data();
+        real32* p43 = matrix43.data();
+        real32* p33 = matrix33.data();
+        real32* p23 = matrix23.data();
+        real32* p42 = matrix42.data();
+        real32* p32 = matrix32.data();
+        real32* p22 = matrix22.data();
 
-        auto check = [](const float a, const float b) { return framework::math::abs(a - b) <= 0; };
+        auto check = [](const real32 a, const real32 b) { return framework::math::abs(a - b) <= 0; };
 
         // clang-format off
         TEST_ASSERT(check(p44[0],  0.0f) && check(p44[1], 1.0f)  && check(p44[2], 2.0f)  && check(p44[3], 3.0f)  &&

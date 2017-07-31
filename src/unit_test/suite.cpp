@@ -13,10 +13,10 @@ namespace framework {
 namespace unit_test {
 
 suite::suite(const std::string& name)
-    : m_success{true}
-    , m_name{name}
+    : m_name{name}
     , m_tests{}
     , m_current_test{m_tests.end()}
+    , m_success{true}
 {
 }
 
@@ -56,7 +56,7 @@ void suite::add_test(function_type&& function, const std::string& name)
     m_tests.emplace_back(std::forward<function_type>(function), name);
 }
 
-void suite::test_failed(const std::string& file, int line, const std::string& message)
+void suite::test_failed(const std::string& file, int32 line, const std::string& message)
 {
     m_success = false;
     if (m_current_test != m_tests.end()) {
@@ -65,8 +65,6 @@ void suite::test_failed(const std::string& file, int line, const std::string& me
         output_fail(*m_current_test);
     }
 }
-
-#pragma mark - internal members
 
 void suite::output_fail(const test_data& test)
 {

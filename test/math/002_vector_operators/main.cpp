@@ -1,6 +1,7 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
+using namespace framework;
 using namespace framework::math;
 
 class vector_operators_test : public framework::unit_test::suite
@@ -52,7 +53,7 @@ private:
         TEST_ASSERT(v4i_result == vector4i(1, 2, 3, 4), "Assign to vector4i failed.");
         TEST_ASSERT(v4d_result == vector4d(1.1, 2.2, 3.3, 4), "Assign to vector4d failed.");
 
-        TEST_ASSERT(v3d_result == vector3d(double(5.5f), double(6.6f), double(7.7f)), "Assign to vector3d failed.");
+        TEST_ASSERT(v3d_result == vector3d(real64(5.5f), real64(6.6f), real64(7.7f)), "Assign to vector3d failed.");
         TEST_ASSERT(v3f_result == vector3f(5.5f, 6.6f, 7.7f), "Assign to vector3f failed.");
 
         TEST_ASSERT(v2f_result == vector2f(1, 2), "Assign to vector2f failed.");
@@ -87,20 +88,20 @@ private:
         const vector3f v3f(5.5f, 6.6f, 7.7f);
         const vector2i v2i(1, 2);
 
-        const double* double_pointer = v4d.data();
-        const float* float_pointer   = v3f.data();
-        const int* int_pointer       = v2i.data();
+        const real64* real64_pointer = v4d.data();
+        const real32* real32_pointer = v3f.data();
+        const int32* int_pointer     = v2i.data();
 
         // clang-format off
-        TEST_ASSERT(almost_equal(double_pointer[0], 1.1) &&
-                    almost_equal(double_pointer[1], 2.2) &&
-                    almost_equal(double_pointer[2], 3.3) &&
-                    almost_equal(double_pointer[3], 4.4),
+        TEST_ASSERT(almost_equal(real64_pointer[0], 1.1) &&
+                    almost_equal(real64_pointer[1], 2.2) &&
+                    almost_equal(real64_pointer[2], 3.3) &&
+                    almost_equal(real64_pointer[3], 4.4),
                     "Access to data of vector4d filed.");
 
-        TEST_ASSERT(almost_equal(float_pointer[0], 5.5f) &&
-                    almost_equal(float_pointer[1], 6.6f) &&
-                    almost_equal(float_pointer[2], 7.7f),
+        TEST_ASSERT(almost_equal(real32_pointer[0], 5.5f) &&
+                    almost_equal(real32_pointer[1], 6.6f) &&
+                    almost_equal(real32_pointer[2], 7.7f),
                     "Access to data of vector3f failed.");
 
         TEST_ASSERT(int_pointer[0] == 1 && int_pointer[1] == 2, "Access to data of vector2i failed.");

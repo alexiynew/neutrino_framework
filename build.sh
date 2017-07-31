@@ -129,6 +129,23 @@ function coverage_scan {
     lcov --list coverage.info                                               # debug info
 }
 
+function run_check {
+    info "==== Run CppCheck ===="
+
+    files=`find ./src ./test -iregex ".*\(cpp\|h\|hpp\)" -type f | sort`
+
+    cppcheck --enable=all -I./src ${files}
+
+    info "==== Run clang scan-build ===="
+
+    mkdir -p "$BUILD_DIR"
+    cd "$BUILD_DIR"
+
+    scan-build cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+    scan-build make all
+    scan-build make framework_tests
+}
+
 function build_documentation {
     info "==== Run framework tests verbose ===="
 
@@ -157,6 +174,7 @@ cat << EOF
             test         : Run all tests.
             test_verbose : Run all tests with verbose logging.
             coverage     : Run test coverage scan.
+            check        : Run static analizers.
             docs         : Build documentation.
             clean        : Clean build results.
 
@@ -194,6 +212,9 @@ function run_task {
         ;;
         "coverage" )
             coverage_scan
+        ;;
+        "check" )
+            run_check
         ;;
         "docs" )
             configure

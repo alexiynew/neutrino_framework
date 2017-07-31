@@ -19,8 +19,6 @@ namespace logging {
 
 class logger;
 
-#pragma mark - log class
-
 /// @brief Logger interface.
 ///
 /// This is facade for @ref logger.
@@ -95,8 +93,6 @@ private:
 
     std::unique_ptr<logger> m_logger;
 };
-
-#pragma mark - base logger class
 
 /// @brief Base class for logger implementations.
 ///

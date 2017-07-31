@@ -3,8 +3,6 @@
 
 #include <unit_test/suite.hpp>
 
-#pragma mark - tests to be tested
-
 class should_fail_test : public framework::unit_test::suite
 {
 public:
@@ -43,8 +41,6 @@ private:
     }
 };
 
-#pragma mark - test suite for tests
-
 class test_for_test : public framework::unit_test::suite
 {
 public:
@@ -57,6 +53,7 @@ public:
 
 private:
     void should_fail()
+
     {
         should_fail_test should_fail;
 
@@ -85,8 +82,6 @@ private:
         std::cout << std::setw(0);
     }
 };
-
-#pragma mark - main function
 
 int main()
 {

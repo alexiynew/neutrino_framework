@@ -1,16 +1,19 @@
 #!/bin/bash
 
-# This script used to run tests in docker environment
+# This script used to run tests on travis CI.
 
 set -e
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd "$SCRIPT_DIR"
-
 # Run build and tests
-sudo docker run -it -v "$(pwd):/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c $COMPILLER -t $TASK"
-
-if [[ "${TASK}" == *"coverage"* ]]
+if [[ "${TRAVIS_OS_NAME}" == "linux" ]]
 then
-    bash <(curl -s https://codecov.io/bash)
+    sudo docker run -it -v "${TRAVIS_BUILD_DIR}:/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -t ${TASK} -c ${COMPILLER}"
+
+    if [[ "${TASK}" == *"coverage"* ]]
+    then
+        bash <(curl -s https://codecov.io/bash)
+    fi
+elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]
+then
+    ./build.sh -t "${TASK}"
 fi
