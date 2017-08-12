@@ -3,15 +3,14 @@
 /// @author Fedorov Alexey
 /// @date 08.08.2017
 
-#include <window/linux/x_server_connection.hpp>
 #include <common/common_types.hpp>
 #include <log/log.hpp>
+#include <window/linux/x_server_connection.hpp>
 
 using namespace framework;
 using log = ::framework::logging::log;
 
-namespace
-{
+namespace {
 const char* const log_tag = "x_server_connection";
 
 x_server_connection* global_connection = nullptr;
@@ -22,7 +21,8 @@ x_server_connection* global_connection = nullptr;
     std::terminate();
 }
 
-void set_error_handlers(x_server_connection* connection) {
+void set_error_handlers(x_server_connection* connection)
+{
     global_connection = connection;
 
     XSetIOErrorHandler(fatal_error_handler);
@@ -38,8 +38,7 @@ void release_error_handlers()
 }
 }
 
-namespace framework
-{
+namespace framework {
 
 int error_handler(Display* display, XErrorEvent* event)
 {

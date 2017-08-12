@@ -7,9 +7,9 @@
 #define FRAMEWORK_WINDOW_LINUX_X_SERVER_CONNECTION_HPP
 
 #include <X11/Xlib.h>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace framework {
 
@@ -50,7 +50,6 @@ private:
     friend std::shared_ptr<x_server_connection> connect_to_x_server();
     friend int error_handler(Display* display, XErrorEvent* event);
 };
-
 }
 
 #endif

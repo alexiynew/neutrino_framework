@@ -1,5 +1,5 @@
 /// @file x11_window.cpp
-/// @brief Window implementation for linux.
+/// @brief Window implementation for Linux.
 /// @author Fedorov Alexey
 /// @date 05.04.2017
 
@@ -28,7 +28,6 @@ void log_x_server_errors(const std::shared_ptr<x_server_connection>& connection)
     log::error(log_tag, message);
     throw std::runtime_error(message);
 }
-
 }
 
 namespace framework {
