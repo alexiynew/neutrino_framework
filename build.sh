@@ -9,16 +9,19 @@ TASK_TO_RUN="none"
 
 TEST_MODULES=""
 
-RED='\033[0;31m'   # Red
-BLUE='\033[0;34m'  # Blue
-NC='\033[0m'       # No Color
+BUILD_TYPE="Debug"
+
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+LIGHT_CYAN='\e[1;36m'
+NO_COLOR='\033[0m'
 
 function info {
-    echo -e "${BLUE}$1${NC}";
+    echo -e "${LIGHT_CYAN}$1${NO_COLOR}";
 }
 
 function error {
-    echo -e "${RED}$1${NC}";
+    echo -e "${RED}$1${NO_COLOR}";
 }
 
 # Settings functions
@@ -67,7 +70,7 @@ function configure {
 
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+    cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
 }
 
 function build_framework {
@@ -115,7 +118,7 @@ function coverage_scan {
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
 
-    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DENABLE_TEST_COVERAGE=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DENABLE_TEST_COVERAGE=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
 
     build_framework
 
@@ -141,7 +144,7 @@ function run_check {
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
 
-    scan-build cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+    scan-build cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
     scan-build make all
     scan-build make framework_tests
 }
@@ -177,6 +180,11 @@ cat << EOF
             check        : Run static analizers.
             docs         : Build documentation.
             clean        : Clean build results.
+
+        -b : Specify build type.
+        VALUES:
+            debug   : Debug build (default).
+            release : Release build.
 
         -c : Specify compiller to use.
         VALUES:
@@ -243,11 +251,14 @@ function execute {
     done
 }
 
-while getopts "t:c:m:h" opt
+while getopts "t:b:c:m:h" opt
 do
     case $opt in
         t)
             TASK_TO_RUN="$OPTARG"
+        ;;
+        b)
+            BUILD_TYPE="$OPTARG"
         ;;
         c)
             set_compiler "$OPTARG"

@@ -3,9 +3,10 @@
 /// @author Fedorov Alexey
 /// @date 04.04.2017
 
-#ifndef FRAMEWORK_WINDOW_HPP
-#define FRAMEWORK_WINDOW_HPP
+#ifndef FRAMEWORK_WINDOW_WINDOW_HPP
+#define FRAMEWORK_WINDOW_WINDOW_HPP
 
+#include <common/common_types.hpp>
 #include <memory>
 
 namespace framework {
@@ -21,29 +22,26 @@ public:
     // actions
     void show();
     void hide();
+    void focus();
 
-    /// Send the Window to the background.
-    void to_back();
-    /// Bring the Window to the foreground.
-    void to_front();
-
-    void request_focus();
+    void minimize();
+    void maximize();
+    void to_full_screen();
+    void restore();
 
     // setters
-    void set_widht(int w);
-    void set_height(int h);
+    void set_size(int32 width, int32 height);
+    void set_position(int32 x, int32 y);
 
-    void set_max_height(int h);
-    void set_max_width(int w);
-    void set_min_height(int h);
-    void set_min_width(int w);
+    void set_max_size(int32 width, int32 height);
+    void set_min_size(int32 width, int32 height);
 
-    void set_title(const std::string& t);
+    void set_title(const std::string& title);
 
     // getters
     int x();
     int y();
-    int widht();
+    int width();
     int height();
 
     int max_height();
@@ -53,11 +51,11 @@ public:
 
     std::string title();
 
-    bool always_on_top();
     bool full_screen();
-    bool iconified();
+    bool minimized();
     bool maximized();
     bool resizable();
+    bool visible();
     bool focused();
 
 private:

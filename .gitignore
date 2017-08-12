@@ -4,5 +4,6 @@ nbproject/
 .idea/
 .atom-build.yml
 .vimrc
+.ycm_extra_conf.py
 .DS_Store
 .xvfb.log
