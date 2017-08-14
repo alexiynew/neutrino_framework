@@ -1,4 +1,4 @@
-/// @file window_implementation.hpp
+/// @file
 /// @brief Describes interface for all canvas implementations.
 /// @author Fedorov Alexey
 /// @date 05.04.2017
@@ -8,13 +8,32 @@
 
 #include <common/common_types.hpp>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace framework {
 
 class window_implementation
 {
 public:
+    enum state_flags
+    {
+        normal,
+        full_screen,
+        minimized,
+        maximized,
+        resizable,
+        visible,
+        focused
+    };
+
+    static constexpr uint32 state_flags_count = 7;
+
+    window_implementation()          = default;
     virtual ~window_implementation() = default;
+
+    window_implementation(const window_implementation&) = delete;
+    window_implementation& operator=(const window_implementation&) = delete;
 
     virtual void show()  = 0;
     virtual void hide()  = 0;
@@ -47,12 +66,7 @@ public:
 
     virtual std::string title() = 0;
 
-    virtual bool full_screen() = 0;
-    virtual bool minimized()   = 0;
-    virtual bool maximized()   = 0;
-    virtual bool resizable()   = 0;
-    virtual bool visible()     = 0;
-    virtual bool focused()     = 0;
+    virtual std::vector<bool> state() = 0;
 };
 
 std::unique_ptr<window_implementation> get_implementation();

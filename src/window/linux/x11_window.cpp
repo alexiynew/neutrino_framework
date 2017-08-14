@@ -1,4 +1,4 @@
-/// @file x11_window.cpp
+/// @file
 /// @brief Window implementation for Linux.
 /// @author Fedorov Alexey
 /// @date 05.04.2017
@@ -15,6 +15,7 @@ using log = framework::logging::log;
 namespace {
 
 const char* const log_tag = "x11_window";
+
 
 void log_x_server_errors(const std::shared_ptr<x_server_connection>& connection)
 {
@@ -38,10 +39,11 @@ std::unique_ptr<window_implementation> get_implementation()
 }
 
 x11_window::x11_window()
-    : m_connection{connect_to_x_server()}
+    : m_connection{x_server_connection::connect()}
     , m_width{640}
     , m_height{480}
     , m_window{0}
+    , m_state(state_flags_count, false)
 {
     if (m_connection->error_state() != x_server_connection::state::no_error) {
         throw_error(m_connection->error_message());
@@ -95,6 +97,8 @@ void x11_window::show()
         throw_error("Failed to create X Window.");
     }
 
+    // TODO catch CreateNotify event
+
     XMapWindow(m_connection->display(), m_window);
 
     XFlush(m_connection->display());
@@ -102,11 +106,12 @@ void x11_window::show()
 
 void x11_window::hide()
 {
-    // Уничтожаем окно
     if (m_connection->display() && m_window) {
         XDestroyWindow(m_connection->display(), m_window);
     }
     m_window = 0;
+
+    // TODO catch DestroyNotify event
 }
 
 void x11_window::focus()
@@ -204,33 +209,8 @@ std::string x11_window::title()
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::full_screen()
+std::vector<bool> x11_window::state()
 {
-    throw std::logic_error("Function is not implemented.");
-}
-
-bool x11_window::minimized()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-bool x11_window::maximized()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-bool x11_window::resizable()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-bool x11_window::visible()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-bool x11_window::focused()
-{
-    throw std::logic_error("Function is not implemented.");
+    return m_state;
 }
 } // namespace framework

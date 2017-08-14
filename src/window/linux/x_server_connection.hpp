@@ -13,9 +13,6 @@
 
 namespace framework {
 
-class x_server_connection;
-
-std::shared_ptr<x_server_connection> connect_to_x_server();
 int error_handler(Display* display, XErrorEvent* event);
 
 class x_server_connection
@@ -40,6 +37,8 @@ public:
     std::string pop_error();
     void clear_errors();
 
+    static std::shared_ptr<x_server_connection> connect();
+
 private:
     explicit x_server_connection(Display* display);
 
@@ -47,9 +46,9 @@ private:
     std::vector<std::string> m_error_messages;
     Display* m_display;
 
-    friend std::shared_ptr<x_server_connection> connect_to_x_server();
     friend int error_handler(Display* display, XErrorEvent* event);
 };
-}
+
+} // namespace framework
 
 #endif

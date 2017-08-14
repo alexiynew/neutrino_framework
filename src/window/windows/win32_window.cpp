@@ -1,4 +1,4 @@
-/// @file win32_window.cpp
+/// @file
 /// @brief Window implementation for windows.
 /// @author Fedorov Alexey
 /// @date 19.04.2017

@@ -19,7 +19,11 @@ public:
     window();
     ~window();
 
-    // actions
+    window(const window&) = delete;
+    window& operator=(const window&) = delete;
+
+    /// @name actions
+    /// @{
     void show();
     void hide();
     void focus();
@@ -28,8 +32,10 @@ public:
     void maximize();
     void to_full_screen();
     void restore();
+    /// @}
 
-    // setters
+    /// @name setters
+    /// @{
     void set_size(int32 width, int32 height);
     void set_position(int32 x, int32 y);
 
@@ -37,8 +43,10 @@ public:
     void set_min_size(int32 width, int32 height);
 
     void set_title(const std::string& title);
+    /// @}
 
-    // getters
+    /// @name getters
+    /// @{
     int x();
     int y();
     int width();
@@ -57,6 +65,7 @@ public:
     bool resizable();
     bool visible();
     bool focused();
+    /// @}
 
 private:
     std::unique_ptr<window_implementation> m_implementation;

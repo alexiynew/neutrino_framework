@@ -1,9 +1,7 @@
-/**
- * @file cocoa_window.cpp
- * @brief Window implementation for osx.
- * @author Fedorov Alexey
- * @date 19.04.2017
- */
+/// @file
+/// @brief Window implementation for osx.
+/// @author Fedorov Alexey
+/// @date 19.04.2017
 
 #include <memory>
 #include <window/osx/cocoa_window.hpp>
@@ -17,7 +15,7 @@ std::unique_ptr<window_implementation> get_implementation()
 }
 
 cocoa_window::cocoa_window()
-{   
+{
     // Create a shared app instance.
     // This will initialize the global variable
     // 'NSApp' with the application instance.

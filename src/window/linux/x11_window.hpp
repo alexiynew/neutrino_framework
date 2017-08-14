@@ -8,11 +8,12 @@
 
 #include <X11/Xlib.h>
 #include <common/common_types.hpp>
+#include <vector>
 #include <window/window_implementation.hpp>
 
 namespace framework {
 
-struct x_server_connection;
+class x_server_connection;
 
 class x11_window final : public window_implementation
 {
@@ -49,12 +50,7 @@ public:
 
     std::string title() override;
 
-    bool full_screen() override;
-    bool minimized() override;
-    bool maximized() override;
-    bool resizable() override;
-    bool visible() override;
-    bool focused() override;
+    std::vector<bool> state() override;
 
 private:
     std::shared_ptr<x_server_connection> m_connection;
@@ -63,6 +59,8 @@ private:
     uint32 m_height;
 
     Window m_window;
+
+    std::vector<bool> m_state;
 };
 } // namespace framework
 
