@@ -35,9 +35,10 @@ public:
     window_implementation(const window_implementation&) = delete;
     window_implementation& operator=(const window_implementation&) = delete;
 
-    virtual void show()  = 0;
-    virtual void hide()  = 0;
-    virtual void focus() = 0;
+    virtual void show()           = 0;
+    virtual void hide()           = 0;
+    virtual void focus()          = 0;
+    virtual void process_events() = 0;
 
     virtual void minimize()       = 0;
     virtual void maximize()       = 0;

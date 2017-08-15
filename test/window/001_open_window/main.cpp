@@ -22,10 +22,12 @@ private:
         window.show();
 
         std::this_thread::sleep_for(timespan);
+        window.process_events();
 
         TEST_ASSERT(window.visible(), "Window is not visible.");
 
         std::this_thread::sleep_for(timespan);
+        window.process_events();
 
         window.hide();
 
@@ -36,33 +38,29 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(100);
 
-        framework::window window1;
-        framework::window window2;
-        framework::window window3;
-        framework::window window4;
-        framework::window window5;
+        framework::window windows[5];
 
-        window1.show();
-        window2.show();
-        window3.show();
-        window4.show();
-        window5.show();
+        for (auto& window : windows) {
+            window.show();
+        }
 
         std::this_thread::sleep_for(timespan);
+        for (auto& window : windows) {
+            window.process_events();
+        }
 
-        window1.hide();
-        window2.hide();
-        window3.hide();
-        window4.hide();
-        window5.hide();
+        for (auto& window : windows) {
+            window.hide();
+        }
 
         std::this_thread::sleep_for(timespan);
+        for (auto& window : windows) {
+            window.process_events();
+        }
 
-        window1.show();
-        window2.show();
-        window3.show();
-        window4.show();
-        window5.show();
+        for (auto& window : windows) {
+            window.show();
+        }
     }
 };
 

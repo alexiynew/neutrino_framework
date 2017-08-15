@@ -35,6 +35,11 @@ void window::focus()
     m_implementation->focus();
 }
 
+void window::process_events()
+{
+    m_implementation->process_events();
+}
+
 void window::minimize()
 {
     m_implementation->minimize();

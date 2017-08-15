@@ -24,6 +24,7 @@ public:
     void show() override;
     void hide() override;
     void focus() override;
+    void process_events() override;
 
     void minimize() override;
     void maximize() override;

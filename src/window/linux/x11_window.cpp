@@ -29,6 +29,12 @@ void log_x_server_errors(const std::shared_ptr<x_server_connection>& connection)
     log::error(log_tag, message);
     throw std::runtime_error(message);
 }
+
+int32 event_predicate(Display*, XEvent* event, XPointer arg)
+{
+    return event->xany.window == *(reinterpret_cast<Window*>(arg));
+}
+
 }
 
 namespace framework {
@@ -66,12 +72,14 @@ void x11_window::show()
     uint32 border_width = 0;
     int32 depth         = 24;
     uint32 window_class = InputOutput;
-    uint64 valuemask    = CWBackPixel;
+    uint64 valuemask    = CWBackPixel | CWEventMask;
     Visual* visual      = DefaultVisual(m_connection->display(), screen);
 
     XSetWindowAttributes attributes = {};
 
-    attributes.background_pixel = color; //          background pixel                         >> CWBackPixel
+    attributes.background_pixel = color; // CWBackPixel
+    attributes.event_mask = VisibilityChangeMask; // CWEventMask
+
     //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
     //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
     //  attributes.border_pixel;          // border pixel value                       >> CWBorderPixel
@@ -80,13 +88,39 @@ void x11_window::show()
     //  attributes.backing_store;         // NotUseful, WhenMapped, Always            >> CWBackingStore
     //  attributes.backing_planes;        // planes to be preserved if possible       >> CWBackingPlanes
     //  attributes.backing_pixel;         // value to use in restoring planes         >> CWBackingPixel
-    //  attributes.save_under;            // should bits under be saved? (popups)     >> CWOverrideRedirect
-    //  attributes.event_mask;            // set of events that should be saved       >> CWSaveUnder
-    //  attributes.do_not_propagate_mask; // set of events that should not propagate  >> CWEventMask
-    //  attributes.override_redirect;     // boolean value for override_redirect      >> CWDontPropagate
+    //  attributes.save_under;            // should bits under be saved? (popups)     >> CWSaveUnder
+    //  attributes.do_not_propagate_mask; // set of events that should not propagate  >> CWDontPropagate
+    //  attributes.override_redirect;     // boolean value for override_redirect      >> CWOverrideRedirect
     //  attributes.colormap;              // color map to be associated with window   >> CWColormap
     //  attributes.cursor;                // cursor to be displayed (or None)         >> CWCursor
 
+
+    // KeyPressMask		Keyboard down events wanted
+    // KeyReleaseMask		Keyboard up events wanted
+    // ButtonPressMask		Pointer button down events wanted
+    // ButtonReleaseMask		Pointer button up events wanted
+    // EnterWindowMask		Pointer window entry events wanted
+    // LeaveWindowMask		Pointer window leave events wanted
+    // PointerMotionMask		Pointer motion events wanted
+    // PointerMotionHintMask		Pointer motion hints wanted
+    // Button1MotionMask		Pointer motion while button 1 down
+    // Button2MotionMask		Pointer motion while button 2 down
+    // Button3MotionMask		Pointer motion while button 3 down
+    // Button4MotionMask		Pointer motion while button 4 down
+    // Button5MotionMask		Pointer motion while button 5 down
+    // ButtonMotionMask		Pointer motion while any button down
+    // KeymapStateMask		Keyboard state wanted at window entry and focus in
+    // ExposureMask		Any exposure wanted
+    // VisibilityChangeMask		Any change in visibility wanted
+    // StructureNotifyMask		Any change in window structure wanted
+    // ResizeRedirectMask		Redirect resize of this window
+    // SubstructureNotifyMask		Substructure notification wanted
+    // SubstructureRedirectMask		Redirect structure requests on children
+    // FocusChangeMask		Any change in input focus wanted
+    // PropertyChangeMask		Any change in property wanted
+    // ColormapChangeMask		Any change in colormap wanted
+    // OwnerGrabButtonMask		Automatic grabs should activate with owner_events set to True
+    //
     m_connection->clear_errors();
     m_window = XCreateWindow(
     m_connection->display(), root_window, x, y, m_width, m_height, border_width, depth, window_class, visual, valuemask, &attributes);
@@ -117,6 +151,16 @@ void x11_window::hide()
 void x11_window::focus()
 {
     throw std::logic_error("Function is not implemented.");
+}
+
+void x11_window::process_events()
+{
+    XEvent event;
+    while (XCheckIfEvent(m_connection->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
+        if (event.xany.type == VisibilityNotify) {
+
+        }
+    }
 }
 
 void x11_window::minimize()

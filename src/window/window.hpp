@@ -27,6 +27,7 @@ public:
     void show();
     void hide();
     void focus();
+    void process_events();
 
     void minimize();
     void maximize();
