@@ -131,10 +131,6 @@ public:
 #define NEED_ASSERT true
 #endif
 
-#ifdef FORCE_ASSERT
-#define NEED_ASSERT true
-#endif
-
 #ifdef NEED_ASSERT
 
 /// @brief @ref STRINGIZE implementation details.

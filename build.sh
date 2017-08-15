@@ -67,7 +67,7 @@ function configure {
 
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
-    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
 }
 
 function build_framework {
