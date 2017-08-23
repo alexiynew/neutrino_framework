@@ -6,3 +6,4 @@ nbproject/
 .vimrc
 .DS_Store
 .xvfb.log
+.dir-locals.*
