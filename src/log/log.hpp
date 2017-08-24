@@ -3,8 +3,8 @@
 /// @author Fedorov Alexey
 /// @date 08.03.2017
 
-#ifndef FRAMEWORK_LOG_HPP
-#define FRAMEWORK_LOG_HPP
+#ifndef FRAMEWORK_LOG_LOG_HPP
+#define FRAMEWORK_LOG_LOG_HPP
 
 #include <memory>
 #include <string>
