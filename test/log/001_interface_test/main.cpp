@@ -1,10 +1,11 @@
-#include <iostream>
 #include <log/log.hpp>
+#include <log/stream_logger.hpp>
+#include <sstream>
 #include <string>
 #include <unit_test/suite.hpp>
-#include <vector>
 
 using framework::logging::log;
+using framework::logging::stream_logger;
 
 std::string to_string(const framework::logging::logger::level level)
 {
@@ -19,42 +20,21 @@ std::string to_string(const framework::logging::logger::level level)
     }
 }
 
-class simple_logger : public framework::logging::logger
-{
-public:
-    void add_message(const logger::level message_level, const std::string& tag, const std::string& message) override
-    {
-        m_messages.push_back(to_string(message_level) + "_" + tag + "_" + message);
-    }
-
-    std::vector<std::string> messages() const
-    {
-        return m_messages;
-    }
-
-    bool are_messages_equal_to(const std::vector<std::string>& example) const
-    {
-        return m_messages == example;
-    }
-
-private:
-    std::vector<std::string> m_messages;
-};
-
 class logger_interface_test : public framework::unit_test::suite
 {
 public:
     logger_interface_test()
         : suite(suite_name)
     {
-        add_test([this]() { simple_logger_test(); }, "simple_logger_test");
+        add_test([this]() { stream_logger_test(); }, "stream_logger_test");
         add_test([this]() { assertion_test(); }, "assertion_test");
     }
 
 private:
-    void simple_logger_test()
+    void stream_logger_test()
     {
-        log::set_logger(std::make_unique<simple_logger>());
+        std::stringstream log_stream;
+        log::set_logger(std::make_unique<stream_logger>(log_stream));
 
         log::debug(suite_name, "message_1");
         log::info(suite_name, "message_2");
@@ -64,42 +44,39 @@ private:
 
         using level = framework::logging::logger::level;
 
-        const std::vector<std::string> example{
-        to_string(level::debug) + "_" + suite_name + "_message_1",
-        to_string(level::info) + "_" + suite_name + "_message_2",
-        to_string(level::warning) + "_" + suite_name + "_message_3",
-        to_string(level::error) + "_" + suite_name + "_message_4",
-        to_string(level::fatal) + "_" + suite_name + "_message_5",
-        };
+        std::stringstream log_test;
+        log_test << "[" << to_string(level::debug) << "] " << suite_name << ": message_1" << std::endl;
+        log_test << "[" << to_string(level::info) << "] " << suite_name << ": message_2" << std::endl;
+        log_test << "[" << to_string(level::warning) << "] " << suite_name << ": message_3" << std::endl;
+        log_test << "[" << to_string(level::error) << "] " << suite_name << ": message_4" << std::endl;
+        log_test << "[" << to_string(level::fatal) << "] " << suite_name << ": message_5" << std::endl;
 
-        const simple_logger* logger = static_cast<simple_logger*>(log::get_logger());
-
-        TEST_ASSERT(logger->are_messages_equal_to(example), "Log messages are not correct.");
+        TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }
 
     void assertion_test()
     {
-        log::set_logger(std::make_unique<simple_logger>());
+        std::stringstream log_stream;
+        log::set_logger(std::make_unique<stream_logger>(log_stream));
 
         ASSERT(0 != false);
         ASSERT_MSG(0 != false, "Test assert message.");
 
         using level = framework::logging::logger::level;
 
-        const std::vector<std::string> example{
-        to_string(level::error) + "_" + "ASSERTION" + "_" + __FILE__ + ":84: 0 != false",
-        to_string(level::error) + "_" + "ASSERTION" + "_" + __FILE__ + ":85: \"Test assert message.\"",
-        };
+        std::stringstream log_test;
+        log_test << "[" << to_string(level::error) << "] "
+                 << "ASSERTION: " << __FILE__ << ":62: 0 != false" << std::endl;
+        log_test << "[" << to_string(level::error) << "] "
+                 << "ASSERTION: " << __FILE__ << ":63: \"Test assert message.\"" << std::endl;
 
-        const simple_logger* logger = static_cast<simple_logger*>(log::get_logger());
-
-        TEST_ASSERT(logger->are_messages_equal_to(example), "Log messages are not correct.");
+        TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }
 
     static const char* suite_name;
 };
 
-const char* logger_interface_test::suite_name = "logger_interface_test";
+const char* logger_interface_test::suite_name = "logger_test";
 
 int main()
 {
