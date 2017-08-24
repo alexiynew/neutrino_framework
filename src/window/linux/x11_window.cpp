@@ -35,6 +35,47 @@ int32 event_predicate(Display*, XEvent* event, XPointer arg)
     return event->xany.window == *(reinterpret_cast<Window*>(arg));
 }
 
+std::string event_type_string(const XEvent& event)
+{
+    switch (event.xany.type) {
+        case KeyPress: return "KeyPress";
+        case KeyRelease: return "KeyRelease";
+        case ButtonPress: return "ButtonPress";
+        case ButtonRelease: return "ButtonRelease";
+        case MotionNotify: return "MotionNotify";
+        case EnterNotify: return "EnterNotify";
+        case LeaveNotify: return "LeaveNotify";
+        case FocusIn: return "FocusIn";
+        case FocusOut: return "FocusOut";
+        case KeymapNotify: return "KeymapNotify";
+        case Expose: return "Expose";
+        case GraphicsExpose: return "GraphicsExpose";
+        case NoExpose: return "NoExpose";
+        case VisibilityNotify: return "VisibilityNotify";
+        case CreateNotify: return "CreateNotify";
+        case DestroyNotify: return "DestroyNotify";
+        case UnmapNotify: return "UnmapNotify";
+        case MapNotify: return "MapNotify";
+        case MapRequest: return "MapRequest";
+        case ReparentNotify: return "ReparentNotify";
+        case ConfigureNotify: return "ConfigureNotify";
+        case ConfigureRequest: return "ConfigureRequest";
+        case GravityNotify: return "GravityNotify";
+        case ResizeRequest: return "ResizeRequest";
+        case CirculateNotify: return "CirculateNotify";
+        case CirculateRequest: return "CirculateRequest";
+        case PropertyNotify: return "PropertyNotify";
+        case SelectionClear: return "SelectionClear";
+        case SelectionRequest: return "SelectionRequest";
+        case SelectionNotify: return "SelectionNotify";
+        case ColormapNotify: return "ColormapNotify";
+        case ClientMessage: return "ClientMessage";
+        case MappingNotify: return "MappingNotify";
+        case GenericEvent: return "GenericEvent";
+        default: return "UNKNOWN";
+    }
+}
+
 }
 
 namespace framework {
@@ -77,8 +118,8 @@ void x11_window::show()
 
     XSetWindowAttributes attributes = {};
 
-    attributes.background_pixel = color; // CWBackPixel
-    attributes.event_mask = VisibilityChangeMask; // CWEventMask
+    attributes.background_pixel = color;                // CWBackPixel
+    attributes.event_mask       = VisibilityChangeMask; // CWEventMask
 
     //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
     //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
@@ -158,7 +199,7 @@ void x11_window::process_events()
     XEvent event;
     while (XCheckIfEvent(m_connection->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
         if (event.xany.type == VisibilityNotify) {
-
+            log::info(log_tag, event_type_string(event));
         }
     }
 }

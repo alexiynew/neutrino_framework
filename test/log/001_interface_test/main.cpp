@@ -1,9 +1,10 @@
+#include <iostream>
 #include <log/log.hpp>
 #include <string>
 #include <unit_test/suite.hpp>
 #include <vector>
 
-// TODO Add test for assertions
+using framework::logging::log;
 
 std::string to_string(const framework::logging::logger::level level)
 {
@@ -26,6 +27,11 @@ public:
         m_messages.push_back(to_string(message_level) + "_" + tag + "_" + message);
     }
 
+    std::vector<std::string> messages() const
+    {
+        return m_messages;
+    }
+
     bool are_messages_equal_to(const std::vector<std::string>& example) const
     {
         return m_messages == example;
@@ -42,13 +48,12 @@ public:
         : suite(suite_name)
     {
         add_test([this]() { simple_logger_test(); }, "simple_logger_test");
+        add_test([this]() { assertion_test(); }, "assertion_test");
     }
 
 private:
     void simple_logger_test()
     {
-        using framework::logging::log;
-
         log::set_logger(std::make_unique<simple_logger>());
 
         log::debug(suite_name, "message_1");
@@ -65,6 +70,25 @@ private:
         to_string(level::warning) + "_" + suite_name + "_message_3",
         to_string(level::error) + "_" + suite_name + "_message_4",
         to_string(level::fatal) + "_" + suite_name + "_message_5",
+        };
+
+        const simple_logger* logger = static_cast<simple_logger*>(log::get_logger());
+
+        TEST_ASSERT(logger->are_messages_equal_to(example), "Log messages are not correct.");
+    }
+
+    void assertion_test()
+    {
+        log::set_logger(std::make_unique<simple_logger>());
+
+        ASSERT(0 != false);
+        ASSERT_MSG(0 != false, "Test assert message.");
+
+        using level = framework::logging::logger::level;
+
+        const std::vector<std::string> example{
+        to_string(level::error) + "_" + "ASSERTION" + "_" + __FILE__ + ":84: 0 != false",
+        to_string(level::error) + "_" + "ASSERTION" + "_" + __FILE__ + ":85: \"Test assert message.\"",
         };
 
         const simple_logger* logger = static_cast<simple_logger*>(log::get_logger());

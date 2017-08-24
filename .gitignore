@@ -9,3 +9,4 @@ nbproject/
 .xvfb.log
 .clang_complete
 tags
+.dir-locals.*
