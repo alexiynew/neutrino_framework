@@ -183,6 +183,7 @@ void x11_window::hide()
 {
     if (m_connection->display() && m_window) {
         XDestroyWindow(m_connection->display(), m_window);
+        XSync(m_connection->display(), false);
     }
     m_window = 0;
 
@@ -198,9 +199,7 @@ void x11_window::process_events()
 {
     XEvent event;
     while (XCheckIfEvent(m_connection->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
-        if (event.xany.type == VisibilityNotify) {
-            log::info(log_tag, event_type_string(event));
-        }
+        log::info(log_tag, event_type_string(event));
     }
 }
 

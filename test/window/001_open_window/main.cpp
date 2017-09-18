@@ -2,6 +2,8 @@
 #include <thread>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
+#include <log/stream_logger.hpp>
+#include <iostream>
 
 class window_test : public framework::unit_test::suite
 {
@@ -9,7 +11,7 @@ public:
     window_test()
         : suite("window_test")
     {
-        add_test([this]() { open_window(); }, "open_window");
+//        add_test([this]() { open_window(); }, "open_window");
         add_test([this]() { open_several_windows(); }, "open_several_windows");
     }
 
@@ -36,6 +38,10 @@ private:
 
     void open_several_windows()
     {
+        using ::framework::logging::log;
+        using ::framework::logging::stream_logger;
+        log::set_logger(std::make_unique<stream_logger>(std::cout));
+
         constexpr std::chrono::milliseconds timespan(100);
 
         framework::window windows[5];
