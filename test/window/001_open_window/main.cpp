@@ -11,7 +11,7 @@ public:
     window_test()
         : suite("window_test")
     {
-//        add_test([this]() { open_window(); }, "open_window");
+        add_test([this]() { open_window(); }, "open_window");
         add_test([this]() { open_several_windows(); }, "open_several_windows");
     }
 

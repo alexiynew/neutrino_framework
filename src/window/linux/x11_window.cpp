@@ -16,7 +16,6 @@ namespace {
 
 const char* const log_tag = "x11_window";
 
-
 void log_x_server_errors(const std::shared_ptr<x_server_connection>& connection)
 {
     while (connection->error_state() != x_server_connection::state::no_error) {
@@ -90,7 +89,6 @@ x11_window::x11_window()
     , m_width{640}
     , m_height{480}
     , m_window{0}
-    , m_state(state_flags_count, false)
 {
     if (m_connection->error_state() != x_server_connection::state::no_error) {
         throw_error(m_connection->error_message());
@@ -293,8 +291,41 @@ std::string x11_window::title()
     throw std::logic_error("Function is not implemented.");
 }
 
-std::vector<bool> x11_window::state()
+bool x11_window::full_screen() 
 {
-    return m_state;
+    throw std::logic_error("Function is not implemented.");
 }
+
+bool x11_window::minimized() 
+{
+    throw std::logic_error("Function is not implemented.");
+}
+
+bool x11_window::maximized() 
+{
+    throw std::logic_error("Function is not implemented.");
+}
+
+bool x11_window::resizable() 
+{
+    throw std::logic_error("Function is not implemented.");
+}
+
+bool x11_window::visible() 
+{
+    XWindowAttributes attributes;
+    if(XGetWindowAttributes(m_connection->display(), m_window, &attributes)) {
+        return attributes.map_state == IsViewable;
+    } else {
+        log_x_server_errors(m_connection);
+    }
+
+    return false;
+}
+
+bool x11_window::focused() 
+{
+    throw std::logic_error("Function is not implemented.");
+}
+
 } // namespace framework

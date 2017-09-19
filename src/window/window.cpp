@@ -135,35 +135,38 @@ std::string window::title()
 {
     return m_implementation->title();
 }
+/// @}
 
+/// @name state
+/// @{
 bool window::full_screen()
 {
-    return m_implementation->state()[window_implementation::state_flags::full_screen];
+    return m_implementation->full_screen();
 }
 
 bool window::minimized()
 {
-    return m_implementation->state()[window_implementation::state_flags::minimized];
+    return m_implementation->minimized();
 }
 
 bool window::maximized()
 {
-    return m_implementation->state()[window_implementation::state_flags::maximized];
+    return m_implementation->maximized();
 }
 
 bool window::resizable()
 {
-    return m_implementation->state()[window_implementation::state_flags::resizable];
+    return m_implementation->resizable();
 }
 
 bool window::visible()
 {
-    return m_implementation->state()[window_implementation::state_flags::visible];
+    return m_implementation->visible();
 }
 
 bool window::focused()
 {
-    return m_implementation->state()[window_implementation::state_flags::focused];
+    return m_implementation->focused();
 }
 /// @}
 }

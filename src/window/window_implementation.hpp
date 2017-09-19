@@ -16,19 +16,6 @@ namespace framework {
 class window_implementation
 {
 public:
-    enum state_flags
-    {
-        normal,
-        full_screen,
-        minimized,
-        maximized,
-        resizable,
-        visible,
-        focused
-    };
-
-    static constexpr uint32 state_flags_count = 7;
-
     window_implementation()          = default;
     virtual ~window_implementation() = default;
 
@@ -67,7 +54,13 @@ public:
 
     virtual std::string title() = 0;
 
-    virtual std::vector<bool> state() = 0;
+    // state
+    virtual bool full_screen() = 0;
+    virtual bool minimized() = 0;
+    virtual bool maximized() = 0;
+    virtual bool resizable() = 0;
+    virtual bool visible() = 0;
+    virtual bool focused() = 0;
 };
 
 std::unique_ptr<window_implementation> get_implementation();

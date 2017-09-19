@@ -51,7 +51,12 @@ public:
 
     std::string title() override;
 
-    std::vector<bool> state() override;
+    bool full_screen() override;
+    bool minimized() override;
+    bool maximized() override;
+    bool resizable() override;
+    bool visible() override;
+    bool focused() override;
 
 private:
     std::shared_ptr<x_server_connection> m_connection;
@@ -60,8 +65,6 @@ private:
     uint32 m_height;
 
     Window m_window;
-
-    std::vector<bool> m_state;
 };
 } // namespace framework
 
