@@ -14,18 +14,14 @@ std::unique_ptr<window_implementation> get_implementation()
 }
 
 win32_window::win32_window()
-{
-}
+{}
 
 win32_window::~win32_window()
-{
-}
+{}
 
 void win32_window::show()
-{
-}
+{}
 
 void win32_window::hide()
-{
-}
-}
+{}
+} // namespace framework

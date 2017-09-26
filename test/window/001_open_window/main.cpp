@@ -1,9 +1,9 @@
 #include <chrono>
+#include <iostream>
+#include <log/stream_logger.hpp>
 #include <thread>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
-#include <log/stream_logger.hpp>
-#include <iostream>
 
 class window_test : public framework::unit_test::suite
 {

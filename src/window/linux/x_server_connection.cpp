@@ -32,7 +32,7 @@ void release_error_handlers()
     XSetIOErrorHandler(nullptr);
     XSetErrorHandler(nullptr);
 }
-}
+} // namespace
 
 namespace framework {
 

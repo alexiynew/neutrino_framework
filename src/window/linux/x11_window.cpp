@@ -75,7 +75,7 @@ std::string event_type_string(const XEvent& event)
     }
 }
 
-}
+} // namespace
 
 namespace framework {
 
@@ -291,30 +291,30 @@ std::string x11_window::title()
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::full_screen() 
+bool x11_window::full_screen()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::minimized() 
+bool x11_window::minimized()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::maximized() 
+bool x11_window::maximized()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::resizable() 
+bool x11_window::resizable()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::visible() 
+bool x11_window::visible()
 {
     XWindowAttributes attributes;
-    if(XGetWindowAttributes(m_connection->display(), m_window, &attributes)) {
+    if (XGetWindowAttributes(m_connection->display(), m_window, &attributes)) {
         return attributes.map_state == IsViewable;
     } else {
         log_x_server_errors(m_connection);
@@ -323,7 +323,7 @@ bool x11_window::visible()
     return false;
 }
 
-bool x11_window::focused() 
+bool x11_window::focused()
 {
     throw std::logic_error("Function is not implemented.");
 }

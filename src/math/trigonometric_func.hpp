@@ -21,7 +21,7 @@ namespace trigonometric_functions_details {
 /// @brief Shortcut to get the common type.
 template <typename... Args>
 using common_type = vector_details::common_type<Args...>;
-}
+} // namespace trigonometric_functions_details
 
 /// @brief Defines trigonometric math functions.
 ///

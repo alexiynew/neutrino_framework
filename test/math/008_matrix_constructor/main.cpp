@@ -750,50 +750,32 @@ private:
 
     void matrix3x3_constructors()
     {
-        TEST_ASSERT(matrix3f(matrix44) == matrix3f(0, 1, 2, 0, 1, 2, 0, 1, 2),
-                    "Matrix3x3 from Matrix4x4 constructor failed.");
-        TEST_ASSERT(matrix3f(matrix43) == matrix3f(0, 1, 2, 0, 1, 2, 0, 1, 2),
-                    "Matrix3x3 from Matrix4x3 constructor failed.");
-        TEST_ASSERT(matrix3f(matrix42) == matrix3f(0, 1, 0, 0, 1, 0, 0, 1, 1),
-                    "Matrix3x3 from Matrix4x2 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix44) == matrix3f(0, 1, 2, 0, 1, 2, 0, 1, 2), "Matrix3x3 from Matrix4x4 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix43) == matrix3f(0, 1, 2, 0, 1, 2, 0, 1, 2), "Matrix3x3 from Matrix4x3 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix42) == matrix3f(0, 1, 0, 0, 1, 0, 0, 1, 1), "Matrix3x3 from Matrix4x2 constructor failed.");
 
-        TEST_ASSERT(matrix3f(matrix34) == matrix3f(0, 1, 2, 0, 1, 2, 0, 1, 2),
-                    "Matrix3x3 from Matrix3x4 constructor failed.");
-        TEST_ASSERT(matrix3f(matrix33) == matrix3f(0, 1, 2, 0, 1, 2, 0, 1, 2),
-                    "Matrix3x3 from Matrix3x3 constructor failed.");
-        TEST_ASSERT(matrix3f(matrix32) == matrix3f(0, 1, 0, 0, 1, 0, 0, 1, 1),
-                    "Matrix3x3 from Matrix3x2 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix34) == matrix3f(0, 1, 2, 0, 1, 2, 0, 1, 2), "Matrix3x3 from Matrix3x4 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix33) == matrix3f(0, 1, 2, 0, 1, 2, 0, 1, 2), "Matrix3x3 from Matrix3x3 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix32) == matrix3f(0, 1, 0, 0, 1, 0, 0, 1, 1), "Matrix3x3 from Matrix3x2 constructor failed.");
 
-        TEST_ASSERT(matrix3f(matrix24) == matrix3f(0, 1, 2, 0, 1, 2, 0, 0, 1),
-                    "Matrix3x3 from Matrix2x4 constructor failed.");
-        TEST_ASSERT(matrix3f(matrix23) == matrix3f(0, 1, 2, 0, 1, 2, 0, 0, 1),
-                    "Matrix3x3 from Matrix2x3 constructor failed.");
-        TEST_ASSERT(matrix3f(matrix22) == matrix3f(0, 1, 0, 0, 1, 0, 0, 0, 1),
-                    "Matrix3x3 from Matrix2x2 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix24) == matrix3f(0, 1, 2, 0, 1, 2, 0, 0, 1), "Matrix3x3 from Matrix2x4 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix23) == matrix3f(0, 1, 2, 0, 1, 2, 0, 0, 1), "Matrix3x3 from Matrix2x3 constructor failed.");
+        TEST_ASSERT(matrix3f(matrix22) == matrix3f(0, 1, 0, 0, 1, 0, 0, 0, 1), "Matrix3x3 from Matrix2x2 constructor failed.");
     }
 
     void matrix3x2_constructors()
     {
-        TEST_ASSERT(matrix3x2f(matrix44) == matrix3x2f(0, 1, 0, 1, 0, 1),
-                    "Matrix3x2 from Matrix4x4 constructor failed.");
-        TEST_ASSERT(matrix3x2f(matrix43) == matrix3x2f(0, 1, 0, 1, 0, 1),
-                    "Matrix3x2 from Matrix4x3 constructor failed.");
-        TEST_ASSERT(matrix3x2f(matrix42) == matrix3x2f(0, 1, 0, 1, 0, 1),
-                    "Matrix3x2 from Matrix4x2 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix44) == matrix3x2f(0, 1, 0, 1, 0, 1), "Matrix3x2 from Matrix4x4 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix43) == matrix3x2f(0, 1, 0, 1, 0, 1), "Matrix3x2 from Matrix4x3 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix42) == matrix3x2f(0, 1, 0, 1, 0, 1), "Matrix3x2 from Matrix4x2 constructor failed.");
 
-        TEST_ASSERT(matrix3x2f(matrix34) == matrix3x2f(0, 1, 0, 1, 0, 1),
-                    "Matrix3x2 from Matrix3x4 constructor failed.");
-        TEST_ASSERT(matrix3x2f(matrix33) == matrix3x2f(0, 1, 0, 1, 0, 1),
-                    "Matrix3x2 from Matrix3x3 constructor failed.");
-        TEST_ASSERT(matrix3x2f(matrix32) == matrix3x2f(0, 1, 0, 1, 0, 1),
-                    "Matrix3x2 from Matrix3x2 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix34) == matrix3x2f(0, 1, 0, 1, 0, 1), "Matrix3x2 from Matrix3x4 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix33) == matrix3x2f(0, 1, 0, 1, 0, 1), "Matrix3x2 from Matrix3x3 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix32) == matrix3x2f(0, 1, 0, 1, 0, 1), "Matrix3x2 from Matrix3x2 constructor failed.");
 
-        TEST_ASSERT(matrix3x2f(matrix24) == matrix3x2f(0, 1, 0, 1, 0, 0),
-                    "Matrix3x2 from Matrix2x4 constructor failed.");
-        TEST_ASSERT(matrix3x2f(matrix23) == matrix3x2f(0, 1, 0, 1, 0, 0),
-                    "Matrix3x2 from Matrix2x3 constructor failed.");
-        TEST_ASSERT(matrix3x2f(matrix22) == matrix3x2f(0, 1, 0, 1, 0, 0),
-                    "Matrix3x2 from Matrix2x2 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix24) == matrix3x2f(0, 1, 0, 1, 0, 0), "Matrix3x2 from Matrix2x4 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix23) == matrix3x2f(0, 1, 0, 1, 0, 0), "Matrix3x2 from Matrix2x3 constructor failed.");
+        TEST_ASSERT(matrix3x2f(matrix22) == matrix3x2f(0, 1, 0, 1, 0, 0), "Matrix3x2 from Matrix2x2 constructor failed.");
     }
 
     void matrix2x4_constructors()
@@ -822,26 +804,17 @@ private:
 
     void matrix2x3_constructors()
     {
-        TEST_ASSERT(matrix2x3f(matrix44) == matrix2x3f(0, 1, 2, 0, 1, 2),
-                    "Matrix2x3 form Matrix4x4 constructor failed.");
-        TEST_ASSERT(matrix2x3f(matrix43) == matrix2x3f(0, 1, 2, 0, 1, 2),
-                    "Matrix2x3 form Matrix4x3 constructor failed.");
-        TEST_ASSERT(matrix2x3f(matrix42) == matrix2x3f(0, 1, 0, 0, 1, 0),
-                    "Matrix2x3 form Matrix4x2 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix44) == matrix2x3f(0, 1, 2, 0, 1, 2), "Matrix2x3 form Matrix4x4 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix43) == matrix2x3f(0, 1, 2, 0, 1, 2), "Matrix2x3 form Matrix4x3 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix42) == matrix2x3f(0, 1, 0, 0, 1, 0), "Matrix2x3 form Matrix4x2 constructor failed.");
 
-        TEST_ASSERT(matrix2x3f(matrix34) == matrix2x3f(0, 1, 2, 0, 1, 2),
-                    "Matrix2x3 form Matrix3x4 constructor failed.");
-        TEST_ASSERT(matrix2x3f(matrix33) == matrix2x3f(0, 1, 2, 0, 1, 2),
-                    "Matrix2x3 form Matrix3x3 constructor failed.");
-        TEST_ASSERT(matrix2x3f(matrix32) == matrix2x3f(0, 1, 0, 0, 1, 0),
-                    "Matrix2x3 form Matrix3x2 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix34) == matrix2x3f(0, 1, 2, 0, 1, 2), "Matrix2x3 form Matrix3x4 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix33) == matrix2x3f(0, 1, 2, 0, 1, 2), "Matrix2x3 form Matrix3x3 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix32) == matrix2x3f(0, 1, 0, 0, 1, 0), "Matrix2x3 form Matrix3x2 constructor failed.");
 
-        TEST_ASSERT(matrix2x3f(matrix24) == matrix2x3f(0, 1, 2, 0, 1, 2),
-                    "Matrix2x3 form Matrix2x4 constructor failed.");
-        TEST_ASSERT(matrix2x3f(matrix23) == matrix2x3f(0, 1, 2, 0, 1, 2),
-                    "Matrix2x3 form Matrix2x3 constructor failed.");
-        TEST_ASSERT(matrix2x3f(matrix22) == matrix2x3f(0, 1, 0, 0, 1, 0),
-                    "Matrix2x3 form Matrix2x2 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix24) == matrix2x3f(0, 1, 2, 0, 1, 2), "Matrix2x3 form Matrix2x4 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix23) == matrix2x3f(0, 1, 2, 0, 1, 2), "Matrix2x3 form Matrix2x3 constructor failed.");
+        TEST_ASSERT(matrix2x3f(matrix22) == matrix2x3f(0, 1, 0, 0, 1, 0), "Matrix2x3 form Matrix2x2 constructor failed.");
     }
 
     void matrix2x2_constructors()

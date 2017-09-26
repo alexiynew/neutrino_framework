@@ -19,7 +19,7 @@ std::string to_string(const framework::logging::logger::level level)
         default: return "UNKNOWN";
     }
 }
-}
+} // namespace
 
 namespace framework {
 
@@ -27,8 +27,7 @@ namespace logging {
 
 stream_logger::stream_logger(std::ostream& stream)
     : m_output(stream)
-{
-}
+{}
 
 void stream_logger::add_message(const logger::level error_level, const std::string& tag, const std::string& message)
 {

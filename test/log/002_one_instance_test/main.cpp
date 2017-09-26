@@ -1,7 +1,7 @@
-#include <sstream>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
 #include <shared_lib/shared_lib.hpp>
+#include <sstream>
 #include <static_lib/static_lib.hpp>
 #include <unit_test/suite.hpp>
 

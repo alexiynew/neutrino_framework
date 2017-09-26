@@ -11,12 +11,10 @@ namespace framework {
 
 window::window()
     : m_implementation(get_implementation())
-{
-}
+{}
 
 window::~window()
-{
-}
+{}
 
 /// @name actions
 /// @{
@@ -169,4 +167,5 @@ bool window::focused()
     return m_implementation->focused();
 }
 /// @}
-}
+
+} // namespace framework

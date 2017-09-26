@@ -25,6 +25,6 @@ private:
     NSAutoreleasePool* pool;
     NSWindow* window;
 };
-}
+} // namespace framework
 
 #endif

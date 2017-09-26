@@ -71,6 +71,6 @@ public:
 private:
     std::unique_ptr<window_implementation> m_implementation;
 };
-}
+} // namespace framework
 
 #endif

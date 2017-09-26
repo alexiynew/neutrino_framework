@@ -56,14 +56,14 @@ public:
 
     // state
     virtual bool full_screen() = 0;
-    virtual bool minimized() = 0;
-    virtual bool maximized() = 0;
-    virtual bool resizable() = 0;
-    virtual bool visible() = 0;
-    virtual bool focused() = 0;
+    virtual bool minimized()   = 0;
+    virtual bool maximized()   = 0;
+    virtual bool resizable()   = 0;
+    virtual bool visible()     = 0;
+    virtual bool focused()     = 0;
 };
 
 std::unique_ptr<window_implementation> get_implementation();
-}
+} // namespace framework
 
 #endif
