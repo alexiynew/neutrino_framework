@@ -122,7 +122,7 @@ public:
     virtual void add_message(const logger::level level, const std::string& tag, const std::string& message);
 };
 
-} // namespace logger
+} // namespace logging
 
 /// @def NEED_ASSERT
 /// @brief Indicates that its need to define assert macros.

@@ -20,6 +20,6 @@ public:
 };
 
 std::unique_ptr<window_implementation> get_implementation();
-}
+} // namespace framework
 
 #endif

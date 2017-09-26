@@ -16,8 +16,7 @@ void logger::add_message(const logger::level, const std::string&, const std::str
 
 log::log()
     : m_logger(nullptr)
-{
-}
+{}
 
 log& log::instance()
 {

@@ -181,8 +181,7 @@ private:
 
         static_assert(v4d1 == vector4d(1.1, 2.2, 0.0, 1.0), "Vector4d from vector2d constructor failed.");
         static_assert(v4d2 == vector4d(1.1, 2.2, 3.3, 4.4), "Vector4d from vector2d and 2 scalars constructor failed.");
-        static_assert(v4d3 == vector4d(3.3, 1.1, 2.2, 4.4),
-                      "Vector4d from scalar, vector2d and scalar constructor failed.");
+        static_assert(v4d3 == vector4d(3.3, 1.1, 2.2, 4.4), "Vector4d from scalar, vector2d and scalar constructor failed.");
         static_assert(v4d4 == vector4d(3.3, 4.4, 1.1, 2.2), "Vector4d from 2 scalars and vector2d constructor failed.");
         static_assert(v4d5 == vector4d(1.1, 2.2, 1.1, 2.2), "Vector4d from 2 vector2d constructor failed.");
 
@@ -302,10 +301,8 @@ private:
         constexpr vector2b v2b = vector2b(v3b);
 
         static_assert(v4b1 == vector4b(true, false, true, false), "Vector4b from vector3b constructor failed.");
-        static_assert(v4b2 == vector4b(true, false, true, true),
-                      "Vector4b from vector3b and scalar constructor failed.");
-        static_assert(v4b3 == vector4b(true, true, false, true),
-                      "Vector4b from scalar and vector3b constructor failed.");
+        static_assert(v4b2 == vector4b(true, false, true, true), "Vector4b from vector3b and scalar constructor failed.");
+        static_assert(v4b3 == vector4b(true, true, false, true), "Vector4b from scalar and vector3b constructor failed.");
 
         static_assert(v2b == vector2b(true, false), "Vector2b from vector3b constructor failed.");
     }
@@ -325,12 +322,10 @@ private:
         constexpr vector3b v3b3 = vector3b(true, v2b);
 
         static_assert(v4b1 == vector4b(true, false, false, false), "Vector4b from vector2b constructor failed.");
-        static_assert(v4b2 == vector4b(true, false, true, false),
-                      "Vector4b from vector2b and 2 scalars constructor failed.");
+        static_assert(v4b2 == vector4b(true, false, true, false), "Vector4b from vector2b and 2 scalars constructor failed.");
         static_assert(v4b3 == vector4b(true, true, false, false),
                       "Vector4b from scalar, vector2b and scalar constructor failed.");
-        static_assert(v4b4 == vector4b(true, false, true, false),
-                      "Vector4b from 2 scalars and vector2b constructor failed.");
+        static_assert(v4b4 == vector4b(true, false, true, false), "Vector4b from 2 scalars and vector2b constructor failed.");
         static_assert(v4b5 == vector4b(true, false, true, false), "Vector4b from 2 vector2b constructor failed.");
 
         static_assert(v3b1 == vector3b(true, false, false), "Vector3b from vector2b constructor failed.");

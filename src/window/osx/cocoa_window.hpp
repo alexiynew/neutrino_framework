@@ -19,6 +19,6 @@ public:
     void show() override;
     void hide() override;
 };
-}
+} // namespace framework
 
 #endif

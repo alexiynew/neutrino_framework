@@ -1827,14 +1827,12 @@ private:
 template <typename T>
 inline constexpr matrix<4, 4, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<4, 4, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -1876,8 +1874,7 @@ inline constexpr matrix<4, 4, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -1994,8 +1991,7 @@ inline constexpr matrix<4, 4, T>::matrix(const matrix<C, R, U>& other)
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0, 0)),
              matrix_details::get_column<2, C>(other, column_type(0, 0, 1, 0)),
              matrix_details::get_column<3, C>(other, column_type(0, 0, 0, 1))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<4, 4, T> operators.
@@ -2061,14 +2057,12 @@ inline typename matrix<4, 4, T>::row_type matrix<4, 4, T>::row(uint32 index) con
 template <typename T>
 inline constexpr matrix<4, 3, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 3, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2110,8 +2104,7 @@ inline constexpr matrix<4, 3, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2120,8 +2113,7 @@ inline constexpr matrix<4, 3, T>::matrix(const vector<3, U0>& column0,
                                          const vector<3, U2>& column2,
                                          const vector<3, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2166,8 +2158,7 @@ inline constexpr matrix<4, 3, T>::matrix(const matrix<C, R, U>& other)
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0)),
              matrix_details::get_column<2, C>(other, column_type(0, 0, 1)),
              matrix_details::get_column<3, C>(other, column_type(0, 0, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<4, 3, T> operators.
@@ -2233,14 +2224,12 @@ inline typename matrix<4, 3, T>::row_type matrix<4, 3, T>::row(uint32 index) con
 template <typename T>
 inline constexpr matrix<4, 2, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 2, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2282,8 +2271,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2292,8 +2280,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<3, U0>& column0,
                                          const vector<3, U2>& column2,
                                          const vector<3, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2302,8 +2289,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<2, U0>& column0,
                                          const vector<2, U2>& column2,
                                          const vector<2, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 template <typename T>
 template <uint32 C, uint32 R, typename U>
@@ -2312,8 +2298,7 @@ inline constexpr matrix<4, 2, T>::matrix(const matrix<C, R, U>& other)
              matrix_details::get_column<1, C>(other, column_type(0, 1)),
              matrix_details::get_column<2, C>(other, column_type(0, 0)),
              matrix_details::get_column<3, C>(other, column_type(0, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<4, 2, T> operators.
@@ -2379,14 +2364,12 @@ inline typename matrix<4, 2, T>::row_type matrix<4, 2, T>::row(uint32 index) con
 template <typename T>
 inline constexpr matrix<3, 4, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 4, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
-{
-}
+{}
 // clang-format off
 template <typename T>
 inline constexpr matrix<3, 4, T>::matrix(const T& value00, const T& value01, const T& value02, const T& value03,
@@ -2524,8 +2507,7 @@ inline constexpr matrix<3, 4, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0, 0)),
              matrix_details::get_column<2, C>(other, column_type(0, 0, 1, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<3, 4, T> operators.
@@ -2590,14 +2572,12 @@ inline typename matrix<3, 4, T>::row_type matrix<3, 4, T>::row(uint32 index) con
 template <typename T>
 inline constexpr matrix<3, 3, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 3, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2687,8 +2667,7 @@ inline constexpr matrix<3, 3, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0)),
              matrix_details::get_column<2, C>(other, column_type(0, 0, 1))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<3, 3, T> operators.
@@ -2753,14 +2732,12 @@ inline typename matrix<3, 3, T>::row_type matrix<3, 3, T>::row(uint32 index) con
 template <typename T>
 inline constexpr matrix<3, 2, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 2, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2796,22 +2773,19 @@ template <typename T>
 template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 2, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1, const vector<4, U2>& column2)
     : m_data{column_type(column0), column_type(column1), column_type(column2)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 2, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1, const vector<3, U2>& column2)
     : m_data{column_type(column0), column_type(column1), column_type(column2)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 2, T>::matrix(const vector<2, U0>& column0, const vector<2, U1>& column1, const vector<2, U2>& column2)
     : m_data{column_type(column0), column_type(column1), column_type(column2)}
-{
-}
+{}
 
 template <typename T>
 template <uint32 C, uint32 R, typename U>
@@ -2819,8 +2793,7 @@ inline constexpr matrix<3, 2, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1)),
              matrix_details::get_column<2, C>(other, column_type(0, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<3, 2, T> operators.
@@ -2885,14 +2858,12 @@ inline typename matrix<3, 2, T>::row_type matrix<3, 2, T>::row(uint32 index) con
 template <typename T>
 inline constexpr matrix<2, 4, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 4, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2925,8 +2896,7 @@ template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 4, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -3005,8 +2975,7 @@ template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<2, 4, T> operators.
@@ -3070,14 +3039,12 @@ inline typename matrix<2, 4, T>::row_type matrix<2, 4, T>::row(uint32 index) con
 template <typename T>
 inline constexpr matrix<2, 3, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 3, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -3110,15 +3077,13 @@ template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 3, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 3, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -3149,8 +3114,7 @@ template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_details::get_column<0, C>(other, column_type(1, 0, 0)),
              matrix_details::get_column<1, C>(other, column_type(0, 1, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<2, 3, T> operators.
@@ -3214,14 +3178,12 @@ inline typename matrix<2, 3, T>::row_type matrix<2, 3, T>::row(uint32 index) con
 template <typename T>
 inline constexpr matrix<2, 2, T>::matrix() noexcept
     : matrix(T{1})
-{
-}
+{}
 
 template <typename T>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 2, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -3254,29 +3216,25 @@ template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<2, U0>& column0, const vector<2, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 template <typename T>
 template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<C, R, U>& other)
     : m_data{static_cast<column_type>(other[0]), static_cast<column_type>(other[1])}
-{
-}
+{}
 /// @}
 
 /// @name matrix<2, 2, T> operators.

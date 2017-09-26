@@ -24,8 +24,7 @@ x11_window::x11_window()
     , m_height{480}
     , m_display{nullptr}
     , m_window{0}
-{
-}
+{}
 
 x11_window::~x11_window()
 {
@@ -66,4 +65,4 @@ void x11_window::hide()
     }
     m_display = nullptr;
 }
-}
+} // namespace framework
