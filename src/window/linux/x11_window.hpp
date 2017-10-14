@@ -8,12 +8,10 @@
 
 #include <X11/Xlib.h>
 #include <common/common_types.hpp>
-#include <vector>
+#include <window/linux/x11_server.hpp>
 #include <window/window_implementation.hpp>
 
 namespace framework {
-
-class x_server_connection;
 
 class x11_window final : public window_implementation
 {
@@ -59,7 +57,7 @@ public:
     bool focused() override;
 
 private:
-    std::shared_ptr<x_server_connection> m_connection;
+    std::shared_ptr<x11_server> m_server;
 
     uint32 m_width;
     uint32 m_height;

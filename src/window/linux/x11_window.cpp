@@ -5,9 +5,9 @@
 
 #include <exception>
 #include <log/log.hpp>
+#include <map>
 #include <string>
 #include <window/linux/x11_window.hpp>
-#include <window/linux/x_server_connection.hpp>
 
 using namespace framework;
 using log = framework::logging::log;
@@ -15,19 +15,6 @@ using log = framework::logging::log;
 namespace {
 
 const char* const log_tag = "x11_window";
-
-void log_x_server_errors(const std::shared_ptr<x_server_connection>& connection)
-{
-    while (connection->error_state() != x_server_connection::state::no_error) {
-        log::error(log_tag, connection->pop_error());
-    }
-}
-
-[[noreturn]] void throw_error(const std::string& message)
-{
-    log::error(log_tag, message);
-    throw std::runtime_error(message);
-}
 
 int32 event_predicate(Display*, XEvent* event, XPointer arg)
 {
@@ -85,26 +72,12 @@ std::unique_ptr<window_implementation> get_implementation()
 }
 
 x11_window::x11_window()
-    : m_connection{x_server_connection::connect()}
+    : m_server{x11_server::connect()}
     , m_width{640}
     , m_height{480}
     , m_window{0}
 {
-    if (m_connection->error_state() != x_server_connection::state::no_error) {
-        throw_error(m_connection->error_message());
-    }
-}
-
-x11_window::~x11_window()
-{
-    hide();
-}
-
-void x11_window::show()
-{
-    XID screen      = static_cast<XID>(DefaultScreen(m_connection->display()));
-    XID root_window = static_cast<XID>(RootWindow(m_connection->display(), screen));
-    XID color       = static_cast<XID>(WhitePixel(m_connection->display(), screen));
+    XID color = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
 
     int32 x             = 100;
     int32 y             = 100;
@@ -112,12 +85,13 @@ void x11_window::show()
     int32 depth         = 24;
     uint32 window_class = InputOutput;
     uint64 valuemask    = CWBackPixel | CWEventMask;
-    Visual* visual      = DefaultVisual(m_connection->display(), screen);
+    Visual* visual      = DefaultVisual(m_server->display(), m_server->default_screen());
 
     XSetWindowAttributes attributes = {};
 
-    attributes.background_pixel = color;                // CWBackPixel
-    attributes.event_mask       = VisibilityChangeMask; // CWEventMask
+    attributes.background_pixel = color; // CWBackPixel
+    attributes.event_mask =
+    VisibilityChangeMask | FocusChangeMask | SubstructureNotifyMask | SubstructureRedirectMask; // CWEventMask
 
     //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
     //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
@@ -159,45 +133,85 @@ void x11_window::show()
     // PropertyChangeMask		Any change in property wanted
     // ColormapChangeMask		Any change in colormap wanted
     // OwnerGrabButtonMask		Automatic grabs should activate with owner_events set to True
-    //
-    m_connection->clear_errors();
-    m_window = XCreateWindow(
-    m_connection->display(), root_window, x, y, m_width, m_height, border_width, depth, window_class, visual, valuemask, &attributes);
-    XSync(m_connection->display(), false);
 
-    if (!m_window || m_connection->error_state() != x_server_connection::state::no_error) {
-        log_x_server_errors(m_connection);
-        throw_error("Failed to create X Window.");
+    m_window = XCreateWindow(
+    m_server->display(), m_server->default_root_window(), x, y, m_width, m_height, border_width, depth, window_class, visual, valuemask, &attributes);
+    XSync(m_server->display(), False);
+
+    if (!m_window) {
+        throw std::runtime_error("Failed to create X Window.");
     }
 
     // TODO catch CreateNotify event
+}
 
-    XMapWindow(m_connection->display(), m_window);
+x11_window::~x11_window()
+{
+    if (m_server->display() && m_window) {
+        XDestroyWindow(m_server->display(), m_window);
+        XSync(m_server->display(), False);
+    }
+    // TODO catch DestroyNotify event
 
-    XFlush(m_connection->display());
+    m_window = 0;
+}
+
+void x11_window::show()
+{
+    XMapWindow(m_server->display(), m_window);
+    XFlush(m_server->display());
+    // TODO catch  MapNotify and Expose evenats
 }
 
 void x11_window::hide()
 {
-    if (m_connection->display() && m_window) {
-        XDestroyWindow(m_connection->display(), m_window);
-        XSync(m_connection->display(), false);
-    }
-    m_window = 0;
-
-    // TODO catch DestroyNotify event
+    XUnmapWindow(m_server->display(), m_window);
+    XFlush(m_server->display());
+    // TODO catch  UnmapNotify event
 }
 
 void x11_window::focus()
 {
-    throw std::logic_error("Function is not implemented.");
+    XWindowAttributes attributes;
+    XGetWindowAttributes(m_server->display(), m_window, &attributes);
+    if (attributes.map_state == IsUnmapped) {
+        return;
+    }
+
+    Atom net_active_window = m_server->get_atom(u8"_NET_ACTIVE_WINDOW", false);
+    if (m_server->ewmh_supported() && net_active_window != None) {
+
+        XEvent event               = {0};
+        event.type                 = ClientMessage;
+        event.xclient.window       = m_window;
+        event.xclient.message_type = net_active_window;
+        event.xclient.format       = 32;
+        event.xclient.data.l[0]    = 1; // source -> from application
+        event.xclient.data.l[1]    = 0; // last user activity timestamp
+        event.xclient.data.l[2]    = 0; // currently active window
+
+        if (!XSendEvent(m_server->display(),
+                        DefaultRootWindow(m_server->display()),
+                        False,
+                        SubstructureNotifyMask | SubstructureRedirectMask,
+                        &event)) {
+            log::error(log_tag, "Failed to send the \"_NET_ACTIVE_WINDOW\" client message.");
+        }
+    } else {
+        XRaiseWindow(m_server->display(), m_window);
+        XSetInputFocus(m_server->display(), m_window, RevertToPointerRoot, CurrentTime);
+    }
+
+    XFlush(m_server->display());
 }
 
 void x11_window::process_events()
 {
-    XEvent event;
-    while (XCheckIfEvent(m_connection->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
+    XEvent event = {0};
+    while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
         log::info(log_tag, event_type_string(event));
+
+        // TODO process FocusIn, FocusOut events
     }
 }
 
@@ -314,10 +328,10 @@ bool x11_window::resizable()
 bool x11_window::visible()
 {
     XWindowAttributes attributes;
-    if (XGetWindowAttributes(m_connection->display(), m_window, &attributes)) {
+    if (XGetWindowAttributes(m_server->display(), m_window, &attributes)) {
         return attributes.map_state == IsViewable;
     } else {
-        log_x_server_errors(m_connection);
+        log::warning(log_tag, "Can't get visible attribute.");
     }
 
     return false;
@@ -325,7 +339,11 @@ bool x11_window::visible()
 
 bool x11_window::focused()
 {
-    throw std::logic_error("Function is not implemented.");
+    Window focus_window;
+    int focus_state;
+    XGetInputFocus(m_server->display(), &focus_window, &focus_state);
+
+    return m_window == focus_window;
 }
 
 } // namespace framework

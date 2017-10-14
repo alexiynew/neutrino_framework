@@ -13,6 +13,7 @@ public:
     {
         add_test([this]() { open_window(); }, "open_window");
         add_test([this]() { open_several_windows(); }, "open_several_windows");
+        add_test([this]() { focus_window(); }, "focus_window");
     }
 
 private:
@@ -38,10 +39,6 @@ private:
 
     void open_several_windows()
     {
-        using ::framework::logging::log;
-        using ::framework::logging::stream_logger;
-        log::set_logger(std::make_unique<stream_logger>(std::cout));
-
         constexpr std::chrono::milliseconds timespan(100);
 
         framework::window windows[5];
@@ -67,6 +64,33 @@ private:
         for (auto& window : windows) {
             window.show();
         }
+    }
+
+    void focus_window()
+    {
+        constexpr std::chrono::milliseconds timespan(100);
+
+        framework::window alpha;
+        framework::window betta;
+
+        alpha.show();
+        betta.show();
+
+        std::this_thread::sleep_for(timespan);
+
+        alpha.focus();
+
+        std::this_thread::sleep_for(timespan);
+
+        TEST_ASSERT(alpha.focused(), "Focus function is not working.");
+        TEST_ASSERT(!betta.focused(), "Focus function is not working.");
+
+        betta.focus();
+
+        std::this_thread::sleep_for(timespan);
+
+        TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
+        TEST_ASSERT(betta.focused(), "Focus function is not working.");
     }
 };
 
