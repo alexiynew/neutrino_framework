@@ -3,99 +3,20 @@
 /// @author Fedorov Alexey
 /// @date 14.07.2017
 
-#ifndef FRAMEWORK_MATH_RELATIONAL_FUNC_HPP
-#define FRAMEWORK_MATH_RELATIONAL_FUNC_HPP
+#ifndef FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_HPP
 
 #include <common/common_types.hpp>
 #include <functional>
-#include <math/common_func.hpp>
+#include <math/common_functions.hpp>
 #include <math/matrix_type.hpp>
+#include <math/relational_functions_details.hpp>
 #include <math/vector_type.hpp>
 
 namespace framework {
 
 namespace math {
 
-/// @brief Contains implementation details of some functions.
-namespace relational_functions_details {
-
-/// @brief Realization of almost_equal function.
-/// @{
-template <typename T>
-inline bool almost_equal_details(const T& a, const T& b, int32 ulp, std::true_type)
-{
-    const auto scaled_epsilon = std::numeric_limits<T>::epsilon() * ::framework::math::abs(a + b) * static_cast<T>(ulp);
-    const auto difference     = ::framework::math::abs(a - b);
-    return difference < scaled_epsilon || difference < std::numeric_limits<T>::min();
-}
-
-template <typename T>
-inline bool almost_equal_details(const T& a, const T& b, int32, std::false_type)
-{
-    return a == b;
-}
-
-template <uint32 N, typename T>
-inline bool almost_equal_details(const vector<N, T>& a, const vector<N, T>& b, int32 ulp = 0)
-{
-    constexpr vector<N, bool> true_vector{true};
-    return true_vector == transform(a, b, [ulp](const T& component_a, const T& component_b) {
-               return almost_equal_details(component_a, component_b, ulp, std::is_floating_point<T>{});
-           });
-}
-
-template <uint32 C, uint32 R, typename T>
-inline bool almost_equal_details(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int32 ulp = 0)
-{
-    for (uint32 i = 0; i < C; ++i) {
-        if (!almost_equal_details(a[i], b[i], ulp)) {
-            return false;
-        }
-    }
-    return true;
-}
-/// @}
-
-/// @brief Realization of any function.
-/// @{
-inline bool any_details(const vector<4, bool>& v)
-{
-    return v.x || v.y || v.z || v.w;
-}
-
-inline bool any_details(const vector<3, bool>& v)
-{
-    return v.x || v.y || v.z;
-}
-
-inline bool any_details(const vector<2, bool>& v)
-{
-    return v.x || v.y;
-}
-/// @}
-
-/// @brief Realization of all function.
-/// @{
-inline bool all_details(const vector<4, bool>& v)
-{
-    return v.x && v.y && v.z && v.w;
-}
-
-inline bool all_details(const vector<3, bool>& v)
-{
-    return v.x && v.y && v.z;
-}
-
-inline bool all_details(const vector<2, bool>& v)
-{
-    return v.x && v.y;
-}
-/// @}
-
-} // namespace relational_functions_details
-
-/// @brief Defines rational math functions.
-///
 /// @addtogroup relational_functions
 /// @{
 
@@ -211,7 +132,7 @@ inline vector<N, bool> not_equal(const vector<N, T>& lhs, const vector<N, T>& rh
 template <typename T, typename std::enable_if<std::is_arithmetic<T>::value, int32>::type = 0>
 inline bool almost_equal(const T& a, const T& b, int32 ulp = 0)
 {
-    return relational_functions_details::almost_equal_details(a, b, ulp, std::is_floating_point<T>{});
+    return relational_functions_details::almost_equal_implementation(a, b, ulp, std::is_floating_point<T>{});
 }
 
 /// @brief Compares elements of two vectors with desired precision.
@@ -227,7 +148,7 @@ inline bool almost_equal(const T& a, const T& b, int32 ulp = 0)
 template <uint32 N, typename T>
 inline bool almost_equal(const vector<N, T>& a, const vector<N, T>& b, int32 ulp = 0)
 {
-    return relational_functions_details::almost_equal_details(a, b, ulp);
+    return relational_functions_details::almost_equal_implementation(a, b, ulp);
 }
 
 /// @brief Compares elements of two matrices with desired precision.
@@ -243,7 +164,7 @@ inline bool almost_equal(const vector<N, T>& a, const vector<N, T>& b, int32 ulp
 template <uint32 C, uint32 R, typename T>
 inline bool almost_equal(const matrix<C, R, T>& a, const matrix<C, R, T>& b, int32 ulp = 0)
 {
-    return relational_functions_details::almost_equal_details(a, b, ulp);
+    return relational_functions_details::almost_equal_implementation(a, b, ulp);
 }
 /// @}
 
@@ -305,7 +226,7 @@ inline vector<N, bool> logical_or(const vector<N, bool>& lhs, const vector<N, bo
 template <uint32 N>
 inline bool any(const vector<N, bool>& value)
 {
-    return relational_functions_details::any_details(value);
+    return relational_functions_details::any_implementation(value);
 }
 /// @}
 
@@ -320,7 +241,7 @@ inline bool any(const vector<N, bool>& value)
 template <uint32 N>
 inline bool all(const vector<N, bool>& value)
 {
-    return relational_functions_details::all_details(value);
+    return relational_functions_details::all_implementation(value);
 }
 /// @}
 

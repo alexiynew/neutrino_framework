@@ -7,3 +7,5 @@ nbproject/
 .DS_Store
 .xvfb.log
 .dir-locals.*
+.lvimrc
+tags

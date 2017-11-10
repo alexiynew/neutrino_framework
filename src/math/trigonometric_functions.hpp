@@ -3,8 +3,8 @@
 /// @author Fedorov Alexey
 /// @date 14.07.2017
 
-#ifndef FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_HPP
-#define FRAMEWORK_MATH_TRIGONOMETRIC_FUNC_HPP
+#ifndef FRAMEWORK_MATH_TRIGONOMETRIC_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_TRIGONOMETRIC_FUNCTIONS_HPP
 
 #include <cmath>
 #include <common/common_types.hpp>
@@ -15,16 +15,6 @@ namespace framework {
 
 namespace math {
 
-/// @brief Contains implementation details of some functions.
-namespace trigonometric_functions_details {
-
-/// @brief Shortcut to get the common type.
-template <typename... Args>
-using common_type = vector_details::common_type<Args...>;
-} // namespace trigonometric_functions_details
-
-/// @brief Defines trigonometric math functions.
-///
 /// @addtogroup trigonometric_functions
 /// @{
 
@@ -36,7 +26,7 @@ using common_type = vector_details::common_type<Args...>;
 /// @param degrees Value of floating-point or integral type.
 ///
 /// @return The value in radians.
-template <typename T, typename R = typename trigonometric_functions_details::common_type<decltype(deg_to_rad), T>::type>
+template <typename T, typename R = typename vector_type_details::common_type<decltype(deg_to_rad), T>::type>
 inline T radians(const T& degrees)
 {
     return static_cast<T>(static_cast<R>(deg_to_rad) * static_cast<R>(degrees));
@@ -62,7 +52,7 @@ inline vector<N, T> radians(const vector<N, T>& value)
 /// @param radians Value of floating-point or integral type.
 ///
 /// @return The value in degrees.
-template <typename T, typename R = typename trigonometric_functions_details::common_type<decltype(rad_to_deg), T>::type>
+template <typename T, typename R = typename vector_type_details::common_type<decltype(rad_to_deg), T>::type>
 inline T degrees(const T& radians)
 {
     return static_cast<T>(static_cast<R>(rad_to_deg) * static_cast<R>(radians));

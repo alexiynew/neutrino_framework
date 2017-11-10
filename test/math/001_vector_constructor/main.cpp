@@ -31,8 +31,8 @@ private:
         constexpr vector3f v3f;
         constexpr vector2i v2i;
 
-        static_assert(sizeof(v4d) == sizeof(real64) * 4 && v4d.size() == 4, "Vector4d size check failed.");
-        static_assert(sizeof(v3f) == sizeof(real32) * 3 && v3f.size() == 3, "Vector3f size check failed.");
+        static_assert(sizeof(v4d) == sizeof(float64) * 4 && v4d.size() == 4, "Vector4d size check failed.");
+        static_assert(sizeof(v3f) == sizeof(float32) * 3 && v3f.size() == 3, "Vector3f size check failed.");
         static_assert(sizeof(v2i) == sizeof(int) * 2 && v2i.size() == 2, "Vector2i size check failed.");
     }
 
@@ -112,10 +112,10 @@ private:
 
     void pointer_constructor()
     {
-        const real64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
-        const real32 data_f[3] = {1.0f, 2.0f, 3.0f};
-        const int32 data_i[2]  = {1, 2};
-        const uint32 data_u[2] = {1, 2};
+        const float64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
+        const float32 data_f[3] = {1.0f, 2.0f, 3.0f};
+        const int32 data_i[2]   = {1, 2};
+        const uint32 data_u[2]  = {1, 2};
 
         const vector4d v4d(data_d);
         const vector3f v3f(data_f);

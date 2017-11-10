@@ -8,145 +8,12 @@
 
 #include <common/common_types.hpp>
 #include <functional>
+#include <math/vector_type_details.hpp>
 
 namespace framework {
 
 namespace math {
 
-/// @brief Contains vector type implementation details.
-namespace vector_details {
-
-/// @brief Workaround to cast float numbers to bool without warnings.
-/// @{
-
-/// Common template.
-template <typename T>
-struct cast_to
-{
-    /// @brief Casts value to a specified type.
-    template <typename U, typename R = typename std::enable_if<std::is_arithmetic<U>::value, T>::type>
-    inline static constexpr R from(const U& value) noexcept
-    {
-        return static_cast<R>(value);
-    }
-};
-
-/// @brief Workaround to cast float numbers to bool without warnings.
-/// Specialization for boolean type.
-template <>
-struct cast_to<bool>
-{
-    /// @brief Casts value to a specified type.
-    template <typename U, typename R = typename std::enable_if<std::is_arithmetic<U>::value, bool>::type>
-    inline static constexpr R from(const U& value) noexcept
-    {
-        return std::not_equal_to<U>()(value, U{0});
-    }
-};
-/// @}
-
-/// @brief Helper that checks if all presented types are arithmetic.
-/// @{
-
-/// Common template.
-template <typename T, typename... Args>
-struct are_all_arithmetic
-{
-    /// @brief `true` if all provided types are arithmetic.
-    static constexpr bool value = std::is_arithmetic<T>::value && are_all_arithmetic<Args...>::value;
-};
-
-/// @brief Helper that checks if all presented types are arithmetic.
-/// Specialization for one type.
-template <typename T>
-struct are_all_arithmetic<T>
-{
-    /// @brief `true` if provided type are arithmetic.
-    static constexpr bool value = std::is_arithmetic<T>::value;
-};
-/// @}
-
-/// @brief Helper that give common type for all presented types.
-/// @{
-
-/// Common template.
-template <typename T, typename... Args>
-struct common_type_details
-{
-    /// @brief Common type for all provided types.
-    using type = typename std::common_type<T, typename common_type_details<Args...>::type>::type;
-};
-
-/// @brief Helper that give common type for all presented types.
-/// Specialization for one type.
-template <typename T>
-struct common_type_details<T>
-{
-    /// @brief Common type is T.
-    using type = T;
-};
-
-/// @brief Shortcut to get the common type.
-/// Also used for SFINAE to get correct overload of vector operators.
-template <typename... Args>
-using common_type = typename std::enable_if<are_all_arithmetic<Args...>::value, common_type_details<Args...>>::type;
-/// @}
-
-/// @brief Implementation of transform function.
-/// @{
-template <uint32 N>
-struct transform_details;
-
-/// @brief Implementation of transform function.
-/// Specialization for vector of 4 components.
-template <>
-struct transform_details<4>
-{
-    /// @brief Creates new vector of type R with provided function and arguments.
-    template <typename R, typename F, typename... Args>
-    static inline constexpr R create(F&& function, Args&&... value) noexcept
-    {
-        return R(std::forward<F>(function)(std::forward<Args>(value).x...),
-                 std::forward<F>(function)(std::forward<Args>(value).y...),
-                 std::forward<F>(function)(std::forward<Args>(value).z...),
-                 std::forward<F>(function)(std::forward<Args>(value).w...));
-    }
-};
-
-/// @brief Implementation of transform function.
-/// Specialization for vector of 3 components.
-template <>
-struct transform_details<3>
-{
-    /// @brief Creates new vector of type R with provided function and arguments.
-    template <typename R, typename F, typename... Args>
-    static inline constexpr R create(F&& function, Args&&... value) noexcept
-    {
-        return R(std::forward<F>(function)(std::forward<Args>(value).x...),
-                 std::forward<F>(function)(std::forward<Args>(value).y...),
-                 std::forward<F>(function)(std::forward<Args>(value).z...));
-    }
-};
-
-/// @brief Implementation of transform function.
-/// Specialization for vector of 2 components.
-template <>
-struct transform_details<2>
-{
-    /// @brief Creates new vector of type R with provided function and arguments.
-    template <typename R, typename F, typename... Args>
-    static inline constexpr R create(F&& function, Args&&... value) noexcept
-    {
-        return R(std::forward<F>(function)(std::forward<Args>(value).x...),
-                 std::forward<F>(function)(std::forward<Args>(value).y...));
-    }
-};
-/// @}
-
-} // namespace vector_details
-
-/// @brief Vector type implementation.
-///
 /// @addtogroup vector_implementation
 /// @{
 
@@ -555,10 +422,10 @@ inline constexpr vector<4, T>::vector(const vector<4, T>& other) noexcept = defa
 template <typename T>
 template <typename X, typename Y, typename Z, typename W>
 inline constexpr vector<4, T>::vector(const X& x_value, const Y& y_value, const Z& z_value, const W& w_value) noexcept
-    : x{vector_details::cast_to<T>::from(x_value)}
-    , y{vector_details::cast_to<T>::from(y_value)}
-    , z{vector_details::cast_to<T>::from(z_value)}
-    , w{vector_details::cast_to<T>::from(w_value)}
+    : x{vector_type_details::cast_to<T>::from(x_value)}
+    , y{vector_type_details::cast_to<T>::from(y_value)}
+    , z{vector_type_details::cast_to<T>::from(z_value)}
+    , w{vector_type_details::cast_to<T>::from(w_value)}
 {}
 
 template <typename T>
@@ -685,9 +552,9 @@ inline constexpr vector<3, T>::vector(const vector<3, T>& other) noexcept = defa
 template <typename T>
 template <typename X, typename Y, typename Z>
 inline constexpr vector<3, T>::vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept
-    : x{vector_details::cast_to<T>::from(x_value)}
-    , y{vector_details::cast_to<T>::from(y_value)}
-    , z{vector_details::cast_to<T>::from(z_value)}
+    : x{vector_type_details::cast_to<T>::from(x_value)}
+    , y{vector_type_details::cast_to<T>::from(y_value)}
+    , z{vector_type_details::cast_to<T>::from(z_value)}
 {}
 
 template <typename T>
@@ -788,8 +655,8 @@ inline constexpr vector<2, T>::vector(const vector<2, T>&) noexcept = default;
 template <typename T>
 template <typename X, typename Y>
 inline constexpr vector<2, T>::vector(const X& x_value, const Y& y_value) noexcept
-    : x{vector_details::cast_to<T>::from(x_value)}
-    , y{vector_details::cast_to<T>::from(y_value)}
+    : x{vector_type_details::cast_to<T>::from(x_value)}
+    , y{vector_type_details::cast_to<T>::from(y_value)}
 {}
 
 template <typename T>
@@ -902,7 +769,7 @@ template <uint32 N, typename T, typename U>
 inline vector<N, T>& operator+=(vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     for (uint32 i = 0; i < N; ++i) {
-        lhs[i] += vector_details::cast_to<T>::from(rhs[i]);
+        lhs[i] += vector_type_details::cast_to<T>::from(rhs[i]);
     }
 
     return lhs;
@@ -918,7 +785,7 @@ template <uint32 N, typename T, typename U>
 inline vector<N, T>& operator-=(vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     for (uint32 i = 0; i < N; ++i) {
-        lhs[i] -= vector_details::cast_to<T>::from(rhs[i]);
+        lhs[i] -= vector_type_details::cast_to<T>::from(rhs[i]);
     }
 
     return lhs;
@@ -934,7 +801,7 @@ template <uint32 N, typename T, typename U>
 inline vector<N, T>& operator*=(vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     for (uint32 i = 0; i < N; ++i) {
-        lhs[i] *= vector_details::cast_to<T>::from(rhs[i]);
+        lhs[i] *= vector_type_details::cast_to<T>::from(rhs[i]);
     }
 
     return lhs;
@@ -950,7 +817,7 @@ template <uint32 N, typename T, typename U>
 inline vector<N, T>& operator/=(vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     for (uint32 i = 0; i < N; ++i) {
-        lhs[i] /= vector_details::cast_to<T>::from(rhs[i]);
+        lhs[i] /= vector_type_details::cast_to<T>::from(rhs[i]);
     }
 
     return lhs;
@@ -966,7 +833,7 @@ template <uint32 N, typename T, typename U, typename std::enable_if<std::is_arit
 inline vector<N, T>& operator+=(vector<N, T>& lhs, const U& rhs) noexcept
 {
     for (uint32 i = 0; i < N; ++i) {
-        lhs[i] += vector_details::cast_to<T>::from(rhs);
+        lhs[i] += vector_type_details::cast_to<T>::from(rhs);
     }
 
     return lhs;
@@ -982,7 +849,7 @@ template <uint32 N, typename T, typename U, typename std::enable_if<std::is_arit
 inline vector<N, T>& operator-=(vector<N, T>& lhs, const U& rhs) noexcept
 {
     for (uint32 i = 0; i < N; ++i) {
-        lhs[i] -= vector_details::cast_to<T>::from(rhs);
+        lhs[i] -= vector_type_details::cast_to<T>::from(rhs);
     }
 
     return lhs;
@@ -998,7 +865,7 @@ template <uint32 N, typename T, typename U, typename std::enable_if<std::is_arit
 inline vector<N, T>& operator*=(vector<N, T>& lhs, const U& rhs) noexcept
 {
     for (uint32 i = 0; i < N; ++i) {
-        lhs[i] *= vector_details::cast_to<T>::from(rhs);
+        lhs[i] *= vector_type_details::cast_to<T>::from(rhs);
     }
 
     return lhs;
@@ -1014,7 +881,7 @@ template <uint32 N, typename T, typename U, typename std::enable_if<std::is_arit
 inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs) noexcept
 {
     for (uint32 i = 0; i < N; ++i) {
-        lhs[i] /= vector_details::cast_to<T>::from(rhs);
+        lhs[i] /= vector_type_details::cast_to<T>::from(rhs);
     }
 
     return lhs;
@@ -1030,7 +897,7 @@ inline vector<N, T>& operator/=(vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Second addend.
 ///
 /// @return Sum of two vectors.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1043,7 +910,7 @@ inline const vector<N, R> operator+(const vector<N, T>& lhs, const vector<N, U>&
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Difference of two vectors.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1056,7 +923,7 @@ inline const vector<N, R> operator-(const vector<N, T>& lhs, const vector<N, U>&
 /// @param rhs Second multiplier.
 ///
 /// @return Product of two vectors.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1069,7 +936,7 @@ inline const vector<N, R> operator*(const vector<N, T>& lhs, const vector<N, U>&
 /// @param rhs Divider vector.
 ///
 /// @return Quotient of two vectors.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const vector<N, T>& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1086,7 +953,7 @@ inline const vector<N, R> operator/(const vector<N, T>& lhs, const vector<N, U>&
 /// @param rhs Second addend.
 ///
 /// @return Sum of vector and scalar value.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const vector<N, T>& lhs, const U& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1099,7 +966,7 @@ inline const vector<N, R> operator+(const vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Difference of vector and scalar value.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const vector<N, T>& lhs, const U& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1112,7 +979,7 @@ inline const vector<N, R> operator-(const vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Second multiplier.
 ///
 /// @return Product of vector and scalar value.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const vector<N, T>& lhs, const U& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1125,7 +992,7 @@ inline const vector<N, R> operator*(const vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Divider scalar value.
 ///
 /// @return Quotient of vector and scalar value.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const vector<N, T>& lhs, const U& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1142,7 +1009,7 @@ inline const vector<N, R> operator/(const vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Second addend.
 ///
 /// @return Sum of scalar value and vector.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator+(const T& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1155,7 +1022,7 @@ inline const vector<N, R> operator+(const T& lhs, const vector<N, U>& rhs) noexc
 /// @param rhs Vector to subtract.
 ///
 /// @return Difference of scalar value and vector.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator-(const T& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1168,7 +1035,7 @@ inline const vector<N, R> operator-(const T& lhs, const vector<N, U>& rhs) noexc
 /// @param rhs Second multiplier.
 ///
 /// @return Product of scalar value and vector.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator*(const T& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1181,7 +1048,7 @@ inline const vector<N, R> operator*(const T& lhs, const vector<N, U>& rhs) noexc
 /// @param rhs Divider vector.
 ///
 /// @return Quotient of scalar value and vector.
-template <uint32 N, typename T, typename U, typename R = typename vector_details::common_type<T, U>::type>
+template <uint32 N, typename T, typename U, typename R = typename vector_type_details::common_type<T, U>::type>
 inline const vector<N, R> operator/(const T& lhs, const vector<N, U>& rhs) noexcept
 {
     vector<N, R> temp{lhs};
@@ -1285,7 +1152,7 @@ inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rh
 template <uint32 N, typename T, typename F, typename R = typename std::result_of<F(const T&)>::type>
 inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& function) noexcept
 {
-    return vector_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), value);
+    return vector_type_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), value);
 }
 
 /// @brief Creates new vector by applying the function to every component of provided vectors.
@@ -1300,7 +1167,7 @@ inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& function)
 template <uint32 N, typename T, typename U, typename F, typename R = typename std::result_of<F(const T&, const U&)>::type>
 inline constexpr vector<N, R> transform(const vector<N, T>& first, const vector<N, U>& second, F&& function) noexcept
 {
-    return vector_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), first, second);
+    return vector_type_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), first, second);
 }
 /// @}
 

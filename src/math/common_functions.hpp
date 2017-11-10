@@ -3,138 +3,19 @@
 /// @author Fedorov Alexey
 /// @date 04.05.2017
 
-#ifndef FRAMEWORK_MATH_COMMON_FUNC_HPP
-#define FRAMEWORK_MATH_COMMON_FUNC_HPP
+#ifndef FRAMEWORK_MATH_COMMON_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_COMMON_FUNCTIONS_HPP
 
 #include <cmath>
 #include <common/common_types.hpp>
 #include <limits>
+#include <math/common_functions_details.hpp>
 #include <math/vector_type.hpp>
 
 namespace framework {
 
 namespace math {
 
-/// @brief Contains implementation details of some functions.
-namespace common_functions_details {
-
-/// @brief Realization of abs function.
-/// @{
-template <typename T>
-inline constexpr T abs_details(const T& v, std::true_type)
-{
-    return (v < T{0}) ? -v : v;
-}
-
-template <typename T>
-inline constexpr T abs_details(const T& v, std::false_type)
-{
-    return v;
-}
-/// @}
-
-/// @brief Realization of sign function.
-/// @{
-template <typename T>
-inline constexpr T sign_details(const T& v, std::true_type)
-{
-    return static_cast<T>((T{0} < v) - (v < T{0}));
-}
-
-template <typename T>
-inline constexpr T sign_details(const T& v, std::false_type)
-{
-    return static_cast<T>(T{0} < v);
-}
-/// @}
-
-/// @brief Realization of modf function.
-/// @{
-template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
-inline vector<4, R> modf_details(const vector<4, T>& value, vector<4, T>& integral)
-{
-    return vector<4, R>(::std::modf(value.x, &integral.x),
-                        ::std::modf(value.y, &integral.y),
-                        ::std::modf(value.z, &integral.z),
-                        ::std::modf(value.w, &integral.w));
-}
-
-template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
-inline vector<3, R> modf_details(const vector<3, T>& value, vector<3, T>& integral)
-{
-    return vector<3, R>(
-    ::std::modf(value.x, &integral.x), ::std::modf(value.y, &integral.y), ::std::modf(value.z, &integral.z));
-}
-
-template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
-inline vector<2, R> modf_details(const vector<2, T>& value, vector<2, T>& integral)
-{
-    return vector<2, R>(::std::modf(value.x, &integral.x), ::std::modf(value.y, &integral.y));
-}
-/// @}
-
-/// @brief Realization of mix function.
-/// @{
-template <typename T, typename U>
-inline T mix_details(const T& a, const T& b, const U& t)
-{
-    return static_cast<T>(a + t * (b - a));
-}
-
-template <typename T>
-inline T mix_details(const T& a, const T& b, const bool& t)
-{
-    return t ? b : a;
-}
-
-template <typename T, typename U>
-inline constexpr vector<4, T> mix_details(const vector<4, T>& a, const vector<4, T>& b, const vector<4, U>& t)
-{
-    return vector<4, T>(
-    mix_details(a.x, b.x, t.x), mix_details(a.y, b.y, t.y), mix_details(a.z, b.z, t.z), mix_details(a.w, b.w, t.w));
-}
-
-template <typename T, typename U>
-inline constexpr vector<3, T> mix_details(const vector<3, T>& a, const vector<3, T>& b, const vector<3, U>& t)
-{
-    return vector<3, T>(mix_details(a.x, b.x, t.x), mix_details(a.y, b.y, t.y), mix_details(a.z, b.z, t.z));
-}
-
-template <typename T, typename U>
-inline constexpr vector<2, T> mix_details(const vector<2, T>& a, const vector<2, T>& b, const vector<2, U>& t)
-{
-    return vector<2, T>(mix_details(a.x, b.x, t.x), mix_details(a.y, b.y, t.y));
-}
-/// @}
-
-/// @brief Realization of frexp function.
-/// @{
-template <typename T, typename R>
-inline vector<4, R> frexp_details(const vector<4, T>& value, vector<4, int32>& exp)
-{
-    return vector<4, R>(::std::frexp(value.x, &exp.x),
-                        ::std::frexp(value.y, &exp.y),
-                        ::std::frexp(value.z, &exp.z),
-                        ::std::frexp(value.w, &exp.w));
-}
-
-template <typename T, typename R>
-inline vector<3, R> frexp_details(const vector<3, T>& value, vector<3, int32>& exp)
-{
-    return vector<3, R>(::std::frexp(value.x, &exp.x), ::std::frexp(value.y, &exp.y), ::std::frexp(value.z, &exp.z));
-}
-
-template <typename T, typename R>
-inline vector<2, R> frexp_details(const vector<2, T>& value, vector<2, int32>& exp)
-{
-    return vector<2, R>(::std::frexp(value.x, &exp.x), ::std::frexp(value.y, &exp.y));
-}
-/// @}
-
-} // namespace common_functions_details
-
-/// @brief Defines common math functions.
-///
 /// @addtogroup common_functions
 /// @{
 
@@ -149,7 +30,7 @@ inline vector<2, R> frexp_details(const vector<2, T>& value, vector<2, int32>& e
 template <typename T>
 inline constexpr T abs(const T& value)
 {
-    return common_functions_details::abs_details(value, std::is_signed<T>{});
+    return common_functions_details::abs(value, std::is_signed<T>{});
 }
 
 /// @brief Creates a vector of the absolute values from the provided vector.
@@ -177,7 +58,7 @@ inline constexpr vector<N, T> abs(const vector<N, T>& value)
 template <typename T>
 inline constexpr T sign(const T& value)
 {
-    return common_functions_details::sign_details(value, std::is_signed<T>{});
+    return common_functions_details::sign(value, std::is_signed<T>{});
 }
 
 /// @brief Creates a vector of the sign values from the provided vector.
@@ -409,7 +290,7 @@ inline R modf(const T& value, T& integral)
 template <uint32 N, typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
 inline vector<N, R> modf(const vector<N, T>& value, vector<N, T>& integral)
 {
-    return common_functions_details::modf_details(value, integral);
+    return common_functions_details::modf(value, integral);
 }
 /// @}
 
@@ -568,7 +449,7 @@ inline vector<N, T> clamp(const vector<N, T>& value, const vector<N, T>& min_val
 template <typename T, typename U>
 inline T mix(const T& a, const T& b, const U& t)
 {
-    return common_functions_details::mix_details(a, b, t);
+    return common_functions_details::mix(a, b, t);
 }
 
 /// @brief Linearly interpolate between two vectors.
@@ -585,7 +466,7 @@ inline T mix(const T& a, const T& b, const U& t)
 template <uint32 N, typename T, typename U>
 inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const U& t)
 {
-    return common_functions_details::mix_details(a, b, t);
+    return common_functions_details::mix(a, b, t);
 }
 
 /// @brief Linearly interpolate each component of vectors.
@@ -602,7 +483,7 @@ inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const U& t
 template <uint32 N, typename T, typename U>
 inline vector<N, T> mix(const vector<N, T>& a, const vector<N, T>& b, const vector<N, U>& t)
 {
-    return common_functions_details::mix_details(a, b, t);
+    return common_functions_details::mix(a, b, t);
 }
 /// @}
 
@@ -816,7 +697,7 @@ inline R frexp(const T& value, int32& exp)
 template <uint32 N, typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int32*>()))>
 inline vector<N, R> frexp(const vector<N, T>& value, vector<N, int32>& exp)
 {
-    return common_functions_details::frexp_details<T, R>(value, exp);
+    return common_functions_details::frexp<T, R>(value, exp);
 }
 /// @}
 

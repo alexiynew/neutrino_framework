@@ -3,53 +3,20 @@
 /// @author Fedorov Alexey
 /// @date 14.07.2017
 
-#ifndef FRAMEWORK_MATH_TRANSFORM_TYPE_HPP
-#define FRAMEWORK_MATH_TRANSFORM_TYPE_HPP
+#ifndef FRAMEWORK_MATH_TRANSFORM_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_TRANSFORM_FUNCTIONS_HPP
 
 #include <limits>
 #include <log/log.hpp>
-#include <math/common_func.hpp>
-#include <math/matrix_func.hpp>
+#include <math/common_functions.hpp>
+#include <math/matrix_functions.hpp>
 #include <math/matrix_type.hpp>
-#include <math/trigonometric_func.hpp>
+#include <math/trigonometric_functions.hpp>
 
 namespace framework {
 
 namespace math {
 
-/// @brief Contains implementation details of some functions.
-namespace transform_functions_details {
-
-/// @brief Creates a rotation 4x4 matrix.
-/// @{
-template <typename T, typename U>
-inline matrix<4, 4, T> create_rotate_matrix(const vector<3, T>& v, const U angle)
-{
-    const T cos = static_cast<T>(::framework::math::cos(angle));
-    const T sin = static_cast<T>(::framework::math::sin(angle));
-
-    const auto x_cos = v[0] * (1 - cos);
-    const auto y_cos = v[1] * (1 - cos);
-    const auto z_cos = v[2] * (1 - cos);
-
-    const auto x_sin = v[0] * sin;
-    const auto y_sin = v[1] * sin;
-    const auto z_sin = v[2] * sin;
-
-    // clang-format off
-    return matrix<4, 4, T>(
-            v[0] * x_cos + cos,   v[1] * x_cos + z_sin, v[2] * x_cos - y_sin, 0,
-            v[0] * y_cos - z_sin, v[1] * y_cos + cos,   v[2] * y_cos + x_sin, 0,
-            v[0] * z_cos + y_sin, v[1] * z_cos - x_sin, v[2] * z_cos + cos,   0,
-            0,                    0,                    0,                    1);
-    // clang-format on
-}
-/// @}
-
-} // namespace transform_functions_details
-
-/// @brief Defines transform functions.
-///
 /// @addtogroup transform_functions
 /// @{
 
@@ -120,7 +87,26 @@ inline matrix<3, 3, T> rotate(const matrix<3, 3, T>& m, const U angle)
 template <typename T, typename U>
 inline matrix<4, 4, T> rotate(const matrix<4, 4, T>& m, const vector<3, T>& v, const U angle)
 {
-    return m * transform_functions_details::create_rotate_matrix(v, angle);
+    const T cos = static_cast<T>(::framework::math::cos(angle));
+    const T sin = static_cast<T>(::framework::math::sin(angle));
+
+    const auto x_cos = v[0] * (1 - cos);
+    const auto y_cos = v[1] * (1 - cos);
+    const auto z_cos = v[2] * (1 - cos);
+
+    const auto x_sin = v[0] * sin;
+    const auto y_sin = v[1] * sin;
+    const auto z_sin = v[2] * sin;
+
+    // clang-format off
+    const matrix<4, 4, T> temp(
+            v[0] * x_cos + cos,   v[1] * x_cos + z_sin, v[2] * x_cos - y_sin, 0,
+            v[0] * y_cos - z_sin, v[1] * y_cos + cos,   v[2] * y_cos + x_sin, 0,
+            v[0] * z_cos + y_sin, v[1] * z_cos - x_sin, v[2] * z_cos + cos,   0,
+            0,                    0,                    0,                    1);
+    // clang-format on
+
+    return m * temp;
 }
 /// @}
 
