@@ -1,6 +1,4 @@
 #include <chrono>
-#include <iostream>
-#include <log/stream_logger.hpp>
 #include <thread>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>

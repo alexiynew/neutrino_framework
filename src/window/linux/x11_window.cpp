@@ -90,8 +90,8 @@ x11_window::x11_window()
     XSetWindowAttributes attributes = {};
 
     attributes.background_pixel = color; // CWBackPixel
-    attributes.event_mask =
-    VisibilityChangeMask | FocusChangeMask | SubstructureNotifyMask | SubstructureRedirectMask; // CWEventMask
+    attributes.event_mask       = ExposureMask | VisibilityChangeMask | FocusChangeMask | SubstructureNotifyMask |
+                            SubstructureRedirectMask; // CWEventMask
 
     //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
     //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
@@ -134,8 +134,18 @@ x11_window::x11_window()
     // ColormapChangeMask		Any change in colormap wanted
     // OwnerGrabButtonMask		Automatic grabs should activate with owner_events set to True
 
-    m_window = XCreateWindow(
-    m_server->display(), m_server->default_root_window(), x, y, m_width, m_height, border_width, depth, window_class, visual, valuemask, &attributes);
+    m_window = XCreateWindow(m_server->display(),
+                             m_server->default_root_window(),
+                             x,
+                             y,
+                             m_width,
+                             m_height,
+                             border_width,
+                             depth,
+                             window_class,
+                             visual,
+                             valuemask,
+                             &attributes);
     XSync(m_server->display(), False);
 
     if (!m_window) {

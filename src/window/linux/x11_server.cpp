@@ -3,10 +3,10 @@
 /// @author Fedorov Alexey
 /// @date 08.08.2017
 
+#include <X11/Xatom.h>
 #include <common/common_types.hpp>
 #include <log/log.hpp>
 #include <window/linux/x11_server.hpp>
-#include <X11/Xatom.h>
 
 using namespace framework;
 using log = ::framework::logging::log;
@@ -61,8 +61,7 @@ uint8* get_window_property(Display* display, Window window, Atom property, Atom 
     int32 result = XGetWindowProperty(
     display, window, property, 0, 1, False, type, &actual_type_return, &actual_format_return, &nitems_return, &bytes_after_return, &prop_return);
 
-    if (result != Success)
-    {
+    if (result != Success) {
         return nullptr;
     }
 
