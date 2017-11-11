@@ -3,44 +3,17 @@
 /// @author Fedorov Alexey
 /// @date 05.07.2017
 
-#ifndef FRAMEWORK_MATH_GEOMETRIC_FUNC_HPP
-#define FRAMEWORK_MATH_GEOMETRIC_FUNC_HPP
+#ifndef FRAMEWORK_MATH_GEOMETRIC_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_GEOMETRIC_FUNCTIONS_HPP
 
+#include <math/exponential_functions.hpp>
+#include <math/geometric_functions_details.hpp>
 #include <math/vector_type.hpp>
-
-#include <common/common_types.hpp>
-#include <math/exponential_func.hpp>
 
 namespace framework {
 
 namespace math {
 
-namespace geometric_functions_details {
-
-/// @brief Realization of dot function.
-/// @{
-template <typename T>
-inline constexpr T dot_details(const vector<4, T>& a, const vector<4, T>& b)
-{
-    return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
-}
-
-template <typename T>
-inline constexpr T dot_details(const vector<3, T>& a, const vector<3, T>& b)
-{
-    return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
-}
-
-template <typename T>
-inline constexpr T dot_details(const vector<2, T>& a, const vector<2, T>& b)
-{
-    return (a.x * b.x) + (a.y * b.y);
-}
-/// @}
-
-} // namespace geometric_functions_details
-
-/// @brief Defines geometric math functions.
 ///
 /// @addtogroup geometric_functions
 /// @{
@@ -56,7 +29,7 @@ inline constexpr T dot_details(const vector<2, T>& a, const vector<2, T>& b)
 template <uint32 N, typename T>
 inline T length(const vector<N, T>& value)
 {
-    return static_cast<T>(::framework::math::sqrt(geometric_functions_details::dot_details(value, value)));
+    return static_cast<T>(::framework::math::sqrt(geometric_functions_details::dot(value, value)));
 }
 /// @}
 
@@ -88,7 +61,7 @@ inline T distance(const vector<N, T>& a, const vector<N, T>& b)
 template <uint32 N, typename T>
 inline T dot(const vector<N, T>& a, const vector<N, T>& b)
 {
-    return geometric_functions_details::dot_details(a, b);
+    return geometric_functions_details::dot(a, b);
 }
 /// @}
 

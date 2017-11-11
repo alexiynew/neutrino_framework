@@ -3,8 +3,8 @@
 /// @author Fedorov Alexey
 /// @date 04.05.2017
 
-#ifndef FRAMEWORK_MATH_EXPONENTIAL_FUNC_HPP
-#define FRAMEWORK_MATH_EXPONENTIAL_FUNC_HPP
+#ifndef FRAMEWORK_MATH_EXPONENTIAL_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_EXPONENTIAL_FUNCTIONS_HPP
 
 #include <cmath>
 #include <common/common_types.hpp>
@@ -14,8 +14,6 @@ namespace framework {
 
 namespace math {
 
-/// @brief Defines exponential math functions.
-///
 /// @addtogroup exponential_functions
 /// @{
 

@@ -226,17 +226,17 @@ private:
 
     void data_function()
     {
-        real32* p44 = matrix44.data();
-        real32* p34 = matrix34.data();
-        real32* p24 = matrix24.data();
-        real32* p43 = matrix43.data();
-        real32* p33 = matrix33.data();
-        real32* p23 = matrix23.data();
-        real32* p42 = matrix42.data();
-        real32* p32 = matrix32.data();
-        real32* p22 = matrix22.data();
+        float32* p44 = matrix44.data();
+        float32* p34 = matrix34.data();
+        float32* p24 = matrix24.data();
+        float32* p43 = matrix43.data();
+        float32* p33 = matrix33.data();
+        float32* p23 = matrix23.data();
+        float32* p42 = matrix42.data();
+        float32* p32 = matrix32.data();
+        float32* p22 = matrix22.data();
 
-        auto check = [](const real32 a, const real32 b) { return framework::math::abs(a - b) <= 0; };
+        auto check = [](const float32 a, const float32 b) { return framework::math::abs(a - b) <= 0; };
 
         // clang-format off
         TEST_ASSERT(check(p44[0],  0.0f) && check(p44[1], 1.0f)  && check(p44[2], 2.0f)  && check(p44[3], 3.0f)  &&

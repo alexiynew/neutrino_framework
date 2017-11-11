@@ -40,17 +40,17 @@ public:
 private:
     void size_check()
     {
-        TEST_ASSERT(sizeof(matrix22) == sizeof(real32) * 2 * 2 && matrix22.size() == 2, "Matrix2x2 size check failed.");
-        TEST_ASSERT(sizeof(matrix23) == sizeof(real32) * 2 * 3 && matrix23.size() == 2, "Matrix2x3 size check failed.");
-        TEST_ASSERT(sizeof(matrix24) == sizeof(real32) * 2 * 4 && matrix24.size() == 2, "Matrix2x4 size check failed.");
+        TEST_ASSERT(sizeof(matrix22) == sizeof(float32) * 2 * 2 && matrix22.size() == 2, "Matrix2x2 size check failed.");
+        TEST_ASSERT(sizeof(matrix23) == sizeof(float32) * 2 * 3 && matrix23.size() == 2, "Matrix2x3 size check failed.");
+        TEST_ASSERT(sizeof(matrix24) == sizeof(float32) * 2 * 4 && matrix24.size() == 2, "Matrix2x4 size check failed.");
 
-        TEST_ASSERT(sizeof(matrix32) == sizeof(real32) * 3 * 2 && matrix32.size() == 3, "Matrix3x2 size check failed.");
-        TEST_ASSERT(sizeof(matrix33) == sizeof(real32) * 3 * 3 && matrix33.size() == 3, "Matrix3x3 size check failed.");
-        TEST_ASSERT(sizeof(matrix34) == sizeof(real32) * 3 * 4 && matrix34.size() == 3, "Matrix3x4 size check failed.");
+        TEST_ASSERT(sizeof(matrix32) == sizeof(float32) * 3 * 2 && matrix32.size() == 3, "Matrix3x2 size check failed.");
+        TEST_ASSERT(sizeof(matrix33) == sizeof(float32) * 3 * 3 && matrix33.size() == 3, "Matrix3x3 size check failed.");
+        TEST_ASSERT(sizeof(matrix34) == sizeof(float32) * 3 * 4 && matrix34.size() == 3, "Matrix3x4 size check failed.");
 
-        TEST_ASSERT(sizeof(matrix42) == sizeof(real32) * 4 * 2 && matrix42.size() == 4, "Matrix4x2 size check failed.");
-        TEST_ASSERT(sizeof(matrix43) == sizeof(real32) * 4 * 3 && matrix43.size() == 4, "Matrix4x3 size check failed.");
-        TEST_ASSERT(sizeof(matrix44) == sizeof(real32) * 4 * 4 && matrix44.size() == 4, "Matrix4x4 size check failed.");
+        TEST_ASSERT(sizeof(matrix42) == sizeof(float32) * 4 * 2 && matrix42.size() == 4, "Matrix4x2 size check failed.");
+        TEST_ASSERT(sizeof(matrix43) == sizeof(float32) * 4 * 3 && matrix43.size() == 4, "Matrix4x3 size check failed.");
+        TEST_ASSERT(sizeof(matrix44) == sizeof(float32) * 4 * 4 && matrix44.size() == 4, "Matrix4x4 size check failed.");
     }
 
     void default_constructor()
@@ -129,9 +129,9 @@ private:
 
     void pointer_constructor()
     {
-        const real32 data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-        const real32 data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
-        const real32 data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
+        const float32 data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+        const float32 data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
+        const float32 data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
 
         const matrix4x4f m44(data4);
         const matrix3x4f m34(data4);
