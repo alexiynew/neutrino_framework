@@ -1,8 +1,8 @@
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(LIB_NAME "shared_lib")
 
-file(GLOB_RECURSE LIB_SOURCES ${SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
+add_library(${LIB_NAME} SHARED shared_lib.cpp)
 
-add_library("shared_lib" SHARED ${LIB_SOURCES})
+target_link_libraries(${LIB_NAME} log)
 
-include_directories(${LIB_NAME} ${FRAMEWORK_SOURCES} ${TEST_SOURCE_DIR})
+target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES} ${TEST_SOURCE_DIR})

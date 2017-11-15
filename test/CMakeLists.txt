@@ -77,6 +77,11 @@ add_custom_target(run_all_tests
     DEPENDS ${PROJECT_NAME}
 )
 
+add_custom_target(run_all_tests_verbose
+    COMMAND ${CMAKE_CTEST_COMMAND} --build-config ${CMAKE_BUILD_TYPE} --output-on-failure --verbose
+    DEPENDS ${PROJECT_NAME}
+)
+
 add_custom_target(${PROJECT_NAME}
     DEPENDS ${FRAMEWORK_TESTS_DEPENDENCIES}
 )

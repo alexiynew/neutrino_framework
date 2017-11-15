@@ -1,8 +1,6 @@
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(LIB_NAME "static_lib")
 
-file(GLOB_RECURSE LIB_SOURCES ${SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
+add_library(${LIB_NAME} STATIC static_lib.cpp)
 
-add_library("static_lib" STATIC ${LIB_SOURCES})
-
-include_directories(${LIB_NAME} ${FRAMEWORK_SOURCES} ${TEST_SOURCE_DIR})
+target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES} ${TEST_SOURCE_DIR})

@@ -1,5 +1,3 @@
-
-
 class static_lib
 {
 public:

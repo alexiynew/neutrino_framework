@@ -1,5 +1,3 @@
-
-
 class shared_lib
 {
 public:
