@@ -1,16 +1,22 @@
 #include <iomanip>
 #include <iostream>
-
+#include <vector>
+#include <memory>
+#include <sstream>
 #include <unit_test/suite.hpp>
 
-class should_fail_test : public framework::unit_test::suite
+class custom_exception
+{};
+
+/// @name Test to fail
+/// @{
+class should_fail_test_assert : public framework::unit_test::suite
 {
 public:
-    should_fail_test()
-        : suite("should_fail_test")
+    should_fail_test_assert()
+        : suite("should_fail_test_assert")
     {
         add_test([this]() { test_assert(); }, "test_assert");
-        add_test([this]() { test_fail(); }, "test_fail");
     }
 
 private:
@@ -18,13 +24,61 @@ private:
     {
         TEST_ASSERT(false, "Test assert message.");
     }
+};
 
+class should_fail_test_fail : public framework::unit_test::suite
+{
+public:
+    should_fail_test_fail()
+        : suite("should_fail_test_fail")
+    {
+        add_test([this]() { test_fail(); }, "test_fail");
+    }
+
+private:
     void test_fail()
     {
         TEST_FAIL("Test fail message.");
     }
 };
 
+class should_fail_test_std_exception : public framework::unit_test::suite
+{
+public:
+    should_fail_test_std_exception()
+        : suite("should_fail_test_std_exception")
+    {
+        add_test([this]() { test_std_exception(); }, "test_std_exception");
+    }
+
+private:
+    [[noreturn]]
+    void test_std_exception()
+    {
+        throw std::runtime_error("Test exception");
+    }
+};
+ 
+class should_fail_test_any_exception : public framework::unit_test::suite
+{
+public:
+    should_fail_test_any_exception()
+        : suite("should_fail_test_any_exception")
+    {
+        add_test([this]() { test_any_exception(); }, "test_any_exception");
+    }
+
+private:
+    [[noreturn]]
+    void test_any_exception()
+    {
+        throw custom_exception();
+    }
+};      
+/// @}
+
+/// @name Test to pass
+/// @{
 class should_pass_test : public framework::unit_test::suite
 {
 public:
@@ -40,7 +94,10 @@ private:
         TEST_ASSERT(true, "Test assert message.");
     }
 };
+/// @}
 
+/// @name Test to run tests
+/// @{
 class test_for_test : public framework::unit_test::suite
 {
 public:
@@ -55,11 +112,23 @@ private:
     void should_fail()
 
     {
-        should_fail_test should_fail;
+        std::vector<std::unique_ptr<framework::unit_test::suite>> tests;
 
-        run_suite(should_fail);
+        tests.emplace_back(std::make_unique<should_fail_test_assert>());
+        tests.emplace_back(std::make_unique<should_fail_test_fail>());
+        tests.emplace_back(std::make_unique<should_fail_test_std_exception>());
+        tests.emplace_back(std::make_unique<should_fail_test_any_exception>());
 
-        TEST_ASSERT(!should_fail.is_succeeded(), "This test should fail.");
+        for (auto& test : tests) {
+            try {
+                run_suite(*test);
+            } catch(...) {
+            }
+
+            std::stringstream error_stream;
+            error_stream << "Test [" << test->name() << "] should fail.";
+            TEST_ASSERT(!test->is_succeeded(), error_stream.str().c_str());
+        } 
     }
 
     void should_pass()
@@ -82,6 +151,7 @@ private:
         std::cout << std::setw(0);
     }
 };
+/// @}
 
 int main()
 {

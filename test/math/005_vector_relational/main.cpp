@@ -187,6 +187,13 @@ private:
             4, 1
         }), "Almost_equal function failed.");
 
+        TEST_ASSERT(!almost_equal(m44f, matrix4x4f{
+            1, 2, 3, 0,
+            4, 1, 2, 0,
+            3, 4, 1, 0,
+            2, 3, 4, 0
+        }), "Almost_equal function failed.");
+
         // clang-format on
     }
 

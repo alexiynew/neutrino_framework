@@ -50,6 +50,11 @@ bool suite::is_succeeded() const
     return m_success;
 }
 
+std::string suite::name() const
+{
+    return m_name;
+}
+
 void suite::add_test(function_type&& function, const std::string& name)
 {
     m_tests.emplace_back(std::forward<function_type>(function), name);
