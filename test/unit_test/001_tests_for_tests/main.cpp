@@ -1,9 +1,9 @@
 #include <iomanip>
 #include <iostream>
-#include <vector>
 #include <memory>
 #include <sstream>
 #include <unit_test/suite.hpp>
+#include <vector>
 
 class custom_exception
 {};
@@ -52,13 +52,12 @@ public:
     }
 
 private:
-    [[noreturn]]
-    void test_std_exception()
+    [[noreturn]] void test_std_exception()
     {
         throw std::runtime_error("Test exception");
     }
 };
- 
+
 class should_fail_test_any_exception : public framework::unit_test::suite
 {
 public:
@@ -69,12 +68,11 @@ public:
     }
 
 private:
-    [[noreturn]]
-    void test_any_exception()
+    [[noreturn]] void test_any_exception()
     {
         throw custom_exception();
     }
-};      
+};
 /// @}
 
 /// @name Test to pass
@@ -120,15 +118,12 @@ private:
         tests.emplace_back(std::make_unique<should_fail_test_any_exception>());
 
         for (auto& test : tests) {
-            try {
-                run_suite(*test);
-            } catch(...) {
-            }
+            run_suite(*test);
 
             std::stringstream error_stream;
             error_stream << "Test [" << test->name() << "] should fail.";
             TEST_ASSERT(!test->is_succeeded(), error_stream.str().c_str());
-        } 
+        }
     }
 
     void should_pass()
@@ -145,7 +140,10 @@ private:
         std::streambuf* buffer = std::cout.rdbuf();
         std::cout.rdbuf(nullptr);
 
-        test.run();
+        try {
+            test.run();
+        } catch (...) {
+        }
 
         std::cout.rdbuf(buffer);
         std::cout << std::setw(0);
@@ -157,3 +155,4 @@ int main()
 {
     return run_tests(test_for_test());
 }
+
