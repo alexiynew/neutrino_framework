@@ -151,8 +151,6 @@ x11_window::x11_window()
     if (!m_window) {
         throw std::runtime_error("Failed to create X Window.");
     }
-
-    // TODO catch CreateNotify event
 }
 
 x11_window::~x11_window()
@@ -161,8 +159,6 @@ x11_window::~x11_window()
         XDestroyWindow(m_server->display(), m_window);
         XSync(m_server->display(), False);
     }
-    // TODO catch DestroyNotify event
-
     m_window = 0;
 }
 
@@ -170,14 +166,12 @@ void x11_window::show()
 {
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
-    // TODO catch  MapNotify and Expose evenats
 }
 
 void x11_window::hide()
 {
     XUnmapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
-    // TODO catch  UnmapNotify event
 }
 
 void x11_window::focus()
@@ -221,6 +215,10 @@ void x11_window::process_events()
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
         log::info(log_tag, event_type_string(event));
 
+        // TODO process DestroyNotify event
+        // TODO process MapNotify and Expose evenats
+        // TODO process UnmapNotify event
+        // TODO process CreateNotify event
         // TODO process FocusIn, FocusOut events
     }
 }
