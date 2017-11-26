@@ -1,3 +1,4 @@
+#include <cassert>
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 

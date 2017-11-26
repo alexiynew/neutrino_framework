@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_MATH_TRANSFORM_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_TRANSFORM_FUNCTIONS_HPP
 
+#include <cassert>
 #include <limits>
 #include <log/log.hpp>
 #include <math/common_functions.hpp>
@@ -186,9 +187,9 @@ inline matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
     const T height = top - bottom;
     const T depth  = far - near;
 
-    ASSERT(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
-    ASSERT(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
-    ASSERT(::framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
 
     // clang-format off
     return matrix<4, 4, T> (
@@ -235,16 +236,16 @@ inline matrix<4, 4, T> ortho2d(const T left, const T right, const T bottom, cons
 template <typename T>
 inline matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near, const T far)
 {
-    ASSERT(near > T(0));
-    ASSERT(far > T(0));
+    assert(near > T(0));
+    assert(far > T(0));
 
     const T width  = right - left;
     const T height = top - bottom;
     const T depth  = far - near;
 
-    ASSERT(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
-    ASSERT(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
-    ASSERT(::framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
 
     // clang-format off
     return matrix<4, 4, T> (
@@ -272,15 +273,15 @@ inline matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 template <typename T>
 inline matrix<4, 4, T> perspective(T fov_y, T aspect, T near, T far)
 {
-    ASSERT(near > T(0));
-    ASSERT(far > T(0));
+    assert(near > T(0));
+    assert(far > T(0));
 
     const T depth   = far - near;
     const T tangent = tan(fov_y / T(2));
 
-    ASSERT(::framework::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
-    ASSERT(::framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
-    ASSERT(::framework::math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
 
     const T cotangent = T(1) / tangent;
 
@@ -310,10 +311,10 @@ inline matrix<4, 4, T> perspective(T fov_y, T aspect, T near, T far)
 template <typename T>
 inline matrix<4, 4, T> perspective_fov(T fov, T width, T height, T near, T far)
 {
-    ASSERT(width > T(0));
-    ASSERT(height > T(0));
-    ASSERT(near > T(0));
-    ASSERT(far > T(0));
+    assert(width > T(0));
+    assert(height > T(0));
+    assert(near > T(0));
+    assert(far > T(0));
 
     return perspective(fov, width / height, near, far);
 }
@@ -333,12 +334,12 @@ inline matrix<4, 4, T> perspective_fov(T fov, T width, T height, T near, T far)
 template <typename T>
 inline matrix<4, 4, T> infinite_perspective(T fov_y, T aspect, T near)
 {
-    ASSERT(near > T(0));
-    ASSERT(::framework::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(near > T(0));
+    assert(::framework::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
 
     const T tangent = math::tan(fov_y / T(2));
 
-    ASSERT(::framework::math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
 
     const T cotangent = T(1) / tangent;
     const T epsilon   = std::numeric_limits<T>::epsilon();
@@ -372,7 +373,7 @@ project(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4, 
     vector<4, T> temp(v, T(1));
     temp = projection * model * temp;
 
-    ASSERT(::framework::math::abs(temp.w - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(temp.w - std::numeric_limits<T>::epsilon()) > T(0));
 
     temp /= temp.w;
 
@@ -410,8 +411,8 @@ unproject(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4
     const T width  = static_cast<T>(viewport[2]);
     const T height = static_cast<T>(viewport[3]);
 
-    ASSERT(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
-    ASSERT(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
 
     const matrix<4, 4, T> inverse = ::framework::math::inverse(projection * model);
 
@@ -423,7 +424,7 @@ unproject(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4
 
     vector<4, T> object_matrix = inverse * temp;
 
-    ASSERT(::framework::math::abs(temp.w - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(::framework::math::abs(temp.w - std::numeric_limits<T>::epsilon()) > T(0));
 
     object_matrix /= object_matrix.w;
 
@@ -446,8 +447,8 @@ unproject(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4
 template <typename T, typename U>
 inline matrix<4, 4, T> pick_matrix(const vector<2, T>& center, const vector<2, T>& delta, const vector<4, U>& viewport)
 {
-    ASSERT(delta.x > T(0));
-    ASSERT(delta.y > T(0));
+    assert(delta.x > T(0));
+    assert(delta.y > T(0));
 
     const T x      = static_cast<T>(viewport[0]);
     const T y      = static_cast<T>(viewport[1]);

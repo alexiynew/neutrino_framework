@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
+#include <cassert>
 #include <common/common_types.hpp>
 #include <functional>
 #include <math/vector_type_details.hpp>
@@ -506,12 +507,14 @@ inline vector<4, T>& vector<4, T>::operator=(const vector<4, T>&) noexcept = def
 template <typename T>
 inline typename vector<4, T>::value_type& vector<4, T>::operator[](uint32 index)
 {
+    assert(index < 4);
     return data()[index];
 }
 
 template <typename T>
 inline const typename vector<4, T>::value_type& vector<4, T>::operator[](uint32 index) const
 {
+    assert(index < 4);
     return data()[index];
 }
 /// @}
@@ -610,12 +613,14 @@ inline vector<3, T>& vector<3, T>::operator=(const vector<3, T>&) noexcept = def
 template <typename T>
 inline typename vector<3, T>::value_type& vector<3, T>::operator[](uint32 index)
 {
+    assert(index < 3);
     return data()[index];
 }
 
 template <typename T>
 inline const typename vector<3, T>::value_type& vector<3, T>::operator[](uint32 index) const
 {
+    assert(index < 3);
     return data()[index];
 }
 /// @}
@@ -699,12 +704,14 @@ inline vector<2, T>& vector<2, T>::operator=(const vector<2, T>&) noexcept = def
 template <typename T>
 inline typename vector<2, T>::value_type& vector<2, T>::operator[](uint32 index)
 {
+    assert(index < 2);
     return data()[index];
 }
 
 template <typename T>
 inline const typename vector<2, T>::value_type& vector<2, T>::operator[](uint32 index) const
 {
+    assert(index < 2);
     return data()[index];
 }
 /// @}

@@ -124,42 +124,6 @@ public:
 
 } // namespace logging
 
-/// @def NEED_ASSERT
-/// @brief Indicates that its need to define assert macros.
-
-#ifndef NDEBUG
-#define NEED_ASSERT true
-#endif
-
-#ifdef NEED_ASSERT
-
-/// @brief @ref STRINGIZE implementation details.
-#define STRINGIZE_DETAIL(x) #x
-
-/// @brief Turns parameter into string.
-#define STRINGIZE(x) STRINGIZE_DETAIL(x)
-
-/// @brief Generates error message.
-#define ERROR_MESSAGE(MESSAGE) __FILE__ ":" STRINGIZE(__LINE__) ": " STRINGIZE(MESSAGE)
-
-/// @brief Prints error message if EXPRESSION evaluates to @b false.
-#define ASSERT(EXPRESSION) \
-    ((EXPRESSION) || (::framework::logging::log::error("ASSERTION", ERROR_MESSAGE(EXPRESSION)), false))
-
-/// @brief Prints provided MESSAGE as error if EXPRESSION evaluates to @b false.
-#define ASSERT_MSG(EXPRESSION, MESSAGE) \
-    ((EXPRESSION) || (::framework::logging::log::error("ASSERTION", ERROR_MESSAGE(MESSAGE)), false))
-
-#else
-
-#define ASSERT(EXPR)
-
-#define ASSERT_MSG(EXPR, MSG)
-
-#endif
-
-#undef NEED_ASSERT
-
 /// @}
 
 } // namespace framework

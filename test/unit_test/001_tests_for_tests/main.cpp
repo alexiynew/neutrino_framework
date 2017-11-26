@@ -155,4 +155,3 @@ int main()
 {
     return run_tests(test_for_test());
 }
-

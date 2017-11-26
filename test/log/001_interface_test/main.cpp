@@ -27,7 +27,6 @@ public:
         : suite(suite_name)
     {
         add_test([this]() { stream_logger_test(); }, "stream_logger_test");
-        add_test([this]() { assertion_test(); }, "assertion_test");
     }
 
 private:
@@ -50,25 +49,6 @@ private:
         log_test << "[" << to_string(level::warning) << "] " << suite_name << ": message_3" << std::endl;
         log_test << "[" << to_string(level::error) << "] " << suite_name << ": message_4" << std::endl;
         log_test << "[" << to_string(level::fatal) << "] " << suite_name << ": message_5" << std::endl;
-
-        TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
-    }
-
-    void assertion_test()
-    {
-        std::stringstream log_stream;
-        log::set_logger(std::make_unique<stream_logger>(log_stream));
-
-        ASSERT(0 != false);
-        ASSERT_MSG(0 != false, "Test assert message.");
-
-        using level = framework::logging::logger::level;
-
-        std::stringstream log_test;
-        log_test << "[" << to_string(level::error) << "] "
-                 << "ASSERTION: " << __FILE__ << ":62: 0 != false" << std::endl;
-        log_test << "[" << to_string(level::error) << "] "
-                 << "ASSERTION: " << __FILE__ << ":63: \"Test assert message.\"" << std::endl;
 
         TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }
