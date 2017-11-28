@@ -6,8 +6,8 @@
 /// You should include this file only.
 /// It includes all math stuff and declarations of main types for vectors and matrices.
 
-#ifndef FRAMEWORK_MATH_HPP
-#define FRAMEWORK_MATH_HPP
+#ifndef FRAMEWORK_MATH_MATH_HPP
+#define FRAMEWORK_MATH_MATH_HPP
 
 #include <common/common_types.hpp>
 
