@@ -8,7 +8,6 @@
 
 #include <cassert>
 #include <common/common_types.hpp>
-#include <functional>
 #include <math/matrix_type_details.hpp>
 #include <math/vector_type.hpp>
 
