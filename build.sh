@@ -65,7 +65,6 @@ function check_x11_support {
 function configure {
     info "==== Run configuration ===="
 
-    info "$TEST_MODULES"
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
 
@@ -207,9 +206,11 @@ function run_task {
             install_all
         ;;
         "test" )
+            configure
             run_tests
         ;;
         "test_verbose" )
+            configure
             run_tests_verbose
         ;;
         "coverage" )
