@@ -1,21 +1,21 @@
-#include <log/log.hpp>
-#include <log/stream_logger.hpp>
+#include <logger/log.hpp>
+#include <logger/stream_logger.hpp>
 #include <sstream>
 #include <string>
 #include <unit_test/suite.hpp>
 
-using framework::logging::log;
-using framework::logging::stream_logger;
+using framework::logger::log;
+using framework::logger::stream_logger;
 
-std::string to_string(const framework::logging::logger::level level)
+std::string to_string(const framework::logger::severity_level level)
 {
-    using framework::logging::logger;
+    using severity_level = framework::logger::severity_level;
     switch (level) {
-        case logger::level::debug: return "debug";
-        case logger::level::info: return "info";
-        case logger::level::warning: return "warning";
-        case logger::level::error: return "error";
-        case logger::level::fatal: return "fatal";
+        case severity_level::debug: return "debug";
+        case severity_level::info: return "info";
+        case severity_level::warning: return "warning";
+        case severity_level::error: return "error";
+        case severity_level::fatal: return "fatal";
         default: return "UNKNOWN";
     }
 }
@@ -41,7 +41,7 @@ private:
         log::error(suite_name, "message_4");
         log::fatal(suite_name, "message_5");
 
-        using level = framework::logging::logger::level;
+        using level = framework::logger::severity_level;
 
         std::stringstream log_test;
         log_test << "[" << to_string(level::debug) << "] " << suite_name << ": message_1" << std::endl;

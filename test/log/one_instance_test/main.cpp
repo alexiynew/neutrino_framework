@@ -1,12 +1,12 @@
-#include <log/log.hpp>
-#include <log/stream_logger.hpp>
+#include <logger/log.hpp>
+#include <logger/stream_logger.hpp>
 #include <shared_lib/shared_lib.hpp>
 #include <sstream>
 #include <static_lib/static_lib.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::logging::log;
-using framework::logging::stream_logger;
+using framework::logger::log;
+using framework::logger::stream_logger;
 
 class one_instance_test : public framework::unit_test::suite
 {

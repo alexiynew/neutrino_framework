@@ -7,8 +7,8 @@
 #define FRAMEWORK_MATH_VECTOR_TYPE_DETAILS_HPP
 
 #include <common/common_types.hpp>
-#include <type_traits>
 #include <functional>
+#include <type_traits>
 
 namespace framework {
 

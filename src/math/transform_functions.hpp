@@ -8,7 +8,7 @@
 
 #include <cassert>
 #include <limits>
-#include <log/log.hpp>
+#include <logger/log.hpp>
 #include <math/common_functions.hpp>
 #include <math/matrix_functions.hpp>
 #include <math/matrix_type.hpp>

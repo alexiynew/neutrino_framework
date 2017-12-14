@@ -4,7 +4,7 @@
 /// @date 05.04.2017
 
 #include <exception>
-#include <log/log.hpp>
+#include <logger/log.hpp>
 #include <string>
 #include <window/linux/x11_window.hpp>
 
@@ -36,7 +36,7 @@ void x11_window::show()
     m_display = XOpenDisplay(nullptr);
 
     if (m_display == nullptr) {
-        logging::log::error(log_tag, "XOpenDisplay returns nullptr, there is no display.");
+        logger::log::error(log_tag, "XOpenDisplay returns nullptr, there is no display.");
         throw std::runtime_error("XOpenDisplay returns nullptr, there is no display.");
     }
 

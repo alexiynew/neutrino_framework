@@ -11,13 +11,13 @@
 
 namespace framework {
 
-/// @defgroup logging_module Logger module
+/// @defgroup logger_module Logger module
 /// @{
 
 /// @brief Contains classes related to logging.
-namespace logging {
+namespace logger {
 
-class logger;
+class default_logger;
 
 /// @brief Logger interface.
 ///
@@ -79,38 +79,38 @@ public:
     /// @brief Set provided class as logger.
     ///
     /// @param implementation Pointer to new logger.
-    static void set_logger(std::unique_ptr<logger> implementation);
+    static void set_logger(std::unique_ptr<default_logger> implementation);
 
     /// @brief Returns current logger instance.
     ///
     /// @return Pointer to current logger instance or base logger implementation if no logger is set.
-    static logger* get_logger();
+    static default_logger* get_logger();
 
 private:
     log();
 
     static log& instance();
 
-    std::unique_ptr<logger> m_logger;
+    std::unique_ptr<default_logger> m_logger;
+};
+
+/// @brief Severity level of log message.
+enum class severity_level
+{
+    debug,   ///< Low-level information for developers.
+    info,    ///< Generic information about system operation.
+    warning, ///< A warning.
+    error,   ///< A handleable error condition.
+    fatal    ///< An unhandleable error that results in a program crash.
 };
 
 /// @brief Base class for logger implementations.
 ///
 /// Describes logger implementation methods.
-class logger
+class default_logger
 {
 public:
-    /// @brief Level of log message.
-    enum class level
-    {
-        debug,   ///< Low-level information for developers.
-        info,    ///< Generic information about system operation.
-        warning, ///< A warning.
-        error,   ///< A handleable error condition.
-        fatal    ///< An unhandleable error that results in a program crash.
-    };
-
-    virtual ~logger() = default;
+    virtual ~default_logger() = default;
 
     /// @brief Add message to the log.
     ///
@@ -119,10 +119,10 @@ public:
     /// @param level The message @ref level
     /// @param tag Message tag. Describes message domain.
     /// @param message Message itself.
-    virtual void add_message(const logger::level level, const std::string& tag, const std::string& message);
+    virtual void add_message(const severity_level level, const std::string& tag, const std::string& message);
 };
 
-} // namespace logging
+} // namespace logger
 
 /// @}
 
