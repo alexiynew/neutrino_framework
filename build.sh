@@ -65,9 +65,11 @@ function check_x11_support {
 function configure {
     info "==== Run configuration ===="
 
+    info "$TEST_MODULES"
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
-    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+
+    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
 }
 
 function build_framework {
@@ -115,7 +117,7 @@ function coverage_scan {
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
 
-    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DENABLE_TEST_COVERAGE=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+    cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DENABLE_TEST_COVERAGE=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
 
     build_framework
 
@@ -141,7 +143,7 @@ function run_check {
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
 
-    scan-build cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES=$TEST_MODULES ../
+    scan-build cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
     scan-build make all
     scan-build make framework_tests
 }
@@ -184,7 +186,7 @@ cat << EOF
             clang : Use clang compiller.
 
         -m : Specify which module you want to test.
-        Parameters: <module>[,<module>]
+        Parameters: <regex>
             If not present, all modules will be tested.
 EOF
 }

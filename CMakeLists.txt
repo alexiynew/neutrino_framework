@@ -7,7 +7,7 @@ option(BUILD_SHARED_LIBS "Build the shared or static libraries" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
 
-set(INCLUDED_TEST_MODULES "" CACHE STRING "Tests that will be included in the build. An empty string means all modules." FORCE)
+set(INCLUDED_TEST_MODULES "" CACHE STRING "Tests that will be included in the build. An empty string means all modules.")
 
 set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
 set(DOCS_OUTPUT_PATH ${OUTPUT_PATH_BASE}/doc)
