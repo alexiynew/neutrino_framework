@@ -3,73 +3,81 @@ project(framework_tests)
 set(TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(TEST_OUTPUT_PATH ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE}/test)
 
-set(FRAMEWORK_TESTS_DEPENDENCIES "")
-
 include(CTest)
 enable_testing()
 
-message("Search tests...")
+message("Add tests...")
 
-# Get all test modules
-subdirlist(TEST_PACK_LIST ${TESTS_DIR})
-list(SORT TEST_PACK_LIST)
+add_subdirectory(unit_test)
+add_subdirectory(log)
+add_subdirectory(math)
+add_subdirectory(window)
 
-# Check if we need exclude some modules
-if(NOT ("${INCLUDED_TEST_MODULES}" STREQUAL ""))
-    string(REPLACE "," ";" INCLUDED_TEST_MODULES_LIST ${INCLUDED_TEST_MODULES})
-    message("Specified test modules: ${INCLUDED_TEST_MODULES_LIST}")
+# message("Search tests...")
 
-    foreach(TEST_PACK_NAME ${INCLUDED_TEST_MODULES_LIST})
-        if(NOT (TEST_PACK_NAME IN_LIST TEST_PACK_LIST))
-            message(WARNING "Unknown test module: ${TEST_PACK_NAME}")
-        endif()
-    endforeach()
+# # Get all test modules
+# subdirlist(TEST_PACK_LIST ${TESTS_DIR})
+# list(SORT TEST_PACK_LIST)
 
-    set(TEST_PACK_LIST_TEMP "")
-    foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
-        if(TEST_PACK_NAME IN_LIST INCLUDED_TEST_MODULES_LIST)
-            list(APPEND TEST_PACK_LIST_TEMP ${TEST_PACK_NAME})
-        endif()
-    endforeach()
-    set(TEST_PACK_LIST ${TEST_PACK_LIST_TEMP})
-endif()
+# # Check if we need exclude some modules
+# if(NOT ("${INCLUDED_TEST_MODULES}" STREQUAL ""))
+#     string(REPLACE "," ";" INCLUDED_TEST_MODULES_LIST ${INCLUDED_TEST_MODULES})
+#     message("Specified test modules: ${INCLUDED_TEST_MODULES_LIST}")
 
-# Add tests to build
-message("Test modules to build: ${TEST_PACK_LIST}")
-foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
-    set(TEST_PACK_DIR ${TESTS_DIR}/${TEST_PACK_NAME})
+#     foreach(TEST_PACK_NAME ${INCLUDED_TEST_MODULES_LIST})
+#         if(NOT (TEST_PACK_NAME IN_LIST TEST_PACK_LIST))
+#             message(WARNING "Unknown test module: ${TEST_PACK_NAME}")
+#         endif()
+#     endforeach()
 
-    message("Search tests in ${TEST_PACK_DIR}")
+#     set(TEST_PACK_LIST_TEMP "")
+#     foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
+#         if(TEST_PACK_NAME IN_LIST INCLUDED_TEST_MODULES_LIST)
+#             list(APPEND TEST_PACK_LIST_TEMP ${TEST_PACK_NAME})
+#         endif()
+#     endforeach()
+#     set(TEST_PACK_LIST ${TEST_PACK_LIST_TEMP})
+# endif()
 
-    subdirlist(TEST_LIST ${TEST_PACK_DIR})
-    list(SORT TEST_LIST)
+# # Add tests to build
+# message("Test modules to build: ${TEST_PACK_LIST}")
+# foreach(TEST_PACK_NAME ${TEST_PACK_LIST})
+#     set(TEST_PACK_DIR ${TESTS_DIR}/${TEST_PACK_NAME})
 
-    foreach(TEST_DIR ${TEST_LIST})
-        set(TEST_DIR ${TEST_PACK_DIR}/${TEST_DIR})
+#     message("Search tests in ${TEST_PACK_DIR}")
 
-        get_filename_component(TEST_NAME ${TEST_DIR} NAME)
-        string(REPLACE " " "_" TEST_NAME ${TEST_NAME})
+#     subdirlist(TEST_LIST ${TEST_PACK_DIR})
+#     list(SORT TEST_LIST)
 
-        if(EXISTS ${TEST_DIR}/CMakeLists.txt)
-            message("\tAdd test: ${TEST_NAME}")
+#     foreach(TEST_DIR ${TEST_LIST})
+#         set(TEST_DIR ${TEST_PACK_DIR}/${TEST_DIR})
 
-            set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
-            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                string(TOUPPER ${CONFIG} CONFIG)
-                set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG} ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
-            endforeach()
+#         get_filename_component(TEST_NAME ${TEST_DIR} NAME)
+#         string(REPLACE " " "_" TEST_NAME ${TEST_NAME})
 
-            add_subdirectory(${TEST_DIR})
-            set(FRAMEWORK_TESTS_DEPENDENCIES ${FRAMEWORK_TESTS_DEPENDENCIES} ${TEST_NAME})
+#         if(EXISTS ${TEST_DIR}/CMakeLists.txt)
 
-            add_test(NAME "${TEST_PACK_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
-            set_tests_properties("${TEST_PACK_NAME}/${TEST_NAME}" PROPERTIES LABELS ${TEST_PACK_NAME})
-        else()
-            message(FATAL_ERROR "There is no CMakeLists.txt in ${TEST_DIR}")
-        endif()
+#             set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
+#             foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+#                 string(TOUPPER ${CONFIG} CONFIG)
+#                 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG} ${TEST_OUTPUT_PATH}/${TEST_PACK_NAME}/${TEST_NAME})
+#             endforeach()
 
-    endforeach()
-endforeach()
+#             add_subdirectory(${TEST_DIR})
+#             set(FRAMEWORK_TESTS_DEPENDENCIES ${FRAMEWORK_TESTS_DEPENDENCIES} ${TEST_NAME})
+
+#             add_test(NAME "${TEST_PACK_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
+#             set_tests_properties("${TEST_PACK_NAME}/${TEST_NAME}" PROPERTIES LABELS ${TEST_PACK_NAME})
+#         else()
+#             message(FATAL_ERROR "There is no CMakeLists.txt in ${TEST_DIR}")
+#         endif()
+
+#     endforeach()
+# endforeach()
+
+add_custom_target(${PROJECT_NAME}
+    DEPENDS unit_test_tests log_tests math_tests window_tests
+)
 
 message("Add custom targets to run all tests")
 add_custom_target(run_all_tests
@@ -82,6 +90,3 @@ add_custom_target(run_all_tests_verbose
     DEPENDS ${PROJECT_NAME}
 )
 
-add_custom_target(${PROJECT_NAME}
-    DEPENDS ${FRAMEWORK_TESTS_DEPENDENCIES}
-)

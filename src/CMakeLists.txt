@@ -1,10 +1,10 @@
 message("Add libraries...")
 
-add_subdirectory(${FRAMEWORK_SOURCES}/common)
-add_subdirectory(${FRAMEWORK_SOURCES}/log)
-add_subdirectory(${FRAMEWORK_SOURCES}/math)
-add_subdirectory(${FRAMEWORK_SOURCES}/unit_test)
-add_subdirectory(${FRAMEWORK_SOURCES}/window)
+add_subdirectory(common)
+add_subdirectory(log)
+add_subdirectory(math)
+add_subdirectory(unit_test)
+add_subdirectory(window)
 
 add_custom_target(${PROJECT_NAME}
 	ALL
