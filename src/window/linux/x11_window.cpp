@@ -4,13 +4,13 @@
 /// @date 05.04.2017
 
 #include <exception>
-#include <log/log.hpp>
+#include <logger/log.hpp>
 #include <map>
 #include <string>
 #include <window/linux/x11_window.hpp>
 
 using namespace framework;
-using log = framework::logging::log;
+using log = framework::logger::log;
 
 namespace {
 
@@ -207,7 +207,7 @@ void x11_window::focus()
     }
 
     XFlush(m_server->display());
-}
+} // namespace framework
 
 void x11_window::process_events()
 {

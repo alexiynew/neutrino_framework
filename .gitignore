@@ -1,13 +1,12 @@
 build/
 output/
 
-.clang_complete
-.xvfb.log
-
+.vscode/
 .atom-build.yml
 .lvimrc
 .DS_Store
 
+.clang_complete
 .xvfb.log
 .dir-locals.*
 .lvimrc

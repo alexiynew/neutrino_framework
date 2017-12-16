@@ -5,11 +5,11 @@
 
 #include <X11/Xatom.h>
 #include <common/common_types.hpp>
-#include <log/log.hpp>
+#include <logger/log.hpp>
 #include <window/linux/x11_server.hpp>
 
 using namespace framework;
-using log = ::framework::logging::log;
+using log = ::framework::logger::log;
 
 // TODO All XServer method should be in the same (GUI) thread
 

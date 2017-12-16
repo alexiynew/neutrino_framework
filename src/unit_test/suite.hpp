@@ -64,6 +64,11 @@ public:
     /// @return @b true if all tests were successful.
     bool is_succeeded() const;
 
+    /// @brief Suite name.
+    ///
+    /// @return The name of this suite.
+    std::string name() const;
+
 protected:
     /// @brief Function type shortcut for internal usage
     using function_type = std::function<void()>;
@@ -80,7 +85,9 @@ protected:
     /// @param line Line number in the file.
     /// @param message Error description.
     ///
-    /// @note You can use @ref TEST_FAIL and @ref TEST_ASSERT macros to get @b file path and @b line number.
+    /// @note You can use @ref TEST_FAIL(MESSAGE) and
+    ///       @ref TEST_ASSERT(EXPRESSION, MESSAGE) macros
+    ///       to get @b file path and @b line number.
     void test_failed(const std::string& file, int32 line, const std::string& message);
 
 private:
@@ -140,7 +147,7 @@ int32 run_tests(Arguments&&... tests)
 /// @brief Unconditionally fails current test.
 ///
 /// @param MESSAGE Error description.
-#define TEST_FAIL(MESSAGE) test_failed(__FILE__, __LINE__, #MESSAGE)
+#define TEST_FAIL(MESSAGE) test_failed(__FILE__, __LINE__, (MESSAGE))
 
 /// @brief Fails current test if EXPRESSION evaluates to @b false.
 ///

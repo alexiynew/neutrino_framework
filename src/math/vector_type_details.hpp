@@ -8,6 +8,7 @@
 
 #include <common/common_types.hpp>
 #include <functional>
+#include <type_traits>
 
 namespace framework {
 
@@ -15,6 +16,28 @@ namespace math {
 
 /// @brief Contains vector type implementation details.
 namespace vector_type_details {
+
+/// @brief Workaround to compare float numbers without warnings.
+/// @{
+
+template <typename T>
+inline constexpr bool equals(const T& a, const T& b, std::true_type)
+{
+    return std::equal_to<T>()(a, b);
+}
+
+template <typename T>
+inline constexpr bool equals(const T& a, const T& b, std::false_type)
+{
+    return a == b;
+}
+
+template <typename T>
+inline constexpr bool equals(const T& a, const T& b)
+{
+    return equals(a, b, std::is_floating_point<T>{});
+}
+/// @}
 
 /// @brief Workaround to cast float numbers to bool without warnings.
 /// @{
@@ -40,7 +63,7 @@ struct cast_to<bool>
     template <typename U, typename R = typename std::enable_if<std::is_arithmetic<U>::value, bool>::type>
     inline static constexpr R from(const U& value) noexcept
     {
-        return std::not_equal_to<U>()(value, U{0});
+        return !equals(value, U{0});
     }
 };
 /// @}

@@ -6,8 +6,8 @@
 #ifndef FRAMEWORK_MATH_MATRIX_TYPE_HPP
 #define FRAMEWORK_MATH_MATRIX_TYPE_HPP
 
+#include <cassert>
 #include <common/common_types.hpp>
-#include <functional>
 #include <math/matrix_type_details.hpp>
 #include <math/vector_type.hpp>
 
@@ -1250,7 +1250,6 @@ private:
     column_type m_data[3];
 };
 
-
 /// @brief matrix<2, 4, T> type specialization.
 ///
 /// @note Can be instantiated only with arithmetic type.
@@ -1952,12 +1951,14 @@ inline matrix<4, 4, T>& matrix<4, 4, T>::operator=(const matrix<4, 4, T>& other)
 template <typename T>
 inline typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](uint32 index)
 {
+    assert(index < 4);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<4, 4, T>::column_type& matrix<4, 4, T>::operator[](uint32 index) const
 {
+    assert(index < 4);
     return m_data[index];
 }
 /// @}
@@ -1985,12 +1986,14 @@ const typename matrix<4, 4, T>::value_type* matrix<4, 4, T>::data() const noexce
 template <typename T>
 inline typename matrix<4, 4, T>::column_type matrix<4, 4, T>::column(uint32 index) const noexcept
 {
+    assert(index < 4);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<4, 4, T>::row_type matrix<4, 4, T>::row(uint32 index) const noexcept
 {
+    assert(index < 4);
     return matrix<4, 4, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
 /// @}
@@ -2119,12 +2122,14 @@ inline matrix<4, 3, T>& matrix<4, 3, T>::operator=(const matrix<4, 3, T>& other)
 template <typename T>
 inline typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](uint32 index)
 {
+    assert(index < 4);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<4, 3, T>::column_type& matrix<4, 3, T>::operator[](uint32 index) const
 {
+    assert(index < 4);
     return m_data[index];
 }
 /// @}
@@ -2152,12 +2157,14 @@ const typename matrix<4, 3, T>::value_type* matrix<4, 3, T>::data() const noexce
 template <typename T>
 inline typename matrix<4, 3, T>::column_type matrix<4, 3, T>::column(uint32 index) const noexcept
 {
+    assert(index < 4);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<4, 3, T>::row_type matrix<4, 3, T>::row(uint32 index) const noexcept
 {
+    assert(index < 3);
     return matrix<4, 3, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
 /// @}
@@ -2259,12 +2266,14 @@ inline matrix<4, 2, T>& matrix<4, 2, T>::operator=(const matrix<4, 2, T>& other)
 template <typename T>
 inline typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](uint32 index)
 {
+    assert(index < 4);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<4, 2, T>::column_type& matrix<4, 2, T>::operator[](uint32 index) const
 {
+    assert(index < 4);
     return m_data[index];
 }
 /// @}
@@ -2292,12 +2301,14 @@ const typename matrix<4, 2, T>::value_type* matrix<4, 2, T>::data() const noexce
 template <typename T>
 inline typename matrix<4, 2, T>::column_type matrix<4, 2, T>::column(uint32 index) const noexcept
 {
+    assert(index < 4);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<4, 2, T>::row_type matrix<4, 2, T>::row(uint32 index) const noexcept
 {
+    assert(index < 2);
     return matrix<4, 2, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index], m_data[3][index]);
 }
 /// @}
@@ -2467,12 +2478,14 @@ inline matrix<3, 4, T>& matrix<3, 4, T>::operator=(const matrix<3, 4, T>& other)
 template <typename T>
 inline typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](uint32 index)
 {
+    assert(index < 3);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<3, 4, T>::column_type& matrix<3, 4, T>::operator[](uint32 index) const
 {
+    assert(index < 3);
     return m_data[index];
 }
 /// @}
@@ -2500,12 +2513,14 @@ const typename matrix<3, 4, T>::value_type* matrix<3, 4, T>::data() const noexce
 template <typename T>
 inline typename matrix<3, 4, T>::column_type matrix<3, 4, T>::column(uint32 index) const noexcept
 {
+    assert(index < 3);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<3, 4, T>::row_type matrix<3, 4, T>::row(uint32 index) const noexcept
 {
+    assert(index < 4);
     return matrix<3, 4, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
 /// @}
@@ -2627,12 +2642,14 @@ inline matrix<3, 3, T>& matrix<3, 3, T>::operator=(const matrix<3, 3, T>& other)
 template <typename T>
 inline typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](uint32 index)
 {
+    assert(index < 3);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<3, 3, T>::column_type& matrix<3, 3, T>::operator[](uint32 index) const
 {
+    assert(index < 3);
     return m_data[index];
 }
 /// @}
@@ -2660,12 +2677,14 @@ const typename matrix<3, 3, T>::value_type* matrix<3, 3, T>::data() const noexce
 template <typename T>
 inline typename matrix<3, 3, T>::column_type matrix<3, 3, T>::column(uint32 index) const noexcept
 {
+    assert(index < 3);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<3, 3, T>::row_type matrix<3, 3, T>::row(uint32 index) const noexcept
 {
+    assert(index < 3);
     return matrix<3, 3, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
 /// @}
@@ -2753,12 +2772,14 @@ inline matrix<3, 2, T>& matrix<3, 2, T>::operator=(const matrix<3, 2, T>& other)
 template <typename T>
 inline typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](uint32 index)
 {
+    assert(index < 3);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<3, 2, T>::column_type& matrix<3, 2, T>::operator[](uint32 index) const
 {
+    assert(index < 3);
     return m_data[index];
 }
 /// @}
@@ -2786,12 +2807,14 @@ const typename matrix<3, 2, T>::value_type* matrix<3, 2, T>::data() const noexce
 template <typename T>
 inline typename matrix<3, 2, T>::column_type matrix<3, 2, T>::column(uint32 index) const noexcept
 {
+    assert(index < 3);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<3, 2, T>::row_type matrix<3, 2, T>::row(uint32 index) const noexcept
 {
+    assert(index < 2);
     return matrix<3, 2, T>::row_type(m_data[0][index], m_data[1][index], m_data[2][index]);
 }
 /// @}
@@ -2934,12 +2957,14 @@ inline matrix<2, 4, T>& matrix<2, 4, T>::operator=(const matrix<2, 4, T>& other)
 template <typename T>
 inline typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](uint32 index)
 {
+    assert(index < 2);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<2, 4, T>::column_type& matrix<2, 4, T>::operator[](uint32 index) const
 {
+    assert(index < 2);
     return m_data[index];
 }
 /// @}
@@ -2967,12 +2992,14 @@ const typename matrix<2, 4, T>::value_type* matrix<2, 4, T>::data() const noexce
 template <typename T>
 inline typename matrix<2, 4, T>::column_type matrix<2, 4, T>::column(uint32 index) const noexcept
 {
+    assert(index < 2);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<2, 4, T>::row_type matrix<2, 4, T>::row(uint32 index) const noexcept
 {
+    assert(index < 4);
     return matrix<2, 4, T>::row_type(m_data[0][index], m_data[1][index]);
 }
 /// @}
@@ -3073,12 +3100,14 @@ inline matrix<2, 3, T>& matrix<2, 3, T>::operator=(const matrix<2, 3, T>& other)
 template <typename T>
 inline typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](uint32 index)
 {
+    assert(index < 2);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<2, 3, T>::column_type& matrix<2, 3, T>::operator[](uint32 index) const
 {
+    assert(index < 2);
     return m_data[index];
 }
 /// @}
@@ -3106,12 +3135,14 @@ const typename matrix<2, 3, T>::value_type* matrix<2, 3, T>::data() const noexce
 template <typename T>
 inline typename matrix<2, 3, T>::column_type matrix<2, 3, T>::column(uint32 index) const noexcept
 {
+    assert(index < 2);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<2, 3, T>::row_type matrix<2, 3, T>::row(uint32 index) const noexcept
 {
+    assert(index < 3);
     return matrix<2, 3, T>::row_type(m_data[0][index], m_data[1][index]);
 }
 /// @}
@@ -3193,12 +3224,14 @@ inline matrix<2, 2, T>& matrix<2, 2, T>::operator=(const matrix<2, 2, T>& other)
 template <typename T>
 inline typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](uint32 index)
 {
+    assert(index < 2);
     return m_data[index];
 }
 
 template <typename T>
 inline const typename matrix<2, 2, T>::column_type& matrix<2, 2, T>::operator[](uint32 index) const
 {
+    assert(index < 2);
     return m_data[index];
 }
 /// @}
@@ -3226,12 +3259,14 @@ const typename matrix<2, 2, T>::value_type* matrix<2, 2, T>::data() const noexce
 template <typename T>
 inline typename matrix<2, 2, T>::column_type matrix<2, 2, T>::column(uint32 index) const noexcept
 {
+    assert(index < 2);
     return m_data[index];
 }
 
 template <typename T>
 inline typename matrix<2, 2, T>::row_type matrix<2, 2, T>::row(uint32 index) const noexcept
 {
+    assert(index < 2);
     return matrix<2, 2, T>::row_type(m_data[0][index], m_data[1][index]);
 }
 /// @}

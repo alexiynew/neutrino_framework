@@ -6,8 +6,8 @@
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
+#include <cassert>
 #include <common/common_types.hpp>
-#include <functional>
 #include <math/vector_type_details.hpp>
 
 namespace framework {
@@ -506,12 +506,14 @@ inline vector<4, T>& vector<4, T>::operator=(const vector<4, T>&) noexcept = def
 template <typename T>
 inline typename vector<4, T>::value_type& vector<4, T>::operator[](uint32 index)
 {
+    assert(index < 4);
     return data()[index];
 }
 
 template <typename T>
 inline const typename vector<4, T>::value_type& vector<4, T>::operator[](uint32 index) const
 {
+    assert(index < 4);
     return data()[index];
 }
 /// @}
@@ -610,12 +612,14 @@ inline vector<3, T>& vector<3, T>::operator=(const vector<3, T>&) noexcept = def
 template <typename T>
 inline typename vector<3, T>::value_type& vector<3, T>::operator[](uint32 index)
 {
+    assert(index < 3);
     return data()[index];
 }
 
 template <typename T>
 inline const typename vector<3, T>::value_type& vector<3, T>::operator[](uint32 index) const
 {
+    assert(index < 3);
     return data()[index];
 }
 /// @}
@@ -699,12 +703,14 @@ inline vector<2, T>& vector<2, T>::operator=(const vector<2, T>&) noexcept = def
 template <typename T>
 inline typename vector<2, T>::value_type& vector<2, T>::operator[](uint32 index)
 {
+    assert(index < 2);
     return data()[index];
 }
 
 template <typename T>
 inline const typename vector<2, T>::value_type& vector<2, T>::operator[](uint32 index) const
 {
+    assert(index < 2);
     return data()[index];
 }
 /// @}
@@ -1068,8 +1074,8 @@ inline const vector<N, R> operator/(const T& lhs, const vector<N, U>& rhs) noexc
 template <typename T>
 inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rhs) noexcept
 {
-    using equal = std::equal_to<T>;
-    return equal()(lhs.x, rhs.x) && equal()(lhs.y, rhs.y) && equal()(lhs.z, rhs.z) && equal()(lhs.w, rhs.w);
+    using namespace vector_type_details;
+    return equals(lhs.x, rhs.x) && equals(lhs.y, rhs.y) && equals(lhs.z, rhs.z) && equals(lhs.w, rhs.w);
 }
 
 /// @brief Equality operator.
@@ -1081,8 +1087,8 @@ inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rh
 template <typename T>
 inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rhs) noexcept
 {
-    using equal = std::equal_to<T>;
-    return equal()(lhs.x, rhs.x) && equal()(lhs.y, rhs.y) && equal()(lhs.z, rhs.z);
+    using namespace vector_type_details;
+    return equals(lhs.x, rhs.x) && equals(lhs.y, rhs.y) && equals(lhs.z, rhs.z);
 }
 
 /// @brief Equality operator.
@@ -1094,8 +1100,8 @@ inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rh
 template <typename T>
 inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rhs) noexcept
 {
-    using equal = std::equal_to<T>;
-    return equal()(lhs.x, rhs.x) && equal()(lhs.y, rhs.y);
+    using namespace vector_type_details;
+    return equals(lhs.x, rhs.x) && equals(lhs.y, rhs.y);
 }
 
 /// @brief Inequality operator.
@@ -1107,8 +1113,8 @@ inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rhs) noexcept
 {
-    using not_equal = std::not_equal_to<T>;
-    return not_equal()(lhs.x, rhs.x) || not_equal()(lhs.y, rhs.y) || not_equal()(lhs.z, rhs.z) || not_equal()(lhs.w, rhs.w);
+    using namespace vector_type_details;
+    return !equals(lhs.x, rhs.x) || !equals(lhs.y, rhs.y) || !equals(lhs.z, rhs.z) || !equals(lhs.w, rhs.w);
 }
 
 /// @brief Inequality operator.
@@ -1120,8 +1126,8 @@ inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rhs) noexcept
 {
-    using not_equal = std::not_equal_to<T>;
-    return not_equal()(lhs.x, rhs.x) || not_equal()(lhs.y, rhs.y) || not_equal()(lhs.z, rhs.z);
+    using namespace vector_type_details;
+    return !equals(lhs.x, rhs.x) || !equals(lhs.y, rhs.y) || !equals(lhs.z, rhs.z);
 }
 
 /// @brief Inequality operator.
@@ -1133,8 +1139,8 @@ inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rhs) noexcept
 {
-    using not_equal = std::not_equal_to<T>;
-    return not_equal()(lhs.x, rhs.x) || not_equal()(lhs.y, rhs.y);
+    using namespace vector_type_details;
+    return !equals(lhs.x, rhs.x) || !equals(lhs.y, rhs.y);
 }
 /// @}
 

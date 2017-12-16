@@ -192,7 +192,7 @@ cat << EOF
             clang : Use clang compiller.
 
         -m : Specify which module you want to test.
-        Parameters: <module>[,<module>]
+        Parameters: <regex>
             If not present, all modules will be tested.
 EOF
 }
@@ -213,9 +213,11 @@ function run_task {
             install_all
         ;;
         "test" )
+            configure
             run_tests
         ;;
         "test_verbose" )
+            configure
             run_tests_verbose
         ;;
         "coverage" )
