@@ -20,6 +20,7 @@ endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
 set(DOCS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/docs)
 set(DOCS_BINARY_DIR ${CMAKE_BINARY_DIR}/docs)
+set(DOCS_OUTPUT_DIR ${OUTPUT_PATH_BASE}/docs)
 
 set(CMAKE_CXX_FLAGS_COVERAGE
     "-g -O0 --coverage -fprofile-arcs -ftest-coverage"
@@ -54,15 +55,16 @@ if(BUILD_TESTS)
     add_subdirectory(${CMAKE_SOURCE_DIR}/test)
 endif()
 
-# Generate Doxyfile
-configure_file(Doxyfile.in Doxyfile @ONLY)
+# Generate documentation
+configure_file(${DOCS_SOURCE_DIR}/Doxyfile.in ${DOCS_BINARY_DIR}/Doxyfile @ONLY)
 
+add_custom_target(documentation
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_OUTPUT_DIR}
+    COMMAND doxygen ${DOCS_BINARY_DIR}/Doxyfile
+)
+
+# Install target
 add_custom_target(install_${PROJECT_NAME}
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_install.cmake
     DEPENDS ${PROJECT_NAME}
     COMMENT "Installing ${PROJECT_NAME}")
-
-add_custom_target(documentation
-    COMMAND mkdir -p ${DOCS_OUTPUT_PATH}
-    COMMAND doxygen ${CMAKE_BINARY_DIR}/Doxyfile
-)

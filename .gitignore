@@ -2,6 +2,7 @@ build/
 output/
 nbproject/
 .idea/
+.vscode/
 .atom-build.yml
 .vimrc
 .DS_Store
