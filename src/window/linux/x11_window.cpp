@@ -9,14 +9,13 @@
 #include <string>
 #include <window/linux/x11_window.hpp>
 
-using namespace framework;
-using log = framework::logger::log;
+using namespace framework::logger;
 
 namespace {
 
 const char* const log_tag = "x11_window";
 
-int32 event_predicate(Display*, XEvent* event, XPointer arg)
+Bool event_predicate(Display*, XEvent* event, XPointer arg)
 {
     return event->xany.window == *(reinterpret_cast<Window*>(arg));
 }
@@ -66,16 +65,13 @@ std::string event_type_string(const XEvent& event)
 
 namespace framework {
 
-std::unique_ptr<window_implementation> get_implementation()
+std::unique_ptr<window::implementation> window::implementation::get_implementation()
 {
     return std::make_unique<x11_window>();
 }
 
 x11_window::x11_window()
     : m_server{x11_server::connect()}
-    , m_width{640}
-    , m_height{480}
-    , m_window{0}
 {
     XID color = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
 
@@ -159,7 +155,6 @@ x11_window::~x11_window()
         XDestroyWindow(m_server->display(), m_window);
         XSync(m_server->display(), False);
     }
-    m_window = 0;
 }
 
 void x11_window::show()
@@ -207,13 +202,13 @@ void x11_window::focus()
     }
 
     XFlush(m_server->display());
-} // namespace framework
+}
 
 void x11_window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
-        log::info(log_tag, event_type_string(event));
+        log::debug(log_tag, event_type_string(event));
 
         // TODO process DestroyNotify event
         // TODO process MapNotify and Expose evenats
@@ -243,22 +238,22 @@ void x11_window::restore()
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::set_size(int32, int32)
+void x11_window::set_size(window::size_t)
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::set_position(int32, int32)
+void x11_window::set_position(window::position_t)
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::set_max_size(int32, int32)
+void x11_window::set_max_size(window::size_t)
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::set_min_size(int32, int32)
+void x11_window::set_min_size(window::size_t)
 {
     throw std::logic_error("Function is not implemented.");
 }
@@ -268,42 +263,22 @@ void x11_window::set_title(const std::string&)
     throw std::logic_error("Function is not implemented.");
 }
 
-int x11_window::x()
+window::position_t x11_window::position()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-int x11_window::y()
+window::size_t x11_window::size()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-int x11_window::width()
+window::size_t x11_window::max_size()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-int x11_window::height()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-int x11_window::max_height()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-int x11_window::max_width()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-int x11_window::min_height()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-int x11_window::min_width()
+window::size_t x11_window::min_size()
 {
     throw std::logic_error("Function is not implemented.");
 }

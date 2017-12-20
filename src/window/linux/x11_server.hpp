@@ -12,13 +12,13 @@
 
 namespace framework {
 
-class x11_server
+class x11_server final
 {
 public:
-    ~x11_server();
-
     x11_server(const x11_server&) = delete;
     x11_server& operator=(const x11_server&) = delete;
+
+    ~x11_server();
 
     Display* display() const;
     XID default_root_window() const;

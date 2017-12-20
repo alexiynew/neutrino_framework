@@ -136,7 +136,6 @@ x11_server::~x11_server()
     if (m_display) {
         XCloseDisplay(m_display);
     }
-    m_display = nullptr;
 
     release_error_handlers();
 }

@@ -11,11 +11,23 @@
 
 namespace framework {
 
-class window_implementation;
-
 class window
 {
 public:
+    class implementation;
+
+    struct size_t
+    {
+        int32 width;
+        int32 height;
+    };
+
+    struct position_t
+    {
+        int32 x;
+        int32 y;
+    };
+
     window();
     ~window();
 
@@ -37,26 +49,22 @@ public:
 
     /// @name setters
     /// @{
-    void set_size(int32 width, int32 height);
-    void set_position(int32 x, int32 y);
+    void set_size(size_t size);
+    void set_position(position_t position);
 
-    void set_max_size(int32 width, int32 height);
-    void set_min_size(int32 width, int32 height);
+    void set_max_size(size_t max_size);
+    void set_min_size(size_t min_size);
 
     void set_title(const std::string& title);
     /// @}
 
     /// @name getters
     /// @{
-    int x();
-    int y();
-    int width();
-    int height();
+    position_t position();
+    size_t size();
 
-    int max_height();
-    int max_width();
-    int min_height();
-    int min_width();
+    size_t max_size();
+    size_t min_size();
 
     std::string title();
 
@@ -69,7 +77,7 @@ public:
     /// @}
 
 private:
-    std::unique_ptr<window_implementation> m_implementation;
+    std::unique_ptr<implementation> m_implementation;
 };
 } // namespace framework
 
