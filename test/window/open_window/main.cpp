@@ -1,4 +1,7 @@
 #include <chrono>
+#include <iostream>
+#include <logger/log.hpp>
+#include <logger/stream_logger.hpp>
 #include <thread>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
@@ -17,7 +20,7 @@ public:
 private:
     void open_window()
     {
-        constexpr std::chrono::milliseconds timespan(100);
+        constexpr std::chrono::milliseconds timespan(10);
 
         framework::window window;
         window.show();
@@ -37,7 +40,7 @@ private:
 
     void open_several_windows()
     {
-        constexpr std::chrono::milliseconds timespan(100);
+        constexpr std::chrono::milliseconds timespan(10);
 
         framework::window windows[5];
 
@@ -66,7 +69,9 @@ private:
 
     void focus_window()
     {
-        constexpr std::chrono::milliseconds timespan(100);
+        constexpr std::chrono::milliseconds timespan(10);
+
+        framework::logger::log::set_logger(std::make_unique<framework::logger::stream_logger>(std::cout));
 
         framework::window alpha;
         framework::window betta;
@@ -75,10 +80,17 @@ private:
         betta.show();
 
         std::this_thread::sleep_for(timespan);
+        alpha.process_events();
+        betta.process_events();
+
+        TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
+        TEST_ASSERT(betta.focused(), "Focus function is not working.");
 
         alpha.focus();
 
         std::this_thread::sleep_for(timespan);
+        alpha.process_events();
+        betta.process_events();
 
         TEST_ASSERT(alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(!betta.focused(), "Focus function is not working.");
@@ -86,9 +98,24 @@ private:
         betta.focus();
 
         std::this_thread::sleep_for(timespan);
+        alpha.process_events();
+        betta.process_events();
 
         TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(betta.focused(), "Focus function is not working.");
+
+        alpha.hide();
+        betta.hide();
+
+        std::this_thread::sleep_for(timespan);
+        alpha.focus();
+
+        std::this_thread::sleep_for(timespan);
+        alpha.process_events();
+        betta.process_events();
+
+        TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
+        TEST_ASSERT(!betta.focused(), "Focus function is not working.");
     }
 };
 

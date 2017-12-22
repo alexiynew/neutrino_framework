@@ -53,10 +53,18 @@ public:
     bool focused() override;
 
 private:
-    std::shared_ptr<x11_server> m_server;
+    void process(XDestroyWindowEvent event);
+    void process(XUnmapEvent event);
+    void process(XVisibilityEvent event);
+    void process(XConfigureEvent event);
+    void process(XAnyEvent event);
 
-    uint32 m_width  = 640;
-    uint32 m_height = 480;
+    std::shared_ptr<x11_server> m_server = nullptr;
+
+    bool m_viewable = false;
+
+    window::size_t m_size         = {640, 480};
+    window::position_t m_position = {0, 0};
 
     Window m_window = 0;
 };

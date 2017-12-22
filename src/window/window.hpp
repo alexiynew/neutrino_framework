@@ -67,7 +67,10 @@ public:
     size_t min_size();
 
     std::string title();
+    /// @}
 
+    /// @name state
+    /// @{
     bool full_screen();
     bool minimized();
     bool maximized();
@@ -79,6 +82,13 @@ public:
 private:
     std::unique_ptr<implementation> m_implementation;
 };
+
+bool operator==(const window::size_t& lhs, const window::size_t& rhs);
+bool operator!=(const window::size_t& lhs, const window::size_t& rhs);
+
+bool operator==(const window::position_t& lhs, const window::position_t& rhs);
+bool operator!=(const window::position_t& lhs, const window::position_t& rhs);
+
 } // namespace framework
 
 #endif
