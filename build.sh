@@ -11,6 +11,8 @@ TEST_MODULES=""
 
 BUILD_TYPE="Debug"
 
+GENERATOR=""
+
 RED='\033[0;31m'
 BLUE='\033[0;34m'
 LIGHT_CYAN='\e[1;36m'
@@ -64,13 +66,23 @@ function check_x11_support {
     fi
 }
 
+function set_generator {
+    if [[ "$(uname -s)" == "Linux" ]]
+    then
+        GENERATOR="Unix Makefiles"
+    elif [[ "$(uname -s)" == "Darwin" ]]
+    then
+        GENERATOR="Xcode"
+    fi
+}
+
 # Task functions
 function configure {
     info "==== Run configuration ===="
 
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
-    cmake -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
+    cmake  -G "$GENERATOR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
 }
 
 function build_framework {
@@ -285,4 +297,5 @@ do
     esac
 done
 
+set_generator
 execute "$TASK_TO_RUN"

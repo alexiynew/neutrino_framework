@@ -37,6 +37,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(Macros)
 include(CompillerSettings)
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # Set compiller flags
 choose_compiller_flags()
 if(ENABLE_TEST_COVERAGE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))

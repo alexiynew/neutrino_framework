@@ -37,7 +37,7 @@ cocoa_window::~cocoa_window()
 void cocoa_window::show()
 {
     // Style flags:
-    NSUInteger windowStyle = NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask;
+    NSUInteger windowStyle = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable;
 
     // Window bounds (x, y, width, height).
     NSRect windowRect = NSMakeRect(100, 100, 400, 400);
@@ -63,4 +63,134 @@ void cocoa_window::hide()
 	std::cout << "cocoa_window::hide" << std::endl;
 	[window orderOut:nil];
 }
+
+    void cocoa_window::focus() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::process_events() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::minimize() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::maximize() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::to_full_screen() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::restore() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::set_size(int32, int32) 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::set_position(int32, int32) 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::set_max_size(int32, int32) 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::set_min_size(int32, int32) 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    void cocoa_window::set_title(const std::string&) 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    int cocoa_window::x() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    int cocoa_window::y() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    int cocoa_window::width() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    int cocoa_window::height() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    int cocoa_window::max_height() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    int cocoa_window::max_width() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    int cocoa_window::min_height() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    int cocoa_window::min_width() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    std::string cocoa_window::title() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    bool cocoa_window::full_screen() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    bool cocoa_window::minimized() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    bool cocoa_window::maximized() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    bool cocoa_window::resizable() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    bool cocoa_window::visible() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
+
+    bool cocoa_window::focused() 
+    {
+        throw std::logic_error("Function is not implemented.");
+    }
 }

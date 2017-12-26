@@ -31,6 +31,9 @@ namespace framework {
 /// @defgroup math_module Math module
 /// @{
 
+/// @brief Predefined constants.
+/// @defgroup predefined_constants Predefined constants
+
 /// @brief Vector type implementation.
 /// @defgroup vector_implementation Vector type
 
@@ -63,6 +66,7 @@ namespace math {
 
 /// @name Common vector types.
 /// @{
+
 using vector2d = vector<2, float64>; ///< Vector of 2 float64 values.
 using vector3d = vector<3, float64>; ///< Vector of 3 float64 values.
 using vector4d = vector<4, float64>; ///< Vector of 4 float64 values.
@@ -82,10 +86,12 @@ using vector4u = vector<4, uint32>; ///< Vector of 4 uint32 values.
 using vector2b = vector<2, bool>; ///< Vector of 2 bool values.
 using vector3b = vector<3, bool>; ///< Vector of 3 bool values.
 using vector4b = vector<4, bool>; ///< Vector of 4 bool values.
+
 /// @}
 
 /// @name Common matrix types.
 /// @{
+
 using matrix2d   = matrix<2, 2, float64>; ///< Matrix with 2 columns and 2 rows of float64 type values.
 using matrix2x2d = matrix<2, 2, float64>; ///< Matrix with 2 columns and 2 rows of float64 type values.
 using matrix2x3d = matrix<2, 3, float64>; ///< Matrix with 2 columns and 3 rows of float64 type values.
@@ -115,6 +121,7 @@ using matrix4f   = matrix<4, 4, float32>; ///< Matrix with 4 columns and 4 rows 
 using matrix4x4f = matrix<4, 4, float32>; ///< Matrix with 4 columns and 4 rows of float32 type values.
 using matrix4x2f = matrix<4, 2, float32>; ///< Matrix with 4 columns and 2 rows of float32 type values.
 using matrix4x3f = matrix<4, 3, float32>; ///< Matrix with 4 columns and 4 rows of float32 type values.
+
 /// @}
 
 /// @}

@@ -754,9 +754,9 @@ QHG_LOCATION           =
 GENERATE_ECLIPSEHELP   = NO
 ECLIPSE_DOC_ID         = org.doxygen.Project
 
-# Treeview index
-DISABLE_INDEX          = YES
-GENERATE_TREEVIEW      = YES
+# Index
+DISABLE_INDEX          = NO
+GENERATE_TREEVIEW      = NO
 
 ENUM_VALUES_PER_LINE   = 4
 
