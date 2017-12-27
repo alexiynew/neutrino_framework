@@ -11,6 +11,9 @@
 
 namespace framework {
 
+/// @addtogroup logger_module 
+/// @{
+
 namespace logger {
 
 /// @brief Prints all messages to provided stream.
@@ -32,6 +35,9 @@ public:
 private:
     std::ostream& m_output;
 };
+
+/// @}
+
 } // namespace logger
 
 } // namespace framework

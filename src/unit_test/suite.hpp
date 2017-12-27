@@ -13,7 +13,7 @@
 
 namespace framework {
 
-/// @defgroup unit_test_module Unit test module
+/// @defgroup unit_test_module Unit test
 /// @{
 
 /// @brief Contains classes related to unit tests.
@@ -85,8 +85,7 @@ protected:
     /// @param line Line number in the file.
     /// @param message Error description.
     ///
-    /// @note You can use @ref TEST_FAIL(MESSAGE) and
-    ///       @ref TEST_ASSERT(EXPRESSION, MESSAGE) macros
+    /// @note You can use @ref TEST_FAIL and @ref TEST_ASSERT macros
     ///       to get @b file path and @b line number.
     void test_failed(const std::string& file, int32 line, const std::string& message);
 

@@ -11,7 +11,7 @@
 
 namespace framework {
 
-/// @defgroup logger_module Logger module
+/// @defgroup logger_module Logger
 /// @{
 
 /// @brief Contains classes related to logging.

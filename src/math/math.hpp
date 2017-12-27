@@ -28,7 +28,7 @@
 namespace framework {
 
 /// @brief Contains all math stuff.
-/// @defgroup math_module Math module
+/// @defgroup math_module Math
 /// @{
 
 /// @brief Vector type implementation.
@@ -82,6 +82,7 @@ using vector4u = vector<4, uint32>; ///< Vector of 4 uint32 values.
 using vector2b = vector<2, bool>; ///< Vector of 2 bool values.
 using vector3b = vector<3, bool>; ///< Vector of 3 bool values.
 using vector4b = vector<4, bool>; ///< Vector of 4 bool values.
+
 /// @}
 
 /// @name Common matrix types.
@@ -115,6 +116,7 @@ using matrix4f   = matrix<4, 4, float32>; ///< Matrix with 4 columns and 4 rows 
 using matrix4x4f = matrix<4, 4, float32>; ///< Matrix with 4 columns and 4 rows of float32 type values.
 using matrix4x2f = matrix<4, 2, float32>; ///< Matrix with 4 columns and 2 rows of float32 type values.
 using matrix4x3f = matrix<4, 3, float32>; ///< Matrix with 4 columns and 4 rows of float32 type values.
+
 /// @}
 
 /// @}
