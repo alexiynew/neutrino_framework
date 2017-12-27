@@ -10,8 +10,6 @@
 
 namespace framework {
 
-/// @brief Contains definition of primitive types.
-///
 /// @defgroup common_types_module Common types
 /// @{
 

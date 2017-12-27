@@ -11,7 +11,7 @@
 
 namespace framework {
 
-/// @defgroup logger_module Logger module
+/// @defgroup logger_module Logger
 /// @{
 
 /// @brief Contains classes related to logging.
@@ -21,8 +21,8 @@ class default_logger;
 
 /// @brief Logger interface.
 ///
-/// This is facade for @ref logger.
-/// It holds current logger instance, and provides interface to use it.
+/// This is facade for logger.
+/// It holds current logger implementation, and provides interface to use it.
 class log
 {
 public:
@@ -41,7 +41,7 @@ public:
     ///
     /// @note Works only in debug mode.
     ///
-    /// @see logger::add_message
+    /// @see default_logger::add_message
     static void debug(const std::string& tag, const std::string& message);
 
     /// @brief Logs information messages.
@@ -49,7 +49,7 @@ public:
     /// @param tag Message tag.
     /// @param message Message for logging.
     ///
-    /// @see logger::add_message
+    /// @see default_logger::add_message
     static void info(const std::string& tag, const std::string& message);
 
     /// @brief Logs warning messages.
@@ -57,7 +57,7 @@ public:
     /// @param tag Message tag.
     /// @param message Message for logging.
     ///
-    /// @see logger::add_message
+    /// @see default_logger::add_message
     static void warning(const std::string& tag, const std::string& message);
 
     /// @brief Logs error messages.
@@ -65,7 +65,7 @@ public:
     /// @param tag Message tag.
     /// @param message Message for logging.
     ///
-    /// @see logger::add_message
+    /// @see default_logger::add_message
     static void error(const std::string& tag, const std::string& message);
 
     /// @brief Logs fatal error messages.
@@ -73,7 +73,7 @@ public:
     /// @param tag Message tag.
     /// @param message Message for logging.
     ///
-    /// @see logger::add_message
+    /// @see default_logger::add_message
     static void fatal(const std::string& tag, const std::string& message);
 
     /// @brief Set provided class as logger.
@@ -116,7 +116,7 @@ public:
     ///
     /// In base implementation, does nothing
     ///
-    /// @param level The message @ref level
+    /// @param level The message @ref severity_level
     /// @param tag Message tag. Describes message domain.
     /// @param message Message itself.
     virtual void add_message(const severity_level level, const std::string& tag, const std::string& message);

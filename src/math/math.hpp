@@ -28,7 +28,7 @@
 namespace framework {
 
 /// @brief Contains all math stuff.
-/// @defgroup math_module Math module
+/// @defgroup math_module Math
 /// @{
 
 /// @brief Predefined constants.
