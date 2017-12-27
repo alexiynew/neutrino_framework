@@ -24,7 +24,7 @@ public:
 
     /// @brief Prints message to the stream.
     ///
-    /// @param level The message @ref level
+    /// @param level The message @ref severity_level
     /// @param tag Message tag. Describes message domain.
     /// @param message Message itself.
     void add_message(const severity_level level, const std::string& tag, const std::string& message) override;
