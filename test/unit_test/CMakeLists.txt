@@ -9,3 +9,5 @@ add_subdirectory(tests_for_tests)
 add_custom_target(${PROJECT_NAME}
     DEPENDS tests_for_tests
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${TARGET_PROJECT_FOLDER}/${TEST_PACK_NAME})

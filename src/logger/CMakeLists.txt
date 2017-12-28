@@ -5,9 +5,10 @@ file(GLOB_RECURSE LIB_SOURCES ${SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
 
 message("\tAdd library: ${LIB_NAME}")
-add_library(${LIB_NAME} ${LIB_SOURCES})
+add_library(${LIB_NAME} ${LIB_SOURCES} ${LIB_HEADERS})
 
 target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
+set_target_properties(${LIB_NAME} PROPERTIES FOLDER ${TARGET_PROJECT_FOLDER})
 
 install(TARGETS ${LIB_NAME} DESTINATION ${PROJECT_NAME}/${LIB_NAME})
 install(FILES ${LIB_HEADERS} DESTINATION ${PROJECT_NAME}/${LIB_NAME})

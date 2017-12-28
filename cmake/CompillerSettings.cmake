@@ -1,7 +1,7 @@
 macro(choose_compiller_flags)
     if("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
         message("Using Clang compiller settings")
-        set(CMAKE_CXX_FLAGS "-Weverything -Werror -std=c++17 -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions -Wno-covered-switch-default -Wno-missing-prototypes -Wno-weak-vtables -Wno-exit-time-destructors -fPIC")
+        set(CMAKE_CXX_FLAGS "-Weverything -Werror -std=c++1z -Wno-c++98-compat -Wno-padded -Wno-c++11-extensions -Wno-covered-switch-default -Wno-missing-prototypes -Wno-weak-vtables -Wno-exit-time-destructors -fPIC")
         set(CMAKE_CXX_FLAGS_DEBUG "-g")
         set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
         set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG -DFORCE_ASSERT")
