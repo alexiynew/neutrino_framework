@@ -5,7 +5,7 @@ set -eu
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BUILD_DIR="$SCRIPT_DIR/build"
 
-TASK_TO_RUN="none"
+TASK_TO_RUN=""
 
 TEST_MODULES=""
 
@@ -36,7 +36,8 @@ function set_compiler {
         CC_COMPILER=clang
         CXX_COMILLER=clang++
     else
-        error "Unknown compiler: $1"
+        error "Unknown compiler: '$1'."
+        exit 1
     fi
 
     info "Specify C compiller as $CC_COMPILER."
@@ -164,11 +165,10 @@ function clean_all {
 function print_help {
 cat << EOF
 ==== Help ====
-    ./build.sh [OPTION VALUE[,VALUE]]
+    ./build.sh [OPTION VALUE] [ACTION [ACTION]]
 
     OPTIONS:
-        -t : Specify task to run.
-        VALUES:
+        ACTIONS:
             configure    : Just runs cmake configuration.
             build        : Build framework and tests.
             install      : Install framework and tests.
@@ -232,7 +232,7 @@ function run_task {
             exit 1
         ;;
         *)
-            error "Unknown task '$1'"
+            error "Unknown task '$1'."
             exit 1
         ;;
     esac
@@ -246,31 +246,59 @@ function execute {
     done
 }
 
-while getopts "t:c:m:h" opt
+
+function parse_argument {
+    option="$1"
+    value="$2"
+
+    if [[ "$value" == "" ]]
+    then
+        error "Option '$option' requires an argument."
+        exit 1
+    fi
+
+    case "$option" in
+        -b)
+            BUILD_TYPE="$value"
+        ;;
+        -c)
+            set_compiler "$value"
+        ;;
+        -m)
+            TEST_MODULES="$value"
+        ;;
+        *)
+            error "Unknown option '$option'."
+            exit 1
+        ;;
+    esac
+}
+
+args_count=$#
+for (( index=1; index<=args_count; index++))
 do
-    case $opt in
-        t)
-            TASK_TO_RUN="$OPTARG"
-        ;;
-        c)
-            set_compiler "$OPTARG"
-        ;;
-        m)
-            TEST_MODULES="$OPTARG"
-        ;;
-        h)
+    arg="${!index}"
+    case "$arg" in
+        -h)
             print_help
             exit 0
         ;;
-        \?)
-            error "Invalid option -$OPTARG."
-            print_help
-            exit 1
+        -* )
+            next_index=$((index+1))
+
+            if [[ "$next_index" -gt "$args_count" ]]
+            then
+                error "Option '$arg' requires an argument."
+                exit 1
+            fi
+
+            next_arg="${!next_index}"
+            parse_argument "$arg" "$next_arg"
+
+            index=next_index
         ;;
-        :)
-            error "Option -$OPTARG requires an argument."
-            print_help
-            exit 1
+        *)
+            TASK_TO_RUN="$TASK_TO_RUN $arg"
         ;;
     esac
 done
