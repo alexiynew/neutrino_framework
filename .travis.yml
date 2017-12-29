@@ -7,7 +7,7 @@ matrix:
     - os: linux
       env:
         - COMPILLER=clang
-        - TASK="clean,build,test"
+        - TASK="clean build test"
       sudo: required
       services:
         - docker
@@ -15,7 +15,7 @@ matrix:
     - os: linux
       env:
         - COMPILLER=gcc
-        - TASK="clean,build,test"
+        - TASK="clean build test"
       sudo: required
       services:
         - docker
@@ -23,18 +23,18 @@ matrix:
     - os: osx
       osx_image: xcode8.3
       env:
-        - TASK="clean,build,test"
+        - TASK="clean build test"
 
     - os: osx
       osx_image: xcode9.1
       env:
-        - TASK="clean,build,test"
+        - TASK="clean build test"
 
     - os: linux
       dist: trusty
       env:
         - COMPILLER=gcc
-        - TASK="clean,coverage"
+        - TASK="clean coverage"
       sudo: required
       services:
         - docker

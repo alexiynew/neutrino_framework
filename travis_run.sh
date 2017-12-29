@@ -7,7 +7,7 @@ set -e
 # Run build and tests
 if [[ "${TRAVIS_OS_NAME}" == "linux" ]]
 then
-    sudo docker run -it -v "${TRAVIS_BUILD_DIR}:/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -t ${TASK} -c ${COMPILLER}"
+    sudo docker run -it -v "${TRAVIS_BUILD_DIR}:/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c ${COMPILLER} ${TASK}"
 
     if [[ "${TASK}" == *"coverage"* ]]
     then
@@ -15,5 +15,5 @@ then
     fi
 elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]
 then
-    ./build.sh -t "${TASK}"
+    ./build.sh "${TASK}"
 fi
