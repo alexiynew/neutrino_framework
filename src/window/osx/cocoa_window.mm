@@ -29,7 +29,6 @@ cocoa_window::cocoa_window()
 
 cocoa_window::~cocoa_window()
 {
-	std::cout << "~cocoa_window" << std::endl;
     [pool drain];
     [NSApp stop:nil];
 }
