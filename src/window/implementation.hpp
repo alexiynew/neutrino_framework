@@ -24,6 +24,7 @@ public:
     implementation(const implementation&) = delete;
     implementation& operator=(const implementation&) = delete;
 
+    //actions
     virtual void show()           = 0;
     virtual void hide()           = 0;
     virtual void focus()          = 0;

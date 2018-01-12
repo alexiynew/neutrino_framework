@@ -6,18 +6,19 @@
 #ifndef FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP
 #define FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP
 
-#include <window/window_implementation.hpp>
+#include <window/implementation.hpp>
 
 #import "Cocoa/Cocoa.h"
 
 namespace framework {
 
-class cocoa_window final : public window_implementation
+    class cocoa_window final : public window::implementation
 {
 public:
     cocoa_window();
     ~cocoa_window() override;
 
+    //actions
     void show() override;
     void hide() override;
     void focus() override;
@@ -27,27 +28,26 @@ public:
     void maximize() override;
     void to_full_screen() override;
     void restore() override;
+    
+    // setters
+    void set_size(window::size_t size) override;
+    void set_position(window::position_t position) override;
 
-    void set_size(int32 width, int32 height) override;
-    void set_position(int32 x, int32 y) override;
-
-    void set_max_size(int32 width, int32 height) override;
-    void set_min_size(int32 width, int32 height) override;
+    void set_max_size(window::size_t max_size) override;
+    void set_min_size(window::size_t min_size) override;
 
     void set_title(const std::string& title) override;
-
-    int x() override;
-    int y() override;
-    int width() override;
-    int height() override;
-
-    int max_height() override;
-    int max_width() override;
-    int min_height() override;
-    int min_width() override;
+    
+    // getters
+    virtual window::position_t position() override;
+    virtual window::size_t size() override;
+    
+    virtual window::size_t max_size() override;
+    virtual window::size_t min_size() override;
 
     std::string title() override;
-
+    
+    // state
     bool full_screen() override;
     bool minimized() override;
     bool maximized() override;
@@ -59,6 +59,7 @@ private:
     NSAutoreleasePool* pool;
     NSWindow* window;
 };
+
 } // namespace framework
 
 #endif

@@ -9,7 +9,7 @@
 
 namespace framework {
 
-std::unique_ptr<window_implementation> get_implementation()
+    std::unique_ptr<window::implementation> window::implementation::get_implementation()
 {
     return std::make_unique<cocoa_window>();
 }
@@ -93,22 +93,22 @@ void cocoa_window::hide()
         throw std::logic_error("Function is not implemented.");
     }
 
-    void cocoa_window::set_size(int32, int32) 
+    void cocoa_window::set_size(window::size_t)
     {
         throw std::logic_error("Function is not implemented.");
     }
 
-    void cocoa_window::set_position(int32, int32) 
+    void cocoa_window::set_position(window::position_t)
     {
         throw std::logic_error("Function is not implemented.");
     }
 
-    void cocoa_window::set_max_size(int32, int32) 
+    void cocoa_window::set_max_size(window::size_t)
     {
         throw std::logic_error("Function is not implemented.");
     }
 
-    void cocoa_window::set_min_size(int32, int32) 
+    void cocoa_window::set_min_size(window::size_t)
     {
         throw std::logic_error("Function is not implemented.");
     }
@@ -117,43 +117,23 @@ void cocoa_window::hide()
     {
         throw std::logic_error("Function is not implemented.");
     }
-
-    int cocoa_window::x() 
+    
+    window::position_t cocoa_window::position()
     {
         throw std::logic_error("Function is not implemented.");
     }
-
-    int cocoa_window::y() 
+    
+    window::size_t cocoa_window::size()
     {
         throw std::logic_error("Function is not implemented.");
     }
-
-    int cocoa_window::width() 
+    
+    window::size_t cocoa_window::max_size()
     {
         throw std::logic_error("Function is not implemented.");
     }
-
-    int cocoa_window::height() 
-    {
-        throw std::logic_error("Function is not implemented.");
-    }
-
-    int cocoa_window::max_height() 
-    {
-        throw std::logic_error("Function is not implemented.");
-    }
-
-    int cocoa_window::max_width() 
-    {
-        throw std::logic_error("Function is not implemented.");
-    }
-
-    int cocoa_window::min_height() 
-    {
-        throw std::logic_error("Function is not implemented.");
-    }
-
-    int cocoa_window::min_width() 
+    
+    window::size_t cocoa_window::min_size()
     {
         throw std::logic_error("Function is not implemented.");
     }
