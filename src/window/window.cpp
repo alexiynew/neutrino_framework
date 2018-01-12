@@ -4,20 +4,20 @@
 /// @date 04.04.2017
 
 #include <memory>
+#include <window/implementation.hpp>
 #include <window/window.hpp>
-#include <window/window_implementation.hpp>
 
 namespace framework {
 
 window::window()
-    : m_implementation(get_implementation())
+    : m_implementation(implementation::get_implementation())
 {}
 
 window::~window()
 {}
 
-/// @name actions
-/// @{
+#pragma region actions
+
 void window::show()
 {
     m_implementation->show();
@@ -57,86 +57,69 @@ void window::restore()
 {
     m_implementation->restore();
 }
-/// @}
 
-/// @name setters
-/// @{
-void window::set_size(int32 width, int32 height)
+#pragma endregion
+
+#pragma region setters
+
+void window::set_size(size_t size)
 {
-    m_implementation->set_size(width, height);
+    m_implementation->set_size(size);
 }
 
-void window::set_position(int32 x, int32 y)
+void window::set_position(position_t position)
 {
-    m_implementation->set_position(x, y);
+    m_implementation->set_position(position);
 }
 
-void window::set_max_size(int32 width, int32 height)
+void window::set_max_size(size_t max_size)
 {
-    m_implementation->set_max_size(width, height);
+    m_implementation->set_max_size(max_size);
 }
 
-void window::set_min_size(int32 width, int32 height)
+void window::set_min_size(size_t min_size)
 {
-    m_implementation->set_min_size(width, height);
+    m_implementation->set_min_size(min_size);
 }
 
 void window::set_title(const std::string& title)
 {
     m_implementation->set_title(title);
 }
-/// @}
 
-/// @name getters
-/// @{
-int window::x()
+#pragma endregion
+
+#pragma region getters
+
+window::position_t window::position()
 {
-    return m_implementation->x();
+    return m_implementation->position();
 }
 
-int window::y()
+window::size_t window::size()
 {
-    return m_implementation->y();
+    return m_implementation->size();
 }
 
-int window::width()
+window::size_t window::max_size()
 {
-    return m_implementation->width();
+    return m_implementation->max_size();
 }
 
-int window::height()
+window::size_t window::min_size()
 {
-    return m_implementation->height();
-}
-
-int window::max_height()
-{
-    return m_implementation->max_height();
-}
-
-int window::max_width()
-{
-    return m_implementation->max_width();
-}
-
-int window::min_height()
-{
-    return m_implementation->min_height();
-}
-
-int window::min_width()
-{
-    return m_implementation->min_width();
+    return m_implementation->min_size();
 }
 
 std::string window::title()
 {
     return m_implementation->title();
 }
-/// @}
 
-/// @name state
-/// @{
+#pragma endregion
+
+#pragma region state
+
 bool window::full_screen()
 {
     return m_implementation->full_screen();
@@ -166,6 +149,31 @@ bool window::focused()
 {
     return m_implementation->focused();
 }
-/// @}
+
+#pragma endregion
+
+#pragma region helper functions
+
+bool operator==(const window::size_t& lhs, const window::size_t& rhs)
+{
+    return lhs.width == rhs.width && lhs.height == rhs.height;
+}
+
+bool operator!=(const window::size_t& lhs, const window::size_t& rhs)
+{
+    return !(lhs == rhs);
+}
+
+bool operator==(const window::position_t& lhs, const window::position_t& rhs)
+{
+    return lhs.x == rhs.x && lhs.y == rhs.y;
+}
+
+bool operator!=(const window::position_t& lhs, const window::position_t& rhs)
+{
+    return !(lhs == rhs);
+}
+
+#pragma endregion
 
 } // namespace framework

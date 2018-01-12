@@ -8,12 +8,12 @@
 
 #include <X11/Xlib.h>
 #include <common/common_types.hpp>
+#include <window/implementation.hpp>
 #include <window/linux/x11_server.hpp>
-#include <window/window_implementation.hpp>
 
 namespace framework {
 
-class x11_window final : public window_implementation
+class x11_window final : public window::implementation
 {
 public:
     x11_window();
@@ -29,23 +29,19 @@ public:
     void to_full_screen() override;
     void restore() override;
 
-    void set_size(int32 width, int32 height) override;
-    void set_position(int32 x, int32 y) override;
+    void set_size(window::size_t size) override;
+    void set_position(window::position_t position) override;
 
-    void set_max_size(int32 width, int32 height) override;
-    void set_min_size(int32 width, int32 height) override;
+    void set_max_size(window::size_t max_size) override;
+    void set_min_size(window::size_t min_size) override;
 
     void set_title(const std::string& title) override;
 
-    int x() override;
-    int y() override;
-    int width() override;
-    int height() override;
+    window::position_t position() override;
+    window::size_t size() override;
 
-    int max_height() override;
-    int max_width() override;
-    int min_height() override;
-    int min_width() override;
+    window::size_t max_size() override;
+    window::size_t min_size() override;
 
     std::string title() override;
 
@@ -57,12 +53,20 @@ public:
     bool focused() override;
 
 private:
-    std::shared_ptr<x11_server> m_server;
+    void process(XDestroyWindowEvent event);
+    void process(XUnmapEvent event);
+    void process(XVisibilityEvent event);
+    void process(XConfigureEvent event);
+    void process(XAnyEvent event);
 
-    uint32 m_width;
-    uint32 m_height;
+    std::shared_ptr<x11_server> m_server = nullptr;
 
-    Window m_window;
+    bool m_viewable = false;
+
+    window::size_t m_size         = {640, 480};
+    window::position_t m_position = {0, 0};
+
+    Window m_window = 0;
 };
 } // namespace framework
 

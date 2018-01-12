@@ -9,21 +9,20 @@
 #include <string>
 #include <window/linux/x11_window.hpp>
 
-using namespace framework;
-using log = framework::logger::log;
+using namespace framework::logger;
 
 namespace {
 
 const char* const log_tag = "x11_window";
 
-int32 event_predicate(Display*, XEvent* event, XPointer arg)
+Bool event_predicate(Display*, XEvent* event, XPointer arg)
 {
     return event->xany.window == *(reinterpret_cast<Window*>(arg));
 }
 
-std::string event_type_string(const XEvent& event)
+std::string event_type_string(const XAnyEvent& event)
 {
-    switch (event.xany.type) {
+    switch (event.type) {
         case KeyPress: return "KeyPress";
         case KeyRelease: return "KeyRelease";
         case ButtonPress: return "ButtonPress";
@@ -66,21 +65,17 @@ std::string event_type_string(const XEvent& event)
 
 namespace framework {
 
-std::unique_ptr<window_implementation> get_implementation()
+std::unique_ptr<window::implementation> window::implementation::get_implementation()
 {
     return std::make_unique<x11_window>();
 }
 
 x11_window::x11_window()
-    : m_server{x11_server::connect()}
-    , m_width{640}
-    , m_height{480}
-    , m_window{0}
 {
+    m_server = x11_server::connect();
+
     XID color = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
 
-    int32 x             = 100;
-    int32 y             = 100;
     uint32 border_width = 0;
     int32 depth         = 24;
     uint32 window_class = InputOutput;
@@ -89,9 +84,8 @@ x11_window::x11_window()
 
     XSetWindowAttributes attributes = {};
 
-    attributes.background_pixel = color; // CWBackPixel
-    attributes.event_mask       = ExposureMask | VisibilityChangeMask | FocusChangeMask | SubstructureNotifyMask |
-                            SubstructureRedirectMask; // CWEventMask
+    attributes.background_pixel = color;
+    attributes.event_mask       = VisibilityChangeMask | FocusChangeMask | StructureNotifyMask;
 
     //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
     //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
@@ -136,10 +130,10 @@ x11_window::x11_window()
 
     m_window = XCreateWindow(m_server->display(),
                              m_server->default_root_window(),
-                             x,
-                             y,
-                             m_width,
-                             m_height,
+                             m_position.x,
+                             m_position.y,
+                             m_size.width,
+                             m_size.height,
                              border_width,
                              depth,
                              window_class,
@@ -159,19 +153,28 @@ x11_window::~x11_window()
         XDestroyWindow(m_server->display(), m_window);
         XSync(m_server->display(), False);
     }
-    m_window = 0;
 }
+
+#pragma region actions
 
 void x11_window::show()
 {
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
+
+    while (!m_viewable) {
+        process_events();
+    }
 }
 
 void x11_window::hide()
 {
     XUnmapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
+
+    while (m_viewable) {
+        process_events();
+    }
 }
 
 void x11_window::focus()
@@ -191,8 +194,8 @@ void x11_window::focus()
         event.xclient.message_type = net_active_window;
         event.xclient.format       = 32;
         event.xclient.data.l[0]    = 1; // source -> from application
-        event.xclient.data.l[1]    = 0; // last user activity timestamp
-        event.xclient.data.l[2]    = 0; // currently active window
+        event.xclient.data.l[1]    = 0; // TODO: get last user activity timestamp
+        event.xclient.data.l[2]    = 0; // TODO: get currently active window ID
 
         if (!XSendEvent(m_server->display(),
                         DefaultRootWindow(m_server->display()),
@@ -207,19 +210,39 @@ void x11_window::focus()
     }
 
     XFlush(m_server->display());
-} // namespace framework
+}
 
 void x11_window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
-        log::info(log_tag, event_type_string(event));
+        process(event.xany);
 
-        // TODO process DestroyNotify event
-        // TODO process MapNotify and Expose evenats
-        // TODO process UnmapNotify event
-        // TODO process CreateNotify event
-        // TODO process FocusIn, FocusOut events
+        switch (event.xany.type) {
+
+                // case KeyPress: return "KeyPress";
+                // case KeyRelease: return "KeyRelease";
+                // case ButtonPress: return "ButtonPress";
+                // case ButtonRelease: return "ButtonRelease";
+                // case MotionNotify: return "MotionNotify";
+                // case EnterNotify: return "EnterNotify";
+                // case LeaveNotify: return "LeaveNotify";
+                // case FocusIn: return "FocusIn";
+                // case FocusOut: return "FocusOut";
+                // case KeymapNotify: return "KeymapNotify"
+                // case PropertyNotify: return "PropertyNotify";
+                // case SelectionClear: return "SelectionClear";
+                // case SelectionRequest: return "SelectionRequest";
+                // case SelectionNotify: return "SelectionNotify";
+                // case ClientMessage: return "ClientMessage";
+                // case GenericEvent:  return "GenericEvent";
+
+            case VisibilityNotify: process(event.xvisibility); break;
+            case DestroyNotify: process(event.xdestroywindow); break;
+            case UnmapNotify: process(event.xunmap); break;
+            case ConfigureNotify: process(event.xconfigure); break;
+            default: break;
+        }
     }
 }
 
@@ -243,22 +266,26 @@ void x11_window::restore()
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::set_size(int32, int32)
+#pragma endregion
+
+#pragma region setters
+
+void x11_window::set_size(window::size_t)
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::set_position(int32, int32)
+void x11_window::set_position(window::position_t)
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::set_max_size(int32, int32)
+void x11_window::set_max_size(window::size_t)
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::set_min_size(int32, int32)
+void x11_window::set_min_size(window::size_t)
 {
     throw std::logic_error("Function is not implemented.");
 }
@@ -268,42 +295,26 @@ void x11_window::set_title(const std::string&)
     throw std::logic_error("Function is not implemented.");
 }
 
-int x11_window::x()
+#pragma endregion
+
+#pragma region getters
+
+window::position_t x11_window::position()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-int x11_window::y()
+window::size_t x11_window::size()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-int x11_window::width()
+window::size_t x11_window::max_size()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-int x11_window::height()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-int x11_window::max_height()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-int x11_window::max_width()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-int x11_window::min_height()
-{
-    throw std::logic_error("Function is not implemented.");
-}
-
-int x11_window::min_width()
+window::size_t x11_window::min_size()
 {
     throw std::logic_error("Function is not implemented.");
 }
@@ -312,6 +323,10 @@ std::string x11_window::title()
 {
     throw std::logic_error("Function is not implemented.");
 }
+
+#pragma endregion
+
+#pragma region state
 
 bool x11_window::full_screen()
 {
@@ -335,6 +350,10 @@ bool x11_window::resizable()
 
 bool x11_window::visible()
 {
+    if (!m_viewable) {
+        return false;
+    }
+
     XWindowAttributes attributes;
     if (XGetWindowAttributes(m_server->display(), m_window, &attributes)) {
         return attributes.map_state == IsViewable;
@@ -353,5 +372,52 @@ bool x11_window::focused()
 
     return m_window == focus_window;
 }
+
+#pragma endregion
+
+#pragma region event processing
+
+void x11_window::process(XDestroyWindowEvent)
+{
+    log::debug(log_tag, "The window is about to be destroyed.");
+}
+
+void x11_window::process(XUnmapEvent)
+{
+    m_viewable = false;
+    log::debug(log_tag, "The window is hidden.");
+}
+
+void x11_window::process(XVisibilityEvent event)
+{
+    if (event.state != VisibilityFullyObscured) {
+        m_viewable = true;
+    }
+
+    log::debug(log_tag, "The window visibility changed.");
+}
+
+void x11_window::process(XConfigureEvent event)
+{
+    window::size_t new_size{event.width, event.height};
+    window::position_t new_position{event.x, event.y};
+
+    if (m_size != new_size) {
+        m_size = new_size;
+        log::debug(log_tag, "The window size changed.");
+    }
+
+    if (m_position != new_position) {
+        m_position = new_position;
+        log::debug(log_tag, "The window position changed.");
+    }
+}
+
+void x11_window::process(XAnyEvent event)
+{
+    log::debug(log_tag, std::string("Got event: ") + event_type_string(event));
+}
+
+#pragma endregion
 
 } // namespace framework
