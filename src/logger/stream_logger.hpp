@@ -11,7 +11,7 @@
 
 namespace framework {
 
-/// @addtogroup logger_module 
+/// @addtogroup logger_module
 /// @{
 
 namespace logger {

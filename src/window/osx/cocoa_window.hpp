@@ -12,13 +12,13 @@
 
 namespace framework {
 
-    class cocoa_window final : public window::implementation
+class cocoa_window final : public window::implementation
 {
 public:
     cocoa_window();
     ~cocoa_window() override;
 
-    //actions
+    // actions
     void show() override;
     void hide() override;
     void focus() override;
@@ -28,7 +28,7 @@ public:
     void maximize() override;
     void to_full_screen() override;
     void restore() override;
-    
+
     // setters
     void set_size(window::size_t size) override;
     void set_position(window::position_t position) override;
@@ -37,16 +37,16 @@ public:
     void set_min_size(window::size_t min_size) override;
 
     void set_title(const std::string& title) override;
-    
+
     // getters
     virtual window::position_t position() override;
     virtual window::size_t size() override;
-    
+
     virtual window::size_t max_size() override;
     virtual window::size_t min_size() override;
 
     std::string title() override;
-    
+
     // state
     bool full_screen() override;
     bool minimized() override;

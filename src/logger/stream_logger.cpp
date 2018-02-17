@@ -27,7 +27,8 @@ namespace logger {
 
 stream_logger::stream_logger(std::ostream& stream)
     : m_output(stream)
-{}
+{
+}
 
 void stream_logger::add_message(const logger::severity_level level, const std::string& tag, const std::string& message)
 {

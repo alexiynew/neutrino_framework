@@ -11,10 +11,12 @@ namespace framework {
 
 window::window()
     : m_implementation(implementation::get_implementation())
-{}
+{
+}
 
 window::~window()
-{}
+{
+}
 
 #pragma region actions
 
