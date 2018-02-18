@@ -129,10 +129,16 @@ x11_server::x11_server()
     set_error_handlers();
 
     m_ewmh_supported = ::is_ewmh_compliant(this);
+
+    m_input_method = XOpenIM(m_display, nullptr, nullptr, nullptr);
 }
 
 x11_server::~x11_server()
 {
+    if (m_input_method) {
+        XCloseIM(m_input_method);
+    }
+
     if (m_display) {
         XCloseDisplay(m_display);
     }
@@ -155,6 +161,11 @@ XID x11_server::default_screen() const
     return DefaultScreen(display());
 }
 
+bool x11_server::ewmh_supported() const
+{
+    return m_ewmh_supported;
+}
+
 Atom x11_server::get_atom(const std::string& name, bool only_if_exists) const
 {
     // TODO make it thread safe
@@ -166,9 +177,9 @@ Atom x11_server::get_atom(const std::string& name, bool only_if_exists) const
     return m_atoms[name];
 }
 
-bool x11_server::ewmh_supported() const
+XIM x11_server::input_method() const
 {
-    return m_ewmh_supported;
+    return m_input_method;
 }
 
 } // namespace framework

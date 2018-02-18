@@ -10,7 +10,6 @@ set(LIB_SOURCES ${LIB_SOURCES} ${PLATFORM_DEPENDENT_SOURCES})
 file(GLOB_RECURSE PLATFORM_DEPENDENT_HEADERS ${SOURCE_DIR}/${PLATFORM_NAME}/*.hpp)
 set(LIB_HEADERS ${LIB_INTERFACE_HEADERS} ${PLATFORM_DEPENDENT_HEADERS} implementation.hpp)
 
-
 # Get list of platform dependent libraries to link with
 include(${SOURCE_DIR}/${PLATFORM_NAME}/libraries.cmake)
 
@@ -18,7 +17,7 @@ message("\tAdd library: ${LIB_NAME}")
 add_library(${LIB_NAME} ${LIB_SOURCES} ${LIB_HEADERS})
 
 target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
-target_link_libraries(${LIB_NAME} ${PLATFORM_DEPENDENT_LIBRARIES})
+target_link_libraries(${LIB_NAME} ${PLATFORM_DEPENDENT_LIBRARIES} logger)
 set_target_properties(${LIB_NAME} PROPERTIES FOLDER ${TARGET_PROJECT_FOLDER})
 
 install(TARGETS ${LIB_NAME} DESTINATION ${PROJECT_NAME}/${LIB_NAME})

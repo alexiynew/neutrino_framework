@@ -145,6 +145,8 @@ x11_window::x11_window()
     if (!m_window) {
         throw std::runtime_error("Failed to create X Window.");
     }
+
+    create_input_context();
 }
 
 x11_window::~x11_window()
@@ -152,6 +154,11 @@ x11_window::~x11_window()
     if (m_server->display() && m_window) {
         XDestroyWindow(m_server->display(), m_window);
         XSync(m_server->display(), False);
+    }
+
+    if (input_context) {
+        XDestroyIC(input_context);
+        input_context = nullptr;
     }
 }
 
@@ -227,8 +234,6 @@ void x11_window::process_events()
                 // case MotionNotify: return "MotionNotify";
                 // case EnterNotify: return "EnterNotify";
                 // case LeaveNotify: return "LeaveNotify";
-                // case FocusIn: return "FocusIn";
-                // case FocusOut: return "FocusOut";
                 // case KeymapNotify: return "KeymapNotify"
                 // case PropertyNotify: return "PropertyNotify";
                 // case SelectionClear: return "SelectionClear";
@@ -241,6 +246,8 @@ void x11_window::process_events()
             case DestroyNotify: process(event.xdestroywindow); break;
             case UnmapNotify: process(event.xunmap); break;
             case ConfigureNotify: process(event.xconfigure); break;
+            case FocusIn: process(event.xfocus); break;
+            case FocusOut: process(event.xfocus); break;
             default: break;
         }
     }
@@ -413,9 +420,61 @@ void x11_window::process(XConfigureEvent event)
     }
 }
 
+void x11_window::process(XFocusChangeEvent event)
+{
+    switch (event.type) {
+        case FocusIn:
+            if (input_context) {
+                XSetICFocus(input_context);
+            }
+            if (!m_cursor_grabbed) {
+                int result = XGrabPointer(m_server->display(),
+                                          m_window,
+                                          True,
+                                          ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+                                          GrabModeAsync,
+                                          GrabModeAsync,
+                                          None,
+                                          None,
+                                          CurrentTime);
+
+                m_cursor_grabbed = (result == GrabSuccess);
+
+                if (!m_cursor_grabbed) {
+                    log::warning(log_tag, "Failed to grab mouse cursor");
+                }
+            }
+            break;
+        case FocusOut:
+            if (input_context) {
+                XUnsetICFocus(input_context);
+            }
+
+            if (m_cursor_grabbed) {
+                XUngrabPointer(m_server->display(), CurrentTime);
+                m_cursor_grabbed = false;
+            }
+            break;
+    }
+}
+
 void x11_window::process(XAnyEvent event)
 {
     log::debug(log_tag, std::string("Got event: ") + event_type_string(event));
+}
+
+void x11_window::create_input_context()
+{
+    if (m_server->input_method()) {
+        input_context = XCreateIC(m_server->input_method(),
+                                  XNInputStyle,
+                                  XIMPreeditNothing | XIMStatusNothing,
+                                  XNClientWindow,
+                                  m_window,
+                                  XNFocusWindow,
+                                  m_window,
+                                  nullptr);
+    }
 }
 
 #pragma endregion

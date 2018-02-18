@@ -57,16 +57,21 @@ private:
     void process(XUnmapEvent event);
     void process(XVisibilityEvent event);
     void process(XConfigureEvent event);
+    void process(XFocusChangeEvent event);
     void process(XAnyEvent event);
+
+    void create_input_context();
 
     std::shared_ptr<x11_server> m_server = nullptr;
 
-    bool m_viewable = false;
+    bool m_viewable       = false;
+    bool m_cursor_grabbed = false;
 
     window::size_t m_size         = {640, 480};
     window::position_t m_position = {0, 0};
 
-    Window m_window = 0;
+    Window m_window   = 0;
+    XIC input_context = nullptr;
 };
 } // namespace framework
 

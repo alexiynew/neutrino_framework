@@ -28,6 +28,8 @@ public:
 
     Atom get_atom(const std::string& name, bool only_if_exists) const;
 
+    XIM input_method() const;
+
     static std::shared_ptr<x11_server> connect();
 
 private:
@@ -35,6 +37,7 @@ private:
 
     Display* m_display    = nullptr;
     bool m_ewmh_supported = false;
+    XIM m_input_method    = nullptr;
 
     mutable std::map<std::string, Atom> m_atoms;
 };
