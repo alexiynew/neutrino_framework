@@ -1,4 +1,4 @@
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 

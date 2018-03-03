@@ -3,8 +3,8 @@
 /// @author Fedorov Alexey
 /// @date 31.07.2017
 
-#ifndef FRAMEWORK_COMMON_COMMON_TYPES_HPP
-#define FRAMEWORK_COMMON_COMMON_TYPES_HPP
+#ifndef FRAMEWORK_COMMON_TYPES_HPP
+#define FRAMEWORK_COMMON_TYPES_HPP
 
 #include <cstdint>
 

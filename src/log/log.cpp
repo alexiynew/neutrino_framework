@@ -3,12 +3,15 @@
 /// @author Fedorov Alexey
 /// @date 08.03.2017
 
+#include <common/utils.hpp>
 #include <log/log.hpp>
 
 namespace {
 
 /// @brief Instance of current logger.
 std::unique_ptr<::framework::log::default_logger> logger_instance;
+
+using namespace framework::log::log_details;
 
 } // namespace
 
@@ -25,27 +28,29 @@ void default_logger::add_message(const severity_level, const std::string&, const
 
 log_ostream debug(const std::string& tag)
 {
-    return log_ostream(severity_level::debug, tag);
+    auto buffer = utils::is_debug() ? std::unique_ptr<std::streambuf>(new log_buffer(severity_level::debug, tag))
+                                    : std::unique_ptr<std::streambuf>(new dummy_buffer());
+    return log_ostream(std::move(buffer));
 }
 
 log_ostream info(const std::string& tag)
 {
-    return log_ostream(severity_level::info, tag);
+    return log_ostream(std::make_unique<log_buffer>(severity_level::info, tag));
 }
 
 log_ostream warning(const std::string& tag)
 {
-    return log_ostream(severity_level::warning, tag);
+    return log_ostream(std::make_unique<log_buffer>(severity_level::warning, tag));
 }
 
 log_ostream error(const std::string& tag)
 {
-    return log_ostream(severity_level::error, tag);
+    return log_ostream(std::make_unique<log_buffer>(severity_level::error, tag));
 }
 
 log_ostream fatal(const std::string& tag)
 {
-    return log_ostream(severity_level::fatal, tag);
+    return log_ostream(std::make_unique<log_buffer>(severity_level::fatal, tag));
 }
 
 #pragma endregion

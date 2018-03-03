@@ -7,7 +7,7 @@
 #define FRAMEWORK_MATH_COMMON_FUNCTIONS_HPP
 
 #include <cmath>
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <limits>
 #include <math/common_functions_details.hpp>
 #include <math/vector_type.hpp>

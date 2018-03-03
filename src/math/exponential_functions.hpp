@@ -7,7 +7,7 @@
 #define FRAMEWORK_MATH_EXPONENTIAL_FUNCTIONS_HPP
 
 #include <cmath>
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <math/vector_type.hpp>
 
 namespace framework {

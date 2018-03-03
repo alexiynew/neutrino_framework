@@ -7,7 +7,7 @@
 #define FRAMEWORK_WINDOW_LINUX_X11_WINDOW_HPP
 
 #include <X11/Xlib.h>
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <window/window_implementation.hpp>
 
 namespace framework {

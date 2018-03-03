@@ -7,7 +7,7 @@
 #define FRAMEWORK_MATH_TRIGONOMETRIC_FUNCTIONS_HPP
 
 #include <cmath>
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <math/constants.hpp>
 #include <math/vector_type.hpp>
 
