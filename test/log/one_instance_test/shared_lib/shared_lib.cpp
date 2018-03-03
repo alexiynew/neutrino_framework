@@ -3,5 +3,5 @@
 
 void shared_lib::do_log()
 {
-    ::framework::log::info("shared_lib", "do_log");
+    ::framework::log::info("shared_lib") << "do_log" << std::endl;
 }

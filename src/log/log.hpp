@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_LOG_LOG_HPP
 #define FRAMEWORK_LOG_LOG_HPP
 
+#include <log/log_details.hpp>
 #include <memory>
 #include <string>
 
@@ -16,6 +17,8 @@ namespace framework {
 
 /// @brief Contains classes related to logging.
 namespace log {
+
+using log_details::log_ostream;
 
 /// @brief Severity level of log message.
 enum class severity_level
@@ -48,54 +51,67 @@ public:
 /// @brief Logs messages for debugging purposes.
 ///
 /// @param tag Message tag.
-/// @param message Message for logging.
+///
+/// @return Output stream to log debug messages.
 ///
 /// @note Works only in debug mode.
 ///
 /// @see default_logger::add_message
-void debug(const std::string& tag, const std::string& message);
+log_ostream debug(const std::string& tag);
 
 /// @brief Logs information messages.
 ///
 /// @param tag Message tag.
-/// @param message Message for logging.
+///
+/// @return Output stream to log info messages.
 ///
 /// @see default_logger::add_message
-void info(const std::string& tag, const std::string& message);
+log_ostream info(const std::string& tag);
 
 /// @brief Logs warning messages.
 ///
 /// @param tag Message tag.
-/// @param message Message for logging.
+///
+/// @return Output stream to log warning messages.
 ///
 /// @see default_logger::add_message
-void warning(const std::string& tag, const std::string& message);
+log_ostream warning(const std::string& tag);
 
 /// @brief Logs error messages.
 ///
 /// @param tag Message tag.
-/// @param message Message for logging.
+///
+/// @return Output stream to log error messages.
 ///
 /// @see default_logger::add_message
-void error(const std::string& tag, const std::string& message);
+log_ostream error(const std::string& tag);
 
 /// @brief Logs fatal error messages.
 ///
 /// @param tag Message tag.
-/// @param message Message for logging.
+///
+/// @return Output stream to log fatal error messages.
 ///
 /// @see default_logger::add_message
-void fatal(const std::string& tag, const std::string& message);
+log_ostream fatal(const std::string& tag);
 
-/// @brief Set provided class as logger.
+/// @brief Sets provided class as a logger.
 ///
-/// @param implementation Pointer to new logger.
+/// @param implementation Pointer to a new logger.
 void set_logger(std::unique_ptr<default_logger> implementation);
 
 /// @brief Returns current logger instance.
 ///
-/// @return Pointer to current logger instance or base logger implementation if no logger is set.
+/// @return Pointer to current logger instance or base logger if no logger is set.
 default_logger* logger();
+
+/// @brief Helper function to print severity level name into the stream.
+///
+/// @param os Output stream.
+/// @param level Severity level to print.
+///
+/// @return Standard output stream.
+std::ostream& operator<<(std::ostream& os, const severity_level level);
 
 } // namespace log
 

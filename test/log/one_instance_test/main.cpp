@@ -25,7 +25,7 @@ private:
 
         set_logger(std::make_unique<stream_logger>(output));
 
-        info("one_instance", "start");
+        info("one_instance") << "start" << std::endl;
 
         static_lib().do_log();
 

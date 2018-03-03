@@ -37,7 +37,7 @@ void x11_window::show()
     m_display = XOpenDisplay(nullptr);
 
     if (m_display == nullptr) {
-        log::error(log_tag, "XOpenDisplay returns nullptr, there is no display.");
+        log::error(log_tag) << "XOpenDisplay returns nullptr, there is no display." << std::endl;
         throw std::runtime_error("XOpenDisplay returns nullptr, there is no display.");
     }
 

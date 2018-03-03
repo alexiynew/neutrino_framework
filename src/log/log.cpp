@@ -6,8 +6,11 @@
 #include <log/log.hpp>
 
 namespace {
+
+/// @brief Instance of current logger.
 std::unique_ptr<::framework::log::default_logger> logger_instance;
-}
+
+} // namespace
 
 namespace framework {
 
@@ -18,30 +21,34 @@ void default_logger::add_message(const severity_level, const std::string&, const
     // nothing to do.
 }
 
-void debug(const std::string& tag, const std::string& message)
+#pragma region log functions
+
+log_ostream debug(const std::string& tag)
 {
-    logger()->add_message(severity_level::debug, tag, message);
+    return log_ostream(severity_level::debug, tag);
 }
 
-void info(const std::string& tag, const std::string& message)
+log_ostream info(const std::string& tag)
 {
-    logger()->add_message(severity_level::info, tag, message);
+    return log_ostream(severity_level::info, tag);
 }
 
-void warning(const std::string& tag, const std::string& message)
+log_ostream warning(const std::string& tag)
 {
-    logger()->add_message(severity_level::warning, tag, message);
+    return log_ostream(severity_level::warning, tag);
 }
 
-void error(const std::string& tag, const std::string& message)
+log_ostream error(const std::string& tag)
 {
-    logger()->add_message(severity_level::error, tag, message);
+    return log_ostream(severity_level::error, tag);
 }
 
-void fatal(const std::string& tag, const std::string& message)
+log_ostream fatal(const std::string& tag)
 {
-    logger()->add_message(severity_level::fatal, tag, message);
+    return log_ostream(severity_level::fatal, tag);
 }
+
+#pragma endregion
 
 void set_logger(std::unique_ptr<default_logger> implementation)
 {
@@ -55,6 +62,19 @@ default_logger* logger()
     }
 
     return ::logger_instance.get();
+}
+
+std::ostream& operator<<(std::ostream& os, const severity_level level)
+{
+    switch (level) {
+        case severity_level::debug: os << "debug"; break;
+        case severity_level::info: os << "info"; break;
+        case severity_level::warning: os << "warning"; break;
+        case severity_level::error: os << "error"; break;
+        case severity_level::fatal: os << "fatal"; break;
+    }
+
+    return os;
 }
 
 } // namespace log

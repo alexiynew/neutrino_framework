@@ -6,17 +6,13 @@
 
 using namespace framework::log;
 
-std::string to_string(const severity_level level)
+bool is_debug()
 {
-    using severity_level = severity_level;
-    switch (level) {
-        case severity_level::debug: return "debug";
-        case severity_level::info: return "info";
-        case severity_level::warning: return "warning";
-        case severity_level::error: return "error";
-        case severity_level::fatal: return "fatal";
-        default: return "UNKNOWN";
-    }
+#ifndef NDEBUG
+    return true;
+#else
+    return false;
+#endif
 }
 
 class logger_interface_test : public framework::unit_test::suite
@@ -34,18 +30,22 @@ private:
         std::stringstream log_stream;
         set_logger(std::make_unique<stream_logger>(log_stream));
 
-        debug(suite_name, "message_1");
-        info(suite_name, "message_2");
-        warning(suite_name, "message_3");
-        error(suite_name, "message_4");
-        fatal(suite_name, "message_5");
+        debug(suite_name) << "message_1" << std::endl;
+        info(suite_name) << "message_2" << std::endl;
+        warning(suite_name) << "message_3" << std::endl;
+        error(suite_name) << "message_4" << std::endl;
+        fatal(suite_name) << "message_5" << std::endl;
 
         std::stringstream log_test;
-        log_test << "[" << to_string(severity_level::debug) << "] " << suite_name << ": message_1" << std::endl;
-        log_test << "[" << to_string(severity_level::info) << "] " << suite_name << ": message_2" << std::endl;
-        log_test << "[" << to_string(severity_level::warning) << "] " << suite_name << ": message_3" << std::endl;
-        log_test << "[" << to_string(severity_level::error) << "] " << suite_name << ": message_4" << std::endl;
-        log_test << "[" << to_string(severity_level::fatal) << "] " << suite_name << ": message_5" << std::endl;
+
+        if (is_debug()) {
+            log_test << "[" << severity_level::debug << "] " << suite_name << ": message_1" << std::endl;
+        }
+
+        log_test << "[" << severity_level::info << "] " << suite_name << ": message_2" << std::endl;
+        log_test << "[" << severity_level::warning << "] " << suite_name << ": message_3" << std::endl;
+        log_test << "[" << severity_level::error << "] " << suite_name << ": message_4" << std::endl;
+        log_test << "[" << severity_level::fatal << "] " << suite_name << ": message_5" << std::endl;
 
         TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }
