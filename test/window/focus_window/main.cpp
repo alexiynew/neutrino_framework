@@ -1,10 +1,12 @@
 #include <chrono>
 #include <iostream>
-#include <logger/log.hpp>
-#include <logger/stream_logger.hpp>
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 #include <thread>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
+
+using namespace framework::log;
 
 class focus_window_test : public framework::unit_test::suite
 {
@@ -20,7 +22,7 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(10);
 
-        framework::logger::log::set_logger(std::make_unique<framework::logger::stream_logger>(std::cout));
+        set_logger(std::make_unique<stream_logger>(std::cout));
 
         framework::window alpha;
         framework::window betta;

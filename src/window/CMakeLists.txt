@@ -17,7 +17,7 @@ message("\tAdd library: ${LIB_NAME}")
 add_library(${LIB_NAME} ${LIB_SOURCES} ${LIB_HEADERS})
 
 target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
-target_link_libraries(${LIB_NAME} ${PLATFORM_DEPENDENT_LIBRARIES} logger)
+target_link_libraries(${LIB_NAME} ${PLATFORM_DEPENDENT_LIBRARIES} log)
 set_target_properties(${LIB_NAME} PROPERTIES FOLDER ${TARGET_PROJECT_FOLDER})
 
 install(TARGETS ${LIB_NAME} DESTINATION ${PROJECT_NAME}/${LIB_NAME})

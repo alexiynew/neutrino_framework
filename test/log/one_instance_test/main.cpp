@@ -1,12 +1,11 @@
-#include <logger/log.hpp>
-#include <logger/stream_logger.hpp>
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 #include <shared_lib/shared_lib.hpp>
 #include <sstream>
 #include <static_lib/static_lib.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::logger::log;
-using framework::logger::stream_logger;
+using namespace framework::log;
 
 class one_instance_test : public framework::unit_test::suite
 {
@@ -24,9 +23,9 @@ private:
 
         std::stringstream output;
 
-        log::set_logger(std::make_unique<stream_logger>(output));
+        set_logger(std::make_unique<stream_logger>(output));
 
-        log::info("one_instance", "start");
+        info("one_instance") << "start" << std::endl;
 
         static_lib().do_log();
 

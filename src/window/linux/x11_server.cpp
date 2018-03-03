@@ -5,11 +5,11 @@
 
 #include <X11/Xatom.h>
 #include <common/common_types.hpp>
-#include <logger/log.hpp>
+#include <log/log.hpp>
 #include <window/linux/x11_server.hpp>
 
 using namespace framework;
-using log = ::framework::logger::log;
+using namespace framework::log;
 
 // TODO All XServer method should be in the same (GUI) thread
 
@@ -21,7 +21,7 @@ std::weak_ptr<x11_server> global_x11_server;
 
 [[noreturn]] int32 fatal_error_handler(Display*)
 {
-    log::fatal(log_tag, "Fatal error occurred.");
+    log::fatal(log_tag) << "Fatal error occurred." << std::endl;
     std::terminate();
 }
 
@@ -32,7 +32,7 @@ int error_handler(Display* display, XErrorEvent* event)
         char buffer[length];
         XGetErrorText(display, event->error_code, buffer, length);
 
-        log::error(log_tag, buffer);
+        log::error(log_tag) << buffer << std::endl;
     }
 
     return 0;

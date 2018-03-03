@@ -8,7 +8,6 @@
 
 #include <cassert>
 #include <limits>
-#include <logger/log.hpp>
 #include <math/common_functions.hpp>
 #include <math/matrix_functions.hpp>
 #include <math/matrix_type.hpp>

@@ -4,12 +4,12 @@
 /// @date 05.04.2017
 
 #include <exception>
-#include <logger/log.hpp>
+#include <log/log.hpp>
 #include <map>
 #include <string>
 #include <window/linux/x11_window.hpp>
 
-using namespace framework::logger;
+using namespace framework::log;
 
 namespace {
 
@@ -209,7 +209,7 @@ void x11_window::focus()
                         False,
                         SubstructureNotifyMask | SubstructureRedirectMask,
                         &event)) {
-            log::error(log_tag, "Failed to send the \"_NET_ACTIVE_WINDOW\" client message.");
+            log::error(log_tag) << "Failed to send the \"_NET_ACTIVE_WINDOW\" client message." << std::endl;
         }
     } else {
         XRaiseWindow(m_server->display(), m_window);
@@ -365,7 +365,7 @@ bool x11_window::visible()
     if (XGetWindowAttributes(m_server->display(), m_window, &attributes)) {
         return attributes.map_state == IsViewable;
     } else {
-        log::warning(log_tag, "Can't get visible attribute.");
+        log::warning(log_tag) << "Can't get visible attribute." << std::endl;
     }
 
     return false;
@@ -386,13 +386,13 @@ bool x11_window::focused()
 
 void x11_window::process(XDestroyWindowEvent)
 {
-    log::debug(log_tag, "The window is about to be destroyed.");
+    log::debug(log_tag) << "The window is about to be destroyed." << std::endl;
 }
 
 void x11_window::process(XUnmapEvent)
 {
     m_viewable = false;
-    log::debug(log_tag, "The window is hidden.");
+    log::debug(log_tag) << "The window is hidden." << std::endl;
 }
 
 void x11_window::process(XVisibilityEvent event)
@@ -401,7 +401,7 @@ void x11_window::process(XVisibilityEvent event)
         m_viewable = true;
     }
 
-    log::debug(log_tag, "The window visibility changed.");
+    log::debug(log_tag) << "The window visibility changed." << std::endl;
 }
 
 void x11_window::process(XConfigureEvent event)
@@ -411,12 +411,12 @@ void x11_window::process(XConfigureEvent event)
 
     if (m_size != new_size) {
         m_size = new_size;
-        log::debug(log_tag, "The window size changed.");
+        log::debug(log_tag) << "The window size changed." << std::endl;
     }
 
     if (m_position != new_position) {
         m_position = new_position;
-        log::debug(log_tag, "The window position changed.");
+        log::debug(log_tag) << "The window position changed." << std::endl;
     }
 }
 
@@ -441,7 +441,7 @@ void x11_window::process(XFocusChangeEvent event)
                 m_cursor_grabbed = (result == GrabSuccess);
 
                 if (!m_cursor_grabbed) {
-                    log::warning(log_tag, "Failed to grab mouse cursor");
+                    log::warning(log_tag) << "Failed to grab mouse cursor" << std::endl;
                 }
             }
             break;
@@ -460,7 +460,7 @@ void x11_window::process(XFocusChangeEvent event)
 
 void x11_window::process(XAnyEvent event)
 {
-    log::debug(log_tag, std::string("Got event: ") + event_type_string(event));
+    log::debug(log_tag) << "Got event: " << event_type_string(event) << std::endl;
 }
 
 void x11_window::create_input_context()
