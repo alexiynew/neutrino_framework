@@ -1,15 +1,15 @@
-/// @file log.cpp
+/// @file
 /// @brief Stream logger implementation.
 /// @author Fedorov Alexey
 /// @date 24.08.2017
 
-#include <logger/stream_logger.hpp>
+#include <log/stream_logger.hpp>
 
 namespace {
 
-std::string to_string(const framework::logger::severity_level level)
+std::string to_string(const framework::log::severity_level level)
 {
-    using severity_level = framework::logger::severity_level;
+    using severity_level = framework::log::severity_level;
     switch (level) {
         case severity_level::debug: return "debug";
         case severity_level::info: return "info";
@@ -23,16 +23,18 @@ std::string to_string(const framework::logger::severity_level level)
 
 namespace framework {
 
-namespace logger {
+namespace log {
 
 stream_logger::stream_logger(std::ostream& stream)
     : m_output(stream)
-{}
+{
+}
 
-void stream_logger::add_message(const logger::severity_level level, const std::string& tag, const std::string& message)
+void stream_logger::add_message(const severity_level level, const std::string& tag, const std::string& message)
 {
     m_output << "[" << to_string(level) << "] " << tag << ": " << message << std::endl;
 }
 
-} // namespace logger
+} // namespace log
+
 } // namespace framework

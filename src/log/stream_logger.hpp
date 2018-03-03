@@ -3,18 +3,18 @@
 /// @author Fedorov Alexey
 /// @date 24.08.2017
 
-#ifndef FRAMEWORK_LOG_COUT_LOGGER_HPP
-#define FRAMEWORK_LOG_COUT_LOGGER_HPP
+#ifndef FRAMEWORK_LOG_STREAM_LOGGER_HPP
+#define FRAMEWORK_LOG_STREAM_LOGGER_HPP
 
-#include <logger/log.hpp>
+#include <log/log.hpp>
 #include <ostream>
 
 namespace framework {
 
-/// @addtogroup logger_module 
+/// @addtogroup log_module
 /// @{
 
-namespace logger {
+namespace log {
 
 /// @brief Prints all messages to provided stream.
 class stream_logger : public default_logger
@@ -38,7 +38,7 @@ private:
 
 /// @}
 
-} // namespace logger
+} // namespace log
 
 } // namespace framework
 

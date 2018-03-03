@@ -11,10 +11,12 @@ namespace framework {
 
 window::window()
     : m_implementation(get_implementation())
-{}
+{
+}
 
 window::~window()
-{}
+{
+}
 
 void window::show()
 {

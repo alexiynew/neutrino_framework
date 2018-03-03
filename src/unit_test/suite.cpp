@@ -17,7 +17,8 @@ suite::suite(const std::string& name)
     , m_tests{}
     , m_current_test{m_tests.end()}
     , m_success{true}
-{}
+{
+}
 
 void suite::run()
 {
@@ -86,7 +87,8 @@ suite::test_data::test_data(function_type&& function_to_call, const std::string&
     , name{test_name}
     , function{std::forward<function_type>(function_to_call)}
     , success{true}
-{}
+{
+}
 
 } // namespace unit_test
 
