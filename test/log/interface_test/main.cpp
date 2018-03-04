@@ -1,3 +1,4 @@
+#include <common/utils.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
 #include <sstream>
@@ -5,15 +6,6 @@
 #include <unit_test/suite.hpp>
 
 using namespace framework::log;
-
-bool is_debug()
-{
-#ifndef NDEBUG
-    return true;
-#else
-    return false;
-#endif
-}
 
 class logger_interface_test : public framework::unit_test::suite
 {
@@ -38,7 +30,7 @@ private:
 
         std::stringstream log_test;
 
-        if (is_debug()) {
+        if (framework::utils::is_debug()) {
             log_test << "[" << severity_level::debug << "] " << suite_name << ": message_1" << std::endl;
         }
 

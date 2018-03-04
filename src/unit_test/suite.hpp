@@ -6,7 +6,7 @@
 #ifndef FRAMEWORK_UNIT_TEST_SUITE_HPP
 #define FRAMEWORK_UNIT_TEST_SUITE_HPP
 
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <functional>
 #include <string>
 #include <vector>

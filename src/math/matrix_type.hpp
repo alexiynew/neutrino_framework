@@ -7,7 +7,7 @@
 #define FRAMEWORK_MATH_MATRIX_TYPE_HPP
 
 #include <cassert>
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <math/matrix_type_details.hpp>
 #include <math/vector_type.hpp>
 

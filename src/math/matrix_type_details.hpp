@@ -6,7 +6,7 @@
 #ifndef FRAMEWORK_MATH_MATRIX_TYPE_DETAILS_HPP
 #define FRAMEWORK_MATH_MATRIX_TYPE_DETAILS_HPP
 
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <math/vector_type.hpp>
 
 namespace framework {

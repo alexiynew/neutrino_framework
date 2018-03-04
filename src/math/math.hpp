@@ -9,7 +9,7 @@
 #ifndef FRAMEWORK_MATH_MATH_HPP
 #define FRAMEWORK_MATH_MATH_HPP
 
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 
 #include <math/constants.hpp>
 

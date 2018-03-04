@@ -6,7 +6,7 @@
 #ifndef FRAMEWORK_MATH_MATRIX_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_MATRIX_FUNCTIONS_HPP
 
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <math/matrix_functions_details.hpp>
 #include <math/matrix_type.hpp>
 

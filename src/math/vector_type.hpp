@@ -7,7 +7,7 @@
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
 #include <cassert>
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <math/vector_type_details.hpp>
 
 namespace framework {
