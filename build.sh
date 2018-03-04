@@ -83,7 +83,7 @@ function configure {
 
     mkdir -p "$BUILD_DIR"
     cd "$BUILD_DIR"
-    cmake  -G "$GENERATOR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
+    cmake -G "$GENERATOR" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DBUILD_TESTS=ON -DINCLUDED_TEST_MODULES="$TEST_MODULES" ../
 }
 
 function build_framework {

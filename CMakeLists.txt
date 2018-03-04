@@ -7,6 +7,12 @@ option(BUILD_SHARED_LIBS "Build the shared or static libraries" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
 
+# Output pathes
+set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
+set(DOCS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/docs)
+set(DOCS_BINARY_DIR ${CMAKE_BINARY_DIR}/docs)
+set(DOCS_OUTPUT_DIR ${OUTPUT_PATH_BASE}/docs)
+
 # Test modules to run
 if(INCLUDED_TEST_MODULES STREQUAL "")
     set(INCLUDED_TEST_MODULES ".*" CACHE STRING "Tests that will be included in the build. An empty string means all modules." FORCE)
@@ -14,13 +20,8 @@ endif()
 
 # Install path
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE} CACHE PATH "Set default install path." FORCE)
-endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-
-set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
-set(DOCS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/docs)
-set(DOCS_BINARY_DIR ${CMAKE_BINARY_DIR}/docs)
-set(DOCS_OUTPUT_DIR ${OUTPUT_PATH_BASE}/docs)
+    set(CMAKE_INSTALL_PREFIX ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE} CACHE PATH "Set default install path." FORCE)
+endif()
 
 set(CMAKE_CXX_FLAGS_COVERAGE
     "-g -O0 --coverage -fprofile-arcs -ftest-coverage"

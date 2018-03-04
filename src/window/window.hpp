@@ -6,7 +6,7 @@
 #ifndef FRAMEWORK_WINDOW_WINDOW_HPP
 #define FRAMEWORK_WINDOW_WINDOW_HPP
 
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <memory>
 
 namespace framework {

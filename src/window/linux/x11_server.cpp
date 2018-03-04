@@ -4,7 +4,7 @@
 /// @date 08.08.2017
 
 #include <X11/Xatom.h>
-#include <common/common_types.hpp>
+#include <common/types.hpp>
 #include <log/log.hpp>
 #include <window/linux/x11_server.hpp>
 
