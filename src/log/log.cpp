@@ -28,9 +28,7 @@ void default_logger::add_message(const severity_level, const std::string&, const
 
 log_ostream debug(const std::string& tag)
 {
-    auto buffer = utils::is_debug() ? std::unique_ptr<std::streambuf>(new log_buffer(severity_level::debug, tag))
-                                    : std::unique_ptr<std::streambuf>(new dummy_buffer());
-    return log_ostream(std::move(buffer));
+    return log_ostream(std::make_unique<log_buffer>(severity_level::debug, tag));
 }
 
 log_ostream info(const std::string& tag)

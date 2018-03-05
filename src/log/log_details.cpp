@@ -8,7 +8,7 @@
 
 namespace {
 
-constexpr size_t log_buffer_size = 1024;
+constexpr size_t log_buffer_size = 64;
 
 } // namespace
 
@@ -39,9 +39,10 @@ int log_buffer::overflow(int character)
         return traits_type::eof();
     }
 
-    if (sync() != 0) {
-        return traits_type::eof();
-    }
+    const int size = static_cast<int>(m_buffer.size());
+    m_buffer.resize(size * 2);
+    reset_pointers();
+    pbump(size);
 
     return sputc(static_cast<char>(character));
 }

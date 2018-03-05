@@ -54,8 +54,6 @@ public:
 ///
 /// @return Output stream to log debug messages.
 ///
-/// @note Works only in debug mode.
-///
 /// @see default_logger::add_message
 log_ostream debug(const std::string& tag);
 
