@@ -39,10 +39,10 @@ int log_buffer::overflow(int character)
         return traits_type::eof();
     }
 
-    const int size = static_cast<int>(m_buffer.size());
+    const size_t size = m_buffer.size();
     m_buffer.resize(size * 2);
     reset_pointers();
-    pbump(size);
+    pbump(static_cast<int>(size));
 
     return sputc(static_cast<char>(character));
 }
@@ -53,7 +53,7 @@ int log_buffer::sync()
         return 0;
     }
 
-    const ptrdiff_t size = pptr() - pbase();
+    const size_t size = static_cast<size_t>(pptr() - pbase());
 
     ::framework::log::logger()->add_message(m_level, m_tag, std::string(m_buffer.data(), size));
 

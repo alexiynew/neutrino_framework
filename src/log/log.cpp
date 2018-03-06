@@ -6,12 +6,17 @@
 #include <common/utils.hpp>
 #include <log/log.hpp>
 
+using namespace framework::log;
+using namespace framework::log::log_details;
+
 namespace {
 
 /// @brief Instance of current logger.
-std::unique_ptr<::framework::log::default_logger> logger_instance;
-
-using namespace framework::log::log_details;
+std::unique_ptr<default_logger>& logger_instance()
+{
+    static std::unique_ptr<default_logger> instance;
+    return instance;
+}
 
 } // namespace
 
@@ -55,16 +60,17 @@ log_ostream fatal(const std::string& tag)
 
 void set_logger(std::unique_ptr<default_logger> implementation)
 {
-    ::logger_instance = std::move(implementation);
+    ::logger_instance() = std::move(implementation);
 }
 
 default_logger* logger()
 {
-    if (!::logger_instance) {
-        ::logger_instance.reset(new default_logger());
+    auto& instance = ::logger_instance();
+    if (!instance) {
+        instance.reset(new default_logger());
     }
 
-    return ::logger_instance.get();
+    return instance.get();
 }
 
 std::ostream& operator<<(std::ostream& os, const severity_level level)
