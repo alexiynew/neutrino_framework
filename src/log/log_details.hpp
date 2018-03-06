@@ -21,18 +21,13 @@ enum class severity_level;
 
 namespace log_details {
 
-/// @brief Custom stream buffer that doing nothing.
-/// Used to disable debug logging in the release build.
-class dummy_buffer : public std::streambuf
-{};
-
 /// @brief Custom stream buffer
 class log_buffer : public std::streambuf
 {
 public:
     log_buffer(::framework::log::severity_level level, const std::string& tag);
 
-    ~log_buffer();
+    ~log_buffer() override;
 
 protected:
     int overflow(int character) override;
@@ -52,7 +47,7 @@ class log_ostream : public std::ostream
 public:
     log_ostream() = delete;
 
-    ~log_ostream();
+    ~log_ostream() override;
 
     log_ostream(const log_ostream&) = delete;
     log_ostream& operator=(const log_ostream&) = delete;

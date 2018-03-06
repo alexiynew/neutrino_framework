@@ -11,13 +11,15 @@
 using namespace framework;
 using namespace framework::log;
 
-// TODO All XServer method should be in the same (GUI) thread
-
 namespace {
 
 const char* const log_tag = "x11_server";
 
-std::weak_ptr<x11_server> global_x11_server;
+std::weak_ptr<x11_server>& server_instance()
+{
+    static std::weak_ptr<x11_server> instance;
+    return instance;
+}
 
 [[noreturn]] int32 fatal_error_handler(Display*)
 {
@@ -27,7 +29,7 @@ std::weak_ptr<x11_server> global_x11_server;
 
 int error_handler(Display* display, XErrorEvent* event)
 {
-    if (auto x_server = global_x11_server.lock(); display == x_server->display()) {
+    if (auto x_server = server_instance().lock(); display == x_server->display()) {
         constexpr uint32 length = 8 * 1024;
         char buffer[length];
         XGetErrorText(display, event->error_code, buffer, length);
@@ -110,12 +112,12 @@ namespace framework {
 std::shared_ptr<x11_server> x11_server::connect()
 {
     // TODO make it thread safe
-    if (global_x11_server.expired()) {
+    if (server_instance().expired()) {
         std::shared_ptr<x11_server> temp{new x11_server()};
-        global_x11_server = temp;
+        server_instance() = temp;
         return temp;
     } else {
-        return global_x11_server.lock();
+        return server_instance().lock();
     }
 }
 
@@ -158,7 +160,7 @@ XID x11_server::default_root_window() const
 
 XID x11_server::default_screen() const
 {
-    return DefaultScreen(display());
+    return static_cast<XID>(DefaultScreen(display()));
 }
 
 bool x11_server::ewmh_supported() const
