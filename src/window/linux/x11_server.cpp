@@ -163,6 +163,16 @@ XID x11_server::default_screen() const
     return static_cast<XID>(DefaultScreen(display()));
 }
 
+Window x11_server::currently_active_window() const
+{
+    Window window;
+    int state;
+
+    XGetInputFocus(m_display, &window, &state);
+
+    return window;
+}
+
 bool x11_server::ewmh_supported() const
 {
     return m_ewmh_supported;

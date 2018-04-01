@@ -3,9 +3,9 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2017
 
+#include <common/utils.hpp>
 #include <exception>
 #include <log/log.hpp>
-#include <map>
 #include <string>
 #include <window/linux/x11_window.hpp>
 
@@ -85,7 +85,33 @@ x11_window::x11_window()
     XSetWindowAttributes attributes = {};
 
     attributes.background_pixel = color;
-    attributes.event_mask       = VisibilityChangeMask | FocusChangeMask | StructureNotifyMask;
+
+    attributes.event_mask = VisibilityChangeMask  // Any change in visibility wanted
+                            | FocusChangeMask     // Any change in input focus wanted
+                            | StructureNotifyMask // Any change in window structure wanted
+                            | PropertyChangeMask; // Any change in property wanted
+
+    // | KeyPressMask             // Keyboard down events wanted
+    // | KeyReleaseMask           // Keyboard up events wanted
+    // | ButtonPressMask          // Pointer button down events wanted
+    // | ButtonReleaseMask        // Pointer button up events wanted
+    // | EnterWindowMask          // Pointer window entry events wanted
+    // | LeaveWindowMask          // Pointer window leave events wanted
+    // | PointerMotionMask        // Pointer motion events wanted
+    // | PointerMotionHintMask    // Pointer motion hints wanted
+    // | Button1MotionMask        // Pointer motion while button 1 down
+    // | Button2MotionMask        // Pointer motion while button 2 down
+    // | Button3MotionMask        // Pointer motion while button 3 down
+    // | Button4MotionMask        // Pointer motion while button 4 down
+    // | Button5MotionMask        // Pointer motion while button 5 down
+    // | ButtonMotionMask         // Pointer motion while any button down
+    // | KeymapStateMask          // Keyboard state wanted at window entry and focus in
+    // | ExposureMask             // Any exposure wanted
+    // | ResizeRedirectMask       // Redirect resize of this window
+    // | SubstructureNotifyMask   // Substructure notification wanted
+    // | SubstructureRedirectMask // Redirect structure requests on children
+    // | ColormapChangeMask       // Any change in colormap wanted
+    // | OwnerGrabButtonMask;     // Automatic grabs should activate with owner_events set to True
 
     //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
     //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
@@ -100,33 +126,6 @@ x11_window::x11_window()
     //  attributes.override_redirect;     // boolean value for override_redirect      >> CWOverrideRedirect
     //  attributes.colormap;              // color map to be associated with window   >> CWColormap
     //  attributes.cursor;                // cursor to be displayed (or None)         >> CWCursor
-
-
-    // KeyPressMask		Keyboard down events wanted
-    // KeyReleaseMask		Keyboard up events wanted
-    // ButtonPressMask		Pointer button down events wanted
-    // ButtonReleaseMask		Pointer button up events wanted
-    // EnterWindowMask		Pointer window entry events wanted
-    // LeaveWindowMask		Pointer window leave events wanted
-    // PointerMotionMask		Pointer motion events wanted
-    // PointerMotionHintMask		Pointer motion hints wanted
-    // Button1MotionMask		Pointer motion while button 1 down
-    // Button2MotionMask		Pointer motion while button 2 down
-    // Button3MotionMask		Pointer motion while button 3 down
-    // Button4MotionMask		Pointer motion while button 4 down
-    // Button5MotionMask		Pointer motion while button 5 down
-    // ButtonMotionMask		Pointer motion while any button down
-    // KeymapStateMask		Keyboard state wanted at window entry and focus in
-    // ExposureMask		Any exposure wanted
-    // VisibilityChangeMask		Any change in visibility wanted
-    // StructureNotifyMask		Any change in window structure wanted
-    // ResizeRedirectMask		Redirect resize of this window
-    // SubstructureNotifyMask		Substructure notification wanted
-    // SubstructureRedirectMask		Redirect structure requests on children
-    // FocusChangeMask		Any change in input focus wanted
-    // PropertyChangeMask		Any change in property wanted
-    // ColormapChangeMask		Any change in colormap wanted
-    // OwnerGrabButtonMask		Automatic grabs should activate with owner_events set to True
 
     m_window = XCreateWindow(m_server->display(),
                              m_server->default_root_window(),
@@ -200,9 +199,10 @@ void x11_window::focus()
         event.xclient.window       = m_window;
         event.xclient.message_type = net_active_window;
         event.xclient.format       = 32;
-        event.xclient.data.l[0]    = 1; // source -> from application
-        event.xclient.data.l[1]    = 0; // TODO: get last user activity timestamp
-        event.xclient.data.l[2]    = 0; // TODO: get currently active window ID
+
+        event.xclient.data.l[0] = 1;                                                      // source -> from application
+        event.xclient.data.l[1] = static_cast<long>(m_lastInputTime);                     // timestamp
+        event.xclient.data.l[2] = static_cast<long>(m_server->currently_active_window()); // currently active window ID
 
         if (!XSendEvent(m_server->display(),
                         DefaultRootWindow(m_server->display()),
@@ -223,7 +223,9 @@ void x11_window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
-        process(event.xany);
+        if (utils::is_debug()) {
+            process(event.xany);
+        }
 
         switch (event.xany.type) {
 
@@ -235,7 +237,6 @@ void x11_window::process_events()
                 // case EnterNotify: return "EnterNotify";
                 // case LeaveNotify: return "LeaveNotify";
                 // case KeymapNotify: return "KeymapNotify"
-                // case PropertyNotify: return "PropertyNotify";
                 // case SelectionClear: return "SelectionClear";
                 // case SelectionRequest: return "SelectionRequest";
                 // case SelectionNotify: return "SelectionNotify";
@@ -248,6 +249,8 @@ void x11_window::process_events()
             case ConfigureNotify: process(event.xconfigure); break;
             case FocusIn: process(event.xfocus); break;
             case FocusOut: process(event.xfocus); break;
+            case PropertyNotify: process(event.xproperty); break;
+
             default: break;
         }
     }
@@ -306,27 +309,27 @@ void x11_window::set_title(const std::string&)
 
 #pragma region getters
 
-window::position_t x11_window::position()
+window::position_t x11_window::position() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-window::size_t x11_window::size()
+window::size_t x11_window::size() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-window::size_t x11_window::max_size()
+window::size_t x11_window::max_size() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-window::size_t x11_window::min_size()
+window::size_t x11_window::min_size() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-std::string x11_window::title()
+std::string x11_window::title() const
 {
     throw std::logic_error("Function is not implemented.");
 }
@@ -335,27 +338,27 @@ std::string x11_window::title()
 
 #pragma region state
 
-bool x11_window::full_screen()
+bool x11_window::full_screen() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::minimized()
+bool x11_window::minimized() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::maximized()
+bool x11_window::maximized() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::resizable()
+bool x11_window::resizable() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool x11_window::visible()
+bool x11_window::visible() const
 {
     if (!m_viewable) {
         return false;
@@ -365,19 +368,15 @@ bool x11_window::visible()
     if (XGetWindowAttributes(m_server->display(), m_window, &attributes)) {
         return attributes.map_state == IsViewable;
     } else {
-        log::warning(log_tag) << "Can't get visible attribute." << std::endl;
+        log::warning(log_tag) << "Can't detect window visibility." << std::endl;
     }
 
     return false;
 }
 
-bool x11_window::focused()
+bool x11_window::focused() const
 {
-    Window focus_window;
-    int focus_state;
-    XGetInputFocus(m_server->display(), &focus_window, &focus_state);
-
-    return m_window == focus_window;
+    return m_window == m_server->currently_active_window();
 }
 
 #pragma endregion
@@ -386,13 +385,11 @@ bool x11_window::focused()
 
 void x11_window::process(XDestroyWindowEvent)
 {
-    log::debug(log_tag) << "The window is about to be destroyed." << std::endl;
 }
 
 void x11_window::process(XUnmapEvent)
 {
     m_viewable = false;
-    log::debug(log_tag) << "The window is hidden." << std::endl;
 }
 
 void x11_window::process(XVisibilityEvent event)
@@ -400,8 +397,6 @@ void x11_window::process(XVisibilityEvent event)
     if (event.state != VisibilityFullyObscured) {
         m_viewable = true;
     }
-
-    log::debug(log_tag) << "The window visibility changed." << std::endl;
 }
 
 void x11_window::process(XConfigureEvent event)
@@ -411,12 +406,10 @@ void x11_window::process(XConfigureEvent event)
 
     if (m_size != new_size) {
         m_size = new_size;
-        log::debug(log_tag) << "The window size changed." << std::endl;
     }
 
     if (m_position != new_position) {
         m_position = new_position;
-        log::debug(log_tag) << "The window position changed." << std::endl;
     }
 }
 
@@ -427,6 +420,7 @@ void x11_window::process(XFocusChangeEvent event)
             if (input_context) {
                 XSetICFocus(input_context);
             }
+
             if (!m_cursor_grabbed) {
                 int result = XGrabPointer(m_server->display(),
                                           m_window,
@@ -456,6 +450,11 @@ void x11_window::process(XFocusChangeEvent event)
             }
             break;
     }
+}
+
+void x11_window::process(XPropertyEvent event)
+{
+    m_lastInputTime = event.time;
 }
 
 void x11_window::process(XAnyEvent event)

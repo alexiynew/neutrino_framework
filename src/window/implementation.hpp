@@ -45,21 +45,21 @@ public:
     virtual void set_title(const std::string& title) = 0;
 
     // getters
-    virtual position_t position() = 0;
-    virtual size_t size()         = 0;
+    virtual position_t position() const = 0;
+    virtual size_t size() const         = 0;
 
-    virtual size_t max_size() = 0;
-    virtual size_t min_size() = 0;
+    virtual size_t max_size() const = 0;
+    virtual size_t min_size() const = 0;
 
-    virtual std::string title() = 0;
+    virtual std::string title() const = 0;
 
     // state
-    virtual bool full_screen() = 0;
-    virtual bool minimized()   = 0;
-    virtual bool maximized()   = 0;
-    virtual bool resizable()   = 0;
-    virtual bool visible()     = 0;
-    virtual bool focused()     = 0;
+    virtual bool full_screen() const = 0;
+    virtual bool minimized() const   = 0;
+    virtual bool maximized() const   = 0;
+    virtual bool resizable() const   = 0;
+    virtual bool visible() const     = 0;
+    virtual bool focused() const     = 0;
 };
 
 } // namespace framework

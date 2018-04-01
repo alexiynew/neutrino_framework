@@ -93,27 +93,27 @@ void window::set_title(const std::string& title)
 
 #pragma region getters
 
-window::position_t window::position()
+window::position_t window::position() const
 {
     return m_implementation->position();
 }
 
-window::size_t window::size()
+window::size_t window::size() const
 {
     return m_implementation->size();
 }
 
-window::size_t window::max_size()
+window::size_t window::max_size() const
 {
     return m_implementation->max_size();
 }
 
-window::size_t window::min_size()
+window::size_t window::min_size() const
 {
     return m_implementation->min_size();
 }
 
-std::string window::title()
+std::string window::title() const
 {
     return m_implementation->title();
 }
@@ -122,32 +122,32 @@ std::string window::title()
 
 #pragma region state
 
-bool window::full_screen()
+bool window::full_screen() const
 {
     return m_implementation->full_screen();
 }
 
-bool window::minimized()
+bool window::minimized() const
 {
     return m_implementation->minimized();
 }
 
-bool window::maximized()
+bool window::maximized() const
 {
     return m_implementation->maximized();
 }
 
-bool window::resizable()
+bool window::resizable() const
 {
     return m_implementation->resizable();
 }
 
-bool window::visible()
+bool window::visible() const
 {
     return m_implementation->visible();
 }
 
-bool window::focused()
+bool window::focused() const
 {
     return m_implementation->focused();
 }

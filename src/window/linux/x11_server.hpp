@@ -24,6 +24,8 @@ public:
     XID default_root_window() const;
     XID default_screen() const;
 
+    Window currently_active_window() const;
+
     bool ewmh_supported() const;
 
     Atom get_atom(const std::string& name, bool only_if_exists) const;

@@ -37,20 +37,20 @@ public:
 
     void set_title(const std::string& title) override;
 
-    window::position_t position() override;
-    window::size_t size() override;
+    window::position_t position() const override;
+    window::size_t size() const override;
 
-    window::size_t max_size() override;
-    window::size_t min_size() override;
+    window::size_t max_size() const override;
+    window::size_t min_size() const override;
 
-    std::string title() override;
+    std::string title() const override;
 
-    bool full_screen() override;
-    bool minimized() override;
-    bool maximized() override;
-    bool resizable() override;
-    bool visible() override;
-    bool focused() override;
+    bool full_screen() const override;
+    bool minimized() const override;
+    bool maximized() const override;
+    bool resizable() const override;
+    bool visible() const override;
+    bool focused() const override;
 
 private:
     void process(XDestroyWindowEvent event);
@@ -58,6 +58,7 @@ private:
     void process(XVisibilityEvent event);
     void process(XConfigureEvent event);
     void process(XFocusChangeEvent event);
+    void process(XPropertyEvent event);
     void process(XAnyEvent event);
 
     void create_input_context();
@@ -70,8 +71,9 @@ private:
     window::size_t m_size         = {640, 480};
     window::position_t m_position = {0, 0};
 
-    Window m_window   = 0;
-    XIC input_context = nullptr;
+    Window m_window      = 0;
+    XIC input_context    = nullptr;
+    Time m_lastInputTime = 0;
 };
 } // namespace framework
 

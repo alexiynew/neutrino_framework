@@ -60,23 +60,23 @@ public:
 
     /// @name getters
     /// @{
-    position_t position();
-    size_t size();
+    position_t position() const;
+    size_t size() const;
 
-    size_t max_size();
-    size_t min_size();
+    size_t max_size() const;
+    size_t min_size() const;
 
-    std::string title();
+    std::string title() const;
     /// @}
 
     /// @name state
     /// @{
-    bool full_screen();
-    bool minimized();
-    bool maximized();
-    bool resizable();
-    bool visible();
-    bool focused();
+    bool full_screen() const;
+    bool minimized() const;
+    bool maximized() const;
+    bool resizable() const;
+    bool visible() const;
+    bool focused() const;
     /// @}
 
 private:

@@ -4,11 +4,11 @@ get_filename_component(TEST_PACK_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 message("\tAdd tests: ${TEST_PACK_NAME}")
 
-add_subdirectory(open_window)
-add_subdirectory(focus_window)
+add_subdirectory(window_open)
+add_subdirectory(window_focus)
 
 add_custom_target(${PROJECT_NAME}
-    DEPENDS open_window focus_window
+    DEPENDS window_open window_focus
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ${TARGET_PROJECT_FOLDER}/${TEST_PACK_NAME})

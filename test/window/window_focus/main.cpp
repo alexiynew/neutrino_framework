@@ -38,14 +38,13 @@ private:
         TEST_ASSERT(betta.focused(), "Focus function is not working.");
 
         alpha.focus();
-        betta.focus();
 
         std::this_thread::sleep_for(timespan);
         alpha.process_events();
         betta.process_events();
 
-        // TODO: Make test more complicated.
-        //       For linux: check on different WM's.
+        TEST_ASSERT(alpha.focused(), "Focus function is not working.");
+        TEST_ASSERT(!betta.focused(), "Focus function is not working.");
     }
 };
 
