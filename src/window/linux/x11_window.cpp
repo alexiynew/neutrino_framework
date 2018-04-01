@@ -3,6 +3,7 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2017
 
+#include <X11/Xutil.h>
 #include <common/utils.hpp>
 #include <exception>
 #include <log/log.hpp>
@@ -60,6 +61,26 @@ std::string event_type_string(const XAnyEvent& event)
         default: return "UNKNOWN";
     }
 }
+
+bool window_has_state_property(const framework::x11_server* server, Window window, const std::string& state_atom_name)
+{
+    const Atom net_wm_state_atom = server->get_atom(state_atom_name, true);
+
+    if (net_wm_state_atom == None) {
+        return false;
+    }
+
+    const auto state = server->get_window_state_properties(window);
+
+    for (auto atom : state) {
+        if (atom == net_wm_state_atom) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 } // namespace
 
@@ -258,7 +279,8 @@ void x11_window::process_events()
 
 void x11_window::minimize()
 {
-    throw std::logic_error("Function is not implemented.");
+    XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen()));
+    XFlush(m_server->display());
 }
 
 void x11_window::maximize()
@@ -266,14 +288,32 @@ void x11_window::maximize()
     throw std::logic_error("Function is not implemented.");
 }
 
-void x11_window::to_full_screen()
+void x11_window::switch_to_fullscreen()
 {
     throw std::logic_error("Function is not implemented.");
 }
 
 void x11_window::restore()
 {
-    throw std::logic_error("Function is not implemented.");
+    if (minimized()) {
+        XMapWindow(m_server->display(), m_window);
+        while (!m_viewable) {
+            process_events();
+        }
+    } else if (maximized()) {
+        // if (_glfw.x11.NET_WM_STATE && _glfw.x11.NET_WM_STATE_MAXIMIZED_VERT && _glfw.x11.NET_WM_STATE_MAXIMIZED_HORZ)
+        // {
+        //     sendEventToWM(window,
+        //                   _glfw.x11.NET_WM_STATE,
+        //                   _NET_WM_STATE_REMOVE,
+        //                   _glfw.x11.NET_WM_STATE_MAXIMIZED_VERT,
+        //                   _glfw.x11.NET_WM_STATE_MAXIMIZED_HORZ,
+        //                   1,
+        //                   0);
+        // }
+    }
+
+    XFlush(m_server->display());
 }
 
 #pragma endregion
@@ -338,19 +378,25 @@ std::string x11_window::title() const
 
 #pragma region state
 
-bool x11_window::full_screen() const
+bool x11_window::fullscreen() const
 {
-    throw std::logic_error("Function is not implemented.");
+    return ::window_has_state_property(m_server.get(), m_window, u8"_NET_WM_STATE_FULLSCREEN");
 }
 
 bool x11_window::minimized() const
 {
-    throw std::logic_error("Function is not implemented.");
+    const auto state  = m_server->get_window_state(m_window);
+    const bool hidden = ::window_has_state_property(m_server.get(), m_window, u8"_NET_WM_STATE_HIDDEN");
+
+    return state == IconicState || hidden;
 }
 
 bool x11_window::maximized() const
 {
-    throw std::logic_error("Function is not implemented.");
+    const bool maximized_vert = ::window_has_state_property(m_server.get(), m_window, u8"_NET_WM_STATE_MAXIMIZED_VERT");
+    const bool maximized_horz = ::window_has_state_property(m_server.get(), m_window, u8"_NET_WM_STATE_MAXIMIZED_HORZ");
+
+    return maximized_vert || maximized_horz;
 }
 
 bool x11_window::resizable() const

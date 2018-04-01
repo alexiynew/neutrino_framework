@@ -37,7 +37,7 @@ private:
 
     void open_several_windows()
     {
-        constexpr std::chrono::milliseconds timespan(10);
+        constexpr std::chrono::milliseconds timespan(50);
 
         framework::window windows[5];
 

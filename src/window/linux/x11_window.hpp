@@ -26,7 +26,7 @@ public:
 
     void minimize() override;
     void maximize() override;
-    void to_full_screen() override;
+    void switch_to_fullscreen() override;
     void restore() override;
 
     void set_size(window::size_t size) override;
@@ -45,7 +45,7 @@ public:
 
     std::string title() const override;
 
-    bool full_screen() const override;
+    bool fullscreen() const override;
     bool minimized() const override;
     bool maximized() const override;
     bool resizable() const override;

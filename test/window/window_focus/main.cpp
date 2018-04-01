@@ -15,7 +15,7 @@ public:
 private:
     void focus_window()
     {
-        constexpr std::chrono::milliseconds timespan(10);
+        constexpr std::chrono::milliseconds timespan(50);
 
         framework::window alpha;
         framework::window betta;

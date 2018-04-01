@@ -43,7 +43,7 @@ public:
 
     void minimize();
     void maximize();
-    void to_full_screen();
+    void switch_to_fullscreen();
     void restore();
     /// @}
 
@@ -71,7 +71,7 @@ public:
 
     /// @name state
     /// @{
-    bool full_screen() const;
+    bool fullscreen() const;
     bool minimized() const;
     bool maximized() const;
     bool resizable() const;

@@ -50,9 +50,9 @@ void window::maximize()
     m_implementation->maximize();
 }
 
-void window::to_full_screen()
+void window::switch_to_fullscreen()
 {
-    m_implementation->to_full_screen();
+    m_implementation->switch_to_fullscreen();
 }
 
 void window::restore()
@@ -122,9 +122,9 @@ std::string window::title() const
 
 #pragma region state
 
-bool window::full_screen() const
+bool window::fullscreen() const
 {
-    return m_implementation->full_screen();
+    return m_implementation->fullscreen();
 }
 
 bool window::minimized() const

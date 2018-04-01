@@ -30,10 +30,10 @@ public:
     virtual void focus()          = 0;
     virtual void process_events() = 0;
 
-    virtual void minimize()       = 0;
-    virtual void maximize()       = 0;
-    virtual void to_full_screen() = 0;
-    virtual void restore()        = 0;
+    virtual void minimize()             = 0;
+    virtual void maximize()             = 0;
+    virtual void switch_to_fullscreen() = 0;
+    virtual void restore()              = 0;
 
     // setters
     virtual void set_size(size_t)         = 0;
@@ -54,12 +54,12 @@ public:
     virtual std::string title() const = 0;
 
     // state
-    virtual bool full_screen() const = 0;
-    virtual bool minimized() const   = 0;
-    virtual bool maximized() const   = 0;
-    virtual bool resizable() const   = 0;
-    virtual bool visible() const     = 0;
-    virtual bool focused() const     = 0;
+    virtual bool fullscreen() const = 0;
+    virtual bool minimized() const  = 0;
+    virtual bool maximized() const  = 0;
+    virtual bool resizable() const  = 0;
+    virtual bool visible() const    = 0;
+    virtual bool focused() const    = 0;
 };
 
 } // namespace framework
