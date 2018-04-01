@@ -4,11 +4,11 @@
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
-class open_window_test : public framework::unit_test::suite
+class window_open_test : public framework::unit_test::suite
 {
 public:
-    open_window_test()
-        : suite("open_window_test")
+    window_open_test()
+        : suite("window_open_test")
     {
         add_test([this]() { open_window(); }, "open_window");
         add_test([this]() { open_several_windows(); }, "open_several_windows");
@@ -67,5 +67,5 @@ private:
 
 int main()
 {
-    return run_tests(open_window_test());
+    return run_tests(window_open_test());
 }
