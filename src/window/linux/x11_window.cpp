@@ -4,15 +4,24 @@
 /// @date 05.04.2017
 
 #include <X11/Xutil.h>
+#include <common/types.hpp>
 #include <common/utils.hpp>
 #include <exception>
 #include <log/log.hpp>
 #include <string>
+#include <window/linux/x11_utils.hpp>
 #include <window/linux/x11_window.hpp>
 
 using namespace framework::log;
 
 namespace {
+
+/// Client message actions
+constexpr ::framework::int32 net_wm_state_remove = 0;
+constexpr ::framework::int32 net_wm_state_add    = 1;
+
+/// Client message source
+constexpr ::framework::int32 source_from_application = 1;
 
 const char* const log_tag = "x11_window";
 
@@ -214,23 +223,13 @@ void x11_window::focus()
 
     Atom net_active_window = m_server->get_atom(u8"_NET_ACTIVE_WINDOW", false);
     if (m_server->ewmh_supported() && net_active_window != None) {
-
-        XEvent event               = {0};
-        event.type                 = ClientMessage;
-        event.xclient.window       = m_window;
-        event.xclient.message_type = net_active_window;
-        event.xclient.format       = 32;
-
-        event.xclient.data.l[0] = 1;                                                      // source -> from application
-        event.xclient.data.l[1] = static_cast<long>(m_lastInputTime);                     // timestamp
-        event.xclient.data.l[2] = static_cast<long>(m_server->currently_active_window()); // currently active window ID
-
-        if (!XSendEvent(m_server->display(),
-                        DefaultRootWindow(m_server->display()),
-                        False,
-                        SubstructureNotifyMask | SubstructureRedirectMask,
-                        &event)) {
-            log::error(log_tag) << "Failed to send the \"_NET_ACTIVE_WINDOW\" client message." << std::endl;
+        if (utils::send_client_message(m_server->display(),
+                                       m_window,
+                                       net_active_window,
+                                       source_from_application,
+                                       m_lastInputTime,
+                                       m_server->currently_active_window()) != Success) {
+            log::error(log_tag) << "Failed to focus window." << std::endl;
         }
     } else {
         XRaiseWindow(m_server->display(), m_window);
@@ -285,7 +284,22 @@ void x11_window::minimize()
 
 void x11_window::maximize()
 {
-    throw std::logic_error("Function is not implemented.");
+    Atom net_wm_state                = m_server->get_atom(u8"_NET_WM_STATE", true);
+    Atom net_wm_state_maximized_vert = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_VERT", true);
+    Atom net_wm_state_maximized_horz = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_HORZ", true);
+
+    if (net_wm_state != None && net_wm_state_maximized_vert != None && net_wm_state_maximized_horz != None) {
+        if (utils::send_client_message(m_server->display(),
+                                       m_window,
+                                       net_wm_state,
+                                       net_wm_state_add,
+                                       net_wm_state_maximized_vert,
+                                       net_wm_state_maximized_horz,
+                                       source_from_application) != Success) {
+            log::warning(log_tag) << "Failed to set maximized state." << std::endl;
+        }
+        XFlush(m_server->display());
+    }
 }
 
 void x11_window::switch_to_fullscreen()
@@ -301,16 +315,21 @@ void x11_window::restore()
             process_events();
         }
     } else if (maximized()) {
-        // if (_glfw.x11.NET_WM_STATE && _glfw.x11.NET_WM_STATE_MAXIMIZED_VERT && _glfw.x11.NET_WM_STATE_MAXIMIZED_HORZ)
-        // {
-        //     sendEventToWM(window,
-        //                   _glfw.x11.NET_WM_STATE,
-        //                   _NET_WM_STATE_REMOVE,
-        //                   _glfw.x11.NET_WM_STATE_MAXIMIZED_VERT,
-        //                   _glfw.x11.NET_WM_STATE_MAXIMIZED_HORZ,
-        //                   1,
-        //                   0);
-        // }
+        Atom net_wm_state                = m_server->get_atom(u8"_NET_WM_STATE", true);
+        Atom net_wm_state_maximized_vert = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_VERT", true);
+        Atom net_wm_state_maximized_horz = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_HORZ", true);
+
+        if (net_wm_state != None && net_wm_state_maximized_vert != None && net_wm_state_maximized_horz != None) {
+            if (utils::send_client_message(m_server->display(),
+                                           m_window,
+                                           net_wm_state,
+                                           net_wm_state_remove,
+                                           net_wm_state_maximized_vert,
+                                           net_wm_state_maximized_horz,
+                                           source_from_application) != Success) {
+                log::warning(log_tag) << "Failed to unset maximized state." << std::endl;
+            }
+        }
     }
 
     XFlush(m_server->display());
