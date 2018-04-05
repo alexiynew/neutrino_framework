@@ -3,6 +3,7 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2017
 
+#include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <common/types.hpp>
 #include <common/utils.hpp>
@@ -22,6 +23,10 @@ constexpr ::framework::int32 net_wm_state_add    = 1;
 
 /// Client message source
 constexpr ::framework::int32 source_from_application = 1;
+
+/// Bypass compositor constants
+constexpr ::framework::int32 bypass_compositor_no_preference = 0;
+constexpr ::framework::int32 bypass_compositor_disabled      = 1;
 
 const char* const log_tag = "x11_window";
 
@@ -73,6 +78,10 @@ std::string event_type_string(const XAnyEvent& event)
 
 bool window_has_state_property(const framework::x11_server* server, Window window, const std::string& state_atom_name)
 {
+    if (!server->ewmh_supported()) {
+        return false;
+    }
+
     const Atom net_wm_state_atom = server->get_atom(state_atom_name, true);
 
     if (net_wm_state_atom == None) {
@@ -284,6 +293,10 @@ void x11_window::minimize()
 
 void x11_window::maximize()
 {
+    if (!m_server->ewmh_supported()) {
+        return;
+    }
+
     Atom net_wm_state                = m_server->get_atom(u8"_NET_WM_STATE", true);
     Atom net_wm_state_maximized_vert = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_VERT", true);
     Atom net_wm_state_maximized_horz = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_HORZ", true);
@@ -304,17 +317,51 @@ void x11_window::maximize()
 
 void x11_window::switch_to_fullscreen()
 {
-    throw std::logic_error("Function is not implemented.");
+    if (!m_server->ewmh_supported()) {
+        return;
+    }
+
+    focus();
+
+    Atom net_wm_bypass_compositor = m_server->get_atom(u8"_NET_WM_BYPASS_COMPOSITOR", true);
+
+    if (net_wm_bypass_compositor) {
+        const int32 value = bypass_compositor_disabled;
+        XChangeProperty(m_server->display(),
+                        m_window,
+                        net_wm_bypass_compositor,
+                        XA_CARDINAL,
+                        32,
+                        PropModeReplace,
+                        reinterpret_cast<const unsigned char*>(&value),
+                        1);
+    }
+
+    Atom net_wm_state            = m_server->get_atom(u8"_NET_WM_STATE", true);
+    Atom net_wm_state_fullscreen = m_server->get_atom(u8"_NET_WM_STATE_FULLSCREEN", true);
+
+    if (net_wm_state == None || net_wm_state_fullscreen == None) {
+        return;
+    }
+
+    if (utils::send_client_message(
+        m_server->display(), m_window, net_wm_state, net_wm_state_add, net_wm_state_fullscreen, 0, source_from_application) !=
+        Success) {
+        log::error(log_tag) << "Failed to switch in fullscreen mode." << std::endl;
+    }
+
+    XFlush(m_server->display());
 }
 
 void x11_window::restore()
 {
     if (minimized()) {
         XMapWindow(m_server->display(), m_window);
+        XFlush(m_server->display());
         while (!m_viewable) {
             process_events();
         }
-    } else if (maximized()) {
+    } else if (maximized() && m_server->ewmh_supported()) {
         Atom net_wm_state                = m_server->get_atom(u8"_NET_WM_STATE", true);
         Atom net_wm_state_maximized_vert = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_VERT", true);
         Atom net_wm_state_maximized_horz = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_HORZ", true);
@@ -327,12 +374,39 @@ void x11_window::restore()
                                            net_wm_state_maximized_vert,
                                            net_wm_state_maximized_horz,
                                            source_from_application) != Success) {
-                log::warning(log_tag) << "Failed to unset maximized state." << std::endl;
+                log::error(log_tag) << "Failed to unset maximized state." << std::endl;
             }
         }
-    }
+        XFlush(m_server->display());
+    } else if (fullscreen() && m_server->ewmh_supported()) {
+        Atom net_wm_bypass_compositor = m_server->get_atom(u8"_NET_WM_BYPASS_COMPOSITOR", true);
 
-    XFlush(m_server->display());
+        if (net_wm_bypass_compositor) {
+            const int32 value = bypass_compositor_no_preference;
+            XChangeProperty(m_server->display(),
+                            m_window,
+                            net_wm_bypass_compositor,
+                            XA_CARDINAL,
+                            32,
+                            PropModeReplace,
+                            reinterpret_cast<const unsigned char*>(&value),
+                            1);
+        }
+
+        Atom net_wm_state            = m_server->get_atom(u8"_NET_WM_STATE", true);
+        Atom net_wm_state_fullscreen = m_server->get_atom(u8"_NET_WM_STATE_FULLSCREEN", true);
+
+        if (net_wm_state == None || net_wm_state_fullscreen == None) {
+            return;
+        }
+
+        if (utils::send_client_message(
+            m_server->display(), m_window, net_wm_state, net_wm_state_remove, net_wm_state_fullscreen, 0, source_from_application) !=
+            Success) {
+            log::error(log_tag) << "Failed to switch in fullscreen mode." << std::endl;
+        }
+        XFlush(m_server->display());
+    }
 }
 
 #pragma endregion
