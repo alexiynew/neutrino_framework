@@ -3,7 +3,6 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2017
 
-#include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <common/types.hpp>
 #include <common/utils.hpp>
@@ -16,17 +15,6 @@
 using namespace framework::log;
 
 namespace {
-
-/// Client message actions
-constexpr ::framework::int32 net_wm_state_remove = 0;
-constexpr ::framework::int32 net_wm_state_add    = 1;
-
-/// Client message source
-constexpr ::framework::int32 source_from_application = 1;
-
-/// Bypass compositor constants
-constexpr ::framework::int32 bypass_compositor_no_preference = 0;
-constexpr ::framework::int32 bypass_compositor_disabled      = 1;
 
 const char* const log_tag = "x11_window";
 
@@ -75,30 +63,6 @@ std::string event_type_string(const XAnyEvent& event)
         default: return "UNKNOWN";
     }
 }
-
-bool window_has_state_property(const framework::x11_server* server, Window window, const std::string& state_atom_name)
-{
-    if (!server->ewmh_supported()) {
-        return false;
-    }
-
-    const Atom net_wm_state_atom = server->get_atom(state_atom_name, true);
-
-    if (net_wm_state_atom == None) {
-        return false;
-    }
-
-    const auto state = server->get_window_state_properties(window);
-
-    for (auto atom : state) {
-        if (atom == net_wm_state_atom) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 
 } // namespace
 
@@ -230,16 +194,8 @@ void x11_window::focus()
         return;
     }
 
-    Atom net_active_window = m_server->get_atom(u8"_NET_ACTIVE_WINDOW", false);
-    if (m_server->ewmh_supported() && net_active_window != None) {
-        if (utils::send_client_message(m_server->display(),
-                                       m_window,
-                                       net_active_window,
-                                       source_from_application,
-                                       m_lastInputTime,
-                                       m_server->currently_active_window()) != Success) {
-            log::error(log_tag) << "Failed to focus window." << std::endl;
-        }
+    if (!utils::activate_window(m_server.get(), m_window, m_lastInputTime)) {
+        log::error(log_tag) << "Failed to focus window." << std::endl;
     } else {
         XRaiseWindow(m_server->display(), m_window);
         XSetInputFocus(m_server->display(), m_window, RevertToPointerRoot, CurrentTime);
@@ -293,61 +249,24 @@ void x11_window::minimize()
 
 void x11_window::maximize()
 {
-    if (!m_server->ewmh_supported()) {
+    if (!utils::window_add_state(
+        m_server.get(), m_window, {u8"_NET_WM_STATE_MAXIMIZED_VERT", u8"_NET_WM_STATE_MAXIMIZED_HORZ"})) {
+        log::warning(log_tag) << "Failed to set maximized state." << std::endl;
         return;
     }
 
-    Atom net_wm_state                = m_server->get_atom(u8"_NET_WM_STATE", true);
-    Atom net_wm_state_maximized_vert = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_VERT", true);
-    Atom net_wm_state_maximized_horz = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_HORZ", true);
-
-    if (net_wm_state != None && net_wm_state_maximized_vert != None && net_wm_state_maximized_horz != None) {
-        if (utils::send_client_message(m_server->display(),
-                                       m_window,
-                                       net_wm_state,
-                                       net_wm_state_add,
-                                       net_wm_state_maximized_vert,
-                                       net_wm_state_maximized_horz,
-                                       source_from_application) != Success) {
-            log::warning(log_tag) << "Failed to set maximized state." << std::endl;
-        }
-        XFlush(m_server->display());
-    }
+    XFlush(m_server->display());
 }
 
 void x11_window::switch_to_fullscreen()
 {
-    if (!m_server->ewmh_supported()) {
-        return;
-    }
-
     focus();
 
-    Atom net_wm_bypass_compositor = m_server->get_atom(u8"_NET_WM_BYPASS_COMPOSITOR", true);
+    utils::bypass_compositor_desable(m_server.get(), m_window);
 
-    if (net_wm_bypass_compositor) {
-        const int32 value = bypass_compositor_disabled;
-        XChangeProperty(m_server->display(),
-                        m_window,
-                        net_wm_bypass_compositor,
-                        XA_CARDINAL,
-                        32,
-                        PropModeReplace,
-                        reinterpret_cast<const unsigned char*>(&value),
-                        1);
-    }
-
-    Atom net_wm_state            = m_server->get_atom(u8"_NET_WM_STATE", true);
-    Atom net_wm_state_fullscreen = m_server->get_atom(u8"_NET_WM_STATE_FULLSCREEN", true);
-
-    if (net_wm_state == None || net_wm_state_fullscreen == None) {
+    if (!utils::window_add_state(m_server.get(), m_window, {u8"_NET_WM_STATE_FULLSCREEN"})) {
+        log::warning(log_tag) << "Failed to set maximized state." << std::endl;
         return;
-    }
-
-    if (utils::send_client_message(
-        m_server->display(), m_window, net_wm_state, net_wm_state_add, net_wm_state_fullscreen, 0, source_from_application) !=
-        Success) {
-        log::error(log_tag) << "Failed to switch in fullscreen mode." << std::endl;
     }
 
     XFlush(m_server->display());
@@ -361,49 +280,19 @@ void x11_window::restore()
         while (!m_viewable) {
             process_events();
         }
-    } else if (maximized() && m_server->ewmh_supported()) {
-        Atom net_wm_state                = m_server->get_atom(u8"_NET_WM_STATE", true);
-        Atom net_wm_state_maximized_vert = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_VERT", true);
-        Atom net_wm_state_maximized_horz = m_server->get_atom(u8"_NET_WM_STATE_MAXIMIZED_HORZ", true);
-
-        if (net_wm_state != None && net_wm_state_maximized_vert != None && net_wm_state_maximized_horz != None) {
-            if (utils::send_client_message(m_server->display(),
-                                           m_window,
-                                           net_wm_state,
-                                           net_wm_state_remove,
-                                           net_wm_state_maximized_vert,
-                                           net_wm_state_maximized_horz,
-                                           source_from_application) != Success) {
-                log::error(log_tag) << "Failed to unset maximized state." << std::endl;
-            }
-        }
-        XFlush(m_server->display());
-    } else if (fullscreen() && m_server->ewmh_supported()) {
-        Atom net_wm_bypass_compositor = m_server->get_atom(u8"_NET_WM_BYPASS_COMPOSITOR", true);
-
-        if (net_wm_bypass_compositor) {
-            const int32 value = bypass_compositor_no_preference;
-            XChangeProperty(m_server->display(),
-                            m_window,
-                            net_wm_bypass_compositor,
-                            XA_CARDINAL,
-                            32,
-                            PropModeReplace,
-                            reinterpret_cast<const unsigned char*>(&value),
-                            1);
-        }
-
-        Atom net_wm_state            = m_server->get_atom(u8"_NET_WM_STATE", true);
-        Atom net_wm_state_fullscreen = m_server->get_atom(u8"_NET_WM_STATE_FULLSCREEN", true);
-
-        if (net_wm_state == None || net_wm_state_fullscreen == None) {
+    } else if (maximized()) {
+        if (!utils::window_remove_state(
+            m_server.get(), m_window, {u8"_NET_WM_STATE_MAXIMIZED_VERT", u8"_NET_WM_STATE_MAXIMIZED_HORZ"})) {
+            log::warning(log_tag) << "Failed to reset maximized state." << std::endl;
             return;
         }
+        XFlush(m_server->display());
+    } else if (fullscreen()) {
+        utils::bypass_compositor_reset(m_server.get(), m_window);
 
-        if (utils::send_client_message(
-            m_server->display(), m_window, net_wm_state, net_wm_state_remove, net_wm_state_fullscreen, 0, source_from_application) !=
-            Success) {
-            log::error(log_tag) << "Failed to switch in fullscreen mode." << std::endl;
+        if (!utils::window_remove_state(m_server.get(), m_window, {u8"_NET_WM_STATE_FULLSCREEN"})) {
+            log::error(log_tag) << "Failed to reset fullscreen mode." << std::endl;
+            return;
         }
         XFlush(m_server->display());
     }
@@ -473,21 +362,21 @@ std::string x11_window::title() const
 
 bool x11_window::fullscreen() const
 {
-    return ::window_has_state_property(m_server.get(), m_window, u8"_NET_WM_STATE_FULLSCREEN");
+    return utils::window_has_state(m_server.get(), m_window, u8"_NET_WM_STATE_FULLSCREEN");
 }
 
 bool x11_window::minimized() const
 {
-    const auto state  = m_server->get_window_state(m_window);
-    const bool hidden = ::window_has_state_property(m_server.get(), m_window, u8"_NET_WM_STATE_HIDDEN");
+    const auto state  = utils::get_window_wm_state(m_server.get(), m_window);
+    const bool hidden = utils::window_has_state(m_server.get(), m_window, u8"_NET_WM_STATE_HIDDEN");
 
     return state == IconicState || hidden;
 }
 
 bool x11_window::maximized() const
 {
-    const bool maximized_vert = ::window_has_state_property(m_server.get(), m_window, u8"_NET_WM_STATE_MAXIMIZED_VERT");
-    const bool maximized_horz = ::window_has_state_property(m_server.get(), m_window, u8"_NET_WM_STATE_MAXIMIZED_HORZ");
+    const bool maximized_vert = utils::window_has_state(m_server.get(), m_window, u8"_NET_WM_STATE_MAXIMIZED_VERT");
+    const bool maximized_horz = utils::window_has_state(m_server.get(), m_window, u8"_NET_WM_STATE_MAXIMIZED_HORZ");
 
     return maximized_vert || maximized_horz;
 }
