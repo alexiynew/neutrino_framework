@@ -6,8 +6,7 @@ using namespace framework::math;
 class matrix_assign_test : public framework::unit_test::suite
 {
 public:
-    matrix_assign_test()
-        : suite("matrix_assign_test")
+    matrix_assign_test() : suite("matrix_assign_test")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
     }

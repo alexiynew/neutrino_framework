@@ -6,9 +6,9 @@
 #ifndef FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP
 #define FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP
 
-#include <window/implementation.hpp>
-
 #import "Cocoa/Cocoa.h"
+
+#include <window/implementation.hpp>
 
 namespace framework {
 

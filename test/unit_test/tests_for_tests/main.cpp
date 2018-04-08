@@ -2,8 +2,9 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
-#include <unit_test/suite.hpp>
 #include <vector>
+
+#include <unit_test/suite.hpp>
 
 class custom_exception
 {};
@@ -13,8 +14,7 @@ class custom_exception
 class should_fail_test_assert : public framework::unit_test::suite
 {
 public:
-    should_fail_test_assert()
-        : suite("should_fail_test_assert")
+    should_fail_test_assert() : suite("should_fail_test_assert")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -29,8 +29,7 @@ private:
 class should_fail_test_fail : public framework::unit_test::suite
 {
 public:
-    should_fail_test_fail()
-        : suite("should_fail_test_fail")
+    should_fail_test_fail() : suite("should_fail_test_fail")
     {
         add_test([this]() { test_fail(); }, "test_fail");
     }
@@ -45,33 +44,25 @@ private:
 class should_fail_test_std_exception : public framework::unit_test::suite
 {
 public:
-    should_fail_test_std_exception()
-        : suite("should_fail_test_std_exception")
+    should_fail_test_std_exception() : suite("should_fail_test_std_exception")
     {
         add_test([this]() { test_std_exception(); }, "test_std_exception");
     }
 
 private:
-    [[noreturn]] void test_std_exception()
-    {
-        throw std::runtime_error("Test exception");
-    }
+    [[noreturn]] void test_std_exception() { throw std::runtime_error("Test exception"); }
 };
 
 class should_fail_test_any_exception : public framework::unit_test::suite
 {
 public:
-    should_fail_test_any_exception()
-        : suite("should_fail_test_any_exception")
+    should_fail_test_any_exception() : suite("should_fail_test_any_exception")
     {
         add_test([this]() { test_any_exception(); }, "test_any_exception");
     }
 
 private:
-    [[noreturn]] void test_any_exception()
-    {
-        throw custom_exception();
-    }
+    [[noreturn]] void test_any_exception() { throw custom_exception(); }
 };
 /// @}
 
@@ -80,8 +71,7 @@ private:
 class should_pass_test : public framework::unit_test::suite
 {
 public:
-    should_pass_test()
-        : suite("should_pass_test")
+    should_pass_test() : suite("should_pass_test")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -99,8 +89,7 @@ private:
 class test_for_test : public framework::unit_test::suite
 {
 public:
-    test_for_test()
-        : suite("test_for_test")
+    test_for_test() : suite("test_for_test")
     {
         add_test([this]() { should_fail(); }, "should_fail");
         add_test([this]() { should_pass(); }, "should_pass");

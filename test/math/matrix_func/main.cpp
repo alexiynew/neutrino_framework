@@ -6,8 +6,7 @@ using namespace framework::math;
 class matrix_function_tests : public framework::unit_test::suite
 {
 public:
-    matrix_function_tests()
-        : suite("matrix_function_tests")
+    matrix_function_tests() : suite("matrix_function_tests")
     {
         add_test([this]() { transpose_function(); }, "transpose_function");
         add_test([this]() { cross_component_multiplication_function(); }, "cross_component_multiplication_function");

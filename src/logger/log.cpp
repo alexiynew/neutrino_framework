@@ -14,10 +14,8 @@ void default_logger::add_message(const severity_level, const std::string&, const
     // nothing to do.
 }
 
-log::log()
-    : m_logger(nullptr)
-{
-}
+log::log() : m_logger(nullptr)
+{}
 
 log& log::instance()
 {

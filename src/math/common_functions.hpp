@@ -7,8 +7,9 @@
 #define FRAMEWORK_MATH_COMMON_FUNCTIONS_HPP
 
 #include <cmath>
-#include <common/types.hpp>
 #include <limits>
+
+#include <common/types.hpp>
 #include <math/common_functions_details.hpp>
 #include <math/vector_type.hpp>
 
@@ -614,7 +615,6 @@ inline vector<N, bool> isnan(const vector<N, T>& value)
 
 /// @name isinf
 /// @{
-
 
 /// @brief Determines if the given floating-point number is a positive or negative infinity.
 ///

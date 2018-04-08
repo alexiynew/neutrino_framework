@@ -6,8 +6,7 @@ using namespace framework::math;
 class geometric_function_tests : public framework::unit_test::suite
 {
 public:
-    geometric_function_tests()
-        : suite("geometric_function_tests")
+    geometric_function_tests() : suite("geometric_function_tests")
     {
         add_test([this]() { length_function(); }, "length_function");
         add_test([this]() { distance_function(); }, "distance_function");
@@ -74,7 +73,6 @@ private:
 
     vector3f v3f;
 };
-
 
 int main()
 {

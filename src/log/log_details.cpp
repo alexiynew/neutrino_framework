@@ -21,9 +21,7 @@ namespace log_details {
 #pragma region log_buffer
 
 log_buffer::log_buffer(::framework::log::severity_level level, const std::string& tag)
-    : m_level(level)
-    , m_tag(tag)
-    , m_buffer(log_buffer_size)
+    : m_level(level), m_tag(tag), m_buffer(log_buffer_size)
 {
     reset_pointers();
 }
@@ -70,15 +68,12 @@ void log_buffer::reset_pointers()
 #pragma endregion
 
 log_ostream::log_ostream(std::unique_ptr<std::streambuf> buffer)
-    : std::ostream(buffer.get())
-    , m_buffer(std::move(buffer))
-{
-}
+    : std::ostream(buffer.get()), m_buffer(std::move(buffer))
+{}
 
 log_ostream::~log_ostream() = default;
 
-log_ostream::log_ostream(log_ostream&& other)
-    : m_buffer(std::move(other.m_buffer))
+log_ostream::log_ostream(log_ostream&& other) : m_buffer(std::move(other.m_buffer))
 {
     rdbuf(m_buffer.get());
 }
@@ -92,7 +87,7 @@ log_ostream& log_ostream::operator=(log_ostream&& other)
     return *this;
 }
 
-} // namespace log
+} // namespace log_details
 
 } // namespace log
 

@@ -6,9 +6,10 @@
 #ifndef FRAMEWORK_LOG_LOG_HPP
 #define FRAMEWORK_LOG_LOG_HPP
 
-#include <log/log_details.hpp>
 #include <memory>
 #include <string>
+
+#include <log/log_details.hpp>
 
 namespace framework {
 

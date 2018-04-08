@@ -8,6 +8,7 @@
 
 #include <cassert>
 #include <limits>
+
 #include <math/common_functions.hpp>
 #include <math/matrix_functions.hpp>
 #include <math/matrix_type.hpp>
@@ -366,8 +367,10 @@ inline matrix<4, 4, T> infinite_perspective(T fov_y, T aspect, T near)
 ///
 /// @return Return the computed window coordinates.
 template <typename T, typename U>
-inline vector<3, T>
-project(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4, T>& projection, const vector<4, U>& viewport)
+inline vector<3, T> project(const vector<3, T>& v,
+                            const matrix<4, 4, T>& model,
+                            const matrix<4, 4, T>& projection,
+                            const vector<4, U>& viewport)
 {
     vector<4, T> temp(v, T(1));
     temp = projection * model * temp;
@@ -402,8 +405,10 @@ project(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4, 
 ///
 /// @return Returns the computed object coordinates.
 template <typename T, typename U>
-inline vector<3, T>
-unproject(const vector<3, T>& v, const matrix<4, 4, T>& model, const matrix<4, 4, T>& projection, const vector<4, U>& viewport)
+inline vector<3, T> unproject(const vector<3, T>& v,
+                              const matrix<4, 4, T>& model,
+                              const matrix<4, 4, T>& projection,
+                              const vector<4, U>& viewport)
 {
     const T x      = static_cast<T>(viewport[0]);
     const T y      = static_cast<T>(viewport[1]);
@@ -454,8 +459,9 @@ inline matrix<4, 4, T> pick_matrix(const vector<2, T>& center, const vector<2, T
     const T width  = static_cast<T>(viewport[2]);
     const T height = static_cast<T>(viewport[3]);
 
-    const vector<3, T> translate_temp = {
-    (width - T(2) * (center.x - x)) / delta.x, (height - T(2) * (center.y - y)) / delta.y, T(0)};
+    const vector<3, T> translate_temp = {(width - T(2) * (center.x - x)) / delta.x,
+                                         (height - T(2) * (center.y - y)) / delta.y,
+                                         T(0)};
 
     const vector<3, T> scale_temp = {width / delta.x, height / delta.y, T(1)};
 

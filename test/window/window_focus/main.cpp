@@ -1,13 +1,13 @@
 #include <chrono>
 #include <thread>
+
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
 class window_focus_test : public framework::unit_test::suite
 {
 public:
-    window_focus_test()
-        : suite("window_focus_test")
+    window_focus_test() : suite("window_focus_test")
     {
         add_test([this]() { focus_window(); }, "focus_window");
     }

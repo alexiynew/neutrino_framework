@@ -1,8 +1,9 @@
-#include <log/log.hpp>
-#include <log/stream_logger.hpp>
 #include <shared_lib/shared_lib.hpp>
 #include <sstream>
 #include <static_lib/static_lib.hpp>
+
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 #include <unit_test/suite.hpp>
 
 using namespace framework::log;
@@ -10,8 +11,7 @@ using namespace framework::log;
 class one_instance_test : public framework::unit_test::suite
 {
 public:
-    one_instance_test()
-        : suite("one_instance_test")
+    one_instance_test() : suite("one_instance_test")
     {
         add_test([this]() { logger_test(); }, "logger_test");
     }

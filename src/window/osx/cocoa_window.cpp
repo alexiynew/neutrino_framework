@@ -4,6 +4,7 @@
 /// @date 19.04.2017
 
 #include <memory>
+
 #include <window/osx/cocoa_window.hpp>
 
 namespace framework {
@@ -14,18 +15,14 @@ std::unique_ptr<window_implementation> get_implementation()
 }
 
 cocoa_window::cocoa_window()
-{
-}
+{}
 
 cocoa_window::~cocoa_window()
-{
-}
+{}
 
 void cocoa_window::show()
-{
-}
+{}
 
 void cocoa_window::hide()
-{
-}
+{}
 } // namespace framework

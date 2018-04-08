@@ -7,8 +7,7 @@ using namespace framework::math;
 class vector_operators_test : public framework::unit_test::suite
 {
 public:
-    vector_operators_test()
-        : suite("vector_operators_test")
+    vector_operators_test() : suite("vector_operators_test")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
         add_test([this]() { access_operator(); }, "access_operator");
@@ -300,8 +299,7 @@ private:
 class bool_vector_operators_test : public framework::unit_test::suite
 {
 public:
-    bool_vector_operators_test()
-        : suite("bool_vector_operators_test")
+    bool_vector_operators_test() : suite("bool_vector_operators_test")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
         add_test([this]() { access_operator(); }, "access_operator");

@@ -1,13 +1,13 @@
 #include <chrono>
 #include <thread>
+
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
 class window_state_test : public framework::unit_test::suite
 {
 public:
-    window_state_test()
-        : suite("window_state_test")
+    window_state_test() : suite("window_state_test")
     {
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
         add_test([this]() { minimize_window(); }, "minimize_window");

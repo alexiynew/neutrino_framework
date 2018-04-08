@@ -7,6 +7,7 @@
 #define FRAMEWORK_MATH_MATRIX_TYPE_HPP
 
 #include <cassert>
+
 #include <common/types.hpp>
 #include <math/matrix_type_details.hpp>
 #include <math/vector_type.hpp>
@@ -1767,16 +1768,13 @@ private:
 /// @name matrix<4, 4, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<4, 4, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<4, 4, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<4, 4, T>::matrix(const matrix<4, 4, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -1818,8 +1816,7 @@ inline constexpr matrix<4, 4, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -1936,8 +1933,7 @@ inline constexpr matrix<4, 4, T>::matrix(const matrix<C, R, U>& other)
              matrix_type_details::get_column<1, C>(other, column_type(0, 1, 0, 0)),
              matrix_type_details::get_column<2, C>(other, column_type(0, 0, 1, 0)),
              matrix_type_details::get_column<3, C>(other, column_type(0, 0, 0, 1))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<4, 4, T> operators.
@@ -2005,16 +2001,13 @@ inline typename matrix<4, 4, T>::row_type matrix<4, 4, T>::row(uint32 index) con
 /// @name matrix<4, 3, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<4, 3, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<4, 3, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<4, 3, T>::matrix(const matrix<4, 3, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2056,8 +2049,7 @@ inline constexpr matrix<4, 3, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2066,8 +2058,7 @@ inline constexpr matrix<4, 3, T>::matrix(const vector<3, U0>& column0,
                                          const vector<3, U2>& column2,
                                          const vector<3, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2112,8 +2103,7 @@ inline constexpr matrix<4, 3, T>::matrix(const matrix<C, R, U>& other)
              matrix_type_details::get_column<1, C>(other, column_type(0, 1, 0)),
              matrix_type_details::get_column<2, C>(other, column_type(0, 0, 1)),
              matrix_type_details::get_column<3, C>(other, column_type(0, 0, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<4, 3, T> operators.
@@ -2181,16 +2171,13 @@ inline typename matrix<4, 3, T>::row_type matrix<4, 3, T>::row(uint32 index) con
 /// @name matrix<4, 2, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<4, 2, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<4, 2, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<4, 2, T>::matrix(const matrix<4, 2, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2], other.m_data[3]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2232,8 +2219,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U2>& column2,
                                          const vector<4, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2242,8 +2228,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<3, U0>& column0,
                                          const vector<3, U2>& column2,
                                          const vector<3, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2252,8 +2237,7 @@ inline constexpr matrix<4, 2, T>::matrix(const vector<2, U0>& column0,
                                          const vector<2, U2>& column2,
                                          const vector<2, U3>& column3)
     : m_data{column_type(column0), column_type(column1), column_type(column2), column_type(column3)}
-{
-}
+{}
 
 template <typename T>
 template <uint32 C, uint32 R, typename U>
@@ -2262,8 +2246,7 @@ inline constexpr matrix<4, 2, T>::matrix(const matrix<C, R, U>& other)
              matrix_type_details::get_column<1, C>(other, column_type(0, 1)),
              matrix_type_details::get_column<2, C>(other, column_type(0, 0)),
              matrix_type_details::get_column<3, C>(other, column_type(0, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<4, 2, T> operators.
@@ -2331,16 +2314,13 @@ inline typename matrix<4, 2, T>::row_type matrix<4, 2, T>::row(uint32 index) con
 /// @name matrix<3, 4, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<3, 4, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<3, 4, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<3, 4, T>::matrix(const matrix<3, 4, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
-{
-}
+{}
 // clang-format off
 template <typename T>
 inline constexpr matrix<3, 4, T>::matrix(const T& value00, const T& value01, const T& value02, const T& value03,
@@ -2478,8 +2458,7 @@ inline constexpr matrix<3, 4, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_type_details::get_column<0, C>(other, column_type(1, 0, 0, 0)),
              matrix_type_details::get_column<1, C>(other, column_type(0, 1, 0, 0)),
              matrix_type_details::get_column<2, C>(other, column_type(0, 0, 1, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<3, 4, T> operators.
@@ -2546,16 +2525,13 @@ inline typename matrix<3, 4, T>::row_type matrix<3, 4, T>::row(uint32 index) con
 /// @name matrix<3, 3, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<3, 3, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<3, 3, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<3, 3, T>::matrix(const matrix<3, 3, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2645,8 +2621,7 @@ inline constexpr matrix<3, 3, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_type_details::get_column<0, C>(other, column_type(1, 0, 0)),
              matrix_type_details::get_column<1, C>(other, column_type(0, 1, 0)),
              matrix_type_details::get_column<2, C>(other, column_type(0, 0, 1))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<3, 3, T> operators.
@@ -2713,16 +2688,13 @@ inline typename matrix<3, 3, T>::row_type matrix<3, 3, T>::row(uint32 index) con
 /// @name matrix<3, 2, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<3, 2, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<3, 2, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<3, 2, T>::matrix(const matrix<3, 2, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1], other.m_data[2]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2756,24 +2728,27 @@ inline constexpr matrix<3, 2, T>::matrix(const U* const pointer)
 
 template <typename T>
 template <typename U0, typename U1, typename U2>
-inline constexpr matrix<3, 2, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1, const vector<4, U2>& column2)
+inline constexpr matrix<3, 2, T>::matrix(const vector<4, U0>& column0,
+                                         const vector<4, U1>& column1,
+                                         const vector<4, U2>& column2)
     : m_data{column_type(column0), column_type(column1), column_type(column2)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2>
-inline constexpr matrix<3, 2, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1, const vector<3, U2>& column2)
+inline constexpr matrix<3, 2, T>::matrix(const vector<3, U0>& column0,
+                                         const vector<3, U1>& column1,
+                                         const vector<3, U2>& column2)
     : m_data{column_type(column0), column_type(column1), column_type(column2)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2>
-inline constexpr matrix<3, 2, T>::matrix(const vector<2, U0>& column0, const vector<2, U1>& column1, const vector<2, U2>& column2)
+inline constexpr matrix<3, 2, T>::matrix(const vector<2, U0>& column0,
+                                         const vector<2, U1>& column1,
+                                         const vector<2, U2>& column2)
     : m_data{column_type(column0), column_type(column1), column_type(column2)}
-{
-}
+{}
 
 template <typename T>
 template <uint32 C, uint32 R, typename U>
@@ -2781,8 +2756,7 @@ inline constexpr matrix<3, 2, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_type_details::get_column<0, C>(other, column_type(1, 0)),
              matrix_type_details::get_column<1, C>(other, column_type(0, 1)),
              matrix_type_details::get_column<2, C>(other, column_type(0, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<3, 2, T> operators.
@@ -2849,16 +2823,13 @@ inline typename matrix<3, 2, T>::row_type matrix<3, 2, T>::row(uint32 index) con
 /// @name matrix<2, 4, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<2, 4, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<2, 4, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<2, 4, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2891,8 +2862,7 @@ template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 4, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2971,8 +2941,7 @@ template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 4, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_type_details::get_column<0, C>(other, column_type(1, 0, 0, 0)),
              matrix_type_details::get_column<1, C>(other, column_type(0, 1, 0, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<2, 4, T> operators.
@@ -3038,16 +3007,13 @@ inline typename matrix<2, 4, T>::row_type matrix<2, 4, T>::row(uint32 index) con
 /// @name matrix<2, 3, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<2, 3, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<2, 3, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<2, 3, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -3080,15 +3046,13 @@ template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 3, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 3, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -3119,8 +3083,7 @@ template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 3, T>::matrix(const matrix<C, R, U>& other)
     : m_data{matrix_type_details::get_column<0, C>(other, column_type(1, 0, 0)),
              matrix_type_details::get_column<1, C>(other, column_type(0, 1, 0))}
-{
-}
+{}
 /// @}
 
 /// @name matrix<2, 3, T> operators.
@@ -3186,16 +3149,13 @@ inline typename matrix<2, 3, T>::row_type matrix<2, 3, T>::row(uint32 index) con
 /// @name matrix<2, 2, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<2, 2, T>::matrix() noexcept
-    : matrix(T{1})
-{
-}
+inline constexpr matrix<2, 2, T>::matrix() noexcept : matrix(T{1})
+{}
 
 template <typename T>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<2, 2, T>& other) noexcept
     : m_data{other.m_data[0], other.m_data[1]}
-{
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -3228,29 +3188,25 @@ template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<3, U0>& column0, const vector<3, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 2, T>::matrix(const vector<2, U0>& column0, const vector<2, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
-{
-}
+{}
 
 template <typename T>
 template <uint32 C, uint32 R, typename U>
 inline constexpr matrix<2, 2, T>::matrix(const matrix<C, R, U>& other)
     : m_data{static_cast<column_type>(other[0]), static_cast<column_type>(other[1])}
-{
-}
+{}
 /// @}
 
 /// @name matrix<2, 2, T> operators.
@@ -3390,7 +3346,11 @@ inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const matrix<C, C, U>& 
 /// @param rhs Second addend.
 ///
 /// @return Reference to component-wise sum of matrix and scalar value.
-template <uint32 C, uint32 R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+template <uint32 C,
+          uint32 R,
+          typename T,
+          typename U,
+          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline matrix<C, R, T>& operator+=(matrix<C, R, T>& lhs, const U& rhs)
 {
     for (uint32 i = 0; i < C; ++i) {
@@ -3405,7 +3365,11 @@ inline matrix<C, R, T>& operator+=(matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Reference to component-wise difference of the matrix and scalar value.
-template <uint32 C, uint32 R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+template <uint32 C,
+          uint32 R,
+          typename T,
+          typename U,
+          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline matrix<C, R, T>& operator-=(matrix<C, R, T>& lhs, const U& rhs)
 {
     for (uint32 i = 0; i < C; ++i) {
@@ -3420,7 +3384,11 @@ inline matrix<C, R, T>& operator-=(matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to component-wise product of the matrix and scalar value.
-template <uint32 C, uint32 R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+template <uint32 C,
+          uint32 R,
+          typename T,
+          typename U,
+          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const U& rhs)
 {
     for (uint32 i = 0; i < C; ++i) {
@@ -3435,7 +3403,11 @@ inline matrix<C, R, T>& operator*=(matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Divider scalar value.
 ///
 /// @return Reference to component-wise quotient of the matrix and scalar value.
-template <uint32 C, uint32 R, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+template <uint32 C,
+          uint32 R,
+          typename T,
+          typename U,
+          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
 inline matrix<C, R, T>& operator/=(matrix<C, R, T>& lhs, const U& rhs)
 {
     for (uint32 i = 0; i < C; ++i) {
@@ -3480,7 +3452,12 @@ inline const matrix<C, R, RT> operator-(const matrix<C, R, T>& lhs, const matrix
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Product of two matrices.
-template <uint32 C, uint32 R, uint32 N, typename T, typename U, typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <uint32 C,
+          uint32 R,
+          uint32 N,
+          typename T,
+          typename U,
+          typename RT = typename matrix_type_details::common_type<T, U>::type>
 inline const matrix<N, R, RT> operator*(const matrix<C, R, T>& lhs, const matrix<N, C, U>& rhs) noexcept
 {
     matrix<N, R, RT> temp(0);

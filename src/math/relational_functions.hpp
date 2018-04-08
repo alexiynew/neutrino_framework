@@ -6,8 +6,9 @@
 #ifndef FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_HPP
 
-#include <common/types.hpp>
 #include <functional>
+
+#include <common/types.hpp>
 #include <math/common_functions.hpp>
 #include <math/matrix_type.hpp>
 #include <math/relational_functions_details.hpp>

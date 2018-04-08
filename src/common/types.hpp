@@ -30,5 +30,4 @@ using float64 = double; ///< Floating point type with width of exactly 64 bits
 
 } // namespace framework
 
-
 #endif

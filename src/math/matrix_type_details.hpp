@@ -57,8 +57,9 @@ inline constexpr V get_column_implementation(M&&, V&& vector, std::false_type) n
 template <uint32 N, uint32 C, typename M, typename V>
 inline constexpr V get_column(M&& matrix, V&& vector) noexcept
 {
-    return get_column_implementation<N>(
-    std::forward<M>(matrix), std::forward<V>(vector), std::integral_constant<bool, (N < C)>{});
+    return get_column_implementation<N>(std::forward<M>(matrix),
+                                        std::forward<V>(vector),
+                                        std::integral_constant<bool, (N < C)>{});
 }
 /// @}
 

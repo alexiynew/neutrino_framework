@@ -1,8 +1,9 @@
+#include <sstream>
+#include <string>
+
 #include <common/utils.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
-#include <sstream>
-#include <string>
 #include <unit_test/suite.hpp>
 
 using namespace framework::log;
@@ -10,8 +11,7 @@ using namespace framework::log;
 class logger_interface_test : public framework::unit_test::suite
 {
 public:
-    logger_interface_test()
-        : suite(suite_name)
+    logger_interface_test() : suite(suite_name)
     {
         add_test([this]() { stream_logger_test(); }, "stream_logger_test");
     }

@@ -8,8 +8,7 @@ using namespace framework::math;
 class relational_function_tests : public framework::unit_test::suite
 {
 public:
-    relational_function_tests()
-        : suite("relational_function_tests")
+    relational_function_tests() : suite("relational_function_tests")
     {
         add_test([this]() { less_function(); }, "less_function");
         add_test([this]() { less_equal_function(); }, "less_equal_function");

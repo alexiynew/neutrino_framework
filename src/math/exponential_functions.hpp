@@ -7,6 +7,7 @@
 #define FRAMEWORK_MATH_EXPONENTIAL_FUNCTIONS_HPP
 
 #include <cmath>
+
 #include <common/types.hpp>
 #include <math/vector_type.hpp>
 
@@ -40,7 +41,10 @@ inline R pow(const T& base, const U& exponent)
 /// @return Vector of values of base that are raised to the power of exponent e.g. (base ^ exponent).
 ///
 /// @see pow
-template <uint32 N, typename T, typename U, typename R = decltype(::framework::math::pow(std::declval<T>(), std::declval<U>()))>
+template <uint32 N,
+          typename T,
+          typename U,
+          typename R = decltype(::framework::math::pow(std::declval<T>(), std::declval<U>()))>
 inline vector<N, R> pow(const vector<N, T>& base, const vector<N, U>& exponent)
 {
     return transform(base, exponent, ::framework::math::pow<T, U>);

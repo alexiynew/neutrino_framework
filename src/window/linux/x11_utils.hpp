@@ -8,9 +8,10 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
-#include <common/types.hpp>
 #include <string>
 #include <vector>
+
+#include <common/types.hpp>
 #include <window/linux/x11_server.hpp>
 
 namespace framework {

@@ -28,5 +28,4 @@ inline constexpr bool is_debug() noexcept
 
 } // namespace framework
 
-
 #endif

@@ -1,5 +1,6 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+
 #include <window/linux/x11_utils.hpp>
 
 using namespace framework;
@@ -44,8 +45,18 @@ std::vector<PropertyType> get_window_property(Display* display, Window window, A
     uint64 bytes_after  = 0;
     uint8* data         = nullptr;
 
-    int32 result = XGetWindowProperty(
-    display, window, property, 0, max_items_count, False, type, &actual_type, &actual_format, &items_count, &bytes_after, &data);
+    int32 result = XGetWindowProperty(display,
+                                      window,
+                                      property,
+                                      0,
+                                      max_items_count,
+                                      False,
+                                      type,
+                                      &actual_type,
+                                      &actual_format,
+                                      &items_count,
+                                      &bytes_after,
+                                      &data);
 
     if (result != Success || actual_type != type || items_count == 0 || data == nullptr) {
         if (data) {
@@ -121,8 +132,13 @@ bool window_change_state(const x11_server* server,
     state_atoms[0] = (state_atom_names.size() > 0 ? server->get_atom(state_atom_names[0], true) : None);
     state_atoms[1] = (state_atom_names.size() > 1 ? server->get_atom(state_atom_names[1], true) : None);
 
-    return utils::send_client_message(
-    server, window, net_wm_state, action, state_atoms[0], state_atoms[1], message_source_application);
+    return utils::send_client_message(server,
+                                      window,
+                                      net_wm_state,
+                                      action,
+                                      state_atoms[0],
+                                      state_atoms[1],
+                                      message_source_application);
 }
 
 void bypass_compositor_set_state(const x11_server* server, Window window, bypass_compositor_state state)
@@ -148,8 +164,6 @@ void bypass_compositor_set_state(const x11_server* server, Window window, bypass
 
 } // namespace
 
-
-
 namespace framework {
 
 namespace utils {
@@ -174,8 +188,11 @@ bool send_client_message(const x11_server* server, Window window, Atom message_t
         event.xclient.data.l[i] = data[i];
     }
 
-    Status result = XSendEvent(
-    server->display(), server->default_root_window(), False, SubstructureNotifyMask | SubstructureRedirectMask, &event);
+    Status result = XSendEvent(server->display(),
+                               server->default_root_window(),
+                               False,
+                               SubstructureNotifyMask | SubstructureRedirectMask,
+                               &event);
 
     return result != 0;
 }
@@ -208,7 +225,9 @@ bool window_add_state(const x11_server* server, Window window, const std::vector
     return ::window_change_state(server, window, ::net_wm_state_action::add, state_atom_names);
 }
 
-bool window_remove_state(const framework::x11_server* server, Window window, const std::vector<std::string>& state_atom_names)
+bool window_remove_state(const framework::x11_server* server,
+                         Window window,
+                         const std::vector<std::string>& state_atom_names)
 {
     return ::window_change_state(server, window, ::net_wm_state_action::remove, state_atom_names);
 }
@@ -229,7 +248,12 @@ bool activate_window(const x11_server* server, Window window, Time lastInputTime
         return true;
     }
 
-    return send_client_message(server, window, net_active_window, message_source_application, lastInputTime, active_window);
+    return send_client_message(server,
+                               window,
+                               net_active_window,
+                               message_source_application,
+                               lastInputTime,
+                               active_window);
 }
 
 void bypass_compositor_desable(const x11_server* server, Window window)

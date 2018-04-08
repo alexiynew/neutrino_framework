@@ -7,6 +7,7 @@
 #define FRAMEWORK_MATH_TRIGONOMETRIC_FUNCTIONS_HPP
 
 #include <cmath>
+
 #include <common/types.hpp>
 #include <math/constants.hpp>
 #include <math/vector_type.hpp>
@@ -254,8 +255,9 @@ inline R atan(const T& value)
 template <uint32 N, typename T, typename R = decltype(::framework::math::atan(std::declval<T>(), std::declval<T>()))>
 inline vector<N, R> atan(vector<N, T> const& a, vector<N, T> const& b)
 {
-    return transform(
-    a, b, [](const T& a_component, const T& b_component) { return ::framework::math::atan(a_component, b_component); });
+    return transform(a, b, [](const T& a_component, const T& b_component) {
+        return ::framework::math::atan(a_component, b_component);
+    });
 }
 
 /// @brief Applies the atan function to every component of the vectors.

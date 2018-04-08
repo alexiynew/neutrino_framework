@@ -6,8 +6,7 @@ using namespace framework::math;
 class exponential_function_tests : public framework::unit_test::suite
 {
 public:
-    exponential_function_tests()
-        : suite("exponential_function_tests")
+    exponential_function_tests() : suite("exponential_function_tests")
     {
         add_test([this]() { pow_function(); }, "pow_function");
         add_test([this]() { exp_function(); }, "exp_function");

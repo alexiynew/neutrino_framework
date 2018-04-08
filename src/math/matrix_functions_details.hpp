@@ -180,7 +180,9 @@ inline matrix<3, 3, T> affine_inverse(const matrix<3, 3, T>& value)
 
     const matrix<2, 2, T> temp = inverse(matrix<2, 2, T>(value));
 
-    return matrix<3, 3, T>(vector3t(temp[0], T{0}), vector3t(temp[1], T{0}), vector3t(-temp * vector2t(value[2]), T{1}));
+    return matrix<3, 3, T>(vector3t(temp[0], T{0}),
+                           vector3t(temp[1], T{0}),
+                           vector3t(-temp * vector2t(value[2]), T{1}));
 }
 
 template <typename T>
@@ -191,8 +193,10 @@ inline matrix<4, 4, T> affine_inverse(const matrix<4, 4, T>& value)
 
     matrix<3, 3, T> const temp = inverse(matrix<3, 3, T>(value));
 
-    return matrix<4, 4, T>(
-    vector4t(temp[0], T{0}), vector4t(temp[1], T{0}), vector4t(temp[2], T{0}), vector4t(-temp * vector3t(value[3]), T{1}));
+    return matrix<4, 4, T>(vector4t(temp[0], T{0}),
+                           vector4t(temp[1], T{0}),
+                           vector4t(temp[2], T{0}),
+                           vector4t(-temp * vector3t(value[3]), T{1}));
 }
 /// @}
 

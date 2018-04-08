@@ -7,8 +7,7 @@ using namespace framework::math;
 class matrix_access_test : public framework::unit_test::suite
 {
 public:
-    matrix_access_test()
-        : suite("matrix_access_test")
+    matrix_access_test() : suite("matrix_access_test")
     {
         add_test([this]() { access_operator(); }, "access_operator");
         add_test([this]() { column_function(); }, "column_function");

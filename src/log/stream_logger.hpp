@@ -6,8 +6,9 @@
 #ifndef FRAMEWORK_LOG_STREAM_LOGGER_HPP
 #define FRAMEWORK_LOG_STREAM_LOGGER_HPP
 
-#include <log/log.hpp>
 #include <ostream>
+
+#include <log/log.hpp>
 
 namespace framework {
 

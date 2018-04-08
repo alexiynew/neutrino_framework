@@ -4,19 +4,17 @@
 /// @date 04.04.2017
 
 #include <memory>
+
 #include <window/implementation.hpp>
 #include <window/window.hpp>
 
 namespace framework {
 
-window::window()
-    : m_implementation(implementation::get_implementation())
-{
-}
+window::window() : m_implementation(implementation::get_implementation())
+{}
 
 window::~window()
-{
-}
+{}
 
 #pragma region actions
 

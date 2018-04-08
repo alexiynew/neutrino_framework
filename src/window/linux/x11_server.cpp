@@ -20,8 +20,7 @@ std::weak_ptr<x11_server>& server_instance()
     return instance;
 }
 
-[[noreturn]] int32 fatal_error_handler(Display*)
-{
+[[noreturn]] int32 fatal_error_handler(Display*) {
     log::fatal(log_tag) << "Fatal error occurred." << std::endl;
     std::terminate();
 }
@@ -66,8 +65,7 @@ std::shared_ptr<x11_server> x11_server::connect()
     }
 }
 
-x11_server::x11_server()
-    : m_display{XOpenDisplay(nullptr)}
+x11_server::x11_server() : m_display{XOpenDisplay(nullptr)}
 {
     if (!m_display) {
         throw std::runtime_error("Failed to open connection to X server, there is no display.");

@@ -4,11 +4,12 @@
 /// @date 05.04.2017
 
 #include <X11/Xutil.h>
+#include <exception>
+#include <string>
+
 #include <common/types.hpp>
 #include <common/utils.hpp>
-#include <exception>
 #include <log/log.hpp>
-#include <string>
 #include <window/linux/x11_utils.hpp>
 #include <window/linux/x11_window.hpp>
 
@@ -17,6 +18,11 @@ using namespace framework::log;
 namespace {
 
 const char* const log_tag = "x11_window";
+
+const char* const net_wm_state_maximized_vert = u8"_NET_WM_STATE_MAXIMIZED_VERT";
+const char* const net_wm_state_maximized_horz = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
+const char* const net_wm_state_fullscreen     = u8"_NET_WM_STATE_FULLSCREEN";
+const char* const net_wm_state_hidden         = u8"_NET_WM_STATE_HIDDEN";
 
 Bool event_predicate(Display*, XEvent* event, XPointer arg)
 {
@@ -213,7 +219,6 @@ void x11_window::process_events()
         }
 
         switch (event.xany.type) {
-
                 // case KeyPress: return "KeyPress";
                 // case KeyRelease: return "KeyRelease";
                 // case ButtonPress: return "ButtonPress";
@@ -249,8 +254,7 @@ void x11_window::minimize()
 
 void x11_window::maximize()
 {
-    if (!utils::window_add_state(
-        m_server.get(), m_window, {u8"_NET_WM_STATE_MAXIMIZED_VERT", u8"_NET_WM_STATE_MAXIMIZED_HORZ"})) {
+    if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_maximized_vert, net_wm_state_maximized_horz})) {
         log::warning(log_tag) << "Failed to set maximized state." << std::endl;
         return;
     }
@@ -264,7 +268,7 @@ void x11_window::switch_to_fullscreen()
 
     utils::bypass_compositor_desable(m_server.get(), m_window);
 
-    if (!utils::window_add_state(m_server.get(), m_window, {u8"_NET_WM_STATE_FULLSCREEN"})) {
+    if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_fullscreen})) {
         log::warning(log_tag) << "Failed to set maximized state." << std::endl;
         return;
     }
@@ -281,8 +285,9 @@ void x11_window::restore()
             process_events();
         }
     } else if (maximized()) {
-        if (!utils::window_remove_state(
-            m_server.get(), m_window, {u8"_NET_WM_STATE_MAXIMIZED_VERT", u8"_NET_WM_STATE_MAXIMIZED_HORZ"})) {
+        if (!utils::window_remove_state(m_server.get(),
+                                        m_window,
+                                        {net_wm_state_maximized_vert, net_wm_state_maximized_horz})) {
             log::warning(log_tag) << "Failed to reset maximized state." << std::endl;
             return;
         }
@@ -290,7 +295,7 @@ void x11_window::restore()
     } else if (fullscreen()) {
         utils::bypass_compositor_reset(m_server.get(), m_window);
 
-        if (!utils::window_remove_state(m_server.get(), m_window, {u8"_NET_WM_STATE_FULLSCREEN"})) {
+        if (!utils::window_remove_state(m_server.get(), m_window, {net_wm_state_fullscreen})) {
             log::error(log_tag) << "Failed to reset fullscreen mode." << std::endl;
             return;
         }
@@ -362,21 +367,21 @@ std::string x11_window::title() const
 
 bool x11_window::fullscreen() const
 {
-    return utils::window_has_state(m_server.get(), m_window, u8"_NET_WM_STATE_FULLSCREEN");
+    return utils::window_has_state(m_server.get(), m_window, net_wm_state_fullscreen);
 }
 
 bool x11_window::minimized() const
 {
     const auto state  = utils::get_window_wm_state(m_server.get(), m_window);
-    const bool hidden = utils::window_has_state(m_server.get(), m_window, u8"_NET_WM_STATE_HIDDEN");
+    const bool hidden = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden);
 
     return state == IconicState || hidden;
 }
 
 bool x11_window::maximized() const
 {
-    const bool maximized_vert = utils::window_has_state(m_server.get(), m_window, u8"_NET_WM_STATE_MAXIMIZED_VERT");
-    const bool maximized_horz = utils::window_has_state(m_server.get(), m_window, u8"_NET_WM_STATE_MAXIMIZED_HORZ");
+    const bool maximized_vert = utils::window_has_state(m_server.get(), m_window, net_wm_state_maximized_vert);
+    const bool maximized_horz = utils::window_has_state(m_server.get(), m_window, net_wm_state_maximized_horz);
 
     return maximized_vert || maximized_horz;
 }
@@ -412,8 +417,7 @@ bool x11_window::focused() const
 #pragma region event processing
 
 void x11_window::process(XDestroyWindowEvent)
-{
-}
+{}
 
 void x11_window::process(XUnmapEvent)
 {

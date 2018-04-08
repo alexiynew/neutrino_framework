@@ -10,20 +10,16 @@
 #define FRAMEWORK_MATH_MATH_HPP
 
 #include <common/types.hpp>
-
-#include <math/constants.hpp>
-
-#include <math/vector_type.hpp>
-
-#include <math/matrix_type.hpp>
-
 #include <math/common_functions.hpp>
+#include <math/constants.hpp>
 #include <math/exponential_functions.hpp>
 #include <math/geometric_functions.hpp>
 #include <math/matrix_functions.hpp>
+#include <math/matrix_type.hpp>
 #include <math/relational_functions.hpp>
 #include <math/transform_functions.hpp>
 #include <math/trigonometric_functions.hpp>
+#include <math/vector_type.hpp>
 
 namespace framework {
 

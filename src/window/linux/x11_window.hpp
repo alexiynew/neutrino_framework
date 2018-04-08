@@ -7,6 +7,7 @@
 #define FRAMEWORK_WINDOW_LINUX_X11_WINDOW_HPP
 
 #include <X11/Xlib.h>
+
 #include <common/types.hpp>
 #include <window/implementation.hpp>
 #include <window/linux/x11_server.hpp>
@@ -19,6 +20,8 @@ public:
     x11_window();
     ~x11_window() override;
 
+    /// @name actions
+    /// @{
     void show() override;
     void hide() override;
     void focus() override;
@@ -28,7 +31,10 @@ public:
     void maximize() override;
     void switch_to_fullscreen() override;
     void restore() override;
+    /// @}
 
+    /// @name setters
+    /// @{
     void set_size(window::size_t size) override;
     void set_position(window::position_t position) override;
 
@@ -36,7 +42,10 @@ public:
     void set_min_size(window::size_t min_size) override;
 
     void set_title(const std::string& title) override;
+    /// @}
 
+    /// @name getters
+    /// @{
     window::position_t position() const override;
     window::size_t size() const override;
 
@@ -44,13 +53,17 @@ public:
     window::size_t min_size() const override;
 
     std::string title() const override;
+    /// @}
 
+    /// @name state
+    /// @{
     bool fullscreen() const override;
     bool minimized() const override;
     bool maximized() const override;
     bool resizable() const override;
     bool visible() const override;
     bool focused() const override;
+    /// @}
 
 private:
     void process(XDestroyWindowEvent event);
@@ -75,6 +88,7 @@ private:
     XIC input_context    = nullptr;
     Time m_lastInputTime = 0;
 };
+
 } // namespace framework
 
 #endif

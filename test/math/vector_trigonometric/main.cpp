@@ -6,8 +6,7 @@ using namespace framework::math;
 class trigonometric_function_tests : public framework::unit_test::suite
 {
 public:
-    trigonometric_function_tests()
-        : suite("trigonometric_function_tests")
+    trigonometric_function_tests() : suite("trigonometric_function_tests")
     {
         add_test([this]() { radians_function(); }, "radians_function");
         add_test([this]() { degrees_function(); }, "degrees_function");
@@ -113,7 +112,6 @@ private:
     vector4d v4d;
     vector3d v3d;
 };
-
 
 int main()
 {

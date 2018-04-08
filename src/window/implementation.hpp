@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+
 #include <window/window.hpp>
 
 namespace framework {

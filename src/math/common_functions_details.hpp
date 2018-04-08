@@ -7,6 +7,7 @@
 #define FRAMEWORK_MATH_COMMON_FUNCTIONS_DETAILS_HPP
 
 #include <cmath>
+
 #include <math/vector_type.hpp>
 
 namespace framework {
@@ -60,8 +61,9 @@ inline vector<4, R> modf(const vector<4, T>& value, vector<4, T>& integral)
 template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
 inline vector<3, R> modf(const vector<3, T>& value, vector<3, T>& integral)
 {
-    return vector<3, R>(
-    ::std::modf(value.x, &integral.x), ::std::modf(value.y, &integral.y), ::std::modf(value.z, &integral.z));
+    return vector<3, R>(::std::modf(value.x, &integral.x),
+                        ::std::modf(value.y, &integral.y),
+                        ::std::modf(value.z, &integral.z));
 }
 
 template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>

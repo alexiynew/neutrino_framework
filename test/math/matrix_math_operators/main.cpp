@@ -6,8 +6,7 @@ using namespace framework::math;
 class matrix_operators_test : public framework::unit_test::suite
 {
 public:
-    matrix_operators_test()
-        : suite("matrix_operators_test")
+    matrix_operators_test() : suite("matrix_operators_test")
     {
         add_test([this]() { unary_minus_operator(); }, "unary_minus_operator");
         add_test([this]() { unary_plus_operator(); }, "unary_plus_operator");
@@ -598,7 +597,6 @@ private:
     const matrix2x3f matrix23;
     const matrix2x2f matrix22;
 };
-
 
 int main()
 {

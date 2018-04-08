@@ -1,5 +1,6 @@
-#include <log/log.hpp>
 #include <static_lib/static_lib.hpp>
+
+#include <log/log.hpp>
 
 void static_lib::do_log()
 {
