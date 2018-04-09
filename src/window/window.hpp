@@ -29,7 +29,7 @@ public:
         int32 y;
     };
 
-    window();
+    window(size_t size);
     ~window();
 
     window(const window&) = delete;

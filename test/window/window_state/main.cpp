@@ -19,7 +19,7 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(50);
 
-        framework::window window;
+        framework::window window({640, 480});
 
         window.show();
 
@@ -59,7 +59,7 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(50);
 
-        framework::window window;
+        framework::window window({640, 480});
 
         window.show();
 
@@ -100,7 +100,7 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(50);
 
-        framework::window window;
+        framework::window window({640, 480});
 
         window.show();
 

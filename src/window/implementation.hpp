@@ -17,7 +17,7 @@ namespace framework {
 class window::implementation
 {
 public:
-    static std::unique_ptr<implementation> get_implementation();
+    static std::unique_ptr<implementation> get_implementation(window::size_t size);
 
     implementation()          = default;
     virtual ~implementation() = default;

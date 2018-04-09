@@ -17,7 +17,7 @@ namespace framework {
 class x11_window final : public window::implementation
 {
 public:
-    x11_window();
+    x11_window(window::size_t size);
     ~x11_window() override;
 
     /// @name actions
@@ -35,6 +35,8 @@ public:
 
     /// @name setters
     /// @{
+
+    // The size() value will be updated after next event processing
     void set_size(window::size_t size) override;
     void set_position(window::position_t position) override;
 

@@ -19,7 +19,7 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(10);
 
-        framework::window window;
+        ::framework::window window({640, 480});
         window.show();
 
         std::this_thread::sleep_for(timespan);
@@ -39,7 +39,13 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(50);
 
-        framework::window windows[5];
+        ::framework::window windows[5] = {
+        ::framework::window({640, 480}),
+        ::framework::window({640, 480}),
+        ::framework::window({640, 480}),
+        ::framework::window({640, 480}),
+        ::framework::window({640, 480}),
+        };
 
         for (auto& window : windows) {
             window.show();

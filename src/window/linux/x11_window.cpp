@@ -74,15 +74,13 @@ std::string event_type_string(const XAnyEvent& event)
 
 namespace framework {
 
-std::unique_ptr<window::implementation> window::implementation::get_implementation()
+std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t size)
 {
-    return std::make_unique<x11_window>();
+    return std::make_unique<x11_window>(size);
 }
 
-x11_window::x11_window()
+x11_window::x11_window(window::size_t size) : m_server(x11_server::connect()), m_size(size)
 {
-    m_server = x11_server::connect();
-
     XID color = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
 
     uint32 border_width = 0;
@@ -307,14 +305,16 @@ void x11_window::restore()
 
 #pragma region setters
 
-void x11_window::set_size(window::size_t)
+void x11_window::set_size(window::size_t size)
 {
-    throw std::logic_error("Function is not implemented.");
+    XResizeWindow(m_server->display(), m_window, size.width, size.height);
+    XFlush(m_server->display());
 }
 
-void x11_window::set_position(window::position_t)
+void x11_window::set_position(window::position_t position)
 {
-    throw std::logic_error("Function is not implemented.");
+    XMoveWindow(m_server->display(), m_window, position.x, position.y);
+    XFlush(m_server->display());
 }
 
 void x11_window::set_max_size(window::size_t)
@@ -338,12 +338,27 @@ void x11_window::set_title(const std::string&)
 
 window::position_t x11_window::position() const
 {
-    throw std::logic_error("Function is not implemented.");
+    int32 x_return, y_return;
+    Window child_return;
+
+    XTranslateCoordinates(m_server->display(),
+                          m_window,
+                          m_server->default_root_window(),
+                          0,
+                          0,
+                          &x_return,
+                          &y_return,
+                          &child_return);
+
+    return {x_return, y_return};
 }
 
 window::size_t x11_window::size() const
 {
-    throw std::logic_error("Function is not implemented.");
+    XWindowAttributes attributes = {};
+    XGetWindowAttributes(m_server->display(), m_window, &attributes);
+
+    return {attributes.width, attributes.height};
 }
 
 window::size_t x11_window::max_size() const

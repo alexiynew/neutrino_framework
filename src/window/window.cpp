@@ -10,7 +10,7 @@
 
 namespace framework {
 
-window::window() : m_implementation(implementation::get_implementation())
+window::window(size_t size) : m_implementation(implementation::get_implementation(size))
 {}
 
 window::~window()
@@ -152,7 +152,7 @@ bool window::focused() const
 
 #pragma endregion
 
-#pragma region helper functions
+#pragma region window::size_t
 
 bool operator==(const window::size_t& lhs, const window::size_t& rhs)
 {
@@ -163,6 +163,10 @@ bool operator!=(const window::size_t& lhs, const window::size_t& rhs)
 {
     return !(lhs == rhs);
 }
+
+#pragma endregion
+
+#pragma region window::position_t
 
 bool operator==(const window::position_t& lhs, const window::position_t& rhs)
 {

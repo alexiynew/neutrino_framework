@@ -17,8 +17,8 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(50);
 
-        framework::window alpha;
-        framework::window betta;
+        framework::window alpha({640, 480});
+        framework::window betta({640, 480});
 
         alpha.show();
         betta.show();
