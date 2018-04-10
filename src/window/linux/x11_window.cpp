@@ -317,14 +317,30 @@ void x11_window::set_position(window::position_t position)
     XFlush(m_server->display());
 }
 
-void x11_window::set_max_size(window::size_t)
+void x11_window::set_max_size(window::size_t max_size)
 {
-    throw std::logic_error("Function is not implemented.");
+    XSizeHints size_hints = {};
+    long supplied;
+
+    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
+
+    size_hints.flags |= PMaxSize;
+    size_hints.max_width  = max_size.width;
+    size_hints.max_height = max_size.height;
+    XSetWMNormalHints(m_server->display(), m_window, &size_hints);
 }
 
-void x11_window::set_min_size(window::size_t)
+void x11_window::set_min_size(window::size_t min_size)
 {
-    throw std::logic_error("Function is not implemented.");
+    XSizeHints size_hints = {};
+    long supplied;
+
+    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
+
+    size_hints.flags |= PMinSize;
+    size_hints.min_width  = min_size.width;
+    size_hints.min_height = min_size.height;
+    XSetWMNormalHints(m_server->display(), m_window, &size_hints);
 }
 
 void x11_window::set_title(const std::string&)
@@ -363,12 +379,32 @@ window::size_t x11_window::size() const
 
 window::size_t x11_window::max_size() const
 {
-    throw std::logic_error("Function is not implemented.");
+    XSizeHints size_hints = {};
+    long supplied;
+
+    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
+    const bool has_max_size_hints = (size_hints.flags &= PMaxSize) != 0;
+
+    if (!got_size_hints || !has_max_size_hints) {
+        return {-1, -1};
+    }
+
+    return {size_hints.max_width, size_hints.max_height};
 }
 
 window::size_t x11_window::min_size() const
 {
-    throw std::logic_error("Function is not implemented.");
+    XSizeHints size_hints = {};
+    long supplied;
+
+    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
+    const bool has_min_size_hints = (size_hints.flags &= PMinSize) != 0;
+
+    if (!got_size_hints || !has_min_size_hints) {
+        return {-1, -1};
+    }
+
+    return {size_hints.min_width, size_hints.min_height};
 }
 
 std::string x11_window::title() const
@@ -468,23 +504,24 @@ void x11_window::process(XFocusChangeEvent event)
                 XSetICFocus(input_context);
             }
 
-            if (!m_cursor_grabbed) {
-                int result = XGrabPointer(m_server->display(),
-                                          m_window,
-                                          True,
-                                          ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-                                          GrabModeAsync,
-                                          GrabModeAsync,
-                                          None,
-                                          None,
-                                          CurrentTime);
+            // TODO: Find out how to deal with cursor
+            // if (!m_cursor_grabbed) {
+            //     int result = XGrabPointer(m_server->display(),
+            //                               m_window,
+            //                               True,
+            //                               ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+            //                               GrabModeAsync,
+            //                               GrabModeAsync,
+            //                               None,
+            //                               None,
+            //                               CurrentTime);
 
-                m_cursor_grabbed = (result == GrabSuccess);
+            //     m_cursor_grabbed = (result == GrabSuccess);
 
-                if (!m_cursor_grabbed) {
-                    log::warning(log_tag) << "Failed to grab mouse cursor" << std::endl;
-                }
-            }
+            //     if (!m_cursor_grabbed) {
+            //         log::warning(log_tag) << "Failed to grab mouse cursor" << std::endl;
+            //     }
+            // }
             break;
         case FocusOut:
             if (input_context) {
