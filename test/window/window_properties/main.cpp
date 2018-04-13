@@ -11,6 +11,7 @@ public:
     {
         add_test([this]() { window_size(); }, "window_size");
         add_test([this]() { window_size_limits(); }, "window_size_limits");
+        add_test([this]() { window_resizability(); }, "window_resizability");
         add_test([this]() { window_position(); }, "window_position");
         add_test([this]() { window_title(); }, "window_title");
     }
@@ -56,7 +57,7 @@ private:
 
         const ::framework::window::size_t size480{480, 320};
         const ::framework::window::size_t size640{640, 480};
-        const ::framework::window::size_t no_size{-1, -1};
+        const ::framework::window::size_t no_size{0, 0};
 
         ::framework::window window({480, 320});
 
@@ -88,6 +89,67 @@ private:
         window.process_events();
 
         TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+    }
+
+    void window_resizability()
+    {
+        constexpr std::chrono::milliseconds timespan(50);
+
+        const ::framework::window::size_t size480{480, 320};
+        const ::framework::window::size_t size640{640, 480};
+        const ::framework::window::size_t size960{960, 640};
+
+        ::framework::window window(size640);
+
+        window.set_min_size(size480);
+        window.set_max_size(size960);
+
+        window.show();
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(window.resizable(), "Window has wrong state.");
+
+        window.set_resizable(false);
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(!window.resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
+
+        window.set_size(size480);
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(!window.resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
+
+        window.set_resizable(true);
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(window.resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
+
+        window.set_size(size480);
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(window.resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
     }
 
     void window_position()

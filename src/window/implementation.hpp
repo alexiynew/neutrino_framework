@@ -43,6 +43,8 @@ public:
     virtual void set_max_size(size_t) = 0;
     virtual void set_min_size(size_t) = 0;
 
+    virtual void set_resizable(bool) = 0;
+
     virtual void set_title(const std::string& title) = 0;
 
     // getters

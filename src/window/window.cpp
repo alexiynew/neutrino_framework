@@ -83,6 +83,11 @@ void window::set_min_size(size_t min_size)
     m_implementation->set_min_size(min_size);
 }
 
+void window::set_resizable(bool value)
+{
+    m_implementation->set_resizable(value);
+}
+
 void window::set_title(const std::string& title)
 {
     m_implementation->set_title(title);

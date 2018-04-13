@@ -43,6 +43,8 @@ public:
     void set_max_size(window::size_t max_size) override;
     void set_min_size(window::size_t min_size) override;
 
+    void set_resizable(bool value) override;
+
     void set_title(const std::string& title) override;
     /// @}
 
@@ -82,9 +84,13 @@ private:
 
     bool m_viewable       = false;
     bool m_cursor_grabbed = false;
+    bool m_resizable      = true;
 
     window::size_t m_size         = {640, 480};
     window::position_t m_position = {0, 0};
+
+    mutable window::size_t m_min_size = {0, 0};
+    mutable window::size_t m_max_size = {0, 0};
 
     Window m_window      = 0;
     XIC input_context    = nullptr;

@@ -56,6 +56,8 @@ public:
     void set_max_size(size_t max_size);
     void set_min_size(size_t min_size);
 
+    void set_resizable(bool value);
+
     void set_title(const std::string& title);
     /// @}
 
