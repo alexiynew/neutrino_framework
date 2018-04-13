@@ -27,7 +27,7 @@ public:
 
     Window currently_active_window() const;
 
-    Atom get_atom(const std::string& name, bool only_if_exists) const;
+    Atom get_atom(const std::string& name, bool only_if_exists = true) const;
 
     XIM input_method() const;
 

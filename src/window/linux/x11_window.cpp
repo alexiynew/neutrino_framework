@@ -17,12 +17,12 @@ using namespace framework::log;
 
 namespace {
 
-const char* const log_tag = "x11_window";
+const std::string log_tag = "x11_window";
 
-const char* const net_wm_state_maximized_vert = u8"_NET_WM_STATE_MAXIMIZED_VERT";
-const char* const net_wm_state_maximized_horz = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
-const char* const net_wm_state_fullscreen     = u8"_NET_WM_STATE_FULLSCREEN";
-const char* const net_wm_state_hidden         = u8"_NET_WM_STATE_HIDDEN";
+const std::string net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
+const std::string net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
+const std::string net_wm_state_fullscreen_atom_name     = u8"_NET_WM_STATE_FULLSCREEN";
+const std::string net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDEN";
 
 Bool event_predicate(Display*, XEvent* event, XPointer arg)
 {
@@ -74,12 +74,13 @@ std::string event_type_string(const XAnyEvent& event)
 
 namespace framework {
 
-std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t size)
+std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t size,
+                                                                                   const std::string& title)
 {
-    return std::make_unique<x11_window>(size);
+    return std::make_unique<x11_window>(size, title);
 }
 
-x11_window::x11_window(window::size_t size) : m_server(x11_server::connect()), m_size(size)
+x11_window::x11_window(window::size_t size, const std::string& title) : m_server(x11_server::connect()), m_size(size)
 {
     XID color = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
 
@@ -153,6 +154,7 @@ x11_window::x11_window(window::size_t size) : m_server(x11_server::connect()), m
     }
 
     create_input_context();
+    set_title(title);
 }
 
 x11_window::~x11_window()
@@ -252,7 +254,9 @@ void x11_window::minimize()
 
 void x11_window::maximize()
 {
-    if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_maximized_vert, net_wm_state_maximized_horz})) {
+    if (!utils::window_add_state(m_server.get(),
+                                 m_window,
+                                 {net_wm_state_maximized_vert_atom_name, net_wm_state_maximized_horz_atom_name})) {
         log::warning(log_tag) << "Failed to set maximized state." << std::endl;
         return;
     }
@@ -266,7 +270,7 @@ void x11_window::switch_to_fullscreen()
 
     utils::bypass_compositor_desable(m_server.get(), m_window);
 
-    if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_fullscreen})) {
+    if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_fullscreen_atom_name})) {
         log::warning(log_tag) << "Failed to set maximized state." << std::endl;
         return;
     }
@@ -285,7 +289,8 @@ void x11_window::restore()
     } else if (maximized()) {
         if (!utils::window_remove_state(m_server.get(),
                                         m_window,
-                                        {net_wm_state_maximized_vert, net_wm_state_maximized_horz})) {
+                                        {net_wm_state_maximized_vert_atom_name,
+                                         net_wm_state_maximized_horz_atom_name})) {
             log::warning(log_tag) << "Failed to reset maximized state." << std::endl;
             return;
         }
@@ -293,7 +298,7 @@ void x11_window::restore()
     } else if (fullscreen()) {
         utils::bypass_compositor_reset(m_server.get(), m_window);
 
-        if (!utils::window_remove_state(m_server.get(), m_window, {net_wm_state_fullscreen})) {
+        if (!utils::window_remove_state(m_server.get(), m_window, {net_wm_state_fullscreen_atom_name})) {
             log::error(log_tag) << "Failed to reset fullscreen mode." << std::endl;
             return;
         }
@@ -343,9 +348,10 @@ void x11_window::set_min_size(window::size_t min_size)
     XSetWMNormalHints(m_server->display(), m_window, &size_hints);
 }
 
-void x11_window::set_title(const std::string&)
+void x11_window::set_title(const std::string& title)
 {
-    throw std::logic_error("Function is not implemented.");
+    utils::set_window_name(m_server.get(), m_window, title);
+    XFlush(m_server->display());
 }
 
 #pragma endregion
@@ -409,7 +415,7 @@ window::size_t x11_window::min_size() const
 
 std::string x11_window::title() const
 {
-    throw std::logic_error("Function is not implemented.");
+    return utils::get_window_name(m_server.get(), m_window);
 }
 
 #pragma endregion
@@ -418,21 +424,25 @@ std::string x11_window::title() const
 
 bool x11_window::fullscreen() const
 {
-    return utils::window_has_state(m_server.get(), m_window, net_wm_state_fullscreen);
+    return utils::window_has_state(m_server.get(), m_window, net_wm_state_fullscreen_atom_name);
 }
 
 bool x11_window::minimized() const
 {
     const auto state  = utils::get_window_wm_state(m_server.get(), m_window);
-    const bool hidden = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden);
+    const bool hidden = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden_atom_name);
 
     return state == IconicState || hidden;
 }
 
 bool x11_window::maximized() const
 {
-    const bool maximized_vert = utils::window_has_state(m_server.get(), m_window, net_wm_state_maximized_vert);
-    const bool maximized_horz = utils::window_has_state(m_server.get(), m_window, net_wm_state_maximized_horz);
+    const bool maximized_vert = utils::window_has_state(m_server.get(),
+                                                        m_window,
+                                                        net_wm_state_maximized_vert_atom_name);
+    const bool maximized_horz = utils::window_has_state(m_server.get(),
+                                                        m_window,
+                                                        net_wm_state_maximized_horz_atom_name);
 
     return maximized_vert || maximized_horz;
 }

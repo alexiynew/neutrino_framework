@@ -12,6 +12,7 @@ public:
         add_test([this]() { window_size(); }, "window_size");
         add_test([this]() { window_size_limits(); }, "window_size_limits");
         add_test([this]() { window_position(); }, "window_position");
+        add_test([this]() { window_title(); }, "window_title");
     }
 
 private:
@@ -109,6 +110,30 @@ private:
 
         // Can't really check window position. Different WM can give different values.
         TEST_ASSERT(position.x > 0 && position.y > 0, "Window always has position.");
+    }
+
+    void window_title()
+    {
+        constexpr std::chrono::milliseconds timespan(50);
+
+        const std::string title     = u8"winodw_title";
+        const std::string new_title = u8"new_window_title";
+
+        ::framework::window window({640, 480}, title);
+
+        window.show();
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(window.title() == title, "Window has wrong title");
+
+        window.set_title(new_title);
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(window.title() == new_title, "Window has wrong title");
     }
 };
 

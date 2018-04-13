@@ -44,6 +44,9 @@ bool activate_window(const x11_server* server, Window window, Time lastInputTime
 void bypass_compositor_desable(const x11_server* server, Window window);
 void bypass_compositor_reset(const x11_server* server, Window window);
 
+void set_window_name(const x11_server* server, Window window, const std::string& title);
+std::string get_window_name(const x11_server* server, Window window);
+
 } // namespace utils
 
 } // namespace framework

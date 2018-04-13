@@ -1,5 +1,6 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+#include <cstring>
 
 #include <window/linux/x11_utils.hpp>
 
@@ -9,6 +10,16 @@ namespace {
 
 /// Client message source
 constexpr int32 message_source_application = 1;
+
+const std::string net_supporting_wm_check_atom_name  = u8"_NET_SUPPORTING_WM_CHECK";
+const std::string net_supported_atom_name            = u8"_NET_SUPPORTED";
+const std::string net_wm_state_atom_name             = u8"_NET_WM_STATE";
+const std::string net_wm_bypass_compositor_atom_name = u8"_NET_WM_BYPASS_COMPOSITOR";
+const std::string net_active_window_atom_name        = u8"_NET_ACTIVE_WINDOW";
+const std::string wm_state_atom_name                 = u8"WM_STATE";
+const std::string net_wm_name_atom_name              = u8"_NET_WM_NAME";
+const std::string net_wm_icon_name_atom_name         = u8"_NET_WM_ICON_NAME";
+const std::string utf8_string_atom_name              = u8"UTF8_STRING";
 
 enum net_wm_state_action
 {
@@ -22,8 +33,17 @@ enum bypass_compositor_state
     disabled       = 1
 };
 
+inline bool have_utf8_support()
+{
+#ifdef X_HAVE_UTF8_STRING
+    return true;
+#else
+    return false;
+#endif
+}
+
 template <typename ValueType, typename DataType>
-std::vector<ValueType> get_values_from_array(const DataType* data, uint64 count)
+std::vector<ValueType> values_from_array(const DataType* data, uint64 count)
 {
     std::vector<ValueType> values(count);
 
@@ -67,9 +87,9 @@ std::vector<PropertyType> get_window_property(Display* display, Window window, A
 
     std::vector<PropertyType> values;
     switch (actual_format) {
-        case 8: values = get_values_from_array<PropertyType>(reinterpret_cast<uint8*>(data), items_count); break;
-        case 16: values = get_values_from_array<PropertyType>(reinterpret_cast<uint16*>(data), items_count); break;
-        case 32: values = get_values_from_array<PropertyType>(reinterpret_cast<uint32*>(data), items_count); break;
+        case 8: values = values_from_array<PropertyType>(reinterpret_cast<uint8*>(data), items_count); break;
+        case 16: values = values_from_array<PropertyType>(reinterpret_cast<uint16*>(data), items_count); break;
+        case 32: values = values_from_array<PropertyType>(reinterpret_cast<uint32*>(data), items_count); break;
     };
 
     XFree(data);
@@ -79,8 +99,8 @@ std::vector<PropertyType> get_window_property(Display* display, Window window, A
 
 bool is_ewmh_compliant(const x11_server* server)
 {
-    const Atom net_supporting_wm_check = server->get_atom(u8"_NET_SUPPORTING_WM_CHECK", true);
-    const Atom net_supported           = server->get_atom(u8"_NET_SUPPORTED", true);
+    const Atom net_supporting_wm_check = server->get_atom(net_supporting_wm_check_atom_name);
+    const Atom net_supported           = server->get_atom(net_supported_atom_name);
 
     if (net_supported == None || net_supporting_wm_check == None) {
         return false;
@@ -105,7 +125,7 @@ bool is_ewmh_compliant(const x11_server* server)
 
 std::vector<Atom> get_window_state(const x11_server* server, Window window)
 {
-    Atom net_wm_state = server->get_atom(u8"_NET_WM_STATE", true);
+    Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
     if (net_wm_state == None) {
         return std::vector<Atom>();
     }
@@ -122,15 +142,15 @@ bool window_change_state(const x11_server* server,
         return false;
     }
 
-    Atom net_wm_state = server->get_atom(u8"_NET_WM_STATE", true);
+    Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
 
     if (net_wm_state == None) {
         return false;
     }
 
     std::array<Atom, 2> state_atoms;
-    state_atoms[0] = (state_atom_names.size() > 0 ? server->get_atom(state_atom_names[0], true) : None);
-    state_atoms[1] = (state_atom_names.size() > 1 ? server->get_atom(state_atom_names[1], true) : None);
+    state_atoms[0] = (state_atom_names.size() > 0 ? server->get_atom(state_atom_names[0]) : None);
+    state_atoms[1] = (state_atom_names.size() > 1 ? server->get_atom(state_atom_names[1]) : None);
 
     return utils::send_client_message(server,
                                       window,
@@ -147,7 +167,7 @@ void bypass_compositor_set_state(const x11_server* server, Window window, bypass
         return;
     }
 
-    Atom net_wm_bypass_compositor = server->get_atom(u8"_NET_WM_BYPASS_COMPOSITOR", true);
+    Atom net_wm_bypass_compositor = server->get_atom(net_wm_bypass_compositor_atom_name);
     if (net_wm_bypass_compositor == None) {
         return;
     }
@@ -160,6 +180,48 @@ void bypass_compositor_set_state(const x11_server* server, Window window, bypass
                     PropModeReplace,
                     reinterpret_cast<const unsigned char*>(&state),
                     1);
+}
+
+XTextProperty create_text_property(Display* display, const std::string& string)
+{
+    XTextProperty text_property = {};
+
+    std::vector<char> temp(string.size() + 1);
+    std::strcpy(temp.data(), string.c_str());
+    char* data = temp.data();
+
+    if (have_utf8_support()) {
+        Xutf8TextListToTextProperty(display, &data, 1, XUTF8StringStyle, &text_property);
+    } else {
+        XmbTextListToTextProperty(display, &data, 1, XStdICCTextStyle, &text_property);
+    }
+
+    return text_property;
+}
+
+std::string create_string(Display* display, const XTextProperty& text_property)
+{
+    if (text_property.value == nullptr || text_property.format != 8) {
+        return "";
+    }
+
+    char** list = nullptr;
+    int count   = 0;
+    if (have_utf8_support()) {
+        Xutf8TextPropertyToTextList(display, &text_property, &list, &count);
+    } else {
+        XmbTextPropertyToTextList(display, &text_property, &list, &count);
+    }
+
+    if (list == nullptr) {
+        return "";
+    }
+
+    std::string string(*list);
+
+    XFreeStringList(list);
+
+    return string;
 }
 
 } // namespace
@@ -203,7 +265,7 @@ bool window_has_state(const x11_server* server, Window window, const std::string
         return false;
     }
 
-    const Atom net_wm_state_atom = server->get_atom(state_atom_name, true);
+    const Atom net_wm_state_atom = server->get_atom(state_atom_name);
 
     if (net_wm_state_atom == None) {
         return false;
@@ -238,7 +300,7 @@ bool activate_window(const x11_server* server, Window window, Time lastInputTime
         return false;
     }
 
-    Atom net_active_window = server->get_atom(u8"_NET_ACTIVE_WINDOW", false);
+    Atom net_active_window = server->get_atom(net_active_window_atom_name, false);
     if (net_active_window == None) {
         return false;
     }
@@ -268,7 +330,7 @@ void bypass_compositor_reset(const x11_server* server, Window window)
 
 CARD32 get_window_wm_state(const x11_server* server, Window window)
 {
-    Atom net_wm_state = server->get_atom(u8"WM_STATE", true);
+    Atom net_wm_state = server->get_atom(wm_state_atom_name);
 
     auto state = get_window_property<CARD32>(server->display(), window, net_wm_state, net_wm_state);
 
@@ -277,6 +339,74 @@ CARD32 get_window_wm_state(const x11_server* server, Window window)
     }
 
     return state[0];
+}
+
+void set_window_name(const x11_server* server, Window window, const std::string& title)
+{
+    Atom net_wm_name      = server->get_atom(net_wm_name_atom_name);
+    Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
+    Atom utf8_string      = server->get_atom(utf8_string_atom_name);
+
+    if (ewmh_supported() && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
+        XChangeProperty(server->display(),
+                        window,
+                        net_wm_name,
+                        utf8_string,
+                        8,
+                        PropModeReplace,
+                        reinterpret_cast<const uint8*>(title.c_str()),
+                        static_cast<int32>(title.size()));
+
+        XChangeProperty(server->display(),
+                        window,
+                        net_wm_icon_name,
+                        utf8_string,
+                        8,
+                        PropModeReplace,
+                        reinterpret_cast<const uint8*>(title.c_str()),
+                        static_cast<int32>(title.size()));
+    }
+
+    XTextProperty text_property = create_text_property(server->display(), title);
+
+    if (text_property.value != nullptr) {
+        XSetWMName(server->display(), window, &text_property);
+        XSetWMIconName(server->display(), window, &text_property);
+        XFree(text_property.value);
+    }
+}
+
+std::string get_window_name(const x11_server* server, Window window)
+{
+    Atom net_wm_name      = server->get_atom(net_wm_name_atom_name);
+    Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
+    Atom utf8_string      = server->get_atom(utf8_string_atom_name);
+
+    if (ewmh_supported() && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
+        std::vector<uint8> data = get_window_property<uint8>(server->display(), window, net_wm_name, utf8_string);
+
+        if (data.empty()) {
+            data = get_window_property<uint8>(server->display(), window, net_wm_icon_name, utf8_string);
+        }
+
+        if (!data.empty()) {
+            return std::string(reinterpret_cast<char*>(data.data()), data.size());
+        }
+    }
+
+    XTextProperty text_property = {};
+
+    if (XGetWMName(server->display(), window, &text_property) == 0) {
+        XGetWMIconName(server->display(), window, &text_property);
+    }
+
+    if (text_property.value != nullptr) {
+        std::string title = create_string(server->display(), text_property);
+        XFree(text_property.value);
+        return title;
+    }
+
+    return "";
 }
 
 } // namespace utils

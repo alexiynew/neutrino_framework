@@ -10,7 +10,8 @@
 
 namespace framework {
 
-window::window(size_t size) : m_implementation(implementation::get_implementation(size))
+window::window(size_t size, const std::string& title)
+    : m_implementation(implementation::get_implementation(size, title))
 {}
 
 window::~window()

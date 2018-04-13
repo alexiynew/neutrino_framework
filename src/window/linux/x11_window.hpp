@@ -17,7 +17,7 @@ namespace framework {
 class x11_window final : public window::implementation
 {
 public:
-    x11_window(window::size_t size);
+    x11_window(window::size_t size, const std::string& title);
     ~x11_window() override;
 
     /// @name actions
