@@ -27,7 +27,8 @@ std::weak_ptr<x11_server>& server_instance()
 
 int error_handler(Display* display, XErrorEvent* event)
 {
-    if (auto x_server = server_instance().lock(); display == x_server->display()) {
+    auto x_server = server_instance().lock();
+    if (x_server && display == x_server->display()) {
         constexpr uint32 length = 8 * 1024;
         char buffer[length];
         XGetErrorText(display, event->error_code, buffer, length);
