@@ -62,6 +62,15 @@ function set_generator {
     fi
 }
 
+function need_virtual_x_server {
+    if [[ "$(uname -s)" == "Linux" && -z ${DISPLAY+x} ]]
+    then
+        echo "1"
+    else 
+        echo "0"
+    fi
+}
+
 # Task functions
 function configure {
     info "==== Run configuration ===="
@@ -96,14 +105,26 @@ function run_tests {
     info "==== Run framework tests ===="
 
     cd "$BUILD_DIR"
-    make run_all_tests
+
+    if [[ "$(need_virtual_x_server)" == "1" ]]
+    then
+        xvfb-run -a -s "-screen 0 1024x768x24" make run_all_tests
+    else
+        make run_all_tests
+    fi
 }
 
 function run_tests_verbose {
     info "==== Run framework tests verbose ===="
 
     cd "$BUILD_DIR"
-    make run_all_tests_verbose
+
+    if [[ "$(need_virtual_x_server)" == "1" ]]
+    then
+        xvfb-run -a -s "-screen 0 1024x768x24" make run_all_tests
+    else
+        make run_all_tests
+    fi
 }
 
 function coverage_scan {
