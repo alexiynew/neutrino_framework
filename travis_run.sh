@@ -7,7 +7,8 @@ set -e
 # Run build and tests
 if [[ "${TRAVIS_OS_NAME}" == "linux" ]]
 then
-    sudo docker run -it -v "${TRAVIS_BUILD_DIR}:/home/framework" alexiynew/docker_image bash -c "/home/framework/build.sh -c ${COMPILLER} ${TASK}"
+    COMMAND = "xvfb-run -a -s \"-screen 0 1024x768x24\" /home/framework/build.sh -c ${COMPILLER} ${TASK}"
+    sudo docker run -it -v "${TRAVIS_BUILD_DIR}:/home/framework" alexiynew/docker_image bash -c "${COMMAND}"
 
     if [[ "${TASK}" == *"coverage"* ]]
     then
