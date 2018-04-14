@@ -111,7 +111,7 @@ private:
 
             std::stringstream error_stream;
             error_stream << "Test [" << test->name() << "] should fail.";
-            TEST_ASSERT(!test->is_succeeded(), error_stream.str().c_str());
+            TEST_ASSERT(!test->is_succeeded(), error_stream.str());
         }
     }
 

@@ -55,7 +55,7 @@ public:
     log_ostream(log_ostream&&);
     log_ostream& operator=(log_ostream&&);
 
-    log_ostream(std::unique_ptr<std::streambuf> buffer);
+    explicit log_ostream(std::unique_ptr<std::streambuf> buffer);
 
 private:
     std::unique_ptr<std::streambuf> m_buffer;

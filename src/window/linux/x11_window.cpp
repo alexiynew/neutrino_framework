@@ -17,12 +17,12 @@ using namespace framework::log;
 
 namespace {
 
-const std::string log_tag = "x11_window";
+const char* const log_tag = "x11_window";
 
-const std::string net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
-const std::string net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
-const std::string net_wm_state_fullscreen_atom_name     = u8"_NET_WM_STATE_FULLSCREEN";
-const std::string net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDEN";
+const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
+const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
+const char* const net_wm_state_fullscreen_atom_name     = u8"_NET_WM_STATE_FULLSCREEN";
+const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDEN";
 
 Bool event_predicate(Display*, XEvent* event, XPointer arg)
 {
@@ -312,7 +312,7 @@ void x11_window::restore()
 
 void x11_window::set_size(window::size_t size)
 {
-    XResizeWindow(m_server->display(), m_window, size.width, size.height);
+    XResizeWindow(m_server->display(), m_window, static_cast<uint32>(size.width), static_cast<uint32>(size.height));
     XFlush(m_server->display());
 
     if (m_resizable) {

@@ -24,7 +24,7 @@ public:
     /// @brief Creates stream logger.
     ///
     /// @param stream Output stream.
-    stream_logger(std::ostream& stream);
+    explicit stream_logger(std::ostream& stream);
 
     /// @brief Prints message to the stream.
     ///

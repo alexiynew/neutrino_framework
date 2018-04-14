@@ -11,15 +11,15 @@ namespace {
 /// Client message source
 constexpr int32 message_source_application = 1;
 
-const std::string net_supporting_wm_check_atom_name  = u8"_NET_SUPPORTING_WM_CHECK";
-const std::string net_supported_atom_name            = u8"_NET_SUPPORTED";
-const std::string net_wm_state_atom_name             = u8"_NET_WM_STATE";
-const std::string net_wm_bypass_compositor_atom_name = u8"_NET_WM_BYPASS_COMPOSITOR";
-const std::string net_active_window_atom_name        = u8"_NET_ACTIVE_WINDOW";
-const std::string wm_state_atom_name                 = u8"WM_STATE";
-const std::string net_wm_name_atom_name              = u8"_NET_WM_NAME";
-const std::string net_wm_icon_name_atom_name         = u8"_NET_WM_ICON_NAME";
-const std::string utf8_string_atom_name              = u8"UTF8_STRING";
+const char* const net_supporting_wm_check_atom_name  = u8"_NET_SUPPORTING_WM_CHECK";
+const char* const net_supported_atom_name            = u8"_NET_SUPPORTED";
+const char* const net_wm_state_atom_name             = u8"_NET_WM_STATE";
+const char* const net_wm_bypass_compositor_atom_name = u8"_NET_WM_BYPASS_COMPOSITOR";
+const char* const net_active_window_atom_name        = u8"_NET_ACTIVE_WINDOW";
+const char* const wm_state_atom_name                 = u8"WM_STATE";
+const char* const net_wm_name_atom_name              = u8"_NET_WM_NAME";
+const char* const net_wm_icon_name_atom_name         = u8"_NET_WM_ICON_NAME";
+const char* const utf8_string_atom_name              = u8"UTF8_STRING";
 
 enum net_wm_state_action
 {
