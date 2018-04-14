@@ -52,21 +52,6 @@ function set_compiler {
     export CXX="$CXX_COMILLER"
 }
 
-function check_x11_support {
-    if [[ "$(uname -s)" == "Linux" ]]
-    then
-        if [[ -n ${DISPLAY+x} ]]
-        then
-            info "==== Found existing display ===="
-        else
-            info "==== Setup virtual display ===="
-
-            Xvfb :1 -screen 0 1024x768x16 &> .xvfb.log &
-            export DISPLAY=:1.0
-        fi
-    fi
-}
-
 function set_generator {
     if [[ "$(uname -s)" == "Linux" ]]
     then
@@ -110,16 +95,12 @@ function install_all {
 function run_tests {
     info "==== Run framework tests ===="
 
-    check_x11_support
-
     cd "$BUILD_DIR"
     make run_all_tests
 }
 
 function run_tests_verbose {
     info "==== Run framework tests verbose ===="
-
-    check_x11_support
 
     cd "$BUILD_DIR"
     make run_all_tests_verbose
