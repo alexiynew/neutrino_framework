@@ -18,6 +18,14 @@ namespace framework {
 
 namespace utils {
 
+constexpr int32 message_source_application = 1;
+
+enum class bypass_compositor_state
+{
+    no_preferences = 0,
+    disabled       = 1
+};
+
 bool ewmh_supported();
 
 bool send_client_message(const x11_server* server, Window window, Atom message_type, const std::vector<int64>& data);
@@ -39,10 +47,7 @@ bool window_has_state(const x11_server* server, Window window, const std::string
 bool window_add_state(const x11_server* server, Window window, const std::vector<std::string>& state_atom_names);
 bool window_remove_state(const x11_server* server, Window window, const std::vector<std::string>& state_atom_names);
 
-bool activate_window(const x11_server* server, Window window, Time lastInputTime);
-
-void bypass_compositor_desable(const x11_server* server, Window window);
-void bypass_compositor_reset(const x11_server* server, Window window);
+void set_bypass_compositor_state(const x11_server* server, Window window, bypass_compositor_state state);
 
 void set_window_name(const x11_server* server, Window window, const std::string& title);
 std::string get_window_name(const x11_server* server, Window window);

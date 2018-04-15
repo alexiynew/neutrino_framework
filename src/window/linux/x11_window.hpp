@@ -78,7 +78,12 @@ private:
     void process(XPropertyEvent event);
     void process(XAnyEvent event);
 
+    void set_wm_hints();
+    void set_class_hints();
+    void add_protocols(const std::vector<std::string>& protocol_names);
     void create_input_context();
+
+    void wait_for_window_visible();
 
     std::shared_ptr<x11_server> m_server = nullptr;
 

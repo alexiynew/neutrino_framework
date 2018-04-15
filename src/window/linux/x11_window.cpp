@@ -4,8 +4,10 @@
 /// @date 05.04.2017
 
 #include <X11/Xutil.h>
+#include <chrono>
 #include <exception>
 #include <string>
+#include <thread>
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
@@ -23,6 +25,35 @@ const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIM
 const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
 const char* const net_wm_state_fullscreen_atom_name     = u8"_NET_WM_STATE_FULLSCREEN";
 const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDEN";
+const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
+const char* const wm_delete_window_atom_name            = u8"WM_DELETE_WINDOW";
+
+const ::framework::int64 event_mask = VisibilityChangeMask     // Any change in visibility wanted
+                                      | FocusChangeMask        // Any change in input focus wanted
+                                      | StructureNotifyMask    // Any change in window structure wanted
+                                      | PropertyChangeMask     // Any change in property wanted
+                                      | ExposureMask           // Any exposure wanted
+                                      | KeyPressMask           // Keyboard down events wanted
+                                      | KeyReleaseMask         // Keyboard up events wanted
+                                      | ButtonPressMask        // Pointer button down events wanted
+                                      | ButtonReleaseMask      // Pointer button up events wanted
+                                      | EnterWindowMask        // Pointer window entry events wanted
+                                      | LeaveWindowMask        // Pointer window leave events wanted
+                                      | PointerMotionMask      // Pointer motion events wanted
+                                      | PointerMotionHintMask; // Pointer motion hints wanted
+
+// | Button1MotionMask        // Pointer motion while button 1 down
+// | Button2MotionMask        // Pointer motion while button 2 down
+// | Button3MotionMask        // Pointer motion while button 3 down
+// | Button4MotionMask        // Pointer motion while button 4 down
+// | Button5MotionMask        // Pointer motion while button 5 down
+// | ButtonMotionMask         // Pointer motion while any button down
+// | KeymapStateMask          // Keyboard state wanted at window entry and focus in
+// | ResizeRedirectMask       // Redirect resize of this window
+// | SubstructureNotifyMask   // Substructure notification wanted
+// | SubstructureRedirectMask // Redirect structure requests on children
+// | ColormapChangeMask       // Any change in colormap wanted
+// | OwnerGrabButtonMask;     // Automatic grabs should activate with owner_events set to True
 
 Bool event_predicate(Display*, XEvent* event, XPointer arg)
 {
@@ -93,33 +124,7 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
     XSetWindowAttributes attributes = {};
 
     attributes.background_pixel = color;
-
-    attributes.event_mask = VisibilityChangeMask  // Any change in visibility wanted
-                            | FocusChangeMask     // Any change in input focus wanted
-                            | StructureNotifyMask // Any change in window structure wanted
-                            | PropertyChangeMask; // Any change in property wanted
-
-    // | KeyPressMask             // Keyboard down events wanted
-    // | KeyReleaseMask           // Keyboard up events wanted
-    // | ButtonPressMask          // Pointer button down events wanted
-    // | ButtonReleaseMask        // Pointer button up events wanted
-    // | EnterWindowMask          // Pointer window entry events wanted
-    // | LeaveWindowMask          // Pointer window leave events wanted
-    // | PointerMotionMask        // Pointer motion events wanted
-    // | PointerMotionHintMask    // Pointer motion hints wanted
-    // | Button1MotionMask        // Pointer motion while button 1 down
-    // | Button2MotionMask        // Pointer motion while button 2 down
-    // | Button3MotionMask        // Pointer motion while button 3 down
-    // | Button4MotionMask        // Pointer motion while button 4 down
-    // | Button5MotionMask        // Pointer motion while button 5 down
-    // | ButtonMotionMask         // Pointer motion while any button down
-    // | KeymapStateMask          // Keyboard state wanted at window entry and focus in
-    // | ExposureMask             // Any exposure wanted
-    // | ResizeRedirectMask       // Redirect resize of this window
-    // | SubstructureNotifyMask   // Substructure notification wanted
-    // | SubstructureRedirectMask // Redirect structure requests on children
-    // | ColormapChangeMask       // Any change in colormap wanted
-    // | OwnerGrabButtonMask;     // Automatic grabs should activate with owner_events set to True
+    attributes.event_mask       = event_mask;
 
     //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
     //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
@@ -153,7 +158,15 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
         throw std::runtime_error("Failed to create X Window.");
     }
 
+    XSelectInput(m_server->display(), m_window, event_mask);
+
+    set_wm_hints();
+    set_class_hints();
+
+    add_protocols({wm_delete_window_atom_name});
+
     create_input_context();
+
     set_title(title);
 }
 
@@ -177,19 +190,13 @@ void x11_window::show()
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
-    while (!m_viewable) {
-        process_events();
-    }
+    wait_for_window_visible();
 }
 
 void x11_window::hide()
 {
     XUnmapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
-
-    while (m_viewable) {
-        process_events();
-    }
 }
 
 void x11_window::focus()
@@ -200,8 +207,14 @@ void x11_window::focus()
         return;
     }
 
-    if (!utils::activate_window(m_server.get(), m_window, m_lastInputTime)) {
-        log::error(log_tag) << "Failed to focus window." << std::endl;
+    Atom net_active_window = m_server->get_atom(net_active_window_atom_name, false);
+    if (utils::ewmh_supported() && net_active_window != None) {
+        utils::send_client_message(m_server.get(),
+                                   m_window,
+                                   net_active_window,
+                                   utils::message_source_application,
+                                   m_lastInputTime,
+                                   m_server->currently_active_window());
     } else {
         XRaiseWindow(m_server->display(), m_window);
         XSetInputFocus(m_server->display(), m_window, RevertToPointerRoot, CurrentTime);
@@ -268,7 +281,7 @@ void x11_window::switch_to_fullscreen()
 {
     focus();
 
-    utils::bypass_compositor_desable(m_server.get(), m_window);
+    utils::set_bypass_compositor_state(m_server.get(), m_window, utils::bypass_compositor_state::disabled);
 
     if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_fullscreen_atom_name})) {
         log::warning(log_tag) << "Failed to set maximized state." << std::endl;
@@ -283,9 +296,7 @@ void x11_window::restore()
     if (minimized()) {
         XMapWindow(m_server->display(), m_window);
         XFlush(m_server->display());
-        while (!m_viewable) {
-            process_events();
-        }
+        wait_for_window_visible();
     } else if (maximized()) {
         if (!utils::window_remove_state(m_server.get(),
                                         m_window,
@@ -296,7 +307,7 @@ void x11_window::restore()
         }
         XFlush(m_server->display());
     } else if (fullscreen()) {
-        utils::bypass_compositor_reset(m_server.get(), m_window);
+        utils::set_bypass_compositor_state(m_server.get(), m_window, utils::bypass_compositor_state::no_preferences);
 
         if (!utils::window_remove_state(m_server.get(), m_window, {net_wm_state_fullscreen_atom_name})) {
             log::error(log_tag) << "Failed to reset fullscreen mode." << std::endl;
@@ -605,6 +616,44 @@ void x11_window::process(XAnyEvent event)
     log::debug(log_tag) << "Got event: " << event_type_string(event) << std::endl;
 }
 
+void x11_window::set_wm_hints()
+{
+    XWMHints wm_hints      = {};
+    wm_hints.flags         = StateHint | InputHint;
+    wm_hints.initial_state = NormalState;
+    wm_hints.input         = True;
+
+    XSetWMHints(m_server->display(), m_window, &wm_hints);
+}
+
+void x11_window::set_class_hints()
+{
+    char application_name[]  = u8"The_best_game_name";
+    char application_class[] = u8"The_best_game_class";
+
+    XClassHint class_hint = {};
+    class_hint.res_name   = application_name;
+    class_hint.res_class  = application_class;
+
+    XSetClassHint(m_server->display(), m_window, &class_hint);
+}
+
+void x11_window::add_protocols(const std::vector<std::string>& protocol_names)
+{
+    std::vector<Atom> protocols;
+
+    for (auto& name : protocol_names) {
+        Atom protocol = m_server->get_atom(name);
+        if (protocol != None) {
+            protocols.push_back(protocol);
+        }
+    }
+
+    if (!protocols.empty()) {
+        XSetWMProtocols(m_server->display(), m_window, protocols.data(), static_cast<int32>(protocols.size()));
+    }
+}
+
 void x11_window::create_input_context()
 {
     if (m_server->input_method()) {
@@ -616,6 +665,18 @@ void x11_window::create_input_context()
                                   XNFocusWindow,
                                   m_window,
                                   nullptr);
+    }
+}
+
+void x11_window::wait_for_window_visible()
+{
+    std::chrono::milliseconds limit(50);
+    const std::chrono::milliseconds delay(10);
+
+    while (!m_viewable && limit.count() > 0) {
+        process_events();
+        limit -= delay;
+        std::this_thread::sleep_for(delay);
     }
 }
 

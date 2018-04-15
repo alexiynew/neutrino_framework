@@ -8,14 +8,10 @@ using namespace framework;
 
 namespace {
 
-/// Client message source
-constexpr int32 message_source_application = 1;
-
 const char* const net_supporting_wm_check_atom_name  = u8"_NET_SUPPORTING_WM_CHECK";
 const char* const net_supported_atom_name            = u8"_NET_SUPPORTED";
 const char* const net_wm_state_atom_name             = u8"_NET_WM_STATE";
 const char* const net_wm_bypass_compositor_atom_name = u8"_NET_WM_BYPASS_COMPOSITOR";
-const char* const net_active_window_atom_name        = u8"_NET_ACTIVE_WINDOW";
 const char* const wm_state_atom_name                 = u8"WM_STATE";
 const char* const net_wm_name_atom_name              = u8"_NET_WM_NAME";
 const char* const net_wm_icon_name_atom_name         = u8"_NET_WM_ICON_NAME";
@@ -25,12 +21,6 @@ enum net_wm_state_action
 {
     remove = 0,
     add    = 1
-};
-
-enum bypass_compositor_state
-{
-    no_preferences = 0,
-    disabled       = 1
 };
 
 inline bool have_utf8_support()
@@ -158,28 +148,7 @@ bool window_change_state(const x11_server* server,
                                       action,
                                       state_atoms[0],
                                       state_atoms[1],
-                                      message_source_application);
-}
-
-void bypass_compositor_set_state(const x11_server* server, Window window, bypass_compositor_state state)
-{
-    if (!utils::ewmh_supported()) {
-        return;
-    }
-
-    Atom net_wm_bypass_compositor = server->get_atom(net_wm_bypass_compositor_atom_name);
-    if (net_wm_bypass_compositor == None) {
-        return;
-    }
-
-    XChangeProperty(server->display(),
-                    window,
-                    net_wm_bypass_compositor,
-                    XA_CARDINAL,
-                    32,
-                    PropModeReplace,
-                    reinterpret_cast<const unsigned char*>(&state),
-                    1);
+                                      utils::message_source_application);
 }
 
 XTextProperty create_text_property(Display* display, const std::string& string)
@@ -294,38 +263,25 @@ bool window_remove_state(const framework::x11_server* server,
     return ::window_change_state(server, window, ::net_wm_state_action::remove, state_atom_names);
 }
 
-bool activate_window(const x11_server* server, Window window, Time lastInputTime)
+void set_bypass_compositor_state(const x11_server* server, Window window, bypass_compositor_state state)
 {
     if (!ewmh_supported()) {
-        return false;
+        return;
     }
 
-    Atom net_active_window = server->get_atom(net_active_window_atom_name, false);
-    if (net_active_window == None) {
-        return false;
+    Atom net_wm_bypass_compositor = server->get_atom(net_wm_bypass_compositor_atom_name);
+    if (net_wm_bypass_compositor == None) {
+        return;
     }
 
-    Window active_window = server->currently_active_window();
-    if (window == active_window) {
-        return true;
-    }
-
-    return send_client_message(server,
-                               window,
-                               net_active_window,
-                               message_source_application,
-                               lastInputTime,
-                               active_window);
-}
-
-void bypass_compositor_desable(const x11_server* server, Window window)
-{
-    ::bypass_compositor_set_state(server, window, bypass_compositor_state::disabled);
-}
-
-void bypass_compositor_reset(const x11_server* server, Window window)
-{
-    ::bypass_compositor_set_state(server, window, bypass_compositor_state::no_preferences);
+    XChangeProperty(server->display(),
+                    window,
+                    net_wm_bypass_compositor,
+                    XA_CARDINAL,
+                    32,
+                    PropModeReplace,
+                    reinterpret_cast<const unsigned char*>(&state),
+                    1);
 }
 
 CARD32 get_window_wm_state(const x11_server* server, Window window)
