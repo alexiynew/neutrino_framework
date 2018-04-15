@@ -85,6 +85,8 @@ private:
 
     void wait_for_window_visible();
 
+    void update_size_limits(window::size_t min_size, window::size_t max_size);
+
     std::shared_ptr<x11_server> m_server = nullptr;
 
     bool m_viewable       = false;
