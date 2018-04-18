@@ -55,20 +55,20 @@ private:
     {
         constexpr std::chrono::milliseconds timespan(50);
 
-        const ::framework::window::size_t size480{480, 320};
         const ::framework::window::size_t size640{640, 480};
+        const ::framework::window::size_t size960{960, 640};
         const ::framework::window::size_t no_size{0, 0};
         const ::framework::window::size_t small_size{100, 100};
         const ::framework::window::size_t big_size{1000, 1000};
 
-        ::framework::window window({480, 320});
+        ::framework::window window({640, 480});
 
         // Base values
         TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
         TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
 
-        window.set_min_size(size480);
-        window.set_max_size(size640);
+        window.set_min_size(size640);
+        window.set_max_size(size960);
 
         window.show();
 
@@ -76,9 +76,9 @@ private:
         window.process_events();
 
         // All sizes setted up correctly
-        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
-        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
-        TEST_ASSERT(window.max_size() == size640, "Window has wrong max size.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size640, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
 
         // Check size limits
         window.set_size(big_size);
@@ -86,14 +86,14 @@ private:
         std::this_thread::sleep_for(timespan);
         window.process_events();
 
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.size() == size960, "Window has wrong size.");
 
         window.set_size(small_size);
 
         std::this_thread::sleep_for(timespan);
         window.process_events();
 
-        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
 
         // No more limits. Can change size as we want
         window.set_min_size(no_size);

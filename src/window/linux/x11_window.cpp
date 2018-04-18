@@ -190,8 +190,6 @@ void x11_window::show()
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
-    set_size(m_size);
-
     wait_for_window_visible();
 }
 
@@ -698,6 +696,10 @@ void x11_window::update_size_limits(window::size_t min_size, window::size_t max_
     } else {
         size_hints.flags &= ~PMaxSize;
     }
+
+    size_hints.flags |= PSize;
+    size_hints.width  = m_size.width;
+    size_hints.height = m_size.height;
 
     XSetWMNormalHints(m_server->display(), m_window, &size_hints);
 }
