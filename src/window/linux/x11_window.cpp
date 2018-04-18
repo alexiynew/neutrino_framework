@@ -190,6 +190,8 @@ void x11_window::show()
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
+    set_size(m_size);
+
     wait_for_window_visible();
 }
 
