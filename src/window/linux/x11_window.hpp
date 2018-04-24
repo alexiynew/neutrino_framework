@@ -7,6 +7,7 @@
 #define FRAMEWORK_WINDOW_LINUX_X11_WINDOW_HPP
 
 #include <X11/Xlib.h>
+#include <functional>
 
 #include <common/types.hpp>
 #include <window/implementation.hpp>
@@ -70,6 +71,8 @@ public:
     /// @}
 
 private:
+    enum class state;
+
     void process(XDestroyWindowEvent event);
     void process(XUnmapEvent event);
     void process(XVisibilityEvent event);
@@ -83,7 +86,7 @@ private:
     void add_protocols(const std::vector<std::string>& protocol_names);
     void create_input_context();
 
-    void wait_for_window_visible();
+    void process_events_while(const std::function<bool()>& condition);
 
     void update_size_limits(window::size_t min_size, window::size_t max_size);
 
@@ -92,6 +95,8 @@ private:
     bool m_viewable       = false;
     bool m_cursor_grabbed = false;
     bool m_resizable      = true;
+
+    state m_state;
 
     window::size_t m_size         = {640, 480};
     window::position_t m_position = {0, 0};

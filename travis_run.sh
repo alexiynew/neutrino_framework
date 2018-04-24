@@ -7,8 +7,9 @@ set -e
 # Run build and tests
 if [[ "${TRAVIS_OS_NAME}" == "linux" ]]
 then
-    COMMAND="/home/framework/build.sh -c ${COMPILLER} ${TASK}"
-    sudo docker run -it -v "${TRAVIS_BUILD_DIR}:/home/framework" alexiynew/docker_image bash -c "${COMMAND}"
+    WORKDIR="/home/framework"
+    RUN_COMMAND="./build.sh -c ${COMPILLER} ${TASK}"
+    sudo docker run -it -e COMMAND="${RUN_COMMAND}" -w "${WORKDIR}" -v "${TRAVIS_BUILD_DIR}:${WORKDIR}" alexiynew/docker_image 
 
     if [[ "${TASK}" == *"coverage"* ]]
     then

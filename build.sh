@@ -62,14 +62,6 @@ function set_generator {
     fi
 }
 
-function try_to_run_dummy_x_server {
-    if [[ "$(uname -s)" == "Linux" && -z ${DISPLAY+x} ]]
-    then
-        export DISPLAY=:1
-        Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile ./Xdummy.log -config /xorg.conf :1 &> /dev/null &
-    fi
-}
-
 # Task functions
 function configure {
     info "==== Run configuration ===="
@@ -105,7 +97,6 @@ function run_tests {
 
     cd "$BUILD_DIR"
 
-    try_to_run_dummy_x_server
     make run_all_tests
 }
 
@@ -114,7 +105,6 @@ function run_tests_verbose {
 
     cd "$BUILD_DIR"
 
-    try_to_run_dummy_x_server
     make run_all_tests_verbose
 }
 

@@ -22,7 +22,6 @@ private:
         framework::window window({640, 480});
 
         window.show();
-        window.focus();
 
         std::this_thread::sleep_for(timespan);
         window.process_events();
@@ -75,7 +74,6 @@ private:
         framework::window window({640, 480});
 
         window.show();
-        window.focus();
 
         std::this_thread::sleep_for(timespan);
         window.process_events();
@@ -110,7 +108,6 @@ private:
         TEST_ASSERT(!window.focused(), "Invalid window state.");
 
         window.restore();
-        window.focus();
 
         std::this_thread::sleep_for(timespan);
         window.process_events();
@@ -129,7 +126,6 @@ private:
         framework::window window({640, 480});
 
         window.show();
-        window.focus();
 
         std::this_thread::sleep_for(timespan);
         window.process_events();

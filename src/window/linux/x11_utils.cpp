@@ -288,6 +288,10 @@ CARD32 get_window_wm_state(const x11_server* server, Window window)
 {
     Atom net_wm_state = server->get_atom(wm_state_atom_name);
 
+    if (net_wm_state == None) {
+        return WithdrawnState;
+    }
+
     auto state = get_window_property<CARD32>(server->display(), window, net_wm_state, net_wm_state);
 
     if (state.empty()) {
