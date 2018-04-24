@@ -565,10 +565,10 @@ bool x11_window::fullscreen() const
 
 bool x11_window::minimized() const
 {
-    const auto state  = utils::get_window_wm_state(m_server.get(), m_window);
-    const bool hidden = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden_atom_name);
+    const auto window_state = utils::get_window_wm_state(m_server.get(), m_window);
+    const bool hidden       = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden_atom_name);
 
-    return state == IconicState || hidden;
+    return window_state == IconicState || hidden;
 }
 
 bool x11_window::maximized() const
