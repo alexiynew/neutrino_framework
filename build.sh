@@ -75,7 +75,16 @@ function build_framework {
     info "==== Build framework ===="
 
     cd "$BUILD_DIR"
-    make -j4 all
+
+    ls -al
+
+    if [[ "$(uname -s)" == "Linux" ]]
+    then
+        make -j4 all
+    elif [[ "$(uname -s)" == "Darwin" ]]
+    then
+        xcodebuild -project framework.xcodeproj -alltargets -configuration "$BUILD_TYPE"
+    fi
 }
 
 function build_tests {
