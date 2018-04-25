@@ -28,6 +28,7 @@ public:
     void focus() override;
     void process_events() override;
 
+    // On window managers without the ewmh support, proper work is not tested, nor granted.
     void minimize() override;
     void maximize() override;
     void switch_to_fullscreen() override;

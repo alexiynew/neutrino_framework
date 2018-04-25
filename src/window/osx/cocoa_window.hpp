@@ -18,7 +18,8 @@ public:
     cocoa_window();
     ~cocoa_window() override;
 
-    // actions
+    /// @name actions
+    /// @{
     void show() override;
     void hide() override;
     void focus() override;
@@ -26,10 +27,12 @@ public:
 
     void minimize() override;
     void maximize() override;
-    void to_full_screen() override;
+    void switch_to_fullscreen() override;
     void restore() override;
+    /// @}
 
-    // setters
+    /// @name setters
+    /// @{
     void set_size(window::size_t size) override;
     void set_position(window::position_t position) override;
 
@@ -37,23 +40,28 @@ public:
     void set_min_size(window::size_t min_size) override;
 
     void set_title(const std::string& title) override;
+    /// @}
 
-    // getters
-    virtual window::position_t position() override;
-    virtual window::size_t size() override;
+    /// @name getters
+    /// @{
+    window::position_t position() const override;
+    window::size_t size() const override;
 
-    virtual window::size_t max_size() override;
-    virtual window::size_t min_size() override;
+    window::size_t max_size() const override;
+    window::size_t min_size() const override;
 
-    std::string title() override;
+    std::string title() const override;
+    /// @}
 
-    // state
-    bool full_screen() override;
-    bool minimized() override;
-    bool maximized() override;
-    bool resizable() override;
-    bool visible() override;
-    bool focused() override;
+    /// @name state
+    /// @{
+    bool fullscreen() const override;
+    bool minimized() const override;
+    bool maximized() const override;
+    bool resizable() const override;
+    bool visible() const override;
+    bool focused() const override;
+    /// @}
 
 private:
     NSAutoreleasePool* pool;
