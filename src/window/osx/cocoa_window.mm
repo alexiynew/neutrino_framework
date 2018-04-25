@@ -10,7 +10,8 @@
 
 namespace framework {
 
-std::unique_ptr<window::implementation> window::implementation::get_implementation()
+
+std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t, const std::string&)
 {
     return std::make_unique<cocoa_window>();
 }
