@@ -81,7 +81,6 @@ function build_framework {
         make -j4 all
     elif [[ "$(uname -s)" == "Darwin" ]]
     then
-        xcodebuild -project framework.xcodeproj -list
         xcodebuild -project framework.xcodeproj -target framework -configuration "$BUILD_TYPE"
     fi
 }
@@ -96,7 +95,7 @@ function build_tests {
         make -j4 framework_tests
     elif [[ "$(uname -s)" == "Darwin" ]]
     then
-        xcodebuild -project ./test/framework_tests.xcodeproj -target framework_tests -configuration "$BUILD_TYPE"
+        xcodebuild -project framework.xcodeproj -target framework_tests -configuration "$BUILD_TYPE"
     fi
 }
 
@@ -110,7 +109,7 @@ function install_all {
         make install
     elif [[ "$(uname -s)" == "Darwin" ]]
     then
-        xcodebuild -project ./test/framework_tests.xcodeproj -target install -configuration "$BUILD_TYPE"
+        xcodebuild -project framework.xcodeproj -target install -configuration "$BUILD_TYPE"
     fi
 }
 
@@ -124,7 +123,7 @@ function run_tests {
         make run_all_tests
     elif [[ "$(uname -s)" == "Darwin" ]]
     then
-        xcodebuild -project ./test/framework_tests.xcodeproj -target run_all_tests -configuration "$BUILD_TYPE"
+        xcodebuild -project framework.xcodeproj -target run_all_tests -configuration "$BUILD_TYPE"
     fi
 }
 
@@ -138,7 +137,7 @@ function run_tests_verbose {
         make run_all_tests_verbose
     elif [[ "$(uname -s)" == "Darwin" ]]
     then
-        xcodebuild -project ./test/framework_tests.xcodeproj -target run_all_tests_verbose -configuration "$BUILD_TYPE"
+        xcodebuild -project framework.xcodeproj -target run_all_tests_verbose -configuration "$BUILD_TYPE"
     fi
 }
 
