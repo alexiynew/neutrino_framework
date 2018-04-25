@@ -10,8 +10,7 @@
 
 namespace framework {
 
-
-std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t, const std::string&)
+ation > window::implementation::get_implementation(window::size_t, const std::string&)
 {
     return std::make_unique<cocoa_window>();
 }
@@ -85,7 +84,7 @@ void cocoa_window::maximize()
     throw std::logic_error("Function is not implemented.");
 }
 
-void cocoa_window::to_full_screen()
+void cocoa_window::switch_to_fullscreen()
 {
     throw std::logic_error("Function is not implemented.");
 }
@@ -115,63 +114,69 @@ void cocoa_window::set_min_size(window::size_t)
     throw std::logic_error("Function is not implemented.");
 }
 
+void cocoa_window::set_resizable()
+{
+    throw std::logic_error("Function is not implemented.");
+}
+
 void cocoa_window::set_title(const std::string&)
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-window::position_t cocoa_window::position()
+window::position_t cocoa_window::position() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-window::size_t cocoa_window::size()
+window::size_t cocoa_window::size() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-window::size_t cocoa_window::max_size()
+window::size_t cocoa_window::max_size() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-window::size_t cocoa_window::min_size()
+window::size_t cocoa_window::min_size() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-std::string cocoa_window::title()
+std::string cocoa_window::title() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool cocoa_window::full_screen()
+bool cocoa_window::fullscreen() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool cocoa_window::minimized()
+bool cocoa_window::minimized() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool cocoa_window::maximized()
+bool cocoa_window::maximized() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool cocoa_window::resizable()
+bool cocoa_window::resizable() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool cocoa_window::visible()
+bool cocoa_window::visible() const
 {
     throw std::logic_error("Function is not implemented.");
 }
 
-bool cocoa_window::focused()
+bool cocoa_window::focused() const
 {
     throw std::logic_error("Function is not implemented.");
 }
-}
+
+} // namespace framework
