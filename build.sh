@@ -76,14 +76,13 @@ function build_framework {
 
     cd "$BUILD_DIR"
 
-    ls -al
-
     if [[ "$(uname -s)" == "Linux" ]]
     then
         make -j4 all
     elif [[ "$(uname -s)" == "Darwin" ]]
     then
-        xcodebuild -project framework.xcodeproj -alltargets -configuration "$BUILD_TYPE"
+        xcodebuild -project framework.xcodeproj -list
+        xcodebuild -project framework.xcodeproj -target framework -configuration "$BUILD_TYPE"
     fi
 }
 
@@ -91,7 +90,14 @@ function build_tests {
     info "==== Build framework tests ===="
 
     cd "$BUILD_DIR"
-    make -j4 framework_tests
+
+    if [[ "$(uname -s)" == "Linux" ]]
+    then
+        make -j4 framework_tests
+    elif [[ "$(uname -s)" == "Darwin" ]]
+    then
+        xcodebuild -project ./test/framework_tests.xcodeproj -target framework_tests -configuration "$BUILD_TYPE"
+    fi
 }
 
 function install_all {
