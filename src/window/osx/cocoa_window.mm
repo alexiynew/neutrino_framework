@@ -10,7 +10,7 @@
 
 namespace framework {
 
-ation > window::implementation::get_implementation(window::size_t, const std::string&)
+std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t, const std::string&)
 {
     return std::make_unique<cocoa_window>();
 }
@@ -114,7 +114,7 @@ void cocoa_window::set_min_size(window::size_t)
     throw std::logic_error("Function is not implemented.");
 }
 
-void cocoa_window::set_resizable()
+void cocoa_window::set_resizable(bool)
 {
     throw std::logic_error("Function is not implemented.");
 }
