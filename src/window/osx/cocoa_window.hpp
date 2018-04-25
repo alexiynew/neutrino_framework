@@ -39,6 +39,8 @@ public:
     void set_max_size(window::size_t max_size) override;
     void set_min_size(window::size_t min_size) override;
 
+    void set_resizable(bool value) override;
+
     void set_title(const std::string& title) override;
     /// @}
 
