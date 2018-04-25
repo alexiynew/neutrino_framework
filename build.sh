@@ -104,7 +104,14 @@ function install_all {
     info "==== Install framework ===="
 
     cd "$BUILD_DIR"
-    make install
+
+    if [[ "$(uname -s)" == "Linux" ]]
+    then
+        make install
+    elif [[ "$(uname -s)" == "Darwin" ]]
+    then
+        xcodebuild -project ./test/framework_tests.xcodeproj -target install -configuration "$BUILD_TYPE"
+    fi
 }
 
 function run_tests {
@@ -112,7 +119,13 @@ function run_tests {
 
     cd "$BUILD_DIR"
 
-    make run_all_tests
+    if [[ "$(uname -s)" == "Linux" ]]
+    then
+        make run_all_tests
+    elif [[ "$(uname -s)" == "Darwin" ]]
+    then
+        xcodebuild -project ./test/framework_tests.xcodeproj -target run_all_tests -configuration "$BUILD_TYPE"
+    fi
 }
 
 function run_tests_verbose {
@@ -120,7 +133,13 @@ function run_tests_verbose {
 
     cd "$BUILD_DIR"
 
-    make run_all_tests_verbose
+    if [[ "$(uname -s)" == "Linux" ]]
+    then
+        make run_all_tests_verbose
+    elif [[ "$(uname -s)" == "Darwin" ]]
+    then
+        xcodebuild -project ./test/framework_tests.xcodeproj -target run_all_tests_verbose -configuration "$BUILD_TYPE"
+    fi
 }
 
 function coverage_scan {
