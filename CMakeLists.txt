@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
-project(framework VERSION 0.0.1)
+project(framework LANGUAGES CXX VERSION 0.0.2)
 
 # Settings
-option(BUILD_SHARED_LIBS "Build the shared or static libraries" OFF)
-option(BUILD_TESTS "Build test programs" OFF)
+option(BUILD_SHARED_LIBS "Would the framework library be shared(ON) or a static(OFF) one" OFF)
+option(BUILD_TESTING "Should we build tests" OFF)
 option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
+
+# Framework sources
+set(FRAMEWORK_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+set(FRAMEWORK_TEST_DIR ${CMAKE_SOURCE_DIR}/test)
 
 # Output pathes
 set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
@@ -15,7 +19,7 @@ set(DOCS_OUTPUT_DIR ${OUTPUT_PATH_BASE}/docs)
 
 # Test modules to run
 if(INCLUDED_TEST_MODULES STREQUAL "")
-    set(INCLUDED_TEST_MODULES ".*" CACHE STRING "Tests that will be included in the build. An empty string means all modules." FORCE)
+    set(INCLUDED_TEST_MODULES ".*" CACHE STRING "Test modules that will be launched in the test command. An empty string means all modules." FORCE)
 endif()
 
 # Install path
@@ -30,18 +34,16 @@ set(CMAKE_CXX_FLAGS_COVERAGE
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(FRAMEWORK_SOURCES ${CMAKE_SOURCE_DIR}/src)
-get_filename_component(SOURCE_PARENT_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Import usefull macros
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(Macros)
 include(CompillerSettings)
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-# Set compiller flags
-choose_compiller_flags()
+# Compiller flags
+set_compiller_flags()
+# Add coverage flags to the Debug build if needed
 if(ENABLE_TEST_COVERAGE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
     set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_COVERAGE})
 endif()
@@ -50,12 +52,15 @@ endif()
 detect_platform_name(PLATFORM_NAME)
 message("platform name: ${PLATFORM_NAME}")
 
-# Assemble framework
-add_subdirectory(${CMAKE_SOURCE_DIR}/src)
+# The framework library itself
+add_library(${PROJECT_NAME} "")
+
+# Add sources to the framework
+include(${FRAMEWORK_SOURCE_DIR}/CMakeLists.txt)
 
 # Add tests
-if(BUILD_TESTS)
-    add_subdirectory(${CMAKE_SOURCE_DIR}/test)
+if(BUILD_TESTING)
+    include(${FRAMEWORK_TEST_DIR}/CMakeLists.txt)
 endif()
 
 # Generate documentation

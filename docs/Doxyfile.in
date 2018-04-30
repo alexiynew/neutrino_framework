@@ -60,7 +60,7 @@ INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
 
 # Strip framework path
-STRIP_FROM_PATH        = @SOURCE_PARENT_DIR@
+STRIP_FROM_PATH        = @FRAMEWORK_SOURCES@
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of the
 # path mentioned in the documentation of a class, which tells the reader which

@@ -17,6 +17,15 @@ window::window(size_t size, const std::string& title)
 window::~window()
 {}
 
+window::window(window&& other) : m_implementation(std::move(other.m_implementation))
+{}
+
+window& window::operator=(window&& other)
+{
+    m_implementation = std::move(other.m_implementation);
+    return *this;
+}
+
 #pragma region actions
 
 void window::show()

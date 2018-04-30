@@ -9,6 +9,12 @@ namespace framework {
 
 namespace log {
 
+std::unique_ptr<default_logger>& logger_instance()
+{
+    static std::unique_ptr<default_logger> instance;
+    return instance;
+}
+
 stream_logger::stream_logger(std::ostream& stream) : m_output(stream)
 {}
 

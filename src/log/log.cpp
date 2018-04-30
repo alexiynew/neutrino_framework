@@ -9,20 +9,12 @@
 using namespace framework::log;
 using namespace framework::log::log_details;
 
-namespace {
-
-/// @brief Instance of current logger.
-std::unique_ptr<default_logger>& logger_instance()
-{
-    static std::unique_ptr<default_logger> instance;
-    return instance;
-}
-
-} // namespace
-
 namespace framework {
 
 namespace log {
+
+/// @brief Instance of current logger.
+extern std::unique_ptr<default_logger>& logger_instance();
 
 void default_logger::add_message(const severity_level, const std::string&, const std::string&)
 {

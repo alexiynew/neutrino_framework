@@ -1,1 +1,0 @@
-set(PLATFORM_DEPENDENT_LIBRARIES "-framework Cocoa")

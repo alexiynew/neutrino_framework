@@ -40,11 +40,11 @@ private:
         constexpr std::chrono::milliseconds timespan(50);
 
         ::framework::window windows[5] = {
-        ::framework::window({640, 480}),
-        ::framework::window({640, 480}),
-        ::framework::window({640, 480}),
-        ::framework::window({640, 480}),
-        ::framework::window({640, 480}),
+        ::framework::window::size_t{640, 480},
+        ::framework::window::size_t{640, 480},
+        ::framework::window::size_t{640, 480},
+        ::framework::window::size_t{640, 480},
+        ::framework::window::size_t{640, 480},
         };
 
         for (auto& window : windows) {

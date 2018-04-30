@@ -35,6 +35,9 @@ public:
     window(const window&) = delete;
     window& operator=(const window&) = delete;
 
+    window(window&& other);
+    window& operator=(window&& other);
+
     /// @name actions
     /// @{
     void show();

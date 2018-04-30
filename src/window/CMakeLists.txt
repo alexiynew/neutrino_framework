@@ -1,24 +1,31 @@
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-get_filename_component(LIB_NAME ${SOURCE_DIR} NAME)
+get_filename_component(MODULE_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 
-set(LIB_INTERFACE_HEADERS window.hpp)
+message("\tAdd module: ${MODULE_NAME}")
 
-file(GLOB LIB_SOURCES ${SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE PLATFORM_DEPENDENT_SOURCES ${SOURCE_DIR}/${PLATFORM_NAME}/*.cpp ${SOURCE_DIR}/${PLATFORM_NAME}/*.mm)
-set(LIB_SOURCES ${LIB_SOURCES} ${PLATFORM_DEPENDENT_SOURCES})
+set(PUBLIC_SOURCES 
+    ${CMAKE_CURRENT_LIST_DIR}/window.hpp
+)
 
-file(GLOB_RECURSE PLATFORM_DEPENDENT_HEADERS ${SOURCE_DIR}/${PLATFORM_NAME}/*.hpp)
-set(LIB_HEADERS ${LIB_INTERFACE_HEADERS} ${PLATFORM_DEPENDENT_HEADERS} implementation.hpp)
+set(PRIVATE_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/implementation.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/window.cpp
+)
 
-# Get list of platform dependent libraries to link with
-include(${SOURCE_DIR}/${PLATFORM_NAME}/libraries.cmake)
+add_library(${MODULE_NAME} OBJECT EXCLUDE_FROM_ALL "")
 
-message("\tAdd library: ${LIB_NAME}")
-add_library(${LIB_NAME} ${LIB_SOURCES} ${LIB_HEADERS})
+target_sources(${MODULE_NAME} 
+    PUBLIC
+        ${PUBLIC_SOURCES}
+    PRIVATE
+        ${PRIVATE_SOURCES}
+)
 
-target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
-target_link_libraries(${LIB_NAME} ${PLATFORM_DEPENDENT_LIBRARIES} log)
-set_target_properties(${LIB_NAME} PROPERTIES FOLDER ${TARGET_PROJECT_FOLDER})
+add_dependencies(${PROJECT_NAME} ${MODULE_NAME})
 
-install(TARGETS ${LIB_NAME} DESTINATION ${PROJECT_NAME}/${LIB_NAME})
-install(FILES ${LIB_INTERFACE_HEADERS} DESTINATION ${PROJECT_NAME}/${LIB_NAME})
+set_target_properties(${MODULE_NAME} PROPERTIES FOLDER ${SOURCE_FOLDER_NAME})
+target_include_directories(${MODULE_NAME} PRIVATE ${FRAMEWORK_SOURCE_DIR})
+
+source_group(${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
+
+# Add platform dependent sources and libraries
+include(${CMAKE_CURRENT_LIST_DIR}/${PLATFORM_NAME}/CMakeLists.txt)

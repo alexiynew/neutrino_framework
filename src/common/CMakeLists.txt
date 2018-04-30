@@ -1,9 +1,15 @@
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-get_filename_component(LIB_NAME ${SOURCE_DIR} NAME)
+get_filename_component(MODULE_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 
-file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
+message("\tAdd module: ${MODULE_NAME}")
 
-message("\tAdd library: ${LIB_NAME}")
-add_library(${LIB_NAME} INTERFACE)
+set(PUBLIC_SOURCES 
+    ${CMAKE_CURRENT_LIST_DIR}/types.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/utils.hpp
+)
 
-install(FILES ${LIB_HEADERS} DESTINATION ${PROJECT_NAME}/${LIB_NAME})
+target_sources(${PROJECT_NAME} 
+    PUBLIC 
+        ${PUBLIC_SOURCES}
+)
+
+source_group(${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})

@@ -1,15 +1,27 @@
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-get_filename_component(LIB_NAME ${SOURCE_DIR} NAME)
+get_filename_component(MODULE_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 
-file(GLOB_RECURSE LIB_SOURCES ${SOURCE_DIR}/*.cpp)
-file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
+message("\tAdd module: ${MODULE_NAME}")
 
-message("\tAdd library: ${LIB_NAME}")
-add_library(${LIB_NAME} ${LIB_SOURCES} ${LIB_HEADERS})
+set(PUBLIC_SOURCES 
+    ${CMAKE_CURRENT_LIST_DIR}/suite.hpp
+)
 
-target_include_directories(${LIB_NAME} PRIVATE ${FRAMEWORK_SOURCES})
-set_target_properties(${LIB_NAME} PROPERTIES FOLDER ${TARGET_PROJECT_FOLDER})
+set(PRIVATE_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/suite.cpp
+)
 
-install(TARGETS ${LIB_NAME} DESTINATION ${PROJECT_NAME}/${LIB_NAME})
-install(FILES ${LIB_HEADERS} DESTINATION ${PROJECT_NAME}/${LIB_NAME})
+add_library(${MODULE_NAME} OBJECT EXCLUDE_FROM_ALL "")
 
+target_sources(${MODULE_NAME} 
+    PUBLIC
+        ${PUBLIC_SOURCES}
+    PRIVATE
+        ${PRIVATE_SOURCES}
+)
+
+add_dependencies(${PROJECT_NAME} ${MODULE_NAME})
+
+set_target_properties(${MODULE_NAME} PROPERTIES FOLDER ${SOURCE_FOLDER_NAME})
+target_include_directories(${MODULE_NAME} PRIVATE ${FRAMEWORK_SOURCE_DIR})
+
+source_group(${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})

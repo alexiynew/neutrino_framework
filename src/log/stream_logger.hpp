@@ -17,6 +17,8 @@ namespace framework {
 
 namespace log {
 
+std::unique_ptr<default_logger>& logger_instance();
+
 /// @brief Prints all messages to provided stream.
 class stream_logger : public default_logger
 {

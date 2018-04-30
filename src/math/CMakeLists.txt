@@ -1,9 +1,39 @@
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-get_filename_component(LIB_NAME ${SOURCE_DIR} NAME)
+get_filename_component(MODULE_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 
-file(GLOB_RECURSE LIB_HEADERS ${SOURCE_DIR}/*.hpp)
+message("\tAdd module: ${MODULE_NAME}")
 
-message("\tAdd library: ${LIB_NAME}")
-add_library(${LIB_NAME} INTERFACE)
+set(PUBLIC_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/math.hpp
 
-install(FILES ${LIB_HEADERS} DESTINATION ${PROJECT_NAME}/${LIB_NAME})
+    ${CMAKE_CURRENT_LIST_DIR}/matrix_type.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/vector_type.hpp
+
+    ${CMAKE_CURRENT_LIST_DIR}/constants.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/common_functions.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/exponential_functions.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/geometric_functions.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/matrix_functions.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/relational_functions.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/transform_functions.hpp
+)
+
+set(PRIVATE_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/vector_type_details.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/matrix_type_details.hpp
+
+    ${CMAKE_CURRENT_LIST_DIR}/common_functions_details.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/geometric_functions_details.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/matrix_functions_details.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/relational_functions_details.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/trigonometric_functions.hpp
+)
+
+target_sources(${PROJECT_NAME} 
+    PUBLIC 
+        ${PUBLIC_SOURCES}
+
+    PRIVATE
+        ${PRIVATE_SOURCES}
+)
+
+source_group(${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})

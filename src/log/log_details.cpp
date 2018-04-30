@@ -73,7 +73,7 @@ log_ostream::log_ostream(std::unique_ptr<std::streambuf> buffer)
 
 log_ostream::~log_ostream() = default;
 
-log_ostream::log_ostream(log_ostream&& other) : m_buffer(std::move(other.m_buffer))
+log_ostream::log_ostream(log_ostream&& other) : std::ostream(other.m_buffer.get()), m_buffer(std::move(other.m_buffer))
 {
     rdbuf(m_buffer.get());
 }
