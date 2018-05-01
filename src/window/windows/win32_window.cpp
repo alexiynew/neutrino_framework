@@ -145,7 +145,8 @@ void win32_window::hide()
 
 void win32_window::focus()
 {
-    throw std::logic_error("Function is not implemented.");
+    BringWindowToTop(m_window);
+    SetForegroundWindow(m_window);
 }
 
 void win32_window::process_events()
@@ -273,7 +274,7 @@ bool win32_window::visible() const
 
 bool win32_window::focused() const
 {
-    throw std::logic_error("Function is not implemented.");
+    return GetActiveWindow() == m_window && GetFocus() == m_window;
 }
 /// @}
 

@@ -23,24 +23,22 @@ private:
         alpha.show();
         betta.show();
 
-        betta.focus();
-
-        while (alpha.focused()) {
+        do {
             std::this_thread::sleep_for(timespan);
             alpha.process_events();
             betta.process_events();
-        }
+        } while (alpha.focused());
 
         TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(betta.focused(), "Focus function is not working.");
 
         alpha.focus();
 
-        while (!alpha.focused()) {
+        do {
             std::this_thread::sleep_for(timespan);
             alpha.process_events();
             betta.process_events();
-        }
+        } while (!alpha.focused());
 
         TEST_ASSERT(alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(!betta.focused(), "Focus function is not working.");
