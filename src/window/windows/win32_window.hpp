@@ -6,6 +6,8 @@
 #ifndef FRAMEWORK_WINDOW_WINDOWS_WIN32_WINDOW_HPP
 #define FRAMEWORK_WINDOW_WINDOWS_WIN32_WINDOW_HPP
 
+#include <Windows.h>
+
 #include <window/implementation.hpp>
 
 namespace framework {
@@ -65,6 +67,12 @@ public:
     bool visible() const override;
     bool focused() const override;
     /// @}
+
+private:
+    window::size_t m_size = {640, 480};
+
+    HWND m_window = {0};
+    std::shared_ptr<ATOM> m_window_class;
 };
 
 } // namespace framework

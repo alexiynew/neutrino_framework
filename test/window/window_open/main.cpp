@@ -17,7 +17,7 @@ public:
 private:
     void open_window()
     {
-        constexpr std::chrono::milliseconds timespan(10);
+        constexpr std::chrono::milliseconds timespan(50);
 
         ::framework::window window({640, 480});
         window.show();

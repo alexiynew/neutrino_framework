@@ -8,4 +8,6 @@ target_sources(${MODULE_NAME}
         ${PRIVATE_SOURCES}
 )
 
+target_compile_definitions(${MODULE_NAME} PRIVATE UNICODE)
+
 source_group(${MODULE_NAME} FILES ${PRIVATE_SOURCES})
