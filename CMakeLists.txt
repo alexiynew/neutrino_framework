@@ -18,7 +18,7 @@ set(DOCS_BINARY_DIR ${CMAKE_BINARY_DIR}/docs)
 set(DOCS_OUTPUT_DIR ${OUTPUT_PATH_BASE}/docs)
 
 # Test modules to run
-if(INCLUDED_TEST_MODULES STREQUAL "")
+if(NOT INCLUDED_TEST_MODULES)
     set(INCLUDED_TEST_MODULES ".*" CACHE STRING "Test modules that will be launched in the test command. An empty string means all modules." FORCE)
 endif()
 
