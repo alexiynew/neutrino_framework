@@ -1,4 +1,4 @@
-#include <chrono>
+﻿#include <chrono>
 #include <thread>
 
 #include <unit_test/suite.hpp>
@@ -58,7 +58,7 @@ private:
         const ::framework::window::size_t size640{640, 480};
         const ::framework::window::size_t size960{960, 640};
         const ::framework::window::size_t no_size{0, 0};
-        const ::framework::window::size_t small_size{100, 100};
+        const ::framework::window::size_t small_size{150, 150};
         const ::framework::window::size_t big_size{1000, 1000};
 
         ::framework::window window({640, 480});
@@ -181,8 +181,9 @@ private:
     void window_position()
     {
         constexpr std::chrono::milliseconds timespan(50);
+        ::framework::window::size_t size640 = {640, 480};
 
-        ::framework::window window({640, 480});
+        ::framework::window window(size640);
 
         window.show();
 
@@ -198,14 +199,17 @@ private:
 
         // Can't really check window position. Different WM can give different values.
         TEST_ASSERT(position.x > 0 && position.y > 0, "Window always has position.");
+
+        TEST_ASSERT(window.size() == size640, "Window should save its size.");
     }
 
     void window_title()
     {
         constexpr std::chrono::milliseconds timespan(50);
 
-        const std::string title     = u8"winodw_title";
-        const std::string new_title = u8"new_window_title";
+        const std::string title      = u8"winodw_title";
+        const std::string new_title  = u8"new_window_title";
+        const std::string utf8_title = u8"พᛁቢ⠗☺w ⊤Iτსе";
 
         ::framework::window window({640, 480}, title);
 
@@ -222,6 +226,13 @@ private:
         window.process_events();
 
         TEST_ASSERT(window.title() == new_title, "Window has wrong title");
+
+        window.set_title(utf8_title);
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(window.title() == utf8_title, "Window has wrong title");
     }
 };
 

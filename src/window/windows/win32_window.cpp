@@ -4,23 +4,78 @@
 /// @date 19.04.2017
 
 #include <exception>
+#include <map>
 
 #include <log/log.hpp>
 #include <window/windows/win32_window.hpp>
 
-namespace {
-const wchar_t g_szClassName[] = L"myWindowClass";
-
-// Step 4: the Window Procedure
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+class application
 {
-    switch (msg) {
-        case WM_CLOSE: DestroyWindow(hwnd); break;
-        case WM_DESTROY: PostQuitMessage(0); break;
-        default: return DefWindowProc(hwnd, msg, wParam, lParam);
-    }
-    return 0;
+public:
+    static void add_window(HANDLE handle, ::framework::win32_window* window);
+    static ::framework::win32_window* get_window(HANDLE handle);
+    static void remove_window(HANDLE handle);
+
+    static HMODULE handle();
+
+    static LRESULT CALLBACK window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param);
+
+private:
+    using container = std::map<HANDLE, ::framework::win32_window*>;
+
+    static container m_windows;
+    static HMODULE m_handle;
+};
+
+application::container application::m_windows;
+HMODULE application::m_handle = nullptr;
+
+void application::add_window(HANDLE handle, ::framework::win32_window* window)
+{
+    m_windows.insert({handle, window});
 }
+
+::framework::win32_window* application::get_window(HANDLE handle)
+{
+    if (m_windows.count(handle)) {
+        return m_windows[handle];
+    }
+
+    return nullptr;
+}
+
+void application::remove_window(HANDLE handle)
+{
+    m_windows.erase(handle);
+}
+
+HMODULE application::handle()
+{
+    if (m_handle == nullptr) {
+        m_handle = GetModuleHandle(nullptr);
+    }
+
+    if (m_handle == nullptr) {
+        throw std::runtime_error("Failed to get application instance handle.");
+    }
+
+    return m_handle;
+}
+
+LRESULT CALLBACK application::window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (auto window = get_window(window_handle)) {
+        return window->process_message(message, w_param, l_param);
+    }
+
+    return DefWindowProc(window_handle, message, w_param, l_param);
+}
+
+namespace {
+
+const char* const log_tag = "win32_window";
+
+const wchar_t g_szClassName[] = L"myWindowClass";
 
 std::wstring to_utf16(const std::string& string)
 {
@@ -28,27 +83,39 @@ std::wstring to_utf16(const std::string& string)
         return std::wstring();
     }
 
-    int size = MultiByteToWideChar(CP_UTF8, 0, &string[0], static_cast<int>(string.size()), 0, 0);
-    std::wstring result(size, 0);
-    MultiByteToWideChar(CP_UTF8, 0, &string[0], static_cast<int>(string.size()), &result[0], size);
+    const auto size = MultiByteToWideChar(CP_UTF8, 0, &string[0], -1, nullptr, 0);
 
-    return result;
-}
-
-HMODULE application_handle()
-{
-    static HMODULE handle = GetModuleHandle(nullptr);
-
-    if (handle == nullptr) {
-        throw std::runtime_error("Failed to get application instance handle.");
+    if (size == 0) {
+        return std::wstring();
     }
 
-    return handle;
+    std::unique_ptr<wchar_t[]> buffer(new wchar_t[size]);
+    MultiByteToWideChar(CP_UTF8, 0, &string[0], -1, buffer.get(), size);
+
+    return std::wstring(buffer.get());
+}
+
+std::string to_utf8(const std::wstring& string)
+{
+    if (string.empty()) {
+        return std::string();
+    }
+
+    const auto size = WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, nullptr, 0, nullptr, nullptr);
+
+    if (size == 0) {
+        return std::string();
+    }
+
+    std::unique_ptr<char[]> buffer(new char[size]);
+    WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
+
+    return std::string(buffer.get());
 }
 
 void unregister_window_class(ATOM*)
 {
-    UnregisterClass(g_szClassName, application_handle());
+    UnregisterClass(g_szClassName, application::handle());
 }
 
 std::shared_ptr<ATOM> register_window_class_details()
@@ -57,10 +124,10 @@ std::shared_ptr<ATOM> register_window_class_details()
 
     window_class.cbSize        = sizeof(WNDCLASSEX);
     window_class.style         = CS_OWNDC;
-    window_class.lpfnWndProc   = WndProc;
+    window_class.lpfnWndProc   = application::window_procedure;
     window_class.cbClsExtra    = 0;
     window_class.cbWndExtra    = 0;
-    window_class.hInstance     = application_handle();
+    window_class.hInstance     = application::handle();
     window_class.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
     window_class.hCursor       = LoadCursor(nullptr, IDC_ARROW);
     window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
@@ -100,9 +167,12 @@ std::unique_ptr<window::implementation> window::implementation::get_implementati
     return std::make_unique<win32_window>(size, title);
 }
 
-win32_window::win32_window(window::size_t size, const std::string& title) : m_size(size)
+win32_window::win32_window(window::size_t size, const std::string& title)
 {
     m_window_class = ::register_window_class();
+
+    RECT rect{0, 0, size.width, size.height};
+    AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
 
     m_window = CreateWindowEx(WS_EX_CLIENTEDGE,
                               g_szClassName,
@@ -110,16 +180,18 @@ win32_window::win32_window(window::size_t size, const std::string& title) : m_si
                               WS_OVERLAPPEDWINDOW,
                               CW_USEDEFAULT,
                               CW_USEDEFAULT,
-                              m_size.width,
-                              m_size.height,
+                              rect.right - rect.left,
+                              rect.bottom - rect.top,
                               nullptr,
                               nullptr,
-                              application_handle(),
+                              ::application::handle(),
                               nullptr);
 
     if (m_window == nullptr) {
         throw std::runtime_error("Failed to create window.");
     }
+
+    application::add_window(m_window, this);
 
     // The first call ignores its parameters
     ShowWindow(m_window, SW_HIDE);
@@ -127,6 +199,8 @@ win32_window::win32_window(window::size_t size, const std::string& title) : m_si
 
 win32_window::~win32_window()
 {
+    application::remove_window(m_window);
+
     DestroyWindow(m_window);
 }
 
@@ -186,34 +260,64 @@ void win32_window::restore()
 
 /// @name setters
 /// @{
-void win32_window::set_size(window::size_t)
+void win32_window::set_size(window::size_t size)
 {
-    throw std::logic_error("Function is not implemented.");
+    RECT rect{0, 0, size.width, size.height};
+    AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
+
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 0,
+                 0,
+                 rect.right - rect.left,
+                 rect.bottom - rect.top,
+                 SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 }
 
-void win32_window::set_position(window::position_t)
+void win32_window::set_position(window::position_t position)
 {
-    throw std::logic_error("Function is not implemented.");
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 position.x,
+                 position.y,
+                 0,
+                 0,
+                 SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
-void win32_window::set_max_size(window::size_t)
+void win32_window::set_max_size(window::size_t max_size)
 {
-    throw std::logic_error("Function is not implemented.");
+    m_max_size = max_size;
 }
 
-void win32_window::set_min_size(window::size_t)
+void win32_window::set_min_size(window::size_t min_size)
 {
-    throw std::logic_error("Function is not implemented.");
+    m_min_size = min_size;
 }
 
-void win32_window::set_resizable(bool)
+void win32_window::set_resizable(bool value)
 {
-    throw std::logic_error("Function is not implemented.");
+    m_resizable = value;
+
+    auto style = GetWindowLong(m_window, GWL_STYLE);
+
+    if (!m_resizable) {
+        style &= ~(WS_SIZEBOX | WS_MAXIMIZEBOX);
+    } else {
+        style |= (WS_SIZEBOX | WS_MAXIMIZEBOX);
+    }
+
+    if (!SetWindowLong(m_window, GWL_STYLE, style)) {
+        log::warning(log_tag) << "Can't change window style. Reason: " << GetLastError() << std::endl;
+    }
+
+    SetWindowPos(m_window, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 }
 
-void win32_window::set_title(const std::string&)
+void win32_window::set_title(const std::string& title)
 {
-    throw std::logic_error("Function is not implemented.");
+    const auto whide_char_title = to_utf16(title);
+    SetWindowText(m_window, &whide_char_title[0]);
 }
 /// @}
 
@@ -221,27 +325,42 @@ void win32_window::set_title(const std::string&)
 /// @{
 window::position_t win32_window::position() const
 {
-    throw std::logic_error("Function is not implemented.");
+    RECT rect;
+    GetWindowRect(m_window, &rect);
+
+    return window::position_t{rect.left, rect.top};
 }
 
 window::size_t win32_window::size() const
 {
-    throw std::logic_error("Function is not implemented.");
+    RECT area;
+    GetClientRect(m_window, &area);
+
+    return window::size_t{area.right, area.bottom};
 }
 
 window::size_t win32_window::max_size() const
 {
-    throw std::logic_error("Function is not implemented.");
+    return m_max_size;
 }
 
 window::size_t win32_window::min_size() const
 {
-    throw std::logic_error("Function is not implemented.");
+    return m_min_size;
 }
 
 std::string win32_window::title() const
 {
-    throw std::logic_error("Function is not implemented.");
+    const int32 title_length = GetWindowTextLength(m_window) + 1;
+
+    if (title_length == 1) {
+        return std::string();
+    }
+
+    std::unique_ptr<wchar_t[]> buffer(new wchar_t[title_length]);
+    GetWindowText(m_window, buffer.get(), title_length);
+
+    return to_utf8(buffer.get());
 }
 /// @}
 
@@ -264,7 +383,7 @@ bool win32_window::maximized() const
 
 bool win32_window::resizable() const
 {
-    throw std::logic_error("Function is not implemented.");
+    return m_resizable;
 }
 
 bool win32_window::visible() const
@@ -277,5 +396,34 @@ bool win32_window::focused() const
     return GetActiveWindow() == m_window && GetFocus() == m_window;
 }
 /// @}
+
+LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    switch (message) {
+        case WM_GETMINMAXINFO: {
+            auto minmaxinfo = reinterpret_cast<MINMAXINFO*>(l_param);
+
+            if (m_min_size.width != 0 && m_min_size.height != 0) {
+                RECT rect{0, 0, m_min_size.width, m_min_size.height};
+                AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
+
+                minmaxinfo->ptMinTrackSize.x = rect.right - rect.left;
+                minmaxinfo->ptMinTrackSize.y = rect.bottom - rect.top;
+            }
+
+            if (m_max_size.width != 0 && m_max_size.height != 0) {
+                RECT rect{0, 0, m_max_size.width, m_max_size.height};
+                AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
+
+                minmaxinfo->ptMaxTrackSize.x = rect.right - rect.left;
+                minmaxinfo->ptMaxTrackSize.y = rect.bottom - rect.top;
+            }
+
+            return 0;
+        }
+    }
+
+    return DefWindowProc(m_window, message, w_param, l_param);
+}
 
 } // namespace framework

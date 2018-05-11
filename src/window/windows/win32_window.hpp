@@ -10,6 +10,8 @@
 
 #include <window/implementation.hpp>
 
+class application;
+
 namespace framework {
 
 class win32_window final : public window::implementation
@@ -69,10 +71,17 @@ public:
     /// @}
 
 private:
-    window::size_t m_size = {640, 480};
-
-    HWND m_window = {0};
+    HWND m_window = nullptr;
     std::shared_ptr<ATOM> m_window_class;
+
+    window::size_t m_min_size = {0, 0};
+    window::size_t m_max_size = {0, 0};
+
+    bool m_resizable = true;
+
+    friend class ::application;
+
+    LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 };
 
 } // namespace framework
