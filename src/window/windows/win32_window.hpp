@@ -27,8 +27,7 @@ public:
     void focus() override;
     void process_events() override;
 
-    // On window managers without the ewmh support, proper work is not tested, nor granted.
-    void minimize() override;
+    void iconify() override;
     void maximize() override;
     void switch_to_fullscreen() override;
     void restore() override;
@@ -63,7 +62,7 @@ public:
     /// @name state
     /// @{
     bool fullscreen() const override;
-    bool minimized() const override;
+    bool iconified() const override;
     bool maximized() const override;
     bool resizable() const override;
     bool visible() const override;
@@ -71,6 +70,15 @@ public:
     /// @}
 
 private:
+    struct window_info
+    {
+        LONG style;
+        LONG ex_style;
+        RECT rect;
+    };
+
+    friend class ::application;
+
     HWND m_window = nullptr;
     std::shared_ptr<ATOM> m_window_class;
 
@@ -79,7 +87,7 @@ private:
 
     bool m_resizable = true;
 
-    friend class ::application;
+    window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
 
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 };

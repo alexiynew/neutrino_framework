@@ -45,7 +45,7 @@ public:
     void focus();
     void process_events();
 
-    void minimize();
+    void iconify();
     void maximize();
     void switch_to_fullscreen();
     void restore();
@@ -78,7 +78,7 @@ public:
     /// @name state
     /// @{
     bool fullscreen() const;
-    bool minimized() const;
+    bool iconified() const;
     bool maximized() const;
     bool resizable() const;
     bool visible() const;

@@ -48,9 +48,9 @@ void window::process_events()
     m_implementation->process_events();
 }
 
-void window::minimize()
+void window::iconify()
 {
-    m_implementation->minimize();
+    m_implementation->iconify();
 }
 
 void window::maximize()
@@ -140,9 +140,9 @@ bool window::fullscreen() const
     return m_implementation->fullscreen();
 }
 
-bool window::minimized() const
+bool window::iconified() const
 {
-    return m_implementation->minimized();
+    return m_implementation->iconified();
 }
 
 bool window::maximized() const

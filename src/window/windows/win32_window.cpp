@@ -174,7 +174,7 @@ win32_window::win32_window(window::size_t size, const std::string& title)
     RECT rect{0, 0, size.width, size.height};
     AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
 
-    m_window = CreateWindowEx(WS_EX_CLIENTEDGE,
+    m_window = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,
                               g_szClassName,
                               to_utf16(title).c_str(),
                               WS_OVERLAPPEDWINDOW,
@@ -237,24 +237,69 @@ void win32_window::process_events()
     }
 }
 
-void win32_window::minimize()
+void win32_window::iconify()
 {
-    throw std::logic_error("Function is not implemented.");
+    ShowWindow(m_window, SW_MINIMIZE);
 }
 
 void win32_window::maximize()
 {
-    throw std::logic_error("Function is not implemented.");
+    ShowWindow(m_window, SW_MAXIMIZE);
 }
 
 void win32_window::switch_to_fullscreen()
 {
-    throw std::logic_error("Function is not implemented.");
+    if (fullscreen()) {
+        return;
+    }
+
+    if (maximized()) {
+        SendMessage(m_window, WM_SYSCOMMAND, SC_RESTORE, 0);
+    }
+
+    m_saved_info.style    = GetWindowLong(m_window, GWL_STYLE);
+    m_saved_info.ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
+    GetWindowRect(m_window, &m_saved_info.rect);
+
+    SetWindowLong(m_window, GWL_STYLE, m_saved_info.style & ~(WS_CAPTION | WS_THICKFRAME));
+    SetWindowLong(m_window,
+                  GWL_EXSTYLE,
+                  m_saved_info.ex_style &
+                  ~(WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
+
+    MONITORINFO monitor_info;
+    monitor_info.cbSize = sizeof(monitor_info);
+    GetMonitorInfo(MonitorFromWindow(m_window, MONITOR_DEFAULTTONEAREST), &monitor_info);
+
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 monitor_info.rcMonitor.left,
+                 monitor_info.rcMonitor.top,
+                 monitor_info.rcMonitor.right,
+                 monitor_info.rcMonitor.bottom,
+                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+    SetForegroundWindow(m_window);
 }
 
 void win32_window::restore()
 {
-    throw std::logic_error("Function is not implemented.");
+    if (fullscreen()) {
+        SetWindowLong(m_window, GWL_STYLE, m_saved_info.style);
+        SetWindowLong(m_window, GWL_EXSTYLE, m_saved_info.ex_style);
+
+        SetWindowPos(m_window,
+                     HWND_TOP,
+                     m_saved_info.rect.left,
+                     m_saved_info.rect.top,
+                     m_saved_info.rect.right - m_saved_info.rect.left,
+                     m_saved_info.rect.bottom - m_saved_info.rect.top,
+                     SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+    } else if (iconified()) {
+        ShowWindow(m_window, SW_RESTORE);
+    } else if (maximized()) {
+        ShowWindow(m_window, SW_RESTORE);
+    }
 }
 /// @}
 
@@ -368,17 +413,23 @@ std::string win32_window::title() const
 /// @{
 bool win32_window::fullscreen() const
 {
-    throw std::logic_error("Function is not implemented.");
+    RECT window_rect;
+    RECT desktop_rect;
+    GetWindowRect(m_window, &window_rect);
+    GetWindowRect(GetDesktopWindow(), &desktop_rect);
+
+    return (window_rect.left == desktop_rect.left && window_rect.top == desktop_rect.top &&
+            window_rect.right == desktop_rect.right && window_rect.bottom == desktop_rect.bottom);
 }
 
-bool win32_window::minimized() const
+bool win32_window::iconified() const
 {
-    throw std::logic_error("Function is not implemented.");
+    return IsIconic(m_window) != 0;
 }
 
 bool win32_window::maximized() const
 {
-    throw std::logic_error("Function is not implemented.");
+    return IsZoomed(m_window) != 0;
 }
 
 bool win32_window::resizable() const
@@ -388,7 +439,7 @@ bool win32_window::resizable() const
 
 bool win32_window::visible() const
 {
-    return IsWindowVisible(m_window);
+    return IsWindowVisible(m_window) && !iconified();
 }
 
 bool win32_window::focused() const
