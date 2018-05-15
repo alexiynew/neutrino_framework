@@ -29,7 +29,7 @@ public:
     void process_events() override;
 
     // On window managers without the ewmh support, proper work is not tested, nor granted.
-    void minimize() override;
+    void iconify() override;
     void maximize() override;
     void switch_to_fullscreen() override;
     void restore() override;
@@ -64,7 +64,7 @@ public:
     /// @name state
     /// @{
     bool fullscreen() const override;
-    bool minimized() const override;
+    bool iconified() const override;
     bool maximized() const override;
     bool resizable() const override;
     bool visible() const override;

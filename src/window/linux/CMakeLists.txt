@@ -7,14 +7,14 @@ set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/x11_window.hpp
 )
 
-target_sources(${MODULE_NAME} 
+target_sources(${PROJECT_NAME} 
     PRIVATE
         ${PRIVATE_SOURCES}
 )
 
 source_group(${MODULE_NAME} FILES ${PRIVATE_SOURCES})
 
-target_link_libraries(${MODULE_NAME}
+target_link_libraries(${PROJECT_NAME}
     PRIVATE
         X11
 )

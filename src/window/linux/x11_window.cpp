@@ -110,7 +110,7 @@ enum class x11_window::state
     normal,
     fullscreen,
     maximized,
-    minimized
+    iconified
 };
 
 std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t size,
@@ -209,7 +209,7 @@ void x11_window::show()
         case state::normal: break;
         case state::fullscreen: switch_to_fullscreen(); break;
         case state::maximized: maximize(); break;
-        case state::minimized: minimize(); break;
+        case state::iconified: iconify(); break;
     };
 }
 
@@ -285,21 +285,21 @@ void x11_window::process_events()
     }
 }
 
-void x11_window::minimize()
+void x11_window::iconify()
 {
     if (!visible()) {
-        m_state = state::minimized;
+        m_state = state::iconified;
         return;
     }
 
     if (!XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen()))) {
-        log::warning(log_tag) << "Failed to minimize window." << std::endl;
+        log::warning(log_tag) << "Failed to iconify window." << std::endl;
         return;
     }
 
     XFlush(m_server->display());
 
-    m_state = state::minimized;
+    m_state = state::iconified;
 
     process_events_while([this]() { return m_viewable; });
 }
@@ -387,7 +387,7 @@ void x11_window::restore()
         XFlush(m_server->display());
 
         process_events_while([this]() { return maximized(); });
-    } else if (minimized()) {
+    } else if (iconified()) {
         XMapWindow(m_server->display(), m_window);
         XFlush(m_server->display());
 
@@ -563,7 +563,7 @@ bool x11_window::fullscreen() const
            : m_state == state::fullscreen;
 }
 
-bool x11_window::minimized() const
+bool x11_window::iconified() const
 {
     const auto window_state = utils::get_window_wm_state(m_server.get(), m_window);
     const bool hidden       = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden_atom_name);
