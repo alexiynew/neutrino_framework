@@ -203,14 +203,22 @@ void x11_window::show()
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
-    process_events_while([this]() { return !m_viewable; });
+    process_events_while([this]() { return !visible(); });
 
     switch (m_state) {
         case state::normal: break;
-        case state::fullscreen: switch_to_fullscreen(); break;
-        case state::maximized: maximize(); break;
-        case state::iconified: iconify(); break;
+        case state::fullscreen:
+            restore();
+            switch_to_fullscreen_impl();
+            break;
+        case state::maximized:
+            restore();
+            maximize_impl();
+            break;
+        case state::iconified: iconify_impl(); break;
     };
+
+    XFlush(m_server->display());
 }
 
 void x11_window::hide()
@@ -292,10 +300,7 @@ void x11_window::iconify()
         return;
     }
 
-    if (!XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen()))) {
-        log::warning(log_tag) << "Failed to iconify window." << std::endl;
-        return;
-    }
+    iconify_impl();
 
     XFlush(m_server->display());
 
@@ -313,19 +318,9 @@ void x11_window::maximize()
 
     restore();
 
-    // We can't maximize window without EWMH.
-    // Just change state.
-    if (!utils::ewmh_supported()) {
-        m_state = state::maximized;
-        return;
-    }
+    m_saved_size = m_size;
 
-    if (!utils::window_add_state(m_server.get(),
-                                 m_window,
-                                 {net_wm_state_maximized_vert_atom_name, net_wm_state_maximized_horz_atom_name})) {
-        log::warning(log_tag) << "Failed to set maximized state." << std::endl;
-        return;
-    }
+    maximize_impl();
 
     m_state = state::maximized;
 
@@ -343,19 +338,9 @@ void x11_window::switch_to_fullscreen()
 
     focus();
 
-    // We can't create fullscreen window without EWMH.
-    // Just change state.
-    if (!utils::ewmh_supported()) {
-        m_state = state::fullscreen;
-        return;
-    }
+    m_saved_size = m_size;
 
-    utils::set_bypass_compositor_state(m_server.get(), m_window, utils::bypass_compositor_state::disabled);
-
-    if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_fullscreen_atom_name})) {
-        log::warning(log_tag) << "Failed to set maximized state." << std::endl;
-        return;
-    }
+    switch_to_fullscreen_impl();
 
     m_state = state::fullscreen;
 
@@ -372,6 +357,8 @@ void x11_window::restore()
             return;
         }
 
+        set_size(m_saved_size);
+
         XFlush(m_server->display());
 
         process_events_while([this]() { return fullscreen(); });
@@ -384,6 +371,8 @@ void x11_window::restore()
             return;
         }
 
+        set_size(m_saved_size);
+
         XFlush(m_server->display());
 
         process_events_while([this]() { return maximized(); });
@@ -391,7 +380,9 @@ void x11_window::restore()
         XMapWindow(m_server->display(), m_window);
         XFlush(m_server->display());
 
-        process_events_while([this]() { return !m_viewable; });
+        process_events_while([this]() { return !visible(); });
+
+        focus();
     }
 
     m_state = state::normal;
@@ -699,6 +690,44 @@ void x11_window::process(XAnyEvent event)
 #pragma endregion
 
 #pragma region helper_functions
+
+void x11_window::iconify_impl()
+{
+    if (!XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen()))) {
+        log::warning(log_tag) << "Failed to iconify window." << std::endl;
+        return;
+    }
+}
+
+void x11_window::maximize_impl()
+{
+    // We can't maximize window without EWMH.
+    if (!utils::ewmh_supported()) {
+        return;
+    }
+
+    if (!utils::window_add_state(m_server.get(),
+                                 m_window,
+                                 {net_wm_state_maximized_vert_atom_name, net_wm_state_maximized_horz_atom_name})) {
+        log::warning(log_tag) << "Failed to set maximized state." << std::endl;
+        return;
+    }
+}
+
+void x11_window::switch_to_fullscreen_impl()
+{
+    // We can't create fullscreen window without EWMH.
+    if (!utils::ewmh_supported()) {
+        return;
+    }
+
+    utils::set_bypass_compositor_state(m_server.get(), m_window, utils::bypass_compositor_state::disabled);
+
+    if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_fullscreen_atom_name})) {
+        log::warning(log_tag) << "Failed to set maximized state." << std::endl;
+        return;
+    }
+}
 
 void x11_window::set_wm_hints()
 {

@@ -95,6 +95,20 @@ bool operator!=(const window::size_t& lhs, const window::size_t& rhs);
 bool operator==(const window::position_t& lhs, const window::position_t& rhs);
 bool operator!=(const window::position_t& lhs, const window::position_t& rhs);
 
+template <typename T>
+T& operator<<(T& ostream, const window::size_t& size)
+{
+    ostream << "{" << size.width << ", " << size.height << "}";
+    return ostream;
+}
+
+template <typename T>
+T& operator<<(T& ostream, const window::position_t& position)
+{
+    ostream << "{" << position.x << ", " << position.y << "}";
+    return ostream;
+}
+
 } // namespace framework
 
 #endif

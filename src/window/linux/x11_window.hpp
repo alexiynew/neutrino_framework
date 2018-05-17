@@ -82,6 +82,10 @@ private:
     void process(XPropertyEvent event);
     void process(XAnyEvent event);
 
+    void iconify_impl();
+    void maximize_impl();
+    void switch_to_fullscreen_impl();
+
     void set_wm_hints();
     void set_class_hints();
     void add_protocols(const std::vector<std::string>& protocol_names);
@@ -100,6 +104,7 @@ private:
     state m_state;
 
     window::size_t m_size         = {640, 480};
+    window::size_t m_saved_size   = {0, 0};
     window::position_t m_position = {0, 0};
 
     mutable window::size_t m_min_size = {0, 0};

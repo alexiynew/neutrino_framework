@@ -12,6 +12,7 @@ public:
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
         add_test([this]() { iconify_window(); }, "iconify_window");
         add_test([this]() { maximize_window(); }, "maximize_window");
+        add_test([this]() { state_before_show(); }, "state_before_show");
     }
 
 private:
@@ -175,6 +176,39 @@ private:
         TEST_ASSERT(window.visible(), "Invalid window state.");
         TEST_ASSERT(window.focused(), "Invalid window state.");
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+    }
+
+    void state_before_show()
+    {
+        constexpr std::chrono::milliseconds timespan(50);
+        const ::framework::window::size_t size640{640, 480};
+
+        ::framework::window window(size640);
+
+        window.switch_to_fullscreen();
+        window.show();
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(window.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!window.iconified(), "Invalid window state.");
+        TEST_ASSERT(!window.maximized(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.focused(), "Invalid window state.");
+
+        window.hide();
+        window.maximize();
+        window.show();
+
+        std::this_thread::sleep_for(timespan);
+        window.process_events();
+
+        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!window.iconified(), "Invalid window state.");
+        TEST_ASSERT(window.maximized(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.focused(), "Invalid window state.");
     }
 };
 
