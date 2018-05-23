@@ -1,6 +1,3 @@
-#include <chrono>
-#include <thread>
-
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
@@ -15,30 +12,16 @@ public:
 private:
     void focus_window()
     {
-        constexpr std::chrono::milliseconds timespan(50);
-
         framework::window alpha({640, 480});
         framework::window betta({640, 480});
 
         alpha.show();
         betta.show();
 
-        do {
-            std::this_thread::sleep_for(timespan);
-            alpha.process_events();
-            betta.process_events();
-        } while (alpha.focused());
-
         TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(betta.focused(), "Focus function is not working.");
 
         alpha.focus();
-
-        do {
-            std::this_thread::sleep_for(timespan);
-            alpha.process_events();
-            betta.process_events();
-        } while (!alpha.focused());
 
         TEST_ASSERT(alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(!betta.focused(), "Focus function is not working.");

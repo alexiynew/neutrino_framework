@@ -72,8 +72,6 @@ public:
     /// @}
 
 private:
-    enum class state;
-
     void process(XDestroyWindowEvent event);
     void process(XUnmapEvent event);
     void process(XVisibilityEvent event);
@@ -82,7 +80,6 @@ private:
     void process(XPropertyEvent event);
     void process(XAnyEvent event);
 
-    void iconify_impl();
     void maximize_impl();
     void switch_to_fullscreen_impl();
 
@@ -97,11 +94,11 @@ private:
 
     std::shared_ptr<x11_server> m_server = nullptr;
 
-    bool m_viewable       = false;
+    bool m_fullscreen     = false;
+    bool m_maximized      = false;
+    bool m_mapped         = false;
     bool m_cursor_grabbed = false;
     bool m_resizable      = true;
-
-    state m_state;
 
     window::size_t m_size         = {640, 480};
     window::size_t m_saved_size   = {0, 0};

@@ -1,6 +1,3 @@
-#include <chrono>
-#include <thread>
-
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
@@ -12,13 +9,15 @@ public:
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
         add_test([this]() { iconify_window(); }, "iconify_window");
         add_test([this]() { maximize_window(); }, "maximize_window");
-        add_test([this]() { state_before_show(); }, "state_before_show");
+        add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
+        add_test([this]() { maximized_before_show(); }, "maximized_before_show");
+        add_test([this]() { nonresizable_fullscreen(); }, "nonresizable_fullscreen");
+        add_test([this]() { nonresizable_maximized(); }, "nonresizable_maximized");
     }
 
 private:
     void fullscreen_window()
     {
-        constexpr std::chrono::milliseconds timespan(50);
         const ::framework::window::size_t size640{640, 480};
 
         framework::window window(size640);
@@ -34,9 +33,6 @@ private:
 
         window.switch_to_fullscreen();
 
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
-
         TEST_ASSERT(window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
         TEST_ASSERT(!window.maximized(), "Invalid window state.");
@@ -46,9 +42,6 @@ private:
         window.hide();
         window.show();
 
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
-
         TEST_ASSERT(window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
         TEST_ASSERT(!window.maximized(), "Invalid window state.");
@@ -56,9 +49,6 @@ private:
         TEST_ASSERT(window.focused(), "Invalid window state.");
 
         window.restore();
-
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
 
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
@@ -70,15 +60,11 @@ private:
 
     void iconify_window()
     {
-        constexpr std::chrono::milliseconds timespan(50);
         const ::framework::window::size_t size640{640, 480};
 
         framework::window window(size640);
 
         window.show();
-
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
 
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
@@ -89,31 +75,32 @@ private:
 
         window.iconify();
 
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
-
+        // Window is iconified, but still on screen (visible)
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(window.iconified(), "Invalid window state.");
         TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(!window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
         TEST_ASSERT(!window.focused(), "Invalid window state.");
 
         window.hide();
         window.show();
 
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
+        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!window.iconified(), "Invalid window state.");
+        TEST_ASSERT(!window.maximized(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+
+        window.iconify();
 
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(window.iconified(), "Invalid window state.");
         TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(!window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
         TEST_ASSERT(!window.focused(), "Invalid window state.");
 
         window.restore();
-
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
 
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
@@ -125,15 +112,11 @@ private:
 
     void maximize_window()
     {
-        constexpr std::chrono::milliseconds timespan(50);
         const ::framework::window::size_t size640{640, 480};
 
         framework::window window(size640);
 
         window.show();
-
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
 
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
@@ -144,9 +127,6 @@ private:
 
         window.maximize();
 
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
-
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
         TEST_ASSERT(window.maximized(), "Invalid window state.");
@@ -155,9 +135,6 @@ private:
 
         window.hide();
         window.show();
-
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
 
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
@@ -167,9 +144,6 @@ private:
 
         window.restore();
 
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
-
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
         TEST_ASSERT(!window.maximized(), "Invalid window state.");
@@ -178,9 +152,8 @@ private:
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");
     }
 
-    void state_before_show()
+    void fullscreen_before_show()
     {
-        constexpr std::chrono::milliseconds timespan(50);
         const ::framework::window::size_t size640{640, 480};
 
         ::framework::window window(size640);
@@ -188,27 +161,95 @@ private:
         window.switch_to_fullscreen();
         window.show();
 
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
-
         TEST_ASSERT(window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
         TEST_ASSERT(!window.maximized(), "Invalid window state.");
         TEST_ASSERT(window.visible(), "Invalid window state.");
         TEST_ASSERT(window.focused(), "Invalid window state.");
+    }
 
-        window.hide();
+    void maximized_before_show()
+    {
+        const ::framework::window::size_t size640{640, 480};
+
+        ::framework::window window(size640);
+
         window.maximize();
         window.show();
-
-        std::this_thread::sleep_for(timespan);
-        window.process_events();
 
         TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
         TEST_ASSERT(!window.iconified(), "Invalid window state.");
         TEST_ASSERT(window.maximized(), "Invalid window state.");
         TEST_ASSERT(window.visible(), "Invalid window state.");
         TEST_ASSERT(window.focused(), "Invalid window state.");
+    }
+
+    void nonresizable_fullscreen()
+    {
+        const ::framework::window::size_t size640{640, 480};
+
+        ::framework::window window(size640);
+
+        window.switch_to_fullscreen();
+        window.set_resizable(false);
+        window.show();
+
+        while (true) {
+            window.process_events();
+        }
+
+        TEST_ASSERT(window.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!window.iconified(), "Invalid window state.");
+        TEST_ASSERT(!window.maximized(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(!window.resizable(), "Invalid window state.");
+
+        window.restore();
+
+        TEST_ASSERT(!window.resizable(), "Invalid window state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+
+        window.switch_to_fullscreen();
+
+        TEST_ASSERT(window.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!window.iconified(), "Invalid window state.");
+        TEST_ASSERT(!window.maximized(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(!window.resizable(), "Invalid window state.");
+    }
+
+    void nonresizable_maximized()
+    {
+        const ::framework::window::size_t size640{640, 480};
+
+        ::framework::window window(size640);
+
+        window.maximize();
+        window.set_resizable(false);
+        window.show();
+
+        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!window.iconified(), "Invalid window state.");
+        TEST_ASSERT(window.maximized(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(!window.resizable(), "Invalid window state.");
+
+        window.restore();
+
+        TEST_ASSERT(!window.resizable(), "Invalid window state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+
+        window.maximize();
+
+        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!window.iconified(), "Invalid window state.");
+        TEST_ASSERT(window.maximized(), "Invalid window state.");
+        TEST_ASSERT(window.visible(), "Invalid window state.");
+        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(!window.resizable(), "Invalid window state.");
     }
 };
 

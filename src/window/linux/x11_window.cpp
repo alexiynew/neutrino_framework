@@ -105,22 +105,13 @@ std::string event_type_string(const XAnyEvent& event)
 
 namespace framework {
 
-enum class x11_window::state
-{
-    normal,
-    fullscreen,
-    maximized,
-    iconified
-};
-
 std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t size,
                                                                                    const std::string& title)
 {
     return std::make_unique<x11_window>(size, title);
 }
 
-x11_window::x11_window(window::size_t size, const std::string& title)
-    : m_server(x11_server::connect()), m_state(state::normal), m_size(size)
+x11_window::x11_window(window::size_t size, const std::string& title) : m_server(x11_server::connect()), m_size(size)
 {
     XID color = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
 
@@ -196,41 +187,36 @@ x11_window::~x11_window()
 
 void x11_window::show()
 {
-    if (m_viewable) {
+    if (m_mapped) {
         return;
     }
 
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
-    process_events_while([this]() { return !visible(); });
+    process_events_while([this]() { return !m_mapped; });
 
-    switch (m_state) {
-        case state::normal: break;
-        case state::fullscreen:
-            restore();
-            switch_to_fullscreen_impl();
-            break;
-        case state::maximized:
-            restore();
-            maximize_impl();
-            break;
-        case state::iconified: iconify_impl(); break;
-    };
-
-    XFlush(m_server->display());
+    if (m_fullscreen) {
+        restore();
+        switch_to_fullscreen_impl();
+        process_events_while([this]() { return !fullscreen(); });
+    } else if (m_maximized) {
+        restore();
+        maximize_impl();
+        process_events_while([this]() { return !maximized(); });
+    }
 }
 
 void x11_window::hide()
 {
-    if (!m_viewable) {
+    if (!m_mapped) {
         return;
     }
 
     XUnmapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
-    process_events_while([this]() { return m_viewable; });
+    process_events_while([this]() { return m_mapped; });
 }
 
 void x11_window::focus()
@@ -255,6 +241,8 @@ void x11_window::focus()
     }
 
     XFlush(m_server->display());
+
+    process_events_while([this]() { return !focused(); });
 }
 
 void x11_window::process_events()
@@ -295,24 +283,20 @@ void x11_window::process_events()
 
 void x11_window::iconify()
 {
-    if (!visible()) {
-        m_state = state::iconified;
+    if (!XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen()))) {
+        log::warning(log_tag) << "Failed to iconify window." << std::endl;
         return;
     }
 
-    iconify_impl();
-
     XFlush(m_server->display());
 
-    m_state = state::iconified;
-
-    process_events_while([this]() { return m_viewable; });
+    process_events_while([this]() { return !iconified(); });
 }
 
 void x11_window::maximize()
 {
-    if (!visible()) {
-        m_state = state::maximized;
+    if (!m_mapped) {
+        m_maximized = true;
         return;
     }
 
@@ -322,15 +306,17 @@ void x11_window::maximize()
 
     maximize_impl();
 
-    m_state = state::maximized;
+    m_maximized = true;
 
     XFlush(m_server->display());
+
+    process_events_while([this]() { return !maximized(); });
 }
 
 void x11_window::switch_to_fullscreen()
 {
-    if (!visible()) {
-        m_state = state::fullscreen;
+    if (!m_mapped) {
+        m_fullscreen = true;
         return;
     }
 
@@ -342,9 +328,11 @@ void x11_window::switch_to_fullscreen()
 
     switch_to_fullscreen_impl();
 
-    m_state = state::fullscreen;
+    m_fullscreen = true;
 
     XFlush(m_server->display());
+
+    process_events_while([this]() { return !fullscreen(); });
 }
 
 void x11_window::restore()
@@ -361,6 +349,8 @@ void x11_window::restore()
 
         XFlush(m_server->display());
 
+        m_fullscreen = false;
+
         process_events_while([this]() { return fullscreen(); });
     } else if (utils::ewmh_supported() && maximized()) {
         if (!utils::window_remove_state(m_server.get(),
@@ -375,17 +365,17 @@ void x11_window::restore()
 
         XFlush(m_server->display());
 
+        m_maximized = false;
+
         process_events_while([this]() { return maximized(); });
     } else if (iconified()) {
         XMapWindow(m_server->display(), m_window);
         XFlush(m_server->display());
 
-        process_events_while([this]() { return !visible(); });
+        process_events_while([this]() { return !m_mapped || iconified(); });
 
         focus();
     }
-
-    m_state = state::normal;
 }
 
 #pragma endregion
@@ -414,20 +404,21 @@ void x11_window::set_size(window::size_t size)
         size.height = std::min(size.height, m_max_size.height);
     }
 
-    m_size = size;
-
     if (!m_resizable) {
-        update_size_limits(m_size, m_size);
+        update_size_limits(size, size);
     }
 
     XResizeWindow(m_server->display(), m_window, static_cast<uint32>(size.width), static_cast<uint32>(size.height));
     XFlush(m_server->display());
+
+    process_events_while([this, size]() { return m_size != size; });
 }
 
 void x11_window::set_position(window::position_t position)
 {
     XMoveWindow(m_server->display(), m_window, position.x, position.y);
     XFlush(m_server->display());
+    process_events();
 }
 
 void x11_window::set_max_size(window::size_t max_size)
@@ -436,7 +427,6 @@ void x11_window::set_max_size(window::size_t max_size)
 
     if (m_resizable) {
         update_size_limits(m_min_size, m_max_size);
-        XFlush(m_server->display());
     }
 }
 
@@ -446,7 +436,6 @@ void x11_window::set_min_size(window::size_t min_size)
 
     if (m_resizable) {
         update_size_limits(m_min_size, m_max_size);
-        XFlush(m_server->display());
     }
 }
 
@@ -465,6 +454,7 @@ void x11_window::set_title(const std::string& title)
 {
     utils::set_window_name(m_server.get(), m_window, title);
     XFlush(m_server->display());
+    process_events();
 }
 
 #pragma endregion
@@ -549,9 +539,13 @@ std::string x11_window::title() const
 
 bool x11_window::fullscreen() const
 {
-    return utils::ewmh_supported()
-           ? utils::window_has_state(m_server.get(), m_window, net_wm_state_fullscreen_atom_name)
-           : m_state == state::fullscreen;
+    const bool in_fullscreen_state = utils::ewmh_supported()
+                                     ? utils::window_has_state(m_server.get(),
+                                                               m_window,
+                                                               net_wm_state_fullscreen_atom_name)
+                                     : false;
+
+    return in_fullscreen_state;
 }
 
 bool x11_window::iconified() const
@@ -573,9 +567,9 @@ bool x11_window::maximized() const
                                                             net_wm_state_maximized_horz_atom_name);
 
         return maximized_vert || maximized_horz;
-    } else {
-        return m_state == state::maximized;
     }
+
+    return false;
 }
 
 bool x11_window::resizable() const
@@ -585,13 +579,13 @@ bool x11_window::resizable() const
 
 bool x11_window::visible() const
 {
-    if (!m_viewable) {
+    if (!m_mapped) {
         return false;
     }
 
     XWindowAttributes attributes;
     if (XGetWindowAttributes(m_server->display(), m_window, &attributes)) {
-        return attributes.map_state == IsViewable;
+        return attributes.map_state == IsViewable || (m_mapped && iconified());
     } else {
         log::warning(log_tag) << "Can't detect window visibility." << std::endl;
     }
@@ -613,13 +607,13 @@ void x11_window::process(XDestroyWindowEvent)
 
 void x11_window::process(XUnmapEvent)
 {
-    m_viewable = false;
+    m_mapped = false;
 }
 
 void x11_window::process(XVisibilityEvent event)
 {
     if (event.state != VisibilityFullyObscured) {
-        m_viewable = true;
+        m_mapped = true;
     }
 }
 
@@ -690,14 +684,6 @@ void x11_window::process(XAnyEvent event)
 #pragma endregion
 
 #pragma region helper_functions
-
-void x11_window::iconify_impl()
-{
-    if (!XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen()))) {
-        log::warning(log_tag) << "Failed to iconify window." << std::endl;
-        return;
-    }
-}
 
 void x11_window::maximize_impl()
 {
@@ -783,7 +769,7 @@ void x11_window::create_input_context()
 
 void x11_window::process_events_while(const std::function<bool()>& condition)
 {
-    std::chrono::milliseconds limit(100);
+    std::chrono::milliseconds limit(1000);
     const std::chrono::milliseconds delay(10);
 
     while (condition() && limit.count() > 0) {
