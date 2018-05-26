@@ -11,8 +11,6 @@ public:
         add_test([this]() { maximize_window(); }, "maximize_window");
         add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
         add_test([this]() { maximized_before_show(); }, "maximized_before_show");
-        add_test([this]() { nonresizable_fullscreen(); }, "nonresizable_fullscreen");
-        add_test([this]() { nonresizable_maximized(); }, "nonresizable_maximized");
     }
 
 private:
@@ -182,74 +180,6 @@ private:
         TEST_ASSERT(window.maximized(), "Invalid window state.");
         TEST_ASSERT(window.visible(), "Invalid window state.");
         TEST_ASSERT(window.focused(), "Invalid window state.");
-    }
-
-    void nonresizable_fullscreen()
-    {
-        const ::framework::window::size_t size640{640, 480};
-
-        ::framework::window window(size640);
-
-        window.switch_to_fullscreen();
-        window.set_resizable(false);
-        window.show();
-
-        while (true) {
-            window.process_events();
-        }
-
-        TEST_ASSERT(window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(!window.resizable(), "Invalid window state.");
-
-        window.restore();
-
-        TEST_ASSERT(!window.resizable(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
-
-        window.switch_to_fullscreen();
-
-        TEST_ASSERT(window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(!window.resizable(), "Invalid window state.");
-    }
-
-    void nonresizable_maximized()
-    {
-        const ::framework::window::size_t size640{640, 480};
-
-        ::framework::window window(size640);
-
-        window.maximize();
-        window.set_resizable(false);
-        window.show();
-
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(!window.resizable(), "Invalid window state.");
-
-        window.restore();
-
-        TEST_ASSERT(!window.resizable(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
-
-        window.maximize();
-
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(!window.resizable(), "Invalid window state.");
     }
 };
 

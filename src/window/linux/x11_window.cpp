@@ -443,11 +443,20 @@ void x11_window::set_resizable(bool value)
 {
     m_resizable = value;
 
+    if (!m_mapped) {
+        return;
+    }
+
     if (m_resizable) {
         update_size_limits(m_min_size, m_max_size);
     } else {
         update_size_limits(m_size, m_size);
     }
+
+    XFlush(m_server->display());
+    process_events_while([this, value]() { return resizable() == value; });
+
+    m_resizable = value;
 }
 
 void x11_window::set_title(const std::string& title)
@@ -574,7 +583,16 @@ bool x11_window::maximized() const
 
 bool x11_window::resizable() const
 {
-    return m_resizable;
+    XSizeHints size_hints = {};
+    long supplied;
+
+    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
+
+    const bool non_resizable = size_hints.flags & (PMinSize | PMaxSize) &&
+                               size_hints.min_width == size_hints.max_width &&
+                               size_hints.min_height == size_hints.max_height;
+
+    return !non_resizable;
 }
 
 bool x11_window::visible() const
@@ -801,10 +819,6 @@ void x11_window::update_size_limits(window::size_t min_size, window::size_t max_
     } else {
         size_hints.flags &= ~PMaxSize;
     }
-
-    size_hints.flags |= PSize;
-    size_hints.width  = m_size.width;
-    size_hints.height = m_size.height;
 
     XSetWMNormalHints(m_server->display(), m_window, &size_hints);
 }
