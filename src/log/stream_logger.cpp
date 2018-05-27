@@ -9,9 +9,9 @@ namespace framework {
 
 namespace log {
 
-std::unique_ptr<default_logger>& logger_instance()
+std::unique_ptr<logger_base>& logger_instance()
 {
-    static std::unique_ptr<default_logger> instance;
+    static std::unique_ptr<logger_base> instance;
     return instance;
 }
 

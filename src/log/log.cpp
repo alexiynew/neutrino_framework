@@ -13,13 +13,13 @@ namespace framework {
 
 namespace log {
 
-/// @brief Instance of current logger.
-extern std::unique_ptr<default_logger>& logger_instance();
-
-void default_logger::add_message(const severity_level, const std::string&, const std::string&)
+class dummy_logger : public logger_base
 {
-    // nothing to do.
-}
+    void add_message(const severity_level, const std::string&, const std::string&) override
+    {
+        // nothing to do.
+    }
+};
 
 #pragma region log functions
 
@@ -50,19 +50,20 @@ log_ostream fatal(const std::string& tag)
 
 #pragma endregion
 
-void set_logger(std::unique_ptr<default_logger> implementation)
+void set_logger(std::unique_ptr<logger_base> implementation)
 {
-    ::logger_instance() = std::move(implementation);
+    ::logger() = std::move(implementation);
 }
 
-default_logger* logger()
+std::unique_ptr<logger_base>& logger()
 {
-    auto& instance = ::logger_instance();
+    static std::unique_ptr<logger_base> instance;
+
     if (!instance) {
-        instance.reset(new default_logger());
+        instance.reset(new dummy_logger());
     }
 
-    return instance.get();
+    return instance;
 }
 
 std::ostream& operator<<(std::ostream& os, const severity_level level)

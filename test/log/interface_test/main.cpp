@@ -14,6 +14,7 @@ public:
     logger_interface_test() : suite(suite_name)
     {
         add_test([this]() { stream_logger_test(); }, "stream_logger_test");
+        add_test([this]() { long_log_string(); }, "long_log_string");
     }
 
 private:
@@ -38,6 +39,33 @@ private:
         log_test << "[" << severity_level::warning << "] " << suite_name << ": message_3" << std::endl;
         log_test << "[" << severity_level::error << "] " << suite_name << ": message_4" << std::endl;
         log_test << "[" << severity_level::fatal << "] " << suite_name << ": message_5" << std::endl;
+
+        TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
+    }
+
+    void long_log_string()
+    {
+        std::stringstream log_stream;
+        set_logger(std::make_unique<stream_logger>(log_stream));
+
+        info(suite_name)
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << std::endl;
+
+        std::stringstream log_test;
+
+        log_test
+        << "[" << severity_level::info << "] " << suite_name << ": "
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << std::endl;
 
         TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }

@@ -34,10 +34,10 @@ enum class severity_level
 /// @brief Base class for logger implementations.
 ///
 /// Describes logger implementation methods.
-class default_logger
+class logger_base
 {
 public:
-    virtual ~default_logger() = default;
+    virtual ~logger_base() = default;
 
     /// @brief Add message to the log.
     ///
@@ -46,7 +46,7 @@ public:
     /// @param level The message @ref severity_level
     /// @param tag Message tag. Describes message domain.
     /// @param message Message itself.
-    virtual void add_message(const severity_level level, const std::string& tag, const std::string& message);
+    virtual void add_message(const severity_level level, const std::string& tag, const std::string& message) = 0;
 };
 
 /// @brief Logs messages for debugging purposes.
@@ -55,7 +55,7 @@ public:
 ///
 /// @return Output stream to log debug messages.
 ///
-/// @see default_logger::add_message
+/// @see logger_base::add_message
 log_ostream debug(const std::string& tag);
 
 /// @brief Logs information messages.
@@ -64,7 +64,7 @@ log_ostream debug(const std::string& tag);
 ///
 /// @return Output stream to log info messages.
 ///
-/// @see default_logger::add_message
+/// @see logger_base::add_message
 log_ostream info(const std::string& tag);
 
 /// @brief Logs warning messages.
@@ -73,7 +73,7 @@ log_ostream info(const std::string& tag);
 ///
 /// @return Output stream to log warning messages.
 ///
-/// @see default_logger::add_message
+/// @see logger_base::add_message
 log_ostream warning(const std::string& tag);
 
 /// @brief Logs error messages.
@@ -82,7 +82,7 @@ log_ostream warning(const std::string& tag);
 ///
 /// @return Output stream to log error messages.
 ///
-/// @see default_logger::add_message
+/// @see logger_base::add_message
 log_ostream error(const std::string& tag);
 
 /// @brief Logs fatal error messages.
@@ -91,18 +91,18 @@ log_ostream error(const std::string& tag);
 ///
 /// @return Output stream to log fatal error messages.
 ///
-/// @see default_logger::add_message
+/// @see logger_base::add_message
 log_ostream fatal(const std::string& tag);
 
-/// @brief Sets provided class as a logger.
+/// @brief Sets new logger.
 ///
 /// @param implementation Pointer to a new logger.
-void set_logger(std::unique_ptr<default_logger> implementation);
+void set_logger(std::unique_ptr<logger_base> implementation);
 
 /// @brief Returns current logger instance.
 ///
 /// @return Pointer to current logger instance or base logger if no logger is set.
-default_logger* logger();
+std::unique_ptr<logger_base>& logger();
 
 /// @brief Helper function to print severity level name into the stream.
 ///
