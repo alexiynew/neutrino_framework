@@ -56,5 +56,5 @@ test: off
   
 test_script:
   - cmd: echo =============== Run All Tests =============== 
-  - cmd: cd C:\projects\game_framework\build\test
-  - cmd: ctest --build-config %configuration% --parallel 4 --output-on-failure
+  - cmd: cd C:\projects\game_framework
+  - cmd: build.cmd test
