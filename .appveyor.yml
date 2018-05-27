@@ -40,18 +40,18 @@ before_build:
   - cd build
   - if "%platform%"=="Win32" (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
   - if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
-  - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_TESTING=ON ../
+  - cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_TESTING=ON ../
 
 build: off
 
 build_script:
   - echo =============== Build Framework =============== 
   - cd C:\projects\game_framework\build
-  - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test: off
   
 test_script:
   - echo =============== Run All Tests =============== 
   - cd C:\projects\game_framework\build
-  - cmd: msbuild framework.sln /t:run_all_tests /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - ctest --build-config %configuration% --output-on-failure
