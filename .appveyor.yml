@@ -36,25 +36,24 @@ branches:
 
 # scripts to run before build
 before_build:
-  - cmd: echo =============== Configure =============== 
+  - cmd: @echo =============== Configure =============== 
   - cmd: cd C:\projects\game_framework
-  - cmd: md build
-  - cmd: cd build
-  - cmd: if "%platform%"=="Win32" (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
-  - cmd: if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
+  - cmd: @md build
+  - cmd: @cd build
+  - cmd: @if "%platform%"=="Win32" (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
+  - cmd: @if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
   - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_TESTS=ON ../
 
 build: off
 
 build_script:
+  - cmd: @echo =============== Build Framework =============== 
   - cmd: cd C:\projects\game_framework\build
-  - cmd: dir /A
-  - cmd: echo =============== Build Framework =============== 
   - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test: off
   
 test_script:
-  - cmd: echo =============== Run All Tests =============== 
+  - cmd: @echo =============== Run All Tests =============== 
   - cmd: cd C:\projects\game_framework
-  - cmd: build.cmd test
+  - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
