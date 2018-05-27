@@ -1,5 +1,8 @@
+#include <chrono>
+#include <iostream>
 #include <sstream>
 #include <string>
+#include <thread>
 
 #include <common/utils.hpp>
 #include <log/log.hpp>
@@ -11,10 +14,11 @@ using namespace framework::log;
 class logger_interface_test : public framework::unit_test::suite
 {
 public:
-    logger_interface_test() : suite(suite_name)
+    logger_interface_test() : suite("logger_interface_test")
     {
         add_test([this]() { stream_logger_test(); }, "stream_logger_test");
         add_test([this]() { long_log_string(); }, "long_log_string");
+        add_test([this]() { thread_safety(); }, "thread_safety");
     }
 
 private:
@@ -23,22 +27,22 @@ private:
         std::stringstream log_stream;
         set_logger(std::make_unique<stream_logger>(log_stream));
 
-        debug(suite_name) << "message_1" << std::endl;
-        info(suite_name) << "message_2" << std::endl;
-        warning(suite_name) << "message_3" << std::endl;
-        error(suite_name) << "message_4" << std::endl;
-        fatal(suite_name) << "message_5" << std::endl;
+        debug(name()) << "message_1" << std::endl;
+        info(name()) << "message_2" << std::endl;
+        warning(name()) << "message_3" << std::endl;
+        error(name()) << "message_4" << std::endl;
+        fatal(name()) << "message_5" << std::endl;
 
         std::stringstream log_test;
 
         if (framework::utils::is_debug()) {
-            log_test << "[" << severity_level::debug << "] " << suite_name << ": message_1" << std::endl;
+            log_test << "[" << severity_level::debug << "] " << name() << ": message_1" << std::endl;
         }
 
-        log_test << "[" << severity_level::info << "] " << suite_name << ": message_2" << std::endl;
-        log_test << "[" << severity_level::warning << "] " << suite_name << ": message_3" << std::endl;
-        log_test << "[" << severity_level::error << "] " << suite_name << ": message_4" << std::endl;
-        log_test << "[" << severity_level::fatal << "] " << suite_name << ": message_5" << std::endl;
+        log_test << "[" << severity_level::info << "] " << name() << ": message_2" << std::endl;
+        log_test << "[" << severity_level::warning << "] " << name() << ": message_3" << std::endl;
+        log_test << "[" << severity_level::error << "] " << name() << ": message_4" << std::endl;
+        log_test << "[" << severity_level::fatal << "] " << name() << ": message_5" << std::endl;
 
         TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }
@@ -48,7 +52,7 @@ private:
         std::stringstream log_stream;
         set_logger(std::make_unique<stream_logger>(log_stream));
 
-        info(suite_name)
+        info(name())
         << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
@@ -59,7 +63,7 @@ private:
         std::stringstream log_test;
 
         log_test
-        << "[" << severity_level::info << "] " << suite_name << ": "
+        << "[" << severity_level::info << "] " << name() << ": "
         << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
@@ -70,10 +74,31 @@ private:
         TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }
 
-    static const char* suite_name;
-};
+    void thread_safety()
+    {
+        std::stringstream log_stream;
+        set_logger(std::make_unique<stream_logger>(log_stream));
 
-const char* logger_interface_test::suite_name = "logger_test";
+        std::thread t1([this]() {
+            for (int i = 0; i < 100; ++i) {
+                info(name()) << "thread 1 [" << i << "]" << std::endl;
+                std::this_thread::yield();
+            }
+        });
+
+        std::thread t2([this]() {
+            for (int i = 0; i < 100; ++i) {
+                info(name()) << "thread 2 [" << i << "]" << std::endl;
+            }
+        });
+
+        t1.join();
+        t2.join();
+
+        // We can't check output. Just check, that the test would not crash.
+        TEST_ASSERT(!log_stream.str().empty(), "Log messages are not correct.");
+    }
+};
 
 int main()
 {

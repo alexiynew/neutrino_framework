@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_LOG_STREAM_LOGGER_HPP
 #define FRAMEWORK_LOG_STREAM_LOGGER_HPP
 
+#include <mutex>
 #include <ostream>
 
 #include <log/log.hpp>
@@ -37,6 +38,7 @@ public:
 
 private:
     std::ostream& m_output;
+    std::mutex m_output_mutex;
 };
 
 /// @}
