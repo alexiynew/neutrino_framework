@@ -1,5 +1,5 @@
 # Specify version format
-version: "{build}"
+version: "0.0.2.{build}"
 
 # Operating system (build VM template)
 image:
@@ -18,9 +18,7 @@ configuration:
   - Release
 
 # scripts that are called at very beginning, before repo cloning
-init:
-  - cmd: cmake --version
-  - cmd: msbuild /version
+# init:
 
 # clone directory
 clone_folder: C:\projects\game_framework
@@ -36,24 +34,24 @@ branches:
 
 # scripts to run before build
 before_build:
-  - cmd: echo =============== Configure =============== 
-  - cmd: cd C:\projects\game_framework
-  - cmd: md build
-  - cmd: cd build
-  - cmd: if "%platform%"=="Win32" (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
-  - cmd: if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
+  - echo =============== Configure =============== 
+  - cd C:\projects\game_framework
+  - md build
+  - cd build
+  - if "%platform%"=="Win32" (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017)
+  - if "%platform%"=="x64"   (if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" set CMAKE_GENERATOR_NAME=Visual Studio 15 2017 Win64)
   - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_TESTING=ON ../
 
 build: off
 
 build_script:
-  - cmd: echo =============== Build Framework =============== 
-  - cmd: cd C:\projects\game_framework\build
+  - echo =============== Build Framework =============== 
+  - cd C:\projects\game_framework\build
   - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test: off
   
 test_script:
-  - cmd: echo =============== Run All Tests =============== 
-  - cmd: cd C:\projects\game_framework\build
+  - echo =============== Run All Tests =============== 
+  - cd C:\projects\game_framework\build
   - cmd: msbuild framework.sln /t:run_all_tests /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
