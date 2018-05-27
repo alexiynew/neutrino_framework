@@ -55,5 +55,5 @@ test: off
   
 test_script:
   - cmd: echo =============== Run All Tests =============== 
-  - cmd: cd C:\projects\game_framework
-  - cmd: msbuild framework.sln /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: cd C:\projects\game_framework\build
+  - cmd: msbuild run_all_tests.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
