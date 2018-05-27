@@ -208,7 +208,11 @@ win32_window::~win32_window()
 /// @{
 void win32_window::show()
 {
-    ShowWindow(m_window, SW_SHOW);
+    if (iconified()) {
+        ShowWindow(m_window, SW_RESTORE);
+    } else {
+        ShowWindow(m_window, SW_SHOW);
+    }
     UpdateWindow(m_window);
 }
 
@@ -439,7 +443,7 @@ bool win32_window::resizable() const
 
 bool win32_window::visible() const
 {
-    return IsWindowVisible(m_window) && !iconified();
+    return IsWindowVisible(m_window);
 }
 
 bool win32_window::focused() const
