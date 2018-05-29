@@ -1,15 +1,16 @@
 macro(set_compiller_flags)
     if("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
         message("Using Clang compiller settings")
-        set(CMAKE_CXX_FLAGS "-Weverything \
+        set(CMAKE_CXX_FLAGS "-std=c++1z \
+                             -Weverything \
                              -Werror \
-                             -std=c++1z \
                              -Wno-c++98-compat \
                              -Wno-c++11-extensions \
                              -Wno-padded \
                              -Wno-weak-vtables \
                              -Wno-exit-time-destructors \
                              -Wno-unknown-pragmas \
+                             -pthread \
                              -fPIC")
         set(CMAKE_CXX_FLAGS_DEBUG "-g")
         set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
@@ -19,12 +20,13 @@ macro(set_compiller_flags)
         set(CMAKE_CXX_FLAGS "-std=c++17 \
                              -Wall \
                              -Wextra \
+                             -Wpedantic \
+                             -Werror \
                              -Wfloat-equal \
                              -Wshadow \
-                             -Wpedantic \
                              -Wconversion \
                              -Wno-unknown-pragmas \
-                             -Werror \
+                             -pthread \
                              -fPIC")
         set(CMAKE_CXX_FLAGS_DEBUG "-g")
         set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
@@ -32,11 +34,12 @@ macro(set_compiller_flags)
     elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
         message("Using Visual Studio C++ compiller settings")
         set(CMAKE_CXX_FLAGS "/std:c++17 \
-        					 /EHsc 
-        					 /W4 \
-        					 /WX")
+                             /EHsc \
+                             /W4 \
+                             /WX")
         set(CMAKE_CXX_FLAGS_DEBUG "/Od /ZI")
         set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
         set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/O2 /DNDEBUG")
     endif()
 endmacro()
+
