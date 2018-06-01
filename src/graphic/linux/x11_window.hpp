@@ -3,17 +3,19 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2017
 
-#ifndef FRAMEWORK_WINDOW_LINUX_X11_WINDOW_HPP
-#define FRAMEWORK_WINDOW_LINUX_X11_WINDOW_HPP
+#ifndef FRAMEWORK_GRAPHIC_LINUX_X11_WINDOW_HPP
+#define FRAMEWORK_GRAPHIC_LINUX_X11_WINDOW_HPP
 
 #include <X11/Xlib.h>
 #include <functional>
 
 #include <common/types.hpp>
-#include <window/implementation.hpp>
-#include <window/linux/x11_server.hpp>
+#include <graphic/linux/x11_server.hpp>
+#include <graphic/window_implementation.hpp>
 
 namespace framework {
+
+namespace graphic {
 
 class x11_window final : public window::implementation
 {
@@ -111,6 +113,8 @@ private:
     XIC input_context    = nullptr;
     Time m_lastInputTime = 0;
 };
+
+} // namespace graphic
 
 } // namespace framework
 

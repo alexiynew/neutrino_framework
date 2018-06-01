@@ -3,21 +3,23 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2017
 
-#ifndef FRAMEWORK_WINDOW_IMPLEMENTATION_HPP
-#define FRAMEWORK_WINDOW_IMPLEMENTATION_HPP
+#ifndef FRAMEWORK_GRAPHIC_WINDOW_IMPLEMENTATION_HPP
+#define FRAMEWORK_GRAPHIC_WINDOW_IMPLEMENTATION_HPP
 
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <window/window.hpp>
+#include <graphic/window.hpp>
 
 namespace framework {
+
+namespace graphic {
 
 class window::implementation
 {
 public:
-    static std::unique_ptr<implementation> get_implementation(window::size_t size, const std::string& title);
+    static std::unique_ptr<implementation> create(window::size_t size, const std::string& title);
 
     implementation()          = default;
     virtual ~implementation() = default;
@@ -64,6 +66,8 @@ public:
     virtual bool visible() const    = 0;
     virtual bool focused() const    = 0;
 };
+
+} // namespace graphic
 
 } // namespace framework
 

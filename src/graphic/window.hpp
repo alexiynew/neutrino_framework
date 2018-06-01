@@ -3,14 +3,16 @@
 /// @author Fedorov Alexey
 /// @date 04.04.2017
 
-#ifndef FRAMEWORK_WINDOW_WINDOW_HPP
-#define FRAMEWORK_WINDOW_WINDOW_HPP
+#ifndef FRAMEWORK_GRAPHIC_WINDOW_HPP
+#define FRAMEWORK_GRAPHIC_WINDOW_HPP
 
 #include <memory>
 
 #include <common/types.hpp>
 
 namespace framework {
+
+namespace graphic {
 
 class window
 {
@@ -108,6 +110,8 @@ T& operator<<(T& ostream, const window::position_t& position)
     ostream << "{" << position.x << ", " << position.y << "}";
     return ostream;
 }
+
+} // namespace graphic
 
 } // namespace framework
 

@@ -3,14 +3,16 @@
 /// @author Fedorov Alexey
 /// @date 19.04.2017
 
-#ifndef FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP
-#define FRAMEWORK_WINDOW_OSX_COCOA_WINDOW_HPP
+#ifndef FRAMEWORK_GRAPHIC_OSX_COCOA_WINDOW_HPP
+#define FRAMEWORK_GRAPHIC_OSX_COCOA_WINDOW_HPP
 
 #import "Cocoa/Cocoa.h"
 
-#include <window/implementation.hpp>
+#include <graphic/window_implementation.hpp>
 
 namespace framework {
+
+namespace graphic {
 
 class cocoa_window final : public window::implementation
 {
@@ -69,6 +71,8 @@ private:
     NSAutoreleasePool* pool;
     NSWindow* window;
 };
+
+} // namespace graphic
 
 } // namespace framework
 

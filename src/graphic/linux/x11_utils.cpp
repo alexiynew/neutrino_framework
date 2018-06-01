@@ -1,10 +1,16 @@
+/// @file
+/// @brief Contains several helper functions.
+/// @author Fedorov Alexey
+/// @date 05.04.2018
+
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <cstring>
 
-#include <window/linux/x11_utils.hpp>
+#include <graphic/linux/x11_utils.hpp>
 
 using namespace framework;
+using namespace framework::graphic;
 
 namespace {
 
@@ -197,6 +203,8 @@ std::string create_string(Display* display, const XTextProperty& text_property)
 
 namespace framework {
 
+namespace graphic {
+
 namespace utils {
 
 bool ewmh_supported()
@@ -256,9 +264,7 @@ bool window_add_state(const x11_server* server, Window window, const std::vector
     return ::window_change_state(server, window, ::net_wm_state_action::add, state_atom_names);
 }
 
-bool window_remove_state(const framework::x11_server* server,
-                         Window window,
-                         const std::vector<std::string>& state_atom_names)
+bool window_remove_state(const x11_server* server, Window window, const std::vector<std::string>& state_atom_names)
 {
     return ::window_change_state(server, window, ::net_wm_state_action::remove, state_atom_names);
 }
@@ -370,5 +376,7 @@ std::string get_window_name(const x11_server* server, Window window)
 }
 
 } // namespace utils
+
+} // namespace graphic
 
 } // namespace framework

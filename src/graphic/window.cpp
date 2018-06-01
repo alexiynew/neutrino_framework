@@ -3,15 +3,15 @@
 /// @author Fedorov Alexey
 /// @date 04.04.2017
 
+#include <graphic/window.hpp>
+#include <graphic/window_implementation.hpp>
 #include <memory>
-
-#include <window/implementation.hpp>
-#include <window/window.hpp>
 
 namespace framework {
 
-window::window(size_t size, const std::string& title)
-    : m_implementation(implementation::get_implementation(size, title))
+namespace graphic {
+
+window::window(size_t size, const std::string& title) : m_implementation(implementation::create(size, title))
 {}
 
 window::~window()
@@ -194,5 +194,7 @@ bool operator!=(const window::position_t& lhs, const window::position_t& rhs)
 }
 
 #pragma endregion
+
+} // namespace graphic
 
 } // namespace framework

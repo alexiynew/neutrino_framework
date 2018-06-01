@@ -1,5 +1,7 @@
+#include <graphic/window.hpp>
 #include <unit_test/suite.hpp>
-#include <window/window.hpp>
+
+using namespace framework::graphic;
 
 class window_state_test : public framework::unit_test::suite
 {
@@ -16,170 +18,170 @@ public:
 private:
     void fullscreen_window()
     {
-        const ::framework::window::size_t size640{640, 480};
+        const window::size_t size640{640, 480};
 
-        framework::window window(size640);
+        window w(size640);
 
-        window.show();
+        w.show();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
-        window.switch_to_fullscreen();
+        w.switch_to_fullscreen();
 
-        TEST_ASSERT(window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
 
-        window.hide();
-        window.show();
+        w.hide();
+        w.show();
 
-        TEST_ASSERT(window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
 
-        window.restore();
+        w.restore();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
     }
 
     void iconify_window()
     {
-        const ::framework::window::size_t size640{640, 480};
+        const window::size_t size640{640, 480};
 
-        framework::window window(size640);
+        window w(size640);
 
-        window.show();
+        w.show();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
-        window.iconify();
+        w.iconify();
 
         // Window is iconified, but still on screen (visible)
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(!window.focused(), "Invalid window state.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(!w.focused(), "Invalid window state.");
 
-        window.hide();
-        window.show();
+        w.hide();
+        w.show();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
-        window.iconify();
+        w.iconify();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(!window.focused(), "Invalid window state.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(!w.focused(), "Invalid window state.");
 
-        window.restore();
+        w.restore();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
     }
 
     void maximize_window()
     {
-        const ::framework::window::size_t size640{640, 480};
+        const window::size_t size640{640, 480};
 
-        framework::window window(size640);
+        window w(size640);
 
-        window.show();
+        w.show();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
-        window.maximize();
+        w.maximize();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
 
-        window.hide();
-        window.show();
+        w.hide();
+        w.show();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
 
-        window.restore();
+        w.restore();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
     }
 
     void fullscreen_before_show()
     {
-        const ::framework::window::size_t size640{640, 480};
+        const window::size_t size640{640, 480};
 
-        ::framework::window window(size640);
+        window w(size640);
 
-        window.switch_to_fullscreen();
-        window.show();
+        w.switch_to_fullscreen();
+        w.show();
 
-        TEST_ASSERT(window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(!window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(!w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
     }
 
     void maximized_before_show()
     {
-        const ::framework::window::size_t size640{640, 480};
+        const window::size_t size640{640, 480};
 
-        ::framework::window window(size640);
+        window w(size640);
 
-        window.maximize();
-        window.show();
+        w.maximize();
+        w.show();
 
-        TEST_ASSERT(!window.fullscreen(), "Invalid window state.");
-        TEST_ASSERT(!window.iconified(), "Invalid window state.");
-        TEST_ASSERT(window.maximized(), "Invalid window state.");
-        TEST_ASSERT(window.visible(), "Invalid window state.");
-        TEST_ASSERT(window.focused(), "Invalid window state.");
+        TEST_ASSERT(!w.fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!w.iconified(), "Invalid window state.");
+        TEST_ASSERT(w.maximized(), "Invalid window state.");
+        TEST_ASSERT(w.visible(), "Invalid window state.");
+        TEST_ASSERT(w.focused(), "Invalid window state.");
     }
 };
 

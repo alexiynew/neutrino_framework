@@ -15,9 +15,7 @@ set(PUBLIC_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/matrix_functions.hpp
     ${CMAKE_CURRENT_LIST_DIR}/relational_functions.hpp
     ${CMAKE_CURRENT_LIST_DIR}/transform_functions.hpp
-)
 
-set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/vector_type_details.hpp
     ${CMAKE_CURRENT_LIST_DIR}/matrix_type_details.hpp
 
@@ -31,9 +29,7 @@ set(PRIVATE_SOURCES
 target_sources(${PROJECT_NAME} 
     PUBLIC 
         ${PUBLIC_SOURCES}
-
-    PRIVATE
-        ${PRIVATE_SOURCES}
 )
 
-source_group(${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
+source_group(${MODULE_NAME} FILES ${PUBLIC_SOURCES})
+

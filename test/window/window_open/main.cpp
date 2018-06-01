@@ -1,5 +1,7 @@
+#include <graphic/window.hpp>
 #include <unit_test/suite.hpp>
-#include <window/window.hpp>
+
+using namespace framework::graphic;
 
 class window_open_test : public framework::unit_test::suite
 {
@@ -13,36 +15,36 @@ public:
 private:
     void open_window()
     {
-        ::framework::window window({640, 480});
-        window.show();
+        window w({640, 480});
+        w.show();
 
-        TEST_ASSERT(window.visible(), "Window is not visible.");
+        TEST_ASSERT(w.visible(), "Window is not visible.");
 
-        window.hide();
+        w.hide();
 
-        TEST_ASSERT(!window.visible(), "Window is still visible.");
+        TEST_ASSERT(!w.visible(), "Window is still visible.");
     }
 
     void open_several_windows()
     {
-        ::framework::window windows[5] = {
-        ::framework::window::size_t{640, 480},
-        ::framework::window::size_t{640, 480},
-        ::framework::window::size_t{640, 480},
-        ::framework::window::size_t{640, 480},
-        ::framework::window::size_t{640, 480},
+        window windows[5] = {
+        window::size_t{640, 480},
+        window::size_t{640, 480},
+        window::size_t{640, 480},
+        window::size_t{640, 480},
+        window::size_t{640, 480},
         };
 
-        for (auto& window : windows) {
-            window.show();
+        for (auto& w : windows) {
+            w.show();
         }
 
-        for (auto& window : windows) {
-            window.hide();
+        for (auto& w : windows) {
+            w.hide();
         }
 
-        for (auto& window : windows) {
-            window.show();
+        for (auto& w : windows) {
+            w.show();
         }
     }
 };

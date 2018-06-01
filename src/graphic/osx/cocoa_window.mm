@@ -6,11 +6,13 @@
 #include <iostream>
 #include <memory>
 
-#include <window/osx/cocoa_window.hpp>
+#include <graphic/osx/cocoa_window.hpp>
 
 namespace framework {
 
-std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t, const std::string&)
+namespace graphic {
+
+std::unique_ptr<window::implementation> window::implementation::create(window::size_t, const std::string&)
 {
     return std::make_unique<cocoa_window>();
 }
@@ -178,5 +180,7 @@ bool cocoa_window::focused() const
 {
     throw std::logic_error("Function is not implemented.");
 }
+
+} // namespace graphic
 
 } // namespace framework

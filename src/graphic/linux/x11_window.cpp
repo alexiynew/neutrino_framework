@@ -11,9 +11,9 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
+#include <graphic/linux/x11_utils.hpp>
+#include <graphic/linux/x11_window.hpp>
 #include <log/log.hpp>
-#include <window/linux/x11_utils.hpp>
-#include <window/linux/x11_window.hpp>
 
 using namespace framework::log;
 
@@ -105,8 +105,9 @@ std::string event_type_string(const XAnyEvent& event)
 
 namespace framework {
 
-std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t size,
-                                                                                   const std::string& title)
+namespace graphic {
+
+std::unique_ptr<window::implementation> window::implementation::create(window::size_t size, const std::string& title)
 {
     return std::make_unique<x11_window>(size, title);
 }
@@ -249,7 +250,7 @@ void x11_window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
-        if (utils::is_debug()) {
+        if (::framework::utils::is_debug()) {
             process(event.xany);
         }
 
@@ -824,5 +825,7 @@ void x11_window::update_size_limits(window::size_t min_size, window::size_t max_
 }
 
 #pragma endregion
+
+} // namespace graphic
 
 } // namespace framework

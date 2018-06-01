@@ -3,16 +3,18 @@
 /// @author Fedorov Alexey
 /// @date 19.04.2017
 
-#ifndef FRAMEWORK_WINDOW_WINDOWS_WIN32_WINDOW_HPP
-#define FRAMEWORK_WINDOW_WINDOWS_WIN32_WINDOW_HPP
+#ifndef FRAMEWORK_GRAPHIC_WINDOWS_WIN32_WINDOW_HPP
+#define FRAMEWORK_GRAPHIC_WINDOWS_WIN32_WINDOW_HPP
 
 #include <Windows.h>
 
-#include <window/implementation.hpp>
+#include <graphic/window_implementation.hpp>
 
 class application;
 
 namespace framework {
+
+namespace graphic {
 
 class win32_window final : public window::implementation
 {
@@ -91,6 +93,8 @@ private:
 
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 };
+
+} // namespace graphic
 
 } // namespace framework
 

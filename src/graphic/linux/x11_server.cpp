@@ -4,11 +4,12 @@
 /// @date 08.08.2017
 
 #include <common/types.hpp>
+#include <graphic/linux/x11_server.hpp>
 #include <log/log.hpp>
-#include <window/linux/x11_server.hpp>
 
 using namespace framework;
 using namespace framework::log;
+using namespace framework::graphic;
 
 namespace {
 
@@ -54,6 +55,8 @@ void release_error_handlers()
 } // namespace
 
 namespace framework {
+
+namespace graphic {
 
 std::shared_ptr<x11_server> x11_server::connect()
 {
@@ -129,5 +132,7 @@ XIM x11_server::input_method() const
 {
     return m_input_method;
 }
+
+} // namespace graphic
 
 } // namespace framework

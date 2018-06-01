@@ -6,8 +6,8 @@
 #include <exception>
 #include <map>
 
+#include <graphic/windows/win32_window.hpp>
 #include <log/log.hpp>
-#include <window/windows/win32_window.hpp>
 
 class application
 {
@@ -161,8 +161,9 @@ std::shared_ptr<ATOM> register_window_class()
 
 namespace framework {
 
-std::unique_ptr<window::implementation> window::implementation::get_implementation(window::size_t size,
-                                                                                   const std::string& title)
+namespace graphic {
+
+std::unique_ptr<window::implementation> window::implementation::create(window::size_t size, const std::string& title)
 {
     return std::make_unique<win32_window>(size, title);
 }
@@ -480,5 +481,7 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
 
     return DefWindowProc(m_window, message, w_param, l_param);
 }
+
+} // namespace graphic
 
 } // namespace framework

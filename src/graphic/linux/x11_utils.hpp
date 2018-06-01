@@ -3,8 +3,8 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2018
 
-#ifndef FRAMEWORK_WINDOW_LINUX_X11_UTILS_HPP
-#define FRAMEWORK_WINDOW_LINUX_X11_UTILS_HPP
+#ifndef FRAMEWORK_GRAPHIC_LINUX_X11_UTILS_HPP
+#define FRAMEWORK_GRAPHIC_LINUX_X11_UTILS_HPP
 
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
@@ -12,9 +12,11 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <window/linux/x11_server.hpp>
+#include <graphic/linux/x11_server.hpp>
 
 namespace framework {
+
+namespace graphic {
 
 namespace utils {
 
@@ -53,6 +55,8 @@ void set_window_name(const x11_server* server, Window window, const std::string&
 std::string get_window_name(const x11_server* server, Window window);
 
 } // namespace utils
+
+} // namespace graphic
 
 } // namespace framework
 
