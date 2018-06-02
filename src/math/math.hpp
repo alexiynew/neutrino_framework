@@ -21,8 +21,8 @@
 #include <math/trigonometric_functions.hpp>
 #include <math/vector_type.hpp>
 
-namespace framework {
-
+namespace framework
+{
 /// @brief Contains all math stuff.
 /// @defgroup math_module Math
 /// @{
@@ -58,8 +58,8 @@ namespace framework {
 /// @defgroup trigonometric_functions Trigonometric functions
 
 /// @brief Contains all math stuff.
-namespace math {
-
+namespace math
+{
 /// @name Common vector types.
 /// @{
 

@@ -11,13 +11,13 @@
 
 #include <log/log.hpp>
 
-namespace framework {
-
+namespace framework
+{
 /// @addtogroup log_module
 /// @{
 
-namespace log {
-
+namespace log
+{
 std::unique_ptr<logger_base>& logger_instance();
 
 /// @brief Prints all messages to provided stream.

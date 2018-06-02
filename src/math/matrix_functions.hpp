@@ -10,10 +10,10 @@
 #include <math/matrix_functions_details.hpp>
 #include <math/matrix_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @addtogroup matrix_functions
 /// @{
 

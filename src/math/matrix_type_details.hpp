@@ -9,13 +9,13 @@
 #include <common/types.hpp>
 #include <math/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @brief Contains matrix type implementation details.
-namespace matrix_type_details {
-
+namespace matrix_type_details
+{
 /// @brief Helper functions to implement matrix constructors.
 /// @{
 template <typename T, typename U>

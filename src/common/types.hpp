@@ -8,8 +8,8 @@
 
 #include <cstdint>
 
-namespace framework {
-
+namespace framework
+{
 /// @defgroup common_types_module Common types
 /// @{
 

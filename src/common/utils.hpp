@@ -6,13 +6,13 @@
 #ifndef FRAMEWORK_COMMON_UTILS_HPP
 #define FRAMEWORK_COMMON_UTILS_HPP
 
-namespace framework {
-
+namespace framework
+{
 /// @defgroup common_utils_module Common utils
 /// @{
 
-namespace utils {
-
+namespace utils
+{
 inline constexpr bool is_debug() noexcept
 {
 #ifndef NDEBUG

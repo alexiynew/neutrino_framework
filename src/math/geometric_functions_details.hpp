@@ -8,12 +8,12 @@
 
 #include <math/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
-namespace geometric_functions_details {
-
+namespace framework
+{
+namespace math
+{
+namespace geometric_functions_details
+{
 /// @brief Realization of dot function.
 /// @{
 template <typename T>

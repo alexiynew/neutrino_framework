@@ -14,10 +14,10 @@
 #include <math/matrix_type.hpp>
 #include <math/trigonometric_functions.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @addtogroup transform_functions
 /// @{
 

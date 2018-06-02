@@ -6,18 +6,18 @@
 #include <log/log.hpp>
 #include <log/log_details.hpp>
 
-namespace {
-
+namespace
+{
 constexpr size_t log_buffer_size = 64;
 
 } // namespace
 
-namespace framework {
-
-namespace log {
-
-namespace log_details {
-
+namespace framework
+{
+namespace log
+{
+namespace log_details
+{
 #pragma region log_buffer
 
 log_buffer::log_buffer(::framework::log::severity_level level, const std::string& tag)

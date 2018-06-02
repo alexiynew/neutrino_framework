@@ -11,14 +11,14 @@
 
 #include <log/log_details.hpp>
 
-namespace framework {
-
+namespace framework
+{
 /// @defgroup log_module Logging
 /// @{
 
 /// @brief Contains classes related to logging.
-namespace log {
-
+namespace log
+{
 using log_details::log_ostream;
 
 /// @brief Severity level of log message.

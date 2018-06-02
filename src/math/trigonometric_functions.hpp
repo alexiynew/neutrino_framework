@@ -12,10 +12,10 @@
 #include <math/constants.hpp>
 #include <math/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @addtogroup trigonometric_functions
 /// @{
 

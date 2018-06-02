@@ -14,10 +14,10 @@
 #include <math/relational_functions_details.hpp>
 #include <math/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @addtogroup relational_functions
 /// @{
 

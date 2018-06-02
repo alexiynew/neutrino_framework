@@ -11,10 +11,10 @@
 #include <common/types.hpp>
 #include <math/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @addtogroup exponential_functions
 /// @{
 

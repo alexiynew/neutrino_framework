@@ -8,10 +8,10 @@
 
 #include <common/types.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @addtogroup predefined_constants
 /// @{
 

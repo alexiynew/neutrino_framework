@@ -11,10 +11,10 @@
 #include <common/types.hpp>
 #include <math/vector_type_details.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @addtogroup vector_implementation
 /// @{
 

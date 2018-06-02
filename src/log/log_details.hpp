@@ -10,17 +10,17 @@
 #include <ostream>
 #include <vector>
 
-namespace framework {
-
+namespace framework
+{
 /// @addtogroup log_module
 /// @{
 
-namespace log {
-
+namespace log
+{
 enum class severity_level;
 
-namespace log_details {
-
+namespace log_details
+{
 /// @brief Custom stream buffer
 class log_buffer : public std::streambuf
 {

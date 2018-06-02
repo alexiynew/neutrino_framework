@@ -13,10 +13,10 @@
 #include <math/common_functions_details.hpp>
 #include <math/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @addtogroup common_functions
 /// @{
 

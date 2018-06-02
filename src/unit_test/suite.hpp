@@ -12,14 +12,14 @@
 
 #include <common/types.hpp>
 
-namespace framework {
-
+namespace framework
+{
 /// @defgroup unit_test_module Unit test
 /// @{
 
 /// @brief Contains classes related to unit tests.
-namespace unit_test {
-
+namespace unit_test
+{
 /// @brief Base class to work with tests.
 ///
 /// You should use it as the base class for your test classes.

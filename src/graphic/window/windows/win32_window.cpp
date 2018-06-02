@@ -71,8 +71,8 @@ LRESULT CALLBACK application::window_procedure(HWND window_handle, UINT message,
     return DefWindowProc(window_handle, message, w_param, l_param);
 }
 
-namespace {
-
+namespace
+{
 const char* const log_tag = "win32_window";
 
 const wchar_t g_szClassName[] = L"myWindowClass";
@@ -159,10 +159,10 @@ std::shared_ptr<ATOM> register_window_class()
 
 } // namespace
 
-namespace framework {
-
-namespace graphic {
-
+namespace framework
+{
+namespace graphic
+{
 std::unique_ptr<window::implementation> window::implementation::create(window::size_t size, const std::string& title)
 {
     return std::make_unique<win32_window>(size, title);

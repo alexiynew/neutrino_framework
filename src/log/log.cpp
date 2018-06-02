@@ -9,10 +9,10 @@
 using namespace framework::log;
 using namespace framework::log::log_details;
 
-namespace framework {
-
-namespace log {
-
+namespace framework
+{
+namespace log
+{
 class dummy_logger : public logger_base
 {
     void add_message(const severity_level, const std::string&, const std::string&) override

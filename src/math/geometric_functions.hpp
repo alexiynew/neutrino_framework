@@ -10,10 +10,10 @@
 #include <math/geometric_functions_details.hpp>
 #include <math/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 ///
 /// @addtogroup geometric_functions
 /// @{

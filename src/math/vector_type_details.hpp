@@ -11,13 +11,13 @@
 
 #include <common/types.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @brief Contains vector type implementation details.
-namespace vector_type_details {
-
+namespace vector_type_details
+{
 /// @brief Workaround to compare float numbers without warnings.
 /// @{
 
