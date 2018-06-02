@@ -1,18 +1,18 @@
 get_filename_component(MODULE_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 
+set(GROUP_PATH ${MODULE_NAME})
+
 message("\tAdd module: ${MODULE_NAME}")
 
 set(PUBLIC_SOURCES 
     ${CMAKE_CURRENT_LIST_DIR}/window.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/context.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/renderer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/canvas_base.hpp
 )
 
 set(PRIVATE_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/window_implementation.hpp
     ${CMAKE_CURRENT_LIST_DIR}/window.cpp
-
-    ${CMAKE_CURRENT_LIST_DIR}/context_implementation.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/context.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/renderer.cpp
 )
 
 target_sources(${PROJECT_NAME} 
@@ -22,8 +22,8 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-source_group(${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
+source_group(${GROUP_PATH} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
 
-# Add platform dependent sources
-include(${CMAKE_CURRENT_LIST_DIR}/${PLATFORM_NAME}/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/window/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
 

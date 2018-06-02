@@ -3,18 +3,18 @@
 /// @author Fedorov Alexey
 /// @date 08.08.2017
 
-#ifndef FRAMEWORK_GRAPHIC_LINUX_X11_SERVER_HPP
-#define FRAMEWORK_GRAPHIC_LINUX_X11_SERVER_HPP
+#ifndef FRAMEWORK_GRAPHIC_WINDOW_LINUX_X11_SERVER_HPP
+#define FRAMEWORK_GRAPHIC_WINDOW_LINUX_X11_SERVER_HPP
 
 #include <X11/Xlib.h>
 #include <map>
 #include <memory>
 #include <vector>
 
-namespace framework {
-
-namespace graphic {
-
+namespace framework
+{
+namespace graphic
+{
 class x11_server final
 {
 public:

@@ -11,14 +11,14 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
-#include <graphic/linux/x11_utils.hpp>
-#include <graphic/linux/x11_window.hpp>
+#include <graphic/window/linux/x11_utils.hpp>
+#include <graphic/window/linux/x11_window.hpp>
 #include <log/log.hpp>
 
 using namespace framework::log;
 
-namespace {
-
+namespace
+{
 const char* const log_tag = "x11_window";
 
 const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
@@ -103,10 +103,10 @@ std::string event_type_string(const XAnyEvent& event)
 
 } // namespace
 
-namespace framework {
-
-namespace graphic {
-
+namespace framework
+{
+namespace graphic
+{
 std::unique_ptr<window::implementation> window::implementation::create(window::size_t size, const std::string& title)
 {
     return std::make_unique<x11_window>(size, title);

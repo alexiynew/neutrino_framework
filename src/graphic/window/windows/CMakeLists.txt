@@ -10,4 +10,4 @@ target_sources(${PROJECT_NAME}
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE UNICODE)
 
-source_group(${MODULE_NAME} FILES ${PRIVATE_SOURCES})
+source_group(${GROUP_PATH} FILES ${PRIVATE_SOURCES})

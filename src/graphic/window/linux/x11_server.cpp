@@ -4,15 +4,15 @@
 /// @date 08.08.2017
 
 #include <common/types.hpp>
-#include <graphic/linux/x11_server.hpp>
+#include <graphic/window/linux/x11_server.hpp>
 #include <log/log.hpp>
 
 using namespace framework;
 using namespace framework::log;
 using namespace framework::graphic;
 
-namespace {
-
+namespace
+{
 const char* const log_tag = "x11_server";
 
 std::weak_ptr<x11_server>& server_instance()
@@ -54,10 +54,10 @@ void release_error_handlers()
 
 } // namespace
 
-namespace framework {
-
-namespace graphic {
-
+namespace framework
+{
+namespace graphic
+{
 std::shared_ptr<x11_server> x11_server::connect()
 {
     if (server_instance().expired()) {

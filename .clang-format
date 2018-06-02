@@ -1,6 +1,4 @@
 ﻿---
-#BasedOnStyle: WebKit
-
 
 AccessModifierOffset: '-4'
 
@@ -26,11 +24,25 @@ AlwaysBreakTemplateDeclarations: 'true'
 BinPackArguments: 'false'
 BinPackParameters: 'false'
 
-# set BraceWrapping to 'Custom' to use this option
-# BraceWrapping:
+BreakBeforeBraces: 'Custom'
+BraceWrapping:
+    AfterClass: 'true'
+    AfterControlStatement: 'false'
+    AfterEnum: 'true'
+    AfterFunction: 'true'
+    AfterNamespace: 'true'
+    AfterObjCDeclaration: 'true'
+    AfterStruct: 'true'
+    AfterUnion: 'true'
+    AfterExternBlock: 'true'
+    BeforeCatch: 'false'
+    BeforeElse: 'false'
+    IndentBraces: 'false'
+    SplitEmptyFunction: 'false'
+    SplitEmptyRecord: 'false'
+    SplitEmptyNamespace: 'false'
 
 BreakBeforeBinaryOperators: 'None'
-BreakBeforeBraces: 'Mozilla'
 BreakBeforeInheritanceComma: 'true'
 BreakBeforeTernaryOperators: 'true'
 BreakConstructorInitializers: 'BeforeColon'
@@ -74,9 +86,6 @@ ObjCBlockIndentWidth: '0'
 ObjCSpaceAfterProperty: 'false'
 ObjCSpaceBeforeProtocolList: 'false'
 
-PenaltyBreakComment: '999'
-PenaltyReturnTypeOnItsOwnLine: '0'
-
 PenaltyBreakAssignment: '999'
 PenaltyBreakBeforeFirstCallParameter: '9999'
 PenaltyBreakComment: '999'
@@ -107,7 +116,4 @@ TabWidth: '4'
 UseTab: Never
 
 ...
-
-
-
 

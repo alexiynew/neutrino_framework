@@ -12,7 +12,7 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-source_group(${MODULE_NAME} FILES ${PRIVATE_SOURCES})
+source_group(${GROUP_PATH} FILES ${PRIVATE_SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE

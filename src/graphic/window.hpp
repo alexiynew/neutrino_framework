@@ -10,10 +10,10 @@
 
 #include <common/types.hpp>
 
-namespace framework {
-
-namespace graphic {
-
+namespace framework
+{
+namespace graphic
+{
 class window
 {
 public:

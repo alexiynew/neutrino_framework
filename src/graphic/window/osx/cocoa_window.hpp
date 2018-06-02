@@ -1,26 +1,24 @@
 /// @file
-/// @brief Window implementation for windows.
+/// @brief Window implementation for osx.
 /// @author Fedorov Alexey
 /// @date 19.04.2017
 
-#ifndef FRAMEWORK_GRAPHIC_WINDOWS_WIN32_WINDOW_HPP
-#define FRAMEWORK_GRAPHIC_WINDOWS_WIN32_WINDOW_HPP
+#ifndef FRAMEWORK_GRAPHIC_WINDOW_OSX_COCOA_WINDOW_HPP
+#define FRAMEWORK_GRAPHIC_WINDOW_OSX_COCOA_WINDOW_HPP
 
-#include <Windows.h>
+#import "Cocoa/Cocoa.h"
 
 #include <graphic/window_implementation.hpp>
 
-class application;
-
-namespace framework {
-
-namespace graphic {
-
-class win32_window final : public window::implementation
+namespace framework
+{
+namespace graphic
+{
+class cocoa_window final : public window::implementation
 {
 public:
-    win32_window(window::size_t size, const std::string& title);
-    ~win32_window() override;
+    cocoa_window();
+    ~cocoa_window() override;
 
     /// @name actions
     /// @{
@@ -29,7 +27,7 @@ public:
     void focus() override;
     void process_events() override;
 
-    void iconify() override;
+    void minimize() override;
     void maximize() override;
     void switch_to_fullscreen() override;
     void restore() override;
@@ -37,8 +35,6 @@ public:
 
     /// @name setters
     /// @{
-
-    // The size() value will be updated after next event processing
     void set_size(window::size_t size) override;
     void set_position(window::position_t position) override;
 
@@ -64,7 +60,7 @@ public:
     /// @name state
     /// @{
     bool fullscreen() const override;
-    bool iconified() const override;
+    bool minimized() const override;
     bool maximized() const override;
     bool resizable() const override;
     bool visible() const override;
@@ -72,26 +68,8 @@ public:
     /// @}
 
 private:
-    struct window_info
-    {
-        LONG style;
-        LONG ex_style;
-        RECT rect;
-    };
-
-    friend class ::application;
-
-    HWND m_window = nullptr;
-    std::shared_ptr<ATOM> m_window_class;
-
-    window::size_t m_min_size = {0, 0};
-    window::size_t m_max_size = {0, 0};
-
-    bool m_resizable = true;
-
-    window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
-
-    LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
+    NSAutoreleasePool* pool;
+    NSWindow* window;
 };
 
 } // namespace graphic

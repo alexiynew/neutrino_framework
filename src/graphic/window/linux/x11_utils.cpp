@@ -7,13 +7,13 @@
 #include <X11/Xutil.h>
 #include <cstring>
 
-#include <graphic/linux/x11_utils.hpp>
+#include <graphic/window/linux/x11_utils.hpp>
 
 using namespace framework;
 using namespace framework::graphic;
 
-namespace {
-
+namespace
+{
 const char* const net_supporting_wm_check_atom_name  = u8"_NET_SUPPORTING_WM_CHECK";
 const char* const net_supported_atom_name            = u8"_NET_SUPPORTED";
 const char* const net_wm_state_atom_name             = u8"_NET_WM_STATE";
@@ -201,12 +201,12 @@ std::string create_string(Display* display, const XTextProperty& text_property)
 
 } // namespace
 
-namespace framework {
-
-namespace graphic {
-
-namespace utils {
-
+namespace framework
+{
+namespace graphic
+{
+namespace utils
+{
 bool ewmh_supported()
 {
     static bool supported = is_ewmh_compliant(x11_server::connect().get());

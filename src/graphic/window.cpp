@@ -3,14 +3,15 @@
 /// @author Fedorov Alexey
 /// @date 04.04.2017
 
-#include <graphic/window.hpp>
-#include <graphic/window_implementation.hpp>
 #include <memory>
 
-namespace framework {
+#include <graphic/window.hpp>
+#include <graphic/window/implementation.hpp>
 
-namespace graphic {
-
+namespace framework
+{
+namespace graphic
+{
 window::window(size_t size, const std::string& title) : m_implementation(implementation::create(size, title))
 {}
 

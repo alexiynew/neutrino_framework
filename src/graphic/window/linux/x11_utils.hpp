@@ -3,8 +3,8 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2018
 
-#ifndef FRAMEWORK_GRAPHIC_LINUX_X11_UTILS_HPP
-#define FRAMEWORK_GRAPHIC_LINUX_X11_UTILS_HPP
+#ifndef FRAMEWORK_GRAPHIC_WINDOW_LINUX_X11_UTILS_HPP
+#define FRAMEWORK_GRAPHIC_WINDOW_LINUX_X11_UTILS_HPP
 
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
@@ -12,14 +12,14 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <graphic/linux/x11_server.hpp>
+#include <graphic/window/linux/x11_server.hpp>
 
-namespace framework {
-
-namespace graphic {
-
-namespace utils {
-
+namespace framework
+{
+namespace graphic
+{
+namespace utils
+{
 constexpr int32 message_source_application = 1;
 
 enum class bypass_compositor_state
