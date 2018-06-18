@@ -75,6 +75,8 @@ public:
     size_t min_size() const;
 
     std::string title() const;
+
+    uint64 native_handler() const;
     /// @}
 
     /// @name state

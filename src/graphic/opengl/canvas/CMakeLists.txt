@@ -3,8 +3,7 @@ get_filename_component(DIR_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 set(GROUP_PATH ${GROUP_PATH}/${DIR_NAME})
 
 set(PRIVATE_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/opengl_canvas.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/opengl_canvas.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/implementation.hpp
 )
 
 target_sources(${PROJECT_NAME} 
@@ -14,5 +13,5 @@ target_sources(${PROJECT_NAME}
 
 source_group(${GROUP_PATH} FILES ${PRIVATE_SOURCES})
 
-include(${CMAKE_CURRENT_LIST_DIR}/canvas/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/${PLATFORM_NAME}/CMakeLists.txt)
 

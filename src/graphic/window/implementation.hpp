@@ -62,6 +62,8 @@ public:
     virtual size_t min_size() const = 0;
 
     virtual std::string title() const = 0;
+
+    virtual uint64 native_handler() const = 0;
     /// @}
 
     /// @name state

@@ -6,8 +6,8 @@ message("\tAdd module: ${MODULE_NAME}")
 
 set(PUBLIC_SOURCES 
     ${CMAKE_CURRENT_LIST_DIR}/window.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/canvas.hpp
     ${CMAKE_CURRENT_LIST_DIR}/renderer.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/canvas_base.hpp
 )
 
 set(PRIVATE_SOURCES

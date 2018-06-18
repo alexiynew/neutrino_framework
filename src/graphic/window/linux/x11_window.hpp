@@ -61,6 +61,8 @@ public:
     window::size_t min_size() const override;
 
     std::string title() const override;
+
+    uint64 native_handler() const override;
     /// @}
 
     /// @name state

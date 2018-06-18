@@ -1,19 +1,19 @@
 /// @file
-/// @brief Base class for canvas implementations.
+/// @brief Base class for all canvas implementations.
 /// @author Fedorov Alexey
 /// @date 02.06.2018
 
-#ifndef FRAMEWORK_GRAPHIC_CANVAS_BASE_HPP
-#define FRAMEWORK_GRAPHIC_CANVAS_BASE_HPP
+#ifndef FRAMEWORK_GRAPHIC_CANVAS_HPP
+#define FRAMEWORK_GRAPHIC_CANVAS_HPP
 
 namespace framework
 {
 namespace graphic
 {
-class canvas_base
+class canvas
 {
 public:
-    virtual ~canvas_base() = default;
+    virtual ~canvas() = default;
 
     virtual void make_current() = 0;
     virtual void swap_buffers() = 0;

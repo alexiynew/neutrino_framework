@@ -543,6 +543,11 @@ std::string x11_window::title() const
     return utils::get_window_name(m_server.get(), m_window);
 }
 
+uint64 x11_window::native_handler() const
+{
+    return static_cast<uint64>(m_window);
+}
+
 #pragma endregion
 
 #pragma region state

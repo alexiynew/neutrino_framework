@@ -8,7 +8,7 @@
 
 #include <memory>
 
-#include <graphic/canvas_base.hpp>
+#include <graphic/canvas.hpp>
 #include <graphic/window.hpp>
 
 namespace framework
@@ -18,14 +18,14 @@ namespace graphic
 class renderer
 {
 public:
-    explicit renderer(std::unique_ptr<canvas_base> canvas);
+    explicit renderer(std::unique_ptr<canvas> canvas);
 
     void draw();
 
     void swap_buffers();
 
 private:
-    std::unique_ptr<canvas_base> m_canvas;
+    std::unique_ptr<canvas> m_canvas;
 };
 
 } // namespace graphic

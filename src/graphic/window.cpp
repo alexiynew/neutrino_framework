@@ -132,6 +132,11 @@ std::string window::title() const
     return m_implementation->title();
 }
 
+uint64 window::native_handler() const
+{
+    return m_implementation->native_handler();
+}
+
 #pragma endregion
 
 #pragma region state

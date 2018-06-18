@@ -12,7 +12,7 @@ namespace framework
 {
 namespace graphic
 {
-renderer::renderer(std::unique_ptr<canvas_base> canvas) : m_canvas(std::move(canvas))
+renderer::renderer(std::unique_ptr<canvas> canvas) : m_canvas(std::move(canvas))
 {}
 
 void renderer::draw()
