@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_GRAPHIC_OPENGL_CANVAS_LINUX_X11_OPENGL_CANVAS_HPP
 #define FRAMEWORK_GRAPHIC_OPENGL_CANVAS_LINUX_X11_OPENGL_CANVAS_HPP
 
+#include <GL/glx.h>
 #include <X11/Xlib.h>
 
 #include <graphic/opengl/canvas/implementation.hpp>
@@ -28,6 +29,7 @@ public:
 private:
     Display* m_display;
     Window m_window;
+    GLXContext m_context;
 };
 
 } // namespace graphic

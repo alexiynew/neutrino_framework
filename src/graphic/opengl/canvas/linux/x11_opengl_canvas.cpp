@@ -3,62 +3,27 @@
 /// @author Fedorov Alexey
 /// @date 02.06.2018
 
-#include <GL/glx.h>
+#include <set>
+#include <string>
 
 #include <graphic/opengl/canvas/linux/x11_opengl_canvas.hpp>
 #include <graphic/window/linux/x11_server.hpp>
-
-//#define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
-//#define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
-// typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
-
-// Helper to check for extension string presence.  Adapted from:
-//   http://www.opengl.org/resources/features/OGLextensions/
-// static bool isExtensionSupported(const char* extList, const char* extension)
-//{
-//    const char* start;
-//    const char *where, *terminator;
-//
-//    /* Extension names should not have spaces. */
-//    where = strchr(extension, ' ');
-//    if (where || *extension == '\0')
-//        return false;
-//
-//    /* It takes a bit of care to be fool-proof about parsing the
-//       OpenGL extensions string. Don't be fooled by sub-strings,
-//       etc. */
-//    for (start = extList;;) {
-//        where = strstr(start, extension);
-//
-//        if (!where)
-//            break;
-//
-//        terminator = where + strlen(extension);
-//
-//        if (where == start || *(where - 1) == ' ')
-//            if (*terminator == ' ' || *terminator == '\0')
-//                return true;
-//
-//        start = terminator;
-//    }
-//
-//    return false;
-//}
 
 namespace
 {
 using namespace framework;
 
-void check_glx_version(Display* display)
+const int32 glx_min_major_version = 1;
+const int32 glx_min_minor_version = 4;
+
+bool check_glx_version(Display* display)
 {
     int32 glx_major = 0;
     int32 glx_minor = 0;
 
     glXQueryVersion(display, &glx_major, &glx_minor);
 
-    if (((glx_major == 1) && (glx_minor < 4)) || (glx_major < 1)) {
-        throw std::runtime_error("Wrong GLX version.");
-    }
+    return glx_major >= glx_min_major_version && glx_minor >= glx_min_minor_version;
 }
 
 GLXFBConfig choose_framebuffer_config(Display* display)
@@ -82,11 +47,11 @@ GLXFBConfig choose_framebuffer_config(Display* display)
     int32 count;
     GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), visual_attribs, &count);
     if (!configs) {
-        throw std::runtime_error("Can't get framebuffer config.");
+        return nullptr;
     }
 
-    int32 best               = -1;
-    int32 best_samples_count = -1;
+    int32 best         = -1;
+    int32 best_samples = -1;
 
     for (int32 i = 0; i < count; ++i) {
         int32 sample_buffer;
@@ -94,9 +59,9 @@ GLXFBConfig choose_framebuffer_config(Display* display)
         glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLE_BUFFERS, &sample_buffer);
         glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLES, &samples);
 
-        if (best < 0 || (sample_buffer && samples > best_samples_count)) {
-            best               = i;
-            best_samples_count = samples;
+        if (best < 0 || (sample_buffer && samples > best_samples)) {
+            best         = i;
+            best_samples = samples;
         }
     }
 
@@ -107,19 +72,84 @@ GLXFBConfig choose_framebuffer_config(Display* display)
     return best_config;
 }
 
-void set_colormap(Display* display, Window& window)
+bool set_colormap(Display* display, Window& window, GLXFBConfig framebuffer_config)
 {
-    GLXFBConfig framebuffer_config = choose_framebuffer_config(display);
-    XVisualInfo* visual_info       = glXGetVisualFromFBConfig(display, framebuffer_config);
+    XVisualInfo* visual_info = glXGetVisualFromFBConfig(display, framebuffer_config);
 
     if (!visual_info) {
-        throw std::runtime_error("Can't get visual info for framebuffer config.");
+        return false;
     }
 
     Colormap colormap = XCreateColormap(display, window, visual_info->visual, AllocNone);
     XSetWindowColormap(display, window, colormap);
 
     XFree(visual_info);
+
+    return true;
+}
+
+template <typename F>
+F get_function(const char* function_name)
+{
+    return reinterpret_cast<F>(glXGetProcAddressARB(reinterpret_cast<const GLubyte*>(function_name)));
+}
+
+std::set<std::string> split(const std::string& string, const std::string& delimeter)
+{
+    std::set<std::string> values;
+
+    size_t begin = 0;
+    size_t end   = string.find(delimeter, begin);
+
+    while (end != std::string::npos && end > begin) {
+        values.insert(string.substr(begin, end - begin));
+
+        begin = end + delimeter.size();
+        end   = string.find(delimeter, begin);
+    }
+
+    if (begin < string.size()) {
+        values.insert(string.substr(begin, string.size() - begin));
+    }
+
+    return values;
+}
+
+std::set<std::string> get_glx_extensions(Display* display)
+{
+    const char* extensions = glXQueryExtensionsString(display, DefaultScreen(display));
+
+    if (!extensions) {
+        return std::set<std::string>();
+    }
+
+    return split(extensions, " ");
+}
+
+bool is_glx_extension_supported(Display* display, const std::string& extension)
+{
+    static std::set<std::string> extensions = get_glx_extensions(display);
+
+    return extensions.count(extension) > 0;
+}
+
+GLXContext create_context(Display* display, GLXFBConfig framebuffer_config)
+{
+    auto glXCreateContextAttribsARB = get_function<PFNGLXCREATECONTEXTATTRIBSARBPROC>("glXCreateContextAttribsARB");
+
+    if (!is_glx_extension_supported(display, "GLX_ARB_create_context") || !glXCreateContextAttribsARB) {
+        return nullptr;
+    }
+
+    // clang-format off
+    int32 context_attribs[] = {
+        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 0,
+        GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+        None};
+    // clang-format on
+
+    return glXCreateContextAttribsARB(display, framebuffer_config, 0, True, context_attribs);
 }
 
 } // namespace
@@ -139,64 +169,28 @@ const ::framework::graphic::window& window)
 
 x11_opengl_canvas::x11_opengl_canvas(Display* display, const Window& window) : m_display(display), m_window(window)
 {
-    check_glx_version(m_display);
+    if (!check_glx_version(m_display)) {
+        throw std::runtime_error("Invalid GLX version.");
+    }
 
-    set_colormap(m_display, m_window);
+    GLXFBConfig framebuffer_config = choose_framebuffer_config(display);
+
+    if (!framebuffer_config) {
+        throw std::runtime_error("Can't get framebuffer config.");
+    }
+
+    if (!set_colormap(m_display, m_window, framebuffer_config)) {
+        throw std::runtime_error("Can't get visual info for framebuffer config.");
+    }
+
+    m_context = create_context(m_display, framebuffer_config);
+
+    if (!m_context) {
+        throw std::runtime_error("Can't create OpenGL context.");
+    }
 
     // init gl
     /*
-        // Get the default screen's GLX extension list
-        const char* glxExts = glXQueryExtensionsString(display, DefaultScreen(display));
-
-        // NOTE: It is not necessary to create or make current to a context before
-        // calling glXGetProcAddressARB
-        glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
-        glXCreateContextAttribsARB                                =
-       (glXCreateContextAttribsARBProc)glXGetProcAddressARB( (const GLubyte*)"glXCreateContextAttribsARB");
-
-        GLXContext ctx = 0;
-
-        // Check for the GLX_ARB_create_context extension string and the function.
-        // If either is not present, use GLX 1.3 context creation method.
-        if (!isExtensionSupported(glxExts, "GLX_ARB_create_context") || !glXCreateContextAttribsARB) {
-            printf("glXCreateContextAttribsARB() not found"
-                   " ... using old-style GLX context\n");
-            ctx = glXCreateNewContext(display, bestFbc, GLX_RGBA_TYPE, 0, True);
-        }
-
-        // If it does, try to get a GL 3.0 context!
-        else {
-            int context_attribs[] = {GLX_CONTEXT_MAJOR_VERSION_ARB,
-                                     3,
-                                     GLX_CONTEXT_MINOR_VERSION_ARB,
-                                     0,
-                                     // GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-                                     None};
-
-            printf("Creating context\n");
-            ctx = glXCreateContextAttribsARB(display, bestFbc, 0, True, context_attribs);
-
-            // Sync to ensure any errors generated are processed.
-            XSync(display, False);
-            if (!ctxErrorOccurred && ctx)
-                printf("Created GL 3.0 context\n");
-            else {
-                // Couldn't create GL 3.0 context.  Fall back to old-style 2.x context.
-                // When a context version below 3.0 is requested, implementations will
-                // return the newest context version compatible with OpenGL versions less
-                // than version 3.0.
-                // GLX_CONTEXT_MAJOR_VERSION_ARB = 1
-                context_attribs[1] = 1;
-                // GLX_CONTEXT_MINOR_VERSION_ARB = 0
-                context_attribs[3] = 0;
-
-                ctxErrorOccurred = false;
-
-                printf("Failed to create GL 3.0 context"
-                       " ... using old-style GLX context\n");
-                ctx = glXCreateContextAttribsARB(display, bestFbc, 0, True, context_attribs);
-            }
-        }
 
         // Sync to ensure any errors generated are processed.
         XSync(display, False);
@@ -235,7 +229,7 @@ x11_opengl_canvas::~x11_opengl_canvas() = default;
 
 void x11_opengl_canvas::make_current()
 {
-    //   glXMakeCurrent(m_display, m_window, m_context);
+    glXMakeCurrent(m_display, m_window, m_context);
 }
 
 void x11_opengl_canvas::swap_buffers()
