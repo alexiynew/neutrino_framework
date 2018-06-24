@@ -5,10 +5,10 @@ output/
 .atom-build.yml
 .lvimrc
 .DS_Store
+.idea
 
 .clang_complete
 *.log
 *.log.*
 .dir-locals.*
-.lvimrc
 tags

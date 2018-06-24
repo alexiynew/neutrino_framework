@@ -62,7 +62,7 @@ public:
 
     std::string title() const override;
 
-    uint64 native_handler() const override;
+    std::unique_ptr<window::graphic_context> context() const override;
     /// @}
 
     /// @name state
@@ -76,6 +76,23 @@ public:
     /// @}
 
 private:
+    class x11_graphic_context : public window::graphic_context
+    {
+    public:
+        x11_graphic_context(Display* display, Window window, GLXContext context);
+
+        bool valid() const override;
+        bool is_current() const override;
+
+        void make_current() override;
+        void swap_buffers() override;
+
+    private:
+        Display* m_display   = nullptr;
+        Window m_window      = None;
+        GLXContext m_context = nullptr;
+    };
+
     void process(XDestroyWindowEvent event);
     void process(XUnmapEvent event);
     void process(XVisibilityEvent event);
@@ -90,6 +107,7 @@ private:
     void set_wm_hints();
     void set_class_hints();
     void add_protocols(const std::vector<std::string>& protocol_names);
+
     void create_input_context();
 
     void process_events_while(const std::function<bool()>& condition);
@@ -111,8 +129,13 @@ private:
     mutable window::size_t m_min_size = {0, 0};
     mutable window::size_t m_max_size = {0, 0};
 
-    Window m_window      = 0;
-    XIC input_context    = nullptr;
+    Window m_window     = None;
+    Colormap m_colormap = None;
+
+    GLXFBConfig m_framebuffer_config = nullptr;
+    GLXContext m_glx_context         = nullptr;
+    XIC m_input_context              = nullptr;
+
     Time m_lastInputTime = 0;
 };
 

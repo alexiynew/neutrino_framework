@@ -63,7 +63,7 @@ public:
 
     virtual std::string title() const = 0;
 
-    virtual uint64 native_handler() const = 0;
+    virtual std::unique_ptr<graphic_context> context() const = 0;
     /// @}
 
     /// @name state

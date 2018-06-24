@@ -3,9 +3,11 @@
 /// @author Fedorov Alexey
 /// @date 05.04.2017
 
+#include <GL/glx.h>
 #include <X11/Xutil.h>
 #include <chrono>
 #include <exception>
+#include <set>
 #include <string>
 #include <thread>
 
@@ -15,6 +17,7 @@
 #include <graphic/window/linux/x11_window.hpp>
 #include <log/log.hpp>
 
+using namespace framework;
 using namespace framework::log;
 
 namespace
@@ -28,19 +31,19 @@ const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDE
 const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
 const char* const wm_delete_window_atom_name            = u8"WM_DELETE_WINDOW";
 
-const ::framework::int64 event_mask = VisibilityChangeMask     // Any change in visibility wanted
-                                      | FocusChangeMask        // Any change in input focus wanted
-                                      | StructureNotifyMask    // Any change in window structure wanted
-                                      | PropertyChangeMask     // Any change in property wanted
-                                      | ExposureMask           // Any exposure wanted
-                                      | KeyPressMask           // Keyboard down events wanted
-                                      | KeyReleaseMask         // Keyboard up events wanted
-                                      | ButtonPressMask        // Pointer button down events wanted
-                                      | ButtonReleaseMask      // Pointer button up events wanted
-                                      | EnterWindowMask        // Pointer window entry events wanted
-                                      | LeaveWindowMask        // Pointer window leave events wanted
-                                      | PointerMotionMask      // Pointer motion events wanted
-                                      | PointerMotionHintMask; // Pointer motion hints wanted
+const int64 event_mask = VisibilityChangeMask     // Any change in visibility wanted
+                         | FocusChangeMask        // Any change in input focus wanted
+                         | StructureNotifyMask    // Any change in window structure wanted
+                         | PropertyChangeMask     // Any change in property wanted
+                         | ExposureMask           // Any exposure wanted
+                         | KeyPressMask           // Keyboard down events wanted
+                         | KeyReleaseMask         // Keyboard up events wanted
+                         | ButtonPressMask        // Pointer button down events wanted
+                         | ButtonReleaseMask      // Pointer button up events wanted
+                         | EnterWindowMask        // Pointer window entry events wanted
+                         | LeaveWindowMask        // Pointer window leave events wanted
+                         | PointerMotionMask      // Pointer motion events wanted
+                         | PointerMotionHintMask; // Pointer motion hints wanted
 
 // | Button1MotionMask        // Pointer motion while button 1 down
 // | Button2MotionMask        // Pointer motion while button 2 down
@@ -54,6 +57,9 @@ const ::framework::int64 event_mask = VisibilityChangeMask     // Any change in 
 // | SubstructureRedirectMask // Redirect structure requests on children
 // | ColormapChangeMask       // Any change in colormap wanted
 // | OwnerGrabButtonMask;     // Automatic grabs should activate with owner_events set to True
+
+const int32 glx_min_major_version = 1;
+const int32 glx_min_minor_version = 4;
 
 Bool event_predicate(Display*, XEvent* event, XPointer arg)
 {
@@ -101,6 +107,123 @@ std::string event_type_string(const XAnyEvent& event)
     }
 }
 
+bool check_glx_version(Display* display)
+{
+    int32 glx_major = 0;
+    int32 glx_minor = 0;
+
+    glXQueryVersion(display, &glx_major, &glx_minor);
+
+    return glx_major >= glx_min_major_version && glx_minor >= glx_min_minor_version;
+}
+
+GLXFBConfig choose_framebuffer_config(Display* display)
+{
+    // clang-format off
+    static int32 visual_attribs[] = {
+        GLX_X_RENDERABLE,  True,
+        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+        GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+        GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+        GLX_RED_SIZE,      8,
+        GLX_GREEN_SIZE,    8,
+        GLX_BLUE_SIZE,     8,
+        GLX_ALPHA_SIZE,    8,
+        GLX_DEPTH_SIZE,    24,
+        GLX_STENCIL_SIZE,  8,
+        GLX_DOUBLEBUFFER,  True,
+        None};
+    // clang-format on
+
+    int32 count;
+    GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), visual_attribs, &count);
+    if (!configs) {
+        return nullptr;
+    }
+
+    int32 best         = -1;
+    int32 best_samples = -1;
+
+    for (int32 i = 0; i < count; ++i) {
+        int32 sample_buffer;
+        int32 samples;
+        glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLE_BUFFERS, &sample_buffer);
+        glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLES, &samples);
+
+        if (best < 0 || (sample_buffer && samples > best_samples)) {
+            best         = i;
+            best_samples = samples;
+        }
+    }
+
+    GLXFBConfig best_config = configs[best];
+
+    XFree(configs);
+
+    return best_config;
+}
+
+std::set<std::string> split(const std::string& string, const std::string& delimeter)
+{
+    std::set<std::string> values;
+
+    size_t begin = 0;
+    size_t end   = string.find(delimeter, begin);
+
+    while (end != std::string::npos && end > begin) {
+        values.insert(string.substr(begin, end - begin));
+
+        begin = end + delimeter.size();
+        end   = string.find(delimeter, begin);
+    }
+
+    if (begin < string.size()) {
+        values.insert(string.substr(begin, string.size() - begin));
+    }
+
+    return values;
+}
+
+std::set<std::string> get_glx_extensions(Display* display)
+{
+    const char* extensions = glXQueryExtensionsString(display, DefaultScreen(display));
+
+    if (!extensions) {
+        return std::set<std::string>();
+    }
+
+    return split(extensions, " ");
+}
+
+bool is_glx_extension_supported(Display* display, const std::string& extension)
+{
+    static std::set<std::string> extensions = get_glx_extensions(display);
+
+    return extensions.count(extension) > 0;
+}
+
+GLXContext create_glx_context(Display* display, const GLXFBConfig framebuffer_config)
+{
+    using namespace ::framework::graphic::utils;
+
+    auto glXCreateContextAttribsARB = reinterpret_cast<PFNGLXCREATECONTEXTATTRIBSARBPROC>(
+    glXGetProcAddressARB(reinterpret_cast<const uint8*>("glXCreateContextAttribsARB")));
+
+    if (!is_glx_extension_supported(display, "GLX_ARB_create_context") || !glXCreateContextAttribsARB) {
+        return nullptr;
+    }
+
+    // clang-format off
+    int32 context_attribs[] = {
+        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 0,
+        GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+        None};
+    // clang-format on
+
+    return glXCreateContextAttribsARB(display, framebuffer_config, 0, True, context_attribs);
+}
+
 } // namespace
 
 namespace framework
@@ -114,18 +237,39 @@ std::unique_ptr<window::implementation> window::implementation::create(window::s
 
 x11_window::x11_window(window::size_t size, const std::string& title) : m_server(x11_server::connect()), m_size(size)
 {
-    XID color = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
+    if (!check_glx_version(m_server->display())) {
+        throw std::runtime_error("Invalid GLX version.");
+    }
 
+    m_framebuffer_config = choose_framebuffer_config(m_server->display());
+
+    if (!m_framebuffer_config) {
+        throw std::runtime_error("Can't get framebuffer config.");
+    }
+
+    XVisualInfo* visual_info = glXGetVisualFromFBConfig(m_server->display(), m_framebuffer_config);
+    if (!visual_info) {
+        throw std::runtime_error("Can't get visual info.");
+    }
+
+    Visual* visual = visual_info->visual;
+    XFree(visual_info);
+
+    m_glx_context = create_glx_context(m_server->display(), m_framebuffer_config);
+
+    m_colormap = XCreateColormap(m_server->display(), m_server->default_root_window(), visual, AllocNone);
+
+    XID color           = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
     uint32 border_width = 0;
-    int32 depth         = 24;
+    int32 depth         = 24; // get it fron visual
     uint32 window_class = InputOutput;
-    uint64 valuemask    = CWBackPixel | CWEventMask;
-    Visual* visual      = DefaultVisual(m_server->display(), m_server->default_screen());
+    uint64 valuemask    = CWBackPixel | CWEventMask | CWColormap;
 
     XSetWindowAttributes attributes = {};
 
     attributes.background_pixel = color;
     attributes.event_mask       = event_mask;
+    attributes.colormap         = m_colormap;
 
     //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
     //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
@@ -173,14 +317,22 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
 
 x11_window::~x11_window()
 {
+    if (m_glx_context) {
+        glXDestroyContext(m_server->display(), m_glx_context);
+    }
+
+    if (m_colormap) {
+        XFreeColormap(m_server->display(), m_colormap);
+    }
+
     if (m_server->display() && m_window) {
         XDestroyWindow(m_server->display(), m_window);
         XSync(m_server->display(), False);
     }
 
-    if (input_context) {
-        XDestroyIC(input_context);
-        input_context = nullptr;
+    if (m_input_context) {
+        XDestroyIC(m_input_context);
+        m_input_context = nullptr;
     }
 }
 
@@ -543,9 +695,9 @@ std::string x11_window::title() const
     return utils::get_window_name(m_server.get(), m_window);
 }
 
-uint64 x11_window::native_handler() const
+std::unique_ptr<window::graphic_context> x11_window::context() const
 {
-    return static_cast<uint64>(m_window);
+    return std::make_unique<x11_window::x11_graphic_context>(m_server->display(), m_window, m_glx_context);
 }
 
 #pragma endregion
@@ -659,8 +811,8 @@ void x11_window::process(XFocusChangeEvent event)
 {
     switch (event.type) {
         case FocusIn:
-            if (input_context) {
-                XSetICFocus(input_context);
+            if (m_input_context) {
+                XSetICFocus(m_input_context);
             }
 
             // TODO: Find out how to deal with cursor
@@ -683,8 +835,8 @@ void x11_window::process(XFocusChangeEvent event)
             // }
             break;
         case FocusOut:
-            if (input_context) {
-                XUnsetICFocus(input_context);
+            if (m_input_context) {
+                XUnsetICFocus(m_input_context);
             }
 
             if (m_cursor_grabbed) {
@@ -780,14 +932,14 @@ void x11_window::add_protocols(const std::vector<std::string>& protocol_names)
 void x11_window::create_input_context()
 {
     if (m_server->input_method()) {
-        input_context = XCreateIC(m_server->input_method(),
-                                  XNInputStyle,
-                                  XIMPreeditNothing | XIMStatusNothing,
-                                  XNClientWindow,
-                                  m_window,
-                                  XNFocusWindow,
-                                  m_window,
-                                  nullptr);
+        m_input_context = XCreateIC(m_server->input_method(),
+                                    XNInputStyle,
+                                    XIMPreeditNothing | XIMStatusNothing,
+                                    XNClientWindow,
+                                    m_window,
+                                    XNFocusWindow,
+                                    m_window,
+                                    nullptr);
     }
 }
 
@@ -827,6 +979,37 @@ void x11_window::update_size_limits(window::size_t min_size, window::size_t max_
     }
 
     XSetWMNormalHints(m_server->display(), m_window, &size_hints);
+}
+
+#pragma endregion
+
+#pragma x11_graphic_context
+
+x11_window::x11_graphic_context::x11_graphic_context(Display* display, Window window, GLXContext context)
+    : m_display(display), m_window(window), m_context(context)
+{}
+
+bool x11_window::x11_graphic_context::valid() const
+{
+    // TODO add more robust checks,
+    return m_display != nullptr && m_window != None && m_context != nullptr;
+}
+
+bool x11_window::x11_graphic_context::is_current() const
+{
+    return glXGetCurrentContext() == m_context;
+}
+
+void x11_window::x11_graphic_context::make_current()
+{
+    if (!is_current()) {
+        glXMakeCurrent(m_display, m_window, m_context);
+    }
+}
+
+void x11_window::x11_graphic_context::swap_buffers()
+{
+    glXSwapBuffers(m_display, m_window);
 }
 
 #pragma endregion

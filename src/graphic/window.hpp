@@ -19,6 +19,16 @@ class window
 public:
     class implementation;
 
+    class graphic_context
+    {
+    public:
+        virtual bool valid() const      = 0;
+        virtual bool is_current() const = 0;
+
+        virtual void make_current() = 0;
+        virtual void swap_buffers() = 0;
+    };
+
     struct size_t
     {
         int32 width;
@@ -76,7 +86,7 @@ public:
 
     std::string title() const;
 
-    uint64 native_handler() const;
+    std::unique_ptr<graphic_context> context() const;
     /// @}
 
     /// @name state

@@ -15,7 +15,8 @@ class canvas
 public:
     virtual ~canvas() = default;
 
-    virtual void make_current() = 0;
+    virtual void clear(float red, float green, float blue, float alpha) = 0;
+
     virtual void swap_buffers() = 0;
 };
 

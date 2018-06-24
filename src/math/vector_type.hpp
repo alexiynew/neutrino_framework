@@ -1156,6 +1156,23 @@ inline constexpr vector<N, R> transform(const vector<N, T>& first, const vector<
                                                                                     first,
                                                                                     second);
 }
+
+/// @brief 
+template <typename S, uint32 N, typename T>
+S& operator<<(S& ostream, const vector<N, T>& v)
+{
+    ostream << "[";
+
+    for (uint32 i = 0; i < N; ++i)  {
+        ostream << v[i] << (i + 1 < N ? ", " : "");
+    }
+
+    ostream << "]";
+    return ostream;
+}
+
+
+
 /// @}
 
 /// @}

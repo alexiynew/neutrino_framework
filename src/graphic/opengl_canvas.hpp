@@ -16,17 +16,16 @@ namespace graphic
 class opengl_canvas final : public canvas
 {
 public:
-    class implementation;
-
-    explicit opengl_canvas(const ::framework::graphic::window& window);
+    explicit opengl_canvas(std::unique_ptr<window::graphic_context> context);
 
     ~opengl_canvas() override;
 
-    void make_current() override;
+    void clear(float red, float green, float blue, float alpha) override;
+
     void swap_buffers() override;
 
 private:
-    std::unique_ptr<implementation> m_implementation;
+    std::unique_ptr<window::graphic_context> m_context;
 };
 
 } // namespace graphic

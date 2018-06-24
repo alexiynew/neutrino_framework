@@ -6,13 +6,14 @@ message("\tAdd module: ${MODULE_NAME}")
 
 set(PUBLIC_SOURCES 
     ${CMAKE_CURRENT_LIST_DIR}/window.hpp
+    
     ${CMAKE_CURRENT_LIST_DIR}/canvas.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/renderer.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/opengl_canvas.hpp
 )
 
 set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/window.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/renderer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/opengl_canvas.cpp
 )
 
 target_sources(${PROJECT_NAME} 
@@ -25,5 +26,5 @@ target_sources(${PROJECT_NAME}
 source_group(${GROUP_PATH} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
 
 include(${CMAKE_CURRENT_LIST_DIR}/window/CMakeLists.txt)
-include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/gl/CMakeLists.txt)
 

@@ -132,9 +132,9 @@ std::string window::title() const
     return m_implementation->title();
 }
 
-uint64 window::native_handler() const
+std::unique_ptr<window::graphic_context> window::context() const
 {
-    return m_implementation->native_handler();
+    return m_implementation->context();
 }
 
 #pragma endregion
