@@ -241,20 +241,38 @@ bool init_gl_version_1_0()
 
 #pragma region gl_version_1_1
 
-using glDRAWARRAYS_ptr    = void (*)(GLenum mode, int32 first, int32 count);
-using glDRAWELEMENTS_ptr  = void (*)(GLenum mode, int32 count, GLenum type, const void* indices);
-using glGETPOINTERV_ptr   = void (*)(GLenum pname, void** params);
-using glPOLYGONOFFSET_ptr = void (*)(float32 factor, float32 units);
-using glCOPYTEXIMAGE1D_ptr =
+using glDrawArrays_ptr             = void (*)(GLenum mode, int32 first, int32 count);
+glDrawArrays_ptr glDrawArrays_proc = nullptr;
+
+using glDrawElements_ptr               = void (*)(GLenum mode, int32 count, GLenum type, const void* indices);
+glDrawElements_ptr glDrawElements_proc = nullptr;
+
+using glGetPointerv_ptr              = void (*)(GLenum pname, void** params);
+glGetPointerv_ptr glGetPointerv_proc = nullptr;
+
+using glPolygonOffset_ptr                = void (*)(float32 factor, float32 units);
+glPolygonOffset_ptr glPolygonOffset_proc = nullptr;
+
+using glCopyTexImage1D_ptr =
 void (*)(GLenum target, int32 level, GLenum internalformat, int32 x, int32 y, int32 width, int32 border);
-using glCOPYTEXIMAGE2D_ptr =
+glCopyTexImage1D_ptr glCopyTexImage1D_proc = nullptr;
+
+using glCopyTexImage2D_ptr =
 void (*)(GLenum target, int32 level, GLenum internalformat, int32 x, int32 y, int32 width, int32 height, int32 border);
-using glCOPYTEXSUBIMAGE1D_ptr = void (*)(GLenum target, int32 level, int32 xoffset, int32 x, int32 y, int32 width);
-using glCOPYTEXSUBIMAGE2D_ptr =
+glCopyTexImage2D_ptr glCopyTexImage2D_proc = nullptr;
+
+using glCopyTexSubImage1D_ptr = void (*)(GLenum target, int32 level, int32 xoffset, int32 x, int32 y, int32 width);
+glCopyTexSubImage1D_ptr glCopyTexSubImage1D_proc = nullptr;
+
+using glCopyTexSubImage2D_ptr =
 void (*)(GLenum target, int32 level, int32 xoffset, int32 yoffset, int32 x, int32 y, int32 width, int32 height);
-using glTEXSUBIMAGE1D_ptr =
+glCopyTexSubImage2D_ptr glCopyTexSubImage2D_proc = nullptr;
+
+using glTexSubImage1D_ptr =
 void (*)(GLenum target, int32 level, int32 xoffset, int32 width, GLenum format, GLenum type, const void* pixels);
-using glTEXSUBIMAGE2D_ptr  = void (*)(GLenum target,
+glTexSubImage1D_ptr glTexSubImage1D_proc = nullptr;
+
+using glTexSubImage2D_ptr                = void (*)(GLenum target,
                                      int32 level,
                                      int32 xoffset,
                                      int32 yoffset,
@@ -263,18 +281,55 @@ using glTEXSUBIMAGE2D_ptr  = void (*)(GLenum target,
                                      GLenum format,
                                      GLenum type,
                                      const void* pixels);
-using glBINDTEXTURE_ptr    = void (*)(GLenum target, uint32 texture);
-using glDELETETEXTURES_ptr = void (*)(int32 n, const uint32* textures);
-using glGENTEXTURES_ptr    = void (*)(int32 n, uint32* textures);
-using glISTEXTURE_ptr      = bool (*)(uint32 texture);
+glTexSubImage2D_ptr glTexSubImage2D_proc = nullptr;
+
+using glBindTexture_ptr              = void (*)(GLenum target, uint32 texture);
+glBindTexture_ptr glBindTexture_proc = nullptr;
+
+using glDeleteTextures_ptr                 = void (*)(int32 n, const uint32* textures);
+glDeleteTextures_ptr glDeleteTextures_proc = nullptr;
+
+using glGenTextures_ptr              = void (*)(int32 n, uint32* textures);
+glGenTextures_ptr glGenTextures_proc = nullptr;
+
+using glIsTexture_ptr            = bool (*)(uint32 texture);
+glIsTexture_ptr glIsTexture_proc = nullptr;
+
+bool init_gl_version_1_1()
+{
+    using namespace ::framework::graphic::utils;
+
+    bool result = true;
+
+    result = result && (glDrawArrays_proc = get_function<glDrawArrays_ptr>("glDrawArrays")) != nullptr;
+    result = result && (glDrawElements_proc = get_function<glDrawElements_ptr>("glDrawElements")) != nullptr;
+    result = result && (glGetPointerv_proc = get_function<glGetPointerv_ptr>("glGetPointerv")) != nullptr;
+    result = result && (glPolygonOffset_proc = get_function<glPolygonOffset_ptr>("glPolygonOffset")) != nullptr;
+    result = result && (glCopyTexImage1D_proc = get_function<glCopyTexImage1D_ptr>("glCopyTexImage1D")) != nullptr;
+    result = result && (glCopyTexImage2D_proc = get_function<glCopyTexImage2D_ptr>("glCopyTexImage2D")) != nullptr;
+    result = result &&
+             (glCopyTexSubImage1D_proc = get_function<glCopyTexSubImage1D_ptr>("glCopyTexSubImage1D")) != nullptr;
+    result = result &&
+             (glCopyTexSubImage2D_proc = get_function<glCopyTexSubImage2D_ptr>("glCopyTexSubImage2D")) != nullptr;
+    result = result && (glTexSubImage1D_proc = get_function<glTexSubImage1D_ptr>("glTexSubImage1D")) != nullptr;
+    result = result && (glTexSubImage2D_proc = get_function<glTexSubImage2D_ptr>("glTexSubImage2D")) != nullptr;
+    result = result && (glBindTexture_proc = get_function<glBindTexture_ptr>("glBindTexture")) != nullptr;
+    result = result && (glDeleteTextures_proc = get_function<glDeleteTextures_ptr>("glDeleteTextures")) != nullptr;
+    result = result && (glGenTextures_proc = get_function<glGenTextures_ptr>("glGenTextures")) != nullptr;
+    result = result && (glIsTexture_proc = get_function<glIsTexture_ptr>("glIsTexture")) != nullptr;
+
+    return result;
+}
 
 #pragma endregion
 
 #pragma region gl_version_1_2
 
-using glDRAWRANGEELEMENTS_ptr =
+using glDrawRangeElements_ptr =
 void (*)(GLenum mode, uint32 start, uint32 end, int32 count, GLenum type, const void* indices);
-using glTEXIMAGE3D_ptr        = void (*)(GLenum target,
+glDrawRangeElements_ptr glDrawRangeElements_proc = nullptr;
+
+using glTexImage3D_ptr             = void (*)(GLenum target,
                                   int32 level,
                                   int32 internalformat,
                                   int32 width,
@@ -284,7 +339,9 @@ using glTEXIMAGE3D_ptr        = void (*)(GLenum target,
                                   GLenum format,
                                   GLenum type,
                                   const void* pixels);
-using glTEXSUBIMAGE3D_ptr     = void (*)(GLenum target,
+glTexImage3D_ptr glTexImage3D_proc = nullptr;
+
+using glTexSubImage3D_ptr                = void (*)(GLenum target,
                                      int32 level,
                                      int32 xoffset,
                                      int32 yoffset,
@@ -295,7 +352,9 @@ using glTEXSUBIMAGE3D_ptr     = void (*)(GLenum target,
                                      GLenum format,
                                      GLenum type,
                                      const void* pixels);
-using glCOPYTEXSUBIMAGE3D_ptr = void (*)(GLenum target,
+glTexSubImage3D_ptr glTexSubImage3D_proc = nullptr;
+
+using glCopyTexSubImage3D_ptr                    = void (*)(GLenum target,
                                          int32 level,
                                          int32 xoffset,
                                          int32 yoffset,
@@ -304,14 +363,35 @@ using glCOPYTEXSUBIMAGE3D_ptr = void (*)(GLenum target,
                                          int32 y,
                                          int32 width,
                                          int32 height);
+glCopyTexSubImage3D_ptr glCopyTexSubImage3D_proc = nullptr;
+
+bool init_gl_version_1_2()
+{
+    using namespace ::framework::graphic::utils;
+
+    bool result = true;
+
+    result = result &&
+             (glDrawRangeElements_proc = get_function<glDrawRangeElements_ptr>("glDrawRangeElements")) != nullptr;
+    result = result && (glTexImage3D_proc = get_function<glTexImage3D_ptr>("glTexImage3D")) != nullptr;
+    result = result && (glTexSubImage3D_proc = get_function<glTexSubImage3D_ptr>("glTexSubImage3D")) != nullptr;
+    result = result &&
+             (glCopyTexSubImage3D_proc = get_function<glCopyTexSubImage3D_ptr>("glCopyTexSubImage3D")) != nullptr;
+
+    return result;
+}
 
 #pragma endregion
 
 #pragma region gl_version_1_3
 
-using glACTIVETEXTURE_ptr           = void (*)(GLenum texture);
-using glSAMPLECOVERAGE_ptr          = void (*)(float32 value, bool invert);
-using glCOMPRESSEDTEXIMAGE3D_ptr    = void (*)(GLenum target,
+using glActiveTexture_ptr                = void (*)(GLenum texture);
+glActiveTexture_ptr glActiveTexture_proc = nullptr;
+
+using glSampleCoverage_ptr                 = void (*)(float32 value, bool invert);
+glSampleCoverage_ptr glSampleCoverage_proc = nullptr;
+
+using glCompressedTexImage3D_ptr                       = void (*)(GLenum target,
                                             int32 level,
                                             GLenum internalformat,
                                             int32 width,
@@ -320,7 +400,9 @@ using glCOMPRESSEDTEXIMAGE3D_ptr    = void (*)(GLenum target,
                                             int32 border,
                                             int32 imageSize,
                                             const void* data);
-using glCOMPRESSEDTEXIMAGE2D_ptr    = void (*)(GLenum target,
+glCompressedTexImage3D_ptr glCompressedTexImage3D_proc = nullptr;
+
+using glCompressedTexImage2D_ptr                       = void (*)(GLenum target,
                                             int32 level,
                                             GLenum internalformat,
                                             int32 width,
@@ -328,14 +410,18 @@ using glCOMPRESSEDTEXIMAGE2D_ptr    = void (*)(GLenum target,
                                             int32 border,
                                             int32 imageSize,
                                             const void* data);
-using glCOMPRESSEDTEXIMAGE1D_ptr    = void (*)(GLenum target,
+glCompressedTexImage2D_ptr glCompressedTexImage2D_proc = nullptr;
+
+using glCompressedTexImage1D_ptr                       = void (*)(GLenum target,
                                             int32 level,
                                             GLenum internalformat,
                                             int32 width,
                                             int32 border,
                                             int32 imageSize,
                                             const void* data);
-using glCOMPRESSEDTEXSUBIMAGE3D_ptr = void (*)(GLenum target,
+glCompressedTexImage1D_ptr glCompressedTexImage1D_proc = nullptr;
+
+using glCompressedTexSubImage3D_ptr                          = void (*)(GLenum target,
                                                int32 level,
                                                int32 xoffset,
                                                int32 yoffset,
@@ -346,7 +432,9 @@ using glCOMPRESSEDTEXSUBIMAGE3D_ptr = void (*)(GLenum target,
                                                GLenum format,
                                                int32 imageSize,
                                                const void* data);
-using glCOMPRESSEDTEXSUBIMAGE2D_ptr = void (*)(GLenum target,
+glCompressedTexSubImage3D_ptr glCompressedTexSubImage3D_proc = nullptr;
+
+using glCompressedTexSubImage2D_ptr                          = void (*)(GLenum target,
                                                int32 level,
                                                int32 xoffset,
                                                int32 yoffset,
@@ -355,9 +443,44 @@ using glCOMPRESSEDTEXSUBIMAGE2D_ptr = void (*)(GLenum target,
                                                GLenum format,
                                                int32 imageSize,
                                                const void* data);
-using glCOMPRESSEDTEXSUBIMAGE1D_ptr =
+glCompressedTexSubImage2D_ptr glCompressedTexSubImage2D_proc = nullptr;
+
+using glCompressedTexSubImage1D_ptr =
 void (*)(GLenum target, int32 level, int32 xoffset, int32 width, GLenum format, int32 imageSize, const void* data);
-using glGETCOMPRESSEDTEXIMAGE_ptr = void (*)(GLenum target, int32 level, void* img);
+glCompressedTexSubImage1D_ptr glCompressedTexSubImage1D_proc = nullptr;
+
+using glGetCompressedTexImage_ptr                        = void (*)(GLenum target, int32 level, void* img);
+glGetCompressedTexImage_ptr glGetCompressedTexImage_proc = nullptr;
+
+bool init_gl_version_1_3()
+{
+    using namespace ::framework::graphic::utils;
+
+    bool result = true;
+    result      = result && (glActiveTexture_proc = get_function<glActiveTexture_ptr>("glActiveTexture")) != nullptr;
+    result      = result && (glSampleCoverage_proc = get_function<glSampleCoverage_ptr>("glSampleCoverage")) != nullptr;
+    result      = result &&
+             (glCompressedTexImage3D_proc = get_function<glCompressedTexImage3D_ptr>("glCompressedTexImage3D")) !=
+             nullptr;
+    result = result &&
+             (glCompressedTexImage2D_proc = get_function<glCompressedTexImage2D_ptr>("glCompressedTexImage2D")) !=
+             nullptr;
+    result = result &&
+             (glCompressedTexImage1D_proc = get_function<glCompressedTexImage1D_ptr>("glCompressedTexImage1D")) !=
+             nullptr;
+    result = result && (glCompressedTexSubImage3D_proc = get_function<glCompressedTexSubImage3D_ptr>(
+                        "glCompressedTexSubImage3D")) != nullptr;
+    result = result && (glCompressedTexSubImage2D_proc = get_function<glCompressedTexSubImage2D_ptr>(
+                        "glCompressedTexSubImage2D")) != nullptr;
+
+    result = result && (glCompressedTexSubImage1D_proc = get_function<glCompressedTexSubImage1D_ptr>(
+                        "glCompressedTexSubImage1D")) != nullptr;
+    result = result &&
+             (glGetCompressedTexImage_proc = get_function<glGetCompressedTexImage_ptr>("glGetCompressedTexImage")) !=
+             nullptr;
+
+    return result;
+}
 
 #pragma endregion
 
@@ -1324,7 +1447,7 @@ namespace gl
 {
 bool init_core()
 {
-    return init_gl_version_1_0();
+    return init_gl_version_1_0() && init_gl_version_1_1() && init_gl_version_1_2() && init_gl_version_1_3();
 }
 
 /// @name gl_version_1_0
@@ -1593,11 +1716,31 @@ void glViewport(int32 x, int32 y, int32 width, int32 height)
 /// @{
 #pragma region gl_version_1_1
 
-void glDrawArrays(GLenum mode, int32 first, int32 count);
-void glDrawElements(GLenum mode, int32 count, GLenum type, const void* indices);
-void glGetPointerv(GLenum pname, void** params);
-void glPolygonOffset(float32 factor, float32 units);
-void glCopyTexImage1D(GLenum target, int32 level, GLenum internalformat, int32 x, int32 y, int32 width, int32 border);
+void glDrawArrays(GLenum mode, int32 first, int32 count)
+{
+    glDrawArrays_proc(mode, first, count);
+}
+
+void glDrawElements(GLenum mode, int32 count, GLenum type, const void* indices)
+{
+    glDrawElements_proc(mode, count, type, indices);
+}
+
+void glGetPointerv(GLenum pname, void** params)
+{
+    glGetPointerv_proc(pname, params);
+}
+
+void glPolygonOffset(float32 factor, float32 units)
+{
+    glPolygonOffset_proc(factor, units);
+}
+
+void glCopyTexImage1D(GLenum target, int32 level, GLenum internalformat, int32 x, int32 y, int32 width, int32 border)
+{
+    glCopyTexImage1D_proc(target, level, internalformat, x, y, width, border);
+}
+
 void glCopyTexImage2D(GLenum target,
                       int32 level,
                       GLenum internalformat,
@@ -1605,8 +1748,16 @@ void glCopyTexImage2D(GLenum target,
                       int32 y,
                       int32 width,
                       int32 height,
-                      int32 border);
-void glCopyTexSubImage1D(GLenum target, int32 level, int32 xoffset, int32 x, int32 y, int32 width);
+                      int32 border)
+{
+    glCopyTexImage2D_proc(target, level, internalformat, x, y, width, height, border);
+}
+
+void glCopyTexSubImage1D(GLenum target, int32 level, int32 xoffset, int32 x, int32 y, int32 width)
+{
+    glCopyTexSubImage1D_proc(target, level, xoffset, x, y, width);
+}
+
 void glCopyTexSubImage2D(GLenum target,
                          int32 level,
                          int32 xoffset,
@@ -1614,14 +1765,22 @@ void glCopyTexSubImage2D(GLenum target,
                          int32 x,
                          int32 y,
                          int32 width,
-                         int32 height);
+                         int32 height)
+{
+    glCopyTexSubImage2D_proc(target, level, xoffset, yoffset, x, y, width, height);
+}
+
 void glTexSubImage1D(GLenum target,
                      int32 level,
                      int32 xoffset,
                      int32 width,
                      GLenum format,
                      GLenum type,
-                     const void* pixels);
+                     const void* pixels)
+{
+    glTexSubImage1D_proc(target, level, xoffset, width, format, type, pixels);
+}
+
 void glTexSubImage2D(GLenum target,
                      int32 level,
                      int32 xoffset,
@@ -1630,11 +1789,30 @@ void glTexSubImage2D(GLenum target,
                      int32 height,
                      GLenum format,
                      GLenum type,
-                     const void* pixels);
-void glBindTexture(GLenum target, uint32 texture);
-void glDeleteTextures(int32 n, const uint32* textures);
-void glGenTextures(int32 n, uint32* textures);
-bool glIsTexture(uint32 texture);
+                     const void* pixels)
+{
+    glTexSubImage2D_proc(target, level, xoffset, yoffset, width, height, format, type, pixels);
+}
+
+void glBindTexture(GLenum target, uint32 texture)
+{
+    glBindTexture_proc(target, texture);
+}
+
+void glDeleteTextures(int32 n, const uint32* textures)
+{
+    glDeleteTextures_proc(n, textures);
+}
+
+void glGenTextures(int32 n, uint32* textures)
+{
+    glGenTextures_proc(n, textures);
+}
+
+bool glIsTexture(uint32 texture)
+{
+    return glIsTexture_proc(texture);
+}
 
 #pragma endregion
 /// @}
@@ -1643,7 +1821,11 @@ bool glIsTexture(uint32 texture);
 /// @{
 #pragma region gl_version_1_2
 
-void glDrawRangeElements(GLenum mode, uint32 start, uint32 end, int32 count, GLenum type, const void* indices);
+void glDrawRangeElements(GLenum mode, uint32 start, uint32 end, int32 count, GLenum type, const void* indices)
+{
+    glDrawRangeElements_proc(mode, start, end, count, type, indices);
+}
+
 void glTexImage3D(GLenum target,
                   int32 level,
                   int32 internalformat,
@@ -1653,7 +1835,11 @@ void glTexImage3D(GLenum target,
                   int32 border,
                   GLenum format,
                   GLenum type,
-                  const void* pixels);
+                  const void* pixels)
+{
+    glTexImage3D_proc(target, level, internalformat, width, height, depth, border, format, type, pixels);
+}
+
 void glTexSubImage3D(GLenum target,
                      int32 level,
                      int32 xoffset,
@@ -1664,7 +1850,11 @@ void glTexSubImage3D(GLenum target,
                      int32 depth,
                      GLenum format,
                      GLenum type,
-                     const void* pixels);
+                     const void* pixels)
+{
+    glTexSubImage3D_proc(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+}
+
 void glCopyTexSubImage3D(GLenum target,
                          int32 level,
                          int32 xoffset,
@@ -1673,7 +1863,10 @@ void glCopyTexSubImage3D(GLenum target,
                          int32 x,
                          int32 y,
                          int32 width,
-                         int32 height);
+                         int32 height)
+{
+    glCopyTexSubImage3D_proc(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+}
 
 #pragma endregion
 /// @}
@@ -1682,8 +1875,16 @@ void glCopyTexSubImage3D(GLenum target,
 /// @{
 #pragma region gl_version_1_3
 
-void glActiveTexture(GLenum texture);
-void glSampleCoverage(float32 value, bool invert);
+void glActiveTexture(GLenum texture)
+{
+    glActiveTexture_proc(texture);
+}
+
+void glSampleCoverage(float32 value, bool invert)
+{
+    glSampleCoverage_proc(value, invert);
+}
+
 void glCompressedTexImage3D(GLenum target,
                             int32 level,
                             GLenum internalformat,
@@ -1692,7 +1893,11 @@ void glCompressedTexImage3D(GLenum target,
                             int32 depth,
                             int32 border,
                             int32 imageSize,
-                            const void* data);
+                            const void* data)
+{
+    glCompressedTexImage3D_proc(target, level, internalformat, width, height, depth, border, imageSize, data);
+}
+
 void glCompressedTexImage2D(GLenum target,
                             int32 level,
                             GLenum internalformat,
@@ -1700,14 +1905,22 @@ void glCompressedTexImage2D(GLenum target,
                             int32 height,
                             int32 border,
                             int32 imageSize,
-                            const void* data);
+                            const void* data)
+{
+    glCompressedTexImage2D_proc(target, level, internalformat, width, height, border, imageSize, data);
+}
+
 void glCompressedTexImage1D(GLenum target,
                             int32 level,
                             GLenum internalformat,
                             int32 width,
                             int32 border,
                             int32 imageSize,
-                            const void* data);
+                            const void* data)
+{
+    glCompressedTexImage1D_proc(target, level, internalformat, width, border, imageSize, data);
+}
+
 void glCompressedTexSubImage3D(GLenum target,
                                int32 level,
                                int32 xoffset,
@@ -1718,7 +1931,21 @@ void glCompressedTexSubImage3D(GLenum target,
                                int32 depth,
                                GLenum format,
                                int32 imageSize,
-                               const void* data);
+                               const void* data)
+{
+    glCompressedTexSubImage3D_proc(target,
+                                   level,
+                                   xoffset,
+                                   yoffset,
+                                   zoffset,
+                                   width,
+                                   height,
+                                   depth,
+                                   format,
+                                   imageSize,
+                                   data);
+}
+
 void glCompressedTexSubImage2D(GLenum target,
                                int32 level,
                                int32 xoffset,
@@ -1727,15 +1954,26 @@ void glCompressedTexSubImage2D(GLenum target,
                                int32 height,
                                GLenum format,
                                int32 imageSize,
-                               const void* data);
+                               const void* data)
+{
+    glCompressedTexSubImage2D_proc(target, level, xoffset, yoffset, width, height, format, imageSize, data);
+}
+
 void glCompressedTexSubImage1D(GLenum target,
                                int32 level,
                                int32 xoffset,
                                int32 width,
                                GLenum format,
                                int32 imageSize,
-                               const void* data);
-void glGetCompressedTexImage(GLenum target, int32 level, void* img);
+                               const void* data)
+{
+    glCompressedTexSubImage1D_proc(target, level, xoffset, width, format, imageSize, data);
+}
+
+void glGetCompressedTexImage(GLenum target, int32 level, void* img)
+{
+    glGetCompressedTexImage_proc(target, level, img);
+}
 
 #pragma endregion
 /// @}
