@@ -1660,7 +1660,7 @@ const uint32 gl_layer_provoking_vertex           = 0x825E;
 const uint32 gl_viewport_index_provoking_vertex  = 0x825F;
 const uint32 gl_undefined_vertex                 = 0x8260;
 
-void glReleaseShaderCompiler(void);
+void glReleaseShaderCompiler();
 void glShaderBinary(int32 count, const uint32* shaders, GLenum binaryformat, const void* binary, int32 length);
 void glGetShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype, int32* range, int32* precision);
 void glDepthRangef(float32 n, float32 f);
