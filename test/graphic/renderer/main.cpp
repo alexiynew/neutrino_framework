@@ -1,8 +1,8 @@
+#include <chrono>
 #include <iostream>
 #include <random>
-#include <thread>
-#include <chrono>
 #include <sstream>
+#include <thread>
 
 #include <graphic/opengl_canvas.hpp>
 #include <graphic/window.hpp>
@@ -45,9 +45,8 @@ private:
         ::framework::float32 t = 0;
 
         while (main_window.visible()) {
-
             if (t >= 1000) {
-                t = 0;
+                t         = 0;
                 old_color = new_color;
                 new_color = vector3f(r_value(), r_value(), r_value());
             }
@@ -67,7 +66,7 @@ private:
 
             main_window.set_title(ss.str());
 
-            t+= 16;
+            t += 16;
         }
     }
 };
