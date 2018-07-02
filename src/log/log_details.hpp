@@ -25,7 +25,7 @@ namespace log_details {
 class log_buffer : public std::streambuf
 {
 public:
-    log_buffer(::framework::log::severity_level level, const std::string& tag);
+    log_buffer(::framework::log::severity_level level, std::string tag);
 
     ~log_buffer() override;
 
@@ -39,6 +39,7 @@ private:
     std::vector<char_type> m_buffer;
 
     void reset_pointers();
+    void clear_buffer();
 };
 
 /// @brief Custom output stream
@@ -52,8 +53,8 @@ public:
     log_ostream(const log_ostream&) = delete;
     log_ostream& operator=(const log_ostream&) = delete;
 
-    log_ostream(log_ostream&&);
-    log_ostream& operator=(log_ostream&&);
+    log_ostream(log_ostream&&) noexcept;
+    log_ostream& operator=(log_ostream&&) noexcept;
 
     explicit log_ostream(std::unique_ptr<std::streambuf> buffer);
 

@@ -4,7 +4,7 @@
 
 #include <window/linux/x11_utils.hpp>
 
-using namespace framework;
+using x11_server = ::framework::x11_server;
 
 namespace {
 
@@ -33,11 +33,11 @@ inline bool have_utf8_support()
 }
 
 template <typename ValueType, typename DataType>
-std::vector<ValueType> values_from_array(const DataType* data, uint64 count)
+std::vector<ValueType> values_from_array(const DataType* data, ::framework::uint64 count)
 {
     std::vector<ValueType> values(count);
 
-    for (uint64 i = 0; i < count; ++i) {
+    for (::framework::uint64 i = 0; i < count; ++i) {
         values[i] = *(reinterpret_cast<const ValueType*>(data + i));
     }
 
@@ -47,26 +47,26 @@ std::vector<ValueType> values_from_array(const DataType* data, uint64 count)
 template <typename PropertyType>
 std::vector<PropertyType> get_window_property(Display* display, Window window, Atom property, Atom type)
 {
-    const int64 max_items_count = 1024;
+    const ::framework::int64 max_items_count = 1024;
 
-    Atom actual_type    = None;
-    int32 actual_format = 0;
-    uint64 items_count  = 0;
-    uint64 bytes_after  = 0;
-    uint8* data         = nullptr;
+    Atom actual_type                 = None;
+    ::framework::int32 actual_format = 0;
+    ::framework::uint64 items_count  = 0;
+    ::framework::uint64 bytes_after  = 0;
+    ::framework::uint8* data         = nullptr;
 
-    int32 result = XGetWindowProperty(display,
-                                      window,
-                                      property,
-                                      0,
-                                      max_items_count,
-                                      False,
-                                      type,
-                                      &actual_type,
-                                      &actual_format,
-                                      &items_count,
-                                      &bytes_after,
-                                      &data);
+    ::framework::int32 result = XGetWindowProperty(display,
+                                                   window,
+                                                   property,
+                                                   0,
+                                                   max_items_count,
+                                                   False,
+                                                   type,
+                                                   &actual_type,
+                                                   &actual_format,
+                                                   &items_count,
+                                                   &bytes_after,
+                                                   &data);
 
     if (result != Success || actual_type != type || items_count == 0 || data == nullptr) {
         if (data) {
@@ -77,9 +77,15 @@ std::vector<PropertyType> get_window_property(Display* display, Window window, A
 
     std::vector<PropertyType> values;
     switch (actual_format) {
-        case 8: values = values_from_array<PropertyType>(reinterpret_cast<uint8*>(data), items_count); break;
-        case 16: values = values_from_array<PropertyType>(reinterpret_cast<uint16*>(data), items_count); break;
-        case 32: values = values_from_array<PropertyType>(reinterpret_cast<uint32*>(data), items_count); break;
+        case 8:
+            values = values_from_array<PropertyType>(reinterpret_cast<::framework::uint8*>(data), items_count);
+            break;
+        case 16:
+            values = values_from_array<PropertyType>(reinterpret_cast<::framework::uint16*>(data), items_count);
+            break;
+        case 32:
+            values = values_from_array<PropertyType>(reinterpret_cast<::framework::uint32*>(data), items_count);
+            break;
     };
 
     XFree(data);
@@ -128,7 +134,7 @@ bool window_change_state(const x11_server* server,
                          net_wm_state_action action,
                          const std::vector<std::string>& state_atom_names)
 {
-    if (!utils::ewmh_supported() || state_atom_names.empty()) {
+    if (!::framework::utils::ewmh_supported() || state_atom_names.empty()) {
         return false;
     }
 
@@ -138,26 +144,26 @@ bool window_change_state(const x11_server* server,
         return false;
     }
 
-    std::array<Atom, 2> state_atoms;
-    state_atoms[0] = (state_atom_names.size() > 0 ? server->get_atom(state_atom_names[0]) : None);
+    std::array<Atom, 2> state_atoms{};
+    state_atoms[0] = (!state_atom_names.empty() ? server->get_atom(state_atom_names[0]) : None);
     state_atoms[1] = (state_atom_names.size() > 1 ? server->get_atom(state_atom_names[1]) : None);
 
-    return utils::send_client_message(server,
-                                      window,
-                                      net_wm_state,
-                                      action,
-                                      state_atoms[0],
-                                      state_atoms[1],
-                                      utils::message_source_application);
+    return ::framework::utils::send_client_message(server,
+                                                   window,
+                                                   net_wm_state,
+                                                   action,
+                                                   state_atoms[0],
+                                                   state_atoms[1],
+                                                   ::framework::utils::message_source_application);
 }
 
 XTextProperty create_text_property(Display* display, const std::string& string)
 {
     XTextProperty text_property = {};
 
-    std::vector<char> temp(string.size() + 1);
-    std::strcpy(temp.data(), string.c_str());
-    char* data = temp.data();
+    std::unique_ptr<char[]> temp = std::make_unique<char[]>(string.size());
+    std::strncpy(temp.get(), string.c_str(), string.size());
+    char* data = temp.get();
 
     if (have_utf8_support()) {
         Xutf8TextListToTextProperty(display, &data, 1, XUTF8StringStyle, &text_property);
@@ -213,10 +219,12 @@ bool send_client_message(const x11_server* server, Window window, Atom message_t
     event.xclient.message_type = message_type;
     event.xclient.format       = 32;
 
-    const int max_size = sizeof(event.xclient.data.l) / sizeof(long);
+    using data_type = std::remove_reference<decltype(event.xclient.data.l[0])>::type;
+
+    const int max_size = std::size(event.xclient.data.l);
 
     for (size_t i = 0; i < data.size() && i < max_size; ++i) {
-        event.xclient.data.l[i] = data[i];
+        event.xclient.data.l[i] = static_cast<const data_type>(data[i]);
     }
 
     Status result = XSendEvent(server->display(),
