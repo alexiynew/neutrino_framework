@@ -35,8 +35,8 @@ public:
     window(const window&) = delete;
     window& operator=(const window&) = delete;
 
-    window(window&& other);
-    window& operator=(window&& other);
+    window(window&& other) noexcept;
+    window& operator=(window&& other) noexcept;
 
     /// @name actions
     /// @{
