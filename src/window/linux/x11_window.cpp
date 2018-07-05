@@ -53,7 +53,8 @@ const ::framework::int64 event_mask = VisibilityChangeMask     // Any change in 
 // | ColormapChangeMask       // Any change in colormap wanted
 // | OwnerGrabButtonMask;     // Automatic grabs should activate with owner_events set to True
 
-Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer const arg)
+// NOLINTNEXTLINE(readability-non-const-parameter)
+Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 {
     return static_cast<Bool>(event->xany.window == *(reinterpret_cast<Window*>(arg)));
 }
@@ -775,7 +776,7 @@ void x11_window::add_protocols(const std::vector<std::string>& protocol_names)
 void x11_window::create_input_context()
 {
     if (m_server->input_method() != nullptr) {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         input_context = XCreateIC(m_server->input_method(),
                                   XNInputStyle,
                                   XIMPreeditNothing | XIMStatusNothing,

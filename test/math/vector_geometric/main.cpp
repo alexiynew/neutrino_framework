@@ -1,7 +1,10 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::math;
+using ::framework::math::vector3f;
+using ::framework::math::vector2f;
+
+using ::framework::math::almost_equal;
 
 class geometric_function_tests : public framework::unit_test::suite
 {

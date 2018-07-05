@@ -9,7 +9,16 @@
 #include <log/stream_logger.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::log;
+using ::framework::log::debug;
+using ::framework::log::error;
+using ::framework::log::fatal;
+using ::framework::log::info;
+using ::framework::log::warning;
+
+using ::framework::log::log_ostream;
+using ::framework::log::set_logger;
+using ::framework::log::severity_level;
+using ::framework::log::stream_logger;
 
 class logger_interface_test : public framework::unit_test::suite
 {
@@ -58,12 +67,32 @@ private:
         << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
         << std::endl;
 
         std::stringstream log_test;
 
         log_test
         << "[" << severity_level::info << "] " << name() << ": "
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
+        << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
         << "long string long string long string long string long string long string long string long string long"
@@ -95,7 +124,7 @@ private:
         t1.join();
         t2.join();
 
-        // We can't check output. Just check, that the test would not crash.
+        // We can't check the output. Just check, that the test would not crash.
         TEST_ASSERT(!log_stream.str().empty(), "Log messages are not correct.");
     }
 };
