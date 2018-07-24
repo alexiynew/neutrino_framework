@@ -1,17 +1,17 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::math::vector4d;
-using ::framework::math::vector4i;
-using ::framework::math::vector4b;
+using ::framework::math::vector2b;
+using ::framework::math::vector2f;
+using ::framework::math::vector2i;
+using ::framework::math::vector2u;
+using ::framework::math::vector3b;
+using ::framework::math::vector3d;
 using ::framework::math::vector3f;
 using ::framework::math::vector3i;
-using ::framework::math::vector3d;
-using ::framework::math::vector3b;
-using ::framework::math::vector2i;
-using ::framework::math::vector2f;
-using ::framework::math::vector2b;
-using ::framework::math::vector2u;
+using ::framework::math::vector4b;
+using ::framework::math::vector4d;
+using ::framework::math::vector4i;
 
 using ::framework::math::matrix2x2f;
 using ::framework::math::matrix2x3f;
@@ -23,7 +23,7 @@ using ::framework::math::matrix4x2f;
 using ::framework::math::matrix4x3f;
 using ::framework::math::matrix4x4f;
 
-// TODO add test for real32 and real64
+// TODO(alex) add test for real32 and real64
 
 class relational_function_tests : public framework::unit_test::suite
 {

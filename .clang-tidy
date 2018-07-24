@@ -17,7 +17,7 @@ Checks: '*,
   -zircon-*'
   
 WarningsAsErrors: '*'
-HeaderFilterRegex: ''
+HeaderFilterRegex: '.*'
 AnalyzeTemporaryDtors: false
 FormatStyle:     none
 User:            alex

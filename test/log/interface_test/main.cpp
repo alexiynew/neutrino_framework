@@ -15,7 +15,6 @@ using ::framework::log::fatal;
 using ::framework::log::info;
 using ::framework::log::warning;
 
-using ::framework::log::log_ostream;
 using ::framework::log::set_logger;
 using ::framework::log::severity_level;
 using ::framework::log::stream_logger;
