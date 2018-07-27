@@ -1,7 +1,5 @@
-﻿#include <unit_test/suite.hpp>
-#include <graphic/window.hpp>
-
-using namespace framework::graphic;
+﻿#include <graphic/window.hpp>
+#include <unit_test/suite.hpp>
 
 class window_properties_test : public framework::unit_test::suite
 {
@@ -18,10 +16,12 @@ public:
 private:
     void window_size()
     {
+        using ::framework::graphic::window;
+
         const window::size_t size480{480, 320};
         const window::size_t size640{640, 480};
 
-        window w({480, 320});
+        window w({480, 320}, "Test");
 
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
 
@@ -41,13 +41,15 @@ private:
 
     void window_size_limits()
     {
+        using ::framework::graphic::window;
+
         const window::size_t size640{640, 480};
         const window::size_t size960{960, 640};
         const window::size_t no_size{0, 0};
         const window::size_t small_size{150, 150};
         const window::size_t big_size{1000, 1000};
 
-        window w({640, 480});
+        window w({640, 480}, "Test");
 
         // Base values
         TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
@@ -87,12 +89,14 @@ private:
 
     void window_resizability()
     {
+        using ::framework::graphic::window;
+
         const window::size_t size480{480, 320};
         const window::size_t size640{640, 480};
         const window::size_t size960{960, 640};
         const window::size_t no_size{0, 0};
 
-        window w(size640);
+        window w(size640, "Test");
 
         w.show();
 
@@ -134,9 +138,11 @@ private:
 
     void window_position()
     {
+        using ::framework::graphic::window;
+
         window::size_t size640 = {640, 480};
 
-        window w(size640);
+        window w(size640, "Test");
 
         w.show();
 
@@ -152,6 +158,8 @@ private:
 
     void window_title()
     {
+        using ::framework::graphic::window;
+
         const std::string title      = u8"winodw_title";
         const std::string new_title  = u8"new_window_title";
         const std::string utf8_title = u8"พᛁቢ⠗☺w ⊤Iτსе";

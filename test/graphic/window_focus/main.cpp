@@ -1,8 +1,6 @@
 #include <graphic/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::graphic;
-
 class window_focus_test : public framework::unit_test::suite
 {
 public:
@@ -14,8 +12,8 @@ public:
 private:
     void focus_window()
     {
-        framework::window alpha({640, 480}, "Test");
-        framework::window betta({640, 480}, "Test");
+        framework::graphic::window alpha({640, 480}, "Test");
+        framework::graphic::window betta({640, 480}, "Test");
 
         alpha.show();
         betta.show();

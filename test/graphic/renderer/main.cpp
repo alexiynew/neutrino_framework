@@ -42,10 +42,11 @@ private:
         vector3f old_color(0, 0, 0);
         vector3f new_color(r_value(), r_value(), r_value());
 
-        ::framework::float32 t = 0;
+        ::framework::float32 t          = 0;
+        ::framework::float32 total_time = 0;
 
-        while (main_window.visible()) {
-            if (t >= 1000) {
+        while (main_window.visible() && total_time < 3000) {
+            if (t >= 500) {
                 t         = 0;
                 old_color = new_color;
                 new_color = vector3f(r_value(), r_value(), r_value());
@@ -67,6 +68,7 @@ private:
             main_window.set_title(ss.str());
 
             t += 16;
+            total_time += 16;
         }
     }
 };

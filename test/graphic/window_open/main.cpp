@@ -1,8 +1,6 @@
 #include <graphic/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::graphic;
-
 class window_open_test : public framework::unit_test::suite
 {
 public:
@@ -15,7 +13,9 @@ public:
 private:
     void open_window()
     {
-        window w({640, 480});
+        using ::framework::graphic::window;
+
+        window w({640, 480}, "Test");
         w.show();
 
         TEST_ASSERT(w.visible(), "Window is not visible.");
@@ -27,12 +27,14 @@ private:
 
     void open_several_windows()
     {
+        using ::framework::graphic::window;
+
         window windows[5] = {
-        window::size_t{640, 480},
-        window::size_t{640, 480},
-        window::size_t{640, 480},
-        window::size_t{640, 480},
-        window::size_t{640, 480},
+        window({640, 480}, "Test"),
+        window({640, 480}, "Test"),
+        window({640, 480}, "Test"),
+        window({640, 480}, "Test"),
+        window({640, 480}, "Test"),
         };
 
         for (auto& w : windows) {

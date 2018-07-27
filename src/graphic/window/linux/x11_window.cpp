@@ -19,6 +19,10 @@
 
 namespace
 {
+using ::framework::int32;
+using ::framework::int64;
+using ::framework::uint8;
+
 const char* const log_tag = "x11_window";
 
 const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
@@ -134,7 +138,7 @@ GLXFBConfig choose_framebuffer_config(Display* display)
 
     int32 count;
     GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), visual_attribs, &count);
-    if (!configs) {
+    if (configs == nullptr) {
         return nullptr;
     }
 
@@ -147,7 +151,7 @@ GLXFBConfig choose_framebuffer_config(Display* display)
         glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLE_BUFFERS, &sample_buffer);
         glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLES, &samples);
 
-        if (best < 0 || (sample_buffer && samples > best_samples)) {
+        if (best < 0 || (sample_buffer != 0 && samples > best_samples)) {
             best         = i;
             best_samples = samples;
         }
@@ -183,9 +187,10 @@ std::set<std::string> split(const std::string& string, const std::string& delime
 
 std::set<std::string> get_glx_extensions(Display* display)
 {
+    // NPLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     const char* extensions = glXQueryExtensionsString(display, DefaultScreen(display));
 
-    if (!extensions) {
+    if (extensions == nullptr) {
         return std::set<std::string>();
     }
 
@@ -206,7 +211,7 @@ GLXContext create_glx_context(Display* display, const GLXFBConfig framebuffer_co
     auto glXCreateContextAttribsARB = reinterpret_cast<PFNGLXCREATECONTEXTATTRIBSARBPROC>(
     glXGetProcAddressARB(reinterpret_cast<const uint8*>("glXCreateContextAttribsARB")));
 
-    if (!is_glx_extension_supported(display, "GLX_ARB_create_context") || !glXCreateContextAttribsARB) {
+    if (!is_glx_extension_supported(display, "GLX_ARB_create_context") || (glXCreateContextAttribsARB == nullptr)) {
         return nullptr;
     }
 
@@ -218,7 +223,7 @@ GLXContext create_glx_context(Display* display, const GLXFBConfig framebuffer_co
         None};
     // clang-format on
 
-    return glXCreateContextAttribsARB(display, framebuffer_config, 0, True, context_attribs);
+    return glXCreateContextAttribsARB(display, framebuffer_config, nullptr, True, context_attribs);
 }
 
 } // namespace
@@ -240,12 +245,12 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
 
     m_framebuffer_config = choose_framebuffer_config(m_server->display());
 
-    if (!m_framebuffer_config) {
+    if (m_framebuffer_config == nullptr) {
         throw std::runtime_error("Can't get framebuffer config.");
     }
 
     XVisualInfo* visual_info = glXGetVisualFromFBConfig(m_server->display(), m_framebuffer_config);
-    if (!visual_info) {
+    if (visual_info == nullptr) {
         throw std::runtime_error("Can't get visual info.");
     }
 
@@ -259,12 +264,9 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     auto color          = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
     uint32 border_width = 0;
-    int32 depth         = 24; // get it fron visual
+    int32 depth         = 24; // get it from visual
     uint32 window_class = InputOutput;
     uint64 valuemask    = CWBackPixel | CWEventMask | CWColormap;
-
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
-    Visual* visual = DefaultVisual(m_server->display(), m_server->default_screen());
 
     XSetWindowAttributes attributes = {};
 
@@ -318,11 +320,11 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
 
 x11_window::~x11_window()
 {
-    if (m_glx_context) {
+    if (m_glx_context != nullptr) {
         glXDestroyContext(m_server->display(), m_glx_context);
     }
 
-    if (m_colormap) {
+    if (m_colormap != 0u) {
         XFreeColormap(m_server->display(), m_colormap);
     }
 
@@ -993,7 +995,7 @@ x11_window::x11_graphic_context::x11_graphic_context(Display* display, Window wi
 
 bool x11_window::x11_graphic_context::valid() const
 {
-    // TODO add more robust checks,
+    // TODO(alex) add more robust checks,
     return m_display != nullptr && m_window != None && m_context != nullptr;
 }
 

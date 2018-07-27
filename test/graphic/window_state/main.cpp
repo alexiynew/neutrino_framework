@@ -1,8 +1,6 @@
 #include <graphic/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::graphic;
-
 class window_state_test : public framework::unit_test::suite
 {
 public:
@@ -18,9 +16,11 @@ public:
 private:
     void fullscreen_window()
     {
+        using ::framework::graphic::window;
+
         const window::size_t size640{640, 480};
 
-        window w(size640);
+        window w(size640, "Test");
 
         w.show();
 
@@ -60,9 +60,11 @@ private:
 
     void iconify_window()
     {
+        using ::framework::graphic::window;
+
         const window::size_t size640{640, 480};
 
-        window w(size640);
+        window w(size640, "Test");
 
         w.show();
 
@@ -112,9 +114,11 @@ private:
 
     void maximize_window()
     {
+        using ::framework::graphic::window;
+
         const window::size_t size640{640, 480};
 
-        window w(size640);
+        window w(size640, "Test");
 
         w.show();
 
@@ -154,9 +158,11 @@ private:
 
     void fullscreen_before_show()
     {
+        using ::framework::graphic::window;
+
         const window::size_t size640{640, 480};
 
-        window w(size640);
+        window w(size640, "Test");
 
         w.switch_to_fullscreen();
         w.show();
@@ -170,9 +176,11 @@ private:
 
     void maximized_before_show()
     {
+        using ::framework::graphic::window;
+
         const window::size_t size640{640, 480};
 
-        window w(size640);
+        window w(size640, "Test");
 
         w.maximize();
         w.show();

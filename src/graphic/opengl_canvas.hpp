@@ -20,6 +20,12 @@ public:
 
     ~opengl_canvas() override;
 
+    opengl_canvas(const opengl_canvas&) = delete;
+    opengl_canvas& operator=(const opengl_canvas&) = delete;
+
+    opengl_canvas(opengl_canvas&&) = default;
+    opengl_canvas& operator=(opengl_canvas&&) = default;
+
     void clear(float red, float green, float blue, float alpha) override;
 
     void swap_buffers() override;

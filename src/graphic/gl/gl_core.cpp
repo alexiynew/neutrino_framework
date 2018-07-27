@@ -8,9 +8,24 @@
 
 namespace
 {
-using namespace ::framework;
+using ::framework::int8;
+using ::framework::uint8;
 
-using GLenum = uint32;
+using ::framework::int16;
+using ::framework::uint16;
+
+using ::framework::int32;
+using ::framework::uint32;
+
+using ::framework::int64;
+using ::framework::uint64;
+
+using ::framework::float32;
+using ::framework::float64;
+
+using ::framework::ptrdiff;
+
+using GLenum = ::framework::uint32;
 
 #pragma region gl_version_1_0
 
@@ -98,10 +113,10 @@ glDisable_ptr glDisable_proc = nullptr;
 using glEnable_ptr         = void (*)(GLenum cap);
 glEnable_ptr glEnable_proc = nullptr;
 
-using glFinish_ptr         = void (*)(void);
+using glFinish_ptr         = void (*)();
 glFinish_ptr glFinish_proc = nullptr;
 
-using glFlush_ptr        = void (*)(void);
+using glFlush_ptr        = void (*)();
 glFlush_ptr glFlush_proc = nullptr;
 
 using glBlendFunc_ptr            = void (*)(GLenum sfactor, GLenum dfactor);
@@ -137,7 +152,7 @@ glGetBooleanv_ptr glGetBooleanv_proc = nullptr;
 using glGetDoublev_ptr             = void (*)(GLenum pname, float64* data);
 glGetDoublev_ptr glGetDoublev_proc = nullptr;
 
-using glGetError_ptr           = GLenum (*)(void);
+using glGetError_ptr           = GLenum (*)();
 glGetError_ptr glGetError_proc = nullptr;
 
 using glGetFloatv_ptr            = void (*)(GLenum pname, float32* data);
@@ -175,7 +190,7 @@ glViewport_ptr glViewport_proc = nullptr;
 
 bool init_gl_version_1_0()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -297,7 +312,7 @@ glIsTexture_ptr glIsTexture_proc = nullptr;
 
 bool init_gl_version_1_1()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -367,7 +382,7 @@ glCopyTexSubImage3D_ptr glCopyTexSubImage3D_proc = nullptr;
 
 bool init_gl_version_1_2()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -454,7 +469,7 @@ glGetCompressedTexImage_ptr glGetCompressedTexImage_proc = nullptr;
 
 bool init_gl_version_1_3()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
     result      = result && (glActiveTexture_proc = get_function<glActiveTexture_ptr>("glActiveTexture")) != nullptr;
@@ -516,7 +531,7 @@ glBlendEquation_ptr glBlendEquation_proc = nullptr;
 
 bool init_gl_version_1_4()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -600,7 +615,7 @@ glGetBufferPointerv_ptr glGetBufferPointerv_proc = nullptr;
 
 bool init_gl_version_1_5()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -921,7 +936,7 @@ glVertexAttribPointer_ptr glVertexAttribPointer_proc = nullptr;
 
 bool init_gl_version_2_0()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -1078,7 +1093,7 @@ glUniformMatrix4x3fv_ptr glUniformMatrix4x3fv_proc = nullptr;
 
 bool init_gl_version_2_1()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -1380,7 +1395,7 @@ glIsVertexArray_ptr glIsVertexArray_proc = nullptr;
 
 bool init_gl_version_3_0()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -1580,7 +1595,7 @@ glUniformBlockBinding_ptr glUniformBlockBinding_proc = nullptr;
 
 bool init_gl_version_3_1()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -1619,7 +1634,7 @@ bool init_gl_version_3_1()
 
 #pragma region gl_versoin_3_2
 
-using GLsync = graphic::gl::GLsync;
+using GLsync = ::framework::graphic::gl::GLsync;
 
 using glDrawElementsBaseVertex_ptr =
 void (*)(GLenum mode, int32 count, GLenum type, const void* indices, int32 basevertex);
@@ -1695,7 +1710,7 @@ glSampleMaski_ptr glSampleMaski_proc = nullptr;
 
 bool init_gl_version_3_2()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -1825,7 +1840,7 @@ glVertexAttribP4uiv_ptr glVertexAttribP4uiv_proc = nullptr;
 
 bool init_gl_version_3_3()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -2035,7 +2050,7 @@ glGetQueryIndexediv_ptr glGetQueryIndexediv_proc = nullptr;
 
 bool init_gl_version_4_0()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -2419,7 +2434,7 @@ glGetDoublei_v_ptr glGetDoublei_v_proc = nullptr;
 
 bool init_gl_version_4_1()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -2647,7 +2662,7 @@ glDrawTransformFeedbackStreamInstanced_ptr glDrawTransformFeedbackStreamInstance
 
 bool init_gl_version_4_2()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -2683,7 +2698,7 @@ bool init_gl_version_4_2()
 
 #pragma region gl_version_4_3
 
-using debug_proc_callback = graphic::gl::debug_proc_callback;
+using debug_proc_callback = ::framework::graphic::gl::debug_proc_callback;
 
 using glClearBufferData_ptr =
 void (*)(GLenum target, GLenum internalformat, GLenum format, GLenum type, const void* data);
@@ -2879,7 +2894,7 @@ glGetObjectPtrLabel_ptr glGetObjectPtrLabel_proc = nullptr;
 
 bool init_gl_version_4_3()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -3019,7 +3034,7 @@ glBindVertexBuffers_ptr glBindVertexBuffers_proc = nullptr;
 
 bool init_gl_version_4_4()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -3502,7 +3517,7 @@ glTextureBarrier_ptr glTextureBarrier_proc = nullptr;
 
 bool init_gl_version_4_5()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -3759,7 +3774,7 @@ glPolygonOffsetClamp_ptr glPolygonOffsetClamp_proc = nullptr;
 
 bool init_gl_version_4_6()
 {
-    using namespace ::framework::graphic::utils;
+    using ::framework::graphic::utils::get_function;
 
     bool result = true;
 
@@ -5560,7 +5575,7 @@ void glDrawElementsInstancedBaseVertex(GLenum mode,
 void glMultiDrawElementsBaseVertex(GLenum mode,
                                    const int32* count,
                                    GLenum type,
-                                   const void* const *indices,
+                                   const void* const* indices,
                                    int32 drawcount,
                                    const int32* basevertex)
 {
@@ -5752,7 +5767,7 @@ void glGetQueryObjecti64v(uint32 id, GLenum pname, int64* params)
 
 void glGetQueryObjectui64v(uint32 id, GLenum pname, uint64* params)
 {
-    glGetQueryObjectui64v_proc(id, pname,params);
+    glGetQueryObjectui64v_proc(id, pname, params);
 }
 
 void glVertexAttribDivisor(uint32 index, uint32 divisor)
@@ -5767,7 +5782,7 @@ void glVertexAttribP1ui(uint32 index, GLenum type, bool normalized, uint32 value
 
 void glVertexAttribP1uiv(uint32 index, GLenum type, bool normalized, const uint32* value)
 {
-    glVertexAttribP1uiv_proc(index, type,normalized, value);
+    glVertexAttribP1uiv_proc(index, type, normalized, value);
 }
 
 void glVertexAttribP2ui(uint32 index, GLenum type, bool normalized, uint32 value)
@@ -5777,7 +5792,7 @@ void glVertexAttribP2ui(uint32 index, GLenum type, bool normalized, uint32 value
 
 void glVertexAttribP2uiv(uint32 index, GLenum type, bool normalized, const uint32* value)
 {
-    glVertexAttribP2uiv_proc(index, type,normalized, value);
+    glVertexAttribP2uiv_proc(index, type, normalized, value);
 }
 
 void glVertexAttribP3ui(uint32 index, GLenum type, bool normalized, uint32 value)
@@ -5787,7 +5802,7 @@ void glVertexAttribP3ui(uint32 index, GLenum type, bool normalized, uint32 value
 
 void glVertexAttribP3uiv(uint32 index, GLenum type, bool normalized, const uint32* value)
 {
-    glVertexAttribP3uiv_proc(index, type,normalized, value);
+    glVertexAttribP3uiv_proc(index, type, normalized, value);
 }
 
 void glVertexAttribP4ui(uint32 index, GLenum type, bool normalized, uint32 value)
@@ -5797,7 +5812,7 @@ void glVertexAttribP4ui(uint32 index, GLenum type, bool normalized, uint32 value
 
 void glVertexAttribP4uiv(uint32 index, GLenum type, bool normalized, const uint32* value)
 {
-    glVertexAttribP4uiv_proc(index, type,normalized, value);
+    glVertexAttribP4uiv_proc(index, type, normalized, value);
 }
 
 #pragma endregion
@@ -5810,7 +5825,7 @@ void glVertexAttribP4uiv(uint32 index, GLenum type, bool normalized, const uint3
 
 void glMinSampleShading(float32 value)
 {
-    glMinSampleShading_proc( value);
+    glMinSampleShading_proc(value);
 }
 
 void glBlendEquationi(uint32 buf, GLenum mode)
@@ -6725,7 +6740,12 @@ uint32 glGetProgramResourceIndex(uint32 program, GLenum programInterface, const 
     return glGetProgramResourceIndex_proc(program, programInterface, name);
 }
 
-void glGetProgramResourceName(uint32 program, GLenum programInterface, uint32 index, int32 bufSize, int32* length, char* name)
+void glGetProgramResourceName(uint32 program,
+                              GLenum programInterface,
+                              uint32 index,
+                              int32 bufSize,
+                              int32* length,
+                              char* name)
 {
     glGetProgramResourceName_proc(program, programInterface, index, bufSize, length, name);
 }

@@ -17,7 +17,7 @@ namespace gl
 /// Initialize GL core function
 bool init_core();
 
-// TODO should split thous constants by enums
+// TODO(alex) should split thous constants by enums
 using GLenum = uint32;
 
 /// @name gl_version_1_0
@@ -1307,7 +1307,7 @@ void glUniformBlockBinding(uint32 program, uint32 uniformBlockIndex, uint32 unif
 /// @{
 #pragma region gl_version_3_2
 
-// TODO what is this???
+// TODO(alex) what is this???
 using GLsync = struct __GLsync*;
 
 const uint32 gl_context_core_profile_bit                  = 0x00000001;
