@@ -18,7 +18,7 @@ private:
     {
         const ::framework::window::size_t size640{640, 480};
 
-        framework::window window(size640);
+        framework::window window(size640, "Test");
 
         window.show();
 
@@ -60,7 +60,7 @@ private:
     {
         const ::framework::window::size_t size640{640, 480};
 
-        framework::window window(size640);
+        framework::window window(size640, "Test");
 
         window.show();
 
@@ -112,7 +112,7 @@ private:
     {
         const ::framework::window::size_t size640{640, 480};
 
-        framework::window window(size640);
+        framework::window window(size640, "Test");
 
         window.show();
 
@@ -154,7 +154,7 @@ private:
     {
         const ::framework::window::size_t size640{640, 480};
 
-        ::framework::window window(size640);
+        ::framework::window window(size640, "Test");
 
         window.switch_to_fullscreen();
         window.show();
@@ -170,7 +170,7 @@ private:
     {
         const ::framework::window::size_t size640{640, 480};
 
-        ::framework::window window(size640);
+        ::framework::window window(size640, "Test");
 
         window.maximize();
         window.show();

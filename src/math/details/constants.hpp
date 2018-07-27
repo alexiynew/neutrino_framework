@@ -3,6 +3,10 @@
 /// @author Fedorov Alexey
 /// @date 06.05.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of constants.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_CONSTANTS_HPP
 #define FRAMEWORK_MATH_CONSTANTS_HPP
 

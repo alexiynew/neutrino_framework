@@ -3,11 +3,15 @@
 /// @author Fedorov Alexey
 /// @date 11.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of matrix_type_details.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_MATRIX_TYPE_DETAILS_HPP
 #define FRAMEWORK_MATH_MATRIX_TYPE_DETAILS_HPP
 
 #include <common/types.hpp>
-#include <math/vector_type.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework {
 

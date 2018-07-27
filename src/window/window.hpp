@@ -29,7 +29,7 @@ public:
         int32 y;
     };
 
-    window(size_t size, const std::string& title = "");
+    window(size_t size, const std::string& title);
     ~window();
 
     window(const window&) = delete;

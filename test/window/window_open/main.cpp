@@ -13,7 +13,7 @@ public:
 private:
     void open_window()
     {
-        ::framework::window window({640, 480});
+        ::framework::window window({640, 480}, "Test");
         window.show();
 
         TEST_ASSERT(window.visible(), "Window is not visible.");
@@ -25,24 +25,26 @@ private:
 
     void open_several_windows()
     {
-        ::framework::window windows[5] = {
-        ::framework::window::size_t{640, 480},
-        ::framework::window::size_t{640, 480},
-        ::framework::window::size_t{640, 480},
-        ::framework::window::size_t{640, 480},
-        ::framework::window::size_t{640, 480},
+        using ::framework::window;
+
+        window windows[5] = {
+        window({640, 480}, "Test1"),
+        window({640, 480}, "Test2"),
+        window({640, 480}, "Test3"),
+        window({640, 480}, "Test4"),
+        window({640, 480}, "Test5"),
         };
 
-        for (auto& window : windows) {
-            window.show();
+        for (auto& w : windows) {
+            w.show();
         }
 
-        for (auto& window : windows) {
-            window.hide();
+        for (auto& w : windows) {
+            w.hide();
         }
 
-        for (auto& window : windows) {
-            window.show();
+        for (auto& w : windows) {
+            w.show();
         }
     }
 };

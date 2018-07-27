@@ -34,7 +34,7 @@ public:
     /// @param level The message @ref severity_level
     /// @param tag Message tag. Describes message domain.
     /// @param message Message itself.
-    void add_message(const severity_level level, const std::string& tag, const std::string& message) override;
+    void add_message(severity_level level, const std::string& tag, const std::string& message) override;
 
 private:
     std::ostream& m_output;

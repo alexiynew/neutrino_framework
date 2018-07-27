@@ -3,13 +3,17 @@
 /// @author Fedorov Alexey
 /// @date 12.03.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of vector_type.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
 #include <cassert>
 
 #include <common/types.hpp>
-#include <math/vector_type_details.hpp>
+#include <math/details/vector_type_details.hpp>
 
 namespace framework {
 

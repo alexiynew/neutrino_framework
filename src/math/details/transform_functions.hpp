@@ -3,16 +3,20 @@
 /// @author Fedorov Alexey
 /// @date 14.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of transform_functions.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_TRANSFORM_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_TRANSFORM_FUNCTIONS_HPP
 
 #include <cassert>
 #include <limits>
 
-#include <math/common_functions.hpp>
-#include <math/matrix_functions.hpp>
-#include <math/matrix_type.hpp>
-#include <math/trigonometric_functions.hpp>
+#include <math/details/common_functions.hpp>
+#include <math/details/matrix_functions.hpp>
+#include <math/details/matrix_type.hpp>
+#include <math/details/trigonometric_functions.hpp>
 
 namespace framework {
 

@@ -3,6 +3,10 @@
 /// @author Fedorov Alexey
 /// @date 12.03.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of vector_type_details.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_DETAILS_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_DETAILS_HPP
 

@@ -15,9 +15,7 @@ namespace log {
 
 class dummy_logger : public logger_base
 {
-    void add_message(const severity_level /*level*/,
-                     const std::string& /*tag*/,
-                     const std::string& /*message*/) override
+    void add_message(severity_level /*level*/, const std::string& /*tag*/, const std::string& /*message*/) override
     {
         // nothing to do.
     }
@@ -68,7 +66,7 @@ std::unique_ptr<logger_base>& logger()
     return instance;
 }
 
-std::ostream& operator<<(std::ostream& os, const severity_level level)
+std::ostream& operator<<(std::ostream& os, severity_level level)
 {
     switch (level) {
         case severity_level::debug: os << "debug"; break;

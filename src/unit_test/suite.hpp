@@ -105,7 +105,7 @@ private:
         Status status;
         std::string name;
         function_type function;
-        // TODO Change state to enum {success, fail, exception}
+        // TODO(alex) Change state to enum {success, fail, exception}
         bool success;
 
         test_data(function_type&& function_to_call, std::string test_name);

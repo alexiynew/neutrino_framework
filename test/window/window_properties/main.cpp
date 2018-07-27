@@ -19,7 +19,7 @@ private:
         const ::framework::window::size_t size480{480, 320};
         const ::framework::window::size_t size640{640, 480};
 
-        ::framework::window window({480, 320});
+        ::framework::window window({480, 320}, "Test");
 
         TEST_ASSERT(window.size() == size480, "Window has wrong size.");
 
@@ -45,7 +45,7 @@ private:
         const ::framework::window::size_t small_size{150, 150};
         const ::framework::window::size_t big_size{1000, 1000};
 
-        ::framework::window window({640, 480});
+        ::framework::window window({640, 480}, "Test");
 
         // Base values
         TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
@@ -90,7 +90,7 @@ private:
         const ::framework::window::size_t size960{960, 640};
         const ::framework::window::size_t no_size{0, 0};
 
-        ::framework::window window(size640);
+        ::framework::window window(size640, "Test");
 
         window.show();
 
@@ -134,7 +134,7 @@ private:
     {
         ::framework::window::size_t size640 = {640, 480};
 
-        ::framework::window window(size640);
+        ::framework::window window(size640, "Test");
 
         window.show();
 

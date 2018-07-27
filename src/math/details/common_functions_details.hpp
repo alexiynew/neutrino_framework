@@ -3,12 +3,16 @@
 /// @author Fedorov Alexey
 /// @date 10.11.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of common_functions_details.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_COMMON_FUNCTIONS_DETAILS_HPP
 #define FRAMEWORK_MATH_COMMON_FUNCTIONS_DETAILS_HPP
 
 #include <cmath>
 
-#include <math/vector_type.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework {
 
@@ -20,13 +24,13 @@ namespace common_functions_details {
 /// @brief Realization of abs function.
 /// @{
 template <typename T>
-inline constexpr T abs(const T& v, std::true_type)
+inline constexpr T abs(const T& v, std::true_type /*unused*/)
 {
     return (v < T{0}) ? -v : v;
 }
 
 template <typename T>
-inline constexpr T abs(const T& v, std::false_type)
+inline constexpr T abs(const T& v, std::false_type /*unused*/)
 {
     return v;
 }
@@ -35,13 +39,13 @@ inline constexpr T abs(const T& v, std::false_type)
 /// @brief Realization of sign function.
 /// @{
 template <typename T>
-inline constexpr T sign(const T& v, std::true_type)
+inline constexpr T sign(const T& v, std::true_type /*unused*/)
 {
     return static_cast<T>((T{0} < v) - (v < T{0}));
 }
 
 template <typename T>
-inline constexpr T sign(const T& v, std::false_type)
+inline constexpr T sign(const T& v, std::false_type /*unused*/)
 {
     return static_cast<T>(T{0} < v);
 }
@@ -109,24 +113,44 @@ inline constexpr vector<2, T> mix(const vector<2, T>& a, const vector<2, T>& b, 
 /// @brief Realization of frexp function.
 /// @{
 template <typename T, typename R>
-inline vector<4, R> frexp(const vector<4, T>& value, vector<4, int32>& exp)
+inline vector<4, R> frexp(const vector<4, T>& value, vector<4, int32>* exp)
 {
-    return vector<4, R>(::std::frexp(value.x, &exp.x),
-                        ::std::frexp(value.y, &exp.y),
-                        ::std::frexp(value.z, &exp.z),
-                        ::std::frexp(value.w, &exp.w));
+    vector<4, int32> temp;
+
+    if (exp == nullptr) {
+        exp = &temp;
+    }
+
+    return vector<4, R>(::std::frexp(value.x, &(exp->x)),
+                        ::std::frexp(value.y, &(exp->y)),
+                        ::std::frexp(value.z, &(exp->z)),
+                        ::std::frexp(value.w, &(exp->w)));
 }
 
 template <typename T, typename R>
-inline vector<3, R> frexp(const vector<3, T>& value, vector<3, int32>& exp)
+inline vector<3, R> frexp(const vector<3, T>& value, vector<3, int32>* exp)
 {
-    return vector<3, R>(::std::frexp(value.x, &exp.x), ::std::frexp(value.y, &exp.y), ::std::frexp(value.z, &exp.z));
+    vector<3, int32> temp;
+
+    if (exp == nullptr) {
+        exp = &temp;
+    }
+
+    return vector<3, R>(::std::frexp(value.x, &(exp->x)),
+                        ::std::frexp(value.y, &(exp->y)),
+                        ::std::frexp(value.z, &(exp->z)));
 }
 
 template <typename T, typename R>
-inline vector<2, R> frexp(const vector<2, T>& value, vector<2, int32>& exp)
+inline vector<2, R> frexp(const vector<2, T>& value, vector<2, int32>* exp)
 {
-    return vector<2, R>(::std::frexp(value.x, &exp.x), ::std::frexp(value.y, &exp.y));
+    vector<2, int32> temp;
+
+    if (exp == nullptr) {
+        exp = &temp;
+    }
+
+    return vector<2, R>(::std::frexp(value.x, &(exp->x)), ::std::frexp(value.y, &(exp->y)));
 }
 /// @}
 

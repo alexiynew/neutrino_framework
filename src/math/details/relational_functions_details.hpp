@@ -3,15 +3,19 @@
 /// @author Fedorov Alexey
 /// @date 14.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of relational_functions_details.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_DETAILS_HPP
 #define FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_DETAILS_HPP
 
 #include <functional>
 
 #include <common/types.hpp>
-#include <math/common_functions.hpp>
-#include <math/matrix_type.hpp>
-#include <math/vector_type.hpp>
+#include <math/details/common_functions.hpp>
+#include <math/details/matrix_type.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework {
 

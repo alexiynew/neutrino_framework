@@ -46,7 +46,7 @@ public:
     /// @param level The message @ref severity_level
     /// @param tag Message tag. Describes message domain.
     /// @param message Message itself.
-    virtual void add_message(const severity_level level, const std::string& tag, const std::string& message) = 0;
+    virtual void add_message(severity_level level, const std::string& tag, const std::string& message) = 0;
 };
 
 /// @brief Logs messages for debugging purposes.
@@ -110,7 +110,7 @@ std::unique_ptr<logger_base>& logger();
 /// @param level Severity level to print.
 ///
 /// @return Standard output stream.
-std::ostream& operator<<(std::ostream& os, const severity_level level);
+std::ostream& operator<<(std::ostream& os, severity_level level);
 
 } // namespace log
 

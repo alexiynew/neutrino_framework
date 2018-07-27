@@ -3,14 +3,18 @@
 /// @author Fedorov Alexey
 /// @date 11.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of matrix_type.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_MATRIX_TYPE_HPP
 #define FRAMEWORK_MATH_MATRIX_TYPE_HPP
 
 #include <cassert>
 
 #include <common/types.hpp>
-#include <math/matrix_type_details.hpp>
-#include <math/vector_type.hpp>
+#include <math/details/matrix_type_details.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework {
 

@@ -20,7 +20,7 @@ namespace log_details {
 
 #pragma region log_buffer
 
-log_buffer::log_buffer(::framework::log::severity_level level, std::string tag)
+log_buffer::log_buffer(severity_level level, std::string tag)
     : m_level(level), m_tag(std::move(tag)), m_buffer(log_buffer_size)
 {
     reset_pointers();
@@ -29,6 +29,21 @@ log_buffer::log_buffer(::framework::log::severity_level level, std::string tag)
 log_buffer::~log_buffer()
 {
     clear_buffer();
+}
+
+log_buffer::log_buffer(log_buffer&& other) noexcept
+    : std::streambuf(other), m_level(other.m_level), m_tag(std::move(other.m_tag)), m_buffer(std::move(other.m_buffer))
+{}
+
+log_buffer& log_buffer::operator=(log_buffer&& other) noexcept
+{
+    std::streambuf::operator=(other);
+
+    m_level  = other.m_level;
+    m_tag    = std::move(other.m_tag);
+    m_buffer = std::move(other.m_buffer);
+
+    return *this;
 }
 
 int log_buffer::overflow(int character)

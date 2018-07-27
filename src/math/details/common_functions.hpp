@@ -3,6 +3,10 @@
 /// @author Fedorov Alexey
 /// @date 04.05.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of common_functions.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_COMMON_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_COMMON_FUNCTIONS_HPP
 
@@ -10,8 +14,8 @@
 #include <limits>
 
 #include <common/types.hpp>
-#include <math/common_functions_details.hpp>
-#include <math/vector_type.hpp>
+#include <math/details/common_functions_details.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework {
 
@@ -675,27 +679,27 @@ inline vector<N, T> fma(const vector<N, T>& a, const vector<N, T>& b, const vect
 /// @brief Decomposes given floating-point value into a normalized fraction and an integral power of two.
 ///
 /// @param value Floating-point value.
-/// @param exp Reference to integer value to store the exponent to.
+/// @param exp Poiner to integer value to store the exponent to.
 ///
 /// @return If value is zero, returns zero and stores zero in exp.
 ///         Otherwise, returns the value x in the range (-1;-0.5], [0.5; 1)
 ///         and stores an integer value in exp such that `x * 2 ^ exp = value`.
 template <typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int32*>()))>
-inline R frexp(const T& value, int32& exp)
+inline R frexp(const T& value, int32* exp)
 {
-    return ::std::frexp(value, &exp);
+    return ::std::frexp(value, exp);
 }
 
 /// @brief Decomposes each component of given vector into a normalized fraction and an integral power of two.
 ///
 /// @param value Vector of floating-point values.
-/// @param exp Reference to integer vector to store the exponent to.
+/// @param exp Pointer to integer vector to store the exponent to.
 ///
 /// @return For each component of value, if it is zero, returns zero and stores zero in exp.
 ///         Otherwise, returns the value x in the range (-1;-0.5], [0.5; 1)
 ///         and stores an integer value in exp such that `x * 2 ^ exp = value`.
 template <uint32 N, typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int32*>()))>
-inline vector<N, R> frexp(const vector<N, T>& value, vector<N, int32>& exp)
+inline vector<N, R> frexp(const vector<N, T>& value, vector<N, int32>* exp)
 {
     return common_functions_details::frexp<T, R>(value, exp);
 }
