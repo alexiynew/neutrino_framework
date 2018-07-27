@@ -55,7 +55,7 @@ public:
     /// @brief Creates test suite with provided name.
     ///
     /// @param name Name of the test suite.
-    explicit suite(const std::string& name);
+    explicit suite(std::string name);
 
     /// @brief Function to run all tests in the suite.
     void run();
@@ -105,10 +105,10 @@ private:
         Status status;
         std::string name;
         function_type function;
-        // TODO Change state to enum {success, fail, exception}
+        // TODO(alex) Change state to enum {success, fail, exception}
         bool success;
 
-        test_data(function_type&& function, const std::string& name);
+        test_data(function_type&& function_to_call, std::string test_name);
     };
 
     void output_fail(const test_data& test);
@@ -120,7 +120,7 @@ private:
     std::vector<test_data> m_tests;
     std::vector<test_data>::iterator m_current_test;
 
-    bool m_success;
+    bool m_success = true;
 };
 
 /// @brief Runs test in all test suites.
@@ -146,7 +146,7 @@ int32 run_tests(Arguments&&... tests)
 /// @brief Unconditionally fails current test.
 ///
 /// @param MESSAGE Error description.
-#define TEST_FAIL(MESSAGE) test_failed(__FILE__, __LINE__, (MESSAGE))
+#define TEST_FAIL(MESSAGE) test_failed(__FILE__, __LINE__, (MESSAGE)) // NOLINT
 
 /// @brief Fails current test if EXPRESSION evaluates to @b false.
 ///

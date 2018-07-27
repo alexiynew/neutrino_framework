@@ -62,6 +62,7 @@ public:
     }
 
 private:
+    // NOLINTNEXTLINE(hicpp-exception-baseclass)
     [[noreturn]] void test_any_exception() { throw custom_exception(); }
 };
 /// @}
@@ -107,7 +108,7 @@ private:
         tests.emplace_back(std::make_unique<should_fail_test_any_exception>());
 
         for (auto& test : tests) {
-            run_suite(*test);
+            run_suite(test.get());
 
             std::stringstream error_stream;
             error_stream << "Test [" << test->name() << "] should fail.";
@@ -119,18 +120,18 @@ private:
     {
         should_pass_test should_pass;
 
-        run_suite(should_pass);
+        run_suite(&should_pass);
 
         TEST_ASSERT(should_pass.is_succeeded(), "This test should pass.");
     }
 
-    void run_suite(framework::unit_test::suite& test)
+    void run_suite(framework::unit_test::suite* test)
     {
         std::streambuf* buffer = std::cout.rdbuf();
         std::cout.rdbuf(nullptr);
 
         try {
-            test.run();
+            test->run();
         } catch (...) {
         }
 

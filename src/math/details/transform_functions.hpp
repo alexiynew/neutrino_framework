@@ -3,16 +3,20 @@
 /// @author Fedorov Alexey
 /// @date 14.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of transform_functions.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_TRANSFORM_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_TRANSFORM_FUNCTIONS_HPP
 
 #include <cassert>
 #include <limits>
 
-#include <math/common_functions.hpp>
-#include <math/matrix_functions.hpp>
-#include <math/matrix_type.hpp>
-#include <math/trigonometric_functions.hpp>
+#include <math/details/common_functions.hpp>
+#include <math/details/matrix_functions.hpp>
+#include <math/details/matrix_type.hpp>
+#include <math/details/trigonometric_functions.hpp>
 
 namespace framework
 {
@@ -68,8 +72,8 @@ inline matrix<4, 4, T> translate(const matrix<4, 4, T>& m, const vector<3, T>& v
 template <typename T, typename U>
 inline matrix<3, 3, T> rotate(const matrix<3, 3, T>& m, const U angle)
 {
-    const T c = static_cast<T>(math::cos(angle));
-    const T s = static_cast<T>(math::sin(angle));
+    const auto c = static_cast<T>(math::cos(angle));
+    const auto s = static_cast<T>(math::sin(angle));
 
     // clang-format off
     return matrix<3, 3, T>(m[0] *  c + m[1] * s,
@@ -88,8 +92,8 @@ inline matrix<3, 3, T> rotate(const matrix<3, 3, T>& m, const U angle)
 template <typename T, typename U>
 inline matrix<4, 4, T> rotate(const matrix<4, 4, T>& m, const vector<3, T>& v, const U angle)
 {
-    const T cos = static_cast<T>(::framework::math::cos(angle));
-    const T sin = static_cast<T>(::framework::math::sin(angle));
+    const auto cos = static_cast<T>(::framework::math::cos(angle));
+    const auto sin = static_cast<T>(::framework::math::sin(angle));
 
     const auto x_cos = v[0] * (1 - cos);
     const auto y_cos = v[1] * (1 - cos);
@@ -381,10 +385,10 @@ inline vector<3, T> project(const vector<3, T>& v,
 
     temp = temp * T(0.5) + T(0.5);
 
-    const T x      = static_cast<T>(viewport[0]);
-    const T y      = static_cast<T>(viewport[1]);
-    const T width  = static_cast<T>(viewport[2]);
-    const T height = static_cast<T>(viewport[3]);
+    const auto x      = static_cast<T>(viewport[0]);
+    const auto y      = static_cast<T>(viewport[1]);
+    const auto width  = static_cast<T>(viewport[2]);
+    const auto height = static_cast<T>(viewport[3]);
 
     temp[0] = temp[0] * width + x;
     temp[1] = temp[1] * height + y;
@@ -410,10 +414,10 @@ inline vector<3, T> unproject(const vector<3, T>& v,
                               const matrix<4, 4, T>& projection,
                               const vector<4, U>& viewport)
 {
-    const T x      = static_cast<T>(viewport[0]);
-    const T y      = static_cast<T>(viewport[1]);
-    const T width  = static_cast<T>(viewport[2]);
-    const T height = static_cast<T>(viewport[3]);
+    const auto x      = static_cast<T>(viewport[0]);
+    const auto y      = static_cast<T>(viewport[1]);
+    const auto width  = static_cast<T>(viewport[2]);
+    const auto height = static_cast<T>(viewport[3]);
 
     assert(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
     assert(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
@@ -454,10 +458,10 @@ inline matrix<4, 4, T> pick_matrix(const vector<2, T>& center, const vector<2, T
     assert(delta.x > T(0));
     assert(delta.y > T(0));
 
-    const T x      = static_cast<T>(viewport[0]);
-    const T y      = static_cast<T>(viewport[1]);
-    const T width  = static_cast<T>(viewport[2]);
-    const T height = static_cast<T>(viewport[3]);
+    const auto x      = static_cast<T>(viewport[0]);
+    const auto y      = static_cast<T>(viewport[1]);
+    const auto width  = static_cast<T>(viewport[2]);
+    const auto height = static_cast<T>(viewport[3]);
 
     const vector<3, T> translate_temp = {(width - T(2) * (center.x - x)) / delta.x,
                                          (height - T(2) * (center.y - y)) / delta.y,

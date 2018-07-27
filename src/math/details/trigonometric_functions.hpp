@@ -3,14 +3,18 @@
 /// @author Fedorov Alexey
 /// @date 14.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of trigonometric_functions.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_TRIGONOMETRIC_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_TRIGONOMETRIC_FUNCTIONS_HPP
 
 #include <cmath>
 
 #include <common/types.hpp>
-#include <math/constants.hpp>
-#include <math/vector_type.hpp>
+#include <math/details/constants.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework
 {

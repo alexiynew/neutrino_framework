@@ -20,15 +20,30 @@ namespace log_details
 {
 #pragma region log_buffer
 
-log_buffer::log_buffer(::framework::log::severity_level level, const std::string& tag)
-    : m_level(level), m_tag(tag), m_buffer(log_buffer_size)
+log_buffer::log_buffer(severity_level level, std::string tag)
+    : m_level(level), m_tag(std::move(tag)), m_buffer(log_buffer_size)
 {
     reset_pointers();
 }
 
 log_buffer::~log_buffer()
 {
-    sync();
+    clear_buffer();
+}
+
+log_buffer::log_buffer(log_buffer&& other) noexcept
+    : std::streambuf(other), m_level(other.m_level), m_tag(std::move(other.m_tag)), m_buffer(std::move(other.m_buffer))
+{}
+
+log_buffer& log_buffer::operator=(log_buffer&& other) noexcept
+{
+    std::streambuf::operator=(other);
+
+    m_level  = other.m_level;
+    m_tag    = std::move(other.m_tag);
+    m_buffer = std::move(other.m_buffer);
+
+    return *this;
 }
 
 int log_buffer::overflow(int character)
@@ -47,13 +62,7 @@ int log_buffer::overflow(int character)
 
 int log_buffer::sync()
 {
-    if (pptr() == pbase()) {
-        return 0;
-    }
-
-    const size_t size = static_cast<size_t>(pptr() - pbase());
-
-    ::framework::log::logger()->add_message(m_level, m_tag, std::string(m_buffer.data(), size));
+    clear_buffer();
 
     reset_pointers();
 
@@ -65,6 +74,16 @@ void log_buffer::reset_pointers()
     setp(m_buffer.data(), m_buffer.data() + m_buffer.size());
 }
 
+void log_buffer::clear_buffer()
+{
+    if (pptr() == pbase()) {
+        return;
+    }
+
+    const auto size = static_cast<size_t>(pptr() - pbase());
+    ::framework::log::logger()->add_message(m_level, m_tag, std::string(m_buffer.data(), size));
+}
+
 #pragma endregion
 
 log_ostream::log_ostream(std::unique_ptr<std::streambuf> buffer)
@@ -73,16 +92,17 @@ log_ostream::log_ostream(std::unique_ptr<std::streambuf> buffer)
 
 log_ostream::~log_ostream() = default;
 
-log_ostream::log_ostream(log_ostream&& other) : std::ostream(other.m_buffer.get()), m_buffer(std::move(other.m_buffer))
+log_ostream::log_ostream(log_ostream&& other) noexcept
+    : std::ostream(other.m_buffer.get()), m_buffer(std::move(other.m_buffer))
 {
     rdbuf(m_buffer.get());
 }
 
-log_ostream& log_ostream::operator=(log_ostream&& other)
+log_ostream& log_ostream::operator=(log_ostream&& other) noexcept
 {
-    std::ostream::operator=(std::move(other));
-
     m_buffer = std::move(other.m_buffer);
+
+    std::ostream::operator=(std::move(other));
 
     return *this;
 }

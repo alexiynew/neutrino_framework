@@ -7,12 +7,10 @@
 #include <graphic/window/linux/x11_server.hpp>
 #include <log/log.hpp>
 
-using namespace framework;
-using namespace framework::log;
-using namespace framework::graphic;
-
 namespace
 {
+using ::framework::graphic::x11_server;
+
 const char* const log_tag = "x11_server";
 
 std::weak_ptr<x11_server>& server_instance()
@@ -21,8 +19,8 @@ std::weak_ptr<x11_server>& server_instance()
     return instance;
 }
 
-[[noreturn]] int32 fatal_error_handler(Display*) {
-    log::fatal(log_tag) << "Fatal error occurred." << std::endl;
+[[noreturn]] ::framework::int32 fatal_error_handler(Display* /*unused*/) {
+    ::framework::log::fatal(log_tag) << "Fatal error occurred." << std::endl;
     std::terminate();
 }
 
@@ -30,11 +28,11 @@ int error_handler(Display* display, XErrorEvent* event)
 {
     auto x_server = server_instance().lock();
     if (x_server && display == x_server->display()) {
-        constexpr uint32 length = 8 * 1024;
+        constexpr ::framework::uint32 length = 8 * 1024;
         char buffer[length];
         XGetErrorText(display, event->error_code, buffer, length);
 
-        log::error(log_tag) << buffer << std::endl;
+        ::framework::log::error(log_tag) << buffer << std::endl;
     }
 
     return 0;
@@ -64,14 +62,14 @@ std::shared_ptr<x11_server> x11_server::connect()
         std::shared_ptr<x11_server> temp{new x11_server()};
         server_instance() = temp;
         return temp;
-    } else {
-        return server_instance().lock();
     }
+
+    return server_instance().lock();
 }
 
 x11_server::x11_server() : m_display{XOpenDisplay(nullptr)}
 {
-    if (!m_display) {
+    if (m_display == nullptr) {
         throw std::runtime_error("Failed to open connection to X server, there is no display.");
     }
 
@@ -82,11 +80,11 @@ x11_server::x11_server() : m_display{XOpenDisplay(nullptr)}
 
 x11_server::~x11_server()
 {
-    if (m_input_method) {
+    if (m_input_method != nullptr) {
         XCloseIM(m_input_method);
     }
 
-    if (m_display) {
+    if (m_display != nullptr) {
         XCloseDisplay(m_display);
     }
 
@@ -100,11 +98,13 @@ Display* x11_server::display() const
 
 XID x11_server::default_root_window() const
 {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     return DefaultRootWindow(display());
 }
 
 XID x11_server::default_screen() const
 {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     return static_cast<XID>(DefaultScreen(display()));
 }
 

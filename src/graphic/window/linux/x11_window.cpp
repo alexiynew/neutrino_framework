@@ -17,9 +17,6 @@
 #include <graphic/window/linux/x11_window.hpp>
 #include <log/log.hpp>
 
-using namespace framework;
-using namespace framework::log;
-
 namespace
 {
 const char* const log_tag = "x11_window";
@@ -61,9 +58,9 @@ const int64 event_mask = VisibilityChangeMask     // Any change in visibility wa
 const int32 glx_min_major_version = 1;
 const int32 glx_min_minor_version = 4;
 
-Bool event_predicate(Display*, XEvent* event, XPointer arg)
+Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 {
-    return event->xany.window == *(reinterpret_cast<Window*>(arg));
+    return static_cast<Bool>(event->xany.window == *(reinterpret_cast<Window*>(arg)));
 }
 
 std::string event_type_string(const XAnyEvent& event)
@@ -259,11 +256,15 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
 
     m_colormap = XCreateColormap(m_server->display(), m_server->default_root_window(), visual, AllocNone);
 
-    XID color           = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
+    auto color          = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
     uint32 border_width = 0;
     int32 depth         = 24; // get it fron visual
     uint32 window_class = InputOutput;
     uint64 valuemask    = CWBackPixel | CWEventMask | CWColormap;
+
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
+    Visual* visual = DefaultVisual(m_server->display(), m_server->default_screen());
 
     XSetWindowAttributes attributes = {};
 
@@ -299,7 +300,7 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
                              &attributes);
     XSync(m_server->display(), False);
 
-    if (!m_window) {
+    if (m_window == None) {
         throw std::runtime_error("Failed to create X Window.");
     }
 
@@ -325,12 +326,12 @@ x11_window::~x11_window()
         XFreeColormap(m_server->display(), m_colormap);
     }
 
-    if (m_server->display() && m_window) {
+    if (m_server->display() != nullptr && m_window != None) {
         XDestroyWindow(m_server->display(), m_window);
         XSync(m_server->display(), False);
     }
 
-    if (m_input_context) {
+    if (m_input_context != nullptr) {
         XDestroyIC(m_input_context);
         m_input_context = nullptr;
     }
@@ -401,7 +402,7 @@ void x11_window::focus()
 void x11_window::process_events()
 {
     XEvent event = {0};
-    while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window))) {
+    while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window)) != 0) {
         if (::framework::utils::is_debug()) {
             process(event.xany);
         }
@@ -436,8 +437,8 @@ void x11_window::process_events()
 
 void x11_window::iconify()
 {
-    if (!XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen()))) {
-        log::warning(log_tag) << "Failed to iconify window." << std::endl;
+    if (XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen())) == 0) {
+        ::framework::log::warning(log_tag) << "Failed to iconify window." << std::endl;
         return;
     }
 
@@ -494,7 +495,7 @@ void x11_window::restore()
         utils::set_bypass_compositor_state(m_server.get(), m_window, utils::bypass_compositor_state::no_preferences);
 
         if (!utils::window_remove_state(m_server.get(), m_window, {net_wm_state_fullscreen_atom_name})) {
-            log::warning(log_tag) << "Failed to reset fullscreen mode." << std::endl;
+            ::framework::log::warning(log_tag) << "Failed to reset fullscreen mode." << std::endl;
             return;
         }
 
@@ -510,7 +511,7 @@ void x11_window::restore()
                                         m_window,
                                         {net_wm_state_maximized_vert_atom_name,
                                          net_wm_state_maximized_horz_atom_name})) {
-            log::warning(log_tag) << "Failed to reset maximized state." << std::endl;
+            ::framework::log::warning(log_tag) << "Failed to reset maximized state." << std::endl;
             return;
         }
 
@@ -655,7 +656,7 @@ window::size_t x11_window::max_size() const
     }
 
     XSizeHints size_hints = {};
-    long supplied;
+    int64 supplied;
 
     const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
     const bool has_max_size_hints = (size_hints.flags &= PMaxSize) != 0;
@@ -676,7 +677,7 @@ window::size_t x11_window::min_size() const
     }
 
     XSizeHints size_hints = {};
-    long supplied;
+    int64 supplied;
 
     const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
     const bool has_min_size_hints = (size_hints.flags &= PMinSize) != 0;
@@ -742,11 +743,11 @@ bool x11_window::maximized() const
 bool x11_window::resizable() const
 {
     XSizeHints size_hints = {};
-    long supplied;
+    int64 supplied;
 
     XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
 
-    const bool non_resizable = size_hints.flags & (PMinSize | PMaxSize) &&
+    const bool non_resizable = ((size_hints.flags & (PMinSize | PMaxSize)) != 0) &&
                                size_hints.min_width == size_hints.max_width &&
                                size_hints.min_height == size_hints.max_height;
 
@@ -760,11 +761,11 @@ bool x11_window::visible() const
     }
 
     XWindowAttributes attributes;
-    if (XGetWindowAttributes(m_server->display(), m_window, &attributes)) {
+    if (XGetWindowAttributes(m_server->display(), m_window, &attributes) != 0) {
         return attributes.map_state == IsViewable || (m_mapped && iconified());
-    } else {
-        log::warning(log_tag) << "Can't detect window visibility." << std::endl;
     }
+
+    ::framework::log::warning(log_tag) << "Can't detect window visibility." << std::endl;
 
     return false;
 }
@@ -778,10 +779,10 @@ bool x11_window::focused() const
 
 #pragma region event processing
 
-void x11_window::process(XDestroyWindowEvent)
+void x11_window::process(XDestroyWindowEvent /*unused*/)
 {}
 
-void x11_window::process(XUnmapEvent)
+void x11_window::process(XUnmapEvent /*unused*/)
 {
     m_mapped = false;
 }
@@ -811,11 +812,11 @@ void x11_window::process(XFocusChangeEvent event)
 {
     switch (event.type) {
         case FocusIn:
-            if (m_input_context) {
+            if (m_input_context != nullptr) {
                 XSetICFocus(m_input_context);
             }
 
-            // TODO: Find out how to deal with cursor
+            // TODO(alex): Find out how to deal with cursor
             // if (!m_cursor_grabbed) {
             //     int result = XGrabPointer(m_server->display(),
             //                               m_window,
@@ -835,7 +836,7 @@ void x11_window::process(XFocusChangeEvent event)
             // }
             break;
         case FocusOut:
-            if (m_input_context) {
+            if (m_input_context != nullptr) {
                 XUnsetICFocus(m_input_context);
             }
 
@@ -854,7 +855,7 @@ void x11_window::process(XPropertyEvent event)
 
 void x11_window::process(XAnyEvent event)
 {
-    log::debug(log_tag) << "Got event: " << event_type_string(event) << std::endl;
+    ::framework::log::debug(log_tag) << "Got event: " << event_type_string(event) << std::endl;
 }
 
 #pragma endregion
@@ -871,7 +872,7 @@ void x11_window::maximize_impl()
     if (!utils::window_add_state(m_server.get(),
                                  m_window,
                                  {net_wm_state_maximized_vert_atom_name, net_wm_state_maximized_horz_atom_name})) {
-        log::warning(log_tag) << "Failed to set maximized state." << std::endl;
+        ::framework::log::warning(log_tag) << "Failed to set maximized state." << std::endl;
         return;
     }
 }
@@ -886,7 +887,7 @@ void x11_window::switch_to_fullscreen_impl()
     utils::set_bypass_compositor_state(m_server.get(), m_window, utils::bypass_compositor_state::disabled);
 
     if (!utils::window_add_state(m_server.get(), m_window, {net_wm_state_fullscreen_atom_name})) {
-        log::warning(log_tag) << "Failed to set maximized state." << std::endl;
+        ::framework::log::warning(log_tag) << "Failed to set maximized state." << std::endl;
         return;
     }
 }
@@ -931,7 +932,8 @@ void x11_window::add_protocols(const std::vector<std::string>& protocol_names)
 
 void x11_window::create_input_context()
 {
-    if (m_server->input_method()) {
+    if (m_server->input_method() != nullptr) {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         m_input_context = XCreateIC(m_server->input_method(),
                                     XNInputStyle,
                                     XIMPreeditNothing | XIMStatusNothing,
@@ -958,7 +960,7 @@ void x11_window::process_events_while(const std::function<bool()>& condition)
 void x11_window::update_size_limits(window::size_t min_size, window::size_t max_size)
 {
     XSizeHints size_hints = {};
-    long supplied;
+    int64 supplied;
 
     XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
 

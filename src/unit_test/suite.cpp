@@ -12,7 +12,7 @@ namespace framework
 {
 namespace unit_test
 {
-suite::suite(const std::string& name) : m_name{name}, m_tests{}, m_current_test{m_tests.end()}, m_success{true}
+suite::suite(std::string name) : m_name{std::move(name)}, m_current_test{m_tests.end()}
 {}
 
 void suite::run()
@@ -77,8 +77,11 @@ void suite::output_success(const test_data& test)
     std::cout << "    " << std::setw(40) << std::left << test.name << " OK" << std::endl;
 }
 
-suite::test_data::test_data(function_type&& function_to_call, const std::string& test_name)
-    : status{"", "", -1}, name{test_name}, function{std::forward<function_type>(function_to_call)}, success{true}
+suite::test_data::test_data(function_type&& function_to_call, std::string test_name)
+    : status{"", "", -1},
+      name{std::move(test_name)},
+      function{std::forward<function_type>(function_to_call)},
+      success{true}
 {}
 
 } // namespace unit_test

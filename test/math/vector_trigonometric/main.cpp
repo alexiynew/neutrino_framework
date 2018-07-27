@@ -1,7 +1,12 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::math;
+using ::framework::math::vector4d;
+using ::framework::math::vector3d;
+
+using ::framework::math::pi;
+using ::framework::math::tau;
+using ::framework::math::quarter_pi;
 
 class trigonometric_function_tests : public framework::unit_test::suite
 {

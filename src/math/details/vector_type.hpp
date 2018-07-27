@@ -3,13 +3,17 @@
 /// @author Fedorov Alexey
 /// @date 12.03.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of vector_type.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_HPP
 
 #include <cassert>
 
 #include <common/types.hpp>
-#include <math/vector_type_details.hpp>
+#include <math/details/vector_type_details.hpp>
 
 namespace framework
 {
@@ -40,6 +44,9 @@ struct vector<4, T> final
     /// For bool vector initializes as {false, false, false, false}
     constexpr vector() noexcept;
 
+    /// @brief Default destructor.
+    ~vector() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Vector to copy from.
@@ -66,7 +73,7 @@ struct vector<4, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr vector(const U* const pointer);
+    explicit constexpr vector(const U* pointer);
 
     /// @brief Initializes vector from another one.
     ///
@@ -196,6 +203,9 @@ struct vector<3, T> final
     /// Initializes vector as {0, 0, 0}
     constexpr vector() noexcept;
 
+    /// @brief Default destructor.
+    ~vector() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Vector to copy from.
@@ -221,7 +231,7 @@ struct vector<3, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr vector(const U* const pointer);
+    explicit constexpr vector(const U* pointer);
 
     /// @brief Initializes vector from another one.
     ///
@@ -316,6 +326,9 @@ struct vector<2, T> final
     ///
     /// Initializes vector as {0, 0}
     constexpr vector() noexcept;
+
+    /// @brief Default destructor.
+    ~vector() noexcept = default;
 
     /// @brief Default copy constructor.
     ///
@@ -433,7 +446,7 @@ inline constexpr vector<4, T>::vector(const U& value) noexcept : vector{value, v
 
 template <typename T>
 template <typename U>
-inline constexpr vector<4, T>::vector(const U* const pointer)
+inline constexpr vector<4, T>::vector(const U* pointer)
     : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -558,7 +571,7 @@ inline constexpr vector<3, T>::vector(const U& value) noexcept : vector{value, v
 
 template <typename T>
 template <typename U>
-inline constexpr vector<3, T>::vector(const U* const pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2)}
+inline constexpr vector<3, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -1053,7 +1066,7 @@ inline const vector<N, R> operator/(const T& lhs, const vector<N, U>& rhs) noexc
 template <typename T>
 inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rhs) noexcept
 {
-    using namespace vector_type_details;
+    using vector_type_details::equals;
     return equals(lhs.x, rhs.x) && equals(lhs.y, rhs.y) && equals(lhs.z, rhs.z) && equals(lhs.w, rhs.w);
 }
 
@@ -1066,7 +1079,7 @@ inline constexpr bool operator==(const vector<4, T>& lhs, const vector<4, T>& rh
 template <typename T>
 inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rhs) noexcept
 {
-    using namespace vector_type_details;
+    using vector_type_details::equals;
     return equals(lhs.x, rhs.x) && equals(lhs.y, rhs.y) && equals(lhs.z, rhs.z);
 }
 
@@ -1079,7 +1092,7 @@ inline constexpr bool operator==(const vector<3, T>& lhs, const vector<3, T>& rh
 template <typename T>
 inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rhs) noexcept
 {
-    using namespace vector_type_details;
+    using vector_type_details::equals;
     return equals(lhs.x, rhs.x) && equals(lhs.y, rhs.y);
 }
 
@@ -1092,7 +1105,7 @@ inline constexpr bool operator==(const vector<2, T>& lhs, const vector<2, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rhs) noexcept
 {
-    using namespace vector_type_details;
+    using vector_type_details::equals;
     return !equals(lhs.x, rhs.x) || !equals(lhs.y, rhs.y) || !equals(lhs.z, rhs.z) || !equals(lhs.w, rhs.w);
 }
 
@@ -1105,7 +1118,7 @@ inline constexpr bool operator!=(const vector<4, T>& lhs, const vector<4, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rhs) noexcept
 {
-    using namespace vector_type_details;
+    using vector_type_details::equals;
     return !equals(lhs.x, rhs.x) || !equals(lhs.y, rhs.y) || !equals(lhs.z, rhs.z);
 }
 
@@ -1118,7 +1131,7 @@ inline constexpr bool operator!=(const vector<3, T>& lhs, const vector<3, T>& rh
 template <typename T>
 inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rhs) noexcept
 {
-    using namespace vector_type_details;
+    using vector_type_details::equals;
     return !equals(lhs.x, rhs.x) || !equals(lhs.y, rhs.y);
 }
 /// @}

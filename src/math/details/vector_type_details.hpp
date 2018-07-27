@@ -3,6 +3,10 @@
 /// @author Fedorov Alexey
 /// @date 12.03.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of vector_type_details.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_VECTOR_TYPE_DETAILS_HPP
 #define FRAMEWORK_MATH_VECTOR_TYPE_DETAILS_HPP
 
@@ -22,13 +26,13 @@ namespace vector_type_details
 /// @{
 
 template <typename T>
-inline constexpr bool equals(const T& a, const T& b, std::true_type)
+inline constexpr bool equals(const T& a, const T& b, std::true_type /*unused*/)
 {
     return std::equal_to<T>()(a, b);
 }
 
 template <typename T>
-inline constexpr bool equals(const T& a, const T& b, std::false_type)
+inline constexpr bool equals(const T& a, const T& b, std::false_type /*unused*/)
 {
     return a == b;
 }

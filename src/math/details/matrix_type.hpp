@@ -3,14 +3,18 @@
 /// @author Fedorov Alexey
 /// @date 11.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of matrix_type.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_MATRIX_TYPE_HPP
 #define FRAMEWORK_MATH_MATRIX_TYPE_HPP
 
 #include <cassert>
 
 #include <common/types.hpp>
-#include <math/matrix_type_details.hpp>
-#include <math/vector_type.hpp>
+#include <math/details/matrix_type_details.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework
 {
@@ -43,6 +47,9 @@ struct matrix<4, 4, T> final
     ///
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
+
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
 
     /// @brief Default copy constructor.
     ///
@@ -86,7 +93,7 @@ struct matrix<4, 4, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -331,6 +338,9 @@ struct matrix<4, 3, T> final
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
 
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Matrix to copy from.
@@ -369,7 +379,7 @@ struct matrix<4, 3, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -526,6 +536,9 @@ struct matrix<4, 2, T> final
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
 
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Matrix to copy from.
@@ -560,7 +573,7 @@ struct matrix<4, 2, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -691,6 +704,9 @@ struct matrix<3, 4, T> final
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
 
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Matrix to copy from.
@@ -728,7 +744,7 @@ struct matrix<3, 4, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -942,6 +958,9 @@ struct matrix<3, 3, T> final
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
 
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Matrix to copy from.
@@ -976,7 +995,7 @@ struct matrix<3, 3, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1117,6 +1136,9 @@ struct matrix<3, 2, T> final
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
 
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Matrix to copy from.
@@ -1148,7 +1170,7 @@ struct matrix<3, 2, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1268,6 +1290,9 @@ struct matrix<2, 4, T> final
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
 
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Matrix to copy from.
@@ -1300,7 +1325,7 @@ struct matrix<2, 4, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1486,6 +1511,9 @@ struct matrix<2, 3, T> final
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
 
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Matrix to copy from.
@@ -1516,7 +1544,7 @@ struct matrix<2, 3, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1647,6 +1675,9 @@ struct matrix<2, 2, T> final
     /// Creates an identity matrix.
     constexpr matrix() noexcept;
 
+    /// @brief Default destructor.
+    ~matrix() noexcept = default;
+
     /// @brief Default copy constructor.
     ///
     /// @param other Matrix to copy from.
@@ -1671,7 +1702,7 @@ struct matrix<2, 2, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr matrix(const U* const pointer);
+    explicit constexpr matrix(const U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1803,7 +1834,7 @@ inline constexpr matrix<4, 4, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<4, 4, T>::matrix(const U* const pointer)
+inline constexpr matrix<4, 4, T>::matrix(const U* pointer)
     : m_data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8), column_type(pointer + 12)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -2036,7 +2067,7 @@ inline constexpr matrix<4, 3, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<4, 3, T>::matrix(const U* const pointer)
+inline constexpr matrix<4, 3, T>::matrix(const U* pointer)
     : m_data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6), column_type(pointer + 9)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -2206,7 +2237,7 @@ inline constexpr matrix<4, 2, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<4, 2, T>::matrix(const U* const pointer)
+inline constexpr matrix<4, 2, T>::matrix(const U* pointer)
     : m_data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4), column_type(pointer + 6)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -2345,7 +2376,7 @@ inline constexpr matrix<3, 4, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<3, 4, T>::matrix(const U* const pointer)
+inline constexpr matrix<3, 4, T>::matrix(const U* pointer)
     : m_data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -2557,7 +2588,7 @@ inline constexpr matrix<3, 3, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<3, 3, T>::matrix(const U* const pointer)
+inline constexpr matrix<3, 3, T>::matrix(const U* pointer)
     : m_data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -2720,7 +2751,7 @@ inline constexpr matrix<3, 2, T>::matrix(const T& value00, const T& value01,
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<3, 2, T>::matrix(const U* const pointer)
+inline constexpr matrix<3, 2, T>::matrix(const U* pointer)
     : m_data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -2852,8 +2883,7 @@ inline constexpr matrix<2, 4, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<2, 4, T>::matrix(const U* const pointer)
-    : m_data{column_type(pointer), column_type(pointer + 4)}
+inline constexpr matrix<2, 4, T>::matrix(const U* pointer) : m_data{column_type(pointer), column_type(pointer + 4)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -3036,8 +3066,7 @@ inline constexpr matrix<2, 3, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<2, 3, T>::matrix(const U* const pointer)
-    : m_data{column_type(pointer), column_type(pointer + 3)}
+inline constexpr matrix<2, 3, T>::matrix(const U* pointer) : m_data{column_type(pointer), column_type(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -3178,8 +3207,7 @@ inline constexpr matrix<2, 2, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline constexpr matrix<2, 2, T>::matrix(const U* const pointer)
-    : m_data{column_type(pointer), column_type(pointer + 2)}
+inline constexpr matrix<2, 2, T>::matrix(const U* pointer) : m_data{column_type(pointer), column_type(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }

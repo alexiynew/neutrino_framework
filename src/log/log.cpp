@@ -6,8 +6,8 @@
 #include <common/utils.hpp>
 #include <log/log.hpp>
 
-using namespace framework::log;
-using namespace framework::log::log_details;
+using log_ostream = framework::log::log_details::log_ostream;
+using log_buffer  = framework::log::log_details::log_buffer;
 
 namespace framework
 {
@@ -15,7 +15,7 @@ namespace log
 {
 class dummy_logger : public logger_base
 {
-    void add_message(const severity_level, const std::string&, const std::string&) override
+    void add_message(severity_level /*level*/, const std::string& /*tag*/, const std::string& /*message*/) override
     {
         // nothing to do.
     }
@@ -52,7 +52,7 @@ log_ostream fatal(const std::string& tag)
 
 void set_logger(std::unique_ptr<logger_base> implementation)
 {
-    ::logger() = std::move(implementation);
+    ::framework::log::logger() = std::move(implementation);
 }
 
 std::unique_ptr<logger_base>& logger()
@@ -60,13 +60,13 @@ std::unique_ptr<logger_base>& logger()
     static std::unique_ptr<logger_base> instance;
 
     if (!instance) {
-        instance.reset(new dummy_logger());
+        instance = std::make_unique<dummy_logger>();
     }
 
     return instance;
 }
 
-std::ostream& operator<<(std::ostream& os, const severity_level level)
+std::ostream& operator<<(std::ostream& os, severity_level level)
 {
     switch (level) {
         case severity_level::debug: os << "debug"; break;

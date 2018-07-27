@@ -1,7 +1,15 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::math;
+using ::framework::math::matrix2x2f;
+using ::framework::math::matrix2x3f;
+using ::framework::math::matrix2x4f;
+using ::framework::math::matrix3x2f;
+using ::framework::math::matrix3x3f;
+using ::framework::math::matrix3x4f;
+using ::framework::math::matrix4x2f;
+using ::framework::math::matrix4x3f;
+using ::framework::math::matrix4x4f;
 
 class matrix_assign_test : public framework::unit_test::suite
 {
@@ -23,15 +31,15 @@ private:
         };
         // clang-format on
 
-        const matrix4x4f test44(temp_matrix);
-        const matrix4x3f test43(temp_matrix);
-        const matrix4x2f test42(temp_matrix);
-        const matrix3x4f test34(temp_matrix);
-        const matrix3x3f test33(temp_matrix);
-        const matrix3x2f test32(temp_matrix);
-        const matrix2x4f test24(temp_matrix);
-        const matrix2x3f test23(temp_matrix);
-        const matrix2x2f test22(temp_matrix);
+        const matrix4x4f test44(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const matrix4x3f test43(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const matrix4x2f test42(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const matrix3x4f test34(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const matrix3x3f test33(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const matrix3x2f test32(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const matrix2x4f test24(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const matrix2x3f test23(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const matrix2x2f test22(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
 
         matrix4x4f result44;
         matrix4x3f result43;

@@ -1,7 +1,27 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::math;
+using ::framework::math::vector2f;
+using ::framework::math::vector3f;
+using ::framework::math::vector4f;
+
+using ::framework::math::vector2d;
+using ::framework::math::vector3d;
+using ::framework::math::vector4d;
+
+using ::framework::math::vector2i;
+using ::framework::math::vector3i;
+using ::framework::math::vector4i;
+
+using ::framework::math::vector2u;
+using ::framework::math::vector3u;
+using ::framework::math::vector4u;
+
+using ::framework::math::vector2b;
+using ::framework::math::vector3b;
+using ::framework::math::vector4b;
+
+using ::framework::math::mix;
 
 class common_function_tests : public framework::unit_test::suite
 {
@@ -200,13 +220,13 @@ private:
     void frexp_function()
     {
         vector4i v4i_exponent;
-        const vector4d v4d_fraction = frexp(v4d, v4i_exponent);
+        const vector4d v4d_fraction = frexp(v4d, &v4i_exponent);
 
         vector3i v3i_exponent;
-        const vector3f v3f_fraction = frexp(v3f, v3i_exponent);
+        const vector3f v3f_fraction = frexp(v3f, &v3i_exponent);
 
         vector2i v2i_exponent;
-        const vector2d v2d_fraction = frexp(v2u, v2i_exponent);
+        const vector2d v2d_fraction = frexp(v2u, &v2i_exponent);
 
         TEST_ASSERT(v4d_fraction == vector4d(0.55, -0.75, 0, -0.9), "Frexp function failed.");
         TEST_ASSERT(v4i_exponent == vector4i(1, 1, 0, 1), "Frexp function failed.");
@@ -224,9 +244,9 @@ private:
         vector3i v3i_exponent;
         vector2i v2i_exponent;
 
-        TEST_ASSERT(ldexp(frexp(v4d, v4i_exponent), v4i_exponent) == v4d, "Ldexp function failed.");
-        TEST_ASSERT(ldexp(frexp(v3f, v3i_exponent), v3i_exponent) == v3f, "Ldexp function failed.");
-        TEST_ASSERT(ldexp(frexp(v2u, v2i_exponent), v2i_exponent) == vector2d(v2u), "Ldexp function failed.");
+        TEST_ASSERT(ldexp(frexp(v4d, &v4i_exponent), v4i_exponent) == v4d, "Ldexp function failed.");
+        TEST_ASSERT(ldexp(frexp(v3f, &v3i_exponent), v3i_exponent) == v3f, "Ldexp function failed.");
+        TEST_ASSERT(ldexp(frexp(v2u, &v2i_exponent), v2i_exponent) == vector2d(v2u), "Ldexp function failed.");
     }
 
     vector4d v4d;

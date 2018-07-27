@@ -162,11 +162,18 @@ function coverage_scan {
 }
 
 function run_check {
+    cd "$SCRIPT_DIR"
+    
     info "==== Run CppCheck ===="
 
     files=`find ./src ./test -iregex ".*\(cpp\|h\|hpp\)" -type f | sort`
 
     cppcheck --enable=all -I./src ${files}
+
+    info "==== Run clang-tidy ===="
+
+    files=`find ./src ./test -iregex ".*\(c\|cpp\)" -type f | sort`
+    clang-tidy -header-filter=.* -config= -p=build ${files}
 
     info "==== Run clang scan-build ===="
 

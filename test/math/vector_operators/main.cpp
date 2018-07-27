@@ -1,8 +1,22 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::math;
+using ::framework::float32;
+using ::framework::float64;
+using ::framework::int32;
+
+using ::framework::math::vector2b;
+using ::framework::math::vector2f;
+using ::framework::math::vector2i;
+using ::framework::math::vector2u;
+using ::framework::math::vector3b;
+using ::framework::math::vector3d;
+using ::framework::math::vector3f;
+using ::framework::math::vector4b;
+using ::framework::math::vector4d;
+using ::framework::math::vector4i;
+
+using ::framework::math::almost_equal;
 
 class vector_operators_test : public framework::unit_test::suite
 {
@@ -135,14 +149,23 @@ private:
         vector3f v3f(1.0f);
         vector2i v2i(1);
 
-        TEST_ASSERT((v4d += vector4d(1.0)) == vector4d(2.0), "Add_assign operator failed.");
-        TEST_ASSERT((v4d += 1.0) == vector4d(3.0), "Add_assign operator failed.");
+        v4d += vector4d(1.0);
+        TEST_ASSERT(v4d == vector4d(2.0), "Add_assign operator failed.");
 
-        TEST_ASSERT((v3f += vector3f(1.0f)) == vector3f(2.0f), "Add_assign operator failed.");
-        TEST_ASSERT((v3f += 1.0f) == vector3f(3.0f), "Add_assign operator failed.");
+        v4d += 1.0;
+        TEST_ASSERT(v4d == vector4d(3.0), "Add_assign operator failed.");
 
-        TEST_ASSERT((v2i += vector2i(1)) == vector2i(2), "Add_assign operator failed.");
-        TEST_ASSERT((v2i += 1) == vector2i(3), "Add_assign operator failed.");
+        v3f += vector3f(1.0f);
+        TEST_ASSERT(v3f == vector3f(2.0f), "Add_assign operator failed.");
+
+        v3f += 1.0f;
+        TEST_ASSERT(v3f == vector3f(3.0f), "Add_assign operator failed.");
+
+        v2i += vector2i(1);
+        TEST_ASSERT(v2i == vector2i(2), "Add_assign operator failed.");
+
+        v2i += 1;
+        TEST_ASSERT(v2i == vector2i(3), "Add_assign operator failed.");
     }
 
     void subtract_assign_operator()
@@ -151,14 +174,23 @@ private:
         vector3f v3f(3.0f);
         vector2i v2i(3);
 
-        TEST_ASSERT((v4d -= vector4d(1.0)) == vector4d(2.0), "Subtract_assign operator failed.");
-        TEST_ASSERT((v4d -= 1.0) == vector4d(1.0), "Subtract_assign operator failed.");
+        v4d -= vector4d(1.0);
+        TEST_ASSERT(v4d == vector4d(2.0), "Subtract_assign operator failed.");
 
-        TEST_ASSERT((v3f -= vector3f(1.0f)) == vector3f(2.0f), "Subtract_assign operator failed.");
-        TEST_ASSERT((v3f -= 1.0f) == vector3f(1.0f), "Subtract_assign operator failed.");
+        v4d -= 1.0;
+        TEST_ASSERT(v4d == vector4d(1.0), "Subtract_assign operator failed.");
 
-        TEST_ASSERT((v2i -= vector2i(1)) == vector2i(2), "Subtract_assign operator failed.");
-        TEST_ASSERT((v2i -= 1) == vector2i(1), "Subtract_assign operator failed.");
+        v3f -= vector3f(1.0f);
+        TEST_ASSERT(v3f == vector3f(2.0f), "Subtract_assign operator failed.");
+
+        v3f -= 1.0f;
+        TEST_ASSERT(v3f == vector3f(1.0f), "Subtract_assign operator failed.");
+
+        v2i -= vector2i(1);
+        TEST_ASSERT(v2i == vector2i(2), "Subtract_assign operator failed.");
+
+        v2i -= 1;
+        TEST_ASSERT(v2i == vector2i(1), "Subtract_assign operator failed.");
     }
 
     void multiplies_assign_operator()
@@ -167,14 +199,23 @@ private:
         vector3f v3f(1.0f);
         vector2i v2i(1);
 
-        TEST_ASSERT((v4d *= vector4d(2.0)) == vector4d(2.0), "Multiplies_assign operator failed.");
-        TEST_ASSERT((v4d *= 2.0) == vector4d(4.0), "Multiplies_assign operator failed.");
+        v4d *= vector4d(2.0);
+        TEST_ASSERT(v4d == vector4d(2.0), "Multiplies_assign operator failed.");
 
-        TEST_ASSERT((v3f *= vector3f(2.0f)) == vector3f(2.0f), "Multiplies_assign operator failed.");
-        TEST_ASSERT((v3f *= 2.0f) == vector3f(4.0f), "Multiplies_assign operator failed.");
+        v4d *= 2.0;
+        TEST_ASSERT(v4d == vector4d(4.0), "Multiplies_assign operator failed.");
 
-        TEST_ASSERT((v2i *= vector2i(2)) == vector2i(2), "Multiplies_assign operator failed.");
-        TEST_ASSERT((v2i *= 2) == vector2i(4), "Multiplies_assign operator failed.");
+        v3f *= vector3f(2.0f);
+        TEST_ASSERT(v3f == vector3f(2.0f), "Multiplies_assign operator failed.");
+
+        v3f *= 2.0f;
+        TEST_ASSERT(v3f == vector3f(4.0f), "Multiplies_assign operator failed.");
+
+        v2i *= vector2i(2);
+        TEST_ASSERT(v2i == vector2i(2), "Multiplies_assign operator failed.");
+
+        v2i *= 2;
+        TEST_ASSERT(v2i == vector2i(4), "Multiplies_assign operator failed.");
     }
 
     void divides_assign_operator()
@@ -183,14 +224,23 @@ private:
         vector3f v3f(4.0f);
         vector2i v2i(4);
 
-        TEST_ASSERT((v4d /= vector4d(2.0)) == vector4d(2.0), "Divides_assign operator failed.");
-        TEST_ASSERT((v4d /= 2.0) == vector4d(1.0), "Divides_assign operator failed.");
+        v4d /= vector4d(2.0);
+        TEST_ASSERT(v4d == vector4d(2.0), "Divides_assign operator failed.");
 
-        TEST_ASSERT((v3f /= vector3f(2.0f)) == vector3f(2.0f), "Divides_assign operator failed.");
-        TEST_ASSERT((v3f /= 2.0f) == vector3f(1.0f), "Divides_assign operator failed.");
+        v4d /= 2.0;
+        TEST_ASSERT(v4d == vector4d(1.0), "Divides_assign operator failed.");
 
-        TEST_ASSERT((v2i /= vector2i(2)) == vector2i(2), "Divides_assign operator failed.");
-        TEST_ASSERT((v2i /= 2) == vector2i(1), "Divides_assign operator failed.");
+        v3f /= vector3f(2.0f);
+        TEST_ASSERT(v3f == vector3f(2.0f), "Divides_assign operator failed.");
+
+        v3f /= 2.0f;
+        TEST_ASSERT(v3f == vector3f(1.0f), "Divides_assign operator failed.");
+
+        v2i /= vector2i(2);
+        TEST_ASSERT(v2i == vector2i(2), "Divides_assign operator failed.");
+
+        v2i /= 2;
+        TEST_ASSERT(v2i == vector2i(1), "Divides_assign operator failed.");
     }
 
     void add_operator()

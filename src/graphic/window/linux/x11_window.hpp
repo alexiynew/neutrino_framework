@@ -23,6 +23,9 @@ public:
     x11_window(window::size_t size, const std::string& title);
     ~x11_window() override;
 
+    x11_window(const x11_window&) = delete;
+    x11_window& operator=(const x11_window&) = delete;
+
     /// @name actions
     /// @{
     void show() override;

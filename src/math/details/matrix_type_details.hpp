@@ -3,11 +3,15 @@
 /// @author Fedorov Alexey
 /// @date 11.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of matrix_type_details.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_MATRIX_TYPE_DETAILS_HPP
 #define FRAMEWORK_MATH_MATRIX_TYPE_DETAILS_HPP
 
 #include <common/types.hpp>
-#include <math/vector_type.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework
 {
@@ -19,7 +23,7 @@ namespace matrix_type_details
 /// @brief Helper functions to implement matrix constructors.
 /// @{
 template <typename T, typename U>
-inline constexpr T combine(const U& first, const T&) noexcept
+inline constexpr T combine(const U& first, const T& /*unused*/) noexcept
 {
     return static_cast<T>(first);
 }
@@ -43,13 +47,13 @@ inline constexpr vector<3, T> combine(const vector<2, U>& first, const vector<3,
 }
 
 template <uint32 N, typename M, typename V>
-inline constexpr V get_column_implementation(M&& matrix, V&& vector, std::true_type) noexcept
+inline constexpr V get_column_implementation(M&& matrix, V&& vector, std::true_type /*unused*/) noexcept
 {
     return combine(std::forward<M>(matrix)[N], std::forward<V>(vector));
 }
 
 template <uint32 N, typename M, typename V>
-inline constexpr V get_column_implementation(M&&, V&& vector, std::false_type) noexcept
+inline constexpr V get_column_implementation(M&& /*unused*/, V&& vector, std::false_type /*unused*/) noexcept
 {
     return std::forward<V>(vector);
 }

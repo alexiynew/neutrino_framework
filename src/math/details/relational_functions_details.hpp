@@ -3,15 +3,19 @@
 /// @author Fedorov Alexey
 /// @date 14.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of relational_functions_details.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_DETAILS_HPP
 #define FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_DETAILS_HPP
 
 #include <functional>
 
 #include <common/types.hpp>
-#include <math/common_functions.hpp>
-#include <math/matrix_type.hpp>
-#include <math/vector_type.hpp>
+#include <math/details/common_functions.hpp>
+#include <math/details/matrix_type.hpp>
+#include <math/details/vector_type.hpp>
 
 namespace framework
 {
@@ -23,7 +27,7 @@ namespace relational_functions_details
 /// @brief Realization of almost_equal function.
 /// @{
 template <typename T>
-inline bool almost_equal_implementation(const T& a, const T& b, int32 ulp, std::true_type)
+inline bool almost_equal_implementation(const T& a, const T& b, int32 ulp, std::true_type /*unused*/)
 {
     const auto scaled_epsilon = std::numeric_limits<T>::epsilon() * ::framework::math::abs(a + b) * static_cast<T>(ulp);
     const auto difference     = ::framework::math::abs(a - b);
@@ -31,7 +35,7 @@ inline bool almost_equal_implementation(const T& a, const T& b, int32 ulp, std::
 }
 
 template <typename T>
-inline bool almost_equal_implementation(const T& a, const T& b, int32, std::false_type)
+inline bool almost_equal_implementation(const T& a, const T& b, int32 /*unused*/, std::false_type /*unused*/)
 {
     return a == b;
 }

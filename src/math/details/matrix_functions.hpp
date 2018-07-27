@@ -3,12 +3,16 @@
 /// @author Fedorov Alexey
 /// @date 05.07.2017
 
+#ifndef FRAMEWORK_MATH_DETAILS
+#error You should include math/math.hpp instead of matrix_functions.hpp
+#endif
+
 #ifndef FRAMEWORK_MATH_MATRIX_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_MATRIX_FUNCTIONS_HPP
 
 #include <common/types.hpp>
-#include <math/matrix_functions_details.hpp>
-#include <math/matrix_type.hpp>
+#include <math/details/matrix_functions_details.hpp>
+#include <math/details/matrix_type.hpp>
 
 namespace framework
 {

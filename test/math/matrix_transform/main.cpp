@@ -3,8 +3,35 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::math;
+using ::framework::math::matrix2x2f;
+using ::framework::math::matrix2x3f;
+using ::framework::math::matrix2x4f;
+using ::framework::math::matrix3x2f;
+using ::framework::math::matrix3x3f;
+using ::framework::math::matrix3x4f;
+using ::framework::math::matrix4x2f;
+using ::framework::math::matrix4x3f;
+using ::framework::math::matrix4x4f;
+
+using ::framework::math::matrix3f;
+using ::framework::math::matrix4f;
+
+using ::framework::math::vector2f;
+using ::framework::math::vector3f;
+using ::framework::math::vector4f;
+
+using ::framework::float32;
+
+using ::framework::math::radians;
+using ::framework::math::ortho2d;
+using ::framework::math::ortho;
+using ::framework::math::frustum;
+using ::framework::math::perspective;
+using ::framework::math::perspective_fov;
+using ::framework::math::infinite_perspective;
+
+using ::framework::math::half_pi;
+
 
 class transform_2d_function_tests : public framework::unit_test::suite
 {
@@ -396,7 +423,7 @@ private:
         };
         // clang-format on
 
-        TEST_ASSERT(::ortho2d(-2.0f, 2.0f, -2.0f, 2.0f) == proj2D, "2D orthogonal projection matrix is not correct.");
+        TEST_ASSERT(ortho2d(-2.0f, 2.0f, -2.0f, 2.0f) == proj2D, "2D orthogonal projection matrix is not correct.");
     }
 
     void frustum_function()

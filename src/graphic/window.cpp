@@ -15,13 +15,12 @@ namespace graphic
 window::window(size_t size, const std::string& title) : m_implementation(implementation::create(size, title))
 {}
 
-window::~window()
+window::~window() = default;
+
+window::window(window&& other) noexcept : m_implementation(std::move(other.m_implementation))
 {}
 
-window::window(window&& other) : m_implementation(std::move(other.m_implementation))
-{}
-
-window& window::operator=(window&& other)
+window& window::operator=(window&& other) noexcept
 {
     m_implementation = std::move(other.m_implementation);
     return *this;
