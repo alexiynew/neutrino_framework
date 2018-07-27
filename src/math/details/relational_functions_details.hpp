@@ -27,7 +27,7 @@ namespace relational_functions_details {
 /// @brief Realization of almost_equal function.
 /// @{
 template <typename T>
-inline bool almost_equal_implementation(const T& a, const T& b, int32 ulp, std::true_type)
+inline bool almost_equal_implementation(const T& a, const T& b, int32 ulp, std::true_type /*unused*/)
 {
     const auto scaled_epsilon = std::numeric_limits<T>::epsilon() * ::framework::math::abs(a + b) * static_cast<T>(ulp);
     const auto difference     = ::framework::math::abs(a - b);
@@ -35,7 +35,7 @@ inline bool almost_equal_implementation(const T& a, const T& b, int32 ulp, std::
 }
 
 template <typename T>
-inline bool almost_equal_implementation(const T& a, const T& b, int32, std::false_type)
+inline bool almost_equal_implementation(const T& a, const T& b, int32 /*unused*/, std::false_type /*unused*/)
 {
     return a == b;
 }

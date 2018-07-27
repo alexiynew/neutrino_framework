@@ -26,13 +26,13 @@ namespace vector_type_details {
 /// @{
 
 template <typename T>
-inline constexpr bool equals(const T& a, const T& b, std::true_type)
+inline constexpr bool equals(const T& a, const T& b, std::true_type /*unused*/)
 {
     return std::equal_to<T>()(a, b);
 }
 
 template <typename T>
-inline constexpr bool equals(const T& a, const T& b, std::false_type)
+inline constexpr bool equals(const T& a, const T& b, std::false_type /*unused*/)
 {
     return a == b;
 }
