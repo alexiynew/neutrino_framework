@@ -62,6 +62,7 @@ const int64 event_mask = VisibilityChangeMask     // Any change in visibility wa
 const int32 glx_min_major_version = 1;
 const int32 glx_min_minor_version = 4;
 
+// NOLINTNEXTLINE(readability-non-const-parameter)
 Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 {
     return static_cast<Bool>(event->xany.window == *(reinterpret_cast<Window*>(arg)));
@@ -137,6 +138,7 @@ GLXFBConfig choose_framebuffer_config(Display* display)
     // clang-format on
 
     int32 count;
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), visual_attribs, &count);
     if (configs == nullptr) {
         return nullptr;
@@ -187,7 +189,7 @@ std::set<std::string> split(const std::string& string, const std::string& delime
 
 std::set<std::string> get_glx_extensions(Display* display)
 {
-    // NPLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     const char* extensions = glXQueryExtensionsString(display, DefaultScreen(display));
 
     if (extensions == nullptr) {
@@ -204,10 +206,8 @@ bool is_glx_extension_supported(Display* display, const std::string& extension)
     return extensions.count(extension) > 0;
 }
 
-GLXContext create_glx_context(Display* display, const GLXFBConfig framebuffer_config)
+GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config)
 {
-    using namespace ::framework::graphic::utils;
-
     auto glXCreateContextAttribsARB = reinterpret_cast<PFNGLXCREATECONTEXTATTRIBSARBPROC>(
     glXGetProcAddressARB(reinterpret_cast<const uint8*>("glXCreateContextAttribsARB")));
 

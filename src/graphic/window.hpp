@@ -22,6 +22,8 @@ public:
     class graphic_context
     {
     public:
+        virtual ~graphic_context() = default;
+
         virtual bool valid() const      = 0;
         virtual bool is_current() const = 0;
 
