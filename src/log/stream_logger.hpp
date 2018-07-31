@@ -9,16 +9,14 @@
 #include <mutex>
 #include <ostream>
 
-#include <log/log.hpp>
+#include <log/logger.hpp>
 
 namespace framework
 {
-/// @addtogroup log_module
-/// @{
-
 namespace log
 {
-std::unique_ptr<logger_base>& logger_instance();
+/// @addtogroup log_logger
+/// @{
 
 /// @brief Prints all messages to provided stream.
 class stream_logger : public logger_base
