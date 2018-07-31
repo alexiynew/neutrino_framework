@@ -28,44 +28,40 @@
 
 namespace framework
 {
-/// @brief Contains all math stuff.
+/// @details
+///
+/// Math detailed description.
+///
 /// @defgroup math_module Math
 /// @{
 
-/// @brief Predefined constants.
-/// @defgroup predefined_constants Predefined constants
+/// @defgroup math_predefined_constants Predefined constants
 
-/// @brief Vector type implementation.
-/// @defgroup vector_implementation Vector type
+/// @defgroup math_vector_implementation Vector type
 
-/// @brief Matrix type implementation.
-/// @defgroup matrix_implementation Matrix type
+/// @defgroup math_matrix_implementation Matrix type
 
-/// @brief Defines common math functions.
-/// @defgroup common_functions Common functions
+/// @defgroup math_common_functions Common functions
 
-/// @brief Defines exponential math functions.
-/// @defgroup exponential_functions Exponential functions
+/// @defgroup math_exponential_functions Exponential functions
 
-/// @brief Defines geometric math functions.
-/// @defgroup geometric_functions Geometric functions
+/// @defgroup math_geometric_functions Geometric functions
 
-/// @brief Defines matrix specific math functions.
-/// @defgroup matrix_functions Matrix functions
+/// @defgroup math_matrix_functions Matrix functions
 
-/// @brief Defines rational math functions.
-/// @defgroup relational_functions Relational functions
+/// @defgroup math_relational_functions Relational functions
 
-/// @brief Defines transform functions.
-/// @defgroup transform_functions Transform functions
+/// @defgroup math_transform_functions Transform functions
 
-/// @brief Defines trigonometric math functions.
-/// @defgroup trigonometric_functions Trigonometric functions
+/// @defgroup math_trigonometric_functions Trigonometric functions
 
 /// @brief Contains all math stuff.
 namespace math
 {
-/// @name Common vector types.
+/// @addtogroup math_module
+/// @{
+
+/// @name Vector types.
 /// @{
 
 using vector2d = vector<2, float64>; ///< Vector of 2 float64 values.
@@ -90,7 +86,7 @@ using vector4b = vector<4, bool>; ///< Vector of 4 bool values.
 
 /// @}
 
-/// @name Common matrix types.
+/// @name Matrix types.
 /// @{
 
 using matrix2d   = matrix<2, 2, float64>; ///< Matrix with 2 columns and 2 rows of float64 type values.
@@ -128,6 +124,8 @@ using matrix4x3f = matrix<4, 3, float32>; ///< Matrix with 4 columns and 4 rows 
 /// @}
 
 } // namespace math
+
+/// @}
 
 } // namespace framework
 

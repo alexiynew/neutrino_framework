@@ -10,6 +10,10 @@
 
 namespace framework
 {
+/// @details
+///
+/// Deatiled description.
+///
 /// @defgroup common_types_module Common types
 /// @{
 

@@ -16,9 +16,11 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup predefined_constants
+/// @addtogroup math_predefined_constants
 /// @{
 
+/// @brief Predefined constant
+/// @{
 constexpr float64 deg_to_rad = 0.017453292519943295769236907684886127134428718885417254560;
 constexpr float64 rad_to_deg = 57.29577951308232087679815481410517033240547246656432154916;
 
@@ -52,6 +54,7 @@ constexpr float64 golden_ratio = 1.618033988749894848204586834365638117720309179
 
 constexpr float64 e     = 2.718281828459045235360287471352662497757247093699959574966;
 constexpr float64 euler = 0.577215664901532860606512090082402431042159335939923598805;
+/// @}
 
 /// @}
 

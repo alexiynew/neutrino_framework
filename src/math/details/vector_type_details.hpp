@@ -24,7 +24,6 @@ namespace vector_type_details
 {
 /// @brief Workaround to compare float numbers without warnings.
 /// @{
-
 template <typename T>
 inline constexpr bool equals(const T& a, const T& b, std::true_type /*unused*/)
 {

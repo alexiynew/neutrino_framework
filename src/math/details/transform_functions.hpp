@@ -22,7 +22,7 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup transform_functions
+/// @addtogroup math_transform_functions
 /// @{
 
 /// @name translate

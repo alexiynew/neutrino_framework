@@ -19,7 +19,7 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup exponential_functions
+/// @addtogroup math_exponential_functions
 /// @{
 
 /// @name pow

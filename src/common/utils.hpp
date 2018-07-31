@@ -8,6 +8,10 @@
 
 namespace framework
 {
+/// @details
+///
+/// Deatiled description.
+///
 /// @defgroup common_utils_module Common utils
 /// @{
 

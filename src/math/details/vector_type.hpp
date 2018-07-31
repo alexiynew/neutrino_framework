@@ -19,7 +19,7 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup vector_implementation
+/// @addtogroup math_vector_implementation
 /// @{
 
 /// @brief Vector template declaration.
@@ -729,7 +729,7 @@ inline const typename vector<2, T>::value_type* vector<2, T>::data() const noexc
 /// @}
 
 /// @name Vector operators and functions.
-/// @addtogroup vector_implementation
+/// @addtogroup math_vector_implementation
 /// @{
 
 /// @name Vector unary operators.
@@ -1170,14 +1170,19 @@ inline constexpr vector<N, R> transform(const vector<N, T>& first, const vector<
                                                                                     second);
 }
 
-/// @brief
+/// @brief Helper function to print vectior into the stream.
+///
+/// @param ostream Output stream.
+/// @param vector Vector to print.
+///
+/// @return Standard output stream.
 template <typename S, uint32 N, typename T>
-S& operator<<(S& ostream, const vector<N, T>& v)
+inline S& operator<<(S& ostream, const vector<N, T>& vector)
 {
     ostream << "[";
 
     for (uint32 i = 0; i < N; ++i) {
-        ostream << v[i] << (i + 1 < N ? ", " : "");
+        ostream << vector[i] << (i + 1 < N ? ", " : "");
     }
 
     ostream << "]";

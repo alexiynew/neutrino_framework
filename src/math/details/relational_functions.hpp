@@ -22,7 +22,7 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup relational_functions
+/// @addtogroup math_relational_functions
 /// @{
 
 /// @name less

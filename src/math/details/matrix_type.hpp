@@ -20,7 +20,7 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup matrix_implementation
+/// @addtogroup math_matrix_implementation
 /// @{
 
 /// @brief Matrix template declaration.
@@ -3298,7 +3298,7 @@ inline typename matrix<2, 2, T>::row_type matrix<2, 2, T>::row(uint32 index) con
 /// @}
 
 /// @name Matrix operators and functions.
-/// @addtogroup matrix_implementation
+/// @addtogroup math_matrix_implementation
 /// @{
 
 /// @name Matrix unary operators.

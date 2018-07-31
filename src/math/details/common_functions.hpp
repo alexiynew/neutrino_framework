@@ -21,7 +21,7 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup common_functions
+/// @addtogroup math_common_functions
 /// @{
 
 /// @name abs

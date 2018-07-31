@@ -20,7 +20,7 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup trigonometric_functions
+/// @addtogroup math_trigonometric_functions
 /// @{
 
 /// @name radians

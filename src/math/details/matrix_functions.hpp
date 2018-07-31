@@ -18,7 +18,7 @@ namespace framework
 {
 namespace math
 {
-/// @addtogroup matrix_functions
+/// @addtogroup math_matrix_functions
 /// @{
 
 /// @name transpose

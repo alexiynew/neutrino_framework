@@ -46,22 +46,22 @@ public:
 
 /// @brief Helper function to print severity level name into the stream.
 ///
-/// @param os Output stream.
+/// @param ostream Output stream.
 /// @param level Severity level to print.
 ///
 /// @return Standard output stream.
 template <typename T>
-inline T& operator<<(T& os, severity_level level)
+inline T& operator<<(T& ostream, severity_level level)
 {
     switch (level) {
-        case severity_level::debug: os << "debug"; break;
-        case severity_level::info: os << "info"; break;
-        case severity_level::warning: os << "warning"; break;
-        case severity_level::error: os << "error"; break;
-        case severity_level::fatal: os << "fatal"; break;
+        case severity_level::debug: ostream << "debug"; break;
+        case severity_level::info: ostream << "info"; break;
+        case severity_level::warning: ostream << "warning"; break;
+        case severity_level::error: ostream << "error"; break;
+        case severity_level::fatal: ostream << "fatal"; break;
     }
 
-    return os;
+    return ostream;
 }
 /// @}
 

@@ -19,7 +19,7 @@ namespace framework
 namespace math
 {
 ///
-/// @addtogroup geometric_functions
+/// @addtogroup math_geometric_functions
 /// @{
 
 /// @name length
