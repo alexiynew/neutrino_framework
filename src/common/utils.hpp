@@ -13,6 +13,12 @@ namespace framework
 
 namespace utils
 {
+/// @addtogroup common_utils_module
+/// @{
+
+/// @brief Determines if it is the debug build.
+///
+/// @return `true` in debug mode, `false` otherwise.
 inline constexpr bool is_debug() noexcept
 {
 #ifndef NDEBUG
@@ -21,6 +27,8 @@ inline constexpr bool is_debug() noexcept
     return false;
 #endif
 }
+
+/// @}
 
 } // namespace utils
 
