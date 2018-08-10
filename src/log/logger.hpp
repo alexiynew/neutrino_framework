@@ -32,6 +32,14 @@ enum class severity_level
 class logger_base
 {
 public:
+    logger_base() = default;
+
+    logger_base(const logger_base&) = default;
+    logger_base(logger_base&&)      = default;
+
+    logger_base& operator=(const logger_base&) = default;
+    logger_base& operator=(logger_base&&) = default;
+
     virtual ~logger_base() = default;
 
     /// @brief Add message to the log.

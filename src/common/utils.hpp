@@ -54,9 +54,9 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     auto get_distribution = [](auto min_value, auto max_value) {
         if constexpr (std::is_integral<T>::value) {
             return std::uniform_int_distribution<T>(min_value, max_value);
-        } else {
-            return std::uniform_real_distribution<T>(min_value, max_value);
         }
+
+        return std::uniform_real_distribution<T>(min_value, max_value);
     };
 
     std::vector<T> result;
