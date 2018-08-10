@@ -34,6 +34,7 @@ public:
     {
         add_test([this]() { size_check(); }, "size_check");
         add_test([this]() { default_constructor(); }, "default_constructor");
+        add_test([this]() { copy_constructor(); }, "copy_constructor");
         add_test([this]() { one_argument_constructor(); }, "one_argument_constructor");
         add_test([this]() { pointer_constructor(); }, "pointer_constructor");
         add_test([this]() { matrix4x4_constructors(); }, "matrix4x4_constructors");
@@ -45,47 +46,57 @@ public:
         add_test([this]() { matrix2x4_constructors(); }, "matrix2x4_constructors");
         add_test([this]() { matrix2x3_constructors(); }, "matrix2x3_constructors");
         add_test([this]() { matrix2x2_constructors(); }, "matrix2x2_constructors");
-
-        matrix22 = matrix2x2f();
-        matrix23 = matrix2x3f();
-        matrix24 = matrix2x4f();
-
-        matrix32 = matrix3x2f();
-        matrix33 = matrix3x3f();
-        matrix34 = matrix3x4f();
-
-        matrix42 = matrix4x2f();
-        matrix43 = matrix4x3f();
-        matrix44 = matrix4x4f();
     }
 
 private:
     void size_check()
     {
-        TEST_ASSERT(sizeof(matrix22) == sizeof(float32) * 2 * 2 && matrix22.size() == 2,
-                    "Matrix2x2 size check failed.");
-        TEST_ASSERT(sizeof(matrix23) == sizeof(float32) * 2 * 3 && matrix23.size() == 2,
-                    "Matrix2x3 size check failed.");
-        TEST_ASSERT(sizeof(matrix24) == sizeof(float32) * 2 * 4 && matrix24.size() == 2,
-                    "Matrix2x4 size check failed.");
+        constexpr matrix2x2f matrix22;
+        constexpr matrix2x3f matrix23;
+        constexpr matrix2x4f matrix24;
 
-        TEST_ASSERT(sizeof(matrix32) == sizeof(float32) * 3 * 2 && matrix32.size() == 3,
-                    "Matrix3x2 size check failed.");
-        TEST_ASSERT(sizeof(matrix33) == sizeof(float32) * 3 * 3 && matrix33.size() == 3,
-                    "Matrix3x3 size check failed.");
-        TEST_ASSERT(sizeof(matrix34) == sizeof(float32) * 3 * 4 && matrix34.size() == 3,
-                    "Matrix3x4 size check failed.");
+        constexpr matrix3x2f matrix32;
+        constexpr matrix3x3f matrix33;
+        constexpr matrix3x4f matrix34;
 
-        TEST_ASSERT(sizeof(matrix42) == sizeof(float32) * 4 * 2 && matrix42.size() == 4,
-                    "Matrix4x2 size check failed.");
-        TEST_ASSERT(sizeof(matrix43) == sizeof(float32) * 4 * 3 && matrix43.size() == 4,
-                    "Matrix4x3 size check failed.");
-        TEST_ASSERT(sizeof(matrix44) == sizeof(float32) * 4 * 4 && matrix44.size() == 4,
-                    "Matrix4x4 size check failed.");
+        constexpr matrix4x2f matrix42;
+        constexpr matrix4x3f matrix43;
+        constexpr matrix4x4f matrix44;
+
+        static_assert(sizeof(matrix22) == sizeof(float32) * 2 * 2 && matrix22.size() == 2,
+                      "Matrix2x2 size check failed.");
+        static_assert(sizeof(matrix23) == sizeof(float32) * 2 * 3 && matrix23.size() == 2,
+                      "Matrix2x3 size check failed.");
+        static_assert(sizeof(matrix24) == sizeof(float32) * 2 * 4 && matrix24.size() == 2,
+                      "Matrix2x4 size check failed.");
+        static_assert(sizeof(matrix32) == sizeof(float32) * 3 * 2 && matrix32.size() == 3,
+                      "Matrix3x2 size check failed.");
+        static_assert(sizeof(matrix33) == sizeof(float32) * 3 * 3 && matrix33.size() == 3,
+                      "Matrix3x3 size check failed.");
+        static_assert(sizeof(matrix34) == sizeof(float32) * 3 * 4 && matrix34.size() == 3,
+                      "Matrix3x4 size check failed.");
+        static_assert(sizeof(matrix42) == sizeof(float32) * 4 * 2 && matrix42.size() == 4,
+                      "Matrix4x2 size check failed.");
+        static_assert(sizeof(matrix43) == sizeof(float32) * 4 * 3 && matrix43.size() == 4,
+                      "Matrix4x3 size check failed.");
+        static_assert(sizeof(matrix44) == sizeof(float32) * 4 * 4 && matrix44.size() == 4,
+                      "Matrix4x4 size check failed.");
     }
 
     void default_constructor()
     {
+        constexpr matrix2x2f matrix22;
+        constexpr matrix2x3f matrix23;
+        constexpr matrix2x4f matrix24;
+
+        constexpr matrix3x2f matrix32;
+        constexpr matrix3x3f matrix33;
+        constexpr matrix3x4f matrix34;
+
+        constexpr matrix4x2f matrix42;
+        constexpr matrix4x3f matrix43;
+        constexpr matrix4x4f matrix44;
+
         // clang-format off
         TEST_ASSERT(matrix22 == matrix2x2f(
             1, 0,
@@ -143,8 +154,59 @@ private:
         // clang-format on
     }
 
+    void copy_constructor()
+    {
+        constexpr matrix2x2f matrix22;
+        constexpr matrix2x3f matrix23;
+        constexpr matrix2x4f matrix24;
+
+        constexpr matrix3x2f matrix32;
+        constexpr matrix3x3f matrix33;
+        constexpr matrix3x4f matrix34;
+
+        constexpr matrix4x2f matrix42;
+        constexpr matrix4x3f matrix43;
+        constexpr matrix4x4f matrix44;
+
+        constexpr matrix2x2f matrix22_2 = matrix22;
+        constexpr matrix2x3f matrix23_2 = matrix23;
+        constexpr matrix2x4f matrix24_2 = matrix24;
+
+        constexpr matrix3x2f matrix32_2 = matrix32;
+        constexpr matrix3x3f matrix33_2 = matrix33;
+        constexpr matrix3x4f matrix34_2 = matrix34;
+
+        constexpr matrix4x2f matrix42_2 = matrix42;
+        constexpr matrix4x3f matrix43_2 = matrix43;
+        constexpr matrix4x4f matrix44_2 = matrix44;
+
+        TEST_ASSERT(matrix22 == matrix22_2, "Matrix2x2 copy constructor failed.");
+        TEST_ASSERT(matrix23 == matrix23_2, "Matrix2x3 copy constructor failed.");
+        TEST_ASSERT(matrix24 == matrix24_2, "Matrix2x4 copy constructor failed.");
+
+        TEST_ASSERT(matrix32 == matrix32_2, "Matrix3x2 copy constructor failed.");
+        TEST_ASSERT(matrix33 == matrix33_2, "Matrix3x3 copy constructor failed.");
+        TEST_ASSERT(matrix34 == matrix34_2, "Matrix3x4 copy constructor failed.");
+
+        TEST_ASSERT(matrix42 == matrix42_2, "Matrix4x2 copy constructor failed.");
+        TEST_ASSERT(matrix43 == matrix43_2, "Matrix4x3 copy constructor failed.");
+        TEST_ASSERT(matrix44 == matrix44_2, "Matrix4x4 copy constructor failed.");
+    }
+
     void one_argument_constructor()
     {
+        constexpr matrix2x2f matrix22;
+        constexpr matrix2x3f matrix23;
+        constexpr matrix2x4f matrix24;
+
+        constexpr matrix3x2f matrix32;
+        constexpr matrix3x3f matrix33;
+        constexpr matrix3x4f matrix34;
+
+        constexpr matrix4x2f matrix42;
+        constexpr matrix4x3f matrix43;
+        constexpr matrix4x4f matrix44;
+
         TEST_ASSERT(matrix22 == matrix2x2f(1), "Matrix2x2 one argument constructor failed.");
         TEST_ASSERT(matrix23 == matrix2x3f(1), "Matrix2x3 one argument constructor failed.");
         TEST_ASSERT(matrix24 == matrix2x4f(1), "Matrix2x4 one argument constructor failed.");
@@ -594,18 +656,6 @@ private:
         TEST_ASSERT(m1 == m3, "Matrix2x2f constructor failed.");
         TEST_ASSERT(m1 == m4, "Matrix2x2f constructor failed.");
     }
-
-    matrix2x2f matrix22;
-    matrix2x3f matrix23;
-    matrix2x4f matrix24;
-
-    matrix3x2f matrix32;
-    matrix3x3f matrix33;
-    matrix3x4f matrix34;
-
-    matrix4x2f matrix42;
-    matrix4x3f matrix43;
-    matrix4x4f matrix44;
 };
 
 class matrix_from_matrix_test : public framework::unit_test::suite

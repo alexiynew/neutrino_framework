@@ -44,14 +44,6 @@ struct vector<4, T> final
     /// For bool vector initializes as {false, false, false, false}
     constexpr vector() noexcept;
 
-    /// @brief Default destructor.
-    ~vector() noexcept = default;
-
-    /// @brief Default copy constructor.
-    ///
-    /// @param other Vector to copy from.
-    constexpr vector(const vector<4, value_type>& other) noexcept;
-
     /// @brief Initializes vector with provided values.
     ///
     /// @param x_value Value for x component.
@@ -73,7 +65,7 @@ struct vector<4, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr vector(const U* pointer);
+    explicit vector(const U* pointer);
 
     /// @brief Initializes vector from another one.
     ///
@@ -142,13 +134,6 @@ struct vector<4, T> final
     template <typename U, typename Z, typename W>
     constexpr vector(const vector<2, U>& other, const Z& z_value, const W& w_value) noexcept;
 
-    /// @brief Default assignment operator.
-    ///
-    /// @param other Vector to copy from.
-    ///
-    /// @return Reference to itself.
-    vector<4, value_type>& operator=(const vector<4, value_type>& other) noexcept;
-
     /// @brief Access operator.
     ///
     /// @param index Index of component.
@@ -203,14 +188,6 @@ struct vector<3, T> final
     /// Initializes vector as {0, 0, 0}
     constexpr vector() noexcept;
 
-    /// @brief Default destructor.
-    ~vector() noexcept = default;
-
-    /// @brief Default copy constructor.
-    ///
-    /// @param other Vector to copy from.
-    constexpr vector(const vector<3, value_type>& other) noexcept;
-
     /// @brief Initializes vector with provided values.
     ///
     /// @param x_value Value for x component.
@@ -231,7 +208,7 @@ struct vector<3, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr vector(const U* pointer);
+    explicit vector(const U* pointer);
 
     /// @brief Initializes vector from another one.
     ///
@@ -266,13 +243,6 @@ struct vector<3, T> final
     /// @param z_value Value for z component.
     template <typename U, typename Z>
     constexpr vector(const vector<2, U>& other, const Z& z_value) noexcept;
-
-    /// @brief Default assignment operator.
-    ///
-    /// @param other Vector to copy from.
-    ///
-    /// @return Reference to itself.
-    vector<3, value_type>& operator=(const vector<3, value_type>& other) noexcept;
 
     /// @brief Access operator.
     ///
@@ -327,14 +297,6 @@ struct vector<2, T> final
     /// Initializes vector as {0, 0}
     constexpr vector() noexcept;
 
-    /// @brief Default destructor.
-    ~vector() noexcept = default;
-
-    /// @brief Default copy constructor.
-    ///
-    /// @param other Vector to copy from.
-    constexpr vector(const vector<2, value_type>& other) noexcept;
-
     /// @brief Initializes vector with provided values.
     ///
     /// @param x_value Value for x component.
@@ -354,7 +316,7 @@ struct vector<2, T> final
     ///
     /// @warning May cause memory access error.
     template <typename U>
-    explicit constexpr vector(const U* pointer);
+    explicit vector(const U* pointer);
 
     /// @brief Initializes vector from another one.
     ///
@@ -373,13 +335,6 @@ struct vector<2, T> final
     /// @param other Vector to initialize x and y components.
     template <typename U>
     explicit constexpr vector(const vector<2, U>& other) noexcept;
-
-    /// @brief Default assignment operator.
-    ///
-    /// @param other Vector to copy from.
-    ///
-    /// @return Reference to itself.
-    vector<2, value_type>& operator=(const vector<2, value_type>& other) noexcept;
 
     /// @brief Access operator.
     ///
@@ -428,9 +383,6 @@ inline constexpr vector<4, T>::vector() noexcept
 {}
 
 template <typename T>
-inline constexpr vector<4, T>::vector(const vector<4, T>& other) noexcept = default;
-
-template <typename T>
 template <typename X, typename Y, typename Z, typename W>
 inline constexpr vector<4, T>::vector(const X& x_value, const Y& y_value, const Z& z_value, const W& w_value) noexcept
     : x{vector_type_details::cast_to<T>::from(x_value)},
@@ -446,8 +398,7 @@ inline constexpr vector<4, T>::vector(const U& value) noexcept : vector{value, v
 
 template <typename T>
 template <typename U>
-inline constexpr vector<4, T>::vector(const U* pointer)
-    : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
+inline vector<4, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -509,9 +460,6 @@ inline constexpr vector<4, T>::vector(const vector<2, U>& other, const Z& z_valu
 /// @name vector<4, T> operators.
 /// @{
 template <typename T>
-inline vector<4, T>& vector<4, T>::operator=(const vector<4, T>&) noexcept = default;
-
-template <typename T>
 inline typename vector<4, T>::value_type& vector<4, T>::operator[](uint32 index)
 {
     assert(index < 4);
@@ -554,9 +502,6 @@ inline constexpr vector<3, T>::vector() noexcept : x{T(0)}, y{T(0)}, z{T(0)}
 {}
 
 template <typename T>
-inline constexpr vector<3, T>::vector(const vector<3, T>& other) noexcept = default;
-
-template <typename T>
 template <typename X, typename Y, typename Z>
 inline constexpr vector<3, T>::vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept
     : x{vector_type_details::cast_to<T>::from(x_value)},
@@ -571,7 +516,7 @@ inline constexpr vector<3, T>::vector(const U& value) noexcept : vector{value, v
 
 template <typename T>
 template <typename U>
-inline constexpr vector<3, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2)}
+inline vector<3, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -606,9 +551,6 @@ inline constexpr vector<3, T>::vector(const vector<2, U>& other, const Z& z_valu
 
 /// @name vector<3, T> operators.
 /// @{
-template <typename T>
-inline vector<3, T>& vector<3, T>::operator=(const vector<3, T>&) noexcept = default;
-
 template <typename T>
 inline typename vector<3, T>::value_type& vector<3, T>::operator[](uint32 index)
 {
@@ -652,9 +594,6 @@ inline constexpr vector<2, T>::vector() noexcept : x{T(0)}, y{T(0)}
 {}
 
 template <typename T>
-inline constexpr vector<2, T>::vector(const vector<2, T>&) noexcept = default;
-
-template <typename T>
 template <typename X, typename Y>
 inline constexpr vector<2, T>::vector(const X& x_value, const Y& y_value) noexcept
     : x{vector_type_details::cast_to<T>::from(x_value)}, y{vector_type_details::cast_to<T>::from(y_value)}
@@ -667,7 +606,7 @@ inline constexpr vector<2, T>::vector(const U& value) noexcept : vector{value, v
 
 template <typename T>
 template <typename U>
-inline constexpr vector<2, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1)}
+inline vector<2, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -689,9 +628,6 @@ inline constexpr vector<2, T>::vector(const vector<2, U>& other) noexcept : vect
 
 /// @name vector<2, T> operators.
 /// @{
-template <typename T>
-inline vector<2, T>& vector<2, T>::operator=(const vector<2, T>&) noexcept = default;
-
 template <typename T>
 inline typename vector<2, T>::value_type& vector<2, T>::operator[](uint32 index)
 {

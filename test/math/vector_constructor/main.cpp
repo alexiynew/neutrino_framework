@@ -2,10 +2,10 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::int32;
-using ::framework::uint32;
 using ::framework::float32;
 using ::framework::float64;
+using ::framework::int32;
+using ::framework::uint32;
 
 using ::framework::math::vector2f;
 using ::framework::math::vector3f;
@@ -36,6 +36,7 @@ public:
     {
         add_test([this]() { size_check(); }, "size_check");
         add_test([this]() { default_constructor(); }, "default_constructor");
+        add_test([this]() { copy_constructor(); }, "copy_constructor");
         add_test([this]() { one_argument_constructor(); }, "one_argument_constructor");
         add_test([this]() { non_default_constructor(); }, "non_default_constructor");
         add_test([this]() { type_cast_constructor(); }, "type_cast_constructor");
@@ -68,6 +69,21 @@ private:
         static_assert(v4d == vector4d(0, 0, 0, 1), "Vector4d default constructor failed.");
         static_assert(v3f == vector3f(0, 0, 0), "Vector3f default constructor failed.");
         static_assert(v2i == vector2i(0, 0), "Vector2i default constructor failed.");
+    }
+
+    void copy_constructor()
+    {
+        constexpr vector4d v4d;
+        constexpr vector3f v3f;
+        constexpr vector2i v2i;
+
+        constexpr vector4d v4d2 = v4d;
+        constexpr vector3f v3f2 = v3f;
+        constexpr vector2i v2i2 = v2i;
+
+        static_assert(v4d == v4d2, "Vector4d copy constructor failed.");
+        static_assert(v3f == v3f2, "Vector3f copy constructor failed.");
+        static_assert(v2i == v2i2, "Vector2i copy constructor failed.");
     }
 
     void one_argument_constructor()
