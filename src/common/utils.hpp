@@ -6,6 +6,9 @@
 #ifndef FRAMEWORK_COMMON_UTILS_HPP
 #define FRAMEWORK_COMMON_UTILS_HPP
 
+#include <random>
+#include <vector>
+
 namespace framework {
 
 /// @defgroup common_utils_module Common utils
@@ -20,6 +23,36 @@ inline constexpr bool is_debug() noexcept
 #else
     return false;
 #endif
+}
+
+template <typename T>
+std::vector<T> random_numbers(T min, T max, size_t count)
+{
+    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
+
+    if (count == 0) {
+        return std::vector<T>();
+    }
+
+    auto get_distribution = [](auto min_value, auto max_value) {
+        if constexpr (std::is_integral<T>::value) {
+            return std::uniform_int_distribution<T>(min_value, max_value);
+        } else {
+            return std::uniform_real_distribution<T>(min_value, max_value);
+        }
+    };
+
+    std::vector<T> result;
+    result.reserve(count);
+
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    auto dist = get_distribution(min, max);
+    for (size_t i = 0; i < count; ++i) {
+        result.push_back(dist(mt));
+    }
+
+    return result;
 }
 
 } // namespace utils
