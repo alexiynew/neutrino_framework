@@ -12,7 +12,7 @@ namespace framework
 {
 /// @details
 ///
-/// Deatiled description.
+/// Base type definitions.
 ///
 /// @defgroup common_types_module Common types
 /// @{

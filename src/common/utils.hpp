@@ -10,7 +10,7 @@ namespace framework
 {
 /// @details
 ///
-/// Deatiled description.
+/// Different helper functions.
 ///
 /// @defgroup common_utils_module Common utils
 /// @{
