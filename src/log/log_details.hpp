@@ -11,17 +11,14 @@
 #include <string>
 #include <vector>
 
-namespace framework {
-
-/// @addtogroup log_module
-/// @{
-
-namespace log {
-
+namespace framework
+{
+namespace log
+{
 enum class severity_level;
 
-namespace log_details {
-
+namespace log_details
+{
 /// @brief Custom stream buffer
 class log_buffer : public std::streambuf
 {
@@ -33,8 +30,8 @@ public:
     log_buffer(const log_buffer&) = delete;
     log_buffer& operator=(const log_buffer&) = delete;
 
-    log_buffer(log_buffer&& /*other*/) noexcept;
-    log_buffer& operator=(log_buffer&& /*other*/) noexcept;
+    log_buffer(log_buffer&& other) noexcept;
+    log_buffer& operator=(log_buffer&& other) noexcept;
 
 protected:
     int overflow(int character) override;
@@ -46,24 +43,22 @@ private:
     std::vector<char_type> m_buffer;
 
     void reset_pointers();
-    void clear_buffer();
+    void flush_buffer();
 };
 
 /// @brief Custom output stream
 class log_ostream : public std::ostream
 {
 public:
-    log_ostream() = delete;
+    explicit log_ostream(std::unique_ptr<std::streambuf> buffer);
 
     ~log_ostream() override;
 
     log_ostream(const log_ostream&) = delete;
     log_ostream& operator=(const log_ostream&) = delete;
 
-    log_ostream(log_ostream&& /*other*/) noexcept;
-    log_ostream& operator=(log_ostream&& /*other*/) noexcept;
-
-    explicit log_ostream(std::unique_ptr<std::streambuf> buffer);
+    log_ostream(log_ostream&& other) noexcept;
+    log_ostream& operator=(log_ostream&& other) noexcept;
 
 private:
     std::unique_ptr<std::streambuf> m_buffer;
@@ -71,10 +66,10 @@ private:
 
 } // namespace log_details
 
+/// @}
+
 } // namespace log
 
 } // namespace framework
-
-/// @}
 
 #endif

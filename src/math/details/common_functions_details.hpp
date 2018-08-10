@@ -14,13 +14,13 @@
 
 #include <math/details/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @brief Contains implementation details of some functions.
-namespace common_functions_details {
-
+namespace common_functions_details
+{
 /// @brief Realization of abs function.
 /// @{
 template <typename T>

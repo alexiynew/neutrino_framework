@@ -5,16 +5,10 @@
 
 #include <log/stream_logger.hpp>
 
-namespace framework {
-
-namespace log {
-
-std::unique_ptr<logger_base>& logger_instance()
+namespace framework
 {
-    static std::unique_ptr<logger_base> instance;
-    return instance;
-}
-
+namespace log
+{
 stream_logger::stream_logger(std::ostream& stream) : m_output(stream)
 {}
 

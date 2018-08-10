@@ -538,7 +538,7 @@ FILE_VERSION_FILTER    =
 # DoxygenLayout.xml, doxygen will parse it automatically even if the LAYOUT_FILE
 # tag is left empty.
 
-LAYOUT_FILE            =
+LAYOUT_FILE            = @DOCS_BINARY_DIR@/DoxygenLayout.xml
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files containing
 # the reference definitions. This must be a list of .bib files. The .bib
@@ -567,13 +567,13 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 
 # Source files
-INPUT                  = @FRAMEWORK_SOURCES@
+INPUT                  = @FRAMEWORK_SOURCE_DIR@
 
 # Encoding of the source files
 INPUT_ENCODING         = UTF-8
 
 # file extention patterns
-FILE_PATTERNS          = *.cpp, *.hpp
+FILE_PATTERNS          = *.hpp
 
 # Search in subdirectories
 RECURSIVE              = YES
@@ -588,7 +588,7 @@ EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       =
 
 # Symbol names to exclude from documentation
-EXCLUDE_SYMBOLS        = framework::math::*_impl
+EXCLUDE_SYMBOLS        = framework::math::*_details, framework::log::*_details
 
 # Code examples
 EXAMPLE_PATH           =

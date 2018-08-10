@@ -1,26 +1,44 @@
 /// @file
-/// @brief Logger implementation.
+/// @brief Logging interface implementation.
 /// @author Fedorov Alexey
 /// @date 08.03.2017
 
 #include <common/utils.hpp>
 #include <log/log.hpp>
 
-using log_ostream = framework::log::log_details::log_ostream;
-using log_buffer  = framework::log::log_details::log_buffer;
-
-namespace framework {
-
-namespace log {
+namespace
+{
+using ::framework::log::logger_base;
+using ::framework::log::log_details::log_buffer;
+using ::framework::log::log_details::log_ostream;
 
 class dummy_logger : public logger_base
 {
-    void add_message(severity_level /*level*/, const std::string& /*tag*/, const std::string& /*message*/) override
+    void add_message(::framework::log::severity_level /*level*/,
+                     const std::string& /*tag*/,
+                     const std::string& /*message*/) override
     {
         // nothing to do.
     }
 };
 
+std::unique_ptr<logger_base>& logger_instance()
+{
+    static std::unique_ptr<logger_base> instance;
+
+    if (!instance) {
+        instance = std::make_unique<dummy_logger>();
+    }
+
+    return instance;
+}
+
+} // namespace
+
+namespace framework
+{
+namespace log
+{
 #pragma region log functions
 
 log_ostream debug(const std::string& tag)
@@ -52,31 +70,12 @@ log_ostream fatal(const std::string& tag)
 
 void set_logger(std::unique_ptr<logger_base> implementation)
 {
-    ::framework::log::logger() = std::move(implementation);
+    ::logger_instance() = std::move(implementation);
 }
 
-std::unique_ptr<logger_base>& logger()
+logger_base* logger()
 {
-    static std::unique_ptr<logger_base> instance;
-
-    if (!instance) {
-        instance = std::make_unique<dummy_logger>();
-    }
-
-    return instance;
-}
-
-std::ostream& operator<<(std::ostream& os, severity_level level)
-{
-    switch (level) {
-        case severity_level::debug: os << "debug"; break;
-        case severity_level::info: os << "info"; break;
-        case severity_level::warning: os << "warning"; break;
-        case severity_level::error: os << "error"; break;
-        case severity_level::fatal: os << "fatal"; break;
-    }
-
-    return os;
+    return ::logger_instance().get();
 }
 
 } // namespace log

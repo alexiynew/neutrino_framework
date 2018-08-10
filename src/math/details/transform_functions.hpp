@@ -18,11 +18,11 @@
 #include <math/details/matrix_type.hpp>
 #include <math/details/trigonometric_functions.hpp>
 
-namespace framework {
-
-namespace math {
-
-/// @addtogroup transform_functions
+namespace framework
+{
+namespace math
+{
+/// @addtogroup math_transform_functions
 /// @{
 
 /// @name translate

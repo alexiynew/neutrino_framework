@@ -16,11 +16,11 @@
 #include <math/details/constants.hpp>
 #include <math/details/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
-/// @addtogroup trigonometric_functions
+namespace framework
+{
+namespace math
+{
+/// @addtogroup math_trigonometric_functions
 /// @{
 
 /// @name radians

@@ -12,17 +12,11 @@
 
 #include <common/types.hpp>
 
-namespace framework {
-
-/// @defgroup unit_test_module Unit test
-/// @{
-
-/// @brief Contains classes related to unit tests.
-namespace unit_test {
-
-/// @brief Base class to work with tests.
+namespace framework
+{
+/// @details
 ///
-/// You should use it as the base class for your test classes.
+/// You should use the `unit_test::suite` as base class for your tests.
 /// @code
 /// class example_test : public framework::unit_test::suite
 /// {
@@ -39,6 +33,19 @@ namespace unit_test {
 /// };
 /// @endcode
 ///
+/// Use the `unit_test::suite::add_test` function to add tests to curretn suite.
+/// @code
+/// add_test([this]() { test_function(); }, "test_function_name");
+/// @endcode
+///
+/// Use the `unit_test::suite::test_failed` function to mark test as failed.
+/// You can use @ref TEST_FAIL and @ref TEST_ASSERT macros
+/// to get @b file path and @b line number.
+/// @code
+/// TEST_FAIL("Test fail message.");
+/// TEST_ASSERT(false, "Test fail message.");
+/// @endcode
+///
 /// And then you can run this test.
 /// @code
 /// framework::unit_test::suite* test_suite = new example_test();
@@ -49,6 +56,17 @@ namespace unit_test {
 /// @code
 /// run_tests(example_test(), other_example_test());
 /// @endcode
+///
+/// @defgroup unit_test_module Unit test
+/// @{
+
+/// @brief Contains classes related to unit tests.
+namespace unit_test
+{
+/// @addtogroup unit_test_module
+/// @{
+
+/// @brief Base class to work with tests.
 class suite
 {
 public:
@@ -71,12 +89,12 @@ public:
     std::string name() const;
 
 protected:
-    /// @brief Function type shortcut for internal usage
+    /// @brief Function type shortcut, for internal usage.
     using function_type = std::function<void()>;
 
     /// @brief Adds function to test suite.
     ///
-    /// @param function Member function of the derived class.
+    /// @param function Test function.
     /// @param name Name of the current test function.
     void add_test(function_type&& function, const std::string& name);
 
@@ -126,12 +144,12 @@ private:
 /// @brief Runs test in all test suites.
 ///
 /// @param tests Test suites to run.
-/// @return Count of suites were failed.
+/// @return Number of test suites that failed.
 template <typename... Arguments>
 int32 run_tests(Arguments&&... tests)
 {
-    int32 count  = sizeof...(tests);
-    int32 passed = 0;
+    const int32 count = sizeof...(tests);
+    int32 passed      = 0;
 
     std::vector<::framework::unit_test::suite*> tests_container{&tests...};
 
@@ -153,6 +171,8 @@ int32 run_tests(Arguments&&... tests)
 /// @param EXPRESSION Expression to check as test condition.
 /// @param MESSAGE Error description.
 #define TEST_ASSERT(EXPRESSION, MESSAGE) !(EXPRESSION) ? TEST_FAIL(MESSAGE) : static_cast<void>(0)
+
+/// @}
 
 } // namespace unit_test
 

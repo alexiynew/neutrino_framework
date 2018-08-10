@@ -17,11 +17,11 @@
 #include <math/details/common_functions_details.hpp>
 #include <math/details/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
-/// @addtogroup common_functions
+namespace framework
+{
+namespace math
+{
+/// @addtogroup math_common_functions
 /// @{
 
 /// @name abs

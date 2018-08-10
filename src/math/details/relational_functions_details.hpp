@@ -17,13 +17,13 @@
 #include <math/details/matrix_type.hpp>
 #include <math/details/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 /// @brief Contains implementation details of some functions.
-namespace relational_functions_details {
-
+namespace relational_functions_details
+{
 /// @brief Realization of almost_equal function.
 /// @{
 template <typename T>

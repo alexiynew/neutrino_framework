@@ -6,18 +6,18 @@
 #include <log/log.hpp>
 #include <log/log_details.hpp>
 
-namespace {
-
+namespace
+{
 constexpr size_t log_buffer_size = 64;
 
 } // namespace
 
-namespace framework {
-
-namespace log {
-
-namespace log_details {
-
+namespace framework
+{
+namespace log
+{
+namespace log_details
+{
 #pragma region log_buffer
 
 log_buffer::log_buffer(severity_level level, std::string tag)
@@ -28,7 +28,7 @@ log_buffer::log_buffer(severity_level level, std::string tag)
 
 log_buffer::~log_buffer()
 {
-    clear_buffer();
+    flush_buffer();
 }
 
 log_buffer::log_buffer(log_buffer&& other) noexcept
@@ -62,7 +62,7 @@ int log_buffer::overflow(int character)
 
 int log_buffer::sync()
 {
-    clear_buffer();
+    flush_buffer();
 
     reset_pointers();
 
@@ -74,7 +74,7 @@ void log_buffer::reset_pointers()
     setp(m_buffer.data(), m_buffer.data() + m_buffer.size());
 }
 
-void log_buffer::clear_buffer()
+void log_buffer::flush_buffer()
 {
     if (pptr() == pbase()) {
         return;

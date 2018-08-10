@@ -14,11 +14,11 @@
 #include <math/details/matrix_functions_details.hpp>
 #include <math/details/matrix_type.hpp>
 
-namespace framework {
-
-namespace math {
-
-/// @addtogroup matrix_functions
+namespace framework
+{
+namespace math
+{
+/// @addtogroup math_matrix_functions
 /// @{
 
 /// @name transpose

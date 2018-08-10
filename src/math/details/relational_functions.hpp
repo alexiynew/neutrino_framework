@@ -18,11 +18,11 @@
 #include <math/details/relational_functions_details.hpp>
 #include <math/details/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
-/// @addtogroup relational_functions
+namespace framework
+{
+namespace math
+{
+/// @addtogroup math_relational_functions
 /// @{
 
 /// @name less

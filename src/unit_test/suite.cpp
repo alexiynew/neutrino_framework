@@ -8,10 +8,10 @@
 
 #include <unit_test/suite.hpp>
 
-namespace framework {
-
-namespace unit_test {
-
+namespace framework
+{
+namespace unit_test
+{
 suite::suite(std::string name) : m_name{std::move(name)}, m_current_test{m_tests.end()}
 {}
 

@@ -13,12 +13,12 @@
 #include <common/types.hpp>
 #include <math/details/matrix_type.hpp>
 
-namespace framework {
-
-namespace math {
-
-namespace matrix_functions_details {
-
+namespace framework
+{
+namespace math
+{
+namespace matrix_functions_details
+{
 /// @brief Realization of transpose function.
 /// @{
 template <uint32 C, typename T>

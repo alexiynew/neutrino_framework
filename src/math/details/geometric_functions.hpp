@@ -14,12 +14,12 @@
 #include <math/details/geometric_functions_details.hpp>
 #include <math/details/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
+namespace framework
+{
+namespace math
+{
 ///
-/// @addtogroup geometric_functions
+/// @addtogroup math_geometric_functions
 /// @{
 
 /// @name length

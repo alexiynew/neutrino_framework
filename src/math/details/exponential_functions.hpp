@@ -15,11 +15,11 @@
 #include <common/types.hpp>
 #include <math/details/vector_type.hpp>
 
-namespace framework {
-
-namespace math {
-
-/// @addtogroup exponential_functions
+namespace framework
+{
+namespace math
+{
+/// @addtogroup math_exponential_functions
 /// @{
 
 /// @name pow

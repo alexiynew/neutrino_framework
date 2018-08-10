@@ -204,24 +204,24 @@ cat << EOF
 ==== Help ====
     ./build.sh [OPTION VALUE] [ACTION [ACTION]]
 
-    OPTIONS:
-        ACTIONS:
-            configure    : Just runs cmake configuration.
-            build        : Build framework and tests.
-            install      : Install framework and tests.
-            test         : Run all tests.
-            test_verbose : Run all tests with verbose logging.
-            coverage     : Run test coverage scan.
-            check        : Run static analizers.
-            docs         : Build documentation.
-            clean        : Clean build results.
+    ACTIONS:
+        configure    : Just runs cmake configuration.
+        build        : Build framework and tests.
+        install      : Install framework and tests.
+        test         : Run all tests.
+        test_verbose : Run all tests with verbose logging.
+        coverage     : Run test coverage scan.
+        check        : Run static analizers.
+        docs         : Build documentation.
+        clean        : Clean build results.
 
+    OPTIONS:
         -b : Specify build type.
         VALUES:
             debug   : Debug build (default).
             release : Release build.
 
-        -c : Specify compiller to use.
+        -c : Specify which compiller to use.
         VALUES:
             gcc   : Use gcc compiller (default).
             clang : Use clang compiller.
