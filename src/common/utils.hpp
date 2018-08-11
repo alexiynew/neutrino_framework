@@ -9,6 +9,8 @@
 #include <random>
 #include <vector>
 
+#include <common/utils_details.hpp>
+
 namespace framework
 {
 /// @details
@@ -53,13 +55,13 @@ std::vector<T> random_numbers(T min, T max, size_t count)
 
     if (min > max) {
         std::swap(min, max);
-        }
+    }
 
     auto get_distribution = [](T min_value, T max_value) {
         if constexpr (std::is_integral<T>::value == true) {
             return std::uniform_int_distribution<T>(min_value, max_value);
         } else {
-        return std::uniform_real_distribution<T>(min_value, max_value);
+            return std::uniform_real_distribution<T>(min_value, max_value);
         }
     };
 
@@ -75,6 +77,16 @@ std::vector<T> random_numbers(T min, T max, size_t count)
 
     return result;
 }
+
+template <typename... Args>
+std::string format(const std::string& str, Args&&... args)
+{
+    std::unique_ptr<format_details::value_base> values[sizeof...(args)] = {
+    (format_details::make_value_holder_ptr(args))...,
+    };
+    return format_details::make_string_impl(str, values, sizeof...(args));
+}
+
 /// @}
 
 } // namespace utils

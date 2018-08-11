@@ -47,7 +47,37 @@ private:
     }
 };
 
+class format_string_test : public framework::unit_test::suite
+{
+public:
+    format_string_test() : suite("format_string_test")
+    {
+        add_test([this]() { type_foramting(); }, "type_formating");
+    }
+
+private:
+    void type_foramting()
+    {
+        using framework::utils::format;
+
+        TEST_ASSERT(format("{0}", 1) == "1", "Wrong number formating.");
+
+        TEST_ASSERT(format("{0}", 1.123456789) == "1.12346", "Wrong floating-point number formating.");
+
+        TEST_ASSERT(format("{0}", "string") == "string", "Wrong string formating.");
+
+        TEST_ASSERT(format("{{{0}}}", "string") == "{string}", "Wrong braces formating.");
+        TEST_ASSERT(format("{0}}}", "string") == "string}", "Wrong braces formating.");
+        TEST_ASSERT(format("{{{0}", "string") == "{string", "Wrong braces formating.");
+
+        // ERROR_TEST(make_string("{{0}}}", "string"), "Single '}' in format string");
+        // ERROR_TEST(make_string("{{{0}}", "string"), "Single '}' in format string");
+        // ERROR_TEST(make_string("0}}}", "string"), "Single '}' in format string");
+        // ERROR_TEST(make_string("{{{0", "string"), "'}' expected");
+    }
+};
+
 int main()
 {
-    return run_tests(random_numbers_test());
+    return run_tests(random_numbers_test(), format_string_test());
 }
