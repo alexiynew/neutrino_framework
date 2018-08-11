@@ -30,7 +30,8 @@ namespace framework
 {
 /// @details
 ///
-/// Math detailed description.
+/// The @ref math_module module is a math library for graphics systems.@n
+/// It provides types and functions for different calculations from geometric and linear algebra domains.
 ///
 /// @defgroup math_module Math
 /// @{

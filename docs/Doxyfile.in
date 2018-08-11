@@ -588,7 +588,7 @@ EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       =
 
 # Symbol names to exclude from documentation
-EXCLUDE_SYMBOLS        = framework::math::*_details, framework::log::*_details
+EXCLUDE_SYMBOLS        = framework::*::*_details
 
 # Code examples
 EXAMPLE_PATH           =
