@@ -32,12 +32,23 @@ enum class severity_level
 class logger_base
 {
 public:
+    /// @brief Deafault constructor.
     logger_base() = default;
 
+    /// @brief Deafault copy constructor.
     logger_base(const logger_base&) = default;
-    logger_base(logger_base&&)      = default;
 
+    /// @brief Deafault move constructor.
+    logger_base(logger_base&&) = default;
+
+    /// @brief Deafault copy assignment operator.
+    ///
+    /// @return Reference to copied object.
     logger_base& operator=(const logger_base&) = default;
+
+    /// @brief Deafault move assignment operator.
+    ///
+    /// @return Reference to moved object.
     logger_base& operator=(logger_base&&) = default;
 
     virtual ~logger_base() = default;
