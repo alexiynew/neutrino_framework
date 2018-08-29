@@ -81,11 +81,19 @@ struct matrix<4, 4, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -352,11 +360,19 @@ struct matrix<4, 3, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -531,11 +547,19 @@ struct matrix<4, 2, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -687,11 +711,19 @@ struct matrix<3, 4, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -923,11 +955,19 @@ struct matrix<3, 3, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1083,11 +1123,19 @@ struct matrix<3, 2, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1223,11 +1271,19 @@ struct matrix<2, 4, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1427,11 +1483,19 @@ struct matrix<2, 3, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1570,11 +1634,19 @@ struct matrix<2, 2, T> final
 
     /// @brief Initializes all components of matrix from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit matrix(const U* pointer);
+
+    /// @brief Initializes all components of matrix from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit matrix(U* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1695,6 +1767,14 @@ inline constexpr matrix<4, 4, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline matrix<4, 4, T>::matrix(const U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8), column_type(pointer + 12)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U>
+inline matrix<4, 4, T>::matrix(U* pointer)
     : m_data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8), column_type(pointer + 12)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -1919,6 +1999,14 @@ inline matrix<4, 3, T>::matrix(const U* pointer)
 }
 
 template <typename T>
+template <typename U>
+inline matrix<4, 3, T>::matrix(U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6), column_type(pointer + 9)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
 inline constexpr matrix<4, 3, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U1>& column1,
@@ -2074,6 +2162,14 @@ inline matrix<4, 2, T>::matrix(const U* pointer)
 }
 
 template <typename T>
+template <typename U>
+inline matrix<4, 2, T>::matrix(U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4), column_type(pointer + 6)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
 inline constexpr matrix<4, 2, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U1>& column1,
@@ -2193,6 +2289,14 @@ inline constexpr matrix<3, 4, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline matrix<3, 4, T>::matrix(const U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U>
+inline matrix<3, 4, T>::matrix(U* pointer)
     : m_data{column_type(pointer), column_type(pointer + 4), column_type(pointer + 8)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
@@ -2396,6 +2500,14 @@ inline matrix<3, 3, T>::matrix(const U* pointer)
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
+template <typename T>
+template <typename U>
+inline matrix<3, 3, T>::matrix(U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 3), column_type(pointer + 6)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
 // clang-format off
 template <typename T>
 template <typename U0, typename U1, typename U2>
@@ -2546,6 +2658,14 @@ inline matrix<3, 2, T>::matrix(const U* pointer)
 }
 
 template <typename T>
+template <typename U>
+inline matrix<3, 2, T>::matrix(U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 2), column_type(pointer + 4)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
 template <typename U0, typename U1, typename U2>
 inline constexpr matrix<3, 2, T>::matrix(const vector<4, U0>& column0,
                                          const vector<4, U1>& column1,
@@ -2658,6 +2778,13 @@ inline constexpr matrix<2, 4, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline matrix<2, 4, T>::matrix(const U* pointer) : m_data{column_type(pointer), column_type(pointer + 4)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U>
+inline matrix<2, 4, T>::matrix(U* pointer) : m_data{column_type(pointer), column_type(pointer + 4)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -2833,6 +2960,13 @@ inline matrix<2, 3, T>::matrix(const U* pointer) : m_data{column_type(pointer), 
 }
 
 template <typename T>
+template <typename U>
+inline matrix<2, 3, T>::matrix(U* pointer) : m_data{column_type(pointer), column_type(pointer + 3)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
 template <typename U0, typename U1>
 inline constexpr matrix<2, 3, T>::matrix(const vector<4, U0>& column0, const vector<4, U1>& column1)
     : m_data{column_type(column0), column_type(column1)}
@@ -2956,6 +3090,13 @@ inline constexpr matrix<2, 2, T>::matrix(const T& value) noexcept
 template <typename T>
 template <typename U>
 inline matrix<2, 2, T>::matrix(const U* pointer) : m_data{column_type(pointer), column_type(pointer + 2)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U>
+inline matrix<2, 2, T>::matrix(U* pointer) : m_data{column_type(pointer), column_type(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }

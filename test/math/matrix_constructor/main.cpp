@@ -36,6 +36,7 @@ public:
         add_test([this]() { default_constructor(); }, "default_constructor");
         add_test([this]() { copy_constructor(); }, "copy_constructor");
         add_test([this]() { one_argument_constructor(); }, "one_argument_constructor");
+        add_test([this]() { const_pointer_constructor(); }, "const_pointer_constructor");
         add_test([this]() { pointer_constructor(); }, "pointer_constructor");
         add_test([this]() { matrix4x4_constructors(); }, "matrix4x4_constructors");
         add_test([this]() { matrix4x3_constructors(); }, "matrix4x3_constructors");
@@ -220,11 +221,46 @@ private:
         TEST_ASSERT(matrix44 == matrix4x4f(1), "Matrix4x4 one argument constructor failed.");
     }
 
-    void pointer_constructor()
+    void const_pointer_constructor()
     {
         const float32 data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
         const float32 data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
         const float32 data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
+
+        const matrix4x4f m44(data4);
+        const matrix3x4f m34(data4);
+        const matrix2x4f m24(data4);
+
+        const matrix4x3f m43(data3);
+        const matrix3x3f m33(data3);
+        const matrix2x3f m23(data3);
+
+        const matrix4x2f m42(data2);
+        const matrix3x2f m32(data2);
+        const matrix2x2f m22(data2);
+
+        const vector4f tmp4f = {0, 1, 2, 3};
+        const vector3f tmp3f = {0, 1, 2};
+        const vector2f tmp2f = {0, 1};
+
+        TEST_ASSERT(m44 == matrix4x4f(tmp4f, tmp4f, tmp4f, tmp4f), "Matrix4x4 from pointer constructor failed.");
+        TEST_ASSERT(m34 == matrix3x4f(tmp4f, tmp4f, tmp4f), "Matrix3x4 from pointer constructor failed.");
+        TEST_ASSERT(m24 == matrix2x4f(tmp4f, tmp4f), "Matrix2x4 from pointer constructor failed.");
+
+        TEST_ASSERT(m43 == matrix4x3f(tmp3f, tmp3f, tmp3f, tmp3f), "Matrix4x3 from pointer constructor failed.");
+        TEST_ASSERT(m33 == matrix3x3f(tmp3f, tmp3f, tmp3f), "Matrix3x3 from pointer constructor failed.");
+        TEST_ASSERT(m23 == matrix2x3f(tmp3f, tmp3f), "Matrix2x3 from pointer constructor failed.");
+
+        TEST_ASSERT(m42 == matrix4x2f(tmp2f, tmp2f, tmp2f, tmp2f), "Matrix4x3 from pointer constructor.");
+        TEST_ASSERT(m32 == matrix3x2f(tmp2f, tmp2f, tmp2f), "Matrix3x3 from pointer constructor.");
+        TEST_ASSERT(m22 == matrix2x2f(tmp2f, tmp2f), "Matrix2x3 from pointer constructor.");
+    }
+
+    void pointer_constructor()
+    {
+        float32 data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+        float32 data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
+        float32 data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
 
         const matrix4x4f m44(data4);
         const matrix3x4f m34(data4);

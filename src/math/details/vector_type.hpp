@@ -61,11 +61,19 @@ struct vector<4, T> final
 
     /// @brief Initializes all components of vector from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit vector(const U* pointer);
+
+    /// @brief Initializes all components of vector from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit vector(U* pointer);
 
     /// @brief Initializes vector from another one.
     ///
@@ -204,11 +212,19 @@ struct vector<3, T> final
 
     /// @brief Initializes all components of vector from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit vector(const U* pointer);
+
+    /// @brief Initializes all components of vector from pointer to values.
+    ///
+    /// @param pointer Pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit vector(U* pointer);
 
     /// @brief Initializes vector from another one.
     ///
@@ -312,11 +328,19 @@ struct vector<2, T> final
 
     /// @brief Initializes all components of vector from pointer to values.
     ///
-    /// @param pointer Pointer to values that should be taken.
+    /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
     template <typename U>
     explicit vector(const U* pointer);
+
+    /// @brief Initializes all components of vector from pointer to values.
+    ///
+    /// @param pointer Const pointer to values that should be taken.
+    ///
+    /// @warning May cause memory access error.
+    template <typename U>
+    explicit vector(U* pointer);
 
     /// @brief Initializes vector from another one.
     ///
@@ -399,6 +423,13 @@ inline constexpr vector<4, T>::vector(const U& value) noexcept : vector{value, v
 template <typename T>
 template <typename U>
 inline vector<4, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U>
+inline vector<4, T>::vector(U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -523,6 +554,13 @@ inline vector<3, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1),
 
 template <typename T>
 template <typename U>
+inline vector<3, T>::vector(U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U>
 inline constexpr vector<3, T>::vector(const vector<4, U>& other) noexcept : vector{other.x, other.y, other.z}
 {}
 
@@ -607,6 +645,13 @@ inline constexpr vector<2, T>::vector(const U& value) noexcept : vector{value, v
 template <typename T>
 template <typename U>
 inline vector<2, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1)}
+{
+    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
+}
+
+template <typename T>
+template <typename U>
+inline vector<2, T>::vector(U* pointer) : vector{*pointer, *(pointer + 1)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }

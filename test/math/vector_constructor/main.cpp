@@ -41,6 +41,7 @@ public:
         add_test([this]() { non_default_constructor(); }, "non_default_constructor");
         add_test([this]() { type_cast_constructor(); }, "type_cast_constructor");
         add_test([this]() { from_vector_of_bool_constructor(); }, "from_vector_of_bool_constructor");
+        add_test([this]() { const_pointer_constructor(); }, "const_pointer_constructor");
         add_test([this]() { pointer_constructor(); }, "pointer_constructor");
         add_test([this]() { integer_zero_constructor(); }, "integer_zero_constructor");
         add_test([this]() { from_vector4d_constructor(); }, "from_vector4d_constructor");
@@ -149,12 +150,30 @@ private:
         static_assert(v2i == vector2i(0, 1), "Vector2i from bool cast constructor failed.");
     }
 
-    void pointer_constructor()
+    void const_pointer_constructor()
     {
         const float64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
         const float32 data_f[3] = {1.0f, 2.0f, 3.0f};
         const int32 data_i[2]   = {1, 2};
         const uint32 data_u[2]  = {1, 2};
+
+        const vector4d v4d(data_d);
+        const vector3f v3f(data_f);
+        const vector2i v2i(data_i);
+        const vector2u v2u(data_u);
+
+        TEST_ASSERT(v4d == vector4d(1.0, 2.0, 3.0, 4.0), "Vector4d pointer constructor failed.");
+        TEST_ASSERT(v3f == vector3f(1.0f, 2.0f, 3.0f), "Vector3f pointer constructor failed.");
+        TEST_ASSERT(v2i == vector2i(1, 2), "Vector2i pointer constructor failed.");
+        TEST_ASSERT(v2u == vector2u(1, 2), "Vector2u pointer constructor failed.");
+    }
+
+    void pointer_constructor()
+    {
+        float64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
+        float32 data_f[3] = {1.0f, 2.0f, 3.0f};
+        int32 data_i[2]   = {1, 2};
+        uint32 data_u[2]  = {1, 2};
 
         const vector4d v4d(data_d);
         const vector3f v3f(data_f);
