@@ -24,6 +24,58 @@ opengl_canvas::opengl_canvas(std::unique_ptr<window::graphic_context> context) :
 
 opengl_canvas::~opengl_canvas() = default;
 
+std::string opengl_canvas::vendor_name()
+{
+    m_context->make_current();
+
+    const char* value = reinterpret_cast<const char*>(gl::glGetString(gl::gl_vendor));
+
+    if (value != nullptr) {
+        return std::string(value);
+    }
+
+    return std::string();
+}
+
+std::string opengl_canvas::renderer_name()
+{
+    m_context->make_current();
+
+    const char* value = reinterpret_cast<const char*>(gl::glGetString(gl::gl_renderer));
+
+    if (value != nullptr) {
+        return std::string(value);
+    }
+
+    return std::string();
+}
+
+std::string opengl_canvas::version()
+{
+    m_context->make_current();
+
+    const char* value = reinterpret_cast<const char*>(gl::glGetString(gl::gl_version));
+
+    if (value != nullptr) {
+        return std::string(value);
+    }
+
+    return std::string();
+}
+
+std::string opengl_canvas::shading_language_version()
+{
+    m_context->make_current();
+
+    const char* value = reinterpret_cast<const char*>(gl::glGetString(gl::gl_shading_language_version));
+
+    if (value != nullptr) {
+        return std::string(value);
+    }
+
+    return std::string();
+}
+
 void opengl_canvas::clear(float red, float green, float blue, float alpha)
 {
     m_context->make_current();

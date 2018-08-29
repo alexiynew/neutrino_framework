@@ -217,8 +217,8 @@ GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config)
 
     // clang-format off
     int32 context_attribs[] = {
-        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-        GLX_CONTEXT_MINOR_VERSION_ARB, 0,
+        GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 2,
         GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
         None};
     // clang-format on
@@ -258,8 +258,14 @@ x11_window::x11_window(window::size_t size, const std::string& title) : m_server
     XFree(visual_info);
 
     m_glx_context = create_glx_context(m_server->display(), m_framebuffer_config);
+    if (m_glx_context == nullptr) {
+        throw std::runtime_error("Can't create opengl context.");
+    }
 
     m_colormap = XCreateColormap(m_server->display(), m_server->default_root_window(), visual, AllocNone);
+    if (m_colormap == None) {
+        throw std::runtime_error("Can't create colormap.");
+    }
 
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     auto color          = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
