@@ -65,14 +65,18 @@ std::vector<T> random_numbers(T min, T max, size_t count)
         }
     };
 
+    auto get_generator = []() {
+        std::random_device rd;
+        return std::mt19937(rd());
+    };
+
     std::vector<T> result;
     result.reserve(count);
 
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    auto dist = get_distribution(min, max);
+    static auto generator = get_generator();
+    auto distribution     = get_distribution(min, max);
     for (size_t i = 0; i < count; ++i) {
-        result.push_back(dist(mt));
+        result.push_back(distribution(generator));
     }
 
     return result;
