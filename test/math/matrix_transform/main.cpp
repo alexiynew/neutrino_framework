@@ -22,16 +22,15 @@ using ::framework::math::vector4f;
 
 using ::framework::float32;
 
-using ::framework::math::radians;
-using ::framework::math::ortho2d;
-using ::framework::math::ortho;
 using ::framework::math::frustum;
+using ::framework::math::infinite_perspective;
+using ::framework::math::ortho;
+using ::framework::math::ortho2d;
 using ::framework::math::perspective;
 using ::framework::math::perspective_fov;
-using ::framework::math::infinite_perspective;
+using ::framework::math::radians;
 
 using ::framework::math::half_pi;
-
 
 class transform_2d_function_tests : public framework::unit_test::suite
 {

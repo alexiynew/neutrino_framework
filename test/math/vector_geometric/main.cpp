@@ -1,8 +1,8 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::math::vector3f;
 using ::framework::math::vector2f;
+using ::framework::math::vector3f;
 
 using ::framework::math::almost_equal;
 
