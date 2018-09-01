@@ -75,6 +75,7 @@ bool init_gl_version_1_0()
 {
     bool result = true;
 
+    // clang-format off
     result = result && (glCullFace = get_function<PFNGLCULLFACEPROC>("glCullFace")) != nullptr;
     result = result && (glFrontFace = get_function<PFNGLFRONTFACEPROC>("glFrontFace")) != nullptr;
     result = result && (glHint = get_function<PFNGLHINTPROC>("glHint")) != nullptr;
@@ -116,19 +117,14 @@ bool init_gl_version_1_0()
     result = result && (glGetIntegerv = get_function<PFNGLGETINTEGERVPROC>("glGetIntegerv")) != nullptr;
     result = result && (glGetString = get_function<PFNGLGETSTRINGPROC>("glGetString")) != nullptr;
     result = result && (glGetTexImage = get_function<PFNGLGETTEXIMAGEPROC>("glGetTexImage")) != nullptr;
-    result = result &&
-             (glGetTexParameterfv = get_function<PFNGLGETTEXPARAMETERFVPROC>("glGetTexParameterfv")) != nullptr;
-    result = result &&
-             (glGetTexParameteriv = get_function<PFNGLGETTEXPARAMETERIVPROC>("glGetTexParameteriv")) != nullptr;
-    result = result &&
-             (glGetTexLevelParameterfv = get_function<PFNGLGETTEXLEVELPARAMETERFVPROC>("glGetTexLevelParameterfv")) !=
-             nullptr;
-    result = result &&
-             (glGetTexLevelParameteriv = get_function<PFNGLGETTEXLEVELPARAMETERIVPROC>("glGetTexLevelParameteriv")) !=
-             nullptr;
+    result = result && (glGetTexParameterfv = get_function<PFNGLGETTEXPARAMETERFVPROC>("glGetTexParameterfv")) != nullptr;
+    result = result && (glGetTexParameteriv = get_function<PFNGLGETTEXPARAMETERIVPROC>("glGetTexParameteriv")) != nullptr;
+    result = result && (glGetTexLevelParameterfv = get_function<PFNGLGETTEXLEVELPARAMETERFVPROC>("glGetTexLevelParameterfv")) != nullptr;
+    result = result && (glGetTexLevelParameteriv = get_function<PFNGLGETTEXLEVELPARAMETERIVPROC>("glGetTexLevelParameteriv")) != nullptr;
     result = result && (glIsEnabled = get_function<PFNGLISENABLEDPROC>("glIsEnabled")) != nullptr;
     result = result && (glDepthRange = get_function<PFNGLDEPTHRANGEPROC>("glDepthRange")) != nullptr;
     result = result && (glViewport = get_function<PFNGLVIEWPORTPROC>("glViewport")) != nullptr;
+    // clang-format on
 
     return result;
 }
@@ -562,20 +558,14 @@ bool init_gl_version_2_1()
 {
     bool result = true;
 
-    // clanf-format off
-    result = result &&
-             (glUniformMatrix2x3fv = get_function<PFNGLUNIFORMMATRIX2X3FVPROC>("glUniformMatrix2x3fv")) != nullptr;
-    result = result &&
-             (glUniformMatrix3x2fv = get_function<PFNGLUNIFORMMATRIX3X2FVPROC>("glUniformMatrix3x2fv")) != nullptr;
-    result = result &&
-             (glUniformMatrix2x4fv = get_function<PFNGLUNIFORMMATRIX2X4FVPROC>("glUniformMatrix2x4fv")) != nullptr;
-    result = result &&
-             (glUniformMatrix4x2fv = get_function<PFNGLUNIFORMMATRIX4X2FVPROC>("glUniformMatrix4x2fv")) != nullptr;
-    result = result &&
-             (glUniformMatrix3x4fv = get_function<PFNGLUNIFORMMATRIX3X4FVPROC>("glUniformMatrix3x4fv")) != nullptr;
-    result = result &&
-             (glUniformMatrix4x3fv = get_function<PFNGLUNIFORMMATRIX4X3FVPROC>("glUniformMatrix4x3fv")) != nullptr;
-    // clanf-format on
+    // clang-format off
+    result = result && (glUniformMatrix2x3fv = get_function<PFNGLUNIFORMMATRIX2X3FVPROC>("glUniformMatrix2x3fv")) != nullptr;
+    result = result && (glUniformMatrix3x2fv = get_function<PFNGLUNIFORMMATRIX3X2FVPROC>("glUniformMatrix3x2fv")) != nullptr;
+    result = result && (glUniformMatrix2x4fv = get_function<PFNGLUNIFORMMATRIX2X4FVPROC>("glUniformMatrix2x4fv")) != nullptr;
+    result = result && (glUniformMatrix4x2fv = get_function<PFNGLUNIFORMMATRIX4X2FVPROC>("glUniformMatrix4x2fv")) != nullptr;
+    result = result && (glUniformMatrix3x4fv = get_function<PFNGLUNIFORMMATRIX3X4FVPROC>("glUniformMatrix3x4fv")) != nullptr;
+    result = result && (glUniformMatrix4x3fv = get_function<PFNGLUNIFORMMATRIX4X3FVPROC>("glUniformMatrix4x3fv")) != nullptr;
+    // clang-format on
 
     return result;
 }
@@ -1703,7 +1693,2256 @@ bool init_gl_version_4_6()
 
 #pragma endregion
 
-#pragma regin init
+#pragma region GL_ARB_ES3_2_compatibility
+
+#ifdef GL_ARB_ES3_2_compatibility
+
+PFNGLPRIMITIVEBOUNDINGBOXARBPROC glPrimitiveBoundingBoxARB = nullptr;
+
+bool init_gl_arb_es3_2_compatibility()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glPrimitiveBoundingBoxARB = get_function<PFNGLPRIMITIVEBOUNDINGBOXARBPROC>("glPrimitiveBoundingBoxARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_ES3_2_compatibility
+
+#pragma endregion
+
+#pragma region GL_ARB_bindless_texture
+
+#ifdef GL_ARB_bindless_texture
+
+PFNGLGETTEXTUREHANDLEARBPROC glGetTextureHandleARB                         = nullptr;
+PFNGLGETTEXTURESAMPLERHANDLEARBPROC glGetTextureSamplerHandleARB           = nullptr;
+PFNGLMAKETEXTUREHANDLERESIDENTARBPROC glMakeTextureHandleResidentARB       = nullptr;
+PFNGLMAKETEXTUREHANDLENONRESIDENTARBPROC glMakeTextureHandleNonResidentARB = nullptr;
+PFNGLGETIMAGEHANDLEARBPROC glGetImageHandleARB                             = nullptr;
+PFNGLMAKEIMAGEHANDLERESIDENTARBPROC glMakeImageHandleResidentARB           = nullptr;
+PFNGLMAKEIMAGEHANDLENONRESIDENTARBPROC glMakeImageHandleNonResidentARB     = nullptr;
+PFNGLUNIFORMHANDLEUI64ARBPROC glUniformHandleui64ARB                       = nullptr;
+PFNGLUNIFORMHANDLEUI64VARBPROC glUniformHandleui64vARB                     = nullptr;
+PFNGLPROGRAMUNIFORMHANDLEUI64ARBPROC glProgramUniformHandleui64ARB         = nullptr;
+PFNGLPROGRAMUNIFORMHANDLEUI64VARBPROC glProgramUniformHandleui64vARB       = nullptr;
+PFNGLISTEXTUREHANDLERESIDENTARBPROC glIsTextureHandleResidentARB           = nullptr;
+PFNGLISIMAGEHANDLERESIDENTARBPROC glIsImageHandleResidentARB               = nullptr;
+PFNGLVERTEXATTRIBL1UI64ARBPROC glVertexAttribL1ui64ARB                     = nullptr;
+PFNGLVERTEXATTRIBL1UI64VARBPROC glVertexAttribL1ui64vARB                   = nullptr;
+PFNGLGETVERTEXATTRIBLUI64VARBPROC glGetVertexAttribLui64vARB               = nullptr;
+
+bool init_gl_arb_bindless_texture()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glGetTextureHandleARB = get_function<PFNGLGETTEXTUREHANDLEARBPROC>("glGetTextureHandleARB")) != nullptr;
+    result = result && (glGetTextureSamplerHandleARB = get_function<PFNGLGETTEXTURESAMPLERHANDLEARBPROC>("glGetTextureSamplerHandleARB")) != nullptr;
+    result = result && (glMakeTextureHandleResidentARB = get_function<PFNGLMAKETEXTUREHANDLERESIDENTARBPROC>("glMakeTextureHandleResidentARB")) != nullptr;
+    result = result && (glMakeTextureHandleNonResidentARB = get_function<PFNGLMAKETEXTUREHANDLENONRESIDENTARBPROC>("glMakeTextureHandleNonResidentARB")) != nullptr;
+    result = result && (glGetImageHandleARB = get_function<PFNGLGETIMAGEHANDLEARBPROC>("glGetImageHandleARB")) != nullptr;
+    result = result && (glMakeImageHandleResidentARB = get_function<PFNGLMAKEIMAGEHANDLERESIDENTARBPROC>("glMakeImageHandleResidentARB")) != nullptr;
+    result = result && (glMakeImageHandleNonResidentARB = get_function<PFNGLMAKEIMAGEHANDLENONRESIDENTARBPROC>("glMakeImageHandleNonResidentARB")) != nullptr;
+    result = result && (glUniformHandleui64ARB = get_function<PFNGLUNIFORMHANDLEUI64ARBPROC>("glUniformHandleui64ARB")) != nullptr;
+    result = result && (glUniformHandleui64vARB = get_function<PFNGLUNIFORMHANDLEUI64VARBPROC>("glUniformHandleui64vARB")) != nullptr;
+    result = result && (glProgramUniformHandleui64ARB = get_function<PFNGLPROGRAMUNIFORMHANDLEUI64ARBPROC>("glProgramUniformHandleui64ARB")) != nullptr;
+    result = result && (glProgramUniformHandleui64vARB = get_function<PFNGLPROGRAMUNIFORMHANDLEUI64VARBPROC>("glProgramUniformHandleui64vARB")) != nullptr;
+    result = result && (glIsTextureHandleResidentARB = get_function<PFNGLISTEXTUREHANDLERESIDENTARBPROC>("glIsTextureHandleResidentARB")) != nullptr;
+    result = result && (glIsImageHandleResidentARB = get_function<PFNGLISIMAGEHANDLERESIDENTARBPROC>("glIsImageHandleResidentARB")) != nullptr;
+    result = result && (glVertexAttribL1ui64ARB = get_function<PFNGLVERTEXATTRIBL1UI64ARBPROC>("glVertexAttribL1ui64ARB")) != nullptr;
+    result = result && (glVertexAttribL1ui64vARB = get_function<PFNGLVERTEXATTRIBL1UI64VARBPROC>("glVertexAttribL1ui64vARB")) != nullptr;
+    result = result && (glGetVertexAttribLui64vARB = get_function<PFNGLGETVERTEXATTRIBLUI64VARBPROC>("glGetVertexAttribLui64vARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_bindless_texture
+
+#pragma endregion
+
+#pragma region GL_ARB_cl_event
+
+#ifdef GL_ARB_cl_event
+
+PFNGLCREATESYNCFROMCLEVENTARBPROC glCreateSyncFromCLeventARB = nullptr;
+
+bool init_gl_arb_cl_event()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glCreateSyncFromCLeventARB = get_function<PFNGLCREATESYNCFROMCLEVENTARBPROC>("glCreateSyncFromCLeventARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_cl_event
+
+#pragma endregion
+
+#pragma region GL_ARB_compute_variable_group_size
+
+#ifdef GL_ARB_compute_variable_group_size
+
+PFNGLDISPATCHCOMPUTEGROUPSIZEARBPROC glDispatchComputeGroupSizeARB = nullptr;
+
+bool init_gl_arb_compute_variable_group_size()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glDispatchComputeGroupSizeARB = get_function<PFNGLDISPATCHCOMPUTEGROUPSIZEARBPROC>("glDispatchComputeGroupSizeARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_compute_variable_group_size
+
+#pragma endregion
+
+#pragma region GL_ARB_debug_output
+
+#ifdef GL_ARB_debug_output
+
+PFNGLDEBUGMESSAGECONTROLARBPROC glDebugMessageControlARB   = nullptr;
+PFNGLDEBUGMESSAGEINSERTARBPROC glDebugMessageInsertARB     = nullptr;
+PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARB = nullptr;
+PFNGLGETDEBUGMESSAGELOGARBPROC glGetDebugMessageLogARB     = nullptr;
+
+bool init_gl_arb_debug_output()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glDebugMessageControlARB = get_function<PFNGLDEBUGMESSAGECONTROLARBPROC>("glDebugMessageControlARB")) != nullptr;
+    result = result && (glDebugMessageInsertARB = get_function<PFNGLDEBUGMESSAGEINSERTARBPROC>("glDebugMessageInsertARB")) != nullptr;
+    result = result && (glDebugMessageCallbackARB = get_function<PFNGLDEBUGMESSAGECALLBACKARBPROC>("glDebugMessageCallbackARB")) != nullptr;
+    result = result && (glGetDebugMessageLogARB = get_function<PFNGLGETDEBUGMESSAGELOGARBPROC>("glGetDebugMessageLogARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_debug_output
+
+#pragma endregion
+
+#pragma region GL_ARB_draw_buffers_blend
+
+#ifdef GL_ARB_draw_buffers_blend
+
+PFNGLBLENDEQUATIONIARBPROC glBlendEquationiARB                 = nullptr;
+PFNGLBLENDEQUATIONSEPARATEIARBPROC glBlendEquationSeparateiARB = nullptr;
+PFNGLBLENDFUNCIARBPROC glBlendFunciARB                         = nullptr;
+PFNGLBLENDFUNCSEPARATEIARBPROC glBlendFuncSeparateiARB         = nullptr;
+
+bool init_gl_arb_draw_buffers_blend()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glBlendEquationiARB = get_function<PFNGLBLENDEQUATIONIARBPROC>("glBlendEquationiARB")) != nullptr;
+    result = result && (glBlendEquationSeparateiARB = get_function<PFNGLBLENDEQUATIONSEPARATEIARBPROC>("glBlendEquationSeparateiARB")) != nullptr;
+    result = result && (glBlendFunciARB = get_function<PFNGLBLENDFUNCIARBPROC>("glBlendFunciARB")) != nullptr;
+    result = result && (glBlendFuncSeparateiARB = get_function<PFNGLBLENDFUNCSEPARATEIARBPROC>("glBlendFuncSeparateiARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_draw_buffers_blend
+
+#pragma endregion
+
+#pragma region GL_ARB_draw_instanced
+
+#ifdef GL_ARB_draw_instanced
+
+PFNGLDRAWARRAYSINSTANCEDARBPROC glDrawArraysInstancedARB     = nullptr;
+PFNGLDRAWELEMENTSINSTANCEDARBPROC glDrawElementsInstancedARB = nullptr;
+
+bool init_gl_arb_draw_instanced()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glDrawArraysInstancedARB = get_function<PFNGLDRAWARRAYSINSTANCEDARBPROC>("glDrawArraysInstancedARB")) != nullptr;
+    result = result && (glDrawElementsInstancedARB = get_function<PFNGLDRAWELEMENTSINSTANCEDARBPROC>("glDrawElementsInstancedARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_draw_instanced
+
+#pragma endregion
+
+#pragma region GL_ARB_geometry_shader4
+
+#ifdef GL_ARB_geometry_shader4
+
+PFNGLPROGRAMPARAMETERIARBPROC glProgramParameteriARB             = nullptr;
+PFNGLFRAMEBUFFERTEXTUREARBPROC glFramebufferTextureARB           = nullptr;
+PFNGLFRAMEBUFFERTEXTURELAYERARBPROC glFramebufferTextureLayerARB = nullptr;
+PFNGLFRAMEBUFFERTEXTUREFACEARBPROC glFramebufferTextureFaceARB   = nullptr;
+
+bool init_gl_arb_geometry_shader4()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glProgramParameteriARB = get_function<PFNGLPROGRAMPARAMETERIARBPROC>("glProgramParameteriARB")) != nullptr;
+    result = result && (glFramebufferTextureARB = get_function<PFNGLFRAMEBUFFERTEXTUREARBPROC>("glFramebufferTextureARB")) != nullptr;
+    result = result && (glFramebufferTextureLayerARB = get_function<PFNGLFRAMEBUFFERTEXTURELAYERARBPROC>("glFramebufferTextureLayerARB")) != nullptr;
+    result = result && (glFramebufferTextureFaceARB = get_function<PFNGLFRAMEBUFFERTEXTUREFACEARBPROC>("glFramebufferTextureFaceARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_geometry_shader4
+
+#pragma endregion
+
+#pragma region GL_ARB_gl_spirv
+
+#ifdef GL_ARB_gl_spirv
+
+PFNGLSPECIALIZESHADERARBPROC glSpecializeShaderARB = nullptr;
+
+bool init_gl_arb_gl_spirv()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glSpecializeShaderARB = get_function<PFNGLSPECIALIZESHADERARBPROC>("glSpecializeShaderARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_gl_spirv
+
+#pragma endregion
+
+#pragma region GL_ARB_gpu_shader_int64
+
+#ifdef GL_ARB_gpu_shader_int64
+
+PFNGLUNIFORM1I64ARBPROC glUniform1i64ARB                   = nullptr;
+PFNGLUNIFORM2I64ARBPROC glUniform2i64ARB                   = nullptr;
+PFNGLUNIFORM3I64ARBPROC glUniform3i64ARB                   = nullptr;
+PFNGLUNIFORM4I64ARBPROC glUniform4i64ARB                   = nullptr;
+PFNGLUNIFORM1I64VARBPROC glUniform1i64vARB                 = nullptr;
+PFNGLUNIFORM2I64VARBPROC glUniform2i64vARB                 = nullptr;
+PFNGLUNIFORM3I64VARBPROC glUniform3i64vARB                 = nullptr;
+PFNGLUNIFORM4I64VARBPROC glUniform4i64vARB                 = nullptr;
+PFNGLUNIFORM1UI64ARBPROC glUniform1ui64ARB                 = nullptr;
+PFNGLUNIFORM2UI64ARBPROC glUniform2ui64ARB                 = nullptr;
+PFNGLUNIFORM3UI64ARBPROC glUniform3ui64ARB                 = nullptr;
+PFNGLUNIFORM4UI64ARBPROC glUniform4ui64ARB                 = nullptr;
+PFNGLUNIFORM1UI64VARBPROC glUniform1ui64vARB               = nullptr;
+PFNGLUNIFORM2UI64VARBPROC glUniform2ui64vARB               = nullptr;
+PFNGLUNIFORM3UI64VARBPROC glUniform3ui64vARB               = nullptr;
+PFNGLUNIFORM4UI64VARBPROC glUniform4ui64vARB               = nullptr;
+PFNGLGETUNIFORMI64VARBPROC glGetUniformi64vARB             = nullptr;
+PFNGLGETUNIFORMUI64VARBPROC glGetUniformui64vARB           = nullptr;
+PFNGLGETNUNIFORMI64VARBPROC glGetnUniformi64vARB           = nullptr;
+PFNGLGETNUNIFORMUI64VARBPROC glGetnUniformui64vARB         = nullptr;
+PFNGLPROGRAMUNIFORM1I64ARBPROC glProgramUniform1i64ARB     = nullptr;
+PFNGLPROGRAMUNIFORM2I64ARBPROC glProgramUniform2i64ARB     = nullptr;
+PFNGLPROGRAMUNIFORM3I64ARBPROC glProgramUniform3i64ARB     = nullptr;
+PFNGLPROGRAMUNIFORM4I64ARBPROC glProgramUniform4i64ARB     = nullptr;
+PFNGLPROGRAMUNIFORM1I64VARBPROC glProgramUniform1i64vARB   = nullptr;
+PFNGLPROGRAMUNIFORM2I64VARBPROC glProgramUniform2i64vARB   = nullptr;
+PFNGLPROGRAMUNIFORM3I64VARBPROC glProgramUniform3i64vARB   = nullptr;
+PFNGLPROGRAMUNIFORM4I64VARBPROC glProgramUniform4i64vARB   = nullptr;
+PFNGLPROGRAMUNIFORM1UI64ARBPROC glProgramUniform1ui64ARB   = nullptr;
+PFNGLPROGRAMUNIFORM2UI64ARBPROC glProgramUniform2ui64ARB   = nullptr;
+PFNGLPROGRAMUNIFORM3UI64ARBPROC glProgramUniform3ui64ARB   = nullptr;
+PFNGLPROGRAMUNIFORM4UI64ARBPROC glProgramUniform4ui64ARB   = nullptr;
+PFNGLPROGRAMUNIFORM1UI64VARBPROC glProgramUniform1ui64vARB = nullptr;
+PFNGLPROGRAMUNIFORM2UI64VARBPROC glProgramUniform2ui64vARB = nullptr;
+PFNGLPROGRAMUNIFORM3UI64VARBPROC glProgramUniform3ui64vARB = nullptr;
+PFNGLPROGRAMUNIFORM4UI64VARBPROC glProgramUniform4ui64vARB = nullptr;
+
+bool init_gl_arb_gpu_shader_int64()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glUniform1i64ARB = get_function<PFNGLUNIFORM1I64ARBPROC>("glUniform1i64ARB")) != nullptr;
+    result = result && (glUniform2i64ARB = get_function<PFNGLUNIFORM2I64ARBPROC>("glUniform2i64ARB")) != nullptr;
+    result = result && (glUniform3i64ARB = get_function<PFNGLUNIFORM3I64ARBPROC>("glUniform3i64ARB")) != nullptr;
+    result = result && (glUniform4i64ARB = get_function<PFNGLUNIFORM4I64ARBPROC>("glUniform4i64ARB")) != nullptr;
+    result = result && (glUniform1i64vARB = get_function<PFNGLUNIFORM1I64VARBPROC>("glUniform1i64vARB")) != nullptr;
+    result = result && (glUniform2i64vARB = get_function<PFNGLUNIFORM2I64VARBPROC>("glUniform2i64vARB")) != nullptr;
+    result = result && (glUniform3i64vARB = get_function<PFNGLUNIFORM3I64VARBPROC>("glUniform3i64vARB")) != nullptr;
+    result = result && (glUniform4i64vARB = get_function<PFNGLUNIFORM4I64VARBPROC>("glUniform4i64vARB")) != nullptr;
+    result = result && (glUniform1ui64ARB = get_function<PFNGLUNIFORM1UI64ARBPROC>("glUniform1ui64ARB")) != nullptr;
+    result = result && (glUniform2ui64ARB = get_function<PFNGLUNIFORM2UI64ARBPROC>("glUniform2ui64ARB")) != nullptr;
+    result = result && (glUniform3ui64ARB = get_function<PFNGLUNIFORM3UI64ARBPROC>("glUniform3ui64ARB")) != nullptr;
+    result = result && (glUniform4ui64ARB = get_function<PFNGLUNIFORM4UI64ARBPROC>("glUniform4ui64ARB")) != nullptr;
+    result = result && (glUniform1ui64vARB = get_function<PFNGLUNIFORM1UI64VARBPROC>("glUniform1ui64vARB")) != nullptr;
+    result = result && (glUniform2ui64vARB = get_function<PFNGLUNIFORM2UI64VARBPROC>("glUniform2ui64vARB")) != nullptr;
+    result = result && (glUniform3ui64vARB = get_function<PFNGLUNIFORM3UI64VARBPROC>("glUniform3ui64vARB")) != nullptr;
+    result = result && (glUniform4ui64vARB = get_function<PFNGLUNIFORM4UI64VARBPROC>("glUniform4ui64vARB")) != nullptr;
+    result = result && (glGetUniformi64vARB = get_function<PFNGLGETUNIFORMI64VARBPROC>("glGetUniformi64vARB")) != nullptr;
+    result = result && (glGetUniformui64vARB = get_function<PFNGLGETUNIFORMUI64VARBPROC>("glGetUniformui64vARB")) != nullptr;
+    result = result && (glGetnUniformi64vARB = get_function<PFNGLGETNUNIFORMI64VARBPROC>("glGetnUniformi64vARB")) != nullptr;
+    result = result && (glGetnUniformui64vARB = get_function<PFNGLGETNUNIFORMUI64VARBPROC>("glGetnUniformui64vARB")) != nullptr;
+    result = result && (glProgramUniform1i64ARB = get_function<PFNGLPROGRAMUNIFORM1I64ARBPROC>("glProgramUniform1i64ARB")) != nullptr;
+    result = result && (glProgramUniform2i64ARB = get_function<PFNGLPROGRAMUNIFORM2I64ARBPROC>("glProgramUniform2i64ARB")) != nullptr;
+    result = result && (glProgramUniform3i64ARB = get_function<PFNGLPROGRAMUNIFORM3I64ARBPROC>("glProgramUniform3i64ARB")) != nullptr;
+    result = result && (glProgramUniform4i64ARB = get_function<PFNGLPROGRAMUNIFORM4I64ARBPROC>("glProgramUniform4i64ARB")) != nullptr;
+    result = result && (glProgramUniform1i64vARB = get_function<PFNGLPROGRAMUNIFORM1I64VARBPROC>("glProgramUniform1i64vARB")) != nullptr;
+    result = result && (glProgramUniform2i64vARB = get_function<PFNGLPROGRAMUNIFORM2I64VARBPROC>("glProgramUniform2i64vARB")) != nullptr;
+    result = result && (glProgramUniform3i64vARB = get_function<PFNGLPROGRAMUNIFORM3I64VARBPROC>("glProgramUniform3i64vARB")) != nullptr;
+    result = result && (glProgramUniform4i64vARB = get_function<PFNGLPROGRAMUNIFORM4I64VARBPROC>("glProgramUniform4i64vARB")) != nullptr;
+    result = result && (glProgramUniform1ui64ARB = get_function<PFNGLPROGRAMUNIFORM1UI64ARBPROC>("glProgramUniform1ui64ARB")) != nullptr;
+    result = result && (glProgramUniform2ui64ARB = get_function<PFNGLPROGRAMUNIFORM2UI64ARBPROC>("glProgramUniform2ui64ARB")) != nullptr;
+    result = result && (glProgramUniform3ui64ARB = get_function<PFNGLPROGRAMUNIFORM3UI64ARBPROC>("glProgramUniform3ui64ARB")) != nullptr;
+    result = result && (glProgramUniform4ui64ARB = get_function<PFNGLPROGRAMUNIFORM4UI64ARBPROC>("glProgramUniform4ui64ARB")) != nullptr;
+    result = result && (glProgramUniform1ui64vARB = get_function<PFNGLPROGRAMUNIFORM1UI64VARBPROC>("glProgramUniform1ui64vARB")) != nullptr;
+    result = result && (glProgramUniform2ui64vARB = get_function<PFNGLPROGRAMUNIFORM2UI64VARBPROC>("glProgramUniform2ui64vARB")) != nullptr;
+    result = result && (glProgramUniform3ui64vARB = get_function<PFNGLPROGRAMUNIFORM3UI64VARBPROC>("glProgramUniform3ui64vARB")) != nullptr;
+    result = result && (glProgramUniform4ui64vARB = get_function<PFNGLPROGRAMUNIFORM4UI64VARBPROC>("glProgramUniform4ui64vARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_gpu_shader_int64
+
+#pragma endregion
+
+#pragma region GL_ARB_indirect_parameters
+
+#ifdef GL_ARB_indirect_parameters
+
+PFNGLMULTIDRAWARRAYSINDIRECTCOUNTARBPROC glMultiDrawArraysIndirectCountARB     = nullptr;
+PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTARBPROC glMultiDrawElementsIndirectCountARB = nullptr;
+
+bool init_gl_arb_indirect_parameters()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glMultiDrawArraysIndirectCountARB = get_function<PFNGLMULTIDRAWARRAYSINDIRECTCOUNTARBPROC>("glMultiDrawArraysIndirectCountARB")) != nullptr;
+    result = result && (glMultiDrawElementsIndirectCountARB = get_function<PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTARBPROC>("glMultiDrawElementsIndirectCountARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_indirect_parameters
+
+#pragma endregion
+
+#pragma region GL_ARB_instanced_arrays
+
+#ifdef GL_ARB_instanced_arrays
+
+PFNGLVERTEXATTRIBDIVISORARBPROC glVertexAttribDivisorARB = nullptr;
+
+bool init_gl_arb_instanced_arrays()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glVertexAttribDivisorARB = get_function<PFNGLVERTEXATTRIBDIVISORARBPROC>("glVertexAttribDivisorARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_instanced_arrays
+
+#pragma endregion
+
+#pragma region GL_ARB_parallel_shader_compile
+
+#ifdef GL_ARB_parallel_shader_compile
+
+PFNGLMAXSHADERCOMPILERTHREADSARBPROC glMaxShaderCompilerThreadsARB = nullptr;
+
+bool init_gl_arb_parallel_shader_compile()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glMaxShaderCompilerThreadsARB = get_function<PFNGLMAXSHADERCOMPILERTHREADSARBPROC>("glMaxShaderCompilerThreadsARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_parallel_shader_compile
+
+#pragma endregion
+
+#pragma region GL_ARB_robustness
+
+#ifdef GL_ARB_robustness
+
+PFNGLGETGRAPHICSRESETSTATUSARBPROC glGetGraphicsResetStatusARB = nullptr;
+PFNGLGETNTEXIMAGEARBPROC glGetnTexImageARB                     = nullptr;
+PFNGLREADNPIXELSARBPROC glReadnPixelsARB                       = nullptr;
+PFNGLGETNCOMPRESSEDTEXIMAGEARBPROC glGetnCompressedTexImageARB = nullptr;
+PFNGLGETNUNIFORMFVARBPROC glGetnUniformfvARB                   = nullptr;
+PFNGLGETNUNIFORMIVARBPROC glGetnUniformivARB                   = nullptr;
+PFNGLGETNUNIFORMUIVARBPROC glGetnUniformuivARB                 = nullptr;
+PFNGLGETNUNIFORMDVARBPROC glGetnUniformdvARB                   = nullptr;
+
+bool init_gl_arb_robustness()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glGetGraphicsResetStatusARB = get_function<PFNGLGETGRAPHICSRESETSTATUSARBPROC>("glGetGraphicsResetStatusARB")) != nullptr;
+    result = result && (glGetnTexImageARB = get_function<PFNGLGETNTEXIMAGEARBPROC>("glGetnTexImageARB")) != nullptr;
+    result = result && (glReadnPixelsARB = get_function<PFNGLREADNPIXELSARBPROC>("glReadnPixelsARB")) != nullptr;
+    result = result && (glGetnCompressedTexImageARB = get_function<PFNGLGETNCOMPRESSEDTEXIMAGEARBPROC>("glGetnCompressedTexImageARB")) != nullptr;
+    result = result && (glGetnUniformfvARB = get_function<PFNGLGETNUNIFORMFVARBPROC>("glGetnUniformfvARB")) != nullptr;
+    result = result && (glGetnUniformivARB = get_function<PFNGLGETNUNIFORMIVARBPROC>("glGetnUniformivARB")) != nullptr;
+    result = result && (glGetnUniformuivARB = get_function<PFNGLGETNUNIFORMUIVARBPROC>("glGetnUniformuivARB")) != nullptr;
+    result = result && (glGetnUniformdvARB = get_function<PFNGLGETNUNIFORMDVARBPROC>("glGetnUniformdvARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_robustness
+
+#pragma endregion
+
+#pragma region GL_ARB_sample_locations
+
+#ifdef GL_ARB_sample_locations
+
+PFNGLFRAMEBUFFERSAMPLELOCATIONSFVARBPROC glFramebufferSampleLocationsfvARB           = nullptr;
+PFNGLNAMEDFRAMEBUFFERSAMPLELOCATIONSFVARBPROC glNamedFramebufferSampleLocationsfvARB = nullptr;
+PFNGLEVALUATEDEPTHVALUESARBPROC glEvaluateDepthValuesARB                             = nullptr;
+
+bool init_gl_arb_sample_locations()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glFramebufferSampleLocationsfvARB = get_function<PFNGLFRAMEBUFFERSAMPLELOCATIONSFVARBPROC>("glFramebufferSampleLocationsfvARB")) != nullptr;
+    result = result && (glNamedFramebufferSampleLocationsfvARB = get_function<PFNGLNAMEDFRAMEBUFFERSAMPLELOCATIONSFVARBPROC>("glNamedFramebufferSampleLocationsfvARB")) != nullptr;
+    result = result && (glEvaluateDepthValuesARB = get_function<PFNGLEVALUATEDEPTHVALUESARBPROC>("glEvaluateDepthValuesARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_sample_locations
+
+#pragma endregion
+
+#pragma region GL_ARB_sample_shading
+
+#ifdef GL_ARB_sample_shading
+
+PFNGLMINSAMPLESHADINGARBPROC glMinSampleShadingARB = nullptr;
+
+bool init_gl_arb_sample_shading()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glMinSampleShadingARB = get_function<PFNGLMINSAMPLESHADINGARBPROC>("glMinSampleShadingARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_sample_shading
+
+#pragma endregion
+
+#pragma region GL_ARB_shading_language_include
+
+#ifdef GL_ARB_shading_language_include
+
+PFNGLNAMEDSTRINGARBPROC glNamedStringARB                   = nullptr;
+PFNGLDELETENAMEDSTRINGARBPROC glDeleteNamedStringARB       = nullptr;
+PFNGLCOMPILESHADERINCLUDEARBPROC glCompileShaderIncludeARB = nullptr;
+PFNGLISNAMEDSTRINGARBPROC glIsNamedStringARB               = nullptr;
+PFNGLGETNAMEDSTRINGARBPROC glGetNamedStringARB             = nullptr;
+PFNGLGETNAMEDSTRINGIVARBPROC glGetNamedStringivARB         = nullptr;
+
+bool init_gl_arb_shading_language_include()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glNamedStringARB = get_function<PFNGLNAMEDSTRINGARBPROC>("glNamedStringARB")) != nullptr;
+    result = result && (glDeleteNamedStringARB = get_function<PFNGLDELETENAMEDSTRINGARBPROC>("glDeleteNamedStringARB")) != nullptr;
+    result = result && (glCompileShaderIncludeARB = get_function<PFNGLCOMPILESHADERINCLUDEARBPROC>("glCompileShaderIncludeARB")) != nullptr;
+    result = result && (glIsNamedStringARB = get_function<PFNGLISNAMEDSTRINGARBPROC>("glIsNamedStringARB")) != nullptr;
+    result = result && (glGetNamedStringARB = get_function<PFNGLGETNAMEDSTRINGARBPROC>("glGetNamedStringARB")) != nullptr;
+    result = result && (glGetNamedStringivARB = get_function<PFNGLGETNAMEDSTRINGIVARBPROC>("glGetNamedStringivARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_shading_language_include
+
+#pragma endregion
+
+#pragma region GL_ARB_sparse_buffer
+
+#ifdef GL_ARB_sparse_buffer
+
+PFNGLBUFFERPAGECOMMITMENTARBPROC glBufferPageCommitmentARB           = nullptr;
+PFNGLNAMEDBUFFERPAGECOMMITMENTEXTPROC glNamedBufferPageCommitmentEXT = nullptr;
+PFNGLNAMEDBUFFERPAGECOMMITMENTARBPROC glNamedBufferPageCommitmentARB = nullptr;
+
+bool init_gl_arb_sparse_buffer()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glBufferPageCommitmentARB = get_function<PFNGLBUFFERPAGECOMMITMENTARBPROC>("glBufferPageCommitmentARB")) != nullptr;
+    result = result && (glNamedBufferPageCommitmentEXT = get_function<PFNGLNAMEDBUFFERPAGECOMMITMENTEXTPROC>("glNamedBufferPageCommitmentEXT")) != nullptr;
+    result = result && (glNamedBufferPageCommitmentARB = get_function<PFNGLNAMEDBUFFERPAGECOMMITMENTARBPROC>("glNamedBufferPageCommitmentARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_sparse_buffer
+
+#pragma endregion
+
+#pragma region GL_ARB_sparse_texture
+
+#ifdef GL_ARB_sparse_texture
+
+PFNGLTEXPAGECOMMITMENTARBPROC glTexPageCommitmentARB = nullptr;
+
+bool init_gl_arb_sparse_texture()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glTexPageCommitmentARB = get_function<PFNGLTEXPAGECOMMITMENTARBPROC>("glTexPageCommitmentARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_sparse_texture
+
+#pragma endregion
+
+#pragma region GL_ARB_texture_buffer_object
+
+#ifdef GL_ARB_texture_buffer_object
+
+PFNGLTEXBUFFERARBPROC glTexBufferARB = nullptr;
+
+bool init_gl_arb_texture_buffer_object()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glTexBufferARB = get_function<PFNGLTEXBUFFERARBPROC>("glTexBufferARB")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_ARB_texture_buffer_object
+
+#pragma endregion
+
+#pragma region GL_KHR_blend_equation_advanced
+
+#ifdef GL_KHR_blend_equation_advanced
+
+PFNGLBLENDBARRIERKHRPROC glBlendBarrierKHR = nullptr;
+
+bool init_gl_khr_blend_equation_advanced()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glBlendBarrierKHR = get_function<PFNGLBLENDBARRIERKHRPROC>("glBlendBarrierKHR")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_KHR_blend_equation_advanced
+
+#pragma endregion
+
+#pragma region GL_KHR_parallel_shader_compile
+
+#ifdef GL_KHR_parallel_shader_compile
+
+PFNGLMAXSHADERCOMPILERTHREADSKHRPROC glMaxShaderCompilerThreadsKHR = nullptr;
+
+bool init_gl_khr_parallel_shader_compile()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glMaxShaderCompilerThreadsKHR = get_function<PFNGLMAXSHADERCOMPILERTHREADSKHRPROC>("glMaxShaderCompilerThreadsKHR")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_KHR_parallel_shader_compile
+
+#pragma endregion
+
+#pragma region GL_AMD_performance_monitor
+
+#ifdef GL_AMD_performance_monitor
+
+PFNGLGETPERFMONITORGROUPSAMDPROC glGetPerfMonitorGroupsAMD               = nullptr;
+PFNGLGETPERFMONITORCOUNTERSAMDPROC glGetPerfMonitorCountersAMD           = nullptr;
+PFNGLGETPERFMONITORGROUPSTRINGAMDPROC glGetPerfMonitorGroupStringAMD     = nullptr;
+PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC glGetPerfMonitorCounterStringAMD = nullptr;
+PFNGLGETPERFMONITORCOUNTERINFOAMDPROC glGetPerfMonitorCounterInfoAMD     = nullptr;
+PFNGLGENPERFMONITORSAMDPROC glGenPerfMonitorsAMD                         = nullptr;
+PFNGLDELETEPERFMONITORSAMDPROC glDeletePerfMonitorsAMD                   = nullptr;
+PFNGLSELECTPERFMONITORCOUNTERSAMDPROC glSelectPerfMonitorCountersAMD     = nullptr;
+PFNGLBEGINPERFMONITORAMDPROC glBeginPerfMonitorAMD                       = nullptr;
+PFNGLENDPERFMONITORAMDPROC glEndPerfMonitorAMD                           = nullptr;
+PFNGLGETPERFMONITORCOUNTERDATAAMDPROC glGetPerfMonitorCounterDataAMD     = nullptr;
+
+bool init_gl_amd_performance_monitor()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glGetPerfMonitorGroupsAMD = get_function<PFNGLGETPERFMONITORGROUPSAMDPROC>("glGetPerfMonitorGroupsAMD")) != nullptr;
+    result = result && (glGetPerfMonitorCountersAMD = get_function<PFNGLGETPERFMONITORCOUNTERSAMDPROC>("glGetPerfMonitorCountersAMD")) != nullptr;
+    result = result && (glGetPerfMonitorGroupStringAMD = get_function<PFNGLGETPERFMONITORGROUPSTRINGAMDPROC>("glGetPerfMonitorGroupStringAMD")) != nullptr;
+    result = result && (glGetPerfMonitorCounterStringAMD = get_function<PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC>("glGetPerfMonitorCounterStringAMD")) != nullptr;
+    result = result && (glGetPerfMonitorCounterInfoAMD = get_function<PFNGLGETPERFMONITORCOUNTERINFOAMDPROC>("glGetPerfMonitorCounterInfoAMD")) != nullptr;
+    result = result && (glGenPerfMonitorsAMD = get_function<PFNGLGENPERFMONITORSAMDPROC>("glGenPerfMonitorsAMD")) != nullptr;
+    result = result && (glDeletePerfMonitorsAMD = get_function<PFNGLDELETEPERFMONITORSAMDPROC>("glDeletePerfMonitorsAMD")) != nullptr;
+    result = result && (glSelectPerfMonitorCountersAMD = get_function<PFNGLSELECTPERFMONITORCOUNTERSAMDPROC>("glSelectPerfMonitorCountersAMD")) != nullptr;
+    result = result && (glBeginPerfMonitorAMD = get_function<PFNGLBEGINPERFMONITORAMDPROC>("glBeginPerfMonitorAMD")) != nullptr;
+    result = result && (glEndPerfMonitorAMD = get_function<PFNGLENDPERFMONITORAMDPROC>("glEndPerfMonitorAMD")) != nullptr;
+    result = result && (glGetPerfMonitorCounterDataAMD = get_function<PFNGLGETPERFMONITORCOUNTERDATAAMDPROC>("glGetPerfMonitorCounterDataAMD")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_AMD_performance_monitor
+
+#pragma endregion
+
+#pragma region GL_EXT_debug_label
+
+#ifdef GL_EXT_debug_label
+
+PFNGLLABELOBJECTEXTPROC glLabelObjectEXT       = nullptr;
+PFNGLGETOBJECTLABELEXTPROC glGetObjectLabelEXT = nullptr;
+
+bool init_gl_ext_debug_label()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glLabelObjectEXT = get_function<PFNGLLABELOBJECTEXTPROC>("glLabelObjectEXT")) != nullptr;
+    result = result && (glGetObjectLabelEXT = get_function<PFNGLGETOBJECTLABELEXTPROC>("glGetObjectLabelEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_debug_label
+
+#pragma endregion
+
+#pragma region GL_EXT_debug_marker
+
+#ifdef GL_EXT_debug_marker
+
+PFNGLINSERTEVENTMARKEREXTPROC glInsertEventMarkerEXT = nullptr;
+PFNGLPUSHGROUPMARKEREXTPROC glPushGroupMarkerEXT     = nullptr;
+PFNGLPOPGROUPMARKEREXTPROC glPopGroupMarkerEXT       = nullptr;
+
+bool init_gl_ext_debug_marker()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glInsertEventMarkerEXT = get_function<PFNGLINSERTEVENTMARKEREXTPROC>("glInsertEventMarkerEXT")) != nullptr;
+    result = result && (glPushGroupMarkerEXT = get_function<PFNGLPUSHGROUPMARKEREXTPROC>("glPushGroupMarkerEXT")) != nullptr;
+    result = result && (glPopGroupMarkerEXT = get_function<PFNGLPOPGROUPMARKEREXTPROC>("glPopGroupMarkerEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_debug_marker
+
+#pragma endregion
+
+#pragma region GL_EXT_direct_state_access
+
+#ifdef GL_EXT_direct_state_access
+
+PFNGLMATRIXLOADFEXTPROC glMatrixLoadfEXT                                                                 = nullptr;
+PFNGLMATRIXLOADDEXTPROC glMatrixLoaddEXT                                                                 = nullptr;
+PFNGLMATRIXMULTFEXTPROC glMatrixMultfEXT                                                                 = nullptr;
+PFNGLMATRIXMULTDEXTPROC glMatrixMultdEXT                                                                 = nullptr;
+PFNGLMATRIXLOADIDENTITYEXTPROC glMatrixLoadIdentityEXT                                                   = nullptr;
+PFNGLMATRIXROTATEFEXTPROC glMatrixRotatefEXT                                                             = nullptr;
+PFNGLMATRIXROTATEDEXTPROC glMatrixRotatedEXT                                                             = nullptr;
+PFNGLMATRIXSCALEFEXTPROC glMatrixScalefEXT                                                               = nullptr;
+PFNGLMATRIXSCALEDEXTPROC glMatrixScaledEXT                                                               = nullptr;
+PFNGLMATRIXTRANSLATEFEXTPROC glMatrixTranslatefEXT                                                       = nullptr;
+PFNGLMATRIXTRANSLATEDEXTPROC glMatrixTranslatedEXT                                                       = nullptr;
+PFNGLMATRIXFRUSTUMEXTPROC glMatrixFrustumEXT                                                             = nullptr;
+PFNGLMATRIXORTHOEXTPROC glMatrixOrthoEXT                                                                 = nullptr;
+PFNGLMATRIXPOPEXTPROC glMatrixPopEXT                                                                     = nullptr;
+PFNGLMATRIXPUSHEXTPROC glMatrixPushEXT                                                                   = nullptr;
+PFNGLCLIENTATTRIBDEFAULTEXTPROC glClientAttribDefaultEXT                                                 = nullptr;
+PFNGLPUSHCLIENTATTRIBDEFAULTEXTPROC glPushClientAttribDefaultEXT                                         = nullptr;
+PFNGLTEXTUREPARAMETERFEXTPROC glTextureParameterfEXT                                                     = nullptr;
+PFNGLTEXTUREPARAMETERFVEXTPROC glTextureParameterfvEXT                                                   = nullptr;
+PFNGLTEXTUREPARAMETERIEXTPROC glTextureParameteriEXT                                                     = nullptr;
+PFNGLTEXTUREPARAMETERIVEXTPROC glTextureParameterivEXT                                                   = nullptr;
+PFNGLTEXTUREIMAGE1DEXTPROC glTextureImage1DEXT                                                           = nullptr;
+PFNGLTEXTUREIMAGE2DEXTPROC glTextureImage2DEXT                                                           = nullptr;
+PFNGLTEXTURESUBIMAGE1DEXTPROC glTextureSubImage1DEXT                                                     = nullptr;
+PFNGLTEXTURESUBIMAGE2DEXTPROC glTextureSubImage2DEXT                                                     = nullptr;
+PFNGLCOPYTEXTUREIMAGE1DEXTPROC glCopyTextureImage1DEXT                                                   = nullptr;
+PFNGLCOPYTEXTUREIMAGE2DEXTPROC glCopyTextureImage2DEXT                                                   = nullptr;
+PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC glCopyTextureSubImage1DEXT                                             = nullptr;
+PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC glCopyTextureSubImage2DEXT                                             = nullptr;
+PFNGLGETTEXTUREIMAGEEXTPROC glGetTextureImageEXT                                                         = nullptr;
+PFNGLGETTEXTUREPARAMETERFVEXTPROC glGetTextureParameterfvEXT                                             = nullptr;
+PFNGLGETTEXTUREPARAMETERIVEXTPROC glGetTextureParameterivEXT                                             = nullptr;
+PFNGLGETTEXTURELEVELPARAMETERFVEXTPROC glGetTextureLevelParameterfvEXT                                   = nullptr;
+PFNGLGETTEXTURELEVELPARAMETERIVEXTPROC glGetTextureLevelParameterivEXT                                   = nullptr;
+PFNGLTEXTUREIMAGE3DEXTPROC glTextureImage3DEXT                                                           = nullptr;
+PFNGLTEXTURESUBIMAGE3DEXTPROC glTextureSubImage3DEXT                                                     = nullptr;
+PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC glCopyTextureSubImage3DEXT                                             = nullptr;
+PFNGLBINDMULTITEXTUREEXTPROC glBindMultiTextureEXT                                                       = nullptr;
+PFNGLMULTITEXCOORDPOINTEREXTPROC glMultiTexCoordPointerEXT                                               = nullptr;
+PFNGLMULTITEXENVFEXTPROC glMultiTexEnvfEXT                                                               = nullptr;
+PFNGLMULTITEXENVFVEXTPROC glMultiTexEnvfvEXT                                                             = nullptr;
+PFNGLMULTITEXENVIEXTPROC glMultiTexEnviEXT                                                               = nullptr;
+PFNGLMULTITEXENVIVEXTPROC glMultiTexEnvivEXT                                                             = nullptr;
+PFNGLMULTITEXGENDEXTPROC glMultiTexGendEXT                                                               = nullptr;
+PFNGLMULTITEXGENDVEXTPROC glMultiTexGendvEXT                                                             = nullptr;
+PFNGLMULTITEXGENFEXTPROC glMultiTexGenfEXT                                                               = nullptr;
+PFNGLMULTITEXGENFVEXTPROC glMultiTexGenfvEXT                                                             = nullptr;
+PFNGLMULTITEXGENIEXTPROC glMultiTexGeniEXT                                                               = nullptr;
+PFNGLMULTITEXGENIVEXTPROC glMultiTexGenivEXT                                                             = nullptr;
+PFNGLGETMULTITEXENVFVEXTPROC glGetMultiTexEnvfvEXT                                                       = nullptr;
+PFNGLGETMULTITEXENVIVEXTPROC glGetMultiTexEnvivEXT                                                       = nullptr;
+PFNGLGETMULTITEXGENDVEXTPROC glGetMultiTexGendvEXT                                                       = nullptr;
+PFNGLGETMULTITEXGENFVEXTPROC glGetMultiTexGenfvEXT                                                       = nullptr;
+PFNGLGETMULTITEXGENIVEXTPROC glGetMultiTexGenivEXT                                                       = nullptr;
+PFNGLMULTITEXPARAMETERIEXTPROC glMultiTexParameteriEXT                                                   = nullptr;
+PFNGLMULTITEXPARAMETERIVEXTPROC glMultiTexParameterivEXT                                                 = nullptr;
+PFNGLMULTITEXPARAMETERFEXTPROC glMultiTexParameterfEXT                                                   = nullptr;
+PFNGLMULTITEXPARAMETERFVEXTPROC glMultiTexParameterfvEXT                                                 = nullptr;
+PFNGLMULTITEXIMAGE1DEXTPROC glMultiTexImage1DEXT                                                         = nullptr;
+PFNGLMULTITEXIMAGE2DEXTPROC glMultiTexImage2DEXT                                                         = nullptr;
+PFNGLMULTITEXSUBIMAGE1DEXTPROC glMultiTexSubImage1DEXT                                                   = nullptr;
+PFNGLMULTITEXSUBIMAGE2DEXTPROC glMultiTexSubImage2DEXT                                                   = nullptr;
+PFNGLCOPYMULTITEXIMAGE1DEXTPROC glCopyMultiTexImage1DEXT                                                 = nullptr;
+PFNGLCOPYMULTITEXIMAGE2DEXTPROC glCopyMultiTexImage2DEXT                                                 = nullptr;
+PFNGLCOPYMULTITEXSUBIMAGE1DEXTPROC glCopyMultiTexSubImage1DEXT                                           = nullptr;
+PFNGLCOPYMULTITEXSUBIMAGE2DEXTPROC glCopyMultiTexSubImage2DEXT                                           = nullptr;
+PFNGLGETMULTITEXIMAGEEXTPROC glGetMultiTexImageEXT                                                       = nullptr;
+PFNGLGETMULTITEXPARAMETERFVEXTPROC glGetMultiTexParameterfvEXT                                           = nullptr;
+PFNGLGETMULTITEXPARAMETERIVEXTPROC glGetMultiTexParameterivEXT                                           = nullptr;
+PFNGLGETMULTITEXLEVELPARAMETERFVEXTPROC glGetMultiTexLevelParameterfvEXT                                 = nullptr;
+PFNGLGETMULTITEXLEVELPARAMETERIVEXTPROC glGetMultiTexLevelParameterivEXT                                 = nullptr;
+PFNGLMULTITEXIMAGE3DEXTPROC glMultiTexImage3DEXT                                                         = nullptr;
+PFNGLMULTITEXSUBIMAGE3DEXTPROC glMultiTexSubImage3DEXT                                                   = nullptr;
+PFNGLCOPYMULTITEXSUBIMAGE3DEXTPROC glCopyMultiTexSubImage3DEXT                                           = nullptr;
+PFNGLENABLECLIENTSTATEINDEXEDEXTPROC glEnableClientStateIndexedEXT                                       = nullptr;
+PFNGLDISABLECLIENTSTATEINDEXEDEXTPROC glDisableClientStateIndexedEXT                                     = nullptr;
+PFNGLGETFLOATINDEXEDVEXTPROC glGetFloatIndexedvEXT                                                       = nullptr;
+PFNGLGETDOUBLEINDEXEDVEXTPROC glGetDoubleIndexedvEXT                                                     = nullptr;
+PFNGLGETPOINTERINDEXEDVEXTPROC glGetPointerIndexedvEXT                                                   = nullptr;
+PFNGLENABLEINDEXEDEXTPROC glEnableIndexedEXT                                                             = nullptr;
+PFNGLDISABLEINDEXEDEXTPROC glDisableIndexedEXT                                                           = nullptr;
+PFNGLISENABLEDINDEXEDEXTPROC glIsEnabledIndexedEXT                                                       = nullptr;
+PFNGLGETINTEGERINDEXEDVEXTPROC glGetIntegerIndexedvEXT                                                   = nullptr;
+PFNGLGETBOOLEANINDEXEDVEXTPROC glGetBooleanIndexedvEXT                                                   = nullptr;
+PFNGLCOMPRESSEDTEXTUREIMAGE3DEXTPROC glCompressedTextureImage3DEXT                                       = nullptr;
+PFNGLCOMPRESSEDTEXTUREIMAGE2DEXTPROC glCompressedTextureImage2DEXT                                       = nullptr;
+PFNGLCOMPRESSEDTEXTUREIMAGE1DEXTPROC glCompressedTextureImage1DEXT                                       = nullptr;
+PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC glCompressedTextureSubImage3DEXT                                 = nullptr;
+PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC glCompressedTextureSubImage2DEXT                                 = nullptr;
+PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC glCompressedTextureSubImage1DEXT                                 = nullptr;
+PFNGLGETCOMPRESSEDTEXTUREIMAGEEXTPROC glGetCompressedTextureImageEXT                                     = nullptr;
+PFNGLCOMPRESSEDMULTITEXIMAGE3DEXTPROC glCompressedMultiTexImage3DEXT                                     = nullptr;
+PFNGLCOMPRESSEDMULTITEXIMAGE2DEXTPROC glCompressedMultiTexImage2DEXT                                     = nullptr;
+PFNGLCOMPRESSEDMULTITEXIMAGE1DEXTPROC glCompressedMultiTexImage1DEXT                                     = nullptr;
+PFNGLCOMPRESSEDMULTITEXSUBIMAGE3DEXTPROC glCompressedMultiTexSubImage3DEXT                               = nullptr;
+PFNGLCOMPRESSEDMULTITEXSUBIMAGE2DEXTPROC glCompressedMultiTexSubImage2DEXT                               = nullptr;
+PFNGLCOMPRESSEDMULTITEXSUBIMAGE1DEXTPROC glCompressedMultiTexSubImage1DEXT                               = nullptr;
+PFNGLGETCOMPRESSEDMULTITEXIMAGEEXTPROC glGetCompressedMultiTexImageEXT                                   = nullptr;
+PFNGLMATRIXLOADTRANSPOSEFEXTPROC glMatrixLoadTransposefEXT                                               = nullptr;
+PFNGLMATRIXLOADTRANSPOSEDEXTPROC glMatrixLoadTransposedEXT                                               = nullptr;
+PFNGLMATRIXMULTTRANSPOSEFEXTPROC glMatrixMultTransposefEXT                                               = nullptr;
+PFNGLMATRIXMULTTRANSPOSEDEXTPROC glMatrixMultTransposedEXT                                               = nullptr;
+PFNGLNAMEDBUFFERDATAEXTPROC glNamedBufferDataEXT                                                         = nullptr;
+PFNGLNAMEDBUFFERSUBDATAEXTPROC glNamedBufferSubDataEXT                                                   = nullptr;
+PFNGLMAPNAMEDBUFFEREXTPROC glMapNamedBufferEXT                                                           = nullptr;
+PFNGLUNMAPNAMEDBUFFEREXTPROC glUnmapNamedBufferEXT                                                       = nullptr;
+PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC glGetNamedBufferParameterivEXT                                     = nullptr;
+PFNGLGETNAMEDBUFFERPOINTERVEXTPROC glGetNamedBufferPointervEXT                                           = nullptr;
+PFNGLGETNAMEDBUFFERSUBDATAEXTPROC glGetNamedBufferSubDataEXT                                             = nullptr;
+PFNGLPROGRAMUNIFORM1FEXTPROC glProgramUniform1fEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM2FEXTPROC glProgramUniform2fEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM3FEXTPROC glProgramUniform3fEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM4FEXTPROC glProgramUniform4fEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM1IEXTPROC glProgramUniform1iEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM2IEXTPROC glProgramUniform2iEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM3IEXTPROC glProgramUniform3iEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM4IEXTPROC glProgramUniform4iEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM1FVEXTPROC glProgramUniform1fvEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM2FVEXTPROC glProgramUniform2fvEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM3FVEXTPROC glProgramUniform3fvEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM4FVEXTPROC glProgramUniform4fvEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM1IVEXTPROC glProgramUniform1ivEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM2IVEXTPROC glProgramUniform2ivEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM3IVEXTPROC glProgramUniform3ivEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM4IVEXTPROC glProgramUniform4ivEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX2FVEXTPROC glProgramUniformMatrix2fvEXT                                         = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX3FVEXTPROC glProgramUniformMatrix3fvEXT                                         = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX4FVEXTPROC glProgramUniformMatrix4fvEXT                                         = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX2X3FVEXTPROC glProgramUniformMatrix2x3fvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX3X2FVEXTPROC glProgramUniformMatrix3x2fvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX2X4FVEXTPROC glProgramUniformMatrix2x4fvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX4X2FVEXTPROC glProgramUniformMatrix4x2fvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX3X4FVEXTPROC glProgramUniformMatrix3x4fvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX4X3FVEXTPROC glProgramUniformMatrix4x3fvEXT                                     = nullptr;
+PFNGLTEXTUREBUFFEREXTPROC glTextureBufferEXT                                                             = nullptr;
+PFNGLMULTITEXBUFFEREXTPROC glMultiTexBufferEXT                                                           = nullptr;
+PFNGLTEXTUREPARAMETERIIVEXTPROC glTextureParameterIivEXT                                                 = nullptr;
+PFNGLTEXTUREPARAMETERIUIVEXTPROC glTextureParameterIuivEXT                                               = nullptr;
+PFNGLGETTEXTUREPARAMETERIIVEXTPROC glGetTextureParameterIivEXT                                           = nullptr;
+PFNGLGETTEXTUREPARAMETERIUIVEXTPROC glGetTextureParameterIuivEXT                                         = nullptr;
+PFNGLMULTITEXPARAMETERIIVEXTPROC glMultiTexParameterIivEXT                                               = nullptr;
+PFNGLMULTITEXPARAMETERIUIVEXTPROC glMultiTexParameterIuivEXT                                             = nullptr;
+PFNGLGETMULTITEXPARAMETERIIVEXTPROC glGetMultiTexParameterIivEXT                                         = nullptr;
+PFNGLGETMULTITEXPARAMETERIUIVEXTPROC glGetMultiTexParameterIuivEXT                                       = nullptr;
+PFNGLPROGRAMUNIFORM1UIEXTPROC glProgramUniform1uiEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM2UIEXTPROC glProgramUniform2uiEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM3UIEXTPROC glProgramUniform3uiEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM4UIEXTPROC glProgramUniform4uiEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM1UIVEXTPROC glProgramUniform1uivEXT                                                   = nullptr;
+PFNGLPROGRAMUNIFORM2UIVEXTPROC glProgramUniform2uivEXT                                                   = nullptr;
+PFNGLPROGRAMUNIFORM3UIVEXTPROC glProgramUniform3uivEXT                                                   = nullptr;
+PFNGLPROGRAMUNIFORM4UIVEXTPROC glProgramUniform4uivEXT                                                   = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETERS4FVEXTPROC glNamedProgramLocalParameters4fvEXT                           = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETERI4IEXTPROC glNamedProgramLocalParameterI4iEXT                             = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETERI4IVEXTPROC glNamedProgramLocalParameterI4ivEXT                           = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETERSI4IVEXTPROC glNamedProgramLocalParametersI4ivEXT                         = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIEXTPROC glNamedProgramLocalParameterI4uiEXT                           = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIVEXTPROC glNamedProgramLocalParameterI4uivEXT                         = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETERSI4UIVEXTPROC glNamedProgramLocalParametersI4uivEXT                       = nullptr;
+PFNGLGETNAMEDPROGRAMLOCALPARAMETERIIVEXTPROC glGetNamedProgramLocalParameterIivEXT                       = nullptr;
+PFNGLGETNAMEDPROGRAMLOCALPARAMETERIUIVEXTPROC glGetNamedProgramLocalParameterIuivEXT                     = nullptr;
+PFNGLENABLECLIENTSTATEIEXTPROC glEnableClientStateiEXT                                                   = nullptr;
+PFNGLDISABLECLIENTSTATEIEXTPROC glDisableClientStateiEXT                                                 = nullptr;
+PFNGLGETFLOATI_VEXTPROC glGetFloati_vEXT                                                                 = nullptr;
+PFNGLGETDOUBLEI_VEXTPROC glGetDoublei_vEXT                                                               = nullptr;
+PFNGLGETPOINTERI_VEXTPROC glGetPointeri_vEXT                                                             = nullptr;
+PFNGLNAMEDPROGRAMSTRINGEXTPROC glNamedProgramStringEXT                                                   = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETER4DEXTPROC glNamedProgramLocalParameter4dEXT                               = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETER4DVEXTPROC glNamedProgramLocalParameter4dvEXT                             = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETER4FEXTPROC glNamedProgramLocalParameter4fEXT                               = nullptr;
+PFNGLNAMEDPROGRAMLOCALPARAMETER4FVEXTPROC glNamedProgramLocalParameter4fvEXT                             = nullptr;
+PFNGLGETNAMEDPROGRAMLOCALPARAMETERDVEXTPROC glGetNamedProgramLocalParameterdvEXT                         = nullptr;
+PFNGLGETNAMEDPROGRAMLOCALPARAMETERFVEXTPROC glGetNamedProgramLocalParameterfvEXT                         = nullptr;
+PFNGLGETNAMEDPROGRAMIVEXTPROC glGetNamedProgramivEXT                                                     = nullptr;
+PFNGLGETNAMEDPROGRAMSTRINGEXTPROC glGetNamedProgramStringEXT                                             = nullptr;
+PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC glNamedRenderbufferStorageEXT                                       = nullptr;
+PFNGLGETNAMEDRENDERBUFFERPARAMETERIVEXTPROC glGetNamedRenderbufferParameterivEXT                         = nullptr;
+PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC glNamedRenderbufferStorageMultisampleEXT                 = nullptr;
+PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLECOVERAGEEXTPROC glNamedRenderbufferStorageMultisampleCoverageEXT = nullptr;
+PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC glCheckNamedFramebufferStatusEXT                                 = nullptr;
+PFNGLNAMEDFRAMEBUFFERTEXTURE1DEXTPROC glNamedFramebufferTexture1DEXT                                     = nullptr;
+PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC glNamedFramebufferTexture2DEXT                                     = nullptr;
+PFNGLNAMEDFRAMEBUFFERTEXTURE3DEXTPROC glNamedFramebufferTexture3DEXT                                     = nullptr;
+PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC glNamedFramebufferRenderbufferEXT                               = nullptr;
+PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetNamedFramebufferAttachmentParameterivEXT       = nullptr;
+PFNGLGENERATETEXTUREMIPMAPEXTPROC glGenerateTextureMipmapEXT                                             = nullptr;
+PFNGLGENERATEMULTITEXMIPMAPEXTPROC glGenerateMultiTexMipmapEXT                                           = nullptr;
+PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC glFramebufferDrawBufferEXT                                             = nullptr;
+PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC glFramebufferDrawBuffersEXT                                           = nullptr;
+PFNGLFRAMEBUFFERREADBUFFEREXTPROC glFramebufferReadBufferEXT                                             = nullptr;
+PFNGLGETFRAMEBUFFERPARAMETERIVEXTPROC glGetFramebufferParameterivEXT                                     = nullptr;
+PFNGLNAMEDCOPYBUFFERSUBDATAEXTPROC glNamedCopyBufferSubDataEXT                                           = nullptr;
+PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC glNamedFramebufferTextureEXT                                         = nullptr;
+PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC glNamedFramebufferTextureLayerEXT                               = nullptr;
+PFNGLNAMEDFRAMEBUFFERTEXTUREFACEEXTPROC glNamedFramebufferTextureFaceEXT                                 = nullptr;
+PFNGLTEXTURERENDERBUFFEREXTPROC glTextureRenderbufferEXT                                                 = nullptr;
+PFNGLMULTITEXRENDERBUFFEREXTPROC glMultiTexRenderbufferEXT                                               = nullptr;
+PFNGLVERTEXARRAYVERTEXOFFSETEXTPROC glVertexArrayVertexOffsetEXT                                         = nullptr;
+PFNGLVERTEXARRAYCOLOROFFSETEXTPROC glVertexArrayColorOffsetEXT                                           = nullptr;
+PFNGLVERTEXARRAYEDGEFLAGOFFSETEXTPROC glVertexArrayEdgeFlagOffsetEXT                                     = nullptr;
+PFNGLVERTEXARRAYINDEXOFFSETEXTPROC glVertexArrayIndexOffsetEXT                                           = nullptr;
+PFNGLVERTEXARRAYNORMALOFFSETEXTPROC glVertexArrayNormalOffsetEXT                                         = nullptr;
+PFNGLVERTEXARRAYTEXCOORDOFFSETEXTPROC glVertexArrayTexCoordOffsetEXT                                     = nullptr;
+PFNGLVERTEXARRAYMULTITEXCOORDOFFSETEXTPROC glVertexArrayMultiTexCoordOffsetEXT                           = nullptr;
+PFNGLVERTEXARRAYFOGCOORDOFFSETEXTPROC glVertexArrayFogCoordOffsetEXT                                     = nullptr;
+PFNGLVERTEXARRAYSECONDARYCOLOROFFSETEXTPROC glVertexArraySecondaryColorOffsetEXT                         = nullptr;
+PFNGLVERTEXARRAYVERTEXATTRIBOFFSETEXTPROC glVertexArrayVertexAttribOffsetEXT                             = nullptr;
+PFNGLVERTEXARRAYVERTEXATTRIBIOFFSETEXTPROC glVertexArrayVertexAttribIOffsetEXT                           = nullptr;
+PFNGLENABLEVERTEXARRAYEXTPROC glEnableVertexArrayEXT                                                     = nullptr;
+PFNGLDISABLEVERTEXARRAYEXTPROC glDisableVertexArrayEXT                                                   = nullptr;
+PFNGLENABLEVERTEXARRAYATTRIBEXTPROC glEnableVertexArrayAttribEXT                                         = nullptr;
+PFNGLDISABLEVERTEXARRAYATTRIBEXTPROC glDisableVertexArrayAttribEXT                                       = nullptr;
+PFNGLGETVERTEXARRAYINTEGERVEXTPROC glGetVertexArrayIntegervEXT                                           = nullptr;
+PFNGLGETVERTEXARRAYPOINTERVEXTPROC glGetVertexArrayPointervEXT                                           = nullptr;
+PFNGLGETVERTEXARRAYINTEGERI_VEXTPROC glGetVertexArrayIntegeri_vEXT                                       = nullptr;
+PFNGLGETVERTEXARRAYPOINTERI_VEXTPROC glGetVertexArrayPointeri_vEXT                                       = nullptr;
+PFNGLMAPNAMEDBUFFERRANGEEXTPROC glMapNamedBufferRangeEXT                                                 = nullptr;
+PFNGLFLUSHMAPPEDNAMEDBUFFERRANGEEXTPROC glFlushMappedNamedBufferRangeEXT                                 = nullptr;
+PFNGLNAMEDBUFFERSTORAGEEXTPROC glNamedBufferStorageEXT                                                   = nullptr;
+PFNGLCLEARNAMEDBUFFERDATAEXTPROC glClearNamedBufferDataEXT                                               = nullptr;
+PFNGLCLEARNAMEDBUFFERSUBDATAEXTPROC glClearNamedBufferSubDataEXT                                         = nullptr;
+PFNGLNAMEDFRAMEBUFFERPARAMETERIEXTPROC glNamedFramebufferParameteriEXT                                   = nullptr;
+PFNGLGETNAMEDFRAMEBUFFERPARAMETERIVEXTPROC glGetNamedFramebufferParameterivEXT                           = nullptr;
+PFNGLPROGRAMUNIFORM1DEXTPROC glProgramUniform1dEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM2DEXTPROC glProgramUniform2dEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM3DEXTPROC glProgramUniform3dEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM4DEXTPROC glProgramUniform4dEXT                                                       = nullptr;
+PFNGLPROGRAMUNIFORM1DVEXTPROC glProgramUniform1dvEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM2DVEXTPROC glProgramUniform2dvEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM3DVEXTPROC glProgramUniform3dvEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORM4DVEXTPROC glProgramUniform4dvEXT                                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX2DVEXTPROC glProgramUniformMatrix2dvEXT                                         = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX3DVEXTPROC glProgramUniformMatrix3dvEXT                                         = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX4DVEXTPROC glProgramUniformMatrix4dvEXT                                         = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX2X3DVEXTPROC glProgramUniformMatrix2x3dvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX2X4DVEXTPROC glProgramUniformMatrix2x4dvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX3X2DVEXTPROC glProgramUniformMatrix3x2dvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX3X4DVEXTPROC glProgramUniformMatrix3x4dvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX4X2DVEXTPROC glProgramUniformMatrix4x2dvEXT                                     = nullptr;
+PFNGLPROGRAMUNIFORMMATRIX4X3DVEXTPROC glProgramUniformMatrix4x3dvEXT                                     = nullptr;
+PFNGLTEXTUREBUFFERRANGEEXTPROC glTextureBufferRangeEXT                                                   = nullptr;
+PFNGLTEXTURESTORAGE1DEXTPROC glTextureStorage1DEXT                                                       = nullptr;
+PFNGLTEXTURESTORAGE2DEXTPROC glTextureStorage2DEXT                                                       = nullptr;
+PFNGLTEXTURESTORAGE3DEXTPROC glTextureStorage3DEXT                                                       = nullptr;
+PFNGLTEXTURESTORAGE2DMULTISAMPLEEXTPROC glTextureStorage2DMultisampleEXT                                 = nullptr;
+PFNGLTEXTURESTORAGE3DMULTISAMPLEEXTPROC glTextureStorage3DMultisampleEXT                                 = nullptr;
+PFNGLVERTEXARRAYBINDVERTEXBUFFEREXTPROC glVertexArrayBindVertexBufferEXT                                 = nullptr;
+PFNGLVERTEXARRAYVERTEXATTRIBFORMATEXTPROC glVertexArrayVertexAttribFormatEXT                             = nullptr;
+PFNGLVERTEXARRAYVERTEXATTRIBIFORMATEXTPROC glVertexArrayVertexAttribIFormatEXT                           = nullptr;
+PFNGLVERTEXARRAYVERTEXATTRIBLFORMATEXTPROC glVertexArrayVertexAttribLFormatEXT                           = nullptr;
+PFNGLVERTEXARRAYVERTEXATTRIBBINDINGEXTPROC glVertexArrayVertexAttribBindingEXT                           = nullptr;
+PFNGLVERTEXARRAYVERTEXBINDINGDIVISOREXTPROC glVertexArrayVertexBindingDivisorEXT                         = nullptr;
+PFNGLVERTEXARRAYVERTEXATTRIBLOFFSETEXTPROC glVertexArrayVertexAttribLOffsetEXT                           = nullptr;
+PFNGLTEXTUREPAGECOMMITMENTEXTPROC glTexturePageCommitmentEXT                                             = nullptr;
+PFNGLVERTEXARRAYVERTEXATTRIBDIVISOREXTPROC glVertexArrayVertexAttribDivisorEXT                           = nullptr;
+
+bool init_gl_ext_direct_state_access()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glMatrixLoadfEXT = get_function<PFNGLMATRIXLOADFEXTPROC>("glMatrixLoadfEXT")) != nullptr;
+    result = result && (glMatrixLoaddEXT = get_function<PFNGLMATRIXLOADDEXTPROC>("glMatrixLoaddEXT")) != nullptr;
+    result = result && (glMatrixMultfEXT = get_function<PFNGLMATRIXMULTFEXTPROC>("glMatrixMultfEXT")) != nullptr;
+    result = result && (glMatrixMultdEXT = get_function<PFNGLMATRIXMULTDEXTPROC>("glMatrixMultdEXT")) != nullptr;
+    result = result && (glMatrixLoadIdentityEXT = get_function<PFNGLMATRIXLOADIDENTITYEXTPROC>("glMatrixLoadIdentityEXT")) != nullptr;
+    result = result && (glMatrixRotatefEXT = get_function<PFNGLMATRIXROTATEFEXTPROC>("glMatrixRotatefEXT")) != nullptr;
+    result = result && (glMatrixRotatedEXT = get_function<PFNGLMATRIXROTATEDEXTPROC>("glMatrixRotatedEXT")) != nullptr;
+    result = result && (glMatrixScalefEXT = get_function<PFNGLMATRIXSCALEFEXTPROC>("glMatrixScalefEXT")) != nullptr;
+    result = result && (glMatrixScaledEXT = get_function<PFNGLMATRIXSCALEDEXTPROC>("glMatrixScaledEXT")) != nullptr;
+    result = result && (glMatrixTranslatefEXT = get_function<PFNGLMATRIXTRANSLATEFEXTPROC>("glMatrixTranslatefEXT")) != nullptr;
+    result = result && (glMatrixTranslatedEXT = get_function<PFNGLMATRIXTRANSLATEDEXTPROC>("glMatrixTranslatedEXT")) != nullptr;
+    result = result && (glMatrixFrustumEXT = get_function<PFNGLMATRIXFRUSTUMEXTPROC>("glMatrixFrustumEXT")) != nullptr;
+    result = result && (glMatrixOrthoEXT = get_function<PFNGLMATRIXORTHOEXTPROC>("glMatrixOrthoEXT")) != nullptr;
+    result = result && (glMatrixPopEXT = get_function<PFNGLMATRIXPOPEXTPROC>("glMatrixPopEXT")) != nullptr;
+    result = result && (glMatrixPushEXT = get_function<PFNGLMATRIXPUSHEXTPROC>("glMatrixPushEXT")) != nullptr;
+    result = result && (glClientAttribDefaultEXT = get_function<PFNGLCLIENTATTRIBDEFAULTEXTPROC>("glClientAttribDefaultEXT")) != nullptr;
+    result = result && (glPushClientAttribDefaultEXT = get_function<PFNGLPUSHCLIENTATTRIBDEFAULTEXTPROC>("glPushClientAttribDefaultEXT")) != nullptr;
+    result = result && (glTextureParameterfEXT = get_function<PFNGLTEXTUREPARAMETERFEXTPROC>("glTextureParameterfEXT")) != nullptr;
+    result = result && (glTextureParameterfvEXT = get_function<PFNGLTEXTUREPARAMETERFVEXTPROC>("glTextureParameterfvEXT")) != nullptr;
+    result = result && (glTextureParameteriEXT = get_function<PFNGLTEXTUREPARAMETERIEXTPROC>("glTextureParameteriEXT")) != nullptr;
+    result = result && (glTextureParameterivEXT = get_function<PFNGLTEXTUREPARAMETERIVEXTPROC>("glTextureParameterivEXT")) != nullptr;
+    result = result && (glTextureImage1DEXT = get_function<PFNGLTEXTUREIMAGE1DEXTPROC>("glTextureImage1DEXT")) != nullptr;
+    result = result && (glTextureImage2DEXT = get_function<PFNGLTEXTUREIMAGE2DEXTPROC>("glTextureImage2DEXT")) != nullptr;
+    result = result && (glTextureSubImage1DEXT = get_function<PFNGLTEXTURESUBIMAGE1DEXTPROC>("glTextureSubImage1DEXT")) != nullptr;
+    result = result && (glTextureSubImage2DEXT = get_function<PFNGLTEXTURESUBIMAGE2DEXTPROC>("glTextureSubImage2DEXT")) != nullptr;
+    result = result && (glCopyTextureImage1DEXT = get_function<PFNGLCOPYTEXTUREIMAGE1DEXTPROC>("glCopyTextureImage1DEXT")) != nullptr;
+    result = result && (glCopyTextureImage2DEXT = get_function<PFNGLCOPYTEXTUREIMAGE2DEXTPROC>("glCopyTextureImage2DEXT")) != nullptr;
+    result = result && (glCopyTextureSubImage1DEXT = get_function<PFNGLCOPYTEXTURESUBIMAGE1DEXTPROC>("glCopyTextureSubImage1DEXT")) != nullptr;
+    result = result && (glCopyTextureSubImage2DEXT = get_function<PFNGLCOPYTEXTURESUBIMAGE2DEXTPROC>("glCopyTextureSubImage2DEXT")) != nullptr;
+    result = result && (glGetTextureImageEXT = get_function<PFNGLGETTEXTUREIMAGEEXTPROC>("glGetTextureImageEXT")) != nullptr;
+    result = result && (glGetTextureParameterfvEXT = get_function<PFNGLGETTEXTUREPARAMETERFVEXTPROC>("glGetTextureParameterfvEXT")) != nullptr;
+    result = result && (glGetTextureParameterivEXT = get_function<PFNGLGETTEXTUREPARAMETERIVEXTPROC>("glGetTextureParameterivEXT")) != nullptr;
+    result = result && (glGetTextureLevelParameterfvEXT = get_function<PFNGLGETTEXTURELEVELPARAMETERFVEXTPROC>("glGetTextureLevelParameterfvEXT")) != nullptr;
+    result = result && (glGetTextureLevelParameterivEXT = get_function<PFNGLGETTEXTURELEVELPARAMETERIVEXTPROC>("glGetTextureLevelParameterivEXT")) != nullptr;
+    result = result && (glTextureImage3DEXT = get_function<PFNGLTEXTUREIMAGE3DEXTPROC>("glTextureImage3DEXT")) != nullptr;
+    result = result && (glTextureSubImage3DEXT = get_function<PFNGLTEXTURESUBIMAGE3DEXTPROC>("glTextureSubImage3DEXT")) != nullptr;
+    result = result && (glCopyTextureSubImage3DEXT = get_function<PFNGLCOPYTEXTURESUBIMAGE3DEXTPROC>("glCopyTextureSubImage3DEXT")) != nullptr;
+    result = result && (glBindMultiTextureEXT = get_function<PFNGLBINDMULTITEXTUREEXTPROC>("glBindMultiTextureEXT")) != nullptr;
+    result = result && (glMultiTexCoordPointerEXT = get_function<PFNGLMULTITEXCOORDPOINTEREXTPROC>("glMultiTexCoordPointerEXT")) != nullptr;
+    result = result && (glMultiTexEnvfEXT = get_function<PFNGLMULTITEXENVFEXTPROC>("glMultiTexEnvfEXT")) != nullptr;
+    result = result && (glMultiTexEnvfvEXT = get_function<PFNGLMULTITEXENVFVEXTPROC>("glMultiTexEnvfvEXT")) != nullptr;
+    result = result && (glMultiTexEnviEXT = get_function<PFNGLMULTITEXENVIEXTPROC>("glMultiTexEnviEXT")) != nullptr;
+    result = result && (glMultiTexEnvivEXT = get_function<PFNGLMULTITEXENVIVEXTPROC>("glMultiTexEnvivEXT")) != nullptr;
+    result = result && (glMultiTexGendEXT = get_function<PFNGLMULTITEXGENDEXTPROC>("glMultiTexGendEXT")) != nullptr;
+    result = result && (glMultiTexGendvEXT = get_function<PFNGLMULTITEXGENDVEXTPROC>("glMultiTexGendvEXT")) != nullptr;
+    result = result && (glMultiTexGenfEXT = get_function<PFNGLMULTITEXGENFEXTPROC>("glMultiTexGenfEXT")) != nullptr;
+    result = result && (glMultiTexGenfvEXT = get_function<PFNGLMULTITEXGENFVEXTPROC>("glMultiTexGenfvEXT")) != nullptr;
+    result = result && (glMultiTexGeniEXT = get_function<PFNGLMULTITEXGENIEXTPROC>("glMultiTexGeniEXT")) != nullptr;
+    result = result && (glMultiTexGenivEXT = get_function<PFNGLMULTITEXGENIVEXTPROC>("glMultiTexGenivEXT")) != nullptr;
+    result = result && (glGetMultiTexEnvfvEXT = get_function<PFNGLGETMULTITEXENVFVEXTPROC>("glGetMultiTexEnvfvEXT")) != nullptr;
+    result = result && (glGetMultiTexEnvivEXT = get_function<PFNGLGETMULTITEXENVIVEXTPROC>("glGetMultiTexEnvivEXT")) != nullptr;
+    result = result && (glGetMultiTexGendvEXT = get_function<PFNGLGETMULTITEXGENDVEXTPROC>("glGetMultiTexGendvEXT")) != nullptr;
+    result = result && (glGetMultiTexGenfvEXT = get_function<PFNGLGETMULTITEXGENFVEXTPROC>("glGetMultiTexGenfvEXT")) != nullptr;
+    result = result && (glGetMultiTexGenivEXT = get_function<PFNGLGETMULTITEXGENIVEXTPROC>("glGetMultiTexGenivEXT")) != nullptr;
+    result = result && (glMultiTexParameteriEXT = get_function<PFNGLMULTITEXPARAMETERIEXTPROC>("glMultiTexParameteriEXT")) != nullptr;
+    result = result && (glMultiTexParameterivEXT = get_function<PFNGLMULTITEXPARAMETERIVEXTPROC>("glMultiTexParameterivEXT")) != nullptr;
+    result = result && (glMultiTexParameterfEXT = get_function<PFNGLMULTITEXPARAMETERFEXTPROC>("glMultiTexParameterfEXT")) != nullptr;
+    result = result && (glMultiTexParameterfvEXT = get_function<PFNGLMULTITEXPARAMETERFVEXTPROC>("glMultiTexParameterfvEXT")) != nullptr;
+    result = result && (glMultiTexImage1DEXT = get_function<PFNGLMULTITEXIMAGE1DEXTPROC>("glMultiTexImage1DEXT")) != nullptr;
+    result = result && (glMultiTexImage2DEXT = get_function<PFNGLMULTITEXIMAGE2DEXTPROC>("glMultiTexImage2DEXT")) != nullptr;
+    result = result && (glMultiTexSubImage1DEXT = get_function<PFNGLMULTITEXSUBIMAGE1DEXTPROC>("glMultiTexSubImage1DEXT")) != nullptr;
+    result = result && (glMultiTexSubImage2DEXT = get_function<PFNGLMULTITEXSUBIMAGE2DEXTPROC>("glMultiTexSubImage2DEXT")) != nullptr;
+    result = result && (glCopyMultiTexImage1DEXT = get_function<PFNGLCOPYMULTITEXIMAGE1DEXTPROC>("glCopyMultiTexImage1DEXT")) != nullptr;
+    result = result && (glCopyMultiTexImage2DEXT = get_function<PFNGLCOPYMULTITEXIMAGE2DEXTPROC>("glCopyMultiTexImage2DEXT")) != nullptr;
+    result = result && (glCopyMultiTexSubImage1DEXT = get_function<PFNGLCOPYMULTITEXSUBIMAGE1DEXTPROC>("glCopyMultiTexSubImage1DEXT")) != nullptr;
+    result = result && (glCopyMultiTexSubImage2DEXT = get_function<PFNGLCOPYMULTITEXSUBIMAGE2DEXTPROC>("glCopyMultiTexSubImage2DEXT")) != nullptr;
+    result = result && (glGetMultiTexImageEXT = get_function<PFNGLGETMULTITEXIMAGEEXTPROC>("glGetMultiTexImageEXT")) != nullptr;
+    result = result && (glGetMultiTexParameterfvEXT = get_function<PFNGLGETMULTITEXPARAMETERFVEXTPROC>("glGetMultiTexParameterfvEXT")) != nullptr;
+    result = result && (glGetMultiTexParameterivEXT = get_function<PFNGLGETMULTITEXPARAMETERIVEXTPROC>("glGetMultiTexParameterivEXT")) != nullptr;
+    result = result && (glGetMultiTexLevelParameterfvEXT = get_function<PFNGLGETMULTITEXLEVELPARAMETERFVEXTPROC>("glGetMultiTexLevelParameterfvEXT")) != nullptr;
+    result = result && (glGetMultiTexLevelParameterivEXT = get_function<PFNGLGETMULTITEXLEVELPARAMETERIVEXTPROC>("glGetMultiTexLevelParameterivEXT")) != nullptr;
+    result = result && (glMultiTexImage3DEXT = get_function<PFNGLMULTITEXIMAGE3DEXTPROC>("glMultiTexImage3DEXT")) != nullptr;
+    result = result && (glMultiTexSubImage3DEXT = get_function<PFNGLMULTITEXSUBIMAGE3DEXTPROC>("glMultiTexSubImage3DEXT")) != nullptr;
+    result = result && (glCopyMultiTexSubImage3DEXT = get_function<PFNGLCOPYMULTITEXSUBIMAGE3DEXTPROC>("glCopyMultiTexSubImage3DEXT")) != nullptr;
+    result = result && (glEnableClientStateIndexedEXT = get_function<PFNGLENABLECLIENTSTATEINDEXEDEXTPROC>("glEnableClientStateIndexedEXT")) != nullptr;
+    result = result && (glDisableClientStateIndexedEXT = get_function<PFNGLDISABLECLIENTSTATEINDEXEDEXTPROC>("glDisableClientStateIndexedEXT")) != nullptr;
+    result = result && (glGetFloatIndexedvEXT = get_function<PFNGLGETFLOATINDEXEDVEXTPROC>("glGetFloatIndexedvEXT")) != nullptr;
+    result = result && (glGetDoubleIndexedvEXT = get_function<PFNGLGETDOUBLEINDEXEDVEXTPROC>("glGetDoubleIndexedvEXT")) != nullptr;
+    result = result && (glGetPointerIndexedvEXT = get_function<PFNGLGETPOINTERINDEXEDVEXTPROC>("glGetPointerIndexedvEXT")) != nullptr;
+    result = result && (glEnableIndexedEXT = get_function<PFNGLENABLEINDEXEDEXTPROC>("glEnableIndexedEXT")) != nullptr;
+    result = result && (glDisableIndexedEXT = get_function<PFNGLDISABLEINDEXEDEXTPROC>("glDisableIndexedEXT")) != nullptr;
+    result = result && (glIsEnabledIndexedEXT = get_function<PFNGLISENABLEDINDEXEDEXTPROC>("glIsEnabledIndexedEXT")) != nullptr;
+    result = result && (glGetIntegerIndexedvEXT = get_function<PFNGLGETINTEGERINDEXEDVEXTPROC>("glGetIntegerIndexedvEXT")) != nullptr;
+    result = result && (glGetBooleanIndexedvEXT = get_function<PFNGLGETBOOLEANINDEXEDVEXTPROC>("glGetBooleanIndexedvEXT")) != nullptr;
+    result = result && (glCompressedTextureImage3DEXT = get_function<PFNGLCOMPRESSEDTEXTUREIMAGE3DEXTPROC>("glCompressedTextureImage3DEXT")) != nullptr;
+    result = result && (glCompressedTextureImage2DEXT = get_function<PFNGLCOMPRESSEDTEXTUREIMAGE2DEXTPROC>("glCompressedTextureImage2DEXT")) != nullptr;
+    result = result && (glCompressedTextureImage1DEXT = get_function<PFNGLCOMPRESSEDTEXTUREIMAGE1DEXTPROC>("glCompressedTextureImage1DEXT")) != nullptr;
+    result = result && (glCompressedTextureSubImage3DEXT = get_function<PFNGLCOMPRESSEDTEXTURESUBIMAGE3DEXTPROC>("glCompressedTextureSubImage3DEXT")) != nullptr;
+    result = result && (glCompressedTextureSubImage2DEXT = get_function<PFNGLCOMPRESSEDTEXTURESUBIMAGE2DEXTPROC>("glCompressedTextureSubImage2DEXT")) != nullptr;
+    result = result && (glCompressedTextureSubImage1DEXT = get_function<PFNGLCOMPRESSEDTEXTURESUBIMAGE1DEXTPROC>("glCompressedTextureSubImage1DEXT")) != nullptr;
+    result = result && (glGetCompressedTextureImageEXT = get_function<PFNGLGETCOMPRESSEDTEXTUREIMAGEEXTPROC>("glGetCompressedTextureImageEXT")) != nullptr;
+    result = result && (glCompressedMultiTexImage3DEXT = get_function<PFNGLCOMPRESSEDMULTITEXIMAGE3DEXTPROC>("glCompressedMultiTexImage3DEXT")) != nullptr;
+    result = result && (glCompressedMultiTexImage2DEXT = get_function<PFNGLCOMPRESSEDMULTITEXIMAGE2DEXTPROC>("glCompressedMultiTexImage2DEXT")) != nullptr;
+    result = result && (glCompressedMultiTexImage1DEXT = get_function<PFNGLCOMPRESSEDMULTITEXIMAGE1DEXTPROC>("glCompressedMultiTexImage1DEXT")) != nullptr;
+    result = result && (glCompressedMultiTexSubImage3DEXT = get_function<PFNGLCOMPRESSEDMULTITEXSUBIMAGE3DEXTPROC>("glCompressedMultiTexSubImage3DEXT")) != nullptr;
+    result = result && (glCompressedMultiTexSubImage2DEXT = get_function<PFNGLCOMPRESSEDMULTITEXSUBIMAGE2DEXTPROC>("glCompressedMultiTexSubImage2DEXT")) != nullptr;
+    result = result && (glCompressedMultiTexSubImage1DEXT = get_function<PFNGLCOMPRESSEDMULTITEXSUBIMAGE1DEXTPROC>("glCompressedMultiTexSubImage1DEXT")) != nullptr;
+    result = result && (glGetCompressedMultiTexImageEXT = get_function<PFNGLGETCOMPRESSEDMULTITEXIMAGEEXTPROC>("glGetCompressedMultiTexImageEXT")) != nullptr;
+    result = result && (glMatrixLoadTransposefEXT = get_function<PFNGLMATRIXLOADTRANSPOSEFEXTPROC>("glMatrixLoadTransposefEXT")) != nullptr;
+    result = result && (glMatrixLoadTransposedEXT = get_function<PFNGLMATRIXLOADTRANSPOSEDEXTPROC>("glMatrixLoadTransposedEXT")) != nullptr;
+    result = result && (glMatrixMultTransposefEXT = get_function<PFNGLMATRIXMULTTRANSPOSEFEXTPROC>("glMatrixMultTransposefEXT")) != nullptr;
+    result = result && (glMatrixMultTransposedEXT = get_function<PFNGLMATRIXMULTTRANSPOSEDEXTPROC>("glMatrixMultTransposedEXT")) != nullptr;
+    result = result && (glNamedBufferDataEXT = get_function<PFNGLNAMEDBUFFERDATAEXTPROC>("glNamedBufferDataEXT")) != nullptr;
+    result = result && (glNamedBufferSubDataEXT = get_function<PFNGLNAMEDBUFFERSUBDATAEXTPROC>("glNamedBufferSubDataEXT")) != nullptr;
+    result = result && (glMapNamedBufferEXT = get_function<PFNGLMAPNAMEDBUFFEREXTPROC>("glMapNamedBufferEXT")) != nullptr;
+    result = result && (glUnmapNamedBufferEXT = get_function<PFNGLUNMAPNAMEDBUFFEREXTPROC>("glUnmapNamedBufferEXT")) != nullptr;
+    result = result && (glGetNamedBufferParameterivEXT = get_function<PFNGLGETNAMEDBUFFERPARAMETERIVEXTPROC>("glGetNamedBufferParameterivEXT")) != nullptr;
+    result = result && (glGetNamedBufferPointervEXT = get_function<PFNGLGETNAMEDBUFFERPOINTERVEXTPROC>("glGetNamedBufferPointervEXT")) != nullptr;
+    result = result && (glGetNamedBufferSubDataEXT = get_function<PFNGLGETNAMEDBUFFERSUBDATAEXTPROC>("glGetNamedBufferSubDataEXT")) != nullptr;
+    result = result && (glProgramUniform1fEXT = get_function<PFNGLPROGRAMUNIFORM1FEXTPROC>("glProgramUniform1fEXT")) != nullptr;
+    result = result && (glProgramUniform2fEXT = get_function<PFNGLPROGRAMUNIFORM2FEXTPROC>("glProgramUniform2fEXT")) != nullptr;
+    result = result && (glProgramUniform3fEXT = get_function<PFNGLPROGRAMUNIFORM3FEXTPROC>("glProgramUniform3fEXT")) != nullptr;
+    result = result && (glProgramUniform4fEXT = get_function<PFNGLPROGRAMUNIFORM4FEXTPROC>("glProgramUniform4fEXT")) != nullptr;
+    result = result && (glProgramUniform1iEXT = get_function<PFNGLPROGRAMUNIFORM1IEXTPROC>("glProgramUniform1iEXT")) != nullptr;
+    result = result && (glProgramUniform2iEXT = get_function<PFNGLPROGRAMUNIFORM2IEXTPROC>("glProgramUniform2iEXT")) != nullptr;
+    result = result && (glProgramUniform3iEXT = get_function<PFNGLPROGRAMUNIFORM3IEXTPROC>("glProgramUniform3iEXT")) != nullptr;
+    result = result && (glProgramUniform4iEXT = get_function<PFNGLPROGRAMUNIFORM4IEXTPROC>("glProgramUniform4iEXT")) != nullptr;
+    result = result && (glProgramUniform1fvEXT = get_function<PFNGLPROGRAMUNIFORM1FVEXTPROC>("glProgramUniform1fvEXT")) != nullptr;
+    result = result && (glProgramUniform2fvEXT = get_function<PFNGLPROGRAMUNIFORM2FVEXTPROC>("glProgramUniform2fvEXT")) != nullptr;
+    result = result && (glProgramUniform3fvEXT = get_function<PFNGLPROGRAMUNIFORM3FVEXTPROC>("glProgramUniform3fvEXT")) != nullptr;
+    result = result && (glProgramUniform4fvEXT = get_function<PFNGLPROGRAMUNIFORM4FVEXTPROC>("glProgramUniform4fvEXT")) != nullptr;
+    result = result && (glProgramUniform1ivEXT = get_function<PFNGLPROGRAMUNIFORM1IVEXTPROC>("glProgramUniform1ivEXT")) != nullptr;
+    result = result && (glProgramUniform2ivEXT = get_function<PFNGLPROGRAMUNIFORM2IVEXTPROC>("glProgramUniform2ivEXT")) != nullptr;
+    result = result && (glProgramUniform3ivEXT = get_function<PFNGLPROGRAMUNIFORM3IVEXTPROC>("glProgramUniform3ivEXT")) != nullptr;
+    result = result && (glProgramUniform4ivEXT = get_function<PFNGLPROGRAMUNIFORM4IVEXTPROC>("glProgramUniform4ivEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix2fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX2FVEXTPROC>("glProgramUniformMatrix2fvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix3fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX3FVEXTPROC>("glProgramUniformMatrix3fvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix4fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX4FVEXTPROC>("glProgramUniformMatrix4fvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix2x3fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX2X3FVEXTPROC>("glProgramUniformMatrix2x3fvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix3x2fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX3X2FVEXTPROC>("glProgramUniformMatrix3x2fvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix2x4fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX2X4FVEXTPROC>("glProgramUniformMatrix2x4fvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix4x2fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX4X2FVEXTPROC>("glProgramUniformMatrix4x2fvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix3x4fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX3X4FVEXTPROC>("glProgramUniformMatrix3x4fvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix4x3fvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX4X3FVEXTPROC>("glProgramUniformMatrix4x3fvEXT")) != nullptr;
+    result = result && (glTextureBufferEXT = get_function<PFNGLTEXTUREBUFFEREXTPROC>("glTextureBufferEXT")) != nullptr;
+    result = result && (glMultiTexBufferEXT = get_function<PFNGLMULTITEXBUFFEREXTPROC>("glMultiTexBufferEXT")) != nullptr;
+    result = result && (glTextureParameterIivEXT = get_function<PFNGLTEXTUREPARAMETERIIVEXTPROC>("glTextureParameterIivEXT")) != nullptr;
+    result = result && (glTextureParameterIuivEXT = get_function<PFNGLTEXTUREPARAMETERIUIVEXTPROC>("glTextureParameterIuivEXT")) != nullptr;
+    result = result && (glGetTextureParameterIivEXT = get_function<PFNGLGETTEXTUREPARAMETERIIVEXTPROC>("glGetTextureParameterIivEXT")) != nullptr;
+    result = result && (glGetTextureParameterIuivEXT = get_function<PFNGLGETTEXTUREPARAMETERIUIVEXTPROC>("glGetTextureParameterIuivEXT")) != nullptr;
+    result = result && (glMultiTexParameterIivEXT = get_function<PFNGLMULTITEXPARAMETERIIVEXTPROC>("glMultiTexParameterIivEXT")) != nullptr;
+    result = result && (glMultiTexParameterIuivEXT = get_function<PFNGLMULTITEXPARAMETERIUIVEXTPROC>("glMultiTexParameterIuivEXT")) != nullptr;
+    result = result && (glGetMultiTexParameterIivEXT = get_function<PFNGLGETMULTITEXPARAMETERIIVEXTPROC>("glGetMultiTexParameterIivEXT")) != nullptr;
+    result = result && (glGetMultiTexParameterIuivEXT = get_function<PFNGLGETMULTITEXPARAMETERIUIVEXTPROC>("glGetMultiTexParameterIuivEXT")) != nullptr;
+    result = result && (glProgramUniform1uiEXT = get_function<PFNGLPROGRAMUNIFORM1UIEXTPROC>("glProgramUniform1uiEXT")) != nullptr;
+    result = result && (glProgramUniform2uiEXT = get_function<PFNGLPROGRAMUNIFORM2UIEXTPROC>("glProgramUniform2uiEXT")) != nullptr;
+    result = result && (glProgramUniform3uiEXT = get_function<PFNGLPROGRAMUNIFORM3UIEXTPROC>("glProgramUniform3uiEXT")) != nullptr;
+    result = result && (glProgramUniform4uiEXT = get_function<PFNGLPROGRAMUNIFORM4UIEXTPROC>("glProgramUniform4uiEXT")) != nullptr;
+    result = result && (glProgramUniform1uivEXT = get_function<PFNGLPROGRAMUNIFORM1UIVEXTPROC>("glProgramUniform1uivEXT")) != nullptr;
+    result = result && (glProgramUniform2uivEXT = get_function<PFNGLPROGRAMUNIFORM2UIVEXTPROC>("glProgramUniform2uivEXT")) != nullptr;
+    result = result && (glProgramUniform3uivEXT = get_function<PFNGLPROGRAMUNIFORM3UIVEXTPROC>("glProgramUniform3uivEXT")) != nullptr;
+    result = result && (glProgramUniform4uivEXT = get_function<PFNGLPROGRAMUNIFORM4UIVEXTPROC>("glProgramUniform4uivEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameters4fvEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETERS4FVEXTPROC>("glNamedProgramLocalParameters4fvEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameterI4iEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETERI4IEXTPROC>("glNamedProgramLocalParameterI4iEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameterI4ivEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETERI4IVEXTPROC>("glNamedProgramLocalParameterI4ivEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParametersI4ivEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETERSI4IVEXTPROC>("glNamedProgramLocalParametersI4ivEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameterI4uiEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIEXTPROC>("glNamedProgramLocalParameterI4uiEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameterI4uivEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETERI4UIVEXTPROC>("glNamedProgramLocalParameterI4uivEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParametersI4uivEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETERSI4UIVEXTPROC>("glNamedProgramLocalParametersI4uivEXT")) != nullptr;
+    result = result && (glGetNamedProgramLocalParameterIivEXT = get_function<PFNGLGETNAMEDPROGRAMLOCALPARAMETERIIVEXTPROC>("glGetNamedProgramLocalParameterIivEXT")) != nullptr;
+    result = result && (glGetNamedProgramLocalParameterIuivEXT = get_function<PFNGLGETNAMEDPROGRAMLOCALPARAMETERIUIVEXTPROC>("glGetNamedProgramLocalParameterIuivEXT")) != nullptr;
+    result = result && (glEnableClientStateiEXT = get_function<PFNGLENABLECLIENTSTATEIEXTPROC>("glEnableClientStateiEXT")) != nullptr;
+    result = result && (glDisableClientStateiEXT = get_function<PFNGLDISABLECLIENTSTATEIEXTPROC>("glDisableClientStateiEXT")) != nullptr;
+    result = result && (glGetFloati_vEXT = get_function<PFNGLGETFLOATI_VEXTPROC>("glGetFloati_vEXT")) != nullptr;
+    result = result && (glGetDoublei_vEXT = get_function<PFNGLGETDOUBLEI_VEXTPROC>("glGetDoublei_vEXT")) != nullptr;
+    result = result && (glGetPointeri_vEXT = get_function<PFNGLGETPOINTERI_VEXTPROC>("glGetPointeri_vEXT")) != nullptr;
+    result = result && (glNamedProgramStringEXT = get_function<PFNGLNAMEDPROGRAMSTRINGEXTPROC>("glNamedProgramStringEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameter4dEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETER4DEXTPROC>("glNamedProgramLocalParameter4dEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameter4dvEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETER4DVEXTPROC>("glNamedProgramLocalParameter4dvEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameter4fEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETER4FEXTPROC>("glNamedProgramLocalParameter4fEXT")) != nullptr;
+    result = result && (glNamedProgramLocalParameter4fvEXT = get_function<PFNGLNAMEDPROGRAMLOCALPARAMETER4FVEXTPROC>("glNamedProgramLocalParameter4fvEXT")) != nullptr;
+    result = result && (glGetNamedProgramLocalParameterdvEXT = get_function<PFNGLGETNAMEDPROGRAMLOCALPARAMETERDVEXTPROC>("glGetNamedProgramLocalParameterdvEXT")) != nullptr;
+    result = result && (glGetNamedProgramLocalParameterfvEXT = get_function<PFNGLGETNAMEDPROGRAMLOCALPARAMETERFVEXTPROC>("glGetNamedProgramLocalParameterfvEXT")) != nullptr;
+    result = result && (glGetNamedProgramivEXT = get_function<PFNGLGETNAMEDPROGRAMIVEXTPROC>("glGetNamedProgramivEXT")) != nullptr;
+    result = result && (glGetNamedProgramStringEXT = get_function<PFNGLGETNAMEDPROGRAMSTRINGEXTPROC>("glGetNamedProgramStringEXT")) != nullptr;
+    result = result && (glNamedRenderbufferStorageEXT = get_function<PFNGLNAMEDRENDERBUFFERSTORAGEEXTPROC>("glNamedRenderbufferStorageEXT")) != nullptr;
+    result = result && (glGetNamedRenderbufferParameterivEXT = get_function<PFNGLGETNAMEDRENDERBUFFERPARAMETERIVEXTPROC>("glGetNamedRenderbufferParameterivEXT")) != nullptr;
+    result = result && (glNamedRenderbufferStorageMultisampleEXT = get_function<PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC>("glNamedRenderbufferStorageMultisampleEXT")) != nullptr;
+    result = result && (glNamedRenderbufferStorageMultisampleCoverageEXT = get_function<PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLECOVERAGEEXTPROC>("glNamedRenderbufferStorageMultisampleCoverageEXT")) != nullptr;
+    result = result && (glCheckNamedFramebufferStatusEXT = get_function<PFNGLCHECKNAMEDFRAMEBUFFERSTATUSEXTPROC>("glCheckNamedFramebufferStatusEXT")) != nullptr;
+    result = result && (glNamedFramebufferTexture1DEXT = get_function<PFNGLNAMEDFRAMEBUFFERTEXTURE1DEXTPROC>("glNamedFramebufferTexture1DEXT")) != nullptr;
+    result = result && (glNamedFramebufferTexture2DEXT = get_function<PFNGLNAMEDFRAMEBUFFERTEXTURE2DEXTPROC>("glNamedFramebufferTexture2DEXT")) != nullptr;
+    result = result && (glNamedFramebufferTexture3DEXT = get_function<PFNGLNAMEDFRAMEBUFFERTEXTURE3DEXTPROC>("glNamedFramebufferTexture3DEXT")) != nullptr;
+    result = result && (glNamedFramebufferRenderbufferEXT = get_function<PFNGLNAMEDFRAMEBUFFERRENDERBUFFEREXTPROC>("glNamedFramebufferRenderbufferEXT")) != nullptr;
+    result = result && (glGetNamedFramebufferAttachmentParameterivEXT = get_function<PFNGLGETNAMEDFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC>("glGetNamedFramebufferAttachmentParameterivEXT")) != nullptr;
+    result = result && (glGenerateTextureMipmapEXT = get_function<PFNGLGENERATETEXTUREMIPMAPEXTPROC>("glGenerateTextureMipmapEXT")) != nullptr;
+    result = result && (glGenerateMultiTexMipmapEXT = get_function<PFNGLGENERATEMULTITEXMIPMAPEXTPROC>("glGenerateMultiTexMipmapEXT")) != nullptr;
+    result = result && (glFramebufferDrawBufferEXT = get_function<PFNGLFRAMEBUFFERDRAWBUFFEREXTPROC>("glFramebufferDrawBufferEXT")) != nullptr;
+    result = result && (glFramebufferDrawBuffersEXT = get_function<PFNGLFRAMEBUFFERDRAWBUFFERSEXTPROC>("glFramebufferDrawBuffersEXT")) != nullptr;
+    result = result && (glFramebufferReadBufferEXT = get_function<PFNGLFRAMEBUFFERREADBUFFEREXTPROC>("glFramebufferReadBufferEXT")) != nullptr;
+    result = result && (glGetFramebufferParameterivEXT = get_function<PFNGLGETFRAMEBUFFERPARAMETERIVEXTPROC>("glGetFramebufferParameterivEXT")) != nullptr;
+    result = result && (glNamedCopyBufferSubDataEXT = get_function<PFNGLNAMEDCOPYBUFFERSUBDATAEXTPROC>("glNamedCopyBufferSubDataEXT")) != nullptr;
+    result = result && (glNamedFramebufferTextureEXT = get_function<PFNGLNAMEDFRAMEBUFFERTEXTUREEXTPROC>("glNamedFramebufferTextureEXT")) != nullptr;
+    result = result && (glNamedFramebufferTextureLayerEXT = get_function<PFNGLNAMEDFRAMEBUFFERTEXTURELAYEREXTPROC>("glNamedFramebufferTextureLayerEXT")) != nullptr;
+    result = result && (glNamedFramebufferTextureFaceEXT = get_function<PFNGLNAMEDFRAMEBUFFERTEXTUREFACEEXTPROC>("glNamedFramebufferTextureFaceEXT")) != nullptr;
+    result = result && (glTextureRenderbufferEXT = get_function<PFNGLTEXTURERENDERBUFFEREXTPROC>("glTextureRenderbufferEXT")) != nullptr;
+    result = result && (glMultiTexRenderbufferEXT = get_function<PFNGLMULTITEXRENDERBUFFEREXTPROC>("glMultiTexRenderbufferEXT")) != nullptr;
+    result = result && (glVertexArrayVertexOffsetEXT = get_function<PFNGLVERTEXARRAYVERTEXOFFSETEXTPROC>("glVertexArrayVertexOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayColorOffsetEXT = get_function<PFNGLVERTEXARRAYCOLOROFFSETEXTPROC>("glVertexArrayColorOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayEdgeFlagOffsetEXT = get_function<PFNGLVERTEXARRAYEDGEFLAGOFFSETEXTPROC>("glVertexArrayEdgeFlagOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayIndexOffsetEXT = get_function<PFNGLVERTEXARRAYINDEXOFFSETEXTPROC>("glVertexArrayIndexOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayNormalOffsetEXT = get_function<PFNGLVERTEXARRAYNORMALOFFSETEXTPROC>("glVertexArrayNormalOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayTexCoordOffsetEXT = get_function<PFNGLVERTEXARRAYTEXCOORDOFFSETEXTPROC>("glVertexArrayTexCoordOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayMultiTexCoordOffsetEXT = get_function<PFNGLVERTEXARRAYMULTITEXCOORDOFFSETEXTPROC>("glVertexArrayMultiTexCoordOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayFogCoordOffsetEXT = get_function<PFNGLVERTEXARRAYFOGCOORDOFFSETEXTPROC>("glVertexArrayFogCoordOffsetEXT")) != nullptr;
+    result = result && (glVertexArraySecondaryColorOffsetEXT = get_function<PFNGLVERTEXARRAYSECONDARYCOLOROFFSETEXTPROC>("glVertexArraySecondaryColorOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayVertexAttribOffsetEXT = get_function<PFNGLVERTEXARRAYVERTEXATTRIBOFFSETEXTPROC>("glVertexArrayVertexAttribOffsetEXT")) != nullptr;
+    result = result && (glVertexArrayVertexAttribIOffsetEXT = get_function<PFNGLVERTEXARRAYVERTEXATTRIBIOFFSETEXTPROC>("glVertexArrayVertexAttribIOffsetEXT")) != nullptr;
+    result = result && (glEnableVertexArrayEXT = get_function<PFNGLENABLEVERTEXARRAYEXTPROC>("glEnableVertexArrayEXT")) != nullptr;
+    result = result && (glDisableVertexArrayEXT = get_function<PFNGLDISABLEVERTEXARRAYEXTPROC>("glDisableVertexArrayEXT")) != nullptr;
+    result = result && (glEnableVertexArrayAttribEXT = get_function<PFNGLENABLEVERTEXARRAYATTRIBEXTPROC>("glEnableVertexArrayAttribEXT")) != nullptr;
+    result = result && (glDisableVertexArrayAttribEXT = get_function<PFNGLDISABLEVERTEXARRAYATTRIBEXTPROC>("glDisableVertexArrayAttribEXT")) != nullptr;
+    result = result && (glGetVertexArrayIntegervEXT = get_function<PFNGLGETVERTEXARRAYINTEGERVEXTPROC>("glGetVertexArrayIntegervEXT")) != nullptr;
+    result = result && (glGetVertexArrayPointervEXT = get_function<PFNGLGETVERTEXARRAYPOINTERVEXTPROC>("glGetVertexArrayPointervEXT")) != nullptr;
+    result = result && (glGetVertexArrayIntegeri_vEXT = get_function<PFNGLGETVERTEXARRAYINTEGERI_VEXTPROC>("glGetVertexArrayIntegeri_vEXT")) != nullptr;
+    result = result && (glGetVertexArrayPointeri_vEXT = get_function<PFNGLGETVERTEXARRAYPOINTERI_VEXTPROC>("glGetVertexArrayPointeri_vEXT")) != nullptr;
+    result = result && (glMapNamedBufferRangeEXT = get_function<PFNGLMAPNAMEDBUFFERRANGEEXTPROC>("glMapNamedBufferRangeEXT")) != nullptr;
+    result = result && (glFlushMappedNamedBufferRangeEXT = get_function<PFNGLFLUSHMAPPEDNAMEDBUFFERRANGEEXTPROC>("glFlushMappedNamedBufferRangeEXT")) != nullptr;
+    result = result && (glNamedBufferStorageEXT = get_function<PFNGLNAMEDBUFFERSTORAGEEXTPROC>("glNamedBufferStorageEXT")) != nullptr;
+    result = result && (glClearNamedBufferDataEXT = get_function<PFNGLCLEARNAMEDBUFFERDATAEXTPROC>("glClearNamedBufferDataEXT")) != nullptr;
+    result = result && (glClearNamedBufferSubDataEXT = get_function<PFNGLCLEARNAMEDBUFFERSUBDATAEXTPROC>("glClearNamedBufferSubDataEXT")) != nullptr;
+    result = result && (glNamedFramebufferParameteriEXT = get_function<PFNGLNAMEDFRAMEBUFFERPARAMETERIEXTPROC>("glNamedFramebufferParameteriEXT")) != nullptr;
+    result = result && (glGetNamedFramebufferParameterivEXT = get_function<PFNGLGETNAMEDFRAMEBUFFERPARAMETERIVEXTPROC>("glGetNamedFramebufferParameterivEXT")) != nullptr;
+    result = result && (glProgramUniform1dEXT = get_function<PFNGLPROGRAMUNIFORM1DEXTPROC>("glProgramUniform1dEXT")) != nullptr;
+    result = result && (glProgramUniform2dEXT = get_function<PFNGLPROGRAMUNIFORM2DEXTPROC>("glProgramUniform2dEXT")) != nullptr;
+    result = result && (glProgramUniform3dEXT = get_function<PFNGLPROGRAMUNIFORM3DEXTPROC>("glProgramUniform3dEXT")) != nullptr;
+    result = result && (glProgramUniform4dEXT = get_function<PFNGLPROGRAMUNIFORM4DEXTPROC>("glProgramUniform4dEXT")) != nullptr;
+    result = result && (glProgramUniform1dvEXT = get_function<PFNGLPROGRAMUNIFORM1DVEXTPROC>("glProgramUniform1dvEXT")) != nullptr;
+    result = result && (glProgramUniform2dvEXT = get_function<PFNGLPROGRAMUNIFORM2DVEXTPROC>("glProgramUniform2dvEXT")) != nullptr;
+    result = result && (glProgramUniform3dvEXT = get_function<PFNGLPROGRAMUNIFORM3DVEXTPROC>("glProgramUniform3dvEXT")) != nullptr;
+    result = result && (glProgramUniform4dvEXT = get_function<PFNGLPROGRAMUNIFORM4DVEXTPROC>("glProgramUniform4dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix2dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX2DVEXTPROC>("glProgramUniformMatrix2dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix3dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX3DVEXTPROC>("glProgramUniformMatrix3dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix4dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX4DVEXTPROC>("glProgramUniformMatrix4dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix2x3dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX2X3DVEXTPROC>("glProgramUniformMatrix2x3dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix2x4dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX2X4DVEXTPROC>("glProgramUniformMatrix2x4dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix3x2dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX3X2DVEXTPROC>("glProgramUniformMatrix3x2dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix3x4dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX3X4DVEXTPROC>("glProgramUniformMatrix3x4dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix4x2dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX4X2DVEXTPROC>("glProgramUniformMatrix4x2dvEXT")) != nullptr;
+    result = result && (glProgramUniformMatrix4x3dvEXT = get_function<PFNGLPROGRAMUNIFORMMATRIX4X3DVEXTPROC>("glProgramUniformMatrix4x3dvEXT")) != nullptr;
+    result = result && (glTextureBufferRangeEXT = get_function<PFNGLTEXTUREBUFFERRANGEEXTPROC>("glTextureBufferRangeEXT")) != nullptr;
+    result = result && (glTextureStorage1DEXT = get_function<PFNGLTEXTURESTORAGE1DEXTPROC>("glTextureStorage1DEXT")) != nullptr;
+    result = result && (glTextureStorage2DEXT = get_function<PFNGLTEXTURESTORAGE2DEXTPROC>("glTextureStorage2DEXT")) != nullptr;
+    result = result && (glTextureStorage3DEXT = get_function<PFNGLTEXTURESTORAGE3DEXTPROC>("glTextureStorage3DEXT")) != nullptr;
+    result = result && (glTextureStorage2DMultisampleEXT = get_function<PFNGLTEXTURESTORAGE2DMULTISAMPLEEXTPROC>("glTextureStorage2DMultisampleEXT")) != nullptr;
+    result = result && (glTextureStorage3DMultisampleEXT = get_function<PFNGLTEXTURESTORAGE3DMULTISAMPLEEXTPROC>("glTextureStorage3DMultisampleEXT")) != nullptr;
+    result = result && (glVertexArrayBindVertexBufferEXT = get_function<PFNGLVERTEXARRAYBINDVERTEXBUFFEREXTPROC>("glVertexArrayBindVertexBufferEXT")) != nullptr;
+    result = result && (glVertexArrayVertexAttribFormatEXT = get_function<PFNGLVERTEXARRAYVERTEXATTRIBFORMATEXTPROC>("glVertexArrayVertexAttribFormatEXT")) != nullptr;
+    result = result && (glVertexArrayVertexAttribIFormatEXT = get_function<PFNGLVERTEXARRAYVERTEXATTRIBIFORMATEXTPROC>("glVertexArrayVertexAttribIFormatEXT")) != nullptr;
+    result = result && (glVertexArrayVertexAttribLFormatEXT = get_function<PFNGLVERTEXARRAYVERTEXATTRIBLFORMATEXTPROC>("glVertexArrayVertexAttribLFormatEXT")) != nullptr;
+    result = result && (glVertexArrayVertexAttribBindingEXT = get_function<PFNGLVERTEXARRAYVERTEXATTRIBBINDINGEXTPROC>("glVertexArrayVertexAttribBindingEXT")) != nullptr;
+    result = result && (glVertexArrayVertexBindingDivisorEXT = get_function<PFNGLVERTEXARRAYVERTEXBINDINGDIVISOREXTPROC>("glVertexArrayVertexBindingDivisorEXT")) != nullptr;
+    result = result && (glVertexArrayVertexAttribLOffsetEXT = get_function<PFNGLVERTEXARRAYVERTEXATTRIBLOFFSETEXTPROC>("glVertexArrayVertexAttribLOffsetEXT")) != nullptr;
+    result = result && (glTexturePageCommitmentEXT = get_function<PFNGLTEXTUREPAGECOMMITMENTEXTPROC>("glTexturePageCommitmentEXT")) != nullptr;
+    result = result && (glVertexArrayVertexAttribDivisorEXT = get_function<PFNGLVERTEXARRAYVERTEXATTRIBDIVISOREXTPROC>("glVertexArrayVertexAttribDivisorEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_direct_state_access
+
+#pragma endregion
+
+#pragma region GL_EXT_draw_instanced
+
+#ifdef GL_EXT_draw_instanced
+
+PFNGLDRAWARRAYSINSTANCEDEXTPROC glDrawArraysInstancedEXT     = nullptr;
+PFNGLDRAWELEMENTSINSTANCEDEXTPROC glDrawElementsInstancedEXT = nullptr;
+
+bool init_gl_ext_draw_instanced()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glDrawArraysInstancedEXT = get_function<PFNGLDRAWARRAYSINSTANCEDEXTPROC>("glDrawArraysInstancedEXT")) != nullptr;
+    result = result && (glDrawElementsInstancedEXT = get_function<PFNGLDRAWELEMENTSINSTANCEDEXTPROC>("glDrawElementsInstancedEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_draw_instanced
+
+#pragma endregion
+
+#pragma region GL_EXT_polygon_offset_clamp
+
+#ifdef GL_EXT_polygon_offset_clamp
+
+PFNGLPOLYGONOFFSETCLAMPEXTPROC glPolygonOffsetClampEXT = nullptr;
+
+bool init_gl_ext_polygon_offset_clamp()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glPolygonOffsetClampEXT = get_function<PFNGLPOLYGONOFFSETCLAMPEXTPROC>("glPolygonOffsetClampEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_polygon_offset_clamp
+
+#pragma endregion
+
+#pragma region GL_EXT_raster_multisample
+
+#ifdef GL_EXT_raster_multisample
+
+PFNGLRASTERSAMPLESEXTPROC glRasterSamplesEXT = nullptr;
+
+bool init_gl_ext_raster_multisample()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glRasterSamplesEXT = get_function<PFNGLRASTERSAMPLESEXTPROC>("glRasterSamplesEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_raster_multisample
+
+#pragma endregion
+
+#pragma region GL_EXT_separate_shader_objects
+
+#ifdef GL_EXT_separate_shader_objects
+
+PFNGLUSESHADERPROGRAMEXTPROC glUseShaderProgramEXT       = nullptr;
+PFNGLACTIVEPROGRAMEXTPROC glActiveProgramEXT             = nullptr;
+PFNGLCREATESHADERPROGRAMEXTPROC glCreateShaderProgramEXT = nullptr;
+
+bool init_gl_ext_separate_shader_objects()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glUseShaderProgramEXT = get_function<PFNGLUSESHADERPROGRAMEXTPROC>("glUseShaderProgramEXT")) != nullptr;
+    result = result && (glActiveProgramEXT = get_function<PFNGLACTIVEPROGRAMEXTPROC>("glActiveProgramEXT")) != nullptr;
+    result = result && (glCreateShaderProgramEXT = get_function<PFNGLCREATESHADERPROGRAMEXTPROC>("glCreateShaderProgramEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_separate_shader_objects
+
+#pragma endregion
+
+#pragma region GL_EXT_window_rectangles
+
+#ifdef GL_EXT_window_rectangles
+
+PFNGLWINDOWRECTANGLESEXTPROC glWindowRectanglesEXT = nullptr;
+
+bool init_gl_ext_window_rectangles()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glWindowRectanglesEXT = get_function<PFNGLWINDOWRECTANGLESEXTPROC>("glWindowRectanglesEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_window_rectangles
+
+#pragma endregion
+
+#pragma region GL_INTEL_framebuffer_CMAA
+
+#ifdef GL_INTEL_framebuffer_CMAA
+
+PFNGLAPPLYFRAMEBUFFERATTACHMENTCMAAINTELPROC glApplyFramebufferAttachmentCMAAINTEL = nullptr;
+
+bool init_gl_intel_framebuffer_cmaa()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glApplyFramebufferAttachmentCMAAINTEL = get_function<PFNGLAPPLYFRAMEBUFFERATTACHMENTCMAAINTELPROC>("glApplyFramebufferAttachmentCMAAINTEL")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_INTEL_framebuffer_CMAA
+
+#pragma endregion
+
+#pragma region GL_INTEL_performance_query
+
+#ifdef GL_INTEL_performance_query
+
+PFNGLBEGINPERFQUERYINTELPROC glBeginPerfQueryINTEL             = nullptr;
+PFNGLCREATEPERFQUERYINTELPROC glCreatePerfQueryINTEL           = nullptr;
+PFNGLDELETEPERFQUERYINTELPROC glDeletePerfQueryINTEL           = nullptr;
+PFNGLENDPERFQUERYINTELPROC glEndPerfQueryINTEL                 = nullptr;
+PFNGLGETFIRSTPERFQUERYIDINTELPROC glGetFirstPerfQueryIdINTEL   = nullptr;
+PFNGLGETNEXTPERFQUERYIDINTELPROC glGetNextPerfQueryIdINTEL     = nullptr;
+PFNGLGETPERFCOUNTERINFOINTELPROC glGetPerfCounterInfoINTEL     = nullptr;
+PFNGLGETPERFQUERYDATAINTELPROC glGetPerfQueryDataINTEL         = nullptr;
+PFNGLGETPERFQUERYIDBYNAMEINTELPROC glGetPerfQueryIdByNameINTEL = nullptr;
+PFNGLGETPERFQUERYINFOINTELPROC glGetPerfQueryInfoINTEL         = nullptr;
+
+bool init_gl_intel_performance_query()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glBeginPerfQueryINTEL = get_function<PFNGLBEGINPERFQUERYINTELPROC>("glBeginPerfQueryINTEL")) != nullptr;
+    result = result && (glCreatePerfQueryINTEL = get_function<PFNGLCREATEPERFQUERYINTELPROC>("glCreatePerfQueryINTEL")) != nullptr;
+    result = result && (glDeletePerfQueryINTEL = get_function<PFNGLDELETEPERFQUERYINTELPROC>("glDeletePerfQueryINTEL")) != nullptr;
+    result = result && (glEndPerfQueryINTEL = get_function<PFNGLENDPERFQUERYINTELPROC>("glEndPerfQueryINTEL")) != nullptr;
+    result = result && (glGetFirstPerfQueryIdINTEL = get_function<PFNGLGETFIRSTPERFQUERYIDINTELPROC>("glGetFirstPerfQueryIdINTEL")) != nullptr;
+    result = result && (glGetNextPerfQueryIdINTEL = get_function<PFNGLGETNEXTPERFQUERYIDINTELPROC>("glGetNextPerfQueryIdINTEL")) != nullptr;
+    result = result && (glGetPerfCounterInfoINTEL = get_function<PFNGLGETPERFCOUNTERINFOINTELPROC>("glGetPerfCounterInfoINTEL")) != nullptr;
+    result = result && (glGetPerfQueryDataINTEL = get_function<PFNGLGETPERFQUERYDATAINTELPROC>("glGetPerfQueryDataINTEL")) != nullptr;
+    result = result && (glGetPerfQueryIdByNameINTEL = get_function<PFNGLGETPERFQUERYIDBYNAMEINTELPROC>("glGetPerfQueryIdByNameINTEL")) != nullptr;
+    result = result && (glGetPerfQueryInfoINTEL = get_function<PFNGLGETPERFQUERYINFOINTELPROC>("glGetPerfQueryInfoINTEL")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_INTEL_performance_query
+
+#pragma endregion
+
+#pragma region GL_NV_bindless_multi_draw_indirect
+
+#ifdef GL_NV_bindless_multi_draw_indirect
+
+PFNGLMULTIDRAWARRAYSINDIRECTBINDLESSNVPROC glMultiDrawArraysIndirectBindlessNV     = nullptr;
+PFNGLMULTIDRAWELEMENTSINDIRECTBINDLESSNVPROC glMultiDrawElementsIndirectBindlessNV = nullptr;
+
+bool init_gl_nv_bindless_multi_draw_indirect()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glMultiDrawArraysIndirectBindlessNV = get_function<PFNGLMULTIDRAWARRAYSINDIRECTBINDLESSNVPROC>("glMultiDrawArraysIndirectBindlessNV")) != nullptr;
+    result = result && (glMultiDrawElementsIndirectBindlessNV = get_function<PFNGLMULTIDRAWELEMENTSINDIRECTBINDLESSNVPROC>("glMultiDrawElementsIndirectBindlessNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_bindless_multi_draw_indirect
+
+#pragma endregion
+
+#pragma region GL_NV_bindless_multi_draw_indirect_count
+
+#ifdef GL_NV_bindless_multi_draw_indirect_count
+
+PFNGLMULTIDRAWARRAYSINDIRECTBINDLESSCOUNTNVPROC glMultiDrawArraysIndirectBindlessCountNV     = nullptr;
+PFNGLMULTIDRAWELEMENTSINDIRECTBINDLESSCOUNTNVPROC glMultiDrawElementsIndirectBindlessCountNV = nullptr;
+
+bool init_gl_nv_bindless_multi_draw_indirect_count()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glMultiDrawArraysIndirectBindlessCountNV = get_function<PFNGLMULTIDRAWARRAYSINDIRECTBINDLESSCOUNTNVPROC>("glMultiDrawArraysIndirectBindlessCountNV")) != nullptr;
+    result = result && (glMultiDrawElementsIndirectBindlessCountNV = get_function<PFNGLMULTIDRAWELEMENTSINDIRECTBINDLESSCOUNTNVPROC>("glMultiDrawElementsIndirectBindlessCountNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_bindless_multi_draw_indirect_count
+
+#pragma endregion
+
+#pragma region GL_NV_bindless_texture
+
+#ifdef GL_NV_bindless_texture
+
+PFNGLGETTEXTUREHANDLENVPROC glGetTextureHandleNV                         = nullptr;
+PFNGLGETTEXTURESAMPLERHANDLENVPROC glGetTextureSamplerHandleNV           = nullptr;
+PFNGLMAKETEXTUREHANDLERESIDENTNVPROC glMakeTextureHandleResidentNV       = nullptr;
+PFNGLMAKETEXTUREHANDLENONRESIDENTNVPROC glMakeTextureHandleNonResidentNV = nullptr;
+PFNGLGETIMAGEHANDLENVPROC glGetImageHandleNV                             = nullptr;
+PFNGLMAKEIMAGEHANDLERESIDENTNVPROC glMakeImageHandleResidentNV           = nullptr;
+PFNGLMAKEIMAGEHANDLENONRESIDENTNVPROC glMakeImageHandleNonResidentNV     = nullptr;
+PFNGLUNIFORMHANDLEUI64NVPROC glUniformHandleui64NV                       = nullptr;
+PFNGLUNIFORMHANDLEUI64VNVPROC glUniformHandleui64vNV                     = nullptr;
+PFNGLPROGRAMUNIFORMHANDLEUI64NVPROC glProgramUniformHandleui64NV         = nullptr;
+PFNGLPROGRAMUNIFORMHANDLEUI64VNVPROC glProgramUniformHandleui64vNV       = nullptr;
+PFNGLISTEXTUREHANDLERESIDENTNVPROC glIsTextureHandleResidentNV           = nullptr;
+PFNGLISIMAGEHANDLERESIDENTNVPROC glIsImageHandleResidentNV               = nullptr;
+
+bool init_gl_nv_bindless_texture()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glGetTextureHandleNV = get_function<PFNGLGETTEXTUREHANDLENVPROC>("glGetTextureHandleNV")) != nullptr;
+    result = result && (glGetTextureSamplerHandleNV = get_function<PFNGLGETTEXTURESAMPLERHANDLENVPROC>("glGetTextureSamplerHandleNV")) != nullptr;
+    result = result && (glMakeTextureHandleResidentNV = get_function<PFNGLMAKETEXTUREHANDLERESIDENTNVPROC>("glMakeTextureHandleResidentNV")) != nullptr;
+    result = result && (glMakeTextureHandleNonResidentNV = get_function<PFNGLMAKETEXTUREHANDLENONRESIDENTNVPROC>("glMakeTextureHandleNonResidentNV")) != nullptr;
+    result = result && (glGetImageHandleNV = get_function<PFNGLGETIMAGEHANDLENVPROC>("glGetImageHandleNV")) != nullptr;
+    result = result && (glMakeImageHandleResidentNV = get_function<PFNGLMAKEIMAGEHANDLERESIDENTNVPROC>("glMakeImageHandleResidentNV")) != nullptr;
+    result = result && (glMakeImageHandleNonResidentNV = get_function<PFNGLMAKEIMAGEHANDLENONRESIDENTNVPROC>("glMakeImageHandleNonResidentNV")) != nullptr;
+    result = result && (glUniformHandleui64NV = get_function<PFNGLUNIFORMHANDLEUI64NVPROC>("glUniformHandleui64NV")) != nullptr;
+    result = result && (glUniformHandleui64vNV = get_function<PFNGLUNIFORMHANDLEUI64VNVPROC>("glUniformHandleui64vNV")) != nullptr;
+    result = result && (glProgramUniformHandleui64NV = get_function<PFNGLPROGRAMUNIFORMHANDLEUI64NVPROC>("glProgramUniformHandleui64NV")) != nullptr;
+    result = result && (glProgramUniformHandleui64vNV = get_function<PFNGLPROGRAMUNIFORMHANDLEUI64VNVPROC>("glProgramUniformHandleui64vNV")) != nullptr;
+    result = result && (glIsTextureHandleResidentNV = get_function<PFNGLISTEXTUREHANDLERESIDENTNVPROC>("glIsTextureHandleResidentNV")) != nullptr;
+    result = result && (glIsImageHandleResidentNV = get_function<PFNGLISIMAGEHANDLERESIDENTNVPROC>("glIsImageHandleResidentNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_bindless_texture
+
+#pragma endregion
+
+#pragma region GL_NV_blend_equation_advanced
+
+#ifdef GL_NV_blend_equation_advanced
+
+PFNGLBLENDPARAMETERINVPROC glBlendParameteriNV = nullptr;
+PFNGLBLENDBARRIERNVPROC glBlendBarrierNV       = nullptr;
+
+bool init_gl_nv_blend_equation_advanced()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glBlendParameteriNV = get_function<PFNGLBLENDPARAMETERINVPROC>("glBlendParameteriNV")) != nullptr;
+    result = result && (glBlendBarrierNV = get_function<PFNGLBLENDBARRIERNVPROC>("glBlendBarrierNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_blend_equation_advanced
+
+#pragma endregion
+
+#pragma region GL_NV_clip_space_w_scaling
+
+#ifdef GL_NV_clip_space_w_scaling
+
+PFNGLVIEWPORTPOSITIONWSCALENVPROC glViewportPositionWScaleNV = nullptr;
+
+bool init_gl_nv_clip_space_w_scaling()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glViewportPositionWScaleNV = get_function<PFNGLVIEWPORTPOSITIONWSCALENVPROC>("glViewportPositionWScaleNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_clip_space_w_scaling
+
+#pragma endregion
+
+#pragma region GL_NV_command_list
+
+#ifdef GL_NV_command_list
+
+PFNGLCREATESTATESNVPROC glCreateStatesNV                                 = nullptr;
+PFNGLDELETESTATESNVPROC glDeleteStatesNV                                 = nullptr;
+PFNGLISSTATENVPROC glIsStateNV                                           = nullptr;
+PFNGLSTATECAPTURENVPROC glStateCaptureNV                                 = nullptr;
+PFNGLGETCOMMANDHEADERNVPROC glGetCommandHeaderNV                         = nullptr;
+PFNGLGETSTAGEINDEXNVPROC glGetStageIndexNV                               = nullptr;
+PFNGLDRAWCOMMANDSNVPROC glDrawCommandsNV                                 = nullptr;
+PFNGLDRAWCOMMANDSADDRESSNVPROC glDrawCommandsAddressNV                   = nullptr;
+PFNGLDRAWCOMMANDSSTATESNVPROC glDrawCommandsStatesNV                     = nullptr;
+PFNGLDRAWCOMMANDSSTATESADDRESSNVPROC glDrawCommandsStatesAddressNV       = nullptr;
+PFNGLCREATECOMMANDLISTSNVPROC glCreateCommandListsNV                     = nullptr;
+PFNGLDELETECOMMANDLISTSNVPROC glDeleteCommandListsNV                     = nullptr;
+PFNGLISCOMMANDLISTNVPROC glIsCommandListNV                               = nullptr;
+PFNGLLISTDRAWCOMMANDSSTATESCLIENTNVPROC glListDrawCommandsStatesClientNV = nullptr;
+PFNGLCOMMANDLISTSEGMENTSNVPROC glCommandListSegmentsNV                   = nullptr;
+PFNGLCOMPILECOMMANDLISTNVPROC glCompileCommandListNV                     = nullptr;
+PFNGLCALLCOMMANDLISTNVPROC glCallCommandListNV                           = nullptr;
+
+bool init_gl_nv_command_list()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glCreateStatesNV = get_function<PFNGLCREATESTATESNVPROC>("glCreateStatesNV")) != nullptr;
+    result = result && (glDeleteStatesNV = get_function<PFNGLDELETESTATESNVPROC>("glDeleteStatesNV")) != nullptr;
+    result = result && (glIsStateNV = get_function<PFNGLISSTATENVPROC>("glIsStateNV")) != nullptr;
+    result = result && (glStateCaptureNV = get_function<PFNGLSTATECAPTURENVPROC>("glStateCaptureNV")) != nullptr;
+    result = result && (glGetCommandHeaderNV = get_function<PFNGLGETCOMMANDHEADERNVPROC>("glGetCommandHeaderNV")) != nullptr;
+    result = result && (glGetStageIndexNV = get_function<PFNGLGETSTAGEINDEXNVPROC>("glGetStageIndexNV")) != nullptr;
+    result = result && (glDrawCommandsNV = get_function<PFNGLDRAWCOMMANDSNVPROC>("glDrawCommandsNV")) != nullptr;
+    result = result && (glDrawCommandsAddressNV = get_function<PFNGLDRAWCOMMANDSADDRESSNVPROC>("glDrawCommandsAddressNV")) != nullptr;
+    result = result && (glDrawCommandsStatesNV = get_function<PFNGLDRAWCOMMANDSSTATESNVPROC>("glDrawCommandsStatesNV")) != nullptr;
+    result = result && (glDrawCommandsStatesAddressNV = get_function<PFNGLDRAWCOMMANDSSTATESADDRESSNVPROC>("glDrawCommandsStatesAddressNV")) != nullptr;
+    result = result && (glCreateCommandListsNV = get_function<PFNGLCREATECOMMANDLISTSNVPROC>("glCreateCommandListsNV")) != nullptr;
+    result = result && (glDeleteCommandListsNV = get_function<PFNGLDELETECOMMANDLISTSNVPROC>("glDeleteCommandListsNV")) != nullptr;
+    result = result && (glIsCommandListNV = get_function<PFNGLISCOMMANDLISTNVPROC>("glIsCommandListNV")) != nullptr;
+    result = result && (glListDrawCommandsStatesClientNV = get_function<PFNGLLISTDRAWCOMMANDSSTATESCLIENTNVPROC>("glListDrawCommandsStatesClientNV")) != nullptr;
+    result = result && (glCommandListSegmentsNV = get_function<PFNGLCOMMANDLISTSEGMENTSNVPROC>("glCommandListSegmentsNV")) != nullptr;
+    result = result && (glCompileCommandListNV = get_function<PFNGLCOMPILECOMMANDLISTNVPROC>("glCompileCommandListNV")) != nullptr;
+    result = result && (glCallCommandListNV = get_function<PFNGLCALLCOMMANDLISTNVPROC>("glCallCommandListNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_command_list
+
+#pragma endregion
+
+#pragma region GL_NV_conditional_render
+
+#ifdef GL_NV_conditional_render
+
+PFNGLBEGINCONDITIONALRENDERNVPROC glBeginConditionalRenderNV = nullptr;
+PFNGLENDCONDITIONALRENDERNVPROC glEndConditionalRenderNV     = nullptr;
+
+bool init_gl_nv_conditional_render()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glBeginConditionalRenderNV = get_function<PFNGLBEGINCONDITIONALRENDERNVPROC>("glBeginConditionalRenderNV")) != nullptr;
+    result = result && (glEndConditionalRenderNV = get_function<PFNGLENDCONDITIONALRENDERNVPROC>("glEndConditionalRenderNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_conditional_render
+
+#pragma endregion
+
+#pragma region GL_NV_conservative_raster
+
+#ifdef GL_NV_conservative_raster
+
+PFNGLSUBPIXELPRECISIONBIASNVPROC glSubpixelPrecisionBiasNV = nullptr;
+
+bool init_gl_nv_conservative_raster()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glSubpixelPrecisionBiasNV = get_function<PFNGLSUBPIXELPRECISIONBIASNVPROC>("glSubpixelPrecisionBiasNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_conservative_raster
+
+#pragma endregion
+
+#pragma region GL_NV_conservative_raster_dilate
+
+#ifdef GL_NV_conservative_raster_dilate
+
+PFNGLCONSERVATIVERASTERPARAMETERFNVPROC glConservativeRasterParameterfNV = nullptr;
+
+bool init_gl_nv_conservative_raster_dilate()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glConservativeRasterParameterfNV = get_function<PFNGLCONSERVATIVERASTERPARAMETERFNVPROC>("glConservativeRasterParameterfNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_conservative_raster_dilate
+
+#pragma endregion
+
+#pragma region GL_NV_conservative_raster_pre_snap_triangles
+
+#ifdef GL_NV_conservative_raster_pre_snap_triangles
+
+PFNGLCONSERVATIVERASTERPARAMETERINVPROC glConservativeRasterParameteriNV = nullptr;
+
+bool init_gl_nv_conservative_raster_pre_snap_triangles()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glConservativeRasterParameteriNV = get_function<PFNGLCONSERVATIVERASTERPARAMETERINVPROC>("glConservativeRasterParameteriNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_conservative_raster_pre_snap_triangles
+
+#pragma endregion
+
+#pragma region GL_NV_draw_vulkan_image
+
+#ifdef GL_NV_draw_vulkan_image
+
+PFNGLDRAWVKIMAGENVPROC glDrawVkImageNV             = nullptr;
+PFNGLGETVKPROCADDRNVPROC glGetVkProcAddrNV         = nullptr;
+PFNGLWAITVKSEMAPHORENVPROC glWaitVkSemaphoreNV     = nullptr;
+PFNGLSIGNALVKSEMAPHORENVPROC glSignalVkSemaphoreNV = nullptr;
+PFNGLSIGNALVKFENCENVPROC glSignalVkFenceNV         = nullptr;
+
+bool init_gl_nv_draw_vulkan_image()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glDrawVkImageNV = get_function<PFNGLDRAWVKIMAGENVPROC>("glDrawVkImageNV")) != nullptr;
+    result = result && (glGetVkProcAddrNV = get_function<PFNGLGETVKPROCADDRNVPROC>("glGetVkProcAddrNV")) != nullptr;
+    result = result && (glWaitVkSemaphoreNV = get_function<PFNGLWAITVKSEMAPHORENVPROC>("glWaitVkSemaphoreNV")) != nullptr;
+    result = result && (glSignalVkSemaphoreNV = get_function<PFNGLSIGNALVKSEMAPHORENVPROC>("glSignalVkSemaphoreNV")) != nullptr;
+    result = result && (glSignalVkFenceNV = get_function<PFNGLSIGNALVKFENCENVPROC>("glSignalVkFenceNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_draw_vulkan_image
+
+#pragma endregion
+
+#pragma region GL_NV_fragment_coverage_to_color
+
+#ifdef GL_NV_fragment_coverage_to_color
+
+PFNGLFRAGMENTCOVERAGECOLORNVPROC glFragmentCoverageColorNV = nullptr;
+
+bool init_gl_nv_fragment_coverage_to_color()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glFragmentCoverageColorNV = get_function<PFNGLFRAGMENTCOVERAGECOLORNVPROC>("glFragmentCoverageColorNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_fragment_coverage_to_color
+
+#pragma endregion
+
+#pragma region GL_NV_framebuffer_mixed_samples
+
+#ifdef GL_NV_framebuffer_mixed_samples
+
+PFNGLCOVERAGEMODULATIONTABLENVPROC glCoverageModulationTableNV       = nullptr;
+PFNGLGETCOVERAGEMODULATIONTABLENVPROC glGetCoverageModulationTableNV = nullptr;
+PFNGLCOVERAGEMODULATIONNVPROC glCoverageModulationNV                 = nullptr;
+
+bool init_gl_nv_framebuffer_mixed_samples()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glCoverageModulationTableNV = get_function<PFNGLCOVERAGEMODULATIONTABLENVPROC>("glCoverageModulationTableNV")) != nullptr;
+    result = result && (glGetCoverageModulationTableNV = get_function<PFNGLGETCOVERAGEMODULATIONTABLENVPROC>("glGetCoverageModulationTableNV")) != nullptr;
+    result = result && (glCoverageModulationNV = get_function<PFNGLCOVERAGEMODULATIONNVPROC>("glCoverageModulationNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_framebuffer_mixed_samples
+
+#pragma endregion
+
+#pragma region GL_NV_framebuffer_multisample_coverage
+
+#ifdef GL_NV_framebuffer_multisample_coverage
+
+PFNGLRENDERBUFFERSTORAGEMULTISAMPLECOVERAGENVPROC glRenderbufferStorageMultisampleCoverageNV = nullptr;
+
+bool init_gl_nv_framebuffer_multisample_coverage()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glRenderbufferStorageMultisampleCoverageNV = get_function<PFNGLRENDERBUFFERSTORAGEMULTISAMPLECOVERAGENVPROC>("glRenderbufferStorageMultisampleCoverageNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_framebuffer_multisample_coverage
+
+#pragma endregion
+
+#pragma region GL_NV_gpu_shader5
+
+#ifdef GL_NV_gpu_shader5
+
+PFNGLUNIFORM1I64NVPROC glUniform1i64NV                   = nullptr;
+PFNGLUNIFORM2I64NVPROC glUniform2i64NV                   = nullptr;
+PFNGLUNIFORM3I64NVPROC glUniform3i64NV                   = nullptr;
+PFNGLUNIFORM4I64NVPROC glUniform4i64NV                   = nullptr;
+PFNGLUNIFORM1I64VNVPROC glUniform1i64vNV                 = nullptr;
+PFNGLUNIFORM2I64VNVPROC glUniform2i64vNV                 = nullptr;
+PFNGLUNIFORM3I64VNVPROC glUniform3i64vNV                 = nullptr;
+PFNGLUNIFORM4I64VNVPROC glUniform4i64vNV                 = nullptr;
+PFNGLUNIFORM1UI64NVPROC glUniform1ui64NV                 = nullptr;
+PFNGLUNIFORM2UI64NVPROC glUniform2ui64NV                 = nullptr;
+PFNGLUNIFORM3UI64NVPROC glUniform3ui64NV                 = nullptr;
+PFNGLUNIFORM4UI64NVPROC glUniform4ui64NV                 = nullptr;
+PFNGLUNIFORM1UI64VNVPROC glUniform1ui64vNV               = nullptr;
+PFNGLUNIFORM2UI64VNVPROC glUniform2ui64vNV               = nullptr;
+PFNGLUNIFORM3UI64VNVPROC glUniform3ui64vNV               = nullptr;
+PFNGLUNIFORM4UI64VNVPROC glUniform4ui64vNV               = nullptr;
+PFNGLGETUNIFORMI64VNVPROC glGetUniformi64vNV             = nullptr;
+PFNGLPROGRAMUNIFORM1I64NVPROC glProgramUniform1i64NV     = nullptr;
+PFNGLPROGRAMUNIFORM2I64NVPROC glProgramUniform2i64NV     = nullptr;
+PFNGLPROGRAMUNIFORM3I64NVPROC glProgramUniform3i64NV     = nullptr;
+PFNGLPROGRAMUNIFORM4I64NVPROC glProgramUniform4i64NV     = nullptr;
+PFNGLPROGRAMUNIFORM1I64VNVPROC glProgramUniform1i64vNV   = nullptr;
+PFNGLPROGRAMUNIFORM2I64VNVPROC glProgramUniform2i64vNV   = nullptr;
+PFNGLPROGRAMUNIFORM3I64VNVPROC glProgramUniform3i64vNV   = nullptr;
+PFNGLPROGRAMUNIFORM4I64VNVPROC glProgramUniform4i64vNV   = nullptr;
+PFNGLPROGRAMUNIFORM1UI64NVPROC glProgramUniform1ui64NV   = nullptr;
+PFNGLPROGRAMUNIFORM2UI64NVPROC glProgramUniform2ui64NV   = nullptr;
+PFNGLPROGRAMUNIFORM3UI64NVPROC glProgramUniform3ui64NV   = nullptr;
+PFNGLPROGRAMUNIFORM4UI64NVPROC glProgramUniform4ui64NV   = nullptr;
+PFNGLPROGRAMUNIFORM1UI64VNVPROC glProgramUniform1ui64vNV = nullptr;
+PFNGLPROGRAMUNIFORM2UI64VNVPROC glProgramUniform2ui64vNV = nullptr;
+PFNGLPROGRAMUNIFORM3UI64VNVPROC glProgramUniform3ui64vNV = nullptr;
+PFNGLPROGRAMUNIFORM4UI64VNVPROC glProgramUniform4ui64vNV = nullptr;
+
+bool init_gl_nv_gpu_shader5()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glUniform1i64NV = get_function<PFNGLUNIFORM1I64NVPROC>("glUniform1i64NV")) != nullptr;
+    result = result && (glUniform2i64NV = get_function<PFNGLUNIFORM2I64NVPROC>("glUniform2i64NV")) != nullptr;
+    result = result && (glUniform3i64NV = get_function<PFNGLUNIFORM3I64NVPROC>("glUniform3i64NV")) != nullptr;
+    result = result && (glUniform4i64NV = get_function<PFNGLUNIFORM4I64NVPROC>("glUniform4i64NV")) != nullptr;
+    result = result && (glUniform1i64vNV = get_function<PFNGLUNIFORM1I64VNVPROC>("glUniform1i64vNV")) != nullptr;
+    result = result && (glUniform2i64vNV = get_function<PFNGLUNIFORM2I64VNVPROC>("glUniform2i64vNV")) != nullptr;
+    result = result && (glUniform3i64vNV = get_function<PFNGLUNIFORM3I64VNVPROC>("glUniform3i64vNV")) != nullptr;
+    result = result && (glUniform4i64vNV = get_function<PFNGLUNIFORM4I64VNVPROC>("glUniform4i64vNV")) != nullptr;
+    result = result && (glUniform1ui64NV = get_function<PFNGLUNIFORM1UI64NVPROC>("glUniform1ui64NV")) != nullptr;
+    result = result && (glUniform2ui64NV = get_function<PFNGLUNIFORM2UI64NVPROC>("glUniform2ui64NV")) != nullptr;
+    result = result && (glUniform3ui64NV = get_function<PFNGLUNIFORM3UI64NVPROC>("glUniform3ui64NV")) != nullptr;
+    result = result && (glUniform4ui64NV = get_function<PFNGLUNIFORM4UI64NVPROC>("glUniform4ui64NV")) != nullptr;
+    result = result && (glUniform1ui64vNV = get_function<PFNGLUNIFORM1UI64VNVPROC>("glUniform1ui64vNV")) != nullptr;
+    result = result && (glUniform2ui64vNV = get_function<PFNGLUNIFORM2UI64VNVPROC>("glUniform2ui64vNV")) != nullptr;
+    result = result && (glUniform3ui64vNV = get_function<PFNGLUNIFORM3UI64VNVPROC>("glUniform3ui64vNV")) != nullptr;
+    result = result && (glUniform4ui64vNV = get_function<PFNGLUNIFORM4UI64VNVPROC>("glUniform4ui64vNV")) != nullptr;
+    result = result && (glGetUniformi64vNV = get_function<PFNGLGETUNIFORMI64VNVPROC>("glGetUniformi64vNV")) != nullptr;
+    result = result && (glProgramUniform1i64NV = get_function<PFNGLPROGRAMUNIFORM1I64NVPROC>("glProgramUniform1i64NV")) != nullptr;
+    result = result && (glProgramUniform2i64NV = get_function<PFNGLPROGRAMUNIFORM2I64NVPROC>("glProgramUniform2i64NV")) != nullptr;
+    result = result && (glProgramUniform3i64NV = get_function<PFNGLPROGRAMUNIFORM3I64NVPROC>("glProgramUniform3i64NV")) != nullptr;
+    result = result && (glProgramUniform4i64NV = get_function<PFNGLPROGRAMUNIFORM4I64NVPROC>("glProgramUniform4i64NV")) != nullptr;
+    result = result && (glProgramUniform1i64vNV = get_function<PFNGLPROGRAMUNIFORM1I64VNVPROC>("glProgramUniform1i64vNV")) != nullptr;
+    result = result && (glProgramUniform2i64vNV = get_function<PFNGLPROGRAMUNIFORM2I64VNVPROC>("glProgramUniform2i64vNV")) != nullptr;
+    result = result && (glProgramUniform3i64vNV = get_function<PFNGLPROGRAMUNIFORM3I64VNVPROC>("glProgramUniform3i64vNV")) != nullptr;
+    result = result && (glProgramUniform4i64vNV = get_function<PFNGLPROGRAMUNIFORM4I64VNVPROC>("glProgramUniform4i64vNV")) != nullptr;
+    result = result && (glProgramUniform1ui64NV = get_function<PFNGLPROGRAMUNIFORM1UI64NVPROC>("glProgramUniform1ui64NV")) != nullptr;
+    result = result && (glProgramUniform2ui64NV = get_function<PFNGLPROGRAMUNIFORM2UI64NVPROC>("glProgramUniform2ui64NV")) != nullptr;
+    result = result && (glProgramUniform3ui64NV = get_function<PFNGLPROGRAMUNIFORM3UI64NVPROC>("glProgramUniform3ui64NV")) != nullptr;
+    result = result && (glProgramUniform4ui64NV = get_function<PFNGLPROGRAMUNIFORM4UI64NVPROC>("glProgramUniform4ui64NV")) != nullptr;
+    result = result && (glProgramUniform1ui64vNV = get_function<PFNGLPROGRAMUNIFORM1UI64VNVPROC>("glProgramUniform1ui64vNV")) != nullptr;
+    result = result && (glProgramUniform2ui64vNV = get_function<PFNGLPROGRAMUNIFORM2UI64VNVPROC>("glProgramUniform2ui64vNV")) != nullptr;
+    result = result && (glProgramUniform3ui64vNV = get_function<PFNGLPROGRAMUNIFORM3UI64VNVPROC>("glProgramUniform3ui64vNV")) != nullptr;
+    result = result && (glProgramUniform4ui64vNV = get_function<PFNGLPROGRAMUNIFORM4UI64VNVPROC>("glProgramUniform4ui64vNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_gpu_shader5
+
+#pragma endregion
+
+#pragma region GL_NV_internalformat_sample_query
+
+#ifdef GL_NV_internalformat_sample_query
+
+PFNGLGETINTERNALFORMATSAMPLEIVNVPROC glGetInternalformatSampleivNV = nullptr;
+
+bool init_gl_nv_internalformat_sample_query()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glGetInternalformatSampleivNV = get_function<PFNGLGETINTERNALFORMATSAMPLEIVNVPROC>("glGetInternalformatSampleivNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_internalformat_sample_query
+
+#pragma endregion
+
+#pragma region GL_NV_path_rendering
+
+#ifdef GL_NV_path_rendering
+
+PFNGLGENPATHSNVPROC glGenPathsNV                                                       = nullptr;
+PFNGLDELETEPATHSNVPROC glDeletePathsNV                                                 = nullptr;
+PFNGLISPATHNVPROC glIsPathNV                                                           = nullptr;
+PFNGLPATHCOMMANDSNVPROC glPathCommandsNV                                               = nullptr;
+PFNGLPATHCOORDSNVPROC glPathCoordsNV                                                   = nullptr;
+PFNGLPATHSUBCOMMANDSNVPROC glPathSubCommandsNV                                         = nullptr;
+PFNGLPATHSUBCOORDSNVPROC glPathSubCoordsNV                                             = nullptr;
+PFNGLPATHSTRINGNVPROC glPathStringNV                                                   = nullptr;
+PFNGLPATHGLYPHSNVPROC glPathGlyphsNV                                                   = nullptr;
+PFNGLPATHGLYPHRANGENVPROC glPathGlyphRangeNV                                           = nullptr;
+PFNGLWEIGHTPATHSNVPROC glWeightPathsNV                                                 = nullptr;
+PFNGLCOPYPATHNVPROC glCopyPathNV                                                       = nullptr;
+PFNGLINTERPOLATEPATHSNVPROC glInterpolatePathsNV                                       = nullptr;
+PFNGLTRANSFORMPATHNVPROC glTransformPathNV                                             = nullptr;
+PFNGLPATHPARAMETERIVNVPROC glPathParameterivNV                                         = nullptr;
+PFNGLPATHPARAMETERINVPROC glPathParameteriNV                                           = nullptr;
+PFNGLPATHPARAMETERFVNVPROC glPathParameterfvNV                                         = nullptr;
+PFNGLPATHPARAMETERFNVPROC glPathParameterfNV                                           = nullptr;
+PFNGLPATHDASHARRAYNVPROC glPathDashArrayNV                                             = nullptr;
+PFNGLPATHSTENCILFUNCNVPROC glPathStencilFuncNV                                         = nullptr;
+PFNGLPATHSTENCILDEPTHOFFSETNVPROC glPathStencilDepthOffsetNV                           = nullptr;
+PFNGLSTENCILFILLPATHNVPROC glStencilFillPathNV                                         = nullptr;
+PFNGLSTENCILSTROKEPATHNVPROC glStencilStrokePathNV                                     = nullptr;
+PFNGLSTENCILFILLPATHINSTANCEDNVPROC glStencilFillPathInstancedNV                       = nullptr;
+PFNGLSTENCILSTROKEPATHINSTANCEDNVPROC glStencilStrokePathInstancedNV                   = nullptr;
+PFNGLPATHCOVERDEPTHFUNCNVPROC glPathCoverDepthFuncNV                                   = nullptr;
+PFNGLCOVERFILLPATHNVPROC glCoverFillPathNV                                             = nullptr;
+PFNGLCOVERSTROKEPATHNVPROC glCoverStrokePathNV                                         = nullptr;
+PFNGLCOVERFILLPATHINSTANCEDNVPROC glCoverFillPathInstancedNV                           = nullptr;
+PFNGLCOVERSTROKEPATHINSTANCEDNVPROC glCoverStrokePathInstancedNV                       = nullptr;
+PFNGLGETPATHPARAMETERIVNVPROC glGetPathParameterivNV                                   = nullptr;
+PFNGLGETPATHPARAMETERFVNVPROC glGetPathParameterfvNV                                   = nullptr;
+PFNGLGETPATHCOMMANDSNVPROC glGetPathCommandsNV                                         = nullptr;
+PFNGLGETPATHCOORDSNVPROC glGetPathCoordsNV                                             = nullptr;
+PFNGLGETPATHDASHARRAYNVPROC glGetPathDashArrayNV                                       = nullptr;
+PFNGLGETPATHMETRICSNVPROC glGetPathMetricsNV                                           = nullptr;
+PFNGLGETPATHMETRICRANGENVPROC glGetPathMetricRangeNV                                   = nullptr;
+PFNGLGETPATHSPACINGNVPROC glGetPathSpacingNV                                           = nullptr;
+PFNGLISPOINTINFILLPATHNVPROC glIsPointInFillPathNV                                     = nullptr;
+PFNGLISPOINTINSTROKEPATHNVPROC glIsPointInStrokePathNV                                 = nullptr;
+PFNGLGETPATHLENGTHNVPROC glGetPathLengthNV                                             = nullptr;
+PFNGLPOINTALONGPATHNVPROC glPointAlongPathNV                                           = nullptr;
+PFNGLMATRIXLOAD3X2FNVPROC glMatrixLoad3x2fNV                                           = nullptr;
+PFNGLMATRIXLOAD3X3FNVPROC glMatrixLoad3x3fNV                                           = nullptr;
+PFNGLMATRIXLOADTRANSPOSE3X3FNVPROC glMatrixLoadTranspose3x3fNV                         = nullptr;
+PFNGLMATRIXMULT3X2FNVPROC glMatrixMult3x2fNV                                           = nullptr;
+PFNGLMATRIXMULT3X3FNVPROC glMatrixMult3x3fNV                                           = nullptr;
+PFNGLMATRIXMULTTRANSPOSE3X3FNVPROC glMatrixMultTranspose3x3fNV                         = nullptr;
+PFNGLSTENCILTHENCOVERFILLPATHNVPROC glStencilThenCoverFillPathNV                       = nullptr;
+PFNGLSTENCILTHENCOVERSTROKEPATHNVPROC glStencilThenCoverStrokePathNV                   = nullptr;
+PFNGLSTENCILTHENCOVERFILLPATHINSTANCEDNVPROC glStencilThenCoverFillPathInstancedNV     = nullptr;
+PFNGLSTENCILTHENCOVERSTROKEPATHINSTANCEDNVPROC glStencilThenCoverStrokePathInstancedNV = nullptr;
+PFNGLPATHGLYPHINDEXRANGENVPROC glPathGlyphIndexRangeNV                                 = nullptr;
+PFNGLPATHGLYPHINDEXARRAYNVPROC glPathGlyphIndexArrayNV                                 = nullptr;
+PFNGLPATHMEMORYGLYPHINDEXARRAYNVPROC glPathMemoryGlyphIndexArrayNV                     = nullptr;
+PFNGLPROGRAMPATHFRAGMENTINPUTGENNVPROC glProgramPathFragmentInputGenNV                 = nullptr;
+PFNGLGETPROGRAMRESOURCEFVNVPROC glGetProgramResourcefvNV                               = nullptr;
+
+bool init_gl_nv_path_rendering()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glGenPathsNV = get_function<PFNGLGENPATHSNVPROC>("glGenPathsNV")) != nullptr;
+    result = result && (glDeletePathsNV = get_function<PFNGLDELETEPATHSNVPROC>("glDeletePathsNV")) != nullptr;
+    result = result && (glIsPathNV = get_function<PFNGLISPATHNVPROC>("glIsPathNV")) != nullptr;
+    result = result && (glPathCommandsNV = get_function<PFNGLPATHCOMMANDSNVPROC>("glPathCommandsNV")) != nullptr;
+    result = result && (glPathCoordsNV = get_function<PFNGLPATHCOORDSNVPROC>("glPathCoordsNV")) != nullptr;
+    result = result && (glPathSubCommandsNV = get_function<PFNGLPATHSUBCOMMANDSNVPROC>("glPathSubCommandsNV")) != nullptr;
+    result = result && (glPathSubCoordsNV = get_function<PFNGLPATHSUBCOORDSNVPROC>("glPathSubCoordsNV")) != nullptr;
+    result = result && (glPathStringNV = get_function<PFNGLPATHSTRINGNVPROC>("glPathStringNV")) != nullptr;
+    result = result && (glPathGlyphsNV = get_function<PFNGLPATHGLYPHSNVPROC>("glPathGlyphsNV")) != nullptr;
+    result = result && (glPathGlyphRangeNV = get_function<PFNGLPATHGLYPHRANGENVPROC>("glPathGlyphRangeNV")) != nullptr;
+    result = result && (glWeightPathsNV = get_function<PFNGLWEIGHTPATHSNVPROC>("glWeightPathsNV")) != nullptr;
+    result = result && (glCopyPathNV = get_function<PFNGLCOPYPATHNVPROC>("glCopyPathNV")) != nullptr;
+    result = result && (glInterpolatePathsNV = get_function<PFNGLINTERPOLATEPATHSNVPROC>("glInterpolatePathsNV")) != nullptr;
+    result = result && (glTransformPathNV = get_function<PFNGLTRANSFORMPATHNVPROC>("glTransformPathNV")) != nullptr;
+    result = result && (glPathParameterivNV = get_function<PFNGLPATHPARAMETERIVNVPROC>("glPathParameterivNV")) != nullptr;
+    result = result && (glPathParameteriNV = get_function<PFNGLPATHPARAMETERINVPROC>("glPathParameteriNV")) != nullptr;
+    result = result && (glPathParameterfvNV = get_function<PFNGLPATHPARAMETERFVNVPROC>("glPathParameterfvNV")) != nullptr;
+    result = result && (glPathParameterfNV = get_function<PFNGLPATHPARAMETERFNVPROC>("glPathParameterfNV")) != nullptr;
+    result = result && (glPathDashArrayNV = get_function<PFNGLPATHDASHARRAYNVPROC>("glPathDashArrayNV")) != nullptr;
+    result = result && (glPathStencilFuncNV = get_function<PFNGLPATHSTENCILFUNCNVPROC>("glPathStencilFuncNV")) != nullptr;
+    result = result && (glPathStencilDepthOffsetNV = get_function<PFNGLPATHSTENCILDEPTHOFFSETNVPROC>("glPathStencilDepthOffsetNV")) != nullptr;
+    result = result && (glStencilFillPathNV = get_function<PFNGLSTENCILFILLPATHNVPROC>("glStencilFillPathNV")) != nullptr;
+    result = result && (glStencilStrokePathNV = get_function<PFNGLSTENCILSTROKEPATHNVPROC>("glStencilStrokePathNV")) != nullptr;
+    result = result && (glStencilFillPathInstancedNV = get_function<PFNGLSTENCILFILLPATHINSTANCEDNVPROC>("glStencilFillPathInstancedNV")) != nullptr;
+    result = result && (glStencilStrokePathInstancedNV = get_function<PFNGLSTENCILSTROKEPATHINSTANCEDNVPROC>("glStencilStrokePathInstancedNV")) != nullptr;
+    result = result && (glPathCoverDepthFuncNV = get_function<PFNGLPATHCOVERDEPTHFUNCNVPROC>("glPathCoverDepthFuncNV")) != nullptr;
+    result = result && (glCoverFillPathNV = get_function<PFNGLCOVERFILLPATHNVPROC>("glCoverFillPathNV")) != nullptr;
+    result = result && (glCoverStrokePathNV = get_function<PFNGLCOVERSTROKEPATHNVPROC>("glCoverStrokePathNV")) != nullptr;
+    result = result && (glCoverFillPathInstancedNV = get_function<PFNGLCOVERFILLPATHINSTANCEDNVPROC>("glCoverFillPathInstancedNV")) != nullptr;
+    result = result && (glCoverStrokePathInstancedNV = get_function<PFNGLCOVERSTROKEPATHINSTANCEDNVPROC>("glCoverStrokePathInstancedNV")) != nullptr;
+    result = result && (glGetPathParameterivNV = get_function<PFNGLGETPATHPARAMETERIVNVPROC>("glGetPathParameterivNV")) != nullptr;
+    result = result && (glGetPathParameterfvNV = get_function<PFNGLGETPATHPARAMETERFVNVPROC>("glGetPathParameterfvNV")) != nullptr;
+    result = result && (glGetPathCommandsNV = get_function<PFNGLGETPATHCOMMANDSNVPROC>("glGetPathCommandsNV")) != nullptr;
+    result = result && (glGetPathCoordsNV = get_function<PFNGLGETPATHCOORDSNVPROC>("glGetPathCoordsNV")) != nullptr;
+    result = result && (glGetPathDashArrayNV = get_function<PFNGLGETPATHDASHARRAYNVPROC>("glGetPathDashArrayNV")) != nullptr;
+    result = result && (glGetPathMetricsNV = get_function<PFNGLGETPATHMETRICSNVPROC>("glGetPathMetricsNV")) != nullptr;
+    result = result && (glGetPathMetricRangeNV = get_function<PFNGLGETPATHMETRICRANGENVPROC>("glGetPathMetricRangeNV")) != nullptr;
+    result = result && (glGetPathSpacingNV = get_function<PFNGLGETPATHSPACINGNVPROC>("glGetPathSpacingNV")) != nullptr;
+    result = result && (glIsPointInFillPathNV = get_function<PFNGLISPOINTINFILLPATHNVPROC>("glIsPointInFillPathNV")) != nullptr;
+    result = result && (glIsPointInStrokePathNV = get_function<PFNGLISPOINTINSTROKEPATHNVPROC>("glIsPointInStrokePathNV")) != nullptr;
+    result = result && (glGetPathLengthNV = get_function<PFNGLGETPATHLENGTHNVPROC>("glGetPathLengthNV")) != nullptr;
+    result = result && (glPointAlongPathNV = get_function<PFNGLPOINTALONGPATHNVPROC>("glPointAlongPathNV")) != nullptr;
+    result = result && (glMatrixLoad3x2fNV = get_function<PFNGLMATRIXLOAD3X2FNVPROC>("glMatrixLoad3x2fNV")) != nullptr;
+    result = result && (glMatrixLoad3x3fNV = get_function<PFNGLMATRIXLOAD3X3FNVPROC>("glMatrixLoad3x3fNV")) != nullptr;
+    result = result && (glMatrixLoadTranspose3x3fNV = get_function<PFNGLMATRIXLOADTRANSPOSE3X3FNVPROC>("glMatrixLoadTranspose3x3fNV")) != nullptr;
+    result = result && (glMatrixMult3x2fNV = get_function<PFNGLMATRIXMULT3X2FNVPROC>("glMatrixMult3x2fNV")) != nullptr;
+    result = result && (glMatrixMult3x3fNV = get_function<PFNGLMATRIXMULT3X3FNVPROC>("glMatrixMult3x3fNV")) != nullptr;
+    result = result && (glMatrixMultTranspose3x3fNV = get_function<PFNGLMATRIXMULTTRANSPOSE3X3FNVPROC>("glMatrixMultTranspose3x3fNV")) != nullptr;
+    result = result && (glStencilThenCoverFillPathNV = get_function<PFNGLSTENCILTHENCOVERFILLPATHNVPROC>("glStencilThenCoverFillPathNV")) != nullptr;
+    result = result && (glStencilThenCoverStrokePathNV = get_function<PFNGLSTENCILTHENCOVERSTROKEPATHNVPROC>("glStencilThenCoverStrokePathNV")) != nullptr;
+    result = result && (glStencilThenCoverFillPathInstancedNV = get_function<PFNGLSTENCILTHENCOVERFILLPATHINSTANCEDNVPROC>("glStencilThenCoverFillPathInstancedNV")) != nullptr;
+    result = result && (glStencilThenCoverStrokePathInstancedNV = get_function<PFNGLSTENCILTHENCOVERSTROKEPATHINSTANCEDNVPROC>("glStencilThenCoverStrokePathInstancedNV")) != nullptr;
+    result = result && (glPathGlyphIndexRangeNV = get_function<PFNGLPATHGLYPHINDEXRANGENVPROC>("glPathGlyphIndexRangeNV")) != nullptr;
+    result = result && (glPathGlyphIndexArrayNV = get_function<PFNGLPATHGLYPHINDEXARRAYNVPROC>("glPathGlyphIndexArrayNV")) != nullptr;
+    result = result && (glPathMemoryGlyphIndexArrayNV = get_function<PFNGLPATHMEMORYGLYPHINDEXARRAYNVPROC>("glPathMemoryGlyphIndexArrayNV")) != nullptr;
+    result = result && (glProgramPathFragmentInputGenNV = get_function<PFNGLPROGRAMPATHFRAGMENTINPUTGENNVPROC>("glProgramPathFragmentInputGenNV")) != nullptr;
+    result = result && (glGetProgramResourcefvNV = get_function<PFNGLGETPROGRAMRESOURCEFVNVPROC>("glGetProgramResourcefvNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_path_rendering
+
+#pragma endregion
+
+#pragma region GL_NV_sample_locations
+
+#ifdef GL_NV_sample_locations
+
+PFNGLFRAMEBUFFERSAMPLELOCATIONSFVNVPROC glFramebufferSampleLocationsfvNV           = nullptr;
+PFNGLNAMEDFRAMEBUFFERSAMPLELOCATIONSFVNVPROC glNamedFramebufferSampleLocationsfvNV = nullptr;
+PFNGLRESOLVEDEPTHVALUESNVPROC glResolveDepthValuesNV                               = nullptr;
+
+bool init_gl_nv_sample_locations()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glFramebufferSampleLocationsfvNV = get_function<PFNGLFRAMEBUFFERSAMPLELOCATIONSFVNVPROC>("glFramebufferSampleLocationsfvNV")) != nullptr;
+    result = result && (glNamedFramebufferSampleLocationsfvNV = get_function<PFNGLNAMEDFRAMEBUFFERSAMPLELOCATIONSFVNVPROC>("glNamedFramebufferSampleLocationsfvNV")) != nullptr;
+    result = result && (glResolveDepthValuesNV = get_function<PFNGLRESOLVEDEPTHVALUESNVPROC>("glResolveDepthValuesNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_sample_locations
+
+#pragma endregion
+
+#pragma region GL_NV_shader_buffer_load
+
+#ifdef GL_NV_shader_buffer_load
+
+PFNGLMAKEBUFFERRESIDENTNVPROC glMakeBufferResidentNV                     = nullptr;
+PFNGLMAKEBUFFERNONRESIDENTNVPROC glMakeBufferNonResidentNV               = nullptr;
+PFNGLISBUFFERRESIDENTNVPROC glIsBufferResidentNV                         = nullptr;
+PFNGLMAKENAMEDBUFFERRESIDENTNVPROC glMakeNamedBufferResidentNV           = nullptr;
+PFNGLMAKENAMEDBUFFERNONRESIDENTNVPROC glMakeNamedBufferNonResidentNV     = nullptr;
+PFNGLISNAMEDBUFFERRESIDENTNVPROC glIsNamedBufferResidentNV               = nullptr;
+PFNGLGETBUFFERPARAMETERUI64VNVPROC glGetBufferParameterui64vNV           = nullptr;
+PFNGLGETNAMEDBUFFERPARAMETERUI64VNVPROC glGetNamedBufferParameterui64vNV = nullptr;
+PFNGLGETINTEGERUI64VNVPROC glGetIntegerui64vNV                           = nullptr;
+PFNGLUNIFORMUI64NVPROC glUniformui64NV                                   = nullptr;
+PFNGLUNIFORMUI64VNVPROC glUniformui64vNV                                 = nullptr;
+PFNGLGETUNIFORMUI64VNVPROC glGetUniformui64vNV                           = nullptr;
+PFNGLPROGRAMUNIFORMUI64NVPROC glProgramUniformui64NV                     = nullptr;
+PFNGLPROGRAMUNIFORMUI64VNVPROC glProgramUniformui64vNV                   = nullptr;
+
+bool init_gl_nv_shader_buffer_load()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glMakeBufferResidentNV = get_function<PFNGLMAKEBUFFERRESIDENTNVPROC>("glMakeBufferResidentNV")) != nullptr;
+    result = result && (glMakeBufferNonResidentNV = get_function<PFNGLMAKEBUFFERNONRESIDENTNVPROC>("glMakeBufferNonResidentNV")) != nullptr;
+    result = result && (glIsBufferResidentNV = get_function<PFNGLISBUFFERRESIDENTNVPROC>("glIsBufferResidentNV")) != nullptr;
+    result = result && (glMakeNamedBufferResidentNV = get_function<PFNGLMAKENAMEDBUFFERRESIDENTNVPROC>("glMakeNamedBufferResidentNV")) != nullptr;
+    result = result && (glMakeNamedBufferNonResidentNV = get_function<PFNGLMAKENAMEDBUFFERNONRESIDENTNVPROC>("glMakeNamedBufferNonResidentNV")) != nullptr;
+    result = result && (glIsNamedBufferResidentNV = get_function<PFNGLISNAMEDBUFFERRESIDENTNVPROC>("glIsNamedBufferResidentNV")) != nullptr;
+    result = result && (glGetBufferParameterui64vNV = get_function<PFNGLGETBUFFERPARAMETERUI64VNVPROC>("glGetBufferParameterui64vNV")) != nullptr;
+    result = result && (glGetNamedBufferParameterui64vNV = get_function<PFNGLGETNAMEDBUFFERPARAMETERUI64VNVPROC>("glGetNamedBufferParameterui64vNV")) != nullptr;
+    result = result && (glGetIntegerui64vNV = get_function<PFNGLGETINTEGERUI64VNVPROC>("glGetIntegerui64vNV")) != nullptr;
+    result = result && (glUniformui64NV = get_function<PFNGLUNIFORMUI64NVPROC>("glUniformui64NV")) != nullptr;
+    result = result && (glUniformui64vNV = get_function<PFNGLUNIFORMUI64VNVPROC>("glUniformui64vNV")) != nullptr;
+    result = result && (glGetUniformui64vNV = get_function<PFNGLGETUNIFORMUI64VNVPROC>("glGetUniformui64vNV")) != nullptr;
+    result = result && (glProgramUniformui64NV = get_function<PFNGLPROGRAMUNIFORMUI64NVPROC>("glProgramUniformui64NV")) != nullptr;
+    result = result && (glProgramUniformui64vNV = get_function<PFNGLPROGRAMUNIFORMUI64VNVPROC>("glProgramUniformui64vNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_shader_buffer_load
+
+#pragma endregion
+
+#pragma region GL_NV_texture_barrier
+
+#ifdef GL_NV_texture_barrier
+
+PFNGLTEXTUREBARRIERNVPROC glTextureBarrierNV = nullptr;
+
+bool init_gl_nv_texture_barrier()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glTextureBarrierNV = get_function<PFNGLTEXTUREBARRIERNVPROC>("glTextureBarrierNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_texture_barrier
+
+#pragma endregion
+
+#pragma region GL_NV_vertex_attrib_integer_64bit
+
+#ifdef GL_NV_vertex_attrib_integer_64bit
+
+PFNGLVERTEXATTRIBL1I64NVPROC glVertexAttribL1i64NV         = nullptr;
+PFNGLVERTEXATTRIBL2I64NVPROC glVertexAttribL2i64NV         = nullptr;
+PFNGLVERTEXATTRIBL3I64NVPROC glVertexAttribL3i64NV         = nullptr;
+PFNGLVERTEXATTRIBL4I64NVPROC glVertexAttribL4i64NV         = nullptr;
+PFNGLVERTEXATTRIBL1I64VNVPROC glVertexAttribL1i64vNV       = nullptr;
+PFNGLVERTEXATTRIBL2I64VNVPROC glVertexAttribL2i64vNV       = nullptr;
+PFNGLVERTEXATTRIBL3I64VNVPROC glVertexAttribL3i64vNV       = nullptr;
+PFNGLVERTEXATTRIBL4I64VNVPROC glVertexAttribL4i64vNV       = nullptr;
+PFNGLVERTEXATTRIBL1UI64NVPROC glVertexAttribL1ui64NV       = nullptr;
+PFNGLVERTEXATTRIBL2UI64NVPROC glVertexAttribL2ui64NV       = nullptr;
+PFNGLVERTEXATTRIBL3UI64NVPROC glVertexAttribL3ui64NV       = nullptr;
+PFNGLVERTEXATTRIBL4UI64NVPROC glVertexAttribL4ui64NV       = nullptr;
+PFNGLVERTEXATTRIBL1UI64VNVPROC glVertexAttribL1ui64vNV     = nullptr;
+PFNGLVERTEXATTRIBL2UI64VNVPROC glVertexAttribL2ui64vNV     = nullptr;
+PFNGLVERTEXATTRIBL3UI64VNVPROC glVertexAttribL3ui64vNV     = nullptr;
+PFNGLVERTEXATTRIBL4UI64VNVPROC glVertexAttribL4ui64vNV     = nullptr;
+PFNGLGETVERTEXATTRIBLI64VNVPROC glGetVertexAttribLi64vNV   = nullptr;
+PFNGLGETVERTEXATTRIBLUI64VNVPROC glGetVertexAttribLui64vNV = nullptr;
+PFNGLVERTEXATTRIBLFORMATNVPROC glVertexAttribLFormatNV     = nullptr;
+
+bool init_gl_nv_vertex_attrib_integer_64bit()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glVertexAttribL1i64NV = get_function<PFNGLVERTEXATTRIBL1I64NVPROC>("glVertexAttribL1i64NV")) != nullptr;
+    result = result && (glVertexAttribL2i64NV = get_function<PFNGLVERTEXATTRIBL2I64NVPROC>("glVertexAttribL2i64NV")) != nullptr;
+    result = result && (glVertexAttribL3i64NV = get_function<PFNGLVERTEXATTRIBL3I64NVPROC>("glVertexAttribL3i64NV")) != nullptr;
+    result = result && (glVertexAttribL4i64NV = get_function<PFNGLVERTEXATTRIBL4I64NVPROC>("glVertexAttribL4i64NV")) != nullptr;
+    result = result && (glVertexAttribL1i64vNV = get_function<PFNGLVERTEXATTRIBL1I64VNVPROC>("glVertexAttribL1i64vNV")) != nullptr;
+    result = result && (glVertexAttribL2i64vNV = get_function<PFNGLVERTEXATTRIBL2I64VNVPROC>("glVertexAttribL2i64vNV")) != nullptr;
+    result = result && (glVertexAttribL3i64vNV = get_function<PFNGLVERTEXATTRIBL3I64VNVPROC>("glVertexAttribL3i64vNV")) != nullptr;
+    result = result && (glVertexAttribL4i64vNV = get_function<PFNGLVERTEXATTRIBL4I64VNVPROC>("glVertexAttribL4i64vNV")) != nullptr;
+    result = result && (glVertexAttribL1ui64NV = get_function<PFNGLVERTEXATTRIBL1UI64NVPROC>("glVertexAttribL1ui64NV")) != nullptr;
+    result = result && (glVertexAttribL2ui64NV = get_function<PFNGLVERTEXATTRIBL2UI64NVPROC>("glVertexAttribL2ui64NV")) != nullptr;
+    result = result && (glVertexAttribL3ui64NV = get_function<PFNGLVERTEXATTRIBL3UI64NVPROC>("glVertexAttribL3ui64NV")) != nullptr;
+    result = result && (glVertexAttribL4ui64NV = get_function<PFNGLVERTEXATTRIBL4UI64NVPROC>("glVertexAttribL4ui64NV")) != nullptr;
+    result = result && (glVertexAttribL1ui64vNV = get_function<PFNGLVERTEXATTRIBL1UI64VNVPROC>("glVertexAttribL1ui64vNV")) != nullptr;
+    result = result && (glVertexAttribL2ui64vNV = get_function<PFNGLVERTEXATTRIBL2UI64VNVPROC>("glVertexAttribL2ui64vNV")) != nullptr;
+    result = result && (glVertexAttribL3ui64vNV = get_function<PFNGLVERTEXATTRIBL3UI64VNVPROC>("glVertexAttribL3ui64vNV")) != nullptr;
+    result = result && (glVertexAttribL4ui64vNV = get_function<PFNGLVERTEXATTRIBL4UI64VNVPROC>("glVertexAttribL4ui64vNV")) != nullptr;
+    result = result && (glGetVertexAttribLi64vNV = get_function<PFNGLGETVERTEXATTRIBLI64VNVPROC>("glGetVertexAttribLi64vNV")) != nullptr;
+    result = result && (glGetVertexAttribLui64vNV = get_function<PFNGLGETVERTEXATTRIBLUI64VNVPROC>("glGetVertexAttribLui64vNV")) != nullptr;
+    result = result && (glVertexAttribLFormatNV = get_function<PFNGLVERTEXATTRIBLFORMATNVPROC>("glVertexAttribLFormatNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_vertex_attrib_integer_64bit
+
+#pragma endregion
+
+#pragma region GL_NV_vertex_buffer_unified_memory
+
+#ifdef GL_NV_vertex_buffer_unified_memory
+
+PFNGLBUFFERADDRESSRANGENVPROC glBufferAddressRangeNV     = nullptr;
+PFNGLVERTEXFORMATNVPROC glVertexFormatNV                 = nullptr;
+PFNGLNORMALFORMATNVPROC glNormalFormatNV                 = nullptr;
+PFNGLCOLORFORMATNVPROC glColorFormatNV                   = nullptr;
+PFNGLINDEXFORMATNVPROC glIndexFormatNV                   = nullptr;
+PFNGLTEXCOORDFORMATNVPROC glTexCoordFormatNV             = nullptr;
+PFNGLEDGEFLAGFORMATNVPROC glEdgeFlagFormatNV             = nullptr;
+PFNGLSECONDARYCOLORFORMATNVPROC glSecondaryColorFormatNV = nullptr;
+PFNGLFOGCOORDFORMATNVPROC glFogCoordFormatNV             = nullptr;
+PFNGLVERTEXATTRIBFORMATNVPROC glVertexAttribFormatNV     = nullptr;
+PFNGLVERTEXATTRIBIFORMATNVPROC glVertexAttribIFormatNV   = nullptr;
+PFNGLGETINTEGERUI64I_VNVPROC glGetIntegerui64i_vNV       = nullptr;
+
+bool init_gl_nv_vertex_buffer_unified_memory()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glBufferAddressRangeNV = get_function<PFNGLBUFFERADDRESSRANGENVPROC>("glBufferAddressRangeNV")) != nullptr;
+    result = result && (glVertexFormatNV = get_function<PFNGLVERTEXFORMATNVPROC>("glVertexFormatNV")) != nullptr;
+    result = result && (glNormalFormatNV = get_function<PFNGLNORMALFORMATNVPROC>("glNormalFormatNV")) != nullptr;
+    result = result && (glColorFormatNV = get_function<PFNGLCOLORFORMATNVPROC>("glColorFormatNV")) != nullptr;
+    result = result && (glIndexFormatNV = get_function<PFNGLINDEXFORMATNVPROC>("glIndexFormatNV")) != nullptr;
+    result = result && (glTexCoordFormatNV = get_function<PFNGLTEXCOORDFORMATNVPROC>("glTexCoordFormatNV")) != nullptr;
+    result = result && (glEdgeFlagFormatNV = get_function<PFNGLEDGEFLAGFORMATNVPROC>("glEdgeFlagFormatNV")) != nullptr;
+    result = result && (glSecondaryColorFormatNV = get_function<PFNGLSECONDARYCOLORFORMATNVPROC>("glSecondaryColorFormatNV")) != nullptr;
+    result = result && (glFogCoordFormatNV = get_function<PFNGLFOGCOORDFORMATNVPROC>("glFogCoordFormatNV")) != nullptr;
+    result = result && (glVertexAttribFormatNV = get_function<PFNGLVERTEXATTRIBFORMATNVPROC>("glVertexAttribFormatNV")) != nullptr;
+    result = result && (glVertexAttribIFormatNV = get_function<PFNGLVERTEXATTRIBIFORMATNVPROC>("glVertexAttribIFormatNV")) != nullptr;
+    result = result && (glGetIntegerui64i_vNV = get_function<PFNGLGETINTEGERUI64I_VNVPROC>("glGetIntegerui64i_vNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_vertex_buffer_unified_memory
+
+#pragma endregion
+
+#pragma region GL_NV_viewport_swizzle
+
+#ifdef GL_NV_viewport_swizzle
+
+PFNGLVIEWPORTSWIZZLENVPROC glViewportSwizzleNV = nullptr;
+
+bool init_gl_nv_viewport_swizzle()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glViewportSwizzleNV = get_function<PFNGLVIEWPORTSWIZZLENVPROC>("glViewportSwizzleNV")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_NV_viewport_swizzle
+
+#pragma endregion
+
+#pragma region GL_OVR_multiview
+
+#ifdef GL_OVR_multiview
+
+PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC glFramebufferTextureMultiviewOVR = nullptr;
+
+bool init_gl_ovr_multiview()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glFramebufferTextureMultiviewOVR = get_function<PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC>("glFramebufferTextureMultiviewOVR")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_OVR_multiview
+
+#pragma endregion
+
+#pragma region init
 
 bool init()
 {
@@ -1766,7 +4005,177 @@ bool init()
 #ifdef GL_VERSION_4_6
     result = result && init_gl_version_4_6();
 #endif
-
+#ifdef GL_ARB_ES3_2_compatibility
+    result = result && init_gl_arb_es3_2_compatibility();
+#endif
+#ifdef GL_ARB_bindless_texture
+    result = result && init_gl_arb_bindless_texture();
+#endif
+#ifdef GL_ARB_cl_event
+    result = result && init_gl_arb_cl_event();
+#endif
+#ifdef GL_ARB_compute_variable_group_size
+    result = result && init_gl_arb_compute_variable_group_size();
+#endif
+#ifdef GL_ARB_debug_output
+    result = result && init_gl_arb_debug_output();
+#endif
+#ifdef GL_ARB_draw_buffers_blend
+    result = result && init_gl_arb_draw_buffers_blend();
+#endif
+#ifdef GL_ARB_draw_instanced
+    result = result && init_gl_arb_draw_instanced();
+#endif
+#ifdef GL_ARB_geometry_shader4
+    result = result && init_gl_arb_geometry_shader4();
+#endif
+#ifdef GL_ARB_gl_spirv
+    result = result && init_gl_arb_gl_spirv();
+#endif
+#ifdef GL_ARB_gpu_shader_int64
+    result = result && init_gl_arb_gpu_shader_int64();
+#endif
+#ifdef GL_ARB_indirect_parameters
+    result = result && init_gl_arb_indirect_parameters();
+#endif
+#ifdef GL_ARB_instanced_arrays
+    result = result && init_gl_arb_instanced_arrays();
+#endif
+#ifdef GL_ARB_parallel_shader_compile
+    result = result && init_gl_arb_parallel_shader_compile();
+#endif
+#ifdef GL_ARB_robustness
+    result = result && init_gl_arb_robustness();
+#endif
+#ifdef GL_ARB_sample_locations
+    result = result && init_gl_arb_sample_locations();
+#endif
+#ifdef GL_ARB_sample_shading
+    result = result && init_gl_arb_sample_shading();
+#endif
+#ifdef GL_ARB_shading_language_include
+    result = result && init_gl_arb_shading_language_include();
+#endif
+#ifdef GL_ARB_sparse_buffer
+    result = result && init_gl_arb_sparse_buffer();
+#endif
+#ifdef GL_ARB_sparse_texture
+    result = result && init_gl_arb_sparse_texture();
+#endif
+#ifdef GL_ARB_texture_buffer_object
+    result = result && init_gl_arb_texture_buffer_object();
+#endif
+#ifdef GL_KHR_blend_equation_advanced
+    result = result && init_gl_khr_blend_equation_advanced();
+#endif
+#ifdef GL_KHR_parallel_shader_compile
+    result = result && init_gl_khr_parallel_shader_compile();
+#endif
+#ifdef GL_AMD_performance_monitor
+    result = result && init_gl_amd_performance_monitor();
+#endif
+#ifdef GL_EXT_debug_label
+    result = result && init_gl_ext_debug_label();
+#endif
+#ifdef GL_EXT_debug_marker
+    result = result && init_gl_ext_debug_marker();
+#endif
+#ifdef GL_EXT_direct_state_access
+    result = result && init_gl_ext_direct_state_access();
+#endif
+#ifdef GL_EXT_draw_instanced
+    result = result && init_gl_ext_draw_instanced();
+#endif
+#ifdef GL_EXT_polygon_offset_clamp
+    result = result && init_gl_ext_polygon_offset_clamp();
+#endif
+#ifdef GL_EXT_raster_multisample
+    result = result && init_gl_ext_raster_multisample();
+#endif
+#ifdef GL_EXT_separate_shader_objects
+    result = result && init_gl_ext_separate_shader_objects();
+#endif
+#ifdef GL_EXT_window_rectangles
+    result = result && init_gl_ext_window_rectangles();
+#endif
+#ifdef GL_INTEL_framebuffer_CMAA
+    result = result && init_gl_intel_framebuffer_cmaa();
+#endif
+#ifdef GL_INTEL_performance_query
+    result = result && init_gl_intel_performance_query();
+#endif
+#ifdef GL_NV_bindless_multi_draw_indirect
+    result = result && init_gl_nv_bindless_multi_draw_indirect();
+#endif
+#ifdef GL_NV_bindless_multi_draw_indirect_count
+    result = result && init_gl_nv_bindless_multi_draw_indirect_count();
+#endif
+#ifdef GL_NV_bindless_texture
+    result = result && init_gl_nv_bindless_texture();
+#endif
+#ifdef GL_NV_blend_equation_advanced
+    result = result && init_gl_nv_blend_equation_advanced();
+#endif
+#ifdef GL_NV_clip_space_w_scaling
+    result = result && init_gl_nv_clip_space_w_scaling();
+#endif
+#ifdef GL_NV_command_list
+    result = result && init_gl_nv_command_list();
+#endif
+#ifdef GL_NV_conditional_render
+    result = result && init_gl_nv_conditional_render();
+#endif
+#ifdef GL_NV_conservative_raster
+    result = result && init_gl_nv_conservative_raster();
+#endif
+#ifdef GL_NV_conservative_raster_dilate
+    result = result && init_gl_nv_conservative_raster_dilate();
+#endif
+#ifdef GL_NV_conservative_raster_pre_snap_triangles
+    result = result && init_gl_nv_conservative_raster_pre_snap_triangles();
+#endif
+#ifdef GL_NV_draw_vulkan_image
+    result = result && init_gl_nv_draw_vulkan_image();
+#endif
+#ifdef GL_NV_fragment_coverage_to_color
+    result = result && init_gl_nv_fragment_coverage_to_color();
+#endif
+#ifdef GL_NV_framebuffer_mixed_samples
+    result = result && init_gl_nv_framebuffer_mixed_samples();
+#endif
+#ifdef GL_NV_framebuffer_multisample_coverage
+    result = result && init_gl_nv_framebuffer_multisample_coverage();
+#endif
+#ifdef GL_NV_gpu_shader5
+    result = result && init_gl_nv_gpu_shader5();
+#endif
+#ifdef GL_NV_internalformat_sample_query
+    result = result && init_gl_nv_internalformat_sample_query();
+#endif
+#ifdef GL_NV_path_rendering
+    result = result && init_gl_nv_path_rendering();
+#endif
+#ifdef GL_NV_sample_locations
+    result = result && init_gl_nv_sample_locations();
+#endif
+#ifdef GL_NV_shader_buffer_load
+    result = result && init_gl_nv_shader_buffer_load();
+#endif
+#ifdef GL_NV_texture_barrier
+    result = result && init_gl_nv_texture_barrier();
+#endif
+#ifdef GL_NV_vertex_attrib_integer_64bit
+    result = result && init_gl_nv_vertex_attrib_integer_64bit();
+#endif
+#ifdef GL_NV_vertex_buffer_unified_memory
+    result = result && init_gl_nv_vertex_buffer_unified_memory();
+#endif
+#ifdef GL_NV_viewport_swizzle
+    result = result && init_gl_nv_viewport_swizzle();
+#endif
+#ifdef GL_OVR_multiview
+    result = result && init_gl_ovr_multiview();
+#endif
     return result;
 }
 
