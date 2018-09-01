@@ -3,13 +3,14 @@
 /// @author Fedorov Alexey
 /// @date 16.08.2018
 
-#include <graphic/gl/gl.hpp>
+#include <common/types.hpp>
+#include <graphic/opengl/gl.hpp>
 #include <graphic/shader.hpp>
 #include <log/log.hpp>
 
 namespace
 {
-framework::uint32 compile_shader(const std::vector<std::string>& sources, ::framework::graphic::gl::GLenum type)
+framework::uint32 compile_shader(const std::vector<std::string>& sources, GLenum type)
 {
     using namespace framework::graphic::gl;
 
@@ -27,10 +28,10 @@ framework::uint32 compile_shader(const std::vector<std::string>& sources, ::fram
     glCompileShader(shader);
 
     framework::int32 is_compiled = 0;
-    glGetShaderiv(shader, gl_compile_status, &is_compiled);
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &is_compiled);
     if (is_compiled == 0) {
         framework::int32 log_length = 0;
-        glGetShaderiv(shader, gl_info_log_length, &log_length);
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
 
         std::vector<char> error_log(log_length);
         glGetShaderInfoLog(shader, log_length, &log_length, &error_log[0]);
@@ -72,8 +73,8 @@ void shader::bind_attribute(shader::attribute attrib)
 
 void shader::compile()
 {
-    m_vertex_shader   = compile_shader(m_vertex_sources, gl::gl_vertex_shader);
-    m_fragment_shader = compile_shader(m_fragment_sources, gl::gl_fragment_shader);
+    m_vertex_shader   = compile_shader(m_vertex_sources, GL_VERTEX_SHADER);
+    m_fragment_shader = compile_shader(m_fragment_sources, GL_FRAGMENT_SHADER);
 
     if (m_vertex_shader == 0 || m_fragment_shader == 0) {
         clear();
@@ -92,10 +93,10 @@ void shader::compile()
     gl::glLinkProgram(m_program);
 
     int32 is_linked = 0;
-    gl::glGetProgramiv(m_program, gl::gl_link_status, &is_linked);
+    gl::glGetProgramiv(m_program, GL_LINK_STATUS, &is_linked);
     if (is_linked == 0) {
         int32 log_length = 0;
-        gl::glGetProgramiv(m_program, gl::gl_info_log_length, &log_length);
+        gl::glGetProgramiv(m_program, GL_INFO_LOG_LENGTH, &log_length);
 
         std::vector<char> error_log(log_length);
         gl::glGetProgramInfoLog(m_program, log_length, &log_length, &error_log[0]);

@@ -5,7 +5,7 @@
 #include <thread>
 
 #include <common/utils.hpp>
-#include <graphic/gl/gl.hpp>
+#include <graphic/opengl/gl.hpp>
 #include <graphic/opengl_canvas.hpp>
 #include <graphic/shader.hpp>
 #include <graphic/window.hpp>
@@ -104,10 +104,10 @@ private:
         glGenBuffers(1, &vertexbuffer);
 
         // Сделаем только что созданный буфер текущим
-        glBindBuffer(gl_array_buffer, vertexbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
         // Передадим информацию о вершинах в OpenGL
-        glBufferData(gl_array_buffer, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, gl_static_draw);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
         while (main_window.visible() && total_time < 10000) {
             if (t >= 5000) {
@@ -124,17 +124,17 @@ private:
 
             // Указываем, что первым буфером атрибутов будут вершины
             glEnableVertexAttribArray(1);
-            glBindBuffer(gl_array_buffer, vertexbuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
             glVertexAttribPointer(1, // Атрибут 0. Подробнее об этом будет рассказано в части, посвященной шейдерам.
                                   3, // Размер
-                                  gl_float, // Тип
+                                  GL_FLOAT, // Тип
                                   false, // Указывает, что значения не нормализованы
                                   0,     // Шаг
                                   (void*)0 // Смещение массива в буфере
             );
 
             // Вывести треугольник!
-            glDrawArrays(gl_triangles, 0, 3); // Начиная с вершины 0, всего 3 вершины -> один треугольник
+            glDrawArrays(GL_TRIANGLES, 0, 3); // Начиная с вершины 0, всего 3 вершины -> один треугольник
 
             glDisableVertexAttribArray(0);
 

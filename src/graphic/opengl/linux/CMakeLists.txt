@@ -1,5 +1,5 @@
 set(PRIVATE_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/gl_utils.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gl_details.cpp
 )
 
 target_sources(${PROJECT_NAME} 

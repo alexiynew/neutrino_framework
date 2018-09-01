@@ -28,5 +28,5 @@ target_sources(${PROJECT_NAME}
 source_group(${GROUP_PATH} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
 
 include(${CMAKE_CURRENT_LIST_DIR}/window/CMakeLists.txt)
-include(${CMAKE_CURRENT_LIST_DIR}/gl/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
 

@@ -4,13 +4,8 @@ set(GROUP_PATH ${GROUP_PATH}/${DIR_NAME})
 
 set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/gl_details.hpp
     ${CMAKE_CURRENT_LIST_DIR}/gl.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/gl_core.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/gl_core.cpp
-    #${CMAKE_CURRENT_LIST_DIR}/gl_extensions.hpp
-    #${CMAKE_CURRENT_LIST_DIR}/gl_extensions.cpp
-
-    ${CMAKE_CURRENT_LIST_DIR}/gl_utils.hpp
 )
 
 find_package(OpenGL REQUIRED)

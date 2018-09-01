@@ -3,7 +3,7 @@
 /// @author Fedorov Alexey
 /// @date 02.06.2018
 
-#include <graphic/gl/gl.hpp>
+#include <graphic/opengl/gl.hpp>
 #include <graphic/opengl_canvas.hpp>
 #include <log/log.hpp>
 
@@ -28,7 +28,7 @@ std::string opengl_canvas::vendor_name()
 {
     m_context->make_current();
 
-    const char* value = reinterpret_cast<const char*>(gl::glGetString(gl::gl_vendor));
+    const char* value = reinterpret_cast<const char*>(gl::glGetString(GL_VENDOR));
 
     if (value != nullptr) {
         return std::string(value);
@@ -41,7 +41,7 @@ std::string opengl_canvas::renderer_name()
 {
     m_context->make_current();
 
-    const char* value = reinterpret_cast<const char*>(gl::glGetString(gl::gl_renderer));
+    const char* value = reinterpret_cast<const char*>(gl::glGetString(GL_RENDERER));
 
     if (value != nullptr) {
         return std::string(value);
@@ -54,7 +54,7 @@ std::string opengl_canvas::version()
 {
     m_context->make_current();
 
-    const char* value = reinterpret_cast<const char*>(gl::glGetString(gl::gl_version));
+    const char* value = reinterpret_cast<const char*>(gl::glGetString(GL_VERSION));
 
     if (value != nullptr) {
         return std::string(value);
@@ -67,7 +67,7 @@ std::string opengl_canvas::shading_language_version()
 {
     m_context->make_current();
 
-    const char* value = reinterpret_cast<const char*>(gl::glGetString(gl::gl_shading_language_version));
+    const char* value = reinterpret_cast<const char*>(gl::glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     if (value != nullptr) {
         return std::string(value);
@@ -81,11 +81,11 @@ void opengl_canvas::clear(float red, float green, float blue, float alpha)
     m_context->make_current();
 
     gl::glClearColor(red, green, blue, alpha);
-    gl::glClear(gl::gl_color_buffer_bit);
+    gl::glClear(GL_COLOR_BUFFER_BIT);
 
     auto error = gl::glGetError();
 
-    if (error != gl::gl_no_error) {
+    if (error != GL_NO_ERROR) {
         log::error(log_tag) << error << std::endl;
     }
 }
