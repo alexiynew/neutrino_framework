@@ -6,8 +6,6 @@
 
 #include <common/utils.hpp>
 #include <graphic/opengl/gl.hpp>
-#include <graphic/opengl_canvas.hpp>
-#include <graphic/shader.hpp>
 #include <graphic/window.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
@@ -16,23 +14,90 @@
 
 namespace
 {
-const std::string vertex_shader = "#version 330 core\n"
-                                  "\n"
-                                  //"layout(location = 0) in vec3 vertexPosition_modelspace;\n"
-                                  "in vec3 vertexPosition_modelspace;\n"
-                                  "void main(){\n"
-                                  "    gl_Position.xyz = vertexPosition_modelspace;\n"
-                                  "    gl_Position.w = 1.0;\n"
-                                  "};\n";
+const std::string vertex_shader_source = "#version 330 core\n"
+                                         "\n"
+                                         "layout(location = 0) in vec3 vertexPosition_modelspace;\n"
+                                         "void main(){\n"
+                                         "    gl_Position.xyz = vertexPosition_modelspace;\n"
+                                         "    gl_Position.w = 1.0;\n"
+                                         "};\n";
 
-const std::string fragment_shader = "#version 330 core\n"
-                                    "uniform vec3 my_color;\n"
-                                    "out vec3 color;\n"
-                                    "\n"
-                                    "void main()\n"
-                                    "{\n"
-                                    "    color = my_color;\n"
-                                    "};\n";
+const std::string fragment_shader_source = "#version 330 core\n"
+                                           "uniform vec3 my_color;\n"
+                                           "out vec3 color;\n"
+                                           "\n"
+                                           "void main()\n"
+                                           "{\n"
+                                           "    color = my_color;\n"
+                                           "};\n";
+
+framework::uint32 compile_shader(const std::string& source, GLenum type)
+{
+    using namespace framework::graphic::gl;
+
+    framework::uint32 shader = glCreateShader(type);
+
+    const char* src = source.c_str();
+    glShaderSource(shader, 1, &src, nullptr);
+
+    glCompileShader(shader);
+
+    framework::int32 is_compiled = 0;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &is_compiled);
+    if (is_compiled == 0) {
+        framework::int32 log_length = 0;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
+
+        std::vector<char> error_log(log_length);
+        glGetShaderInfoLog(shader, log_length, &log_length, &error_log[0]);
+
+        framework::log::error("shader") << "Can't compile shader\n" << error_log.data() << std::endl;
+
+        glDeleteShader(shader);
+        return 0;
+    }
+
+    return shader;
+}
+
+framework::uint32 link_shader_program(framework::uint32 vertex_shader, framework::uint32 fragment_shader)
+{
+    using namespace framework::graphic::gl;
+
+    if (vertex_shader == 0 || fragment_shader == 0) {
+        return 0;
+    }
+
+    framework::uint32 program = glCreateProgram();
+
+    glAttachShader(program, vertex_shader);
+    glAttachShader(program, fragment_shader);
+
+    glLinkProgram(program);
+
+    framework::int32 is_linked = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, &is_linked);
+    if (is_linked == 0) {
+        framework::int32 log_length = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_length);
+
+        std::vector<char> error_log(log_length);
+        glGetProgramInfoLog(program, log_length, &log_length, &error_log[0]);
+
+        framework::log::error("shader") << "Can't compile shader\n" << error_log.data() << std::endl;
+
+        glDeleteProgram(program);
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
+        return 0;
+    }
+
+    glDetachShader(program, vertex_shader);
+    glDetachShader(program, fragment_shader);
+
+    return program;
+}
+
 } // namespace
 
 class renderer_test : public framework::unit_test::suite
@@ -56,35 +121,36 @@ private:
         set_logger(std::make_unique<stream_logger>(std::cout));
 
         window main_window({640, 480}, "Game");
-        opengl_canvas gl_canvas(main_window.context());
+        auto context = main_window.context();
 
-        info(name()) << "GL:       " << gl_canvas.version() << std::endl;
-        info(name()) << "GLSL:     " << gl_canvas.shading_language_version() << std::endl;
-        info(name()) << "Vendor:   " << gl_canvas.vendor_name() << std::endl;
-        info(name()) << "Renderer: " << gl_canvas.renderer_name() << std::endl;
+        if (!context->valid()) {
+            TEST_FAIL("Graphic context is not valid.");
+            return;
+        }
 
-        shader simple_shader;
-        simple_shader.add_vertex_source(vertex_shader);
-        simple_shader.add_fragment_source(fragment_shader);
-        simple_shader.bind_attribute({1, "vertexPosition_modelspace"});
+        context->make_current();
+        if (!gl::init()) {
+            TEST_FAIL("Can't init OpenGL functions.");
+            return;
+        }
 
-        simple_shader.compile();
+        framework::uint32 shader = link_shader_program(compile_shader(vertex_shader_source, GL_VERTEX_SHADER),
+                                                       compile_shader(fragment_shader_source, GL_FRAGMENT_SHADER));
 
-        simple_shader.use();
+        glUseProgram(shader);
 
-        // float vcolor[] = {1.0f, 0.5f, 0.0f};
-
-        gl::glUniform3f(0, 1.0f, 0.5f, 0.0f);
+        auto color_location = glGetUniformLocation(shader, "my_color");
 
         main_window.show();
 
-        vector3f old_color(0, 0, 0);
+        vector3f triangle_color(random_numbers(0.0f, 1.0f, 3).data());
+        vector3f back_color(random_numbers(0.0f, 1.0f, 3).data());
         vector3f new_color(random_numbers(0.0f, 1.0f, 3).data());
 
-        framework::float32 t          = 0;
-        framework::float32 total_time = 0;
+        framework::float32 total_time          = 0;
+        framework::float32 step_time           = 0;
+        const framework::float32 step_max_time = 2000;
 
-        /// --------------
         framework::uint32 VertexArrayID;
         glGenVertexArrays(1, &VertexArrayID);
         glBindVertexArray(VertexArrayID);
@@ -110,22 +176,28 @@ private:
         glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
         while (main_window.visible() && total_time < 10000) {
-            if (t >= 5000) {
-                t         = 0;
-                old_color = new_color;
-                new_color = vector3f(random_numbers(0.0f, 1.0f, 3).data());
+            if (step_time >= step_max_time) {
+                step_time      = 0;
+                triangle_color = back_color;
+                back_color     = new_color;
+                new_color      = vector3f(random_numbers(0.0f, 1.0f, 3).data());
             }
 
             main_window.process_events();
 
-            vector3f color = mix(old_color, new_color, t / 1000.0f);
+            vector3f clear_color = mix(back_color, new_color, step_time / step_max_time);
 
-            gl_canvas.clear(color.x, color.y, color.z, 1.0f);
+            glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            vector3f object_color = mix(triangle_color, back_color, step_time / step_max_time);
+
+            glUniform3fv(color_location, 1, object_color.data());
 
             // Указываем, что первым буфером атрибутов будут вершины
-            glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(0);
             glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-            glVertexAttribPointer(1, // Атрибут 0. Подробнее об этом будет рассказано в части, посвященной шейдерам.
+            glVertexAttribPointer(0, // Атрибут 0. Подробнее об этом будет рассказано в части, посвященной шейдерам.
                                   3, // Размер
                                   GL_FLOAT, // Тип
                                   false, // Указывает, что значения не нормализованы
@@ -138,11 +210,11 @@ private:
 
             glDisableVertexAttribArray(0);
 
-            gl_canvas.swap_buffers();
+            context->swap_buffers();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
 
-            t += 16;
+            step_time += 16;
             total_time += 16;
         }
     }

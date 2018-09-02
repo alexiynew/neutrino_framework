@@ -6,16 +6,10 @@ message("\tAdd module: ${MODULE_NAME}")
 
 set(PUBLIC_SOURCES 
     ${CMAKE_CURRENT_LIST_DIR}/window.hpp
-    
-    ${CMAKE_CURRENT_LIST_DIR}/canvas.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/opengl_canvas.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/shader.hpp
 )
 
 set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/window.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/opengl_canvas.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/shader.cpp
 )
 
 target_sources(${PROJECT_NAME} 
