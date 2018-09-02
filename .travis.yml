@@ -42,7 +42,7 @@ branches:
     - dev
 
 install:
-  - ./travis_install.sh
+  - ./misc/travis_install.sh
 
 script:
-  - ./travis_run.sh
+  - ./misc/travis_run.sh
