@@ -1,8 +1,8 @@
 #! /usr/bin/python3
 
 source = "/usr/include/GL/glcorearb.h"
-desthpp = "src/graphic/opengl/gl.hpp"
-destcpp = "src/graphic/opengl/gl.cpp"
+desthpp = "../src/graphic/opengl/gl.hpp"
+destcpp = "../src/graphic/opengl/gl.cpp"
 
 
 
@@ -40,14 +40,14 @@ class section:
 
 
 def get_type(s):
-    b = s.find("PFN");
-    e = s.find("PROC)", b) + 4;
+    b = s.find("PFN")
+    e = s.find("PROC)", b) + 4
     return s[b:e]
 
 
 def get_name(s):
-    b = s.find("gl");
-    e = s.find(" (");
+    b = s.find("gl")
+    e = s.find(" (")
     return s[b:e]
 
 

@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHIC_WINDOW_WINDOWS_WIN32_WINDOW_HPP
-#define FRAMEWORK_GRAPHIC_WINDOW_WINDOWS_WIN32_WINDOW_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
+#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 
 #include <Windows.h>
 

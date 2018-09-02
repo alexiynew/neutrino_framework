@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHIC_WINDOW_LINUX_X11_SERVER_HPP
-#define FRAMEWORK_GRAPHIC_WINDOW_LINUX_X11_SERVER_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_SERVER_HPP
+#define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_SERVER_HPP
 
 #include <X11/Xlib.h>
 #include <map>

@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHIC_WINDOW_OSX_COCOA_WINDOW_HPP
-#define FRAMEWORK_GRAPHIC_WINDOW_OSX_COCOA_WINDOW_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_OSX_COCOA_WINDOW_HPP
+#define FRAMEWORK_WINDOW_DETAILS_OSX_COCOA_WINDOW_HPP
 
 #import "Cocoa/Cocoa.h"
 

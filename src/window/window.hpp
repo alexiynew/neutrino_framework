@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHIC_WINDOW_HPP
-#define FRAMEWORK_GRAPHIC_WINDOW_HPP
+#ifndef FRAMEWORK_WINDOW_WINDOW_HPP
+#define FRAMEWORK_WINDOW_WINDOW_HPP
 
 #include <memory>
 

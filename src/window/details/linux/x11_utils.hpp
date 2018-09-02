@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHIC_WINDOW_LINUX_X11_UTILS_HPP
-#define FRAMEWORK_GRAPHIC_WINDOW_LINUX_X11_UTILS_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_UTILS_HPP
+#define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_UTILS_HPP
 
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
