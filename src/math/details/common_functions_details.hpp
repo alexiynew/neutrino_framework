@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of common_functions_details.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_COMMON_FUNCTIONS_DETAILS_HPP
-#define FRAMEWORK_MATH_COMMON_FUNCTIONS_DETAILS_HPP
+#ifndef FRAMEWORK_MATH_DETAILS_COMMON_FUNCTIONS_DETAILS_HPP
+#define FRAMEWORK_MATH_DETAILS_COMMON_FUNCTIONS_DETAILS_HPP
 
 #include <cmath>
 

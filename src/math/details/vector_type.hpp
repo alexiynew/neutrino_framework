@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of vector_type.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_VECTOR_TYPE_HPP
-#define FRAMEWORK_MATH_VECTOR_TYPE_HPP
+#ifndef FRAMEWORK_MATH_DETAILS_VECTOR_TYPE_HPP
+#define FRAMEWORK_MATH_DETAILS_VECTOR_TYPE_HPP
 
 #include <cassert>
 

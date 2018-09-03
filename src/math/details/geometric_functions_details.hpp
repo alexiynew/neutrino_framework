@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of geometric_functions_details.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_GEOMETRIC_FUNCTIONS_DETAILS_HPP
-#define FRAMEWORK_MATH_GEOMETRIC_FUNCTIONS_DETAILS_HPP
+#ifndef FRAMEWORK_MATH_DETAILS_GEOMETRIC_FUNCTIONS_DETAILS_HPP
+#define FRAMEWORK_MATH_DETAILS_GEOMETRIC_FUNCTIONS_DETAILS_HPP
 
 #include <math/details/vector_type.hpp>
 

@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of matrix_type.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_MATRIX_TYPE_HPP
-#define FRAMEWORK_MATH_MATRIX_TYPE_HPP
+#ifndef FRAMEWORK_MATH_DETAILS_MATRIX_TYPE_HPP
+#define FRAMEWORK_MATH_DETAILS_MATRIX_TYPE_HPP
 
 #include <cassert>
 

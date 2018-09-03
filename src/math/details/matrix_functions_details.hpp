@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of matrix_functions_details.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_MATRIX_FUNCTIONS_DETAILS_HPP
-#define FRAMEWORK_MATH_MATRIX_FUNCTIONS_DETAILS_HPP
+#ifndef FRAMEWORK_MATH_DETAILS_MATRIX_FUNCTIONS_DETAILS_HPP
+#define FRAMEWORK_MATH_DETAILS_MATRIX_FUNCTIONS_DETAILS_HPP
 
 #include <common/types.hpp>
 #include <math/details/matrix_type.hpp>

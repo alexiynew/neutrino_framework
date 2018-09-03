@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of relational_functions.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_HPP
-#define FRAMEWORK_MATH_RELATIONAL_FUNCTIONS_HPP
+#ifndef FRAMEWORK_MATH_DETAILS_RELATIONAL_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_DETAILS_RELATIONAL_FUNCTIONS_HPP
 
 #include <functional>
 
