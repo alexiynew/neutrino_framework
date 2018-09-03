@@ -72,6 +72,7 @@ private:
     }
 };
 
+/*
 class format_string_test : public framework::unit_test::suite
 {
 public:
@@ -101,8 +102,9 @@ private:
         // ERROR_TEST(make_string("{{{0", "string"), "'}' expected");
     }
 };
+*/
 
 int main()
 {
-    return run_tests(random_numbers_test(), format_string_test());
+    return run_tests(random_numbers_test());
 }

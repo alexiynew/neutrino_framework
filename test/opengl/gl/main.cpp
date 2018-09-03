@@ -39,22 +39,22 @@
 
 namespace
 {
-const std::string vertex_shader_source = "#version 330 core\n"
-                                         "\n"
-                                         "layout(location = 0) in vec3 vertexPosition_modelspace;\n"
-                                         "void main(){\n"
-                                         "    gl_Position.xyz = vertexPosition_modelspace;\n"
-                                         "    gl_Position.w = 1.0;\n"
-                                         "};\n";
+const char* vertex_shader_source = "#version 330 core\n"
+                                   "\n"
+                                   "layout(location = 0) in vec3 vertexPosition_modelspace;\n"
+                                   "void main(){\n"
+                                   "    gl_Position.xyz = vertexPosition_modelspace;\n"
+                                   "    gl_Position.w = 1.0;\n"
+                                   "};\n";
 
-const std::string fragment_shader_source = "#version 330 core\n"
-                                           "uniform vec3 my_color;\n"
-                                           "out vec3 color;\n"
-                                           "\n"
-                                           "void main()\n"
-                                           "{\n"
-                                           "    color = my_color;\n"
-                                           "};\n";
+const char* fragment_shader_source = "#version 330 core\n"
+                                     "uniform vec3 my_color;\n"
+                                     "out vec3 color;\n"
+                                     "\n"
+                                     "void main()\n"
+                                     "{\n"
+                                     "    color = my_color;\n"
+                                     "};\n";
 
 framework::uint32 compile_shader(const std::string& source, GLenum type)
 {
@@ -73,7 +73,7 @@ framework::uint32 compile_shader(const std::string& source, GLenum type)
         framework::int32 log_length = 0;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
 
-        std::vector<char> error_log(log_length);
+        std::vector<char> error_log(static_cast<std::size_t>(log_length));
         glGetShaderInfoLog(shader, log_length, &log_length, &error_log[0]);
 
         framework::log::error("shader") << "Can't compile shader\n" << error_log.data() << std::endl;
@@ -106,7 +106,7 @@ framework::uint32 link_shader_program(framework::uint32 vertex_shader, framework
         framework::int32 log_length = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_length);
 
-        std::vector<char> error_log(log_length);
+        std::vector<char> error_log(static_cast<std::size_t>(log_length));
         glGetProgramInfoLog(program, log_length, &log_length, &error_log[0]);
 
         framework::log::error("shader") << "Can't compile shader\n" << error_log.data() << std::endl;
@@ -224,9 +224,9 @@ private:
             glVertexAttribPointer(0, // Атрибут 0. Подробнее об этом будет рассказано в части, посвященной шейдерам.
                                   3, // Размер
                                   GL_FLOAT, // Тип
-                                  false, // Указывает, что значения не нормализованы
-                                  0,     // Шаг
-                                  (void*)0 // Смещение массива в буфере
+                                  false,  // Указывает, что значения не нормализованы
+                                  0,      // Шаг
+                                  nullptr // Смещение массива в буфере
             );
 
             // Вывести треугольник!

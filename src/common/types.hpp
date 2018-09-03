@@ -35,7 +35,6 @@
 namespace framework
 {
 /// @details
-///
 /// Base type definitions.
 ///
 /// @defgroup common_types_module Common types

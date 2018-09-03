@@ -42,6 +42,239 @@ F get_function(const char* function_name)
 
 namespace framework::opengl
 {
+#pragma region declarations
+
+#ifdef GL_VERSION_1_0
+bool init_gl_version_1_0();
+#endif
+#ifdef GL_VERSION_1_1
+bool init_gl_version_1_1();
+#endif
+#ifdef GL_VERSION_1_2
+bool init_gl_version_1_2();
+#endif
+#ifdef GL_VERSION_1_3
+bool init_gl_version_1_3();
+#endif
+#ifdef GL_VERSION_1_4
+bool init_gl_version_1_4();
+#endif
+#ifdef GL_VERSION_1_5
+bool init_gl_version_1_5();
+#endif
+#ifdef GL_VERSION_2_0
+bool init_gl_version_2_0();
+#endif
+#ifdef GL_VERSION_2_1
+bool init_gl_version_2_1();
+#endif
+#ifdef GL_VERSION_3_0
+bool init_gl_version_3_0();
+#endif
+#ifdef GL_VERSION_3_1
+bool init_gl_version_3_1();
+#endif
+#ifdef GL_VERSION_3_2
+bool init_gl_version_3_2();
+#endif
+#ifdef GL_VERSION_3_3
+bool init_gl_version_3_3();
+#endif
+#ifdef GL_VERSION_4_0
+bool init_gl_version_4_0();
+#endif
+#ifdef GL_VERSION_4_1
+bool init_gl_version_4_1();
+#endif
+#ifdef GL_VERSION_4_2
+bool init_gl_version_4_2();
+#endif
+#ifdef GL_VERSION_4_3
+bool init_gl_version_4_3();
+#endif
+#ifdef GL_VERSION_4_4
+bool init_gl_version_4_4();
+#endif
+#ifdef GL_VERSION_4_5
+bool init_gl_version_4_5();
+#endif
+#ifdef GL_VERSION_4_6
+bool init_gl_version_4_6();
+#endif
+#ifdef GL_ARB_ES3_2_compatibility
+bool init_gl_arb_es3_2_compatibility();
+#endif
+#ifdef GL_ARB_bindless_texture
+bool init_gl_arb_bindless_texture();
+#endif
+#ifdef GL_ARB_cl_event
+bool init_gl_arb_cl_event();
+#endif
+#ifdef GL_ARB_compute_variable_group_size
+bool init_gl_arb_compute_variable_group_size();
+#endif
+#ifdef GL_ARB_debug_output
+bool init_gl_arb_debug_output();
+#endif
+#ifdef GL_ARB_draw_buffers_blend
+bool init_gl_arb_draw_buffers_blend();
+#endif
+#ifdef GL_ARB_draw_instanced
+bool init_gl_arb_draw_instanced();
+#endif
+#ifdef GL_ARB_geometry_shader4
+bool init_gl_arb_geometry_shader4();
+#endif
+#ifdef GL_ARB_gl_spirv
+bool init_gl_arb_gl_spirv();
+#endif
+#ifdef GL_ARB_gpu_shader_int64
+bool init_gl_arb_gpu_shader_int64();
+#endif
+#ifdef GL_ARB_indirect_parameters
+bool init_gl_arb_indirect_parameters();
+#endif
+#ifdef GL_ARB_instanced_arrays
+bool init_gl_arb_instanced_arrays();
+#endif
+#ifdef GL_ARB_parallel_shader_compile
+bool init_gl_arb_parallel_shader_compile();
+#endif
+#ifdef GL_ARB_robustness
+bool init_gl_arb_robustness();
+#endif
+#ifdef GL_ARB_sample_locations
+bool init_gl_arb_sample_locations();
+#endif
+#ifdef GL_ARB_sample_shading
+bool init_gl_arb_sample_shading();
+#endif
+#ifdef GL_ARB_shading_language_include
+bool init_gl_arb_shading_language_include();
+#endif
+#ifdef GL_ARB_sparse_buffer
+bool init_gl_arb_sparse_buffer();
+#endif
+#ifdef GL_ARB_sparse_texture
+bool init_gl_arb_sparse_texture();
+#endif
+#ifdef GL_ARB_texture_buffer_object
+bool init_gl_arb_texture_buffer_object();
+#endif
+#ifdef GL_KHR_blend_equation_advanced
+bool init_gl_khr_blend_equation_advanced();
+#endif
+#ifdef GL_KHR_parallel_shader_compile
+bool init_gl_khr_parallel_shader_compile();
+#endif
+#ifdef GL_AMD_performance_monitor
+bool init_gl_amd_performance_monitor();
+#endif
+#ifdef GL_EXT_debug_label
+bool init_gl_ext_debug_label();
+#endif
+#ifdef GL_EXT_debug_marker
+bool init_gl_ext_debug_marker();
+#endif
+#ifdef GL_EXT_direct_state_access
+bool init_gl_ext_direct_state_access();
+#endif
+#ifdef GL_EXT_draw_instanced
+bool init_gl_ext_draw_instanced();
+#endif
+#ifdef GL_EXT_polygon_offset_clamp
+bool init_gl_ext_polygon_offset_clamp();
+#endif
+#ifdef GL_EXT_raster_multisample
+bool init_gl_ext_raster_multisample();
+#endif
+#ifdef GL_EXT_separate_shader_objects
+bool init_gl_ext_separate_shader_objects();
+#endif
+#ifdef GL_EXT_window_rectangles
+bool init_gl_ext_window_rectangles();
+#endif
+#ifdef GL_INTEL_framebuffer_CMAA
+bool init_gl_intel_framebuffer_cmaa();
+#endif
+#ifdef GL_INTEL_performance_query
+bool init_gl_intel_performance_query();
+#endif
+#ifdef GL_NV_bindless_multi_draw_indirect
+bool init_gl_nv_bindless_multi_draw_indirect();
+#endif
+#ifdef GL_NV_bindless_multi_draw_indirect_count
+bool init_gl_nv_bindless_multi_draw_indirect_count();
+#endif
+#ifdef GL_NV_bindless_texture
+bool init_gl_nv_bindless_texture();
+#endif
+#ifdef GL_NV_blend_equation_advanced
+bool init_gl_nv_blend_equation_advanced();
+#endif
+#ifdef GL_NV_clip_space_w_scaling
+bool init_gl_nv_clip_space_w_scaling();
+#endif
+#ifdef GL_NV_command_list
+bool init_gl_nv_command_list();
+#endif
+#ifdef GL_NV_conditional_render
+bool init_gl_nv_conditional_render();
+#endif
+#ifdef GL_NV_conservative_raster
+bool init_gl_nv_conservative_raster();
+#endif
+#ifdef GL_NV_conservative_raster_dilate
+bool init_gl_nv_conservative_raster_dilate();
+#endif
+#ifdef GL_NV_conservative_raster_pre_snap_triangles
+bool init_gl_nv_conservative_raster_pre_snap_triangles();
+#endif
+#ifdef GL_NV_draw_vulkan_image
+bool init_gl_nv_draw_vulkan_image();
+#endif
+#ifdef GL_NV_fragment_coverage_to_color
+bool init_gl_nv_fragment_coverage_to_color();
+#endif
+#ifdef GL_NV_framebuffer_mixed_samples
+bool init_gl_nv_framebuffer_mixed_samples();
+#endif
+#ifdef GL_NV_framebuffer_multisample_coverage
+bool init_gl_nv_framebuffer_multisample_coverage();
+#endif
+#ifdef GL_NV_gpu_shader5
+bool init_gl_nv_gpu_shader5();
+#endif
+#ifdef GL_NV_internalformat_sample_query
+bool init_gl_nv_internalformat_sample_query();
+#endif
+#ifdef GL_NV_path_rendering
+bool init_gl_nv_path_rendering();
+#endif
+#ifdef GL_NV_sample_locations
+bool init_gl_nv_sample_locations();
+#endif
+#ifdef GL_NV_shader_buffer_load
+bool init_gl_nv_shader_buffer_load();
+#endif
+#ifdef GL_NV_texture_barrier
+bool init_gl_nv_texture_barrier();
+#endif
+#ifdef GL_NV_vertex_attrib_integer_64bit
+bool init_gl_nv_vertex_attrib_integer_64bit();
+#endif
+#ifdef GL_NV_vertex_buffer_unified_memory
+bool init_gl_nv_vertex_buffer_unified_memory();
+#endif
+#ifdef GL_NV_viewport_swizzle
+bool init_gl_nv_viewport_swizzle();
+#endif
+#ifdef GL_OVR_multiview
+bool init_gl_ovr_multiview();
+#endif
+
+#pragma endregion
+
 #pragma region GL_VERSION_1_0
 
 #ifdef GL_VERSION_1_0

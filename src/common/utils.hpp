@@ -38,7 +38,6 @@
 namespace framework
 {
 /// @details
-///
 /// Different helper functions.
 ///
 /// @defgroup common_utils_module Common utils
@@ -106,6 +105,7 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     return result;
 }
 
+/*
 template <typename... Args>
 std::string format(const std::string& str, Args&&... args)
 {
@@ -114,6 +114,7 @@ std::string format(const std::string& str, Args&&... args)
     };
     return format_details::make_string_impl(str, values, sizeof...(args));
 }
+*/
 
 /// @}
 

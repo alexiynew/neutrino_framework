@@ -37,11 +37,12 @@ namespace framework
 {
 namespace utils
 {
+/*
 namespace format_details
 {
 struct value_base
 {
-    virtual ~value_base(){};
+    virtual ~value_base()                         = default;
     virtual void print_to(std::ostream& os) const = 0;
 };
 
@@ -69,6 +70,7 @@ std::string make_string_impl(const std::string& str,
 
 } // namespace format_details
 
+*/
 } // namespace utils
 
 } // namespace framework

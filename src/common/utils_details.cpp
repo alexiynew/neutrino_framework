@@ -39,6 +39,7 @@ namespace utils
 {
 namespace format_details
 {
+/*
 struct value_format
 {
     size_t width;     // number
@@ -272,6 +273,7 @@ std::string make_string_impl(const std::string& str,
     }
     return out.str();
 }
+*/
 
 } // namespace format_details
 
