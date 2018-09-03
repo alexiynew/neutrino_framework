@@ -1,3 +1,7 @@
+/// @file
+/// @brief Helper functions.
+/// @author Fedorov Alexey
+/// @date 21.06.2018
 
 // =============================================================================
 // MIT License
@@ -23,37 +27,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphic/window.hpp>
-#include <unit_test/suite.hpp>
+#include <GL/glx.h>
 
-class window_focus_test : public framework::unit_test::suite
+#include <common/types.hpp>
+#include <opengl/gl_details.hpp>
+
+namespace framework::opengl::details
 {
-public:
-    window_focus_test() : suite("window_focus_test")
-    {
-        add_test([this]() { focus_window(); }, "focus_window");
-    }
-
-private:
-    void focus_window()
-    {
-        framework::graphic::window alpha({640, 480}, "Test");
-        framework::graphic::window betta({640, 480}, "Test");
-
-        alpha.show();
-        betta.show();
-
-        TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
-        TEST_ASSERT(betta.focused(), "Focus function is not working.");
-
-        alpha.focus();
-
-        TEST_ASSERT(alpha.focused(), "Focus function is not working.");
-        TEST_ASSERT(!betta.focused(), "Focus function is not working.");
-    }
-};
-
-int main()
+gl_function_ptr get_function(const char* function_name)
 {
-    return run_tests(window_focus_test());
+    return glXGetProcAddressARB(reinterpret_cast<const uint8*>(function_name));
 }
+
+} // namespace framework::opengl::details

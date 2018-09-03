@@ -32,13 +32,13 @@
 
 #include <Windows.h>
 
-#include <graphic/window_implementation.hpp>
+#include <window/details/implementation.hpp>
 
 class application;
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 class win32_window final : public window::implementation
 {
@@ -118,7 +118,7 @@ private:
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 };
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework
 

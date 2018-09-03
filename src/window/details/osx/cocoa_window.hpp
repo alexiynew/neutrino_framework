@@ -32,11 +32,11 @@
 
 #import "Cocoa/Cocoa.h"
 
-#include <graphic/window_implementation.hpp>
+#include <window/details/window_implementation.hpp>
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 class cocoa_window final : public window::implementation
 {
@@ -96,7 +96,7 @@ private:
     NSWindow* window;
 };
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework
 

@@ -1,8 +1,8 @@
 #! /usr/bin/python3
 
 source = "/usr/include/GL/glcorearb.h"
-desthpp = "../src/graphic/opengl/gl.hpp"
-destcpp = "../src/graphic/opengl/gl.cpp"
+desthpp = "../src/opengl/gl.hpp"
+destcpp = "../src/opengl/gl.cpp"
 
 
 
@@ -100,12 +100,12 @@ hppheader = "/// @file\n" \
 "\n" \
 "#include <GL/glcorearb.h>\n" \
 "\n" \
-"namespace framework::graphic::gl\n" \
+"namespace framework::opengl\n" \
 "{\n" \
 "/// Initialize all GL functions\n" \
 "bool init();\n\n"
 
-hppfooter = "} // namespace framework::graphic::gl\n" \
+hppfooter = "} // namespace framework::opengl\n" \
 "\n" \
 "#endif\n"
 
@@ -129,23 +129,23 @@ cppheader = "/// @file\n" \
 "/// @author Fedorov Alexey\n" \
 "/// @date 21.06.2018\n" \
 "\n" \
-"#include <graphic/opengl/gl.hpp>\n" \
-"#include <graphic/opengl/gl_details.hpp>\n" \
+"#include <opengl/gl.hpp>\n" \
+"#include <opengl/gl_details.hpp>\n" \
 "\n" \
 "namespace\n" \
 "{\n" \
 "template <typename F>\n" \
 "F get_function(const char* function_name)\n" \
 "{\n" \
-"    return reinterpret_cast<F>(framework::graphic::gl::details::get_function(function_name));\n" \
+"    return reinterpret_cast<F>(framework::opengl::details::get_function(function_name));\n" \
 "}\n" \
 "\n" \
 "} // namespace\n" \
 "\n" \
-"namespace framework::graphic::gl\n" \
+"namespace framework::opengl\n" \
 "{\n"
 
-cppfooter = "} // namespace framework::graphic::gl\n"
+cppfooter = "} // namespace framework::opengl\n"
 
 
 cpp = open(destcpp, "w")

@@ -30,12 +30,12 @@
 #include <thread>
 
 #include <common/utils.hpp>
-#include <graphic/opengl/gl.hpp>
-#include <graphic/window.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
 #include <math/math.hpp>
+#include <opengl/gl.hpp>
 #include <unit_test/suite.hpp>
+#include <window/window.hpp>
 
 namespace
 {
@@ -58,7 +58,7 @@ const std::string fragment_shader_source = "#version 330 core\n"
 
 framework::uint32 compile_shader(const std::string& source, GLenum type)
 {
-    using namespace framework::graphic::gl;
+    using namespace framework::opengl;
 
     framework::uint32 shader = glCreateShader(type);
 
@@ -87,7 +87,7 @@ framework::uint32 compile_shader(const std::string& source, GLenum type)
 
 framework::uint32 link_shader_program(framework::uint32 vertex_shader, framework::uint32 fragment_shader)
 {
-    using namespace framework::graphic::gl;
+    using namespace framework::opengl;
 
     if (vertex_shader == 0 || fragment_shader == 0) {
         return 0;
@@ -138,14 +138,13 @@ private:
     {
         using framework::utils::random_numbers;
 
-        using namespace ::framework::graphic;
-        using namespace ::framework::graphic::gl;
-        using namespace ::framework::log;
-        using namespace ::framework::math;
+        using namespace framework::opengl;
+        using namespace framework::log;
+        using namespace framework::math;
 
         set_logger(std::make_unique<stream_logger>(std::cout));
 
-        window main_window({640, 480}, "Game");
+        framework::os::window main_window({640, 480}, "Game");
         auto context = main_window.context();
 
         if (!context->valid()) {
@@ -154,7 +153,7 @@ private:
         }
 
         context->make_current();
-        if (!gl::init()) {
+        if (!framework::opengl::init()) {
             TEST_FAIL("Can't init OpenGL functions.");
             return;
         }

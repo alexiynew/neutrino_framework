@@ -36,11 +36,11 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <graphic/window/linux/x11_server.hpp>
+#include <window/details/linux/x11_server.hpp>
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 namespace utils
 {
@@ -80,7 +80,7 @@ std::string get_window_name(const x11_server* server, Window window);
 
 } // namespace utils
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework
 

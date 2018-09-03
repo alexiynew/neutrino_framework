@@ -1,7 +1,3 @@
-/// @file
-/// @brief OpneGL helper functions.
-/// @author Fedorov Alexey
-/// @date 01.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,14 +23,60 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHIC_OPENGL_GL_DETAILS_HPP
-#define FRAMEWORK_GRAPHIC_OPENGL_GL_DETAILS_HPP
+#include <unit_test/suite.hpp>
+#include <window/window.hpp>
 
-namespace framework::graphic::gl::details
+class window_open_test : public framework::unit_test::suite
 {
-using gl_function_ptr = void (*)();
-gl_function_ptr get_function(const char* function_name);
+public:
+    window_open_test() : suite("window_open_test")
+    {
+        add_test([this]() { open_window(); }, "open_window");
+        add_test([this]() { open_several_windows(); }, "open_several_windows");
+    }
 
-} // namespace framework::graphic::gl::details
+private:
+    void open_window()
+    {
+        using ::framework::os::window;
 
-#endif
+        window w({640, 480}, "Test");
+        w.show();
+
+        TEST_ASSERT(w.visible(), "Window is not visible.");
+
+        w.hide();
+
+        TEST_ASSERT(!w.visible(), "Window is still visible.");
+    }
+
+    void open_several_windows()
+    {
+        using ::framework::os::window;
+
+        window windows[5] = {
+        window({640, 480}, "Test"),
+        window({640, 480}, "Test"),
+        window({640, 480}, "Test"),
+        window({640, 480}, "Test"),
+        window({640, 480}, "Test"),
+        };
+
+        for (auto& w : windows) {
+            w.show();
+        }
+
+        for (auto& w : windows) {
+            w.hide();
+        }
+
+        for (auto& w : windows) {
+            w.show();
+        }
+    }
+};
+
+int main()
+{
+    return run_tests(window_open_test());
+}

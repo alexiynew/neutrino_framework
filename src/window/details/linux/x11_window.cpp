@@ -37,9 +37,9 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
-#include <graphic/window/linux/x11_utils.hpp>
-#include <graphic/window/linux/x11_window.hpp>
 #include <log/log.hpp>
+#include <window/details/linux/x11_utils.hpp>
+#include <window/details/linux/x11_window.hpp>
 
 namespace
 {
@@ -254,7 +254,7 @@ GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config)
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 std::unique_ptr<window::implementation> window::implementation::create(window::size_t size, const std::string& title)
 {
@@ -1048,6 +1048,6 @@ void x11_window::x11_graphic_context::swap_buffers()
 
 #pragma endregion
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework

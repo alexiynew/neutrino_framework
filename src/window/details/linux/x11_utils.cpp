@@ -31,9 +31,9 @@
 #include <X11/Xutil.h>
 #include <cstring>
 
-#include <graphic/window/linux/x11_utils.hpp>
+#include <window/details/linux/x11_utils.hpp>
 
-using ::framework::graphic::x11_server;
+using ::framework::os::x11_server;
 
 namespace
 {
@@ -163,7 +163,7 @@ bool window_change_state(const x11_server* server,
                          net_wm_state_action action,
                          const std::vector<std::string>& state_atom_names)
 {
-    if (!::framework::graphic::utils::ewmh_supported() || state_atom_names.empty()) {
+    if (!::framework::os::utils::ewmh_supported() || state_atom_names.empty()) {
         return false;
     }
 
@@ -177,13 +177,13 @@ bool window_change_state(const x11_server* server,
     state_atoms[0] = (!state_atom_names.empty() ? server->get_atom(state_atom_names[0]) : None);
     state_atoms[1] = (state_atom_names.size() > 1 ? server->get_atom(state_atom_names[1]) : None);
 
-    return ::framework::graphic::utils::send_client_message(server,
-                                                            window,
-                                                            net_wm_state,
-                                                            action,
-                                                            state_atoms[0],
-                                                            state_atoms[1],
-                                                            ::framework::graphic::utils::message_source_application);
+    return ::framework::os::utils::send_client_message(server,
+                                                       window,
+                                                       net_wm_state,
+                                                       action,
+                                                       state_atoms[0],
+                                                       state_atoms[1],
+                                                       ::framework::os::utils::message_source_application);
 }
 
 XTextProperty create_text_property(Display* display, const std::string& string)
@@ -232,7 +232,7 @@ std::string create_string(Display* display, const XTextProperty& text_property)
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 namespace utils
 {
@@ -408,6 +408,6 @@ std::string get_window_name(const x11_server* server, Window window)
 
 } // namespace utils
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework

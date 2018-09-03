@@ -23,8 +23,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphic/window.hpp>
 #include <unit_test/suite.hpp>
+#include <window/window.hpp>
 
 class window_properties_test : public framework::unit_test::suite
 {
@@ -41,7 +41,7 @@ public:
 private:
     void window_size()
     {
-        using ::framework::graphic::window;
+        using ::framework::os::window;
 
         const window::size_t size480{480, 320};
         const window::size_t size640{640, 480};
@@ -66,7 +66,7 @@ private:
 
     void window_size_limits()
     {
-        using ::framework::graphic::window;
+        using ::framework::os::window;
 
         const window::size_t size640{640, 480};
         const window::size_t size960{960, 640};
@@ -114,7 +114,7 @@ private:
 
     void window_resizability()
     {
-        using ::framework::graphic::window;
+        using ::framework::os::window;
 
         const window::size_t size480{480, 320};
         const window::size_t size640{640, 480};
@@ -163,7 +163,7 @@ private:
 
     void window_position()
     {
-        using ::framework::graphic::window;
+        using ::framework::os::window;
 
         window::size_t size640 = {640, 480};
 
@@ -183,7 +183,7 @@ private:
 
     void window_title()
     {
-        using ::framework::graphic::window;
+        using ::framework::os::window;
 
         const std::string title      = u8"winodw_title";
         const std::string new_title  = u8"new_window_title";

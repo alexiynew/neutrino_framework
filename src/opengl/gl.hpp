@@ -27,12 +27,12 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHIC_OPENGL_GL_HPP
-#define FRAMEWORK_GRAPHIC_OPENGL_GL_HPP
+#ifndef FRAMEWORK_OPENGL_GL_HPP
+#define FRAMEWORK_OPENGL_GL_HPP
 
 #include <GL/glcorearb.h>
 
-namespace framework::graphic::gl
+namespace framework::opengl
 {
 /// Initialize all GL functions
 bool init();
@@ -1961,6 +1961,6 @@ GLAPI PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC glFramebufferTextureMultiviewOVR;
 
 #pragma endregion
 
-} // namespace framework::graphic::gl
+} // namespace framework::opengl
 
 #endif

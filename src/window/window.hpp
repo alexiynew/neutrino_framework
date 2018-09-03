@@ -36,7 +36,7 @@
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 class window
 {
@@ -149,7 +149,7 @@ T& operator<<(T& ostream, const window::position_t& position)
     return ostream;
 }
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework
 

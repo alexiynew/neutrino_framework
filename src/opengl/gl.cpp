@@ -27,20 +27,20 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphic/opengl/gl.hpp>
-#include <graphic/opengl/gl_details.hpp>
+#include <opengl/gl.hpp>
+#include <opengl/gl_details.hpp>
 
 namespace
 {
 template <typename F>
 F get_function(const char* function_name)
 {
-    return reinterpret_cast<F>(framework::graphic::gl::details::get_function(function_name));
+    return reinterpret_cast<F>(framework::opengl::details::get_function(function_name));
 }
 
 } // namespace
 
-namespace framework::graphic::gl
+namespace framework::opengl
 {
 #pragma region GL_VERSION_1_0
 
@@ -4205,4 +4205,4 @@ bool init()
 
 #pragma endregion
 
-} // namespace framework::graphic::gl
+} // namespace framework::opengl

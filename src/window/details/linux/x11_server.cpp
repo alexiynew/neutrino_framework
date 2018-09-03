@@ -28,12 +28,12 @@
 // =============================================================================
 
 #include <common/types.hpp>
-#include <graphic/window/linux/x11_server.hpp>
 #include <log/log.hpp>
+#include <window/details/linux/x11_server.hpp>
 
 namespace
 {
-using ::framework::graphic::x11_server;
+using ::framework::os::x11_server;
 
 const char* const log_tag = "x11_server";
 
@@ -78,7 +78,7 @@ void release_error_handlers()
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 std::shared_ptr<x11_server> x11_server::connect()
 {
@@ -157,6 +157,6 @@ XIM x11_server::input_method() const
     return m_input_method;
 }
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework

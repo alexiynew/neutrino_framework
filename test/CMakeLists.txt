@@ -37,7 +37,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/unit_test/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/common/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/log/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/math/CMakeLists.txt)
-include(${CMAKE_CURRENT_LIST_DIR}/graphic/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/os/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
 
 add_custom_target(run_all_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --build-config ${CMAKE_BUILD_TYPE} --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\"

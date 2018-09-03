@@ -34,12 +34,12 @@
 #include <functional>
 
 #include <common/types.hpp>
-#include <graphic/window/implementation.hpp>
-#include <graphic/window/linux/x11_server.hpp>
+#include <window/details/implementation.hpp>
+#include <window/details/linux/x11_server.hpp>
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 class x11_window final : public window::implementation
 {
@@ -166,7 +166,7 @@ private:
     Time m_lastInputTime = 0;
 };
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework
 

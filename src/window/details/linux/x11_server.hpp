@@ -37,7 +37,7 @@
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 class x11_server final
 {
@@ -68,7 +68,7 @@ private:
     mutable std::map<std::string, Atom> m_atoms;
 };
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework
 

@@ -34,11 +34,11 @@
 #include <string>
 #include <vector>
 
-#include <graphic/window.hpp>
+#include <window/window.hpp>
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 class window::implementation
 {
@@ -101,7 +101,7 @@ public:
     /// @}
 };
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework
 

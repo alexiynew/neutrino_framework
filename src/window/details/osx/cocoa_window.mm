@@ -27,14 +27,13 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <window/details/osx/cocoa_window.hpp>
 #include <iostream>
 #include <memory>
 
-#include <graphic/osx/cocoa_window.hpp>
-
 namespace framework
 {
-namespace graphic
+namespace os
 {
 std::unique_ptr<window::implementation> window::implementation::create(window::size_t, const std::string&)
 {
@@ -205,6 +204,6 @@ bool cocoa_window::focused() const
     throw std::logic_error("Function is not implemented.");
 }
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework

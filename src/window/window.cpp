@@ -29,12 +29,12 @@
 
 #include <memory>
 
-#include <graphic/window.hpp>
-#include <graphic/window/implementation.hpp>
+#include <window/details/implementation.hpp>
+#include <window/window.hpp>
 
 namespace framework
 {
-namespace graphic
+namespace os
 {
 window::window(size_t size, const std::string& title) : m_implementation(implementation::create(size, title))
 {}
@@ -224,6 +224,6 @@ bool operator!=(const window::position_t& lhs, const window::position_t& rhs)
 
 #pragma endregion
 
-} // namespace graphic
+} // namespace os
 
 } // namespace framework
