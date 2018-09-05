@@ -1,9 +1,8 @@
 #! /usr/bin/python3
 
-source = "/usr/include/GL/glcorearb.h"
+source = "./dependencies/GL/glcorearb.h"
 desthpp = "./src/opengl/gl.hpp"
 destcpp = "./src/opengl/gl.cpp"
-
 
 
 class func:
@@ -55,7 +54,7 @@ sections = []
 
 file = open(source, "r")
 
-s = section("",[])
+s = section("", [])
 in_section = False
 f_counter = 0
 
@@ -91,47 +90,47 @@ file.close()
 
 
 hppheader = "/// @file\n" \
-"/// @brief OpneGL functions wrapper.\n" \
-"/// @author Fedorov Alexey\n" \
-"/// @date 21.06.2018\n" \
-"\n" \
-"// =============================================================================\n" \
-"// MIT License\n" \
-"//\n" \
-"// Copyright (c) 2017-2018 Fedorov Alexey\n" \
-"//\n" \
-"// Permission is hereby granted, free of charge, to any person obtaining a copy\n" \
-"// of this software and associated documentation files (the \"Software\"), to deal\n" \
-"// in the Software without restriction, including without limitation the rights\n" \
-"// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n" \
-"// copies of the Software, and to permit persons to whom the Software is\n" \
-"// furnished to do so, subject to the following conditions:\n" \
-"//\n" \
-"// The above copyright notice and this permission notice shall be included in all\n" \
-"// copies or substantial portions of the Software.\n" \
-"//\n" \
-"// THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n" \
-"// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n" \
-"// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n" \
-"// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n" \
-"// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n" \
-"// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n" \
-"// SOFTWARE.\n" \
-"// =============================================================================\n" \
-"\n" \
-"#ifndef FRAMEWORK_OPENGL_GL_HPP\n" \
-"#define FRAMEWORK_OPENGL_GL_HPP\n" \
-"\n" \
-"#include <GL/glcorearb.h>\n" \
-"\n" \
-"namespace framework::opengl\n" \
-"{\n" \
-"/// Initialize all GL functions\n" \
-"bool init();\n\n"
+    "/// @brief OpneGL functions wrapper.\n" \
+    "/// @author Fedorov Alexey\n" \
+    "/// @date 21.06.2018\n" \
+    "\n" \
+    "// =============================================================================\n" \
+    "// MIT License\n" \
+    "//\n" \
+    "// Copyright (c) 2017-2018 Fedorov Alexey\n" \
+    "//\n" \
+    "// Permission is hereby granted, free of charge, to any person obtaining a copy\n" \
+    "// of this software and associated documentation files (the \"Software\"), to deal\n" \
+    "// in the Software without restriction, including without limitation the rights\n" \
+    "// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n" \
+    "// copies of the Software, and to permit persons to whom the Software is\n" \
+    "// furnished to do so, subject to the following conditions:\n" \
+    "//\n" \
+    "// The above copyright notice and this permission notice shall be included in all\n" \
+    "// copies or substantial portions of the Software.\n" \
+    "//\n" \
+    "// THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n" \
+    "// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n" \
+    "// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n" \
+    "// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n" \
+    "// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n" \
+    "// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n" \
+    "// SOFTWARE.\n" \
+    "// =============================================================================\n" \
+    "\n" \
+    "#ifndef FRAMEWORK_OPENGL_GL_HPP\n" \
+    "#define FRAMEWORK_OPENGL_GL_HPP\n" \
+    "\n" \
+    "#include <GL/glcorearb.h>\n" \
+    "\n" \
+    "namespace framework::opengl\n" \
+    "{\n" \
+    "/// Initialize all GL functions\n" \
+    "bool init();\n\n"
 
 hppfooter = "} // namespace framework::opengl\n" \
-"\n" \
-"#endif\n"
+    "\n" \
+    "#endif\n"
 
 hpp = open(desthpp, "w")
 
@@ -149,49 +148,49 @@ hpp.close()
 
 
 cppheader = "/// @file\n" \
-"/// @brief OpneGL functions wrapper.\n" \
-"/// @author Fedorov Alexey\n" \
-"/// @date 21.06.2018\n" \
-"\n" \
-"// =============================================================================\n" \
-"// MIT License\n" \
-"//\n" \
-"// Copyright (c) 2017-2018 Fedorov Alexey\n" \
-"//\n" \
-"// Permission is hereby granted, free of charge, to any person obtaining a copy\n" \
-"// of this software and associated documentation files (the \"Software\"), to deal\n" \
-"// in the Software without restriction, including without limitation the rights\n" \
-"// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n" \
-"// copies of the Software, and to permit persons to whom the Software is\n" \
-"// furnished to do so, subject to the following conditions:\n" \
-"//\n" \
-"// The above copyright notice and this permission notice shall be included in all\n" \
-"// copies or substantial portions of the Software.\n" \
-"//\n" \
-"// THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n" \
-"// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n" \
-"// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n" \
-"// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n" \
-"// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n" \
-"// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n" \
-"// SOFTWARE.\n" \
-"// =============================================================================\n" \
-"\n" \
-"#include <opengl/gl.hpp>\n" \
-"#include <opengl/gl_details.hpp>\n" \
-"\n" \
-"namespace\n" \
-"{\n" \
-"template <typename F>\n" \
-"F get_function(const char* function_name)\n" \
-"{\n" \
-"    return reinterpret_cast<F>(framework::opengl::details::get_function(function_name));\n" \
-"}\n" \
-"\n" \
-"} // namespace\n" \
-"\n" \
-"namespace framework::opengl\n" \
-"{\n"
+    "/// @brief OpneGL functions wrapper.\n" \
+    "/// @author Fedorov Alexey\n" \
+    "/// @date 21.06.2018\n" \
+    "\n" \
+    "// =============================================================================\n" \
+    "// MIT License\n" \
+    "//\n" \
+    "// Copyright (c) 2017-2018 Fedorov Alexey\n" \
+    "//\n" \
+    "// Permission is hereby granted, free of charge, to any person obtaining a copy\n" \
+    "// of this software and associated documentation files (the \"Software\"), to deal\n" \
+    "// in the Software without restriction, including without limitation the rights\n" \
+    "// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n" \
+    "// copies of the Software, and to permit persons to whom the Software is\n" \
+    "// furnished to do so, subject to the following conditions:\n" \
+    "//\n" \
+    "// The above copyright notice and this permission notice shall be included in all\n" \
+    "// copies or substantial portions of the Software.\n" \
+    "//\n" \
+    "// THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n" \
+    "// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n" \
+    "// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n" \
+    "// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n" \
+    "// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n" \
+    "// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n" \
+    "// SOFTWARE.\n" \
+    "// =============================================================================\n" \
+    "\n" \
+    "#include <opengl/details/gl_details.hpp>\n" \
+    "#include <opengl/gl.hpp>\n" \
+    "\n" \
+    "namespace\n" \
+    "{\n" \
+    "template <typename F>\n" \
+    "F get_function(const char* function_name)\n" \
+    "{\n" \
+    "    return reinterpret_cast<F>(framework::opengl::details::get_function(function_name));\n" \
+    "}\n" \
+    "\n" \
+    "} // namespace\n" \
+    "\n" \
+    "namespace framework::opengl\n" \
+    "{\n"
 
 cppfooter = "} // namespace framework::opengl\n"
 
@@ -245,7 +244,8 @@ cpp.write("\n")
 for s in sections:
     if len(s.functions) > 0:
         cpp.write("#ifdef {0}\n".format(s.name))
-        cpp.write("    result = result && init_{0}();\n".format(s.name.lower()))
+        cpp.write(
+            "    result = result && init_{0}();\n".format(s.name.lower()))
         cpp.write("#endif\n")
 
 cpp.write("    return result;\n")
@@ -255,4 +255,3 @@ cpp.write("#pragma endregion\n\n")
 cpp.write(cppfooter)
 
 cpp.close()
-

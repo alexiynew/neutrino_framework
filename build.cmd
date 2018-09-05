@@ -1,3 +1,4 @@
+@ECHO off
 
 REM =============================================================================
 REM MIT License
@@ -22,9 +23,6 @@ REM LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM
 REM OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 REM SOFTWARE.
 REM =============================================================================
-
-@ECHO off
-
 
 REM Main script body
 REM ==========================================

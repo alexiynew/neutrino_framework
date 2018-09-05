@@ -23,34 +23,42 @@
 # SOFTWARE.
 # =============================================================================
 
-get_filename_component(DIR_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
+get_filename_component(MODULE_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 
-set(GROUP_PATH ${GROUP_PATH}/${DIR_NAME})
+set(GROUP_PATH ${MODULE_NAME})
 
-set(PRIVATE_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/gl.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/gl_details.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/gl.cpp
-)
+message("\tAdd module: ${MODULE_NAME}")
 
 find_package(OpenGL REQUIRED)
 
-target_include_directories(${PROJECT_NAME} 
+target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${OPENGL_INCLUDE_DIR}
 )
 
-target_sources(${PROJECT_NAME} 
+message(=========================)
+message(${OPENGL_LIBRARY})
+
+set(PUBLIC_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/gl.hpp
+)
+
+set(PRIVATE_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/gl.cpp
+)
+
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        ${PUBLIC_SOURCES}
     PRIVATE
         ${PRIVATE_SOURCES}
 )
 
-source_group(${GROUP_PATH} FILES ${PRIVATE_SOURCES})
+source_group(${GROUP_PATH} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
 
-# Add platform dependent sources
-include(${CMAKE_CURRENT_LIST_DIR}/${PLATFORM_NAME}/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/details/CMakeLists.txt)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        GL
+        ${OPENGL_LIBRARY}
 )

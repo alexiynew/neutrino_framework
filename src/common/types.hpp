@@ -30,6 +30,7 @@
 #ifndef FRAMEWORK_COMMON_TYPES_HPP
 #define FRAMEWORK_COMMON_TYPES_HPP
 
+#include <cstddef>
 #include <cstdint>
 
 namespace framework

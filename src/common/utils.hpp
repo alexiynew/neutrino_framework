@@ -80,14 +80,6 @@ std::vector<T> random_numbers(T min, T max, size_t count)
         std::swap(min, max);
     }
 
-    auto get_distribution = [](T min_value, T max_value) {
-        if constexpr (std::is_integral<T>::value == true) {
-            return std::uniform_int_distribution<T>(min_value, max_value);
-        } else {
-            return std::uniform_real_distribution<T>(min_value, max_value);
-        }
-    };
-
     auto get_generator = []() {
         std::random_device rd;
         return std::mt19937(rd());
@@ -97,7 +89,7 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     result.reserve(count);
 
     static auto generator = get_generator();
-    auto distribution     = get_distribution(min, max);
+    auto distribution     = details::get_distribution(min, max);
     for (size_t i = 0; i < count; ++i) {
         result.push_back(distribution(generator));
     }

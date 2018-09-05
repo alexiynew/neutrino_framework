@@ -36,8 +36,8 @@
 class application
 {
 public:
-    static void add_window(HANDLE handle, ::framework::win32_window* window);
-    static ::framework::win32_window* get_window(HANDLE handle);
+    static void add_window(HANDLE handle, framework::os::win32_window* window);
+    static framework::os::win32_window* get_window(HANDLE handle);
     static void remove_window(HANDLE handle);
 
     static HMODULE handle();
@@ -45,7 +45,7 @@ public:
     static LRESULT CALLBACK window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param);
 
 private:
-    using container = std::map<HANDLE, ::framework::win32_window*>;
+    using container = std::map<HANDLE, framework::os::win32_window*>;
 
     static container m_windows;
     static HMODULE m_handle;
@@ -54,12 +54,12 @@ private:
 application::container application::m_windows;
 HMODULE application::m_handle = nullptr;
 
-void application::add_window(HANDLE handle, ::framework::win32_window* window)
+void application::add_window(HANDLE handle, framework::os::win32_window* window)
 {
     m_windows.insert({handle, window});
 }
 
-::framework::win32_window* application::get_window(HANDLE handle)
+framework::os::win32_window* application::get_window(HANDLE handle)
 {
     if (m_windows.count(handle)) {
         return m_windows[handle];
@@ -435,6 +435,11 @@ std::string win32_window::title() const
     GetWindowText(m_window, buffer.get(), title_length);
 
     return to_utf8(buffer.get());
+}
+
+std::unique_ptr<window::graphic_context> win32_window::context() const
+{
+    return nullptr;
 }
 /// @}
 

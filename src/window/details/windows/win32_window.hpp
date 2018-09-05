@@ -83,6 +83,8 @@ public:
     window::size_t min_size() const override;
 
     std::string title() const override;
+
+    std::unique_ptr<window::graphic_context> context() const override;
     /// @}
 
     /// @name state

@@ -23,16 +23,13 @@
 # SOFTWARE.
 # =============================================================================
 
-message("Add modules...")
+set(PRIVATE_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/gl_details.cpp
+)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${FRAMEWORK_SOURCE_DIR})
-target_include_directories(${PROJECT_NAME} PUBLIC ${FRAMEWORK_DEPENDENCIES_DIR})
+target_sources(${PROJECT_NAME} 
+    PRIVATE
+        ${PRIVATE_SOURCES}
+)
 
-# Add source files
-include(${CMAKE_CURRENT_LIST_DIR}/common/CMakeLists.txt)
-include(${CMAKE_CURRENT_LIST_DIR}/math/CMakeLists.txt)
-include(${CMAKE_CURRENT_LIST_DIR}/window/CMakeLists.txt)
-include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
-include(${CMAKE_CURRENT_LIST_DIR}/log/CMakeLists.txt)
-include(${CMAKE_CURRENT_LIST_DIR}/unit_test/CMakeLists.txt)
-
+source_group(${GROUP_PATH} FILES ${PRIVATE_SOURCES})

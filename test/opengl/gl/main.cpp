@@ -147,7 +147,7 @@ private:
         framework::os::window main_window({640, 480}, "Game");
         auto context = main_window.context();
 
-        if (!context->valid()) {
+        if (context == nullptr || !context->valid()) {
             TEST_FAIL("Graphic context is not valid.");
             return;
         }
@@ -183,7 +183,7 @@ private:
         static const framework::float32 g_vertex_buffer_data[] = {
             -1.0f, -1.0f, 0.0f,
              1.0f, -1.0f, 0.0f,
-             0.0f,  1.0f, 0.0f 
+             0.0f,  1.0f, 0.0f
         };
         // clang-format on
 

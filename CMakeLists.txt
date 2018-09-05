@@ -34,6 +34,7 @@ option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
 
 # Framework sources
 set(FRAMEWORK_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+set(FRAMEWORK_DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/dependencies)
 set(FRAMEWORK_TEST_DIR ${CMAKE_SOURCE_DIR}/test)
 
 # Output pathes
@@ -90,7 +91,7 @@ endif()
 
 # Generate documentation
 configure_file(${DOCS_SOURCE_DIR}/Doxyfile.in ${DOCS_BINARY_DIR}/Doxyfile @ONLY)
-configure_file(${DOCS_SOURCE_DIR}/DoxygenLayout.xml ${DOCS_BINARY_DIR}/DoxygenLayout.xml COPYONLY) 
+configure_file(${DOCS_SOURCE_DIR}/DoxygenLayout.xml ${DOCS_BINARY_DIR}/DoxygenLayout.xml COPYONLY)
 
 add_custom_target(documentation
     COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_OUTPUT_DIR}

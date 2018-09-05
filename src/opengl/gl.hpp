@@ -1162,6 +1162,17 @@ GLAPI PFNGLMAXSHADERCOMPILERTHREADSKHRPROC glMaxShaderCompilerThreadsKHR;
 
 #pragma endregion
 
+#pragma region GL_AMD_framebuffer_multisample_advanced
+
+#ifdef GL_AMD_framebuffer_multisample_advanced
+
+GLAPI PFNGLRENDERBUFFERSTORAGEMULTISAMPLEADVANCEDAMDPROC glRenderbufferStorageMultisampleAdvancedAMD;
+GLAPI PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEADVANCEDAMDPROC glNamedRenderbufferStorageMultisampleAdvancedAMD;
+
+#endif // GL_AMD_framebuffer_multisample_advanced
+
+#pragma endregion
+
 #pragma region GL_AMD_performance_monitor
 
 #ifdef GL_AMD_performance_monitor
@@ -1179,6 +1190,17 @@ GLAPI PFNGLENDPERFMONITORAMDPROC glEndPerfMonitorAMD;
 GLAPI PFNGLGETPERFMONITORCOUNTERDATAAMDPROC glGetPerfMonitorCounterDataAMD;
 
 #endif // GL_AMD_performance_monitor
+
+#pragma endregion
+
+#pragma region GL_EXT_EGL_image_storage
+
+#ifdef GL_EXT_EGL_image_storage
+
+GLAPI PFNGLEGLIMAGETARGETTEXSTORAGEEXTPROC glEGLImageTargetTexStorageEXT;
+GLAPI PFNGLEGLIMAGETARGETTEXTURESTORAGEEXTPROC glEGLImageTargetTextureStorageEXT;
+
+#endif // GL_EXT_EGL_image_storage
 
 #pragma endregion
 
@@ -1509,6 +1531,16 @@ GLAPI PFNGLACTIVEPROGRAMEXTPROC glActiveProgramEXT;
 GLAPI PFNGLCREATESHADERPROGRAMEXTPROC glCreateShaderProgramEXT;
 
 #endif // GL_EXT_separate_shader_objects
+
+#pragma endregion
+
+#pragma region GL_EXT_shader_framebuffer_fetch_non_coherent
+
+#ifdef GL_EXT_shader_framebuffer_fetch_non_coherent
+
+GLAPI PFNGLFRAMEBUFFERFETCHBARRIEREXTPROC glFramebufferFetchBarrierEXT;
+
+#endif // GL_EXT_shader_framebuffer_fetch_non_coherent
 
 #pragma endregion
 

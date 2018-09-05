@@ -1,7 +1,7 @@
 /// @file
-/// @brief Implementation details of utils functions
+/// @brief Helper functions.
 /// @author Fedorov Alexey
-/// @date 11.07.2018
+/// @date 05.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,58 +27,34 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_UTILS_DETAILS_HPP
-#define FRAMEWORK_COMMON_UTILS_DETAILS_HPP
+#include <windows.h>
 
-#include <iostream>
-#include <memory>
+#include <common/types.hpp>
+#include <opengl/details/gl_details.hpp>
 
-namespace framework::utils::details
+namespace framework::opengl::details
 {
-template <typename T>
-auto get_distribution(T min_value, T max_value)
+gl_function_ptr get_function(const char* function_name)
 {
-    if constexpr (std::is_integral<T>::value == true) {
-        return std::uniform_int_distribution<T>(min_value, max_value);
-    } else {
-        return std::uniform_real_distribution<T>(min_value, max_value);
+    HDC device_context      = GetDC(nullptr);
+    HGLRC rendering_context = wglCreateContext(device_context);
+    wglMakeCurrent(device_context, rendering_context);
+
+    auto function = reinterpret_cast<gl_function_ptr>(wglGetProcAddress(function_name));
+    if (function == nullptr || (function == reinterpret_cast<gl_function_ptr>(0x1)) ||
+        (function == reinterpret_cast<gl_function_ptr>(0x2)) || (function == reinterpret_cast<gl_function_ptr>(0x3)) ||
+        (function == reinterpret_cast<gl_function_ptr>(-1))) {
+        HMODULE module = LoadLibrary(L"opengl32.dll");
+        if (module != nullptr) {
+            function = reinterpret_cast<gl_function_ptr>(GetProcAddress(module, function_name));
+        } else {
+            function = nullptr;
+        }
     }
-};
 
-/*
-namespace format_details
-{
-struct value_base
-{
-    virtual ~value_base()                         = default;
-    virtual void print_to(std::ostream& os) const = 0;
-};
+    wglDeleteContext(rendering_context);
 
-template <typename T>
-struct value_holder : public value_base
-{
-    value_holder(const T& v) : value(v)
-    {}
-    void print_to(std::ostream& os) const override
-    {
-        os << value;
-    }
-    const T& value;
-};
-
-template <typename T>
-inline std::unique_ptr<value_base> make_value_holder_ptr(const T& t)
-{
-    return std::unique_ptr<value_base>(new value_holder<T>(t));
+    return function;
 }
 
-std::string make_string_impl(const std::string& str,
-                             const std::unique_ptr<value_base>* const values,
-                             const size_t values_count);
-
-} // namespace format_details
-
-*/
-} // namespace framework::utils::details
-
-#endif
+} // namespace framework::opengl::details

@@ -42,7 +42,7 @@ private:
         using ::framework::float32;
         using ::framework::float64;
         using ::framework::int32;
-        using ::framework::uint8;
+        using ::framework::uint16;
 
         using ::framework::utils::random_numbers;
 
@@ -64,8 +64,8 @@ private:
             }
         }
 
-        for (int32 i : random_numbers<uint8>(255, 0, 1000)) {
-            if (i < 0 || i > 255) {
+        for (int32 i : random_numbers<uint16>(0xFFFF, 0, 1000)) {
+            if (i < 0 || i > 0xFFFF) {
                 TEST_FAIL("Wrong number in the sequence.");
             }
         }

@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <opengl/details/gl_details.hpp>
 #include <opengl/gl.hpp>
-#include <opengl/gl_details.hpp>
 
 namespace
 {
@@ -167,8 +167,14 @@ bool init_gl_khr_blend_equation_advanced();
 #ifdef GL_KHR_parallel_shader_compile
 bool init_gl_khr_parallel_shader_compile();
 #endif
+#ifdef GL_AMD_framebuffer_multisample_advanced
+bool init_gl_amd_framebuffer_multisample_advanced();
+#endif
 #ifdef GL_AMD_performance_monitor
 bool init_gl_amd_performance_monitor();
+#endif
+#ifdef GL_EXT_EGL_image_storage
+bool init_gl_ext_egl_image_storage();
 #endif
 #ifdef GL_EXT_debug_label
 bool init_gl_ext_debug_label();
@@ -190,6 +196,9 @@ bool init_gl_ext_raster_multisample();
 #endif
 #ifdef GL_EXT_separate_shader_objects
 bool init_gl_ext_separate_shader_objects();
+#endif
+#ifdef GL_EXT_shader_framebuffer_fetch_non_coherent
+bool init_gl_ext_shader_framebuffer_fetch_non_coherent();
 #endif
 #ifdef GL_EXT_window_rectangles
 bool init_gl_ext_window_rectangles();
@@ -2566,6 +2575,29 @@ bool init_gl_khr_parallel_shader_compile()
 
 #pragma endregion
 
+#pragma region GL_AMD_framebuffer_multisample_advanced
+
+#ifdef GL_AMD_framebuffer_multisample_advanced
+
+PFNGLRENDERBUFFERSTORAGEMULTISAMPLEADVANCEDAMDPROC glRenderbufferStorageMultisampleAdvancedAMD           = nullptr;
+PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEADVANCEDAMDPROC glNamedRenderbufferStorageMultisampleAdvancedAMD = nullptr;
+
+bool init_gl_amd_framebuffer_multisample_advanced()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glRenderbufferStorageMultisampleAdvancedAMD = get_function<PFNGLRENDERBUFFERSTORAGEMULTISAMPLEADVANCEDAMDPROC>("glRenderbufferStorageMultisampleAdvancedAMD")) != nullptr;
+    result = result && (glNamedRenderbufferStorageMultisampleAdvancedAMD = get_function<PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEADVANCEDAMDPROC>("glNamedRenderbufferStorageMultisampleAdvancedAMD")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_AMD_framebuffer_multisample_advanced
+
+#pragma endregion
+
 #pragma region GL_AMD_performance_monitor
 
 #ifdef GL_AMD_performance_monitor
@@ -2604,6 +2636,29 @@ bool init_gl_amd_performance_monitor()
 }
 
 #endif // GL_AMD_performance_monitor
+
+#pragma endregion
+
+#pragma region GL_EXT_EGL_image_storage
+
+#ifdef GL_EXT_EGL_image_storage
+
+PFNGLEGLIMAGETARGETTEXSTORAGEEXTPROC glEGLImageTargetTexStorageEXT         = nullptr;
+PFNGLEGLIMAGETARGETTEXTURESTORAGEEXTPROC glEGLImageTargetTextureStorageEXT = nullptr;
+
+bool init_gl_ext_egl_image_storage()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glEGLImageTargetTexStorageEXT = get_function<PFNGLEGLIMAGETARGETTEXSTORAGEEXTPROC>("glEGLImageTargetTexStorageEXT")) != nullptr;
+    result = result && (glEGLImageTargetTextureStorageEXT = get_function<PFNGLEGLIMAGETARGETTEXTURESTORAGEEXTPROC>("glEGLImageTargetTextureStorageEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_EGL_image_storage
 
 #pragma endregion
 
@@ -3271,6 +3326,27 @@ bool init_gl_ext_separate_shader_objects()
 }
 
 #endif // GL_EXT_separate_shader_objects
+
+#pragma endregion
+
+#pragma region GL_EXT_shader_framebuffer_fetch_non_coherent
+
+#ifdef GL_EXT_shader_framebuffer_fetch_non_coherent
+
+PFNGLFRAMEBUFFERFETCHBARRIEREXTPROC glFramebufferFetchBarrierEXT = nullptr;
+
+bool init_gl_ext_shader_framebuffer_fetch_non_coherent()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (glFramebufferFetchBarrierEXT = get_function<PFNGLFRAMEBUFFERFETCHBARRIEREXTPROC>("glFramebufferFetchBarrierEXT")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
+#endif // GL_EXT_shader_framebuffer_fetch_non_coherent
 
 #pragma endregion
 
@@ -4328,8 +4404,14 @@ bool init()
 #ifdef GL_KHR_parallel_shader_compile
     result = result && init_gl_khr_parallel_shader_compile();
 #endif
+#ifdef GL_AMD_framebuffer_multisample_advanced
+    result = result && init_gl_amd_framebuffer_multisample_advanced();
+#endif
 #ifdef GL_AMD_performance_monitor
     result = result && init_gl_amd_performance_monitor();
+#endif
+#ifdef GL_EXT_EGL_image_storage
+    result = result && init_gl_ext_egl_image_storage();
 #endif
 #ifdef GL_EXT_debug_label
     result = result && init_gl_ext_debug_label();
@@ -4351,6 +4433,9 @@ bool init()
 #endif
 #ifdef GL_EXT_separate_shader_objects
     result = result && init_gl_ext_separate_shader_objects();
+#endif
+#ifdef GL_EXT_shader_framebuffer_fetch_non_coherent
+    result = result && init_gl_ext_shader_framebuffer_fetch_non_coherent();
 #endif
 #ifdef GL_EXT_window_rectangles
     result = result && init_gl_ext_window_rectangles();
