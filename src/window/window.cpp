@@ -36,7 +36,8 @@ namespace framework
 {
 namespace os
 {
-window::window(size_t size, const std::string& title) : m_implementation(implementation::create(size, title))
+window::window(size_t size, const std::string& title, opengl::context_settings settings)
+    : m_implementation(implementation::create(size, title, std::move(settings)))
 {}
 
 window::~window() = default;
@@ -155,7 +156,7 @@ std::string window::title() const
     return m_implementation->title();
 }
 
-std::unique_ptr<window::graphic_context> window::context() const
+framework::opengl::context* window::context() const
 {
     return m_implementation->context();
 }

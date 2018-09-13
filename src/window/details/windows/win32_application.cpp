@@ -1,7 +1,7 @@
 /// @file
-/// @brief OpneGL helper functions.
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 01.09.2018
+/// @date 19.04.2017
 
 // =============================================================================
 // MIT License
@@ -27,14 +27,53 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_OPENGL_DETAILS_GL_DETAILS_HPP
-#define FRAMEWORK_OPENGL_DETAILS_GL_DETAILS_HPP
+#include <window/details/windows/win32_application.hpp>
+#include <window/details/windows/win32_window.hpp>
 
-namespace framework::opengl::details
+namespace framework::os
 {
-using gl_function_ptr = void (*)();
-gl_function_ptr get_function(const char* function_name);
+win32_application::container win32_application::m_windows;
+HMODULE win32_application::m_handle = nullptr;
 
-} // namespace framework::opengl::details
+void win32_application::add_window(HANDLE handle, framework::os::win32_window* window)
+{
+    m_windows.insert({handle, window});
+}
 
-#endif
+framework::os::win32_window* win32_application::get_window(HANDLE handle)
+{
+    if (m_windows.count(handle)) {
+        return m_windows[handle];
+    }
+
+    return nullptr;
+}
+
+void win32_application::remove_window(HANDLE handle)
+{
+    m_windows.erase(handle);
+}
+
+HMODULE win32_application::handle()
+{
+    if (m_handle == nullptr) {
+        m_handle = GetModuleHandle(nullptr);
+    }
+
+    if (m_handle == nullptr) {
+        throw std::runtime_error("Failed to get application instance handle.");
+    }
+
+    return m_handle;
+}
+
+LRESULT CALLBACK win32_application::window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (auto window = get_window(window_handle); window != nullptr) {
+        return window->process_message(message, w_param, l_param);
+    }
+
+    return DefWindowProc(window_handle, message, w_param, l_param);
+}
+
+} // namespace framework::os

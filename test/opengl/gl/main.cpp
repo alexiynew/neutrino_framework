@@ -30,6 +30,7 @@
 #include <thread>
 
 #include <common/utils.hpp>
+#include <common/version.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
 #include <math/math.hpp>
@@ -144,7 +145,15 @@ private:
 
         set_logger(std::make_unique<stream_logger>(std::cout));
 
-        framework::os::window main_window({640, 480}, "Game");
+        framework::os::window main_window({640, 480},
+                                          "Game",
+                                          context_settings()
+                                          .double_buffered()
+                                          .version({4, 2})
+                                          .depth_bits(32)
+                                          .stencil_bits(32)
+                                          .color_type(context_settings::color::rgba)
+                                          .samples_count(context_settings::samples::best));
         auto context = main_window.context();
 
         if (context == nullptr || !context->valid()) {
@@ -152,8 +161,12 @@ private:
             return;
         }
 
-        context->make_current();
-        if (!framework::opengl::init()) {
+        if (!framework::opengl::init(context)) {
+            TEST_FAIL("Can't init OpenGL functions.");
+            return;
+        }
+
+        if (!framework::opengl::init_extensions(context, {"large", "extentions", "list"})) {
             TEST_FAIL("Can't init OpenGL functions.");
             return;
         }

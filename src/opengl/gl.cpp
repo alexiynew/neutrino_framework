@@ -27,6 +27,9 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <algorithm>
+
+#include <common/version.hpp>
 #include <opengl/details/gl_details.hpp>
 #include <opengl/gl.hpp>
 
@@ -4277,246 +4280,448 @@ bool init_gl_ovr_multiview()
 
 #pragma region init
 
-bool init()
+bool init(const opengl::context* context)
 {
-    bool result = true;
+    bool result = context->valid();
+    context->make_current();
 
 #ifdef GL_VERSION_1_0
-    result = result && init_gl_version_1_0();
+    if (context->settings().get_version() >= utils::version(1, 0)) {
+        result = result && init_gl_version_1_0();
+    }
 #endif
 #ifdef GL_VERSION_1_1
-    result = result && init_gl_version_1_1();
+    if (context->settings().get_version() >= utils::version(1, 1)) {
+        result = result && init_gl_version_1_1();
+    }
 #endif
 #ifdef GL_VERSION_1_2
-    result = result && init_gl_version_1_2();
+    if (context->settings().get_version() >= utils::version(1, 2)) {
+        result = result && init_gl_version_1_2();
+    }
 #endif
 #ifdef GL_VERSION_1_3
-    result = result && init_gl_version_1_3();
+    if (context->settings().get_version() >= utils::version(1, 3)) {
+        result = result && init_gl_version_1_3();
+    }
 #endif
 #ifdef GL_VERSION_1_4
-    result = result && init_gl_version_1_4();
+    if (context->settings().get_version() >= utils::version(1, 4)) {
+        result = result && init_gl_version_1_4();
+    }
 #endif
 #ifdef GL_VERSION_1_5
-    result = result && init_gl_version_1_5();
+    if (context->settings().get_version() >= utils::version(1, 5)) {
+        result = result && init_gl_version_1_5();
+    }
 #endif
 #ifdef GL_VERSION_2_0
-    result = result && init_gl_version_2_0();
+    if (context->settings().get_version() >= utils::version(2, 0)) {
+        result = result && init_gl_version_2_0();
+    }
 #endif
 #ifdef GL_VERSION_2_1
-    result = result && init_gl_version_2_1();
+    if (context->settings().get_version() >= utils::version(2, 1)) {
+        result = result && init_gl_version_2_1();
+    }
 #endif
 #ifdef GL_VERSION_3_0
-    result = result && init_gl_version_3_0();
+    if (context->settings().get_version() >= utils::version(3, 0)) {
+        result = result && init_gl_version_3_0();
+    }
 #endif
 #ifdef GL_VERSION_3_1
-    result = result && init_gl_version_3_1();
+    if (context->settings().get_version() >= utils::version(3, 1)) {
+        result = result && init_gl_version_3_1();
+    }
 #endif
 #ifdef GL_VERSION_3_2
-    result = result && init_gl_version_3_2();
+    if (context->settings().get_version() >= utils::version(3, 2)) {
+        result = result && init_gl_version_3_2();
+    }
 #endif
 #ifdef GL_VERSION_3_3
-    result = result && init_gl_version_3_3();
+    if (context->settings().get_version() >= utils::version(3, 3)) {
+        result = result && init_gl_version_3_3();
+    }
 #endif
 #ifdef GL_VERSION_4_0
-    result = result && init_gl_version_4_0();
+    if (context->settings().get_version() >= utils::version(4, 0)) {
+        result = result && init_gl_version_4_0();
+    }
 #endif
 #ifdef GL_VERSION_4_1
-    result = result && init_gl_version_4_1();
+    if (context->settings().get_version() >= utils::version(4, 1)) {
+        result = result && init_gl_version_4_1();
+    }
 #endif
 #ifdef GL_VERSION_4_2
-    result = result && init_gl_version_4_2();
+    if (context->settings().get_version() >= utils::version(4, 2)) {
+        result = result && init_gl_version_4_2();
+    }
 #endif
 #ifdef GL_VERSION_4_3
-    result = result && init_gl_version_4_3();
+    if (context->settings().get_version() >= utils::version(4, 3)) {
+        result = result && init_gl_version_4_3();
+    }
 #endif
 #ifdef GL_VERSION_4_4
-    result = result && init_gl_version_4_4();
+    if (context->settings().get_version() >= utils::version(4, 4)) {
+        result = result && init_gl_version_4_4();
+    }
 #endif
 #ifdef GL_VERSION_4_5
-    result = result && init_gl_version_4_5();
+    if (context->settings().get_version() >= utils::version(4, 5)) {
+        result = result && init_gl_version_4_5();
+    }
 #endif
 #ifdef GL_VERSION_4_6
-    result = result && init_gl_version_4_6();
+    if (context->settings().get_version() >= utils::version(4, 6)) {
+        result = result && init_gl_version_4_6();
+    }
 #endif
+    return result;
+}
+
+bool init_extensions(const opengl::context* context, const std::vector<std::string>& extensions_list)
+{
+    bool result = context->valid();
+    context->make_current();
+
 #ifdef GL_ARB_ES3_2_compatibility
-    result = result && init_gl_arb_es3_2_compatibility();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_ES3_2_compatibility") !=
+        extensions_list.end()) {
+        result = result && init_gl_arb_es3_2_compatibility();
+    }
 #endif
 #ifdef GL_ARB_bindless_texture
-    result = result && init_gl_arb_bindless_texture();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_bindless_texture") != extensions_list.end()) {
+        result = result && init_gl_arb_bindless_texture();
+    }
 #endif
 #ifdef GL_ARB_cl_event
-    result = result && init_gl_arb_cl_event();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_cl_event") != extensions_list.end()) {
+        result = result && init_gl_arb_cl_event();
+    }
 #endif
 #ifdef GL_ARB_compute_variable_group_size
-    result = result && init_gl_arb_compute_variable_group_size();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_compute_variable_group_size") !=
+        extensions_list.end()) {
+        result = result && init_gl_arb_compute_variable_group_size();
+    }
 #endif
 #ifdef GL_ARB_debug_output
-    result = result && init_gl_arb_debug_output();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_debug_output") != extensions_list.end()) {
+        result = result && init_gl_arb_debug_output();
+    }
 #endif
 #ifdef GL_ARB_draw_buffers_blend
-    result = result && init_gl_arb_draw_buffers_blend();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_draw_buffers_blend") !=
+        extensions_list.end()) {
+        result = result && init_gl_arb_draw_buffers_blend();
+    }
 #endif
 #ifdef GL_ARB_draw_instanced
-    result = result && init_gl_arb_draw_instanced();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_draw_instanced") != extensions_list.end()) {
+        result = result && init_gl_arb_draw_instanced();
+    }
 #endif
 #ifdef GL_ARB_geometry_shader4
-    result = result && init_gl_arb_geometry_shader4();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_geometry_shader4") != extensions_list.end()) {
+        result = result && init_gl_arb_geometry_shader4();
+    }
 #endif
 #ifdef GL_ARB_gl_spirv
-    result = result && init_gl_arb_gl_spirv();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_gl_spirv") != extensions_list.end()) {
+        result = result && init_gl_arb_gl_spirv();
+    }
 #endif
 #ifdef GL_ARB_gpu_shader_int64
-    result = result && init_gl_arb_gpu_shader_int64();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_gpu_shader_int64") != extensions_list.end()) {
+        result = result && init_gl_arb_gpu_shader_int64();
+    }
 #endif
 #ifdef GL_ARB_indirect_parameters
-    result = result && init_gl_arb_indirect_parameters();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_indirect_parameters") !=
+        extensions_list.end()) {
+        result = result && init_gl_arb_indirect_parameters();
+    }
 #endif
 #ifdef GL_ARB_instanced_arrays
-    result = result && init_gl_arb_instanced_arrays();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_instanced_arrays") != extensions_list.end()) {
+        result = result && init_gl_arb_instanced_arrays();
+    }
 #endif
 #ifdef GL_ARB_parallel_shader_compile
-    result = result && init_gl_arb_parallel_shader_compile();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_parallel_shader_compile") !=
+        extensions_list.end()) {
+        result = result && init_gl_arb_parallel_shader_compile();
+    }
 #endif
 #ifdef GL_ARB_robustness
-    result = result && init_gl_arb_robustness();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_robustness") != extensions_list.end()) {
+        result = result && init_gl_arb_robustness();
+    }
 #endif
 #ifdef GL_ARB_sample_locations
-    result = result && init_gl_arb_sample_locations();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_sample_locations") != extensions_list.end()) {
+        result = result && init_gl_arb_sample_locations();
+    }
 #endif
 #ifdef GL_ARB_sample_shading
-    result = result && init_gl_arb_sample_shading();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_sample_shading") != extensions_list.end()) {
+        result = result && init_gl_arb_sample_shading();
+    }
 #endif
 #ifdef GL_ARB_shading_language_include
-    result = result && init_gl_arb_shading_language_include();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_shading_language_include") !=
+        extensions_list.end()) {
+        result = result && init_gl_arb_shading_language_include();
+    }
 #endif
 #ifdef GL_ARB_sparse_buffer
-    result = result && init_gl_arb_sparse_buffer();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_sparse_buffer") != extensions_list.end()) {
+        result = result && init_gl_arb_sparse_buffer();
+    }
 #endif
 #ifdef GL_ARB_sparse_texture
-    result = result && init_gl_arb_sparse_texture();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_sparse_texture") != extensions_list.end()) {
+        result = result && init_gl_arb_sparse_texture();
+    }
 #endif
 #ifdef GL_ARB_texture_buffer_object
-    result = result && init_gl_arb_texture_buffer_object();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_texture_buffer_object") !=
+        extensions_list.end()) {
+        result = result && init_gl_arb_texture_buffer_object();
+    }
 #endif
 #ifdef GL_KHR_blend_equation_advanced
-    result = result && init_gl_khr_blend_equation_advanced();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_KHR_blend_equation_advanced") !=
+        extensions_list.end()) {
+        result = result && init_gl_khr_blend_equation_advanced();
+    }
 #endif
 #ifdef GL_KHR_parallel_shader_compile
-    result = result && init_gl_khr_parallel_shader_compile();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_KHR_parallel_shader_compile") !=
+        extensions_list.end()) {
+        result = result && init_gl_khr_parallel_shader_compile();
+    }
 #endif
 #ifdef GL_AMD_framebuffer_multisample_advanced
-    result = result && init_gl_amd_framebuffer_multisample_advanced();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_AMD_framebuffer_multisample_advanced") !=
+        extensions_list.end()) {
+        result = result && init_gl_amd_framebuffer_multisample_advanced();
+    }
 #endif
 #ifdef GL_AMD_performance_monitor
-    result = result && init_gl_amd_performance_monitor();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_AMD_performance_monitor") !=
+        extensions_list.end()) {
+        result = result && init_gl_amd_performance_monitor();
+    }
 #endif
 #ifdef GL_EXT_EGL_image_storage
-    result = result && init_gl_ext_egl_image_storage();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_EGL_image_storage") !=
+        extensions_list.end()) {
+        result = result && init_gl_ext_egl_image_storage();
+    }
 #endif
 #ifdef GL_EXT_debug_label
-    result = result && init_gl_ext_debug_label();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_debug_label") != extensions_list.end()) {
+        result = result && init_gl_ext_debug_label();
+    }
 #endif
 #ifdef GL_EXT_debug_marker
-    result = result && init_gl_ext_debug_marker();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_debug_marker") != extensions_list.end()) {
+        result = result && init_gl_ext_debug_marker();
+    }
 #endif
 #ifdef GL_EXT_direct_state_access
-    result = result && init_gl_ext_direct_state_access();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_direct_state_access") !=
+        extensions_list.end()) {
+        result = result && init_gl_ext_direct_state_access();
+    }
 #endif
 #ifdef GL_EXT_draw_instanced
-    result = result && init_gl_ext_draw_instanced();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_draw_instanced") != extensions_list.end()) {
+        result = result && init_gl_ext_draw_instanced();
+    }
 #endif
 #ifdef GL_EXT_polygon_offset_clamp
-    result = result && init_gl_ext_polygon_offset_clamp();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_polygon_offset_clamp") !=
+        extensions_list.end()) {
+        result = result && init_gl_ext_polygon_offset_clamp();
+    }
 #endif
 #ifdef GL_EXT_raster_multisample
-    result = result && init_gl_ext_raster_multisample();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_raster_multisample") !=
+        extensions_list.end()) {
+        result = result && init_gl_ext_raster_multisample();
+    }
 #endif
 #ifdef GL_EXT_separate_shader_objects
-    result = result && init_gl_ext_separate_shader_objects();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_separate_shader_objects") !=
+        extensions_list.end()) {
+        result = result && init_gl_ext_separate_shader_objects();
+    }
 #endif
 #ifdef GL_EXT_shader_framebuffer_fetch_non_coherent
-    result = result && init_gl_ext_shader_framebuffer_fetch_non_coherent();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_shader_framebuffer_fetch_non_coherent") !=
+        extensions_list.end()) {
+        result = result && init_gl_ext_shader_framebuffer_fetch_non_coherent();
+    }
 #endif
 #ifdef GL_EXT_window_rectangles
-    result = result && init_gl_ext_window_rectangles();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_window_rectangles") !=
+        extensions_list.end()) {
+        result = result && init_gl_ext_window_rectangles();
+    }
 #endif
 #ifdef GL_INTEL_framebuffer_CMAA
-    result = result && init_gl_intel_framebuffer_cmaa();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_INTEL_framebuffer_CMAA") !=
+        extensions_list.end()) {
+        result = result && init_gl_intel_framebuffer_cmaa();
+    }
 #endif
 #ifdef GL_INTEL_performance_query
-    result = result && init_gl_intel_performance_query();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_INTEL_performance_query") !=
+        extensions_list.end()) {
+        result = result && init_gl_intel_performance_query();
+    }
 #endif
 #ifdef GL_NV_bindless_multi_draw_indirect
-    result = result && init_gl_nv_bindless_multi_draw_indirect();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_bindless_multi_draw_indirect") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_bindless_multi_draw_indirect();
+    }
 #endif
 #ifdef GL_NV_bindless_multi_draw_indirect_count
-    result = result && init_gl_nv_bindless_multi_draw_indirect_count();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_bindless_multi_draw_indirect_count") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_bindless_multi_draw_indirect_count();
+    }
 #endif
 #ifdef GL_NV_bindless_texture
-    result = result && init_gl_nv_bindless_texture();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_bindless_texture") != extensions_list.end()) {
+        result = result && init_gl_nv_bindless_texture();
+    }
 #endif
 #ifdef GL_NV_blend_equation_advanced
-    result = result && init_gl_nv_blend_equation_advanced();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_blend_equation_advanced") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_blend_equation_advanced();
+    }
 #endif
 #ifdef GL_NV_clip_space_w_scaling
-    result = result && init_gl_nv_clip_space_w_scaling();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_clip_space_w_scaling") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_clip_space_w_scaling();
+    }
 #endif
 #ifdef GL_NV_command_list
-    result = result && init_gl_nv_command_list();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_command_list") != extensions_list.end()) {
+        result = result && init_gl_nv_command_list();
+    }
 #endif
 #ifdef GL_NV_conditional_render
-    result = result && init_gl_nv_conditional_render();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_conditional_render") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_conditional_render();
+    }
 #endif
 #ifdef GL_NV_conservative_raster
-    result = result && init_gl_nv_conservative_raster();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_conservative_raster") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_conservative_raster();
+    }
 #endif
 #ifdef GL_NV_conservative_raster_dilate
-    result = result && init_gl_nv_conservative_raster_dilate();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_conservative_raster_dilate") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_conservative_raster_dilate();
+    }
 #endif
 #ifdef GL_NV_conservative_raster_pre_snap_triangles
-    result = result && init_gl_nv_conservative_raster_pre_snap_triangles();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_conservative_raster_pre_snap_triangles") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_conservative_raster_pre_snap_triangles();
+    }
 #endif
 #ifdef GL_NV_draw_vulkan_image
-    result = result && init_gl_nv_draw_vulkan_image();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_draw_vulkan_image") != extensions_list.end()) {
+        result = result && init_gl_nv_draw_vulkan_image();
+    }
 #endif
 #ifdef GL_NV_fragment_coverage_to_color
-    result = result && init_gl_nv_fragment_coverage_to_color();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_fragment_coverage_to_color") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_fragment_coverage_to_color();
+    }
 #endif
 #ifdef GL_NV_framebuffer_mixed_samples
-    result = result && init_gl_nv_framebuffer_mixed_samples();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_framebuffer_mixed_samples") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_framebuffer_mixed_samples();
+    }
 #endif
 #ifdef GL_NV_framebuffer_multisample_coverage
-    result = result && init_gl_nv_framebuffer_multisample_coverage();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_framebuffer_multisample_coverage") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_framebuffer_multisample_coverage();
+    }
 #endif
 #ifdef GL_NV_gpu_shader5
-    result = result && init_gl_nv_gpu_shader5();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_gpu_shader5") != extensions_list.end()) {
+        result = result && init_gl_nv_gpu_shader5();
+    }
 #endif
 #ifdef GL_NV_internalformat_sample_query
-    result = result && init_gl_nv_internalformat_sample_query();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_internalformat_sample_query") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_internalformat_sample_query();
+    }
 #endif
 #ifdef GL_NV_path_rendering
-    result = result && init_gl_nv_path_rendering();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_path_rendering") != extensions_list.end()) {
+        result = result && init_gl_nv_path_rendering();
+    }
 #endif
 #ifdef GL_NV_sample_locations
-    result = result && init_gl_nv_sample_locations();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_sample_locations") != extensions_list.end()) {
+        result = result && init_gl_nv_sample_locations();
+    }
 #endif
 #ifdef GL_NV_shader_buffer_load
-    result = result && init_gl_nv_shader_buffer_load();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_shader_buffer_load") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_shader_buffer_load();
+    }
 #endif
 #ifdef GL_NV_texture_barrier
-    result = result && init_gl_nv_texture_barrier();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_texture_barrier") != extensions_list.end()) {
+        result = result && init_gl_nv_texture_barrier();
+    }
 #endif
 #ifdef GL_NV_vertex_attrib_integer_64bit
-    result = result && init_gl_nv_vertex_attrib_integer_64bit();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_vertex_attrib_integer_64bit") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_vertex_attrib_integer_64bit();
+    }
 #endif
 #ifdef GL_NV_vertex_buffer_unified_memory
-    result = result && init_gl_nv_vertex_buffer_unified_memory();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_vertex_buffer_unified_memory") !=
+        extensions_list.end()) {
+        result = result && init_gl_nv_vertex_buffer_unified_memory();
+    }
 #endif
 #ifdef GL_NV_viewport_swizzle
-    result = result && init_gl_nv_viewport_swizzle();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_viewport_swizzle") != extensions_list.end()) {
+        result = result && init_gl_nv_viewport_swizzle();
+    }
 #endif
 #ifdef GL_OVR_multiview
-    result = result && init_gl_ovr_multiview();
+    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_OVR_multiview") != extensions_list.end()) {
+        result = result && init_gl_ovr_multiview();
+    }
 #endif
     return result;
 }

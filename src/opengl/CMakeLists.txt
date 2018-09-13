@@ -36,15 +36,14 @@ target_include_directories(${PROJECT_NAME}
         ${OPENGL_INCLUDE_DIR}
 )
 
-message(=========================)
-message(${OPENGL_LIBRARY})
-
 set(PUBLIC_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/context.hpp
 )
 
 set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/context.cpp
 )
 
 target_sources(${PROJECT_NAME}

@@ -1,7 +1,7 @@
 /// @file
-/// @brief OpneGL helper functions.
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 01.09.2018
+/// @date 11.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,14 +27,32 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_OPENGL_DETAILS_GL_DETAILS_HPP
-#define FRAMEWORK_OPENGL_DETAILS_GL_DETAILS_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_CONTEXT_HPP
+#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_CONTEXT_HPP
 
-namespace framework::opengl::details
+#include <windows.h>
+
+#include <opengl/context.hpp>
+
+namespace framework::os
 {
-using gl_function_ptr = void (*)();
-gl_function_ptr get_function(const char* function_name);
+class win32_context : public framework::opengl::context
+{
+public:
+    win32_context(HWND window, opengl::context_settings settings_value);
+    ~win32_context() override = default;
 
-} // namespace framework::opengl::details
+    bool valid() const override;
+    bool is_current() const override;
+
+    void make_current() const override;
+    void swap_buffers() const override;
+
+private:
+    HDC m_hdc     = nullptr;
+    HGLRC m_hglrc = nullptr;
+};
+
+} // namespace framework::os
 
 #endif

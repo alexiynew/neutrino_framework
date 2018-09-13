@@ -27,79 +27,17 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <exception>
-#include <map>
+#include <stdexcept>
 
 #include <log/log.hpp>
+#include <window/details/windows/win32_application.hpp>
+#include <window/details/windows/win32_context.hpp>
 #include <window/details/windows/win32_window.hpp>
-
-class application
-{
-public:
-    static void add_window(HANDLE handle, framework::os::win32_window* window);
-    static framework::os::win32_window* get_window(HANDLE handle);
-    static void remove_window(HANDLE handle);
-
-    static HMODULE handle();
-
-    static LRESULT CALLBACK window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param);
-
-private:
-    using container = std::map<HANDLE, framework::os::win32_window*>;
-
-    static container m_windows;
-    static HMODULE m_handle;
-};
-
-application::container application::m_windows;
-HMODULE application::m_handle = nullptr;
-
-void application::add_window(HANDLE handle, framework::os::win32_window* window)
-{
-    m_windows.insert({handle, window});
-}
-
-framework::os::win32_window* application::get_window(HANDLE handle)
-{
-    if (m_windows.count(handle)) {
-        return m_windows[handle];
-    }
-
-    return nullptr;
-}
-
-void application::remove_window(HANDLE handle)
-{
-    m_windows.erase(handle);
-}
-
-HMODULE application::handle()
-{
-    if (m_handle == nullptr) {
-        m_handle = GetModuleHandle(nullptr);
-    }
-
-    if (m_handle == nullptr) {
-        throw std::runtime_error("Failed to get application instance handle.");
-    }
-
-    return m_handle;
-}
-
-LRESULT CALLBACK application::window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (auto window = get_window(window_handle)) {
-        return window->process_message(message, w_param, l_param);
-    }
-
-    return DefWindowProc(window_handle, message, w_param, l_param);
-}
 
 namespace
 {
-const char* const log_tag = "win32_window";
-
-const wchar_t g_szClassName[] = L"myWindowClass";
+const char* const log_tag  = "win32_window";
+const wchar_t class_name[] = L"my_window_class";
 
 std::wstring to_utf16(const std::string& string)
 {
@@ -139,24 +77,28 @@ std::string to_utf8(const std::wstring& string)
 
 void unregister_window_class(ATOM*)
 {
-    UnregisterClass(g_szClassName, application::handle());
+    using framework::os::win32_application;
+
+    UnregisterClass(class_name, win32_application::handle());
 }
 
 std::shared_ptr<ATOM> register_window_class_details()
 {
+    using framework::os::win32_application;
+
     WNDCLASSEX window_class = {0};
 
     window_class.cbSize        = sizeof(WNDCLASSEX);
     window_class.style         = CS_OWNDC;
-    window_class.lpfnWndProc   = application::window_procedure;
+    window_class.lpfnWndProc   = win32_application::window_procedure;
     window_class.cbClsExtra    = 0;
     window_class.cbWndExtra    = 0;
-    window_class.hInstance     = application::handle();
+    window_class.hInstance     = win32_application::handle();
     window_class.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
     window_class.hCursor       = LoadCursor(nullptr, IDC_ARROW);
     window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     window_class.lpszMenuName  = nullptr;
-    window_class.lpszClassName = g_szClassName;
+    window_class.lpszClassName = class_name;
     window_class.hIconSm       = LoadIcon(nullptr, IDI_APPLICATION);
 
     if (!RegisterClassEx(&window_class)) {
@@ -174,7 +116,6 @@ std::shared_ptr<ATOM> register_window_class()
         std::shared_ptr<ATOM> temp = ::register_window_class_details();
 
         pointer = temp;
-
         return temp;
     }
 
@@ -183,16 +124,16 @@ std::shared_ptr<ATOM> register_window_class()
 
 } // namespace
 
-namespace framework
+namespace framework::os
 {
-namespace os
+std::unique_ptr<window::implementation> window::implementation::create(window::size_t size,
+                                                                       const std::string& title,
+                                                                       opengl::context_settings settings)
 {
-std::unique_ptr<window::implementation> window::implementation::create(window::size_t size, const std::string& title)
-{
-    return std::make_unique<win32_window>(size, title);
+    return std::make_unique<win32_window>(size, title, std::move(settings));
 }
 
-win32_window::win32_window(window::size_t size, const std::string& title)
+win32_window::win32_window(window::size_t size, const std::string& title, opengl::context_settings settings)
 {
     m_window_class = ::register_window_class();
 
@@ -200,7 +141,7 @@ win32_window::win32_window(window::size_t size, const std::string& title)
     AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
 
     m_window = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,
-                              g_szClassName,
+                              class_name,
                               to_utf16(title).c_str(),
                               WS_OVERLAPPEDWINDOW,
                               CW_USEDEFAULT,
@@ -209,14 +150,16 @@ win32_window::win32_window(window::size_t size, const std::string& title)
                               rect.bottom - rect.top,
                               nullptr,
                               nullptr,
-                              ::application::handle(),
+                              win32_application::handle(),
                               nullptr);
 
     if (m_window == nullptr) {
         throw std::runtime_error("Failed to create window.");
     }
 
-    application::add_window(m_window, this);
+    m_context = std::make_unique<win32_context>(m_window, std::move(settings));
+
+    win32_application::add_window(m_window, this);
 
     // The first call ignores its parameters
     ShowWindow(m_window, SW_HIDE);
@@ -224,13 +167,13 @@ win32_window::win32_window(window::size_t size, const std::string& title)
 
 win32_window::~win32_window()
 {
-    application::remove_window(m_window);
+    win32_application::remove_window(m_window);
 
     DestroyWindow(m_window);
 }
 
-/// @name actions
-/// @{
+#pragma region actions
+
 void win32_window::show()
 {
     if (iconified()) {
@@ -330,10 +273,11 @@ void win32_window::restore()
         ShowWindow(m_window, SW_RESTORE);
     }
 }
-/// @}
 
-/// @name setters
-/// @{
+#pragma endregion
+
+#pragma region setters
+
 void win32_window::set_size(window::size_t size)
 {
     RECT rect{0, 0, size.width, size.height};
@@ -393,10 +337,11 @@ void win32_window::set_title(const std::string& title)
     const auto whide_char_title = to_utf16(title);
     SetWindowText(m_window, &whide_char_title[0]);
 }
-/// @}
 
-/// @name getters
-/// @{
+#pragma endregion
+
+#pragma region getters
+
 window::position_t win32_window::position() const
 {
     RECT rect;
@@ -437,14 +382,15 @@ std::string win32_window::title() const
     return to_utf8(buffer.get());
 }
 
-std::unique_ptr<window::graphic_context> win32_window::context() const
+framework::opengl::context* win32_window::context() const
 {
-    return nullptr;
+    return m_context.get();
 }
-/// @}
 
-/// @name state
-/// @{
+#pragma endregion
+
+#pragma region state
+
 bool win32_window::fullscreen() const
 {
     RECT window_rect;
@@ -480,7 +426,10 @@ bool win32_window::focused() const
 {
     return GetActiveWindow() == m_window && GetFocus() == m_window;
 }
-/// @}
+
+#pragma endregion
+
+#pragma region message processing
 
 LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_param)
 {
@@ -511,6 +460,6 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
     return DefWindowProc(m_window, message, w_param, l_param);
 }
 
-} // namespace os
+#pragma endregion
 
-} // namespace framework
+} // namespace framework::os

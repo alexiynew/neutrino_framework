@@ -30,11 +30,10 @@
 #ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 
-#include <Windows.h>
+#include <memory>
+#include <windows.h>
 
 #include <window/details/implementation.hpp>
-
-class application;
 
 namespace framework
 {
@@ -43,8 +42,11 @@ namespace os
 class win32_window final : public window::implementation
 {
 public:
-    win32_window(window::size_t size, const std::string& title);
+    win32_window(window::size_t size, const std::string& title, opengl::context_settings settings);
     ~win32_window() override;
+
+    win32_window(const win32_window&) = delete;
+    win32_window& operator=(const win32_window&) = delete;
 
     /// @name actions
     /// @{
@@ -84,7 +86,7 @@ public:
 
     std::string title() const override;
 
-    std::unique_ptr<window::graphic_context> context() const override;
+    framework::opengl::context* context() const override;
     /// @}
 
     /// @name state
@@ -105,9 +107,11 @@ private:
         RECT rect;
     };
 
-    friend class ::application;
+    friend class win32_application;
 
     HWND m_window = nullptr;
+    HDC m_hdc     = nullptr;
+    HGLRC m_hglrc = nullptr;
     std::shared_ptr<ATOM> m_window_class;
 
     window::size_t m_min_size = {0, 0};
@@ -116,6 +120,8 @@ private:
     bool m_resizable = true;
 
     window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
+
+    std::unique_ptr<opengl::context> m_context = nullptr;
 
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 };

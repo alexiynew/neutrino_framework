@@ -1017,7 +1017,7 @@ void x11_window::update_size_limits(window::size_t min_size, window::size_t max_
 
 #pragma endregion
 
-#pragma x11_graphic_context
+#pragma region x11_graphic_context
 
 x11_window::x11_graphic_context::x11_graphic_context(Display* display, Window window, GLXContext context)
     : m_display(display), m_window(window), m_context(context)
@@ -1031,10 +1031,10 @@ bool x11_window::x11_graphic_context::valid() const
 
 bool x11_window::x11_graphic_context::is_current() const
 {
-    return glXGetCurrentContext() == m_context;
+    return valid() && glXGetCurrentContext() == m_context;
 }
 
-void x11_window::x11_graphic_context::make_current()
+void x11_window::x11_graphic_context::make_current() const
 {
     if (!is_current()) {
         glXMakeCurrent(m_display, m_window, m_context);

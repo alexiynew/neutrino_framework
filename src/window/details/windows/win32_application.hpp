@@ -1,7 +1,7 @@
 /// @file
-/// @brief OpneGL helper functions.
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 01.09.2018
+/// @date 11.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,14 +27,34 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_OPENGL_DETAILS_GL_DETAILS_HPP
-#define FRAMEWORK_OPENGL_DETAILS_GL_DETAILS_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
+#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
 
-namespace framework::opengl::details
+#include <map>
+#include <windows.h>
+
+namespace framework::os
 {
-using gl_function_ptr = void (*)();
-gl_function_ptr get_function(const char* function_name);
+class win32_window;
 
-} // namespace framework::opengl::details
+class win32_application
+{
+public:
+    static void add_window(HANDLE handle, framework::os::win32_window* window);
+    static framework::os::win32_window* get_window(HANDLE handle);
+    static void remove_window(HANDLE handle);
+
+    static HMODULE handle();
+
+    static LRESULT CALLBACK window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param);
+
+private:
+    using container = std::map<HANDLE, framework::os::win32_window*>;
+
+    static container m_windows;
+    static HMODULE m_handle;
+};
+
+} // namespace framework::os
 
 #endif

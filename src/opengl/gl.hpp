@@ -31,11 +31,18 @@
 #define FRAMEWORK_OPENGL_GL_HPP
 
 #include <GL/glcorearb.h>
+#include <string>
+#include <vector>
+
+#include <opengl/context.hpp>
 
 namespace framework::opengl
 {
-/// Initialize all GL functions
-bool init();
+/// Initialize GL core functions
+bool init(const opengl::context* context);
+
+/// Initialize GL extension functions
+bool init_extensions(const opengl::context* context, const std::vector<std::string>& extensions_list);
 
 #pragma region GL_VERSION_1_0
 

@@ -1,5 +1,7 @@
 #! /usr/bin/python3
 
+import re
+
 source = "./dependencies/GL/glcorearb.h"
 desthpp = "./src/opengl/gl.hpp"
 destcpp = "./src/opengl/gl.cpp"
@@ -122,11 +124,19 @@ hppheader = "/// @file\n" \
     "#define FRAMEWORK_OPENGL_GL_HPP\n" \
     "\n" \
     "#include <GL/glcorearb.h>\n" \
+    "#include <string>\n" \
+    "#include <vector>\n" \
+    "\n" \
+    "#include <opengl/context.hpp>\n" \
     "\n" \
     "namespace framework::opengl\n" \
     "{\n" \
-    "/// Initialize all GL functions\n" \
-    "bool init();\n\n"
+    "/// Initialize GL core functions\n" \
+    "bool init(const opengl::context* context);\n" \
+    "\n" \
+    "/// Initialize GL extension functions\n" \
+    "bool init_extensions(const opengl::context* context, const std::vector<std::string>& extensions_list);\n" \
+    "\n"
 
 hppfooter = "} // namespace framework::opengl\n" \
     "\n" \
@@ -176,6 +186,9 @@ cppheader = "/// @file\n" \
     "// SOFTWARE.\n" \
     "// =============================================================================\n" \
     "\n" \
+    "#include <algorithm>\n" \
+    "\n" \
+    "#include <common/version.hpp>\n" \
     "#include <opengl/details/gl_details.hpp>\n" \
     "#include <opengl/gl.hpp>\n" \
     "\n" \
@@ -235,21 +248,50 @@ for s in sections:
 
 
 cpp.write("#pragma region init\n")
+
 cpp.write("\n")
-cpp.write("bool init()\n")
+cpp.write("bool init(const opengl::context* context)\n")
 cpp.write("{\n")
-cpp.write("    bool result = true;\n")
+cpp.write("    bool result = context->valid();\n")
+cpp.write("    context->make_current();\n")
 cpp.write("\n")
 
 for s in sections:
-    if len(s.functions) > 0:
+    if len(s.functions) > 0 and s.name.startswith("GL_VERSION"):
+        major, minor = re.findall(r'[A-Z_]*_(\d)_(\d)', s.name)[0]
+
         cpp.write("#ifdef {0}\n".format(s.name))
         cpp.write(
-            "    result = result && init_{0}();\n".format(s.name.lower()))
+            "    if (context->settings().get_version() >= utils::version({0}, {1})) {{\n".format(major, minor))
+        cpp.write(
+            "        result = result && init_{0}();\n".format(s.name.lower()))
+        cpp.write("    }\n")
         cpp.write("#endif\n")
 
 cpp.write("    return result;\n")
-cpp.write("}\n\n")
+cpp.write("}\n")
+
+cpp.write("\n")
+cpp.write("bool init_extensions(const opengl::context* context, const std::vector<std::string>& extensions_list)\n")
+cpp.write("{\n")
+cpp.write("    bool result = context->valid();\n")
+cpp.write("    context->make_current();\n")
+cpp.write("\n")
+
+for s in sections:
+    if len(s.functions) > 0 and (not s.name.startswith("GL_VERSION")):
+        cpp.write("#ifdef {0}\n".format(s.name))
+        cpp.write(
+            "    if (std::find(extensions_list.begin(), extensions_list.end(), \"{0}\") != extensions_list.end()) {{\n".format(s.name))
+        cpp.write(
+            "        result = result && init_{0}();\n".format(s.name.lower()))
+        cpp.write("    }\n")
+        cpp.write("#endif\n")
+
+cpp.write("    return result;\n")
+cpp.write("}\n")
+
+cpp.write("\n")
 cpp.write("#pragma endregion\n\n")
 
 cpp.write(cppfooter)

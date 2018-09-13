@@ -36,10 +36,6 @@ namespace framework::opengl::details
 {
 gl_function_ptr get_function(const char* function_name)
 {
-    HDC device_context      = GetDC(nullptr);
-    HGLRC rendering_context = wglCreateContext(device_context);
-    wglMakeCurrent(device_context, rendering_context);
-
     auto function = reinterpret_cast<gl_function_ptr>(wglGetProcAddress(function_name));
     if (function == nullptr || (function == reinterpret_cast<gl_function_ptr>(0x1)) ||
         (function == reinterpret_cast<gl_function_ptr>(0x2)) || (function == reinterpret_cast<gl_function_ptr>(0x3)) ||
@@ -51,8 +47,6 @@ gl_function_ptr get_function(const char* function_name)
             function = nullptr;
         }
     }
-
-    wglDeleteContext(rendering_context);
 
     return function;
 }

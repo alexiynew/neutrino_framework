@@ -43,7 +43,9 @@ namespace os
 class window::implementation
 {
 public:
-    static std::unique_ptr<implementation> create(window::size_t size, const std::string& title);
+    static std::unique_ptr<implementation> create(window::size_t size,
+                                                  const std::string& title,
+                                                  opengl::context_settings settings);
 
     implementation()          = default;
     virtual ~implementation() = default;
@@ -87,7 +89,7 @@ public:
 
     virtual std::string title() const = 0;
 
-    virtual std::unique_ptr<graphic_context> context() const = 0;
+    virtual framework::opengl::context* context() const = 0;
     /// @}
 
     /// @name state

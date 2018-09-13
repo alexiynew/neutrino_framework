@@ -25,8 +25,11 @@
 
 message("Add modules...")
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${FRAMEWORK_SOURCE_DIR})
-target_include_directories(${PROJECT_NAME} PUBLIC ${FRAMEWORK_DEPENDENCIES_DIR})
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${FRAMEWORK_SOURCE_DIR}
+        ${FRAMEWORK_DEPENDENCIES_DIR}
+)
 
 # Add source files
 include(${CMAKE_CURRENT_LIST_DIR}/common/CMakeLists.txt)

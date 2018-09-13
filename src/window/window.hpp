@@ -33,6 +33,7 @@
 #include <memory>
 
 #include <common/types.hpp>
+#include <opengl/context.hpp>
 
 namespace framework
 {
@@ -42,18 +43,6 @@ class window
 {
 public:
     class implementation;
-
-    class graphic_context
-    {
-    public:
-        virtual ~graphic_context() = default;
-
-        virtual bool valid() const      = 0;
-        virtual bool is_current() const = 0;
-
-        virtual void make_current() = 0;
-        virtual void swap_buffers() = 0;
-    };
 
     struct size_t
     {
@@ -67,7 +56,7 @@ public:
         int32 y;
     };
 
-    window(size_t size, const std::string& title);
+    window(size_t size, const std::string& title, opengl::context_settings settings = opengl::context_settings());
     ~window();
 
     window(const window&) = delete;
@@ -112,7 +101,7 @@ public:
 
     std::string title() const;
 
-    std::unique_ptr<graphic_context> context() const;
+    framework::opengl::context* context() const;
     /// @}
 
     /// @name state

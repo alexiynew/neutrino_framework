@@ -19,12 +19,13 @@ def get_files(path):
             files.extend(get_files(os.path.join(dirpath, d)))
 
         break
-    
+
     return files
 
 
 def include_gurad(header):
-    t = header.replace(path, '').replace('.', '_').replace('/', '_').split('_')
+    t = header.replace(path, '').replace('.', '_').replace(
+        '/', '_').replace('\\', '_').split('_')
     t = list(filter(lambda s: len(s) > 0, t))
     t.insert(0, 'framework')
     return '_'.join(s.upper() for s in t)
@@ -33,7 +34,8 @@ def include_gurad(header):
 def replace_guard(data, guard):
     new_guard = "#ifndef {0}\n#define {0}\n".format(guard)
 
-    data = re.sub(r'#ifndef\s(?P<g>[a-zA-Z_]*)\n#define\s\1\n', new_guard, data)
+    data = re.sub(
+        r'#ifndef\s(?P<g>[a-zA-Z_\\]*)\n#define\s\1\n', new_guard, data)
     return data
 
 
@@ -54,4 +56,3 @@ for header in headers:
     f = open(header, 'w')
     f.write(newdata)
     f.close()
-
