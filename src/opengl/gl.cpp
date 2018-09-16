@@ -27,14 +27,20 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <algorithm>
+#include <array>
+#include <mutex>
 
-#include <common/version.hpp>
+#include <common/types.hpp>
 #include <opengl/details/gl_details.hpp>
 #include <opengl/gl.hpp>
 
 namespace
 {
+std::once_flag init_flag;
+
+std::array<bool, 19> is_supported_version   = {false};
+std::array<bool, 60> is_supported_extension = {false};
+
 template <typename F>
 F get_function(const char* function_name)
 {
@@ -45,251 +51,94 @@ F get_function(const char* function_name)
 
 namespace framework::opengl
 {
-#pragma region declarations
+#pragma region init_declarations
 
-#ifdef GL_VERSION_1_0
 bool init_gl_version_1_0();
-#endif
-#ifdef GL_VERSION_1_1
 bool init_gl_version_1_1();
-#endif
-#ifdef GL_VERSION_1_2
 bool init_gl_version_1_2();
-#endif
-#ifdef GL_VERSION_1_3
 bool init_gl_version_1_3();
-#endif
-#ifdef GL_VERSION_1_4
 bool init_gl_version_1_4();
-#endif
-#ifdef GL_VERSION_1_5
 bool init_gl_version_1_5();
-#endif
-#ifdef GL_VERSION_2_0
 bool init_gl_version_2_0();
-#endif
-#ifdef GL_VERSION_2_1
 bool init_gl_version_2_1();
-#endif
-#ifdef GL_VERSION_3_0
 bool init_gl_version_3_0();
-#endif
-#ifdef GL_VERSION_3_1
 bool init_gl_version_3_1();
-#endif
-#ifdef GL_VERSION_3_2
 bool init_gl_version_3_2();
-#endif
-#ifdef GL_VERSION_3_3
 bool init_gl_version_3_3();
-#endif
-#ifdef GL_VERSION_4_0
 bool init_gl_version_4_0();
-#endif
-#ifdef GL_VERSION_4_1
 bool init_gl_version_4_1();
-#endif
-#ifdef GL_VERSION_4_2
 bool init_gl_version_4_2();
-#endif
-#ifdef GL_VERSION_4_3
 bool init_gl_version_4_3();
-#endif
-#ifdef GL_VERSION_4_4
 bool init_gl_version_4_4();
-#endif
-#ifdef GL_VERSION_4_5
 bool init_gl_version_4_5();
-#endif
-#ifdef GL_VERSION_4_6
 bool init_gl_version_4_6();
-#endif
-#ifdef GL_ARB_ES3_2_compatibility
 bool init_gl_arb_es3_2_compatibility();
-#endif
-#ifdef GL_ARB_bindless_texture
 bool init_gl_arb_bindless_texture();
-#endif
-#ifdef GL_ARB_cl_event
 bool init_gl_arb_cl_event();
-#endif
-#ifdef GL_ARB_compute_variable_group_size
 bool init_gl_arb_compute_variable_group_size();
-#endif
-#ifdef GL_ARB_debug_output
 bool init_gl_arb_debug_output();
-#endif
-#ifdef GL_ARB_draw_buffers_blend
 bool init_gl_arb_draw_buffers_blend();
-#endif
-#ifdef GL_ARB_draw_instanced
 bool init_gl_arb_draw_instanced();
-#endif
-#ifdef GL_ARB_geometry_shader4
 bool init_gl_arb_geometry_shader4();
-#endif
-#ifdef GL_ARB_gl_spirv
 bool init_gl_arb_gl_spirv();
-#endif
-#ifdef GL_ARB_gpu_shader_int64
 bool init_gl_arb_gpu_shader_int64();
-#endif
-#ifdef GL_ARB_indirect_parameters
 bool init_gl_arb_indirect_parameters();
-#endif
-#ifdef GL_ARB_instanced_arrays
 bool init_gl_arb_instanced_arrays();
-#endif
-#ifdef GL_ARB_parallel_shader_compile
 bool init_gl_arb_parallel_shader_compile();
-#endif
-#ifdef GL_ARB_robustness
 bool init_gl_arb_robustness();
-#endif
-#ifdef GL_ARB_sample_locations
 bool init_gl_arb_sample_locations();
-#endif
-#ifdef GL_ARB_sample_shading
 bool init_gl_arb_sample_shading();
-#endif
-#ifdef GL_ARB_shading_language_include
 bool init_gl_arb_shading_language_include();
-#endif
-#ifdef GL_ARB_sparse_buffer
 bool init_gl_arb_sparse_buffer();
-#endif
-#ifdef GL_ARB_sparse_texture
 bool init_gl_arb_sparse_texture();
-#endif
-#ifdef GL_ARB_texture_buffer_object
 bool init_gl_arb_texture_buffer_object();
-#endif
-#ifdef GL_KHR_blend_equation_advanced
 bool init_gl_khr_blend_equation_advanced();
-#endif
-#ifdef GL_KHR_parallel_shader_compile
 bool init_gl_khr_parallel_shader_compile();
-#endif
-#ifdef GL_AMD_framebuffer_multisample_advanced
 bool init_gl_amd_framebuffer_multisample_advanced();
-#endif
-#ifdef GL_AMD_performance_monitor
 bool init_gl_amd_performance_monitor();
-#endif
-#ifdef GL_EXT_EGL_image_storage
 bool init_gl_ext_egl_image_storage();
-#endif
-#ifdef GL_EXT_debug_label
 bool init_gl_ext_debug_label();
-#endif
-#ifdef GL_EXT_debug_marker
 bool init_gl_ext_debug_marker();
-#endif
-#ifdef GL_EXT_direct_state_access
 bool init_gl_ext_direct_state_access();
-#endif
-#ifdef GL_EXT_draw_instanced
 bool init_gl_ext_draw_instanced();
-#endif
-#ifdef GL_EXT_polygon_offset_clamp
 bool init_gl_ext_polygon_offset_clamp();
-#endif
-#ifdef GL_EXT_raster_multisample
 bool init_gl_ext_raster_multisample();
-#endif
-#ifdef GL_EXT_separate_shader_objects
 bool init_gl_ext_separate_shader_objects();
-#endif
-#ifdef GL_EXT_shader_framebuffer_fetch_non_coherent
 bool init_gl_ext_shader_framebuffer_fetch_non_coherent();
-#endif
-#ifdef GL_EXT_window_rectangles
 bool init_gl_ext_window_rectangles();
-#endif
-#ifdef GL_INTEL_framebuffer_CMAA
 bool init_gl_intel_framebuffer_cmaa();
-#endif
-#ifdef GL_INTEL_performance_query
 bool init_gl_intel_performance_query();
-#endif
-#ifdef GL_NV_bindless_multi_draw_indirect
 bool init_gl_nv_bindless_multi_draw_indirect();
-#endif
-#ifdef GL_NV_bindless_multi_draw_indirect_count
 bool init_gl_nv_bindless_multi_draw_indirect_count();
-#endif
-#ifdef GL_NV_bindless_texture
 bool init_gl_nv_bindless_texture();
-#endif
-#ifdef GL_NV_blend_equation_advanced
 bool init_gl_nv_blend_equation_advanced();
-#endif
-#ifdef GL_NV_clip_space_w_scaling
 bool init_gl_nv_clip_space_w_scaling();
-#endif
-#ifdef GL_NV_command_list
 bool init_gl_nv_command_list();
-#endif
-#ifdef GL_NV_conditional_render
 bool init_gl_nv_conditional_render();
-#endif
-#ifdef GL_NV_conservative_raster
 bool init_gl_nv_conservative_raster();
-#endif
-#ifdef GL_NV_conservative_raster_dilate
 bool init_gl_nv_conservative_raster_dilate();
-#endif
-#ifdef GL_NV_conservative_raster_pre_snap_triangles
 bool init_gl_nv_conservative_raster_pre_snap_triangles();
-#endif
-#ifdef GL_NV_draw_vulkan_image
 bool init_gl_nv_draw_vulkan_image();
-#endif
-#ifdef GL_NV_fragment_coverage_to_color
 bool init_gl_nv_fragment_coverage_to_color();
-#endif
-#ifdef GL_NV_framebuffer_mixed_samples
 bool init_gl_nv_framebuffer_mixed_samples();
-#endif
-#ifdef GL_NV_framebuffer_multisample_coverage
 bool init_gl_nv_framebuffer_multisample_coverage();
-#endif
-#ifdef GL_NV_gpu_shader5
 bool init_gl_nv_gpu_shader5();
-#endif
-#ifdef GL_NV_internalformat_sample_query
 bool init_gl_nv_internalformat_sample_query();
-#endif
-#ifdef GL_NV_path_rendering
 bool init_gl_nv_path_rendering();
-#endif
-#ifdef GL_NV_sample_locations
 bool init_gl_nv_sample_locations();
-#endif
-#ifdef GL_NV_shader_buffer_load
 bool init_gl_nv_shader_buffer_load();
-#endif
-#ifdef GL_NV_texture_barrier
 bool init_gl_nv_texture_barrier();
-#endif
-#ifdef GL_NV_vertex_attrib_integer_64bit
 bool init_gl_nv_vertex_attrib_integer_64bit();
-#endif
-#ifdef GL_NV_vertex_buffer_unified_memory
 bool init_gl_nv_vertex_buffer_unified_memory();
-#endif
-#ifdef GL_NV_viewport_swizzle
 bool init_gl_nv_viewport_swizzle();
-#endif
-#ifdef GL_OVR_multiview
 bool init_gl_ovr_multiview();
-#endif
+
+void init_versions();
+void init_extensions();
 
 #pragma endregion
 
 #pragma region GL_VERSION_1_0
-
-#ifdef GL_VERSION_1_0
 
 PFNGLCULLFACEPROC glCullFace                             = nullptr;
 PFNGLFRONTFACEPROC glFrontFace                           = nullptr;
@@ -398,13 +247,9 @@ bool init_gl_version_1_0()
     return result;
 }
 
-#endif // GL_VERSION_1_0
-
 #pragma endregion
 
 #pragma region GL_VERSION_1_1
-
-#ifdef GL_VERSION_1_1
 
 PFNGLDRAWARRAYSPROC glDrawArrays               = nullptr;
 PFNGLDRAWELEMENTSPROC glDrawElements           = nullptr;
@@ -445,13 +290,9 @@ bool init_gl_version_1_1()
     return result;
 }
 
-#endif // GL_VERSION_1_1
-
 #pragma endregion
 
 #pragma region GL_VERSION_1_2
-
-#ifdef GL_VERSION_1_2
 
 PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements = nullptr;
 PFNGLTEXIMAGE3DPROC glTexImage3D               = nullptr;
@@ -472,13 +313,9 @@ bool init_gl_version_1_2()
     return result;
 }
 
-#endif // GL_VERSION_1_2
-
 #pragma endregion
 
 #pragma region GL_VERSION_1_3
-
-#ifdef GL_VERSION_1_3
 
 PFNGLACTIVETEXTUREPROC glActiveTexture                     = nullptr;
 PFNGLSAMPLECOVERAGEPROC glSampleCoverage                   = nullptr;
@@ -509,13 +346,9 @@ bool init_gl_version_1_3()
     return result;
 }
 
-#endif // GL_VERSION_1_3
-
 #pragma endregion
 
 #pragma region GL_VERSION_1_4
-
-#ifdef GL_VERSION_1_4
 
 PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = nullptr;
 PFNGLMULTIDRAWARRAYSPROC glMultiDrawArrays     = nullptr;
@@ -546,13 +379,9 @@ bool init_gl_version_1_4()
     return result;
 }
 
-#endif // GL_VERSION_1_4
-
 #pragma endregion
 
 #pragma region GL_VERSION_1_5
-
-#ifdef GL_VERSION_1_5
 
 PFNGLGENQUERIESPROC glGenQueries                     = nullptr;
 PFNGLDELETEQUERIESPROC glDeleteQueries               = nullptr;
@@ -603,13 +432,9 @@ bool init_gl_version_1_5()
     return result;
 }
 
-#endif // GL_VERSION_1_5
-
 #pragma endregion
 
 #pragma region GL_VERSION_2_0
-
-#ifdef GL_VERSION_2_0
 
 PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate       = nullptr;
 PFNGLDRAWBUFFERSPROC glDrawBuffers                           = nullptr;
@@ -808,13 +633,9 @@ bool init_gl_version_2_0()
     return result;
 }
 
-#endif // GL_VERSION_2_0
-
 #pragma endregion
 
 #pragma region GL_VERSION_2_1
-
-#ifdef GL_VERSION_2_1
 
 PFNGLUNIFORMMATRIX2X3FVPROC glUniformMatrix2x3fv = nullptr;
 PFNGLUNIFORMMATRIX3X2FVPROC glUniformMatrix3x2fv = nullptr;
@@ -839,13 +660,9 @@ bool init_gl_version_2_1()
     return result;
 }
 
-#endif // GL_VERSION_2_1
-
 #pragma endregion
 
 #pragma region GL_VERSION_3_0
-
-#ifdef GL_VERSION_3_0
 
 PFNGLCOLORMASKIPROC glColorMaski                                                   = nullptr;
 PFNGLGETBOOLEANI_VPROC glGetBooleani_v                                             = nullptr;
@@ -1026,13 +843,9 @@ bool init_gl_version_3_0()
     return result;
 }
 
-#endif // GL_VERSION_3_0
-
 #pragma endregion
 
 #pragma region GL_VERSION_3_1
-
-#ifdef GL_VERSION_3_1
 
 PFNGLDRAWARRAYSINSTANCEDPROC glDrawArraysInstanced             = nullptr;
 PFNGLDRAWELEMENTSINSTANCEDPROC glDrawElementsInstanced         = nullptr;
@@ -1069,13 +882,9 @@ bool init_gl_version_3_1()
     return result;
 }
 
-#endif // GL_VERSION_3_1
-
 #pragma endregion
 
 #pragma region GL_VERSION_3_2
-
-#ifdef GL_VERSION_3_2
 
 PFNGLDRAWELEMENTSBASEVERTEXPROC glDrawElementsBaseVertex                   = nullptr;
 PFNGLDRAWRANGEELEMENTSBASEVERTEXPROC glDrawRangeElementsBaseVertex         = nullptr;
@@ -1126,13 +935,9 @@ bool init_gl_version_3_2()
     return result;
 }
 
-#endif // GL_VERSION_3_2
-
 #pragma endregion
 
 #pragma region GL_VERSION_3_3
-
-#ifdef GL_VERSION_3_3
 
 PFNGLBINDFRAGDATALOCATIONINDEXEDPROC glBindFragDataLocationIndexed = nullptr;
 PFNGLGETFRAGDATAINDEXPROC glGetFragDataIndex                       = nullptr;
@@ -1201,13 +1006,9 @@ bool init_gl_version_3_3()
     return result;
 }
 
-#endif // GL_VERSION_3_3
-
 #pragma endregion
 
 #pragma region GL_VERSION_4_0
-
-#ifdef GL_VERSION_4_0
 
 PFNGLMINSAMPLESHADINGPROC glMinSampleShading                             = nullptr;
 PFNGLBLENDEQUATIONIPROC glBlendEquationi                                 = nullptr;
@@ -1312,13 +1113,9 @@ bool init_gl_version_4_0()
     return result;
 }
 
-#endif // GL_VERSION_4_0
-
 #pragma endregion
 
 #pragma region GL_VERSION_4_1
-
-#ifdef GL_VERSION_4_1
 
 PFNGLRELEASESHADERCOMPILERPROC glReleaseShaderCompiler         = nullptr;
 PFNGLSHADERBINARYPROC glShaderBinary                           = nullptr;
@@ -1507,13 +1304,9 @@ bool init_gl_version_4_1()
     return result;
 }
 
-#endif // GL_VERSION_4_1
-
 #pragma endregion
 
 #pragma region GL_VERSION_4_2
-
-#ifdef GL_VERSION_4_2
 
 PFNGLDRAWARRAYSINSTANCEDBASEINSTANCEPROC glDrawArraysInstancedBaseInstance                         = nullptr;
 PFNGLDRAWELEMENTSINSTANCEDBASEINSTANCEPROC glDrawElementsInstancedBaseInstance                     = nullptr;
@@ -1550,13 +1343,9 @@ bool init_gl_version_4_2()
     return result;
 }
 
-#endif // GL_VERSION_4_2
-
 #pragma endregion
 
 #pragma region GL_VERSION_4_3
-
-#ifdef GL_VERSION_4_3
 
 PFNGLCLEARBUFFERDATAPROC glClearBufferData                                 = nullptr;
 PFNGLCLEARBUFFERSUBDATAPROC glClearBufferSubData                           = nullptr;
@@ -1655,13 +1444,9 @@ bool init_gl_version_4_3()
     return result;
 }
 
-#endif // GL_VERSION_4_3
-
 #pragma endregion
 
 #pragma region GL_VERSION_4_4
-
-#ifdef GL_VERSION_4_4
 
 PFNGLBUFFERSTORAGEPROC glBufferStorage         = nullptr;
 PFNGLCLEARTEXIMAGEPROC glClearTexImage         = nullptr;
@@ -1692,13 +1477,9 @@ bool init_gl_version_4_4()
     return result;
 }
 
-#endif // GL_VERSION_4_4
-
 #pragma endregion
 
 #pragma region GL_VERSION_4_5
-
-#ifdef GL_VERSION_4_5
 
 PFNGLCLIPCONTROLPROC glClipControl                                                           = nullptr;
 PFNGLCREATETRANSFORMFEEDBACKSPROC glCreateTransformFeedbacks                                 = nullptr;
@@ -1931,13 +1712,9 @@ bool init_gl_version_4_5()
     return result;
 }
 
-#endif // GL_VERSION_4_5
-
 #pragma endregion
 
 #pragma region GL_VERSION_4_6
-
-#ifdef GL_VERSION_4_6
 
 PFNGLSPECIALIZESHADERPROC glSpecializeShader                             = nullptr;
 PFNGLMULTIDRAWARRAYSINDIRECTCOUNTPROC glMultiDrawArraysIndirectCount     = nullptr;
@@ -1958,13 +1735,9 @@ bool init_gl_version_4_6()
     return result;
 }
 
-#endif // GL_VERSION_4_6
-
 #pragma endregion
 
 #pragma region GL_ARB_ES3_2_compatibility
-
-#ifdef GL_ARB_ES3_2_compatibility
 
 PFNGLPRIMITIVEBOUNDINGBOXARBPROC glPrimitiveBoundingBoxARB = nullptr;
 
@@ -1979,13 +1752,9 @@ bool init_gl_arb_es3_2_compatibility()
     return result;
 }
 
-#endif // GL_ARB_ES3_2_compatibility
-
 #pragma endregion
 
 #pragma region GL_ARB_bindless_texture
-
-#ifdef GL_ARB_bindless_texture
 
 PFNGLGETTEXTUREHANDLEARBPROC glGetTextureHandleARB                         = nullptr;
 PFNGLGETTEXTURESAMPLERHANDLEARBPROC glGetTextureSamplerHandleARB           = nullptr;
@@ -2030,13 +1799,9 @@ bool init_gl_arb_bindless_texture()
     return result;
 }
 
-#endif // GL_ARB_bindless_texture
-
 #pragma endregion
 
 #pragma region GL_ARB_cl_event
-
-#ifdef GL_ARB_cl_event
 
 PFNGLCREATESYNCFROMCLEVENTARBPROC glCreateSyncFromCLeventARB = nullptr;
 
@@ -2051,13 +1816,9 @@ bool init_gl_arb_cl_event()
     return result;
 }
 
-#endif // GL_ARB_cl_event
-
 #pragma endregion
 
 #pragma region GL_ARB_compute_variable_group_size
-
-#ifdef GL_ARB_compute_variable_group_size
 
 PFNGLDISPATCHCOMPUTEGROUPSIZEARBPROC glDispatchComputeGroupSizeARB = nullptr;
 
@@ -2072,13 +1833,9 @@ bool init_gl_arb_compute_variable_group_size()
     return result;
 }
 
-#endif // GL_ARB_compute_variable_group_size
-
 #pragma endregion
 
 #pragma region GL_ARB_debug_output
-
-#ifdef GL_ARB_debug_output
 
 PFNGLDEBUGMESSAGECONTROLARBPROC glDebugMessageControlARB   = nullptr;
 PFNGLDEBUGMESSAGEINSERTARBPROC glDebugMessageInsertARB     = nullptr;
@@ -2099,13 +1856,9 @@ bool init_gl_arb_debug_output()
     return result;
 }
 
-#endif // GL_ARB_debug_output
-
 #pragma endregion
 
 #pragma region GL_ARB_draw_buffers_blend
-
-#ifdef GL_ARB_draw_buffers_blend
 
 PFNGLBLENDEQUATIONIARBPROC glBlendEquationiARB                 = nullptr;
 PFNGLBLENDEQUATIONSEPARATEIARBPROC glBlendEquationSeparateiARB = nullptr;
@@ -2126,13 +1879,9 @@ bool init_gl_arb_draw_buffers_blend()
     return result;
 }
 
-#endif // GL_ARB_draw_buffers_blend
-
 #pragma endregion
 
 #pragma region GL_ARB_draw_instanced
-
-#ifdef GL_ARB_draw_instanced
 
 PFNGLDRAWARRAYSINSTANCEDARBPROC glDrawArraysInstancedARB     = nullptr;
 PFNGLDRAWELEMENTSINSTANCEDARBPROC glDrawElementsInstancedARB = nullptr;
@@ -2149,13 +1898,9 @@ bool init_gl_arb_draw_instanced()
     return result;
 }
 
-#endif // GL_ARB_draw_instanced
-
 #pragma endregion
 
 #pragma region GL_ARB_geometry_shader4
-
-#ifdef GL_ARB_geometry_shader4
 
 PFNGLPROGRAMPARAMETERIARBPROC glProgramParameteriARB             = nullptr;
 PFNGLFRAMEBUFFERTEXTUREARBPROC glFramebufferTextureARB           = nullptr;
@@ -2176,13 +1921,9 @@ bool init_gl_arb_geometry_shader4()
     return result;
 }
 
-#endif // GL_ARB_geometry_shader4
-
 #pragma endregion
 
 #pragma region GL_ARB_gl_spirv
-
-#ifdef GL_ARB_gl_spirv
 
 PFNGLSPECIALIZESHADERARBPROC glSpecializeShaderARB = nullptr;
 
@@ -2197,13 +1938,9 @@ bool init_gl_arb_gl_spirv()
     return result;
 }
 
-#endif // GL_ARB_gl_spirv
-
 #pragma endregion
 
 #pragma region GL_ARB_gpu_shader_int64
-
-#ifdef GL_ARB_gpu_shader_int64
 
 PFNGLUNIFORM1I64ARBPROC glUniform1i64ARB                   = nullptr;
 PFNGLUNIFORM2I64ARBPROC glUniform2i64ARB                   = nullptr;
@@ -2288,13 +2025,9 @@ bool init_gl_arb_gpu_shader_int64()
     return result;
 }
 
-#endif // GL_ARB_gpu_shader_int64
-
 #pragma endregion
 
 #pragma region GL_ARB_indirect_parameters
-
-#ifdef GL_ARB_indirect_parameters
 
 PFNGLMULTIDRAWARRAYSINDIRECTCOUNTARBPROC glMultiDrawArraysIndirectCountARB     = nullptr;
 PFNGLMULTIDRAWELEMENTSINDIRECTCOUNTARBPROC glMultiDrawElementsIndirectCountARB = nullptr;
@@ -2311,13 +2044,9 @@ bool init_gl_arb_indirect_parameters()
     return result;
 }
 
-#endif // GL_ARB_indirect_parameters
-
 #pragma endregion
 
 #pragma region GL_ARB_instanced_arrays
-
-#ifdef GL_ARB_instanced_arrays
 
 PFNGLVERTEXATTRIBDIVISORARBPROC glVertexAttribDivisorARB = nullptr;
 
@@ -2332,13 +2061,9 @@ bool init_gl_arb_instanced_arrays()
     return result;
 }
 
-#endif // GL_ARB_instanced_arrays
-
 #pragma endregion
 
 #pragma region GL_ARB_parallel_shader_compile
-
-#ifdef GL_ARB_parallel_shader_compile
 
 PFNGLMAXSHADERCOMPILERTHREADSARBPROC glMaxShaderCompilerThreadsARB = nullptr;
 
@@ -2353,13 +2078,9 @@ bool init_gl_arb_parallel_shader_compile()
     return result;
 }
 
-#endif // GL_ARB_parallel_shader_compile
-
 #pragma endregion
 
 #pragma region GL_ARB_robustness
-
-#ifdef GL_ARB_robustness
 
 PFNGLGETGRAPHICSRESETSTATUSARBPROC glGetGraphicsResetStatusARB = nullptr;
 PFNGLGETNTEXIMAGEARBPROC glGetnTexImageARB                     = nullptr;
@@ -2388,13 +2109,9 @@ bool init_gl_arb_robustness()
     return result;
 }
 
-#endif // GL_ARB_robustness
-
 #pragma endregion
 
 #pragma region GL_ARB_sample_locations
-
-#ifdef GL_ARB_sample_locations
 
 PFNGLFRAMEBUFFERSAMPLELOCATIONSFVARBPROC glFramebufferSampleLocationsfvARB           = nullptr;
 PFNGLNAMEDFRAMEBUFFERSAMPLELOCATIONSFVARBPROC glNamedFramebufferSampleLocationsfvARB = nullptr;
@@ -2413,13 +2130,9 @@ bool init_gl_arb_sample_locations()
     return result;
 }
 
-#endif // GL_ARB_sample_locations
-
 #pragma endregion
 
 #pragma region GL_ARB_sample_shading
-
-#ifdef GL_ARB_sample_shading
 
 PFNGLMINSAMPLESHADINGARBPROC glMinSampleShadingARB = nullptr;
 
@@ -2434,13 +2147,9 @@ bool init_gl_arb_sample_shading()
     return result;
 }
 
-#endif // GL_ARB_sample_shading
-
 #pragma endregion
 
 #pragma region GL_ARB_shading_language_include
-
-#ifdef GL_ARB_shading_language_include
 
 PFNGLNAMEDSTRINGARBPROC glNamedStringARB                   = nullptr;
 PFNGLDELETENAMEDSTRINGARBPROC glDeleteNamedStringARB       = nullptr;
@@ -2465,13 +2174,9 @@ bool init_gl_arb_shading_language_include()
     return result;
 }
 
-#endif // GL_ARB_shading_language_include
-
 #pragma endregion
 
 #pragma region GL_ARB_sparse_buffer
-
-#ifdef GL_ARB_sparse_buffer
 
 PFNGLBUFFERPAGECOMMITMENTARBPROC glBufferPageCommitmentARB           = nullptr;
 PFNGLNAMEDBUFFERPAGECOMMITMENTEXTPROC glNamedBufferPageCommitmentEXT = nullptr;
@@ -2490,13 +2195,9 @@ bool init_gl_arb_sparse_buffer()
     return result;
 }
 
-#endif // GL_ARB_sparse_buffer
-
 #pragma endregion
 
 #pragma region GL_ARB_sparse_texture
-
-#ifdef GL_ARB_sparse_texture
 
 PFNGLTEXPAGECOMMITMENTARBPROC glTexPageCommitmentARB = nullptr;
 
@@ -2511,13 +2212,9 @@ bool init_gl_arb_sparse_texture()
     return result;
 }
 
-#endif // GL_ARB_sparse_texture
-
 #pragma endregion
 
 #pragma region GL_ARB_texture_buffer_object
-
-#ifdef GL_ARB_texture_buffer_object
 
 PFNGLTEXBUFFERARBPROC glTexBufferARB = nullptr;
 
@@ -2532,13 +2229,9 @@ bool init_gl_arb_texture_buffer_object()
     return result;
 }
 
-#endif // GL_ARB_texture_buffer_object
-
 #pragma endregion
 
 #pragma region GL_KHR_blend_equation_advanced
-
-#ifdef GL_KHR_blend_equation_advanced
 
 PFNGLBLENDBARRIERKHRPROC glBlendBarrierKHR = nullptr;
 
@@ -2553,13 +2246,9 @@ bool init_gl_khr_blend_equation_advanced()
     return result;
 }
 
-#endif // GL_KHR_blend_equation_advanced
-
 #pragma endregion
 
 #pragma region GL_KHR_parallel_shader_compile
-
-#ifdef GL_KHR_parallel_shader_compile
 
 PFNGLMAXSHADERCOMPILERTHREADSKHRPROC glMaxShaderCompilerThreadsKHR = nullptr;
 
@@ -2574,13 +2263,9 @@ bool init_gl_khr_parallel_shader_compile()
     return result;
 }
 
-#endif // GL_KHR_parallel_shader_compile
-
 #pragma endregion
 
 #pragma region GL_AMD_framebuffer_multisample_advanced
-
-#ifdef GL_AMD_framebuffer_multisample_advanced
 
 PFNGLRENDERBUFFERSTORAGEMULTISAMPLEADVANCEDAMDPROC glRenderbufferStorageMultisampleAdvancedAMD           = nullptr;
 PFNGLNAMEDRENDERBUFFERSTORAGEMULTISAMPLEADVANCEDAMDPROC glNamedRenderbufferStorageMultisampleAdvancedAMD = nullptr;
@@ -2597,13 +2282,9 @@ bool init_gl_amd_framebuffer_multisample_advanced()
     return result;
 }
 
-#endif // GL_AMD_framebuffer_multisample_advanced
-
 #pragma endregion
 
 #pragma region GL_AMD_performance_monitor
-
-#ifdef GL_AMD_performance_monitor
 
 PFNGLGETPERFMONITORGROUPSAMDPROC glGetPerfMonitorGroupsAMD               = nullptr;
 PFNGLGETPERFMONITORCOUNTERSAMDPROC glGetPerfMonitorCountersAMD           = nullptr;
@@ -2638,13 +2319,9 @@ bool init_gl_amd_performance_monitor()
     return result;
 }
 
-#endif // GL_AMD_performance_monitor
-
 #pragma endregion
 
 #pragma region GL_EXT_EGL_image_storage
-
-#ifdef GL_EXT_EGL_image_storage
 
 PFNGLEGLIMAGETARGETTEXSTORAGEEXTPROC glEGLImageTargetTexStorageEXT         = nullptr;
 PFNGLEGLIMAGETARGETTEXTURESTORAGEEXTPROC glEGLImageTargetTextureStorageEXT = nullptr;
@@ -2661,13 +2338,9 @@ bool init_gl_ext_egl_image_storage()
     return result;
 }
 
-#endif // GL_EXT_EGL_image_storage
-
 #pragma endregion
 
 #pragma region GL_EXT_debug_label
-
-#ifdef GL_EXT_debug_label
 
 PFNGLLABELOBJECTEXTPROC glLabelObjectEXT       = nullptr;
 PFNGLGETOBJECTLABELEXTPROC glGetObjectLabelEXT = nullptr;
@@ -2684,13 +2357,9 @@ bool init_gl_ext_debug_label()
     return result;
 }
 
-#endif // GL_EXT_debug_label
-
 #pragma endregion
 
 #pragma region GL_EXT_debug_marker
-
-#ifdef GL_EXT_debug_marker
 
 PFNGLINSERTEVENTMARKEREXTPROC glInsertEventMarkerEXT = nullptr;
 PFNGLPUSHGROUPMARKEREXTPROC glPushGroupMarkerEXT     = nullptr;
@@ -2709,13 +2378,9 @@ bool init_gl_ext_debug_marker()
     return result;
 }
 
-#endif // GL_EXT_debug_marker
-
 #pragma endregion
 
 #pragma region GL_EXT_direct_state_access
-
-#ifdef GL_EXT_direct_state_access
 
 PFNGLMATRIXLOADFEXTPROC glMatrixLoadfEXT                                                                 = nullptr;
 PFNGLMATRIXLOADDEXTPROC glMatrixLoaddEXT                                                                 = nullptr;
@@ -3238,13 +2903,9 @@ bool init_gl_ext_direct_state_access()
     return result;
 }
 
-#endif // GL_EXT_direct_state_access
-
 #pragma endregion
 
 #pragma region GL_EXT_draw_instanced
-
-#ifdef GL_EXT_draw_instanced
 
 PFNGLDRAWARRAYSINSTANCEDEXTPROC glDrawArraysInstancedEXT     = nullptr;
 PFNGLDRAWELEMENTSINSTANCEDEXTPROC glDrawElementsInstancedEXT = nullptr;
@@ -3261,13 +2922,9 @@ bool init_gl_ext_draw_instanced()
     return result;
 }
 
-#endif // GL_EXT_draw_instanced
-
 #pragma endregion
 
 #pragma region GL_EXT_polygon_offset_clamp
-
-#ifdef GL_EXT_polygon_offset_clamp
 
 PFNGLPOLYGONOFFSETCLAMPEXTPROC glPolygonOffsetClampEXT = nullptr;
 
@@ -3282,13 +2939,9 @@ bool init_gl_ext_polygon_offset_clamp()
     return result;
 }
 
-#endif // GL_EXT_polygon_offset_clamp
-
 #pragma endregion
 
 #pragma region GL_EXT_raster_multisample
-
-#ifdef GL_EXT_raster_multisample
 
 PFNGLRASTERSAMPLESEXTPROC glRasterSamplesEXT = nullptr;
 
@@ -3303,13 +2956,9 @@ bool init_gl_ext_raster_multisample()
     return result;
 }
 
-#endif // GL_EXT_raster_multisample
-
 #pragma endregion
 
 #pragma region GL_EXT_separate_shader_objects
-
-#ifdef GL_EXT_separate_shader_objects
 
 PFNGLUSESHADERPROGRAMEXTPROC glUseShaderProgramEXT       = nullptr;
 PFNGLACTIVEPROGRAMEXTPROC glActiveProgramEXT             = nullptr;
@@ -3328,13 +2977,9 @@ bool init_gl_ext_separate_shader_objects()
     return result;
 }
 
-#endif // GL_EXT_separate_shader_objects
-
 #pragma endregion
 
 #pragma region GL_EXT_shader_framebuffer_fetch_non_coherent
-
-#ifdef GL_EXT_shader_framebuffer_fetch_non_coherent
 
 PFNGLFRAMEBUFFERFETCHBARRIEREXTPROC glFramebufferFetchBarrierEXT = nullptr;
 
@@ -3349,13 +2994,9 @@ bool init_gl_ext_shader_framebuffer_fetch_non_coherent()
     return result;
 }
 
-#endif // GL_EXT_shader_framebuffer_fetch_non_coherent
-
 #pragma endregion
 
 #pragma region GL_EXT_window_rectangles
-
-#ifdef GL_EXT_window_rectangles
 
 PFNGLWINDOWRECTANGLESEXTPROC glWindowRectanglesEXT = nullptr;
 
@@ -3370,13 +3011,9 @@ bool init_gl_ext_window_rectangles()
     return result;
 }
 
-#endif // GL_EXT_window_rectangles
-
 #pragma endregion
 
 #pragma region GL_INTEL_framebuffer_CMAA
-
-#ifdef GL_INTEL_framebuffer_CMAA
 
 PFNGLAPPLYFRAMEBUFFERATTACHMENTCMAAINTELPROC glApplyFramebufferAttachmentCMAAINTEL = nullptr;
 
@@ -3391,13 +3028,9 @@ bool init_gl_intel_framebuffer_cmaa()
     return result;
 }
 
-#endif // GL_INTEL_framebuffer_CMAA
-
 #pragma endregion
 
 #pragma region GL_INTEL_performance_query
-
-#ifdef GL_INTEL_performance_query
 
 PFNGLBEGINPERFQUERYINTELPROC glBeginPerfQueryINTEL             = nullptr;
 PFNGLCREATEPERFQUERYINTELPROC glCreatePerfQueryINTEL           = nullptr;
@@ -3430,13 +3063,9 @@ bool init_gl_intel_performance_query()
     return result;
 }
 
-#endif // GL_INTEL_performance_query
-
 #pragma endregion
 
 #pragma region GL_NV_bindless_multi_draw_indirect
-
-#ifdef GL_NV_bindless_multi_draw_indirect
 
 PFNGLMULTIDRAWARRAYSINDIRECTBINDLESSNVPROC glMultiDrawArraysIndirectBindlessNV     = nullptr;
 PFNGLMULTIDRAWELEMENTSINDIRECTBINDLESSNVPROC glMultiDrawElementsIndirectBindlessNV = nullptr;
@@ -3453,13 +3082,9 @@ bool init_gl_nv_bindless_multi_draw_indirect()
     return result;
 }
 
-#endif // GL_NV_bindless_multi_draw_indirect
-
 #pragma endregion
 
 #pragma region GL_NV_bindless_multi_draw_indirect_count
-
-#ifdef GL_NV_bindless_multi_draw_indirect_count
 
 PFNGLMULTIDRAWARRAYSINDIRECTBINDLESSCOUNTNVPROC glMultiDrawArraysIndirectBindlessCountNV     = nullptr;
 PFNGLMULTIDRAWELEMENTSINDIRECTBINDLESSCOUNTNVPROC glMultiDrawElementsIndirectBindlessCountNV = nullptr;
@@ -3476,13 +3101,9 @@ bool init_gl_nv_bindless_multi_draw_indirect_count()
     return result;
 }
 
-#endif // GL_NV_bindless_multi_draw_indirect_count
-
 #pragma endregion
 
 #pragma region GL_NV_bindless_texture
-
-#ifdef GL_NV_bindless_texture
 
 PFNGLGETTEXTUREHANDLENVPROC glGetTextureHandleNV                         = nullptr;
 PFNGLGETTEXTURESAMPLERHANDLENVPROC glGetTextureSamplerHandleNV           = nullptr;
@@ -3521,13 +3142,9 @@ bool init_gl_nv_bindless_texture()
     return result;
 }
 
-#endif // GL_NV_bindless_texture
-
 #pragma endregion
 
 #pragma region GL_NV_blend_equation_advanced
-
-#ifdef GL_NV_blend_equation_advanced
 
 PFNGLBLENDPARAMETERINVPROC glBlendParameteriNV = nullptr;
 PFNGLBLENDBARRIERNVPROC glBlendBarrierNV       = nullptr;
@@ -3544,13 +3161,9 @@ bool init_gl_nv_blend_equation_advanced()
     return result;
 }
 
-#endif // GL_NV_blend_equation_advanced
-
 #pragma endregion
 
 #pragma region GL_NV_clip_space_w_scaling
-
-#ifdef GL_NV_clip_space_w_scaling
 
 PFNGLVIEWPORTPOSITIONWSCALENVPROC glViewportPositionWScaleNV = nullptr;
 
@@ -3565,13 +3178,9 @@ bool init_gl_nv_clip_space_w_scaling()
     return result;
 }
 
-#endif // GL_NV_clip_space_w_scaling
-
 #pragma endregion
 
 #pragma region GL_NV_command_list
-
-#ifdef GL_NV_command_list
 
 PFNGLCREATESTATESNVPROC glCreateStatesNV                                 = nullptr;
 PFNGLDELETESTATESNVPROC glDeleteStatesNV                                 = nullptr;
@@ -3618,13 +3227,9 @@ bool init_gl_nv_command_list()
     return result;
 }
 
-#endif // GL_NV_command_list
-
 #pragma endregion
 
 #pragma region GL_NV_conditional_render
-
-#ifdef GL_NV_conditional_render
 
 PFNGLBEGINCONDITIONALRENDERNVPROC glBeginConditionalRenderNV = nullptr;
 PFNGLENDCONDITIONALRENDERNVPROC glEndConditionalRenderNV     = nullptr;
@@ -3641,13 +3246,9 @@ bool init_gl_nv_conditional_render()
     return result;
 }
 
-#endif // GL_NV_conditional_render
-
 #pragma endregion
 
 #pragma region GL_NV_conservative_raster
-
-#ifdef GL_NV_conservative_raster
 
 PFNGLSUBPIXELPRECISIONBIASNVPROC glSubpixelPrecisionBiasNV = nullptr;
 
@@ -3662,13 +3263,9 @@ bool init_gl_nv_conservative_raster()
     return result;
 }
 
-#endif // GL_NV_conservative_raster
-
 #pragma endregion
 
 #pragma region GL_NV_conservative_raster_dilate
-
-#ifdef GL_NV_conservative_raster_dilate
 
 PFNGLCONSERVATIVERASTERPARAMETERFNVPROC glConservativeRasterParameterfNV = nullptr;
 
@@ -3683,13 +3280,9 @@ bool init_gl_nv_conservative_raster_dilate()
     return result;
 }
 
-#endif // GL_NV_conservative_raster_dilate
-
 #pragma endregion
 
 #pragma region GL_NV_conservative_raster_pre_snap_triangles
-
-#ifdef GL_NV_conservative_raster_pre_snap_triangles
 
 PFNGLCONSERVATIVERASTERPARAMETERINVPROC glConservativeRasterParameteriNV = nullptr;
 
@@ -3704,13 +3297,9 @@ bool init_gl_nv_conservative_raster_pre_snap_triangles()
     return result;
 }
 
-#endif // GL_NV_conservative_raster_pre_snap_triangles
-
 #pragma endregion
 
 #pragma region GL_NV_draw_vulkan_image
-
-#ifdef GL_NV_draw_vulkan_image
 
 PFNGLDRAWVKIMAGENVPROC glDrawVkImageNV             = nullptr;
 PFNGLGETVKPROCADDRNVPROC glGetVkProcAddrNV         = nullptr;
@@ -3733,13 +3322,9 @@ bool init_gl_nv_draw_vulkan_image()
     return result;
 }
 
-#endif // GL_NV_draw_vulkan_image
-
 #pragma endregion
 
 #pragma region GL_NV_fragment_coverage_to_color
-
-#ifdef GL_NV_fragment_coverage_to_color
 
 PFNGLFRAGMENTCOVERAGECOLORNVPROC glFragmentCoverageColorNV = nullptr;
 
@@ -3754,13 +3339,9 @@ bool init_gl_nv_fragment_coverage_to_color()
     return result;
 }
 
-#endif // GL_NV_fragment_coverage_to_color
-
 #pragma endregion
 
 #pragma region GL_NV_framebuffer_mixed_samples
-
-#ifdef GL_NV_framebuffer_mixed_samples
 
 PFNGLCOVERAGEMODULATIONTABLENVPROC glCoverageModulationTableNV       = nullptr;
 PFNGLGETCOVERAGEMODULATIONTABLENVPROC glGetCoverageModulationTableNV = nullptr;
@@ -3779,13 +3360,9 @@ bool init_gl_nv_framebuffer_mixed_samples()
     return result;
 }
 
-#endif // GL_NV_framebuffer_mixed_samples
-
 #pragma endregion
 
 #pragma region GL_NV_framebuffer_multisample_coverage
-
-#ifdef GL_NV_framebuffer_multisample_coverage
 
 PFNGLRENDERBUFFERSTORAGEMULTISAMPLECOVERAGENVPROC glRenderbufferStorageMultisampleCoverageNV = nullptr;
 
@@ -3800,13 +3377,9 @@ bool init_gl_nv_framebuffer_multisample_coverage()
     return result;
 }
 
-#endif // GL_NV_framebuffer_multisample_coverage
-
 #pragma endregion
 
 #pragma region GL_NV_gpu_shader5
-
-#ifdef GL_NV_gpu_shader5
 
 PFNGLUNIFORM1I64NVPROC glUniform1i64NV                   = nullptr;
 PFNGLUNIFORM2I64NVPROC glUniform2i64NV                   = nullptr;
@@ -3885,13 +3458,9 @@ bool init_gl_nv_gpu_shader5()
     return result;
 }
 
-#endif // GL_NV_gpu_shader5
-
 #pragma endregion
 
 #pragma region GL_NV_internalformat_sample_query
-
-#ifdef GL_NV_internalformat_sample_query
 
 PFNGLGETINTERNALFORMATSAMPLEIVNVPROC glGetInternalformatSampleivNV = nullptr;
 
@@ -3906,13 +3475,9 @@ bool init_gl_nv_internalformat_sample_query()
     return result;
 }
 
-#endif // GL_NV_internalformat_sample_query
-
 #pragma endregion
 
 #pragma region GL_NV_path_rendering
-
-#ifdef GL_NV_path_rendering
 
 PFNGLGENPATHSNVPROC glGenPathsNV                                                       = nullptr;
 PFNGLDELETEPATHSNVPROC glDeletePathsNV                                                 = nullptr;
@@ -4039,13 +3604,9 @@ bool init_gl_nv_path_rendering()
     return result;
 }
 
-#endif // GL_NV_path_rendering
-
 #pragma endregion
 
 #pragma region GL_NV_sample_locations
-
-#ifdef GL_NV_sample_locations
 
 PFNGLFRAMEBUFFERSAMPLELOCATIONSFVNVPROC glFramebufferSampleLocationsfvNV           = nullptr;
 PFNGLNAMEDFRAMEBUFFERSAMPLELOCATIONSFVNVPROC glNamedFramebufferSampleLocationsfvNV = nullptr;
@@ -4064,13 +3625,9 @@ bool init_gl_nv_sample_locations()
     return result;
 }
 
-#endif // GL_NV_sample_locations
-
 #pragma endregion
 
 #pragma region GL_NV_shader_buffer_load
-
-#ifdef GL_NV_shader_buffer_load
 
 PFNGLMAKEBUFFERRESIDENTNVPROC glMakeBufferResidentNV                     = nullptr;
 PFNGLMAKEBUFFERNONRESIDENTNVPROC glMakeBufferNonResidentNV               = nullptr;
@@ -4111,13 +3668,9 @@ bool init_gl_nv_shader_buffer_load()
     return result;
 }
 
-#endif // GL_NV_shader_buffer_load
-
 #pragma endregion
 
 #pragma region GL_NV_texture_barrier
-
-#ifdef GL_NV_texture_barrier
 
 PFNGLTEXTUREBARRIERNVPROC glTextureBarrierNV = nullptr;
 
@@ -4132,13 +3685,9 @@ bool init_gl_nv_texture_barrier()
     return result;
 }
 
-#endif // GL_NV_texture_barrier
-
 #pragma endregion
 
 #pragma region GL_NV_vertex_attrib_integer_64bit
-
-#ifdef GL_NV_vertex_attrib_integer_64bit
 
 PFNGLVERTEXATTRIBL1I64NVPROC glVertexAttribL1i64NV         = nullptr;
 PFNGLVERTEXATTRIBL2I64NVPROC glVertexAttribL2i64NV         = nullptr;
@@ -4189,13 +3738,9 @@ bool init_gl_nv_vertex_attrib_integer_64bit()
     return result;
 }
 
-#endif // GL_NV_vertex_attrib_integer_64bit
-
 #pragma endregion
 
 #pragma region GL_NV_vertex_buffer_unified_memory
-
-#ifdef GL_NV_vertex_buffer_unified_memory
 
 PFNGLBUFFERADDRESSRANGENVPROC glBufferAddressRangeNV     = nullptr;
 PFNGLVERTEXFORMATNVPROC glVertexFormatNV                 = nullptr;
@@ -4232,13 +3777,9 @@ bool init_gl_nv_vertex_buffer_unified_memory()
     return result;
 }
 
-#endif // GL_NV_vertex_buffer_unified_memory
-
 #pragma endregion
 
 #pragma region GL_NV_viewport_swizzle
-
-#ifdef GL_NV_viewport_swizzle
 
 PFNGLVIEWPORTSWIZZLENVPROC glViewportSwizzleNV = nullptr;
 
@@ -4253,13 +3794,9 @@ bool init_gl_nv_viewport_swizzle()
     return result;
 }
 
-#endif // GL_NV_viewport_swizzle
-
 #pragma endregion
 
 #pragma region GL_OVR_multiview
-
-#ifdef GL_OVR_multiview
 
 PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC glFramebufferTextureMultiviewOVR = nullptr;
 
@@ -4274,458 +3811,113 @@ bool init_gl_ovr_multiview()
     return result;
 }
 
-#endif // GL_OVR_multiview
-
 #pragma endregion
 
-#pragma region init
-
-bool init(const opengl::context* context)
+void init()
 {
-    bool result = context->valid();
-    context->make_current();
-
-#ifdef GL_VERSION_1_0
-    if (context->settings().get_version() >= utils::version(1, 0)) {
-        result = result && init_gl_version_1_0();
-    }
-#endif
-#ifdef GL_VERSION_1_1
-    if (context->settings().get_version() >= utils::version(1, 1)) {
-        result = result && init_gl_version_1_1();
-    }
-#endif
-#ifdef GL_VERSION_1_2
-    if (context->settings().get_version() >= utils::version(1, 2)) {
-        result = result && init_gl_version_1_2();
-    }
-#endif
-#ifdef GL_VERSION_1_3
-    if (context->settings().get_version() >= utils::version(1, 3)) {
-        result = result && init_gl_version_1_3();
-    }
-#endif
-#ifdef GL_VERSION_1_4
-    if (context->settings().get_version() >= utils::version(1, 4)) {
-        result = result && init_gl_version_1_4();
-    }
-#endif
-#ifdef GL_VERSION_1_5
-    if (context->settings().get_version() >= utils::version(1, 5)) {
-        result = result && init_gl_version_1_5();
-    }
-#endif
-#ifdef GL_VERSION_2_0
-    if (context->settings().get_version() >= utils::version(2, 0)) {
-        result = result && init_gl_version_2_0();
-    }
-#endif
-#ifdef GL_VERSION_2_1
-    if (context->settings().get_version() >= utils::version(2, 1)) {
-        result = result && init_gl_version_2_1();
-    }
-#endif
-#ifdef GL_VERSION_3_0
-    if (context->settings().get_version() >= utils::version(3, 0)) {
-        result = result && init_gl_version_3_0();
-    }
-#endif
-#ifdef GL_VERSION_3_1
-    if (context->settings().get_version() >= utils::version(3, 1)) {
-        result = result && init_gl_version_3_1();
-    }
-#endif
-#ifdef GL_VERSION_3_2
-    if (context->settings().get_version() >= utils::version(3, 2)) {
-        result = result && init_gl_version_3_2();
-    }
-#endif
-#ifdef GL_VERSION_3_3
-    if (context->settings().get_version() >= utils::version(3, 3)) {
-        result = result && init_gl_version_3_3();
-    }
-#endif
-#ifdef GL_VERSION_4_0
-    if (context->settings().get_version() >= utils::version(4, 0)) {
-        result = result && init_gl_version_4_0();
-    }
-#endif
-#ifdef GL_VERSION_4_1
-    if (context->settings().get_version() >= utils::version(4, 1)) {
-        result = result && init_gl_version_4_1();
-    }
-#endif
-#ifdef GL_VERSION_4_2
-    if (context->settings().get_version() >= utils::version(4, 2)) {
-        result = result && init_gl_version_4_2();
-    }
-#endif
-#ifdef GL_VERSION_4_3
-    if (context->settings().get_version() >= utils::version(4, 3)) {
-        result = result && init_gl_version_4_3();
-    }
-#endif
-#ifdef GL_VERSION_4_4
-    if (context->settings().get_version() >= utils::version(4, 4)) {
-        result = result && init_gl_version_4_4();
-    }
-#endif
-#ifdef GL_VERSION_4_5
-    if (context->settings().get_version() >= utils::version(4, 5)) {
-        result = result && init_gl_version_4_5();
-    }
-#endif
-#ifdef GL_VERSION_4_6
-    if (context->settings().get_version() >= utils::version(4, 6)) {
-        result = result && init_gl_version_4_6();
-    }
-#endif
-    return result;
+    std::call_once(init_flag, []() {
+        init_versions();
+        init_extensions();
+    });
 }
 
-bool init_extensions(const opengl::context* context, const std::vector<std::string>& extensions_list)
+void init_versions()
 {
-    bool result = context->valid();
-    context->make_current();
-
-#ifdef GL_ARB_ES3_2_compatibility
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_ES3_2_compatibility") !=
-        extensions_list.end()) {
-        result = result && init_gl_arb_es3_2_compatibility();
-    }
-#endif
-#ifdef GL_ARB_bindless_texture
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_bindless_texture") != extensions_list.end()) {
-        result = result && init_gl_arb_bindless_texture();
-    }
-#endif
-#ifdef GL_ARB_cl_event
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_cl_event") != extensions_list.end()) {
-        result = result && init_gl_arb_cl_event();
-    }
-#endif
-#ifdef GL_ARB_compute_variable_group_size
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_compute_variable_group_size") !=
-        extensions_list.end()) {
-        result = result && init_gl_arb_compute_variable_group_size();
-    }
-#endif
-#ifdef GL_ARB_debug_output
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_debug_output") != extensions_list.end()) {
-        result = result && init_gl_arb_debug_output();
-    }
-#endif
-#ifdef GL_ARB_draw_buffers_blend
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_draw_buffers_blend") !=
-        extensions_list.end()) {
-        result = result && init_gl_arb_draw_buffers_blend();
-    }
-#endif
-#ifdef GL_ARB_draw_instanced
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_draw_instanced") != extensions_list.end()) {
-        result = result && init_gl_arb_draw_instanced();
-    }
-#endif
-#ifdef GL_ARB_geometry_shader4
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_geometry_shader4") != extensions_list.end()) {
-        result = result && init_gl_arb_geometry_shader4();
-    }
-#endif
-#ifdef GL_ARB_gl_spirv
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_gl_spirv") != extensions_list.end()) {
-        result = result && init_gl_arb_gl_spirv();
-    }
-#endif
-#ifdef GL_ARB_gpu_shader_int64
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_gpu_shader_int64") != extensions_list.end()) {
-        result = result && init_gl_arb_gpu_shader_int64();
-    }
-#endif
-#ifdef GL_ARB_indirect_parameters
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_indirect_parameters") !=
-        extensions_list.end()) {
-        result = result && init_gl_arb_indirect_parameters();
-    }
-#endif
-#ifdef GL_ARB_instanced_arrays
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_instanced_arrays") != extensions_list.end()) {
-        result = result && init_gl_arb_instanced_arrays();
-    }
-#endif
-#ifdef GL_ARB_parallel_shader_compile
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_parallel_shader_compile") !=
-        extensions_list.end()) {
-        result = result && init_gl_arb_parallel_shader_compile();
-    }
-#endif
-#ifdef GL_ARB_robustness
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_robustness") != extensions_list.end()) {
-        result = result && init_gl_arb_robustness();
-    }
-#endif
-#ifdef GL_ARB_sample_locations
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_sample_locations") != extensions_list.end()) {
-        result = result && init_gl_arb_sample_locations();
-    }
-#endif
-#ifdef GL_ARB_sample_shading
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_sample_shading") != extensions_list.end()) {
-        result = result && init_gl_arb_sample_shading();
-    }
-#endif
-#ifdef GL_ARB_shading_language_include
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_shading_language_include") !=
-        extensions_list.end()) {
-        result = result && init_gl_arb_shading_language_include();
-    }
-#endif
-#ifdef GL_ARB_sparse_buffer
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_sparse_buffer") != extensions_list.end()) {
-        result = result && init_gl_arb_sparse_buffer();
-    }
-#endif
-#ifdef GL_ARB_sparse_texture
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_sparse_texture") != extensions_list.end()) {
-        result = result && init_gl_arb_sparse_texture();
-    }
-#endif
-#ifdef GL_ARB_texture_buffer_object
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_ARB_texture_buffer_object") !=
-        extensions_list.end()) {
-        result = result && init_gl_arb_texture_buffer_object();
-    }
-#endif
-#ifdef GL_KHR_blend_equation_advanced
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_KHR_blend_equation_advanced") !=
-        extensions_list.end()) {
-        result = result && init_gl_khr_blend_equation_advanced();
-    }
-#endif
-#ifdef GL_KHR_parallel_shader_compile
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_KHR_parallel_shader_compile") !=
-        extensions_list.end()) {
-        result = result && init_gl_khr_parallel_shader_compile();
-    }
-#endif
-#ifdef GL_AMD_framebuffer_multisample_advanced
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_AMD_framebuffer_multisample_advanced") !=
-        extensions_list.end()) {
-        result = result && init_gl_amd_framebuffer_multisample_advanced();
-    }
-#endif
-#ifdef GL_AMD_performance_monitor
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_AMD_performance_monitor") !=
-        extensions_list.end()) {
-        result = result && init_gl_amd_performance_monitor();
-    }
-#endif
-#ifdef GL_EXT_EGL_image_storage
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_EGL_image_storage") !=
-        extensions_list.end()) {
-        result = result && init_gl_ext_egl_image_storage();
-    }
-#endif
-#ifdef GL_EXT_debug_label
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_debug_label") != extensions_list.end()) {
-        result = result && init_gl_ext_debug_label();
-    }
-#endif
-#ifdef GL_EXT_debug_marker
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_debug_marker") != extensions_list.end()) {
-        result = result && init_gl_ext_debug_marker();
-    }
-#endif
-#ifdef GL_EXT_direct_state_access
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_direct_state_access") !=
-        extensions_list.end()) {
-        result = result && init_gl_ext_direct_state_access();
-    }
-#endif
-#ifdef GL_EXT_draw_instanced
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_draw_instanced") != extensions_list.end()) {
-        result = result && init_gl_ext_draw_instanced();
-    }
-#endif
-#ifdef GL_EXT_polygon_offset_clamp
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_polygon_offset_clamp") !=
-        extensions_list.end()) {
-        result = result && init_gl_ext_polygon_offset_clamp();
-    }
-#endif
-#ifdef GL_EXT_raster_multisample
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_raster_multisample") !=
-        extensions_list.end()) {
-        result = result && init_gl_ext_raster_multisample();
-    }
-#endif
-#ifdef GL_EXT_separate_shader_objects
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_separate_shader_objects") !=
-        extensions_list.end()) {
-        result = result && init_gl_ext_separate_shader_objects();
-    }
-#endif
-#ifdef GL_EXT_shader_framebuffer_fetch_non_coherent
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_shader_framebuffer_fetch_non_coherent") !=
-        extensions_list.end()) {
-        result = result && init_gl_ext_shader_framebuffer_fetch_non_coherent();
-    }
-#endif
-#ifdef GL_EXT_window_rectangles
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_EXT_window_rectangles") !=
-        extensions_list.end()) {
-        result = result && init_gl_ext_window_rectangles();
-    }
-#endif
-#ifdef GL_INTEL_framebuffer_CMAA
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_INTEL_framebuffer_CMAA") !=
-        extensions_list.end()) {
-        result = result && init_gl_intel_framebuffer_cmaa();
-    }
-#endif
-#ifdef GL_INTEL_performance_query
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_INTEL_performance_query") !=
-        extensions_list.end()) {
-        result = result && init_gl_intel_performance_query();
-    }
-#endif
-#ifdef GL_NV_bindless_multi_draw_indirect
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_bindless_multi_draw_indirect") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_bindless_multi_draw_indirect();
-    }
-#endif
-#ifdef GL_NV_bindless_multi_draw_indirect_count
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_bindless_multi_draw_indirect_count") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_bindless_multi_draw_indirect_count();
-    }
-#endif
-#ifdef GL_NV_bindless_texture
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_bindless_texture") != extensions_list.end()) {
-        result = result && init_gl_nv_bindless_texture();
-    }
-#endif
-#ifdef GL_NV_blend_equation_advanced
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_blend_equation_advanced") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_blend_equation_advanced();
-    }
-#endif
-#ifdef GL_NV_clip_space_w_scaling
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_clip_space_w_scaling") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_clip_space_w_scaling();
-    }
-#endif
-#ifdef GL_NV_command_list
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_command_list") != extensions_list.end()) {
-        result = result && init_gl_nv_command_list();
-    }
-#endif
-#ifdef GL_NV_conditional_render
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_conditional_render") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_conditional_render();
-    }
-#endif
-#ifdef GL_NV_conservative_raster
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_conservative_raster") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_conservative_raster();
-    }
-#endif
-#ifdef GL_NV_conservative_raster_dilate
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_conservative_raster_dilate") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_conservative_raster_dilate();
-    }
-#endif
-#ifdef GL_NV_conservative_raster_pre_snap_triangles
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_conservative_raster_pre_snap_triangles") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_conservative_raster_pre_snap_triangles();
-    }
-#endif
-#ifdef GL_NV_draw_vulkan_image
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_draw_vulkan_image") != extensions_list.end()) {
-        result = result && init_gl_nv_draw_vulkan_image();
-    }
-#endif
-#ifdef GL_NV_fragment_coverage_to_color
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_fragment_coverage_to_color") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_fragment_coverage_to_color();
-    }
-#endif
-#ifdef GL_NV_framebuffer_mixed_samples
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_framebuffer_mixed_samples") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_framebuffer_mixed_samples();
-    }
-#endif
-#ifdef GL_NV_framebuffer_multisample_coverage
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_framebuffer_multisample_coverage") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_framebuffer_multisample_coverage();
-    }
-#endif
-#ifdef GL_NV_gpu_shader5
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_gpu_shader5") != extensions_list.end()) {
-        result = result && init_gl_nv_gpu_shader5();
-    }
-#endif
-#ifdef GL_NV_internalformat_sample_query
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_internalformat_sample_query") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_internalformat_sample_query();
-    }
-#endif
-#ifdef GL_NV_path_rendering
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_path_rendering") != extensions_list.end()) {
-        result = result && init_gl_nv_path_rendering();
-    }
-#endif
-#ifdef GL_NV_sample_locations
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_sample_locations") != extensions_list.end()) {
-        result = result && init_gl_nv_sample_locations();
-    }
-#endif
-#ifdef GL_NV_shader_buffer_load
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_shader_buffer_load") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_shader_buffer_load();
-    }
-#endif
-#ifdef GL_NV_texture_barrier
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_texture_barrier") != extensions_list.end()) {
-        result = result && init_gl_nv_texture_barrier();
-    }
-#endif
-#ifdef GL_NV_vertex_attrib_integer_64bit
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_vertex_attrib_integer_64bit") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_vertex_attrib_integer_64bit();
-    }
-#endif
-#ifdef GL_NV_vertex_buffer_unified_memory
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_vertex_buffer_unified_memory") !=
-        extensions_list.end()) {
-        result = result && init_gl_nv_vertex_buffer_unified_memory();
-    }
-#endif
-#ifdef GL_NV_viewport_swizzle
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_NV_viewport_swizzle") != extensions_list.end()) {
-        result = result && init_gl_nv_viewport_swizzle();
-    }
-#endif
-#ifdef GL_OVR_multiview
-    if (std::find(extensions_list.begin(), extensions_list.end(), "GL_OVR_multiview") != extensions_list.end()) {
-        result = result && init_gl_ovr_multiview();
-    }
-#endif
-    return result;
+    is_supported_version[static_cast<int32>(version::gl_version_1_0)] = init_gl_version_1_0();
+    is_supported_version[static_cast<int32>(version::gl_version_1_1)] = init_gl_version_1_1();
+    is_supported_version[static_cast<int32>(version::gl_version_1_2)] = init_gl_version_1_2();
+    is_supported_version[static_cast<int32>(version::gl_version_1_3)] = init_gl_version_1_3();
+    is_supported_version[static_cast<int32>(version::gl_version_1_4)] = init_gl_version_1_4();
+    is_supported_version[static_cast<int32>(version::gl_version_1_5)] = init_gl_version_1_5();
+    is_supported_version[static_cast<int32>(version::gl_version_2_0)] = init_gl_version_2_0();
+    is_supported_version[static_cast<int32>(version::gl_version_2_1)] = init_gl_version_2_1();
+    is_supported_version[static_cast<int32>(version::gl_version_3_0)] = init_gl_version_3_0();
+    is_supported_version[static_cast<int32>(version::gl_version_3_1)] = init_gl_version_3_1();
+    is_supported_version[static_cast<int32>(version::gl_version_3_2)] = init_gl_version_3_2();
+    is_supported_version[static_cast<int32>(version::gl_version_3_3)] = init_gl_version_3_3();
+    is_supported_version[static_cast<int32>(version::gl_version_4_0)] = init_gl_version_4_0();
+    is_supported_version[static_cast<int32>(version::gl_version_4_1)] = init_gl_version_4_1();
+    is_supported_version[static_cast<int32>(version::gl_version_4_2)] = init_gl_version_4_2();
+    is_supported_version[static_cast<int32>(version::gl_version_4_3)] = init_gl_version_4_3();
+    is_supported_version[static_cast<int32>(version::gl_version_4_4)] = init_gl_version_4_4();
+    is_supported_version[static_cast<int32>(version::gl_version_4_5)] = init_gl_version_4_5();
+    is_supported_version[static_cast<int32>(version::gl_version_4_6)] = init_gl_version_4_6();
 }
 
-#pragma endregion
+void init_extensions()
+{
+    // clang-format off
+    is_supported_extension[static_cast<int32>(extension::gl_arb_es3_2_compatibility)] = init_gl_arb_es3_2_compatibility();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_bindless_texture)] = init_gl_arb_bindless_texture();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_cl_event)] = init_gl_arb_cl_event();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_compute_variable_group_size)] = init_gl_arb_compute_variable_group_size();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_debug_output)] = init_gl_arb_debug_output();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_draw_buffers_blend)] = init_gl_arb_draw_buffers_blend();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_draw_instanced)] = init_gl_arb_draw_instanced();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_geometry_shader4)] = init_gl_arb_geometry_shader4();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_gl_spirv)] = init_gl_arb_gl_spirv();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_gpu_shader_int64)] = init_gl_arb_gpu_shader_int64();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_indirect_parameters)] = init_gl_arb_indirect_parameters();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_instanced_arrays)] = init_gl_arb_instanced_arrays();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_parallel_shader_compile)] = init_gl_arb_parallel_shader_compile();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_robustness)] = init_gl_arb_robustness();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_sample_locations)] = init_gl_arb_sample_locations();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_sample_shading)] = init_gl_arb_sample_shading();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_shading_language_include)] = init_gl_arb_shading_language_include();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_sparse_buffer)] = init_gl_arb_sparse_buffer();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_sparse_texture)] = init_gl_arb_sparse_texture();
+    is_supported_extension[static_cast<int32>(extension::gl_arb_texture_buffer_object)] = init_gl_arb_texture_buffer_object();
+    is_supported_extension[static_cast<int32>(extension::gl_khr_blend_equation_advanced)] = init_gl_khr_blend_equation_advanced();
+    is_supported_extension[static_cast<int32>(extension::gl_khr_parallel_shader_compile)] = init_gl_khr_parallel_shader_compile();
+    is_supported_extension[static_cast<int32>(extension::gl_amd_framebuffer_multisample_advanced)] = init_gl_amd_framebuffer_multisample_advanced();
+    is_supported_extension[static_cast<int32>(extension::gl_amd_performance_monitor)] = init_gl_amd_performance_monitor();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_egl_image_storage)] = init_gl_ext_egl_image_storage();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_debug_label)] = init_gl_ext_debug_label();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_debug_marker)] = init_gl_ext_debug_marker();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_direct_state_access)] = init_gl_ext_direct_state_access();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_draw_instanced)] = init_gl_ext_draw_instanced();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_polygon_offset_clamp)] = init_gl_ext_polygon_offset_clamp();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_raster_multisample)] = init_gl_ext_raster_multisample();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_separate_shader_objects)] = init_gl_ext_separate_shader_objects();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_shader_framebuffer_fetch_non_coherent)] = init_gl_ext_shader_framebuffer_fetch_non_coherent();
+    is_supported_extension[static_cast<int32>(extension::gl_ext_window_rectangles)] = init_gl_ext_window_rectangles();
+    is_supported_extension[static_cast<int32>(extension::gl_intel_framebuffer_cmaa)] = init_gl_intel_framebuffer_cmaa();
+    is_supported_extension[static_cast<int32>(extension::gl_intel_performance_query)] = init_gl_intel_performance_query();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_bindless_multi_draw_indirect)] = init_gl_nv_bindless_multi_draw_indirect();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_bindless_multi_draw_indirect_count)] = init_gl_nv_bindless_multi_draw_indirect_count();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_bindless_texture)] = init_gl_nv_bindless_texture();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_blend_equation_advanced)] = init_gl_nv_blend_equation_advanced();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_clip_space_w_scaling)] = init_gl_nv_clip_space_w_scaling();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_command_list)] = init_gl_nv_command_list();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_conditional_render)] = init_gl_nv_conditional_render();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_conservative_raster)] = init_gl_nv_conservative_raster();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_conservative_raster_dilate)] = init_gl_nv_conservative_raster_dilate();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_conservative_raster_pre_snap_triangles)] = init_gl_nv_conservative_raster_pre_snap_triangles();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_draw_vulkan_image)] = init_gl_nv_draw_vulkan_image();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_fragment_coverage_to_color)] = init_gl_nv_fragment_coverage_to_color();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_framebuffer_mixed_samples)] = init_gl_nv_framebuffer_mixed_samples();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_framebuffer_multisample_coverage)] = init_gl_nv_framebuffer_multisample_coverage();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_gpu_shader5)] = init_gl_nv_gpu_shader5();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_internalformat_sample_query)] = init_gl_nv_internalformat_sample_query();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_path_rendering)] = init_gl_nv_path_rendering();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_sample_locations)] = init_gl_nv_sample_locations();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_shader_buffer_load)] = init_gl_nv_shader_buffer_load();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_texture_barrier)] = init_gl_nv_texture_barrier();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_vertex_attrib_integer_64bit)] = init_gl_nv_vertex_attrib_integer_64bit();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_vertex_buffer_unified_memory)] = init_gl_nv_vertex_buffer_unified_memory();
+    is_supported_extension[static_cast<int32>(extension::gl_nv_viewport_swizzle)] = init_gl_nv_viewport_swizzle();
+    is_supported_extension[static_cast<int32>(extension::gl_ovr_multiview)] = init_gl_ovr_multiview();
+    // clang-format on
+}
+
+bool is_supported(version name)
+{
+    return is_supported_version[static_cast<int32>(name)];
+}
+
+bool is_supported(extension name)
+{
+    return is_supported_extension[static_cast<int32>(name)];
+}
 
 } // namespace framework::opengl

@@ -161,15 +161,9 @@ private:
             return;
         }
 
-        if (!framework::opengl::init(context)) {
-            TEST_FAIL("Can't init OpenGL functions.");
-            return;
-        }
+        context->make_current();
 
-        if (!framework::opengl::init_extensions(context, {"large", "extentions", "list"})) {
-            TEST_FAIL("Can't init OpenGL functions.");
-            return;
-        }
+        framework::opengl::init();
 
         framework::uint32 shader = link_shader_program(compile_shader(vertex_shader_source, GL_VERTEX_SHADER),
                                                        compile_shader(fragment_shader_source, GL_FRAGMENT_SHADER));
