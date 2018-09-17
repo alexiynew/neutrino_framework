@@ -121,7 +121,7 @@ enum class extension
     gl_ovr_multiview
 };
 
-/// Initialize GL core functions
+/// Initialize GL functions
 void init();
 
 /// Checks if functions is supported

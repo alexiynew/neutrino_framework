@@ -141,7 +141,7 @@ def generate_header(sections):
                  "\n"
                  "${enum_extension}"
                  "\n"
-                 "/// Initialize GL core functions\n"
+                 "/// Initialize GL functions\n"
                  "void init();\n"
                  "\n"
                  "/// Checks if functions is supported\n"
