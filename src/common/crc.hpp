@@ -30,22 +30,74 @@
 #ifndef FRAMEWORK_COMMON_CRC_HPP
 #define FRAMEWORK_COMMON_CRC_HPP
 
-#include <common/types.hpp>
 #include <common/crc_details.hpp>
+#include <common/types.hpp>
 
 namespace framework::utils
 {
+/// @addtogroup common_utils_module
+/// @{
+
+/// @brief Cyclic redundancy check implementation
+///
+/// All parameters needed for computation passed to constructor,@n
+/// so you can configure the crc class to any algorithm you want.@n
+///
+/// As template parameter it accepts the number of bits in result value e.g. 8, 16, or 32.@n
+/// There are predefined types for @ref crc8, @ref crc16 and @ref crc32 algorithms.
+///
+/// At construction time @ref crc class generates the crc value table.@n
+/// So you can create one instance of it and use it many times without mush overhead.
+///
+/// Code example:
+/// @code
+/// std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+///
+/// std::cout << "0x" << std::hex
+///           << static_cast<int>(crc8(0x39, 0x00, true, true, 0x00).calculate(data.begin(), data.end()))
+///           << std::endl; // CRC-8/DARC
+/// std::cout << "0x" << std::hex << crc16(0x8005).calculate(data.begin(), data.end())
+///           << std::endl; // CRC-16/BUYPAS
+/// std::cout << "0x" << std::hex
+///           << crc32(0x04C11DB7, 0xFFFFFFFF, true, true, 0xFFFFFFFF).calculate(data.begin(), data.end())
+///           << std::endl; // CRC-32
+/// @endcode
 template <usize BitsCount>
 class crc
 {
 public:
     using value_type = typename details::get_crc_value_type<BitsCount>::type;
 
-    explicit crc(value_type poly, value_type init = 0, bool reflect_in = false, bool reflect_out = false, value_type xor_out = 0) noexcept;
+    /// @brief Creates crc algorithm instance.
+    ///
+    /// @param poly Polynome.
+    /// @param init Initial vlaue.
+    /// @param reflect_in Should reflect input bytes.
+    /// @param reflect_out Should reflect output value.
+    /// @param xor_out Value to 'xor' the result at the end.
+    explicit crc(value_type poly,
+                 value_type init    = 0,
+                 bool reflect_in    = false,
+                 bool reflect_out   = false,
+                 value_type xor_out = 0) noexcept;
 
+    /// @brief Calculates the crc value.
+    ///
+    /// @param begin Iterator that points to the begin of diapason.
+    /// @param end Iterator that points to the end of diapason.
+    ///
+    /// @return The crc value.
     template <typename Iterator>
     value_type calculate(Iterator begin, Iterator end) const;
-    
+
+    /// @brief Updates crc value.
+    ///
+    /// @param byte Byte to update crc.
+    /// @param crc Old crc value.
+    ///
+    /// @return New crc value.
+    ///
+    /// @note This functions uses only the poly parameter. All other parameters does not counted in value computation.
     value_type update(uint8 byte, value_type crc) const noexcept;
 
 private:
@@ -54,55 +106,62 @@ private:
     const value_type m_xor_out = 0;
     const bool m_reflect_in    = false;
     const bool m_reflect_out   = false;
+
+    value_type crc_table[256] = {0};
 };
 
-using crc8 = crc<8>;
+using crc8  = crc<8>;
 using crc16 = crc<16>;
 using crc32 = crc<32>;
 
 #pragma region definitions
 
 template <usize BitsCount>
-inline crc<BitsCount>::crc(value_type poly, value_type init, bool reflect_in, bool reflect_out, value_type xor_out) noexcept
+inline crc<BitsCount>::crc(value_type poly,
+                           value_type init,
+                           bool reflect_in,
+                           bool reflect_out,
+                           value_type xor_out) noexcept
     : m_poly(poly), m_init(init), m_xor_out(xor_out), m_reflect_in(reflect_in), m_reflect_out(reflect_out)
-{}
+{
+    constexpr value_type topbit = 1 << (BitsCount - 1);
+
+    for (uint32 dividend = 0; dividend < 256; ++dividend) {
+        value_type value = static_cast<value_type>(dividend << (BitsCount - 8));
+        for (uint8 bit = 8; bit > 0; --bit) {
+            value = static_cast<value_type>((value & topbit) ? (value << 1) ^ m_poly : value << 1);
+        }
+
+        crc_table[dividend] = value;
+    }
+}
 
 template <usize BitsCount>
 template <typename Iterator>
 inline typename crc<BitsCount>::value_type crc<BitsCount>::calculate(Iterator begin, Iterator end) const
 {
-    value_type out = m_init;
+    value_type value = m_init;
 
-    for (;begin != end; ++begin) {
-        out = update(m_reflect_in ? details::reflect(*begin) : *begin, out);
+    for (; begin != end; ++begin) {
+        value = update(m_reflect_in ? details::reflect(*begin) : *begin, value);
     }
 
     if (m_reflect_out) {
-        out = details::reflect(out);
+        value = details::reflect(value);
     }
 
-    return (out ^ m_xor_out);
+    return (value ^ m_xor_out);
 }
 
 template <usize BitsCount>
 inline typename crc<BitsCount>::value_type crc<BitsCount>::update(uint8 byte, value_type value) const noexcept
 {
-    constexpr int topbit = 1 << (BitsCount - 1);
-
-    value = static_cast<value_type>(value ^ (byte << (BitsCount - 8)));
-    for (uint8 bit = 8; bit > 0; --bit) {
-        if (value & topbit) {
-            value = static_cast<value_type>((value << 1) ^ m_poly);
-        } else {
-            value = static_cast<value_type>(value << 1);
-        }
-    }
-    
-    return value;
+    const uint8 index = static_cast<uint8>(byte ^ (value >> (BitsCount - 8)));
+    return static_cast<value_type>(crc_table[index] ^ (value << 8));
 }
 
 #pragma endregion
 
-}
+} // namespace framework::utils
 
 #endif

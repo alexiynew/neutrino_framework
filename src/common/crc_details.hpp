@@ -34,7 +34,6 @@
 
 namespace framework::utils::details
 {
-
 template <usize BitsCount>
 struct get_crc_value_type;
 
@@ -56,7 +55,6 @@ struct get_crc_value_type<32>
     using type = uint32;
 };
 
-
 template <typename T>
 T reflect(T data)
 {
@@ -74,7 +72,6 @@ T reflect(T data)
     return static_cast<T>(ref);
 }
 
-}
+} // namespace framework::utils::details
 
 #endif
-

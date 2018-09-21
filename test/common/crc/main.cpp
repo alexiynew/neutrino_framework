@@ -37,13 +37,12 @@ public:
     }
 
 private:
-
     void crc8()
     {
         using framework::utils::crc8;
-        
+
         std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-        
+
         // clang-format off
         TEST_ASSERT(0xF4 == crc8(0x07, 0x00, false, false, 0x00).calculate(data.begin(), data.end()), "CRC-8 Failed.");
         TEST_ASSERT(0xDA == crc8(0x9B, 0xFF, false, false, 0x00).calculate(data.begin(), data.end()), "CRC-8/CDMA2000 Failed.");
@@ -57,13 +56,13 @@ private:
         TEST_ASSERT(0x25 == crc8(0x9B, 0x00, true,  true,  0x00).calculate(data.begin(), data.end()), "CRC-8/WCDMA Failed.");
         // clang-format on
     }
-    
+
     void crc16()
     {
         using framework::utils::crc16;
-        
+
         std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-        
+
         // clang-format off
         TEST_ASSERT(0x29B1 == crc16(0x1021, 0xFFFF, false, false, 0x0000).calculate(data.begin(), data.end()), "CRC-16/CCITT-FALSE Failed.");
         TEST_ASSERT(0xBB3D == crc16(0x8005, 0x0000, true,  true,  0x0000).calculate(data.begin(), data.end()), "CRC-16/ARC Failed.");
@@ -88,13 +87,13 @@ private:
         TEST_ASSERT(0x31C3 == crc16(0x1021, 0x0000, false, false, 0x0000).calculate(data.begin(), data.end()), "CRC-16/XMODEM Failed.");
         // clang-format on
     }
-    
+
     void crc32()
     {
         using framework::utils::crc32;
-        
+
         std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-        
+
         // clang-format off
         TEST_ASSERT(0xCBF43926 == crc32(0x04C11DB7, 0xFFFFFFFF, true,  true,  0xFFFFFFFF).calculate(data.begin(), data.end()), "CRC-32 failed.");
         TEST_ASSERT(0xFC891918 == crc32(0x04C11DB7, 0xFFFFFFFF, false, false, 0xFFFFFFFF).calculate(data.begin(), data.end()), "CRC-32/BZIP2 failed.");
@@ -108,7 +107,6 @@ private:
         // clang-format on
     }
 };
-
 
 int main()
 {
