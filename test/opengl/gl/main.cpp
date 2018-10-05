@@ -180,7 +180,7 @@ private:
 
         framework::float32 total_time          = 0;
         framework::float32 step_time           = 0;
-        const framework::float32 step_max_time = 2000;
+        const framework::float32 step_max_time = 500;
 
         framework::uint32 VertexArrayID;
         glGenVertexArrays(1, &VertexArrayID);
@@ -206,7 +206,7 @@ private:
         // Передадим информацию о вершинах в OpenGL
         glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-        while (main_window.visible() && total_time < 10000) {
+        while (main_window.visible() && total_time < 3000) {
             if (step_time >= step_max_time) {
                 step_time      = 0;
                 triangle_color = back_color;

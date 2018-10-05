@@ -39,8 +39,14 @@ namespace framework::os
 class win32_context : public framework::opengl::context
 {
 public:
-    win32_context(HWND window, opengl::context_settings settings_value);
-    ~win32_context() override = default;
+    win32_context(HWND window, opengl::context_settings settings);
+    ~win32_context() override;
+
+    win32_context(const win32_context&) = default;
+    win32_context(win32_context&&)      = default;
+
+    win32_context& operator=(const win32_context&) = default;
+    win32_context& operator=(win32_context&&) = default;
 
     bool valid() const override;
     bool is_current() const override;
@@ -49,6 +55,7 @@ public:
     void swap_buffers() const override;
 
 private:
+    HWND m_window = nullptr;
     HDC m_hdc     = nullptr;
     HGLRC m_hglrc = nullptr;
 };

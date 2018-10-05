@@ -27,75 +27,70 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <GL/glcorearb.h>
-#include <GL/wglext.h>
 #include <stdexcept>
 
+#include <opengl/extensions/windows/wglext.hpp>
 #include <window/details/windows/win32_context.hpp>
 
 namespace framework::os
 {
-win32_context::win32_context(HWND window, opengl::context_settings settings_value)
-    : opengl::context(std::move(settings_value))
+win32_context::win32_context(HWND window, opengl::context_settings settings)
+    : opengl::context(settings), m_window(window)
 {
-    m_hdc = GetDC(window);
+    opengl::init_wgl();
+
+    if (!opengl::wgl_arb_create_context_supported) {
+        throw std::runtime_error("WGL init failed!");
+    }
+
+    m_hdc = GetDC(m_window);
 
     if (m_hdc == nullptr) {
         throw std::runtime_error("GetDC failed!");
     }
 
     PIXELFORMATDESCRIPTOR pfd{0};
-    pfd.nSize    = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.nVersion = 1;
-    pfd.dwFlags  = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
-
-    if (settings().get_double_buffered()) {
-        pfd.dwFlags |= PFD_DOUBLEBUFFER;
-    }
-
-    pfd.iPixelType = settings().get_color_type() == opengl::context_settings::color::rgba ? PFD_TYPE_RGBA
-                                                                                          : PFD_TYPE_COLORINDEX;
+    pfd.nSize      = sizeof(PIXELFORMATDESCRIPTOR);
+    pfd.nVersion   = 1;
+    pfd.dwFlags    = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
+    pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 24;
 
     int pixelFormat = ChoosePixelFormat(m_hdc, &pfd);
 
     if (pixelFormat == 0) {
+        ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't choose pixelformat");
     }
 
     if (!SetPixelFormat(m_hdc, pixelFormat, &pfd)) {
+        ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't set pixelformat");
     }
 
-    HGLRC tempContext = wglCreateContext(m_hdc);
-    wglMakeCurrent(m_hdc, tempContext);
-
-    auto version = settings().get_version();
+    auto version = settings.get_version();
     // clang-format off
     int attribs[] = {
         WGL_CONTEXT_MAJOR_VERSION_ARB, version.major,
         WGL_CONTEXT_MINOR_VERSION_ARB, version.minor,
+        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         WGL_CONTEXT_FLAGS_ARB, 0,
         0
     };
     // clang-format on
 
-    if (WGL_ARB_create_context) {
-        PFNWGLCREATECONTEXTATTRIBSARBPROC
-        wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(
-        wglGetProcAddress("wglCreateContextAttribsARB"));
-
-        m_hglrc = wglCreateContextAttribsARB(m_hdc, 0, attribs);
-        wglMakeCurrent(nullptr, nullptr);
-        wglDeleteContext(tempContext);
-        wglMakeCurrent(m_hdc, m_hglrc);
-    } else {
+    m_hglrc = opengl::wglCreateContextAttribsARB(m_hdc, 0, attribs);
+    if (m_hglrc == nullptr) {
+        ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't create HRC");
     }
+}
 
-    if (m_hdc == nullptr) {
-        throw std::runtime_error("GetDC failed!");
-    }
+win32_context::~win32_context()
+{
+    wglMakeCurrent(nullptr, nullptr);
+    wglDeleteContext(m_hglrc);
+    ReleaseDC(m_window, m_hdc);
 }
 
 bool win32_context::valid() const
