@@ -25,6 +25,7 @@
 
 get_filename_component(MODULE_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 
+set(GROUP_PATH ${MODULE_NAME})
 
 message("\tAdd module: ${MODULE_NAME}")
 
