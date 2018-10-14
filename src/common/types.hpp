@@ -33,6 +33,10 @@
 #include <cstddef>
 #include <cstdint>
 
+// undefine GNU GCC backward compatibility makros.
+#undef major
+#undef minor
+
 namespace framework
 {
 /// @details

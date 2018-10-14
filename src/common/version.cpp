@@ -45,7 +45,7 @@ framework::int32 get_number(std::istringstream& ins)
     }
 
     return std::stoi(number);
-};
+}
 
 } // namespace
 

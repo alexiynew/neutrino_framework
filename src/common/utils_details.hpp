@@ -32,6 +32,7 @@
 
 #include <iostream>
 #include <memory>
+#include <random>
 
 namespace framework::utils::details
 {
@@ -43,7 +44,7 @@ auto get_distribution(T min_value, T max_value)
     } else {
         return std::uniform_real_distribution<T>(min_value, max_value);
     }
-};
+}
 
 /*
 namespace format_details
