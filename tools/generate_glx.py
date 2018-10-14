@@ -3,7 +3,7 @@
 import re
 from string import Template
 
-source = "./dependencies/GL/glxext.h"
+source = "/usr/include/GL/glxext.h"
 desthpp = "./src/opengl/extensions/linux/glxext.hpp"
 destcpp = "./src/opengl/extensions/linux/glxext.cpp"
 
@@ -35,8 +35,9 @@ license = "// ==================================================================
           "// SOFTWARE.\n" \
           "// =============================================================================\n"
 
+exclude = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC", "PFNGLXCREATEGLXVIDEOSOURCESGIXPROC", "PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC"]
 
-class func:
+class function:
     type = ''
     name = ''
 
@@ -62,13 +63,15 @@ def get_sections():
     file = open(source, "r")
 
     groups = re.findall(group_regex, file.read(), re.S)
+    groups = list(filter(lambda g: not(g[0] in exclude), groups))
 
     for g in groups:
         types = re.findall(type_regex, g[1])
         names = re.findall(name_regex, g[1])
 
         functions = (
-            list(map(lambda f: func(f[0], f[1]), list(zip(types, names)))))
+            list(map(lambda f: function(f[0], f[1]), list(zip(types, names)))))
+        functions = list(filter(lambda f: not(f.name in exclude) and not(f.type in exclude), functions))
 
         sections.append(section(g[0], functions))
 
@@ -106,8 +109,7 @@ def generate_header(sections):
         "#ifndef FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP\n" \
         "#define FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP\n" \
         "\n" \
-        "#include <GL/glcorearb.h>\n" \
-        "#include <GL/glxext.h>\n" \
+        "#include <GL/glx.h>\n" \
         "\n" \
         "namespace framework::opengl\n" \
         "{{\n" \

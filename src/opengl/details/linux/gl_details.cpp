@@ -27,10 +27,9 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <GL/glx.h>
-
 #include <common/types.hpp>
 #include <opengl/details/gl_details.hpp>
+#include <opengl/extensions/linux/glxext.hpp>
 
 namespace framework::opengl::details
 {

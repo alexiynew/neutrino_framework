@@ -49,7 +49,6 @@ F get_function(const char* function_name)
 bool init_glx_version_1_3();
 bool init_glx_version_1_4();
 bool init_glx_arb_create_context();
-bool init_glx_arb_get_proc_address();
 bool init_glx_amd_gpu_association();
 bool init_glx_ext_import_context();
 bool init_glx_ext_swap_control();
@@ -60,7 +59,6 @@ bool init_glx_mesa_pixmap_colormap();
 bool init_glx_mesa_query_renderer();
 bool init_glx_mesa_release_buffers();
 bool init_glx_mesa_set_3dfx_mode();
-bool init_glx_mesa_swap_control();
 bool init_glx_nv_copy_buffer();
 bool init_glx_nv_copy_image();
 bool init_glx_nv_delay_before_swap();
@@ -69,14 +67,12 @@ bool init_glx_nv_swap_group();
 bool init_glx_nv_video_capture();
 bool init_glx_nv_video_out();
 bool init_glx_oml_sync_control();
-bool init_glx_sgix_dmbuffer();
 bool init_glx_sgix_fbconfig();
 bool init_glx_sgix_hyperpipe();
 bool init_glx_sgix_pbuffer();
 bool init_glx_sgix_swap_barrier();
 bool init_glx_sgix_swap_group();
 bool init_glx_sgix_video_resize();
-bool init_glx_sgix_video_source();
 bool init_glx_sgi_cushion();
 bool init_glx_sgi_make_current_read();
 bool init_glx_sgi_swap_control();
@@ -94,7 +90,6 @@ namespace framework::opengl
 bool glx_version_1_3_supported               = false;
 bool glx_version_1_4_supported               = false;
 bool glx_arb_create_context_supported        = false;
-bool glx_arb_get_proc_address_supported      = false;
 bool glx_amd_gpu_association_supported       = false;
 bool glx_ext_import_context_supported        = false;
 bool glx_ext_swap_control_supported          = false;
@@ -105,7 +100,6 @@ bool glx_mesa_pixmap_colormap_supported      = false;
 bool glx_mesa_query_renderer_supported       = false;
 bool glx_mesa_release_buffers_supported      = false;
 bool glx_mesa_set_3dfx_mode_supported        = false;
-bool glx_mesa_swap_control_supported         = false;
 bool glx_nv_copy_buffer_supported            = false;
 bool glx_nv_copy_image_supported             = false;
 bool glx_nv_delay_before_swap_supported      = false;
@@ -114,14 +108,12 @@ bool glx_nv_swap_group_supported             = false;
 bool glx_nv_video_capture_supported          = false;
 bool glx_nv_video_out_supported              = false;
 bool glx_oml_sync_control_supported          = false;
-bool glx_sgix_dmbuffer_supported             = false;
 bool glx_sgix_fbconfig_supported             = false;
 bool glx_sgix_hyperpipe_supported            = false;
 bool glx_sgix_pbuffer_supported              = false;
 bool glx_sgix_swap_barrier_supported         = false;
 bool glx_sgix_swap_group_supported           = false;
 bool glx_sgix_video_resize_supported         = false;
-bool glx_sgix_video_source_supported         = false;
 bool glx_sgi_cushion_supported               = false;
 bool glx_sgi_make_current_read_supported     = false;
 bool glx_sgi_swap_control_supported          = false;
@@ -159,12 +151,6 @@ PFNGLXGETPROCADDRESSPROC glXGetProcAddress = nullptr;
 #pragma region GLX_ARB_create_context
 
 PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = nullptr;
-
-#pragma endregion
-
-#pragma region GLX_ARB_get_proc_address
-
-PFNGLXGETPROCADDRESSARBPROC glXGetProcAddressARB = nullptr;
 
 #pragma endregion
 
@@ -244,13 +230,6 @@ PFNGLXSET3DFXMODEMESAPROC glXSet3DfxModeMESA = nullptr;
 
 #pragma endregion
 
-#pragma region GLX_MESA_swap_control
-
-PFNGLXGETSWAPINTERVALMESAPROC glXGetSwapIntervalMESA = nullptr;
-PFNGLXSWAPINTERVALMESAPROC glXSwapIntervalMESA       = nullptr;
-
-#pragma endregion
-
 #pragma region GLX_NV_copy_buffer
 
 PFNGLXCOPYBUFFERSUBDATANVPROC glXCopyBufferSubDataNV           = nullptr;
@@ -319,12 +298,6 @@ PFNGLXWAITFORSBCOMLPROC glXWaitForSbcOML         = nullptr;
 
 #pragma endregion
 
-#pragma region GLX_SGIX_dmbuffer
-
-PFNGLXASSOCIATEDMPBUFFERSGIXPROC glXAssociateDMPbufferSGIX = nullptr;
-
-#pragma endregion
-
 #pragma region GLX_SGIX_fbconfig
 
 PFNGLXGETFBCONFIGATTRIBSGIXPROC glXGetFBConfigAttribSGIX                 = nullptr;
@@ -379,13 +352,6 @@ PFNGLXCHANNELRECTSGIXPROC glXChannelRectSGIX                 = nullptr;
 PFNGLXQUERYCHANNELRECTSGIXPROC glXQueryChannelRectSGIX       = nullptr;
 PFNGLXQUERYCHANNELDELTASSGIXPROC glXQueryChannelDeltasSGIX   = nullptr;
 PFNGLXCHANNELRECTSYNCSGIXPROC glXChannelRectSyncSGIX         = nullptr;
-
-#pragma endregion
-
-#pragma region GLX_SGIX_video_source
-
-PFNGLXCREATEGLXVIDEOSOURCESGIXPROC glXCreateGLXVideoSourceSGIX   = nullptr;
-PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC glXDestroyGLXVideoSourceSGIX = nullptr;
 
 #pragma endregion
 
@@ -476,17 +442,6 @@ bool init_glx_arb_create_context()
 
     // clang-format off
     result = result && (framework::opengl::glXCreateContextAttribsARB = get_function<PFNGLXCREATECONTEXTATTRIBSARBPROC>("glXCreateContextAttribsARB")) != nullptr;
-    // clang-format on
-
-    return result;
-}
-
-bool init_glx_arb_get_proc_address()
-{
-    bool result = true;
-
-    // clang-format off
-    result = result && (framework::opengl::glXGetProcAddressARB = get_function<PFNGLXGETPROCADDRESSARBPROC>("glXGetProcAddressARB")) != nullptr;
     // clang-format on
 
     return result;
@@ -618,18 +573,6 @@ bool init_glx_mesa_set_3dfx_mode()
     return result;
 }
 
-bool init_glx_mesa_swap_control()
-{
-    bool result = true;
-
-    // clang-format off
-    result = result && (framework::opengl::glXGetSwapIntervalMESA = get_function<PFNGLXGETSWAPINTERVALMESAPROC>("glXGetSwapIntervalMESA")) != nullptr;
-    result = result && (framework::opengl::glXSwapIntervalMESA = get_function<PFNGLXSWAPINTERVALMESAPROC>("glXSwapIntervalMESA")) != nullptr;
-    // clang-format on
-
-    return result;
-}
-
 bool init_glx_nv_copy_buffer()
 {
     bool result = true;
@@ -738,17 +681,6 @@ bool init_glx_oml_sync_control()
     return result;
 }
 
-bool init_glx_sgix_dmbuffer()
-{
-    bool result = true;
-
-    // clang-format off
-    result = result && (framework::opengl::glXAssociateDMPbufferSGIX = get_function<PFNGLXASSOCIATEDMPBUFFERSGIXPROC>("glXAssociateDMPbufferSGIX")) != nullptr;
-    // clang-format on
-
-    return result;
-}
-
 bool init_glx_sgix_fbconfig()
 {
     bool result = true;
@@ -836,18 +768,6 @@ bool init_glx_sgix_video_resize()
     return result;
 }
 
-bool init_glx_sgix_video_source()
-{
-    bool result = true;
-
-    // clang-format off
-    result = result && (framework::opengl::glXCreateGLXVideoSourceSGIX = get_function<PFNGLXCREATEGLXVIDEOSOURCESGIXPROC>("glXCreateGLXVideoSourceSGIX")) != nullptr;
-    result = result && (framework::opengl::glXDestroyGLXVideoSourceSGIX = get_function<PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC>("glXDestroyGLXVideoSourceSGIX")) != nullptr;
-    // clang-format on
-
-    return result;
-}
-
 bool init_glx_sgi_cushion()
 {
     bool result = true;
@@ -911,7 +831,6 @@ void init_extensions()
     framework::opengl::glx_version_1_3_supported = init_glx_version_1_3();
     framework::opengl::glx_version_1_4_supported = init_glx_version_1_4();
     framework::opengl::glx_arb_create_context_supported = init_glx_arb_create_context();
-    framework::opengl::glx_arb_get_proc_address_supported = init_glx_arb_get_proc_address();
     framework::opengl::glx_amd_gpu_association_supported = init_glx_amd_gpu_association();
     framework::opengl::glx_ext_import_context_supported = init_glx_ext_import_context();
     framework::opengl::glx_ext_swap_control_supported = init_glx_ext_swap_control();
@@ -922,7 +841,6 @@ void init_extensions()
     framework::opengl::glx_mesa_query_renderer_supported = init_glx_mesa_query_renderer();
     framework::opengl::glx_mesa_release_buffers_supported = init_glx_mesa_release_buffers();
     framework::opengl::glx_mesa_set_3dfx_mode_supported = init_glx_mesa_set_3dfx_mode();
-    framework::opengl::glx_mesa_swap_control_supported = init_glx_mesa_swap_control();
     framework::opengl::glx_nv_copy_buffer_supported = init_glx_nv_copy_buffer();
     framework::opengl::glx_nv_copy_image_supported = init_glx_nv_copy_image();
     framework::opengl::glx_nv_delay_before_swap_supported = init_glx_nv_delay_before_swap();
@@ -931,14 +849,12 @@ void init_extensions()
     framework::opengl::glx_nv_video_capture_supported = init_glx_nv_video_capture();
     framework::opengl::glx_nv_video_out_supported = init_glx_nv_video_out();
     framework::opengl::glx_oml_sync_control_supported = init_glx_oml_sync_control();
-    framework::opengl::glx_sgix_dmbuffer_supported = init_glx_sgix_dmbuffer();
     framework::opengl::glx_sgix_fbconfig_supported = init_glx_sgix_fbconfig();
     framework::opengl::glx_sgix_hyperpipe_supported = init_glx_sgix_hyperpipe();
     framework::opengl::glx_sgix_pbuffer_supported = init_glx_sgix_pbuffer();
     framework::opengl::glx_sgix_swap_barrier_supported = init_glx_sgix_swap_barrier();
     framework::opengl::glx_sgix_swap_group_supported = init_glx_sgix_swap_group();
     framework::opengl::glx_sgix_video_resize_supported = init_glx_sgix_video_resize();
-    framework::opengl::glx_sgix_video_source_supported = init_glx_sgix_video_source();
     framework::opengl::glx_sgi_cushion_supported = init_glx_sgi_cushion();
     framework::opengl::glx_sgi_make_current_read_supported = init_glx_sgi_make_current_read();
     framework::opengl::glx_sgi_swap_control_supported = init_glx_sgi_swap_control();

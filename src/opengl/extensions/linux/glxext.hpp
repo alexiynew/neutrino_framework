@@ -30,15 +30,13 @@
 #ifndef FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP
 #define FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP
 
-#include <GL/glcorearb.h>
-#include <GL/glxext.h>
+#include <GL/glx.h>
 
 namespace framework::opengl
 {
 extern bool glx_version_1_3_supported;
 extern bool glx_version_1_4_supported;
 extern bool glx_arb_create_context_supported;
-extern bool glx_arb_get_proc_address_supported;
 extern bool glx_amd_gpu_association_supported;
 extern bool glx_ext_import_context_supported;
 extern bool glx_ext_swap_control_supported;
@@ -49,7 +47,6 @@ extern bool glx_mesa_pixmap_colormap_supported;
 extern bool glx_mesa_query_renderer_supported;
 extern bool glx_mesa_release_buffers_supported;
 extern bool glx_mesa_set_3dfx_mode_supported;
-extern bool glx_mesa_swap_control_supported;
 extern bool glx_nv_copy_buffer_supported;
 extern bool glx_nv_copy_image_supported;
 extern bool glx_nv_delay_before_swap_supported;
@@ -58,14 +55,12 @@ extern bool glx_nv_swap_group_supported;
 extern bool glx_nv_video_capture_supported;
 extern bool glx_nv_video_out_supported;
 extern bool glx_oml_sync_control_supported;
-extern bool glx_sgix_dmbuffer_supported;
 extern bool glx_sgix_fbconfig_supported;
 extern bool glx_sgix_hyperpipe_supported;
 extern bool glx_sgix_pbuffer_supported;
 extern bool glx_sgix_swap_barrier_supported;
 extern bool glx_sgix_swap_group_supported;
 extern bool glx_sgix_video_resize_supported;
-extern bool glx_sgix_video_source_supported;
 extern bool glx_sgi_cushion_supported;
 extern bool glx_sgi_make_current_read_supported;
 extern bool glx_sgi_swap_control_supported;
@@ -103,12 +98,6 @@ extern PFNGLXGETPROCADDRESSPROC glXGetProcAddress;
 #pragma region GLX_ARB_create_context
 
 extern PFNGLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB;
-
-#pragma endregion
-
-#pragma region GLX_ARB_get_proc_address
-
-extern PFNGLXGETPROCADDRESSARBPROC glXGetProcAddressARB;
 
 #pragma endregion
 
@@ -188,13 +177,6 @@ extern PFNGLXSET3DFXMODEMESAPROC glXSet3DfxModeMESA;
 
 #pragma endregion
 
-#pragma region GLX_MESA_swap_control
-
-extern PFNGLXGETSWAPINTERVALMESAPROC glXGetSwapIntervalMESA;
-extern PFNGLXSWAPINTERVALMESAPROC glXSwapIntervalMESA;
-
-#pragma endregion
-
 #pragma region GLX_NV_copy_buffer
 
 extern PFNGLXCOPYBUFFERSUBDATANVPROC glXCopyBufferSubDataNV;
@@ -263,12 +245,6 @@ extern PFNGLXWAITFORSBCOMLPROC glXWaitForSbcOML;
 
 #pragma endregion
 
-#pragma region GLX_SGIX_dmbuffer
-
-extern PFNGLXASSOCIATEDMPBUFFERSGIXPROC glXAssociateDMPbufferSGIX;
-
-#pragma endregion
-
 #pragma region GLX_SGIX_fbconfig
 
 extern PFNGLXGETFBCONFIGATTRIBSGIXPROC glXGetFBConfigAttribSGIX;
@@ -323,13 +299,6 @@ extern PFNGLXCHANNELRECTSGIXPROC glXChannelRectSGIX;
 extern PFNGLXQUERYCHANNELRECTSGIXPROC glXQueryChannelRectSGIX;
 extern PFNGLXQUERYCHANNELDELTASSGIXPROC glXQueryChannelDeltasSGIX;
 extern PFNGLXCHANNELRECTSYNCSGIXPROC glXChannelRectSyncSGIX;
-
-#pragma endregion
-
-#pragma region GLX_SGIX_video_source
-
-extern PFNGLXCREATEGLXVIDEOSOURCESGIXPROC glXCreateGLXVideoSourceSGIX;
-extern PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC glXDestroyGLXVideoSourceSGIX;
 
 #pragma endregion
 

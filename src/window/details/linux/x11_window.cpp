@@ -27,7 +27,6 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <GL/glx.h>
 #include <X11/Xutil.h>
 #include <chrono>
 #include <exception>
