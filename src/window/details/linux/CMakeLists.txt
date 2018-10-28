@@ -30,6 +30,8 @@ set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/x11_utils.hpp
     ${CMAKE_CURRENT_LIST_DIR}/x11_window.cpp
     ${CMAKE_CURRENT_LIST_DIR}/x11_window.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/x11_context.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/x11_context.hpp
 )
 
 target_sources(${PROJECT_NAME} 

@@ -44,7 +44,7 @@ namespace os
 class x11_window final : public window::implementation
 {
 public:
-    x11_window(window::size_t size, const std::string& title);
+    x11_window(window::size_t size, const std::string& title, opengl::context_settings settings);
     ~x11_window() override;
 
     x11_window(const x11_window&) = delete;
@@ -89,7 +89,7 @@ public:
 
     std::string title() const override;
 
-    std::unique_ptr<window::graphic_context> context() const override;
+    framework::opengl::context* context() const override;
     /// @}
 
     /// @name state
@@ -103,23 +103,6 @@ public:
     /// @}
 
 private:
-    class x11_graphic_context : public window::graphic_context
-    {
-    public:
-        x11_graphic_context(Display* display, Window window, GLXContext context);
-
-        bool valid() const override;
-        bool is_current() const override;
-
-        void make_current() override;
-        void swap_buffers() override;
-
-    private:
-        Display* m_display   = nullptr;
-        Window m_window      = None;
-        GLXContext m_context = nullptr;
-    };
-
     void process(XDestroyWindowEvent event);
     void process(XUnmapEvent event);
     void process(XVisibilityEvent event);
@@ -141,7 +124,8 @@ private:
 
     void update_size_limits(window::size_t min_size, window::size_t max_size);
 
-    std::shared_ptr<x11_server> m_server = nullptr;
+    std::shared_ptr<x11_server> m_server       = nullptr;
+    std::unique_ptr<opengl::context> m_context = nullptr;
 
     bool m_fullscreen     = false;
     bool m_maximized      = false;
@@ -156,12 +140,9 @@ private:
     mutable window::size_t m_min_size = {0, 0};
     mutable window::size_t m_max_size = {0, 0};
 
-    Window m_window     = None;
-    Colormap m_colormap = None;
+    Window m_window = None;
 
-    GLXFBConfig m_framebuffer_config = nullptr;
-    GLXContext m_glx_context         = nullptr;
-    XIC m_input_context              = nullptr;
+    XIC m_input_context = nullptr;
 
     Time m_lastInputTime = 0;
 };
