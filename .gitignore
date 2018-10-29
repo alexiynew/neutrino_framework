@@ -1,6 +1,8 @@
 build/
 output/
 
+__pycache__/
+
 .vscode/
 .atom-build.yml
 .lvimrc
