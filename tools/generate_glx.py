@@ -22,7 +22,7 @@ date = "17.09.2018"
 
 include_guard = "FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP"
 
-includes = ["GL/glx.h"]
+include_files = ["GL/glx.h"]
 
 init_function_description = "/// Initialize GLX functions"
 init_function_name = "init_glx"
