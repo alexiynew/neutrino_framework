@@ -30,7 +30,7 @@
 #ifndef FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP
 #define FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP
 
-#include <GL/glx.h>
+#include <GL/glxext.h>
 
 namespace framework::opengl
 {
@@ -47,6 +47,7 @@ extern bool glx_mesa_pixmap_colormap_supported;
 extern bool glx_mesa_query_renderer_supported;
 extern bool glx_mesa_release_buffers_supported;
 extern bool glx_mesa_set_3dfx_mode_supported;
+extern bool glx_mesa_swap_control_supported;
 extern bool glx_nv_copy_buffer_supported;
 extern bool glx_nv_copy_image_supported;
 extern bool glx_nv_delay_before_swap_supported;
@@ -174,6 +175,13 @@ extern PFNGLXRELEASEBUFFERSMESAPROC glXReleaseBuffersMESA;
 #pragma region GLX_MESA_set_3dfx_mode
 
 extern PFNGLXSET3DFXMODEMESAPROC glXSet3DfxModeMESA;
+
+#pragma endregion
+
+#pragma region GLX_MESA_swap_control
+
+extern PFNGLXGETSWAPINTERVALMESAPROC glXGetSwapIntervalMESA;
+extern PFNGLXSWAPINTERVALMESAPROC glXSwapIntervalMESA;
 
 #pragma endregion
 

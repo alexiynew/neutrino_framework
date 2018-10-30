@@ -1,7 +1,7 @@
 /// @file
 /// @brief GLX extension functions wrapper.
 /// @author Fedorov Alexey
-/// @date 16.09.2018
+/// @date 17.09.2018
 
 // =============================================================================
 // MIT License
@@ -59,6 +59,7 @@ bool init_glx_mesa_pixmap_colormap();
 bool init_glx_mesa_query_renderer();
 bool init_glx_mesa_release_buffers();
 bool init_glx_mesa_set_3dfx_mode();
+bool init_glx_mesa_swap_control();
 bool init_glx_nv_copy_buffer();
 bool init_glx_nv_copy_image();
 bool init_glx_nv_delay_before_swap();
@@ -100,6 +101,7 @@ bool glx_mesa_pixmap_colormap_supported      = false;
 bool glx_mesa_query_renderer_supported       = false;
 bool glx_mesa_release_buffers_supported      = false;
 bool glx_mesa_set_3dfx_mode_supported        = false;
+bool glx_mesa_swap_control_supported         = false;
 bool glx_nv_copy_buffer_supported            = false;
 bool glx_nv_copy_image_supported             = false;
 bool glx_nv_delay_before_swap_supported      = false;
@@ -227,6 +229,13 @@ PFNGLXRELEASEBUFFERSMESAPROC glXReleaseBuffersMESA = nullptr;
 #pragma region GLX_MESA_set_3dfx_mode
 
 PFNGLXSET3DFXMODEMESAPROC glXSet3DfxModeMESA = nullptr;
+
+#pragma endregion
+
+#pragma region GLX_MESA_swap_control
+
+PFNGLXGETSWAPINTERVALMESAPROC glXGetSwapIntervalMESA = nullptr;
+PFNGLXSWAPINTERVALMESAPROC glXSwapIntervalMESA       = nullptr;
 
 #pragma endregion
 
@@ -573,6 +582,18 @@ bool init_glx_mesa_set_3dfx_mode()
     return result;
 }
 
+bool init_glx_mesa_swap_control()
+{
+    bool result = true;
+
+    // clang-format off
+    result = result && (framework::opengl::glXGetSwapIntervalMESA = get_function<PFNGLXGETSWAPINTERVALMESAPROC>("glXGetSwapIntervalMESA")) != nullptr;
+    result = result && (framework::opengl::glXSwapIntervalMESA = get_function<PFNGLXSWAPINTERVALMESAPROC>("glXSwapIntervalMESA")) != nullptr;
+    // clang-format on
+
+    return result;
+}
+
 bool init_glx_nv_copy_buffer()
 {
     bool result = true;
@@ -841,6 +862,7 @@ void init_extensions()
     framework::opengl::glx_mesa_query_renderer_supported = init_glx_mesa_query_renderer();
     framework::opengl::glx_mesa_release_buffers_supported = init_glx_mesa_release_buffers();
     framework::opengl::glx_mesa_set_3dfx_mode_supported = init_glx_mesa_set_3dfx_mode();
+    framework::opengl::glx_mesa_swap_control_supported = init_glx_mesa_swap_control();
     framework::opengl::glx_nv_copy_buffer_supported = init_glx_nv_copy_buffer();
     framework::opengl::glx_nv_copy_image_supported = init_glx_nv_copy_image();
     framework::opengl::glx_nv_delay_before_swap_supported = init_glx_nv_delay_before_swap();

@@ -3,7 +3,7 @@
 import re
 import generator
 
-source = "/usr/include/GL/glxext.h"
+source = "./dependencies/GL/glxext.h"
 
 desthpp = "./src/opengl/extensions/linux/glxext.hpp"
 destcpp = "./src/opengl/extensions/linux/glxext.cpp"
@@ -22,7 +22,7 @@ date = "17.09.2018"
 
 include_guard = "FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP"
 
-include_files = ["GL/glx.h"]
+include_files = ["GL/glxext.h"]
 
 init_function_description = "/// Initialize GLX functions"
 init_function_name = "init_glx"
