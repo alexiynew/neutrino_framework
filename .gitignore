@@ -12,5 +12,6 @@ __pycache__/
 .clang_complete
 *.log
 *.log.*
+xorg.conf
 .dir-locals.*
 tags
