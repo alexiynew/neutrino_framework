@@ -1,7 +1,7 @@
 /// @file
 /// @brief OpneGL functions wrapper.
 /// @author Fedorov Alexey
-/// @date 21.06.2018
+/// @date 17.09.2018
 
 // =============================================================================
 // MIT License
@@ -34,101 +34,85 @@
 
 namespace framework::opengl
 {
-enum class version
-{
-    gl_version_1_0,
-    gl_version_1_1,
-    gl_version_1_2,
-    gl_version_1_3,
-    gl_version_1_4,
-    gl_version_1_5,
-    gl_version_2_0,
-    gl_version_2_1,
-    gl_version_3_0,
-    gl_version_3_1,
-    gl_version_3_2,
-    gl_version_3_3,
-    gl_version_4_0,
-    gl_version_4_1,
-    gl_version_4_2,
-    gl_version_4_3,
-    gl_version_4_4,
-    gl_version_4_5,
-    gl_version_4_6
-};
-
-enum class extension
-{
-    gl_arb_es3_2_compatibility,
-    gl_arb_bindless_texture,
-    gl_arb_cl_event,
-    gl_arb_compute_variable_group_size,
-    gl_arb_debug_output,
-    gl_arb_draw_buffers_blend,
-    gl_arb_draw_instanced,
-    gl_arb_geometry_shader4,
-    gl_arb_gl_spirv,
-    gl_arb_gpu_shader_int64,
-    gl_arb_indirect_parameters,
-    gl_arb_instanced_arrays,
-    gl_arb_parallel_shader_compile,
-    gl_arb_robustness,
-    gl_arb_sample_locations,
-    gl_arb_sample_shading,
-    gl_arb_shading_language_include,
-    gl_arb_sparse_buffer,
-    gl_arb_sparse_texture,
-    gl_arb_texture_buffer_object,
-    gl_khr_blend_equation_advanced,
-    gl_khr_parallel_shader_compile,
-    gl_amd_framebuffer_multisample_advanced,
-    gl_amd_performance_monitor,
-    gl_ext_egl_image_storage,
-    gl_ext_debug_label,
-    gl_ext_debug_marker,
-    gl_ext_direct_state_access,
-    gl_ext_draw_instanced,
-    gl_ext_polygon_offset_clamp,
-    gl_ext_raster_multisample,
-    gl_ext_separate_shader_objects,
-    gl_ext_shader_framebuffer_fetch_non_coherent,
-    gl_ext_window_rectangles,
-    gl_intel_framebuffer_cmaa,
-    gl_intel_performance_query,
-    gl_nv_bindless_multi_draw_indirect,
-    gl_nv_bindless_multi_draw_indirect_count,
-    gl_nv_bindless_texture,
-    gl_nv_blend_equation_advanced,
-    gl_nv_clip_space_w_scaling,
-    gl_nv_command_list,
-    gl_nv_conditional_render,
-    gl_nv_conservative_raster,
-    gl_nv_conservative_raster_dilate,
-    gl_nv_conservative_raster_pre_snap_triangles,
-    gl_nv_draw_vulkan_image,
-    gl_nv_fragment_coverage_to_color,
-    gl_nv_framebuffer_mixed_samples,
-    gl_nv_framebuffer_multisample_coverage,
-    gl_nv_gpu_shader5,
-    gl_nv_internalformat_sample_query,
-    gl_nv_path_rendering,
-    gl_nv_sample_locations,
-    gl_nv_shader_buffer_load,
-    gl_nv_texture_barrier,
-    gl_nv_vertex_attrib_integer_64bit,
-    gl_nv_vertex_buffer_unified_memory,
-    gl_nv_viewport_swizzle,
-    gl_ovr_multiview
-};
-
-/// Initialize GL functions
-void init();
-
-/// Checks if functions is supported
-bool is_supported(version name);
-
-/// Checks if functions is supported
-bool is_supported(extension name);
+extern bool gl_version_1_0_supported;
+extern bool gl_version_1_1_supported;
+extern bool gl_version_1_2_supported;
+extern bool gl_version_1_3_supported;
+extern bool gl_version_1_4_supported;
+extern bool gl_version_1_5_supported;
+extern bool gl_version_2_0_supported;
+extern bool gl_version_2_1_supported;
+extern bool gl_version_3_0_supported;
+extern bool gl_version_3_1_supported;
+extern bool gl_version_3_2_supported;
+extern bool gl_version_3_3_supported;
+extern bool gl_version_4_0_supported;
+extern bool gl_version_4_1_supported;
+extern bool gl_version_4_2_supported;
+extern bool gl_version_4_3_supported;
+extern bool gl_version_4_4_supported;
+extern bool gl_version_4_5_supported;
+extern bool gl_version_4_6_supported;
+extern bool gl_arb_es3_2_compatibility_supported;
+extern bool gl_arb_bindless_texture_supported;
+extern bool gl_arb_cl_event_supported;
+extern bool gl_arb_compute_variable_group_size_supported;
+extern bool gl_arb_debug_output_supported;
+extern bool gl_arb_draw_buffers_blend_supported;
+extern bool gl_arb_draw_instanced_supported;
+extern bool gl_arb_geometry_shader4_supported;
+extern bool gl_arb_gl_spirv_supported;
+extern bool gl_arb_gpu_shader_int64_supported;
+extern bool gl_arb_indirect_parameters_supported;
+extern bool gl_arb_instanced_arrays_supported;
+extern bool gl_arb_parallel_shader_compile_supported;
+extern bool gl_arb_robustness_supported;
+extern bool gl_arb_sample_locations_supported;
+extern bool gl_arb_sample_shading_supported;
+extern bool gl_arb_shading_language_include_supported;
+extern bool gl_arb_sparse_buffer_supported;
+extern bool gl_arb_sparse_texture_supported;
+extern bool gl_arb_texture_buffer_object_supported;
+extern bool gl_khr_blend_equation_advanced_supported;
+extern bool gl_khr_parallel_shader_compile_supported;
+extern bool gl_amd_framebuffer_multisample_advanced_supported;
+extern bool gl_amd_performance_monitor_supported;
+extern bool gl_ext_egl_image_storage_supported;
+extern bool gl_ext_debug_label_supported;
+extern bool gl_ext_debug_marker_supported;
+extern bool gl_ext_direct_state_access_supported;
+extern bool gl_ext_draw_instanced_supported;
+extern bool gl_ext_polygon_offset_clamp_supported;
+extern bool gl_ext_raster_multisample_supported;
+extern bool gl_ext_separate_shader_objects_supported;
+extern bool gl_ext_shader_framebuffer_fetch_non_coherent_supported;
+extern bool gl_ext_window_rectangles_supported;
+extern bool gl_intel_framebuffer_cmaa_supported;
+extern bool gl_intel_performance_query_supported;
+extern bool gl_nv_bindless_multi_draw_indirect_supported;
+extern bool gl_nv_bindless_multi_draw_indirect_count_supported;
+extern bool gl_nv_bindless_texture_supported;
+extern bool gl_nv_blend_equation_advanced_supported;
+extern bool gl_nv_clip_space_w_scaling_supported;
+extern bool gl_nv_command_list_supported;
+extern bool gl_nv_conditional_render_supported;
+extern bool gl_nv_conservative_raster_supported;
+extern bool gl_nv_conservative_raster_dilate_supported;
+extern bool gl_nv_conservative_raster_pre_snap_triangles_supported;
+extern bool gl_nv_draw_vulkan_image_supported;
+extern bool gl_nv_fragment_coverage_to_color_supported;
+extern bool gl_nv_framebuffer_mixed_samples_supported;
+extern bool gl_nv_framebuffer_multisample_coverage_supported;
+extern bool gl_nv_gpu_shader5_supported;
+extern bool gl_nv_internalformat_sample_query_supported;
+extern bool gl_nv_path_rendering_supported;
+extern bool gl_nv_sample_locations_supported;
+extern bool gl_nv_shader_buffer_load_supported;
+extern bool gl_nv_texture_barrier_supported;
+extern bool gl_nv_vertex_attrib_integer_64bit_supported;
+extern bool gl_nv_vertex_buffer_unified_memory_supported;
+extern bool gl_nv_viewport_swizzle_supported;
+extern bool gl_ovr_multiview_supported;
 
 #pragma region GL_VERSION_1_0
 
@@ -1769,6 +1753,9 @@ extern PFNGLVIEWPORTSWIZZLENVPROC glViewportSwizzleNV;
 extern PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC glFramebufferTextureMultiviewOVR;
 
 #pragma endregion
+
+/// Initialize GL functions
+void init();
 
 } // namespace framework::opengl
 

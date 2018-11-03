@@ -36,7 +36,8 @@ def get_sections(dictionary):
         types = re.findall(dictionary['type_regex'], g[1])
         names = re.findall(dictionary['name_regex'], g[1])
 
-        functions = (list(map(lambda f: Function(f[0], f[1]), list(zip(types, names)))))
+        functions = (
+            list(map(lambda f: Function(f[0], f[1]), list(zip(types, names)))))
         functions = [f for f in functions if not(f.name in dictionary['exclude'])
                      and not f.type in dictionary['exclude']]
 
@@ -128,8 +129,6 @@ def generate_null_definitions(sections):
                  "${null_definition}"
                  "\n"
                  "#pragma endregion\n")
-
-    result = ""
 
     return "\n".join(t.substitute(name=s.name,
                                   null_definition="\n".join("{0} {1} = nullptr;".format(
