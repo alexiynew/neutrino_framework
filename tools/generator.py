@@ -1,10 +1,10 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
 
 import re
 from string import Template
 
 
-class function:
+class Function:
     type = ''
     name = ''
 
@@ -13,7 +13,7 @@ class function:
         self.name = n
 
 
-class section:
+class Section:
     name = ''
     lower_name = ''
     functions = []
@@ -27,23 +27,22 @@ class section:
 def get_sections(dictionary):
     sections = []
 
-    file = open(dictionary['source'], "r")
+    src_file = open(dictionary['source'], "r")
 
-    groups = re.findall(dictionary['group_regex'], file.read(), re.S)
-    groups = list(filter(lambda g: not(g[0] in dictionary['exclude']), groups))
+    groups = re.findall(dictionary['group_regex'], src_file.read(), re.S)
+    groups = [g for g in groups if not g[0] in dictionary['exclude']]
 
     for g in groups:
         types = re.findall(dictionary['type_regex'], g[1])
         names = re.findall(dictionary['name_regex'], g[1])
 
-        functions = (
-            list(map(lambda f: function(f[0], f[1]), list(zip(types, names)))))
-        functions = list(filter(lambda f: not(f.name in dictionary['exclude'])
-                                and not(f.type in dictionary['exclude']), functions))
+        functions = (list(map(lambda f: Function(f[0], f[1]), list(zip(types, names)))))
+        functions = [f for f in functions if not(f.name in dictionary['exclude'])
+                     and not f.type in dictionary['exclude']]
 
-        sections.append(section(g[0], functions))
+        sections.append(Section(g[0], functions))
 
-    file.close()
+    src_file.close()
 
     return sections
 
@@ -246,8 +245,7 @@ def generate_source(sections, dictionary):
 
 
 def generate(dictionary):
-    sections = list(filter(lambda s: len(s.functions)
-                           > 0, get_sections(dictionary)))
+    sections = [s for s in get_sections(dictionary) if len(s.functions) > 0]
 
     generate_header(sections, dictionary)
     generate_source(sections, dictionary)

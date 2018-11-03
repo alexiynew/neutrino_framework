@@ -1,37 +1,37 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
+"""Generates extension wrapper for glx functions."""
 
-import re
 import generator
 
-source = "./dependencies/GL/glxext.h"
+SOURCE = "./dependencies/GL/glxext.h"
 
-desthpp = "./src/opengl/extensions/linux/glxext.hpp"
-destcpp = "./src/opengl/extensions/linux/glxext.cpp"
+DESTHPP = "./src/opengl/extensions/linux/glxext.hpp"
+DESTCPP = "./src/opengl/extensions/linux/glxext.cpp"
 
-group_regex = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
-type_regex = r'typedef.*\(\s?\*(PFN.*PROC)\).*;'
-name_regex = r'.*(glX[\w\d_]+)\s?\(.*;'
+GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
+TYPE_REGEX = r'typedef.*\(\s?\*(PFN.*PROC)\).*;'
+NAME_REGEX = r'.*(glX[\w\d_]+)\s?\(.*;'
 
-exclude = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC",
+EXCLUDE = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC",
            "PFNGLXCREATEGLXVIDEOSOURCESGIXPROC", "PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC"]
 
-header_file = "opengl/extensions/linux/glxext.hpp"
+HEADER_FILE = "opengl/extensions/linux/glxext.hpp"
 
-brief = "GLX extension functions wrapper."
-date = "17.09.2018"
+BRIEF = "GLX extension functions wrapper."
+DATE = "17.09.2018"
 
-include_guard = "FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP"
+INCLUDE_GUARD = "FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP"
 
-include_files = ["GL/glxext.h"]
+INCLUDE_FILES = ["GL/glxext.h"]
 
-init_function_description = "/// Initialize GLX functions"
-init_function_name = "init_glx"
+INIT_FUNCTION_DESCRIPTION = "/// Initialize GLX functions"
+INIT_FUNCTION_NAME = "init_glx"
 
-init_extensions_begin = ""
+INIT_EXTENSIONS_BEGIN = ""
 
-init_extensions_end = ""
+INIT_EXTENSIONS_END = ""
 
-license = "// =============================================================================\n" \
+LICENSE = "// =============================================================================\n" \
           "// MIT License\n" \
           "//\n" \
           "// Copyright (c) 2017-2018 Fedorov Alexey\n" \
@@ -55,20 +55,20 @@ license = "// ==================================================================
           "// SOFTWARE.\n" \
           "// =============================================================================\n"
 
-generator.generate(dict(source=source,
-                        desthpp=desthpp,
-                        destcpp=destcpp,
-                        group_regex=group_regex,
-                        type_regex=type_regex,
-                        name_regex=name_regex,
-                        exclude=exclude,
-                        header_file=header_file,
-                        brief=brief,
-                        date=date,
-                        include_guard=include_guard,
-                        include_files=include_files,
-                        init_function_description=init_function_description,
-                        init_function_name=init_function_name,
-                        init_extensions_begin=init_extensions_begin,
-                        init_extensions_end=init_extensions_end,
-                        license=license))
+generator.generate(dict(source=SOURCE,
+                        desthpp=DESTHPP,
+                        destcpp=DESTCPP,
+                        group_regex=GROUP_REGEX,
+                        type_regex=TYPE_REGEX,
+                        name_regex=NAME_REGEX,
+                        exclude=EXCLUDE,
+                        header_file=HEADER_FILE,
+                        brief=BRIEF,
+                        date=DATE,
+                        include_guard=INCLUDE_GUARD,
+                        include_files=INCLUDE_FILES,
+                        init_function_description=INIT_FUNCTION_DESCRIPTION,
+                        init_function_name=INIT_FUNCTION_NAME,
+                        init_extensions_begin=INIT_EXTENSIONS_BEGIN,
+                        init_extensions_end=INIT_EXTENSIONS_END,
+                        license=LICENSE))

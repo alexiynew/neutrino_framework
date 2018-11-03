@@ -34,7 +34,7 @@
 
 namespace framework::opengl
 {
-enum class version 
+enum class version
 {
     gl_version_1_0,
     gl_version_1_1,
@@ -57,7 +57,7 @@ enum class version
     gl_version_4_6
 };
 
-enum class extension 
+enum class extension
 {
     gl_arb_es3_2_compatibility,
     gl_arb_bindless_texture,

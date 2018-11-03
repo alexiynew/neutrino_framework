@@ -1,32 +1,32 @@
-#! /usr/bin/python3
+#!/usr/bin/python3
+"""Generates extension wrapper for wgl functions."""
 
-import re
 import generator
 
-source = "./dependencies/GL/wglext.h"
+SOURCE = "./dependencies/GL/wglext.h"
 
-desthpp = "./src/opengl/extensions/windows/wglext.hpp"
-destcpp = "./src/opengl/extensions/windows/wglext.cpp"
+DESTHPP = "./src/opengl/extensions/windows/wglext.hpp"
+DESTCPP = "./src/opengl/extensions/windows/wglext.cpp"
 
-group_regex = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
-type_regex = r'typedef.*\(WINAPI\s?\*\s?(PFN[\w\d_]*PROC)\).*;'
-name_regex = r'.*WINAPI\s([\w\d_]+)\s\(.*\);'
+GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
+TYPE_REGEX = r'typedef.*\(WINAPI\s?\*\s?(PFN[\w\d_]*PROC)\).*;'
+NAME_REGEX = r'.*WINAPI\s([\w\d_]+)\s\(.*\);'
 
-exclude = []
+EXCLUDE = []
 
-header_file = "opengl/extensions/windows/wglext.hpp"
+HEADER_FILE = "opengl/extensions/windows/wglext.hpp"
 
-brief = "WGL extension functions wrapper."
-date = "17.09.2018"
+BRIEF = "WGL extension functions wrapper."
+DATE = "17.09.2018"
 
-include_guard = "FRAMEWORK_OPENGL_EXTENSIONS_WINDOWS_WGLEXT_HPP"
+INCLUDE_GUARD = "FRAMEWORK_OPENGL_EXTENSIONS_WINDOWS_WGLEXT_HPP"
 
-include_files = ["GL/glcorearb.h", "GL/wglext.h"]
+INCLUDE_FILES = ["GL/glcorearb.h", "GL/wglext.h"]
 
-init_function_description = "/// Initialize WGL functions"
-init_function_name = "init_wgl"
+INIT_FUNCTION_DESCRIPTION = "/// Initialize WGL functions"
+INIT_FUNCTION_NAME = "init_wgl"
 
-init_extensions_begin = "    HDC hdc = GetDC(nullptr);\n"\
+INIT_EXTENSIONS_BEGIN = "    HDC hdc = GetDC(nullptr);\n"\
                         "\n"\
                         "    if (hdc == nullptr) {\n"\
                         "        return;\n"\
@@ -56,11 +56,11 @@ init_extensions_begin = "    HDC hdc = GetDC(nullptr);\n"\
                         "\n"\
                         "    wglMakeCurrent(hdc, hglrc);\n"\
 
-init_extensions_end = "    wglMakeCurrent(nullptr, nullptr);\n"\
+INIT_EXTENSIONS_END = "    wglMakeCurrent(nullptr, nullptr);\n"\
                       "    wglDeleteContext(hglrc);\n"\
                       "    ReleaseDC(nullptr, hdc);\n"
 
-license = "// =============================================================================\n" \
+LICENSE = "// =============================================================================\n" \
           "// MIT License\n" \
           "//\n" \
           "// Copyright (c) 2017-2018 Fedorov Alexey\n" \
@@ -85,20 +85,20 @@ license = "// ==================================================================
           "// =============================================================================\n"
 
 
-generator.generate(dict(source=source,
-                        desthpp=desthpp,
-                        destcpp=destcpp,
-                        group_regex=group_regex,
-                        type_regex=type_regex,
-                        name_regex=name_regex,
-                        exclude=exclude,
-                        header_file=header_file,
-                        brief=brief,
-                        date=date,
-                        include_guard=include_guard,
-                        include_files=include_files,
-                        init_function_description=init_function_description,
-                        init_function_name=init_function_name,
-                        init_extensions_begin=init_extensions_begin,
-                        init_extensions_end=init_extensions_end,
-                        license=license))
+generator.generate(dict(source=SOURCE,
+                        desthpp=DESTHPP,
+                        destcpp=DESTCPP,
+                        group_regex=GROUP_REGEX,
+                        type_regex=TYPE_REGEX,
+                        name_regex=NAME_REGEX,
+                        exclude=EXCLUDE,
+                        header_file=HEADER_FILE,
+                        brief=BRIEF,
+                        date=DATE,
+                        include_guard=INCLUDE_GUARD,
+                        include_files=INCLUDE_FILES,
+                        init_function_description=INIT_FUNCTION_DESCRIPTION,
+                        init_function_name=INIT_FUNCTION_NAME,
+                        init_extensions_begin=INIT_EXTENSIONS_BEGIN,
+                        init_extensions_end=INIT_EXTENSIONS_END,
+                        license=LICENSE))
