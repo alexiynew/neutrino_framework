@@ -32,27 +32,31 @@
 
 #include <common/types.hpp>
 
-namespace framework::utils::details
+namespace framework::utils::crc_details
 {
+/// @brief Helper class to get correct type for crc::value_type.
 template <usize BitsCount>
 struct get_crc_value_type;
 
+/// @brief Helper class to get correct type for crc::value_type.
 template <>
 struct get_crc_value_type<8>
 {
-    using type = uint8;
+    using type = uint8; ///< crc::value_type
 };
 
+/// @brief Helper class to get correct type for crc::value_type.
 template <>
 struct get_crc_value_type<16>
 {
-    using type = uint16;
+    using type = uint16; ///< crc::value_type
 };
 
+/// @brief Helper class to get correct type for crc::value_type.
 template <>
 struct get_crc_value_type<32>
 {
-    using type = uint32;
+    using type = uint32; ///< crc::value_type
 };
 
 template <typename T>
@@ -72,6 +76,6 @@ T reflect(T data)
     return static_cast<T>(ref);
 }
 
-} // namespace framework::utils::details
+} // namespace framework::utils::crc_details
 
 #endif
