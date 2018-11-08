@@ -38,41 +38,84 @@ namespace framework
 {
 namespace utils
 {
+/// @details Version class.
 /// @addtogroup version_abstraction
 /// @{
 
+/// @brief Version implementation.
 struct version
 {
 public:
+    /// @brief Creates version instance.
+    ///
+    /// @param major Major version number.
+    /// @param minor Minor version number.
+    /// @param patch Patch version number.
+    /// @param build Build version number.
     version(int32 major, int32 minor, int32 patch = 0, int32 build = 0) noexcept;
+
+    /// @brief Creates version instance from string.
+    ///
+    /// @param version_string Version string in the dot-separated format (e.g. "1.2.3.4").
     explicit version(const std::string& version_string);
 
+    /// @brief Default copy constructor.
     version(const version&) = default;
-    version(version&&)      = default;
 
+    /// @brief Default move constructor.
+    version(version&&) = default;
+
+    /// @brief Deafault copy assignment operator.
+    ///
+    /// @return Reference to copied object.
     version& operator=(const version&) = default;
+
+    /// @brief Deafault move assignment operator.
+    ///
+    /// @return Reference to moved object.
     version& operator=(version&&) = default;
 
     ~version() = default;
 
+    /// @brief Version string.
+    ///
+    /// @return Version number as string e.g. "1.2.3.4".
     std::string as_string() const;
 
-    int32 major = 0;
-    int32 minor = 0;
-    int32 patch = 0;
-    int32 build = 0;
+    int32 major = 0; ///< Major version number.
+    int32 minor = 0; ///< Minor version number.
+    int32 patch = 0; ///< Patch version number.
+    int32 build = 0; ///< Build version number.
 };
 
+/// @brief Equality operator.
+///
+/// @param lhs Version to compare.
+/// @param rhs Version to compare.
+///
+/// @return `true` if lhs equals rhs, otherwise `false`.
 inline constexpr bool operator==(const version& lhs, const version& rhs) noexcept
 {
     return lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch == rhs.patch && lhs.build == rhs.build;
 }
 
+/// @brief Inequality operator.
+///
+/// @param lhs Version to compare.
+/// @param rhs Version to compare.
+///
+/// @return `true` if lhs isn't equal rhs, otherwise `false`.
 inline constexpr bool operator!=(const version& lhs, const version& rhs) noexcept
 {
     return !(lhs == rhs);
 }
 
+/// @brief Less than operator.
+///
+/// @param lhs Version to compare.
+/// @param rhs Version to compare.
+///
+/// @return `true` if lhs is less than rhs, otherwise `false`.
 inline constexpr bool operator<(const version& lhs, const version& rhs) noexcept
 {
     return (lhs.major != rhs.major
@@ -81,16 +124,34 @@ inline constexpr bool operator<(const version& lhs, const version& rhs) noexcept
                                       : (lhs.patch != rhs.patch ? lhs.patch < rhs.patch : lhs.build < rhs.build)));
 }
 
+/// @brief Greater than operator.
+///
+/// @param lhs Version to compare.
+/// @param rhs Version to compare.
+///
+/// @return `true` if lhs is greater than rhs, otherwise `false`.
 inline constexpr bool operator>(const version& lhs, const version& rhs) noexcept
 {
     return !(lhs < rhs) && lhs != rhs;
 }
 
+/// @brief Less than or equal operator.
+///
+/// @param lhs Version to compare.
+/// @param rhs Version to compare.
+///
+/// @return `true` if lhs is less than or euqal rhs, otherwise `false`.
 inline constexpr bool operator<=(const version& lhs, const version& rhs) noexcept
 {
     return lhs < rhs || lhs == rhs;
 }
 
+/// @brief Greater than or equal operator.
+///
+/// @param lhs Version to compare.
+/// @param rhs Version to compare.
+///
+/// @return `true` if lhs is greater than or equal rhs, otherwise `false`.
 inline constexpr bool operator>=(const version& lhs, const version& rhs) noexcept
 {
     return lhs > rhs || lhs == rhs;
