@@ -48,6 +48,10 @@ namespace utils
 /// @addtogroup common_utils_module
 /// @{
 
+/// @defgroup crc_implementation Crc
+
+/// @defgroup version_abstraction Version
+
 /// @brief Determines if it is the debug build.
 ///
 /// @return `true` in debug mode, `false` otherwise.

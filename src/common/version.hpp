@@ -38,7 +38,7 @@ namespace framework
 {
 namespace utils
 {
-/// @addtogroup common_utils_module
+/// @addtogroup version_abstraction
 /// @{
 
 struct version

@@ -35,19 +35,17 @@
 
 namespace framework::utils
 {
-/// @addtogroup common_utils_module
-/// @{
-
-/// @brief Cyclic redundancy check implementation
+/// @details
+///
+/// Cyclic redundancy check implementation
 ///
 /// All parameters needed for computation passed to constructor,@n
-/// so you can configure the crc class to any algorithm you want.@n
+/// so it can be configured to any algorithm you want.
 ///
 /// As template parameter it accepts the number of bits in result value e.g. 8, 16, or 32.@n
-/// There are predefined types for @ref crc8, @ref crc16 and @ref crc32 algorithms.
+/// There are predefined types for `crc8`, `crc16` and `crc32` algorithms.
 ///
 /// At construction time @ref crc class generates the crc value table.@n
-/// So you can create one instance of it and use it many times without mush overhead.
 ///
 /// Code example:
 /// @code
@@ -56,17 +54,25 @@ namespace framework::utils
 /// std::cout << "0x" << std::hex
 ///           << static_cast<int>(crc8(0x39, 0x00, true, true, 0x00).calculate(data.begin(), data.end()))
 ///           << std::endl; // CRC-8/DARC
+///
 /// std::cout << "0x" << std::hex << crc16(0x8005).calculate(data.begin(), data.end())
 ///           << std::endl; // CRC-16/BUYPAS
+///
 /// std::cout << "0x" << std::hex
 ///           << crc32(0x04C11DB7, 0xFFFFFFFF, true, true, 0xFFFFFFFF).calculate(data.begin(), data.end())
 ///           << std::endl; // CRC-32
 /// @endcode
+
+/// @addtogroup crc_implementation
+/// @{
+
+/// @brief CRC implementation.
 template <usize BitsCount>
 class crc
 {
 public:
-    using value_type = typename details::get_crc_value_type<BitsCount>::type;
+    /// @brief Crc value type.
+    using value_type = typename crc_details::get_crc_value_type<BitsCount>::type;
 
     /// @brief Creates crc algorithm instance.
     ///
@@ -110,9 +116,11 @@ private:
     value_type crc_table[256] = {0};
 };
 
-using crc8  = crc<8>;
-using crc16 = crc<16>;
-using crc32 = crc<32>;
+using crc8  = crc<8>;  ///< Predefined class for crc8 algorithms.
+using crc16 = crc<16>; ///< Predefined class for crc16 algorithms.
+using crc32 = crc<32>; ///< Predefined class for crc32 algorithms.
+
+/// @}
 
 #pragma region definitions
 
@@ -143,11 +151,11 @@ inline typename crc<BitsCount>::value_type crc<BitsCount>::calculate(Iterator be
     value_type value = m_init;
 
     for (; begin != end; ++begin) {
-        value = update(m_reflect_in ? details::reflect(*begin) : *begin, value);
+        value = update(m_reflect_in ? crc_details::reflect(*begin) : *begin, value);
     }
 
     if (m_reflect_out) {
-        value = details::reflect(value);
+        value = crc_details::reflect(value);
     }
 
     return (value ^ m_xor_out);
