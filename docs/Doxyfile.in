@@ -585,7 +585,12 @@ EXCLUDE                = CMakeLists.txt
 EXCLUDE_SYMLINKS       = NO
 
 # Patterns to exclude from sources
-EXCLUDE_PATTERNS       =
+EXCLUDE_PATTERNS       = */opengl/gl.hpp \
+                         */opengl/details/* \
+                         */opengl/**/glxext.hpp \
+                         */opengl/**/wglext.hpp \
+                         */window/details/*
+
 
 # Symbol names to exclude from documentation
 EXCLUDE_SYMBOLS        = framework::*::*_details
