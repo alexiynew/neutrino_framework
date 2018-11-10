@@ -34,6 +34,8 @@ public:
         add_test([this]() { window_size(); }, "window_size");
         add_test([this]() { window_size_limits(); }, "window_size_limits");
         add_test([this]() { window_resizability(); }, "window_resizability");
+        add_test([this]() { window_resizability_and_size(); }, "window_resizability_and_size");
+        add_test([this]() { window_resizability_before_show(); }, "window_resizability_before_show");
         add_test([this]() { window_position(); }, "window_position");
         add_test([this]() { window_title(); }, "window_title");
     }
@@ -62,6 +64,12 @@ private:
         w.show();
 
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
+
+        w.hide();
+        w.set_size({480, 320});
+        w.show();
+
+        TEST_ASSERT(w.size() == size480, "Window has wrong size.");
     }
 
     void window_size_limits()
@@ -116,9 +124,7 @@ private:
     {
         using ::framework::os::window;
 
-        const window::size_t size480{480, 320};
         const window::size_t size640{640, 480};
-        const window::size_t size960{960, 640};
         const window::size_t no_size{0, 0};
 
         window w(size640, "Test");
@@ -134,6 +140,21 @@ private:
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
+    }
+
+    void window_resizability_and_size()
+    {
+        using ::framework::os::window;
+
+        const window::size_t size480{480, 320};
+        const window::size_t size640{640, 480};
+        const window::size_t size960{960, 640};
+
+        window w(size640, "Test");
+
+        w.show();
+
+        w.set_resizable(false);
 
         w.set_size(size480);
         w.set_min_size(size480);
@@ -159,6 +180,30 @@ private:
         TEST_ASSERT(w.size() == size960, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == size480, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
+    }
+
+    void window_resizability_before_show()
+    {
+        using ::framework::os::window;
+
+        const window::size_t no_size{0, 0};
+        const window::size_t size640{640, 480};
+
+        window w(size640, "Test");
+
+        w.set_resizable(false);
+
+        w.show();
+
+        TEST_ASSERT(!w.resizable(), "Window has wrong state.");
+
+        w.set_resizable(true);
+
+        // No other values were changed
+        TEST_ASSERT(w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
+        TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
     }
 
     void window_position()

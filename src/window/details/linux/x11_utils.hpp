@@ -38,11 +38,7 @@
 #include <common/types.hpp>
 #include <window/details/linux/x11_server.hpp>
 
-namespace framework
-{
-namespace os
-{
-namespace utils
+namespace framework::os::utils
 {
 constexpr int32 message_source_application = 1;
 
@@ -50,6 +46,12 @@ enum class bypass_compositor_state
 {
     no_preferences = 0,
     disabled       = 1
+};
+
+enum class window_state_action
+{
+    remove = 0,
+    add    = 1
 };
 
 bool ewmh_supported();
@@ -69,19 +71,17 @@ inline bool send_client_message(const x11_server* server, Window window, Atom me
 
 CARD32 get_window_wm_state(const x11_server* server, Window window);
 
-bool window_has_state(const x11_server* server, Window window, const std::string& state_atom_name);
-bool window_add_state(const x11_server* server, Window window, const std::vector<std::string>& state_atom_names);
-bool window_remove_state(const x11_server* server, Window window, const std::vector<std::string>& state_atom_names);
+bool window_has_state(const x11_server* server, Window window, const std::string& atom_name);
+bool window_change_state(const x11_server* server,
+                         Window window,
+                         window_state_action action,
+                         const std::vector<std::string>& atom_names);
 
 void set_bypass_compositor_state(const x11_server* server, Window window, bypass_compositor_state state);
 
 void set_window_name(const x11_server* server, Window window, const std::string& title);
 std::string get_window_name(const x11_server* server, Window window);
 
-} // namespace utils
-
-} // namespace os
-
-} // namespace framework
+} // namespace framework::os::utils
 
 #endif

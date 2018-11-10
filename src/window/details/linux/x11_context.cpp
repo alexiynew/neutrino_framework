@@ -133,41 +133,34 @@ x11_context::x11_context(Display* display, opengl::context_settings settings)
         throw std::runtime_error("Can't get framebuffer config.");
     }
 
-    XVisualInfo* visual_info = glXGetVisualFromFBConfig(m_display, m_framebuffer_config);
-    if (visual_info == nullptr) {
+    m_visual_info = glXGetVisualFromFBConfig(m_display, m_framebuffer_config);
+    if (m_visual_info == nullptr) {
         throw std::runtime_error("Can't get visual info.");
     }
 
-    m_visual = visual_info->visual;
-    XFree(visual_info);
-
-    m_colormap = XCreateColormap(m_display, DefaultRootWindow(m_display), m_visual, AllocNone);
+    m_colormap = XCreateColormap(m_display, DefaultRootWindow(m_display), m_visual_info->visual, AllocNone);
     if (m_colormap == None) {
+        clear();
         throw std::runtime_error("Can't create colormap.");
     }
 
     m_glx_context = create_glx_context(m_display, m_framebuffer_config);
     if (m_glx_context == nullptr) {
+        clear();
         throw std::runtime_error("Can't create opengl context.");
     }
 }
 
 x11_context::~x11_context()
 {
-    if (m_display && m_glx_context != nullptr) {
-        glXDestroyContext(m_display, m_glx_context);
-    }
-
-    if (m_display && m_colormap != 0u) {
-        XFreeColormap(m_display, m_colormap);
-    }
+    clear();
 }
 
 bool x11_context::valid() const
 {
     // TODO(alex) add more robust checks,
     return m_display != nullptr && m_framebuffer_config != nullptr && m_glx_context != nullptr && m_colormap != None &&
-           m_visual != nullptr;
+           m_visual_info != nullptr;
 }
 
 bool x11_context::is_current() const
@@ -192,14 +185,29 @@ Colormap x11_context::colormap() const
     return m_colormap;
 }
 
-Visual* x11_context::visual() const
+XVisualInfo* x11_context::visual_info() const
 {
-    return m_visual;
+    return m_visual_info;
 }
 
 void x11_context::attach_window(Window window)
 {
     m_window = window;
+}
+
+void x11_context::clear()
+{
+    if (m_display && m_glx_context != nullptr) {
+        glXDestroyContext(m_display, m_glx_context);
+    }
+
+    if (m_display && m_colormap != 0u) {
+        XFreeColormap(m_display, m_colormap);
+    }
+
+    if (m_visual_info) {
+        XFree(m_visual_info);
+    }
 }
 
 } // namespace framework::os

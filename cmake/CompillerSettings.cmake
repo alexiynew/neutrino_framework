@@ -30,11 +30,13 @@ macro(set_compiller_flags)
                              -Weverything \
                              -Werror \
                              -Wno-c++98-compat \
+                             -Wno-c++98-compat-pedantic \
                              -Wno-c++11-extensions \
                              -Wno-padded \
                              -Wno-weak-vtables \
                              -Wno-exit-time-destructors \
                              -Wno-unknown-pragmas \
+                             -Wno-reserved-id-macro \
                              -pthread \
                              -fPIC")
         set(CMAKE_CXX_FLAGS_DEBUG "-g")

@@ -35,9 +35,7 @@
 #include <memory>
 #include <vector>
 
-namespace framework
-{
-namespace os
+namespace framework::os
 {
 class x11_server final
 {
@@ -51,7 +49,7 @@ public:
     XID default_root_window() const;
     XID default_screen() const;
 
-    Window currently_active_window() const;
+    Window active_window() const;
 
     Atom get_atom(const std::string& name, bool only_if_exists = true) const;
 
@@ -68,8 +66,6 @@ private:
     mutable std::map<std::string, Atom> m_atoms;
 };
 
-} // namespace os
-
-} // namespace framework
+} // namespace framework::os
 
 #endif

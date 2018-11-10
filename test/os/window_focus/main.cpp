@@ -50,6 +50,11 @@ private:
 
         TEST_ASSERT(alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(!betta.focused(), "Focus function is not working.");
+
+        betta.focus();
+
+        TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
+        TEST_ASSERT(betta.focused(), "Focus function is not working.");
     }
 };
 

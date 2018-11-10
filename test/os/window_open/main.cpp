@@ -66,13 +66,31 @@ private:
             w.show();
         }
 
+        TEST_ASSERT(windows[0].visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[1].visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[2].visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[3].visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[4].visible(), "Window is not visidle.");
+
         for (auto& w : windows) {
             w.hide();
         }
 
+        TEST_ASSERT(!windows[0].visible(), "Window is still visidle.");
+        TEST_ASSERT(!windows[1].visible(), "Window is still visidle.");
+        TEST_ASSERT(!windows[2].visible(), "Window is still visidle.");
+        TEST_ASSERT(!windows[3].visible(), "Window is still visidle.");
+        TEST_ASSERT(!windows[4].visible(), "Window is still visidle.");
+
         for (auto& w : windows) {
             w.show();
         }
+
+        TEST_ASSERT(windows[0].visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[1].visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[2].visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[3].visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[4].visible(), "Window is not visidle.");
     }
 };
 

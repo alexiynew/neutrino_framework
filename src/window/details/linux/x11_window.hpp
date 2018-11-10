@@ -37,9 +37,7 @@
 #include <window/details/implementation.hpp>
 #include <window/details/linux/x11_server.hpp>
 
-namespace framework
-{
-namespace os
+namespace framework::os
 {
 class x11_window final : public window::implementation
 {
@@ -111,8 +109,8 @@ private:
     void process(XPropertyEvent event);
     void process(XAnyEvent event);
 
-    void maximize_impl();
-    void switch_to_fullscreen_impl();
+    void maximize_toggle(bool enable);
+    void fullscreen_toggle(bool enable);
 
     void set_wm_hints();
     void set_class_hints();
@@ -147,8 +145,6 @@ private:
     Time m_lastInputTime = 0;
 };
 
-} // namespace os
-
-} // namespace framework
+} // namespace framework::os
 
 #endif

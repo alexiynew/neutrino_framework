@@ -132,7 +132,7 @@ inline crc<BitsCount>::crc(value_type poly,
                            value_type xor_out) noexcept
     : m_poly(poly), m_init(init), m_xor_out(xor_out), m_reflect_in(reflect_in), m_reflect_out(reflect_out)
 {
-    constexpr value_type topbit = 1 << (BitsCount - 1);
+    constexpr value_type topbit = static_cast<value_type>(1u << (BitsCount - 1));
 
     for (uint32 dividend = 0; dividend < 256; ++dividend) {
         value_type value = static_cast<value_type>(dividend << (BitsCount - 8));

@@ -46,12 +46,6 @@ const char* const net_wm_name_atom_name              = u8"_NET_WM_NAME";
 const char* const net_wm_icon_name_atom_name         = u8"_NET_WM_ICON_NAME";
 const char* const utf8_string_atom_name              = u8"UTF8_STRING";
 
-enum net_wm_state_action
-{
-    remove = 0,
-    add    = 1
-};
-
 inline bool have_utf8_support()
 {
 #ifdef X_HAVE_UTF8_STRING
@@ -158,34 +152,6 @@ std::vector<Atom> get_window_state(const x11_server* server, Window window)
     return get_window_property<Atom>(server->display(), window, net_wm_state, XA_ATOM);
 }
 
-bool window_change_state(const x11_server* server,
-                         Window window,
-                         net_wm_state_action action,
-                         const std::vector<std::string>& state_atom_names)
-{
-    if (!::framework::os::utils::ewmh_supported() || state_atom_names.empty()) {
-        return false;
-    }
-
-    Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
-
-    if (net_wm_state == None) {
-        return false;
-    }
-
-    std::array<Atom, 2> state_atoms{};
-    state_atoms[0] = (!state_atom_names.empty() ? server->get_atom(state_atom_names[0]) : None);
-    state_atoms[1] = (state_atom_names.size() > 1 ? server->get_atom(state_atom_names[1]) : None);
-
-    return ::framework::os::utils::send_client_message(server,
-                                                       window,
-                                                       net_wm_state,
-                                                       action,
-                                                       state_atoms[0],
-                                                       state_atoms[1],
-                                                       ::framework::os::utils::message_source_application);
-}
-
 XTextProperty create_text_property(Display* display, const std::string& string)
 {
     XTextProperty text_property = {};
@@ -230,11 +196,7 @@ std::string create_string(Display* display, const XTextProperty& text_property)
 
 } // namespace
 
-namespace framework
-{
-namespace os
-{
-namespace utils
+namespace framework::os::utils
 {
 bool ewmh_supported()
 {
@@ -267,13 +229,13 @@ bool send_client_message(const x11_server* server, Window window, Atom message_t
     return result != 0;
 }
 
-bool window_has_state(const x11_server* server, Window window, const std::string& state_atom_name)
+bool window_has_state(const x11_server* server, Window window, const std::string& atom_name)
 {
     if (!ewmh_supported()) {
         return false;
     }
 
-    const Atom net_wm_state_atom = server->get_atom(state_atom_name);
+    const Atom net_wm_state_atom = server->get_atom(atom_name);
 
     if (net_wm_state_atom == None) {
         return false;
@@ -290,14 +252,28 @@ bool window_has_state(const x11_server* server, Window window, const std::string
     return false;
 }
 
-bool window_add_state(const x11_server* server, Window window, const std::vector<std::string>& state_atom_names)
+bool window_change_state(const x11_server* server,
+                         Window window,
+                         window_state_action action,
+                         const std::vector<std::string>& atom_names)
 {
-    return ::window_change_state(server, window, ::net_wm_state_action::add, state_atom_names);
-}
+    Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
 
-bool window_remove_state(const x11_server* server, Window window, const std::vector<std::string>& state_atom_names)
-{
-    return ::window_change_state(server, window, ::net_wm_state_action::remove, state_atom_names);
+    if (net_wm_state == None) {
+        return false;
+    }
+
+    std::array<Atom, 2> state_atoms{};
+    state_atoms[0] = (!atom_names.empty() ? server->get_atom(atom_names[0]) : None);
+    state_atoms[1] = (atom_names.size() > 1 ? server->get_atom(atom_names[1]) : None);
+
+    return send_client_message(server,
+                               window,
+                               net_wm_state,
+                               static_cast<int>(action),
+                               state_atoms[0],
+                               state_atoms[1],
+                               message_source_application);
 }
 
 void set_bypass_compositor_state(const x11_server* server, Window window, bypass_compositor_state state)
@@ -406,8 +382,4 @@ std::string get_window_name(const x11_server* server, Window window)
     return "";
 }
 
-} // namespace utils
-
-} // namespace os
-
-} // namespace framework
+} // namespace framework::os::utils

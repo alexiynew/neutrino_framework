@@ -76,9 +76,7 @@ void release_error_handlers()
 
 } // namespace
 
-namespace framework
-{
-namespace os
+namespace framework::os
 {
 std::shared_ptr<x11_server> x11_server::connect()
 {
@@ -132,7 +130,7 @@ XID x11_server::default_screen() const
     return static_cast<XID>(DefaultScreen(display()));
 }
 
-Window x11_server::currently_active_window() const
+Window x11_server::active_window() const
 {
     Window window;
     int state;
@@ -157,6 +155,4 @@ XIM x11_server::input_method() const
     return m_input_method;
 }
 
-} // namespace os
-
-} // namespace framework
+} // namespace framework::os

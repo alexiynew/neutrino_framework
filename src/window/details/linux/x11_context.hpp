@@ -56,7 +56,7 @@ public:
     void swap_buffers() const override;
 
     Colormap colormap() const;
-    Visual* visual() const;
+    XVisualInfo* visual_info() const;
 
     void attach_window(Window window);
 
@@ -65,8 +65,10 @@ private:
     GLXFBConfig m_framebuffer_config = nullptr;
     GLXContext m_glx_context         = nullptr;
     Colormap m_colormap              = None;
-    Visual* m_visual                 = nullptr;
+    XVisualInfo* m_visual_info       = nullptr;
     Window m_window                  = None;
+
+    void clear();
 };
 
 } // namespace framework::os
