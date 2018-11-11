@@ -68,14 +68,14 @@ const int64 event_mask = VisibilityChangeMask     // Any change in visibility wa
                          | EnterWindowMask        // Pointer window entry events wanted
                          | LeaveWindowMask        // Pointer window leave events wanted
                          | PointerMotionMask      // Pointer motion events wanted
-                         | PointerMotionHintMask; // Pointer motion hints wanted
+                         | PointerMotionHintMask  // Pointer motion hints wanted
+                         | ButtonMotionMask;      // Pointer motion while any button down
 
 // | Button1MotionMask        // Pointer motion while button 1 down
 // | Button2MotionMask        // Pointer motion while button 2 down
 // | Button3MotionMask        // Pointer motion while button 3 down
 // | Button4MotionMask        // Pointer motion while button 4 down
 // | Button5MotionMask        // Pointer motion while button 5 down
-// | ButtonMotionMask         // Pointer motion while any button down
 // | KeymapStateMask          // Keyboard state wanted at window entry and focus in
 // | ResizeRedirectMask       // Redirect resize of this window
 // | SubstructureNotifyMask   // Substructure notification wanted
@@ -788,12 +788,14 @@ void x11_window::set_wm_hints()
 
 void x11_window::set_class_hints()
 {
-    char application_name[]  = u8"The_best_game_name";
-    char application_class[] = u8"The_best_game_class";
+    std::string class_name = application_name + "_class";
+
+    std::vector<char> res_name(application_name.begin(), application_name.end());
+    std::vector<char> res_class(class_name.begin(), class_name.end());
 
     XClassHint class_hint = {};
-    class_hint.res_name   = application_name;
-    class_hint.res_class  = application_class;
+    class_hint.res_name   = res_name.data();
+    class_hint.res_class  = res_class.data();
 
     XSetClassHint(m_server->display(), m_window, &class_hint);
 }

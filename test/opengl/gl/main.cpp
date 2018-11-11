@@ -138,6 +138,8 @@ private:
     void main_loop()
     {
         using framework::utils::random_numbers;
+        using framework::float32;
+        using framework::os::window;
 
         using namespace framework::opengl;
         using namespace framework::log;
@@ -145,7 +147,9 @@ private:
 
         set_logger(std::make_unique<stream_logger>(std::cout));
 
-        framework::os::window main_window({640, 480},
+        window::set_application_name("GL Test");
+
+        window main_window({640, 480},
                                           "Game",
                                           context_settings()
                                           .double_buffered()
@@ -178,19 +182,20 @@ private:
         vector3f back_color(random_numbers(0.0f, 1.0f, 3).data());
         vector3f new_color(random_numbers(0.0f, 1.0f, 3).data());
 
-        framework::float32 total_time          = 0;
-        framework::float32 step_time           = 0;
-        const framework::float32 step_max_time = 500;
+        float32 total_time          = 0;
+        float32 step_time           = 0;
+        const float32 step_max_time = 500;
+        const float32 max_total_time = 3000;
 
         framework::uint32 VertexArrayID;
         glGenVertexArrays(1, &VertexArrayID);
         glBindVertexArray(VertexArrayID);
 
         // clang-format off
-        static const framework::float32 g_vertex_buffer_data[] = {
-            -1.0f, -1.0f, 0.0f,
-             1.0f, -1.0f, 0.0f,
-             0.0f,  1.0f, 0.0f
+        static const vector3f g_vertex_buffer_data[] = {
+            {-1.0f, -1.0f, 0.0f},
+            {1.0f, -1.0f, 0.0f},
+            {0.0f,  1.0f, 0.0f}
         };
         // clang-format on
 
@@ -204,9 +209,9 @@ private:
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
         // Передадим информацию о вершинах в OpenGL
-        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data) * sizeof(vector3f), g_vertex_buffer_data[0].data(), GL_STATIC_DRAW);
 
-        while (main_window.visible() && total_time < 3000) {
+        while (main_window.visible() && total_time < max_total_time) {
             if (step_time >= step_max_time) {
                 step_time      = 0;
                 triangle_color = back_color;

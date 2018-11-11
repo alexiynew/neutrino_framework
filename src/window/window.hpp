@@ -56,6 +56,8 @@ public:
         int32 y;
     };
 
+    static void set_application_name(const std::string& name);
+
     window(size_t size, const std::string& title, opengl::context_settings settings = opengl::context_settings());
     ~window();
 

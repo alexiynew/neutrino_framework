@@ -32,10 +32,20 @@
 #include <window/details/implementation.hpp>
 #include <window/window.hpp>
 
-namespace framework
+namespace framework::os
 {
-namespace os
+std::string window::implementation::application_name = "Application";
+
+void window::set_application_name(const std::string& name)
 {
+    implementation::set_application_name(name);
+}
+
+void window::implementation::set_application_name(const std::string& name)
+{
+    application_name = name;
+}
+
 window::window(size_t size, const std::string& title, opengl::context_settings settings)
     : m_implementation(implementation::create(size, title, std::move(settings)))
 {}
@@ -224,7 +234,5 @@ bool operator!=(const window::position_t& lhs, const window::position_t& rhs)
 }
 
 #pragma endregion
-
-} // namespace os
 
 } // namespace framework

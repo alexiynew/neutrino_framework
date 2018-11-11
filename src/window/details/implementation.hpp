@@ -47,6 +47,8 @@ public:
                                                   const std::string& title,
                                                   opengl::context_settings settings);
 
+    static void set_application_name(const std::string& name);
+
     implementation()          = default;
     virtual ~implementation() = default;
 
@@ -101,6 +103,9 @@ public:
     virtual bool visible() const    = 0;
     virtual bool focused() const    = 0;
     /// @}
+
+protected:
+    static std::string application_name;
 };
 
 } // namespace os
