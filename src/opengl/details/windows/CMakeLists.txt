@@ -25,6 +25,8 @@
 
 set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl_details.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/win32_context.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/win32_context.cpp
 )
 
 target_sources(${PROJECT_NAME} 

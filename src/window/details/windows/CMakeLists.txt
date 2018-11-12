@@ -24,8 +24,6 @@
 # =============================================================================
 
 set(PRIVATE_SOURCES
-    ${CMAKE_CURRENT_LIST_DIR}/win32_context.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/win32_context.hpp
     ${CMAKE_CURRENT_LIST_DIR}/win32_application.cpp
     ${CMAKE_CURRENT_LIST_DIR}/win32_application.hpp
     ${CMAKE_CURRENT_LIST_DIR}/win32_window.cpp

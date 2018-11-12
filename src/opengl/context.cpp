@@ -1,5 +1,5 @@
 /// @file
-/// @brief Window implementation for windows.
+/// @brief OpenGLggraphic context.
 /// @author Fedorov Alexey
 /// @date 11.09.2018
 
@@ -27,105 +27,19 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <utility>
-
 #include <opengl/context.hpp>
 
 namespace framework::opengl
 {
-#pragma region context
 
 context::context(context_settings settings) noexcept : m_settings(std::move(settings))
 {}
 
 context::~context() = default;
 
-context_settings context::settings() const
+const context_settings& context::settings() const
 {
     return m_settings;
 }
-
-#pragma endregion
-
-#pragma region context_settings
-
-context_settings& context_settings::double_buffered()
-{
-    m_double_buffered = true;
-    return *this;
-}
-
-context_settings& context_settings::single_buffered()
-{
-    m_double_buffered = false;
-    return *this;
-}
-
-context_settings& context_settings::version(utils::version version)
-{
-    m_version = version;
-    return *this;
-}
-
-context_settings& context_settings::depth_bits(int32 bits)
-{
-    m_depth_bits = bits;
-    return *this;
-}
-
-context_settings& context_settings::stencil_bits(int32 bits)
-{
-    m_stencil_bits = bits;
-    return *this;
-}
-
-context_settings& context_settings::color_type(context_settings::color type)
-{
-    m_color_type = type;
-    return *this;
-}
-
-context_settings& context_settings::samples_count(context_settings::samples count)
-{
-    m_samples_count = count;
-    return *this;
-}
-
-bool context_settings::get_double_buffered() const
-{
-    return m_double_buffered;
-}
-
-bool context_settings::get_single_buffered() const
-{
-    return !m_double_buffered;
-}
-
-utils::version context_settings::get_version() const
-{
-    return m_version;
-}
-
-int32 context_settings::get_depth_bits() const
-{
-    return m_depth_bits;
-}
-
-int32 context_settings::get_stencil_bits() const
-{
-    return m_stencil_bits;
-}
-
-context_settings::color context_settings::get_color_type() const
-{
-    return m_color_type;
-}
-
-context_settings::samples context_settings::get_samples_count() const
-{
-    return m_samples_count;
-}
-
-#pragma endregion
 
 } // namespace framework::opengl
