@@ -30,11 +30,12 @@
 #include <stdexcept>
 
 #include <common/types.hpp>
-#include <window/details/linux/x11_context.hpp>
+#include <opengl/details/linux/x11_context.hpp>
 
 namespace
 {
 using framework::int32;
+using framework::opengl::context_settings;
 
 constexpr int32 glx_min_major_version = 1;
 constexpr int32 glx_min_minor_version = 4;
@@ -49,29 +50,13 @@ bool check_glx_version(Display* display)
     return glx_major >= glx_min_major_version && glx_minor >= glx_min_minor_version;
 }
 
-GLXFBConfig choose_framebuffer_config(Display* display)
+GLXFBConfig find_best_config(Display* display,
+                             context_settings::samples samples_count,
+                             GLXFBConfig* configs,
+                             int32 count)
 {
-    // clang-format off
-    static int32 visual_attribs[] = {
-        GLX_X_RENDERABLE,  True,
-        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-        GLX_RENDER_TYPE,   GLX_RGBA_BIT,
-        GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
-        GLX_RED_SIZE,      8,
-        GLX_GREEN_SIZE,    8,
-        GLX_BLUE_SIZE,     8,
-        GLX_ALPHA_SIZE,    8,
-        GLX_DEPTH_SIZE,    24,
-        GLX_STENCIL_SIZE,  8,
-        GLX_DOUBLEBUFFER,  True,
-        None};
-    // clang-format on
-
-    int32 count;
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
-    GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), visual_attribs, &count);
-    if (configs == nullptr) {
-        return nullptr;
+    if (samples_count == context_settings::samples::dont_care && count > 0) {
+        return configs[0];
     }
 
     int32 best         = -1;
@@ -89,14 +74,50 @@ GLXFBConfig choose_framebuffer_config(Display* display)
         }
     }
 
-    GLXFBConfig best_config = configs[best];
+    return configs[best];
+}
+
+GLXFBConfig choose_framebuffer_config(Display* display, const context_settings& settings)
+{
+    const auto render_type = [](context_settings::color color) {
+        switch (color) {
+            case context_settings::color::rgba: return GLX_RGBA_BIT;
+            case context_settings::color::index: return GLX_COLOR_INDEX_BIT;
+        }
+        return GLX_RGBA_BIT;
+    }(settings.color_type());
+
+    // clang-format off
+    static int32 visual_attribs[] = {
+        GLX_X_RENDERABLE,  True,
+        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+        GLX_RENDER_TYPE,   render_type,
+        GLX_X_VISUAL_TYPE, static_cast<int32>((render_type == GLX_RGBA_BIT) ? GLX_TRUE_COLOR : GLX_DONT_CARE),
+        GLX_RED_SIZE,      8,
+        GLX_GREEN_SIZE,    8,
+        GLX_BLUE_SIZE,     8,
+        GLX_ALPHA_SIZE,    8,
+        GLX_DEPTH_SIZE,    settings.depth_bits(),
+        GLX_STENCIL_SIZE,  settings.stencil_bits(),
+        GLX_DOUBLEBUFFER,  settings.double_buffered() ? True : False,
+        None};
+    // clang-format on
+
+    int32 count;
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
+    GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), visual_attribs, &count);
+    if (configs == nullptr) {
+        return nullptr;
+    }
+
+    GLXFBConfig best_config = find_best_config(display, settings.samples_count(), configs, count);
 
     XFree(configs);
 
     return best_config;
 }
 
-GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config)
+GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config, const context_settings& settings)
 {
     if (!framework::opengl::glx_arb_create_context_supported ||
         (framework::opengl::glXCreateContextAttribsARB == nullptr)) {
@@ -105,8 +126,8 @@ GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config)
 
     // clang-format off
     int32 context_attribs[] = {
-        GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
-        GLX_CONTEXT_MINOR_VERSION_ARB, 2,
+        GLX_CONTEXT_MAJOR_VERSION_ARB, settings.version().major,
+        GLX_CONTEXT_MINOR_VERSION_ARB, settings.version().minor,
         GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
         None};
     // clang-format on
@@ -127,7 +148,7 @@ x11_context::x11_context(Display* display, opengl::context_settings settings)
 
     opengl::init_glx();
 
-    m_framebuffer_config = choose_framebuffer_config(m_display);
+    m_framebuffer_config = choose_framebuffer_config(m_display, settings);
 
     if (m_framebuffer_config == nullptr) {
         throw std::runtime_error("Can't get framebuffer config.");
@@ -144,7 +165,7 @@ x11_context::x11_context(Display* display, opengl::context_settings settings)
         throw std::runtime_error("Can't create colormap.");
     }
 
-    m_glx_context = create_glx_context(m_display, m_framebuffer_config);
+    m_glx_context = create_glx_context(m_display, m_framebuffer_config, settings);
     if (m_glx_context == nullptr) {
         clear();
         throw std::runtime_error("Can't create opengl context.");
@@ -158,7 +179,6 @@ x11_context::~x11_context()
 
 bool x11_context::valid() const
 {
-    // TODO(alex) add more robust checks,
     return m_display != nullptr && m_framebuffer_config != nullptr && m_glx_context != nullptr && m_colormap != None &&
            m_visual_info != nullptr;
 }

@@ -35,23 +35,23 @@
 
 namespace framework::opengl
 {
-
 /// @brief OpenGL graphic context settings.
-/// 
+///
 /// Structure to store context settings. Used in the @ref window class to setuap graphic context.
 class context_settings
 {
 public:
-    /// @breif Color type
+    /// @brief Color type
     enum class color
     {
-        rgba
+        rgba,
+        index
     };
 
-    /// @breif Samples 
+    /// @brief Samples
     enum class samples
     {
-        any,
+        dont_care,
         best
     };
 
@@ -75,7 +75,7 @@ public:
 
     bool double_buffered() const;
     bool single_buffered() const;
-    
+
     utils::version version() const;
     int32 depth_bits() const;
     int32 stencil_bits() const;
@@ -89,31 +89,6 @@ private:
     int32 m_stencil_bits     = 8;
     color m_color_type       = color::rgba;
     samples m_samples_count  = samples::best;
-};
-
-class context
-{
-public:
-    explicit context(context_settings settings) noexcept;
-
-    context(const context&) = default;
-    context(context&&)      = default;
-
-    context& operator=(const context&) = default;
-    context& operator=(context&&) = default;
-
-    virtual ~context();
-
-    virtual bool valid() const      = 0;
-    virtual bool is_current() const = 0;
-
-    virtual void make_current() const = 0;
-    virtual void swap_buffers() const = 0;
-
-    context_settings settings() const;
-
-private:
-    context_settings m_settings;
 };
 
 } // namespace framework::opengl

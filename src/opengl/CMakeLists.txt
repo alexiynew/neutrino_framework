@@ -39,11 +39,13 @@ target_include_directories(${PROJECT_NAME}
 set(PUBLIC_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl.hpp
     ${CMAKE_CURRENT_LIST_DIR}/context.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/context_settings.hpp
 )
 
 set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl.cpp
     ${CMAKE_CURRENT_LIST_DIR}/context.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/context_settings.cpp
 )
 
 target_sources(${PROJECT_NAME}

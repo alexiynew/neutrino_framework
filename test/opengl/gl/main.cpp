@@ -137,9 +137,9 @@ public:
 private:
     void main_loop()
     {
-        using framework::utils::random_numbers;
         using framework::float32;
         using framework::os::window;
+        using framework::utils::random_numbers;
 
         using namespace framework::opengl;
         using namespace framework::log;
@@ -150,14 +150,14 @@ private:
         window::set_application_name("GL Test");
 
         window main_window({640, 480},
-                                          "Game",
-                                          context_settings()
-                                          .double_buffered()
-                                          .version({4, 2})
-                                          .depth_bits(32)
-                                          .stencil_bits(32)
-                                          .color_type(context_settings::color::rgba)
-                                          .samples_count(context_settings::samples::best));
+                           "Game",
+                           context_settings()
+                           .set_double_buffered()
+                           .set_version({4, 2})
+                           .set_depth_bits(24)
+                           .set_stencil_bits(8)
+                           .set_color_type(context_settings::color::rgba)
+                           .set_samples_count(context_settings::samples::best));
         auto context = main_window.context();
 
         if (context == nullptr || !context->valid()) {
@@ -182,9 +182,9 @@ private:
         vector3f back_color(random_numbers(0.0f, 1.0f, 3).data());
         vector3f new_color(random_numbers(0.0f, 1.0f, 3).data());
 
-        float32 total_time          = 0;
-        float32 step_time           = 0;
-        const float32 step_max_time = 500;
+        float32 total_time           = 0;
+        float32 step_time            = 0;
+        const float32 step_max_time  = 500;
         const float32 max_total_time = 3000;
 
         framework::uint32 VertexArrayID;
@@ -209,7 +209,10 @@ private:
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 
         // Передадим информацию о вершинах в OpenGL
-        glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data) * sizeof(vector3f), g_vertex_buffer_data[0].data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER,
+                     sizeof(g_vertex_buffer_data) * sizeof(vector3f),
+                     g_vertex_buffer_data[0].data(),
+                     GL_STATIC_DRAW);
 
         while (main_window.visible() && total_time < max_total_time) {
             if (step_time >= step_max_time) {

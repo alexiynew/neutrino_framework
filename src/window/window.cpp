@@ -235,4 +235,4 @@ bool operator!=(const window::position_t& lhs, const window::position_t& rhs)
 
 #pragma endregion
 
-} // namespace framework
+} // namespace framework::os

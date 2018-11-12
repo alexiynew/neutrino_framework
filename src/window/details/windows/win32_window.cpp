@@ -30,8 +30,8 @@
 #include <stdexcept>
 
 #include <log/log.hpp>
+#include <opengl/details/windows/win32_context.hpp>
 #include <window/details/windows/win32_application.hpp>
-#include <window/details/windows/win32_context.hpp>
 #include <window/details/windows/win32_window.hpp>
 
 namespace

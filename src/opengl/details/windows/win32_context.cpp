@@ -29,8 +29,8 @@
 
 #include <stdexcept>
 
+#include <opengl/details/windows/win32_context.hpp>
 #include <opengl/extensions/windows/wglext.hpp>
-#include <window/details/windows/win32_context.hpp>
 
 namespace framework::os
 {

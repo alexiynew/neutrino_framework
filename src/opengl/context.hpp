@@ -30,14 +30,13 @@
 #ifndef FRAMEWORK_OPENGL_CONTEXT_HPP
 #define FRAMEWORK_OPENGL_CONTEXT_HPP
 
-#include <opengl/context_settings.hpp>
 #include <common/types.hpp>
+#include <opengl/context_settings.hpp>
 
 namespace framework::opengl
 {
-
 /// @brief OpenGL graphic context.
-/// 
+///
 class context
 {
 public:

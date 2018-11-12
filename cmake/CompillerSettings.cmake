@@ -35,6 +35,7 @@ macro(set_compiller_flags)
                              -Wno-padded \
                              -Wno-weak-vtables \
                              -Wno-exit-time-destructors \
+                             -Wno-global-constructors \
                              -Wno-unknown-pragmas \
                              -Wno-reserved-id-macro \
                              -pthread \

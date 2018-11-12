@@ -27,13 +27,10 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <utility>
-
 #include <opengl/context_settings.hpp>
 
 namespace framework::opengl
 {
-
 #pragma region setters
 
 context_settings& context_settings::set_double_buffered()

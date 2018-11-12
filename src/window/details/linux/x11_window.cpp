@@ -37,7 +37,7 @@
 #include <common/types.hpp>
 #include <common/utils.hpp>
 #include <log/log.hpp>
-#include <window/details/linux/x11_context.hpp>
+#include <opengl/details/linux/x11_context.hpp>
 #include <window/details/linux/x11_utils.hpp>
 #include <window/details/linux/x11_window.hpp>
 
@@ -56,20 +56,20 @@ const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDE
 const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
 const char* const wm_delete_window_atom_name            = u8"WM_DELETE_WINDOW";
 
-const int64 event_mask = VisibilityChangeMask     // Any change in visibility wanted
-                         | FocusChangeMask        // Any change in input focus wanted
-                         | StructureNotifyMask    // Any change in window structure wanted
-                         | PropertyChangeMask     // Any change in property wanted
-                         | ExposureMask           // Any exposure wanted
-                         | KeyPressMask           // Keyboard down events wanted
-                         | KeyReleaseMask         // Keyboard up events wanted
-                         | ButtonPressMask        // Pointer button down events wanted
-                         | ButtonReleaseMask      // Pointer button up events wanted
-                         | EnterWindowMask        // Pointer window entry events wanted
-                         | LeaveWindowMask        // Pointer window leave events wanted
-                         | PointerMotionMask      // Pointer motion events wanted
-                         | PointerMotionHintMask  // Pointer motion hints wanted
-                         | ButtonMotionMask;      // Pointer motion while any button down
+const int64 event_mask = VisibilityChangeMask    // Any change in visibility wanted
+                         | FocusChangeMask       // Any change in input focus wanted
+                         | StructureNotifyMask   // Any change in window structure wanted
+                         | PropertyChangeMask    // Any change in property wanted
+                         | ExposureMask          // Any exposure wanted
+                         | KeyPressMask          // Keyboard down events wanted
+                         | KeyReleaseMask        // Keyboard up events wanted
+                         | ButtonPressMask       // Pointer button down events wanted
+                         | ButtonReleaseMask     // Pointer button up events wanted
+                         | EnterWindowMask       // Pointer window entry events wanted
+                         | LeaveWindowMask       // Pointer window leave events wanted
+                         | PointerMotionMask     // Pointer motion events wanted
+                         | PointerMotionHintMask // Pointer motion hints wanted
+                         | ButtonMotionMask;     // Pointer motion while any button down
 
 // | Button1MotionMask        // Pointer motion while button 1 down
 // | Button2MotionMask        // Pointer motion while button 2 down

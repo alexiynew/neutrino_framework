@@ -27,11 +27,12 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <utility>
+
 #include <opengl/context.hpp>
 
 namespace framework::opengl
 {
-
 context::context(context_settings settings) noexcept : m_settings(std::move(settings))
 {}
 
