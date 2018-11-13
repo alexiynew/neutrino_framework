@@ -5,8 +5,8 @@ import generator
 
 SOURCE = "./dependencies/GL/glxext.h"
 
-DESTHPP = "./src/opengl/extensions/linux/glxext.hpp"
-DESTCPP = "./src/opengl/extensions/linux/glxext.cpp"
+DESTHPP = "./src/opengl/extensions/linux/glxext_wrapper.hpp"
+DESTCPP = "./src/opengl/extensions/linux/glxext_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
 TYPE_REGEX = r'typedef.*\(\s?\*(PFN.*PROC)\).*;'
@@ -15,17 +15,16 @@ NAME_REGEX = r'.*(glX[\w\d_]+)\s?\(.*;'
 EXCLUDE = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC",
            "PFNGLXCREATEGLXVIDEOSOURCESGIXPROC", "PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC"]
 
-HEADER_FILE = "opengl/extensions/linux/glxext.hpp"
+HEADER_FILE = "opengl/extensions/linux/glxext_wrapper.hpp"
 
 BRIEF = "GLX extension functions wrapper."
 DATE = "17.09.2018"
 
-INCLUDE_GUARD = "FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP"
+INCLUDE_GUARD = "FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_WRAPPER_HPP"
 
 INCLUDE_FILES = ["GL/glx.h"]
 
-INIT_FUNCTION_DESCRIPTION = "/// Initialize GLX functions"
-INIT_FUNCTION_NAME = "init_glx"
+INIT_FUNCTION_NAME = "init_glx_functions"
 
 INIT_EXTENSIONS_BEGIN = ""
 
@@ -67,7 +66,6 @@ generator.generate(dict(source=SOURCE,
                         date=DATE,
                         include_guard=INCLUDE_GUARD,
                         include_files=INCLUDE_FILES,
-                        init_function_description=INIT_FUNCTION_DESCRIPTION,
                         init_function_name=INIT_FUNCTION_NAME,
                         init_extensions_begin=INIT_EXTENSIONS_BEGIN,
                         init_extensions_end=INIT_EXTENSIONS_END,

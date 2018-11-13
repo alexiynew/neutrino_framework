@@ -3,8 +3,8 @@
 import generator
 
 SOURCE = "./dependencies/GL/glcorearb.h"
-DESTHPP = "./src/opengl/gl.hpp"
-DESTCPP = "./src/opengl/gl.cpp"
+DESTHPP = "./src/opengl/details/gl_wrapper.hpp"
+DESTCPP = "./src/opengl/details/gl_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
 TYPE_REGEX = r'typedef.*\(APIENTRYP\s(PFN.*PROC)\).*;'
@@ -12,17 +12,16 @@ NAME_REGEX = r'.*\s(gl[\w\d_]+)\s?\(.*;'
 
 EXCLUDE = []
 
-HEADER_FILE = "opengl/gl.hpp"
+HEADER_FILE = "opengl/details/gl_wrapper.hpp"
 
 BRIEF = "OpneGL functions wrapper."
 DATE = "17.09.2018"
 
-INCLUDE_GUARD = "FRAMEWORK_OPENGL_GL_HPP"
+INCLUDE_GUARD = "FRAMEWORK_OPENGL_GL_WRAPPE_HPP"
 
 INCLUDE_FILES = ["GL/glcorearb.h"]
 
-INIT_FUNCTION_DESCRIPTION = "/// Initialize GL functions"
-INIT_FUNCTION_NAME = "init"
+INIT_FUNCTION_NAME = "init_gl_functions"
 
 INIT_EXTENSIONS_BEGIN = ""
 
@@ -64,7 +63,6 @@ generator.generate(dict(source=SOURCE,
                         date=DATE,
                         include_guard=INCLUDE_GUARD,
                         include_files=INCLUDE_FILES,
-                        init_function_description=INIT_FUNCTION_DESCRIPTION,
                         init_function_name=INIT_FUNCTION_NAME,
                         init_extensions_begin=INIT_EXTENSIONS_BEGIN,
                         init_extensions_end=INIT_EXTENSIONS_END,

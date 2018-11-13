@@ -85,10 +85,13 @@ def generate_header(sections, dictionary):
         "\n" \
         "{declarations}" \
         "\n" \
-        "{init_function_description}\n" \
+        "}} // namespace framework::opengl\n" \
+        "\n" \
+        "namespace framework::opengl::opengl_details\n" \
+        "{{\n" \
         "void {init_function_name}();\n" \
         "\n" \
-        "}} // namespace framework::opengl\n" \
+        "}} // namespace framework::opengl::opengl_details\n" \
         "\n" \
         "#endif\n"
 
@@ -106,7 +109,6 @@ def generate_header(sections, dictionary):
                        includes=includes,
                        is_extension_supported=is_extension_supported,
                        declarations=generate_declarations(sections),
-                       init_function_description=dictionary['init_function_description'],
                        init_function_name=dictionary['init_function_name']))
     hpp.close()
 
@@ -115,8 +117,6 @@ def generate_init_declarations(sections):
     t = Template("#pragma region init_declarations\n"
                  "\n"
                  "${init_functions}"
-                 "\n"
-                 "void init_extensions();\n"
                  "\n"
                  "#pragma endregion\n")
 
@@ -135,7 +135,7 @@ def generate_null_definitions(sections):
                                       f.type, f.name) for f in s.functions) + "\n") for s in sections)
 
 
-def generate_init_definitions(sections, dictionary):
+def generate_init_definitions(sections):
     t = Template("bool init_${lower_name}()\n"
                  "{\n"
                  "    bool result = true;\n"
@@ -154,33 +154,7 @@ def generate_init_definitions(sections, dictionary):
                                             lower_name=s.name.lower(),
                                             assignment="\n".join(impl_str.format(f.name, f.type) for f in s.functions)) for s in sections)
 
-    e = Template("#pragma region init_definitions\n"
-                 "\n"
-                 "namespace\n"
-                 "{\n"
-                 "${init_functions}"
-                 "\n"
-                 "void init_extensions()\n"
-                 "{\n"
-                 "${init_extensions_begin}\n"
-                 "    // clang-format off\n"
-                 "${assignment_extensions}\n"
-                 "    // clang-format on\n"
-                 "\n"
-                 "${init_extensions_end}\n"
-                 "}\n"
-                 "\n"
-                 "} // namespace\n"
-                 "\n"
-                 "#pragma endregion\n")
-
-    assignment_extensions = "\n".join("    framework::opengl::{0}_supported = init_{0}();".format(
-        s.lower_name) for s in sections)
-
-    return e.substitute(init_functions=init_functions,
-                        init_extensions_begin=dictionary['init_extensions_begin'],
-                        assignment_extensions=assignment_extensions,
-                        init_extensions_end=dictionary['init_extensions_end'])
+    return init_functions
 
 
 def generate_source(sections, dictionary):
@@ -191,21 +165,17 @@ def generate_source(sections, dictionary):
                  "\n"
                  "${license}"
                  "\n"
-                 "#include <array>\n"
-                 "#include <mutex>\n"
-                 "\n"
                  "#include <common/types.hpp>\n"
                  "#include <opengl/details/gl_details.hpp>\n"
                  "#include <${header_file}>\n"
                  "\n"
                  "namespace\n"
                  "{\n"
-                 "std::once_flag init_flag;\n"
                  "\n"
                  "template <typename F>\n"
                  "F get_function(const char* function_name)\n"
                  "{\n"
-                 "    return reinterpret_cast<F>(framework::opengl::details::get_function(function_name));\n"
+                 "    return reinterpret_cast<F>(framework::opengl::opengl_details::get_function(function_name));\n"
                  "}\n"
                  "\n"
                  "${init_declarations}"
@@ -218,14 +188,32 @@ def generate_source(sections, dictionary):
                  "\n"
                  "${null_definitions}"
                  "\n"
-                 "void ${init_function_name}()\n"
-                 "{\n"
-                 "    std::call_once(init_flag, []() { ::init_extensions(); });\n"
-                 "}\n"
-                 "\n"
                  "} // namespace framework::opengl\n"
                  "\n"
-                 "${init_definitions}")
+                 "namespace\n"
+                 "{\n"
+                 "#pragma region init_definitions\n"
+                 "\n"
+                 "${init_definitions}"
+                 "\n"
+                 "#pragma endregion\n"
+                 "\n"
+                 "} // namespace\n"
+                 "\n"
+                 "namespace framework::opengl::opengl_details\n"
+                 "{\n"
+                 "void ${init_function_name}()\n"
+                 "{\n"
+                 "    // clang-format off\n"
+                 "${assignment_extensions}\n"
+                 "    // clang-format on\n"
+                 "}\n"
+                 "\n"
+                 "} // namespace framework::opengl::opengl_details\n"
+                 )
+
+    assignment_extensions = "\n".join("    {0}_supported = ::init_{0}();".format(
+        s.lower_name) for s in sections)
 
     d = dict(brief=dictionary['brief'],
              date=dictionary['date'],
@@ -236,7 +224,8 @@ def generate_source(sections, dictionary):
              init_declarations=generate_init_declarations(sections),
              null_definitions=generate_null_definitions(sections),
              init_function_name=dictionary['init_function_name'],
-             init_definitions=generate_init_definitions(sections, dictionary))
+             init_definitions=generate_init_definitions(sections),
+             assignment_extensions=assignment_extensions)
 
     cpp = open(dictionary['destcpp'], "w")
     cpp.write(t.substitute(d))

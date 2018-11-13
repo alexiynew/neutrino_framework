@@ -30,11 +30,11 @@
 #ifndef FRAMEWORK_OPENGL_DETAILS_GL_DETAILS_HPP
 #define FRAMEWORK_OPENGL_DETAILS_GL_DETAILS_HPP
 
-namespace framework::opengl::details
+namespace framework::opengl::opengl_details
 {
 using gl_function_ptr = void (*)();
 gl_function_ptr get_function(const char* function_name);
 
-} // namespace framework::opengl::details
+} // namespace framework::opengl::opengl_details
 
 #endif

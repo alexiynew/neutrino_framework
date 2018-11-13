@@ -31,11 +31,11 @@
 #include <opengl/details/gl_details.hpp>
 #include <opengl/extensions/linux/glxext.hpp>
 
-namespace framework::opengl::details
+namespace framework::opengl::opengl_details
 {
 gl_function_ptr get_function(const char* function_name)
 {
     return glXGetProcAddressARB(reinterpret_cast<const uint8*>(function_name));
 }
 
-} // namespace framework::opengl::details
+} // namespace framework::opengl::opengl_details

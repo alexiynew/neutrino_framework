@@ -29,6 +29,8 @@ set(GROUP_PATH ${GROUP_PATH}/${DIR_NAME})
 
 set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl_details.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/gl_wrapper.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/gl_wrapper.cpp
 )
 
 target_sources(${PROJECT_NAME}
