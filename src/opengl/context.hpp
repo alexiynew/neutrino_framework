@@ -1,5 +1,5 @@
 /// @file
-/// @brief OpenGLggraphic context.
+/// @brief OpenGL graphic context.
 /// @author Fedorov Alexey
 /// @date 11.09.2018
 

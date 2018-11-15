@@ -709,11 +709,11 @@ GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 
-HTML_HEADER            =
-HTML_FOOTER            =
+HTML_HEADER            = @DOCS_SOURCE_DIR@/header.html
+HTML_FOOTER            = @DOCS_SOURCE_DIR@/footer.html
 HTML_STYLESHEET        =
 
-HTML_EXTRA_STYLESHEET  =
+HTML_EXTRA_STYLESHEET  = @DOCS_SOURCE_DIR@/frameworkdoxygen.css
 HTML_EXTRA_FILES       =
 
 HTML_COLORSTYLE_HUE    = 220
