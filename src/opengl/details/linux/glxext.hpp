@@ -30,7 +30,7 @@
 #ifndef FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP
 #define FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_HPP
 
-#include <opengl/extensions/linux/glxext_wrapper.hpp>
+#include <opengl/details/linux/glxext_wrapper.hpp>
 
 namespace framework::opengl
 {

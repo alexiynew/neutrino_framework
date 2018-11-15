@@ -25,8 +25,12 @@
 
 set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl_details.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/x11_context.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/x11_context.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/glx_context.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/glx_context.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/glxext.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/glxext.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/glxext_wrapper.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/glxext_wrapper.hpp
 )
 
 target_sources(${PROJECT_NAME} 

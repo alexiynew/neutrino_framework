@@ -28,8 +28,8 @@
 // =============================================================================
 
 #include <common/types.hpp>
+#include <opengl/details/linux/glxext_wrapper.hpp>
 #include <opengl/details/gl_details.hpp>
-#include <opengl/extensions/linux/glxext_wrapper.hpp>
 
 namespace
 {

@@ -57,11 +57,7 @@ target_sources(${PROJECT_NAME}
 
 source_group(${GROUP_PATH} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
 
-set(GROUP_PATH ${MODULE_NAME})
 include(${CMAKE_CURRENT_LIST_DIR}/details/CMakeLists.txt)
-
-set(GROUP_PATH ${MODULE_NAME})
-include(${CMAKE_CURRENT_LIST_DIR}/extensions/CMakeLists.txt)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE

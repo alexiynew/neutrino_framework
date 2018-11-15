@@ -29,7 +29,7 @@
 
 #include <common/types.hpp>
 #include <opengl/details/gl_details.hpp>
-#include <opengl/extensions/linux/glxext.hpp>
+#include <opengl/details/linux/glxext.hpp>
 
 namespace framework::opengl::opengl_details
 {

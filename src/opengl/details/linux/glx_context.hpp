@@ -27,27 +27,27 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_CONTEXT_HPP
-#define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_CONTEXT_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_GLX_CONTEXT_HPP
+#define FRAMEWORK_WINDOW_DETAILS_LINUX_GLX_CONTEXT_HPP
 
 #include <X11/Xlib.h>
 
 #include <opengl/context.hpp>
-#include <opengl/extensions/linux/glxext.hpp>
+#include <opengl/details/linux/glxext.hpp>
 
 namespace framework::os
 {
-class x11_context : public framework::opengl::context
+class glx_context : public framework::opengl::context
 {
 public:
-    x11_context(Display* display, opengl::context_settings settings);
-    ~x11_context() override;
+    glx_context(Display* display, opengl::context_settings settings);
+    ~glx_context() override;
 
-    x11_context(const x11_context&) = default;
-    x11_context(x11_context&&)      = default;
+    glx_context(const glx_context&) = default;
+    glx_context(glx_context&&)      = default;
 
-    x11_context& operator=(const x11_context&) = default;
-    x11_context& operator=(x11_context&&) = default;
+    glx_context& operator=(const glx_context&) = default;
+    glx_context& operator=(glx_context&&) = default;
 
     bool valid() const override;
     bool is_current() const override;

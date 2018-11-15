@@ -30,7 +30,7 @@
 #include <stdexcept>
 
 #include <common/types.hpp>
-#include <opengl/details/linux/x11_context.hpp>
+#include <opengl/details/linux/glx_context.hpp>
 
 namespace
 {
@@ -139,7 +139,7 @@ GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config, 
 
 namespace framework::os
 {
-x11_context::x11_context(Display* display, opengl::context_settings settings)
+glx_context::glx_context(Display* display, opengl::context_settings settings)
     : context(std::move(settings)), m_display(display)
 {
     if (!check_glx_version(m_display)) {
@@ -172,50 +172,50 @@ x11_context::x11_context(Display* display, opengl::context_settings settings)
     }
 }
 
-x11_context::~x11_context()
+glx_context::~glx_context()
 {
     clear();
 }
 
-bool x11_context::valid() const
+bool glx_context::valid() const
 {
     return m_display != nullptr && m_framebuffer_config != nullptr && m_glx_context != nullptr && m_colormap != None &&
            m_visual_info != nullptr;
 }
 
-bool x11_context::is_current() const
+bool glx_context::is_current() const
 {
     return valid() && glXGetCurrentContext() == m_glx_context;
 }
 
-void x11_context::make_current() const
+void glx_context::make_current() const
 {
     if (!is_current()) {
         glXMakeCurrent(m_display, m_window, m_glx_context);
     }
 }
 
-void x11_context::swap_buffers() const
+void glx_context::swap_buffers() const
 {
     glXSwapBuffers(m_display, m_window);
 }
 
-Colormap x11_context::colormap() const
+Colormap glx_context::colormap() const
 {
     return m_colormap;
 }
 
-XVisualInfo* x11_context::visual_info() const
+XVisualInfo* glx_context::visual_info() const
 {
     return m_visual_info;
 }
 
-void x11_context::attach_window(Window window)
+void glx_context::attach_window(Window window)
 {
     m_window = window;
 }
 
-void x11_context::clear()
+void glx_context::clear()
 {
     if (m_display && m_glx_context != nullptr) {
         glXDestroyContext(m_display, m_glx_context);

@@ -29,7 +29,7 @@
 
 #include <mutex>
 
-#include <opengl/extensions/linux/glxext.hpp>
+#include <opengl/details/linux/glxext.hpp>
 
 namespace
 {

@@ -37,7 +37,7 @@
 #include <common/types.hpp>
 #include <common/utils.hpp>
 #include <log/log.hpp>
-#include <opengl/details/linux/x11_context.hpp>
+#include <opengl/details/linux/glx_context.hpp>
 #include <window/details/linux/x11_utils.hpp>
 #include <window/details/linux/x11_window.hpp>
 
@@ -144,7 +144,7 @@ std::unique_ptr<window::implementation> window::implementation::create(window::s
 x11_window::x11_window(window::size_t size, const std::string& title, opengl::context_settings settings)
     : m_server(x11_server::connect()), m_size(size)
 {
-    auto context = std::make_unique<x11_context>(m_server->display(), std::move(settings));
+    auto context = std::make_unique<glx_context>(m_server->display(), std::move(settings));
     if (!context->valid()) {
         throw std::runtime_error("Can't create graphic context.");
     }
