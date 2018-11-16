@@ -11,12 +11,14 @@ add_project_arguments('-Wno-unknown-pragmas', language : 'cpp')
 
 install_prefix = '' # TODO
 
-#TODO documentation 
-#TODO test coverage
 #TODO instalation
 
 framework_source_dir = 'src'
 framework_test_dir   = 'test'
+
+docs_source_dir  = 'docs'
+docs_output_dir  = 'docs'
+docs_install_dir = docs_output_dir
 
 thread_dependency = dependency('threads')
 
@@ -28,6 +30,7 @@ framework_dependencies = [thread_dependency]
 
 system_name = build_machine.system()
 
+# Add sources
 subdir(framework_source_dir)
 
 framework_lib = library(meson.project_name(), framework_sources, 
@@ -35,6 +38,18 @@ framework_lib = library(meson.project_name(), framework_sources,
                         include_directories : framework_include,
                         dependencies: framework_dependencies)
 
+# Add tests
 if get_option('build_tests')
     subdir(framework_test_dir)
+endif
+
+# Docs
+if get_option('build_docs')
+    subdir(docs_source_dir)
+    if is_variable('doxygen') and is_variable('doxyfile')
+        custom_target('docs',
+                      input: doxyfile,
+                      output: docs_output_dir,
+                      command: [doxygen, doxyfile])
+    endif
 endif
