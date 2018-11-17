@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_GLX_CONTEXT_HPP
-#define FRAMEWORK_WINDOW_DETAILS_LINUX_GLX_CONTEXT_HPP
+#ifndef FRAMEWORK_OPENGL_DETAILS_LINUX_GLX_CONTEXT_HPP
+#define FRAMEWORK_OPENGL_DETAILS_LINUX_GLX_CONTEXT_HPP
 
 #include <X11/Xlib.h>
 

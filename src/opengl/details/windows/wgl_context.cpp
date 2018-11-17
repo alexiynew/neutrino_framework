@@ -29,8 +29,8 @@
 
 #include <stdexcept>
 
-#include <opengl/details/windows/win32_context.hpp>
-#include <opengl/extensions/windows/wglext.hpp>
+#include <opengl/details/windows/wgl_context.hpp>
+#include <opengl/details/windows/wglext.hpp>
 
 namespace framework::os
 {
@@ -68,7 +68,7 @@ win32_context::win32_context(HWND window, opengl::context_settings settings)
         throw std::runtime_error("Can't set pixelformat");
     }
 
-    auto version = settings.get_version();
+    auto version = settings.version();
     // clang-format off
     int attribs[] = {
         WGL_CONTEXT_MAJOR_VERSION_ARB, version.major,

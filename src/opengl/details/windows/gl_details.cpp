@@ -32,7 +32,7 @@
 #include <common/types.hpp>
 #include <opengl/details/gl_details.hpp>
 
-namespace framework::opengl::details
+namespace framework::opengl::opengl_details
 {
 gl_function_ptr get_function(const char* function_name)
 {
@@ -51,4 +51,4 @@ gl_function_ptr get_function(const char* function_name)
     return function;
 }
 
-} // namespace framework::opengl::details
+} // namespace framework::opengl::opengl_details

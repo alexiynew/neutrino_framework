@@ -27,11 +27,13 @@ set(PRIVATE_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/gl_details.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wgl_context.hpp
     ${CMAKE_CURRENT_LIST_DIR}/wgl_context.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/wglext_wrapper.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/wglext_wrapper.hpp
     ${CMAKE_CURRENT_LIST_DIR}/wglext.cpp
     ${CMAKE_CURRENT_LIST_DIR}/wglext.hpp
 )
 
-target_sources(${PROJECT_NAME} 
+target_sources(${PROJECT_NAME}
     PRIVATE
         ${PRIVATE_SOURCES}
 )

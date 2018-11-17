@@ -26,10 +26,6 @@ INCLUDE_FILES = ["GL/glx.h"]
 
 INIT_FUNCTION_NAME = "init_glx_functions"
 
-INIT_EXTENSIONS_BEGIN = ""
-
-INIT_EXTENSIONS_END = ""
-
 LICENSE = "// =============================================================================\n" \
           "// MIT License\n" \
           "//\n" \
@@ -67,6 +63,4 @@ generator.generate(dict(source=SOURCE,
                         include_guard=INCLUDE_GUARD,
                         include_files=INCLUDE_FILES,
                         init_function_name=INIT_FUNCTION_NAME,
-                        init_extensions_begin=INIT_EXTENSIONS_BEGIN,
-                        init_extensions_end=INIT_EXTENSIONS_END,
                         license=LICENSE))

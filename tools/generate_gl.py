@@ -1,8 +1,10 @@
 #!/usr/bin/python3
+"""Generates extension wrapper for gl functions."""
 
 import generator
 
 SOURCE = "./dependencies/GL/glcorearb.h"
+
 DESTHPP = "./src/opengl/details/gl_wrapper.hpp"
 DESTCPP = "./src/opengl/details/gl_wrapper.cpp"
 
@@ -17,15 +19,11 @@ HEADER_FILE = "opengl/details/gl_wrapper.hpp"
 BRIEF = "OpneGL functions wrapper."
 DATE = "17.09.2018"
 
-INCLUDE_GUARD = "FRAMEWORK_OPENGL_GL_WRAPPE_HPP"
+INCLUDE_GUARD = "FRAMEWORK_OPENGL_GL_WRAPPER_HPP"
 
 INCLUDE_FILES = ["GL/glcorearb.h"]
 
 INIT_FUNCTION_NAME = "init_gl_functions"
-
-INIT_EXTENSIONS_BEGIN = ""
-
-INIT_EXTENSIONS_END = ""
 
 LICENSE = "// =============================================================================\n" \
           "// MIT License\n" \
@@ -64,6 +62,4 @@ generator.generate(dict(source=SOURCE,
                         include_guard=INCLUDE_GUARD,
                         include_files=INCLUDE_FILES,
                         init_function_name=INIT_FUNCTION_NAME,
-                        init_extensions_begin=INIT_EXTENSIONS_BEGIN,
-                        init_extensions_end=INIT_EXTENSIONS_END,
                         license=LICENSE))

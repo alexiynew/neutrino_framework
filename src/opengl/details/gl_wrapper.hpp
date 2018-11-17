@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_OPENGL_GL_WRAPPE_HPP
-#define FRAMEWORK_OPENGL_GL_WRAPPE_HPP
+#ifndef FRAMEWORK_OPENGL_DETAILS_GL_WRAPPER_HPP
+#define FRAMEWORK_OPENGL_DETAILS_GL_WRAPPER_HPP
 
 #include <GL/glcorearb.h>
 
