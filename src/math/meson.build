@@ -5,10 +5,10 @@ message('\tAdd module: ' + module_name)
 public = files('math.hpp')
 
 
-public += files('details/matrix_type.hpp',
+details = files('details/matrix_type.hpp',
                 'details/vector_type.hpp')
 
-public += files('details/constants.hpp',
+details += files('details/constants.hpp',
                 'details/common_functions.hpp',
                 'details/exponential_functions.hpp',
                 'details/geometric_functions.hpp',
@@ -16,13 +16,17 @@ public += files('details/constants.hpp',
                 'details/relational_functions.hpp',
                 'details/transform_functions.hpp')
 
-public += files('details/vector_type_details.hpp',
+details += files('details/vector_type_details.hpp',
                 'details/matrix_type_details.hpp')
 
-public += files('details/common_functions_details.hpp',
+details += files('details/common_functions_details.hpp',
                 'details/geometric_functions_details.hpp',
                 'details/matrix_functions_details.hpp',
                 'details/relational_functions_details.hpp',
                 'details/trigonometric_functions.hpp')
 
+install_headers(public, subdir: module_name)
+install_headers(details, subdir: join_paths(module_name, 'details'))
+
 framework_sources += public
+framework_sources += details 
