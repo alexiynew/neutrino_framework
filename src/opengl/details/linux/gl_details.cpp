@@ -33,7 +33,7 @@
 
 namespace framework::opengl::opengl_details
 {
-gl_function_ptr get_function(const char* function_name)
+gl_function_ptr get_function_implementation(const char* function_name)
 {
     return glXGetProcAddressARB(reinterpret_cast<const uint8*>(function_name));
 }

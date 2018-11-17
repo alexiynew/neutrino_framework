@@ -8,5 +8,5 @@ test = executable(test_name, test_sources,
 
 test(test_name, test,
      suite: test_pack_name,
-     timeout: 60,
+     timeout: 300,
      is_parallel: false)

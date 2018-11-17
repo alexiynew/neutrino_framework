@@ -34,7 +34,7 @@
 
 namespace framework::opengl::opengl_details
 {
-gl_function_ptr get_function(const char* function_name)
+gl_function_ptr get_function_implementation(const char* function_name)
 {
     auto function = reinterpret_cast<gl_function_ptr>(wglGetProcAddress(function_name));
     if (function == nullptr || (function == reinterpret_cast<gl_function_ptr>(0x1)) ||

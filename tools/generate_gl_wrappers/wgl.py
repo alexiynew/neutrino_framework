@@ -1,30 +1,27 @@
 #!/usr/bin/python3
-"""Generates extension wrapper for glx functions."""
+"""Generates extension wrapper for wgl functions."""
 
-import generator
+SOURCE = "./dependencies/GL/wglext.h"
 
-SOURCE = "./dependencies/GL/glxext.h"
-
-DESTHPP = "./src/opengl/details/linux/glxext_wrapper.hpp"
-DESTCPP = "./src/opengl/details/linux/glxext_wrapper.cpp"
+DESTHPP = "./src/opengl/details/windows/wglext_wrapper.hpp"
+DESTCPP = "./src/opengl/details/windows/wglext_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
-TYPE_REGEX = r'typedef.*\(\s?\*(PFN.*PROC)\).*;'
-NAME_REGEX = r'.*(glX[\w\d_]+)\s?\(.*;'
+TYPE_REGEX = r'typedef.*\(WINAPI\s?\*\s?(PFN[\w\d_]*PROC)\).*;'
+NAME_REGEX = r'.*WINAPI\s([\w\d_]+)\s\(.*\);'
 
-EXCLUDE = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC",
-           "PFNGLXCREATEGLXVIDEOSOURCESGIXPROC", "PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC"]
+EXCLUDE = []
 
-HEADER_FILE = "opengl/deatils/linux/glxext_wrapper.hpp"
+HEADER_FILE = "opengl/details/windows/wglext_wrapper.hpp"
 
-BRIEF = "GLX extension functions wrapper."
+BRIEF = "WGL extension functions wrapper."
 DATE = "17.09.2018"
 
-INCLUDE_GUARD = "FRAMEWORK_OPENGL_EXTENSIONS_LINUX_GLXEXT_WRAPPER_HPP"
+INCLUDE_GUARD = "FRAMEWORK_OPENGL_DETAILS_WINDOWS_WGLEXT_WRAPPER_HPP"
 
-INCLUDE_FILES = ["GL/glx.h"]
+INCLUDE_FILES = ["GL/glcorearb.h", "GL/wglext.h"]
 
-INIT_FUNCTION_NAME = "init_glx_functions"
+INIT_FUNCTION_NAME = "init_wgl_functions"
 
 LICENSE = "// =============================================================================\n" \
           "// MIT License\n" \
@@ -50,17 +47,17 @@ LICENSE = "// ==================================================================
           "// SOFTWARE.\n" \
           "// =============================================================================\n"
 
-generator.generate(dict(source=SOURCE,
-                        desthpp=DESTHPP,
-                        destcpp=DESTCPP,
-                        group_regex=GROUP_REGEX,
-                        type_regex=TYPE_REGEX,
-                        name_regex=NAME_REGEX,
-                        exclude=EXCLUDE,
-                        header_file=HEADER_FILE,
-                        brief=BRIEF,
-                        date=DATE,
-                        include_guard=INCLUDE_GUARD,
-                        include_files=INCLUDE_FILES,
-                        init_function_name=INIT_FUNCTION_NAME,
-                        license=LICENSE))
+data = dict(source=SOURCE,
+            desthpp=DESTHPP,
+            destcpp=DESTCPP,
+            group_regex=GROUP_REGEX,
+            type_regex=TYPE_REGEX,
+            name_regex=NAME_REGEX,
+            exclude=EXCLUDE,
+            header_file=HEADER_FILE,
+            brief=BRIEF,
+            date=DATE,
+            include_guard=INCLUDE_GUARD,
+            include_files=INCLUDE_FILES,
+            init_function_name=INIT_FUNCTION_NAME,
+            license=LICENSE)

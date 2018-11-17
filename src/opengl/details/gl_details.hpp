@@ -33,7 +33,13 @@
 namespace framework::opengl::opengl_details
 {
 using gl_function_ptr = void (*)();
-gl_function_ptr get_function(const char* function_name);
+gl_function_ptr get_function_implementation(const char* function_name);
+
+template <typename F>
+F get_function(const char* function_name)
+{
+    return reinterpret_cast<F>(get_function_implementation(function_name));
+}
 
 } // namespace framework::opengl::opengl_details
 

@@ -28,7 +28,7 @@
 // =============================================================================
 
 #include <common/types.hpp>
-#include <opengl/details/linux/glxext_wrapper.hpp>
+#include <opengl/deatils/linux/glxext_wrapper.hpp>
 #include <opengl/details/gl_details.hpp>
 
 namespace

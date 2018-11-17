@@ -8,12 +8,14 @@ project('framework', 'cpp',
                            'werror=true',
                            'b_pch=false',
                            'prefix=' + join_paths(meson.source_root(), 'output'),
-                           'default_library=both'])
+                           'default_library=static'])
 
 compiler = meson.get_compiler('cpp').get_id()
 
 if compiler == 'gcc' or compiler == 'clang'
     add_project_arguments('-Wno-unknown-pragmas', language : 'cpp')
+elif compiler == 'msvc'
+    add_project_arguments('/std:c++17', language : 'cpp')
 endif
 
 framework_source_dir = 'src'
@@ -25,13 +27,17 @@ docs_install_dir = docs_output_dir
 
 thread_dependency = dependency('threads')
 
-framework_include = include_directories(framework_source_dir)
+framework_include = include_directories(framework_source_dir, 'dependencies')
 
 framework_sources = []
 framework_definitions = []
 framework_dependencies = [thread_dependency]
 
 system_name = build_machine.system()
+
+if (system_name == 'windows')
+    framework_definitions += '-DUNICODE'
+endif
 
 # Add sources
 subdir(framework_source_dir)
@@ -40,6 +46,7 @@ framework_lib = library(meson.project_name(), framework_sources,
                         version : meson.project_version(),
                         include_directories : framework_include,
                         dependencies: framework_dependencies,
+                        cpp_args : framework_definitions,
                         install: true)
 
 # Add tests
@@ -56,4 +63,12 @@ if get_option('build_docs')
                       output: docs_output_dir,
                       command: [doxygen, doxyfile])
     endif
+endif
+
+clang_format = find_program('clang_format', 'clang_format.exe',  'clang-format.exe', 'clang_format.py')
+
+if clang_format.found()
+    message(run_command(clang_format, '--version').stdout())
+    run_target('format',
+               command : [clang_format, '-style=file', '-i', framework_sources])
 endif
