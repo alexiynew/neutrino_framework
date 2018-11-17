@@ -1,4 +1,4 @@
-module_name = meson.current_source_dir().split('/').get(-1)
+module_name = meson.current_source_dir().split('/').get(-1).split('\\').get(-1)
 
 message('\tAdd module: ' + module_name)
 
@@ -29,4 +29,4 @@ install_headers(public, subdir: module_name)
 install_headers(details, subdir: join_paths(module_name, 'details'))
 
 framework_sources += public
-framework_sources += details 
+framework_sources += details

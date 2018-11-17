@@ -1,8 +1,8 @@
 # Project setup
-project('framework', 'cpp', 
-        version : '0.0.2', 
+project('framework', 'cpp',
+        version : '0.0.2',
         license : 'MIT',
-        default_options : ['cpp_std=c++17', 
+        default_options : ['cpp_std=c++17',
                            'buildtype=release',
                            'warning_level=3',
                            'werror=true',
@@ -10,7 +10,11 @@ project('framework', 'cpp',
                            'prefix=' + join_paths(meson.source_root(), 'output'),
                            'default_library=both'])
 
-add_project_arguments('-Wno-unknown-pragmas', language : 'cpp')
+compiler = meson.get_compiler('cpp').get_id()
+
+if compiler == 'gcc' or compiler == 'clang'
+    add_project_arguments('-Wno-unknown-pragmas', language : 'cpp')
+endif
 
 framework_source_dir = 'src'
 framework_test_dir   = 'test'
@@ -32,7 +36,7 @@ system_name = build_machine.system()
 # Add sources
 subdir(framework_source_dir)
 
-framework_lib = library(meson.project_name(), framework_sources, 
+framework_lib = library(meson.project_name(), framework_sources,
                         version : meson.project_version(),
                         include_directories : framework_include,
                         dependencies: framework_dependencies,
