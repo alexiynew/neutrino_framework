@@ -208,8 +208,8 @@ std::string make_string_impl(const std::string& str,
                              const std::unique_ptr<value_base>* const values,
                              const size_t values_count)
 {
-    indexing_mode mode;
-    size_t next_index = 0;
+    indexing_mode mode = indexing_mode::none;
+    size_t next_index  = 0;
 
     std::istringstream in(str);
     std::ostringstream out;
