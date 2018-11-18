@@ -33,6 +33,7 @@
 
 namespace
 {
+
 #pragma region init_declarations
 
 bool init_wgl_arb_buffer_region();
@@ -73,43 +74,43 @@ bool init_wgl_oml_sync_control();
 
 namespace framework::opengl
 {
-bool wgl_arb_buffer_region_supported         = false;
-bool wgl_arb_create_context_supported        = false;
-bool wgl_arb_extensions_string_supported     = false;
-bool wgl_arb_make_current_read_supported     = false;
-bool wgl_arb_pbuffer_supported               = false;
-bool wgl_arb_pixel_format_supported          = false;
-bool wgl_arb_render_texture_supported        = false;
-bool wgl_3dl_stereo_control_supported        = false;
-bool wgl_amd_gpu_association_supported       = false;
-bool wgl_ext_display_color_table_supported   = false;
-bool wgl_ext_extensions_string_supported     = false;
-bool wgl_ext_make_current_read_supported     = false;
-bool wgl_ext_pbuffer_supported               = false;
-bool wgl_ext_pixel_format_supported          = false;
-bool wgl_ext_swap_control_supported          = false;
+bool wgl_arb_buffer_region_supported = false;
+bool wgl_arb_create_context_supported = false;
+bool wgl_arb_extensions_string_supported = false;
+bool wgl_arb_make_current_read_supported = false;
+bool wgl_arb_pbuffer_supported = false;
+bool wgl_arb_pixel_format_supported = false;
+bool wgl_arb_render_texture_supported = false;
+bool wgl_3dl_stereo_control_supported = false;
+bool wgl_amd_gpu_association_supported = false;
+bool wgl_ext_display_color_table_supported = false;
+bool wgl_ext_extensions_string_supported = false;
+bool wgl_ext_make_current_read_supported = false;
+bool wgl_ext_pbuffer_supported = false;
+bool wgl_ext_pixel_format_supported = false;
+bool wgl_ext_swap_control_supported = false;
 bool wgl_i3d_digital_video_control_supported = false;
-bool wgl_i3d_gamma_supported                 = false;
-bool wgl_i3d_genlock_supported               = false;
-bool wgl_i3d_image_buffer_supported          = false;
-bool wgl_i3d_swap_frame_lock_supported       = false;
-bool wgl_i3d_swap_frame_usage_supported      = false;
-bool wgl_nv_dx_interop_supported             = false;
-bool wgl_nv_copy_image_supported             = false;
-bool wgl_nv_delay_before_swap_supported      = false;
-bool wgl_nv_gpu_affinity_supported           = false;
-bool wgl_nv_present_video_supported          = false;
-bool wgl_nv_swap_group_supported             = false;
-bool wgl_nv_vertex_array_range_supported     = false;
-bool wgl_nv_video_capture_supported          = false;
-bool wgl_nv_video_output_supported           = false;
-bool wgl_oml_sync_control_supported          = false;
+bool wgl_i3d_gamma_supported = false;
+bool wgl_i3d_genlock_supported = false;
+bool wgl_i3d_image_buffer_supported = false;
+bool wgl_i3d_swap_frame_lock_supported = false;
+bool wgl_i3d_swap_frame_usage_supported = false;
+bool wgl_nv_dx_interop_supported = false;
+bool wgl_nv_copy_image_supported = false;
+bool wgl_nv_delay_before_swap_supported = false;
+bool wgl_nv_gpu_affinity_supported = false;
+bool wgl_nv_present_video_supported = false;
+bool wgl_nv_swap_group_supported = false;
+bool wgl_nv_vertex_array_range_supported = false;
+bool wgl_nv_video_capture_supported = false;
+bool wgl_nv_video_output_supported = false;
+bool wgl_oml_sync_control_supported = false;
 
 #pragma region WGL_ARB_buffer_region
 
-PFNWGLCREATEBUFFERREGIONARBPROC wglCreateBufferRegionARB   = nullptr;
-PFNWGLDELETEBUFFERREGIONARBPROC wglDeleteBufferRegionARB   = nullptr;
-PFNWGLSAVEBUFFERREGIONARBPROC wglSaveBufferRegionARB       = nullptr;
+PFNWGLCREATEBUFFERREGIONARBPROC wglCreateBufferRegionARB = nullptr;
+PFNWGLDELETEBUFFERREGIONARBPROC wglDeleteBufferRegionARB = nullptr;
+PFNWGLSAVEBUFFERREGIONARBPROC wglSaveBufferRegionARB = nullptr;
 PFNWGLRESTOREBUFFERREGIONARBPROC wglRestoreBufferRegionARB = nullptr;
 
 #pragma endregion
@@ -129,17 +130,17 @@ PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = nullptr;
 #pragma region WGL_ARB_make_current_read
 
 PFNWGLMAKECONTEXTCURRENTARBPROC wglMakeContextCurrentARB = nullptr;
-PFNWGLGETCURRENTREADDCARBPROC wglGetCurrentReadDCARB     = nullptr;
+PFNWGLGETCURRENTREADDCARBPROC wglGetCurrentReadDCARB = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_ARB_pbuffer
 
-PFNWGLCREATEPBUFFERARBPROC wglCreatePbufferARB       = nullptr;
-PFNWGLGETPBUFFERDCARBPROC wglGetPbufferDCARB         = nullptr;
+PFNWGLCREATEPBUFFERARBPROC wglCreatePbufferARB = nullptr;
+PFNWGLGETPBUFFERDCARBPROC wglGetPbufferDCARB = nullptr;
 PFNWGLRELEASEPBUFFERDCARBPROC wglReleasePbufferDCARB = nullptr;
-PFNWGLDESTROYPBUFFERARBPROC wglDestroyPbufferARB     = nullptr;
-PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB         = nullptr;
+PFNWGLDESTROYPBUFFERARBPROC wglDestroyPbufferARB = nullptr;
+PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB = nullptr;
 
 #pragma endregion
 
@@ -147,14 +148,14 @@ PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB         = nullptr;
 
 PFNWGLGETPIXELFORMATATTRIBIVARBPROC wglGetPixelFormatAttribivARB = nullptr;
 PFNWGLGETPIXELFORMATATTRIBFVARBPROC wglGetPixelFormatAttribfvARB = nullptr;
-PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB           = nullptr;
+PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_ARB_render_texture
 
-PFNWGLBINDTEXIMAGEARBPROC wglBindTexImageARB         = nullptr;
-PFNWGLRELEASETEXIMAGEARBPROC wglReleaseTexImageARB   = nullptr;
+PFNWGLBINDTEXIMAGEARBPROC wglBindTexImageARB = nullptr;
+PFNWGLRELEASETEXIMAGEARBPROC wglReleaseTexImageARB = nullptr;
 PFNWGLSETPBUFFERATTRIBARBPROC wglSetPbufferAttribARB = nullptr;
 
 #pragma endregion
@@ -167,23 +168,23 @@ PFNWGLSETSTEREOEMITTERSTATE3DLPROC wglSetStereoEmitterState3DL = nullptr;
 
 #pragma region WGL_AMD_gpu_association
 
-PFNWGLGETGPUIDSAMDPROC wglGetGPUIDsAMD                                           = nullptr;
-PFNWGLGETGPUINFOAMDPROC wglGetGPUInfoAMD                                         = nullptr;
-PFNWGLGETCONTEXTGPUIDAMDPROC wglGetContextGPUIDAMD                               = nullptr;
-PFNWGLCREATEASSOCIATEDCONTEXTAMDPROC wglCreateAssociatedContextAMD               = nullptr;
+PFNWGLGETGPUIDSAMDPROC wglGetGPUIDsAMD = nullptr;
+PFNWGLGETGPUINFOAMDPROC wglGetGPUInfoAMD = nullptr;
+PFNWGLGETCONTEXTGPUIDAMDPROC wglGetContextGPUIDAMD = nullptr;
+PFNWGLCREATEASSOCIATEDCONTEXTAMDPROC wglCreateAssociatedContextAMD = nullptr;
 PFNWGLCREATEASSOCIATEDCONTEXTATTRIBSAMDPROC wglCreateAssociatedContextAttribsAMD = nullptr;
-PFNWGLDELETEASSOCIATEDCONTEXTAMDPROC wglDeleteAssociatedContextAMD               = nullptr;
-PFNWGLMAKEASSOCIATEDCONTEXTCURRENTAMDPROC wglMakeAssociatedContextCurrentAMD     = nullptr;
-PFNWGLGETCURRENTASSOCIATEDCONTEXTAMDPROC wglGetCurrentAssociatedContextAMD       = nullptr;
-PFNWGLBLITCONTEXTFRAMEBUFFERAMDPROC wglBlitContextFramebufferAMD                 = nullptr;
+PFNWGLDELETEASSOCIATEDCONTEXTAMDPROC wglDeleteAssociatedContextAMD = nullptr;
+PFNWGLMAKEASSOCIATEDCONTEXTCURRENTAMDPROC wglMakeAssociatedContextCurrentAMD = nullptr;
+PFNWGLGETCURRENTASSOCIATEDCONTEXTAMDPROC wglGetCurrentAssociatedContextAMD = nullptr;
+PFNWGLBLITCONTEXTFRAMEBUFFERAMDPROC wglBlitContextFramebufferAMD = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_EXT_display_color_table
 
-PFNWGLCREATEDISPLAYCOLORTABLEEXTPROC wglCreateDisplayColorTableEXT   = nullptr;
-PFNWGLLOADDISPLAYCOLORTABLEEXTPROC wglLoadDisplayColorTableEXT       = nullptr;
-PFNWGLBINDDISPLAYCOLORTABLEEXTPROC wglBindDisplayColorTableEXT       = nullptr;
+PFNWGLCREATEDISPLAYCOLORTABLEEXTPROC wglCreateDisplayColorTableEXT = nullptr;
+PFNWGLLOADDISPLAYCOLORTABLEEXTPROC wglLoadDisplayColorTableEXT = nullptr;
+PFNWGLBINDDISPLAYCOLORTABLEEXTPROC wglBindDisplayColorTableEXT = nullptr;
 PFNWGLDESTROYDISPLAYCOLORTABLEEXTPROC wglDestroyDisplayColorTableEXT = nullptr;
 
 #pragma endregion
@@ -197,17 +198,17 @@ PFNWGLGETEXTENSIONSSTRINGEXTPROC wglGetExtensionsStringEXT = nullptr;
 #pragma region WGL_EXT_make_current_read
 
 PFNWGLMAKECONTEXTCURRENTEXTPROC wglMakeContextCurrentEXT = nullptr;
-PFNWGLGETCURRENTREADDCEXTPROC wglGetCurrentReadDCEXT     = nullptr;
+PFNWGLGETCURRENTREADDCEXTPROC wglGetCurrentReadDCEXT = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_EXT_pbuffer
 
-PFNWGLCREATEPBUFFEREXTPROC wglCreatePbufferEXT       = nullptr;
-PFNWGLGETPBUFFERDCEXTPROC wglGetPbufferDCEXT         = nullptr;
+PFNWGLCREATEPBUFFEREXTPROC wglCreatePbufferEXT = nullptr;
+PFNWGLGETPBUFFERDCEXTPROC wglGetPbufferDCEXT = nullptr;
 PFNWGLRELEASEPBUFFERDCEXTPROC wglReleasePbufferDCEXT = nullptr;
-PFNWGLDESTROYPBUFFEREXTPROC wglDestroyPbufferEXT     = nullptr;
-PFNWGLQUERYPBUFFEREXTPROC wglQueryPbufferEXT         = nullptr;
+PFNWGLDESTROYPBUFFEREXTPROC wglDestroyPbufferEXT = nullptr;
+PFNWGLQUERYPBUFFEREXTPROC wglQueryPbufferEXT = nullptr;
 
 #pragma endregion
 
@@ -215,13 +216,13 @@ PFNWGLQUERYPBUFFEREXTPROC wglQueryPbufferEXT         = nullptr;
 
 PFNWGLGETPIXELFORMATATTRIBIVEXTPROC wglGetPixelFormatAttribivEXT = nullptr;
 PFNWGLGETPIXELFORMATATTRIBFVEXTPROC wglGetPixelFormatAttribfvEXT = nullptr;
-PFNWGLCHOOSEPIXELFORMATEXTPROC wglChoosePixelFormatEXT           = nullptr;
+PFNWGLCHOOSEPIXELFORMATEXTPROC wglChoosePixelFormatEXT = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_EXT_swap_control
 
-PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT       = nullptr;
+PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 PFNWGLGETSWAPINTERVALEXTPROC wglGetSwapIntervalEXT = nullptr;
 
 #pragma endregion
@@ -237,51 +238,51 @@ PFNWGLSETDIGITALVIDEOPARAMETERSI3DPROC wglSetDigitalVideoParametersI3D = nullptr
 
 PFNWGLGETGAMMATABLEPARAMETERSI3DPROC wglGetGammaTableParametersI3D = nullptr;
 PFNWGLSETGAMMATABLEPARAMETERSI3DPROC wglSetGammaTableParametersI3D = nullptr;
-PFNWGLGETGAMMATABLEI3DPROC wglGetGammaTableI3D                     = nullptr;
-PFNWGLSETGAMMATABLEI3DPROC wglSetGammaTableI3D                     = nullptr;
+PFNWGLGETGAMMATABLEI3DPROC wglGetGammaTableI3D = nullptr;
+PFNWGLSETGAMMATABLEI3DPROC wglSetGammaTableI3D = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_I3D_genlock
 
-PFNWGLENABLEGENLOCKI3DPROC wglEnableGenlockI3D                           = nullptr;
-PFNWGLDISABLEGENLOCKI3DPROC wglDisableGenlockI3D                         = nullptr;
-PFNWGLISENABLEDGENLOCKI3DPROC wglIsEnabledGenlockI3D                     = nullptr;
-PFNWGLGENLOCKSOURCEI3DPROC wglGenlockSourceI3D                           = nullptr;
-PFNWGLGETGENLOCKSOURCEI3DPROC wglGetGenlockSourceI3D                     = nullptr;
-PFNWGLGENLOCKSOURCEEDGEI3DPROC wglGenlockSourceEdgeI3D                   = nullptr;
-PFNWGLGETGENLOCKSOURCEEDGEI3DPROC wglGetGenlockSourceEdgeI3D             = nullptr;
-PFNWGLGENLOCKSAMPLERATEI3DPROC wglGenlockSampleRateI3D                   = nullptr;
-PFNWGLGETGENLOCKSAMPLERATEI3DPROC wglGetGenlockSampleRateI3D             = nullptr;
-PFNWGLGENLOCKSOURCEDELAYI3DPROC wglGenlockSourceDelayI3D                 = nullptr;
-PFNWGLGETGENLOCKSOURCEDELAYI3DPROC wglGetGenlockSourceDelayI3D           = nullptr;
+PFNWGLENABLEGENLOCKI3DPROC wglEnableGenlockI3D = nullptr;
+PFNWGLDISABLEGENLOCKI3DPROC wglDisableGenlockI3D = nullptr;
+PFNWGLISENABLEDGENLOCKI3DPROC wglIsEnabledGenlockI3D = nullptr;
+PFNWGLGENLOCKSOURCEI3DPROC wglGenlockSourceI3D = nullptr;
+PFNWGLGETGENLOCKSOURCEI3DPROC wglGetGenlockSourceI3D = nullptr;
+PFNWGLGENLOCKSOURCEEDGEI3DPROC wglGenlockSourceEdgeI3D = nullptr;
+PFNWGLGETGENLOCKSOURCEEDGEI3DPROC wglGetGenlockSourceEdgeI3D = nullptr;
+PFNWGLGENLOCKSAMPLERATEI3DPROC wglGenlockSampleRateI3D = nullptr;
+PFNWGLGETGENLOCKSAMPLERATEI3DPROC wglGetGenlockSampleRateI3D = nullptr;
+PFNWGLGENLOCKSOURCEDELAYI3DPROC wglGenlockSourceDelayI3D = nullptr;
+PFNWGLGETGENLOCKSOURCEDELAYI3DPROC wglGetGenlockSourceDelayI3D = nullptr;
 PFNWGLQUERYGENLOCKMAXSOURCEDELAYI3DPROC wglQueryGenlockMaxSourceDelayI3D = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_I3D_image_buffer
 
-PFNWGLCREATEIMAGEBUFFERI3DPROC wglCreateImageBufferI3D                   = nullptr;
-PFNWGLDESTROYIMAGEBUFFERI3DPROC wglDestroyImageBufferI3D                 = nullptr;
+PFNWGLCREATEIMAGEBUFFERI3DPROC wglCreateImageBufferI3D = nullptr;
+PFNWGLDESTROYIMAGEBUFFERI3DPROC wglDestroyImageBufferI3D = nullptr;
 PFNWGLASSOCIATEIMAGEBUFFEREVENTSI3DPROC wglAssociateImageBufferEventsI3D = nullptr;
-PFNWGLRELEASEIMAGEBUFFEREVENTSI3DPROC wglReleaseImageBufferEventsI3D     = nullptr;
+PFNWGLRELEASEIMAGEBUFFEREVENTSI3DPROC wglReleaseImageBufferEventsI3D = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_I3D_swap_frame_lock
 
-PFNWGLENABLEFRAMELOCKI3DPROC wglEnableFrameLockI3D           = nullptr;
-PFNWGLDISABLEFRAMELOCKI3DPROC wglDisableFrameLockI3D         = nullptr;
-PFNWGLISENABLEDFRAMELOCKI3DPROC wglIsEnabledFrameLockI3D     = nullptr;
+PFNWGLENABLEFRAMELOCKI3DPROC wglEnableFrameLockI3D = nullptr;
+PFNWGLDISABLEFRAMELOCKI3DPROC wglDisableFrameLockI3D = nullptr;
+PFNWGLISENABLEDFRAMELOCKI3DPROC wglIsEnabledFrameLockI3D = nullptr;
 PFNWGLQUERYFRAMELOCKMASTERI3DPROC wglQueryFrameLockMasterI3D = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_I3D_swap_frame_usage
 
-PFNWGLGETFRAMEUSAGEI3DPROC wglGetFrameUsageI3D           = nullptr;
+PFNWGLGETFRAMEUSAGEI3DPROC wglGetFrameUsageI3D = nullptr;
 PFNWGLBEGINFRAMETRACKINGI3DPROC wglBeginFrameTrackingI3D = nullptr;
-PFNWGLENDFRAMETRACKINGI3DPROC wglEndFrameTrackingI3D     = nullptr;
+PFNWGLENDFRAMETRACKINGI3DPROC wglEndFrameTrackingI3D = nullptr;
 PFNWGLQUERYFRAMETRACKINGI3DPROC wglQueryFrameTrackingI3D = nullptr;
 
 #pragma endregion
@@ -289,13 +290,13 @@ PFNWGLQUERYFRAMETRACKINGI3DPROC wglQueryFrameTrackingI3D = nullptr;
 #pragma region WGL_NV_DX_interop
 
 PFNWGLDXSETRESOURCESHAREHANDLENVPROC wglDXSetResourceShareHandleNV = nullptr;
-PFNWGLDXOPENDEVICENVPROC wglDXOpenDeviceNV                         = nullptr;
-PFNWGLDXCLOSEDEVICENVPROC wglDXCloseDeviceNV                       = nullptr;
-PFNWGLDXREGISTEROBJECTNVPROC wglDXRegisterObjectNV                 = nullptr;
-PFNWGLDXUNREGISTEROBJECTNVPROC wglDXUnregisterObjectNV             = nullptr;
-PFNWGLDXOBJECTACCESSNVPROC wglDXObjectAccessNV                     = nullptr;
-PFNWGLDXLOCKOBJECTSNVPROC wglDXLockObjectsNV                       = nullptr;
-PFNWGLDXUNLOCKOBJECTSNVPROC wglDXUnlockObjectsNV                   = nullptr;
+PFNWGLDXOPENDEVICENVPROC wglDXOpenDeviceNV = nullptr;
+PFNWGLDXCLOSEDEVICENVPROC wglDXCloseDeviceNV = nullptr;
+PFNWGLDXREGISTEROBJECTNVPROC wglDXRegisterObjectNV = nullptr;
+PFNWGLDXUNREGISTEROBJECTNVPROC wglDXUnregisterObjectNV = nullptr;
+PFNWGLDXOBJECTACCESSNVPROC wglDXObjectAccessNV = nullptr;
+PFNWGLDXLOCKOBJECTSNVPROC wglDXLockObjectsNV = nullptr;
+PFNWGLDXUNLOCKOBJECTSNVPROC wglDXUnlockObjectsNV = nullptr;
 
 #pragma endregion
 
@@ -313,69 +314,69 @@ PFNWGLDELAYBEFORESWAPNVPROC wglDelayBeforeSwapNV = nullptr;
 
 #pragma region WGL_NV_gpu_affinity
 
-PFNWGLENUMGPUSNVPROC wglEnumGpusNV                             = nullptr;
-PFNWGLENUMGPUDEVICESNVPROC wglEnumGpuDevicesNV                 = nullptr;
-PFNWGLCREATEAFFINITYDCNVPROC wglCreateAffinityDCNV             = nullptr;
+PFNWGLENUMGPUSNVPROC wglEnumGpusNV = nullptr;
+PFNWGLENUMGPUDEVICESNVPROC wglEnumGpuDevicesNV = nullptr;
+PFNWGLCREATEAFFINITYDCNVPROC wglCreateAffinityDCNV = nullptr;
 PFNWGLENUMGPUSFROMAFFINITYDCNVPROC wglEnumGpusFromAffinityDCNV = nullptr;
-PFNWGLDELETEDCNVPROC wglDeleteDCNV                             = nullptr;
+PFNWGLDELETEDCNVPROC wglDeleteDCNV = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_NV_present_video
 
 PFNWGLENUMERATEVIDEODEVICESNVPROC wglEnumerateVideoDevicesNV = nullptr;
-PFNWGLBINDVIDEODEVICENVPROC wglBindVideoDeviceNV             = nullptr;
-PFNWGLQUERYCURRENTCONTEXTNVPROC wglQueryCurrentContextNV     = nullptr;
+PFNWGLBINDVIDEODEVICENVPROC wglBindVideoDeviceNV = nullptr;
+PFNWGLQUERYCURRENTCONTEXTNVPROC wglQueryCurrentContextNV = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_NV_swap_group
 
-PFNWGLJOINSWAPGROUPNVPROC wglJoinSwapGroupNV           = nullptr;
-PFNWGLBINDSWAPBARRIERNVPROC wglBindSwapBarrierNV       = nullptr;
-PFNWGLQUERYSWAPGROUPNVPROC wglQuerySwapGroupNV         = nullptr;
+PFNWGLJOINSWAPGROUPNVPROC wglJoinSwapGroupNV = nullptr;
+PFNWGLBINDSWAPBARRIERNVPROC wglBindSwapBarrierNV = nullptr;
+PFNWGLQUERYSWAPGROUPNVPROC wglQuerySwapGroupNV = nullptr;
 PFNWGLQUERYMAXSWAPGROUPSNVPROC wglQueryMaxSwapGroupsNV = nullptr;
-PFNWGLQUERYFRAMECOUNTNVPROC wglQueryFrameCountNV       = nullptr;
-PFNWGLRESETFRAMECOUNTNVPROC wglResetFrameCountNV       = nullptr;
+PFNWGLQUERYFRAMECOUNTNVPROC wglQueryFrameCountNV = nullptr;
+PFNWGLRESETFRAMECOUNTNVPROC wglResetFrameCountNV = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_NV_vertex_array_range
 
 PFNWGLALLOCATEMEMORYNVPROC wglAllocateMemoryNV = nullptr;
-PFNWGLFREEMEMORYNVPROC wglFreeMemoryNV         = nullptr;
+PFNWGLFREEMEMORYNVPROC wglFreeMemoryNV = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_NV_video_capture
 
-PFNWGLBINDVIDEOCAPTUREDEVICENVPROC wglBindVideoCaptureDeviceNV             = nullptr;
+PFNWGLBINDVIDEOCAPTUREDEVICENVPROC wglBindVideoCaptureDeviceNV = nullptr;
 PFNWGLENUMERATEVIDEOCAPTUREDEVICESNVPROC wglEnumerateVideoCaptureDevicesNV = nullptr;
-PFNWGLLOCKVIDEOCAPTUREDEVICENVPROC wglLockVideoCaptureDeviceNV             = nullptr;
-PFNWGLQUERYVIDEOCAPTUREDEVICENVPROC wglQueryVideoCaptureDeviceNV           = nullptr;
-PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC wglReleaseVideoCaptureDeviceNV       = nullptr;
+PFNWGLLOCKVIDEOCAPTUREDEVICENVPROC wglLockVideoCaptureDeviceNV = nullptr;
+PFNWGLQUERYVIDEOCAPTUREDEVICENVPROC wglQueryVideoCaptureDeviceNV = nullptr;
+PFNWGLRELEASEVIDEOCAPTUREDEVICENVPROC wglReleaseVideoCaptureDeviceNV = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_NV_video_output
 
-PFNWGLGETVIDEODEVICENVPROC wglGetVideoDeviceNV         = nullptr;
+PFNWGLGETVIDEODEVICENVPROC wglGetVideoDeviceNV = nullptr;
 PFNWGLRELEASEVIDEODEVICENVPROC wglReleaseVideoDeviceNV = nullptr;
-PFNWGLBINDVIDEOIMAGENVPROC wglBindVideoImageNV         = nullptr;
-PFNWGLRELEASEVIDEOIMAGENVPROC wglReleaseVideoImageNV   = nullptr;
+PFNWGLBINDVIDEOIMAGENVPROC wglBindVideoImageNV = nullptr;
+PFNWGLRELEASEVIDEOIMAGENVPROC wglReleaseVideoImageNV = nullptr;
 PFNWGLSENDPBUFFERTOVIDEONVPROC wglSendPbufferToVideoNV = nullptr;
-PFNWGLGETVIDEOINFONVPROC wglGetVideoInfoNV             = nullptr;
+PFNWGLGETVIDEOINFONVPROC wglGetVideoInfoNV = nullptr;
 
 #pragma endregion
 
 #pragma region WGL_OML_sync_control
 
-PFNWGLGETSYNCVALUESOMLPROC wglGetSyncValuesOML             = nullptr;
-PFNWGLGETMSCRATEOMLPROC wglGetMscRateOML                   = nullptr;
-PFNWGLSWAPBUFFERSMSCOMLPROC wglSwapBuffersMscOML           = nullptr;
+PFNWGLGETSYNCVALUESOMLPROC wglGetSyncValuesOML = nullptr;
+PFNWGLGETMSCRATEOMLPROC wglGetMscRateOML = nullptr;
+PFNWGLSWAPBUFFERSMSCOMLPROC wglSwapBuffersMscOML = nullptr;
 PFNWGLSWAPLAYERBUFFERSMSCOMLPROC wglSwapLayerBuffersMscOML = nullptr;
-PFNWGLWAITFORMSCOMLPROC wglWaitForMscOML                   = nullptr;
-PFNWGLWAITFORSBCOMLPROC wglWaitForSbcOML                   = nullptr;
+PFNWGLWAITFORMSCOMLPROC wglWaitForMscOML = nullptr;
+PFNWGLWAITFORSBCOMLPROC wglWaitForSbcOML = nullptr;
 
 #pragma endregion
 

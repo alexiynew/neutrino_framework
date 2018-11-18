@@ -28,17 +28,11 @@
 // =============================================================================
 
 #include <common/types.hpp>
-#include <opengl/deatils/linux/glxext_wrapper.hpp>
 #include <opengl/details/gl_details.hpp>
+#include <opengl/details/linux/glxext_wrapper.hpp>
 
 namespace
 {
-template <typename F>
-F get_function(const char* function_name)
-{
-    return reinterpret_cast<F>(framework::opengl::opengl_details::get_function(function_name));
-}
-
 #pragma region init_declarations
 
 bool init_glx_version_1_3();
@@ -397,6 +391,7 @@ namespace
 
 bool init_glx_version_1_3()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -424,6 +419,7 @@ bool init_glx_version_1_3()
 
 bool init_glx_version_1_4()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -435,6 +431,7 @@ bool init_glx_version_1_4()
 
 bool init_glx_arb_create_context()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -446,6 +443,7 @@ bool init_glx_arb_create_context()
 
 bool init_glx_amd_gpu_association()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -465,6 +463,7 @@ bool init_glx_amd_gpu_association()
 
 bool init_glx_ext_import_context()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -480,6 +479,7 @@ bool init_glx_ext_import_context()
 
 bool init_glx_ext_swap_control()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -491,6 +491,7 @@ bool init_glx_ext_swap_control()
 
 bool init_glx_ext_texture_from_pixmap()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -503,6 +504,7 @@ bool init_glx_ext_texture_from_pixmap()
 
 bool init_glx_mesa_agp_offset()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -514,6 +516,7 @@ bool init_glx_mesa_agp_offset()
 
 bool init_glx_mesa_copy_sub_buffer()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -525,6 +528,7 @@ bool init_glx_mesa_copy_sub_buffer()
 
 bool init_glx_mesa_pixmap_colormap()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -536,6 +540,7 @@ bool init_glx_mesa_pixmap_colormap()
 
 bool init_glx_mesa_query_renderer()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -550,6 +555,7 @@ bool init_glx_mesa_query_renderer()
 
 bool init_glx_mesa_release_buffers()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -561,6 +567,7 @@ bool init_glx_mesa_release_buffers()
 
 bool init_glx_mesa_set_3dfx_mode()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -572,6 +579,7 @@ bool init_glx_mesa_set_3dfx_mode()
 
 bool init_glx_mesa_swap_control()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -584,6 +592,7 @@ bool init_glx_mesa_swap_control()
 
 bool init_glx_nv_copy_buffer()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -596,6 +605,7 @@ bool init_glx_nv_copy_buffer()
 
 bool init_glx_nv_copy_image()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -607,6 +617,7 @@ bool init_glx_nv_copy_image()
 
 bool init_glx_nv_delay_before_swap()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -618,6 +629,7 @@ bool init_glx_nv_delay_before_swap()
 
 bool init_glx_nv_present_video()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -630,6 +642,7 @@ bool init_glx_nv_present_video()
 
 bool init_glx_nv_swap_group()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -646,6 +659,7 @@ bool init_glx_nv_swap_group()
 
 bool init_glx_nv_video_capture()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -661,6 +675,7 @@ bool init_glx_nv_video_capture()
 
 bool init_glx_nv_video_out()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -677,6 +692,7 @@ bool init_glx_nv_video_out()
 
 bool init_glx_oml_sync_control()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -692,6 +708,7 @@ bool init_glx_oml_sync_control()
 
 bool init_glx_sgix_fbconfig()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -708,6 +725,7 @@ bool init_glx_sgix_fbconfig()
 
 bool init_glx_sgix_hyperpipe()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -726,6 +744,7 @@ bool init_glx_sgix_hyperpipe()
 
 bool init_glx_sgix_pbuffer()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -741,6 +760,7 @@ bool init_glx_sgix_pbuffer()
 
 bool init_glx_sgix_swap_barrier()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -753,6 +773,7 @@ bool init_glx_sgix_swap_barrier()
 
 bool init_glx_sgix_swap_group()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -764,6 +785,7 @@ bool init_glx_sgix_swap_group()
 
 bool init_glx_sgix_video_resize()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -779,6 +801,7 @@ bool init_glx_sgix_video_resize()
 
 bool init_glx_sgi_cushion()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -790,6 +813,7 @@ bool init_glx_sgi_cushion()
 
 bool init_glx_sgi_make_current_read()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -802,6 +826,7 @@ bool init_glx_sgi_make_current_read()
 
 bool init_glx_sgi_swap_control()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -813,6 +838,7 @@ bool init_glx_sgi_swap_control()
 
 bool init_glx_sgi_video_sync()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off
@@ -825,6 +851,7 @@ bool init_glx_sgi_video_sync()
 
 bool init_glx_sun_get_transparent_index()
 {
+    using ::framework::opengl::opengl_details::get_function;
     bool result = true;
 
     // clang-format off

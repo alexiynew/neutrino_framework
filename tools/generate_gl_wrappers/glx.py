@@ -13,7 +13,7 @@ NAME_REGEX = r'.*(glX[\w\d_]+)\s?\(.*;'
 EXCLUDE = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC",
            "PFNGLXCREATEGLXVIDEOSOURCESGIXPROC", "PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC"]
 
-HEADER_FILE = "opengl/deatils/linux/glxext_wrapper.hpp"
+HEADER_FILE = "opengl/details/linux/glxext_wrapper.hpp"
 
 BRIEF = "GLX extension functions wrapper."
 DATE = "17.09.2018"

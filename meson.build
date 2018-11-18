@@ -65,7 +65,7 @@ if get_option('build_docs')
     endif
 endif
 
-clang_format = find_program('clang_format', 'clang_format.exe',  'clang-format.exe', 'clang_format.py')
+clang_format = find_program('clang-format', 'clang-format.exe',  'clang-format.py')
 
 if clang_format.found()
     message(run_command(clang_format, '--version').stdout())
