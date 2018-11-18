@@ -11,6 +11,8 @@ sources = files('gl.cpp',
                 'context_settings.cpp')
 
 install_headers(headers, subdir: module_name)
+install_headers(files(join_paths(meson.source_root(), 'dependencies', 'GL', 'glcorearb.h')), subdir: 'GL')
+install_headers(files(join_paths(meson.source_root(), 'dependencies', 'KHR', 'khrplatform.h')), subdir: 'KHR')
 
 framework_sources += headers
 framework_sources += sources

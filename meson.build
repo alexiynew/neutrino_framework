@@ -23,7 +23,6 @@ framework_test_dir   = 'test'
 
 docs_source_dir  = 'docs'
 docs_output_dir  = 'docs'
-docs_install_dir = docs_output_dir
 
 thread_dependency = dependency('threads')
 

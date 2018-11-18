@@ -6,7 +6,7 @@ headers = files('gl_details.hpp')
 
 sources = files('gl_wrapper.cpp')
 
-install_headers(public, subdir: subdir_name)
+install_headers(public, subdir: join_paths(module_name, subdir_name))
 
 framework_sources += public
 framework_sources += headers
