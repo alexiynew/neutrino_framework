@@ -35,52 +35,140 @@
 
 namespace framework::opengl
 {
+/// @addtogroup opengl_module
+/// @{
+
 /// @brief OpenGL graphic context settings.
 ///
-/// Structure to store context settings. Used in the @ref window class to setuap graphic context.
+/// Structure to store context settings. Used by the @ref ::framework::os::window class to setup graphic context.
+///
+/// @see ::framework::os::window, context
 class context_settings
 {
 public:
     /// @brief Color type
     enum class color
     {
-        rgba,
-        index
+        rgba, ///< Use RGBA collors.
+        index ///< Use indexed collors.
     };
 
-    /// @brief Samples
+    /// @brief Samples count
     enum class samples
     {
-        dont_care,
-        best
+        dont_care, ///< Get any suitable context.
+        best       ///< Get context with maximum samples count.
     };
 
+    /// @brief Default constructor
     context_settings() = default;
 
+    /// @brief Default copy constructor.
     context_settings(const context_settings&) = default;
-    context_settings(context_settings&&)      = default;
 
+    /// @brief Default move constructor.
+    context_settings(context_settings&&) = default;
+
+    /// @brief Default copy operator.
+    ///
+    /// @return Reference to copied object.
     context_settings& operator=(const context_settings&) = default;
+
+    /// @brief Default move operator.
+    ///
+    /// @return Reference to moved object.
     context_settings& operator=(context_settings&&) = default;
 
+    /// @brief Default destructor
     ~context_settings() = default;
 
+#pragma region setters
+
+    /// @brief Request double buffered context.
+    ///
+    /// @return Reference to this settings.
     context_settings& set_double_buffered();
+
+    /// @brief Request single buffered context.
+    ///
+    /// @return Reference to this settings.
     context_settings& set_single_buffered();
+
+    /// @brief Sets required OpenGL version.
+    ///
+    /// @param version required OpenGl version.
+    ///
+    /// @return Reference to this settings.
     context_settings& set_version(utils::version version);
+
+    /// @brief Sets depth buffers bits count.
+    ///
+    /// @param bits Depth buffer bits count.
+    ///
+    /// @return Reference to this settings.
     context_settings& set_depth_bits(int32 bits);
+
+    /// @brief Sets stencil buffer bits count.
+    ///
+    /// @param bits Stencil buffer bits count.
+    ///
+    /// @return Reference to this settings.
     context_settings& set_stencil_bits(int32 bits);
+
+    /// @brief Sets color type.
+    ///
+    /// @param type Color type.
+    ///
+    /// @return Reference to this settings.
     context_settings& set_color_type(color type);
+
+    /// @brief Sets samples count.
+    ///
+    /// @param count Samples count.
+    ///
+    /// @return Reference to this settings.
     context_settings& set_samples_count(samples count);
 
+#pragma endregion
+
+#pragma region getters
+
+    /// @brief Check if double buffered context required.
+    ///
+    /// @return `true` if double buffered context required.
     bool double_buffered() const;
+
+    /// @brief Check if single buffered context required.
+    ///
+    /// @return `true` if single buffered context required.
     bool single_buffered() const;
 
+    /// @brief Required OpenGl version.
+    ///
+    /// @return Required OpenGl version.
     utils::version version() const;
+
+    /// @brief Required detph buffer bits count.
+    ///
+    /// @return The detph buffer bits count.
     int32 depth_bits() const;
+
+    /// @brief Required stencil buffer bits count.
+    ///
+    /// @return The stencil buffer bits count.
     int32 stencil_bits() const;
+
+    /// @brief Required color type.
+    ///
+    /// @return The color type.
     color color_type() const;
+
+    /// @brief Required samples count.
+    ///
+    /// @return The samples count.
     samples samples_count() const;
+
+#pragma endregion
 
 private:
     bool m_double_buffered   = true;
@@ -90,6 +178,8 @@ private:
     color m_color_type       = color::rgba;
     samples m_samples_count  = samples::best;
 };
+
+/// @}
 
 } // namespace framework::opengl
 

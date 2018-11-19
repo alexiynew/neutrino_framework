@@ -35,32 +35,81 @@
 
 namespace framework::opengl
 {
+/// @addtogroup opengl_module
+/// @{
+
 /// @brief OpenGL graphic context.
 ///
+/// Encapsulates the platform dependent graphics context.
+/// Actual context is created by ::framework::os::window class. Each window has its own context.
+/// The make_current should be called before perform any OpenGL functon.
+///
+/// @thread_safety Context must be created only on main thread.
+///
+/// @see ::framework::os::window, context_settings.
 class context
 {
 public:
+    /// @brief Creates context with settings.
+    ///
+    /// @param settings Context settings to use.
     explicit context(context_settings settings) noexcept;
 
+    /// @brief Default copy constructor.
     context(const context&) = default;
-    context(context&&)      = default;
 
+    /// @brief Default move constructor.
+    context(context&&) = default;
+
+    /// @brief Default copy operator.
+    ///
+    /// @return Reference to copied object.
     context& operator=(const context&) = default;
+
+    /// @brief Default move operator.
+    ///
+    /// @return Reference to moved object.
     context& operator=(context&&) = default;
 
+    /// @brief Destructor.
     virtual ~context();
 
-    virtual bool valid() const      = 0;
+    /// @brief Checks if context is created and valid.
+    ///
+    /// @return `ture` if context can be used.
+    ///
+    /// @thread_safety This function can be called only from main thread.
+    virtual bool valid() const = 0;
+
+    /// @brief Checks if context is current.
+    ///
+    /// @return `ture` if context is current.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     virtual bool is_current() const = 0;
 
+    /// @brief Makes the context current.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     virtual void make_current() const = 0;
+
+    /// @brief Swaps frame buffers.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     virtual void swap_buffers() const = 0;
 
+    /// @brief Current context settings.
+    ///
+    /// @return Current context settings.
+    ///
+    /// @thread_safety This function may be called from any thread.
     const context_settings& settings() const;
 
 private:
-    context_settings m_settings;
+    context_settings m_settings; ///< Current context settings.
 };
+
+/// @}
 
 } // namespace framework::opengl
 

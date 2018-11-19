@@ -32,11 +32,60 @@
 
 #include <opengl/details/gl_wrapper.hpp>
 
+/// @details
+///
+/// The @ref opengl_module module gives access to OpenGL functionality.
+/// Module wraps functions up to OpenGL version 4.6 and other extensions.
+///
+/// @warning Only OpenGL core profile is supporteed.
+///
+/// Before using any functions the ::framework::opengl::init function must be called.
+/// After initialization any supported functions will get their address and can be used.
+/// Which of them will be available depends on the current user platform, video card, and video drivers.
+///
+/// Each extension has its related variable that is set if the extension is supported by the platform.
+/// The variable is set only when all functions from that extension is supported.
+/// It should be checked before using this extension. @n
+/// The variable has name in format 'extension_name_supported', f.e. '`gl_arb_debug_output_supported`'.
+///
+/// Code example:
+/// @code
+/// using namespace framework::opengl;
+///
+/// ::framework::opengl::init();
+///
+/// // check if specific version supported
+/// if (gl_version_3_2_supported) {
+///     // use functions form OpenGL 3.2
+/// }
+/// // check if specific function is available.
+/// if (glUseProgram) {
+///     glUseProgram(shader);
+/// }
+///
+/// @endcode
+
+/// @defgroup opengl_module OpenGL
+/// @{
+
+/// @brief Contails OpenGL functions.
 namespace framework::opengl
 {
-/// Initialize GL functions
+/// @addtogroup opengl_module
+/// @{
+
+/// @brief Initializes GL functions.
+///
+/// This function must be called before use OpenGL.
+/// It is safe to call init several times, actual initialisation happens only once.
+///
+/// @thread_safety This function may be called from any thread.
 void init();
 
+/// @}
+
 } // namespace framework::opengl
+
+/// @}
 
 #endif
