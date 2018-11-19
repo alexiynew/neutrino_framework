@@ -33,9 +33,7 @@
 #include <memory>
 #include <string>
 
-namespace framework
-{
-namespace log
+namespace framework::log
 {
 /// @addtogroup log_logger
 /// @{
@@ -108,8 +106,6 @@ inline T& operator<<(T& ostream, severity_level level)
 }
 /// @}
 
-} // namespace log
-
-} // namespace framework
+} // namespace framework::log
 
 #endif

@@ -36,8 +36,6 @@
 #include <log/log_details.hpp>
 #include <log/logger.hpp>
 
-namespace framework
-{
 /// @details
 ///
 /// The @ref log_module module provides a simple logging utility that you can use to output messages.@n
@@ -84,7 +82,7 @@ namespace framework
 /// @defgroup log_logger Logger implementation
 
 /// @brief Contains classes related to logging.
-namespace log
+namespace framework::log
 {
 /// @addtogroup log_interface_functions
 /// @{
@@ -150,12 +148,8 @@ logger_base* logger();
 
 /// @}
 
-/// @}
-
-} // namespace log
+} // namespace framework::log
 
 /// @}
-
-} // namespace framework
 
 #endif

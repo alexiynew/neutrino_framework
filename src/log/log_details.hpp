@@ -35,13 +35,12 @@
 #include <string>
 #include <vector>
 
-namespace framework
-{
-namespace log
+namespace framework::log
 {
 enum class severity_level;
+}
 
-namespace log_details
+namespace framework::log::log_details
 {
 /// @brief Custom stream buffer
 class log_buffer : public std::streambuf
@@ -88,12 +87,6 @@ private:
     std::unique_ptr<std::streambuf> m_buffer;
 };
 
-} // namespace log_details
-
-/// @}
-
-} // namespace log
-
-} // namespace framework
+} // namespace framework::log::log_details
 
 #endif

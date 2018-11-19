@@ -60,7 +60,8 @@ if get_option('build_docs')
         custom_target('docs',
                       input: doxyfile,
                       output: docs_output_dir,
-                      command: [doxygen, doxyfile])
+                      command: [doxygen, doxyfile],
+                      build_always_stale: true)
     endif
 endif
 

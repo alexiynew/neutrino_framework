@@ -35,9 +35,7 @@
 
 #include <log/logger.hpp>
 
-namespace framework
-{
-namespace log
+namespace framework::log
 {
 /// @addtogroup log_logger
 /// @{
@@ -65,8 +63,6 @@ private:
 
 /// @}
 
-} // namespace log
-
-} // namespace framework
+} // namespace framework::log
 
 #endif

@@ -36,11 +36,7 @@ constexpr size_t log_buffer_size = 64;
 
 } // namespace
 
-namespace framework
-{
-namespace log
-{
-namespace log_details
+namespace framework::log::log_details
 {
 #pragma region log_buffer
 
@@ -131,8 +127,4 @@ log_ostream& log_ostream::operator=(log_ostream&& other) noexcept
     return *this;
 }
 
-} // namespace log_details
-
-} // namespace log
-
-} // namespace framework
+} // namespace framework::log::log_details

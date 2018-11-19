@@ -59,9 +59,7 @@ std::unique_ptr<logger_base>& logger_instance()
 
 } // namespace
 
-namespace framework
-{
-namespace log
+namespace framework::log
 {
 #pragma region log functions
 
@@ -102,6 +100,4 @@ logger_base* logger()
     return ::logger_instance().get();
 }
 
-} // namespace log
-
-} // namespace framework
+} // namespace framework::log
