@@ -67,25 +67,24 @@ namespace framework::utils
 /// @{
 
 /// @brief CRC implementation.
-template <usize BitsCount>
+///
+/// @t_param BitsCount Bits count in result value.
+/// @t_param Polynome Polynome to generate crc_table.
+/// @t_param Init Initial vlaue.
+/// @t_param ReflectIn Should reflect input bytes.
+/// @t_param ReflectOut Should reflect output value.
+/// @t_param XorOut Value to 'xor' with the result at the end.
+template <usize BitsCount, 
+          value_t<BitsCount> Polynome, 
+          value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut, 
+          value_t<BitsCount> XorOut>
 class crc
 {
 public:
     /// @brief Crc value type.
-    using value_type = typename crc_details::get_crc_value_type<BitsCount>::type;
-
-    /// @brief Creates crc algorithm instance.
-    ///
-    /// @param poly Polynome.
-    /// @param init Initial vlaue.
-    /// @param reflect_in Should reflect input bytes.
-    /// @param reflect_out Should reflect output value.
-    /// @param xor_out Value to 'xor' the result at the end.
-    explicit crc(value_type poly,
-                 value_type init    = 0,
-                 bool reflect_in    = false,
-                 bool reflect_out   = false,
-                 value_type xor_out = 0) noexcept;
+    using value_type = crc_details::value_t<BitsCount>;
 
     /// @brief Calculates the crc value.
     ///
@@ -94,7 +93,7 @@ public:
     ///
     /// @return The crc value.
     template <typename Iterator>
-    value_type calculate(Iterator begin, Iterator end) const;
+    static value_type calculate(Iterator begin, Iterator end);
 
     /// @brief Updates crc value.
     ///
@@ -103,17 +102,11 @@ public:
     ///
     /// @return New crc value.
     ///
-    /// @note This functions uses only the poly parameter. All other parameters does not counted in value computation.
-    value_type update(uint8 byte, value_type crc) const noexcept;
+    /// @note This functions uses only the Polynome parameter. All other parameters does not counted in value computation.
+    static value_type update(uint8 byte, value_type crc) noexcept;
 
 private:
-    const value_type m_poly    = 0;
-    const value_type m_init    = 0;
-    const value_type m_xor_out = 0;
-    const bool m_reflect_in    = false;
-    const bool m_reflect_out   = false;
-
-    value_type crc_table[256] = {0};
+    constexpr static crc_details::crc_table_t<BitsCount> crc_table = crc_details::fill_table<BitsCount, Polynome>();
 };
 
 using crc8  = crc<8>;  ///< Predefined class for crc8 algorithms.
@@ -124,50 +117,41 @@ using crc32 = crc<32>; ///< Predefined class for crc32 algorithms.
 
 #pragma region definitions
 
-template <usize BitsCount>
-inline crc<BitsCount>::crc(value_type poly,
-                           value_type init,
-                           bool reflect_in,
-                           bool reflect_out,
-                           value_type xor_out) noexcept
-    : m_poly(poly), m_init(init), m_xor_out(xor_out), m_reflect_in(reflect_in), m_reflect_out(reflect_out)
-{
-    constexpr value_type topbit = static_cast<value_type>(1u << (BitsCount - 1));
-
-    for (uint32 dividend = 0; dividend < 256; ++dividend) {
-        value_type value = static_cast<value_type>(dividend << (BitsCount - 8));
-        for (uint8 bit = 8; bit > 0; --bit) {
-            value = static_cast<value_type>((value & topbit) ? (value << 1) ^ m_poly : value << 1);
-        }
-
-        crc_table[dividend] = value;
-    }
-}
-
-template <usize BitsCount>
+template <usize BitsCount, 
+          value_t<BitsCount> Polynome, 
+          value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut, 
+          value_t<BitsCount> XorOut>
 template <typename Iterator>
-inline typename crc<BitsCount>::value_type crc<BitsCount>::calculate(Iterator begin, Iterator end) const
+inline typename crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type 
+crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::calculate(Iterator begin, Iterator end)
 {
-    value_type value = m_init;
+    value_type value = Init;
 
     for (; begin != end; ++begin) {
-        value = update(m_reflect_in ? crc_details::reflect(*begin) : *begin, value);
+        value = update(ReflectIn ? crc_details::reflect(*begin) : *begin, value);
     }
 
-    if (m_reflect_out) {
+    if (ReflectOut) {
         value = crc_details::reflect(value);
     }
 
-    return (value ^ m_xor_out);
+    return (value ^ XorOut);
 }
 
-template <usize BitsCount>
-inline typename crc<BitsCount>::value_type crc<BitsCount>::update(uint8 byte, value_type value) const noexcept
+template <usize BitsCount, 
+          value_t<BitsCount> Polynome, 
+          value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut, 
+          value_t<BitsCount> XorOut>
+inline typename crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type 
+crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(uint8 byte, value_type value) noexcept
 {
     const uint8 index = static_cast<uint8>(byte ^ (value >> (BitsCount - 8)));
     return static_cast<value_type>(crc_table[index] ^ (value << 8));
 }
-
 #pragma endregion
 
 } // namespace framework::utils

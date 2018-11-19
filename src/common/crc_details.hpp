@@ -31,6 +31,7 @@
 #define FRAMEWORK_COMMON_CRC_DETAILS_HPP
 
 #include <common/types.hpp>
+#include <array>
 
 namespace framework::utils::crc_details
 {
@@ -59,6 +60,9 @@ struct get_crc_value_type<32>
     using type = uint32; ///< crc::value_type
 };
 
+template<usize BitsCount>
+using value_t = typename get_crc_value_type<BitsCount>::type;
+
 template <typename T>
 T reflect(T data)
 {
@@ -74,6 +78,27 @@ T reflect(T data)
     }
 
     return static_cast<T>(ref);
+}
+
+template <usize BitsCount>
+using crc_table_t std::array<value_t<BitsCount>, 256>;
+
+template <usize BitsCount, value_t<BitsCount> Polynome>
+constexpr crc_table_t<BitsCount> fill_table() noexcept
+{
+    crc_table_t<BitsCount> table{0};
+    constexpr value_t<BitsCount> topbit = static_cast<value_t<BitsCount>>(1u << (BitsCount - 1));
+
+    for (usize dividend = 0; dividend < table.size(); ++dividend) {
+        value_t<BitsCount> value = static_cast<value_t<BitsCount>>(dividend << (BitsCount - 8));
+        for (uint8 bit = 8; bit > 0; --bit) {
+            value = static_cast<value_t<BitsCount>>((value & topbit) ? (value << 1) ^ Polynome : value << 1);
+        }
+
+        table[dividend] = value;
+    }
+
+    return table;
 }
 
 } // namespace framework::utils::crc_details
