@@ -43,46 +43,32 @@ struct get_crc_value_type;
 template <>
 struct get_crc_value_type<8>
 {
-    using type = uint8; ///< crc::value_type
+    using type = uint8;
 };
 
 /// @brief Helper class to get correct type for crc::value_type.
 template <>
 struct get_crc_value_type<16>
 {
-    using type = uint16; ///< crc::value_type
+    using type = uint16;
 };
 
 /// @brief Helper class to get correct type for crc::value_type.
 template <>
 struct get_crc_value_type<32>
 {
-    using type = uint32; ///< crc::value_type
+    using type = uint32;
 };
 
+/// @brief Valuie type short cut.
 template<usize BitsCount>
 using value_t = typename get_crc_value_type<BitsCount>::type;
 
-template <typename T>
-T reflect(T data)
-{
-    constexpr uint8 bitsCount = sizeof(T) * 8;
-
-    T ref = 0;
-
-    for (uint8 bit = 0; bit < bitsCount; ++bit) {
-        if (data & 0x01) {
-            ref = static_cast<T>(ref | (1 << ((bitsCount - 1) - bit)));
-        }
-        data = static_cast<T>(data >> 1);
-    }
-
-    return static_cast<T>(ref);
-}
-
+/// @brieaf crc table type
 template <usize BitsCount>
-using crc_table_t std::array<value_t<BitsCount>, 256>;
+using crc_table_t = std::array<value_t<BitsCount>, 256>;
 
+/// @brief Geneates crc table at compile time.
 template <usize BitsCount, value_t<BitsCount> Polynome>
 constexpr crc_table_t<BitsCount> fill_table() noexcept
 {
@@ -99,6 +85,22 @@ constexpr crc_table_t<BitsCount> fill_table() noexcept
     }
 
     return table;
+}
+
+/// @brief Reflects bits in value.
+template <usize BitsCount>
+value_t<BitsCount> reflect(value_t<BitsCount> value)
+{
+    value_t<BitsCount> ref = 0;
+
+    for (usize bit = 0; bit < BitsCount; ++bit) {
+        if (value & 0x01) {
+            ref = static_cast<value_t<BitsCount>>(ref | (1 << ((BitsCount - 1) - bit)));
+        }
+        value = static_cast<value_t<BitsCount>>(value >> 1);
+    }
+
+    return ref;
 }
 
 } // namespace framework::utils::crc_details
