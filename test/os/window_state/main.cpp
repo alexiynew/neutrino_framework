@@ -41,7 +41,7 @@ public:
 private:
     void fullscreen_window()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size640{640, 480};
 
@@ -85,7 +85,7 @@ private:
 
     void iconify_window()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size640{640, 480};
 
@@ -139,7 +139,7 @@ private:
 
     void maximize_window()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size640{640, 480};
 
@@ -183,7 +183,7 @@ private:
 
     void fullscreen_before_show()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size640{640, 480};
 
@@ -201,7 +201,7 @@ private:
 
     void maximized_before_show()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size640{640, 480};
 

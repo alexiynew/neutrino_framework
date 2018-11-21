@@ -132,7 +132,7 @@ std::string event_type_string(const XAnyEvent& event)
 
 } // namespace
 
-namespace framework::os
+namespace framework::system
 {
 std::unique_ptr<window::implementation> window::implementation::create(window::size_t size,
                                                                        const std::string& title,
@@ -873,4 +873,4 @@ void x11_window::update_size_limits(window::size_t min_size, window::size_t max_
 
 #pragma endregion
 
-} // namespace framework::os
+} // namespace framework::system

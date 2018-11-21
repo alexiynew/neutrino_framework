@@ -43,7 +43,7 @@ public:
 private:
     void window_size()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size480{480, 320};
         const window::size_t size640{640, 480};
@@ -74,7 +74,7 @@ private:
 
     void window_size_limits()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size640{640, 480};
         const window::size_t size960{960, 640};
@@ -122,7 +122,7 @@ private:
 
     void window_resizability()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size640{640, 480};
         const window::size_t no_size{0, 0};
@@ -144,7 +144,7 @@ private:
 
     void window_resizability_and_size()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t size480{480, 320};
         const window::size_t size640{640, 480};
@@ -184,7 +184,7 @@ private:
 
     void window_resizability_before_show()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const window::size_t no_size{0, 0};
         const window::size_t size640{640, 480};
@@ -208,7 +208,7 @@ private:
 
     void window_position()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         window::size_t size640 = {640, 480};
 
@@ -228,7 +228,7 @@ private:
 
     void window_title()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         const std::string title      = u8"winodw_title";
         const std::string new_title  = u8"new_window_title";

@@ -37,7 +37,7 @@
 #include <window/details/implementation.hpp>
 #include <window/details/linux/x11_server.hpp>
 
-namespace framework::os
+namespace framework::system
 {
 class x11_window final : public window::implementation
 {
@@ -145,6 +145,6 @@ private:
     Time m_lastInputTime = 0;
 };
 
-} // namespace framework::os
+} // namespace framework::system
 
 #endif

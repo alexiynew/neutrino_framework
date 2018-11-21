@@ -35,43 +35,87 @@
 #include <common/types.hpp>
 #include <opengl/context.hpp>
 
-namespace framework
+/// @details
+///
+/// Contains different OS related stuff.
+///
+/// @defgroup system_module System
+/// @{
+
+/// @defgroup window_class Window
+
+/// @}
+
+/// @brief Operating System related classes.
+namespace framework::system
 {
-namespace os
-{
+/// @addtogroup window_class
+/// @{
+
+/// @brief A Window class.
+///
+/// OpenGL-based window, abstracts all window management, input processing, and event handling.
 class window
 {
 public:
+    /// @brief Base class for OS specific realisation.
     class implementation;
 
+    /// @brief Window size.
     struct size_t
     {
-        int32 width;
-        int32 height;
+        int32 width;  ///< Window width.
+        int32 height; ///< Window height.
     };
 
+    /// @brief Window position.
     struct position_t
     {
-        int32 x;
-        int32 y;
+        int32 x; ///< X coordiante.
+        int32 y; ///< Y coordinate.
     };
 
+    /// @brief Sets the formal name of the application.
+    ///
+    /// @param name Application name.
     static void set_application_name(const std::string& name);
 
+    /// @brief Creates window.
+    ///
+    /// @param size Window size.
+    /// @param title Window name.
+    /// @param settings Gpaphic context settings.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     window(size_t size, const std::string& title, opengl::context_settings settings = opengl::context_settings());
+
+    /// @brief Destructor.
     ~window();
 
     window(const window&) = delete;
     window& operator=(const window&) = delete;
 
+    /// @brief Move constructor.
     window(window&& other) noexcept;
+
+    /// @brief Move operator.
+    ///
+    /// @return Reference to moved object.
     window& operator=(window&& other) noexcept;
 
     /// @name actions
     /// @{
+
+    /// @brief Makes the window visible.
     void show();
+
+    /// @brief Hides the window.
     void hide();
+
+    /// @brief If window is visible, brings it to the front and may make it the focused.
     void focus();
+
+    /// @brief Pull all system events and process it.
     void process_events();
 
     void iconify();
@@ -82,10 +126,25 @@ public:
 
     /// @name setters
     /// @{
+
+    /// @brief Resize window.
+    ///
+    /// @param size New window size.
     void set_size(size_t size);
+
+    /// @brief Move window.
+    ///
+    /// @brief New winodw position.
     void set_position(position_t position);
 
+    /// @brief Sets maximum window size.
+    ///
+    /// @param max_size Maximum window size.
     void set_max_size(size_t max_size);
+
+    /// @brief Sets minimum window size.
+    ///
+    /// @param min_size Minimum window size.
     void set_min_size(size_t min_size);
 
     void set_resizable(bool value);
@@ -140,8 +199,8 @@ T& operator<<(T& ostream, const window::position_t& position)
     return ostream;
 }
 
-} // namespace os
+/// @}
 
-} // namespace framework
+} // namespace framework::system
 
 #endif

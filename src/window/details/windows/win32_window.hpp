@@ -35,9 +35,7 @@
 
 #include <window/details/implementation.hpp>
 
-namespace framework
-{
-namespace os
+namespace framework::system
 {
 class win32_window final : public window::implementation
 {
@@ -126,7 +124,7 @@ private:
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 };
 
-} // namespace os
+} // namespace framework::system
 
 } // namespace framework
 

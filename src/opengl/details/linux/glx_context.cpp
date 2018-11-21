@@ -137,7 +137,7 @@ GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config, 
 
 } // namespace
 
-namespace framework::os
+namespace framework::system
 {
 glx_context::glx_context(Display* display, opengl::context_settings settings)
     : context(std::move(settings)), m_display(display)
@@ -230,4 +230,4 @@ void glx_context::clear()
     }
 }
 
-} // namespace framework::os
+} // namespace framework::system

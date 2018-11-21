@@ -37,8 +37,8 @@ public:
 private:
     void focus_window()
     {
-        framework::os::window alpha({640, 480}, "Test");
-        framework::os::window betta({640, 480}, "Test");
+        framework::system::window alpha({640, 480}, "Test");
+        framework::system::window betta({640, 480}, "Test");
 
         alpha.show();
         betta.show();

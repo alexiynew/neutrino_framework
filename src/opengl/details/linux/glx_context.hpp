@@ -35,7 +35,7 @@
 #include <opengl/context.hpp>
 #include <opengl/details/linux/glxext.hpp>
 
-namespace framework::os
+namespace framework::system
 {
 class glx_context : public framework::opengl::context
 {
@@ -71,6 +71,6 @@ private:
     void clear();
 };
 
-} // namespace framework::os
+} // namespace framework::system
 
 #endif

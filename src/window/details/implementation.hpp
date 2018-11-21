@@ -36,9 +36,7 @@
 
 #include <window/window.hpp>
 
-namespace framework
-{
-namespace os
+namespace framework::system
 {
 class window::implementation
 {
@@ -108,8 +106,6 @@ protected:
     static std::string application_name;
 };
 
-} // namespace os
-
-} // namespace framework
+} // namespace framework::system
 
 #endif

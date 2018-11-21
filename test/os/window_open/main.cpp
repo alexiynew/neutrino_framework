@@ -38,7 +38,7 @@ public:
 private:
     void open_window()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         window w({640, 480}, "Test");
         w.show();
@@ -52,7 +52,7 @@ private:
 
     void open_several_windows()
     {
-        using ::framework::os::window;
+        using ::framework::system::window;
 
         window windows[5] = {
         window({640, 480}, "Test"),

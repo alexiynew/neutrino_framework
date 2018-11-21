@@ -77,14 +77,14 @@ std::string to_utf8(const std::wstring& string)
 
 void unregister_window_class(ATOM*)
 {
-    using framework::os::win32_application;
+    using framework::system::win32_application;
 
     UnregisterClass(class_name, win32_application::handle());
 }
 
 std::shared_ptr<ATOM> register_window_class_details()
 {
-    using framework::os::win32_application;
+    using framework::system::win32_application;
 
     WNDCLASSEX window_class = {0};
 
@@ -124,7 +124,7 @@ std::shared_ptr<ATOM> register_window_class()
 
 } // namespace
 
-namespace framework::os
+namespace framework::system
 {
 std::unique_ptr<window::implementation> window::implementation::create(window::size_t size,
                                                                        const std::string& title,
@@ -462,4 +462,4 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
 
 #pragma endregion
 
-} // namespace framework::os
+} // namespace framework::system

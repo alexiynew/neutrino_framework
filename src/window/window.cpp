@@ -32,7 +32,7 @@
 #include <window/details/implementation.hpp>
 #include <window/window.hpp>
 
-namespace framework::os
+namespace framework::system
 {
 std::string window::implementation::application_name = "Application";
 
@@ -235,4 +235,4 @@ bool operator!=(const window::position_t& lhs, const window::position_t& rhs)
 
 #pragma endregion
 
-} // namespace framework::os
+} // namespace framework::system
