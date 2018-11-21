@@ -102,13 +102,13 @@ std::vector<T> random_numbers(T min, T max, size_t count)
 }
 
 template <class C> 
-constexpr auto size(const C& c) -> decltype(c.size())
+constexpr inline auto size(const C& container) -> decltype(container.size())
 {
-    return c.size();
+    return container.size();
 }
 
 template <class T, std::size_t N>
-constexpr std::size_t size(const T (&array)[N]) noexcept
+constexpr inline std::size_t size(const T (&)[N]) noexcept
 {
     return N;
 }

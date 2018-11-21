@@ -215,7 +215,7 @@ bool send_client_message(const x11_server* server, Window window, Atom message_t
 
     using data_type = std::remove_reference<decltype(event.xclient.data.l[0])>::type;
 
-    const int count = utils::size(event.xclient.data.l);
+    const int count = ::framework::utils::size(event.xclient.data.l);
 
     for (size_t i = 0; i < data.size() && i < count; ++i) {
         event.xclient.data.l[i] = static_cast<const data_type>(data[i]);
