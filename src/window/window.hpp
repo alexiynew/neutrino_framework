@@ -96,9 +96,13 @@ public:
     window& operator=(const window&) = delete;
 
     /// @brief Move constructor.
+    ///
+    /// @param other Window to move from.
     window(window&& other) noexcept;
 
     /// @brief Move operator.
+    ///
+    /// @param other Window to move from.
     ///
     /// @return Reference to moved object.
     window& operator=(window&& other) noexcept;
@@ -118,9 +122,16 @@ public:
     /// @brief Pull all system events and process it.
     void process_events();
 
+    /// @brief Switch window to iconic state.
     void iconify();
+
+    /// @brief Maximize window.
     void maximize();
+
+    /// @brief Switch to fullscreen mode.
     void switch_to_fullscreen();
+
+    /// @brief Restore normal window mode.
     void restore();
     /// @}
 
@@ -134,7 +145,7 @@ public:
 
     /// @brief Move window.
     ///
-    /// @brief New winodw position.
+    /// @param position New winodw position.
     void set_position(position_t position);
 
     /// @brief Sets maximum window size.
@@ -147,31 +158,86 @@ public:
     /// @param min_size Minimum window size.
     void set_min_size(size_t min_size);
 
+    /// @brief Forbids/permits window resizing.
+    ///
+    /// When the value is false, window can't be resized by the user.
+    /// The @ref size function can still change the window size.
+    ///
+    /// @param value Is window resizable.
     void set_resizable(bool value);
 
+    /// @brief Sets window title.
+    ///
+    /// @param title New window title.
     void set_title(const std::string& title);
+
     /// @}
 
     /// @name getters
     /// @{
+
+    /// @brief Window position.
+    ///
+    /// @return Current window position.
     position_t position() const;
+
+    /// @brief Window size.
+    ///
+    /// @return Current window size.
     size_t size() const;
 
+    /// @brief Maximum window size.
+    ///
+    /// @return Current maximum size.
     size_t max_size() const;
+
+    /// @brief Minimum window size.
+    ///
+    /// @return Current minimum size.
     size_t min_size() const;
 
+    /// @brief Window title.
+    ///
+    /// @return Current window title.
     std::string title() const;
 
+    /// @brief Returns graphic context associated with this window.
+    ///
+    /// @return Graphic context.
     framework::opengl::context* context() const;
     /// @}
 
     /// @name state
     /// @{
+
+    /// @brief Checks if window is in fullscreen mode.
+    ///
+    /// @return `true` if window is in fullscreen mode.
     bool fullscreen() const;
+
+    /// @brief Checks if window is in iconic state.
+    ///
+    /// @return `true` if window is in iconic state.
     bool iconified() const;
+
+    /// @brief Checks if window is maximized.
+    ///
+    /// @return `true` if window is maximized.
     bool maximized() const;
+
+    /// @brief Checks if window resizing is allowed.
+    ///
+    /// @return `true` if window resizing is allowed.
     bool resizable() const;
+
+    /// @brief Checks if window is visible to the user.
+    ///
+    /// @return `true` if window is visible.
     bool visible() const;
+
+    /// @brief Checks if window has input focus.
+    ///
+    /// @return `true` if window is focused.
     bool focused() const;
     /// @}
 
@@ -179,12 +245,44 @@ private:
     std::unique_ptr<implementation> m_implementation;
 };
 
+/// @brief Equality operator for window size.
+///
+/// @param lhs Size to compare.
+/// @param rhs Size to compare.
+///
+/// @return `true` if lhs equals rhs, otherwise `false`.
 bool operator==(const window::size_t& lhs, const window::size_t& rhs);
+
+/// @brief Inequality operator for window size.
+///
+/// @param lhs Size to compare.
+/// @param rhs Size to compare.
+///
+/// @return `true` if lhs isn't equals rhs, otherwise `false`.
 bool operator!=(const window::size_t& lhs, const window::size_t& rhs);
 
+/// @brief Equality operator for window position.
+///
+/// @param lhs Position to compare.
+/// @param rhs Position to compare.
+///
+/// @return `true` if lhs equals rhs, otherwise `false`.
 bool operator==(const window::position_t& lhs, const window::position_t& rhs);
+
+/// @brief Inequality operator for window position.
+///
+/// @param lhs Position to compare.
+/// @param rhs Position to compare.
+///
+/// @return `true` if lhs isn't equals rhs, otherwise `false`.
 bool operator!=(const window::position_t& lhs, const window::position_t& rhs);
 
+/// @brief Helper function to print window size.
+///
+/// @param ostream Output stream.
+/// @param size Window size.
+///
+/// @return Reference to output stream.
 template <typename T>
 T& operator<<(T& ostream, const window::size_t& size)
 {
@@ -192,6 +290,12 @@ T& operator<<(T& ostream, const window::size_t& size)
     return ostream;
 }
 
+/// @brief Helper function to print window position.
+///
+/// @param ostream Output stream.
+/// @param position Window position.
+///
+/// @return Reference to output stream.
 template <typename T>
 T& operator<<(T& ostream, const window::position_t& position)
 {
