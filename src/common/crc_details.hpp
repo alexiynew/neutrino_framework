@@ -61,38 +61,38 @@ struct get_crc_value_type<32>
     using type = uint32;
 };
 
-/// @brief Valuie type short cut.
+/// @brief Value type short cut.
 template<usize BitsCount>
 using value_t = typename get_crc_value_type<BitsCount>::type;
 
 /// @brieaf crc table type
-template <usize BitsCount>
-using crc_table_t = std::array<value_t<BitsCount>, 256>;
+template <usize BitsCount, usize Size>
+using crc_table_t = std::array<value_t<BitsCount>, Size>;
 
 template <usize BitsCount, value_t<BitsCount> Polynome>
 constexpr value_t<BitsCount> generate_value(usize dividend) noexcept
 {
-    constexpr value_t<BitsCount> topbit = static_cast<value_t<BitsCount>>(1u << (BitsCount - 1));
+    constexpr value_t<BitsCount> topbit = (1u << (BitsCount - 1));
     
-    value_t<BitsCount> value = static_cast<value_t<BitsCount>>(dividend << (BitsCount - 8));
+    value_t<BitsCount> value = dividend << (BitsCount - 8);
     for (uint8 bit = 8; bit > 0; --bit) {
-        value = static_cast<value_t<BitsCount>>((value & topbit) ? (value << 1) ^ Polynome : value << 1);
+        value = (value & topbit) ? (value << 1) ^ Polynome : value << 1;
     }
     
     return value;
 }
 
-template<usize BitsCount, value_t<BitsCount> Polynome, usize... I>
-constexpr inline crc_table_t<BitsCount> gen_table(std::index_sequence<I...>)
+template<usize BitsCount, value_t<BitsCount> Polynome, usize Size, usize... I>
+constexpr inline crc_table_t<BitsCount, Size> generate_table_impl(std::index_sequence<I...>) noexcept
 {
-    return crc_table_t<BitsCount>{generate_value<BitsCount, Polynome>(I)...};
+    return {generate_value<BitsCount, Polynome>(I)...};
 }
 
 /// @brief Geneates crc table at compile time.
-template <usize BitsCount, value_t<BitsCount> Polynome>
-constexpr inline crc_table_t<BitsCount> fill_table() noexcept
+template <usize BitsCount, value_t<BitsCount> Polynome, usize Size>
+constexpr inline crc_table_t<BitsCount, Size> generate_table() noexcept
 {
-    return gen_table<BitsCount, Polynome>(std::make_index_sequence<256>());
+    return generate_table_impl<BitsCount, Polynome, Size>(std::make_index_sequence<Size>());
 }
 
 /// @brief Reflects bits in value.
@@ -103,10 +103,9 @@ value_t<BitsCount> reflect(value_t<BitsCount> value)
 
     for (usize bit = 0; bit < BitsCount; ++bit) {
         if (value & 1) {
-            ref |= 1;
+            ref |= 1 << (BitsCount - 1 - bit);
         }
         value >>= 1;
-        ref <<= 1;
     }
 
     return ref;
