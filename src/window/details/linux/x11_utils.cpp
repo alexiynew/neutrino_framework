@@ -31,6 +31,7 @@
 #include <X11/Xutil.h>
 #include <cstring>
 
+#include <common/utils.hpp>
 #include <window/details/linux/x11_utils.hpp>
 
 using ::framework::system::x11_server;
@@ -214,9 +215,9 @@ bool send_client_message(const x11_server* server, Window window, Atom message_t
 
     using data_type = std::remove_reference<decltype(event.xclient.data.l[0])>::type;
 
-    const int max_size = std::size(event.xclient.data.l);
+    const int count = ::framework::utils::size(event.xclient.data.l);
 
-    for (size_t i = 0; i < data.size() && i < max_size; ++i) {
+    for (size_t i = 0; i < data.size() && i < count; ++i) {
         event.xclient.data.l[i] = static_cast<const data_type>(data[i]);
     }
 

@@ -10,11 +10,23 @@ project('framework', 'cpp',
                            'prefix=' + join_paths(meson.source_root(), 'output'),
                            'default_library=static'])
 
-compiler = meson.get_compiler('cpp').get_id()
+required_versions = {
+    'gcc': '7.3.0',
+    'clang': '6.0.1'
+}
 
-if compiler == 'gcc' or compiler == 'clang'
+compiler = meson.get_compiler('cpp')
+required_compiler_version = required_versions[compiler.get_id()]
+
+
+if compiler.version() < required_compiler_version
+    error(compiler.get_id() + ' ' + required_compiler_version + ' or higher required.')
+endif
+
+
+if compiler.get_id() == 'gcc' or compiler.get_id() == 'clang'
     add_project_arguments('-Wno-unknown-pragmas', language : 'cpp')
-elif compiler == 'msvc'
+elif compiler.get_id() == 'msvc'
     add_project_arguments('/std:c++17', language : 'cpp')
 endif
 

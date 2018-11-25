@@ -31,6 +31,8 @@
 #define FRAMEWORK_COMMON_CRC_DETAILS_HPP
 
 #include <common/types.hpp>
+#include <array>
+#include <utility>
 
 namespace framework::utils::crc_details
 {
@@ -42,38 +44,71 @@ struct get_crc_value_type;
 template <>
 struct get_crc_value_type<8>
 {
-    using type = uint8; ///< crc::value_type
+    using type = uint8;
 };
 
 /// @brief Helper class to get correct type for crc::value_type.
 template <>
 struct get_crc_value_type<16>
 {
-    using type = uint16; ///< crc::value_type
+    using type = uint16;
 };
 
 /// @brief Helper class to get correct type for crc::value_type.
 template <>
 struct get_crc_value_type<32>
 {
-    using type = uint32; ///< crc::value_type
+    using type = uint32;
 };
 
-template <typename T>
-T reflect(T data)
+/// @brief Value type short cut.
+template<usize BitsCount>
+using value_t = typename get_crc_value_type<BitsCount>::type;
+
+/// @brieaf crc table type
+template <usize BitsCount, usize Size>
+using crc_table_t = std::array<value_t<BitsCount>, Size>;
+
+template <usize BitsCount, value_t<BitsCount> Polynome>
+constexpr value_t<BitsCount> generate_value(usize dividend) noexcept
 {
-    constexpr uint8 bitsCount = sizeof(T) * 8;
+    constexpr value_t<BitsCount> topbit = (1u << (BitsCount - 1));
+    
+    value_t<BitsCount> value = dividend << (BitsCount - 8);
+    for (uint8 bit = 8; bit > 0; --bit) {
+        value = (value & topbit) ? (value << 1) ^ Polynome : value << 1;
+    }
+    
+    return value;
+}
 
-    T ref = 0;
+template<usize BitsCount, value_t<BitsCount> Polynome, usize Size, usize... I>
+constexpr inline crc_table_t<BitsCount, Size> generate_table_impl(std::index_sequence<I...>) noexcept
+{
+    return {generate_value<BitsCount, Polynome>(I)...};
+}
 
-    for (uint8 bit = 0; bit < bitsCount; ++bit) {
-        if (data & 0x01) {
-            ref = static_cast<T>(ref | (1 << ((bitsCount - 1) - bit)));
+/// @brief Geneates crc table at compile time.
+template <usize BitsCount, value_t<BitsCount> Polynome, usize Size>
+constexpr inline crc_table_t<BitsCount, Size> generate_table() noexcept
+{
+    return generate_table_impl<BitsCount, Polynome, Size>(std::make_index_sequence<Size>());
+}
+
+/// @brief Reflects bits in value.
+template <usize BitsCount>
+value_t<BitsCount> reflect(value_t<BitsCount> value)
+{
+    value_t<BitsCount> ref = 0;
+
+    for (usize bit = 0; bit < BitsCount; ++bit) {
+        if (value & 1) {
+            ref |= 1 << (BitsCount - 1 - bit);
         }
-        data = static_cast<T>(data >> 1);
+        value >>= 1;
     }
 
-    return static_cast<T>(ref);
+    return ref;
 }
 
 } // namespace framework::utils::crc_details

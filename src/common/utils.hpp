@@ -101,6 +101,18 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     return result;
 }
 
+template <class C> 
+constexpr inline auto size(const C& container) -> decltype(container.size())
+{
+    return container.size();
+}
+
+template <class T, std::size_t N>
+constexpr inline std::size_t size(const T (&)[N]) noexcept
+{
+    return N;
+}
+
 /*
 template <typename... Args>
 std::string format(const std::string& str, Args&&... args)

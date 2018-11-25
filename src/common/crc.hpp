@@ -39,53 +39,47 @@ namespace framework::utils
 ///
 /// Cyclic redundancy check implementation
 ///
-/// All parameters needed for computation passed to constructor,@n
-/// so it can be configured to any algorithm you want.
+/// All parameters needed for computation passed as template parametrs,@n
+/// so it can be configured to any algorithm.
 ///
-/// As template parameter it accepts the number of bits in result value e.g. 8, 16, or 32.@n
-/// There are predefined types for `crc8`, `crc16` and `crc32` algorithms.
-///
-/// At construction time @ref crc class generates the crc value table.@n
+/// There are predefined types for different `crc8`, `crc16` and `crc32` algorithms.
 ///
 /// Code example:
 /// @code
 /// std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 ///
-/// std::cout << "0x" << std::hex
-///           << static_cast<int>(crc8(0x39, 0x00, true, true, 0x00).calculate(data.begin(), data.end()))
-///           << std::endl; // CRC-8/DARC
+/// // CRC-8/DARC 
+/// std::cout << "0x" << std::hex << static_cast<int>(crc8_darc::calculate(data.begin(), data.end())) << std::endl;
 ///
-/// std::cout << "0x" << std::hex << crc16(0x8005).calculate(data.begin(), data.end())
-///           << std::endl; // CRC-16/BUYPAS
+/// // CRC-16/BUYPAS
+/// std::cout << "0x" << std::hex << crc16_buypas::calculate(data.begin(), data.end()) << std::endl;
 ///
-/// std::cout << "0x" << std::hex
-///           << crc32(0x04C11DB7, 0xFFFFFFFF, true, true, 0xFFFFFFFF).calculate(data.begin(), data.end())
-///           << std::endl; // CRC-32
+/// // CRC-32
+/// std::cout << "0x" << std::hex << crc32::calculate(data.begin(), data.end()) << std::endl;
 /// @endcode
 
 /// @addtogroup crc_implementation
 /// @{
 
 /// @brief CRC implementation.
-template <usize BitsCount>
+///
+/// @t_param BitsCount Bits count in result value.
+/// @t_param Polynome Polynome to generate crc_table.
+/// @t_param Init Initial vlaue.
+/// @t_param ReflectIn Should reflect input bytes.
+/// @t_param ReflectOut Should reflect output value.
+/// @t_param XorOut Value to 'xor' with the result at the end.
+template <usize BitsCount, 
+          crc_details::value_t<BitsCount> Polynome, 
+          crc_details::value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut, 
+          crc_details::value_t<BitsCount> XorOut>
 class crc
 {
 public:
     /// @brief Crc value type.
-    using value_type = typename crc_details::get_crc_value_type<BitsCount>::type;
-
-    /// @brief Creates crc algorithm instance.
-    ///
-    /// @param poly Polynome.
-    /// @param init Initial vlaue.
-    /// @param reflect_in Should reflect input bytes.
-    /// @param reflect_out Should reflect output value.
-    /// @param xor_out Value to 'xor' the result at the end.
-    explicit crc(value_type poly,
-                 value_type init    = 0,
-                 bool reflect_in    = false,
-                 bool reflect_out   = false,
-                 value_type xor_out = 0) noexcept;
+    using value_type = crc_details::value_t<BitsCount>;
 
     /// @brief Calculates the crc value.
     ///
@@ -94,7 +88,7 @@ public:
     ///
     /// @return The crc value.
     template <typename Iterator>
-    value_type calculate(Iterator begin, Iterator end) const;
+    static value_type calculate(Iterator begin, Iterator end);
 
     /// @brief Updates crc value.
     ///
@@ -103,71 +97,103 @@ public:
     ///
     /// @return New crc value.
     ///
-    /// @note This functions uses only the poly parameter. All other parameters does not counted in value computation.
-    value_type update(uint8 byte, value_type crc) const noexcept;
+    /// @note This functions uses only the Polynome parameter. All other parameters does not counted in value computation.
+    static value_type update(uint8 byte, value_type crc) noexcept;
 
 private:
-    const value_type m_poly    = 0;
-    const value_type m_init    = 0;
-    const value_type m_xor_out = 0;
-    const bool m_reflect_in    = false;
-    const bool m_reflect_out   = false;
-
-    value_type crc_table[256] = {0};
+    constexpr static usize crc_table_size = 256;
+    constexpr static crc_details::crc_table_t<BitsCount, crc_table_size> crc_table = crc_details::generate_table<BitsCount, Polynome, crc_table_size>();
 };
 
-using crc8  = crc<8>;  ///< Predefined class for crc8 algorithms.
-using crc16 = crc<16>; ///< Predefined class for crc16 algorithms.
-using crc32 = crc<32>; ///< Predefined class for crc32 algorithms.
+// clang-format off
+using crc8          = crc<8, 0x07, 0x00, false, false, 0x00>; ///< Predefined CRC-8 algorithm.
+using crc8_cdma2000 = crc<8, 0x9B, 0xFF, false, false, 0x00>; ///< Predefined CRC-8/CDMA2000 algorithm.
+using crc8_darc     = crc<8, 0x39, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/DARC algorithm.
+using crc8_dvb_s2   = crc<8, 0xD5, 0x00, false, false, 0x00>; ///< Predefined CRC-8/DVB-S2 algorithm.
+using crc8_ebu      = crc<8, 0x1D, 0xFF, true,  true,  0x00>; ///< Predefined CRC-8/EBU algorithm.
+using crc8_i_code   = crc<8, 0x1D, 0xFD, false, false, 0x00>; ///< Predefined CRC-8/I-CODE algorithm.
+using crc8_itu      = crc<8, 0x07, 0x00, false, false, 0x55>; ///< Predefined CRC-8/ITU algorithm.
+using crc8_maxim    = crc<8, 0x31, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/MAXIM algorithm.
+using crc8_rohc     = crc<8, 0x07, 0xFF, true,  true,  0x00>; ///< Predefined CRC-8/ROHC algorithm.
+using crc8_wcdma    = crc<8, 0x9B, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/WCDMA algorithm.
+
+using crc16_ccitt_false = crc<16, 0x1021, 0xFFFF, false, false, 0x0000>; ///< Predefined CRC-16/CCITT-FALSE algorithm.
+using crc16_arc         = crc<16, 0x8005, 0x0000, true,  true,  0x0000>; ///< Predefined CRC-16/ARC algorithm.
+using crc16_aug_ccitt   = crc<16, 0x1021, 0x1D0F, false, false, 0x0000>; ///< Predefined CRC-16/AUG-CCITT algorithm.
+using crc16_buypas      = crc<16, 0x8005, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/BUYPAS algorithm.
+using crc16_cdma2000    = crc<16, 0xC867, 0xFFFF, false, false, 0x0000>; ///< Predefined CRC-16/CDMA2000 algorithm.
+using crc16_dds_110     = crc<16, 0x8005, 0x800D, false, false, 0x0000>; ///< Predefined CRC-16/DDS-110 algorithm.
+using crc16_dect_r      = crc<16, 0x0589, 0x0000, false, false, 0x0001>; ///< Predefined CRC-16/DECT-R algorithm.
+using crc16_dect_x      = crc<16, 0x0589, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/DECT-X algorithm.
+using crc16_genibus     = crc<16, 0x1021, 0xFFFF, false, false, 0xFFFF>; ///< Predefined CRC-16/GENIBUS algorithm.
+using crc16_maxim       = crc<16, 0x8005, 0x0000, true,  true,  0xFFFF>; ///< Predefined CRC-16/MAXIM algorithm.
+using crc16_mcrf4xx     = crc<16, 0x1021, 0xFFFF, true,  true,  0x0000>; ///< Predefined CRC-16/MCRF4XX algorithm.
+using crc16_riello      = crc<16, 0x1021, 0xB2AA, true,  true,  0x0000>; ///< Predefined CRC-16/RIELLO algorithm.
+using crc16_t0_dif      = crc<16, 0x8BB7, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/T0-DIF algorithm.
+using crc16_teledisk    = crc<16, 0xA097, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/TELEDISK algorithm.
+using crc16_tms37157    = crc<16, 0x1021, 0x89EC, true,  true,  0x0000>; ///< Predefined CRC-16/TMS37157 algorithm.
+using crc16_usb         = crc<16, 0x8005, 0xFFFF, true,  true,  0xFFFF>; ///< Predefined CRC-16/USB algorithm.
+using crc16_a           = crc<16, 0x1021, 0xC6C6, true,  true,  0x0000>; ///< Predefined CRC-A algorithm.
+using crc16_kermit      = crc<16, 0x1021, 0x0000, true,  true,  0x0000>; ///< Predefined CRC-16/KERMIT algorithm.
+using crc16_modbus      = crc<16, 0x8005, 0xFFFF, true,  true,  0x0000>; ///< Predefined CRC-16/MODBUS algorithm.
+using crc16_x_25        = crc<16, 0x1021, 0xFFFF, true,  true,  0xFFFF>; ///< Predefined CRC-16/X-25 algorithm.
+using crc16_xmodem      = crc<16, 0x1021, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/XMODEM algorithm.
+
+using crc32        = crc<32, 0x04C11DB7, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32 algorithm.
+using crc32_bzip2  = crc<32, 0x04C11DB7, 0xFFFFFFFF, false, false, 0xFFFFFFFF>; ///< Predefined CRC-32/BZIP2 algorithm.
+using crc32c       = crc<32, 0x1EDC6F41, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32C algorithm.
+using crc32d       = crc<32, 0xA833982B, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32D algorithm.
+using crc32_mpeg_2 = crc<32, 0x04C11DB7, 0xFFFFFFFF, false, false, 0x00000000>; ///< Predefined CRC-32/MPEG-2 algorithm.
+using crc32_posix  = crc<32, 0x04C11DB7, 0x00000000, false, false, 0xFFFFFFFF>; ///< Predefined CRC-32/POSIX algorithm.
+using crc32q       = crc<32, 0x814141AB, 0x00000000, false, false, 0x00000000>; ///< Predefined CRC-32Q algorithm.
+using crc32_jamcrc = crc<32, 0x04C11DB7, 0xFFFFFFFF, true,  true,  0x00000000>; ///< Predefined CRC-32/JAMCRC algorithm.
+using crc32_xfer   = crc<32, 0x000000AF, 0x00000000, false, false, 0x00000000>; ///< Predefined CRC-32/XFER algorithm.
+// clang-format on
 
 /// @}
 
 #pragma region definitions
 
-template <usize BitsCount>
-inline crc<BitsCount>::crc(value_type poly,
-                           value_type init,
-                           bool reflect_in,
-                           bool reflect_out,
-                           value_type xor_out) noexcept
-    : m_poly(poly), m_init(init), m_xor_out(xor_out), m_reflect_in(reflect_in), m_reflect_out(reflect_out)
-{
-    constexpr value_type topbit = static_cast<value_type>(1u << (BitsCount - 1));
-
-    for (uint32 dividend = 0; dividend < 256; ++dividend) {
-        value_type value = static_cast<value_type>(dividend << (BitsCount - 8));
-        for (uint8 bit = 8; bit > 0; --bit) {
-            value = static_cast<value_type>((value & topbit) ? (value << 1) ^ m_poly : value << 1);
-        }
-
-        crc_table[dividend] = value;
-    }
-}
-
-template <usize BitsCount>
+template <usize BitsCount, 
+          crc_details::value_t<BitsCount> Polynome, 
+          crc_details::value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut, 
+          crc_details::value_t<BitsCount> XorOut>
 template <typename Iterator>
-inline typename crc<BitsCount>::value_type crc<BitsCount>::calculate(Iterator begin, Iterator end) const
+inline typename crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type 
+crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::calculate(Iterator begin, Iterator end)
 {
-    value_type value = m_init;
+    constexpr usize input_value_size = sizeof(typename std::iterator_traits<Iterator>::value_type);
+    
+    value_type value = Init;
 
     for (; begin != end; ++begin) {
-        value = update(m_reflect_in ? crc_details::reflect(*begin) : *begin, value);
+        for (usize i = 0; i < input_value_size; ++i) {
+            const uint8 byte = ((*begin) >> (i * 8)) & 0xFF;
+            value = update(ReflectIn ? crc_details::reflect<8>(byte) : byte, value);
+        }
     }
 
-    if (m_reflect_out) {
-        value = crc_details::reflect(value);
+    if (ReflectOut) {
+        value = crc_details::reflect<BitsCount>(value);
     }
 
-    return (value ^ m_xor_out);
+    return (value ^ XorOut);
 }
 
-template <usize BitsCount>
-inline typename crc<BitsCount>::value_type crc<BitsCount>::update(uint8 byte, value_type value) const noexcept
+template <usize BitsCount, 
+          crc_details::value_t<BitsCount> Polynome, 
+          crc_details::value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut, 
+          crc_details::value_t<BitsCount> XorOut>
+inline typename crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type 
+crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(uint8 byte, value_type value) noexcept
 {
-    const uint8 index = static_cast<uint8>(byte ^ (value >> (BitsCount - 8)));
-    return static_cast<value_type>(crc_table[index] ^ (value << 8));
+    const uint8 index = byte ^ (value >> (BitsCount - 8));
+    return crc_table[index] ^ (value << 8);
 }
-
 #pragma endregion
 
 } // namespace framework::utils
