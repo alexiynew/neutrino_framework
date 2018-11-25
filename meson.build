@@ -32,6 +32,7 @@ endif
 
 framework_source_dir = 'src'
 framework_test_dir   = 'test'
+framework_examples_dir   = 'examples'
 
 docs_source_dir  = 'docs'
 docs_output_dir  = 'docs'
@@ -63,6 +64,11 @@ framework_lib = library(meson.project_name(), framework_sources,
 # Add tests
 if get_option('build_tests')
     subdir(framework_test_dir)
+endif
+
+# Add examples
+if (get_option('build_examples'))
+    subdir(framework_examples_dir)
 endif
 
 # Docs
