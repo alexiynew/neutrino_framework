@@ -1,3 +1,7 @@
 message('Add examples...')
 
-subdir('opengl')
+examples = ['opengl']
+
+foreach example : examples
+    subdir(example)
+endforeach

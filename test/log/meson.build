@@ -1,5 +1,5 @@
-test_pack_name = meson.current_source_dir().split('/').get(-1).split('\\').get(-1)
+tests = ['interface_test']
 
-message('\tAdd tests: ' + test_pack_name)
-
-subdir('interface_test')
+foreach test_name : tests
+    subdir(test_name)
+endforeach

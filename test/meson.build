@@ -1,7 +1,8 @@
 message('Add tests...')
 
-subdir('common')
-subdir('log')
-subdir('math')
-subdir('os')
-subdir('unit_test')
+groups = ['common' ,'log' ,'math' ,'os' ,'unit_test']
+
+foreach group : groups
+    message('\tAdd tests: ' + group)
+    subdir(group)
+endforeach

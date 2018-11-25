@@ -1,18 +1,6 @@
-test_pack_name = meson.current_source_dir().split('/').get(-1).split('\\').get(-1)
+tests = ['vector_constructor', 'vector_operators', 'vector_common', 'vector_exponential', 'vector_geometric', 'vector_relational', 'vector_trigonometric',
+         'matrix_constructor', 'matrix_math_operators', 'matrix_access', 'matrix_assign', 'matrix_func', 'matrix_transform']
 
-message('\tAdd tests: ' + test_pack_name)
-
-subdir('vector_constructor')
-subdir('vector_operators')
-subdir('vector_common')
-subdir('vector_exponential')
-subdir('vector_geometric')
-subdir('vector_relational')
-subdir('vector_trigonometric')
-
-subdir('matrix_constructor')
-subdir('matrix_math_operators')
-subdir('matrix_access')
-subdir('matrix_assign')
-subdir('matrix_func')
-subdir('matrix_transform')
+foreach test_name : tests
+    subdir(test_name)
+endforeach

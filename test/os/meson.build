@@ -1,8 +1,5 @@
-test_pack_name = meson.current_source_dir().split('/').get(-1).split('\\').get(-1)
+tests = ['window_focus', 'window_open', 'window_properties', 'window_state']
 
-message('\tAdd tests: ' + test_pack_name)
-
-subdir('window_focus')
-subdir('window_open')
-subdir('window_properties')
-subdir('window_state')
+foreach test_name : tests
+    subdir(test_name)
+endforeach

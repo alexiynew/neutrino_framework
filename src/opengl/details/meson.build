@@ -1,12 +1,10 @@
-subdir_name = meson.current_source_dir().split('/').get(-1).split('\\').get(-1)
-
 public = files('gl_wrapper.hpp')
 
 headers = files('gl_details.hpp')
 
 sources = files('gl_wrapper.cpp')
 
-install_headers(public, subdir: join_paths(module_name, subdir_name))
+install_headers(public, subdir: join_paths(module_name, 'details'))
 
 framework_sources += public
 framework_sources += headers
