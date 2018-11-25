@@ -6,29 +6,26 @@ matrix:
   include:
     - os: linux
       env:
-        - COMPILLER=clang
-        - TASK="clean build test"
+        - CC_COMPILER=clang
+        - CXX_COMPILER=clang++
+        - TASK="test"
       sudo: required
       services:
         - docker
 
     - os: linux
       env:
-        - COMPILLER=gcc
-        - TASK="clean build test"
+        - CC_COMPILER=gcc
+        - CXX_COMPILER=g++
+        - TASK="test"
       sudo: required
       services:
         - docker
 
-    - os: osx
-      osx_image: xcode9.1
-      env:
-        - TASK="clean build test"
-
     - os: linux
-      dist: trusty
       env:
-        - COMPILLER=gcc
+        - CC_COMPILER=gcc
+        - CXX_COMPILER=g++
         - TASK="clean coverage"
       sudo: required
       services:

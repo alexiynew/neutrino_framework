@@ -7,11 +7,12 @@ project('framework', 'cpp',
                            'warning_level=3',
                            'werror=true',
                            'b_pch=false',
+                           'b_lundef=false',
                            'prefix=' + join_paths(meson.source_root(), 'output'),
                            'default_library=static'])
 
 required_versions = {
-    'gcc': '7.3.0',
+    'gcc': '7.1.0',
     'clang': '6.0.1'
 }
 
@@ -20,7 +21,7 @@ required_compiler_version = required_versions[compiler.get_id()]
 
 
 if compiler.version() < required_compiler_version
-    error(compiler.get_id() + ' ' + required_compiler_version + ' or higher required.')
+    error(compiler.get_id() + ' ' + compiler.version() + ' instaled, ' + required_compiler_version + ' or higher required.')
 endif
 
 
@@ -83,7 +84,7 @@ if get_option('build_docs')
     endif
 endif
 
-clang_format = find_program('clang-format', 'clang-format.exe',  'clang-format.py')
+clang_format = find_program('clang-format', 'clang-format.exe', 'clang-format.py', required: false)
 
 if clang_format.found()
     message(run_command(clang_format, '--version').stdout())
