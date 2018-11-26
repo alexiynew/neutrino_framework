@@ -30,9 +30,10 @@
 #ifndef FRAMEWORK_COMMON_CRC_DETAILS_HPP
 #define FRAMEWORK_COMMON_CRC_DETAILS_HPP
 
-#include <common/types.hpp>
 #include <array>
 #include <utility>
+
+#include <common/types.hpp>
 
 namespace framework::utils::crc_details
 {
@@ -62,7 +63,7 @@ struct get_crc_value_type<32>
 };
 
 /// @brief Value type short cut.
-template<usize BitsCount>
+template <usize BitsCount>
 using value_t = typename get_crc_value_type<BitsCount>::type;
 
 /// @brieaf crc table type
@@ -73,16 +74,16 @@ template <usize BitsCount, value_t<BitsCount> Polynome>
 constexpr value_t<BitsCount> generate_value(usize dividend) noexcept
 {
     constexpr value_t<BitsCount> topbit = (1u << (BitsCount - 1));
-    
+
     value_t<BitsCount> value = dividend << (BitsCount - 8);
     for (uint8 bit = 8; bit > 0; --bit) {
         value = (value & topbit) ? (value << 1) ^ Polynome : value << 1;
     }
-    
+
     return value;
 }
 
-template<usize BitsCount, value_t<BitsCount> Polynome, usize Size, usize... I>
+template <usize BitsCount, value_t<BitsCount> Polynome, usize Size, usize... I>
 constexpr inline crc_table_t<BitsCount, Size> generate_table_impl(std::index_sequence<I...>) noexcept
 {
     return {generate_value<BitsCount, Polynome>(I)...};

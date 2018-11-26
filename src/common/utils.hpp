@@ -101,7 +101,7 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     return result;
 }
 
-template <class C> 
+template <class C>
 constexpr inline auto size(const C& container) -> decltype(container.size())
 {
     return container.size();
