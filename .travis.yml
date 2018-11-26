@@ -1,35 +1,39 @@
 env:
   global:
     - CODECOV_TOKEN=67a4f583-c9f2-4c56-9dc4-bf421bb11a63
+    - WORKDIR="/home/framework"
 
 matrix:
   include:
     - os: linux
       env:
-        - CC_COMPILER=clang
-        - CXX_COMPILER=clang++
-        - TASK="test"
+        - CC=clang
+        - CXX=clang++
+        - COMMAND="meson build && cd build && ninja"
       sudo: required
       services:
         - docker
 
     - os: linux
       env:
-        - CC_COMPILER=gcc
-        - CXX_COMPILER=g++
-        - TASK="test"
+        - CC=gcc
+        - CXX=g++
+        - COMMAND="meson build && cd build && ninja"
       sudo: required
       services:
         - docker
 
     - os: linux
       env:
-        - CC_COMPILER=gcc
-        - CXX_COMPILER=g++
-        - TASK="clean coverage"
+        - CC=gcc
+        - CXX=g++
+        - COMMAND="meson -D b_coverage=true build && cd build && ninja test"
       sudo: required
       services:
         - docker
+        
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
 
 language: generic
 
@@ -39,7 +43,7 @@ branches:
     - dev
 
 install:
-  - ./misc/travis_install.sh
+  - docker pull alexiynew/docker_image
 
 script:
-  - ./misc/travis_run.sh
+  - docker run -it -e COMMAND="${COMMAND}" -e CC="${CC}" -e CXX="${CXX}" -w "${WORKDIR}" -v "${TRAVIS_BUILD_DIR}:${WORKDIR}" alexiynew/docker_image 
