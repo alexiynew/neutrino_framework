@@ -53,21 +53,15 @@ private:
         TEST_ASSERT(numbers.size() == 1000, "Wrond numbers count.");
 
         for (auto i : numbers) {
-            if (i != 0) {
-                TEST_FAIL("Wrong number in the sequence.");
-            }
+            TEST_ASSERT(i == 0, "Wrong number in the sequence.");
         }
 
         for (auto i : random_numbers<float64>(0.0, 1.0, 10)) {
-            if (i < 0.0 || i > 1.0) {
-                TEST_FAIL("Wrong number in the sequence.");
-            }
+            TEST_ASSERT(i >= 0.0 && i <= 1.0, "Wrong number in the sequence.");
         }
 
         for (int32 i : random_numbers<uint16>(0xFFFF, 0, 1000)) {
-            if (i < 0 || i > 0xFFFF) {
-                TEST_FAIL("Wrong number in the sequence.");
-            }
+            TEST_ASSERT(i >= 0 && i <= 0xFFFF, "Wrong number in the sequence.");
         }
     }
 };

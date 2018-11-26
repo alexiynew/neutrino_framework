@@ -63,12 +63,6 @@ context_settings& context_settings::set_stencil_bits(int32 bits)
     return *this;
 }
 
-context_settings& context_settings::set_color_type(context_settings::color type)
-{
-    m_color_type = type;
-    return *this;
-}
-
 context_settings& context_settings::set_samples_count(context_settings::samples count)
 {
     m_samples_count = count;
@@ -102,11 +96,6 @@ int32 context_settings::depth_bits() const
 int32 context_settings::stencil_bits() const
 {
     return m_stencil_bits;
-}
-
-context_settings::color context_settings::color_type() const
-{
-    return m_color_type;
 }
 
 context_settings::samples context_settings::samples_count() const

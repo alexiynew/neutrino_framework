@@ -43,8 +43,7 @@ std::weak_ptr<x11_server>& server_instance()
     return instance;
 }
 
-[[noreturn]] ::framework::int32 fatal_error_handler(Display* /*unused*/)
-{
+[[noreturn]] ::framework::int32 fatal_error_handler(Display* /*unused*/) {
     ::framework::log::fatal(log_tag) << "Fatal error occurred." << std::endl;
     std::terminate();
 }

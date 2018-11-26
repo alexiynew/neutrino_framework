@@ -46,13 +46,6 @@ namespace framework::opengl
 class context_settings
 {
 public:
-    /// @brief Color type
-    enum class color
-    {
-        rgba, ///< Use RGBA collors.
-        index ///< Use indexed collors.
-    };
-
     /// @brief Samples count
     enum class samples
     {
@@ -115,13 +108,6 @@ public:
     /// @return Reference to this settings.
     context_settings& set_stencil_bits(int32 bits);
 
-    /// @brief Sets color type.
-    ///
-    /// @param type Color type.
-    ///
-    /// @return Reference to this settings.
-    context_settings& set_color_type(color type);
-
     /// @brief Sets samples count.
     ///
     /// @param count Samples count.
@@ -158,11 +144,6 @@ public:
     /// @return The stencil buffer bits count.
     int32 stencil_bits() const;
 
-    /// @brief Required color type.
-    ///
-    /// @return The color type.
-    color color_type() const;
-
     /// @brief Required samples count.
     ///
     /// @return The samples count.
@@ -175,7 +156,6 @@ private:
     utils::version m_version = {3, 0};
     int32 m_depth_bits       = 24;
     int32 m_stencil_bits     = 8;
-    color m_color_type       = color::rgba;
     samples m_samples_count  = samples::best;
 };
 

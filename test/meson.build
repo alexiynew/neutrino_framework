@@ -1,6 +1,6 @@
 message('Add tests...')
 
-groups = ['common' ,'log' ,'math' ,'os' ,'unit_test']
+groups = ['common', 'unit_test', 'log', 'math', 'system', 'opengl']
 
 foreach group : groups
     message('\tAdd tests: ' + group)

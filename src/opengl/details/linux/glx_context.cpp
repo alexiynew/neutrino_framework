@@ -79,20 +79,12 @@ GLXFBConfig find_best_config(Display* display,
 
 GLXFBConfig choose_framebuffer_config(Display* display, const context_settings& settings)
 {
-    const auto render_type = [](context_settings::color color) {
-        switch (color) {
-            case context_settings::color::rgba: return GLX_RGBA_BIT;
-            case context_settings::color::index: return GLX_COLOR_INDEX_BIT;
-        }
-        return GLX_RGBA_BIT;
-    }(settings.color_type());
-
     // clang-format off
     static int32 visual_attribs[] = {
         GLX_X_RENDERABLE,  True,
         GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-        GLX_RENDER_TYPE,   render_type,
-        GLX_X_VISUAL_TYPE, static_cast<int32>((render_type == GLX_RGBA_BIT) ? GLX_TRUE_COLOR : GLX_DONT_CARE),
+        GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+        GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
         GLX_RED_SIZE,      8,
         GLX_GREEN_SIZE,    8,
         GLX_BLUE_SIZE,     8,

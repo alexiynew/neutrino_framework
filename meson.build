@@ -67,11 +67,6 @@ if get_option('build_tests')
     subdir(framework_test_dir)
 endif
 
-# Add examples
-if (get_option('build_examples'))
-    subdir(framework_examples_dir)
-endif
-
 # Docs
 if get_option('build_docs')
     subdir(docs_source_dir)
