@@ -86,7 +86,7 @@ std::shared_ptr<ATOM> register_window_class_details()
 {
     using framework::system::win32_application;
 
-    WNDCLASSEX window_class = {0};
+    WNDCLASSEX window_class = {};
 
     window_class.cbSize        = sizeof(WNDCLASSEX);
     window_class.style         = CS_OWNDC;
@@ -197,7 +197,7 @@ void win32_window::focus()
 
 void win32_window::process_events()
 {
-    MSG message = {0};
+    MSG message = {};
 
     while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
         if (message.message == WM_QUIT) {

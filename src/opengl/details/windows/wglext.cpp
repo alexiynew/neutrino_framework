@@ -43,7 +43,7 @@ void init_extensions()
         return;
     }
 
-    PIXELFORMATDESCRIPTOR pfd{0};
+    PIXELFORMATDESCRIPTOR pfd{};
     pfd.nSize    = sizeof(PIXELFORMATDESCRIPTOR);
     pfd.nVersion = 1;
     pfd.dwFlags  = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;

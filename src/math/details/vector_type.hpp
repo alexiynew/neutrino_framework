@@ -1152,7 +1152,7 @@ inline constexpr bool operator!=(const vector<2, T>& lhs, const vector<2, T>& rh
 /// @param function Function to apply.
 ///
 /// @return New vector.
-template <uint32 N, typename T, typename F, typename R = typename std::result_of<F(const T&)>::type>
+template <uint32 N, typename T, typename F, typename R = std::invoke_result_t<F, const T&>>
 inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& function) noexcept
 {
     return vector_type_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function), value);
@@ -1167,7 +1167,7 @@ inline constexpr vector<N, R> transform(const vector<N, T>& value, F&& function)
 /// @param function Function to apply.
 ///
 /// @return New vector.
-template <uint32 N, typename T, typename U, typename F, typename R = typename std::result_of<F(const T&, const U&)>::type>
+template <uint32 N, typename T, typename U, typename F, typename R = std::invoke_result_t<F, const T&, const U&>>
 inline constexpr vector<N, R> transform(const vector<N, T>& first, const vector<N, U>& second, F&& function) noexcept
 {
     return vector_type_details::transform_details<N>::template create<vector<N, R>>(std::forward<F>(function),

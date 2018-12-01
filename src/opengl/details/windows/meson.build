@@ -9,3 +9,8 @@ sources = files('gl_details.cpp',
 
 framework_sources += headers
 framework_sources += sources
+
+gdi32_lib = compiler.find_library('Gdi32')
+gdi32 = declare_dependency(dependencies: gdi32_lib)
+
+framework_dependencies += gdi32

@@ -72,4 +72,10 @@ build_script:
 
 test_script:
   - echo =============== Run All Tests ===============
-  - if %frontend%==meson meson test
+  - meson test --suite unit_test
+  - meson test --suite common
+  - meson test --suite log
+  - meson test --suite math
+# OpenGL Is not supported
+  # - meson test --suite math
+  # - meson test --suite math

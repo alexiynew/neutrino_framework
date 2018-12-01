@@ -27,7 +27,7 @@ endif
 
 
 if compiler.get_id() == 'gcc' or compiler.get_id() == 'clang'
-    add_project_arguments('-Wno-unknown-pragmas', language : 'cpp')
+    add_project_arguments(['-Wno-unknown-pragmas', '-Wno-language-extension-token'], language : 'cpp')
 elif compiler.get_id() == 'msvc'
     add_project_arguments('/std:c++17', language : 'cpp')
 endif

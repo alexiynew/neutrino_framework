@@ -49,7 +49,7 @@ win32_context::win32_context(HWND window, opengl::context_settings settings)
         throw std::runtime_error("GetDC failed!");
     }
 
-    PIXELFORMATDESCRIPTOR pfd{0};
+    PIXELFORMATDESCRIPTOR pfd{};
     pfd.nSize      = sizeof(PIXELFORMATDESCRIPTOR);
     pfd.nVersion   = 1;
     pfd.dwFlags    = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
