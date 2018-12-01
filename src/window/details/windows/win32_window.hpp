@@ -126,6 +126,4 @@ private:
 
 } // namespace framework::system
 
-} // namespace framework
-
 #endif

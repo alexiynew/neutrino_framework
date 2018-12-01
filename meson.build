@@ -13,7 +13,8 @@ project('framework', 'cpp',
 
 required_versions = {
     'gcc': '7.1.0',
-    'clang': '6.0.1'
+    'clang': '6.0.1',
+    'msvc' : '19.0.0'
 }
 
 compiler = meson.get_compiler('cpp')
@@ -31,19 +32,19 @@ elif compiler.get_id() == 'msvc'
     add_project_arguments('/std:c++17', language : 'cpp')
 endif
 
-framework_source_dir = 'src'
-framework_test_dir   = 'test'
-framework_examples_dir   = 'examples'
+framework_source_dir   = 'src'
+framework_test_dir     = 'test'
+framework_examples_dir = 'examples'
 
-docs_source_dir  = 'docs'
-docs_output_dir  = 'docs'
+docs_source_dir = 'docs'
+docs_output_dir = 'docs'
 
 thread_dependency = dependency('threads')
 
 framework_include = include_directories(framework_source_dir, 'dependencies')
 
-framework_sources = []
-framework_definitions = []
+framework_sources      = []
+framework_definitions  = []
 framework_dependencies = [thread_dependency]
 
 system_name = build_machine.system()

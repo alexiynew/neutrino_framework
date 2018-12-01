@@ -75,7 +75,7 @@ constexpr value_t<BitsCount> generate_value(usize dividend) noexcept
 {
     constexpr value_t<BitsCount> topbit = (1u << (BitsCount - 1));
 
-    value_t<BitsCount> value = dividend << (BitsCount - 8);
+    value_t<BitsCount> value = static_cast<value_t<BitsCount>>(dividend << (BitsCount - 8));
     for (uint8 bit = 8; bit > 0; --bit) {
         value = (value & topbit) ? (value << 1) ^ Polynome : value << 1;
     }
