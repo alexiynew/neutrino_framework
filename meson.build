@@ -1,6 +1,6 @@
 # Project setup
 project('framework', 'cpp',
-        version : '0.0.2',
+        version : '0.0.3',
         license : 'MIT',
         default_options : ['cpp_std=c++17',
                            'buildtype=release',
