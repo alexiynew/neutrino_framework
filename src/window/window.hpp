@@ -241,6 +241,9 @@ public:
     bool focused() const;
     /// @}
 
+    template <typename T>
+    void add_event_handler(T handler);
+
 private:
     std::unique_ptr<implementation> m_implementation;
 };
