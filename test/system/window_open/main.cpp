@@ -23,6 +23,7 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <common/types.hpp>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
@@ -38,16 +39,22 @@ public:
 private:
     void open_window()
     {
-        using ::framework::system::window;
+        ::framework::int32 show_called = 0;
+        ::framework::int32 hide_called = 0;
 
-        window w({640, 480}, "Test");
-        w.show();
+        ::framework::system::window window({640, 480}, "Test");
 
-        TEST_ASSERT(w.visible(), "Window is not visible.");
+        window.on_show = [&show_called](const ::framework::system::window& /*unused*/) { show_called++; };
+        window.show();
 
-        w.hide();
+        TEST_ASSERT(window.visible(), "Window is not visible.");
+        TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
 
-        TEST_ASSERT(!w.visible(), "Window is still visible.");
+        window.on_hide = [&hide_called](const ::framework::system::window& /*unused*/) { hide_called++; };
+        window.hide();
+
+        TEST_ASSERT(!window.visible(), "Window is still visible.");
+        TEST_ASSERT(show_called == 1 && hide_called == 1, "Wrong callbacks call.");
     }
 
     void open_several_windows()

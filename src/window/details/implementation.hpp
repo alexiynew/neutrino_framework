@@ -41,17 +41,19 @@ namespace framework::system
 class window::implementation
 {
 public:
-    static std::unique_ptr<implementation> create(window::size_t size,
+    static std::unique_ptr<implementation> create(const window& interface,
+                                                  window::size_t size,
                                                   const std::string& title,
                                                   opengl::context_settings settings);
 
     static void set_application_name(const std::string& name);
 
-    implementation()          = default;
     virtual ~implementation() = default;
 
     implementation(const implementation&) = delete;
     implementation& operator=(const implementation&) = delete;
+
+    void set_interface(window& interface);
 
     /// @name actions
     /// @{
@@ -103,7 +105,11 @@ public:
     /// @}
 
 protected:
+    explicit implementation(const window& interface);
+
     static std::string application_name;
+
+    const window& m_interface;
 };
 
 } // namespace framework::system

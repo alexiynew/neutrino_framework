@@ -1,5 +1,5 @@
 /// @file
-/// @brief Window events.
+/// @brief Types and functions for keyboard support.
 /// @author Fedorov Alexey
 /// @date 15.12.2018
 
@@ -27,59 +27,31 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_WINDOW_HPP
-#define FRAMEWORK_WINDOW_WINDOW_HPP
+#ifndef FRAMEWORK_WINDOW_KEYBOARD_HPP
+#define FRAMEWORK_WINDOW_KEYBOARD_HPP
 
-namespace framework::system::window_event
+#include <common/types.hpp>
+
+namespace framework::system
 {
-struct show
-{};
+enum class key_code
+{
+};
 
-struct hide
-{};
+enum modifiers_state
+{
+};
 
-struct focus
-{};
+enum class mouse_button
+{
+};
 
-struct focus_lost
-{};
+struct cursor_position
+{
+    int32 x;
+    int32 y;
+};
 
-struct iconify
-{};
-
-struct fullscreen
-{};
-
-struct change_size
-{};
-
-struct change_position
-{};
-
-struct key_down
-{};
-
-struct key_up
-{};
-
-struct character
-{};
-
-struct mouse_button_down
-{};
-
-struct mouse_button_up
-{};
-
-struct mouse_enter
-{};
-
-struct mouse_leave
-{};
-
-struct mouse_move
-{};
-
-} // namespace framework::system::window_event
+} // namespace framework::system
 
 #endif

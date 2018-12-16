@@ -134,15 +134,19 @@ std::string event_type_string(const XAnyEvent& event)
 
 namespace framework::system
 {
-std::unique_ptr<window::implementation> window::implementation::create(window::size_t size,
+std::unique_ptr<window::implementation> window::implementation::create(const window& interface,
+                                                                       window::size_t size,
                                                                        const std::string& title,
                                                                        opengl::context_settings settings)
 {
-    return std::make_unique<x11_window>(size, title, settings);
+    return std::make_unique<x11_window>(interface, size, title, settings);
 }
 
-x11_window::x11_window(window::size_t size, const std::string& title, opengl::context_settings settings)
-    : m_server(x11_server::connect()), m_size(size)
+x11_window::x11_window(const window& interface,
+                       window::size_t size,
+                       const std::string& title,
+                       opengl::context_settings settings)
+    : implementation(interface), m_server(x11_server::connect()), m_size(size)
 {
     auto context = std::make_unique<glx_context>(m_server->display(), std::move(settings));
     if (!context->valid()) {
@@ -233,6 +237,10 @@ void x11_window::show()
     XFlush(m_server->display());
     process_events_while([this]() { return !m_mapped; });
 
+    if (m_interface.on_show) {
+        m_interface.on_show(m_interface);
+    }
+
     if (m_fullscreen) {
         maximize_toggle(false);
         fullscreen_toggle(true);
@@ -259,6 +267,10 @@ void x11_window::hide()
     XFlush(m_server->display());
 
     process_events_while([this]() { return m_mapped; });
+
+    if (m_interface.on_hide) {
+        m_interface.on_hide(m_interface);
+    }
 }
 
 void x11_window::focus()

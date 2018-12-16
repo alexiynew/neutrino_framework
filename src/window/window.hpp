@@ -30,10 +30,13 @@
 #ifndef FRAMEWORK_WINDOW_WINDOW_HPP
 #define FRAMEWORK_WINDOW_WINDOW_HPP
 
+#include <functional>
 #include <memory>
+#include <optional>
 
 #include <common/types.hpp>
 #include <opengl/context.hpp>
+#include <window/keyboard.hpp>
 
 /// @details
 ///
@@ -55,7 +58,7 @@ namespace framework::system
 /// @brief A Window class.
 ///
 /// OpenGL-based window, abstracts all window management, input processing, and event handling.
-class window
+class window final
 {
 public:
     /// @brief Base class for OS specific realisation.
@@ -74,6 +77,9 @@ public:
         int32 x; ///< X coordiante.
         int32 y; ///< Y coordinate.
     };
+
+    template <typename... Args>
+    using event_handler = std::function<void(Args...)>;
 
     /// @brief Sets the formal name of the application.
     ///
@@ -241,8 +247,29 @@ public:
     bool focused() const;
     /// @}
 
-    template <typename T>
-    void add_event_handler(T handler);
+    event_handler<const window&> on_show = nullptr;
+    event_handler<const window&> on_hide = nullptr;
+
+    event_handler<const window&> on_close = nullptr;
+
+    event_handler<const window&> on_focus      = nullptr;
+    event_handler<const window&> on_focus_lost = nullptr;
+
+    event_handler<const window&, window::size_t> on_size         = nullptr;
+    event_handler<const window&, window::position_t> on_position = nullptr;
+
+    event_handler<const window&, key_code, modifiers_state> on_key_press   = nullptr;
+    event_handler<const window&, key_code, modifiers_state> on_key_release = nullptr;
+
+    event_handler<const window&, std::string> on_character = nullptr;
+
+    event_handler<const window&, mouse_button, modifiers_state> on_mouse_press   = nullptr;
+    event_handler<const window&, mouse_button, modifiers_state> on_mouse_release = nullptr;
+
+    event_handler<const window&> on_mouse_enter = nullptr;
+    event_handler<const window&> on_mouse_leave = nullptr;
+
+    event_handler<const window&, cursor_position> mouse_move = nullptr;
 
 private:
     std::unique_ptr<implementation> m_implementation;

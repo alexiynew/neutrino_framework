@@ -46,8 +46,11 @@ void window::implementation::set_application_name(const std::string& name)
     application_name = name;
 }
 
+window::implementation::implementation(const window& interface) : m_interface(interface)
+{}
+
 window::window(size_t size, const std::string& title, opengl::context_settings settings)
-    : m_implementation(implementation::create(size, title, std::move(settings)))
+    : m_implementation(implementation::create(*this, size, title, std::move(settings)))
 {}
 
 window::~window() = default;

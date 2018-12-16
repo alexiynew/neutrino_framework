@@ -42,7 +42,10 @@ namespace framework::system
 class x11_window final : public window::implementation
 {
 public:
-    x11_window(window::size_t size, const std::string& title, opengl::context_settings settings);
+    x11_window(const window& interface,
+               window::size_t size,
+               const std::string& title,
+               opengl::context_settings settings);
     ~x11_window() override;
 
     x11_window(const x11_window&) = delete;
