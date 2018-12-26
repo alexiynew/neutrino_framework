@@ -237,10 +237,6 @@ void x11_window::show()
     XFlush(m_server->display());
     process_events_while([this]() { return !m_mapped; });
 
-    if (m_interface.on_show) {
-        m_interface.on_show(m_interface);
-    }
-
     if (m_fullscreen) {
         maximize_toggle(false);
         fullscreen_toggle(true);
@@ -267,10 +263,6 @@ void x11_window::hide()
     XFlush(m_server->display());
 
     process_events_while([this]() { return m_mapped; });
-
-    if (m_interface.on_hide) {
-        m_interface.on_hide(m_interface);
-    }
 }
 
 void x11_window::focus()
@@ -319,7 +311,6 @@ void x11_window::process_events()
                 // case SelectionClear: return "SelectionClear";
                 // case SelectionRequest: return "SelectionRequest";
                 // case SelectionNotify: return "SelectionNotify";
-                // case ClientMessage: return "ClientMessage";
                 // case GenericEvent:  return "GenericEvent";
 
             case VisibilityNotify: process(event.xvisibility); break;
@@ -329,6 +320,7 @@ void x11_window::process_events()
             case FocusIn: process(event.xfocus); break;
             case FocusOut: process(event.xfocus); break;
             case PropertyNotify: process(event.xproperty); break;
+            case ClientMessage: process(event.xclient); break;
 
             default: break;
         }
@@ -672,12 +664,23 @@ void x11_window::process(XDestroyWindowEvent /*unused*/)
 void x11_window::process(XUnmapEvent /*unused*/)
 {
     m_mapped = false;
+    if (m_interface.on_hide) {
+        m_interface.on_hide(m_interface);
+    }
 }
 
 void x11_window::process(XVisibilityEvent event)
 {
-    if (event.state != VisibilityFullyObscured) {
+    if (event.state == VisibilityFullyObscured) {
+        return;
+    }
+
+    if (!m_mapped) {
         m_mapped = true;
+
+        if (m_interface.on_show) {
+            m_interface.on_show(m_interface);
+        }
     }
 }
 
@@ -721,6 +724,11 @@ void x11_window::process(XFocusChangeEvent event)
             //         log::warning(log_tag) << "Failed to grab mouse cursor" << std::endl;
             //     }
             // }
+
+            if (m_interface.on_focus) {
+                m_interface.on_focus(m_interface);
+            }
+
             break;
         case FocusOut:
             if (m_input_context != nullptr) {
@@ -731,6 +739,10 @@ void x11_window::process(XFocusChangeEvent event)
                 XUngrabPointer(m_server->display(), CurrentTime);
                 m_cursor_grabbed = false;
             }
+
+            if (m_interface.on_focus_lost) {
+                m_interface.on_focus_lost(m_interface);
+            }
             break;
     }
 }
@@ -740,9 +752,17 @@ void x11_window::process(XPropertyEvent event)
     m_lastInputTime = event.time;
 }
 
+void x11_window::process(XClientMessageEvent event)
+{
+    Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
+    if (static_cast<Atom>(event.data.l[0]) == delete_window && m_interface.on_close) {
+        m_interface.on_close(m_interface);
+    }
+}
+
 void x11_window::process(XAnyEvent event)
 {
-    ::framework::log::debug(log_tag) << "Got event: " << event_type_string(event) << std::endl;
+    ::framework::log::debug(log_tag) << "[" << title() << "] Got event: " << event_type_string(event) << std::endl;
 }
 
 #pragma endregion

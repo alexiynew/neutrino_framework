@@ -110,6 +110,7 @@ private:
     void process(XConfigureEvent event);
     void process(XFocusChangeEvent event);
     void process(XPropertyEvent event);
+    void process(XClientMessageEvent event);
     void process(XAnyEvent event);
 
     void maximize_toggle(bool enable);

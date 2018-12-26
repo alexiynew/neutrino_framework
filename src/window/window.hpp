@@ -247,12 +247,19 @@ public:
     bool focused() const;
     /// @}
 
+    /// @brief On show callback. Called when window shows after creation.
     event_handler<const window&> on_show = nullptr;
+
+    /// @brief On hide callback. Called when window hides from screen.
     event_handler<const window&> on_hide = nullptr;
 
+    /// @brief On close callback. Called when the user clicks on the close window button.
     event_handler<const window&> on_close = nullptr;
 
-    event_handler<const window&> on_focus      = nullptr;
+    /// @brief On focus callback. Called when the window gets input focus.
+    event_handler<const window&> on_focus = nullptr;
+
+    /// @brief On focus lost callback. Called when the window loses input focus.
     event_handler<const window&> on_focus_lost = nullptr;
 
     event_handler<const window&, window::size_t> on_size         = nullptr;

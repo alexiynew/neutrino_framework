@@ -37,21 +37,65 @@ public:
 private:
     void focus_window()
     {
-        framework::system::window alpha({640, 480}, "Test");
-        framework::system::window betta({640, 480}, "Test");
+        using ::framework::system::window;
+
+        int alpha_focused    = 0;
+        int alpha_lost_focus = 0;
+
+        int betta_focused    = 0;
+        int betta_lost_focus = 0;
+
+        window alpha({640, 480}, "alpha");
+        window betta({640, 480}, "betta");
+
+        alpha.on_focus = [&alpha_focused](const window& /*unused*/) { alpha_focused++; };
+        betta.on_focus = [&betta_focused](const window& /*unused*/) { betta_focused++; };
+
+        alpha.on_focus_lost = [&alpha_lost_focus](const window& /*unused*/) { alpha_lost_focus++; };
+        betta.on_focus_lost = [&betta_lost_focus](const window& /*unused*/) { betta_lost_focus++; };
 
         alpha.show();
+
+        alpha.process_events();
+        betta.process_events();
+
+        TEST_ASSERT(alpha_focused == 1, "Window should has focus.");
+
         betta.show();
+
+        alpha.process_events();
+        betta.process_events();
+
+        TEST_ASSERT(alpha_focused == 1, "Window should has focus.");
+        TEST_ASSERT(alpha_lost_focus == 1, "Window should not has focus.");
+        TEST_ASSERT(betta_focused == 1, "Window should has focus.");
+        TEST_ASSERT(betta_lost_focus == 0, "Window should not has focus.");
 
         TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(betta.focused(), "Focus function is not working.");
 
         alpha.focus();
 
+        alpha.process_events();
+        betta.process_events();
+
+        TEST_ASSERT(alpha_focused == 2, "Window should has focus.");
+        TEST_ASSERT(alpha_lost_focus == 1, "Window should not has focus.");
+        TEST_ASSERT(betta_focused == 1, "Window should has focus.");
+        TEST_ASSERT(betta_lost_focus == 1, "Window should not has focus.");
+
         TEST_ASSERT(alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(!betta.focused(), "Focus function is not working.");
 
         betta.focus();
+
+        alpha.process_events();
+        betta.process_events();
+
+        TEST_ASSERT(alpha_focused == 2, "Window should has focus.");
+        TEST_ASSERT(alpha_lost_focus == 2, "Window should not has focus.");
+        TEST_ASSERT(betta_focused == 2, "Window should has focus.");
+        TEST_ASSERT(betta_lost_focus == 1, "Window should not has focus.");
 
         TEST_ASSERT(!alpha.focused(), "Focus function is not working.");
         TEST_ASSERT(betta.focused(), "Focus function is not working.");
