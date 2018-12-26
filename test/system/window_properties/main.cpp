@@ -45,30 +45,41 @@ private:
     {
         using ::framework::system::window;
 
+        bool on_size_called = false;
+
         const window::size_t size480{480, 320};
         const window::size_t size640{640, 480};
 
         window w({480, 320}, "Test");
 
+        w.on_size = [&on_size_called](const window& /*unused*/, window::size_t /*unused*/) { on_size_called = true; };
+
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
 
         w.show();
 
+        TEST_ASSERT(on_size_called == true, "On size should be called.");
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
 
+        on_size_called = false;
         w.set_size({640, 480});
 
+        TEST_ASSERT(on_size_called == true, "On size should be called.");
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
         w.hide();
+        on_size_called = false;
         w.show();
 
+        TEST_ASSERT(on_size_called == true, "On size should be called.");
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
         w.hide();
         w.set_size({480, 320});
+        on_size_called = false;
         w.show();
 
+        TEST_ASSERT(on_size_called == true, "On size should be called.");
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
     }
 
@@ -210,15 +221,22 @@ private:
     {
         using ::framework::system::window;
 
-        window::size_t size640 = {640, 480};
+        bool on_position_called = false;
+        window::size_t size640  = {640, 480};
 
         window w(size640, "Test");
+
+        w.on_position = [&on_position_called](const window& /*unused*/, window::position_t /*unused*/) {
+            on_position_called = true;
+        };
 
         w.show();
 
         w.set_position({100, 100});
 
         auto position = w.position();
+
+        TEST_ASSERT(on_position_called == true, "On position should be called.");
 
         // Can't really check window position. Different WM can give different values.
         TEST_ASSERT(position.x > -100000 && position.y > -100000, "Window always has position.");

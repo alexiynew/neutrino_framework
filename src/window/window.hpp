@@ -262,7 +262,10 @@ public:
     /// @brief On focus lost callback. Called when the window loses input focus.
     event_handler<const window&> on_focus_lost = nullptr;
 
-    event_handler<const window&, window::size_t> on_size         = nullptr;
+    /// @biref On size callback. Called when window size changes.
+    event_handler<const window&, window::size_t> on_size = nullptr;
+
+    /// @biref On position callback. Called when window position changes.
     event_handler<const window&, window::position_t> on_position = nullptr;
 
     event_handler<const window&, key_code, modifiers_state> on_key_press   = nullptr;

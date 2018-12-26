@@ -63,6 +63,11 @@ private:
         w.on_focus      = [](const window&) { log::info("test") << "on_focus" << std::endl; };
         w.on_focus_lost = [](const window&) { log::info("test") << "on_focus_lost" << std::endl; };
 
+        w.on_size = [](const window&, window::size_t size) { log::info("test") << "on_size: " << size << std::endl; };
+        w.on_position = [](const window&, window::position_t position) {
+            log::info("test") << "on_position: " << position << std::endl;
+        };
+
         w.show();
 
         while (w.visible() && !should_close) {

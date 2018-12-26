@@ -681,6 +681,10 @@ void x11_window::process(XVisibilityEvent event)
         if (m_interface.on_show) {
             m_interface.on_show(m_interface);
         }
+
+        if (m_interface.on_size) {
+            m_interface.on_size(m_interface, m_size);
+        }
     }
 }
 
@@ -691,10 +695,18 @@ void x11_window::process(XConfigureEvent event)
 
     if (m_size != new_size) {
         m_size = new_size;
+
+        if (m_interface.on_size) {
+            m_interface.on_size(m_interface, m_size);
+        }
     }
 
     if (m_position != new_position) {
         m_position = new_position;
+
+        if (m_interface.on_position) {
+            m_interface.on_position(m_interface, m_position);
+        }
     }
 }
 
