@@ -308,9 +308,6 @@ void x11_window::process_events()
                 // case EnterNotify: return "EnterNotify";
                 // case LeaveNotify: return "LeaveNotify";
                 // case KeymapNotify: return "KeymapNotify"
-                // case SelectionClear: return "SelectionClear";
-                // case SelectionRequest: return "SelectionRequest";
-                // case SelectionNotify: return "SelectionNotify";
                 // case GenericEvent:  return "GenericEvent";
 
             case VisibilityNotify: process(event.xvisibility); break;
@@ -321,6 +318,8 @@ void x11_window::process_events()
             case FocusOut: process(event.xfocus); break;
             case PropertyNotify: process(event.xproperty); break;
             case ClientMessage: process(event.xclient); break;
+            case KeyPress: process(event.xkey); break;
+            case KeyRelease: process(event.xkey); break;
 
             default: break;
         }
@@ -769,6 +768,32 @@ void x11_window::process(XClientMessageEvent event)
     Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
     if (static_cast<Atom>(event.data.l[0]) == delete_window && m_interface.on_close) {
         m_interface.on_close(m_interface);
+    }
+}
+
+void x11_window::process(XKeyEvent event)
+{
+    switch (event.type) {
+        case KeyPress:
+            if (m_interface.on_key_press) {
+                m_interface.on_key_press(m_interface, {}, {});
+            }
+            break;
+
+        case KeyRelease:
+            bool is_retriggered = false;
+            if (XEventsQueued(m_server->display(), QueuedAfterReading)) {
+                XEvent next_event;
+                XPeekEvent(m_server->display(), &next_event);
+
+                is_retriggered = (next_event.type == KeyPress && next_event.xkey.time == event.time &&
+                                  next_event.xkey.keycode == event.keycode);
+            }
+
+            if (!is_retriggered && m_interface.on_key_release) {
+                m_interface.on_key_release(m_interface, {}, {});
+            }
+            break;
     }
 }
 

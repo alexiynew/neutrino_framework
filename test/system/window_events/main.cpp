@@ -68,6 +68,13 @@ private:
             log::info("test") << "on_position: " << position << std::endl;
         };
 
+        w.on_key_press = [](const window&, system::key_code, system::modifiers_state) {
+            log::info("test") << "on_key_press" << std::endl;
+        };
+        w.on_key_release = [](const window&, system::key_code, system::modifiers_state) {
+            log::info("test") << "on_key_release" << std::endl;
+        };
+
         w.show();
 
         while (w.visible() && !should_close) {

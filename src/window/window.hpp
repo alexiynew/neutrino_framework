@@ -268,7 +268,10 @@ public:
     /// @biref On position callback. Called when window position changes.
     event_handler<const window&, window::position_t> on_position = nullptr;
 
-    event_handler<const window&, key_code, modifiers_state> on_key_press   = nullptr;
+    /// @biref On key press callback. Called when key is pressed. Can be called multiple times.
+    event_handler<const window&, key_code, modifiers_state> on_key_press = nullptr;
+
+    /// @biref On key release callback. Called when key is released.
     event_handler<const window&, key_code, modifiers_state> on_key_release = nullptr;
 
     event_handler<const window&, std::string> on_character = nullptr;
