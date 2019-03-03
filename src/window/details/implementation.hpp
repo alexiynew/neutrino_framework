@@ -32,10 +32,11 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 
+#include <opengl/context.hpp>
 #include <window/details/event_handler.hpp>
-#include <window/window.hpp>
+#include <window/window_position.hpp>
+#include <window/window_size.hpp>
 
 namespace framework::system::details
 {
@@ -51,8 +52,8 @@ public:
     implementation(const implementation&) = delete;
     implementation& operator=(const implementation&) = delete;
 
-    implementation(implementation&&) = delete;
-    implementation& operator=(implementation&&) = delete;
+    implementation(implementation&&) = default;
+    implementation& operator=(implementation&&) = default;
 
     void set_event_handler(const details::event_handler* handler);
 
