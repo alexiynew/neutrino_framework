@@ -37,23 +37,22 @@
 #include <window/details/event_handler.hpp>
 #include <window/window.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
-class window::implementation
+class implementation
 {
 public:
-    static std::unique_ptr<implementation> create(window_size size,
-                                                  const std::string& title,
-                                                  opengl::context_settings settings);
-
     static void set_application_name(const std::string& name);
 
-    implementation() = default;
+    implementation();
 
-    virtual ~implementation() = default;
+    virtual ~implementation();
 
     implementation(const implementation&) = delete;
     implementation& operator=(const implementation&) = delete;
+
+    implementation(implementation&&) = delete;
+    implementation& operator=(implementation&&) = delete;
 
     void set_event_handler(const details::event_handler* handler);
 
@@ -112,6 +111,11 @@ protected:
     const details::event_handler* m_event_handler = nullptr;
 };
 
-} // namespace framework::system
+// @brief Fabric function to make platform dependent implementation
+std::unique_ptr<implementation> create_implementation(window_size size,
+                                                      const std::string& title,
+                                                      opengl::context_settings settings);
+
+} // namespace framework::system::details
 
 #endif

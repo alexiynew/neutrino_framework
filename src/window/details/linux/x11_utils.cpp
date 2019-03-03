@@ -197,7 +197,7 @@ std::string create_string(Display* display, const XTextProperty& text_property)
 
 } // namespace
 
-namespace framework::system::utils
+namespace framework::system::details::utils
 {
 bool ewmh_supported()
 {
@@ -383,4 +383,4 @@ std::string get_window_name(const x11_server* server, Window window)
     return "";
 }
 
-} // namespace framework::system::utils
+} // namespace framework::system::details::utils

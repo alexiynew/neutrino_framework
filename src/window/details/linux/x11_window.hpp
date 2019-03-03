@@ -37,9 +37,9 @@
 #include <window/details/implementation.hpp>
 #include <window/details/linux/x11_server.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
-class x11_window final : public window::implementation
+class x11_window final : public implementation
 {
 public:
     x11_window(window_size size, const std::string& title, opengl::context_settings settings);
@@ -148,6 +148,6 @@ private:
     Time m_lastInputTime = 0;
 };
 
-} // namespace framework::system
+} // namespace framework::system::details
 
 #endif

@@ -54,8 +54,13 @@ namespace framework::system
 {
 namespace details
 {
+/// @brief Base class for OS specific realisation.
+class implementation;
+
+/// @brief Helper class to handle events.
 class event_handler;
-}
+
+} // namespace details
 
 /// @addtogroup window_class
 /// @{
@@ -66,9 +71,6 @@ class event_handler;
 class window final
 {
 public:
-    /// @brief Base class for OS specific realisation.
-    class implementation;
-
     /// @brief Sets the formal name of the application.
     ///
     /// @param name Application name.
@@ -282,8 +284,7 @@ public:
     /// @}
 
 private:
-    std::unique_ptr<implementation> m_implementation;
-
+    std::unique_ptr<details::implementation> m_implementation;
     std::unique_ptr<details::event_handler> m_event_handler;
 };
 

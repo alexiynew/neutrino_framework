@@ -35,9 +35,9 @@
 
 #include <window/details/implementation.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
-class win32_window final : public window::implementation
+class win32_window final : public implementation
 {
 public:
     win32_window(window_size size, const std::string& title, opengl::context_settings settings);
@@ -115,15 +115,18 @@ private:
     window_size m_min_size = {0, 0};
     window_size m_max_size = {0, 0};
 
-    bool m_resizable = true;
+    bool m_resizable   = true;
+    bool m_mouse_hover = false;
 
     window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
 
     std::unique_ptr<opengl::context> m_context = nullptr;
 
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    void track_mouse();
 };
 
-} // namespace framework::system
+} // namespace framework::system::details
 
 #endif

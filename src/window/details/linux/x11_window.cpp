@@ -132,15 +132,8 @@ std::string event_type_string(const XAnyEvent& event)
 
 } // namespace
 
-namespace framework::system
+namespace framework::system::details
 {
-std::unique_ptr<window::implementation> window::implementation::create(window_size size,
-                                                                       const std::string& title,
-                                                                       opengl::context_settings settings)
-{
-    return std::make_unique<x11_window>(size, title, settings);
-}
-
 x11_window::x11_window(window_size size, const std::string& title, opengl::context_settings settings)
     : m_server(x11_server::connect()), m_size(size)
 {
@@ -955,4 +948,4 @@ void x11_window::update_size_limits(window_size min_size, window_size max_size)
 
 #pragma endregion
 
-} // namespace framework::system
+} // namespace framework::system::details

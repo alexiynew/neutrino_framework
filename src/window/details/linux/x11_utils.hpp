@@ -38,7 +38,7 @@
 #include <common/types.hpp>
 #include <window/details/linux/x11_server.hpp>
 
-namespace framework::system::utils
+namespace framework::system::details::utils
 {
 constexpr int32 message_source_application = 1;
 
@@ -82,6 +82,6 @@ void set_bypass_compositor_state(const x11_server* server, Window window, bypass
 void set_window_name(const x11_server* server, Window window, const std::string& title);
 std::string get_window_name(const x11_server* server, Window window);
 
-} // namespace framework::system::utils
+} // namespace framework::system::details::utils
 
 #endif

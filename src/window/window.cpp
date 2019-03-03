@@ -35,15 +35,13 @@
 
 namespace framework::system
 {
-std::string window::implementation::application_name = "Application";
-
 void window::set_application_name(const std::string& name)
 {
-    implementation::set_application_name(name);
+    details::implementation::set_application_name(name);
 }
 
 window::window(window_size size, const std::string& title, opengl::context_settings settings)
-    : m_implementation(implementation::create(size, title, std::move(settings))),
+    : m_implementation(details::create_implementation(size, title, std::move(settings))),
       m_event_handler(std::make_unique<details::event_handler>(this))
 {
     m_implementation->set_event_handler(m_event_handler.get());

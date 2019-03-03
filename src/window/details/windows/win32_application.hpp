@@ -33,15 +33,15 @@
 #include <map>
 #include <windows.h>
 
-namespace framework::system
+namespace framework::system::details
 {
 class win32_window;
 
 class win32_application
 {
 public:
-    static void add_window(HANDLE handle, framework::system::win32_window* window);
-    static framework::system::win32_window* get_window(HANDLE handle);
+    static void add_window(HANDLE handle, win32_window* window);
+    static win32_window* get_window(HANDLE handle);
     static void remove_window(HANDLE handle);
 
     static HMODULE handle();
@@ -49,12 +49,12 @@ public:
     static LRESULT CALLBACK window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param);
 
 private:
-    using container = std::map<HANDLE, framework::system::win32_window*>;
+    using container = std::map<HANDLE, win32_window*>;
 
     static container m_windows;
     static HMODULE m_handle;
 };
 
-} // namespace framework::system
+} // namespace framework::system::details
 
 #endif

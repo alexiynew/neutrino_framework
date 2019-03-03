@@ -30,17 +30,17 @@
 #include <window/details/windows/win32_application.hpp>
 #include <window/details/windows/win32_window.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
 win32_application::container win32_application::m_windows;
 HMODULE win32_application::m_handle = nullptr;
 
-void win32_application::add_window(HANDLE handle, framework::system::win32_window* window)
+void win32_application::add_window(HANDLE handle, win32_window* window)
 {
     m_windows.insert({handle, window});
 }
 
-framework::system::win32_window* win32_application::get_window(HANDLE handle)
+win32_window* win32_application::get_window(HANDLE handle)
 {
     if (m_windows.count(handle)) {
         return m_windows[handle];
@@ -76,4 +76,4 @@ LRESULT CALLBACK win32_application::window_procedure(HWND window_handle, UINT me
     return DefWindowProc(window_handle, message, w_param, l_param);
 }
 
-} // namespace framework::system
+} // namespace framework::system::details

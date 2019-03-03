@@ -1,7 +1,7 @@
 /// @file
-/// @brief Describes interface for all window implementations.
+/// @brief Window implementation for Linux.
 /// @author Fedorov Alexey
-/// @date 05.04.2017
+/// @date 03.03.2019
 
 // =============================================================================
 // MIT License
@@ -28,23 +28,15 @@
 // =============================================================================
 
 #include <window/details/implementation.hpp>
+#include <window/details/linux/x11_window.hpp>
 
 namespace framework::system::details
 {
-std::string implementation::application_name = "Application";
-
-implementation::implementation() = default;
-
-implementation::~implementation() = default;
-
-void implementation::set_application_name(const std::string& name)
+std::unique_ptr<implementation> create_implementation(window_size size,
+                                                      const std::string& title,
+                                                      opengl::context_settings settings)
 {
-    application_name = name;
-}
-
-void implementation::set_event_handler(const details::event_handler* handler)
-{
-    m_event_handler = handler;
+    return std::make_unique<x11_window>(size, title, settings);
 }
 
 } // namespace framework::system::details

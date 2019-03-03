@@ -81,6 +81,10 @@ private:
             log::info("test") << "on_key_release" << std::endl;
         });
 
+        w.set_on_mouse_enter_callback([](const window&) { log::info("test") << "on_mouse_enter" << std::endl; });
+
+        w.set_on_mouse_leave_callback([](const window&) { log::info("test") << "on_mouse_leave" << std::endl; });
+
         w.show();
 
         while (w.visible() && !should_close) {

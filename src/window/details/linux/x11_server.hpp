@@ -35,7 +35,7 @@
 #include <memory>
 #include <vector>
 
-namespace framework::system
+namespace framework::system::details
 {
 class x11_server final
 {
@@ -66,6 +66,6 @@ private:
     mutable std::map<std::string, Atom> m_atoms;
 };
 
-} // namespace framework::system
+} // namespace framework::system::details
 
 #endif

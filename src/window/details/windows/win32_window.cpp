@@ -77,14 +77,14 @@ std::string to_utf8(const std::wstring& string)
 
 void unregister_window_class(ATOM*)
 {
-    using framework::system::win32_application;
+    using framework::system::details::win32_application;
 
     UnregisterClass(class_name, win32_application::handle());
 }
 
 std::shared_ptr<ATOM> register_window_class_details()
 {
-    using framework::system::win32_application;
+    using framework::system::details::win32_application;
 
     WNDCLASSEX window_class = {};
 
@@ -124,15 +124,8 @@ std::shared_ptr<ATOM> register_window_class()
 
 } // namespace
 
-namespace framework::system
+namespace framework::system::details
 {
-std::unique_ptr<window::implementation> window::implementation::create(window_size size,
-                                                                       const std::string& title,
-                                                                       opengl::context_settings settings)
-{
-    return std::make_unique<win32_window>(size, title, std::move(settings));
-}
-
 win32_window::win32_window(window_size size, const std::string& title, opengl::context_settings settings)
 {
     m_window_class = ::register_window_class();
@@ -182,6 +175,9 @@ void win32_window::show()
         ShowWindow(m_window, SW_SHOW);
     }
     UpdateWindow(m_window);
+
+    // TODO: Get mouse position and set m_mouse_hover correctly.
+    // m_mouse_hover = cursor inside window?
 }
 
 void win32_window::hide()
@@ -512,6 +508,7 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
             if (m_event_handler) {
                 m_event_handler->on_mouse_leave();
             }
+            m_mouse_hover = false;
 
             return 0;
         }
@@ -520,8 +517,13 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
             if (m_event_handler) {
                 m_event_handler->on_mouse_enter();
             }
+            m_mouse_hover = true;
 
             return 0;
+        }
+
+        case WM_MOUSEMOVE: {
+            track_mouse();
         }
 
         case WM_SYSCOMMAND: {
@@ -545,4 +547,19 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
 
 #pragma endregion
 
-} // namespace framework::system
+#pragma region helper functions
+
+void win32_window::track_mouse()
+{
+    TRACKMOUSEEVENT track_info;
+    track_info.cbSize      = sizeof(track_info);
+    track_info.dwFlags     = m_mouse_hover ? TME_LEAVE : TME_HOVER;
+    track_info.hwndTrack   = m_window;
+    track_info.dwHoverTime = 1;
+
+    TrackMouseEvent(&track_info);
+}
+
+#pragma endregion
+
+} // namespace framework::system::details
