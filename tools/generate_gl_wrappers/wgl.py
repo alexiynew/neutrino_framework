@@ -26,7 +26,7 @@ INIT_FUNCTION_NAME = "init_wgl_functions"
 LICENSE = "// =============================================================================\n" \
           "// MIT License\n" \
           "//\n" \
-          "// Copyright (c) 2017-2018 Fedorov Alexey\n" \
+          "// Copyright (c) 2017-2019 Fedorov Alexey\n" \
           "//\n" \
           "// Permission is hereby granted, free of charge, to any person obtaining a copy\n" \
           "// of this software and associated documentation files (the \"Software\"), to deal\n" \

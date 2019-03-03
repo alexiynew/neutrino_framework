@@ -9,7 +9,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2018 Fedorov Alexey
+// Copyright (c) 2017-2019 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
