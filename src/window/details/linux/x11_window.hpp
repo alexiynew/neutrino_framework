@@ -109,6 +109,7 @@ private:
     void process(XPropertyEvent event);
     void process(XClientMessageEvent event);
     void process(XKeyEvent event);
+    void process(XCrossingEvent event);
     void process(XAnyEvent event);
 
     void maximize_toggle(bool enable);

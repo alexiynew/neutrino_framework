@@ -301,8 +301,6 @@ void x11_window::process_events()
                 // case ButtonPress: return "ButtonPress";
                 // case ButtonRelease: return "ButtonRelease";
                 // case MotionNotify: return "MotionNotify";
-                // case EnterNotify: return "EnterNotify";
-                // case LeaveNotify: return "LeaveNotify";
                 // case KeymapNotify: return "KeymapNotify"
                 // case GenericEvent:  return "GenericEvent";
 
@@ -316,6 +314,8 @@ void x11_window::process_events()
             case ClientMessage: process(event.xclient); break;
             case KeyPress: process(event.xkey); break;
             case KeyRelease: process(event.xkey); break;
+            case EnterNotify: process(event.xcrossing); break;
+            case LeaveNotify: process(event.xcrossing); break;
 
             default: break;
         }
@@ -662,7 +662,7 @@ void x11_window::process(XUnmapEvent /*unused*/)
     if (m_event_handler) {
         m_event_handler->on_hide();
     }
-} // namespace framework::system
+}
 
 void x11_window::process(XVisibilityEvent event)
 {
@@ -788,6 +788,23 @@ void x11_window::process(XKeyEvent event)
 
             if (!is_retriggered && m_event_handler) {
                 m_event_handler->on_key_release({}, {});
+            }
+            break;
+    }
+}
+
+void x11_window::process(XCrossingEvent event)
+{
+    switch (event.type) {
+        case EnterNotify:
+            if (m_event_handler) {
+                m_event_handler->on_mouse_enter();
+            }
+            break;
+
+        case LeaveNotify:
+            if (m_event_handler) {
+                m_event_handler->on_mouse_leave();
             }
             break;
     }
