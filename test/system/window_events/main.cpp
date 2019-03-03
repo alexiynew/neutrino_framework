@@ -73,12 +73,12 @@ private:
         w.set_on_position_callback(
         [](const window&, window_position position) { log::info("test") << "on_position: " << position << std::endl; });
 
-        w.set_on_key_press_callback([](const window&, system::key_code, system::modifiers_state) {
-            log::info("test") << "on_key_press" << std::endl;
+        w.set_on_key_press_callback([](const window&, system::key_code key, system::modifiers_state) {
+            log::info("test") << "on_key_press key: " << (int)key << std::endl;
         });
 
-        w.set_on_key_release_callback([](const window&, system::key_code, system::modifiers_state) {
-            log::info("test") << "on_key_release" << std::endl;
+        w.set_on_key_release_callback([](const window&, system::key_code key, system::modifiers_state) {
+            log::info("test") << "on_key_release key: " << (int)key << std::endl;
         });
 
         w.set_on_mouse_enter_callback([](const window&) { log::info("test") << "on_mouse_enter" << std::endl; });

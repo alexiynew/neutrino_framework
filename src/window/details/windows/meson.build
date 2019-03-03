@@ -3,7 +3,8 @@ hdr = files('win32_window.hpp',
 
 src = files('win32_window.cpp',
             'win32_application.cpp',
-            'win32_implementation.cpp')
+            'win32_implementation.cpp',
+            'keyboard.cpp')
 
 framework_sources += hdr
 framework_sources += src

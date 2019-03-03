@@ -526,6 +526,28 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
             track_mouse();
         }
 
+        case WM_KEYDOWN:
+        case WM_SYSKEYDOWN:
+        case WM_KEYUP:
+        case WM_SYSKEYUP: {
+            const key_code key              = map_system_key(static_cast<uint32>(w_param));
+            const bool is_key_down          = ((l_param >> 31) & 1) == 0;
+            const modifiers_state mod_state = get_modifiers_state();
+
+            if (key == key_code::key_unknown)
+                break;
+
+            if (m_event_handler) {
+                if (is_key_down) {
+                    m_event_handler->on_key_press(key, mod_state);
+                } else {
+                    m_event_handler->on_key_release(key, mod_state);
+                }
+            }
+
+            return 0;
+        }
+
         case WM_SYSCOMMAND: {
             switch (w_param & 0xfff0) {
                 case SC_SCREENSAVE:
