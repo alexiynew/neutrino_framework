@@ -134,19 +134,15 @@ std::string event_type_string(const XAnyEvent& event)
 
 namespace framework::system
 {
-std::unique_ptr<window::implementation> window::implementation::create(const window& interface,
-                                                                       window::size_t size,
+std::unique_ptr<window::implementation> window::implementation::create(window_size size,
                                                                        const std::string& title,
                                                                        opengl::context_settings settings)
 {
-    return std::make_unique<x11_window>(interface, size, title, settings);
+    return std::make_unique<x11_window>(size, title, settings);
 }
 
-x11_window::x11_window(const window& interface,
-                       window::size_t size,
-                       const std::string& title,
-                       opengl::context_settings settings)
-    : implementation(interface), m_server(x11_server::connect()), m_size(size)
+x11_window::x11_window(window_size size, const std::string& title, opengl::context_settings settings)
+    : m_server(x11_server::connect()), m_size(size)
 {
     auto context = std::make_unique<glx_context>(m_server->display(), std::move(settings));
     if (!context->valid()) {
@@ -416,7 +412,7 @@ void x11_window::restore()
 
 #pragma region setters
 
-void x11_window::set_size(window::size_t size)
+void x11_window::set_size(window_size size)
 {
     if (size.width <= 0 || size.height <= 0) {
         return;
@@ -448,14 +444,14 @@ void x11_window::set_size(window::size_t size)
     process_events_while([this, size]() { return m_size != size; });
 }
 
-void x11_window::set_position(window::position_t position)
+void x11_window::set_position(window_position position)
 {
     XMoveWindow(m_server->display(), m_window, position.x, position.y);
     XFlush(m_server->display());
     process_events();
 }
 
-void x11_window::set_max_size(window::size_t max_size)
+void x11_window::set_max_size(window_size max_size)
 {
     m_max_size = max_size;
 
@@ -464,7 +460,7 @@ void x11_window::set_max_size(window::size_t max_size)
     }
 }
 
-void x11_window::set_min_size(window::size_t min_size)
+void x11_window::set_min_size(window_size min_size)
 {
     m_min_size = min_size;
 
@@ -502,7 +498,7 @@ void x11_window::set_title(const std::string& title)
 
 #pragma region getters
 
-window::position_t x11_window::position() const
+window_position x11_window::position() const
 {
     int32 x_return, y_return;
     Window child_return;
@@ -519,7 +515,7 @@ window::position_t x11_window::position() const
     return {x_return, y_return};
 }
 
-window::size_t x11_window::size() const
+window_size x11_window::size() const
 {
     XWindowAttributes attributes = {};
     XGetWindowAttributes(m_server->display(), m_window, &attributes);
@@ -527,7 +523,7 @@ window::size_t x11_window::size() const
     return {attributes.width, attributes.height};
 }
 
-window::size_t x11_window::max_size() const
+window_size x11_window::max_size() const
 {
     if (!m_resizable) {
         return m_max_size;
@@ -540,15 +536,15 @@ window::size_t x11_window::max_size() const
     const bool has_max_size_hints = (size_hints.flags &= PMaxSize) != 0;
 
     if (!got_size_hints || !has_max_size_hints) {
-        m_max_size = window::size_t{0, 0};
+        m_max_size = window_size{0, 0};
     } else {
-        m_max_size = window::size_t{size_hints.max_width, size_hints.max_height};
+        m_max_size = window_size{size_hints.max_width, size_hints.max_height};
     }
 
     return m_max_size;
 }
 
-window::size_t x11_window::min_size() const
+window_size x11_window::min_size() const
 {
     if (!m_resizable) {
         return m_min_size;
@@ -561,9 +557,9 @@ window::size_t x11_window::min_size() const
     const bool has_min_size_hints = (size_hints.flags &= PMinSize) != 0;
 
     if (!got_size_hints || !has_min_size_hints) {
-        m_min_size = window::size_t{0, 0};
+        m_min_size = window_size{0, 0};
     } else {
-        m_min_size = window::size_t{size_hints.min_width, size_hints.min_height};
+        m_min_size = window_size{size_hints.min_width, size_hints.min_height};
     }
 
     return m_min_size;
@@ -663,10 +659,10 @@ void x11_window::process(XDestroyWindowEvent /*unused*/)
 void x11_window::process(XUnmapEvent /*unused*/)
 {
     m_mapped = false;
-    if (m_interface.on_hide) {
-        m_interface.on_hide(m_interface);
+    if (m_event_handler) {
+        m_event_handler->on_hide();
     }
-}
+} // namespace framework::system
 
 void x11_window::process(XVisibilityEvent event)
 {
@@ -677,34 +673,34 @@ void x11_window::process(XVisibilityEvent event)
     if (!m_mapped) {
         m_mapped = true;
 
-        if (m_interface.on_show) {
-            m_interface.on_show(m_interface);
+        if (m_event_handler) {
+            m_event_handler->on_show();
         }
 
-        if (m_interface.on_size) {
-            m_interface.on_size(m_interface, m_size);
+        if (m_event_handler) {
+            m_event_handler->on_size(m_size);
         }
     }
 }
 
 void x11_window::process(XConfigureEvent event)
 {
-    window::size_t new_size{event.width, event.height};
-    window::position_t new_position{event.x, event.y};
+    window_size new_size{event.width, event.height};
+    window_position new_position{event.x, event.y};
 
     if (m_size != new_size) {
         m_size = new_size;
 
-        if (m_interface.on_size) {
-            m_interface.on_size(m_interface, m_size);
+        if (m_event_handler) {
+            m_event_handler->on_size(m_size);
         }
     }
 
     if (m_position != new_position) {
         m_position = new_position;
 
-        if (m_interface.on_position) {
-            m_interface.on_position(m_interface, m_position);
+        if (m_event_handler) {
+            m_event_handler->on_position(m_position);
         }
     }
 }
@@ -736,8 +732,8 @@ void x11_window::process(XFocusChangeEvent event)
             //     }
             // }
 
-            if (m_interface.on_focus) {
-                m_interface.on_focus(m_interface);
+            if (m_event_handler) {
+                m_event_handler->on_focus();
             }
 
             break;
@@ -751,8 +747,8 @@ void x11_window::process(XFocusChangeEvent event)
                 m_cursor_grabbed = false;
             }
 
-            if (m_interface.on_focus_lost) {
-                m_interface.on_focus_lost(m_interface);
+            if (m_event_handler) {
+                m_event_handler->on_focus_lost();
             }
             break;
     }
@@ -766,8 +762,8 @@ void x11_window::process(XPropertyEvent event)
 void x11_window::process(XClientMessageEvent event)
 {
     Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
-    if (static_cast<Atom>(event.data.l[0]) == delete_window && m_interface.on_close) {
-        m_interface.on_close(m_interface);
+    if (static_cast<Atom>(event.data.l[0]) == delete_window && m_event_handler) {
+        m_event_handler->on_close();
     }
 }
 
@@ -775,8 +771,8 @@ void x11_window::process(XKeyEvent event)
 {
     switch (event.type) {
         case KeyPress:
-            if (m_interface.on_key_press) {
-                m_interface.on_key_press(m_interface, {}, {});
+            if (m_event_handler) {
+                m_event_handler->on_key_press({}, {});
             }
             break;
 
@@ -790,8 +786,8 @@ void x11_window::process(XKeyEvent event)
                                   next_event.xkey.keycode == event.keycode);
             }
 
-            if (!is_retriggered && m_interface.on_key_release) {
-                m_interface.on_key_release(m_interface, {}, {});
+            if (!is_retriggered && m_event_handler) {
+                m_event_handler->on_key_release({}, {});
             }
             break;
     }
@@ -914,7 +910,7 @@ void x11_window::process_events_while(const std::function<bool()>& condition)
     }
 }
 
-void x11_window::update_size_limits(window::size_t min_size, window::size_t max_size)
+void x11_window::update_size_limits(window_size min_size, window_size max_size)
 {
     XSizeHints size_hints = {};
     int64 supplied;

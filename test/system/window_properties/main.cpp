@@ -44,15 +44,17 @@ private:
     void window_size()
     {
         using ::framework::system::window;
+        using ::framework::system::window_size;
 
         bool on_size_called = false;
 
-        const window::size_t size480{480, 320};
-        const window::size_t size640{640, 480};
+        const window_size size480{480, 320};
+        const window_size size640{640, 480};
 
         window w({480, 320}, "Test");
 
-        w.on_size = [&on_size_called](const window& /*unused*/, window::size_t /*unused*/) { on_size_called = true; };
+        w.set_on_size_callback(
+        [&on_size_called](const window& /*unused*/, window_size /*unused*/) { on_size_called = true; });
 
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
 
@@ -86,12 +88,13 @@ private:
     void window_size_limits()
     {
         using ::framework::system::window;
+        using ::framework::system::window_size;
 
-        const window::size_t size640{640, 480};
-        const window::size_t size960{960, 640};
-        const window::size_t no_size{0, 0};
-        const window::size_t small_size{150, 150};
-        const window::size_t big_size{1000, 1000};
+        const window_size size640{640, 480};
+        const window_size size960{960, 640};
+        const window_size no_size{0, 0};
+        const window_size small_size{150, 150};
+        const window_size big_size{1000, 1000};
 
         window w({640, 480}, "Test");
 
@@ -134,9 +137,10 @@ private:
     void window_resizability()
     {
         using ::framework::system::window;
+        using ::framework::system::window_size;
 
-        const window::size_t size640{640, 480};
-        const window::size_t no_size{0, 0};
+        const window_size size640{640, 480};
+        const window_size no_size{0, 0};
 
         window w(size640, "Test");
 
@@ -156,10 +160,11 @@ private:
     void window_resizability_and_size()
     {
         using ::framework::system::window;
+        using ::framework::system::window_size;
 
-        const window::size_t size480{480, 320};
-        const window::size_t size640{640, 480};
-        const window::size_t size960{960, 640};
+        const window_size size480{480, 320};
+        const window_size size640{640, 480};
+        const window_size size960{960, 640};
 
         window w(size640, "Test");
 
@@ -196,9 +201,10 @@ private:
     void window_resizability_before_show()
     {
         using ::framework::system::window;
+        using ::framework::system::window_size;
 
-        const window::size_t no_size{0, 0};
-        const window::size_t size640{640, 480};
+        const window_size no_size{0, 0};
+        const window_size size640{640, 480};
 
         window w(size640, "Test");
 
@@ -220,15 +226,16 @@ private:
     void window_position()
     {
         using ::framework::system::window;
+        using ::framework::system::window_position;
+        using ::framework::system::window_size;
 
         bool on_position_called = false;
-        window::size_t size640  = {640, 480};
+        window_size size640     = {640, 480};
 
         window w(size640, "Test");
 
-        w.on_position = [&on_position_called](const window& /*unused*/, window::position_t /*unused*/) {
-            on_position_called = true;
-        };
+        w.set_on_position_callback(
+        [&on_position_called](const window& /*unused*/, window_position /*unused*/) { on_position_called = true; });
 
         w.show();
 

@@ -43,37 +43,43 @@ private:
     {
         using namespace framework;
         using ::framework::system::window;
+        using ::framework::system::window_position;
+        using ::framework::system::window_size;
 
         ::framework::log::set_logger(std::make_unique<::framework::log::stream_logger>(std::cout));
 
-        const window::size_t size640{640, 480};
+        const window_size size640{640, 480};
 
         window w(size640, "Test");
 
         bool should_close = false;
 
-        w.on_show = [](const window&) { log::info("test") << "on_show" << std::endl; };
-        w.on_hide = [](const window&) { log::info("test") << "on_hide" << std::endl; };
+        w.set_on_show_callback([](const window&) { log::info("test") << "on_show" << std::endl; });
 
-        w.on_close = [&should_close](const window&) {
+        w.set_on_hide_callback([](const window&) { log::info("test") << "on_hide" << std::endl; });
+
+        w.set_on_close_callback([&should_close](const window&) {
             log::info("test") << "on_close" << std::endl;
             should_close = true;
-        };
+        });
 
-        w.on_focus      = [](const window&) { log::info("test") << "on_focus" << std::endl; };
-        w.on_focus_lost = [](const window&) { log::info("test") << "on_focus_lost" << std::endl; };
+        w.set_on_focus_callback([](const window&) { log::info("test") << "on_focus" << std::endl; });
 
-        w.on_size = [](const window&, window::size_t size) { log::info("test") << "on_size: " << size << std::endl; };
-        w.on_position = [](const window&, window::position_t position) {
-            log::info("test") << "on_position: " << position << std::endl;
-        };
+        w.set_on_focus_lost_callback([](const window&) { log::info("test") << "on_focus_lost" << std::endl; });
 
-        w.on_key_press = [](const window&, system::key_code, system::modifiers_state) {
+        w.set_on_size_callback(
+        [](const window&, window_size size) { log::info("test") << "on_size: " << size << std::endl; });
+
+        w.set_on_position_callback(
+        [](const window&, window_position position) { log::info("test") << "on_position: " << position << std::endl; });
+
+        w.set_on_key_press_callback([](const window&, system::key_code, system::modifiers_state) {
             log::info("test") << "on_key_press" << std::endl;
-        };
-        w.on_key_release = [](const window&, system::key_code, system::modifiers_state) {
+        });
+
+        w.set_on_key_release_callback([](const window&, system::key_code, system::modifiers_state) {
             log::info("test") << "on_key_release" << std::endl;
-        };
+        });
 
         w.show();
 

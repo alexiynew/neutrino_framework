@@ -34,6 +34,7 @@
 #include <string>
 #include <vector>
 
+#include <window/details/event_handler.hpp>
 #include <window/window.hpp>
 
 namespace framework::system
@@ -41,19 +42,20 @@ namespace framework::system
 class window::implementation
 {
 public:
-    static std::unique_ptr<implementation> create(const window& interface,
-                                                  window::size_t size,
+    static std::unique_ptr<implementation> create(window_size size,
                                                   const std::string& title,
                                                   opengl::context_settings settings);
 
     static void set_application_name(const std::string& name);
+
+    implementation() = default;
 
     virtual ~implementation() = default;
 
     implementation(const implementation&) = delete;
     implementation& operator=(const implementation&) = delete;
 
-    void set_interface(window& interface);
+    void set_event_handler(const details::event_handler* handler);
 
     /// @name actions
     /// @{
@@ -70,11 +72,11 @@ public:
 
     /// @name setters
     /// @{
-    virtual void set_size(size_t)         = 0;
-    virtual void set_position(position_t) = 0;
+    virtual void set_size(window_size)         = 0;
+    virtual void set_position(window_position) = 0;
 
-    virtual void set_max_size(size_t) = 0;
-    virtual void set_min_size(size_t) = 0;
+    virtual void set_max_size(window_size) = 0;
+    virtual void set_min_size(window_size) = 0;
 
     virtual void set_resizable(bool) = 0;
 
@@ -83,11 +85,11 @@ public:
 
     /// @name getters
     /// @{
-    virtual position_t position() const = 0;
-    virtual size_t size() const         = 0;
+    virtual window_position position() const = 0;
+    virtual window_size size() const         = 0;
 
-    virtual size_t max_size() const = 0;
-    virtual size_t min_size() const = 0;
+    virtual window_size max_size() const = 0;
+    virtual window_size min_size() const = 0;
 
     virtual std::string title() const = 0;
 
@@ -105,11 +107,9 @@ public:
     /// @}
 
 protected:
-    explicit implementation(const window& interface);
-
     static std::string application_name;
 
-    const window& m_interface;
+    const details::event_handler* m_event_handler = nullptr;
 };
 
 } // namespace framework::system

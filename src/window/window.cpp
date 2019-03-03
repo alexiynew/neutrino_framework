@@ -29,6 +29,7 @@
 
 #include <memory>
 
+#include <window/details/event_handler.hpp>
 #include <window/details/implementation.hpp>
 #include <window/window.hpp>
 
@@ -41,17 +42,12 @@ void window::set_application_name(const std::string& name)
     implementation::set_application_name(name);
 }
 
-void window::implementation::set_application_name(const std::string& name)
+window::window(window_size size, const std::string& title, opengl::context_settings settings)
+    : m_implementation(implementation::create(size, title, std::move(settings))),
+      m_event_handler(std::make_unique<details::event_handler>(this))
 {
-    application_name = name;
+    m_implementation->set_event_handler(m_event_handler.get());
 }
-
-window::implementation::implementation(const window& interface) : m_interface(interface)
-{}
-
-window::window(size_t size, const std::string& title, opengl::context_settings settings)
-    : m_implementation(implementation::create(*this, size, title, std::move(settings)))
-{}
 
 window::~window() = default;
 
@@ -110,22 +106,22 @@ void window::restore()
 
 #pragma region setters
 
-void window::set_size(size_t size)
+void window::set_size(window_size size)
 {
     m_implementation->set_size(size);
 }
 
-void window::set_position(position_t position)
+void window::set_position(window_position position)
 {
     m_implementation->set_position(position);
 }
 
-void window::set_max_size(size_t max_size)
+void window::set_max_size(window_size max_size)
 {
     m_implementation->set_max_size(max_size);
 }
 
-void window::set_min_size(size_t min_size)
+void window::set_min_size(window_size min_size)
 {
     m_implementation->set_min_size(min_size);
 }
@@ -144,22 +140,22 @@ void window::set_title(const std::string& title)
 
 #pragma region getters
 
-window::position_t window::position() const
+window_position window::position() const
 {
     return m_implementation->position();
 }
 
-window::size_t window::size() const
+window_size window::size() const
 {
     return m_implementation->size();
 }
 
-window::size_t window::max_size() const
+window_size window::max_size() const
 {
     return m_implementation->max_size();
 }
 
-window::size_t window::min_size() const
+window_size window::min_size() const
 {
     return m_implementation->min_size();
 }
@@ -210,30 +206,76 @@ bool window::focused() const
 
 #pragma endregion
 
-#pragma region window::size_t
+#pragma region events
 
-bool operator==(const window::size_t& lhs, const window::size_t& rhs)
+void window::set_on_show_callback(window_event_callback callback)
 {
-    return lhs.width == rhs.width && lhs.height == rhs.height;
+    m_event_handler->m_on_show_callback = std::move(callback);
 }
 
-bool operator!=(const window::size_t& lhs, const window::size_t& rhs)
+void window::set_on_hide_callback(window_event_callback callback)
 {
-    return !(lhs == rhs);
+    m_event_handler->m_on_hide_callback = std::move(callback);
 }
 
-#pragma endregion
-
-#pragma region window::position_t
-
-bool operator==(const window::position_t& lhs, const window::position_t& rhs)
+void window::set_on_close_callback(window_event_callback callback)
 {
-    return lhs.x == rhs.x && lhs.y == rhs.y;
+    m_event_handler->m_on_close_callback = std::move(callback);
 }
 
-bool operator!=(const window::position_t& lhs, const window::position_t& rhs)
+void window::set_on_focus_callback(window_event_callback callback)
 {
-    return !(lhs == rhs);
+    m_event_handler->m_on_focus_callback = std::move(callback);
+}
+
+void window::set_on_focus_lost_callback(window_event_callback callback)
+{
+    m_event_handler->m_on_focus_lost_callback = std::move(callback);
+}
+
+void window::set_on_size_callback(window_size_event_callback callback)
+{
+    m_event_handler->m_on_size_callback = std::move(callback);
+}
+
+void window::set_on_position_callback(window_position_event_callback callback)
+{
+    m_event_handler->m_on_position_callback = std::move(callback);
+}
+
+void window::set_on_key_press_callback(window_key_event_callback callback)
+{
+    m_event_handler->m_on_key_press_callback = std::move(callback);
+}
+
+void window::set_on_key_release_callback(window_key_event_callback callback)
+{
+    m_event_handler->m_on_key_release_callback = std::move(callback);
+}
+
+void window::set_on_character_callback(window_character_event_callback callback)
+{
+    m_event_handler->m_on_character_callback = std::move(callback);
+}
+
+void window::set_on_mouse_button_press_callback(window_mouse_button_event_callback callback)
+{
+    m_event_handler->m_on_mouse_press_callback = std::move(callback);
+}
+
+void window::set_on_mouse_button_release_callback(window_mouse_button_event_callback callback)
+{
+    m_event_handler->m_on_mouse_release_callback = std::move(callback);
+}
+
+void window::set_on_mouse_enter_callback(window_event_callback callback)
+{
+    m_event_handler->m_on_mouse_enter_callback = std::move(callback);
+}
+
+void window::set_on_mouse_leave_callback(window_event_callback callback)
+{
+    m_event_handler->m_on_mouse_leave_callback = std::move(callback);
 }
 
 #pragma endregion

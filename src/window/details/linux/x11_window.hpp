@@ -42,10 +42,7 @@ namespace framework::system
 class x11_window final : public window::implementation
 {
 public:
-    x11_window(const window& interface,
-               window::size_t size,
-               const std::string& title,
-               opengl::context_settings settings);
+    x11_window(window_size size, const std::string& title, opengl::context_settings settings);
     ~x11_window() override;
 
     x11_window(const x11_window&) = delete;
@@ -69,11 +66,11 @@ public:
     /// @{
 
     // The size() value will be updated after next event processing
-    void set_size(window::size_t size) override;
-    void set_position(window::position_t position) override;
+    void set_size(window_size size) override;
+    void set_position(window_position position) override;
 
-    void set_max_size(window::size_t max_size) override;
-    void set_min_size(window::size_t min_size) override;
+    void set_max_size(window_size max_size) override;
+    void set_min_size(window_size min_size) override;
 
     void set_resizable(bool value) override;
 
@@ -82,11 +79,11 @@ public:
 
     /// @name getters
     /// @{
-    window::position_t position() const override;
-    window::size_t size() const override;
+    window_position position() const override;
+    window_size size() const override;
 
-    window::size_t max_size() const override;
-    window::size_t min_size() const override;
+    window_size max_size() const override;
+    window_size min_size() const override;
 
     std::string title() const override;
 
@@ -125,7 +122,7 @@ private:
 
     void process_events_while(const std::function<bool()>& condition);
 
-    void update_size_limits(window::size_t min_size, window::size_t max_size);
+    void update_size_limits(window_size min_size, window_size max_size);
 
     std::shared_ptr<x11_server> m_server       = nullptr;
     std::unique_ptr<opengl::context> m_context = nullptr;
@@ -136,12 +133,12 @@ private:
     bool m_cursor_grabbed = false;
     bool m_resizable      = true;
 
-    window::size_t m_size         = {640, 480};
-    window::size_t m_saved_size   = {0, 0};
-    window::position_t m_position = {0, 0};
+    window_size m_size         = {640, 480};
+    window_size m_saved_size   = {0, 0};
+    window_position m_position = {0, 0};
 
-    mutable window::size_t m_min_size = {0, 0};
-    mutable window::size_t m_max_size = {0, 0};
+    mutable window_size m_min_size = {0, 0};
+    mutable window_size m_max_size = {0, 0};
 
     Window m_window = None;
 

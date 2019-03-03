@@ -30,13 +30,13 @@
 #ifndef FRAMEWORK_WINDOW_WINDOW_HPP
 #define FRAMEWORK_WINDOW_WINDOW_HPP
 
-#include <functional>
 #include <memory>
 #include <optional>
 
-#include <common/types.hpp>
 #include <opengl/context.hpp>
-#include <window/keyboard.hpp>
+#include <window/window_callback_types.hpp>
+#include <window/window_position.hpp>
+#include <window/window_size.hpp>
 
 /// @details
 ///
@@ -52,6 +52,11 @@
 /// @brief Operating System related classes.
 namespace framework::system
 {
+namespace details
+{
+class event_handler;
+}
+
 /// @addtogroup window_class
 /// @{
 
@@ -63,23 +68,6 @@ class window final
 public:
     /// @brief Base class for OS specific realisation.
     class implementation;
-
-    /// @brief Window size.
-    struct size_t
-    {
-        int32 width;  ///< Window width.
-        int32 height; ///< Window height.
-    };
-
-    /// @brief Window position.
-    struct position_t
-    {
-        int32 x; ///< X coordiante.
-        int32 y; ///< Y coordinate.
-    };
-
-    template <typename... Args>
-    using event_handler = std::function<void(Args...)>;
 
     /// @brief Sets the formal name of the application.
     ///
@@ -93,7 +81,7 @@ public:
     /// @param settings Gpaphic context settings.
     ///
     /// @thread_safety This function can be called only from main thread.
-    window(size_t size, const std::string& title, opengl::context_settings settings = opengl::context_settings());
+    window(window_size size, const std::string& title, opengl::context_settings settings = opengl::context_settings());
 
     /// @brief Destructor.
     ~window();
@@ -147,22 +135,22 @@ public:
     /// @brief Resize window.
     ///
     /// @param size New window size.
-    void set_size(size_t size);
+    void set_size(window_size size);
 
     /// @brief Move window.
     ///
     /// @param position New winodw position.
-    void set_position(position_t position);
+    void set_position(window_position position);
 
     /// @brief Sets maximum window size.
     ///
     /// @param max_size Maximum window size.
-    void set_max_size(size_t max_size);
+    void set_max_size(window_size max_size);
 
     /// @brief Sets minimum window size.
     ///
     /// @param min_size Minimum window size.
-    void set_min_size(size_t min_size);
+    void set_min_size(window_size min_size);
 
     /// @brief Forbids/permits window resizing.
     ///
@@ -185,22 +173,22 @@ public:
     /// @brief Window position.
     ///
     /// @return Current window position.
-    position_t position() const;
+    window_position position() const;
 
     /// @brief Window size.
     ///
     /// @return Current window size.
-    size_t size() const;
+    window_size size() const;
 
     /// @brief Maximum window size.
     ///
     /// @return Current maximum size.
-    size_t max_size() const;
+    window_size max_size() const;
 
     /// @brief Minimum window size.
     ///
     /// @return Current minimum size.
-    size_t min_size() const;
+    window_size min_size() const;
 
     /// @brief Window title.
     ///
@@ -247,104 +235,57 @@ public:
     bool focused() const;
     /// @}
 
-    /// @brief On show callback. Called when window shows after creation.
-    event_handler<const window&> on_show = nullptr;
+    /// @name events
+    /// @{
 
-    /// @brief On hide callback. Called when window hides from screen.
-    event_handler<const window&> on_hide = nullptr;
+    /// @brief Set on show callback. Called when window shows after creation.
+    void set_on_show_callback(window_event_callback callback);
 
-    /// @brief On close callback. Called when the user clicks on the close window button.
-    event_handler<const window&> on_close = nullptr;
+    /// @brief Set on hide callback. Called when window hides from screen.
+    void set_on_hide_callback(window_event_callback callback);
 
-    /// @brief On focus callback. Called when the window gets input focus.
-    event_handler<const window&> on_focus = nullptr;
+    /// @brief Set on close callback. Called when the user clicks on the close window button.
+    void set_on_close_callback(window_event_callback callback);
 
-    /// @brief On focus lost callback. Called when the window loses input focus.
-    event_handler<const window&> on_focus_lost = nullptr;
+    /// @brief Set on focus callback. Called when the window gets input focus.
+    void set_on_focus_callback(window_event_callback callback);
 
-    /// @biref On size callback. Called when window size changes.
-    event_handler<const window&, window::size_t> on_size = nullptr;
+    /// @brief Set on focus lost callback. Called when the window loses input focus.
+    void set_on_focus_lost_callback(window_event_callback callback);
 
-    /// @biref On position callback. Called when window position changes.
-    event_handler<const window&, window::position_t> on_position = nullptr;
+    /// @biref Set on size callback. Called when window size changes.
+    void set_on_size_callback(window_size_event_callback callback);
 
-    /// @biref On key press callback. Called when key is pressed. Can be called multiple times.
-    event_handler<const window&, key_code, modifiers_state> on_key_press = nullptr;
+    /// @biref Set on position callback. Called when window position changes.
+    void set_on_position_callback(window_position_event_callback callback);
 
-    /// @biref On key release callback. Called when key is released.
-    event_handler<const window&, key_code, modifiers_state> on_key_release = nullptr;
+    /// @biref Set on key press callback. Called when key is pressed. Can be called multiple times.
+    void set_on_key_press_callback(window_key_event_callback callback);
 
-    event_handler<const window&, std::string> on_character = nullptr;
+    /// @biref Set on key release callback. Called when key is released.
+    void set_on_key_release_callback(window_key_event_callback callback);
 
-    event_handler<const window&, mouse_button, modifiers_state> on_mouse_press   = nullptr;
-    event_handler<const window&, mouse_button, modifiers_state> on_mouse_release = nullptr;
+    /// @biref Set on character callback. Called when user press the char symbol key.
+    void set_on_character_callback(window_character_event_callback callback);
 
-    event_handler<const window&> on_mouse_enter = nullptr;
-    event_handler<const window&> on_mouse_leave = nullptr;
+    /// @biref Set on mouse button press callback. Called when the mouse button is pressed.
+    void set_on_mouse_button_press_callback(window_mouse_button_event_callback callback);
 
-    event_handler<const window&, cursor_position> mouse_move = nullptr;
+    /// @biref Set on mouse button release callback. Called when the mouse button is released.
+    void set_on_mouse_button_release_callback(window_mouse_button_event_callback callback);
+
+    /// @biref Set on mouse enter callback. Called when the cursor enters in the window frame.
+    void set_on_mouse_enter_callback(window_event_callback callback);
+
+    /// @biref Set on mouse leave callback. Called when the cursor leaves the window frame.
+    void set_on_mouse_leave_callback(window_event_callback callback);
+    /// @}
 
 private:
     std::unique_ptr<implementation> m_implementation;
+
+    std::unique_ptr<details::event_handler> m_event_handler;
 };
-
-/// @brief Equality operator for window size.
-///
-/// @param lhs Size to compare.
-/// @param rhs Size to compare.
-///
-/// @return `true` if lhs equals rhs, otherwise `false`.
-bool operator==(const window::size_t& lhs, const window::size_t& rhs);
-
-/// @brief Inequality operator for window size.
-///
-/// @param lhs Size to compare.
-/// @param rhs Size to compare.
-///
-/// @return `true` if lhs isn't equals rhs, otherwise `false`.
-bool operator!=(const window::size_t& lhs, const window::size_t& rhs);
-
-/// @brief Equality operator for window position.
-///
-/// @param lhs Position to compare.
-/// @param rhs Position to compare.
-///
-/// @return `true` if lhs equals rhs, otherwise `false`.
-bool operator==(const window::position_t& lhs, const window::position_t& rhs);
-
-/// @brief Inequality operator for window position.
-///
-/// @param lhs Position to compare.
-/// @param rhs Position to compare.
-///
-/// @return `true` if lhs isn't equals rhs, otherwise `false`.
-bool operator!=(const window::position_t& lhs, const window::position_t& rhs);
-
-/// @brief Helper function to print window size.
-///
-/// @param ostream Output stream.
-/// @param size Window size.
-///
-/// @return Reference to output stream.
-template <typename T>
-T& operator<<(T& ostream, const window::size_t& size)
-{
-    ostream << "{" << size.width << ", " << size.height << "}";
-    return ostream;
-}
-
-/// @brief Helper function to print window position.
-///
-/// @param ostream Output stream.
-/// @param position Window position.
-///
-/// @return Reference to output stream.
-template <typename T>
-T& operator<<(T& ostream, const window::position_t& position)
-{
-    ostream << "{" << position.x << ", " << position.y << "}";
-    return ostream;
-}
 
 /// @}
 

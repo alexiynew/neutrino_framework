@@ -48,11 +48,11 @@ private:
         window alpha({640, 480}, "alpha");
         window betta({640, 480}, "betta");
 
-        alpha.on_focus = [&alpha_focused](const window& /*unused*/) { alpha_focused++; };
-        betta.on_focus = [&betta_focused](const window& /*unused*/) { betta_focused++; };
+        alpha.set_on_focus_callback([&alpha_focused](const window& /*unused*/) { alpha_focused++; });
+        betta.set_on_focus_callback([&betta_focused](const window& /*unused*/) { betta_focused++; });
 
-        alpha.on_focus_lost = [&alpha_lost_focus](const window& /*unused*/) { alpha_lost_focus++; };
-        betta.on_focus_lost = [&betta_lost_focus](const window& /*unused*/) { betta_lost_focus++; };
+        alpha.set_on_focus_lost_callback([&alpha_lost_focus](const window& /*unused*/) { alpha_lost_focus++; });
+        betta.set_on_focus_lost_callback([&betta_lost_focus](const window& /*unused*/) { betta_lost_focus++; });
 
         alpha.show();
 

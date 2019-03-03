@@ -126,14 +126,14 @@ std::shared_ptr<ATOM> register_window_class()
 
 namespace framework::system
 {
-std::unique_ptr<window::implementation> window::implementation::create(window::size_t size,
+std::unique_ptr<window::implementation> window::implementation::create(window_size size,
                                                                        const std::string& title,
                                                                        opengl::context_settings settings)
 {
     return std::make_unique<win32_window>(size, title, std::move(settings));
 }
 
-win32_window::win32_window(window::size_t size, const std::string& title, opengl::context_settings settings)
+win32_window::win32_window(window_size size, const std::string& title, opengl::context_settings settings)
 {
     m_window_class = ::register_window_class();
 
@@ -278,7 +278,7 @@ void win32_window::restore()
 
 #pragma region setters
 
-void win32_window::set_size(window::size_t size)
+void win32_window::set_size(window_size size)
 {
     RECT rect{0, 0, size.width, size.height};
     AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
@@ -292,7 +292,7 @@ void win32_window::set_size(window::size_t size)
                  SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 }
 
-void win32_window::set_position(window::position_t position)
+void win32_window::set_position(window_position position)
 {
     SetWindowPos(m_window,
                  HWND_TOP,
@@ -303,12 +303,12 @@ void win32_window::set_position(window::position_t position)
                  SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
-void win32_window::set_max_size(window::size_t max_size)
+void win32_window::set_max_size(window_size max_size)
 {
     m_max_size = max_size;
 }
 
-void win32_window::set_min_size(window::size_t min_size)
+void win32_window::set_min_size(window_size min_size)
 {
     m_min_size = min_size;
 }
@@ -342,28 +342,28 @@ void win32_window::set_title(const std::string& title)
 
 #pragma region getters
 
-window::position_t win32_window::position() const
+window_position win32_window::position() const
 {
     RECT rect;
     GetWindowRect(m_window, &rect);
 
-    return window::position_t{rect.left, rect.top};
+    return window_position{rect.left, rect.top};
 }
 
-window::size_t win32_window::size() const
+window_size win32_window::size() const
 {
     RECT area;
     GetClientRect(m_window, &area);
 
-    return window::size_t{area.right, area.bottom};
+    return window_size{area.right, area.bottom};
 }
 
-window::size_t win32_window::max_size() const
+window_size win32_window::max_size() const
 {
     return m_max_size;
 }
 
-window::size_t win32_window::min_size() const
+window_size win32_window::min_size() const
 {
     return m_min_size;
 }

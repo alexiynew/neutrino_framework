@@ -44,13 +44,13 @@ private:
 
         ::framework::system::window window({640, 480}, "Test");
 
-        window.on_show = [&show_called](const ::framework::system::window& /*unused*/) { show_called++; };
+        window.set_on_show_callback([&show_called](const ::framework::system::window& /*unused*/) { show_called++; });
         window.show();
 
         TEST_ASSERT(window.visible(), "Window is not visible.");
         TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
 
-        window.on_hide = [&hide_called](const ::framework::system::window& /*unused*/) { hide_called++; };
+        window.set_on_hide_callback([&hide_called](const ::framework::system::window& /*unused*/) { hide_called++; });
         window.hide();
 
         TEST_ASSERT(!window.visible(), "Window is still visible.");

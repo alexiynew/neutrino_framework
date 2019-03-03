@@ -40,7 +40,7 @@ namespace framework::system
 class win32_window final : public window::implementation
 {
 public:
-    win32_window(window::size_t size, const std::string& title, opengl::context_settings settings);
+    win32_window(window_size size, const std::string& title, opengl::context_settings settings);
     ~win32_window() override;
 
     win32_window(const win32_window&) = delete;
@@ -63,11 +63,11 @@ public:
     /// @{
 
     // The size() value will be updated after next event processing
-    void set_size(window::size_t size) override;
-    void set_position(window::position_t position) override;
+    void set_size(window_size size) override;
+    void set_position(window_position position) override;
 
-    void set_max_size(window::size_t max_size) override;
-    void set_min_size(window::size_t min_size) override;
+    void set_max_size(window_size max_size) override;
+    void set_min_size(window_size min_size) override;
 
     void set_resizable(bool value) override;
 
@@ -76,11 +76,11 @@ public:
 
     /// @name getters
     /// @{
-    window::position_t position() const override;
-    window::size_t size() const override;
+    window_position position() const override;
+    window_size size() const override;
 
-    window::size_t max_size() const override;
-    window::size_t min_size() const override;
+    window_size max_size() const override;
+    window_size min_size() const override;
 
     std::string title() const override;
 
@@ -112,8 +112,8 @@ private:
     HGLRC m_hglrc = nullptr;
     std::shared_ptr<ATOM> m_window_class;
 
-    window::size_t m_min_size = {0, 0};
-    window::size_t m_max_size = {0, 0};
+    window_size m_min_size = {0, 0};
+    window_size m_max_size = {0, 0};
 
     bool m_resizable = true;
 
