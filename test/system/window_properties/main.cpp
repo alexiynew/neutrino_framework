@@ -51,37 +51,44 @@ private:
         const window_size size480{480, 320};
         const window_size size640{640, 480};
 
+        window_size size_in_callback{0, 0};
+
         window w({480, 320}, "Test");
 
-        w.set_on_size_callback(
-        [&on_size_called](const window& /*unused*/, window_size /*unused*/) { on_size_called = true; });
+        w.set_on_size_callback([&on_size_called, &size_in_callback](const window& /*unused*/, window_size w_size) {
+            on_size_called   = true;
+            size_in_callback = w_size;
+        });
 
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
 
         w.show();
 
         TEST_ASSERT(on_size_called == true, "On size should be called.");
+        TEST_ASSERT(size_in_callback == size480, "Wrong window size in callback.");
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
 
-        on_size_called = false;
+        on_size_called   = false;
+        size_in_callback = {0, 0};
         w.set_size({640, 480});
 
         TEST_ASSERT(on_size_called == true, "On size should be called.");
+        TEST_ASSERT(size_in_callback == size640, "Wrong window size in callback.");
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
         w.hide();
-        on_size_called = false;
         w.show();
 
-        TEST_ASSERT(on_size_called == true, "On size should be called.");
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
         w.hide();
+        on_size_called   = false;
+        size_in_callback = {0, 0};
         w.set_size({480, 320});
-        on_size_called = false;
         w.show();
 
         TEST_ASSERT(on_size_called == true, "On size should be called.");
+        TEST_ASSERT(size_in_callback == size480, "Wrong window size in callback.");
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
     }
 

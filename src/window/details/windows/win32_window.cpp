@@ -434,6 +434,58 @@ bool win32_window::focused() const
 LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_param)
 {
     switch (message) {
+        case WM_SETFOCUS: {
+            if (m_event_handler) {
+                m_event_handler->on_focus();
+            }
+
+            return 0;
+        }
+
+        case WM_KILLFOCUS: {
+            if (m_event_handler) {
+                m_event_handler->on_focus_lost();
+            }
+
+            return 0;
+        }
+
+        case WM_CLOSE: {
+            if (m_event_handler) {
+                m_event_handler->on_close();
+            }
+
+            return 0;
+        }
+
+        case WM_SHOWWINDOW: {
+            if (l_param == 0 && m_event_handler) {
+                if (w_param == TRUE) {
+                    m_event_handler->on_show();
+                } else {
+                    m_event_handler->on_hide();
+                }
+            }
+
+            return 0;
+        }
+
+        case WM_SIZE: {
+            if (m_event_handler) {
+                m_event_handler->on_size(size());
+            }
+
+            return 0;
+        }
+
+        case WM_MOVE: {
+            if (m_event_handler) {
+                m_event_handler->on_position(position());
+            }
+
+            return 0;
+        }
+
         case WM_GETMINMAXINFO: {
             auto minmaxinfo = reinterpret_cast<MINMAXINFO*>(l_param);
 
@@ -454,6 +506,37 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
             }
 
             return 0;
+        }
+
+        case WM_MOUSELEAVE: {
+            if (m_event_handler) {
+                m_event_handler->on_mouse_leave();
+            }
+
+            return 0;
+        }
+
+        case WM_MOUSEHOVER: {
+            if (m_event_handler) {
+                m_event_handler->on_mouse_enter();
+            }
+
+            return 0;
+        }
+
+        case WM_SYSCOMMAND: {
+            switch (w_param & 0xfff0) {
+                case SC_SCREENSAVE:
+                case SC_MONITORPOWER: {
+                    if (fullscreen()) {
+                        return 0;
+                    } else
+                        break;
+                }
+
+                case SC_KEYMENU: return 0;
+            }
+            break;
         }
     }
 
