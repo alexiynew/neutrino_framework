@@ -27,6 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <windows.h>
+
 #include <window/keyboard.hpp>
 
 namespace
@@ -56,11 +58,11 @@ key_code::key_enter, // 0x0d
 key_code::key_unknown,
 key_code::key_unknown,
 
-key_code::key_left_shift,   // 0x10
-key_code::key_left_control, // 0x11
-key_code::key_left_alt,     // 0x12
-key_code::key_pause,        // 0x13
-key_code::key_caps_lock,    // 0x14
+key_code::key_shift,     // 0x10
+key_code::key_control,   // 0x11
+key_code::key_alt,       // 0x12
+key_code::key_pause,     // 0x13
+key_code::key_caps_lock, // 0x14
 
 key_code::key_unknown,
 key_code::key_unknown,
@@ -115,57 +117,55 @@ key_code::key_unknown,
 key_code::key_unknown,
 key_code::key_unknown,
 
-key_code::key_a, // 0x41
-key_code::key_b, // 0x42
-key_code::key_c, // 0x43
-key_code::key_d, // 0x44
-key_code::key_e, // 0x45
-key_code::key_f, // 0x46
-key_code::key_g, // 0x47
-key_code::key_h, // 0x48
-key_code::key_i, // 0x49
-key_code::key_j, // 0x4a
-key_code::key_k, // 0x4b
-key_code::key_l, // 0x4c
-key_code::key_m, // 0x4d
-key_code::key_n, // 0x4e
-key_code::key_o, // 0x4f
-key_code::key_p, // 0x50
-key_code::key_q, // 0x51
-key_code::key_r, // 0x52
-key_code::key_s, // 0x53
-key_code::key_t, // 0x54
-key_code::key_u, // 0x55
-key_code::key_v, // 0x56
-key_code::key_w, // 0x57
-key_code::key_x, // 0x58
-key_code::key_y, // 0x59
-key_code::key_z, // 0x5a
+key_code::key_a,     // 0x41
+key_code::key_b,     // 0x42
+key_code::key_c,     // 0x43
+key_code::key_d,     // 0x44
+key_code::key_e,     // 0x45
+key_code::key_f,     // 0x46
+key_code::key_g,     // 0x47
+key_code::key_h,     // 0x48
+key_code::key_i,     // 0x49
+key_code::key_j,     // 0x4a
+key_code::key_k,     // 0x4b
+key_code::key_l,     // 0x4c
+key_code::key_m,     // 0x4d
+key_code::key_n,     // 0x4e
+key_code::key_o,     // 0x4f
+key_code::key_p,     // 0x50
+key_code::key_q,     // 0x51
+key_code::key_r,     // 0x52
+key_code::key_s,     // 0x53
+key_code::key_t,     // 0x54
+key_code::key_u,     // 0x55
+key_code::key_v,     // 0x56
+key_code::key_w,     // 0x57
+key_code::key_x,     // 0x58
+key_code::key_y,     // 0x59
+key_code::key_z,     // 0x5a
+key_code::key_super, // 0x5b  left supper
+key_code::key_super, // 0x5c  right supper
 
 key_code::key_unknown,
 key_code::key_unknown,
 key_code::key_unknown,
-key_code::key_unknown,
-key_code::key_unknown,
 
-key_code::key_num_0,        // 0x60
-key_code::key_num_1,        // 0x61
-key_code::key_num_2,        // 0x62
-key_code::key_num_3,        // 0x63
-key_code::key_num_4,        // 0x64
-key_code::key_num_5,        // 0x65
-key_code::key_num_6,        // 0x66
-key_code::key_num_7,        // 0x67
-key_code::key_num_8,        // 0x68
-key_code::key_num_9,        // 0x69
-key_code::key_num_multiply, // 0x6a
-key_code::key_num_add,      // 0x6b
-
-key_code::key_unknown, // separator
-
-key_code::key_num_subtract, // 0x6d
-key_code::key_num_decimal,  // 0x6e
-key_code::key_num_divide,   // 0x6f
+key_code::key_num_0,         // 0x60
+key_code::key_num_1,         // 0x61
+key_code::key_num_2,         // 0x62
+key_code::key_num_3,         // 0x63
+key_code::key_num_4,         // 0x64
+key_code::key_num_5,         // 0x65
+key_code::key_num_6,         // 0x66
+key_code::key_num_7,         // 0x67
+key_code::key_num_8,         // 0x68
+key_code::key_num_9,         // 0x69
+key_code::key_num_multiply,  // 0x6a
+key_code::key_num_add,       // 0x6b
+key_code::key_num_separator, // 0x6c
+key_code::key_num_subtract,  // 0x6d
+key_code::key_num_decimal,   // 0x6e
+key_code::key_num_divide,    // 0x6f
 
 key_code::key_f1,  // 0x70
 key_code::key_f2,  // 0x71
@@ -290,7 +290,9 @@ key_code::key_apostrophe,    // 0xde
 key_code::key_unknown,
 key_code::key_unknown,
 key_code::key_unknown,
-key_code::key_unknown,
+
+key_code::key_backslash, // 0xe2
+
 key_code::key_unknown,
 key_code::key_unknown,
 key_code::key_unknown,
@@ -333,7 +335,33 @@ key_code map_system_key(uint32 key)
 
 modifiers_state get_modifiers_state()
 {
-    return static_cast<modifiers_state>(0);
+    int state = 0;
+
+    if (GetKeyState(VK_SHIFT) & 0x8000) {
+        state |= modifiers_state::mod_shift;
+    }
+
+    if (GetKeyState(VK_CONTROL) & 0x8000) {
+        state |= modifiers_state::mod_control;
+    }
+
+    if (GetKeyState(VK_MENU) & 0x8000) {
+        state |= modifiers_state::mod_menu;
+    }
+
+    if ((GetKeyState(VK_LWIN) | GetKeyState(VK_RWIN)) & 0x8000) {
+        state |= modifiers_state::mod_super;
+    }
+
+    if (GetKeyState(VK_CAPITAL) & 1) {
+        state |= modifiers_state::mod_caps_lock;
+    }
+
+    if (GetKeyState(VK_NUMLOCK) & 1) {
+        state |= modifiers_state::mod_num_lock;
+    }
+
+    return static_cast<modifiers_state>(state);
 }
 
 } // namespace framework::system

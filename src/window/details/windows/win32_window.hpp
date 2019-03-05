@@ -125,6 +125,8 @@ private:
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 
     void track_mouse();
+
+    LRESULT process_key_event(WPARAM w_param, LPARAM l_param);
 };
 
 } // namespace framework::system::details

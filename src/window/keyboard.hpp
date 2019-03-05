@@ -110,6 +110,10 @@ enum class key_code
     key_num_lock     = 282,
     key_print_screen = 283,
     key_pause        = 284,
+    key_shift        = 285,
+    key_control      = 286,
+    key_alt          = 287,
+    key_super        = 288,
 
     // Function keys
     key_f1  = 290,
@@ -139,23 +143,22 @@ enum class key_code
     key_f25 = 314,
 
     // numpad
-    key_num_0        = 320,
-    key_num_1        = 321,
-    key_num_2        = 322,
-    key_num_3        = 323,
-    key_num_4        = 324,
-    key_num_5        = 325,
-    key_num_6        = 326,
-    key_num_7        = 327,
-    key_num_8        = 328,
-    key_num_9        = 329,
-    key_num_decimal  = 330,
-    key_num_divide   = 331,
-    key_num_multiply = 332,
-    key_num_subtract = 333,
-    key_num_add      = 334,
-    key_num_enter    = 335,
-    key_num_equal    = 336,
+    key_num_0         = 320,
+    key_num_1         = 321,
+    key_num_2         = 322,
+    key_num_3         = 323,
+    key_num_4         = 324,
+    key_num_5         = 325,
+    key_num_6         = 326,
+    key_num_7         = 327,
+    key_num_8         = 328,
+    key_num_9         = 329,
+    key_num_decimal   = 330,
+    key_num_divide    = 331,
+    key_num_multiply  = 332,
+    key_num_subtract  = 333,
+    key_num_add       = 334,
+    key_num_separator = 335,
 
     // modifiers
     key_left_shift   = 340, // !!!!
@@ -167,15 +170,13 @@ enum class key_code
     key_right_control = 345, // !!!!
     key_right_alt     = 346, // !!!!
     key_right_super   = 347, // !!!!
-
-    key_menu = 348,
 };
 
 enum modifiers_state
 {
     mod_shift     = 0x0001,
     mod_control   = 0x0002,
-    mod_alt       = 0x0004,
+    mod_menu      = 0x0004,
     mod_super     = 0x0008,
     mod_caps_lock = 0x0010,
     mod_num_lock  = 0x0020,

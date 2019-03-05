@@ -527,26 +527,15 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
             break;
         }
 
-        case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-        case WM_KEYUP:
         case WM_SYSKEYUP: {
-            const key_code key              = map_system_key(static_cast<uint32>(w_param));
-            const bool is_key_down          = ((l_param >> 31) & 1) == 0;
-            const modifiers_state mod_state = get_modifiers_state();
+            process_key_event(w_param, l_param);
+            return DefWindowProc(m_window, message, w_param, l_param);
+        }
 
-            if (key == key_code::key_unknown)
-                break;
-
-            if (m_event_handler) {
-                if (is_key_down) {
-                    m_event_handler->on_key_press(key, mod_state);
-                } else {
-                    m_event_handler->on_key_release(key, mod_state);
-                }
-            }
-
-            return 0;
+        case WM_KEYDOWN:
+        case WM_KEYUP: {
+            return process_key_event(w_param, l_param);
         }
 
         case WM_SYSCOMMAND: {
@@ -566,6 +555,32 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
     }
 
     return DefWindowProc(m_window, message, w_param, l_param);
+}
+
+LRESULT win32_window::process_key_event(WPARAM w_param, LPARAM l_param)
+{
+    if (m_event_handler == nullptr) {
+        return 0;
+    }
+
+    log::debug(log_tag) << w_param << std::endl;
+    const key_code key              = map_system_key(static_cast<uint32>(w_param));
+    const bool is_key_down          = ((l_param >> 31) & 1) == 0;
+    const modifiers_state mod_state = get_modifiers_state();
+
+    if (key == key_code::key_unknown) {
+        return 0;
+    }
+
+    if (key == key_code::key_print_screen) {
+        m_event_handler->on_key_press(key, mod_state);
+        m_event_handler->on_key_release(key, mod_state);
+    } else {
+        auto action = is_key_down ? &event_handler::on_key_press : &event_handler::on_key_release;
+        (m_event_handler->*action)(key, mod_state);
+    }
+
+    return 0;
 }
 
 #pragma endregion
