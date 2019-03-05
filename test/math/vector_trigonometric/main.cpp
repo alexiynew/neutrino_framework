@@ -71,13 +71,13 @@ private:
     void sin_function()
     {
         const vector4d sin_vector(sin(pi), sin(tau), sin(pi / 2), sin(pi / 4));
-        TEST_ASSERT(almost_equal(sin(radians(v4d)), sin_vector), "Sin function failed.");
+        TEST_ASSERT(almost_equal(sin(radians(v4d)), sin_vector, 1), "Sin function failed.");
     }
 
     void cos_function()
     {
         const vector4d cos_vector(cos(pi), cos(tau), cos(pi / 2), cos(pi / 4));
-        TEST_ASSERT(almost_equal(cos(radians(v4d)), cos_vector), "Cos function failed.");
+        TEST_ASSERT(almost_equal(cos(radians(v4d)), cos_vector, 1), "Cos function failed.");
     }
 
     void tan_function()
@@ -109,15 +109,14 @@ private:
     {
         const vector3d sinh_vector(0.86867096148600953, 1.2493670505239751, 11.548739357257748);
 
-        TEST_ASSERT(almost_equal(sinh(radians(v3d)), sinh_vector, 2), "Sinh function failed.");
+        TEST_ASSERT(almost_equal(sinh(radians(v3d)), sinh_vector, 10), "Sinh function failed.");
     }
 
     void cosh_function()
     {
         const vector3d cosh_vector(1.3246090892520057, 1.6002868577023861, 11.591953275521519);
-        TEST_ASSERT(almost_equal(cosh(radians(v3d)), cosh_vector, 1), "Cosh function failed.");
+        TEST_ASSERT(almost_equal(cosh(radians(v3d)), cosh_vector, 2), "Cosh function failed.");
     }
-
     void tanh_function()
     {
         const vector3d tanh_vector = sinh(radians(v3d)) / cosh(radians(v3d));
@@ -136,9 +135,8 @@ private:
 
     void atanh_function()
     {
-        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), vector3d(pi / 4, pi / 3, pi), 4), "Atanh function failed.");
+        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), vector3d(pi / 4, pi / 3, pi), 50), "Atanh function failed.");
     }
-
     vector4d v4d;
     vector3d v3d;
 };

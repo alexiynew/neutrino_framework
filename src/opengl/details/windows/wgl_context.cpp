@@ -40,7 +40,7 @@ win32_context::win32_context(HWND window, opengl::context_settings settings)
     opengl::init_wgl();
 
     if (!opengl::wgl_arb_create_context_supported) {
-        throw std::runtime_error("WGL init failed!");
+        throw std::runtime_error("wglCreateContextAttribsARB not supported. WGL init failed!");
     }
 
     m_hdc = GetDC(m_window);

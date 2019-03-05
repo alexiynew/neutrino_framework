@@ -87,7 +87,7 @@ private:
 
     void reflection_function()
     {
-        TEST_ASSERT(almost_equal(reflect(v3f, normalize(v3f)), -v3f, 1), "Reflection function failed.");
+        TEST_ASSERT(almost_equal(reflect(v3f, normalize(v3f)), -v3f, 5), "Reflection function failed.");
     }
 
     void refraction_function()

@@ -524,6 +524,7 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
 
         case WM_MOUSEMOVE: {
             track_mouse();
+            break;
         }
 
         case WM_KEYDOWN:
