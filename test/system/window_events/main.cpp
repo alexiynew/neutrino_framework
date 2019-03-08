@@ -265,6 +265,9 @@ private:
 
         w.set_on_mouse_leave_callback([](const window&) { log::info("test") << "on_mouse_leave" << std::endl; });
 
+        w.set_on_character_callback(
+        [](const window&, std::string s) { log::info("test") << "on_character: " << s << std::endl; });
+
         w.show();
 
         while (w.visible() && !should_close) {

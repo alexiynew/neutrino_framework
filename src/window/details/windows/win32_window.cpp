@@ -39,7 +39,7 @@ namespace
 const char* const log_tag  = "win32_window";
 const wchar_t class_name[] = L"my_window_class";
 
-std::wstring to_utf16(const std::string& string)
+std::wstring utf8_to_utf16(const std::string& string)
 {
     if (string.empty()) {
         return std::wstring();
@@ -57,7 +57,25 @@ std::wstring to_utf16(const std::string& string)
     return std::wstring(buffer.get());
 }
 
-std::string to_utf8(const std::wstring& string)
+std::string utf16_to_utf8(const std::wstring& string)
+{
+    if (string.empty()) {
+        return std::string();
+    }
+
+    const auto size = WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, nullptr, 0, nullptr, nullptr);
+
+    if (size == 0) {
+        return std::string();
+    }
+
+    std::unique_ptr<char[]> buffer(new char[size]);
+    WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
+
+    return std::string(buffer.get());
+}
+
+std::string utf32_to_utf8(const std::wstring& string)
 {
     if (string.empty()) {
         return std::string();
@@ -135,7 +153,7 @@ win32_window::win32_window(window_size size, const std::string& title, opengl::c
 
     m_window = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,
                               class_name,
-                              to_utf16(title).c_str(),
+                              utf8_to_utf16(title).c_str(),
                               WS_OVERLAPPEDWINDOW,
                               CW_USEDEFAULT,
                               CW_USEDEFAULT,
@@ -197,7 +215,9 @@ void win32_window::process_events()
 
     while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
         if (message.message == WM_QUIT) {
-            // TODO: process close requet
+            if (m_event_handler) {
+                m_event_handler->on_close();
+            }
         } else {
             TranslateMessage(&message);
             DispatchMessage(&message);
@@ -330,7 +350,7 @@ void win32_window::set_resizable(bool value)
 
 void win32_window::set_title(const std::string& title)
 {
-    const auto whide_char_title = to_utf16(title);
+    const auto whide_char_title = utf8_to_utf16(title);
     SetWindowText(m_window, &whide_char_title[0]);
 }
 
@@ -375,7 +395,7 @@ std::string win32_window::title() const
     std::unique_ptr<wchar_t[]> buffer(new wchar_t[title_length]);
     GetWindowText(m_window, buffer.get(), title_length);
 
-    return to_utf8(buffer.get());
+    return utf16_to_utf8(buffer.get());
 }
 
 framework::opengl::context* win32_window::context() const
@@ -536,6 +556,34 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
         case WM_KEYDOWN:
         case WM_KEYUP: {
             return process_key_event(w_param, l_param);
+        }
+
+        case WM_UNICHAR: {
+            if (w_param == UNICODE_NOCHAR) {
+                // The WM_UNICHAR message can be used by an application to post input to other windows
+                // Returning TRUE here announces support for this message
+                return TRUE;
+            }
+            if (m_event_handler) {
+                // TODO (alex): Do the correct unicode casting
+                wchar_t wchar = static_cast<wchar_t>(w_param);
+                std::wstring s;
+                s += wchar;
+                m_event_handler->on_character(utf32_to_utf8(s));
+            }
+        }
+
+        case WM_CHAR:
+        case WM_SYSCHAR: {
+            if (m_event_handler) {
+                // TODO (alex): Do the correct unicode casting
+                wchar_t wchar = static_cast<wchar_t>(w_param);
+                std::wstring s;
+                s += wchar;
+                m_event_handler->on_character(utf16_to_utf8(s));
+            }
+
+            return 0;
         }
 
         case WM_SYSCOMMAND: {
