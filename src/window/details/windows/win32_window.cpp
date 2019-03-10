@@ -28,6 +28,7 @@
 // =============================================================================
 
 #include <stdexcept>
+#include <windowsx.h>
 
 #include <log/log.hpp>
 #include <opengl/details/windows/wgl_context.hpp>
@@ -590,7 +591,7 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
         case WM_RBUTTONUP: {
             if (m_event_handler) {
                 const mouse_button button = get_mouse_button(message);
-                const cursor_position position{LOWORD(l_param), HIWORD(l_param)};
+                const cursor_position position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
                 const modifiers_state mod_state = get_modifiers_state();
                 auto action = (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_RBUTTONDOWN
                                ? &event_handler::on_mouse_press
@@ -608,7 +609,7 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
         case WM_XBUTTONUP: {
             const mouse_button button = (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? mouse_button::button_4
                                                                                  : mouse_button::button_5);
-            const cursor_position position{LOWORD(l_param), HIWORD(l_param)};
+            const cursor_position position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
             const modifiers_state mod_state = get_modifiers_state();
             auto action                     = (message == WM_XBUTTONDOWN ? &event_handler::on_mouse_press
                                                      : &event_handler::on_mouse_release);
