@@ -270,6 +270,9 @@ public:
     /// @biref Set on character callback. Called when user press the char symbol key.
     void set_on_character_callback(window_character_event_callback callback);
 
+    /// @biref Set on mouse move callback. Called when the mouse is moving.
+    void set_on_mouse_move_callback(window_mouse_move_callback callback);
+
     /// @biref Set on mouse button press callback. Called when the mouse button is pressed.
     void set_on_mouse_button_press_callback(window_mouse_button_event_callback callback);
 

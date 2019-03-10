@@ -72,8 +72,9 @@ public:
 
     void on_character(std::string) const;
 
-    void on_mouse_press(mouse_button, modifiers_state) const;
-    void on_mouse_release(mouse_button, modifiers_state) const;
+    void on_mouse_move(cursor_position) const;
+    void on_mouse_press(mouse_button, cursor_position, modifiers_state) const;
+    void on_mouse_release(mouse_button, cursor_position, modifiers_state) const;
 
     void on_mouse_enter() const;
     void on_mouse_leave() const;
@@ -96,6 +97,7 @@ private:
 
     window_character_event_callback m_on_character_callback = nullptr;
 
+    window_mouse_move_callback m_on_mouse_move_callback            = nullptr;
     window_mouse_button_event_callback m_on_mouse_press_callback   = nullptr;
     window_mouse_button_event_callback m_on_mouse_release_callback = nullptr;
 

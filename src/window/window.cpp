@@ -256,6 +256,11 @@ void window::set_on_character_callback(window_character_event_callback callback)
     m_event_handler->m_on_character_callback = std::move(callback);
 }
 
+void window::set_on_mouse_move_callback(window_mouse_move_callback callback)
+{
+    m_event_handler->m_on_mouse_move_callback = std::move(callback);
+}
+
 void window::set_on_mouse_button_press_callback(window_mouse_button_event_callback callback)
 {
     m_event_handler->m_on_mouse_press_callback = std::move(callback);

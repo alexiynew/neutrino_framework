@@ -104,17 +104,24 @@ void event_handler::on_character(std::string ch) const
     }
 }
 
-void event_handler::on_mouse_press(mouse_button button, modifiers_state state) const
+void event_handler::on_mouse_move(cursor_position position) const
 {
-    if (m_on_mouse_press_callback) {
-        m_on_mouse_press_callback(*m_window, button, state);
+    if (m_on_mouse_move_callback) {
+        m_on_mouse_move_callback(*m_window, position);
     }
 }
 
-void event_handler::on_mouse_release(mouse_button button, modifiers_state state) const
+void event_handler::on_mouse_press(mouse_button button, cursor_position position, modifiers_state state) const
+{
+    if (m_on_mouse_press_callback) {
+        m_on_mouse_press_callback(*m_window, button, position, state);
+    }
+}
+
+void event_handler::on_mouse_release(mouse_button button, cursor_position position, modifiers_state state) const
 {
     if (m_on_mouse_release_callback) {
-        m_on_mouse_release_callback(*m_window, button, state);
+        m_on_mouse_release_callback(*m_window, button, position, state);
     }
 }
 

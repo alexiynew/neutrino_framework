@@ -34,6 +34,7 @@ namespace
 {
 using ::framework::system::key_code;
 using ::framework::system::modifiers_state;
+using ::framework::system::mouse_button;
 
 std::string key_name(key_code key)
 {
@@ -206,6 +207,22 @@ std::string print_state(const modifiers_state state)
     return s;
 }
 
+std::string button_name(mouse_button button)
+{
+    switch (button) {
+        case mouse_button::button_left: return "button_left";
+        case mouse_button::button_right: return "button_right";
+        case mouse_button::button_middle: return "button_middle";
+        case mouse_button::button_4: return "button_4";
+        case mouse_button::button_5: return "button_5";
+        case mouse_button::button_6: return "button_6";
+        case mouse_button::button_7: return "button_7";
+        case mouse_button::button_8: return "button_8";
+
+        case mouse_button::button_unknown: return "button_unknown";
+    }
+}
+
 } // namespace
 
 class window_events_test : public framework::unit_test::suite
@@ -264,6 +281,22 @@ private:
         w.set_on_mouse_enter_callback([](const window&) { log::info("test") << "on_mouse_enter" << std::endl; });
 
         w.set_on_mouse_leave_callback([](const window&) { log::info("test") << "on_mouse_leave" << std::endl; });
+
+        w.set_on_mouse_move_callback([](const window&, system::cursor_position p) {
+            log::info("test") << "on_mouse_move {" << p.x << ", " << p.y << "}" << std::endl;
+        });
+
+        w.set_on_mouse_button_press_callback(
+        [](const window&, system::mouse_button button, system::cursor_position position, system::modifiers_state state) {
+            log::info("test") << "on_mouse_press: " << button_name(button) << " {" << position.x << ", " << position.y
+                              << "} " << print_state(state) << std::endl;
+        });
+
+        w.set_on_mouse_button_release_callback(
+        [](const window&, system::mouse_button button, system::cursor_position position, system::modifiers_state state) {
+            log::info("test") << "on_mouse_release: " << button_name(button) << " {" << position.x << ", " << position.y
+                              << "} " << print_state(state) << std::endl;
+        });
 
         w.set_on_character_callback(
         [](const window&, std::string s) { log::info("test") << "on_character: " << s << std::endl; });

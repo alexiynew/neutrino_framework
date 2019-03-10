@@ -140,6 +140,24 @@ std::shared_ptr<ATOM> register_window_class()
     return pointer.lock();
 }
 
+framework::system::mouse_button get_mouse_button(UINT message)
+{
+    using framework::system::mouse_button;
+
+    switch (message) {
+        case WM_LBUTTONDOWN:
+        case WM_LBUTTONUP: return mouse_button::button_left;
+
+        case WM_MBUTTONDOWN:
+        case WM_MBUTTONUP: return mouse_button::button_middle;
+
+        case WM_RBUTTONDOWN:
+        case WM_RBUTTONUP: return mouse_button::button_right;
+    }
+
+    return mouse_button::button_unknown;
+}
+
 } // namespace
 
 namespace framework::system::details
@@ -544,7 +562,13 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
 
         case WM_MOUSEMOVE: {
             track_mouse();
-            break;
+
+            if (m_event_handler) {
+                const cursor_position position{LOWORD(l_param), HIWORD(l_param)};
+                m_event_handler->on_mouse_move(position);
+            }
+
+            return 0;
         }
 
         case WM_SYSKEYDOWN:
@@ -556,6 +580,42 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
         case WM_KEYDOWN:
         case WM_KEYUP: {
             return process_key_event(w_param, l_param);
+        }
+
+        case WM_LBUTTONDOWN:
+        case WM_MBUTTONDOWN:
+        case WM_RBUTTONDOWN:
+        case WM_LBUTTONUP:
+        case WM_MBUTTONUP:
+        case WM_RBUTTONUP: {
+            if (m_event_handler) {
+                const mouse_button button = get_mouse_button(message);
+                const cursor_position position{LOWORD(l_param), HIWORD(l_param)};
+                const modifiers_state mod_state = get_modifiers_state();
+                auto action = (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_RBUTTONDOWN
+                               ? &event_handler::on_mouse_press
+                               : &event_handler::on_mouse_release);
+
+                if (button != mouse_button::button_unknown) {
+                    (m_event_handler->*action)(button, position, mod_state);
+                }
+            }
+
+            return 0;
+        }
+
+        case WM_XBUTTONDOWN:
+        case WM_XBUTTONUP: {
+            const mouse_button button = (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? mouse_button::button_4
+                                                                                 : mouse_button::button_5);
+            const cursor_position position{LOWORD(l_param), HIWORD(l_param)};
+            const modifiers_state mod_state = get_modifiers_state();
+            auto action                     = (message == WM_XBUTTONDOWN ? &event_handler::on_mouse_press
+                                                     : &event_handler::on_mouse_release);
+
+            (m_event_handler->*action)(button, position, mod_state);
+
+            return TRUE;
         }
 
         case WM_UNICHAR: {
