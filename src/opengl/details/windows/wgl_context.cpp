@@ -37,12 +37,6 @@ namespace framework::system
 win32_context::win32_context(HWND window, opengl::context_settings settings)
     : opengl::context(settings), m_window(window)
 {
-    opengl::init_wgl();
-
-    if (!opengl::wgl_arb_create_context_supported) {
-        throw std::runtime_error("wglCreateContextAttribsARB not supported. WGL init failed!");
-    }
-
     m_hdc = GetDC(m_window);
 
     if (m_hdc == nullptr) {
@@ -66,6 +60,24 @@ win32_context::win32_context(HWND window, opengl::context_settings settings)
     if (!SetPixelFormat(m_hdc, pixelFormat, &pfd)) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't set pixelformat");
+    }
+
+    HGLRC hglrc = wglCreateContext(m_hdc);
+    if (hglrc == nullptr) {
+        ReleaseDC(m_window, m_hdc);
+        throw std::runtime_error("Can't create temporary graphic context");
+    }
+
+    wglMakeCurrent(m_hdc, hglrc);
+
+    opengl::init_wgl();
+
+    wglMakeCurrent(nullptr, nullptr);
+    wglDeleteContext(hglrc);
+
+    if (!opengl::wgl_arb_create_context_supported) {
+        ReleaseDC(m_window, m_hdc);
+        throw std::runtime_error("wglCreateContextAttribsARB not supported");
     }
 
     auto version = settings.version();

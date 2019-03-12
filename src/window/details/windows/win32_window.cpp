@@ -173,7 +173,7 @@ win32_window::win32_window(window_size size, const std::string& title, opengl::c
     m_window = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,
                               class_name,
                               utf8_to_utf16(title).c_str(),
-                              WS_OVERLAPPEDWINDOW,
+                              WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
                               CW_USEDEFAULT,
                               CW_USEDEFAULT,
                               rect.right - rect.left,
@@ -632,6 +632,8 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
                 s += wchar;
                 m_event_handler->on_character(utf32_to_utf8(s));
             }
+
+            return 0;
         }
 
         case WM_CHAR:

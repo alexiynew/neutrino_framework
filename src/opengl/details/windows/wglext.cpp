@@ -37,41 +37,7 @@ std::once_flag init_flag;
 
 void init_extensions()
 {
-    HDC hdc = GetDC(nullptr);
-
-    if (hdc == nullptr) {
-        return;
-    }
-
-    PIXELFORMATDESCRIPTOR pfd{};
-    pfd.nSize    = sizeof(PIXELFORMATDESCRIPTOR);
-    pfd.nVersion = 1;
-    pfd.dwFlags  = PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
-
-    int pixelFormat = ChoosePixelFormat(hdc, &pfd);
-    if (pixelFormat == 0) {
-        ReleaseDC(nullptr, hdc);
-        return;
-    }
-
-    if (!SetPixelFormat(hdc, pixelFormat, &pfd)) {
-        ReleaseDC(nullptr, hdc);
-        return;
-    }
-
-    HGLRC hglrc = wglCreateContext(hdc);
-    if (hglrc == nullptr) {
-        ReleaseDC(nullptr, hdc);
-        return;
-    }
-
-    wglMakeCurrent(hdc, hglrc);
-
     ::framework::opengl::opengl_details::init_wgl_functions();
-
-    wglMakeCurrent(nullptr, nullptr);
-    wglDeleteContext(hglrc);
-    ReleaseDC(nullptr, hdc);
 }
 
 } // namespace

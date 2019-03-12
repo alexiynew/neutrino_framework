@@ -174,6 +174,8 @@ std::string key_name(key_code key)
         case key_code::key_right_alt: return "key_right_alt";
         case key_code::key_right_super: return "key_right_super";
     }
+
+    return "undefined";
 }
 
 std::string print_state(const modifiers_state state)
@@ -221,6 +223,8 @@ std::string button_name(mouse_button button)
 
         case mouse_button::button_unknown: return "button_unknown";
     }
+
+    return "undefined";
 }
 
 } // namespace
