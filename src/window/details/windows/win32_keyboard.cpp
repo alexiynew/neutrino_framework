@@ -29,7 +29,7 @@
 
 #include <windows.h>
 
-#include <window/keyboard.hpp>
+#include <window/details/windows/win32_keyboard.hpp>
 
 namespace
 {
@@ -326,7 +326,7 @@ key_code::key_unknown,
 
 } // namespace
 
-namespace framework::system
+namespace framework::system::details
 {
 key_code map_system_key(uint32 key)
 {
@@ -364,4 +364,4 @@ modifiers_state get_modifiers_state()
     return static_cast<modifiers_state>(state);
 }
 
-} // namespace framework::system
+} // namespace framework::system::details

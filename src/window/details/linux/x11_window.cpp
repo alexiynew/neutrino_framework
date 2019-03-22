@@ -27,6 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <X11/XKBlib.h>
 #include <X11/Xutil.h>
 #include <chrono>
 #include <exception>
@@ -38,6 +39,7 @@
 #include <common/utils.hpp>
 #include <log/log.hpp>
 #include <opengl/details/linux/glx_context.hpp>
+#include <window/details/linux/x11_keyboard.hpp>
 #include <window/details/linux/x11_utils.hpp>
 #include <window/details/linux/x11_window.hpp>
 
@@ -284,13 +286,7 @@ void x11_window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window)) != 0) {
-        if (::framework::utils::is_debug()) {
-            process(event.xany);
-        }
-
         switch (event.xany.type) {
-                // case KeyPress: return "KeyPress";
-                // case KeyRelease: return "KeyRelease";
                 // case ButtonPress: return "ButtonPress";
                 // case ButtonRelease: return "ButtonRelease";
                 // case MotionNotify: return "MotionNotify";
@@ -310,7 +306,10 @@ void x11_window::process_events()
             case EnterNotify: process(event.xcrossing); break;
             case LeaveNotify: process(event.xcrossing); break;
 
-            default: break;
+            default:
+                if (framework::utils::is_debug()) {
+                    process(event.xany);
+                }
         }
     }
 }
@@ -669,10 +668,6 @@ void x11_window::process(XVisibilityEvent event)
         if (m_event_handler) {
             m_event_handler->on_show();
         }
-
-        if (m_event_handler) {
-            m_event_handler->on_size(m_size);
-        }
     }
 }
 
@@ -762,27 +757,32 @@ void x11_window::process(XClientMessageEvent event)
 
 void x11_window::process(XKeyEvent event)
 {
+    const key_code key          = details::map_system_key(event.keycode);
+    const modifiers_state state = details::get_modifiers_state();
+
     switch (event.type) {
         case KeyPress:
             if (m_event_handler) {
-                m_event_handler->on_key_press({}, {});
+                m_event_handler->on_key_press(key, state);
             }
             break;
 
-        case KeyRelease:
-            bool is_retriggered = false;
-            if (XEventsQueued(m_server->display(), QueuedAfterReading)) {
-                XEvent next_event;
-                XPeekEvent(m_server->display(), &next_event);
+        case KeyRelease: {
+            const bool is_retriggered = [this](XKeyEvent e) {
+                if (XEventsQueued(m_server->display(), QueuedAfterReading)) {
+                    XEvent next_event;
+                    XPeekEvent(m_server->display(), &next_event);
 
-                is_retriggered = (next_event.type == KeyPress && next_event.xkey.time == event.time &&
-                                  next_event.xkey.keycode == event.keycode);
-            }
+                    return (next_event.type == KeyPress && next_event.xkey.time == e.time &&
+                            next_event.xkey.keycode == e.keycode);
+                }
+                return false;
+            }(event);
 
             if (!is_retriggered && m_event_handler) {
-                m_event_handler->on_key_release({}, {});
+                m_event_handler->on_key_release(key, state);
             }
-            break;
+        } break;
     }
 }
 

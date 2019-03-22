@@ -110,10 +110,6 @@ enum class key_code
     key_num_lock     = 282,
     key_print_screen = 283,
     key_pause        = 284,
-    key_shift        = 285,
-    key_control      = 286,
-    key_alt          = 287,
-    key_super        = 288,
 
     // Function keys
     key_f1  = 290,
@@ -161,6 +157,8 @@ enum class key_code
     key_num_separator = 335,
 
     // modifiers
+    key_super = 288,
+
     key_left_shift   = 340, // !!!!
     key_left_control = 341, // !!!!
     key_left_alt     = 342, // !!!!

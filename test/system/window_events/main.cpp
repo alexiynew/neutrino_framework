@@ -113,10 +113,6 @@ std::string key_name(key_code key)
         case key_code::key_num_lock: return "key_num_lock";
         case key_code::key_print_screen: return "key_print_screen";
         case key_code::key_pause: return "key_pause";
-        case key_code::key_shift: return "key_shift";
-        case key_code::key_control: return "key_control";
-        case key_code::key_alt: return "key_alt";
-        case key_code::key_super: return "key_super";
 
         // Function keys
         case key_code::key_f1: return "key_f1";
@@ -164,6 +160,8 @@ std::string key_name(key_code key)
         case key_code::key_num_separator: return "key_num_separator";
 
         // modifiers
+        case key_code::key_super: return "key_super";
+
         case key_code::key_left_shift: return "key_left_shift";
         case key_code::key_left_control: return "key_left_control";
         case key_code::key_left_alt: return "key_left_alt";
