@@ -58,20 +58,19 @@ const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDE
 const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
 const char* const wm_delete_window_atom_name            = u8"WM_DELETE_WINDOW";
 
-const int64 event_mask = VisibilityChangeMask    // Any change in visibility wanted
-                         | FocusChangeMask       // Any change in input focus wanted
-                         | StructureNotifyMask   // Any change in window structure wanted
-                         | PropertyChangeMask    // Any change in property wanted
-                         | ExposureMask          // Any exposure wanted
-                         | KeyPressMask          // Keyboard down events wanted
-                         | KeyReleaseMask        // Keyboard up events wanted
-                         | ButtonPressMask       // Pointer button down events wanted
-                         | ButtonReleaseMask     // Pointer button up events wanted
-                         | EnterWindowMask       // Pointer window entry events wanted
-                         | LeaveWindowMask       // Pointer window leave events wanted
-                         | PointerMotionMask     // Pointer motion events wanted
-                         | PointerMotionHintMask // Pointer motion hints wanted
-                         | ButtonMotionMask;     // Pointer motion while any button down
+const int64 event_mask = VisibilityChangeMask  // Any change in visibility wanted
+                         | FocusChangeMask     // Any change in input focus wanted
+                         | StructureNotifyMask // Any change in window structure wanted
+                         | PropertyChangeMask  // Any change in property wanted
+                         | ExposureMask        // Any exposure wanted
+                         | KeyPressMask        // Keyboard down events wanted
+                         | KeyReleaseMask      // Keyboard up events wanted
+                         | ButtonPressMask     // Pointer button down events wanted
+                         | ButtonReleaseMask   // Pointer button up events wanted
+                         | EnterWindowMask     // Pointer window entry events wanted
+                         | LeaveWindowMask     // Pointer window leave events wanted
+                         | PointerMotionMask   // Pointer motion events wanted
+                         | ButtonMotionMask;   // Pointer motion while any button down
 
 // | Button1MotionMask        // Pointer motion while button 1 down
 // | Button2MotionMask        // Pointer motion while button 2 down
@@ -84,6 +83,7 @@ const int64 event_mask = VisibilityChangeMask    // Any change in visibility wan
 // | SubstructureRedirectMask // Redirect structure requests on children
 // | ColormapChangeMask       // Any change in colormap wanted
 // | OwnerGrabButtonMask;     // Automatic grabs should activate with owner_events set to True
+// | PointerMotionHintMask    // Pointer motion hints wanted
 
 // NOLINTNEXTLINE(readability-non-const-parameter)
 Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
@@ -289,7 +289,6 @@ void x11_window::process_events()
         switch (event.xany.type) {
                 // case ButtonPress: return "ButtonPress";
                 // case ButtonRelease: return "ButtonRelease";
-                // case MotionNotify: return "MotionNotify";
                 // case KeymapNotify: return "KeymapNotify"
                 // case GenericEvent:  return "GenericEvent";
 
@@ -305,6 +304,7 @@ void x11_window::process_events()
             case KeyRelease: process(event.xkey); break;
             case EnterNotify: process(event.xcrossing); break;
             case LeaveNotify: process(event.xcrossing); break;
+            case MotionNotify: process(event.xmotion); break;
 
             default:
                 if (framework::utils::is_debug()) {
@@ -800,6 +800,13 @@ void x11_window::process(XCrossingEvent event)
                 m_event_handler->on_mouse_leave();
             }
             break;
+    }
+}
+
+void x11_window::process(XMotionEvent event)
+{
+    if (m_event_handler) {
+        m_event_handler->on_mouse_move({event.x, event.y});
     }
 }
 
