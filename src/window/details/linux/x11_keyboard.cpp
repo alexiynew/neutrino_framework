@@ -208,9 +208,24 @@ key_code map_system_key(uint32 key)
     return key_codes[key];
 }
 
-modifiers_state get_modifiers_state()
+modifiers_state get_modifiers_state(uint32 state)
 {
-    return {};
+    int32 mods = 0;
+
+    if (state & ShiftMask)
+        mods |= modifiers_state::mod_shift;
+    if (state & ControlMask)
+        mods |= modifiers_state::mod_control;
+    if (state & Mod1Mask)
+        mods |= modifiers_state::mod_menu;
+    if (state & Mod4Mask)
+        mods |= modifiers_state::mod_super;
+    if (state & LockMask)
+        mods |= modifiers_state::mod_caps_lock;
+    if (state & Mod2Mask)
+        mods |= modifiers_state::mod_num_lock;
+
+    return static_cast<modifiers_state>(mods);
 }
 
 } // namespace framework::system::details

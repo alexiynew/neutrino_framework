@@ -335,7 +335,7 @@ key_code map_system_key(uint32 key)
 
 modifiers_state get_modifiers_state()
 {
-    int state = 0;
+    int32 state = 0;
 
     if (GetKeyState(VK_SHIFT) & 0x8000) {
         state |= modifiers_state::mod_shift;

@@ -175,9 +175,6 @@ enum modifiers_state
     mod_num_lock  = 0x0020,
 };
 
-key_code map_system_key(uint32 key);
-modifiers_state get_modifiers_state();
-
 enum class mouse_button
 {
     button_unknown = -1,

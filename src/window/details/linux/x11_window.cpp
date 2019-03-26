@@ -758,7 +758,7 @@ void x11_window::process(XClientMessageEvent event)
 void x11_window::process(XKeyEvent event)
 {
     const key_code key          = details::map_system_key(event.keycode);
-    const modifiers_state state = details::get_modifiers_state();
+    const modifiers_state state = details::get_modifiers_state(event.state);
 
     switch (event.type) {
         case KeyPress:
