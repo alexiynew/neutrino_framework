@@ -39,9 +39,9 @@ using ::framework::system::mouse_button;
 std::string key_name(key_code key)
 {
     switch (key) {
-        case key_code::key_unknown:
-            return "key_unknown";
-            // Printable
+        case key_code::key_unknown: return "key_unknown";
+
+        // Printable
         case key_code::key_space: return "key_space";
         case key_code::key_apostrophe: return "key_apostrophe";
         case key_code::key_comma: return "key_comma";
@@ -90,8 +90,6 @@ std::string key_name(key_code key)
         case key_code::key_backslash: return "key_backslash";
         case key_code::key_right_bracket: return "key_right_bracket";
         case key_code::key_grave_accent: return "key_grave_accent";
-        case key_code::key_world_1: return "key_world_1";
-        case key_code::key_world_2: return "key_world_2";
 
         // navigation
         case key_code::key_escape: return "key_escape";
@@ -139,7 +137,6 @@ std::string key_name(key_code key)
         case key_code::key_f22: return "key_f22";
         case key_code::key_f23: return "key_f23";
         case key_code::key_f24: return "key_f24";
-        case key_code::key_f25: return "key_f25";
 
         // numpad
         case key_code::key_num_0: return "key_num_0";
@@ -160,8 +157,6 @@ std::string key_name(key_code key)
         case key_code::key_num_separator: return "key_num_separator";
 
         // modifiers
-        case key_code::key_super: return "key_super";
-
         case key_code::key_left_shift: return "key_left_shift";
         case key_code::key_left_control: return "key_left_control";
         case key_code::key_left_alt: return "key_left_alt";

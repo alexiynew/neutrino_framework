@@ -87,8 +87,6 @@ enum class key_code
     key_backslash     = 92, // \ //
     key_right_bracket = 93, // ]
     key_grave_accent  = 96, // `
-    key_world_1       = 161,
-    key_world_2       = 162,
 
     // navigation
     key_escape       = 256,
@@ -136,7 +134,6 @@ enum class key_code
     key_f22 = 311,
     key_f23 = 312,
     key_f24 = 313,
-    key_f25 = 314,
 
     // numpad
     key_num_0         = 320,
@@ -157,17 +154,15 @@ enum class key_code
     key_num_separator = 335,
 
     // modifiers
-    key_super = 288,
+    key_left_shift   = 340,
+    key_left_control = 341,
+    key_left_alt     = 342,
+    key_left_super   = 343,
 
-    key_left_shift   = 340, // !!!!
-    key_left_control = 341, // !!!!
-    key_left_alt     = 342, // !!!!
-    key_left_super   = 343, // !!!!
-
-    key_right_shift   = 344, // !!!!
-    key_right_control = 345, // !!!!
-    key_right_alt     = 346, // !!!!
-    key_right_super   = 347, // !!!!
+    key_right_shift   = 344,
+    key_right_control = 345,
+    key_right_alt     = 346,
+    key_right_super   = 347,
 };
 
 enum modifiers_state

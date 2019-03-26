@@ -99,8 +99,6 @@ key_name_pair key_name_map[] = {
 {"BKSL", framework::system::key_code::key_backslash},
 {"AD12", framework::system::key_code::key_right_bracket},
 {"TLDE", framework::system::key_code::key_grave_accent},
-//{"", framework::system::key_code::key_world_1},
-//{"", framework::system::key_code::key_world_2},
 
 // navigation
 {"ESC", framework::system::key_code::key_escape},
@@ -120,7 +118,7 @@ key_name_pair key_name_map[] = {
 {"CAPS", framework::system::key_code::key_caps_lock},
 {"SCLK", framework::system::key_code::key_scroll_lock},
 {"NMLK", framework::system::key_code::key_num_lock},
-{"", framework::system::key_code::key_print_screen}, // TODO detect this key
+{"PRSK", framework::system::key_code::key_print_screen},
 {"PAUS", framework::system::key_code::key_pause},
 
 // Function keys
@@ -148,7 +146,6 @@ key_name_pair key_name_map[] = {
 {"FK22", framework::system::key_code::key_f22},
 {"FK23", framework::system::key_code::key_f23},
 {"FK24", framework::system::key_code::key_f24},
-{"FK25", framework::system::key_code::key_f25},
 
 // numpad
 {"KP0", framework::system::key_code::key_num_0},
@@ -170,17 +167,15 @@ key_name_pair key_name_map[] = {
 {"", framework::system::key_code::key_num_separator}, // TODO detect this key
 
 // modifiers
-{"", framework::system::key_code::key_super}, // TODO detect this key
-
 {"LFSH", framework::system::key_code::key_left_shift},
 {"LCTL", framework::system::key_code::key_left_control},
 {"LALT", framework::system::key_code::key_left_alt},
-{"", framework::system::key_code::key_left_super},
+{"LWIN", framework::system::key_code::key_left_super},
 
 {"RTSH", framework::system::key_code::key_right_shift},
 {"RCTL", framework::system::key_code::key_right_control},
 {"RALT", framework::system::key_code::key_right_alt},
-{"", framework::system::key_code::key_right_super},
+{"RWIN", framework::system::key_code::key_right_super},
 };
 
 } // namespace
@@ -210,13 +205,6 @@ void init_key_code_map(const x11_server* server)
 
 key_code map_system_key(uint32 key)
 {
-    XkbDescPtr desc = XkbGetMap(d, 0, XkbUseCoreKbd);
-    XkbGetNames(d, XkbKeyNamesMask, desc);
-
-    std::string name(desc->names->keys[key].name, XkbKeyNameLength);
-
-    log::debug("keyboard") << '[' << name << ']' << std::endl;
-
     return key_codes[key];
 }
 
