@@ -33,6 +33,7 @@
 #include <log/log.hpp>
 #include <opengl/details/windows/wgl_context.hpp>
 #include <window/details/windows/win32_application.hpp>
+#include <window/details/windows/win32_keyboard.hpp>
 #include <window/details/windows/win32_window.hpp>
 
 namespace
@@ -677,9 +678,9 @@ LRESULT win32_window::process_key_event(WPARAM w_param, LPARAM l_param)
     }
 
     log::debug(log_tag) << w_param << std::endl;
-    const key_code key              = map_system_key(static_cast<uint32>(w_param));
+    const key_code key              = details::map_system_key(static_cast<uint32>(w_param));
     const bool is_key_down          = ((l_param >> 31) & 1) == 0;
-    const modifiers_state mod_state = get_modifiers_state();
+    const modifiers_state mod_state = details::get_modifiers_state();
 
     if (key == key_code::key_unknown) {
         return 0;

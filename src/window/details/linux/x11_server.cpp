@@ -29,11 +29,12 @@
 
 #include <common/types.hpp>
 #include <log/log.hpp>
+#include <window/details/linux/x11_keyboard.hpp>
 #include <window/details/linux/x11_server.hpp>
 
 namespace
 {
-using ::framework::system::x11_server;
+using ::framework::system::details::x11_server;
 
 const char* const log_tag = "x11_server";
 
@@ -98,6 +99,8 @@ x11_server::x11_server() : m_display{XOpenDisplay(nullptr)}
     set_error_handlers();
 
     m_input_method = XOpenIM(m_display, nullptr, nullptr, nullptr);
+
+    init_key_code_map(this);
 }
 
 x11_server::~x11_server()

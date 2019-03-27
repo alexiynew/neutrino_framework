@@ -27,6 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <X11/XKBlib.h>
 #include <X11/Xutil.h>
 #include <chrono>
 #include <exception>
@@ -38,6 +39,7 @@
 #include <common/utils.hpp>
 #include <log/log.hpp>
 #include <opengl/details/linux/glx_context.hpp>
+#include <window/details/linux/x11_keyboard.hpp>
 #include <window/details/linux/x11_utils.hpp>
 #include <window/details/linux/x11_window.hpp>
 
@@ -56,20 +58,19 @@ const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDE
 const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
 const char* const wm_delete_window_atom_name            = u8"WM_DELETE_WINDOW";
 
-const int64 event_mask = VisibilityChangeMask    // Any change in visibility wanted
-                         | FocusChangeMask       // Any change in input focus wanted
-                         | StructureNotifyMask   // Any change in window structure wanted
-                         | PropertyChangeMask    // Any change in property wanted
-                         | ExposureMask          // Any exposure wanted
-                         | KeyPressMask          // Keyboard down events wanted
-                         | KeyReleaseMask        // Keyboard up events wanted
-                         | ButtonPressMask       // Pointer button down events wanted
-                         | ButtonReleaseMask     // Pointer button up events wanted
-                         | EnterWindowMask       // Pointer window entry events wanted
-                         | LeaveWindowMask       // Pointer window leave events wanted
-                         | PointerMotionMask     // Pointer motion events wanted
-                         | PointerMotionHintMask // Pointer motion hints wanted
-                         | ButtonMotionMask;     // Pointer motion while any button down
+const int64 event_mask = VisibilityChangeMask  // Any change in visibility wanted
+                         | FocusChangeMask     // Any change in input focus wanted
+                         | StructureNotifyMask // Any change in window structure wanted
+                         | PropertyChangeMask  // Any change in property wanted
+                         | ExposureMask        // Any exposure wanted
+                         | KeyPressMask        // Keyboard down events wanted
+                         | KeyReleaseMask      // Keyboard up events wanted
+                         | ButtonPressMask     // Pointer button down events wanted
+                         | ButtonReleaseMask   // Pointer button up events wanted
+                         | EnterWindowMask     // Pointer window entry events wanted
+                         | LeaveWindowMask     // Pointer window leave events wanted
+                         | PointerMotionMask   // Pointer motion events wanted
+                         | ButtonMotionMask;   // Pointer motion while any button down
 
 // | Button1MotionMask        // Pointer motion while button 1 down
 // | Button2MotionMask        // Pointer motion while button 2 down
@@ -82,6 +83,7 @@ const int64 event_mask = VisibilityChangeMask    // Any change in visibility wan
 // | SubstructureRedirectMask // Redirect structure requests on children
 // | ColormapChangeMask       // Any change in colormap wanted
 // | OwnerGrabButtonMask;     // Automatic grabs should activate with owner_events set to True
+// | PointerMotionHintMask    // Pointer motion hints wanted
 
 // NOLINTNEXTLINE(readability-non-const-parameter)
 Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
@@ -284,16 +286,9 @@ void x11_window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window)) != 0) {
-        if (::framework::utils::is_debug()) {
-            process(event.xany);
-        }
-
         switch (event.xany.type) {
-                // case KeyPress: return "KeyPress";
-                // case KeyRelease: return "KeyRelease";
                 // case ButtonPress: return "ButtonPress";
                 // case ButtonRelease: return "ButtonRelease";
-                // case MotionNotify: return "MotionNotify";
                 // case KeymapNotify: return "KeymapNotify"
                 // case GenericEvent:  return "GenericEvent";
 
@@ -309,8 +304,12 @@ void x11_window::process_events()
             case KeyRelease: process(event.xkey); break;
             case EnterNotify: process(event.xcrossing); break;
             case LeaveNotify: process(event.xcrossing); break;
+            case MotionNotify: process(event.xmotion); break;
 
-            default: break;
+            default:
+                if (framework::utils::is_debug()) {
+                    process(event.xany);
+                }
         }
     }
 }
@@ -669,10 +668,6 @@ void x11_window::process(XVisibilityEvent event)
         if (m_event_handler) {
             m_event_handler->on_show();
         }
-
-        if (m_event_handler) {
-            m_event_handler->on_size(m_size);
-        }
     }
 }
 
@@ -762,27 +757,32 @@ void x11_window::process(XClientMessageEvent event)
 
 void x11_window::process(XKeyEvent event)
 {
+    const key_code key          = details::map_system_key(event.keycode);
+    const modifiers_state state = details::get_modifiers_state(event.state);
+
     switch (event.type) {
         case KeyPress:
             if (m_event_handler) {
-                m_event_handler->on_key_press({}, {});
+                m_event_handler->on_key_press(key, state);
             }
             break;
 
-        case KeyRelease:
-            bool is_retriggered = false;
-            if (XEventsQueued(m_server->display(), QueuedAfterReading)) {
-                XEvent next_event;
-                XPeekEvent(m_server->display(), &next_event);
+        case KeyRelease: {
+            const bool is_retriggered = [this](XKeyEvent e) {
+                if (XEventsQueued(m_server->display(), QueuedAfterReading)) {
+                    XEvent next_event;
+                    XPeekEvent(m_server->display(), &next_event);
 
-                is_retriggered = (next_event.type == KeyPress && next_event.xkey.time == event.time &&
-                                  next_event.xkey.keycode == event.keycode);
-            }
+                    return (next_event.type == KeyPress && next_event.xkey.time == e.time &&
+                            next_event.xkey.keycode == e.keycode);
+                }
+                return false;
+            }(event);
 
             if (!is_retriggered && m_event_handler) {
-                m_event_handler->on_key_release({}, {});
+                m_event_handler->on_key_release(key, state);
             }
-            break;
+        } break;
     }
 }
 
@@ -800,6 +800,13 @@ void x11_window::process(XCrossingEvent event)
                 m_event_handler->on_mouse_leave();
             }
             break;
+    }
+}
+
+void x11_window::process(XMotionEvent event)
+{
+    if (m_event_handler) {
+        m_event_handler->on_mouse_move({event.x, event.y});
     }
 }
 

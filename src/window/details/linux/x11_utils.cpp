@@ -34,7 +34,7 @@
 #include <common/utils.hpp>
 #include <window/details/linux/x11_utils.hpp>
 
-using ::framework::system::x11_server;
+using ::framework::system::details::x11_server;
 
 namespace
 {
