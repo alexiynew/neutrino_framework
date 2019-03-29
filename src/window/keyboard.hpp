@@ -84,7 +84,7 @@ enum class key_code
     key_y             = 89,
     key_z             = 90,
     key_left_bracket  = 91, // [
-    key_backslash     = 92, // \ //
+    key_backslash     = 92, /* \  */
     key_right_bracket = 93, // ]
     key_grave_accent  = 96, // `
 
@@ -173,30 +173,6 @@ enum modifiers_state
     mod_super     = 0x0008,
     mod_caps_lock = 0x0010,
     mod_num_lock  = 0x0020,
-};
-
-enum class mouse_button
-{
-    button_unknown = -1,
-
-    button_1 = 0,
-    button_2 = 1,
-    button_3 = 2,
-    button_4 = 3,
-    button_5 = 4,
-    button_6 = 5,
-    button_7 = 6,
-    button_8 = 7,
-
-    button_left   = button_1,
-    button_right  = button_2,
-    button_middle = button_3,
-};
-
-struct cursor_position
-{
-    int32 x;
-    int32 y;
 };
 
 } // namespace framework::system

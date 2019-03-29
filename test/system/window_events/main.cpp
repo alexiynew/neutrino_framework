@@ -211,8 +211,6 @@ std::string button_name(mouse_button button)
         case mouse_button::button_4: return "button_4";
         case mouse_button::button_5: return "button_5";
         case mouse_button::button_6: return "button_6";
-        case mouse_button::button_7: return "button_7";
-        case mouse_button::button_8: return "button_8";
 
         case mouse_button::button_unknown: return "button_unknown";
     }
