@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_WINDOW_EVENT_TYPES_HPP
-#define FRAMEWORK_WINDOW_WINDOW_EVENT_TYPES_HPP
+#ifndef FRAMEWORK_WINDOW_WINDOW_CALLBACK_TYPES_HPP
+#define FRAMEWORK_WINDOW_WINDOW_CALLBACK_TYPES_HPP
 
 #include <functional>
 
