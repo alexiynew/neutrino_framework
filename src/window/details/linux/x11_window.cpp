@@ -774,13 +774,14 @@ void x11_window::process(XKeyEvent event)
         case KeyPress: {
             m_event_handler->on_key_press(key, state);
 
-            // TODO: check X_HAVE_UTF8_STRING
-            char buffer[64] = {0};
-            KeySym sym;
-            int32 count = Xutf8LookupString(m_input_context, &event, buffer, sizeof(buffer), &sym, nullptr);
+            if (X_HAVE_UTF8_STRING) {
+                char buffer[64] = {0};
+                KeySym sym;
+                int32 count = Xutf8LookupString(m_input_context, &event, buffer, sizeof(buffer), &sym, nullptr);
 
-            if (count > 0) {
-                m_event_handler->on_character(std::string(buffer));
+                if (count > 0) {
+                    m_event_handler->on_character(std::string(buffer));
+                }
             }
         } break;
 
