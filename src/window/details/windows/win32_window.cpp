@@ -677,7 +677,6 @@ LRESULT win32_window::process_key_event(WPARAM w_param, LPARAM l_param)
         return 0;
     }
 
-    log::debug(log_tag) << w_param << std::endl;
     const key_code key              = details::map_system_key(static_cast<uint32>(w_param));
     const bool is_key_down          = ((l_param >> 31) & 1) == 0;
     const modifiers_state mod_state = details::get_modifiers_state();

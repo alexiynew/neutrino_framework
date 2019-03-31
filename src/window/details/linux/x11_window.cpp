@@ -308,10 +308,7 @@ void x11_window::process_events()
             case MotionNotify: process(event.xmotion); break;
             case MappingNotify: process(event.xmapping); break;
 
-            default:
-                if (framework::utils::is_debug()) {
-                    process(event.xany);
-                }
+            default: process(event.xany);
         }
     }
 }
@@ -850,7 +847,9 @@ void x11_window::process(XMappingEvent event)
 
 void x11_window::process(XAnyEvent event)
 {
-    ::framework::log::debug(log_tag) << "[" << title() << "] Got event: " << event_type_string(event) << std::endl;
+    if (framework::utils::is_debug()) {
+        ::framework::log::debug(log_tag) << "[" << title() << "] Got event: " << event_type_string(event) << std::endl;
+    }
 }
 
 #pragma endregion
