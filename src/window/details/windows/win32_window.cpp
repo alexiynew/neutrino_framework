@@ -41,6 +41,8 @@ namespace
 const char* const log_tag  = "win32_window";
 const wchar_t class_name[] = L"my_window_class";
 
+const DWORD window_style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+
 std::wstring utf8_to_utf16(const std::string& string)
 {
     if (string.empty()) {
@@ -169,12 +171,12 @@ win32_window::win32_window(window_size size, const std::string& title, opengl::c
     m_window_class = ::register_window_class();
 
     RECT rect{0, 0, size.width, size.height};
-    AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
+    AdjustWindowRectEx(&rect, window_style, false, WS_EX_CLIENTEDGE);
 
     m_window = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,
                               class_name,
                               utf8_to_utf16(title).c_str(),
-                              WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+                              window_style,
                               CW_USEDEFAULT,
                               CW_USEDEFAULT,
                               rect.right - rect.left,
@@ -317,7 +319,7 @@ void win32_window::restore()
 void win32_window::set_size(window_size size)
 {
     RECT rect{0, 0, size.width, size.height};
-    AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
+    AdjustWindowRectEx(&rect, window_style, false, WS_EX_CLIENTEDGE);
 
     SetWindowPos(m_window,
                  HWND_TOP,
@@ -527,7 +529,7 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
 
             if (m_min_size.width != 0 && m_min_size.height != 0) {
                 RECT rect{0, 0, m_min_size.width, m_min_size.height};
-                AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
+                AdjustWindowRectEx(&rect, window_style, false, WS_EX_CLIENTEDGE);
 
                 minmaxinfo->ptMinTrackSize.x = rect.right - rect.left;
                 minmaxinfo->ptMinTrackSize.y = rect.bottom - rect.top;
@@ -535,7 +537,7 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
 
             if (m_max_size.width != 0 && m_max_size.height != 0) {
                 RECT rect{0, 0, m_max_size.width, m_max_size.height};
-                AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_CLIENTEDGE);
+                AdjustWindowRectEx(&rect, window_style, false, WS_EX_CLIENTEDGE);
 
                 minmaxinfo->ptMaxTrackSize.x = rect.right - rect.left;
                 minmaxinfo->ptMaxTrackSize.y = rect.bottom - rect.top;

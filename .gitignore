@@ -6,6 +6,9 @@ __pycache__/
 .vscode/
 .atom-build.yml
 .lvimrc
+_lvimrc
+.vimrc
+_vimrc
 .DS_Store
 .idea
 
