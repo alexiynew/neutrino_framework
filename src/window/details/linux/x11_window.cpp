@@ -306,6 +306,7 @@ void x11_window::process_events()
             case EnterNotify: process(event.xcrossing); break;
             case LeaveNotify: process(event.xcrossing); break;
             case MotionNotify: process(event.xmotion); break;
+            case MappingNotify: process(event.xmapping); break;
 
             default:
                 if (framework::utils::is_debug()) {
@@ -770,7 +771,18 @@ void x11_window::process(XKeyEvent event)
     }
 
     switch (event.type) {
-        case KeyPress: m_event_handler->on_key_press(key, state); break;
+        case KeyPress: {
+            m_event_handler->on_key_press(key, state);
+
+            // TODO: check X_HAVE_UTF8_STRING
+            char buffer[64] = {0};
+            KeySym sym;
+            int32 count = Xutf8LookupString(m_input_context, &event, buffer, sizeof(buffer), &sym, nullptr);
+
+            if (count > 0) {
+                m_event_handler->on_character(std::string(buffer));
+            }
+        } break;
 
         case KeyRelease: {
             const bool is_retriggered = [this](XKeyEvent e) {
@@ -828,6 +840,11 @@ void x11_window::process(XMotionEvent event)
     if (m_event_handler) {
         m_event_handler->on_mouse_move({event.x, event.y});
     }
+}
+
+void x11_window::process(XMappingEvent event)
+{
+    XRefreshKeyboardMapping(&event);
 }
 
 void x11_window::process(XAnyEvent event)

@@ -112,6 +112,7 @@ private:
     void process(XButtonEvent event);
     void process(XCrossingEvent event);
     void process(XMotionEvent event);
+    void process(XMappingEvent event);
     void process(XAnyEvent event);
 
     void maximize_toggle(bool enable);
