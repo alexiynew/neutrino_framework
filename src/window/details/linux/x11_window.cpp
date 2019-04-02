@@ -40,6 +40,7 @@
 #include <log/log.hpp>
 #include <opengl/details/linux/glx_context.hpp>
 #include <window/details/linux/x11_keyboard.hpp>
+#include <window/details/linux/x11_mouse.hpp>
 #include <window/details/linux/x11_utils.hpp>
 #include <window/details/linux/x11_window.hpp>
 
@@ -287,8 +288,6 @@ void x11_window::process_events()
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window)) != 0) {
         switch (event.xany.type) {
-                // case ButtonPress: return "ButtonPress";
-                // case ButtonRelease: return "ButtonRelease";
                 // case KeymapNotify: return "KeymapNotify"
                 // case GenericEvent:  return "GenericEvent";
 
@@ -302,9 +301,12 @@ void x11_window::process_events()
             case ClientMessage: process(event.xclient); break;
             case KeyPress: process(event.xkey); break;
             case KeyRelease: process(event.xkey); break;
+            case ButtonPress: process(event.xbutton); break;
+            case ButtonRelease: process(event.xbutton); break;
             case EnterNotify: process(event.xcrossing); break;
             case LeaveNotify: process(event.xcrossing); break;
             case MotionNotify: process(event.xmotion); break;
+            case MappingNotify: process(event.xmapping); break;
 
             default:
                 if (framework::utils::is_debug()) {
@@ -757,15 +759,31 @@ void x11_window::process(XClientMessageEvent event)
 
 void x11_window::process(XKeyEvent event)
 {
+    if (!m_event_handler) {
+        return;
+    }
+
     const key_code key          = details::map_system_key(event.keycode);
     const modifiers_state state = details::get_modifiers_state(event.state);
 
+    if (key == key_code::key_unknown) {
+        return;
+    }
+
     switch (event.type) {
-        case KeyPress:
-            if (m_event_handler) {
-                m_event_handler->on_key_press(key, state);
+        case KeyPress: {
+            m_event_handler->on_key_press(key, state);
+
+            if (X_HAVE_UTF8_STRING) {
+                char buffer[64] = {0};
+                KeySym sym;
+                int32 count = Xutf8LookupString(m_input_context, &event, buffer, sizeof(buffer), &sym, nullptr);
+
+                if (count > 0) {
+                    m_event_handler->on_character(std::string(buffer));
+                }
             }
-            break;
+        } break;
 
         case KeyRelease: {
             const bool is_retriggered = [this](XKeyEvent e) {
@@ -779,27 +797,42 @@ void x11_window::process(XKeyEvent event)
                 return false;
             }(event);
 
-            if (!is_retriggered && m_event_handler) {
+            if (!is_retriggered) {
                 m_event_handler->on_key_release(key, state);
             }
         } break;
     }
 }
 
+void x11_window::process(XButtonEvent event)
+{
+    if (!m_event_handler) {
+        return;
+    }
+
+    const mouse_button button      = details::map_mouse_button(event.button);
+    const modifiers_state state    = details::get_modifiers_state(event.state);
+    const cursor_position position = {event.x, event.y};
+
+    if (button == mouse_button::button_unknown) {
+        return;
+    }
+
+    switch (event.type) {
+        case ButtonPress: m_event_handler->on_mouse_press(button, position, state); break;
+        case ButtonRelease: m_event_handler->on_mouse_release(button, position, state); break;
+    }
+}
+
 void x11_window::process(XCrossingEvent event)
 {
-    switch (event.type) {
-        case EnterNotify:
-            if (m_event_handler) {
-                m_event_handler->on_mouse_enter();
-            }
-            break;
+    if (!m_event_handler) {
+        return;
+    }
 
-        case LeaveNotify:
-            if (m_event_handler) {
-                m_event_handler->on_mouse_leave();
-            }
-            break;
+    switch (event.type) {
+        case EnterNotify: m_event_handler->on_mouse_enter(); break;
+        case LeaveNotify: m_event_handler->on_mouse_leave(); break;
     }
 }
 
@@ -808,6 +841,11 @@ void x11_window::process(XMotionEvent event)
     if (m_event_handler) {
         m_event_handler->on_mouse_move({event.x, event.y});
     }
+}
+
+void x11_window::process(XMappingEvent event)
+{
+    XRefreshKeyboardMapping(&event);
 }
 
 void x11_window::process(XAnyEvent event)

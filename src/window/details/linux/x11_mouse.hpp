@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window event types.
+/// @brief Types and functions for mouse support.
 /// @author Fedorov Alexey
-/// @date 01.03.2019
+/// @date 29.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,36 +27,15 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_WINDOW_EVENT_TYPES_HPP
-#define FRAMEWORK_WINDOW_WINDOW_EVENT_TYPES_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_X11_MOUSE_HPP
+#define FRAMEWORK_WINDOW_DETAILS_X11_MOUSE_HPP
 
-#include <functional>
-
-#include <window/keyboard.hpp>
 #include <window/mouse.hpp>
-#include <window/window_position.hpp>
-#include <window/window_size.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
-class window;
+mouse_button map_mouse_button(uint32 button);
 
-/// @addtogroup window_class
-/// @{
-
-using window_event_callback              = std::function<void(const window&)>;
-using window_size_event_callback         = std::function<void(const window&, window_size)>;
-using window_position_event_callback     = std::function<void(const window&, window_position)>;
-using window_key_event_callback          = std::function<void(const window&, key_code, modifiers_state)>;
-using window_character_event_callback    = std::function<void(const window&, std::string)>;
-using window_mouse_move_callback         = std::function<void(const window&, cursor_position)>;
-using window_mouse_button_event_callback = std::function<
-void(const window&, mouse_button, cursor_position, modifiers_state)>;
-using window_mouse_button_event_callback = std::function<
-void(const window&, mouse_button, cursor_position, modifiers_state)>;
-
-/// @}
-
-} // namespace framework::system
+} // namespace framework::system::details
 
 #endif

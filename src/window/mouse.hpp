@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window event types.
+/// @brief Types and functions for mouse support.
 /// @author Fedorov Alexey
-/// @date 01.03.2019
+/// @date 29.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,35 +27,34 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_WINDOW_EVENT_TYPES_HPP
-#define FRAMEWORK_WINDOW_WINDOW_EVENT_TYPES_HPP
+#ifndef FRAMEWORK_WINDOW_MOUSE_HPP
+#define FRAMEWORK_WINDOW_MOUSE_HPP
 
-#include <functional>
-
-#include <window/keyboard.hpp>
-#include <window/mouse.hpp>
-#include <window/window_position.hpp>
-#include <window/window_size.hpp>
+#include <common/types.hpp>
 
 namespace framework::system
 {
-class window;
+enum class mouse_button
+{
+    button_unknown = -1,
 
-/// @addtogroup window_class
-/// @{
+    button_1 = 0,
+    button_2 = 1,
+    button_3 = 2,
+    button_4 = 3,
+    button_5 = 4,
+    button_6 = 5,
 
-using window_event_callback              = std::function<void(const window&)>;
-using window_size_event_callback         = std::function<void(const window&, window_size)>;
-using window_position_event_callback     = std::function<void(const window&, window_position)>;
-using window_key_event_callback          = std::function<void(const window&, key_code, modifiers_state)>;
-using window_character_event_callback    = std::function<void(const window&, std::string)>;
-using window_mouse_move_callback         = std::function<void(const window&, cursor_position)>;
-using window_mouse_button_event_callback = std::function<
-void(const window&, mouse_button, cursor_position, modifiers_state)>;
-using window_mouse_button_event_callback = std::function<
-void(const window&, mouse_button, cursor_position, modifiers_state)>;
+    button_left   = button_1,
+    button_right  = button_2,
+    button_middle = button_3,
+};
 
-/// @}
+struct cursor_position
+{
+    int32 x;
+    int32 y;
+};
 
 } // namespace framework::system
 

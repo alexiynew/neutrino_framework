@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window event types.
+/// @brief Types and functions for mouse support.
 /// @author Fedorov Alexey
-/// @date 01.03.2019
+/// @date 29.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,36 +27,23 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_WINDOW_EVENT_TYPES_HPP
-#define FRAMEWORK_WINDOW_WINDOW_EVENT_TYPES_HPP
+#include <X11/Xlib.h>
 
-#include <functional>
+#include <window/details/linux/x11_mouse.hpp>
 
-#include <window/keyboard.hpp>
-#include <window/mouse.hpp>
-#include <window/window_position.hpp>
-#include <window/window_size.hpp>
-
-namespace framework::system
+namespace framework::system::details
 {
-class window;
+mouse_button map_mouse_button(uint32 button)
+{
+    switch (button) {
+        case Button1: return mouse_button::button_left;
+        case Button2: return mouse_button::button_middle;
+        case Button3: return mouse_button::button_right;
+        case Button4: return mouse_button::button_unknown; // whell up
+        case Button5: return mouse_button::button_unknown; // whell down
+    }
 
-/// @addtogroup window_class
-/// @{
+    return mouse_button::button_unknown;
+}
 
-using window_event_callback              = std::function<void(const window&)>;
-using window_size_event_callback         = std::function<void(const window&, window_size)>;
-using window_position_event_callback     = std::function<void(const window&, window_position)>;
-using window_key_event_callback          = std::function<void(const window&, key_code, modifiers_state)>;
-using window_character_event_callback    = std::function<void(const window&, std::string)>;
-using window_mouse_move_callback         = std::function<void(const window&, cursor_position)>;
-using window_mouse_button_event_callback = std::function<
-void(const window&, mouse_button, cursor_position, modifiers_state)>;
-using window_mouse_button_event_callback = std::function<
-void(const window&, mouse_button, cursor_position, modifiers_state)>;
-
-/// @}
-
-} // namespace framework::system
-
-#endif
+} // namespace framework::system::details
