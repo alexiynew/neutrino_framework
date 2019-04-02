@@ -58,9 +58,10 @@ key_code::key_enter, // 0x0d
 key_code::key_unknown,
 key_code::key_unknown,
 
-key_code::key_shift,     // 0x10
-key_code::key_control,   // 0x11
-key_code::key_alt,       // 0x12
+key_code::key_unknown, // 0x10 key_shift
+key_code::key_unknown, // 0x11 key_control
+key_code::key_unknown, // 0x12 key_alt
+
 key_code::key_pause,     // 0x13
 key_code::key_caps_lock, // 0x14
 
@@ -143,10 +144,11 @@ key_code::key_w,     // 0x57
 key_code::key_x,     // 0x58
 key_code::key_y,     // 0x59
 key_code::key_z,     // 0x5a
-key_code::key_super, // 0x5b  left supper
-key_code::key_super, // 0x5c  right supper
 
-key_code::key_unknown,
+key_code::key_left_super,  // 0x5b  left supper
+key_code::key_right_super, // 0x5c  right supper
+
+key_code::key_unknown, // 0x5d  application key
 key_code::key_unknown,
 key_code::key_unknown,
 
