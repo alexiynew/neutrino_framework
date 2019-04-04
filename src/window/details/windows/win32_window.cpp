@@ -677,23 +677,125 @@ LRESULT win32_window::process_key_event(WPARAM w_param, LPARAM l_param)
         return 0;
     }
 
-    const key_code key              = details::map_system_key(static_cast<uint32>(w_param));
-    const bool is_key_down          = ((l_param >> 31) & 1) == 0;
+    switch (w_param)
+    {
+        case VK_SHIFT:
+            process_shift_key(l_param);
+            return 0;
+
+        case VK_CONTROL:
+            process_control_key(l_param);
+            return 0;
+
+        case VK_MENU:
+            process_alt_key(l_param);
+            return 0;
+        default: break;
+    }
+
+    const key_code key = details::map_system_key(static_cast<uint32>(w_param));
     const modifiers_state mod_state = details::get_modifiers_state();
+    const bool key_is_down = ((l_param >> 31) & 1) == 0;
 
     if (key == key_code::key_unknown) {
         return 0;
     }
 
+    // Print screen does not emmit press event.
     if (key == key_code::key_print_screen) {
         m_event_handler->on_key_press(key, mod_state);
         m_event_handler->on_key_release(key, mod_state);
+        return 0;
+    }
+
+    if (key_is_down) {
+        m_event_handler->on_key_press(key, mod_state);
     } else {
-        auto action = is_key_down ? &event_handler::on_key_press : &event_handler::on_key_release;
-        (m_event_handler->*action)(key, mod_state);
+        m_event_handler->on_key_release(key, mod_state);
     }
 
     return 0;
+}
+
+void win32_window::process_shift_key(LPARAM l_param)
+{
+    const bool key_is_down = ((l_param >> 31) & 1) == 0;
+    const modifiers_state mod_state = details::get_modifiers_state();
+
+    const bool left_shift  = ((GetKeyState(VK_LSHIFT) & 0x8000));
+    const bool right_shift = ((GetKeyState(VK_RSHIFT) & 0x8000));
+
+    if (key_is_down) {
+        if (left_shift != m_modifiers_flags.left_shift) {
+            m_event_handler->on_key_press(key_code::key_left_shift, mod_state);
+        } else if (right_shift != m_modifiers_flags.right_shift) {
+            m_event_handler->on_key_press(key_code::key_right_shift, mod_state);
+        }
+    } else {
+        if (m_modifiers_flags.left_shift) {
+            m_event_handler->on_key_release(key_code::key_left_shift, mod_state);
+        }
+        if (m_modifiers_flags.right_shift) {
+            m_event_handler->on_key_release(key_code::key_right_shift, mod_state);
+        }
+    }
+
+    m_modifiers_flags.left_shift = left_shift;
+    m_modifiers_flags.right_shift = right_shift;
+}
+
+void win32_window::process_control_key(LPARAM l_param)
+{
+    const bool key_is_down = ((l_param >> 31) & 1) == 0;
+    const modifiers_state mod_state = details::get_modifiers_state();
+
+    const bool left_control  = ((GetKeyState(VK_LCONTROL) & 0x8000));
+    const bool right_control = ((GetKeyState(VK_RCONTROL) & 0x8000));
+
+    key_code key = key_code::key_unknown;
+    if (left_control != m_modifiers_flags.left_control) {
+        key = key_code::key_left_control;
+    } else if (right_control != m_modifiers_flags.right_control) {
+        key = key_code::key_right_control;
+    } else {
+        return;
+    }
+
+    if (key_is_down) {
+        m_event_handler->on_key_press(key, mod_state);
+    } else {
+        m_event_handler->on_key_release(key, mod_state);
+    }
+
+    m_modifiers_flags.left_control = left_control;
+    m_modifiers_flags.right_control = right_control;
+}
+
+void win32_window::process_alt_key(LPARAM l_param)
+{
+    const bool key_is_down = ((l_param >> 31) & 1) == 0;
+    const modifiers_state mod_state = details::get_modifiers_state();
+
+    const bool left_alt  = ((GetKeyState(VK_LMENU) & 0x8000));
+    const bool right_alt = ((GetKeyState(VK_RMENU) & 0x8000));
+
+    key_code key = key_code::key_unknown;
+    if (left_alt != m_modifiers_flags.left_alt) {
+        key = key_code::key_left_alt;
+    } else if (right_alt != m_modifiers_flags.right_alt) {
+        key = key_code::key_right_alt;
+    } else {
+        return;
+    }
+
+    if (key_is_down) {
+        m_event_handler->on_key_press(key, mod_state);
+    } else {
+        m_event_handler->on_key_release(key, mod_state);
+    }
+
+    m_modifiers_flags.left_alt = left_alt;
+    m_modifiers_flags.right_alt = right_alt;
 }
 
 #pragma endregion

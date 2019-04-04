@@ -105,6 +105,16 @@ private:
         RECT rect;
     };
 
+    struct modifiers_flags
+    {
+        bool left_shift;
+        bool right_shift;
+        bool left_control;
+        bool right_control;
+        bool left_alt;
+        bool right_alt;
+    };
+
     friend class win32_application;
 
     HWND m_window = nullptr;
@@ -122,11 +132,16 @@ private:
 
     std::unique_ptr<opengl::context> m_context = nullptr;
 
+    modifiers_flags m_modifiers_flags = {false, false, false, false, false, false};
+ 
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 
     void track_mouse();
 
     LRESULT process_key_event(WPARAM w_param, LPARAM l_param);
+    void process_shift_key(LPARAM l_param);
+    void process_control_key(LPARAM l_param);
+    void process_alt_key(LPARAM l_param);
 };
 
 } // namespace framework::system::details
