@@ -32,13 +32,16 @@
 
 #include <image/details/format_converter.hpp>
 #include <vector>
+#include <string>
 
 #include <common/types.hpp>
 
 namespace framework::image::details::bmp
 {
 std::vector<uint8> load(const format_converter* converter, const std::string& filename);
-bool save(const format_converter* converter, const std::string& filename);
+bool save(const std::string& filename);
+
+bool is_bmp(const std::string& filename);
 
 } // namespace framework::image::details::bmp
 

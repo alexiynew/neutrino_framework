@@ -36,6 +36,7 @@
 #include <image/details/tga.hpp>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <common/types.hpp>
 
@@ -50,7 +51,7 @@ namespace framework::image
 {
 /// @addtogroup image_module
 /// @{
-enum class image_type
+enum class file_type
 {
     bmp,
     tga,
@@ -65,12 +66,14 @@ enum class pixel_format
     bgra,
 };
 
-template <image_type Type, pixel_format Format>
+template <pixel_format Format>
 class image
 {
 public:
+    bool load(const std::string& filename, file_type type);
     bool load(const std::string& filename);
-    bool save(const std::string& filename) const;
+
+    bool save(const std::string& filename, file_type type) const;
 
     std::vector<uint8> data() const;
 
@@ -78,52 +81,62 @@ private:
     std::vector<uint8> m_data;
 };
 
-template <image_type Type, pixel_format Format>
-bool image<Type, Format>::load(const std::string& filename)
+template <pixel_format Format>
+bool image<Format>::load(const std::string& filename, file_type type)
 {
     auto converter = []() {
         if constexpr (Format == pixel_format::rgb) {
-            return std::make_unique<format_converter_rgb>();
+            return std::make_unique<details::format_converter_rgb>();
         } else if constexpr (Format == pixel_format::bgr) {
-            return std::make_unique<format_converter_bgr>();
+            return std::make_unique<details::format_converter_bgr>();
         } else if constexpr (Format == pixel_format::rgba) {
-            return std::make_unique<format_converter_rgba>();
+            return std::make_unique<details::format_converter_rgba>();
         } else if constexpr (Format == pixel_format::bgra) {
-            return std::make_unique<format_converter_bgra>();
+            return std::make_unique<details::format_converter_bgra>();
         } else {
-            static_assert("Unknown pixel format.") :
+            static_assert("Unknown pixel format.");
         }
     };
 
-    if constexpr (Type == image_type::bmp) {
-        m_data = details::bmp::load(converter().get(), filename);
-    } else if constexpr (Type == image_type::tga) {
-        m_data = details::tga::load(converter().get(), filename);
-    } else if constexpr (Type == image_type::png) {
-        m_data = details::png::load(converter().get(), filename);
-    } else {
-        static_assert("Unknown image type.") :
+    switch (type) {
+        case file_type::bmp: m_data = details::bmp::load(converter().get(), filename); break;
+        case file_type::tga: m_data = details::tga::load(converter().get(), filename); break;
+        case file_type::png: m_data = details::png::load(converter().get(), filename); break;
+        default: break;
     }
 
     return !m_data.empty();
-} // namespace framework::image
+} 
 
-template <image_type Type, pixel_format Format>
-bool image<Type, Format>::save(const std::string& filename) const
+template <pixel_format Format>
+bool image<Format>::load(const std::string& filename)
 {
-    if constexpr (Type == image_type::bmp) {
-        details::bmp::save(filename);
-    } else if constexpr (Type == image_type::tga) {
-        details::tga::save(filename);
-    } else if constexpr (Type == image_type::png) {
-        details::png::save(filename);
-    } else {
-        static_assert("Unknown image type.") :
+    if (details::bmp::is_bmp(filename)) {
+        return load(filename, file_type::bmp);
+    } else if (details::tga::is_tga(filename)) {
+        return load(filename, file_type::tga);
+    } else if (details::png::is_png(filename)) {
+        return load(filename, file_type::png);
     }
+
+    return false;
 }
 
-template <image_type Type, pixel_format Format>
-std::vector<uint8> image<Type, Format>::data() const
+template <pixel_format Format>
+bool image<Format>::save(const std::string& filename, file_type type) const
+{
+    switch (type) {
+        case file_type::bmp: return details::bmp::save(filename);
+        case file_type::tga: return details::tga::save(filename);
+        case file_type::png: return details::png::save(filename);
+        default: break;
+    }
+
+    return false;
+}
+
+template <pixel_format Format>
+std::vector<uint8> image<Format>::data() const
 {
     return m_data;
 }

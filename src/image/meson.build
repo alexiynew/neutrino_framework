@@ -1,5 +1,9 @@
 public = files('image.hpp')
 
+private = files('details/bmp.cpp',
+                'details/tga.cpp',
+                'details/png.cpp')
+
 details = files('details/format_converter.hpp',
                 'details/bmp.hpp',
                 'details/tga.hpp',
@@ -9,5 +13,6 @@ install_headers(public, subdir: module_name)
 install_headers(details, subdir: join_paths(module_name, 'details'))
 
 framework_sources += public
+framework_sources += private
 framework_sources += details
 

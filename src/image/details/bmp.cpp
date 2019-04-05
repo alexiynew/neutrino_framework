@@ -1,7 +1,7 @@
 /// @file
-/// @brief Tga image implementation.
+/// @brief Bmp image implementation.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 05.04.2019
 
 // =============================================================================
 // MIT License
@@ -27,22 +27,25 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_DETAILS_TGA_HPP
-#define FRAMEWORK_IMAGE_DETAILS_TGA_HPP
-
-#include <image/details/format_converter.hpp>
-#include <string>
+#include <common/types.hpp>
+#include <image/details/bmp.hpp>
 #include <vector>
 
-#include <common/types.hpp>
-
-namespace framework::image::details::tga
+namespace framework::image::details::bmp
 {
-std::vector<uint8> load(const format_converter* converter, const std::string& filename);
-bool save(const std::string& filename);
+std::vector<uint8> load(const format_converter* converter, const std::string& filename)
+{
+    return std::vector<uint8>();
+}
 
-bool is_tga(const std::string& filename);
+bool save(const std::string& filename)
+{
+    return false;
+}
 
-} // namespace framework::image::details::tga
+bool is_bmp(const std::string& filename)
+{
+    return false;
+}
 
-#endif
+} // namespace framework::image::details::bmp
