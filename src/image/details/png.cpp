@@ -34,17 +34,17 @@
 
 namespace framework::image::details::png
 {
-std::vector<uint8> load(const format_converter* converter, const std::string& filename)
+std::vector<uint8> load(const format_converter*, const std::string&)
 {
     return std::vector<uint8>();
 }
 
-bool save(const std::string& filename)
+bool save(const std::string&)
 {
     return false;
 }
 
-bool is_png(const std::string& filename)
+bool is_png(const std::string&)
 {
     return false;
 }
