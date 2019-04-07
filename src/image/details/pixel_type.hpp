@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image format converter.
+/// @brief Image pixel types.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 07.04.2019
 
 // =============================================================================
 // MIT License
@@ -27,55 +27,58 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_DETAILS_FORMAT_CONFERTER_HPP
-#define FRAMEWORK_IMAGE_DETAILS_FORMAT_CONFERTER_HPP
+#ifndef FRAMEWORK_IMAGE_DETAILS_PIXEL_TYPE_HPP
+#define FRAMEWORK_IMAGE_DETAILS_PIXEL_TYPE_HPP
 
 #include <common/types.hpp>
 
 namespace framework::image::details
 {
-class format_converter
+enum class pixel_format
 {
-public:
-    virtual uint32 bits_per_pixel() const;
-    virtual ~format_converter() = default;
+    rgb,
+    bgr,
+    rgba,
+    bgra,
 };
 
-class format_converter_rgb : public format_converter
+template <pixel_format>
+struct pixel_type_traits;
+
+template <>
+struct pixel_type_traits<pixel_format::rgb>
 {
-public:
-    uint32 bits_per_pixel() const override
-    {
-        return 24;
-    }
+    using type = framework::uint32;
+
+    static constexpr uint32 bits_per_pixel = 24;
 };
 
-class format_converter_bgr : public format_converter
+template <>
+struct pixel_type_traits<pixel_format::bgr>
 {
-public:
-    uint32 bits_per_pixel() const override
-    {
-        return 24;
-    }
+    using type = framework::uint32;
+
+    static constexpr uint32 bits_per_pixel = 24;
 };
 
-class format_converter_rgba : public format_converter
+template <>
+struct pixel_type_traits<pixel_format::rgba>
 {
-public:
-    uint32 bits_per_pixel() const override
-    {
-        return 32;
-    }
+    using type = framework::uint32;
+
+    static constexpr uint32 bits_per_pixel = 32;
 };
 
-class format_converter_bgra : public format_converter
+template <>
+struct pixel_type_traits<pixel_format::bgra>
 {
-public:
-    uint32 bits_per_pixel() const override
-    {
-        return 32;
-    }
+    using type = framework::uint32;
+
+    static constexpr uint32 bits_per_pixel = 32;
 };
+
+template <pixel_format Format>
+using pixel_t = typename pixel_type_traits<Format>::type;
 
 } // namespace framework::image::details
 

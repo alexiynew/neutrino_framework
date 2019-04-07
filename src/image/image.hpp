@@ -37,6 +37,7 @@
 #include <common/types.hpp>
 #include <image/details/bmp.hpp>
 #include <image/details/format_converter.hpp>
+#include <image/details/pixel_type.hpp>
 #include <image/details/png.hpp>
 #include <image/details/tga.hpp>
 
@@ -58,50 +59,32 @@ enum class file_type
     png
 };
 
-enum class pixel_format
-{
-    rgb,
-    bgr,
-    rgba,
-    bgra,
-};
+using pixel_format = details::pixel_format;
 
 template <pixel_format Format>
 class image
 {
 public:
+    using pixel_t = typename details::pixel_t<Format>;
+
     bool load(const std::string& filename, file_type type);
     bool load(const std::string& filename);
 
     bool save(const std::string& filename, file_type type) const;
 
-    std::vector<uint8> data() const;
+    std::vector<pixel_t> data() const;
 
 private:
-    std::vector<uint8> m_data;
+    std::vector<pixel_t> m_data;
 };
 
 template <pixel_format Format>
 bool image<Format>::load(const std::string& filename, file_type type)
 {
-    auto converter = []() {
-        if constexpr (Format == pixel_format::rgb) {
-            return std::make_unique<details::format_converter_rgb>();
-        } else if constexpr (Format == pixel_format::bgr) {
-            return std::make_unique<details::format_converter_bgr>();
-        } else if constexpr (Format == pixel_format::rgba) {
-            return std::make_unique<details::format_converter_rgba>();
-        } else if constexpr (Format == pixel_format::bgra) {
-            return std::make_unique<details::format_converter_bgra>();
-        } else {
-            static_assert("Unknown pixel format.");
-        }
-    };
-
     switch (type) {
-        case file_type::bmp: m_data = details::bmp::load(converter().get(), filename); break;
-        case file_type::tga: m_data = details::tga::load(converter().get(), filename); break;
-        case file_type::png: m_data = details::png::load(converter().get(), filename); break;
+        case file_type::bmp: m_data = details::bmp::load(filename); break;
+        case file_type::tga: m_data = details::tga::load(filename); break;
+        case file_type::png: m_data = details::png::load(filename); break;
         default: break;
     }
 
@@ -136,7 +119,7 @@ bool image<Format>::save(const std::string& filename, file_type type) const
 }
 
 template <pixel_format Format>
-std::vector<uint8> image<Format>::data() const
+std::vector<typename image<Format>::pixel_t> image<Format>::data() const
 {
     return m_data;
 }
