@@ -30,11 +30,11 @@
 #ifndef FRAMEWORK_IMAGE_DETAILS_BMP_HPP
 #define FRAMEWORK_IMAGE_DETAILS_BMP_HPP
 
-#include <image/details/format_converter.hpp>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <common/types.hpp>
+#include <image/details/format_converter.hpp>
 
 namespace framework::image::details::bmp
 {

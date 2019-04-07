@@ -27,9 +27,10 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <vector>
+
 #include <common/types.hpp>
 #include <image/details/tga.hpp>
-#include <vector>
 
 namespace framework::image::details::tga
 {

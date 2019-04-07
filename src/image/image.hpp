@@ -30,15 +30,15 @@
 #ifndef FRAMEWORK_IMAGE_IMAGE_HPP
 #define FRAMEWORK_IMAGE_IMAGE_HPP
 
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <common/types.hpp>
 #include <image/details/bmp.hpp>
 #include <image/details/format_converter.hpp>
 #include <image/details/png.hpp>
 #include <image/details/tga.hpp>
-#include <string>
-#include <vector>
-#include <memory>
-
-#include <common/types.hpp>
 
 /// @details
 ///
@@ -106,7 +106,7 @@ bool image<Format>::load(const std::string& filename, file_type type)
     }
 
     return !m_data.empty();
-} 
+}
 
 template <pixel_format Format>
 bool image<Format>::load(const std::string& filename)
