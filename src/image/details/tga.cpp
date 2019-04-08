@@ -34,9 +34,9 @@
 
 namespace framework::image::details::tga
 {
-std::vector<uint8> load(const format_converter*, const std::string&)
+bool load(const std::string&, pixel_storage_interface*)
 {
-    return std::vector<uint8>();
+    return false;
 }
 
 bool save(const std::string&)

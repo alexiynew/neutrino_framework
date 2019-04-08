@@ -34,11 +34,11 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <image/details/format_converter.hpp>
+#include <image/details/pixel_type.hpp>
 
 namespace framework::image::details::bmp
 {
-std::vector<uint8> load(const format_converter* converter, const std::string& filename);
+bool load(const std::string& filename, pixel_storage_interface* storage);
 bool save(const std::string& filename);
 
 bool is_bmp(const std::string& filename);

@@ -75,7 +75,7 @@ struct dib_header
     enum class compression_t
     {
         bi_rgb            = 0,  // none
-        bi_rle8           = 1,  //  RLE 8-bit/pixel
+        bi_rle8           = 1,  // RLE 8-bit/pixel
         bi_rle4           = 2,  // RLE 4-bit/pixel
         bi_bitfields      = 3,  // OS22XBITMAPHEADER: Huffman 1D
         bi_jpeg           = 4,  // OS22XBITMAPHEADER: RLE-24
@@ -220,95 +220,77 @@ color_table read_color_table(std::ifstream& in, const dib_header& dib)
     return t;
 }
 
-std::vector<uint8> read_row(std::ifstream& in,
-                            const dib_header& dib,
-                            const color_table& palette,
-                            const framework::image::details::format_converter* converter)
+bool read_data(std::ifstream& in, const dib_header& dib, const color_table& palette, framework::image::details::pixel_storage_interface* storage)
 {
-    const uint32 padding_count   = ((dib.bits_per_pixel * dib.width + 31) / 32) % 4;
-    const uint32 bytes_per_pixel = converter->bits_per_pixel / 8;
-    const uint32 bytes_per_row   = dib.width * bytes_per_pixel;
-
-    std::vector<uint8> row(bytes_per_row);
-    for (int32 i = 0; i < dib.width;) {
-        uint32 buffer;
-        in.read(reinterpret_cast<char*>(&buffer), 4);
-
-        switch (dib.bits_per_pixel) {
-            case 1: break;
-            case 2: break;
-            case 4: break;
-            case 8: break;
-            case 16: break;
-            case 24: break;
-            case 32: {
-                // TODO: add support of chanel bitmask
-                uint8 red;
-                uint8 green;
-                uint8 blue;
-                uint8 alpha;
-
-                std::vector<uint8> converted = converter->convert(red, green, blue, alpha);
-                std::copy(begin(converted), end(converted), begin(row) + i * bytes_per_pixel);
-                ++i;
-            } break;
-            default: break;
-        }
-    }
-
-    return row;
-}
-
-std::vector<uint8> read_data(std::ifstream& in,
-                             const dib_header& dib,
-                             const color_table& palette,
-                             const framework::image::details::format_converter* converter)
-{
-    const uint32 row_size        = ((dib.bits_per_pixel * dib.width + 31) / 32) * 4;
-    const uint32 image_data_size = row_size * std::abs(dib.height);
-
-    if (image_data_size != dib.image_size) {
-        return std::vector<uint8>();
-    }
+    storage->reserve(dib.width * dib.height);
 
     const bool bottom_up       = dib.type() == dib_header::type_t::bitmapcoreheader ? true : dib.height > 0;
-    const uint32 bytes_per_row = dib.width * converter->bits_per_pixel / 8;
+    //const uint32 padding_count = ((dib.bits_per_pixel * dib.width + 31) / 32) % 4;
 
-    std::vector<uint8> data(bytes_per_row * std::abs(dib.height));
+    for (int32 y = 0; y < dib.height; ++y) {
+        for (int32 x = 0; x < dib.width; ) {
+            uint32 index = bottom_up ? ((dib.height - y - 1) * dib.width + x) : (y * dib.width + x);
 
-    for (int32 i = 0; i < dib.height; ++i) {
-        std::vector<uint8> row = read_row(in, dib, palette, converter);
-        if (bottom_up) {
-            std::copy(begin(row), end(row), begin(data) + data.size() - (i + 1) * bytes_per_row);
-        } else {
-            std::copy(begin(row), end(row), begin(data) + i * bytes_per_row);
+            switch (dib.bits_per_pixel) {
+                case 1:
+                    if (palette.size() == 0)  {
+                        return false;
+                    }
+                 break;
+                case 2: break;
+                case 4: break;
+                case 8: break;
+                case 16: break;
+                case 24: {
+                    char buffer[3] = {0};
+                    in.read(buffer, sizeof(buffer));
+
+                    storage->set_pixel(index, buffer[2], buffer[1], buffer[0]);
+                    ++x;
+                } break;
+                case 32: {
+                    char buffer[4] = {0};
+                    in.read(buffer, sizeof(buffer));
+
+                    storage->set_pixel(index, buffer[2], buffer[1], buffer[0], buffer[3]);
+                    ++x;
+                } break;
+                default: break;
+            }
         }
     }
 
-    return data;
+    return true;
 }
 
 } // namespace
 
 namespace framework::image::details::bmp
 {
-std::vector<uint8> load(const format_converter* converter, const std::string& filename)
+bool load(const std::string& filename, pixel_storage_interface* storage)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file) {
-        return std::vector<uint8>();
+        return false;
     }
 
     header h = header::read(file);
 
     if (!check_signature(h)) {
-        return std::vector<uint8>();
+        return false;
     }
 
     dib_header dib = dib_header::read(file);
 
     if (dib.type() == dib_header::type_t::undefined) {
-        return std::vector<uint8>();
+        return false;
+    }
+
+    const uint32 row_size        = ((dib.bits_per_pixel * dib.width + 31) / 32) * 4;
+    const uint32 image_data_size = row_size * std::abs(dib.height);
+
+    if (image_data_size != dib.image_size) {
+        return false;
     }
 
     color_table palette;
@@ -319,10 +301,10 @@ std::vector<uint8> load(const format_converter* converter, const std::string& fi
     file.seekg(h.pixel_array_offset);
 
     if (!file) {
-        return std::vector<uint8>();
+        return false;
     }
 
-    return read_data(file, dib, palette, converter);
+    return read_data(file, dib, palette, storage);
 }
 
 bool save(const std::string& filename)

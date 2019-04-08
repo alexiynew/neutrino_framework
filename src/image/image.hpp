@@ -75,20 +75,20 @@ public:
     std::vector<pixel_t> data() const;
 
 private:
-    std::vector<pixel_t> m_data;
+    details::pixel_storage<Format> m_data;
 };
 
 template <pixel_format Format>
 bool image<Format>::load(const std::string& filename, file_type type)
 {
     switch (type) {
-        case file_type::bmp: m_data = details::bmp::load(filename); break;
-        case file_type::tga: m_data = details::tga::load(filename); break;
-        case file_type::png: m_data = details::png::load(filename); break;
+        case file_type::bmp: return details::bmp::load(filename, &m_data);
+        case file_type::tga: return details::tga::load(filename, &m_data);
+        case file_type::png: return details::png::load(filename, &m_data);
         default: break;
     }
 
-    return !m_data.empty();
+    return false;
 }
 
 template <pixel_format Format>
@@ -121,7 +121,7 @@ bool image<Format>::save(const std::string& filename, file_type type) const
 template <pixel_format Format>
 std::vector<typename image<Format>::pixel_t> image<Format>::data() const
 {
-    return m_data;
+    return m_data.data();
 }
 /// @}
 
