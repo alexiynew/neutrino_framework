@@ -47,19 +47,19 @@ using framework::uint8;
 //  | signature | file size | reserved | reserved | pixel array offset |
 //  |------------------------------------------------------------------|
 //  | 2         | 4         | 2        | 2        | 4                  |
-struct header
+struct file_header
 {
     uint16 signature          = 0;
     uint32 file_size          = 0;
     uint32 pixel_array_offset = 0;
 
-    static header read(std::ifstream& in);
+    static file_header read(std::ifstream& in);
 
     static constexpr uint32 size = 14;
 };
 
 // correspond to BITMAPV3INFOHEADER
-struct dib_header
+struct info_header
 {
     enum class type_t
     {
@@ -74,16 +74,13 @@ struct dib_header
 
     enum class compression_t
     {
-        bi_rgb            = 0,  // none
-        bi_rle8           = 1,  // RLE 8-bit/pixel
-        bi_rle4           = 2,  // RLE 4-bit/pixel
-        bi_bitfields      = 3,  // OS22XBITMAPHEADER: Huffman 1D
-        bi_jpeg           = 4,  // OS22XBITMAPHEADER: RLE-24
-        bi_png            = 5,  //
-        bi_alphabitfields = 6,  // RGBA bit field masks
-        bi_cmyk           = 11, // none
-        bi_cmykrle8       = 12, // RLE-8
-        bi_cmykrle4       = 13, // RLE-4
+        bi_rgb            = 0, // none
+        bi_rle8           = 1, // RLE 8-bit/pixel
+        bi_rle4           = 2, // RLE 4-bit/pixel
+        bi_bitfields      = 3, // OS22XBITMAPHEADER: Huffman 1D
+        bi_jpeg           = 4, //
+        bi_png            = 5, //
+        bi_alphabitfields = 6, // RGBA bit field masks
     };
 
     // BITMAPCOREHEADER
@@ -111,19 +108,19 @@ struct dib_header
 
     type_t type() const;
 
-    static dib_header read(std::ifstream& in);
+    static info_header read(std::ifstream& in);
 };
 
 using color_table = std::vector<uint32>;
 using pixel_data  = std::vector<uint8>;
 
-header header::read(std::ifstream& in)
+file_header file_header::read(std::ifstream& in)
 {
-    char buffer[header::size];
+    char buffer[file_header::size];
 
-    in.read(buffer, header::size);
+    in.read(buffer, file_header::size);
 
-    header h;
+    file_header h;
     h.signature          = (buffer[0] << 8) + buffer[1];
     h.file_size          = *(reinterpret_cast<uint32*>(buffer + 2));
     h.pixel_array_offset = *(reinterpret_cast<uint32*>(buffer + 2 + 4 + 4));
@@ -131,25 +128,25 @@ header header::read(std::ifstream& in)
     return h;
 }
 
-dib_header::type_t dib_header::type() const
+info_header::type_t info_header::type() const
 {
     return static_cast<type_t>(size);
 }
 
-dib_header dib_header::read(std::ifstream& in)
+info_header info_header::read(std::ifstream& in)
 {
     char size_buffer[4];
     in.read(size_buffer, sizeof(size_buffer));
 
-    dib_header h;
+    info_header h;
     h.size = *(reinterpret_cast<uint32*>(size_buffer));
 
     std::unique_ptr<char[]> buffer(new char[h.size]);
     in.read(buffer.get(), h.size);
 
     if (h.type() == type_t::bitmapcoreheader) {
-        h.width          = *(reinterpret_cast<int16*>(buffer.get()));
-        h.height         = *(reinterpret_cast<int16*>(buffer.get() + 2));
+        h.width          = *(reinterpret_cast<uint16*>(buffer.get()));
+        h.height         = *(reinterpret_cast<uint16*>(buffer.get() + 2));
         h.planes         = *(reinterpret_cast<uint16*>(buffer.get() + 4));
         h.bits_per_pixel = *(reinterpret_cast<uint16*>(buffer.get() + 6));
     } else {
@@ -159,7 +156,7 @@ dib_header dib_header::read(std::ifstream& in)
         h.bits_per_pixel = *(reinterpret_cast<uint16*>(buffer.get() + 10));
     }
 
-    if (h.size >= static_cast<uint32>(dib_header::type_t::bitmapinfoheader)) {
+    if (h.size >= static_cast<uint32>(info_header::type_t::bitmapinfoheader)) {
         h.compresion       = static_cast<compression_t>(*(reinterpret_cast<uint32*>(buffer.get() + 12)));
         h.image_size       = *(reinterpret_cast<uint32*>(buffer.get() + 16));
         h.x_ppm            = *(reinterpret_cast<int32*>(buffer.get() + 20));
@@ -168,20 +165,20 @@ dib_header dib_header::read(std::ifstream& in)
         h.important_colors = *(reinterpret_cast<uint32*>(buffer.get() + 32));
     }
 
-    if (h.size >= static_cast<uint32>(dib_header::type_t::bitmapv2infoheader)) {
+    if (h.size >= static_cast<uint32>(info_header::type_t::bitmapv2infoheader)) {
         h.red_chanel_bitmask   = *(reinterpret_cast<uint32*>(buffer.get() + 36));
         h.green_chanel_bitmask = *(reinterpret_cast<uint32*>(buffer.get() + 40));
         h.blue_chanel_bitmask  = *(reinterpret_cast<uint32*>(buffer.get() + 44));
     }
 
-    if (h.size >= static_cast<uint32>(dib_header::type_t::bitmapv3infoheader)) {
+    if (h.size >= static_cast<uint32>(info_header::type_t::bitmapv3infoheader)) {
         h.alpha_chanel_bitmask = *(reinterpret_cast<uint32*>(buffer.get() + 48));
     }
 
     return h;
 }
 
-bool check_signature(const header& h)
+bool check_signature(const file_header& h)
 {
     switch (h.signature) {
         case 0x424D: return true; // BM
@@ -196,10 +193,10 @@ bool check_signature(const header& h)
     return false;
 }
 
-color_table read_color_table(std::ifstream& in, const dib_header& dib)
+color_table read_color_table(std::ifstream& in, const info_header& info)
 {
     color_table t;
-    for (uint32 i = 0; i < dib.colors_in_table; ++i) {
+    for (uint32 i = 0; i < info.colors_in_table; ++i) {
         uint8 red   = 0;
         uint8 green = 0;
         uint8 blue  = 0;
@@ -209,7 +206,7 @@ color_table read_color_table(std::ifstream& in, const dib_header& dib)
         in.read(reinterpret_cast<char*>(green), 1);
         in.read(reinterpret_cast<char*>(red), 1);
 
-        if (dib.type() != dib_header::type_t::bitmapcoreheader) {
+        if (info.type() != info_header::type_t::bitmapcoreheader) {
             in.read(reinterpret_cast<char*>(alpha), 1);
         }
 
@@ -220,23 +217,26 @@ color_table read_color_table(std::ifstream& in, const dib_header& dib)
     return t;
 }
 
-bool read_data(std::ifstream& in, const dib_header& dib, const color_table& palette, framework::image::details::pixel_storage_interface* storage)
+bool read_data(std::ifstream& in,
+               const info_header& info,
+               const color_table& palette,
+               framework::image::details::pixel_storage_interface* storage)
 {
-    storage->reserve(dib.width * dib.height);
+    storage->reserve(info.width * info.height);
 
-    const bool bottom_up       = dib.type() == dib_header::type_t::bitmapcoreheader ? true : dib.height > 0;
-    //const uint32 padding_count = ((dib.bits_per_pixel * dib.width + 31) / 32) % 4;
+    const bool bottom_up = info.type() == info_header::type_t::bitmapcoreheader ? true : info.height > 0;
+    // const uint32 padding_count = ((info.bits_per_pixel * info.width + 31) / 32) % 4;
 
-    for (int32 y = 0; y < dib.height; ++y) {
-        for (int32 x = 0; x < dib.width; ) {
-            uint32 index = bottom_up ? ((dib.height - y - 1) * dib.width + x) : (y * dib.width + x);
+    for (int32 y = 0; y < info.height; ++y) {
+        for (int32 x = 0; x < info.width;) {
+            uint32 index = bottom_up ? ((info.height - y - 1) * info.width + x) : (y * info.width + x);
 
-            switch (dib.bits_per_pixel) {
+            switch (info.bits_per_pixel) {
                 case 1:
-                    if (palette.size() == 0)  {
+                    if (palette.size() == 0) {
                         return false;
                     }
-                 break;
+                    break;
                 case 2: break;
                 case 4: break;
                 case 8: break;
@@ -274,28 +274,28 @@ bool load(const std::string& filename, pixel_storage_interface* storage)
         return false;
     }
 
-    header h = header::read(file);
+    file_header h = file_header::read(file);
 
     if (!check_signature(h)) {
         return false;
     }
 
-    dib_header dib = dib_header::read(file);
+    info_header info = info_header::read(file);
 
-    if (dib.type() == dib_header::type_t::undefined) {
+    if (info.type() == info_header::type_t::undefined) {
         return false;
     }
 
-    const uint32 row_size        = ((dib.bits_per_pixel * dib.width + 31) / 32) * 4;
-    const uint32 image_data_size = row_size * std::abs(dib.height);
+    const uint32 row_size        = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
+    const uint32 image_data_size = row_size * std::abs(info.height);
 
-    if (image_data_size != dib.image_size) {
+    if (image_data_size != info.image_size) {
         return false;
     }
 
     color_table palette;
-    if (dib.bits_per_pixel <= 8) {
-        palette = read_color_table(file, dib);
+    if (info.bits_per_pixel <= 8) {
+        palette = read_color_table(file, info);
     }
 
     file.seekg(h.pixel_array_offset);
@@ -304,7 +304,7 @@ bool load(const std::string& filename, pixel_storage_interface* storage)
         return false;
     }
 
-    return read_data(file, dib, palette, storage);
+    return read_data(file, info, palette, storage);
 }
 
 bool save(const std::string& filename)
@@ -321,7 +321,7 @@ bool is_bmp(const std::string& filename)
         return false;
     }
 
-    header h = header::read(file);
+    file_header h = file_header::read(file);
 
     return check_signature(h);
 }
