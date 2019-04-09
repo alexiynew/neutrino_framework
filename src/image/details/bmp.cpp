@@ -84,7 +84,7 @@ struct info_header
 
     enum class color_space_type_t
     {
-        lcs_calibrated_rgb      = 0, // Use endpoints
+        lcs_calibrated_rgb      = 0,          // Use endpoints
         lcs_srgb                = 0x73524742, // sRGB
         lcs_windows_color_space = 0x57696E20, // System color space (sRBG by default)
         profile_linked          = 0x4C494E4B, // Profile in another file
@@ -105,7 +105,15 @@ struct info_header
         ciexyz blue;
     };
 
-    using color_table_t = std::vector<uint32>;
+    struct color_t 
+    {
+        uint8 r = 0;
+        uint8 g = 0;
+        uint8 b = 0;
+        uint8 a = 0;
+    };
+
+    using color_table_t = std::vector<color_t>;
 
     // BITMAPCOREHEADER
     uint32 size           = 0;
@@ -138,10 +146,10 @@ struct info_header
     uint32 gamma_blue  = 0; //  +- 
 
     // BITMAPV4HEADER
-    uint32 intent;
-    uint32 color_profile_offset;
-    uint32 color_profile_size;
-    uint32 reserved;
+    uint32 intent               = 0;
+    uint32 color_profile_offset = 0;
+    uint32 color_profile_size   = 0;
+    uint32 reserved             = 0;
 
     color_table_t color_table;
 
@@ -258,12 +266,12 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
     const uint32 cell_size = [&info]() {
         switch (info.type()) {
             case type_t::undefined:           return 0;
-            case type_t::bitmapcoreheader:    return 24;
+            case type_t::bitmapcoreheader:    return 3;
             case type_t::bitmapinfoheader:
             case type_t::bitmapv2infoheader:
             case type_t::bitmapv3infoheader:
             case type_t::bitmapv4header:
-            case type_t::bitmapv5header:      return 32;
+            case type_t::bitmapv5header:      return 4;
             default: break;
         }
 
@@ -277,15 +285,17 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
     std::unique_ptr<char[]> buffer(new char[colors_count * cell_size]);
     in.read(buffer.get(), colors_count * cell_size);
 
-    color_table_t table;
-    for (uint32 i = 0; i < colors_count; ++i) {
-        const uint8 b = buffer[i * cell_size + 0];
-        const uint8 g = buffer[i * cell_size + 1];
-        const uint8 r = buffer[i * cell_size + 2];
-        const uint8 a = 0;
+    if (!in) {
+        return color_table_t();
+    }
 
-        const uint32 color = (r << 24) + (g << 16) + (b << 8) + a;
-        table.push_back(color);
+    color_table_t table(colors_count);
+    for (uint32 i = 0; i < colors_count; ++i) {
+        const uint32 offset = i * cell_size;
+        table[i].r = buffer[offset + 2];
+        table[i].g = buffer[offset + 1];
+        table[i].b = buffer[offset + 0];
+        table[i].a = 0;
     }
 
     return table;
