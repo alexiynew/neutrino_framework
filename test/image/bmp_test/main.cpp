@@ -40,10 +40,7 @@ private:
         using namespace framework::image;
         image<pixel_format::rgb> img;
 
-        TEST_ASSERT(img.load("rgb.bmp") == true, "Can't load rgb.bmp.");
-        TEST_ASSERT(img.load("256colors.bmp") == true, "Can't load 256colors.bmp.");
-        TEST_ASSERT(img.load("16colors.bmp") == true, "Can't load 16colors.bmp.");
-        TEST_ASSERT(img.load("mono.bmp") == true, "Can't load mono.bmp.");
+        TEST_FAIL("Fail");
     }
 };
 
