@@ -358,45 +358,52 @@ bool read_data(std::ifstream& in, const info_header& info, framework::image::det
 {
     storage->reserve(info.width * info.height);
 
-    const bool bottom_up = info.type() == info_header::type_t::bitmapcoreheader ? true : info.height > 0;
-    // const uint32 padding_count = ((info.bits_per_pixel * info.width + 31) / 32) % 4;
+    const bool bottom_up  = info.type() == info_header::type_t::bitmapcoreheader ? true : info.height > 0;
+    const uint32 row_size = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
 
+    std::unique_ptr<char[]> buffer(new char[row_size]);
     for (int32 y = 0; y < info.height; ++y) {
-        for (int32 x = 0; x < info.width;) {
-            uint32 index = bottom_up ? ((info.height - y - 1) * info.width + x) : (y * info.width + x);
+        in.read(buffer.get(), row_size);
 
-            switch (info.bits_per_pixel) {
-                case 1:
-                    break;
-                case 2: break;
-                case 4: break;
-                    // rle
-                case 8: break;
-                    // rle
-                case 16: break;
-                    // chanel masks
-                    // may be alpha
-                case 24: {
-                    char buffer[3] = {0};
-                    in.read(buffer, sizeof(buffer));
+        switch (info.bits_per_pixel) {
+            case 1:
+                for (int32 x = 0, byte = 0; x < info.width; ++byte) {
+                    for (int32 b = 7; b >= 0 && x < info.width; --b, ++x) {
+                        const uint32 index = bottom_up ? ((info.height - y - 1) * info.width + x) : (y * info.width + x);
+                        const uint32 color_index = (buffer.get()[byte] & (1 << b)) ? 1 : 0;
+                        const info_header::color_t color = info.color_table[color_index];
+                        storage->set_pixel(index, color.r, color.g, color.b, color.a);
+                    }
+                }
+                break;
+            case 2: break;
+            case 4: break;
+                // rle
+            case 8: break;
+                // rle
+            case 16: break;
+                // chanel masks
+                // may be alpha
+            case 24: {
+                //char buffer[3] = {0};
+                //in.read(buffer, sizeof(buffer));
 
-                    storage->set_pixel(index, buffer[2], buffer[1], buffer[0]);
-                    ++x;
-                } break;
-                case 32: {
-                    // chanel masks
-                    // may be alpha
-                    char buffer[4] = {0};
-                    in.read(buffer, sizeof(buffer));
+                //storage->set_pixel(index, buffer[2], buffer[1], buffer[0]);
+                //++x;
+            } break;
+            case 32: {
+                // chanel masks
+                // may be alpha
+                //char buffer[4] = {0};
+                //in.read(buffer, sizeof(buffer));
 
-                    storage->set_pixel(index, buffer[2], buffer[1], buffer[0], buffer[3]);
-                    ++x;
-                } break;
-                case 48: break;
-                case 64: break;
-                    // always alpha
-                default: break;
-            }
+                //storage->set_pixel(index, buffer[2], buffer[1], buffer[0], buffer[3]);
+                //++x;
+            } break;
+            case 48: break;
+            case 64: break;
+                // always alpha
+            default: break;
         }
     }
 
