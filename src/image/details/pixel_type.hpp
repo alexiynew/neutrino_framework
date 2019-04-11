@@ -114,8 +114,7 @@ public:
     virtual ~pixel_storage_interface() = default;
 
     virtual void set_pixel(uint32 index, uint8 red, uint8 green, uint8 blue, uint8 alpha = 0) = 0;
-    virtual void reserve(uint32 size) = 0;
-
+    virtual void reserve(uint32 size)                                                         = 0;
 };
 
 template <pixel_format Format>
@@ -132,7 +131,7 @@ public:
         m_data.reserve(size);
     }
 
-    std::vector<pixel_t<Format>> data() 
+    std::vector<pixel_t<Format>> data()
     {
         return m_data;
     }

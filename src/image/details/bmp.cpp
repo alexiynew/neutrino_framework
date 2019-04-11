@@ -91,7 +91,7 @@ struct info_header
         profile_embedded        = 0x4D424544, // Profile in this file
     };
 
-    struct ciexyz 
+    struct ciexyz
     {
         uint32 x = 0;
         uint32 y = 0;
@@ -105,7 +105,7 @@ struct info_header
         ciexyz blue;
     };
 
-    struct color_t 
+    struct color_t
     {
         uint8 r = 0;
         uint8 g = 0;
@@ -131,7 +131,7 @@ struct info_header
     uint32 important_colors   = 0;
 
     // BITMAPV2INFOHEADER
-    uint32 red_chanel_bitmask   = 0; //  +- 
+    uint32 red_chanel_bitmask   = 0; //  +-
     uint32 green_chanel_bitmask = 0; //  | matter only if bits_per_pixel == 16 or 32
     uint32 blue_chanel_bitmask  = 0; //  |
                                      //  |
@@ -143,7 +143,7 @@ struct info_header
     ciexyztriple endpoints; //  +-
     uint32 gamma_red   = 0; //  | matter only if color_space_type == lcs_calibrated_rgb
     uint32 gamma_green = 0; //  |
-    uint32 gamma_blue  = 0; //  +- 
+    uint32 gamma_blue  = 0; //  +-
 
     // BITMAPV4HEADER
     uint32 intent               = 0;
@@ -202,7 +202,7 @@ info_header info_header::read(std::ifstream& in)
     }
 
     if (h.size >= static_cast<uint32>(info_header::type_t::bitmapinfoheader)) {
-        h.compression       = static_cast<compression_t>(*(reinterpret_cast<uint32*>(buffer.get() + 12)));
+        h.compression      = static_cast<compression_t>(*(reinterpret_cast<uint32*>(buffer.get() + 12)));
         h.image_size       = *(reinterpret_cast<uint32*>(buffer.get() + 16));
         h.x_ppm            = *(reinterpret_cast<int32*>(buffer.get() + 20));
         h.y_ppm            = *(reinterpret_cast<int32*>(buffer.get() + 24));
@@ -255,7 +255,7 @@ info_header info_header::read(std::ifstream& in)
 info_header::color_table_t info_header::read_color_table(std::ifstream& in, const info_header& info)
 {
     const uint32 colors_count = [&info]() {
-        if (info.bits_per_pixel >= 1 && info.bits_per_pixel <= 8 && 
+        if (info.bits_per_pixel >= 1 && info.bits_per_pixel <= 8 &&
             (info.type() == type_t::bitmapcoreheader || info.colors_in_table == 0)) {
             return static_cast<uint32>(std::pow(2, info.bits_per_pixel));
         }
@@ -265,13 +265,13 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
 
     const uint32 cell_size = [&info]() {
         switch (info.type()) {
-            case type_t::undefined:           return 0;
-            case type_t::bitmapcoreheader:    return 3;
+            case type_t::undefined: return 0;
+            case type_t::bitmapcoreheader: return 3;
             case type_t::bitmapinfoheader:
             case type_t::bitmapv2infoheader:
             case type_t::bitmapv3infoheader:
             case type_t::bitmapv4header:
-            case type_t::bitmapv5header:      return 4;
+            case type_t::bitmapv5header: return 4;
             default: break;
         }
 
@@ -292,6 +292,7 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
     color_table_t table(colors_count);
     for (uint32 i = 0; i < colors_count; ++i) {
         const uint32 offset = i * cell_size;
+
         table[i].r = buffer[offset + 2];
         table[i].g = buffer[offset + 1];
         table[i].b = buffer[offset + 0];
@@ -323,12 +324,12 @@ bool check_compression(const info_header& h)
     }
 
     switch (h.compression) {
-        case info_header::compression_t::bi_rgb:            return h.bits_per_pixel != 0;
-        case info_header::compression_t::bi_rle8:           return h.bits_per_pixel == 8;
-        case info_header::compression_t::bi_rle4:           return h.bits_per_pixel == 4;
-        case info_header::compression_t::bi_bitfields:      return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
-        case info_header::compression_t::bi_jpeg:           return false; // unsupported
-        case info_header::compression_t::bi_png:            return false; // unsupported
+        case info_header::compression_t::bi_rgb: return h.bits_per_pixel != 0;
+        case info_header::compression_t::bi_rle8: return h.bits_per_pixel == 8;
+        case info_header::compression_t::bi_rle4: return h.bits_per_pixel == 4;
+        case info_header::compression_t::bi_bitfields: return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
+        case info_header::compression_t::bi_jpeg: return false; // unsupported
+        case info_header::compression_t::bi_png: return false;  // unsupported
         case info_header::compression_t::bi_alphabitfields: return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
         default: break;
     }
@@ -343,65 +344,75 @@ bool check_color_space_type(const info_header& h)
     }
 
     switch (h.color_space_type) {
-        case info_header::color_space_type_t::lcs_calibrated_rgb:      return true;
-        case info_header::color_space_type_t::lcs_srgb:                return true;
+        case info_header::color_space_type_t::lcs_calibrated_rgb: return true;
+        case info_header::color_space_type_t::lcs_srgb: return true;
         case info_header::color_space_type_t::lcs_windows_color_space: return true;
-        case info_header::color_space_type_t::profile_linked:          return false; // unsupported
-        case info_header::color_space_type_t::profile_embedded:        return false; // unsupported ???
+        case info_header::color_space_type_t::profile_linked: return false;   // unsupported
+        case info_header::color_space_type_t::profile_embedded: return false; // unsupported ???
         default: break;
     }
 
     return false;
 }
 
+void process_row_1bpp(char* buffer,
+                      const info_header& info,
+                      uint32 position,
+                      framework::image::details::pixel_storage_interface* storage)
+{
+    for (int32 x = 0, byte = 0; x < info.width; ++byte) {
+        for (int32 b = 7; b >= 0 && x < info.width; --b, ++x) {
+            const uint32 color_index         = (buffer[byte] & (1 << b)) ? 1 : 0;
+            const info_header::color_t color = info.color_table[color_index];
+            storage->set_pixel(position + x, color.r, color.g, color.b, color.a);
+        }
+    }
+}
+
 bool read_data(std::ifstream& in, const info_header& info, framework::image::details::pixel_storage_interface* storage)
 {
     storage->reserve(info.width * info.height);
 
-    const bool bottom_up  = info.type() == info_header::type_t::bitmapcoreheader ? true : info.height > 0;
     const uint32 row_size = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
 
     std::unique_ptr<char[]> buffer(new char[row_size]);
     for (int32 y = 0; y < info.height; ++y) {
         in.read(buffer.get(), row_size);
 
+        const bool bottom_up  = info.type() == info_header::type_t::bitmapcoreheader ? true : info.height > 0;
+        const uint32 position = bottom_up ? ((info.height - y - 1) * info.width) : (y * info.width);
         switch (info.bits_per_pixel) {
-            case 1:
-                for (int32 x = 0, byte = 0; x < info.width; ++byte) {
-                    for (int32 b = 7; b >= 0 && x < info.width; --b, ++x) {
-                        const uint32 index = bottom_up ? ((info.height - y - 1) * info.width + x) : (y * info.width + x);
-                        const uint32 color_index = (buffer.get()[byte] & (1 << b)) ? 1 : 0;
-                        const info_header::color_t color = info.color_table[color_index];
-                        storage->set_pixel(index, color.r, color.g, color.b, color.a);
-                    }
-                }
-                break;
+            case 1: process_row_1bpp(buffer.get(), info, position, storage); break;
             case 2: break;
-            case 4: break;
+            case 4:
+                break;
                 // rle
-            case 8: break;
+            case 8:
+                break;
                 // rle
-            case 16: break;
+            case 16:
+                break;
                 // chanel masks
                 // may be alpha
             case 24: {
-                //char buffer[3] = {0};
-                //in.read(buffer, sizeof(buffer));
+                // char buffer[3] = {0};
+                // in.read(buffer, sizeof(buffer));
 
-                //storage->set_pixel(index, buffer[2], buffer[1], buffer[0]);
+                // storage->set_pixel(index, buffer[2], buffer[1], buffer[0]);
                 //++x;
             } break;
             case 32: {
                 // chanel masks
                 // may be alpha
-                //char buffer[4] = {0};
-                //in.read(buffer, sizeof(buffer));
+                // char buffer[4] = {0};
+                // in.read(buffer, sizeof(buffer));
 
-                //storage->set_pixel(index, buffer[2], buffer[1], buffer[0], buffer[3]);
+                // storage->set_pixel(index, buffer[2], buffer[1], buffer[0], buffer[3]);
                 //++x;
             } break;
             case 48: break;
-            case 64: break;
+            case 64:
+                break;
                 // always alpha
             default: break;
         }
