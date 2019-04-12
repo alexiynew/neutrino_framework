@@ -78,6 +78,8 @@ namespace framework::opengl
 ///
 /// This function must be called before use OpenGL.
 /// It is safe to call init several times, actual initialisation happens only once.
+/// 
+/// @note On some systems its required to set current context before calling this function.
 ///
 /// @thread_safety This function may be called from any thread.
 void init();

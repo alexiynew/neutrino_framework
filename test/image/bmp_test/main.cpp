@@ -37,16 +37,20 @@
 using image_rgb = framework::image::image<framework::image::pixel_format::rgb>;
 
 const std::string vertex_shader = "#version 330 core\n\
-layout(location = 0) in vec3 vertexPosition_modelspace;\n\
+layout(location = 0) in vec2 vertexPosition_modelspace;\n\
+layout(location = 1) in vec2 vertexUV;\n\
+uniform mat4 MVP;\n\
 void main(){\n\
-    gl_Position.xyz = vertexPosition_modelspace;\n\
-    gl_Position.w = 1.0;\n\
+    gl_Position = MVP * vec4(vertexPosition_modelspace, 0.0, 1.0);\n\
+    UV = vertexUV;\n\
 }";
 
 const std::string fragment_shader = "#version 330 core\n\
+in vec2 UV;\n\
 out vec3 color;\n\
+uniform sampler2D myTextureSampler;\n\
 void main(){\n\
-    color = vec3(1,0,0);\n\
+    color = texture( myTextureSampler, UV ).rgb;\n\
 }";
 
 class bmp_image_test : public framework::unit_test::suite
@@ -175,20 +179,22 @@ int main()
     using framework::float32;
     using framework::int32;
     using framework::uint32;
-    using framework::math::vector3f;
+    using framework::math::vector2f;
+    using framework::math::matrix4f;
 
     window::set_application_name("BMP Test");
-
-    framework::opengl::init();
 
     window main_window({640, 480}, "BMP test");
     auto context = main_window.context();
     context->make_current();
 
+    framework::opengl::init();
+
     const float32 max_total_time = 10000;
     float32 total_time           = 0;
 
     main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
+    main_window.set_on_size_callback([&main_window](const window&, window_size size) { glViewport(0, 0, size.width, size.height); });
 
     // load all images
     std::vector<image_rgb> images;
@@ -198,9 +204,19 @@ int main()
     glGenVertexArrays(1, &vertex_array_id);
     glBindVertexArray(vertex_array_id);
 
-    static const vector3f vertex_buffer_data[] = {vector3f(-1.0f, -1.0f, 0.0f),
-                                                  vector3f(1.0f, -1.0f, 0.0f),
-                                                  vector3f(0.0f, 1.0f, 0.0f)};
+    glViewport(0, 0, 640, 480);
+
+    static const vector2f vertex_buffer_data[] = {vector2f(0.0f, 0.0f),
+                                                  vector2f(127.0f, 0.0f),
+                                                  vector2f(127.0f, 64.0f),
+                                                  vector2f(0.0f, 64.0f),
+                                                  };
+
+    static const vector2f texture_buffer_data[] = {vector2f(0.0f, 0.0f),
+                                                  vector2f(1.0f, 0.0f),
+                                                  vector2f(1.0f, 1.0f),
+                                                  vector2f(0.0f, 1.0f),
+                                                  };
 
     GLuint vertexbuffer;
     glGenBuffers(1, &vertexbuffer);
@@ -208,7 +224,39 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data[0].data(), GL_STATIC_DRAW);
 
+
+    GLuint texturebuffer;
+    glGenBuffers(1, &texturebuffer);
+
+    glBindBuffer(GL_ARRAY_BUFFER, texturebuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(texture_buffer_data), texture_buffer_data[0].data(), GL_STATIC_DRAW);
+
+
+
+
     uint32 shader = load_shader(vertex_shader, fragment_shader);
+
+
+
+
+
+
+    matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 0, 480);
+
+
+    // Создадим одну текстуру OpenGL
+    uint32 texture_id;
+    glGenTextures(1, &texture_id);
+
+    // Сделаем созданную текстуру текущий, таким образом все следующие функции будут работать именно с этой текстурой
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    // Передадим изображение OpenGL
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 127, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, images[0].data());
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
 
     load(images);
 
@@ -222,11 +270,28 @@ int main()
 
         glUseProgram(shader);
 
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+
+        uint32 mvp_id = glGetUniformLocation(shader, "MVP");
+        glUniformMatrix4fv(mvp_id, 1, GL_FALSE, mvp.data());
+
+
+        uint32 texture_uniform_id = glGetUniformLocation(shader, "myTextureSampler");
+        glUniform1i(texture_uniform_id, texture_id);
+
+        //texture 0, first texture
+        glActiveTexture(texture_id);
+
+
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, texturebuffer);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
         glDisableVertexAttribArray(0);
 

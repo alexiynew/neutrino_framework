@@ -72,7 +72,7 @@ public:
 
     bool save(const std::string& filename, file_type type) const;
 
-    std::vector<pixel_t> data() const;
+    pixel_t* data() const;
 
 private:
     details::pixel_storage<Format> m_data;
@@ -119,9 +119,9 @@ bool image<Format>::save(const std::string& filename, file_type type) const
 }
 
 template <pixel_format Format>
-std::vector<typename image<Format>::pixel_t> image<Format>::data() const
+typename image<Format>::pixel_t* image<Format>::data() const
 {
-    return m_data.data();
+    return m_data.data().data();
 }
 /// @}
 

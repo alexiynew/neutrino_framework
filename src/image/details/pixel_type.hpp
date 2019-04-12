@@ -131,7 +131,7 @@ public:
         m_data.reserve(size);
     }
 
-    std::vector<pixel_t<Format>> data()
+    std::vector<pixel_t<Format>> data() const
     {
         return m_data;
     }
