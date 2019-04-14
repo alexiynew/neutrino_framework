@@ -72,7 +72,7 @@ public:
 
     bool save(const std::string& filename, file_type type) const;
 
-    pixel_t* data() const;
+    const pixel_t* data() const;
 
 private:
     details::pixel_storage<Format> m_data;
@@ -81,8 +81,21 @@ private:
 template <pixel_format Format>
 bool image<Format>::load(const std::string& filename, file_type type)
 {
+    uint32 s = m_data.data().size();
+    if (s == 0) {
+    }
+
     switch (type) {
-        case file_type::bmp: return details::bmp::load(filename, &m_data);
+        case file_type::bmp: {
+            bool r = details::bmp::load(filename, &m_data);
+
+            uint32 s = m_data.data().size();
+            if (s == 0) {
+                return false;
+            }
+
+            return r;
+        }
         case file_type::tga: return details::tga::load(filename, &m_data);
         case file_type::png: return details::png::load(filename, &m_data);
         default: break;
@@ -119,8 +132,13 @@ bool image<Format>::save(const std::string& filename, file_type type) const
 }
 
 template <pixel_format Format>
-typename image<Format>::pixel_t* image<Format>::data() const
+const typename image<Format>::pixel_t* image<Format>::data() const
 {
+    uint32 s = m_data.data().size();
+    if (s == 0) {
+        return nullptr;
+    }
+
     return m_data.data().data();
 }
 /// @}

@@ -24,11 +24,15 @@
 // =============================================================================
 
 #include <chrono>
+#include <iostream>
+#include <memory>
 #include <string>
 #include <thread>
 #include <vector>
 
 #include <image/image.hpp>
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 #include <math/math.hpp>
 #include <opengl/gl.hpp>
 #include <unit_test/suite.hpp>
@@ -40,17 +44,22 @@ const std::string vertex_shader = "#version 330 core\n\
 layout(location = 0) in vec2 vertexPosition_modelspace;\n\
 layout(location = 1) in vec2 vertexUV;\n\
 uniform mat4 MVP;\n\
+out vec2 UV;\n\
 void main(){\n\
     gl_Position = MVP * vec4(vertexPosition_modelspace, 0.0, 1.0);\n\
     UV = vertexUV;\n\
 }";
 
 const std::string fragment_shader = "#version 330 core\n\
+uniform sampler2D tex;\n\
+out vec4 color;\n\
 in vec2 UV;\n\
-out vec3 color;\n\
-uniform sampler2D myTextureSampler;\n\
 void main(){\n\
-    color = texture( myTextureSampler, UV ).rgb;\n\
+    vec4 c = texture(tex, UV);\n\
+    if (c.x == 0) {\n\
+        c.r = .5;\n\
+    }\n\
+    color = c;\n\
 }";
 
 class bmp_image_test : public framework::unit_test::suite
@@ -99,9 +108,31 @@ private:
     }
 };
 
+void gl_error(const char* file, int line)
+{
+    using namespace framework::opengl;
+    GLenum err(glGetError());
+
+    while (err != GL_NO_ERROR) {
+        std::string error;
+
+        switch (err) {
+            case GL_INVALID_OPERATION: error = "INVALID_OPERATION"; break;
+            case GL_INVALID_ENUM: error = "INVALID_ENUM"; break;
+            case GL_INVALID_VALUE: error = "INVALID_VALUE"; break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION: error = "GL_INVALID_FRAMEBUFFER_OPERATION"; break;
+            case GL_OUT_OF_MEMORY: error = "OUT_OF_MEMORY"; break;
+        }
+
+        framework::log::error("GL") << file << ":" << line << " err: " << err << " " << error << std::endl;
+        err = glGetError();
+    }
+}
+
 framework::uint32 load_shader(const std::string& VertexShaderCode, const std::string& FragmentShaderCode)
 {
     using namespace framework::opengl;
+    using namespace framework::log;
 
     GLuint VertexShaderID   = glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -120,7 +151,7 @@ framework::uint32 load_shader(const std::string& VertexShaderCode, const std::st
     if (InfoLogLength > 0) {
         std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
         glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-        //        fprintf(stdout, "%sn", &VertexShaderErrorMessage[0]);
+        framework::log::error("shader") << "vertex: " << VertexShaderErrorMessage.data() << std::endl;
     }
 
     // Компилируем Фрагментный шейдер
@@ -134,7 +165,7 @@ framework::uint32 load_shader(const std::string& VertexShaderCode, const std::st
     if (InfoLogLength > 0) {
         std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
         glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-        //       fprintf(stdout, "%s\n", &FragmentShaderErrorMessage[0]);
+        framework::log::error("shader") << "fragment: " << FragmentShaderErrorMessage.data() << std::endl;
     }
 
     // Создаем шейдерную программу и привязываем шейдеры к ней
@@ -149,7 +180,7 @@ framework::uint32 load_shader(const std::string& VertexShaderCode, const std::st
     if (InfoLogLength > 0) {
         std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
         glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-        //        fprintf(stdout, "%s\n", &ProgramErrorMessage[0]);
+        framework::log::error("shader") << "program: " << ProgramErrorMessage.data() << std::endl;
     }
 
     glDeleteShader(VertexShaderID);
@@ -179,8 +210,10 @@ int main()
     using framework::float32;
     using framework::int32;
     using framework::uint32;
-    using framework::math::vector2f;
     using framework::math::matrix4f;
+    using framework::math::vector2f;
+
+    framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
 
     window::set_application_name("BMP Test");
 
@@ -194,29 +227,38 @@ int main()
     float32 total_time           = 0;
 
     main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
-    main_window.set_on_size_callback([&main_window](const window&, window_size size) { glViewport(0, 0, size.width, size.height); });
+    main_window.set_on_size_callback(
+    [&main_window](const window&, window_size size) { glViewport(0, 0, size.width, size.height); });
 
     // load all images
     std::vector<image_rgb> images;
     const int32 result = run_tests(bmp_image_test(images));
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    gl_error(__FILE__, __LINE__);
+
     uint32 vertex_array_id;
     glGenVertexArrays(1, &vertex_array_id);
     glBindVertexArray(vertex_array_id);
 
+    gl_error(__FILE__, __LINE__);
     glViewport(0, 0, 640, 480);
 
-    static const vector2f vertex_buffer_data[] = {vector2f(0.0f, 0.0f),
-                                                  vector2f(127.0f, 0.0f),
-                                                  vector2f(127.0f, 64.0f),
-                                                  vector2f(0.0f, 64.0f),
-                                                  };
+    static const vector2f vertex_buffer_data[] = {
+    vector2f(0.0f, 0.0f),
+    vector2f(127.0f, 0.0f),
+    vector2f(127.0f, 64.0f),
+    vector2f(0.0f, 64.0f),
+    };
 
-    static const vector2f texture_buffer_data[] = {vector2f(0.0f, 0.0f),
-                                                  vector2f(1.0f, 0.0f),
-                                                  vector2f(1.0f, 1.0f),
-                                                  vector2f(0.0f, 1.0f),
-                                                  };
+    static const vector2f texture_buffer_data[] = {
+    vector2f(0.0f, 0.0f),
+    vector2f(1.0f, 0.0f),
+    vector2f(1.0f, 1.0f),
+    vector2f(0.0f, 1.0f),
+    };
 
     GLuint vertexbuffer;
     glGenBuffers(1, &vertexbuffer);
@@ -224,25 +266,29 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data[0].data(), GL_STATIC_DRAW);
 
-
+    gl_error(__FILE__, __LINE__);
     GLuint texturebuffer;
     glGenBuffers(1, &texturebuffer);
 
     glBindBuffer(GL_ARRAY_BUFFER, texturebuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(texture_buffer_data), texture_buffer_data[0].data(), GL_STATIC_DRAW);
+    gl_error(__FILE__, __LINE__);
 
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
+    gl_error(__FILE__, __LINE__);
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, texturebuffer);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
+    glBindVertexArray(0);
 
     uint32 shader = load_shader(vertex_shader, fragment_shader);
 
-
-
-
-
-
+    gl_error(__FILE__, __LINE__);
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 0, 480);
-
 
     // Создадим одну текстуру OpenGL
     uint32 texture_id;
@@ -251,12 +297,22 @@ int main()
     // Сделаем созданную текстуру текущий, таким образом все следующие функции будут работать именно с этой текстурой
     glBindTexture(GL_TEXTURE_2D, texture_id);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    framework::uint32 data[128 * 64];
+    for (int i = 0; i < 127 * 64; ++i) {
+        data[i] = (255 << 24) + (255 << 16) + (255 << 8) + 255;
+
+        data[i] = images[0].data()[i];
+    }
+
     // Передадим изображение OpenGL
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 127, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, images[0].data());
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 64, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, data);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    gl_error(__FILE__, __LINE__);
 
     load(images);
 
@@ -270,30 +326,24 @@ int main()
 
         glUseProgram(shader);
 
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture_id);
+        uint32 texture_uniform_id = glGetUniformLocation(shader, "tex");
+        glUniform1i(texture_uniform_id, 0);
 
+        gl_error(__FILE__, __LINE__);
         uint32 mvp_id = glGetUniformLocation(shader, "MVP");
         glUniformMatrix4fv(mvp_id, 1, GL_FALSE, mvp.data());
 
+        gl_error(__FILE__, __LINE__);
 
-        uint32 texture_uniform_id = glGetUniformLocation(shader, "myTextureSampler");
-        glUniform1i(texture_uniform_id, texture_id);
-
-        //texture 0, first texture
-        glActiveTexture(texture_id);
-
-
-        glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-        glEnableVertexAttribArray(1);
-        glBindBuffer(GL_ARRAY_BUFFER, texturebuffer);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
+        glBindVertexArray(vertex_array_id);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-        glDisableVertexAttribArray(0);
+        gl_error(__FILE__, __LINE__);
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glUseProgram(0);
 
         draw(images);
 

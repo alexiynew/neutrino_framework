@@ -30,6 +30,8 @@
 #ifndef FRAMEWORK_IMAGE_DETAILS_PIXEL_TYPE_HPP
 #define FRAMEWORK_IMAGE_DETAILS_PIXEL_TYPE_HPP
 
+#include <vector>
+
 #include <common/types.hpp>
 
 namespace framework::image::details
@@ -55,7 +57,8 @@ struct pixel_type_traits<pixel_format::rgb>
     // TODO: Check bytes packing
     static constexpr type make_pixel(uint8 r, uint8 g, uint8 b, uint8 /*unused*/) noexcept
     {
-        return static_cast<type>((r << 16) + (g << 8) + (b));
+        // return static_cast<type>((r << 16) + (g << 8) + (b));
+        return static_cast<type>((r << 24) + (g << 16) + (b << 8) + 255);
     }
 };
 
@@ -69,7 +72,8 @@ struct pixel_type_traits<pixel_format::bgr>
     // TODO: Check bytes packing
     static constexpr type make_pixel(uint8 r, uint8 g, uint8 b, uint8 /*unused*/) noexcept
     {
-        return static_cast<type>((b << 16) + (g << 8) + (r));
+        // return static_cast<type>((b << 16) + (g << 8) + (r));
+        return static_cast<type>((r << 24) + (g << 16) + (b << 8) + 255);
     }
 };
 
@@ -128,10 +132,14 @@ public:
 
     virtual void reserve(uint32 size) override
     {
-        m_data.reserve(size);
+        m_data.resize(size);
+
+        uint32 s = m_data.size();
+        if (s == 0) {
+        }
     }
 
-    std::vector<pixel_t<Format>> data() const
+    const std::vector<pixel_t<Format>>& data() const
     {
         return m_data;
     }
