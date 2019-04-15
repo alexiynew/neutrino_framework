@@ -35,12 +35,14 @@
 #include <log/stream_logger.hpp>
 #include <math/math.hpp>
 #include <opengl/gl.hpp>
+#include <opengl/shader.hpp>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
+
 using image_rgb = framework::image::image<framework::image::pixel_format::rgb>;
 
-const std::string vertex_shader = "#version 330 core\n\
+const std::string vertex_shader_src = "#version 330 core\n\
 layout(location = 0) in vec2 vertexPosition_modelspace;\n\
 layout(location = 1) in vec2 vertexUV;\n\
 uniform mat4 MVP;\n\
@@ -50,7 +52,7 @@ void main(){\n\
     UV = vertexUV;\n\
 }";
 
-const std::string fragment_shader = "#version 330 core\n\
+const std::string fragment_shader_src = "#version 330 core\n\
 uniform sampler2D tex;\n\
 out vec4 color;\n\
 in vec2 UV;\n\
@@ -76,8 +78,7 @@ private:
     void bmp_load()
     {
         image_rgb img;
-        TEST_ASSERT(img.load("/home/alex/Projects/game_framework/build/test/image/bmp_test/good_pal1.bmp"),
-                    "Loading of good_pal1.bmp failed.");
+        TEST_ASSERT(img.load("good_pal1.bmp"), "Loading of good_pal1.bmp failed.");
         m_images.push_back(img);
 
         // TEST_ASSERT(img.load("good_pal1bg.bmp"), "Loading of good_pal1bg.bmp failed.");
@@ -135,44 +136,28 @@ framework::uint32 load_shader(const std::string& VertexShaderCode, const std::st
     using namespace framework::opengl;
     using namespace framework::log;
 
-    GLuint VertexShaderID   = glCreateShader(GL_VERTEX_SHADER);
-    GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    vertex_shader v_shader;
+    fragment_shader f_shader;
 
-    GLint Result = GL_FALSE;
+    v_shader.set_source(VertexShaderCode);
+    f_shader.set_source(FragmentShaderCode);
+
+    v_shader.compile();
+    f_shader.compile();
+
+    if (!v_shader.compiled()) {
+        framework::log::error("shader") << "vertex: " << v_shader.info_log() << std::endl;
+    }
+
+    if (!f_shader.compiled()) {
+        framework::log::error("shader") << "fragment: " << f_shader.info_log() << std::endl;
+    }
+GLint Result = GL_FALSE;
     int InfoLogLength;
-
-    // Компилируем Вершинный шейдер
-    char const* VertexSourcePointer = VertexShaderCode.c_str();
-    glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
-    glCompileShader(VertexShaderID);
-
-    // Выполняем проверку Вершинного шейдера
-    glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-    glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if (InfoLogLength > 0) {
-        std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
-        glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-        framework::log::error("shader") << "vertex: " << VertexShaderErrorMessage.data() << std::endl;
-    }
-
-    // Компилируем Фрагментный шейдер
-    char const* FragmentSourcePointer = FragmentShaderCode.c_str();
-    glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
-    glCompileShader(FragmentShaderID);
-
-    // Проверяем Фрагментный шейдер
-    glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-    glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if (InfoLogLength > 0) {
-        std::vector<char> FragmentShaderErrorMessage(InfoLogLength + 1);
-        glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-        framework::log::error("shader") << "fragment: " << FragmentShaderErrorMessage.data() << std::endl;
-    }
-
     // Создаем шейдерную программу и привязываем шейдеры к ней
     GLuint ProgramID = glCreateProgram();
-    glAttachShader(ProgramID, VertexShaderID);
-    glAttachShader(ProgramID, FragmentShaderID);
+    glAttachShader(ProgramID, v_shader.shader_id());
+    glAttachShader(ProgramID, f_shader.shader_id());
     glLinkProgram(ProgramID);
 
     // Проверяем шейдерную программу
@@ -183,9 +168,6 @@ framework::uint32 load_shader(const std::string& VertexShaderCode, const std::st
         glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
         framework::log::error("shader") << "program: " << ProgramErrorMessage.data() << std::endl;
     }
-
-    glDeleteShader(VertexShaderID);
-    glDeleteShader(FragmentShaderID);
 
     return ProgramID;
 }
@@ -249,8 +231,8 @@ int main()
 
     static const vector2f vertex_buffer_data[] = {
     vector2f(0.0f, 0.0f),
-    vector2f(127.0f, 0.0f),
-    vector2f(127.0f, 64.0f),
+    vector2f(128.0f, 0.0f),
+    vector2f(128.0f, 64.0f),
     vector2f(0.0f, 64.0f),
     };
 
@@ -286,7 +268,7 @@ int main()
 
     glBindVertexArray(0);
 
-    uint32 shader = load_shader(vertex_shader, fragment_shader);
+    uint32 shader = load_shader(vertex_shader_src, fragment_shader_src);
 
     gl_error(__FILE__, __LINE__);
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 0, 480);
@@ -315,7 +297,7 @@ int main()
     while (main_window.visible() && total_time < max_total_time) {
         main_window.process_events();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shader);

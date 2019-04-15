@@ -1,8 +1,10 @@
 headers = files('gl.hpp',
+                'shader.hpp',
                 'context.hpp',
                 'context_settings.hpp')
 
 sources = files('gl.cpp',
+                'shader.cpp',
                 'context.cpp',
                 'context_settings.cpp')
 
