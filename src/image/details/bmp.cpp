@@ -369,6 +369,21 @@ void process_row_1bpp(char* buffer,
     }
 }
 
+void process_row_24bpp(char* buffer,
+                       const info_header& info,
+                       uint32 position,
+                       framework::image::details::pixel_storage_interface* storage)
+{
+    for (int32 x = 0; x < info.width; ++x) {
+        const uint8 b = buffer[x * 3 + 0];
+        const uint8 g = buffer[x * 3 + 1];
+        const uint8 r = buffer[x * 3 + 2];
+        const uint8 a = 255;
+
+        storage->set_pixel(position + x, r, g, b, a);
+    }
+}
+
 bool read_data(std::ifstream& in, const info_header& info, framework::image::details::pixel_storage_interface* storage)
 {
     storage->resize(info.width * info.height);
@@ -394,13 +409,7 @@ bool read_data(std::ifstream& in, const info_header& info, framework::image::det
                 break;
                 // chanel masks
                 // may be alpha
-            case 24: {
-                // char buffer[3] = {0};
-                // in.read(buffer, sizeof(buffer));
-
-                // storage->set_pixel(index, buffer[2], buffer[1], buffer[0]);
-                //++x;
-            } break;
+            case 24: process_row_24bpp(buffer.get(), info, position, storage); break;
             case 32: {
                 // chanel masks
                 // may be alpha

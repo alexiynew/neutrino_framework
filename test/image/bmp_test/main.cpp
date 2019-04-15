@@ -39,7 +39,6 @@
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
-
 using image_rgb = framework::image::image<framework::image::pixel_format::rgb>;
 
 const std::string vertex_shader_src = "#version 330 core\n\
@@ -57,11 +56,7 @@ uniform sampler2D tex;\n\
 out vec4 color;\n\
 in vec2 UV;\n\
 void main(){\n\
-    vec4 c = texture(tex, UV);\n\
-    if (c.x == 0) {\n\
-        c.r = .5;\n\
-    }\n\
-    color = c;\n\
+    color = texture(tex, UV);\n\
 }";
 
 class bmp_image_test : public framework::unit_test::suite
@@ -152,7 +147,7 @@ framework::uint32 load_shader(const std::string& VertexShaderCode, const std::st
     if (!f_shader.compiled()) {
         framework::log::error("shader") << "fragment: " << f_shader.info_log() << std::endl;
     }
-GLint Result = GL_FALSE;
+    GLint Result = GL_FALSE;
     int InfoLogLength;
     // Создаем шейдерную программу и привязываем шейдеры к ней
     GLuint ProgramID = glCreateProgram();
@@ -206,7 +201,7 @@ int main()
 
     framework::opengl::init();
 
-    const float32 max_total_time = 10000;
+    const float32 max_total_time = 1000000;
     float32 total_time           = 0;
 
     main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
@@ -220,6 +215,10 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
     gl_error(__FILE__, __LINE__);
 
     uint32 vertex_array_id;
@@ -231,16 +230,16 @@ int main()
 
     static const vector2f vertex_buffer_data[] = {
     vector2f(0.0f, 0.0f),
-    vector2f(128.0f, 0.0f),
-    vector2f(128.0f, 64.0f),
     vector2f(0.0f, 64.0f),
+    vector2f(127.0f, 64.0f),
+    vector2f(127.0f, 0.0f),
     };
 
     static const vector2f texture_buffer_data[] = {
     vector2f(0.0f, 0.0f),
-    vector2f(1.0f, 0.0f),
-    vector2f(1.0f, 1.0f),
     vector2f(0.0f, 1.0f),
+    vector2f(1.0f, 1.0f),
+    vector2f(1.0f, 0.0f),
     };
 
     GLuint vertexbuffer;
@@ -271,7 +270,8 @@ int main()
     uint32 shader = load_shader(vertex_shader_src, fragment_shader_src);
 
     gl_error(__FILE__, __LINE__);
-    matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 0, 480);
+    matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
+    mvp          = framework::math::scale(mvp, {4, 4, 4});
 
     // Создадим одну текстуру OpenGL
     uint32 texture_id;
@@ -282,8 +282,8 @@ int main()
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
     // Передадим изображение OpenGL
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 127, 64, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, images[0].data());
