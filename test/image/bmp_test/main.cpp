@@ -76,7 +76,8 @@ private:
     void bmp_load()
     {
         image_rgb img;
-        TEST_ASSERT(img.load("good_pal1.bmp"), "Loading of good_pal1.bmp failed.");
+        TEST_ASSERT(img.load("/home/alex/Projects/game_framework/build/test/image/bmp_test/good_pal1.bmp"),
+                    "Loading of good_pal1.bmp failed.");
         m_images.push_back(img);
 
         // TEST_ASSERT(img.load("good_pal1bg.bmp"), "Loading of good_pal1bg.bmp failed.");
@@ -302,15 +303,8 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    framework::uint32 data[128 * 64];
-    for (int i = 0; i < 127 * 64; ++i) {
-        data[i] = (255 << 24) + (255 << 16) + (255 << 8) + 255;
-
-        data[i] = images[0].data()[i];
-    }
-
     // Передадим изображение OpenGL
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 64, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 127, 64, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, images[0].data());
     glBindTexture(GL_TEXTURE_2D, 0);
     gl_error(__FILE__, __LINE__);
 

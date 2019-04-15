@@ -371,7 +371,7 @@ void process_row_1bpp(char* buffer,
 
 bool read_data(std::ifstream& in, const info_header& info, framework::image::details::pixel_storage_interface* storage)
 {
-    storage->reserve(info.width * info.height);
+    storage->resize(info.width * info.height);
 
     const uint32 row_size = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
 
