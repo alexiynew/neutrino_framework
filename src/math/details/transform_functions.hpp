@@ -204,16 +204,16 @@ inline matrix<3, 3, T> shear(const matrix<3, 3, T>& m, const vector<2, T>& v)
 /// @param right Right clipping plane.
 /// @param bottom Bottom clipping plane.
 /// @param top Top clipping plane.
-/// @param near Near clipping plane.
-/// @param far Far clipping plane.
+/// @param near_val Near clipping plane.
+/// @param far_val Far clipping plane.
 ///
 /// @return The orthographic projection matrix.
 template <typename T>
-inline matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const T top, const T near, const T far)
+inline matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const T top, const T near_val, const T far_val)
 {
     const T width  = right - left;
     const T height = top - bottom;
-    const T depth  = far - near;
+    const T depth  = far_val - near_val;
 
     assert(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
     assert(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
@@ -221,10 +221,10 @@ inline matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
 
     // clang-format off
     return matrix<4, 4, T> (
-            T(2) / width,            0,                        0,                     0,
-            0,                       T(2) / height,            0,                     0,
-            0,                       0,                        -T(2) / depth,         0,
-            -(right + left) / width, -(top + bottom) / height, -(far + near) / depth, 1
+            T(2) / width,            0,                        0,                             0,
+            0,                       T(2) / height,            0,                             0,
+            0,                       0,                        -T(2) / depth,                 0,
+            -(right + left) / width, -(top + bottom) / height, -(far_val + near_val) / depth, 1
     );
     // clang-format on
 }
@@ -244,7 +244,7 @@ inline matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
 template <typename T>
 inline matrix<4, 4, T> ortho2d(const T left, const T right, const T bottom, const T top)
 {
-    return ortho(left, right, bottom, top, T(1), -T(1));
+    return ortho(left, right, bottom, top, -T(1), T(1));
 }
 /// @}
 
@@ -257,19 +257,19 @@ inline matrix<4, 4, T> ortho2d(const T left, const T right, const T bottom, cons
 /// @param right Right clipping plane.
 /// @param bottom Bottom clipping plane.
 /// @param top Top clipping plane.
-/// @param near Distance to the near clipping plane (always positive).
-/// @param far Distance to the far clipping plane (always positive).
+/// @param near_val Distance to the near clipping plane (always positive).
+/// @param far_val Distance to the far clipping plane (always positive).
 ///
 /// @return The frustum matrix.
 template <typename T>
-inline matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near, const T far)
+inline matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near_val, const T far_val)
 {
-    assert(near > T(0));
-    assert(far > T(0));
+    assert(near_val > T(0));
+    assert(far_val > T(0));
 
     const T width  = right - left;
     const T height = top - bottom;
-    const T depth  = far - near;
+    const T depth  = far_val - near_val;
 
     assert(::framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
     assert(::framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
@@ -277,10 +277,10 @@ inline matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 
     // clang-format off
     return matrix<4, 4, T> (
-        (T(2) * near) / width,  0,                       0,                            0,
-        0,                      (T(2) * near) / height,  0,                            0,
-        (right + left) / width, (top + bottom) / height, -(far + near) / depth,        -1,
-        0,                      0,                       -(T(2) * far * near) / depth, 0
+        (T(2) * near_val) / width,  0,                          0,                                    0,
+        0,                          (T(2) * near_val) / height, 0,                                    0,
+        (right + left) / width,     (top + bottom) / height,    -(far_val + near_val) / depth,        -1,
+        0,                          0,                          -(T(2) * far_val * near_val) / depth, 0
     );
     // clang-format on
 }
@@ -294,17 +294,17 @@ inline matrix<4, 4, T> frustum(const T left, const T right, const T bottom, cons
 /// @param fov_y Specifies the field of view angle in the y direction, in radians.
 /// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
 ///               The aspect ratio is the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+/// @param near_val Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param far_val Specifies the distance from the viewer to the far clipping plane (always positive).
 ///
 /// @return The perspective projection matrix.
 template <typename T>
-inline matrix<4, 4, T> perspective(T fov_y, T aspect, T near, T far)
+inline matrix<4, 4, T> perspective(T fov_y, T aspect, T near_val, T far_val)
 {
-    assert(near > T(0));
-    assert(far > T(0));
+    assert(near_val > T(0));
+    assert(far_val > T(0));
 
-    const T depth   = far - near;
+    const T depth   = far_val - near_val;
     const T tangent = tan(fov_y / T(2));
 
     assert(::framework::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
@@ -315,10 +315,10 @@ inline matrix<4, 4, T> perspective(T fov_y, T aspect, T near, T far)
 
     // clang-format off
     return matrix<4, 4, T> (
-        cotangent / aspect, 0,         0,                            0,
-        0,                  cotangent, 0,                            0,
-        0,                  0,         -(far + near) / depth,        -1,
-        0,                  0,         -(T(2) * far * near) / depth, 0
+        cotangent / aspect, 0,         0,                                    0,
+        0,                  cotangent, 0,                                    0,
+        0,                  0,         -(far_val + near_val) / depth,        -1,
+        0,                  0,         -(T(2) * far_val * near_val) / depth, 0
     );
     // clang-format on
 }
@@ -332,19 +332,19 @@ inline matrix<4, 4, T> perspective(T fov_y, T aspect, T near, T far)
 /// @param fov Expressed in radians.
 /// @param width Width of the plane (always positive).
 /// @param height Height of the plane (always positive).
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
-/// @param far Specifies the distance from the viewer to the far clipping plane (always positive).
+/// @param near_val Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param far_val Specifies the distance from the viewer to the far clipping plane (always positive).
 ///
 /// @return The perspective projection matrix.
 template <typename T>
-inline matrix<4, 4, T> perspective_fov(T fov, T width, T height, T near, T far)
+inline matrix<4, 4, T> perspective_fov(T fov, T width, T height, T near_val, T far_val)
 {
     assert(width > T(0));
     assert(height > T(0));
-    assert(near > T(0));
-    assert(far > T(0));
+    assert(near_val > T(0));
+    assert(far_val > T(0));
 
-    return perspective(fov, width / height, near, far);
+    return perspective(fov, width / height, near_val, far_val);
 }
 /// @}
 
@@ -356,13 +356,13 @@ inline matrix<4, 4, T> perspective_fov(T fov, T width, T height, T near, T far)
 /// @param fov_y Specifies the field of view angle in the y direction, in radians.
 /// @param aspect Specifies the aspect ratio that determines the field of view in the x direction.
 ///               The aspect ratio is the ratio of x (width) to y (height).
-/// @param near Specifies the distance from the viewer to the near clipping plane (always positive).
+/// @param near_val Specifies the distance from the viewer to the near clipping plane (always positive).
 ///
 /// @return The perspective projection matrix.
 template <typename T>
-inline matrix<4, 4, T> infinite_perspective(T fov_y, T aspect, T near)
+inline matrix<4, 4, T> infinite_perspective(T fov_y, T aspect, T near_val)
 {
-    assert(near > T(0));
+    assert(near_val > T(0));
     assert(::framework::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
 
     const T tangent = math::tan(fov_y / T(2));
@@ -374,10 +374,10 @@ inline matrix<4, 4, T> infinite_perspective(T fov_y, T aspect, T near)
 
     // clang-format off
     return matrix<4, 4, T> (
-        cotangent / aspect, 0,         0,                       0,
-        0,                  cotangent, 0,                       0,
-        0,                  0,         epsilon - 1,             -1,
-        0,                  0,         (epsilon - T(2)) * near, 0
+        cotangent / aspect, 0,         0,                           0,
+        0,                  cotangent, 0,                           0,
+        0,                  0,         epsilon - 1,                 -1,
+        0,                  0,         (epsilon - T(2)) * near_val, 0
     );
     // clang-format on
 }
