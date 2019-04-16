@@ -126,7 +126,8 @@ void gl_error(const char* file, int line)
     }
 }
 
-framework::uint32 load_shader(const std::string& VertexShaderCode, const std::string& FragmentShaderCode)
+framework::opengl::shader_program load_shader(const std::string& VertexShaderCode,
+                                              const std::string& FragmentShaderCode)
 {
     using namespace framework::opengl;
     using namespace framework::log;
@@ -147,24 +148,18 @@ framework::uint32 load_shader(const std::string& VertexShaderCode, const std::st
     if (!f_shader.compiled()) {
         framework::log::error("shader") << "fragment: " << f_shader.info_log() << std::endl;
     }
-    GLint Result = GL_FALSE;
-    int InfoLogLength;
-    // Создаем шейдерную программу и привязываем шейдеры к ней
-    GLuint ProgramID = glCreateProgram();
-    glAttachShader(ProgramID, v_shader.shader_id());
-    glAttachShader(ProgramID, f_shader.shader_id());
-    glLinkProgram(ProgramID);
 
-    // Проверяем шейдерную программу
-    glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-    glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if (InfoLogLength > 0) {
-        std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
-        glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-        framework::log::error("shader") << "program: " << ProgramErrorMessage.data() << std::endl;
+    shader_program program;
+
+    program.arttach(v_shader);
+    program.arttach(f_shader);
+    program.link();
+
+    if (!program.linked()) {
+        framework::log::error("shader") << "program: " << program.info_log() << std::endl;
     }
 
-    return ProgramID;
+    return program;
 }
 
 void load(const std::vector<image_rgb>& images)
@@ -267,7 +262,7 @@ int main()
 
     glBindVertexArray(0);
 
-    uint32 shader = load_shader(vertex_shader_src, fragment_shader_src);
+    shader_program shader = load_shader(vertex_shader_src, fragment_shader_src);
 
     gl_error(__FILE__, __LINE__);
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
@@ -290,8 +285,6 @@ int main()
     glBindTexture(GL_TEXTURE_2D, 0);
     gl_error(__FILE__, __LINE__);
 
-    load(images);
-
     main_window.show();
 
     while (main_window.visible() && total_time < max_total_time) {
@@ -300,28 +293,20 @@ int main()
         glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shader);
+        shader.use();
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture_id);
-        uint32 texture_uniform_id = glGetUniformLocation(shader, "tex");
-        glUniform1i(texture_uniform_id, 0);
+        shader.uniform("tex", 0);
 
-        gl_error(__FILE__, __LINE__);
-        uint32 mvp_id = glGetUniformLocation(shader, "MVP");
-        glUniformMatrix4fv(mvp_id, 1, GL_FALSE, mvp.data());
-
-        gl_error(__FILE__, __LINE__);
+        shader.uniform("MVP", mvp);
 
         glBindVertexArray(vertex_array_id);
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-        gl_error(__FILE__, __LINE__);
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
-        glUseProgram(0);
-
-        draw(images);
+        shader.stop_using();
 
         context->swap_buffers();
 
