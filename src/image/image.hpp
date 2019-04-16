@@ -35,10 +35,11 @@
 #include <vector>
 
 #include <common/types.hpp>
+#include <common/pixel_type.hpp>
 #include <image/details/bmp.hpp>
 #include <image/details/format_converter.hpp>
-#include <image/details/pixel_type.hpp>
 #include <image/details/png.hpp>
+#include <image/details/pixel_storage.hpp>
 #include <image/details/tga.hpp>
 
 /// @details
@@ -59,14 +60,12 @@ enum class file_type
     png
 };
 
-using pixel_format = details::pixel_format;
-
 template <pixel_format Format>
 class image
 {
 public:
-    using pixel_t      = details::pixel_t<Format>;
-    using pixel_data_t = details::pixel_data_t<Format>;
+    using pixel_t      = pixel_t<Format>;
+    using pixel_data_t = std::vector<pixel_t<Format>>;
 
     bool load(const std::string& filename, file_type type);
     bool load(const std::string& filename);

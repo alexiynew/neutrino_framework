@@ -1,7 +1,7 @@
 /// @file
-/// @brief Tga image implementation.
+/// @brief OpenGL texture.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 16.04.2019
 
 // =============================================================================
 // MIT License
@@ -27,22 +27,42 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_DETAILS_TGA_HPP
-#define FRAMEWORK_IMAGE_DETAILS_TGA_HPP
-
-#include <string>
-#include <vector>
-
+#include <opengl/texture.hpp>
+#include <opengl/gl.hpp>
 #include <common/types.hpp>
-#include <image/details/pixel_storage.hpp>
 
-namespace framework::image::details::tga
+namespace framework::opengl
 {
-bool load(const std::string& filename, pixel_storage_interface* storage);
-bool save(const std::string& filename);
 
-bool is_tga(const std::string& filename);
+// GL_ACTIVE_TEXTURE or GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+texture::texture(min_filter minf, mag_filter magf, wrap_s ws, wrap_t wt)
+{
+    using framework::int32;
 
-} // namespace framework::image::details::tga
+    glActiveTexture(GL_TEXTURE0);
 
-#endif
+    glGenTextures(1, &m_texture_id);
+
+    glBindTexture(GL_TEXTURE_2D, m_texture_id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<int32>(minf));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<int32>(magf));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<int32>(ws));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<int32>(wt));
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void texture::load()
+{}
+
+void texture::bind()
+{}
+
+void texture::unbind()
+{}
+
+void texture::texture_id() const
+{}
+
+}

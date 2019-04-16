@@ -34,7 +34,7 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <image/details/pixel_type.hpp>
+#include <image/details/pixel_storage.hpp>
 
 namespace framework::image::details::bmp
 {

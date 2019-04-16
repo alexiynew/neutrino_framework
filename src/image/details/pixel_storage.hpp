@@ -1,7 +1,7 @@
 /// @file
-/// @brief Tga image implementation.
+/// @brief Image pixel storage.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 07.04.2019
 
 // =============================================================================
 // MIT License
@@ -27,22 +27,53 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_DETAILS_TGA_HPP
-#define FRAMEWORK_IMAGE_DETAILS_TGA_HPP
+#ifndef FRAMEWORK_IMAGE_DETAILS_PIXEL_STORAGE_HPP
+#define FRAMEWORK_IMAGE_DETAILS_PIXEL_STORAGE_HPP
 
-#include <string>
 #include <vector>
 
 #include <common/types.hpp>
-#include <image/details/pixel_storage.hpp>
+#include <common/pixel_type.hpp>
 
-namespace framework::image::details::tga
+namespace framework::image::details
 {
-bool load(const std::string& filename, pixel_storage_interface* storage);
-bool save(const std::string& filename);
+class pixel_storage_interface
+{
+public:
+    virtual ~pixel_storage_interface() = default;
 
-bool is_tga(const std::string& filename);
+    virtual void set_pixel(uint32 index, uint8 red, uint8 green, uint8 blue, uint8 alpha = 0) = 0;
+    virtual void resize(uint32 size)                                                          = 0;
+};
 
-} // namespace framework::image::details::tga
+template <pixel_format Format>
+class pixel_storage : public pixel_storage_interface
+{
+public:
+    using pixel_data_t = std::vector<pixel_t<Format>>;
+
+    pixel_storage(pixel_data_t& data) : m_data(data)
+    {}
+
+    virtual void set_pixel(uint32 index, uint8 red, uint8 green, uint8 blue, uint8 alpha = 0) override
+    {
+        m_data[index] = make_pixel<Format>(red, green, blue, alpha);
+    }
+
+    virtual void resize(uint32 size) override
+    {
+        m_data.resize(size);
+    }
+
+    const pixel_data_t& data() const
+    {
+        return m_data;
+    }
+
+private:
+    pixel_data_t& m_data;
+};
+
+} // namespace framework::image::details
 
 #endif

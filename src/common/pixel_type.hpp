@@ -27,14 +27,12 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_DETAILS_PIXEL_TYPE_HPP
-#define FRAMEWORK_IMAGE_DETAILS_PIXEL_TYPE_HPP
-
-#include <vector>
+#ifndef FRAMEWORK_COMMON_PIXEL_TYPE_HPP
+#define FRAMEWORK_COMMON_PIXEL_TYPE_HPP
 
 #include <common/types.hpp>
 
-namespace framework::image::details
+namespace framework
 {
 enum class pixel_format
 {
@@ -107,49 +105,11 @@ template <pixel_format Format>
 using pixel_t = typename pixel_type_traits<Format>::type;
 
 template <pixel_format Format>
-using pixel_data_t = std::vector<pixel_t<Format>>;
-
-template <pixel_format Format>
 constexpr auto make_pixel(uint8 r, uint8 g, uint8 b, uint8 a) noexcept
 {
     return pixel_type_traits<Format>::make_pixel(r, g, b, a);
 }
 
-class pixel_storage_interface
-{
-public:
-    virtual ~pixel_storage_interface() = default;
-
-    virtual void set_pixel(uint32 index, uint8 red, uint8 green, uint8 blue, uint8 alpha = 0) = 0;
-    virtual void resize(uint32 size)                                                          = 0;
-};
-
-template <pixel_format Format>
-class pixel_storage : public pixel_storage_interface
-{
-public:
-    pixel_storage(pixel_data_t<Format>& data) : m_data(data)
-    {}
-
-    virtual void set_pixel(uint32 index, uint8 red, uint8 green, uint8 blue, uint8 alpha = 0) override
-    {
-        m_data[index] = make_pixel<Format>(red, green, blue, alpha);
-    }
-
-    virtual void resize(uint32 size) override
-    {
-        m_data.resize(size);
-    }
-
-    const pixel_data_t<Format>& data() const
-    {
-        return m_data;
-    }
-
-private:
-    pixel_data_t<Format>& m_data;
-};
-
-} // namespace framework::image::details
+} // namespace framework
 
 #endif

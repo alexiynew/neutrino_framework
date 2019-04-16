@@ -36,6 +36,7 @@
 #include <math/math.hpp>
 #include <opengl/gl.hpp>
 #include <opengl/shader.hpp>
+#include <opengl/texture.hpp>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
 
@@ -268,22 +269,13 @@ int main()
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
     mvp          = framework::math::scale(mvp, {4, 4, 4});
 
-    // Создадим одну текстуру OpenGL
-    uint32 texture_id;
-    glGenTextures(1, &texture_id);
+    
+    opengl::texture tex(min_fil, GL_CLAMP_TO_EDGE);
 
-    // Сделаем созданную текстуру текущий, таким образом все следующие функции будут работать именно с этой текстурой
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    gl_error(__FILE__, __LINE__);
 
     // Передадим изображение OpenGL
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 127, 64, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, images[0].data());
-    glBindTexture(GL_TEXTURE_2D, 0);
-    gl_error(__FILE__, __LINE__);
 
     main_window.show();
 
