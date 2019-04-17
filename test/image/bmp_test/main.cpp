@@ -270,12 +270,10 @@ int main()
     mvp          = framework::math::scale(mvp, {4, 4, 4});
 
     
-    opengl::texture tex(min_fil, GL_CLAMP_TO_EDGE);
+    texture tex(min_filter::nearest, mag_filter::nearest, wrap_s::clamp_to_edge, wrap_t::clamp_to_edge);
+    tex.load(internal_format::rgba, 127, 64, format::rgb, images[0].data());
 
     gl_error(__FILE__, __LINE__);
-
-    // Передадим изображение OpenGL
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 127, 64, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, images[0].data());
 
     main_window.show();
 
@@ -287,9 +285,8 @@ int main()
 
         shader.use();
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture_id);
-        shader.uniform("tex", 0);
+        tex.bind();
+        shader.uniform("tex", tex.texture_unit());
 
         shader.uniform("MVP", mvp);
 
@@ -297,7 +294,9 @@ int main()
         glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
         glBindVertexArray(0);
-        glBindTexture(GL_TEXTURE_2D, 0);
+
+        tex.unbind();
+
         shader.stop_using();
 
         context->swap_buffers();

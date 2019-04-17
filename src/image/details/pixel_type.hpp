@@ -27,12 +27,12 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_PIXEL_TYPE_HPP
-#define FRAMEWORK_COMMON_PIXEL_TYPE_HPP
+#ifndef FRAMEWORK_IMAGE_DETAILS_PIXEL_TYPE_HPP
+#define FRAMEWORK_IMAGE_DETAILS_PIXEL_TYPE_HPP
 
 #include <common/types.hpp>
 
-namespace framework
+namespace framework::image::details
 {
 enum class pixel_format
 {
@@ -48,61 +48,82 @@ struct pixel_type_traits;
 template <>
 struct pixel_type_traits<pixel_format::rgb>
 {
-    using type = framework::uint32;
-
-    static constexpr uint32 bits_per_pixel = 24;
-
-    // TODO: Check bytes packing
-    static constexpr type make_pixel(uint8 r, uint8 g, uint8 b, uint8 /*unused*/) noexcept
+    struct pixel_type_t 
     {
-        // return static_cast<type>((r << 16) + (g << 8) + (b));
-        return static_cast<type>((r << 24) + (g << 16) + (b << 8) + 255);
+        uint8 r;
+        uint8 g;
+        uint8 b;
+    };
+
+    using internal_type = uint8;
+
+    static constexpr pixel_type_t make_pixel(uint8 r, uint8 g, uint8 b, uint8 /*unused*/) noexcept
+    {
+        return pixel_type_t{r, g, b};
     }
 };
 
 template <>
 struct pixel_type_traits<pixel_format::bgr>
 {
-    using type = framework::uint32;
-
-    static constexpr uint32 bits_per_pixel = 24;
-
-    // TODO: Check bytes packing
-    static constexpr type make_pixel(uint8 r, uint8 g, uint8 b, uint8 /*unused*/) noexcept
+    struct pixel_type_t
     {
-        // return static_cast<type>((b << 16) + (g << 8) + (r));
-        return static_cast<type>((r << 24) + (g << 16) + (b << 8) + 255);
+        uint8 b;
+        uint8 g;
+        uint8 r;
+    };
+
+    using internal_type = uint8;
+
+    static constexpr pixel_type_t make_pixel(uint8 r, uint8 g, uint8 b, uint8 /*unused*/) noexcept
+    {
+        return pixel_type_t{b, g, r};
     }
 };
 
 template <>
 struct pixel_type_traits<pixel_format::rgba>
 {
-    using type = framework::uint32;
-
-    static constexpr uint32 bits_per_pixel = 32;
-
-    static constexpr type make_pixel(uint8 r, uint8 g, uint8 b, uint8 a) noexcept
+    struct pixel_type_t 
     {
-        return static_cast<type>((r << 24) + (g << 16) + (b << 8) + a);
+        uint8 r;
+        uint8 g;
+        uint8 b;
+        uint8 a;
+    };
+
+    using internal_type = uint8;
+
+    static constexpr pixel_type_t make_pixel(uint8 r, uint8 g, uint8 b, uint8 a) noexcept
+    {
+        return pixel_type_t{r, g, b, a};
     }
 };
 
 template <>
 struct pixel_type_traits<pixel_format::bgra>
 {
-    using type = framework::uint32;
-
-    static constexpr uint32 bits_per_pixel = 32;
-
-    static constexpr type make_pixel(uint8 r, uint8 g, uint8 b, uint8 a) noexcept
+    struct pixel_type_t
     {
-        return static_cast<type>((b << 24) + (g << 16) + (r << 8) + a);
+        uint8 b;
+        uint8 g;
+        uint8 r;
+        uint8 a;
+    };
+
+    using internal_type = uint8;
+
+    static constexpr pixel_type_t make_pixel(uint8 r, uint8 g, uint8 b, uint8 a) noexcept
+    {
+        return pixel_type_t{b, g, r, a};
     }
 };
 
 template <pixel_format Format>
-using pixel_t = typename pixel_type_traits<Format>::type;
+using pixel_t = typename pixel_type_traits<Format>::pixel_type_t;
+
+template <pixel_format Format>
+using pixel_internal_type = typename pixel_type_traits<Format>::internal_type;
 
 template <pixel_format Format>
 constexpr auto make_pixel(uint8 r, uint8 g, uint8 b, uint8 a) noexcept

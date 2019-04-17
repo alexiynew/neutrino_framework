@@ -33,7 +33,7 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <common/pixel_type.hpp>
+#include <image/details/pixel_type.hpp>
 
 namespace framework::image::details
 {
@@ -42,8 +42,9 @@ class pixel_storage_interface
 public:
     virtual ~pixel_storage_interface() = default;
 
-    virtual void set_pixel(uint32 index, uint8 red, uint8 green, uint8 blue, uint8 alpha = 0) = 0;
-    virtual void resize(uint32 size)                                                          = 0;
+    virtual void set_pixel(uint32 index, uint8 r, uint8 g, uint8 b, uint8 a = 0) = 0;
+
+    virtual void resize(uint32 size) = 0;
 };
 
 template <pixel_format Format>
@@ -55,9 +56,9 @@ public:
     pixel_storage(pixel_data_t& data) : m_data(data)
     {}
 
-    virtual void set_pixel(uint32 index, uint8 red, uint8 green, uint8 blue, uint8 alpha = 0) override
+    virtual void set_pixel(uint32 index, uint8 r, uint8 g, uint8 b, uint8 a = 0) override
     {
-        m_data[index] = make_pixel<Format>(red, green, blue, alpha);
+        m_data[index] = make_pixel<Format>(r, g, b, a);
     }
 
     virtual void resize(uint32 size) override

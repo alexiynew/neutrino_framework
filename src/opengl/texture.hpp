@@ -31,7 +31,6 @@
 #define FRAMEWORK_OPENGL_TEXTURE_HPP
 
 #include <common/types.hpp>
-#include <common/pixel_type.hpp>
 #include <opengl/gl.hpp>
 
 namespace framework::opengl
@@ -69,8 +68,16 @@ enum class wrap_t
 
 enum class internal_format
 {
-    rgb,
-    rgba,
+    rgb = GL_RGB,
+    rgba = GL_RGBA,
+};
+
+enum class format
+{
+    rgb = GL_RGB,
+    bgr = GL_BGR,
+    rgba = GL_RGBA,
+    bgra = GL_BGRA,
 };
 
 class texture
@@ -82,16 +89,16 @@ public:
             wrap_s ws = wrap_s::repeat, 
             wrap_t wt = wrap_t::repeat);
 
-    void load(internal_format ifmt, int32 width, int32 height, pixel_t<pixel_format::rgb>* data)
-    {
+    void load(internal_format ifmt, int32 width, int32 height, format fmt, const void* data);
 
-    }
+    // void alloc();
+    // void subload();
 
     void bind();
     void unbind();
 
-    void texture_id() const;
-    void texture_unit() const;
+    framework::uint32 texture_id() const;
+    framework::int32 texture_unit() const;
 
 private:
     framework::uint32 m_texture_id = 0;

@@ -4,7 +4,8 @@ private = files('details/bmp.cpp',
                 'details/tga.cpp',
                 'details/png.cpp')
 
-details = files('details/format_converter.hpp',
+details = files('details/pixel_type.hpp',
+                'details/pixel_storage.hpp',
                 'details/bmp.hpp',
                 'details/tga.hpp',
                 'details/png.hpp')

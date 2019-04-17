@@ -53,16 +53,36 @@ texture::texture(min_filter minf, mag_filter magf, wrap_s ws, wrap_t wt)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void texture::load()
-{}
+void texture::load(internal_format ifmt, int32 width, int32 height, format fmt, const void* data)
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_texture_id);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, static_cast<int32>(ifmt), width, height, 0, static_cast<int32>(fmt), GL_UNSIGNED_BYTE, data);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 void texture::bind()
-{}
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_texture_id);
+}
 
 void texture::unbind()
-{}
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
-void texture::texture_id() const
-{}
+framework::uint32 texture::texture_id() const
+{
+    return m_texture_id;
+}
+
+framework::int32 texture::texture_unit() const
+{
+    return 0;
+}
 
 }

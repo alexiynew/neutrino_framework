@@ -1,5 +1,4 @@
 headers = files('types.hpp',
-                'pixel_type.hpp',
                 'utils.hpp',
                 'utils_details.hpp',
                 'crc.hpp',
