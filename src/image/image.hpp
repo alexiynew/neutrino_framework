@@ -58,7 +58,7 @@ enum class file_type
 class image
 {
 public:
-    using pixel_t      = framework::uint8;
+    using pixel_t      = uint8;
     using pixel_data_t = std::vector<pixel_t>;
 
     bool load(const std::string& filename);
@@ -68,8 +68,8 @@ public:
 
     void flip_vertically();
 
-    framework::uint32 width() const;
-    framework::uint32 height() const;
+    int32 width() const;
+    int32 height() const;
 
     bool is_bottom_up() const;
 

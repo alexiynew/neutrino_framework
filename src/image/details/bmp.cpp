@@ -30,6 +30,7 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
+#include <memory>
 #include <vector>
 
 #include <common/types.hpp>
@@ -45,7 +46,7 @@ using framework::uint8;
 
 using framework::image::details::image_info;
 
-namespace framework::image::details::bmp;
+using framework::image::details::bmp::data_t;
 
 constexpr uint32 pixel_size = 4;
 
@@ -179,12 +180,12 @@ file_header file_header::read(std::ifstream& in)
     return h;
 }
 
-info_header::type_t info_header::type() const
+inline info_header::type_t info_header::type() const
 {
     return static_cast<type_t>(size);
 }
 
-bool info_header::bottom_up() const
+inline bool info_header::bottom_up() const
 {
     return type() == info_header::type_t::bitmapcoreheader ? true : height > 0;
 }
@@ -197,8 +198,8 @@ info_header info_header::read(std::ifstream& in)
     info_header h;
     h.size = *(reinterpret_cast<uint32*>(size_buffer));
 
-    std::unique_ptr<char[]> buffer(new char[h.size]);
-    in.read(buffer.get(), h.size);
+    std::unique_ptr<char[]> buffer(new char[h.size - sizeof(size_buffer)]);
+    in.read(buffer.get(), h.size - sizeof(size_buffer));
 
     if (h.type() == type_t::bitmapcoreheader) {
         h.width          = *(reinterpret_cast<uint16*>(buffer.get()));
@@ -307,13 +308,13 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
         table[i].r = buffer[offset + 2];
         table[i].g = buffer[offset + 1];
         table[i].b = buffer[offset + 0];
-        table[i].a = 0;
+        table[i].a = 255;
     }
 
     return table;
 }
 
-bool check_signature(const file_header& h)
+inline bool check_signature(const file_header& h) noexcept
 {
     switch (h.signature) {
         case 0x424D: return true; // BM
@@ -328,7 +329,7 @@ bool check_signature(const file_header& h)
     return false;
 }
 
-bool check_compression(const info_header& h)
+inline bool check_compression(const info_header& h) noexcept
 {
     if (h.type() == info_header::type_t::bitmapcoreheader) {
         return true;
@@ -348,7 +349,7 @@ bool check_compression(const info_header& h)
     return false;
 }
 
-bool check_color_space_type(const info_header& h)
+inline bool check_color_space_type(const info_header& h) noexcept
 {
     if (h.size < static_cast<uint32>(info_header::type_t::bitmapv4header)) {
         return true;
@@ -366,7 +367,7 @@ bool check_color_space_type(const info_header& h)
     return false;
 }
 
-bool check_bits_per_pixel(const info_header& h)
+inline bool check_bits_per_pixel(const info_header& h) noexcept
 {
     switch (h.bits_per_pixel) {
         case 1:
@@ -382,58 +383,66 @@ bool check_bits_per_pixel(const info_header& h)
     return false;
 }
 
-image_info make_image_info(const info_header& h)
+inline image_info make_image_info(const info_header& h) noexcept
 {
     return image_info{h.width, h.height, h.bottom_up()};
 }
 
-bmp::data_t process_row_1bpp(const std::vector<char>& buffer, uint32 count, const color_table_t& color_table)
+data_t process_row_1bpp(const std::vector<char>& buffer, int32 count, const info_header::color_table_t& color_table)
 {
-    bmp::data_t out(count * pixel_size);
+    data_t out(count * pixel_size);
 
-    for (int32 x = 0, byte = 0; x < conut; ++byte) {
-        for (int32 b = 7; b >= 0 && x < count; --b, ++x) {
-            const uint32 color_index         = (buffer[byte] & (1 << b)) ? 1 : 0;
-            const info_header::color_t color = color_table[color_index];
+    for (int32 x = 0, byte = 0; x < count; ++byte) {
+        for (int32 bit = 7; bit >= 0 && x < count; --bit, ++x) {
+            uint8 bb = buffer[byte];
 
-            out[x * 4 + 0] = color.r;
-            out[x * 4 + 1] = color.g;
-            out[x * 4 + 2] = color.b;
-            out[x * 4 + 3] = color.a;
+            const uint32 color_index = (bb & (1 << bit)) ? 1 : 0;
+            const auto [r, g, b, a]  = color_table[color_index];
+
+            out[x * 4 + 0] = r;
+            out[x * 4 + 1] = g;
+            out[x * 4 + 2] = b;
+            out[x * 4 + 3] = a;
         }
     }
 
     return out;
 }
 
-bmp::data_t process_row_2bpp(const std::vector<char>& buffer, uint32 count, const color_table_t& color_table)
+data_t process_row_2bpp(const std::vector<char>& /*buffer*/,
+                        int32 /*count*/,
+                        const info_header::color_table_t& /*color_table*/)
 {
-    return bmp::data_t();
+    return data_t();
 }
 
-bmp::data_t process_row_4bpp(const std::vector<char>& buffer, uint32 count, const color_table_t& color_table)
-{
-    // rle
-    return bmp::data_t();
-}
-
-bmp::data_t process_row_8bpp(const std::vector<char>& buffer, uint32 count, const color_table_t& color_table)
+data_t process_row_4bpp(const std::vector<char>& /*buffer*/,
+                        int32 /*count*/,
+                        const info_header::color_table_t& /*color_table*/)
 {
     // rle
-    return bmp::data_t();
+    return data_t();
 }
 
-bmp::data_t process_row_16bpp(const std::vector<char>& buffer, uint32 count)
+data_t process_row_8bpp(const std::vector<char>& /*buffer*/,
+                        int32 /*count*/,
+                        const info_header::color_table_t& /*color_table*/)
+{
+    // rle
+    return data_t();
+}
+
+data_t process_row_16bpp(const std::vector<char>& /*buffer*/, int32 /*count*/)
 {
     // chanel masks
     // may be alpha
-    return bmp::data_t();
+    return data_t();
 }
 
-bmp::data_t process_row_24bpp(const std::vector<char>& buffer, uint32 count)
+data_t process_row_24bpp(const std::vector<char>& buffer, int32 count)
 {
-    bmp::data_t out(count * pixel_size);
-    for (uint32 x = 0; x < count; ++x) {
+    data_t out(count * pixel_size);
+    for (int32 x = 0; x < count; ++x) {
         out[x * 4 + 2] = buffer[x * 3 + 0];
         out[x * 4 + 1] = buffer[x * 3 + 1];
         out[x * 4 + 0] = buffer[x * 3 + 2];
@@ -443,14 +452,14 @@ bmp::data_t process_row_24bpp(const std::vector<char>& buffer, uint32 count)
     return out;
 }
 
-bmp::data_t process_row_32bpp(const std::vecotr<char>& buffer, uint32 count)
+data_t process_row_32bpp(const std::vector<char>& /*buffer*/, int32 /*count*/)
 {
     // chanel masks
     // may be alpha
-    return bmp::data_t();
+    return data_t();
 }
 
-bmp::data_t process_row(const std::vecotr<char>& buffer, const info_header& info)
+data_t process_row(const std::vector<char>& buffer, const info_header& info)
 {
     switch (info.bits_per_pixel) {
         case 1: return process_row_1bpp(buffer, info.width, info.color_table);
@@ -463,12 +472,12 @@ bmp::data_t process_row(const std::vecotr<char>& buffer, const info_header& info
         default: break;
     }
 
-    return bmp::data_t();
+    return data_t();
 }
 
-bmp::data_t read_data(std::ifstream& in, const info_header& info)
+data_t read_data(std::ifstream& in, const info_header& info)
 {
-    bmp::data_t image_data(info.width * info.height * pixel_size);
+    data_t image_data(info.width * info.height * pixel_size);
 
     const uint32 row_size = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
     std::vector<char> buffer(row_size);
@@ -477,7 +486,7 @@ bmp::data_t read_data(std::ifstream& in, const info_header& info)
     for (int32 y = 0; y < info.height; ++y) {
         in.read(buffer.data(), row_size);
 
-        bmp::data_t row = process_row(buffer, info);
+        data_t row = process_row(buffer, info);
 
         pos = copy(begin(row), end(row), pos);
     }
@@ -493,50 +502,50 @@ load_result_t load(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file) {
-        return load_result_t;
+        return load_result_t();
     }
 
     file_header h = file_header::read(file);
 
     if (!check_signature(h)) {
-        return load_result_t;
+        return load_result_t();
     }
 
     info_header info = info_header::read(file);
 
     if (info.type() == info_header::type_t::undefined) {
-        return load_result_t;
+        return load_result_t();
     }
 
     const uint32 row_size        = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
     const uint32 image_data_size = row_size * std::abs(info.height);
 
     if (image_data_size != info.image_size) {
-        return load_result_t;
+        return load_result_t();
     }
 
     if (!check_compression(info)) {
-        return load_result_t;
+        return load_result_t();
     }
 
     if (!check_color_space_type(info)) {
-        return load_result_t;
+        return load_result_t();
     }
 
     if (!check_bits_per_pixel(info)) {
-        return load_result_t;
+        return load_result_t();
     }
 
     file.seekg(h.pixel_array_offset);
 
     if (!file) {
-        return load_result_t;
+        return load_result_t();
     }
 
     auto data = read_data(file, info);
 
     if (data.empty()) {
-        return load_result_t;
+        return load_result_t();
     }
 
     return std::make_optional(std::make_tuple(make_image_info(info), std::move(data)));

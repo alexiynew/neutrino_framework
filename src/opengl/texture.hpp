@@ -47,8 +47,8 @@ enum class min_filter
                                                         // produce a texture value.
     linear_mipmap_nearest = GL_LINEAR_MIPMAP_NEAREST,   // Chooses the mipmap that most closely matches the size of the
                                                         // pixel being textured and uses the GL_LINEAR criterion (a
-                                                      // weighted average of the four texture elements that are closest
-                                                      // to the center of the pixel) to produce a texture value.
+    // weighted average of the four texture elements that are closest
+    // to the center of the pixel) to produce a texture value.
     nearest_mipmap_linear = GL_NEAREST_MIPMAP_LINEAR, // Chooses the two mipmaps that most closely match the size of the
                                                       // pixel being textured and uses the GL_NEAREST criterion (the
                                                       // texture element nearest to the center of the pixel) to produce
@@ -83,20 +83,6 @@ enum class wrap_t
     repeat          = GL_REPEAT,
 };
 
-enum class internal_format
-{
-    rgb  = GL_RGB,
-    rgba = GL_RGBA,
-};
-
-enum class format
-{
-    rgb  = GL_RGB,
-    bgr  = GL_BGR,
-    rgba = GL_RGBA,
-    bgra = GL_BGRA,
-};
-
 class texture
 {
 public:
@@ -105,7 +91,7 @@ public:
             wrap_s ws       = wrap_s::repeat,
             wrap_t wt       = wrap_t::repeat);
 
-    void load(internal_format ifmt, int32 width, int32 height, format fmt, const void* data);
+    void load(int32 width, int32 height, const void* data);
 
     // void alloc();
     // void subload();

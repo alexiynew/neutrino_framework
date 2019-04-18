@@ -84,12 +84,12 @@ bool image::save(const std::string& filename, file_type type) const
 void image::flip_vertically()
 {}
 
-uint32 image::width() const
+int32 image::width() const
 {
     return m_info.width;
 }
 
-uint32 image::height() const
+int32 image::height() const
 {
     return m_info.height;
 }

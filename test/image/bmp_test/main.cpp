@@ -23,6 +23,7 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <memory>
@@ -39,8 +40,6 @@
 #include <opengl/texture.hpp>
 #include <unit_test/suite.hpp>
 #include <window/window.hpp>
-
-using image_rgb = framework::image::image<framework::image::pixel_format::rgb>;
 
 const std::string vertex_shader_src = "#version 330 core\n\
 layout(location = 0) in vec2 vertexPosition_modelspace;\n\
@@ -60,25 +59,41 @@ void main(){\n\
     color = texture(tex, UV);\n\
 }";
 
+struct object
+{
+    framework::int32 width  = 0;
+    framework::int32 height = 0;
+    framework::int32 x      = 0;
+    framework::int32 y      = 0;
+    framework::opengl::texture texture;
+};
+
 class bmp_image_test : public framework::unit_test::suite
 {
 public:
-    bmp_image_test(std::vector<image_rgb>& images) : suite("bmp_image_test"), m_images(images)
+    bmp_image_test(std::vector<framework::image::image>& images) : suite("bmp_image_test"), m_images(images)
     {
         add_test([this]() { bmp_load(); }, "bmp_load");
     }
 
 private:
-    std::vector<image_rgb>& m_images;
+    std::vector<framework::image::image>& m_images;
 
     void bmp_load()
     {
-        image_rgb img;
-        TEST_ASSERT(img.load("good_pal1.bmp"), "Loading of good_pal1.bmp failed.");
-        m_images.push_back(img);
+        std::string names[] = {"good_pal1.bmp", "good_pal1bg.bmp", "good_pal1wb.bmp"};
 
-        // TEST_ASSERT(img.load("good_pal1bg.bmp"), "Loading of good_pal1bg.bmp failed.");
-        // TEST_ASSERT(img.load("good_pal1wb.bmp"), "Loading of good_pal1wb.bmp failed.");
+        std::transform(begin(names), end(names), std::back_inserter(m_images), [this](const std::string& name) {
+            framework::image::image img;
+            TEST_ASSERT(img.load(name), std::string("Loading of ") + name + " failed.");
+
+            if (!img.is_bottom_up()) {
+                img.flip_vertically();
+            }
+
+            return img;
+        });
+
         // TEST_ASSERT(img.load("good_pal4.bmp"), "Loading of good_pal4.bmp failed.");
         // TEST_ASSERT(img.load("good_pal4gs.bmp"), "Loading of good_pal4gs.bmp failed.");
         // TEST_ASSERT(img.load("good_pal4rle.bmp"), "Loading of good_pal4rle.bmp failed.");
@@ -159,70 +174,17 @@ framework::opengl::shader_program load_shader(const std::string& VertexShaderCod
     if (!program.linked()) {
         framework::log::error("shader") << "program: " << program.info_log() << std::endl;
     }
-
     return program;
 }
 
-void load(const std::vector<image_rgb>& images)
-{
-    if (images.empty()) {
-        return;
-    }
-}
-
-void draw(const std::vector<image_rgb>& images)
-{
-    if (images.empty()) {
-        return;
-    }
-}
-
-int main()
+framework::uint32 load_mesh()
 {
     using namespace framework::opengl;
-    using namespace framework::system;
-    using framework::float32;
-    using framework::int32;
-    using framework::uint32;
-    using framework::math::matrix4f;
     using framework::math::vector2f;
 
-    framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
-
-    window::set_application_name("BMP Test");
-
-    window main_window({640, 480}, "BMP test");
-    auto context = main_window.context();
-    context->make_current();
-
-    framework::opengl::init();
-
-    const float32 max_total_time = 1000000;
-    float32 total_time           = 0;
-
-    main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
-    main_window.set_on_size_callback(
-    [&main_window](const window&, window_size size) { glViewport(0, 0, size.width, size.height); });
-
-    // load all images
-    std::vector<image_rgb> images;
-    const int32 result = run_tests(bmp_image_test(images));
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-
-    gl_error(__FILE__, __LINE__);
-
-    uint32 vertex_array_id;
+    framework::uint32 vertex_array_id = 0;
     glGenVertexArrays(1, &vertex_array_id);
     glBindVertexArray(vertex_array_id);
-
-    gl_error(__FILE__, __LINE__);
-    glViewport(0, 0, 640, 480);
 
     static const vector2f vertex_buffer_data[] = {
     vector2f(0.0f, 0.0f),
@@ -232,10 +194,10 @@ int main()
     };
 
     static const vector2f texture_buffer_data[] = {
-    vector2f(0.0f, 0.0f),
     vector2f(0.0f, 1.0f),
-    vector2f(1.0f, 1.0f),
+    vector2f(0.0f, 0.0f),
     vector2f(1.0f, 0.0f),
+    vector2f(1.0f, 1.0f),
     };
 
     GLuint vertexbuffer;
@@ -263,17 +225,100 @@ int main()
 
     glBindVertexArray(0);
 
+    return vertex_array_id;
+}
+
+std::vector<object> generate_objects(const std::vector<framework::image::image>& images)
+{
+    using framework::image::image;
+    using namespace framework::opengl;
+
+    std::vector<object> res;
+    transform(begin(images), end(images), back_inserter(res), [](const image& img) {
+        texture tex(min_filter::nearest, mag_filter::nearest, wrap_s::clamp_to_edge, wrap_t::clamp_to_edge);
+        tex.load(img.width(), img.height(), img.data());
+
+        return object{img.width(), img.height(), 0, 0, std::move(tex)};
+    });
+
+    return res;
+}
+
+void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height)
+{
+    using framework::int32;
+
+    int32 w = 0;
+    int32 h = 0;
+    for_each(begin(objects), end(objects), [&w, &h, width, height](object& o) {
+        if (w + o.width + 1 > width && w != 0) {
+            h += o.height + 1;
+            w = 0;
+        }
+
+        o.x = w;
+        o.y = h;
+
+        w += o.width + 1;
+    });
+}
+
+int main()
+{
+    using namespace framework::opengl;
+    using namespace framework::system;
+    using framework::float32;
+    using framework::int32;
+    using framework::uint32;
+    using framework::math::matrix4f;
+
+    framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
+
+    // load all images
+    std::vector<framework::image::image> images;
+    const int32 result = run_tests(bmp_image_test(images));
+
+    if (result != 0) {
+        return result;
+    }
+
+    window::set_application_name("BMP Test");
+
+    window main_window({640, 480}, "BMP test");
+    auto context = main_window.context();
+    context->make_current();
+
+    framework::opengl::init();
+
+    const float32 max_total_time = 1000000;
+    float32 total_time           = 0;
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
+    glViewport(0, 0, 640, 480);
+
+    uint32 mesh = load_mesh();
+
     shader_program shader = load_shader(vertex_shader_src, fragment_shader_src);
 
-    gl_error(__FILE__, __LINE__);
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
-    mvp          = framework::math::scale(mvp, {4, 4, 4});
 
-    
-    texture tex(min_filter::nearest, mag_filter::nearest, wrap_s::clamp_to_edge, wrap_t::clamp_to_edge);
-    tex.load(internal_format::rgba, 127, 64, format::rgb, images[0].data());
+    std::vector<object> objects = generate_objects(images);
+    arrange(objects, 640, 480);
 
     gl_error(__FILE__, __LINE__);
+
+    main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
+    main_window.set_on_size_callback([&main_window, &objects, &mvp](const window&, window_size size) {
+        mvp = framework::math::ortho2d<float32>(0, size.width, size.height, 0);
+        glViewport(0, 0, size.width, size.height);
+        arrange(objects, size.width, size.height);
+    });
 
     main_window.show();
 
@@ -285,17 +330,18 @@ int main()
 
         shader.use();
 
-        tex.bind();
-        shader.uniform("tex", tex.texture_unit());
+        for (auto& o : objects) {
+            o.texture.bind();
 
-        shader.uniform("MVP", mvp);
+            shader.uniform("tex", o.texture.texture_unit());
+            shader.uniform("MVP", translate(mvp, {o.x, o.y, 0}));
 
-        glBindVertexArray(vertex_array_id);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+            glBindVertexArray(mesh);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+            glBindVertexArray(0);
 
-        glBindVertexArray(0);
-
-        tex.unbind();
+            o.texture.unbind();
+        }
 
         shader.stop_using();
 

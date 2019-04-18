@@ -36,8 +36,8 @@ namespace framework::image::details
 {
 struct image_info
 {
-    uint32 width  = 0;
-    uint32 height = 0;
+    int32 width  = 0;
+    int32 height = 0;
 
     bool bottom_up = false;
 };
