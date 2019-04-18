@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image pixel storage.
+/// @brief Image info.
 /// @author Fedorov Alexey
-/// @date 07.04.2019
+/// @date 18.04.2019
 
 // =============================================================================
 // MIT License
@@ -27,54 +27,22 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_DETAILS_PIXEL_STORAGE_HPP
-#define FRAMEWORK_IMAGE_DETAILS_PIXEL_STORAGE_HPP
-
-#include <vector>
+#ifndef FRAMEWORK_IMAGE_DETAILS_IMAGE_INFO_HPP
+#define FRAMEWORK_IMAGE_DETAILS_IMAGE_INFO_HPP
 
 #include <common/types.hpp>
-#include <image/details/pixel_type.hpp>
 
 namespace framework::image::details
 {
-class pixel_storage_interface
+
+struct image_info
 {
-public:
-    virtual ~pixel_storage_interface() = default;
+    framework::uint32 width  = 0;
+    framework::uint32 height = 0;
 
-    virtual void set_pixel(uint32 index, uint8 r, uint8 g, uint8 b, uint8 a = 0) = 0;
-
-    virtual void resize(uint32 size) = 0;
+    bool bottom_up = false;
 };
 
-template <pixel_format Format>
-class pixel_storage : public pixel_storage_interface
-{
-public:
-    using pixel_data_t = std::vector<pixel_t<Format>>;
+}
 
-    pixel_storage(pixel_data_t& data) : m_data(data)
-    {}
-
-    virtual void set_pixel(uint32 index, uint8 r, uint8 g, uint8 b, uint8 a = 0) override
-    {
-        m_data[index] = make_pixel<Format>(r, g, b, a);
-    }
-
-    virtual void resize(uint32 size) override
-    {
-        m_data.resize(size);
-    }
-
-    const pixel_data_t& data() const
-    {
-        return m_data;
-    }
-
-private:
-    pixel_data_t& m_data;
-};
-
-} // namespace framework::image::details
-
-#endif
+#endif 

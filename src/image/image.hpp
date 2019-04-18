@@ -30,16 +30,11 @@
 #ifndef FRAMEWORK_IMAGE_IMAGE_HPP
 #define FRAMEWORK_IMAGE_IMAGE_HPP
 
-#include <memory>
 #include <string>
 #include <vector>
 
 #include <common/types.hpp>
-#include <image/details/bmp.hpp>
-#include <image/details/png.hpp>
-#include <image/details/pixel_storage.hpp>
-#include <image/details/pixel_type.hpp>
-#include <image/details/tga.hpp>
+#include <image/details/image_info.hpp>
 
 /// @details
 ///
@@ -50,8 +45,10 @@
 /// @brief Contains image classes.
 namespace framework::image
 {
+
 /// @addtogroup image_module
 /// @{
+
 enum class file_type
 {
     bmp,
@@ -59,80 +56,31 @@ enum class file_type
     png
 };
 
-using pixel_format = details::pixel_format;
-
-template <pixel_format Format>
 class image
 {
 public:
-    using pixel_t      = details::pixel_t<Format>;
+    using pixel_t      = framework::uint8;
     using pixel_data_t = std::vector<pixel_t>;
 
-    bool load(const std::string& filename, file_type type);
     bool load(const std::string& filename);
+    bool load(const std::string& filename, file_type type);
 
     bool save(const std::string& filename, file_type type) const;
 
     void flip_vertically();
 
-    uint32 width() const;
-    uint32 height() const;
+    framework::uint32 width() const;
+    framework::uint32 height() const;
 
     bool is_bottom_up() const;
 
     const pixel_t* data() const;
 
 private:
+    details::image_info m_info;
     pixel_data_t m_data;
 };
 
-template <pixel_format Format>
-bool image<Format>::load(const std::string& filename, file_type type)
-{
-    details::pixel_storage<Format> storage(m_data);
-
-    switch (type) {
-        case file_type::bmp: return details::bmp::load(filename, &storage);
-        case file_type::tga: return details::tga::load(filename, &storage);
-        case file_type::png: return details::png::load(filename, &storage);
-        default: break;
-    }
-
-    return false;
-}
-
-template <pixel_format Format>
-bool image<Format>::load(const std::string& filename)
-{
-    if (details::bmp::is_bmp(filename)) {
-        return load(filename, file_type::bmp);
-    } else if (details::tga::is_tga(filename)) {
-        return load(filename, file_type::tga);
-    } else if (details::png::is_png(filename)) {
-        return load(filename, file_type::png);
-    }
-
-    return false;
-}
-
-template <pixel_format Format>
-bool image<Format>::save(const std::string& filename, file_type type) const
-{
-    switch (type) {
-        case file_type::bmp: return details::bmp::save(filename);
-        case file_type::tga: return details::tga::save(filename);
-        case file_type::png: return details::png::save(filename);
-        default: break;
-    }
-
-    return false;
-}
-
-template <pixel_format Format>
-const typename image<Format>::pixel_t* image<Format>::data() const
-{
-    return &m_data[0];
-}
 /// @}
 
 } // namespace framework::image

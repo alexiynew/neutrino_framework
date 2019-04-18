@@ -32,13 +32,19 @@
 
 #include <string>
 #include <vector>
+#include <tuple>
+#include <optional>
 
 #include <common/types.hpp>
-#include <image/details/pixel_storage.hpp>
+#include <image/details/image_info.hpp>
 
 namespace framework::image::details::bmp
 {
-bool load(const std::string& filename, pixel_storage_interface* storage);
+using data_t        = std::vector<framework::uint8>;
+using image_data_t  = std::tuple<image_info, data_t>;
+using load_result_t = std::optional<image_data_t>;
+
+load_result_t load(const std::string& filename);
 bool save(const std::string& filename);
 
 bool is_bmp(const std::string& filename);

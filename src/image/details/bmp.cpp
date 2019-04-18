@@ -32,6 +32,7 @@
 #include <fstream>
 #include <memory>
 #include <vector>
+#include <algorithm>
 
 #include <common/types.hpp>
 #include <image/details/bmp.hpp>
@@ -43,6 +44,12 @@ using framework::int32;
 using framework::uint16;
 using framework::uint32;
 using framework::uint8;
+
+using framework::image::details::image_info;
+
+namespace framework::image::details::bmp;
+
+constexpr uint32 pixel_size = 4;
 
 //  | signature | file size | reserved | reserved | pixel array offset |
 //  |------------------------------------------------------------------|
@@ -154,6 +161,7 @@ struct info_header
     color_table_t color_table;
 
     type_t type() const;
+    bool bottom_up() const;
 
     static info_header read(std::ifstream& in);
     static color_table_t read_color_table(std::ifstream& in, const info_header& info);
@@ -176,6 +184,11 @@ file_header file_header::read(std::ifstream& in)
 info_header::type_t info_header::type() const
 {
     return static_cast<type_t>(size);
+}
+
+bool info_header::bottom_up() const
+{
+    return type() == info_header::type_t::bitmapcoreheader ? true : height > 0;
 }
 
 info_header info_header::read(std::ifstream& in)
@@ -355,126 +368,180 @@ bool check_color_space_type(const info_header& h)
     return false;
 }
 
-void process_row_1bpp(char* buffer,
-                      const info_header& info,
-                      uint32 position,
-                      framework::image::details::pixel_storage_interface* storage)
+bool check_bits_per_pixel(const info_header& h)
 {
-    for (int32 x = 0, byte = 0; x < info.width; ++byte) {
-        for (int32 b = 7; b >= 0 && x < info.width; --b, ++x) {
+    switch (h.bits_per_pixel) {
+        case 1:
+        case 2:
+        case 4:
+        case 8:
+        case 16:
+        case 24:
+        case 32: return true;
+        default: break;
+    }
+
+    return false;
+}
+
+image_info make_image_info(const info_header& h)
+{
+    return image_info{h.width, h.height, h.bottom_up()};
+}
+
+bmp::data_t process_row_1bpp(const std::vector<char>& buffer, uint32 count, const color_table_t& color_table)
+{
+    bmp::data_t out(count * pixel_size);
+
+    for (int32 x = 0, byte = 0; x < conut; ++byte) {
+        for (int32 b = 7; b >= 0 && x < count; --b, ++x) {
             const uint32 color_index         = (buffer[byte] & (1 << b)) ? 1 : 0;
-            const info_header::color_t color = info.color_table[color_index];
-            storage->set_pixel(position + x, color.r, color.g, color.b, color.a);
+            const info_header::color_t color = color_table[color_index];
+
+            out[x * 4 + 0] = color.r
+            out[x * 4 + 1] = color.g
+            out[x * 4 + 2] = color.b
+            out[x * 4 + 3] = color.a
         }
     }
+
+    return out;
 }
 
-void process_row_24bpp(char* buffer,
-                       const info_header& info,
-                       uint32 position,
-                       framework::image::details::pixel_storage_interface* storage)
+bmp::data_t process_row_2bpp(const std::vector<char>& buffer, uint32 count, const color_table_t& color_table)
 {
-    for (int32 x = 0; x < info.width; ++x) {
-        const uint8 b = buffer[x * 3 + 0];
-        const uint8 g = buffer[x * 3 + 1];
-        const uint8 r = buffer[x * 3 + 2];
-        const uint8 a = 255;
+    return bmp::data_t();
+}
 
-        storage->set_pixel(position + x, r, g, b, a);
+bmp::data_t process_row_4bpp(const std::vector<char>& buffer, uint32 count, const color_table_t& color_table)
+{
+    // rle
+    return bmp::data_t();
+}
+
+bmp::data_t process_row_8bpp(const std::vector<char>& buffer, uint32 count, const color_table_t& color_table)
+{
+    // rle
+    return bmp::data_t();
+}
+
+bmp::data_t process_row_16bpp(const std::vector<char>& buffer, uint32 count)
+{
+    // chanel masks
+    // may be alpha
+    return bmp::data_t();
+}
+
+bmp::data_t process_row_24bpp(const std::vector<char>& buffer, uint32 count)
+{
+    bmp::data_t out(count * pixel_size);
+    for (uint32 x = 0; x < count; ++x) {
+        out[x * 4 + 2] = buffer[x * 3 + 0];
+        out[x * 4 + 1] = buffer[x * 3 + 1];
+        out[x * 4 + 0] = buffer[x * 3 + 2];
+        out[x * 4 + 3] = 255;
     }
+
+    return out;
 }
 
-bool read_data(std::ifstream& in, const info_header& info, framework::image::details::pixel_storage_interface* storage)
+bmp::data_t process_row_32bpp(const std::vecotr<char>& buffer, uint32 count)
 {
-    storage->resize(info.width * info.height);
+    // chanel masks
+    // may be alpha
+    return bmp::data_t();
+}
+
+bmp::data_t process_row(const std::vecotr<char>& buffer, const info_header& info)
+{
+    switch (info.bits_per_pixel) {
+        case 1: return process_row_1bpp(buffer, info.width, info.color_table);
+        case 2: return process_row_2bpp(buffer, info.width, info.color_table);
+        case 4: return process_row_4bpp(buffer, info.width, info.color_table);
+        case 8: return process_row_8bpp(buffer, info.width, info.color_table);
+        case 16: return process_row_16bpp(buffer, info.width);
+        case 24: return process_row_24bpp(buffer, info.width); 
+        case 32: return process_row_32bpp(buffer, info.width);
+        default: break;
+    }
+
+    return bmp::data_t();
+}
+
+bmp::data_t read_data(std::ifstream& in, const info_header& info)
+{
+    bmp::data_t image_data(info.width * info.height * pixel_size);
 
     const uint32 row_size = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
+    std::vector<char> buffer(row_size);
 
-    std::unique_ptr<char[]> buffer(new char[row_size]);
+    auto pos = begin(image_data);
     for (int32 y = 0; y < info.height; ++y) {
-        in.read(buffer.get(), row_size);
+        in.read(buffer.data(), row_size);
 
-        const bool bottom_up  = info.type() == info_header::type_t::bitmapcoreheader ? true : info.height > 0;
-        const uint32 position = bottom_up ? ((info.height - y - 1) * info.width) : (y * info.width);
-        switch (info.bits_per_pixel) {
-            case 1: process_row_1bpp(buffer.get(), info, position, storage); break;
-            case 2: break;
-            case 4:
-                break;
-                // rle
-            case 8:
-                break;
-                // rle
-            case 16:
-                break;
-                // chanel masks
-                // may be alpha
-            case 24: process_row_24bpp(buffer.get(), info, position, storage); break;
-            case 32: {
-                // chanel masks
-                // may be alpha
-                // char buffer[4] = {0};
-                // in.read(buffer, sizeof(buffer));
-
-                // storage->set_pixel(index, buffer[2], buffer[1], buffer[0], buffer[3]);
-                //++x;
-            } break;
-            case 48: break;
-            case 64:
-                break;
-                // always alpha
-            default: break;
-        }
+        bmp::data_t row = process_row(buffer, info);
+        pos = copy(begin(row), end(row), pos);
     }
 
-    return true;
+    return image_data;
 }
 
 } // namespace
 
 namespace framework::image::details::bmp
 {
-bool load(const std::string& filename, pixel_storage_interface* storage)
+
+load_result_t load(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file) {
-        return false;
+        return load_result_t;
     }
 
     file_header h = file_header::read(file);
 
     if (!check_signature(h)) {
-        return false;
+        return load_result_t;
     }
 
     info_header info = info_header::read(file);
 
     if (info.type() == info_header::type_t::undefined) {
-        return false;
+        return load_result_t;
     }
 
     const uint32 row_size        = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
     const uint32 image_data_size = row_size * std::abs(info.height);
 
     if (image_data_size != info.image_size) {
-        return false;
+        return load_result_t;
     }
 
     if (!check_compression(info)) {
-        return false;
+        return load_result_t;
     }
 
     if (!check_color_space_type(info)) {
-        return false;
+        return load_result_t;
+    }
+
+    if (!check_bits_per_pixel(info)) {
+        return load_result_t;
     }
 
     file.seekg(h.pixel_array_offset);
 
     if (!file) {
-        return false;
+        return load_result_t;
     }
 
-    return read_data(file, info, storage);
+    auto data = read_data(file, info);
+
+    if (data.empty()) {
+        return load_result_t;
+    }
+
+    return std::make_optional(std::make_tuple(make_image_info(info), std::move(data)));
 }
 
 bool save(const std::string& filename)

@@ -1,14 +1,14 @@
 public = files('image.hpp')
 
-private = files('details/bmp.cpp',
+private = files('image.cpp',
+                'details/bmp.hpp',
+                'details/bmp.cpp',
+                'details/tga.hpp',
                 'details/tga.cpp',
+                'details/png.hpp',
                 'details/png.cpp')
 
-details = files('details/pixel_type.hpp',
-                'details/pixel_storage.hpp',
-                'details/bmp.hpp',
-                'details/tga.hpp',
-                'details/png.hpp')
+details = files('details/image_info.hpp')
 
 install_headers(public, subdir: module_name)
 install_headers(details, subdir: join_paths(module_name, 'details'))

@@ -34,9 +34,9 @@
 
 namespace framework::image::details::png
 {
-bool load(const std::string&, pixel_storage_interface*)
+load_result_t load(const std::string&)
 {
-    return false;
+    return load_result_t();
 }
 
 bool save(const std::string&)
