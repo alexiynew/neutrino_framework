@@ -45,7 +45,6 @@
 /// @brief Contains image classes.
 namespace framework::image
 {
-
 /// @addtogroup image_module
 /// @{
 

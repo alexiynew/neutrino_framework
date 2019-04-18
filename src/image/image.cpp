@@ -27,21 +27,20 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <image/image.hpp>
 #include <image/details/bmp.hpp>
 #include <image/details/png.hpp>
 #include <image/details/tga.hpp>
+#include <image/image.hpp>
 
 namespace framework::image
 {
-
 bool image::load(const std::string& filename, file_type type)
 {
     auto load_function = [type](const std::string& f) {
         switch (type) {
             case file_type::bmp: return details::bmp::load(f);
-            case file_type::tga: return details::tga::load(f); 
-            case file_type::png: return details::png::load(f); 
+            case file_type::tga: return details::tga::load(f);
+            case file_type::png: return details::png::load(f);
             default: break;
         }
         return details::bmp::load_result_t();
@@ -49,8 +48,8 @@ bool image::load(const std::string& filename, file_type type)
 
     if (auto result = load_function(filename); result.has_value()) {
         auto& [info, data] = *result;
-        m_info = std::move(info);
-        m_data = std::move(data);
+        m_info             = std::move(info);
+        m_data             = std::move(data);
         return true;
     }
 
@@ -83,9 +82,7 @@ bool image::save(const std::string& filename, file_type type) const
 }
 
 void image::flip_vertically()
-{
-
-}
+{}
 
 uint32 image::width() const
 {
@@ -107,4 +104,4 @@ const image::pixel_t* image::data() const
     return m_data.data();
 }
 
-}
+} // namespace framework::image

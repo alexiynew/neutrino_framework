@@ -27,13 +27,12 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <opengl/texture.hpp>
-#include <opengl/gl.hpp>
 #include <common/types.hpp>
+#include <opengl/gl.hpp>
+#include <opengl/texture.hpp>
 
 namespace framework::opengl
 {
-
 // GL_ACTIVE_TEXTURE or GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 texture::texture(min_filter minf, mag_filter magf, wrap_s ws, wrap_t wt)
 {
@@ -58,7 +57,15 @@ void texture::load(internal_format ifmt, int32 width, int32 height, format fmt, 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_texture_id);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, static_cast<int32>(ifmt), width, height, 0, static_cast<int32>(fmt), GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D,
+                 0,
+                 static_cast<int32>(ifmt),
+                 width,
+                 height,
+                 0,
+                 static_cast<int32>(fmt),
+                 GL_UNSIGNED_BYTE,
+                 data);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -85,4 +92,4 @@ framework::int32 texture::texture_unit() const
     return 0;
 }
 
-}
+} // namespace framework::opengl

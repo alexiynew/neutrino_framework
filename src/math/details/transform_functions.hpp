@@ -262,7 +262,12 @@ inline matrix<4, 4, T> ortho2d(const T left, const T right, const T bottom, cons
 ///
 /// @return The frustum matrix.
 template <typename T>
-inline matrix<4, 4, T> frustum(const T left, const T right, const T bottom, const T top, const T near_val, const T far_val)
+inline matrix<4, 4, T> frustum(const T left,
+                               const T right,
+                               const T bottom,
+                               const T top,
+                               const T near_val,
+                               const T far_val)
 {
     assert(near_val > T(0));
     assert(far_val > T(0));

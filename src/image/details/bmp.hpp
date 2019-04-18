@@ -30,10 +30,10 @@
 #ifndef FRAMEWORK_IMAGE_DETAILS_BMP_HPP
 #define FRAMEWORK_IMAGE_DETAILS_BMP_HPP
 
-#include <string>
-#include <vector>
-#include <tuple>
 #include <optional>
+#include <string>
+#include <tuple>
+#include <vector>
 
 #include <common/types.hpp>
 #include <image/details/image_info.hpp>

@@ -34,15 +34,14 @@
 
 namespace framework::image::details
 {
-
 struct image_info
 {
-    framework::uint32 width  = 0;
-    framework::uint32 height = 0;
+    uint32 width  = 0;
+    uint32 height = 0;
 
     bool bottom_up = false;
 };
 
-}
+} // namespace framework::image::details
 
-#endif 
+#endif

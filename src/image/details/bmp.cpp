@@ -30,9 +30,7 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
-#include <memory>
 #include <vector>
-#include <algorithm>
 
 #include <common/types.hpp>
 #include <image/details/bmp.hpp>
@@ -361,7 +359,7 @@ bool check_color_space_type(const info_header& h)
         case info_header::color_space_type_t::lcs_srgb: return true;
         case info_header::color_space_type_t::lcs_windows_color_space: return true;
         case info_header::color_space_type_t::profile_linked: return false;   // unsupported
-        case info_header::color_space_type_t::profile_embedded: return false; // unsupported ???
+        case info_header::color_space_type_t::profile_embedded: return false; // unsupported
         default: break;
     }
 
@@ -398,10 +396,10 @@ bmp::data_t process_row_1bpp(const std::vector<char>& buffer, uint32 count, cons
             const uint32 color_index         = (buffer[byte] & (1 << b)) ? 1 : 0;
             const info_header::color_t color = color_table[color_index];
 
-            out[x * 4 + 0] = color.r
-            out[x * 4 + 1] = color.g
-            out[x * 4 + 2] = color.b
-            out[x * 4 + 3] = color.a
+            out[x * 4 + 0] = color.r;
+            out[x * 4 + 1] = color.g;
+            out[x * 4 + 2] = color.b;
+            out[x * 4 + 3] = color.a;
         }
     }
 
@@ -460,7 +458,7 @@ bmp::data_t process_row(const std::vecotr<char>& buffer, const info_header& info
         case 4: return process_row_4bpp(buffer, info.width, info.color_table);
         case 8: return process_row_8bpp(buffer, info.width, info.color_table);
         case 16: return process_row_16bpp(buffer, info.width);
-        case 24: return process_row_24bpp(buffer, info.width); 
+        case 24: return process_row_24bpp(buffer, info.width);
         case 32: return process_row_32bpp(buffer, info.width);
         default: break;
     }
@@ -480,6 +478,7 @@ bmp::data_t read_data(std::ifstream& in, const info_header& info)
         in.read(buffer.data(), row_size);
 
         bmp::data_t row = process_row(buffer, info);
+
         pos = copy(begin(row), end(row), pos);
     }
 
@@ -490,7 +489,6 @@ bmp::data_t read_data(std::ifstream& in, const info_header& info)
 
 namespace framework::image::details::bmp
 {
-
 load_result_t load(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);

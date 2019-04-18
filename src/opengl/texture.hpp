@@ -35,47 +35,64 @@
 
 namespace framework::opengl
 {
-
 enum class min_filter
 {
-    nearest = GL_NEAREST, // Returns the value of the texture element that is nearest (in Manhattan distance) to the center of the pixel being textured.
-    linear = GL_LINEAR, // Returns the weighted average of the four texture elements that are closest to the center of the pixel being textured.
-    nearest_mipmap_nearest = GL_NEAREST_MIPMAP_NEAREST, // Chooses the mipmap that most closely matches the size of the pixel being textured and uses the GL_NEAREST criterion (the texture element nearest to the center of the pixel) to produce a texture value.
-    linear_mipmap_nearest = GL_LINEAR_MIPMAP_NEAREST, // Chooses the mipmap that most closely matches the size of the pixel being textured and uses the GL_LINEAR criterion (a weighted average of the four texture elements that are closest to the center of the pixel) to produce a texture value.
-    nearest_mipmap_linear = GL_NEAREST_MIPMAP_LINEAR, // Chooses the two mipmaps that most closely match the size of the pixel being textured and uses the GL_NEAREST criterion (the texture element nearest to the center of the pixel) to produce a texture value from each mipmap. The final texture value is a weighted average of those two values.
-    linear_mipmap_linear = GL_LINEAR_MIPMAP_LINEAR,// Chooses the two mipmaps that most closely match the size of the pixel being textured and uses the GL_LINEAR criterion (a weighted average of the four texture elements that are closest to the center of the pixel) to produce a texture value from each mipmap. The final texture value is a weighted average of those two values. 
+    nearest = GL_NEAREST, // Returns the value of the texture element that is nearest (in Manhattan distance) to the
+                          // center of the pixel being textured.
+    linear = GL_LINEAR,   // Returns the weighted average of the four texture elements that are closest to the center of
+                          // the pixel being textured.
+    nearest_mipmap_nearest = GL_NEAREST_MIPMAP_NEAREST, // Chooses the mipmap that most closely matches the size of the
+                                                        // pixel being textured and uses the GL_NEAREST criterion (the
+                                                        // texture element nearest to the center of the pixel) to
+                                                        // produce a texture value.
+    linear_mipmap_nearest = GL_LINEAR_MIPMAP_NEAREST,   // Chooses the mipmap that most closely matches the size of the
+                                                        // pixel being textured and uses the GL_LINEAR criterion (a
+                                                      // weighted average of the four texture elements that are closest
+                                                      // to the center of the pixel) to produce a texture value.
+    nearest_mipmap_linear = GL_NEAREST_MIPMAP_LINEAR, // Chooses the two mipmaps that most closely match the size of the
+                                                      // pixel being textured and uses the GL_NEAREST criterion (the
+                                                      // texture element nearest to the center of the pixel) to produce
+                                                      // a texture value from each mipmap. The final texture value is a
+                                                      // weighted average of those two values.
+    linear_mipmap_linear =
+    GL_LINEAR_MIPMAP_LINEAR, // Chooses the two mipmaps that most closely match the size of the pixel being textured and
+                             // uses the GL_LINEAR criterion (a weighted average of the four texture elements that are
+                             // closest to the center of the pixel) to produce a texture value from each mipmap. The
+                             // final texture value is a weighted average of those two values.
 };
 
 enum class mag_filter
 {
-    nearest = GL_NEAREST, // Returns the value of the texture element that is nearest (in Manhattan distance) to the center of the pixel being textured.
-    linear = GL_LINEAR, //  Returns the weighted average of the four texture elements that are closest to the center of the pixel being textured.
+    nearest = GL_NEAREST, // Returns the value of the texture element that is nearest (in Manhattan distance) to the
+                          // center of the pixel being textured.
+    linear = GL_LINEAR, //  Returns the weighted average of the four texture elements that are closest to the center of
+                        //  the pixel being textured.
 };
 
 enum class wrap_s
 {
-    clamp_to_edge = GL_CLAMP_TO_EDGE, 
-    mirrored_repeat = GL_MIRRORED_REPEAT, 
-    repeat = GL_REPEAT,
+    clamp_to_edge   = GL_CLAMP_TO_EDGE,
+    mirrored_repeat = GL_MIRRORED_REPEAT,
+    repeat          = GL_REPEAT,
 };
 
 enum class wrap_t
 {
-    clamp_to_edge = GL_CLAMP_TO_EDGE, 
-    mirrored_repeat = GL_MIRRORED_REPEAT, 
-    repeat = GL_REPEAT,
+    clamp_to_edge   = GL_CLAMP_TO_EDGE,
+    mirrored_repeat = GL_MIRRORED_REPEAT,
+    repeat          = GL_REPEAT,
 };
 
 enum class internal_format
 {
-    rgb = GL_RGB,
+    rgb  = GL_RGB,
     rgba = GL_RGBA,
 };
 
 enum class format
 {
-    rgb = GL_RGB,
-    bgr = GL_BGR,
+    rgb  = GL_RGB,
+    bgr  = GL_BGR,
     rgba = GL_RGBA,
     bgra = GL_BGRA,
 };
@@ -83,11 +100,10 @@ enum class format
 class texture
 {
 public:
-
-    texture(min_filter minf = min_filter::linear, 
-            mag_filter magf = mag_filter::linear, 
-            wrap_s ws = wrap_s::repeat, 
-            wrap_t wt = wrap_t::repeat);
+    texture(min_filter minf = min_filter::linear,
+            mag_filter magf = mag_filter::linear,
+            wrap_s ws       = wrap_s::repeat,
+            wrap_t wt       = wrap_t::repeat);
 
     void load(internal_format ifmt, int32 width, int32 height, format fmt, const void* data);
 
@@ -104,7 +120,6 @@ private:
     framework::uint32 m_texture_id = 0;
 };
 
-}
+} // namespace framework::opengl
 
 #endif
-
