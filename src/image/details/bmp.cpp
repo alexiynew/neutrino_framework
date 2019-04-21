@@ -337,8 +337,8 @@ inline bool check_compression(const info_header& h) noexcept
 
     switch (h.compression) {
         case info_header::compression_t::bi_rgb: return h.bits_per_pixel != 0;
-        case info_header::compression_t::bi_rle8: return h.bits_per_pixel == 8;
-        case info_header::compression_t::bi_rle4: return h.bits_per_pixel == 4;
+        case info_header::compression_t::bi_rle8: return h.bits_per_pixel == 8 && h.height > 0;
+        case info_header::compression_t::bi_rle4: return h.bits_per_pixel == 4 && h.height > 0;
         case info_header::compression_t::bi_bitfields: return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
         case info_header::compression_t::bi_jpeg: return false; // unsupported
         case info_header::compression_t::bi_png: return false;  // unsupported
@@ -388,21 +388,22 @@ inline image_info make_image_info(const info_header& h) noexcept
     return image_info{h.width, h.height, h.bottom_up()};
 }
 
+inline void set_color(data_t::iterator it, const info_header::color_t& color)
+{
+    *(it + 0) = color.r;
+    *(it + 1) = color.g;
+    *(it + 2) = color.b;
+    *(it + 3) = color.a;
+}
+
 data_t process_row_1bpp(const std::vector<char>& buffer, int32 count, const info_header::color_table_t& color_table)
 {
     data_t out(count * pixel_size);
 
     for (int32 x = 0, byte = 0; x < count; ++byte) {
         for (int32 bit = 7; bit >= 0 && x < count; --bit, ++x) {
-            uint8 bb = buffer[byte];
-
-            const uint32 color_index = (bb & (1 << bit)) ? 1 : 0;
-            const auto [r, g, b, a]  = color_table[color_index];
-
-            out[x * 4 + 0] = r;
-            out[x * 4 + 1] = g;
-            out[x * 4 + 2] = b;
-            out[x * 4 + 3] = a;
+            const uint32 color_index = (buffer[byte] & (1 << bit)) ? 1 : 0;
+            set_color(next(begin(out), x * pixel_size), color_table[color_index]);
         }
     }
 
@@ -416,20 +417,30 @@ data_t process_row_2bpp(const std::vector<char>& /*buffer*/,
     return data_t();
 }
 
-data_t process_row_4bpp(const std::vector<char>& /*buffer*/,
-                        int32 /*count*/,
-                        const info_header::color_table_t& /*color_table*/)
+data_t process_row_4bpp(const std::vector<char>& buffer, int32 count, const info_header::color_table_t& color_table)
 {
-    // rle
-    return data_t();
+    data_t out(count * pixel_size);
+
+    for (int32 x = 0, byte = 0, offset = 4; x < count; ++x) {
+        set_color(next(begin(out), x * pixel_size), color_table[(buffer[byte] >> offset) & 0x0F]);
+        if (offset == 4) {
+            offset = 0;
+        } else {
+            offset = 4;
+            byte++;
+        }
+    }
+    return out;
 }
 
-data_t process_row_8bpp(const std::vector<char>& /*buffer*/,
-                        int32 /*count*/,
-                        const info_header::color_table_t& /*color_table*/)
+data_t process_row_8bpp(const std::vector<char>& buffer, int32 count, const info_header::color_table_t& color_table)
 {
-    // rle
-    return data_t();
+    data_t out(count * pixel_size);
+
+    for (int32 x = 0; x < count; ++x) {
+        set_color(next(begin(out), x * pixel_size), color_table[static_cast<uint8>(buffer[x])]);
+    }
+    return out;
 }
 
 data_t process_row_16bpp(const std::vector<char>& /*buffer*/, int32 /*count*/)
@@ -443,9 +454,9 @@ data_t process_row_24bpp(const std::vector<char>& buffer, int32 count)
 {
     data_t out(count * pixel_size);
     for (int32 x = 0; x < count; ++x) {
-        out[x * 4 + 2] = buffer[x * 3 + 0];
-        out[x * 4 + 1] = buffer[x * 3 + 1];
-        out[x * 4 + 0] = buffer[x * 3 + 2];
+        out[x * 4 + 2] = static_cast<uint8>(buffer[x * 3 + 0]);
+        out[x * 4 + 1] = static_cast<uint8>(buffer[x * 3 + 1]);
+        out[x * 4 + 0] = static_cast<uint8>(buffer[x * 3 + 2]);
         out[x * 4 + 3] = 255;
     }
 
@@ -494,6 +505,78 @@ data_t read_data(std::ifstream& in, const info_header& info)
     return image_data;
 }
 
+data_t read_data_rle(std::ifstream& in, const info_header& info)
+{
+    const int32 colors_in_byte = (8 / info.bits_per_pixel);
+
+    auto fill_with_color = [&info](data_t::iterator pos, const auto it, int32 count) {
+        for (int32 c = 0, offset = 4; c < count; ++c) {
+            set_color(pos, info.color_table[(*it >> offset) & 0x0F]);
+            offset = (offset == 0 ? 4 : 0);
+            advance(pos, pixel_size);
+        }
+        return pos;
+    };
+
+    auto fill_from_buffer = [&fill_with_color, colors_in_byte](data_t::iterator pos, auto it, int32 count) {
+        while (count > 0) {
+            pos = fill_with_color(pos, it, (count >= colors_in_byte ? colors_in_byte : 1));
+            count -= 2;
+            it++;
+        }
+
+        return pos;
+    };
+
+    data_t image_data(info.width * info.height * pixel_size);
+
+    std::vector<char> buffer(info.image_size);
+    in.read(buffer.data(), info.image_size);
+
+    auto pos = begin(image_data);
+
+    for (auto it = begin(buffer); it != end(buffer);) {
+        if (*it == 0x00) {
+            ++it;
+            switch (*it) {
+                case 0x00: {
+                    const int32 d = (distance(begin(image_data), pos) / pixel_size) % info.width;
+
+                    advance(pos, d * pixel_size);
+                    it++;
+                } break;
+                case 0x01: it = end(buffer); break;
+                case 0x02: {
+                    const int32 w = *it++;
+                    const int32 h = *it++;
+
+                    advance(pos, (h * info.width + w) * pixel_size);
+                    it++;
+                } break;
+                default: {
+                    const int32 count = *it++;
+
+                    pos = fill_from_buffer(pos, it, count);
+
+                    if (info.bits_per_pixel == 4) {
+                        advance(it, ((count + 3) / 4) * 2);
+                    } else {
+                        advance(it, ((count + 1) / 2) * 2);
+                    }
+
+                } break;
+            }
+        } else {
+            const int32 count = *it++;
+
+            pos = fill_with_color(pos, it, count);
+            it++;
+        }
+    }
+
+    return image_data;
+}
+
 } // namespace
 
 namespace framework::image::details::bmp
@@ -517,13 +600,6 @@ load_result_t load(const std::string& filename)
         return load_result_t();
     }
 
-    const uint32 row_size        = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
-    const uint32 image_data_size = row_size * std::abs(info.height);
-
-    if (image_data_size != info.image_size) {
-        return load_result_t();
-    }
-
     if (!check_compression(info)) {
         return load_result_t();
     }
@@ -542,7 +618,13 @@ load_result_t load(const std::string& filename)
         return load_result_t();
     }
 
-    auto data = read_data(file, info);
+    auto data = [&info](auto& f) {
+        switch (info.compression) {
+            case info_header::compression_t::bi_rle4:
+            case info_header::compression_t::bi_rle8: return read_data_rle(f, info);
+            default: return read_data(f, info);
+        }
+    }(file);
 
     if (data.empty()) {
         return load_result_t();
