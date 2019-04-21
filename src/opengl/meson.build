@@ -1,12 +1,14 @@
 headers = files('gl.hpp',
                 'shader.hpp',
                 'texture.hpp',
+                'mesh.hpp',
                 'context.hpp',
                 'context_settings.hpp')
 
 sources = files('gl.cpp',
                 'shader.cpp',
                 'texture.cpp',
+                'mesh.cpp',
                 'context.cpp',
                 'context_settings.cpp')
 

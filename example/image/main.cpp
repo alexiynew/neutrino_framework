@@ -36,6 +36,7 @@
 #include <log/stream_logger.hpp>
 #include <math/math.hpp>
 #include <opengl/gl.hpp>
+#include <opengl/mesh.hpp>
 #include <opengl/shader.hpp>
 #include <opengl/texture.hpp>
 #include <unit_test/suite.hpp>
@@ -66,16 +67,38 @@ struct object
     framework::int32 x      = 0;
     framework::int32 y      = 0;
     framework::opengl::texture texture;
+    framework::opengl::mesh quad;
 };
 
 std::vector<framework::image::image> load_bmp()
 {
-    std::string names[] = {"pal1.bmp",     "pal1bg.bmp",     "pal1wb.bmp",      "pal4.bmp",      "pal4gs.bmp",
-                           "pal4rle.bmp",  "pal8-0",         "pal8.bmp",        "pal8gs.bmp",    "pal8nonsquare.bmp",
-                           "pal8os2.bmp",  "pal8rle.bmp",    "pal8topdown.bmp", "pal8v4.bmp",    "pal8v5.bmp",
-                           "pal8w124.bmp", "pal8w125.bmp",   "pal8w126.bmp",    "rgb16-565.bmp", "rgb16-565pal.bmp",
-                           "rgb16.bmp",    "rgb16bfdef.bmp", "rgb24.bmp",       "rgb24pal.bmp",  "rgb32.bmp",
-                           "rgb32bf.bmp",  "rgb32bfdef.bmp"};
+    std::string names[] = {//"pal1.bmp",
+                           //"pal1bg.bmp",
+                           //"pal1wb.bmp",
+                           //"pal4.bmp",
+                           //"pal4gs.bmp",
+                           //"pal4rle.bmp",
+                           // "pal8.bmp",
+                           //"pal8-0.bmp",
+                           "pal8gs.bmp",
+                           "pal8nonsquare.bmp",
+                           "pal8os2.bmp",
+                           //  "pal8rle.bmp",
+                           "pal8topdown.bmp",
+                           "pal8v4.bmp",
+                           "pal8v5.bmp",
+                           "pal8w124.bmp",
+                           "pal8w125.bmp",
+                           "pal8w126.bmp",
+                           "rgb16-565.bmp",
+                           "rgb16-565pal.bmp",
+                           "rgb16.bmp",
+                           "rgb16bfdef.bmp",
+                           "rgb24.bmp",
+                           "rgb24pal.bmp",
+                           "rgb32.bmp",
+                           "rgb32bf.bmp",
+                           "rgb32bfdef.bmp"};
 
     std::vector<framework::image::image> images;
     std::transform(begin(names), end(names), std::back_inserter(images), [](const std::string& name) {
@@ -148,55 +171,29 @@ framework::opengl::shader_program load_shader(const std::string& VertexShaderCod
     return program;
 }
 
-framework::uint32 load_mesh()
+framework::opengl::mesh make_quad(framework::int32 width, framework::int32 height)
 {
     using namespace framework::opengl;
     using framework::math::vector2f;
 
-    framework::uint32 vertex_array_id = 0;
-    glGenVertexArrays(1, &vertex_array_id);
-    glBindVertexArray(vertex_array_id);
-
-    static const vector2f vertex_buffer_data[] = {
+    const std::vector<vector2f> vertex_buffer_data = {
     vector2f(0.0f, 0.0f),
-    vector2f(0.0f, 64.0f),
-    vector2f(127.0f, 64.0f),
-    vector2f(127.0f, 0.0f),
+    vector2f(0.0f, height),
+    vector2f(width, height),
+    vector2f(width, 0.0f),
     };
 
-    static const vector2f texture_buffer_data[] = {
+    const std::vector<vector2f> texture_buffer_data = {
     vector2f(0.0f, 1.0f),
     vector2f(0.0f, 0.0f),
     vector2f(1.0f, 0.0f),
     vector2f(1.0f, 1.0f),
     };
 
-    GLuint vertexbuffer;
-    glGenBuffers(1, &vertexbuffer);
+    mesh m;
+    m.load(vertex_buffer_data, texture_buffer_data);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex_buffer_data), vertex_buffer_data[0].data(), GL_STATIC_DRAW);
-
-    gl_error(__FILE__, __LINE__);
-    GLuint texturebuffer;
-    glGenBuffers(1, &texturebuffer);
-
-    glBindBuffer(GL_ARRAY_BUFFER, texturebuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(texture_buffer_data), texture_buffer_data[0].data(), GL_STATIC_DRAW);
-    gl_error(__FILE__, __LINE__);
-
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    gl_error(__FILE__, __LINE__);
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, texturebuffer);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    glBindVertexArray(0);
-
-    return vertex_array_id;
+    return m;
 }
 
 std::vector<object> generate_objects(const std::vector<framework::image::image>& images)
@@ -209,7 +206,10 @@ std::vector<object> generate_objects(const std::vector<framework::image::image>&
         texture tex(min_filter::nearest, mag_filter::nearest, wrap_s::clamp_to_edge, wrap_t::clamp_to_edge);
         tex.load(img.width(), img.height(), img.data());
 
-        return object{img.width(), img.height(), 0, 0, std::move(tex)};
+        auto quad = make_quad(img.width(), img.height());
+        gl_error(__FILE__, __LINE__);
+
+        return object{img.width(), img.height(), 0, 0, std::move(tex), std::move(quad)};
     });
 
     return res;
@@ -219,18 +219,23 @@ void arrange(std::vector<object>& objects, framework::int32 width, framework::in
 {
     using framework::int32;
 
-    int32 w = 0;
-    int32 h = 0;
-    for_each(begin(objects), end(objects), [&w, &h, width, height](object& o) {
+    int32 w          = 1;
+    int32 h          = 1;
+    int32 max_height = 1;
+    for_each(begin(objects), end(objects), [&w, &h, &max_height, width, height](object& o) {
         if (w + o.width + 1 > width && w != 0) {
-            h += o.height + 1;
-            w = 0;
+            h += max_height + 1;
+            w = 1;
         }
 
         o.x = w;
         o.y = h;
 
         w += o.width + 1;
+
+        if (o.height > max_height) {
+            max_height = o.height;
+        }
     });
 }
 
@@ -272,11 +277,10 @@ int main()
 
     glViewport(0, 0, 640, 480);
 
-    uint32 mesh = load_mesh();
-
     shader_program shader = load_shader(vertex_shader_src, fragment_shader_src);
 
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
+    // mvp          = scale(mvp, {4, 4, 4});
 
     std::vector<object> objects = generate_objects(images);
     arrange(objects, 640, 480);
@@ -303,11 +307,19 @@ int main()
         for (auto& o : objects) {
             o.texture.bind();
 
+            glBindVertexArray(o.quad.vertex_array_id());
+
+            glEnableVertexAttribArray(0);
+            o.quad.bind_vertices_attrib(0);
+
+            glEnableVertexAttribArray(1);
+            o.quad.bind_texture_attrib(1);
+
             shader.uniform("tex", o.texture.texture_unit());
             shader.uniform("MVP", translate(mvp, {o.x, o.y, 0}));
 
-            glBindVertexArray(mesh);
             glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
             glBindVertexArray(0);
 
             o.texture.unbind();
