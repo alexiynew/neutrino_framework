@@ -385,7 +385,7 @@ inline bool check_bits_per_pixel(const info_header& h) noexcept
 
 inline image_info make_image_info(const info_header& h) noexcept
 {
-    return image_info{h.width, h.height, h.bottom_up()};
+    return image_info{h.width, std::abs(h.height), h.bottom_up()};
 }
 
 inline void set_color(data_t::iterator it, const info_header::color_t& color)
@@ -488,13 +488,14 @@ data_t process_row(const std::vector<char>& buffer, const info_header& info)
 
 data_t read_data(std::ifstream& in, const info_header& info)
 {
-    data_t image_data(info.width * info.height * pixel_size);
+    const int32 height = std::abs(info.height);
+    data_t image_data(info.width * height * pixel_size);
 
     const uint32 row_size = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
     std::vector<char> buffer(row_size);
 
     auto pos = begin(image_data);
-    for (int32 y = 0; y < info.height; ++y) {
+    for (int32 y = 0; y < height; ++y) {
         in.read(buffer.data(), row_size);
 
         data_t row = process_row(buffer, info);
@@ -528,7 +529,8 @@ data_t read_data_rle(std::ifstream& in, const info_header& info)
         return pos;
     };
 
-    data_t image_data(info.width * info.height * pixel_size);
+    const int32 height = std::abs(info.height);
+    data_t image_data(info.width * height * pixel_size);
 
     std::vector<char> buffer(info.image_size);
     in.read(buffer.data(), info.image_size);

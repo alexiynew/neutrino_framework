@@ -72,6 +72,7 @@ public:
     int32 height() const;
 
     bool is_bottom_up() const;
+    int32 pixel_size() const;
 
     const pixel_t* data() const;
 

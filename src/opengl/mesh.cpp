@@ -39,17 +39,10 @@ framework::uint32 create_buffer(std::vector<T> data)
 
     framework::uint32 buffer_id = 0;
     glGenBuffers(1, &buffer_id);
-    GLenum err(glGetError());
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-    err = (glGetError());
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(T), data[0].data(), GL_STATIC_DRAW);
-    err = (glGetError());
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    err = (glGetError());
-
-    if (err) {
-    }
 
     return buffer_id;
 }
@@ -82,6 +75,7 @@ mesh::mesh(mesh&& other)
     swap(other.m_vertex_array_id, m_vertex_array_id);
     swap(other.m_vertex_buffer_id, m_vertex_buffer_id);
     swap(other.m_texture_buffer_id, m_texture_buffer_id);
+    swap(other.m_vertex_size, m_vertex_size);
 }
 
 mesh& mesh::operator=(mesh&& other)
@@ -90,6 +84,7 @@ mesh& mesh::operator=(mesh&& other)
     swap(other.m_vertex_array_id, m_vertex_array_id);
     swap(other.m_vertex_buffer_id, m_vertex_buffer_id);
     swap(other.m_texture_buffer_id, m_texture_buffer_id);
+    swap(other.m_vertex_size, m_vertex_size);
 
     return *this;
 }
@@ -129,7 +124,6 @@ void mesh::load(const std::vector<math::vector3f> vertices, const std::vector<ma
 void mesh::load(const std::vector<math::vector2f> vertices, const std::vector<math::vector2f> texture_coordinates)
 {
     glBindVertexArray(m_vertex_array_id);
-    GLenum err(glGetError());
 
     if (!vertices.empty()) {
         m_vertex_buffer_id = create_buffer(vertices);
@@ -138,9 +132,6 @@ void mesh::load(const std::vector<math::vector2f> vertices, const std::vector<ma
 
     if (!texture_coordinates.empty()) {
         m_texture_buffer_id = create_buffer(texture_coordinates);
-    }
-
-    if (err) {
     }
 
     glBindVertexArray(0);

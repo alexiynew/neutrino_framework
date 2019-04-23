@@ -48,8 +48,9 @@ bool image::load(const std::string& filename, file_type type)
 
     if (auto result = load_function(filename); result.has_value()) {
         auto& [info, data] = *result;
-        m_info             = std::move(info);
-        m_data             = std::move(data);
+
+        m_info = std::move(info);
+        m_data = std::move(data);
         return true;
     }
 
@@ -82,7 +83,25 @@ bool image::save(const std::string& filename, file_type type) const
 }
 
 void image::flip_vertically()
-{}
+{
+    pixel_data_t tmp(m_data.size());
+
+    const int32 offset = width() * pixel_size();
+
+    auto from = begin(m_data);
+    auto to   = prev(end(tmp), offset);
+
+    for (int32 y = 0; y < height(); ++y) {
+        auto next_from = next(from, offset);
+
+        copy(from, next_from, to);
+
+        from = next_from;
+        to   = prev(to, offset);
+    }
+
+    m_data = std::move(tmp);
+}
 
 int32 image::width() const
 {
@@ -97,6 +116,11 @@ int32 image::height() const
 bool image::is_bottom_up() const
 {
     return m_info.bottom_up;
+}
+
+int32 image::pixel_size() const
+{
+    return 4;
 }
 
 const image::pixel_t* image::data() const
