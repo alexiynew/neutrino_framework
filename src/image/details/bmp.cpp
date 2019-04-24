@@ -508,9 +508,7 @@ data_t read_data(std::ifstream& in, const info_header& info)
 
 data_t read_data_rle(std::ifstream& in, const info_header& info)
 {
-    const int32 colors_in_byte = (8 / info.bits_per_pixel);
-
-    auto fill_with_color = [&info](data_t::iterator pos, const auto it, int32 count) {
+    auto fill_with_color_4 = [&info](data_t::iterator pos, const auto it, int32 count) {
         for (int32 c = 0, offset = 4; c < count; ++c) {
             set_color(pos, info.color_table[(*it >> offset) & 0x0F]);
             offset = (offset == 0 ? 4 : 0);
@@ -519,11 +517,31 @@ data_t read_data_rle(std::ifstream& in, const info_header& info)
         return pos;
     };
 
-    auto fill_from_buffer = [&fill_with_color, colors_in_byte](data_t::iterator pos, auto it, int32 count) {
+    auto fill_with_color_8 = [&info](data_t::iterator pos, const auto it, int32 count) {
+        for (int32 c = 0; c < count; ++c) {
+            set_color(pos, info.color_table[*it]);
+            advance(pos, pixel_size);
+        }
+        return pos;
+    };
+
+    auto fill_from_buffer_4 = [&fill_with_color_4](data_t::iterator pos, auto it, int32 count) {
+        const int32 colors_in_byte = 2;
         while (count > 0) {
-            pos = fill_with_color(pos, it, (count >= colors_in_byte ? colors_in_byte : 1));
-            count -= 2;
+            pos = fill_with_color_4(pos, it, (count >= colors_in_byte ? colors_in_byte : 1));
+            count -= colors_in_byte;
             it++;
+        }
+
+        return pos;
+    };
+
+    auto fill_from_buffer_8 = [&info](data_t::iterator pos, auto it, int32 count) {
+        while (count > 0) {
+            set_color(pos, info.color_table[*it]);
+            advance(pos, pixel_size);
+            it++;
+            count--; 
         }
 
         return pos;
@@ -558,11 +576,11 @@ data_t read_data_rle(std::ifstream& in, const info_header& info)
                 default: {
                     const int32 count = *it++;
 
-                    pos = fill_from_buffer(pos, it, count);
-
                     if (info.bits_per_pixel == 4) {
+                        pos = fill_from_buffer_4(pos, it, count);
                         advance(it, ((count + 3) / 4) * 2);
                     } else {
+                        pos = fill_from_buffer_8(pos, it, count);
                         advance(it, ((count + 1) / 2) * 2);
                     }
 
@@ -571,7 +589,12 @@ data_t read_data_rle(std::ifstream& in, const info_header& info)
         } else {
             const int32 count = *it++;
 
-            pos = fill_with_color(pos, it, count);
+            if (info.bits_per_pixel == 4) {
+                pos = fill_with_color_4(pos, it, count);
+            } else {
+                pos = fill_with_color_8(pos, it, count);
+            }
+
             it++;
         }
     }
