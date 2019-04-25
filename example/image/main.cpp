@@ -72,36 +72,12 @@ struct object
 
 std::vector<framework::image::image> load_bmp()
 {
-    std::string names[] = {
-    //"pal1.bmp",
-    //"pal1bg.bmp",
-    //"pal1wb.bmp",
-    //"pal4.bmp",
-    //"pal4gs.bmp",
-    //"pal4rle.bmp",
-    // "pal8.bmp",
-    //"pal8-0.bmp",
-    //"pal8gs.bmp",
-    //"pal8nonsquare.bmp",
-    //"pal8os2.bmp",
-    //  "pal8rle.bmp",
-    //"pal8topdown.bmp",
-    //"pal8v4.bmp",
-    //"pal8v5.bmp",
-    //    "pal8w124.bmp",
-    //    "pal8w125.bmp",
-    //    "pal8w126.bmp",
-
-        "rgb16.bmp",
-        "rgb16-565.bmp",
-        "rgb16-565pal.bmp",
-        "rgb16bfdef.bmp",
-    //    "rgb24.bmp",
-    //    "rgb24pal.bmp",
-    //    "rgb32.bmp",
-    //    "rgb32bf.bmp",
-    // "rgb32bfdef.bmp"
-    };
+    std::string names[] = {"pal1.bmp",         "pal1bg.bmp",     "pal1wb.bmp",      "pal4.bmp",     "pal4gs.bmp",
+                           "pal4rle.bmp",      "pal8.bmp",       "pal8-0.bmp",      "pal8gs.bmp",   "pal8nonsquare.bmp",
+                           "pal8os2.bmp",      "pal8rle.bmp",    "pal8topdown.bmp", "pal8v4.bmp",   "pal8v5.bmp",
+                           "pal8w124.bmp",     "pal8w125.bmp",   "pal8w126.bmp",    "rgb16.bmp",    "rgb16-565.bmp",
+                           "rgb16-565pal.bmp", "rgb16bfdef.bmp", "rgb24.bmp",       "rgb24pal.bmp", "rgb32.bmp",
+                           "rgb32bf.bmp",      "rgb32bfdef.bmp"};
 
     std::vector<framework::image::image> images;
     std::transform(begin(names), end(names), std::back_inserter(images), [](const std::string& name) {

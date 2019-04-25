@@ -222,6 +222,24 @@ info_header info_header::read(std::ifstream& in)
         h.important_colors = *(reinterpret_cast<uint32*>(buffer.get() + 32));
     }
 
+    if (h.size == static_cast<uint32>(info_header::type_t::bitmapinfoheader) &&
+        (h.compression == compression_t::bi_bitfields || h.compression == compression_t::bi_alphabitfields)) {
+        std::unique_ptr<char[]> mask_buffer(new char[3 * sizeof(uint32)]);
+        in.read(mask_buffer.get(), 3 * sizeof(uint32));
+
+        h.red_chanel_bitmask   = *(reinterpret_cast<uint32*>(mask_buffer.get() + 0));
+        h.green_chanel_bitmask = *(reinterpret_cast<uint32*>(mask_buffer.get() + 4));
+        h.blue_chanel_bitmask  = *(reinterpret_cast<uint32*>(mask_buffer.get() + 8));
+    }
+
+    if (h.size == static_cast<uint32>(info_header::type_t::bitmapinfoheader) &&
+        h.compression == compression_t::bi_alphabitfields) {
+        std::unique_ptr<char[]> mask_buffer(new char[sizeof(uint32)]);
+        in.read(mask_buffer.get(), sizeof(uint32));
+
+        h.alpha_chanel_bitmask = *(reinterpret_cast<uint32*>(mask_buffer.get()));
+    }
+
     if (h.size >= static_cast<uint32>(info_header::type_t::bitmapv2infoheader)) {
         h.red_chanel_bitmask   = *(reinterpret_cast<uint32*>(buffer.get() + 36));
         h.green_chanel_bitmask = *(reinterpret_cast<uint32*>(buffer.get() + 40));
@@ -396,6 +414,24 @@ inline void set_color(data_t::iterator it, const info_header::color_t& color)
     *(it + 3) = color.a;
 }
 
+inline uint32 get_offset(uint32 value)
+{
+    int32 count = 0;
+    while ((value & 1) == 0) {
+        count++;
+        value >>= 1;
+    }
+
+    return count;
+}
+
+inline uint8 masked_value(uint32 pixel, uint32 mask, uint32 offset)
+{
+    const uint8 value = (pixel & mask) >> offset;
+    const uint8 scale = mask >> offset;
+    return scale ? static_cast<uint8>((value / float(scale)) * 255) : 0;
+}
+
 data_t process_row_1bpp(const std::vector<uint8>& buffer, const info_header& info)
 {
     data_t out(info.width * pixel_size);
@@ -431,7 +467,7 @@ data_t process_row_4bpp(const std::vector<uint8>& buffer, const info_header& inf
     return out;
 }
 
-data_t process_row_8bpp(const std::vector<uint8>& buffer,const info_header& info)
+data_t process_row_8bpp(const std::vector<uint8>& buffer, const info_header& info)
 {
     data_t out(info.width * pixel_size);
 
@@ -443,22 +479,6 @@ data_t process_row_8bpp(const std::vector<uint8>& buffer,const info_header& info
 
 data_t process_row_16bpp(const std::vector<uint8>& buffer, const info_header& info)
 {
-    auto get_offset = [](uint32 value) {
-        int32 count = 0;
-        while ((value & 1) == 0) {
-            count++;
-            value >>= 1;
-        }
-
-        return count;
-    };
-
-    auto get_value = [](uint16 pixel, uint32 mask, uint32 offset){
-        const uint8 value = (pixel & mask) >> offset;
-        const uint8 scale = mask >> offset;
-        return scale ? static_cast<uint8>((value / float(scale)) * 255) : 0;
-    };
-
     const auto [red_mask, green_mask, blue_mask] = [&info]() -> std::tuple<uint32, uint32, uint32> {
         if (info.red_chanel_bitmask || info.green_chanel_bitmask || info.blue_chanel_bitmask) {
             return {info.red_chanel_bitmask, info.green_chanel_bitmask, info.blue_chanel_bitmask};
@@ -469,25 +489,20 @@ data_t process_row_16bpp(const std::vector<uint8>& buffer, const info_header& in
 
     const uint32 alpha_mask = (info.alpha_chanel_bitmask ? info.alpha_chanel_bitmask : 0);
 
-    const uint32 red_offset   = (red_mask ? get_offset(red_mask): 0);
-    const uint32 green_offset = (green_mask ? get_offset(green_mask): 0);
-    const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask): 0);
-    const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask): 0);
+    const uint32 red_offset   = (red_mask ? get_offset(red_mask) : 0);
+    const uint32 green_offset = (green_mask ? get_offset(green_mask) : 0);
+    const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask) : 0);
+    const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask) : 0);
 
     data_t out(info.width * pixel_size);
 
     for (int32 x = 0; x < info.width; ++x) {
-        uint16 pixel = (buffer[x * 2 + 1] << 8) + buffer[x * 2];
+        uint16 pixel = *(reinterpret_cast<const uint16*>(&buffer[x * sizeof(uint16)]));
 
-        auto r = get_value(pixel, red_mask, red_offset);
-        auto g = get_value(pixel, green_mask, green_offset);
-        auto b = get_value(pixel, blue_mask, blue_offset);
-        auto a = (alpha_mask ? get_value(pixel, alpha_offset, alpha_mask) : 255);
-
-        out[x * 4 + 0] = r;
-        out[x * 4 + 1] = g;
-        out[x * 4 + 2] = b;
-        out[x * 4 + 3] = a;
+        out[x * 4 + 0] = masked_value(pixel, red_mask, red_offset);
+        out[x * 4 + 1] = masked_value(pixel, green_mask, green_offset);
+        out[x * 4 + 2] = masked_value(pixel, blue_mask, blue_offset);
+        out[x * 4 + 3] = (alpha_mask ? masked_value(pixel, alpha_offset, alpha_mask) : 255);
     }
 
     return out;
@@ -506,11 +521,35 @@ data_t process_row_24bpp(const std::vector<uint8>& buffer, const info_header& in
     return out;
 }
 
-data_t process_row_32bpp(const std::vector<uint8>& /*buffer*/, const info_header& /*count*/)
+data_t process_row_32bpp(const std::vector<uint8>& buffer, const info_header& info)
 {
-    // chanel masks
-    // may be alpha
-    return data_t();
+    const auto [red_mask, green_mask, blue_mask] = [&info]() -> std::tuple<uint32, uint32, uint32> {
+        if (info.red_chanel_bitmask || info.green_chanel_bitmask || info.blue_chanel_bitmask) {
+            return {info.red_chanel_bitmask, info.green_chanel_bitmask, info.blue_chanel_bitmask};
+        } else {
+            return {0xFF0000, 0x00FF00, 0x0000FF};
+        }
+    }();
+
+    const uint32 alpha_mask = (info.alpha_chanel_bitmask ? info.alpha_chanel_bitmask : 0);
+
+    const uint32 red_offset   = (red_mask ? get_offset(red_mask) : 0);
+    const uint32 green_offset = (green_mask ? get_offset(green_mask) : 0);
+    const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask) : 0);
+    const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask) : 0);
+
+    data_t out(info.width * pixel_size);
+
+    for (int32 x = 0; x < info.width; ++x) {
+        uint32 pixel = *(reinterpret_cast<const uint32*>(&buffer[x * sizeof(uint32)]));
+
+        out[x * 4 + 0] = masked_value(pixel, red_mask, red_offset);
+        out[x * 4 + 1] = masked_value(pixel, green_mask, green_offset);
+        out[x * 4 + 2] = masked_value(pixel, blue_mask, blue_offset);
+        out[x * 4 + 3] = (alpha_mask ? masked_value(pixel, alpha_offset, alpha_mask) : 255);
+    }
+
+    return out;
 }
 
 data_t process_row(const std::vector<uint8>& buffer, const info_header& info)
@@ -585,7 +624,7 @@ data_t read_data_rle(std::ifstream& in, const info_header& info)
             set_color(pos, c);
             advance(pos, pixel_size);
             it++;
-            count--; 
+            count--;
         }
 
         return pos;
