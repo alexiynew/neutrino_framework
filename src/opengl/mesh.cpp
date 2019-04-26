@@ -33,9 +33,13 @@
 namespace
 {
 template <typename T>
-framework::uint32 create_buffer(std::vector<T> data)
+inline framework::uint32 create_buffer(const std::vector<T>& data)
 {
     using namespace framework::opengl;
+
+    if (data.empty()) {
+        return 0;
+    }
 
     framework::uint32 buffer_id = 0;
     glGenBuffers(1, &buffer_id);
@@ -46,6 +50,28 @@ framework::uint32 create_buffer(std::vector<T> data)
 
     return buffer_id;
 }
+
+template <typename T>
+inline framework::uint32 load_buffer(uint32* buffer_id, const std::vector<T>& data)
+{
+    using namespace framework::opengl;
+
+    if (*buffer_id != 0) {
+        glDeleteBuffers(1, &buffer_id);
+    }
+
+    *buffer_id = create_buffer(data);
+}
+
+enum vbo_type 
+{
+    vertices = 0;
+    normals = 1;
+    tex_coord_1 = 2;
+    tex_coord_2 = 3;
+    colors = 4;
+    tangents = 5;
+};
 
 } // namespace
 
@@ -89,50 +115,93 @@ mesh& mesh::operator=(mesh&& other)
     return *this;
 }
 
-void mesh::load(const std::vector<math::vector4f> vertices, const std::vector<math::vector2f> texture_coordinates)
+void mesh::load_vertices(const std::vector<math::vector2f> vertices)
 {
     glBindVertexArray(m_vertex_array_id);
 
-    if (!vertices.empty()) {
-        m_vertex_buffer_id = create_buffer(vertices);
-        m_vertex_size      = 4;
-    }
-
-    if (!texture_coordinates.empty()) {
-        m_texture_buffer_id = create_buffer(texture_coordinates);
-    }
+    load_buffer(m_bufferids[vbo_type::vertices], vertices);
+    m_type_sizes[vbo_type::vertices] = 2;
 
     glBindVertexArray(0);
 }
 
-void mesh::load(const std::vector<math::vector3f> vertices, const std::vector<math::vector2f> texture_coordinates)
+void mesh::load_vertices(const std::vector<math::vector3f> vertices)
 {
     glBindVertexArray(m_vertex_array_id);
 
-    if (!vertices.empty()) {
-        m_vertex_buffer_id = create_buffer(vertices);
-        m_vertex_size      = 3;
-    }
-
-    if (!texture_coordinates.empty()) {
-        m_texture_buffer_id = create_buffer(texture_coordinates);
-    }
+    load_buffer(m_bufferids[vbo_type::vertices], vertices);
+    m_type_sizes[vbo_type::vertices] = 3;
 
     glBindVertexArray(0);
 }
 
-void mesh::load(const std::vector<math::vector2f> vertices, const std::vector<math::vector2f> texture_coordinates)
+void mesh::load_vertices(const std::vector<math::vector4f> vertices)
 {
     glBindVertexArray(m_vertex_array_id);
 
-    if (!vertices.empty()) {
-        m_vertex_buffer_id = create_buffer(vertices);
-        m_vertex_size      = 2;
-    }
+    load_buffer(m_bufferids[vbo_type::vertices], vertices);
+    m_type_sizes[vbo_type::vertices] = 4;
 
-    if (!texture_coordinates.empty()) {
-        m_texture_buffer_id = create_buffer(texture_coordinates);
-    }
+    glBindVertexArray(0);
+}
+
+void mesh::load_normals(const std::vector<math::vector2f>& normals)
+{
+    glBindVertexArray(m_vertex_array_id);
+
+    load_buffer(m_bufferids[vbo_type::normals], vertices);
+    m_type_sizes[vbo_type::normals] = 2;
+
+    glBindVertexArray(0);
+}
+
+void mesh::load_normals(const std::vector<math::vector3f>& normals)
+{
+    glBindVertexArray(m_vertex_array_id);
+
+    load_buffer(m_bufferids[vbo_type::normals], vertices);
+    m_type_sizes[vbo_type::normals] = 3;
+
+    glBindVertexArray(0);
+}
+
+void mesh::load_texture_coord1(const std::vector<math::vector2f>& t_coord)
+{
+    glBindVertexArray(m_vertex_array_id);
+
+    load_buffer(m_bufferids[vbo_type::tex_coord_1], vertices);
+    m_type_sizes[vbo_type::tex_coord_1] = 3;
+
+    glBindVertexArray(0);
+}
+
+void mesh::load_texture_coord2(const std::vector<math::vector2f>& t_coord)
+{
+    glBindVertexArray(m_vertex_array_id);
+
+    load_buffer(m_bufferids[vbo_type::tex_coord_2], vertices);
+    m_type_sizes[vbo_type::tex_coord_2] = 3;
+
+    glBindVertexArray(0);
+
+}
+
+void mesh::load_colors(const std::vector<color_t>& colors)
+{
+    glBindVertexArray(m_vertex_array_id);
+
+    load_buffer(m_bufferids[vbo_type::colors], vertices);
+    m_type_sizes[vbo_type::colors] = 4;
+
+    glBindVertexArray(0);
+}
+
+void mesh::load_tangents(const std::vector<math::vector3f>& tangents)
+{
+    glBindVertexArray(m_vertex_array_id);
+
+    load_buffer(m_bufferids[vbo_type::tangents], vertices);
+    m_type_sizes[vbo_type::tangents] = 3;
 
     glBindVertexArray(0);
 }
