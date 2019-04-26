@@ -33,10 +33,23 @@
 #include <vector>
 
 #include <common/types.hpp>
+#include <common/color_type.hpp>
 #include <math/math.hpp>
 
 namespace framework::opengl
 {
+
+/// @addtogroup opengl_module
+/// @{
+
+/// @brief OpenGL mesh.
+///
+/// Mesh contains vertices of triangle arrays.
+/// For every vertex there can be a coordinates, normal, two texture coordinates, color and tangent. 
+/// All vertex information is stored in separate arrays. Count of elements in each array must be the same.
+///
+/// @thread_safety All mesh operation should be in main thread.
+///
 class mesh
 {
 public:
@@ -49,9 +62,19 @@ public:
     mesh(mesh&&);
     mesh& operator=(mesh&&);
 
-    void load(const std::vector<math::vector4f> vertices, const std::vector<math::vector2f> texture_coordinates = {});
-    void load(const std::vector<math::vector3f> vertices, const std::vector<math::vector2f> texture_coordinates = {});
-    void load(const std::vector<math::vector2f> vertices, const std::vector<math::vector2f> texture_coordinates = {});
+    void load_vertices(const std::vector<math::vector2f>& vertices);
+    void load_vertices(const std::vector<math::vector3f>& vertices);
+    void load_vertices(const std::vector<math::vector4f>& vertices);
+
+    void load_normals(const std::vector<math::vector2f>& normals);
+    void load_normals(const std::vector<math::vector3f>& normals);
+
+    void load_texture_coord1(const std::vector<math::vector2f>& t_coord);
+    void load_texture_coord2(const std::vector<math::vector2f>& t_coord);
+
+    void load_colors(const std::vector<color_t>& colors);
+
+    void load_tangents(const std::vector<math::vector3f>& tangents);
 
     void bind_vertices_attrib(int32 index);
     void bind_texture_attrib(int32 index);
@@ -60,11 +83,12 @@ public:
 
 private:
     uint32 m_vertex_array_id   = 0;
-    uint32 m_vertex_buffer_id  = 0;
-    uint32 m_texture_buffer_id = 0;
 
-    uint32 m_vertex_size = 0;
+    uint32 m_buffer_ids[6] = {0,0,0,0,0,0};
+    uint32 m_type_sizes[6] = {0,0,0,0,0,0};
 };
+
+/// @}
 
 } // namespace framework::opengl
 
