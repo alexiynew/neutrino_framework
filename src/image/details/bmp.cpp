@@ -66,13 +66,15 @@ struct info_header
 {
     enum class type_t
     {
-        undefined          = 0,
-        bitmapcoreheader   = 12,
-        bitmapinfoheader   = 40,
-        bitmapv2infoheader = 52,
-        bitmapv3infoheader = 56,
-        bitmapv4header     = 108,
-        bitmapv5header     = 124
+        undefined             = 0,
+        bitmapcoreheader      = 12,
+        os22xbitmapheader     = 16,
+        bitmapinfoheader      = 40,
+        bitmapv2infoheader    = 52,
+        bitmapv3infoheader    = 56,
+        os22xbitmapheaderfull = 64,
+        bitmapv4header        = 108,
+        bitmapv5header        = 124
     };
 
     enum class compression_t
@@ -212,7 +214,7 @@ info_header info_header::read(std::ifstream& in)
         h.important_colors = *(reinterpret_cast<uint32*>(buffer.get() + 32));
     }
 
-    if (h.size == static_cast<uint32>(info_header::type_t::bitmapinfoheader) &&
+    if (h.type() == info_header::type_t::bitmapinfoheader &&
         (h.compression == compression_t::bi_bitfields || h.compression == compression_t::bi_alphabitfields)) {
         std::unique_ptr<char[]> mask_buffer(new char[3 * sizeof(uint32)]);
         in.read(mask_buffer.get(), 3 * sizeof(uint32));
@@ -287,9 +289,11 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
         switch (info.type()) {
             case type_t::undefined: return 0;
             case type_t::bitmapcoreheader: return 3;
+            case type_t::os22xbitmapheader:
             case type_t::bitmapinfoheader:
             case type_t::bitmapv2infoheader:
             case type_t::bitmapv3infoheader:
+            case type_t::os22xbitmapheaderfull:
             case type_t::bitmapv4header:
             case type_t::bitmapv5header: return 4;
             default: break;
@@ -430,9 +434,27 @@ std::vector<color_t> process_row_1bpp(const std::vector<uint8>& buffer, const in
     return out;
 }
 
-std::vector<color_t> process_row_2bpp(const std::vector<uint8>& /*buffer*/, const info_header&)
+std::vector<color_t> process_row_2bpp(const std::vector<uint8>& buffer, const info_header& info)
 {
-    return std::vector<color_t>();
+    std::vector<color_t> out(info.width);
+
+    auto to        = begin(out);
+    const auto end = begin(out) + info.width;
+    auto from      = begin(buffer);
+
+    int32 offset = 6;
+    while (to != end) {
+        *to++ = info.color_table[(*from >> offset) & 0x03];
+
+        if (offset == 0) {
+            offset = 6;
+            from++;
+        } else {
+            offset -= 2;
+        }
+    }
+
+    return out;
 }
 
 std::vector<color_t> process_row_4bpp(const std::vector<uint8>& buffer, const info_header& info)
@@ -626,16 +648,19 @@ std::vector<color_t> read_data_rle(std::ifstream& in, const info_header& info)
             switch (*it) {
                 case 0x00: {
                     const int32 d = distance(begin(image_data), pos) % info.width;
-                    advance(pos, d);
+                    if (d != 0) {
+                        pos += info.width - d;
+                    }
                     it++;
                 } break;
                 case 0x01: it = end(buffer); break;
                 case 0x02: {
+                    it++;
+
                     const int32 w = *it++;
                     const int32 h = *it++;
 
                     advance(pos, (h * info.width + w));
-                    it++;
                 } break;
                 default: {
                     const int32 count = *it++;

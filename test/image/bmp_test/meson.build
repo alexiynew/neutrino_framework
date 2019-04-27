@@ -95,4 +95,5 @@ configure_file(input: 'questionable/rgba32abf.bmp',       output: 'questionable_
 configure_file(input: 'questionable/rgba32h56.bmp',       output: 'questionable_rgba32h56.bmp', copy: true)
 
 test(test_name, test,
-     suite: group)
+     suite: group,
+     workdir: meson.current_build_dir())

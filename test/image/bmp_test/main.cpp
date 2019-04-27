@@ -31,26 +31,37 @@ class bmp_image_test : public framework::unit_test::suite
 public:
     bmp_image_test() : suite("bmp_image_test")
     {
-        add_test([this]() { bmp_load(); }, "bmp_load");
+        add_test([this]() { bmp_load_good(); }, "bmp_load_good");
+        add_test([this]() { bmp_load_questionable(); }, "bmp_load_questionable");
     }
 
 private:
-    void bmp_load()
+    void bmp_load_good()
     {
         framework::image::image img;
         TEST_ASSERT(img.load("good_pal1.bmp"), "Loading of good_pal1.bmp failed.");
+
+        TEST_ASSERT(img.width() == 127, "Loading of good_pal1.bmp failed.");
+        TEST_ASSERT(img.height() == 64, "Loading of good_pal1.bmp failed.");
+        TEST_ASSERT(img.is_bottom_up() == true, "Loading of good_pal1.bmp failed.");
+
         TEST_ASSERT(img.load("good_pal1bg.bmp"), "Loading of good_pal1bg.bmp failed.");
         TEST_ASSERT(img.load("good_pal1wb.bmp"), "Loading of good_pal1wb.bmp failed.");
         TEST_ASSERT(img.load("good_pal4.bmp"), "Loading of good_pal4.bmp failed.");
         TEST_ASSERT(img.load("good_pal4gs.bmp"), "Loading of good_pal4gs.bmp failed.");
         TEST_ASSERT(img.load("good_pal4rle.bmp"), "Loading of good_pal4rle.bmp failed.");
-        TEST_ASSERT(img.load("good_pal8-0"), "Loading of good_pal8-0 failed.");
+        TEST_ASSERT(img.load("good_pal8-0.bmp"), "Loading of good_pal8-0 failed.");
         TEST_ASSERT(img.load("good_pal8.bmp"), "Loading of good_pal8.bmp failed.");
         TEST_ASSERT(img.load("good_pal8gs.bmp"), "Loading of good_pal8gs.bmp failed.");
         TEST_ASSERT(img.load("good_pal8nonsquare.bmp"), "Loading of good_pal8nonsquare.bmp failed.");
         TEST_ASSERT(img.load("good_pal8os2.bmp"), "Loading of good_pal8os2.bmp failed.");
         TEST_ASSERT(img.load("good_pal8rle.bmp"), "Loading of good_pal8rle.bmp failed.");
+
         TEST_ASSERT(img.load("good_pal8topdown.bmp"), "Loading of good_pal8topdown.bmp failed.");
+        TEST_ASSERT(img.is_bottom_up() == false, "Loading of good_pal8topdown.bmp failed.");
+        img.flip_vertically();
+        TEST_ASSERT(img.is_bottom_up() == true, "Image flip_vertically failed.");
+
         TEST_ASSERT(img.load("good_pal8v4.bmp"), "Loading of good_pal8v4.bmp failed.");
         TEST_ASSERT(img.load("good_pal8v5.bmp"), "Loading of good_pal8v5.bmp failed.");
         TEST_ASSERT(img.load("good_pal8w124.bmp"), "Loading of good_pal8w124.bmp failed.");
@@ -65,6 +76,52 @@ private:
         TEST_ASSERT(img.load("good_rgb32.bmp"), "Loading of good_rgb32.bmp failed.");
         TEST_ASSERT(img.load("good_rgb32bf.bmp"), "Loading of good_rgb32bf.bmp failed.");
         TEST_ASSERT(img.load("good_rgb32bfdef.bmp"), "Loading of good_rgb32bfdef.bmp failed.");
+    }
+
+    void bmp_load_questionable()
+    {
+        framework::image::image img;
+        TEST_ASSERT(img.load("questionable_pal1huff.bmp"), "Loading of questionable_pal1huff.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal1p1.bmp"), "Loading of questionable_pal1p1.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal2.bmp"), "Loading of questionable_pal2.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal2color.bmp"), "Loading of questionable_pal2color.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal4rlecut.bmp"), "Loading of questionable_pal4rlecut.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal4rletrns.bmp"), "Loading of questionable_pal4rletrns.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8offs.bmp"), "Loading of questionable_pal8offs.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8os2-hs.bmp"), "Loading of questionable_pal8os2-hs.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8os2-sz.bmp"), "Loading of questionable_pal8os2-sz.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8os2sp.bmp"), "Loading of questionable_pal8os2sp.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8os2v2-16.bmp"), "Loading of questionable_pal8os2v2-16.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8os2v2-40sz.bmp"), "Loading of questionable_pal8os2v2-40sz.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8os2v2-sz.bmp"), "Loading of questionable_pal8os2v2-sz.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8os2v2.bmp"), "Loading of questionable_pal8os2v2.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8oversizepal.bmp"),
+                    "Loading of questionable_pal8oversizepal.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8rlecut.bmp"), "Loading of questionable_pal8rlecut.bmp failed.");
+        TEST_ASSERT(img.load("questionable_pal8rletrns.bmp"), "Loading of questionable_pal8rletrns.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb16-231.bmp"), "Loading of questionable_rgb16-231.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb16-3103.bmp"), "Loading of questionable_rgb16-3103.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb16faketrns.bmp"), "Loading of questionable_rgb16faketrns.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb24jpeg.bmp"), "Loading of questionable_rgb24jpeg.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb24largepal.bmp"), "Loading of questionable_rgb24largepal.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb24lprof.bmp"), "Loading of questionable_rgb24lprof.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb24png.bmp"), "Loading of questionable_rgb24png.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb24prof.bmp"), "Loading of questionable_rgb24prof.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb24prof2.bmp"), "Loading of questionable_rgb24prof2.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb32-111110.bmp"), "Loading of questionable_rgb32-111110.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb32-7187.bmp"), "Loading of questionable_rgb32-7187.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb32-xbgr.bmp"), "Loading of questionable_rgb32-xbgr.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb32fakealpha.bmp"), "Loading of questionable_rgb32fakealpha.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgb32h52.bmp"), "Loading of questionable_rgb32h52.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba16-1924.bmp"), "Loading of questionable_rgba16-1924.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba16-4444.bmp"), "Loading of questionable_rgba16-4444.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba16-5551.bmp"), "Loading of questionable_rgba16-5551.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba32-1010102.bmp"), "Loading of questionable_rgba32-1010102.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba32-61754.bmp"), "Loading of questionable_rgba32-61754.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba32-81284.bmp"), "Loading of questionable_rgba32-81284.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba32.bmp"), "Loading of questionable_rgba32.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba32abf.bmp"), "Loading of questionable_rgba32abf.bmp failed.");
+        TEST_ASSERT(img.load("questionable_rgba32h56.bmp"), "Loading of questionable_rgba32h56.bmp failed.");
     }
 };
 

@@ -72,12 +72,58 @@ struct object
 
 std::vector<framework::image::image> load_bmp()
 {
-    std::string names[] = {"pal1.bmp",         "pal1bg.bmp",     "pal1wb.bmp",      "pal4.bmp",     "pal4gs.bmp",
-                           "pal4rle.bmp",      "pal8.bmp",       "pal8-0.bmp",      "pal8gs.bmp",   "pal8nonsquare.bmp",
-                           "pal8os2.bmp",      "pal8rle.bmp",    "pal8topdown.bmp", "pal8v4.bmp",   "pal8v5.bmp",
-                           "pal8w124.bmp",     "pal8w125.bmp",   "pal8w126.bmp",    "rgb16.bmp",    "rgb16-565.bmp",
-                           "rgb16-565pal.bmp", "rgb16bfdef.bmp", "rgb24.bmp",       "rgb24pal.bmp", "rgb32.bmp",
-                           "rgb32bf.bmp",      "rgb32bfdef.bmp"};
+    //    std::string names[] = {
+    //    "good_pal1.bmp",         "good_pal1bg.bmp",        "good_pal1wb.bmp",     "good_pal4.bmp",
+    //    "good_pal4gs.bmp",       "good_pal4rle.bmp",       "good_pal8.bmp",       "good_pal8-0.bmp",
+    //    "good_pal8gs.bmp",       "good_pal8nonsquare.bmp", "good_pal8os2.bmp",    "good_pal8rle.bmp",
+    //    "good_pal8topdown.bmp",  "good_pal8v4.bmp",        "good_pal8v5.bmp",     "good_pal8w124.bmp",
+    //    "good_pal8w125.bmp",     "good_pal8w126.bmp",      "good_rgb16.bmp",      "good_rgb16-565.bmp",
+    //    "good_rgb16-565pal.bmp", "good_rgb16bfdef.bmp",    "good_rgb24.bmp",      "good_rgb24pal.bmp",
+    //    "good_rgb32.bmp",        "good_rgb32bf.bmp",       "good_rgb32bfdef.bmp",
+    //    };
+
+    std::string names[] = {
+    // - "questionable_pal1huff.bmp",
+    // + "questionable_pal1p1.bmp",
+    // + "questionable_pal2.bmp",
+    // + "questionable_pal2color.bmp",
+    // + "questionable_pal4rlecut.bmp",
+    // + "questionable_pal4rletrns.bmp",
+    // + "questionable_pal8offs.bmp",
+    // + "questionable_pal8os2-hs.bmp",
+    // + "questionable_pal8os2-sz.bmp",
+    // + "questionable_pal8os2sp.bmp",
+    // + "questionable_pal8os2v2-16.bmp",
+    // + "questionable_pal8os2v2-40sz.bmp",
+    // + "questionable_pal8os2v2-sz.bmp",
+    // + "questionable_pal8os2v2.bmp",
+    // + "questionable_pal8oversizepal.bmp",
+    // + "questionable_pal8rlecut.bmp",
+    // + "questionable_pal8rletrns.bmp",
+    // + "questionable_rgb16-231.bmp",
+    // ?? "questionable_rgb16-3103.bmp",
+    // + "questionable_rgb16faketrns.bmp",
+    // ? "questionable_rgba16-1924.bmp",
+    // ? "questionable_rgba16-4444.bmp",
+    // ? "questionable_rgba16-5551.bmp",
+    // - "questionable_rgb24jpeg.bmp",
+    // + "questionable_rgb24largepal.bmp",
+    // - "questionable_rgb24lprof.bmp",
+    // - "questionable_rgb24png.bmp",
+    // - "questionable_rgb24prof.bmp",
+    // - "questionable_rgb24prof2.bmp",
+    // ?? "questionable_rgb32-111110.bmp",
+    // ?? "questionable_rgb32-7187.bmp",
+    // + "questionable_rgb32-xbgr.bmp",
+    // + "questionable_rgb32fakealpha.bmp",
+    // + "questionable_rgb32h52.bmp",
+    // ?? "questionable_rgba32-1010102.bmp",
+    // ?? "questionable_rgba32-61754.bmp",
+    // ?? "questionable_rgba32-81284.bmp",
+    // ?? "questionable_rgba32.bmp",
+    // ?? "questionable_rgba32abf.bmp",
+    // ?? "questionable_rgba32h56.bmp",
+    };
 
     std::vector<framework::image::image> images;
     std::transform(begin(names), end(names), std::back_inserter(images), [](const std::string& name) {
