@@ -54,19 +54,17 @@ constexpr uint32 alpha_rgba8 = 0xFF;
 
 namespace framework
 {
-color_t::color_t() = default;
-
 color_t::color_t(uint8 r, uint8 g, uint8 b, uint8 a) : r(r), g(g), b(b), a(a)
 {}
 
 color_t::color_t(float32 r, float32 g, float32 b, float32 a) : r(map(r)), g(map(g)), b(map(b)), a(map(a))
 {}
 
-color_t::color_t(uint16 value) : r(value & red_565), g(value & green_565), b(value & blue_565), a(255)
+color_t::color_t(uint16 value) : r((value & red_565) >> 11), g((value & green_565) >> 5), b(value & blue_565), a(255)
 {}
 
 color_t::color_t(uint32 value)
-    : r(value & red_rgba8), g(value & green_rgba8), b(value & blue_rgba8), a(value & alpha_rgba8)
+    : r((value & red_rgba8) >> 24), g((value & green_rgba8) >> 16), b((value & blue_rgba8) >> 8), a(value & alpha_rgba8)
 {}
 
 uint8* color_t::data()
