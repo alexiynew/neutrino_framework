@@ -32,21 +32,20 @@
 
 #include <vector>
 
-#include <common/types.hpp>
 #include <common/color_type.hpp>
+#include <common/types.hpp>
 #include <math/math.hpp>
 
 namespace framework::opengl
 {
-
 /// @addtogroup opengl_module
 /// @{
 
 /// @brief OpenGL mesh.
 ///
 /// Mesh contains vertices of triangle arrays.
-/// For every vertex there can be a coordinates, normal, two texture coordinates, color and tangent. 
-/// All vertex information is stored in separate arrays. Count of elements in each array must be the same.
+/// For every vertex there can be a coordinates, normal, two texture coordinates, color and tangent.
+/// All vertex information is stored in separate arrays.
 ///
 /// @thread_safety All mesh operation should be in main thread.
 ///
@@ -81,12 +80,16 @@ public:
 
     uint32 vertex_array_id() const;
 
-private:
-    uint32 m_vertex_array_id   = 0;
+    friend void swap(mesh&, mesh&);
 
-    uint32 m_buffer_ids[6] = {0,0,0,0,0,0};
-    uint32 m_type_sizes[6] = {0,0,0,0,0,0};
+private:
+    uint32 m_vertex_array_id = 0;
+
+    uint32 m_buffer_ids[6] = {0, 0, 0, 0, 0, 0};
+    uint32 m_type_sizes[6] = {0, 0, 0, 0, 0, 0};
 };
+
+void swap(mesh& a, mesh& b);
 
 /// @}
 

@@ -33,6 +33,7 @@
 #include <string>
 #include <vector>
 
+#include <common/color_type.hpp>
 #include <common/types.hpp>
 #include <image/details/image_info.hpp>
 
@@ -58,13 +59,18 @@ enum class file_type
 class image
 {
 public:
-    using pixel_t      = uint8;
-    using pixel_data_t = std::vector<pixel_t>;
+    using data_t = std::vector<color_t>;
+
+    image();
+
+    image(const image&);
+    image& operator=(const image&);
+
+    image(image&&);
+    image& operator=(image&&);
 
     bool load(const std::string& filename);
     bool load(const std::string& filename, file_type type);
-
-    bool save(const std::string& filename, file_type type) const;
 
     void flip_vertically();
 
@@ -74,11 +80,11 @@ public:
     bool is_bottom_up() const;
     int32 pixel_size() const;
 
-    const pixel_t* data() const;
+    const color_t* data() const;
 
 private:
     details::image_info m_info;
-    pixel_data_t m_data;
+    data_t m_data;
 };
 
 /// @}

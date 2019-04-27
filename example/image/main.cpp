@@ -170,7 +170,8 @@ framework::opengl::mesh make_quad(framework::int32 width, framework::int32 heigh
     };
 
     mesh m;
-    m.load(vertex_buffer_data, texture_buffer_data);
+    m.load_vertices(vertex_buffer_data);
+    m.load_texture_coord1(texture_buffer_data);
 
     return m;
 }

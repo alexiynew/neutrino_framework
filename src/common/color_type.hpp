@@ -40,29 +40,26 @@ namespace framework
 /// @addtogroup common_types_module Common types
 /// @{
 
-struct color_t 
+struct color_t
 {
-    uint8 r;
-    uint8 g;
-    uint8 b;
-    uint8 a;
+    uint8 r = 0;
+    uint8 g = 0;
+    uint8 b = 0;
+    uint8 a = 255;
 
-    static constexpr uint16 red_565 = 0xF800;
-    static constexpr uint16 green_565 = 0x7E0;
-    static constexpr uint16 blue_565 = 0x1F;
-
-    static constexpr uint32 red_rgba8 = 0xFF000000;
-    static constexpr uint32 green_rgba8 = 0xFF0000;
-    static constexpr uint32 blue_rgba8 = 0xFF00;
-    static constexpr uint32 alpha_rgba8 = 0xFF;
+    color_t();
 
     color_t(uint8 r, uint8 g, uint8 b, uint8 a);
     color_t(float32 r, float32 g, float32 b, float32 a);
 
-    color_t(uint16 value, uint16 red_mask = red_565, uint16 green_mask = green_565, uint16 blue_mask = blue_565, uint16 alpha_mask = 0);
-    color_t(uint32 value, uint32 red_mask= red_rgba8, uint32 green_mask = green_rgba8, uint32 blue_mask = blue_rgba8, uint32 alpha_mask = alpha_rgba8);
+    color_t(uint16 value);
+    color_t(uint32 value);
+
+    uint8* data();
+    const uint8* data() const;
 };
 
 /// @}
-}
+} // namespace framework
+
 #endif

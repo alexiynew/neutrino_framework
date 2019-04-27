@@ -29,46 +29,54 @@
 
 #include <common/color_type.hpp>
 
-namespace framework
+namespace
 {
-
+using framework::float32;
+using framework::uint16;
+using framework::uint32;
+using framework::uint8;
 
 inline uint8 map(float32 value) noexcept
 {
     return value * 255;
 }
 
+constexpr uint16 red_565   = 0xF800;
+constexpr uint16 green_565 = 0x7E0;
+constexpr uint16 blue_565  = 0x1F;
 
-color_t::color_t(uint8 r, uint8 g, uint8 b, uint8 a)
-    : r(r)
-    , g(g)
-    , b(b)
-    , a(a)
+constexpr uint32 red_rgba8   = 0xFF000000;
+constexpr uint32 green_rgba8 = 0xFF0000;
+constexpr uint32 blue_rgba8  = 0xFF00;
+constexpr uint32 alpha_rgba8 = 0xFF;
+
+} // namespace
+
+namespace framework
+{
+color_t::color_t() = default;
+
+color_t::color_t(uint8 r, uint8 g, uint8 b, uint8 a) : r(r), g(g), b(b), a(a)
 {}
 
-color_t::color_t(float32 r, float32 g, float32 b, float32 a)
-    : r(map(r))
-    , g(map(g))
-    , b(map(b))
-    , a(map(a))
+color_t::color_t(float32 r, float32 g, float32 b, float32 a) : r(map(r)), g(map(g)), b(map(b)), a(map(a))
 {}
 
-color_t::color_t(uint16 value, uint16 red_mask, uint16 green_mask, uint16 blue_mask, uint16 alpha_mask)
-    : r(value & red_mask)
-    , g(value & green_mask)
-    , b(value & blue_mask)
-    , a(value & alpha_mask)
+color_t::color_t(uint16 value) : r(value & red_565), g(value & green_565), b(value & blue_565), a(255)
+{}
+
+color_t::color_t(uint32 value)
+    : r(value & red_rgba8), g(value & green_rgba8), b(value & blue_rgba8), a(value & alpha_rgba8)
+{}
+
+uint8* color_t::data()
 {
-
+    return &r;
 }
 
-color_t::color_t(uint32 value, uint32 red_mask, uint32 green_mask, uint32 blue_mask, uint32 alpha_mask)
-    : r(value & red_mask)
-    , g(value & green_mask)
-    , b(value & blue_mask)
-    , a(value & alpha_mask)
+const uint8* color_t::data() const
 {
-
+    return &r;
 }
 
-}
+} // namespace framework

@@ -34,6 +34,14 @@
 
 namespace framework::image
 {
+image::image() = default;
+
+image::image(const image&) = default;
+image& image::operator=(const image&) = default;
+
+image::image(image&&) = default;
+image& image::operator=(image&&) = default;
+
 bool image::load(const std::string& filename, file_type type)
 {
     auto load_function = [type](const std::string& f) {
@@ -70,37 +78,25 @@ bool image::load(const std::string& filename)
     return false;
 }
 
-bool image::save(const std::string& filename, file_type type) const
-{
-    switch (type) {
-        case file_type::bmp: return details::bmp::save(filename);
-        case file_type::tga: return details::tga::save(filename);
-        case file_type::png: return details::png::save(filename);
-        default: break;
-    }
-
-    return false;
-}
-
 void image::flip_vertically()
 {
-    pixel_data_t tmp(m_data.size());
-
-    const int32 offset = width() * pixel_size();
+    data_t tmp(m_data.size());
 
     auto from = begin(m_data);
-    auto to   = prev(end(tmp), offset);
+    auto to   = prev(end(tmp), width());
 
     for (int32 y = 0; y < height(); ++y) {
-        auto next_from = next(from, offset);
+        auto next_from = next(from, width());
 
         copy(from, next_from, to);
 
         from = next_from;
-        to   = prev(to, offset);
+        to   = prev(to, width());
     }
 
     m_data = std::move(tmp);
+
+    m_info.bottom_up = !m_info.bottom_up;
 }
 
 int32 image::width() const
@@ -123,7 +119,7 @@ int32 image::pixel_size() const
     return 4;
 }
 
-const image::pixel_t* image::data() const
+const color_t* image::data() const
 {
     return m_data.data();
 }
