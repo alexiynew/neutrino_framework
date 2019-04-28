@@ -174,7 +174,19 @@ file_header file_header::read(std::ifstream& in)
 
 inline info_header::type_t info_header::type() const
 {
-    return static_cast<type_t>(size);
+    switch (static_cast<type_t>(size)) {
+        case type_t::bitmapcoreheader:
+        case type_t::os22xbitmapheader:
+        case type_t::bitmapinfoheader:
+        case type_t::bitmapv2infoheader:
+        case type_t::bitmapv3infoheader:
+        case type_t::os22xbitmapheaderfull:
+        case type_t::bitmapv4header:
+        case type_t::bitmapv5header: return static_cast<type_t>(size);
+        default: break;
+    }
+
+    return type_t::undefined;
 }
 
 inline bool info_header::bottom_up() const
@@ -397,6 +409,11 @@ inline bool check_bits_per_pixel(const info_header& h) noexcept
     return false;
 }
 
+inline bool check_size(const info_header& h) noexcept
+{
+    return h.width > 0 && h.height != 0 && h.width * std::abs(h.height) * sizeof(color_t) < 1024 * 1024 * 1024;
+}
+
 inline image_info make_image_info(const info_header& h) noexcept
 {
     return image_info{h.width, std::abs(h.height), h.bottom_up()};
@@ -600,58 +617,64 @@ std::vector<color_t> read_data(std::ifstream& in, const info_header& info)
 
 std::vector<color_t> read_data_rle(std::ifstream& in, const info_header& info)
 {
-    auto fill_with_color_4 = [&info](std::vector<color_t>::iterator pos, const auto it, int32 count) {
+    auto fill_with_color_4 = [&info](std::vector<color_t>& image_data, uint32 index, const auto it, int32 count) {
         for (int32 c = 0, offset = 4; c < count; ++c) {
-            *pos++ = info.color_table[(*it >> offset) & 0x0F];
+            image_data[index] = info.color_table[(*it >> offset) & 0x0F];
 
             offset = (offset == 0 ? 4 : 0);
+            index++;
         }
-        return pos;
+        return index;
     };
 
-    auto fill_with_color_8 = [&info](std::vector<color_t>::iterator pos, const auto it, int32 count) {
+    auto fill_with_color_8 = [&info](std::vector<color_t>& image_data, uint32 index, const auto it, int32 count) {
         for (int32 c = 0; c < count; ++c) {
-            *pos++ = info.color_table[*it];
+            image_data[index] = info.color_table[*it];
+            index++;
         }
-        return pos;
+        return index;
     };
 
-    auto fill_from_buffer_4 = [&fill_with_color_4](std::vector<color_t>::iterator pos, auto it, int32 count) {
+    auto fill_from_buffer_4 =
+    [&fill_with_color_4](std::vector<color_t>& image_data, uint32 index, auto it, int32 count) {
         const int32 colors_in_byte = 2;
         while (count > 0) {
-            pos = fill_with_color_4(pos, it, (count >= colors_in_byte ? colors_in_byte : 1));
+            index = fill_with_color_4(image_data, index, it, (count >= colors_in_byte ? colors_in_byte : 1));
             count -= colors_in_byte;
             it++;
         }
 
-        return pos;
+        return index;
     };
 
-    auto fill_from_buffer_8 = [&info](std::vector<color_t>::iterator pos, auto it, int32 count) {
+    auto fill_from_buffer_8 = [&info](std::vector<color_t>& image_data, uint32 index, auto it, int32 count) {
         while (count-- > 0) {
-            *pos++ = info.color_table[*it];
+            image_data[index] = info.color_table[*it];
             it++;
+            index++;
         }
 
-        return pos;
+        return index;
     };
 
-    const int32 height = std::abs(info.height);
-    std::vector<color_t> image_data(info.width * height);
+    const int32 height      = std::abs(info.height);
+    const uint32 image_size = info.width * height;
+    std::vector<color_t> image_data(image_size);
 
     std::vector<uint8> buffer(info.image_size);
     in.read(reinterpret_cast<char*>(buffer.data()), info.image_size);
 
-    auto pos = begin(image_data);
+    auto it      = begin(buffer);
+    uint32 index = 0;
 
-    for (auto it = begin(buffer); it != end(buffer);) {
+    while (it != end(buffer) && index < image_size) {
         if (*it == 0x00) {
             ++it;
             switch (*it) {
                 case 0x00: {
-                    const int32 d = distance(begin(image_data), pos) % info.width;
+                    const int32 d = index % info.width;
                     if (d != 0) {
-                        pos += info.width - d;
+                        index += info.width - d;
                     }
                     it++;
                 } break;
@@ -662,16 +685,21 @@ std::vector<color_t> read_data_rle(std::ifstream& in, const info_header& info)
                     const int32 w = *it++;
                     const int32 h = *it++;
 
-                    advance(pos, (h * info.width + w));
+                    index += h * info.width + w;
                 } break;
                 default: {
                     const int32 count = *it++;
 
+                    if (index + count >= image_size) {
+                        index = image_size;
+                        break;
+                    }
+
                     if (info.bits_per_pixel == 4) {
-                        pos = fill_from_buffer_4(pos, it, count);
+                        index = fill_from_buffer_4(image_data, index, it, count);
                         advance(it, ((count + 3) / 4) * 2);
                     } else {
-                        pos = fill_from_buffer_8(pos, it, count);
+                        index = fill_from_buffer_8(image_data, index, it, count);
                         advance(it, ((count + 1) / 2) * 2);
                     }
 
@@ -680,10 +708,15 @@ std::vector<color_t> read_data_rle(std::ifstream& in, const info_header& info)
         } else {
             const int32 count = *it++;
 
+            if (index + count >= image_size) {
+                index = image_size;
+                break;
+            }
+
             if (info.bits_per_pixel == 4) {
-                pos = fill_with_color_4(pos, it, count);
+                index = fill_with_color_4(image_data, index, it, count);
             } else {
-                pos = fill_with_color_8(pos, it, count);
+                index = fill_with_color_8(image_data, index, it, count);
             }
 
             it++;
@@ -713,6 +746,10 @@ load_result_t load(const std::string& filename)
     info_header info = info_header::read(file);
 
     if (info.type() == info_header::type_t::undefined) {
+        return load_result_t();
+    }
+
+    if (!check_size(info)) {
         return load_result_t();
     }
 

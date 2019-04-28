@@ -33,6 +33,7 @@ public:
     {
         add_test([this]() { bmp_load_good(); }, "bmp_load_good");
         add_test([this]() { bmp_load_questionable(); }, "bmp_load_questionable");
+        add_test([this]() { bmp_load_bad(); }, "bmp_load_bad");
     }
 
 private:
@@ -81,7 +82,6 @@ private:
     void bmp_load_questionable()
     {
         framework::image::image img;
-        TEST_ASSERT(img.load("questionable_pal1huff.bmp"), "Loading of questionable_pal1huff.bmp failed.");
         TEST_ASSERT(img.load("questionable_pal1p1.bmp"), "Loading of questionable_pal1p1.bmp failed.");
         TEST_ASSERT(img.load("questionable_pal2.bmp"), "Loading of questionable_pal2.bmp failed.");
         TEST_ASSERT(img.load("questionable_pal2color.bmp"), "Loading of questionable_pal2color.bmp failed.");
@@ -102,12 +102,7 @@ private:
         TEST_ASSERT(img.load("questionable_rgb16-231.bmp"), "Loading of questionable_rgb16-231.bmp failed.");
         TEST_ASSERT(img.load("questionable_rgb16-3103.bmp"), "Loading of questionable_rgb16-3103.bmp failed.");
         TEST_ASSERT(img.load("questionable_rgb16faketrns.bmp"), "Loading of questionable_rgb16faketrns.bmp failed.");
-        TEST_ASSERT(img.load("questionable_rgb24jpeg.bmp"), "Loading of questionable_rgb24jpeg.bmp failed.");
         TEST_ASSERT(img.load("questionable_rgb24largepal.bmp"), "Loading of questionable_rgb24largepal.bmp failed.");
-        TEST_ASSERT(img.load("questionable_rgb24lprof.bmp"), "Loading of questionable_rgb24lprof.bmp failed.");
-        TEST_ASSERT(img.load("questionable_rgb24png.bmp"), "Loading of questionable_rgb24png.bmp failed.");
-        TEST_ASSERT(img.load("questionable_rgb24prof.bmp"), "Loading of questionable_rgb24prof.bmp failed.");
-        TEST_ASSERT(img.load("questionable_rgb24prof2.bmp"), "Loading of questionable_rgb24prof2.bmp failed.");
         TEST_ASSERT(img.load("questionable_rgb32-111110.bmp"), "Loading of questionable_rgb32-111110.bmp failed.");
         TEST_ASSERT(img.load("questionable_rgb32-7187.bmp"), "Loading of questionable_rgb32-7187.bmp failed.");
         TEST_ASSERT(img.load("questionable_rgb32-xbgr.bmp"), "Loading of questionable_rgb32-xbgr.bmp failed.");
@@ -122,6 +117,39 @@ private:
         TEST_ASSERT(img.load("questionable_rgba32.bmp"), "Loading of questionable_rgba32.bmp failed.");
         TEST_ASSERT(img.load("questionable_rgba32abf.bmp"), "Loading of questionable_rgba32abf.bmp failed.");
         TEST_ASSERT(img.load("questionable_rgba32h56.bmp"), "Loading of questionable_rgba32h56.bmp failed.");
+
+        TEST_ASSERT(!img.load("questionable_pal1huff.bmp"), "Loading of questionable_pal1huff.bmp failed.");
+        TEST_ASSERT(!img.load("questionable_rgb24jpeg.bmp"), "Loading of questionable_rgb24jpeg.bmp failed.");
+        TEST_ASSERT(!img.load("questionable_rgb24lprof.bmp"), "Loading of questionable_rgb24lprof.bmp failed.");
+        TEST_ASSERT(!img.load("questionable_rgb24png.bmp"), "Loading of questionable_rgb24png.bmp failed.");
+        TEST_ASSERT(!img.load("questionable_rgb24prof.bmp"), "Loading of questionable_rgb24prof.bmp failed.");
+        TEST_ASSERT(!img.load("questionable_rgb24prof2.bmp"), "Loading of questionable_rgb24prof2.bmp failed.");
+    }
+
+    void bmp_load_bad()
+    {
+        framework::image::image img;
+
+        img.load("bad_badbitcount.bmp");
+        img.load("bad_badbitssize.bmp");
+        img.load("bad_baddens1.bmp");
+        img.load("bad_baddens2.bmp");
+        img.load("bad_badfilesize.bmp");
+        img.load("bad_badheadersize.bmp");
+        img.load("bad_badpalettesize.bmp");
+        img.load("bad_badplanes.bmp");
+        img.load("bad_badrle.bmp");
+        img.load("bad_badrle4.bmp");
+        img.load("bad_badrle4bis.bmp");
+        img.load("bad_badrle4ter.bmp");
+        img.load("bad_badrlebis.bmp ");
+        img.load("bad_badrleter.bmp");
+        img.load("bad_badwidth.bmp");
+        img.load("bad_pal8badindex.bmp ");
+        img.load("bad_reallybig.bmp ");
+        img.load("bad_rgb16-880.bmp");
+        img.load("bad_rletopdown.bmp ");
+        img.load("bad_shortfile.bmp ");
     }
 };
 
