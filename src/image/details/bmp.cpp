@@ -786,13 +786,6 @@ load_result_t load(const std::string& filename)
     return std::make_optional(std::make_tuple(make_image_info(info), std::move(data)));
 }
 
-bool save(const std::string& filename)
-{
-    std::ofstream file(filename, std::ios::out | std::ios::binary);
-
-    return false;
-}
-
 bool is_bmp(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);

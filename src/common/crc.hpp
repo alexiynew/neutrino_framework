@@ -79,7 +79,11 @@ class crc
 {
 public:
     /// @brief Crc value type.
-    using value_type = crc_details::value_t<BitsCount>;
+    using value_type                         = crc_details::value_t<BitsCount>;
+    constexpr static value_type init_value   = Init;
+    constexpr static bool reflect_in         = ReflectIn;
+    constexpr static bool reflect_out        = ReflectOut;
+    constexpr static value_type xorout_value = XorOut;
 
     /// @brief Calculates the crc value.
     ///
@@ -88,7 +92,7 @@ public:
     ///
     /// @return The crc value.
     template <typename Iterator>
-    static value_type calculate(Iterator begin, Iterator end);
+    static value_type calculate(Iterator begin, const Iterator end);
 
     /// @brief Updates crc value.
     ///
@@ -168,7 +172,7 @@ Polynome,
 Init,
 ReflectIn,
 ReflectOut,
-XorOut>::calculate(Iterator begin, Iterator end)
+XorOut>::calculate(Iterator begin, const Iterator end)
 {
     constexpr usize input_value_size = sizeof(typename std::iterator_traits<Iterator>::value_type);
 

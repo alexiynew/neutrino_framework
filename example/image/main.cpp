@@ -60,6 +60,109 @@ void main(){\n\
     color = texture(tex, UV);\n\
 }";
 
+enum mode
+{
+    bmp,
+    png
+};
+
+const std::vector<std::string> bmp_names = {
+"good_pal1.bmp",
+"good_pal1bg.bmp",
+"good_pal1wb.bmp",
+"good_pal4.bmp",
+"good_pal4gs.bmp",
+"good_pal4rle.bmp",
+"good_pal8.bmp",
+"good_pal8-0.bmp",
+"good_pal8gs.bmp",
+"good_pal8nonsquare.bmp",
+"good_pal8os2.bmp",
+"good_pal8rle.bmp",
+"good_pal8topdown.bmp",
+"good_pal8v4.bmp",
+"good_pal8v5.bmp",
+"good_pal8w124.bmp",
+"good_pal8w125.bmp",
+"good_pal8w126.bmp",
+"good_rgb16.bmp",
+"good_rgb16-565.bmp",
+"good_rgb16-565pal.bmp",
+"good_rgb16bfdef.bmp",
+"good_rgb24.bmp",
+"good_rgb24pal.bmp",
+"good_rgb32.bmp",
+"good_rgb32bf.bmp",
+"good_rgb32bfdef.bmp",
+"questionable_pal1p1.bmp",
+"questionable_pal2.bmp",
+"questionable_pal2color.bmp",
+"questionable_pal4rlecut.bmp",
+"questionable_pal4rletrns.bmp",
+"questionable_pal8offs.bmp",
+"questionable_pal8os2-hs.bmp",
+"questionable_pal8os2-sz.bmp",
+"questionable_pal8os2sp.bmp",
+"questionable_pal8os2v2-16.bmp",
+"questionable_pal8os2v2-40sz.bmp",
+"questionable_pal8os2v2-sz.bmp",
+"questionable_pal8os2v2.bmp",
+"questionable_pal8oversizepal.bmp",
+"questionable_pal8rlecut.bmp",
+"questionable_pal8rletrns.bmp",
+"questionable_rgb16-231.bmp",
+"questionable_rgb16-3103.bmp",
+"questionable_rgb16faketrns.bmp",
+"questionable_rgba16-4444.bmp",
+"questionable_rgba16-1924.bmp",
+"questionable_rgba16-5551.bmp",
+"questionable_rgb24largepal.bmp",
+"questionable_rgb32-111110.bmp",
+"questionable_rgb32-7187.bmp",
+"questionable_rgb32-xbgr.bmp",
+"questionable_rgb32fakealpha.bmp",
+"questionable_rgb32h52.bmp",
+"questionable_rgba32-1010102.bmp",
+"questionable_rgba32-61754.bmp",
+"questionable_rgba32-81284.bmp",
+"questionable_rgba32.bmp",
+"questionable_rgba32abf.bmp",
+"questionable_rgba32h56.bmp",
+};
+
+const std::vector<std::string> png_names = {
+"png_basi0g01.png", "png_basi0g02.png", "png_basi0g04.png", "png_basi0g08.png", "png_basi0g16.png", "png_basi2c08.png",
+"png_basi2c16.png", "png_basi3p01.png", "png_basi3p02.png", "png_basi3p04.png", "png_basi3p08.png", "png_basi4a08.png",
+"png_basi4a16.png", "png_basi6a08.png", "png_basi6a16.png", "png_basn0g01.png", "png_basn0g02.png", "png_basn0g04.png",
+"png_basn0g08.png", "png_basn0g16.png", "png_basn2c08.png", "png_basn2c16.png", "png_basn3p01.png", "png_basn3p02.png",
+"png_basn3p04.png", "png_basn3p08.png", "png_basn4a08.png", "png_basn4a16.png", "png_basn6a08.png", "png_basn6a16.png",
+"png_bgai4a08.png", "png_bgai4a16.png", "png_bgan6a08.png", "png_bgan6a16.png", "png_bgbn4a08.png", "png_bggn4a16.png",
+"png_bgwn6a08.png", "png_bgyn6a16.png", "png_ccwn2c08.png", "png_ccwn3p08.png", "png_cdfn2c08.png", "png_cdhn2c08.png",
+"png_cdsn2c08.png", "png_cdun2c08.png", "png_ch1n3p04.png", "png_ch2n3p08.png", "png_cm0n0g04.png", "png_cm7n0g04.png",
+"png_cm9n0g04.png", "png_cs3n2c16.png", "png_cs3n3p08.png", "png_cs5n2c08.png", "png_cs5n3p08.png", "png_cs8n2c08.png",
+"png_cs8n3p08.png", "png_ct0n0g04.png", "png_ct1n0g04.png", "png_cten0g04.png", "png_ctfn0g04.png", "png_ctgn0g04.png",
+"png_cthn0g04.png", "png_ctjn0g04.png", "png_ctzn0g04.png", "png_exif2c08.png", "png_f00n0g08.png", "png_f00n2c08.png",
+"png_f01n0g08.png", "png_f01n2c08.png", "png_f02n0g08.png", "png_f02n2c08.png", "png_f03n0g08.png", "png_f03n2c08.png",
+"png_f04n0g08.png", "png_f04n2c08.png", "png_f99n0g04.png", "png_g03n0g16.png", "png_g03n2c08.png", "png_g03n3p04.png",
+"png_g04n0g16.png", "png_g04n2c08.png", "png_g04n3p04.png", "png_g05n0g16.png", "png_g05n2c08.png", "png_g05n3p04.png",
+"png_g07n0g16.png", "png_g07n2c08.png", "png_g07n3p04.png", "png_g10n0g16.png", "png_g10n2c08.png", "png_g10n3p04.png",
+"png_g25n0g16.png", "png_g25n2c08.png", "png_g25n3p04.png", "png_oi1n0g16.png", "png_oi1n2c16.png", "png_oi2n0g16.png",
+"png_oi2n2c16.png", "png_oi4n0g16.png", "png_oi4n2c16.png", "png_oi9n0g16.png", "png_oi9n2c16.png", "png_pp0n2c16.png",
+"png_pp0n6a08.png", "png_ps1n0g08.png", "png_ps1n2c16.png", "png_ps2n0g08.png", "png_ps2n2c16.png", "png_s01i3p01.png",
+"png_s01n3p01.png", "png_s02i3p01.png", "png_s02n3p01.png", "png_s03i3p01.png", "png_s03n3p01.png", "png_s04i3p01.png",
+"png_s04n3p01.png", "png_s05i3p02.png", "png_s05n3p02.png", "png_s06i3p02.png", "png_s06n3p02.png", "png_s07i3p02.png",
+"png_s07n3p02.png", "png_s08i3p02.png", "png_s08n3p02.png", "png_s09i3p02.png", "png_s09n3p02.png", "png_s32i3p04.png",
+"png_s32n3p04.png", "png_s33i3p04.png", "png_s33n3p04.png", "png_s34i3p04.png", "png_s34n3p04.png", "png_s35i3p04.png",
+"png_s35n3p04.png", "png_s36i3p04.png", "png_s36n3p04.png", "png_s37i3p04.png", "png_s37n3p04.png", "png_s38i3p04.png",
+"png_s38n3p04.png", "png_s39i3p04.png", "png_s39n3p04.png", "png_s40i3p04.png", "png_s40n3p04.png", "png_tbbn0g04.png",
+"png_tbbn2c16.png", "png_tbbn3p08.png", "png_tbgn2c16.png", "png_tbgn3p08.png", "png_tbrn2c08.png", "png_tbwn0g16.png",
+"png_tbwn3p08.png", "png_tbyn3p08.png", "png_tm3n3p02.png", "png_tp0n0g08.png", "png_tp0n2c08.png", "png_tp0n3p08.png",
+"png_tp1n3p08.png", "png_xc1n0g08.png", "png_xc9n2c08.png", "png_xcrn0g04.png", "png_xcsn0g01.png", "png_xd0n2c08.png",
+"png_xd3n2c08.png", "png_xd9n2c08.png", "png_xdtn0g01.png", "png_xhdn0g08.png", "png_xlfn0g04.png", "png_xs1n0g01.png",
+"png_xs2n0g01.png", "png_xs4n0g01.png", "png_xs7n0g01.png", "png_z00n2c08.png", "png_z03n2c08.png", "png_z06n2c08.png",
+"png_z09n2c08.png",
+};
+
 struct object
 {
     framework::int32 width  = 0;
@@ -70,74 +173,20 @@ struct object
     framework::opengl::mesh quad;
 };
 
-std::vector<framework::image::image> load_bmp()
+std::vector<framework::image::image> load_images(mode m)
 {
-    std::string names[] = {
-    "good_pal1.bmp",
-    "good_pal1bg.bmp",
-    "good_pal1wb.bmp",
-    "good_pal4.bmp",
-    "good_pal4gs.bmp",
-    "good_pal4rle.bmp",
-    "good_pal8.bmp",
-    "good_pal8-0.bmp",
-    "good_pal8gs.bmp",
-    "good_pal8nonsquare.bmp",
-    "good_pal8os2.bmp",
-    "good_pal8rle.bmp",
-    "good_pal8topdown.bmp",
-    "good_pal8v4.bmp",
-    "good_pal8v5.bmp",
-    "good_pal8w124.bmp",
-    "good_pal8w125.bmp",
-    "good_pal8w126.bmp",
-    "good_rgb16.bmp",
-    "good_rgb16-565.bmp",
-    "good_rgb16-565pal.bmp",
-    "good_rgb16bfdef.bmp",
-    "good_rgb24.bmp",
-    "good_rgb24pal.bmp",
-    "good_rgb32.bmp",
-    "good_rgb32bf.bmp",
-    "good_rgb32bfdef.bmp",
-    "questionable_pal1p1.bmp",
-    "questionable_pal2.bmp",
-    "questionable_pal2color.bmp",
-    "questionable_pal4rlecut.bmp",
-    "questionable_pal4rletrns.bmp",
-    "questionable_pal8offs.bmp",
-    "questionable_pal8os2-hs.bmp",
-    "questionable_pal8os2-sz.bmp",
-    "questionable_pal8os2sp.bmp",
-    "questionable_pal8os2v2-16.bmp",
-    "questionable_pal8os2v2-40sz.bmp",
-    "questionable_pal8os2v2-sz.bmp",
-    "questionable_pal8os2v2.bmp",
-    "questionable_pal8oversizepal.bmp",
-    "questionable_pal8rlecut.bmp",
-    "questionable_pal8rletrns.bmp",
-    "questionable_rgb16-231.bmp",
-    "questionable_rgb16-3103.bmp",
-    "questionable_rgb16faketrns.bmp",
-    "questionable_rgba16-4444.bmp",
-    "questionable_rgba16-1924.bmp",
-    "questionable_rgba16-5551.bmp",
-    "questionable_rgb24largepal.bmp",
-    "questionable_rgb32-111110.bmp",
-    "questionable_rgb32-7187.bmp",
-    "questionable_rgb32-xbgr.bmp",
-    "questionable_rgb32fakealpha.bmp",
-    "questionable_rgb32h52.bmp",
-    "questionable_rgba32-1010102.bmp",
-    "questionable_rgba32-61754.bmp",
-    "questionable_rgba32-81284.bmp",
-    "questionable_rgba32.bmp",
-    "questionable_rgba32abf.bmp",
-    "questionable_rgba32h56.bmp",
-    };
-
     std::vector<framework::image::image> images;
-    std::transform(begin(names), end(names), std::back_inserter(images), [](const std::string& name) {
+
+    const auto& names = [](mode m) {
+        switch (m) {
+            case mode::bmp: return bmp_names;
+            case mode::png: return png_names;
+        }
+
+        return std::vector<std::string>();
+    }(m);
+
+    std::transform(cbegin(names), cend(names), std::back_inserter(images), [](const std::string& name) {
         framework::image::image img;
         img.load(name);
 
@@ -288,7 +337,7 @@ int main()
     framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
 
     // load all images
-    std::vector<framework::image::image> images = load_bmp();
+    std::vector<framework::image::image> images = load_images(mode::png);
 
     if (images.empty()) {
         return 0;
