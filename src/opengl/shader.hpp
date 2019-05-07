@@ -30,7 +30,7 @@
 #ifndef FRAMEWORK_OPENGL_SHADER_HPP
 #define FRAMEWORK_OPENGL_SHADER_HPP
 
-#include <fstream>
+#include <istream>
 #include <string>
 
 #include <common/types.hpp>
@@ -39,16 +39,64 @@
 
 namespace framework::opengl
 {
+
+/// @addtogroup opengl_module
+/// @{
+
+/// @brief base class for OpenGL shaders.
+///
+/// Encapsulates all base operations with shader. 
+/// Provides unified interface for all kinds of shaders.
+///
+/// @thread_safety All operations must be done only in main thread.
+///
+/// @see vertex_shader fragment_shader
 class shader_base
 {
 public:
+    /// @brief Destructor.
+    ///
+    /// Marks shader for deletion.
+    virtual ~shader_base() = 0;
+
     shader_base(const shader_base&) = delete;
     shader_base& operator=(const shader_base&) = delete;
 
-    void set_source(const std::string& src);
-    void set_source(std::ifstream& src_stream);
+    /// @brief Move constructor.
+    ///
+    /// @param other Shader to move from.
+    shader_base(shader_base&&);
 
+    /// @brief Move operator.
+    ///
+    /// @param other Shader to move from.
+    ///
+    /// @return Reference to moved object.
+    shader_base& operator=(shader_base&&);
+
+    /// @brief Sets the new shader source code.
+    ///
+    /// Deletes old shader source code and sets the new one.
+    /// After source code was set, the shader need to be compiled @ref compile.
+    ///
+    /// @param src Shader source code.
+    void set_source(const std::string& src);
+
+    /// @brief Reads shader source code from input stream.
+    ///
+    /// Deletes old shader source code and sets the new one.
+    /// After source code was set, the shader need to be compiled @ref compile.
+    ///
+    /// @param src_stream Shader source code stream.
+    void set_source(std::istream& src_stream);
+
+    /// @brief Compiles the shader.
+    ///
+    /// Compiles stored shader code.
+    /// Compilation status can be obtained by @ref compiled.
+    /// If compilation fails for any reason, information about errors can be obtained by @ref info_log. 
     void compile();
+
     void mark_for_deletion();
 
     framework::int32 shader_type() const;
@@ -61,7 +109,6 @@ public:
     std::string info_log() const;
     framework::int32 shader_id() const;
 
-    virtual ~shader_base();
 
 protected:
     shader_base();
@@ -81,8 +128,8 @@ public:
     vertex_shader(const vertex_shader&) = delete;
     vertex_shader& operator=(const vertex_shader&) = delete;
 
-    vertex_shader(vertex_shader&&) = default;
-    vertex_shader& operator=(vertex_shader&&) = default;
+    vertex_shader(vertex_shader&&);
+    vertex_shader& operator=(vertex_shader&&);
 };
 
 class fragment_shader : public shader_base
@@ -94,8 +141,8 @@ public:
     fragment_shader(const fragment_shader&) = delete;
     fragment_shader& operator=(const fragment_shader&) = delete;
 
-    fragment_shader(fragment_shader&&) = default;
-    fragment_shader& operator=(fragment_shader&&) = default;
+    fragment_shader(fragment_shader&&);
+    fragment_shader& operator=(fragment_shader&&);
 };
 
 class shader_program
@@ -107,8 +154,8 @@ public:
     shader_program(const shader_program&) = delete;
     shader_program& operator=(const shader_program&) = delete;
 
-    shader_program(shader_program&&) = default;
-    shader_program& operator=(shader_program&&) = default;
+    shader_program(shader_program&&);
+    shader_program& operator=(shader_program&&);
 
     void arttach(const shader_base& shader);
 

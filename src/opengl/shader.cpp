@@ -47,20 +47,12 @@ shader_base::~shader_base()
 
 void shader_base::set_source(const std::string& src)
 {
-    if (!valid()) {
-        return;
-    }
-
     const char* src_pointer = src.c_str();
     glShaderSource(m_shader_id, 1, &src_pointer, NULL);
 }
 
-void shader_base::set_source(std::ifstream& src_stream)
+void shader_base::set_source(std::istream& src_stream)
 {
-    if (!valid()) {
-        return;
-    }
-
     std::string src;
     std::string line;
     while (getline(src_stream, line)) {
@@ -72,10 +64,6 @@ void shader_base::set_source(std::ifstream& src_stream)
 
 void shader_base::compile()
 {
-    if (!valid()) {
-        return;
-    }
-
     glCompileShader(m_shader_id);
 }
 
