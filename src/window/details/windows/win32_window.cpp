@@ -41,7 +41,8 @@ namespace
 const char* const log_tag  = "win32_window";
 const wchar_t class_name[] = L"my_window_class";
 
-const DWORD window_style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+const DWORD window_style =  WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+const DWORD window_ex_style = WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW;
 
 std::wstring utf8_to_utf16(const std::string& string)
 {
@@ -162,6 +163,19 @@ framework::system::mouse_button get_mouse_button(UINT message)
     return mouse_button::button_unknown;
 }
 
+framework::system::window_size adjust_size(framework::system::window_size size, DWORD style)
+{
+    framework::int32 height = GetSystemMetrics(SM_CYCAPTION);
+    height += ((style & WS_SIZEBOX) ? GetSystemMetrics(SM_CYFRAME) : GetSystemMetrics(SM_CYFIXEDFRAME)) * 2;
+    height += GetSystemMetrics(SM_CYEDGE) * 2;
+
+    framework::int32 width = 0;
+    width += ((style & WS_SIZEBOX) ? GetSystemMetrics(SM_CXFRAME) : GetSystemMetrics(SM_CXFIXEDFRAME)) * 2;
+    width += GetSystemMetrics(SM_CXEDGE) * 2;
+
+    return {size.width + width, size.height + height};
+}
+
 } // namespace
 
 namespace framework::system::details
@@ -170,17 +184,16 @@ win32_window::win32_window(window_size size, const std::string& title, opengl::c
 {
     m_window_class = ::register_window_class();
 
-    RECT rect{0, 0, size.width, size.height};
-    AdjustWindowRectEx(&rect, window_style, false, WS_EX_CLIENTEDGE);
+    size = adjust_size(size, window_style);
 
-    m_window = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW,
+    m_window = CreateWindowEx(window_ex_style,
                               class_name,
                               utf8_to_utf16(title).c_str(),
                               window_style,
                               CW_USEDEFAULT,
                               CW_USEDEFAULT,
-                              rect.right - rect.left,
-                              rect.bottom - rect.top,
+                              size.width,
+                              size.height,
                               nullptr,
                               nullptr,
                               win32_application::handle(),
@@ -318,15 +331,14 @@ void win32_window::restore()
 
 void win32_window::set_size(window_size size)
 {
-    RECT rect{0, 0, size.width, size.height};
-    AdjustWindowRectEx(&rect, window_style, false, WS_EX_CLIENTEDGE);
-
+    auto style = GetWindowLong(m_window, GWL_STYLE);
+    size = adjust_size(size, style);
     SetWindowPos(m_window,
                  HWND_TOP,
                  0,
                  0,
-                 rect.right - rect.left,
-                 rect.bottom - rect.top,
+                 size.width,
+                 size.height,
                  SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 }
 
@@ -367,7 +379,8 @@ void win32_window::set_resizable(bool value)
         log::warning(log_tag) << "Can't change window style. Reason: " << GetLastError() << std::endl;
     }
 
-    SetWindowPos(m_window, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    window_size sz = adjust_size(size(), style);
+    SetWindowPos(m_window, HWND_TOP, 0, 0, sz.width, sz.height, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
 }
 
 void win32_window::set_title(const std::string& title)
@@ -526,21 +539,20 @@ LRESULT win32_window::process_message(UINT message, WPARAM w_param, LPARAM l_par
 
         case WM_GETMINMAXINFO: {
             auto minmaxinfo = reinterpret_cast<MINMAXINFO*>(l_param);
+            auto style = GetWindowLong(m_window, GWL_STYLE);
 
             if (m_min_size.width != 0 && m_min_size.height != 0) {
-                RECT rect{0, 0, m_min_size.width, m_min_size.height};
-                AdjustWindowRectEx(&rect, window_style, false, WS_EX_CLIENTEDGE);
+                window_size size = adjust_size(m_min_size, style);
 
-                minmaxinfo->ptMinTrackSize.x = rect.right - rect.left;
-                minmaxinfo->ptMinTrackSize.y = rect.bottom - rect.top;
+                minmaxinfo->ptMinTrackSize.x = size.width;
+                minmaxinfo->ptMinTrackSize.y = size.height;
             }
 
             if (m_max_size.width != 0 && m_max_size.height != 0) {
-                RECT rect{0, 0, m_max_size.width, m_max_size.height};
-                AdjustWindowRectEx(&rect, window_style, false, WS_EX_CLIENTEDGE);
+                window_size size = adjust_size(m_max_size, style);
 
-                minmaxinfo->ptMaxTrackSize.x = rect.right - rect.left;
-                minmaxinfo->ptMaxTrackSize.y = rect.bottom - rect.top;
+                minmaxinfo->ptMaxTrackSize.x = size.width;
+                minmaxinfo->ptMaxTrackSize.y = size.height;
             }
 
             return 0;
