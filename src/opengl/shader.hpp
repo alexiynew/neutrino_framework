@@ -35,7 +35,6 @@
 
 #include <common/types.hpp>
 #include <math/math.hpp>
-#include <opengl/gl.hpp>
 
 namespace framework::opengl
 {
@@ -97,24 +96,50 @@ public:
     /// If compilation fails for any reason, information about errors can be obtained by @ref info_log. 
     void compile();
 
+    /// @brief Deletes OpenGL shader object.
+    ///
+    /// If a shader is attached to a shader_program, it will be flagged for deletion, but it will not be deleted until it is no longer attached to any shader_program.
     void mark_for_deletion();
 
+    /// @brief OpenGL shader object type.
+    ///
+    /// @retrun Shader object type (e.g: GL_VERTEX_SHADER, GL_FRAGMENT_SHADER)
     framework::int32 shader_type() const;
+
+    /// @brief Determines if shader can be used.
+    ///
+    /// @return `true` if shader created and not yet deleted.
     bool valid() const;
+
+    /// @brief Determines if shader sources compiled.
+    ///
+    /// @return `true` if shader source loaded and compiled successfully.
     bool compiled() const;
-    bool marked_for_deletion() const;
+
+    /// @brief Length of shader sources.
+    ///
+    /// @return Length of loaded shader source code.
     framework::int32 source_length() const;
 
+    /// @brief Shader sources.
+    ///
+    /// @return Loaded shader source code.
     std::string source() const;
-    std::string info_log() const;
-    framework::int32 shader_id() const;
 
+    /// @brief Shader information log.
+    ///
+    /// Shader info log updated when shader is compiled.
+    ///
+    /// @return Shader information log if any.
+    std::string info_log() const;
+
+    /// @brief Shader id.
+    ///
+    /// @return OpenGL shader object id.
+    framework::uint32 shader_id() const;
 
 protected:
-    shader_base();
-
-    shader_base(shader_base&&) = default;
-    shader_base& operator=(shader_base&&) = default;
+    shader_base(int32 shader_type);
 
     framework::uint32 m_shader_id = 0;
 };
@@ -128,8 +153,8 @@ public:
     vertex_shader(const vertex_shader&) = delete;
     vertex_shader& operator=(const vertex_shader&) = delete;
 
-    vertex_shader(vertex_shader&&);
-    vertex_shader& operator=(vertex_shader&&);
+    vertex_shader(vertex_shader&&) = default;
+    vertex_shader& operator=(vertex_shader&&) = default;
 };
 
 class fragment_shader : public shader_base
@@ -141,8 +166,8 @@ public:
     fragment_shader(const fragment_shader&) = delete;
     fragment_shader& operator=(const fragment_shader&) = delete;
 
-    fragment_shader(fragment_shader&&);
-    fragment_shader& operator=(fragment_shader&&);
+    fragment_shader(fragment_shader&&) = default;
+    fragment_shader& operator=(fragment_shader&&) = default;
 };
 
 class shader_program

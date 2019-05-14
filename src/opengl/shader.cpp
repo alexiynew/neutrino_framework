@@ -38,11 +38,25 @@ namespace framework::opengl
 {
 #pragma region shader_base
 
-shader_base::shader_base() = default;
+shader_base::shader_base(int32 shader_type)
+{
+    m_shader_id = glCreateShader(shader_type);
+}
 
 shader_base::~shader_base()
 {
-    glDeleteShader(m_shader_id);
+    mark_for_deletion();
+}
+
+shader_base::shader_base(shader_base&& other)
+{
+    std::swap(other.m_shader_id, m_shader_id);
+}
+
+shader_base& shader_base::operator=(shader_base&& other)
+{
+    std::swap(other.m_shader_id, m_shader_id);
+    return *this;
 }
 
 void shader_base::set_source(const std::string& src)
@@ -91,13 +105,6 @@ bool shader_base::compiled() const
     return status;
 }
 
-bool shader_base::marked_for_deletion() const
-{
-    framework::int32 status = 0;
-    glGetShaderiv(m_shader_id, GL_DELETE_STATUS, &status);
-    return status;
-}
-
 framework::int32 shader_base::source_length() const
 {
     framework::int32 length = 0;
@@ -137,23 +144,24 @@ std::string shader_base::info_log() const
     return std::string(buffer.get());
 }
 
-framework::int32 shader_base::shader_id() const
+framework::uint32 shader_base::shader_id() const
 {
     return m_shader_id;
 }
+
 
 #pragma endregion
 
 #pragma region concrete_shaders
 
 vertex_shader::vertex_shader()
+    : shader_base(GL_VERTEX_SHADER)
 {
-    m_shader_id = glCreateShader(GL_VERTEX_SHADER);
 }
 
 fragment_shader::fragment_shader()
+    : shader_base(GL_FRAGMENT_SHADER)
 {
-    m_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 }
 
 #pragma endregion
