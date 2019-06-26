@@ -33,8 +33,8 @@
 #include <memory>
 #include <string>
 
-#include <log/log_details.hpp>
-#include <log/logger.hpp>
+#include <log/hdr/log_details.hpp>
+#include <log/hdr/logger.hpp>
 
 /// @details
 ///
