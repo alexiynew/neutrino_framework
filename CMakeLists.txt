@@ -37,11 +37,6 @@ if(NOT INCLUDED_TEST_MODULES)
     set(INCLUDED_TEST_MODULES ".*" CACHE STRING "Test modules that will be launched in the test command. An empty string means all modules." FORCE)
 endif()
 
-# Install path
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE} CACHE PATH "Set default install path." FORCE)
-endif()
-
 # Directories
 set(FRAMEWORK_DIR ${CMAKE_SOURCE_DIR})
 set(FRAMEWORK_SOURCE_DIR ${CMAKE_SOURCE_DIR}/framework)
@@ -53,6 +48,11 @@ set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
 set(DOCS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/docs)
 set(DOCS_BINARY_DIR ${CMAKE_BINARY_DIR}/docs)
 set(DOCS_OUTPUT_DIR ${OUTPUT_PATH_BASE}/docs)
+
+# Install path
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX ${OUTPUT_PATH_BASE}/${CMAKE_BUILD_TYPE} CACHE PATH "Set default install path." FORCE)
+endif()
 
 # Misk settings
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -88,9 +88,3 @@ add_custom_target(documentation
     COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_OUTPUT_DIR}
     COMMAND doxygen ${DOCS_BINARY_DIR}/Doxyfile
 )
-
-# Install target
-add_custom_target(install_${PROJECT_NAME}
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_install.cmake
-    DEPENDS ${PROJECT_NAME}
-    COMMENT "Installing ${PROJECT_NAME}")

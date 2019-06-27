@@ -23,7 +23,7 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} "")
+add_library(${PROJECT_NAME} OBJECT "")
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -42,3 +42,10 @@ foreach(MODULE ${MODULES})
 
     include(${MODULE_DIR}/CMakeLists.txt)
 endforeach(MODULE)
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
+
+add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
+add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
+
+install(TARGETS ${PROJECT_NAME}_shared ${PROJECT_NAME}_static DESTINATION lib)

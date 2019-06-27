@@ -1,15 +1,3 @@
-# Get list of all directories in current directory
-macro(subdirlist RESULT_LIST CURDIR)
-    file(GLOB CHILDREN RELATIVE ${CURDIR} ${CURDIR}/*)
-    set(DIRLIST "")
-    foreach(CHILD ${CHILDREN})
-        if(IS_DIRECTORY ${CURDIR}/${CHILD})
-            list(APPEND DIRLIST ${CHILD})
-        endif()
-    endforeach()
-    set(${RESULT_LIST} ${DIRLIST})
-endmacro()
-
 # Detect platform and set platform name
 macro(detect_platform_name PLATFORM_NAME)
     if(${UNIX})
@@ -23,4 +11,20 @@ macro(detect_platform_name PLATFORM_NAME)
     elseif(${WIN32})
         set(PLATFORM_NAME "windows")
     endif()
-endmacro()
+endmacro(detect_platform_name)
+
+# Make absolute path to source files
+macro(set_sources SOURCE_OUTPUT)
+    foreach(ARG ${ARGN})
+        list(APPEND ${SOURCE_OUTPUT} "${CMAKE_CURRENT_LIST_DIR}/${ARG}")
+    endforeach(ARG)
+endmacro(set_sources)
+
+# Make install target for files
+macro(make_install_files_target PREFIX)
+    foreach(ARG ${ARGN})
+        get_filename_component(DIR ${ARG} DIRECTORY)
+        string(REGEX REPLACE "^${CMAKE_CURRENT_LIST_DIR}" "" DIR ${DIR})
+        install(FILES ${ARG} DESTINATION "${PREFIX}/${DIR}")
+    endforeach(ARG)
+endmacro(make_install_files_target)

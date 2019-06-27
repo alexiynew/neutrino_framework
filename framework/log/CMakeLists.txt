@@ -25,24 +25,26 @@
 
 message("${MODULE_NAME}")
 
-set(MODULE_PUBLIC_SOURCES 
-    ${CMAKE_CURRENT_LIST_DIR}/log.hpp 
-    ${CMAKE_CURRENT_LIST_DIR}/logger.hpp 
-    ${CMAKE_CURRENT_LIST_DIR}/stream_logger.hpp
-    ${CMAKE_CURRENT_LIST_DIR}/hdr/log_details.hpp
+set_sources(PUBLIC_SOURCES 
+    log.hpp 
+    logger.hpp 
+    stream_logger.hpp
+    hdr/log_details.hpp
 )
 
-set(MODULE_PRIVATE_SOURCES 
-    ${CMAKE_CURRENT_LIST_DIR}/src/log.cpp 
-    ${CMAKE_CURRENT_LIST_DIR}/src/stream_logger.cpp 
-    ${CMAKE_CURRENT_LIST_DIR}/src/log_details.cpp
+set_sources(PRIVATE_SOURCES 
+    src/log.cpp 
+    src/stream_logger.cpp 
+    src/log_details.cpp
 )
 
 target_sources(${PROJECT_NAME}
     PUBLIC 
-        ${MODULE_PUBLIC_SOURCES}
+        ${PUBLIC_SOURCES}
     PRIVATE 
-        ${MODULE_PRIVATE_SOURCES}
+        ${PRIVATE_SOURCES}
 )
 
-source_group(${MODULE_NAME} FILES ${MODULE_PUBLIC_SOURCES} ${MODULE_PRIVATE_SOURCES})
+source_group(${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
+
+make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
