@@ -37,7 +37,6 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
-#include <log/log.hpp>
 #include <opengl/details/linux/glx_context.hpp>
 #include <window/details/linux/x11_keyboard.hpp>
 #include <window/details/linux/x11_mouse.hpp>
@@ -316,7 +315,6 @@ void x11_window::process_events()
 void x11_window::iconify()
 {
     if (XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen())) == 0) {
-        ::framework::log::warning(log_tag) << "Failed to iconify window." << std::endl;
         return;
     }
 
@@ -630,8 +628,6 @@ bool x11_window::visible() const
         return attributes.map_state == IsViewable || (m_mapped && iconified());
     }
 
-    ::framework::log::warning(log_tag) << "Can't detect window visibility." << std::endl;
-
     return false;
 }
 
@@ -845,13 +841,6 @@ void x11_window::process(XMappingEvent event)
     XRefreshKeyboardMapping(&event);
 }
 
-void x11_window::process(XAnyEvent event)
-{
-    if (framework::utils::is_debug()) {
-        ::framework::log::debug(log_tag) << "[" << title() << "] Got event: " << event_type_string(event) << std::endl;
-    }
-}
-
 #pragma endregion
 
 #pragma region helper_functions
@@ -869,8 +858,8 @@ void x11_window::maximize_toggle(bool enable)
     auto action = enable ? utils::window_state_action::add : utils::window_state_action::remove;
 
     if (!utils::window_change_state(m_server.get(), m_window, action, state)) {
-        using log::warning;
-        warning(log_tag) << "Failed to " << (enable ? "set" : "reset") << " maximized state." << std::endl;
+        // report error
+        //        warning(log_tag) << "Failed to " << (enable ? "set" : "reset") << " maximized state." << std::endl;
     }
 }
 
@@ -890,8 +879,8 @@ void x11_window::fullscreen_toggle(bool enable)
     auto action = enable ? utils::window_state_action::add : utils::window_state_action::remove;
 
     if (!utils::window_change_state(m_server.get(), m_window, action, state)) {
-        using log::warning;
-        warning(log_tag) << "Failed to " << (enable ? "set" : "reset") << " fullscreen mode." << std::endl;
+        // report error
+        // warning(log_tag) << "Failed to " << (enable ? "set" : "reset") << " fullscreen mode." << std::endl;
     }
 }
 

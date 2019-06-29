@@ -28,7 +28,6 @@
 // =============================================================================
 
 #include <common/types.hpp>
-#include <log/log.hpp>
 #include <window/details/linux/x11_keyboard.hpp>
 #include <window/details/linux/x11_server.hpp>
 
@@ -45,7 +44,7 @@ std::weak_ptr<x11_server>& server_instance()
 }
 
 [[noreturn]] ::framework::int32 fatal_error_handler(Display* /*unused*/) {
-    ::framework::log::fatal(log_tag) << "Fatal error occurred." << std::endl;
+    // TODO(alex): Report error
     std::terminate();
 }
 
@@ -53,11 +52,12 @@ int error_handler(Display* display, XErrorEvent* event)
 {
     auto x_server = server_instance().lock();
     if (x_server && display == x_server->display()) {
-        constexpr ::framework::uint32 length = 8 * 1024;
-        char buffer[length];
-        XGetErrorText(display, event->error_code, buffer, length);
+        // TODO(alex): Report error
+        // constexpr ::framework::uint32 length = 8 * 1024;
+        // char buffer[length];
+        // XGetErrorText(display, event->error_code, buffer, length);
 
-        ::framework::log::error(log_tag) << buffer << std::endl;
+        //::framework::log::error(log_tag) << buffer << std::endl;
     }
 
     return 0;

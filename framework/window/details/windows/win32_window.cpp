@@ -30,7 +30,6 @@
 #include <stdexcept>
 #include <windowsx.h>
 
-#include <log/log.hpp>
 #include <opengl/details/windows/wgl_context.hpp>
 #include <window/details/windows/win32_application.hpp>
 #include <window/details/windows/win32_keyboard.hpp>
@@ -363,9 +362,7 @@ void win32_window::set_resizable(bool value)
         style |= (WS_SIZEBOX | WS_MAXIMIZEBOX);
     }
 
-    if (!SetWindowLong(m_window, GWL_STYLE, style)) {
-        log::warning(log_tag) << "Can't change window style. Reason: " << GetLastError() << std::endl;
-    }
+    SetWindowLong(m_window, GWL_STYLE, style);
 
     SetWindowPos(m_window, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 }
@@ -677,25 +674,18 @@ LRESULT win32_window::process_key_event(WPARAM w_param, LPARAM l_param)
         return 0;
     }
 
-    switch (w_param)
-    {
-        case VK_SHIFT:
-            process_shift_key(l_param);
-            return 0;
+    switch (w_param) {
+        case VK_SHIFT: process_shift_key(l_param); return 0;
 
-        case VK_CONTROL:
-            process_control_key(l_param);
-            return 0;
+        case VK_CONTROL: process_control_key(l_param); return 0;
 
-        case VK_MENU:
-            process_alt_key(l_param);
-            return 0;
+        case VK_MENU: process_alt_key(l_param); return 0;
         default: break;
     }
 
-    const key_code key = details::map_system_key(static_cast<uint32>(w_param));
+    const key_code key              = details::map_system_key(static_cast<uint32>(w_param));
     const modifiers_state mod_state = details::get_modifiers_state();
-    const bool key_is_down = ((l_param >> 31) & 1) == 0;
+    const bool key_is_down          = ((l_param >> 31) & 1) == 0;
 
     if (key == key_code::key_unknown) {
         return 0;
@@ -719,7 +709,7 @@ LRESULT win32_window::process_key_event(WPARAM w_param, LPARAM l_param)
 
 void win32_window::process_shift_key(LPARAM l_param)
 {
-    const bool key_is_down = ((l_param >> 31) & 1) == 0;
+    const bool key_is_down          = ((l_param >> 31) & 1) == 0;
     const modifiers_state mod_state = details::get_modifiers_state();
 
     const bool left_shift  = ((GetKeyState(VK_LSHIFT) & 0x8000));
@@ -740,13 +730,13 @@ void win32_window::process_shift_key(LPARAM l_param)
         }
     }
 
-    m_modifiers_flags.left_shift = left_shift;
+    m_modifiers_flags.left_shift  = left_shift;
     m_modifiers_flags.right_shift = right_shift;
 }
 
 void win32_window::process_control_key(LPARAM l_param)
 {
-    const bool key_is_down = ((l_param >> 31) & 1) == 0;
+    const bool key_is_down          = ((l_param >> 31) & 1) == 0;
     const modifiers_state mod_state = details::get_modifiers_state();
 
     const bool left_control  = ((GetKeyState(VK_LCONTROL) & 0x8000));
@@ -767,13 +757,13 @@ void win32_window::process_control_key(LPARAM l_param)
         m_event_handler->on_key_release(key, mod_state);
     }
 
-    m_modifiers_flags.left_control = left_control;
+    m_modifiers_flags.left_control  = left_control;
     m_modifiers_flags.right_control = right_control;
 }
 
 void win32_window::process_alt_key(LPARAM l_param)
 {
-    const bool key_is_down = ((l_param >> 31) & 1) == 0;
+    const bool key_is_down          = ((l_param >> 31) & 1) == 0;
     const modifiers_state mod_state = details::get_modifiers_state();
 
     const bool left_alt  = ((GetKeyState(VK_LMENU) & 0x8000));
@@ -794,7 +784,7 @@ void win32_window::process_alt_key(LPARAM l_param)
         m_event_handler->on_key_release(key, mod_state);
     }
 
-    m_modifiers_flags.left_alt = left_alt;
+    m_modifiers_flags.left_alt  = left_alt;
     m_modifiers_flags.right_alt = right_alt;
 }
 
