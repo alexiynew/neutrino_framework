@@ -23,38 +23,20 @@
 # SOFTWARE.
 # =============================================================================
 
-include(CTest)
-enable_testing()
-
-set(TESTS_TARGET ${PROJECT_NAME}_tests)
-
-add_custom_target(${TESTS_TARGET} DEPENDS ${PROJECT_NAME})
-
-message("Add tests...")
-
-set(TEST_GROUPS 
-    unit_test
-    common
-    log
-    math
-    window
+set_sources(PRIVATE_SOURCES 
+    main.cpp
 )
 
-foreach(GROUP ${TEST_GROUPS})
-    set(GROUP_NAME ${GROUP})
-    set(GROUP_DIR ${FRAMEWORK_TEST_DIR}/${GROUP})
+add_executable(${TEST_NAME} EXCLUDE_FROM_ALL "")
 
-    include(${GROUP_DIR}/CMakeLists.txt)
-endforeach(GROUP)
+target_sources(${TEST_NAME} PRIVATE ${PRIVATE_SOURCES})
 
-add_custom_target(run_all_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} --build-config ${CMAKE_BUILD_TYPE} --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\"
-    DEPENDS ${TESTS_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+target_link_libraries(${TEST_NAME} ${PROJECT_NAME}_static)
+target_include_directories(${TEST_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 
-add_custom_target(run_all_tests_verbose
-    COMMAND ${CMAKE_CTEST_COMMAND} --build-config ${CMAKE_BUILD_TYPE} --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\" --verbose
-    DEPENDS ${TESTS_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+set_target_properties(${TEST_NAME} PROPERTIES FOLDER ${TEST_FOLDER_NAME}/${GROUP_NAME})
+
+add_test(NAME "${GROUP_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
+set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME})
+
+add_dependencies(${TESTS_TARGET} ${TEST_NAME})

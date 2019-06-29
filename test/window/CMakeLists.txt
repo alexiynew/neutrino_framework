@@ -23,38 +23,19 @@
 # SOFTWARE.
 # =============================================================================
 
-include(CTest)
-enable_testing()
+message("${GROUP_NAME}")
 
-set(TESTS_TARGET ${PROJECT_NAME}_tests)
-
-add_custom_target(${TESTS_TARGET} DEPENDS ${PROJECT_NAME})
-
-message("Add tests...")
-
-set(TEST_GROUPS 
-    unit_test
-    common
-    log
-    math
-    window
+set(TESTS 
+    window_focus
+    window_open
+    window_properties
+    window_state
+    window_events
 )
 
-foreach(GROUP ${TEST_GROUPS})
-    set(GROUP_NAME ${GROUP})
-    set(GROUP_DIR ${FRAMEWORK_TEST_DIR}/${GROUP})
+foreach(TEST ${TESTS})
+    set(TEST_NAME ${TEST})
+    set(TEST_DIR ${GROUP_DIR}/${TEST})
 
-    include(${GROUP_DIR}/CMakeLists.txt)
-endforeach(GROUP)
-
-add_custom_target(run_all_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} --build-config ${CMAKE_BUILD_TYPE} --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\"
-    DEPENDS ${TESTS_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-add_custom_target(run_all_tests_verbose
-    COMMAND ${CMAKE_CTEST_COMMAND} --build-config ${CMAKE_BUILD_TYPE} --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\" --verbose
-    DEPENDS ${TESTS_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+    include(${TEST_DIR}/CMakeLists.txt)
+endforeach(TEST)
