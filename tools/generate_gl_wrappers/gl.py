@@ -3,8 +3,8 @@
 
 SOURCE = "./dependencies/GL/glcorearb.h"
 
-DESTHPP = "./src/opengl/details/gl_wrapper.hpp"
-DESTCPP = "./src/opengl/details/gl_wrapper.cpp"
+DESTHPP = "./framework/opengl/details/gl_wrapper.hpp"
+DESTCPP = "./framework/opengl/details/gl_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
 TYPE_REGEX = r'typedef.*\(APIENTRYP\s(PFN.*PROC)\).*;'
