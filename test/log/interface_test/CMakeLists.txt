@@ -23,28 +23,20 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${MODULE_NAME}")
-
-set_sources(PUBLIC_SOURCES
-    log.hpp
-    logger.hpp
-    stream_logger.hpp
-    details/log_ostream.hpp
+set_sources(PRIVATE_SOURCES 
+    main.cpp
 )
 
-set_sources(PRIVATE_SOURCES
-    log.cpp
-    stream_logger.cpp
-    details/log_ostream.cpp
-)
+add_executable(${TEST_NAME} EXCLUDE_FROM_ALL "")
 
-target_sources(${PROJECT_NAME}
-    PUBLIC
-        ${PUBLIC_SOURCES}
-    PRIVATE
-        ${PRIVATE_SOURCES}
-)
+target_sources(${TEST_NAME} PRIVATE ${PRIVATE_SOURCES})
 
-source_group(TREE ${MODULE_DIR} PREFIX ${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
+target_link_libraries(${TEST_NAME} ${PROJECT_NAME}_static)
+target_include_directories(${TEST_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+set_target_properties(${TEST_NAME} PROPERTIES FOLDER ${TEST_FOLDER_NAME}/${GROUP_NAME})
+
+add_test(NAME "${GROUP_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
+set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME})
+
+add_dependencies(${TESTS_TARGET} ${TEST_NAME})

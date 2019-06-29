@@ -34,7 +34,7 @@ target_include_directories(${PROJECT_NAME}
 message("Add modules...")
 
 #set(MODULES, "common log math unit_test window opengl")
-set(MODULES "log")
+set(MODULES "log" "unit_test")
 
 foreach(MODULE ${MODULES})
     set(MODULE_NAME ${MODULE})

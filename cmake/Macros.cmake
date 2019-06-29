@@ -15,6 +15,8 @@ endmacro(detect_platform_name)
 
 # Make absolute path to source files
 macro(set_sources SOURCE_OUTPUT)
+    unset(${SOURCE_OUTPUT})
+    unset(${SOURCE_OUTPUT} CACHE)
     foreach(ARG ${ARGN})
         list(APPEND ${SOURCE_OUTPUT} "${CMAKE_CURRENT_LIST_DIR}/${ARG}")
     endforeach(ARG)

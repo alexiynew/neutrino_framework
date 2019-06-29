@@ -23,28 +23,13 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${MODULE_NAME}")
+message("${GROUP_NAME}")
 
-set_sources(PUBLIC_SOURCES
-    log.hpp
-    logger.hpp
-    stream_logger.hpp
-    details/log_ostream.hpp
-)
+set(TESTS "interface_test")
 
-set_sources(PRIVATE_SOURCES
-    log.cpp
-    stream_logger.cpp
-    details/log_ostream.cpp
-)
+foreach(TEST ${TESTS})
+    set(TEST_NAME ${TEST})
+    set(TEST_DIR ${GROUP_DIR}/${TEST})
 
-target_sources(${PROJECT_NAME}
-    PUBLIC
-        ${PUBLIC_SOURCES}
-    PRIVATE
-        ${PRIVATE_SOURCES}
-)
-
-source_group(TREE ${MODULE_DIR} PREFIX ${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
-
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+    include(${TEST_DIR}/CMakeLists.txt)
+endforeach(TEST)

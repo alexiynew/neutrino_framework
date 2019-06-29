@@ -26,16 +26,11 @@
 message("${MODULE_NAME}")
 
 set_sources(PUBLIC_SOURCES
-    log.hpp
-    logger.hpp
-    stream_logger.hpp
-    details/log_ostream.hpp
+    suite.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    log.cpp
-    stream_logger.cpp
-    details/log_ostream.cpp
+    suite.cpp
 )
 
 target_sources(${PROJECT_NAME}

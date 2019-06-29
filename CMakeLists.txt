@@ -77,7 +77,7 @@ include(${FRAMEWORK_SOURCE_DIR}/CMakeLists.txt)
 
 # Add tests
 if(BUILD_TESTS)
-#    add_subdirectory(${FRAMEWORK_TEST_DIR})
+    add_subdirectory(${FRAMEWORK_TEST_DIR})
 endif()
 
 # Generate documentation
