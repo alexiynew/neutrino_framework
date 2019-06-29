@@ -23,28 +23,32 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} OBJECT "")
+message("${MODULE_NAME}")
 
-add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+set_sources(PUBLIC_SOURCES
+    window.hpp
+    window_size.hpp
+    window_position.hpp
+    window_callback_types.hpp
+    keyboard.hpp
+    mouse.hpp
 )
 
-message("Add modules...")
+set_sources(PRIVATE_SOURCES
+    window.cpp
+    window_size.cpp
+    window_position.cpp
+)
 
-set(MODULES "common" "log" "unit_test" "math" "window")
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        ${PUBLIC_SOURCES}
+    PRIVATE
+        ${PRIVATE_SOURCES}
+)
 
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
+source_group(TREE ${MODULE_DIR} PREFIX ${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
 
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
+make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-install(TARGETS ${PROJECT_NAME}_shared ${PROJECT_NAME}_static DESTINATION lib)
+include(${MODULE_DIR}/details/CMakeLists.txt)

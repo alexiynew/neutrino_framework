@@ -23,28 +23,29 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} OBJECT "")
+set_sources(PRIVATE_SOURCES
+    x11_server.hpp
+    x11_window.hpp
+    x11_utils.hpp
+    x11_keyboard.hpp
+    x11_mouse.hpp
 
-add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+    x11_server.cpp
+    x11_window.cpp
+    x11_utils.cpp
+    x11_implementation.cpp
+    x11_keyboard.cpp
+    x11_mouse.cpp
 )
 
-message("Add modules...")
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${PRIVATE_SOURCES}
+)
 
-set(MODULES "common" "log" "unit_test" "math" "window")
+# Link to x11
+find_package(X11 REQUIRED)
 
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
-
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-install(TARGETS ${PROJECT_NAME}_shared ${PROJECT_NAME}_static DESTINATION lib)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${X11_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}_static ${X11_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_shared ${X11_LIBRARIES})

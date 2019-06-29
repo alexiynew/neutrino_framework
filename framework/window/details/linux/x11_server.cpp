@@ -48,7 +48,7 @@ std::weak_ptr<x11_server>& server_instance()
     std::terminate();
 }
 
-int error_handler(Display* display, XErrorEvent* event)
+int error_handler(Display* display, XErrorEvent* /* unused */)
 {
     auto x_server = server_instance().lock();
     if (x_server && display == x_server->display()) {
