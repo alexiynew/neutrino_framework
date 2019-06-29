@@ -33,11 +33,12 @@ add_custom_target(${TESTS_TARGET} DEPENDS ${PROJECT_NAME})
 message("Add tests...")
 
 set(TEST_GROUPS 
-    unit_test
-    common
-    log
-    math
-    window
+    "unit_test"
+    "common"
+    "log"
+    "math"
+    "window"
+    "opengl"
 )
 
 foreach(GROUP ${TEST_GROUPS})
