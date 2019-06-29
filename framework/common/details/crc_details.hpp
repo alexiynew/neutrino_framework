@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_CRC_DETAILS_HPP
-#define FRAMEWORK_COMMON_CRC_DETAILS_HPP
+#ifndef FRAMEWORK_COMMON_DETAILS_CRC_DETAILS_HPP
+#define FRAMEWORK_COMMON_DETAILS_CRC_DETAILS_HPP
 
 #include <array>
 #include <utility>
