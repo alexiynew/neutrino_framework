@@ -23,28 +23,39 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} OBJECT "")
+message("${MODULE_NAME}")
 
-add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+set_sources(PUBLIC_SOURCES
+    gl.hpp
+    context.hpp
+    context_settings.hpp
 )
 
-message("Add modules...")
+set_sources(PRIVATE_SOURCES
+    gl.cpp
+    context.cpp
+    context_settings.cpp
+)
 
-set(MODULES "common" "log" "unit_test" "math" "window" "opengl")
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        ${PUBLIC_SOURCES}
+    PRIVATE
+        ${PRIVATE_SOURCES}
+)
 
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
+source_group(TREE ${MODULE_DIR} PREFIX ${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
 
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
+make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
+install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/GL/glcorearb.h DESTINATION include/${MODULE_NAME}/GL)
+install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/KHR/khrplatform.h DESTINATION include/${MODULE_NAME}/KHR)
 
-install(TARGETS ${PROJECT_NAME}_shared ${PROJECT_NAME}_static DESTINATION lib)
+include(${MODULE_DIR}/details/CMakeLists.txt)
+
+# Link with OpenGL
+find_package(OpenGL REQUIRED)
+
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${OPENGL_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}_static ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_shared ${OPENGL_LIBRARIES})

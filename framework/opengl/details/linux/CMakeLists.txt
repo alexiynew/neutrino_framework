@@ -23,28 +23,18 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} OBJECT "")
+set_sources(PRIVATE_SOURCES
+    glx_context.hpp
+    glxext_wrapper.hpp
+    glxext.hpp
 
-add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+    gl_details.cpp
+    glx_context.cpp
+    glxext_wrapper.cpp
+    glxext.cpp
 )
 
-message("Add modules...")
-
-set(MODULES "common" "log" "unit_test" "math" "window" "opengl")
-
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
-
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-install(TARGETS ${PROJECT_NAME}_shared ${PROJECT_NAME}_static DESTINATION lib)
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${PRIVATE_SOURCES}
+)
