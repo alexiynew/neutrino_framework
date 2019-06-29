@@ -29,13 +29,13 @@ set_sources(PUBLIC_SOURCES
     log.hpp
     logger.hpp
     stream_logger.hpp
-    hdr/log_details.hpp
+    details/log_ostream.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    src/log.cpp
-    src/stream_logger.cpp
-    src/log_details.cpp
+    log.cpp
+    stream_logger.cpp
+    details/log_ostream.cpp
 )
 
 target_sources(${PROJECT_NAME}

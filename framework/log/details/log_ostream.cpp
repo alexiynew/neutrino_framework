@@ -27,7 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <log/hdr/log_details.hpp>
+#include <log/details/log_ostream.hpp>
 #include <log/log.hpp>
 
 namespace
