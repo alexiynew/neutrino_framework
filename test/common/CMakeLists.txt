@@ -23,29 +23,17 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} OBJECT "")
+message("${GROUP_NAME}")
 
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+set(TESTS 
+    utils
+    crc
+    version
 )
 
-message("Add modules...")
+foreach(TEST ${TESTS})
+    set(TEST_NAME ${TEST})
+    set(TEST_DIR ${GROUP_DIR}/${TEST})
 
-#set(MODULES, "common log math unit_test window opengl")
-set(MODULES "common" "log" "unit_test" "math")
-
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
-
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
-
-install(TARGETS ${PROJECT_NAME}_shared ${PROJECT_NAME}_static DESTINATION lib)
+    include(${TEST_DIR}/CMakeLists.txt)
+endforeach(TEST)

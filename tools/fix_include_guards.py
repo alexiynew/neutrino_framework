@@ -1,11 +1,11 @@
-#! /usr/bin/python3
+! /usr/bin/python3
 
 import re
 import os
 
 script_path = os.getcwd()
 
-path = "{}/src".format(script_path)
+path = "{}/framework".format(script_path)
 
 
 def get_files(path):

@@ -23,29 +23,37 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} OBJECT "")
+message("${MODULE_NAME}")
 
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+set_sources(PUBLIC_SOURCES
+    math.hpp
+
+    details/matrix_type.hpp
+    details/vector_type.hpp
+
+    details/constants.hpp
+    details/common_functions.hpp
+    details/exponential_functions.hpp
+    details/geometric_functions.hpp
+    details/matrix_functions.hpp
+    details/relational_functions.hpp
+    details/transform_functions.hpp
+
+    details/vector_type_details.hpp
+    details/matrix_type_details.hpp
+
+    details/common_functions_details.hpp
+    details/geometric_functions_details.hpp
+    details/matrix_functions_details.hpp
+    details/relational_functions_details.hpp
+    details/trigonometric_functions.hpp
 )
 
-message("Add modules...")
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        ${PUBLIC_SOURCES}
+)
 
-#set(MODULES, "common log math unit_test window opengl")
-set(MODULES "common" "log" "unit_test" "math")
+source_group(TREE ${MODULE_DIR} PREFIX ${MODULE_NAME} FILES ${PUBLIC_SOURCES})
 
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
-
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
-
-install(TARGETS ${PROJECT_NAME}_shared ${PROJECT_NAME}_static DESTINATION lib)
+make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})

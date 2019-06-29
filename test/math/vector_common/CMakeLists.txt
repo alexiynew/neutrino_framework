@@ -23,29 +23,20 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} OBJECT "")
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+set_sources(PRIVATE_SOURCES 
+    main.cpp
 )
 
-message("Add modules...")
+add_executable(${TEST_NAME} EXCLUDE_FROM_ALL "")
 
-#set(MODULES, "common log math unit_test window opengl")
-set(MODULES "common" "log" "unit_test" "math")
+target_sources(${TEST_NAME} PRIVATE ${PRIVATE_SOURCES})
 
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
+target_link_libraries(${TEST_NAME} ${PROJECT_NAME}_static)
+target_include_directories(${TEST_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
+set_target_properties(${TEST_NAME} PROPERTIES FOLDER ${TEST_FOLDER_NAME}/${GROUP_NAME})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
+add_test(NAME "${GROUP_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
+set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME})
 
-add_library(${PROJECT_NAME}_shared SHARED $<TARGET_OBJECTS:${PROJECT_NAME}>)
-add_library(${PROJECT_NAME}_static STATIC $<TARGET_OBJECTS:${PROJECT_NAME}>)
-
-install(TARGETS ${PROJECT_NAME}_shared ${PROJECT_NAME}_static DESTINATION lib)
+add_dependencies(${TESTS_TARGET} ${TEST_NAME})

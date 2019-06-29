@@ -31,7 +31,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include <common/utils_details.hpp>
+#include <common/details/utils_details.hpp>
 
 namespace framework
 {

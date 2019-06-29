@@ -76,11 +76,12 @@ constexpr value_t<BitsCount> generate_value(usize dividend) noexcept
     constexpr value_t<BitsCount> topbit = (1u << (BitsCount - 1));
 
     value_t<BitsCount> value = static_cast<value_t<BitsCount>>(dividend << (BitsCount - 8));
-    for (uint8 bit = 8; bit > 0; --bit) {
-        value = (value & topbit) ? (value << 1) ^ Polynome : value << 1;
+
+    for (uint8 bit = 0; bit < 8; ++bit) {
+        value = static_cast<value_t<BitsCount>>((value & topbit) ? ((value << 1) ^ Polynome) : (value << 1));
     }
 
-    return value;
+    return static_cast<value_t<BitsCount>>(value);
 }
 
 template <usize BitsCount, value_t<BitsCount> Polynome, usize Size, usize... I>
@@ -104,9 +105,9 @@ value_t<BitsCount> reflect(value_t<BitsCount> value)
 
     for (usize bit = 0; bit < BitsCount; ++bit) {
         if (value & 1) {
-            ref |= 1 << (BitsCount - 1 - bit);
+            ref = static_cast<value_t<BitsCount>>(ref | 1 << (BitsCount - 1 - bit));
         }
-        value >>= 1;
+        value = static_cast<value_t<BitsCount>>(value >> 1);
     }
 
     return ref;

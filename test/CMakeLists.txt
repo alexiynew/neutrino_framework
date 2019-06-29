@@ -32,7 +32,7 @@ add_custom_target(${TESTS_TARGET} DEPENDS ${PROJECT_NAME})
 
 message("Add tests...")
 
-set(TEST_GROUPS "unit_test" "log")
+set(TEST_GROUPS "unit_test" "common" "log" "math")
 
 foreach(GROUP ${TEST_GROUPS})
     set(GROUP_NAME ${GROUP})

@@ -30,7 +30,7 @@
 #ifndef FRAMEWORK_COMMON_CRC_HPP
 #define FRAMEWORK_COMMON_CRC_HPP
 
-#include <common/crc_details.hpp>
+#include <common/details/crc_details.hpp>
 #include <common/types.hpp>
 
 namespace framework::utils
@@ -176,8 +176,9 @@ XorOut>::calculate(Iterator begin, Iterator end)
 
     for (; begin != end; ++begin) {
         for (usize i = 0; i < input_value_size; ++i) {
-            const uint8 byte = ((*begin) >> (i * 8)) & 0xFF;
-            value            = update(ReflectIn ? crc_details::reflect<8>(byte) : byte, value);
+            const uint8 byte = static_cast<uint8>(((*begin) >> (i * 8)) & 0xFF);
+
+            value = update(ReflectIn ? crc_details::reflect<8>(byte) : byte, value);
         }
     }
 
@@ -202,8 +203,8 @@ ReflectIn,
 ReflectOut,
 XorOut>::update(uint8 byte, value_type value) noexcept
 {
-    const uint8 index = byte ^ (value >> (BitsCount - 8));
-    return crc_table[index] ^ (value << 8);
+    const uint8 index = static_cast<uint8>(byte ^ (value >> (BitsCount - 8)));
+    return static_cast<value_type>(crc_table[index] ^ (value << 8));
 }
 #pragma endregion
 
