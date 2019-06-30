@@ -46,8 +46,8 @@ target_sources(${PROJECT_NAME}
 
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
-install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/GL/glcorearb.h DESTINATION include/${MODULE_NAME}/GL)
-install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/KHR/khrplatform.h DESTINATION include/${MODULE_NAME}/KHR)
+install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/GL/glcorearb.h DESTINATION dependencies/GL)
+install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/KHR/khrplatform.h DESTINATION dependencies/KHR)
 
 include(${MODULE_DIR}/details/CMakeLists.txt)
 
