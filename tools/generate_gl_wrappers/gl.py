@@ -17,7 +17,7 @@ HEADER_FILE = "graphics/opengl/details/gl_wrapper.hpp"
 BRIEF = "OpneGL functions wrapper."
 DATE = "17.09.2018"
 
-INCLUDE_GUARD = "FRAMEWORK_OPENGL_DETAILS_GL_WRAPPER_HPP"
+INCLUDE_GUARD = "FRAMEWORK_GRAPHICS_OPENGL_DETAILS_GL_WRAPPER_HPP"
 
 INCLUDE_FILES = ["GL/glcorearb.h"]
 

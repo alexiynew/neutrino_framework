@@ -27,9 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <opengl/details/gl_details.hpp>
-
 #include <common/types.hpp>
+#include <graphics/opengl/details/gl_details.hpp>
 #include <graphics/opengl/details/windows/wglext_wrapper.hpp>
 
 namespace

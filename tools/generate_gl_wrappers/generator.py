@@ -167,7 +167,7 @@ def generate_source(sections, dictionary):
                  "${license}"
                  "\n"
                  "#include <common/types.hpp>\n"
-                 "#include <opengl/details/gl_details.hpp>\n"
+                 "#include <graphics/opengl/details/gl_details.hpp>\n"
                  "#include <${header_file}>\n"
                  "\n"
                  "namespace\n"
