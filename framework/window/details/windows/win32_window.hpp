@@ -133,7 +133,7 @@ private:
     std::unique_ptr<opengl::context> m_context = nullptr;
 
     modifiers_flags m_modifiers_flags = {false, false, false, false, false, false};
- 
+
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 
     void track_mouse();

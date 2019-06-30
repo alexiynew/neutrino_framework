@@ -118,32 +118,32 @@ key_code::key_unknown,
 key_code::key_unknown,
 key_code::key_unknown,
 
-key_code::key_a,     // 0x41
-key_code::key_b,     // 0x42
-key_code::key_c,     // 0x43
-key_code::key_d,     // 0x44
-key_code::key_e,     // 0x45
-key_code::key_f,     // 0x46
-key_code::key_g,     // 0x47
-key_code::key_h,     // 0x48
-key_code::key_i,     // 0x49
-key_code::key_j,     // 0x4a
-key_code::key_k,     // 0x4b
-key_code::key_l,     // 0x4c
-key_code::key_m,     // 0x4d
-key_code::key_n,     // 0x4e
-key_code::key_o,     // 0x4f
-key_code::key_p,     // 0x50
-key_code::key_q,     // 0x51
-key_code::key_r,     // 0x52
-key_code::key_s,     // 0x53
-key_code::key_t,     // 0x54
-key_code::key_u,     // 0x55
-key_code::key_v,     // 0x56
-key_code::key_w,     // 0x57
-key_code::key_x,     // 0x58
-key_code::key_y,     // 0x59
-key_code::key_z,     // 0x5a
+key_code::key_a, // 0x41
+key_code::key_b, // 0x42
+key_code::key_c, // 0x43
+key_code::key_d, // 0x44
+key_code::key_e, // 0x45
+key_code::key_f, // 0x46
+key_code::key_g, // 0x47
+key_code::key_h, // 0x48
+key_code::key_i, // 0x49
+key_code::key_j, // 0x4a
+key_code::key_k, // 0x4b
+key_code::key_l, // 0x4c
+key_code::key_m, // 0x4d
+key_code::key_n, // 0x4e
+key_code::key_o, // 0x4f
+key_code::key_p, // 0x50
+key_code::key_q, // 0x51
+key_code::key_r, // 0x52
+key_code::key_s, // 0x53
+key_code::key_t, // 0x54
+key_code::key_u, // 0x55
+key_code::key_v, // 0x56
+key_code::key_w, // 0x57
+key_code::key_x, // 0x58
+key_code::key_y, // 0x59
+key_code::key_z, // 0x5a
 
 key_code::key_left_super,  // 0x5b  left supper
 key_code::key_right_super, // 0x5c  right supper
