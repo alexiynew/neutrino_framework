@@ -47,8 +47,6 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-source_group(TREE ${MODULE_DIR} PREFIX ${MODULE_NAME} FILES ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
-
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
 include(${MODULE_DIR}/details/CMakeLists.txt)

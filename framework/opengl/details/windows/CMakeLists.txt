@@ -23,35 +23,18 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${MODULE_NAME}")
+set_sources(PRIVATE_SOURCES
+    wgl_context.hpp
+    wglext_wrapper.hpp
+    wglext.hpp
 
-set_sources(PUBLIC_SOURCES
-    math.hpp
-
-    details/matrix_type.hpp
-    details/vector_type.hpp
-
-    details/constants.hpp
-    details/common_functions.hpp
-    details/exponential_functions.hpp
-    details/geometric_functions.hpp
-    details/matrix_functions.hpp
-    details/relational_functions.hpp
-    details/transform_functions.hpp
-
-    details/vector_type_details.hpp
-    details/matrix_type_details.hpp
-
-    details/common_functions_details.hpp
-    details/geometric_functions_details.hpp
-    details/matrix_functions_details.hpp
-    details/relational_functions_details.hpp
-    details/trigonometric_functions.hpp
+    gl_details.cpp
+    wgl_context.cpp
+    wglext_wrapper.cpp
+    wglext.cpp
 )
 
 target_sources(${PROJECT_NAME}
-    PUBLIC
-        ${PUBLIC_SOURCES}
+    PRIVATE
+        ${PRIVATE_SOURCES}
 )
-
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})

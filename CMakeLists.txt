@@ -57,7 +57,6 @@ endif()
 # Misk settings
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Import usefull macros
