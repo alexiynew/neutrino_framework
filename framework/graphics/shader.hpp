@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_OPENGL_SHADER_HPP
-#define FRAMEWORK_OPENGL_SHADER_HPP
+#ifndef FRAMEWORK_GRAPHICS_SHADER_HPP
+#define FRAMEWORK_GRAPHICS_SHADER_HPP
 
 #include <istream>
 #include <string>
@@ -38,13 +38,12 @@
 
 namespace framework::opengl
 {
-
 /// @addtogroup opengl_module
 /// @{
 
 /// @brief base class for OpenGL shaders.
 ///
-/// Encapsulates all base operations with shader. 
+/// Encapsulates all base operations with shader.
 /// Provides unified interface for all kinds of shaders.
 ///
 /// @thread_safety All operations must be done only in main thread.
@@ -93,12 +92,13 @@ public:
     ///
     /// Compiles stored shader code.
     /// Compilation status can be obtained by @ref compiled.
-    /// If compilation fails for any reason, information about errors can be obtained by @ref info_log. 
+    /// If compilation fails for any reason, information about errors can be obtained by @ref info_log.
     void compile();
 
     /// @brief Deletes OpenGL shader object.
     ///
-    /// If a shader is attached to a shader_program, it will be flagged for deletion, but it will not be deleted until it is no longer attached to any shader_program.
+    /// If a shader is attached to a shader_program, it will be flagged for deletion, but it will not be deleted until
+    /// it is no longer attached to any shader_program.
     void mark_for_deletion();
 
     /// @brief OpenGL shader object type.

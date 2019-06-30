@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <opengl/gl.hpp>
-#include <opengl/mesh.hpp>
+#include <graphics/mesh.hpp>
+#include <graphics/opengl/gl.hpp>
 
 namespace
 {

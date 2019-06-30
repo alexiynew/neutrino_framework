@@ -27,11 +27,11 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_OPENGL_TEXTURE_HPP
-#define FRAMEWORK_OPENGL_TEXTURE_HPP
+#ifndef FRAMEWORK_GRAPHICS_TEXTURE_HPP
+#define FRAMEWORK_GRAPHICS_TEXTURE_HPP
 
 #include <common/types.hpp>
-#include <opengl/gl.hpp>
+#include <graphics/opengl/gl.hpp>
 
 namespace framework::opengl
 {

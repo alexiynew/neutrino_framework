@@ -29,11 +29,24 @@ set_sources(PUBLIC_SOURCES
     window.hpp
     context.hpp
     context_settings.hpp
+    color_type.hpp
+    mesh.hpp
+    shader.hpp
+    texture.hpp
+)
+
+set_sources(PRIVATE_SOURCES
+    color_type.cpp
+    mesh.cpp
+    shader.cpp
+    texture.cpp
 )
 
 target_sources(${PROJECT_NAME}
     PUBLIC
         ${PUBLIC_SOURCES}
+    PRIVATE
+        ${PRIVATE_SOURCES}
 )
 
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})

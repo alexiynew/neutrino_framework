@@ -28,15 +28,15 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
+#include <graphics/mesh.hpp>
 #include <graphics/opengl/gl.hpp>
-#include <graphics/texture.hpp>
 #include <graphics/window.hpp>
 #include <unit_test/suite.hpp>
 
-class texture_test : public framework::unit_test::suite
+class mesh_test : public framework::unit_test::suite
 {
 public:
-    texture_test() : suite("texture_test")
+    mesh_test() : suite("mesh_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }
@@ -45,17 +45,17 @@ private:
     void main_loop()
     {
         using framework::float32;
-        using framework::opengl::texture;
+        using framework::opengl::mesh;
         using framework::system::window;
         using framework::utils::random_numbers;
 
         using namespace framework::opengl;
 
-        window::set_application_name("GL texture Test");
+        window::set_application_name("GL mesh Test");
 
         framework::opengl::init();
 
-        window main_window({640, 480}, "GL texture test");
+        window main_window({640, 480}, "GL mesh test");
         auto context = main_window.context();
 
         context->make_current();
@@ -84,5 +84,5 @@ private:
 
 int main()
 {
-    return run_tests(texture_test());
+    return run_tests(mesh_test());
 }

@@ -31,8 +31,8 @@
 #include <string>
 
 #include <common/types.hpp>
-#include <opengl/gl.hpp>
-#include <opengl/shader.hpp>
+#include <graphics/opengl/gl.hpp>
+#include <graphics/shader.hpp>
 
 namespace framework::opengl
 {
@@ -149,20 +149,15 @@ framework::uint32 shader_base::shader_id() const
     return m_shader_id;
 }
 
-
 #pragma endregion
 
 #pragma region concrete_shaders
 
-vertex_shader::vertex_shader()
-    : shader_base(GL_VERTEX_SHADER)
-{
-}
+vertex_shader::vertex_shader() : shader_base(GL_VERTEX_SHADER)
+{}
 
-fragment_shader::fragment_shader()
-    : shader_base(GL_FRAGMENT_SHADER)
-{
-}
+fragment_shader::fragment_shader() : shader_base(GL_FRAGMENT_SHADER)
+{}
 
 #pragma endregion
 

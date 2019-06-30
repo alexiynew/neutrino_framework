@@ -27,13 +27,13 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_OPENGL_MESH_HPP
-#define FRAMEWORK_OPENGL_MESH_HPP
+#ifndef FRAMEWORK_GRAPHICS_MESH_HPP
+#define FRAMEWORK_GRAPHICS_MESH_HPP
 
 #include <vector>
 
-#include <common/color_type.hpp>
 #include <common/types.hpp>
+#include <graphics/color_type.hpp>
 #include <math/math.hpp>
 
 namespace framework::opengl
