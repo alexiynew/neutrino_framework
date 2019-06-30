@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_IMAGE_HPP
-#define FRAMEWORK_IMAGE_IMAGE_HPP
+#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
+#define FRAMEWORK_GRAPHICS_IMAGE_HPP
 
 #include <string>
 #include <vector>

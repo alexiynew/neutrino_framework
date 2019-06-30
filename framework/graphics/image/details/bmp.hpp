@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_DETAILS_BMP_HPP
-#define FRAMEWORK_IMAGE_DETAILS_BMP_HPP
+#ifndef FRAMEWORK_GRAPHICS_IMAGE_DETAILS_BMP_HPP
+#define FRAMEWORK_GRAPHICS_IMAGE_DETAILS_BMP_HPP
 
 #include <optional>
 #include <string>
