@@ -1,5 +1,5 @@
 /// @file
-/// @brief Png image implementation.
+/// @brief Bmp image implementation.
 /// @author Fedorov Alexey
 /// @date 04.04.2019
 
@@ -27,27 +27,27 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_IMAGE_DETAILS_PNG_HPP
-#define FRAMEWORK_IMAGE_DETAILS_PNG_HPP
+#ifndef FRAMEWORK_IMAGE_DETAILS_BMP_HPP
+#define FRAMEWORK_IMAGE_DETAILS_BMP_HPP
 
 #include <optional>
 #include <string>
 #include <tuple>
 #include <vector>
 
-#include <common/color_type.hpp>
 #include <common/types.hpp>
-#include <image/details/image_info.hpp>
+#include <graphics/color_type.hpp>
+#include <graphics/image/details/image_info.hpp>
 
-namespace framework::image::details::png
+namespace framework::image::details::bmp
 {
 using image_data_t  = std::tuple<image_info, std::vector<color_t>>;
 using load_result_t = std::optional<image_data_t>;
 
 load_result_t load(const std::string& filename);
 
-bool is_png(const std::string& filename);
+bool is_bmp(const std::string& filename);
 
-} // namespace framework::image::details::png
+} // namespace framework::image::details::bmp
 
 #endif

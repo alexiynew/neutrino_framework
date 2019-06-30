@@ -33,7 +33,7 @@
 
 #include <common/crc.hpp>
 #include <common/types.hpp>
-#include <image/details/png.hpp>
+#include <graphics/image/details/png.hpp>
 
 namespace
 {

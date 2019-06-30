@@ -27,10 +27,10 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <image/details/bmp.hpp>
-#include <image/details/png.hpp>
-#include <image/details/tga.hpp>
-#include <image/image.hpp>
+#include <graphics/image.hpp>
+#include <graphics/image/details/bmp.hpp>
+#include <graphics/image/details/png.hpp>
+#include <graphics/image/details/tga.hpp>
 
 namespace framework::image
 {

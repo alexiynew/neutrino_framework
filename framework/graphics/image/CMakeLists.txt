@@ -23,24 +23,18 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${MODULE_NAME}")
-
 set_sources(PUBLIC_SOURCES
-    window.hpp
-    context.hpp
-    context_settings.hpp
-    color_type.hpp
-    mesh.hpp
-    shader.hpp
-    texture.hpp
-    image.hpp
+    details/image_info.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    color_type.cpp
-    mesh.cpp
-    shader.cpp
-    texture.cpp
+    image.cpp
+    details/bmp.hpp
+    details/bmp.cpp
+    details/tga.hpp
+    details/tga.cpp
+    details/png.hpp
+    details/png.cpp
 )
 
 target_sources(${PROJECT_NAME}
@@ -50,8 +44,4 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
-
-include(${MODULE_DIR}/window/CMakeLists.txt)
-include(${MODULE_DIR}/opengl/CMakeLists.txt)
-include(${MODULE_DIR}/image/CMakeLists.txt)
+make_install_files_target(include/${MODULE_NAME}/image ${PUBLIC_SOURCES})

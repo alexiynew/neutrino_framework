@@ -30,7 +30,7 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <image/details/tga.hpp>
+#include <graphics/image/details/tga.hpp>
 
 namespace framework::image::details::tga
 {
