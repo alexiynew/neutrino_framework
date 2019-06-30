@@ -3,8 +3,8 @@
 
 SOURCE = "./dependencies/GL/glxext.h"
 
-DESTHPP = "./src/opengl/details/linux/glxext_wrapper.hpp"
-DESTCPP = "./src/opengl/details/linux/glxext_wrapper.cpp"
+DESTHPP = "./framework/opengl/details/linux/glxext_wrapper.hpp"
+DESTCPP = "./framework/opengl/details/linux/glxext_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
 TYPE_REGEX = r'typedef.*\(\s?\*(PFN.*PROC)\).*;'

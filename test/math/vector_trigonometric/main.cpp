@@ -135,7 +135,8 @@ private:
 
     void atanh_function()
     {
-        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), vector3d(pi / 4, pi / 3, pi), 50), "Atanh function failed.");
+        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), vector3d(pi / 4, pi / 3, pi), 50),
+                    "Atanh function failed.");
     }
     vector4d v4d;
     vector3d v3d;
