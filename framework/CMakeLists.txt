@@ -39,10 +39,9 @@ message("Add modules...")
 set(MODULES
     "common"
     "log"
-    "unit_test"
     "math"
-    "window"
-    "opengl"
+    "graphics"
+    "unit_test"
 )
 
 foreach(MODULE ${MODULES})

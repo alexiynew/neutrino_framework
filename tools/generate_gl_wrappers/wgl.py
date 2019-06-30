@@ -3,8 +3,8 @@
 
 SOURCE = "./dependencies/GL/wglext.h"
 
-DESTHPP = "./framework/opengl/details/windows/wglext_wrapper.hpp"
-DESTCPP = "./framework/opengl/details/windows/wglext_wrapper.cpp"
+DESTHPP = "./framework/graphics/opengl/details/windows/wglext_wrapper.hpp"
+DESTCPP = "./framework/graphics/opengl/details/windows/wglext_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
 TYPE_REGEX = r'typedef.*\(WINAPI\s?\*\s?(PFN[\w\d_]*PROC)\).*;'
@@ -12,7 +12,7 @@ NAME_REGEX = r'.*WINAPI\s([\w\d_]+)\s\(.*\);'
 
 EXCLUDE = []
 
-HEADER_FILE = "opengl/details/windows/wglext_wrapper.hpp"
+HEADER_FILE = "graphics/opengl/details/windows/wglext_wrapper.hpp"
 
 BRIEF = "WGL extension functions wrapper."
 DATE = "17.09.2018"

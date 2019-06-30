@@ -3,8 +3,8 @@
 
 SOURCE = "./dependencies/GL/glxext.h"
 
-DESTHPP = "./framework/opengl/details/linux/glxext_wrapper.hpp"
-DESTCPP = "./framework/opengl/details/linux/glxext_wrapper.cpp"
+DESTHPP = "./framework/graphics/opengl/details/linux/glxext_wrapper.hpp"
+DESTCPP = "./framework/graphics/opengl/details/linux/glxext_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
 TYPE_REGEX = r'typedef.*\(\s?\*(PFN.*PROC)\).*;'
@@ -13,7 +13,7 @@ NAME_REGEX = r'.*(glX[\w\d_]+)\s?\(.*;'
 EXCLUDE = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC",
            "PFNGLXCREATEGLXVIDEOSOURCESGIXPROC", "PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC"]
 
-HEADER_FILE = "opengl/details/linux/glxext_wrapper.hpp"
+HEADER_FILE = "graphics/opengl/details/linux/glxext_wrapper.hpp"
 
 BRIEF = "GLX extension functions wrapper."
 DATE = "17.09.2018"

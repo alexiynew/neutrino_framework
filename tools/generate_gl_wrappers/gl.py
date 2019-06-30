@@ -3,8 +3,8 @@
 
 SOURCE = "./dependencies/GL/glcorearb.h"
 
-DESTHPP = "./framework/opengl/details/gl_wrapper.hpp"
-DESTCPP = "./framework/opengl/details/gl_wrapper.cpp"
+DESTHPP = "./framework/graphics/opengl/details/gl_wrapper.hpp"
+DESTCPP = "./framework/graphics/opengl/details/gl_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
 TYPE_REGEX = r'typedef.*\(APIENTRYP\s(PFN.*PROC)\).*;'
@@ -12,7 +12,7 @@ NAME_REGEX = r'.*\s(gl[\w\d_]+)\s?\(.*;'
 
 EXCLUDE = []
 
-HEADER_FILE = "opengl/details/gl_wrapper.hpp"
+HEADER_FILE = "graphics/opengl/details/gl_wrapper.hpp"
 
 BRIEF = "OpneGL functions wrapper."
 DATE = "17.09.2018"

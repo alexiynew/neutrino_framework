@@ -23,43 +23,20 @@
 # SOFTWARE.
 # =============================================================================
 
-include(CTest)
-enable_testing()
+message("${MODULE_NAME}")
 
-set(TESTS_TARGET ${PROJECT_NAME}_tests)
-set(TEST_DIR_NAME test)
-
-add_custom_target(${TESTS_TARGET} DEPENDS ${PROJECT_NAME})
-
-message("Add tests...")
-
-set(TEST_GROUPS
-    "unit_test"
-    "common"
-    "log"
-    "math"
-    "graphics"
+set_sources(PUBLIC_SOURCES
+    window.hpp
+    context.hpp
+    context_settings.hpp
 )
 
-foreach(GROUP ${TEST_GROUPS})
-    set(GROUP_NAME ${GROUP})
-    set(GROUP_DIR ${FRAMEWORK_TEST_DIR}/${GROUP})
-
-    include(${GROUP_DIR}/CMakeLists.txt)
-endforeach(GROUP)
-
-add_custom_target(run_all_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} --build-config $<CONFIG> --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\"
-    DEPENDS ${TESTS_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        ${PUBLIC_SOURCES}
 )
 
-add_custom_target(run_all_tests_verbose
-    COMMAND ${CMAKE_CTEST_COMMAND} --build-config $<CONFIG> --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\" --verbose
-    DEPENDS ${TESTS_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
-set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TEST_DIR_NAME})
-set_target_properties(run_all_tests PROPERTIES FOLDER ${TEST_DIR_NAME})
-set_target_properties(run_all_tests_verbose PROPERTIES FOLDER ${TEST_DIR_NAME})
+include(${MODULE_DIR}/window/CMakeLists.txt)
+include(${MODULE_DIR}/opengl/CMakeLists.txt)
