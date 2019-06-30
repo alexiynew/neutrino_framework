@@ -35,6 +35,7 @@ set(TESTS
     mesh
     shader
     texture
+    image_bmp
 )
 
 foreach(TEST ${TESTS})

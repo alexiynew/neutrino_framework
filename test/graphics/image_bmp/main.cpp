@@ -23,7 +23,7 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <image/image.hpp>
+#include <graphics/image.hpp>
 #include <unit_test/suite.hpp>
 
 class bmp_image_test : public framework::unit_test::suite
