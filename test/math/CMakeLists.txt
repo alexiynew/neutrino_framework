@@ -23,8 +23,6 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${GROUP_NAME}")
-
 set(TESTS 
     vector_constructor
     vector_operators

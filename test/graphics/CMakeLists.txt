@@ -23,14 +23,7 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${GROUP_NAME}")
-
 set(TESTS 
-    window_focus
-    window_open
-    window_properties
-    window_state
-    window_events
     context
     mesh
     shader

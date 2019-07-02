@@ -23,8 +23,6 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${GROUP_NAME}")
-
 set(TESTS "tests_for_tests")
 
 foreach(TEST ${TESTS})

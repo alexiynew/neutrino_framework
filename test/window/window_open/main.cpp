@@ -24,7 +24,7 @@
 // =============================================================================
 
 #include <common/types.hpp>
-#include <graphics/window.hpp>
+#include <window/window.hpp>
 #include <unit_test/suite.hpp>
 
 class window_open_test : public framework::unit_test::suite

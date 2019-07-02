@@ -25,7 +25,7 @@
 
 #include <iostream>
 
-#include <graphics/window.hpp>
+#include <window/window.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
 #include <unit_test/suite.hpp>

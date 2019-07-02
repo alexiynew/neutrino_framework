@@ -30,7 +30,7 @@
 #include <common/version.hpp>
 #include <graphics/mesh.hpp>
 #include <graphics/opengl/gl.hpp>
-#include <graphics/window.hpp>
+#include <window/window.hpp>
 #include <unit_test/suite.hpp>
 
 class mesh_test : public framework::unit_test::suite

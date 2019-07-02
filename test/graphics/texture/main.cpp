@@ -30,7 +30,7 @@
 #include <common/version.hpp>
 #include <graphics/opengl/gl.hpp>
 #include <graphics/texture.hpp>
-#include <graphics/window.hpp>
+#include <window/window.hpp>
 #include <unit_test/suite.hpp>
 
 class texture_test : public framework::unit_test::suite

@@ -23,7 +23,7 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/window.hpp>
+#include <window/window.hpp>
 #include <unit_test/suite.hpp>
 
 class window_properties_test : public framework::unit_test::suite
