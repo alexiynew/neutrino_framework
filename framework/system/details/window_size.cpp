@@ -1,7 +1,7 @@
 /// @file
-/// @brief WGL extension functions wrapper.
+/// @brief Window size.
 /// @author Fedorov Alexey
-/// @date 17.09.2018
+/// @date 01.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,27 +27,18 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <mutex>
+#include <system/details/window_size.hpp>
 
-#include <graphics/opengl/details/windows/wglext.hpp>
-
-namespace
+namespace framework::system
 {
-std::once_flag init_flag;
-
-void init_extensions()
+bool operator==(const window_size& lhs, const window_size& rhs)
 {
-    ::framework::opengl::opengl_details::init_wgl_functions();
+    return lhs.width == rhs.width && lhs.height == rhs.height;
 }
 
-} // namespace
-
-namespace framework::opengl
+bool operator!=(const window_size& lhs, const window_size& rhs)
 {
-void init_wgl()
-{
-    std::call_once(init_flag, init_extensions);
+    return !(lhs == rhs);
 }
 
-} // namespace framework::opengl
-#pragma endregion
+} // namespace framework::system

@@ -1,7 +1,7 @@
 /// @file
-/// @brief WGL extension functions wrapper.
+/// @brief Helper functions for keyboard handling.
 /// @author Fedorov Alexey
-/// @date 17.09.2018
+/// @date 11.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,27 +27,19 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <mutex>
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
+#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
 
-#include <graphics/opengl/details/windows/wglext.hpp>
+#include <system/details/linux/x11_server.hpp>
+#include <system/keyboard.hpp>
 
-namespace
+namespace framework::system::details
 {
-std::once_flag init_flag;
+void init_key_code_map(const x11_server* server);
 
-void init_extensions()
-{
-    ::framework::opengl::opengl_details::init_wgl_functions();
-}
+key_code map_system_key(uint32 key);
+modifiers_state get_modifiers_state(uint32 state);
 
-} // namespace
+} // namespace framework::system::details
 
-namespace framework::opengl
-{
-void init_wgl()
-{
-    std::call_once(init_flag, init_extensions);
-}
-
-} // namespace framework::opengl
-#pragma endregion
+#endif

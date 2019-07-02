@@ -1,7 +1,7 @@
 /// @file
-/// @brief WGL extension functions wrapper.
+/// @brief Window size.
 /// @author Fedorov Alexey
-/// @date 17.09.2018
+/// @date 01.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,27 +27,54 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <mutex>
+#ifndef FRAMEWORK_SYSTEM_DETAILS_WINDOW_SIZE_HPP
+#define FRAMEWORK_SYSTEM_DETAILS_WINDOW_SIZE_HPP
 
-#include <graphics/opengl/details/windows/wglext.hpp>
+#include <common/types.hpp>
 
-namespace
+namespace framework::system
 {
-std::once_flag init_flag;
+/// @addtogroup window_class
+/// @{
 
-void init_extensions()
+/// @brief Window size.
+struct window_size
 {
-    ::framework::opengl::opengl_details::init_wgl_functions();
+    int32 width;  ///< Window width.
+    int32 height; ///< Window height.
+};
+
+/// @brief Equality operator for window size.
+///
+/// @param lhs Size to compare.
+/// @param rhs Size to compare.
+///
+/// @return `true` if lhs equals rhs, otherwise `false`.
+bool operator==(const window_size& lhs, const window_size& rhs);
+
+/// @brief Inequality operator for window size.
+///
+/// @param lhs Size to compare.
+/// @param rhs Size to compare.
+///
+/// @return `true` if lhs isn't equals rhs, otherwise `false`.
+bool operator!=(const window_size& lhs, const window_size& rhs);
+
+/// @brief Helper function to print window size.
+///
+/// @param ostream Output stream.
+/// @param size Window size.
+///
+/// @return Reference to output stream.
+template <typename T>
+T& operator<<(T& ostream, const window_size& size)
+{
+    ostream << "{" << size.width << ", " << size.height << "}";
+    return ostream;
 }
 
-} // namespace
+/// @}
 
-namespace framework::opengl
-{
-void init_wgl()
-{
-    std::call_once(init_flag, init_extensions);
-}
+} // namespace framework::system
 
-} // namespace framework::opengl
-#pragma endregion
+#endif

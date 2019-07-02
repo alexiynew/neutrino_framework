@@ -1,7 +1,7 @@
 /// @file
-/// @brief WGL extension functions wrapper.
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 17.09.2018
+/// @date 03.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,27 +27,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <mutex>
+#include <system/details/window_implementation.hpp>
+#include <system/details/windows/win32_window.hpp>
 
-#include <graphics/opengl/details/windows/wglext.hpp>
-
-namespace
+namespace framework::system::details
 {
-std::once_flag init_flag;
-
-void init_extensions()
+std::unique_ptr<implementation> create_implementation(window_size size,
+                                                      const std::string& title,
+                                                      opengl::context_settings settings)
 {
-    ::framework::opengl::opengl_details::init_wgl_functions();
+    return std::make_unique<win32_window>(size, title, std::move(settings));
 }
 
-} // namespace
-
-namespace framework::opengl
-{
-void init_wgl()
-{
-    std::call_once(init_flag, init_extensions);
-}
-
-} // namespace framework::opengl
-#pragma endregion
+} // namespace framework::system::details

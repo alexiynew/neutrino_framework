@@ -1,7 +1,7 @@
 /// @file
-/// @brief WGL extension functions wrapper.
+/// @brief Describes interface for all window implementations.
 /// @author Fedorov Alexey
-/// @date 17.09.2018
+/// @date 05.04.2017
 
 // =============================================================================
 // MIT License
@@ -27,27 +27,24 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <mutex>
+#include <system/details/window_implementation.hpp>
 
-#include <graphics/opengl/details/windows/wglext.hpp>
-
-namespace
+namespace framework::system::details
 {
-std::once_flag init_flag;
+std::string implementation::application_name = "Application";
 
-void init_extensions()
+implementation::implementation() = default;
+
+implementation::~implementation() = default;
+
+void implementation::set_application_name(const std::string& name)
 {
-    ::framework::opengl::opengl_details::init_wgl_functions();
+    application_name = name;
 }
 
-} // namespace
-
-namespace framework::opengl
+void implementation::set_event_handler(const details::event_handler* handler)
 {
-void init_wgl()
-{
-    std::call_once(init_flag, init_extensions);
+    m_event_handler = handler;
 }
 
-} // namespace framework::opengl
-#pragma endregion
+} // namespace framework::system::details

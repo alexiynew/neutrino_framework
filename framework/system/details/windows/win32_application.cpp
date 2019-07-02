@@ -1,7 +1,7 @@
-/// @file
-/// @brief WGL extension functions wrapper.
+/// @file ::system::
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 17.09.2018
+/// @date 19.04.2017
 
 // =============================================================================
 // MIT License
@@ -27,27 +27,53 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <mutex>
+#include <system/details/windows/win32_application.hpp>
+#include <system/details/windows/win32_window.hpp>
 
-#include <graphics/opengl/details/windows/wglext.hpp>
-
-namespace
+namespace framework::system::details
 {
-std::once_flag init_flag;
+win32_application::container win32_application::m_windows;
+HMODULE win32_application::m_handle = nullptr;
 
-void init_extensions()
+void win32_application::add_window(HANDLE handle, win32_window* window)
 {
-    ::framework::opengl::opengl_details::init_wgl_functions();
+    m_windows.insert({handle, window});
 }
 
-} // namespace
+win32_window* win32_application::get_window(HANDLE handle)
+{
+    if (m_windows.count(handle)) {
+        return m_windows[handle];
+    }
 
-namespace framework::opengl
-{
-void init_wgl()
-{
-    std::call_once(init_flag, init_extensions);
+    return nullptr;
 }
 
-} // namespace framework::opengl
-#pragma endregion
+void win32_application::remove_window(HANDLE handle)
+{
+    m_windows.erase(handle);
+}
+
+HMODULE win32_application::handle()
+{
+    if (m_handle == nullptr) {
+        m_handle = GetModuleHandle(nullptr);
+    }
+
+    if (m_handle == nullptr) {
+        throw std::runtime_error("Failed to get application instance handle.");
+    }
+
+    return m_handle;
+}
+
+LRESULT CALLBACK win32_application::window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (auto window = get_window(window_handle); window != nullptr) {
+        return window->process_message(message, w_param, l_param);
+    }
+
+    return DefWindowProc(window_handle, message, w_param, l_param);
+}
+
+} // namespace framework::system::details

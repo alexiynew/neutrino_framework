@@ -27,10 +27,10 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/opengl/details/gl_details.hpp>
 #include <windows.h>
 
 #include <common/types.hpp>
+#include <graphics/opengl/details/gl_details.hpp>
 
 namespace framework::opengl::opengl_details
 {

@@ -1,7 +1,7 @@
 /// @file
-/// @brief WGL extension functions wrapper.
+/// @brief Types and functions for mouse support.
 /// @author Fedorov Alexey
-/// @date 17.09.2018
+/// @date 29.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,27 +27,15 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <mutex>
+#ifndef FRAMEWORK_WINDOW_DETAILS_X11_MOUSE_HPP
+#define FRAMEWORK_WINDOW_DETAILS_X11_MOUSE_HPP
 
-#include <graphics/opengl/details/windows/wglext.hpp>
+#include <system/mouse.hpp>
 
-namespace
+namespace framework::system::details
 {
-std::once_flag init_flag;
+mouse_button map_mouse_button(uint32 button);
 
-void init_extensions()
-{
-    ::framework::opengl::opengl_details::init_wgl_functions();
-}
+} // namespace framework::system::details
 
-} // namespace
-
-namespace framework::opengl
-{
-void init_wgl()
-{
-    std::call_once(init_flag, init_extensions);
-}
-
-} // namespace framework::opengl
-#pragma endregion
+#endif

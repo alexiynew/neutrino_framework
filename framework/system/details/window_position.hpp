@@ -1,7 +1,7 @@
 /// @file
-/// @brief WGL extension functions wrapper.
+/// @brief Window position.
 /// @author Fedorov Alexey
-/// @date 17.09.2018
+/// @date 01.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,27 +27,54 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <mutex>
+#ifndef FRAMEWORK_SYSTEM_DETAILS_WINDOW_POSITION_HPP
+#define FRAMEWORK_SYSTEM_DETAILS_WINDOW_POSITION_HPP
 
-#include <graphics/opengl/details/windows/wglext.hpp>
+#include <common/types.hpp>
 
-namespace
+namespace framework::system
 {
-std::once_flag init_flag;
+/// @addtogroup window_class
+/// @{
 
-void init_extensions()
+/// @brief Window position.
+struct window_position
 {
-    ::framework::opengl::opengl_details::init_wgl_functions();
+    int32 x; ///< X coordiante.
+    int32 y; ///< Y coordinate.
+};
+
+/// @brief Equality operator for window position.
+///
+/// @param lhs Position to compare.
+/// @param rhs Position to compare.
+///
+/// @return `true` if lhs equals rhs, otherwise `false`.
+bool operator==(const window_position& lhs, const window_position& rhs);
+
+/// @brief Inequality operator for window position.
+///
+/// @param lhs Position to compare.
+/// @param rhs Position to compare.
+///
+/// @return `true` if lhs isn't equals rhs, otherwise `false`.
+bool operator!=(const window_position& lhs, const window_position& rhs);
+
+/// @brief Helper function to print window position.
+///
+/// @param ostream Output stream.
+/// @param position Window position.
+///
+/// @return Reference to output stream.
+template <typename T>
+T& operator<<(T& ostream, const window_position& position)
+{
+    ostream << "{" << position.x << ", " << position.y << "}";
+    return ostream;
 }
 
-} // namespace
+/// @}
 
-namespace framework::opengl
-{
-void init_wgl()
-{
-    std::call_once(init_flag, init_extensions);
-}
+} // namespace framework::system
 
-} // namespace framework::opengl
-#pragma endregion
+#endif

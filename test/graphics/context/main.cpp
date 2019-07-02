@@ -29,7 +29,7 @@
 #include <common/utils.hpp>
 #include <common/version.hpp>
 #include <graphics/opengl/gl.hpp>
-#include <window/window.hpp>
+#include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
 class context_test : public framework::unit_test::suite
