@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window implementation for Linux.
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 05.04.2017
+/// @date 19.04.2017
 
 // =============================================================================
 // MIT License
@@ -27,26 +27,23 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_WINDOW_HPP
-#define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_WINDOW_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
+#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 
-#include <X11/Xlib.h>
-#include <functional>
-
-#include <common/types.hpp>
-#include <graphics/window/details/implementation.hpp>
-#include <graphics/window/details/linux/x11_server.hpp>
+#include <memory>
+#include <window/details/implementation.hpp>
+#include <windows.h>
 
 namespace framework::system::details
 {
-class x11_window final : public implementation
+class win32_window final : public implementation
 {
 public:
-    x11_window(window_size size, const std::string& title, opengl::context_settings settings);
-    ~x11_window() override;
+    win32_window(window_size size, const std::string& title, opengl::context_settings settings);
+    ~win32_window() override;
 
-    x11_window(const x11_window&) = delete;
-    x11_window& operator=(const x11_window&) = delete;
+    win32_window(const win32_window&) = delete;
+    win32_window& operator=(const win32_window&) = delete;
 
     /// @name actions
     /// @{
@@ -55,7 +52,6 @@ public:
     void focus() override;
     void process_events() override;
 
-    // On window managers without the ewmh support, proper work is not tested, nor granted.
     void iconify() override;
     void maximize() override;
     void switch_to_fullscreen() override;
@@ -101,53 +97,50 @@ public:
     /// @}
 
 private:
-    void process(XDestroyWindowEvent event);
-    void process(XUnmapEvent event);
-    void process(XVisibilityEvent event);
-    void process(XConfigureEvent event);
-    void process(XFocusChangeEvent event);
-    void process(XPropertyEvent event);
-    void process(XClientMessageEvent event);
-    void process(XKeyEvent event);
-    void process(XButtonEvent event);
-    void process(XCrossingEvent event);
-    void process(XMotionEvent event);
-    void process(XMappingEvent event);
+    struct window_info
+    {
+        LONG style;
+        LONG ex_style;
+        RECT rect;
+    };
 
-    void maximize_toggle(bool enable);
-    void fullscreen_toggle(bool enable);
+    struct modifiers_flags
+    {
+        bool left_shift;
+        bool right_shift;
+        bool left_control;
+        bool right_control;
+        bool left_alt;
+        bool right_alt;
+    };
 
-    void set_wm_hints();
-    void set_class_hints();
-    void add_protocols(const std::vector<std::string>& protocol_names);
+    friend class win32_application;
 
-    void create_input_context();
+    HWND m_window = nullptr;
+    HDC m_hdc     = nullptr;
+    HGLRC m_hglrc = nullptr;
+    std::shared_ptr<ATOM> m_window_class;
 
-    void process_events_while(const std::function<bool()>& condition);
+    window_size m_min_size = {0, 0};
+    window_size m_max_size = {0, 0};
 
-    void update_size_limits(window_size min_size, window_size max_size);
+    bool m_resizable   = true;
+    bool m_mouse_hover = false;
 
-    std::shared_ptr<x11_server> m_server       = nullptr;
+    window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
+
     std::unique_ptr<opengl::context> m_context = nullptr;
 
-    bool m_fullscreen     = false;
-    bool m_maximized      = false;
-    bool m_mapped         = false;
-    bool m_cursor_grabbed = false;
-    bool m_resizable      = true;
+    modifiers_flags m_modifiers_flags = {false, false, false, false, false, false};
 
-    window_size m_size         = {640, 480};
-    window_size m_saved_size   = {0, 0};
-    window_position m_position = {0, 0};
+    LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 
-    mutable window_size m_min_size = {0, 0};
-    mutable window_size m_max_size = {0, 0};
+    void track_mouse();
 
-    Window m_window = None;
-
-    XIC m_input_context = nullptr;
-
-    Time m_lastInputTime = 0;
+    LRESULT process_key_event(WPARAM w_param, LPARAM l_param);
+    void process_shift_key(LPARAM l_param);
+    void process_control_key(LPARAM l_param);
+    void process_alt_key(LPARAM l_param);
 };
 
 } // namespace framework::system::details

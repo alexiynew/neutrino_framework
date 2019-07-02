@@ -1,7 +1,7 @@
 /// @file
-/// @brief Helper functions for keyboard handling.
+/// @brief Types and functions for mouse support.
 /// @author Fedorov Alexey
-/// @date 11.03.2019
+/// @date 29.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,15 +27,14 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_KEYBOARD_HPP
-#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_KEYBOARD_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_X11_MOUSE_HPP
+#define FRAMEWORK_WINDOW_DETAILS_X11_MOUSE_HPP
 
-#include <graphics/window/keyboard.hpp>
+#include <window/mouse.hpp>
 
 namespace framework::system::details
 {
-key_code map_system_key(uint32 key);
-modifiers_state get_modifiers_state();
+mouse_button map_mouse_button(uint32 button);
 
 } // namespace framework::system::details
 

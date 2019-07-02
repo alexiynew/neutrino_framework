@@ -40,6 +40,7 @@ set(MODULES
     "common"
     "log"
     "math"
+    "window"
     "graphics"
     "unit_test"
 )

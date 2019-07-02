@@ -32,7 +32,7 @@
 #include <cstring>
 
 #include <common/utils.hpp>
-#include <graphics/window/details/linux/x11_utils.hpp>
+#include <window/details/linux/x11_utils.hpp>
 
 using ::framework::system::details::x11_server;
 

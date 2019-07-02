@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window implementation for windows.
+/// @brief Helper functions for keyboard handling.
 /// @author Fedorov Alexey
-/// @date 03.03.2019
+/// @date 11.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,16 +27,19 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/window/details/implementation.hpp>
-#include <graphics/window/details/windows/win32_window.hpp>
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
+#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
+
+#include <window/details/linux/x11_server.hpp>
+#include <window/keyboard.hpp>
 
 namespace framework::system::details
 {
-std::unique_ptr<implementation> create_implementation(window_size size,
-                                                      const std::string& title,
-                                                      opengl::context_settings settings)
-{
-    return std::make_unique<win32_window>(size, title, std::move(settings));
-}
+void init_key_code_map(const x11_server* server);
+
+key_code map_system_key(uint32 key);
+modifiers_state get_modifiers_state(uint32 state);
 
 } // namespace framework::system::details
+
+#endif

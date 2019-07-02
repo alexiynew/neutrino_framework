@@ -1,7 +1,7 @@
 /// @file
-/// @brief Types and functions for mouse support.
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 29.03.2019
+/// @date 03.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,15 +27,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_X11_MOUSE_HPP
-#define FRAMEWORK_WINDOW_DETAILS_X11_MOUSE_HPP
-
-#include <graphics/window/mouse.hpp>
+#include <window/details/implementation.hpp>
+#include <window/details/windows/win32_window.hpp>
 
 namespace framework::system::details
 {
-mouse_button map_mouse_button(uint32 button);
+std::unique_ptr<implementation> create_implementation(window_size size,
+                                                      const std::string& title,
+                                                      opengl::context_settings settings)
+{
+    return std::make_unique<win32_window>(size, title, std::move(settings));
+}
 
 } // namespace framework::system::details
-
-#endif

@@ -29,9 +29,9 @@
 
 #include <graphics/opengl/details/windows/wgl_context.hpp>
 #include <stdexcept>
-#include <graphics/window/details/windows/win32_application.hpp>
-#include <graphics/window/details/windows/win32_keyboard.hpp>
-#include <graphics/window/details/windows/win32_window.hpp>
+#include <window/details/windows/win32_application.hpp>
+#include <window/details/windows/win32_keyboard.hpp>
+#include <window/details/windows/win32_window.hpp>
 #include <windowsx.h>
 
 namespace

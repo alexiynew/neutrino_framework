@@ -32,10 +32,10 @@
 
 #include <string>
 
-#include <graphics/window/keyboard.hpp>
-#include <graphics/window/window_callback_types.hpp>
-#include <graphics/window/window_position.hpp>
-#include <graphics/window/window_size.hpp>
+#include <window/window.hpp>
+#include <window/keyboard.hpp>
+#include <window/window_position.hpp>
+#include <window/window_size.hpp>
 
 namespace framework::system
 {
@@ -82,27 +82,27 @@ public:
 private:
     friend class framework::system::window;
 
-    window_event_callback m_on_show_callback  = nullptr;
-    window_event_callback m_on_hide_callback  = nullptr;
-    window_event_callback m_on_close_callback = nullptr;
+    window::event_callback m_on_show_callback  = nullptr;
+    window::event_callback m_on_hide_callback  = nullptr;
+    window::event_callback m_on_close_callback = nullptr;
 
-    window_event_callback m_on_focus_callback      = nullptr;
-    window_event_callback m_on_focus_lost_callback = nullptr;
+    window::event_callback m_on_focus_callback      = nullptr;
+    window::event_callback m_on_focus_lost_callback = nullptr;
 
-    window_size_event_callback m_on_size_callback         = nullptr;
-    window_position_event_callback m_on_position_callback = nullptr;
+    window::size_event_callback m_on_size_callback         = nullptr;
+    window::position_event_callback m_on_position_callback = nullptr;
 
-    window_key_event_callback m_on_key_press_callback   = nullptr;
-    window_key_event_callback m_on_key_release_callback = nullptr;
+    window::key_event_callback m_on_key_press_callback   = nullptr;
+    window::key_event_callback m_on_key_release_callback = nullptr;
 
-    window_character_event_callback m_on_character_callback = nullptr;
+    window::character_event_callback m_on_character_callback = nullptr;
 
-    window_mouse_move_callback m_on_mouse_move_callback            = nullptr;
-    window_mouse_button_event_callback m_on_mouse_press_callback   = nullptr;
-    window_mouse_button_event_callback m_on_mouse_release_callback = nullptr;
+    window::mouse_move_callback m_on_mouse_move_callback      = nullptr;
+    window::mouse_button_callback m_on_mouse_press_callback   = nullptr;
+    window::mouse_button_callback m_on_mouse_release_callback = nullptr;
 
-    window_event_callback m_on_mouse_enter_callback = nullptr;
-    window_event_callback m_on_mouse_leave_callback = nullptr;
+    window::event_callback m_on_mouse_enter_callback = nullptr;
+    window::event_callback m_on_mouse_leave_callback = nullptr;
 
     const window* const m_window = nullptr;
 };

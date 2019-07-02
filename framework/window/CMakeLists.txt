@@ -24,9 +24,9 @@
 # =============================================================================
 
 set_sources(PUBLIC_SOURCES
+    window.hpp
     window_size.hpp
     window_position.hpp
-    window_callback_types.hpp
     keyboard.hpp
     mouse.hpp
 )
@@ -44,6 +44,6 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-make_install_files_target(include/${MODULE_NAME}/window ${PUBLIC_SOURCES})
+make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
-include(${MODULE_DIR}/window/details/CMakeLists.txt)
+include(${MODULE_DIR}/details/CMakeLists.txt)

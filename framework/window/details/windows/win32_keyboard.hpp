@@ -27,18 +27,15 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
-#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_KEYBOARD_HPP
+#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_KEYBOARD_HPP
 
-#include <graphics/window/details/linux/x11_server.hpp>
-#include <graphics/window/keyboard.hpp>
+#include <window/keyboard.hpp>
 
 namespace framework::system::details
 {
-void init_key_code_map(const x11_server* server);
-
 key_code map_system_key(uint32 key);
-modifiers_state get_modifiers_state(uint32 state);
+modifiers_state get_modifiers_state();
 
 } // namespace framework::system::details
 

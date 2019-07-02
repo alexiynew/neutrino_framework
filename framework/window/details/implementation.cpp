@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window size.
+/// @brief Describes interface for all window implementations.
 /// @author Fedorov Alexey
-/// @date 01.03.2019
+/// @date 05.04.2017
 
 // =============================================================================
 // MIT License
@@ -27,18 +27,24 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/window/window_size.hpp>
+#include <window/details/implementation.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
-bool operator==(const window_size& lhs, const window_size& rhs)
+std::string implementation::application_name = "Application";
+
+implementation::implementation() = default;
+
+implementation::~implementation() = default;
+
+void implementation::set_application_name(const std::string& name)
 {
-    return lhs.width == rhs.width && lhs.height == rhs.height;
+    application_name = name;
 }
 
-bool operator!=(const window_size& lhs, const window_size& rhs)
+void implementation::set_event_handler(const details::event_handler* handler)
 {
-    return !(lhs == rhs);
+    m_event_handler = handler;
 }
 
-} // namespace framework::system
+} // namespace framework::system::details

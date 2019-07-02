@@ -1,7 +1,7 @@
-/// @file ::system::
-/// @brief Window implementation for windows.
+/// @file
+/// @brief Types and functions for mouse support.
 /// @author Fedorov Alexey
-/// @date 19.04.2017
+/// @date 29.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,53 +27,23 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/window/details/windows/win32_application.hpp>
-#include <graphics/window/details/windows/win32_window.hpp>
+#include <X11/Xlib.h>
+
+#include <window/details/linux/x11_mouse.hpp>
 
 namespace framework::system::details
 {
-win32_application::container win32_application::m_windows;
-HMODULE win32_application::m_handle = nullptr;
-
-void win32_application::add_window(HANDLE handle, win32_window* window)
+mouse_button map_mouse_button(uint32 button)
 {
-    m_windows.insert({handle, window});
-}
-
-win32_window* win32_application::get_window(HANDLE handle)
-{
-    if (m_windows.count(handle)) {
-        return m_windows[handle];
+    switch (button) {
+        case Button1: return mouse_button::button_left;
+        case Button2: return mouse_button::button_middle;
+        case Button3: return mouse_button::button_right;
+        case Button4: return mouse_button::button_unknown; // whell up
+        case Button5: return mouse_button::button_unknown; // whell down
     }
 
-    return nullptr;
-}
-
-void win32_application::remove_window(HANDLE handle)
-{
-    m_windows.erase(handle);
-}
-
-HMODULE win32_application::handle()
-{
-    if (m_handle == nullptr) {
-        m_handle = GetModuleHandle(nullptr);
-    }
-
-    if (m_handle == nullptr) {
-        throw std::runtime_error("Failed to get application instance handle.");
-    }
-
-    return m_handle;
-}
-
-LRESULT CALLBACK win32_application::window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (auto window = get_window(window_handle); window != nullptr) {
-        return window->process_message(message, w_param, l_param);
-    }
-
-    return DefWindowProc(window_handle, message, w_param, l_param);
+    return mouse_button::button_unknown;
 }
 
 } // namespace framework::system::details

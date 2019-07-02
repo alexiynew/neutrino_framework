@@ -34,9 +34,9 @@
 #include <string>
 
 #include <graphics/context.hpp>
-#include <graphics/window/details/event_handler.hpp>
-#include <graphics/window/window_position.hpp>
-#include <graphics/window/window_size.hpp>
+#include <window/details/event_handler.hpp>
+#include <window/window_position.hpp>
+#include <window/window_size.hpp>
 
 namespace framework::system::details
 {

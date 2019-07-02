@@ -29,9 +29,9 @@
 
 #include <memory>
 
-#include <graphics/window.hpp>
-#include <graphics/window/details/event_handler.hpp>
-#include <graphics/window/details/implementation.hpp>
+#include <window/window.hpp>
+#include <window/details/event_handler.hpp>
+#include <window/details/implementation.hpp>
 
 namespace framework::system
 {

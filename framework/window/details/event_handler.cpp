@@ -27,7 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/window/details/event_handler.hpp>
+#include <window/details/event_handler.hpp>
 
 namespace framework::system::details
 {

@@ -33,7 +33,7 @@
 #include <array>
 #include <string>
 
-#include <graphics/window/details/linux/x11_keyboard.hpp>
+#include <window/details/linux/x11_keyboard.hpp>
 
 namespace
 {

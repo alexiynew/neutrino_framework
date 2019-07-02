@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window implementation for Linux.
+/// @brief Window size.
 /// @author Fedorov Alexey
-/// @date 03.03.2019
+/// @date 01.03.2019
 
 // =============================================================================
 // MIT License
@@ -27,16 +27,18 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/window/details/implementation.hpp>
-#include <graphics/window/details/linux/x11_window.hpp>
+#include <window/window_size.hpp>
 
-namespace framework::system::details
+namespace framework::system
 {
-std::unique_ptr<implementation> create_implementation(window_size size,
-                                                      const std::string& title,
-                                                      opengl::context_settings settings)
+bool operator==(const window_size& lhs, const window_size& rhs)
 {
-    return std::make_unique<x11_window>(size, title, settings);
+    return lhs.width == rhs.width && lhs.height == rhs.height;
 }
 
-} // namespace framework::system::details
+bool operator!=(const window_size& lhs, const window_size& rhs)
+{
+    return !(lhs == rhs);
+}
+
+} // namespace framework::system

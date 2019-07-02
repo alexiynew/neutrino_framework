@@ -36,7 +36,7 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <graphics/window/details/linux/x11_server.hpp>
+#include <window/details/linux/x11_server.hpp>
 
 namespace framework::system::details::utils
 {

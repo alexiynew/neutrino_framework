@@ -36,4 +36,4 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-include(${MODULE_DIR}/window/details/${PLATFORM_NAME}/CMakeLists.txt)
+include(${MODULE_DIR}/details/${PLATFORM_NAME}/CMakeLists.txt)

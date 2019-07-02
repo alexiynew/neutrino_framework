@@ -33,9 +33,9 @@
 #include <memory>
 
 #include <graphics/context.hpp>
-#include <graphics/window/window_callback_types.hpp>
-#include <graphics/window/window_position.hpp>
-#include <graphics/window/window_size.hpp>
+#include <window/window_callback_types.hpp>
+#include <window/window_position.hpp>
+#include <window/window_size.hpp>
 
 /// @details
 ///
@@ -239,50 +239,58 @@ public:
     /// @name events
     /// @{
 
+    using event_callback           = std::function<void(const window&)>;
+    using size_event_callback      = std::function<void(const window&, window_size)>;
+    using position_event_callback  = std::function<void(const window&, window_position)>;
+    using key_event_callback       = std::function<void(const window&, key_code, modifiers_state)>;
+    using character_event_callback = std::function<void(const window&, std::string)>;
+    using mouse_move_callback      = std::function<void(const window&, cursor_position)>;
+    using mouse_button_callback    = std::function<void(const window&, mouse_button, cursor_position, modifiers_state)>;
+
     /// @brief Set on show callback. Called when window shows after creation.
-    void set_on_show_callback(window_event_callback callback);
+    void set_on_show_callback(event_callback callback);
 
     /// @brief Set on hide callback. Called when window hides from screen.
-    void set_on_hide_callback(window_event_callback callback);
+    void set_on_hide_callback(event_callback callback);
 
     /// @brief Set on close callback. Called when the user clicks on the close window button.
-    void set_on_close_callback(window_event_callback callback);
+    void set_on_close_callback(event_callback callback);
 
     /// @brief Set on focus callback. Called when the window gets input focus.
-    void set_on_focus_callback(window_event_callback callback);
+    void set_on_focus_callback(event_callback callback);
 
     /// @brief Set on focus lost callback. Called when the window loses input focus.
-    void set_on_focus_lost_callback(window_event_callback callback);
+    void set_on_focus_lost_callback(event_callback callback);
 
     /// @biref Set on size callback. Called when window size changes.
-    void set_on_size_callback(window_size_event_callback callback);
+    void set_on_size_callback(size_event_callback callback);
 
     /// @biref Set on position callback. Called when window position changes.
-    void set_on_position_callback(window_position_event_callback callback);
+    void set_on_position_callback(position_event_callback callback);
 
     /// @biref Set on key press callback. Called when key is pressed. Can be called multiple times.
-    void set_on_key_press_callback(window_key_event_callback callback);
+    void set_on_key_press_callback(key_event_callback callback);
 
     /// @biref Set on key release callback. Called when key is released.
-    void set_on_key_release_callback(window_key_event_callback callback);
+    void set_on_key_release_callback(key_event_callback callback);
 
     /// @biref Set on character callback. Called when user press the char symbol key.
-    void set_on_character_callback(window_character_event_callback callback);
+    void set_on_character_callback(character_event_callback callback);
 
     /// @biref Set on mouse move callback. Called when the mouse is moving.
-    void set_on_mouse_move_callback(window_mouse_move_callback callback);
+    void set_on_mouse_move_callback(mouse_move_callback callback);
 
     /// @biref Set on mouse button press callback. Called when the mouse button is pressed.
-    void set_on_mouse_button_press_callback(window_mouse_button_event_callback callback);
+    void set_on_mouse_button_press_callback(mouse_button_callback callback);
 
     /// @biref Set on mouse button release callback. Called when the mouse button is released.
-    void set_on_mouse_button_release_callback(window_mouse_button_event_callback callback);
+    void set_on_mouse_button_release_callback(mouse_button_callback callback);
 
     /// @biref Set on mouse enter callback. Called when the cursor enters in the window frame.
-    void set_on_mouse_enter_callback(window_event_callback callback);
+    void set_on_mouse_enter_callback(event_callback callback);
 
     /// @biref Set on mouse leave callback. Called when the cursor leaves the window frame.
-    void set_on_mouse_leave_callback(window_event_callback callback);
+    void set_on_mouse_leave_callback(event_callback callback);
     /// @}
 
 private:

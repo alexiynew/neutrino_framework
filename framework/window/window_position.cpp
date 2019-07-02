@@ -1,5 +1,5 @@
 /// @file
-/// @brief Window event types.
+/// @brief Window position.
 /// @author Fedorov Alexey
 /// @date 01.03.2019
 
@@ -27,36 +27,18 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_WINDOW_WINDOW_CALLBACK_TYPES_HPP
-#define FRAMEWORK_GRAPHICS_WINDOW_WINDOW_CALLBACK_TYPES_HPP
-
-#include <functional>
-
-#include <graphics/window/keyboard.hpp>
-#include <graphics/window/mouse.hpp>
-#include <graphics/window/window_position.hpp>
-#include <graphics/window/window_size.hpp>
+#include <window/window_position.hpp>
 
 namespace framework::system
 {
-class window;
+bool operator==(const window_position& lhs, const window_position& rhs)
+{
+    return lhs.x == rhs.x && lhs.y == rhs.y;
+}
 
-/// @addtogroup window_class
-/// @{
-
-using window_event_callback              = std::function<void(const window&)>;
-using window_size_event_callback         = std::function<void(const window&, window_size)>;
-using window_position_event_callback     = std::function<void(const window&, window_position)>;
-using window_key_event_callback          = std::function<void(const window&, key_code, modifiers_state)>;
-using window_character_event_callback    = std::function<void(const window&, std::string)>;
-using window_mouse_move_callback         = std::function<void(const window&, cursor_position)>;
-using window_mouse_button_event_callback = std::function<
-void(const window&, mouse_button, cursor_position, modifiers_state)>;
-using window_mouse_button_event_callback = std::function<
-void(const window&, mouse_button, cursor_position, modifiers_state)>;
-
-/// @}
+bool operator!=(const window_position& lhs, const window_position& rhs)
+{
+    return !(lhs == rhs);
+}
 
 } // namespace framework::system
-
-#endif

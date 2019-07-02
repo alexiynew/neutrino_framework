@@ -38,10 +38,10 @@
 #include <common/types.hpp>
 #include <common/utils.hpp>
 #include <graphics/opengl/details/linux/glx_context.hpp>
-#include <graphics/window/details/linux/x11_keyboard.hpp>
-#include <graphics/window/details/linux/x11_mouse.hpp>
-#include <graphics/window/details/linux/x11_utils.hpp>
-#include <graphics/window/details/linux/x11_window.hpp>
+#include <window/details/linux/x11_keyboard.hpp>
+#include <window/details/linux/x11_mouse.hpp>
+#include <window/details/linux/x11_utils.hpp>
+#include <window/details/linux/x11_window.hpp>
 
 namespace
 {
