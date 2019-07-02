@@ -40,7 +40,7 @@ void window::set_application_name(const std::string& name)
     details::implementation::set_application_name(name);
 }
 
-window::window(window_size size, const std::string& title, opengl::context_settings settings)
+window::window(size_t size, const std::string& title, opengl::context_settings settings)
     : m_implementation(details::create_implementation(size, title, std::move(settings))),
       m_event_handler(std::make_unique<details::event_handler>(this))
 {
@@ -104,22 +104,22 @@ void window::restore()
 
 #pragma region setters
 
-void window::set_size(window_size size)
+void window::set_size(size_t size)
 {
     m_implementation->set_size(size);
 }
 
-void window::set_position(window_position position)
+void window::set_position(position_t position)
 {
     m_implementation->set_position(position);
 }
 
-void window::set_max_size(window_size max_size)
+void window::set_max_size(size_t max_size)
 {
     m_implementation->set_max_size(max_size);
 }
 
-void window::set_min_size(window_size min_size)
+void window::set_min_size(size_t min_size)
 {
     m_implementation->set_min_size(min_size);
 }
@@ -138,22 +138,22 @@ void window::set_title(const std::string& title)
 
 #pragma region getters
 
-window_position window::position() const
+window::position_t window::position() const
 {
     return m_implementation->position();
 }
 
-window_size window::size() const
+window::size_t window::size() const
 {
     return m_implementation->size();
 }
 
-window_size window::max_size() const
+window::size_t window::max_size() const
 {
     return m_implementation->max_size();
 }
 
-window_size window::min_size() const
+window::size_t window::min_size() const
 {
     return m_implementation->min_size();
 }

@@ -43,7 +43,7 @@ private:
     {
         using ::framework::system::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const window::size_t size640{640, 480};
 
         window w(size640, "Test");
 
@@ -87,7 +87,7 @@ private:
     {
         using ::framework::system::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const window::size_t size640{640, 480};
 
         window w(size640, "Test");
 
@@ -141,7 +141,7 @@ private:
     {
         using ::framework::system::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const window::size_t size640{640, 480};
 
         window w(size640, "Test");
 
@@ -185,7 +185,7 @@ private:
     {
         using ::framework::system::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const window::size_t size640{640, 480};
 
         window w(size640, "Test");
 
@@ -203,7 +203,7 @@ private:
     {
         using ::framework::system::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const window::size_t size640{640, 480};
 
         window w(size640, "Test");
 

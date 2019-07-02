@@ -72,6 +72,9 @@ class event_handler;
 class window final
 {
 public:
+    using size_t     = details::window_size;
+    using position_t = details::window_position;
+
     /// @brief Sets the formal name of the application.
     ///
     /// @param name Application name.
@@ -84,7 +87,7 @@ public:
     /// @param settings Gpaphic context settings.
     ///
     /// @thread_safety This function can be called only from main thread.
-    window(window_size size, const std::string& title, opengl::context_settings settings = opengl::context_settings());
+    window(size_t size, const std::string& title, opengl::context_settings settings = opengl::context_settings());
 
     /// @brief Destructor.
     ~window();
@@ -138,22 +141,22 @@ public:
     /// @brief Resize window.
     ///
     /// @param size New window size.
-    void set_size(window_size size);
+    void set_size(size_t size);
 
     /// @brief Move window.
     ///
     /// @param position New winodw position.
-    void set_position(window_position position);
+    void set_position(position_t position);
 
     /// @brief Sets maximum window size.
     ///
     /// @param max_size Maximum window size.
-    void set_max_size(window_size max_size);
+    void set_max_size(size_t max_size);
 
     /// @brief Sets minimum window size.
     ///
     /// @param min_size Minimum window size.
-    void set_min_size(window_size min_size);
+    void set_min_size(size_t min_size);
 
     /// @brief Forbids/permits window resizing.
     ///
@@ -176,22 +179,22 @@ public:
     /// @brief Window position.
     ///
     /// @return Current window position.
-    window_position position() const;
+    position_t position() const;
 
     /// @brief Window size.
     ///
     /// @return Current window size.
-    window_size size() const;
+    size_t size() const;
 
     /// @brief Maximum window size.
     ///
     /// @return Current maximum size.
-    window_size max_size() const;
+    size_t max_size() const;
 
     /// @brief Minimum window size.
     ///
     /// @return Current minimum size.
-    window_size min_size() const;
+    size_t min_size() const;
 
     /// @brief Window title.
     ///
@@ -242,8 +245,8 @@ public:
     /// @{
 
     using event_callback           = std::function<void(const window&)>;
-    using size_event_callback      = std::function<void(const window&, window_size)>;
-    using position_event_callback  = std::function<void(const window&, window_position)>;
+    using size_event_callback      = std::function<void(const window&, size_t)>;
+    using position_event_callback  = std::function<void(const window&, position_t)>;
     using key_event_callback       = std::function<void(const window&, key_code, modifiers_state)>;
     using character_event_callback = std::function<void(const window&, std::string)>;
     using mouse_move_callback      = std::function<void(const window&, cursor_position)>;

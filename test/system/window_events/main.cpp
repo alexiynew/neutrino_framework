@@ -233,12 +233,10 @@ private:
     {
         using namespace framework;
         using ::framework::system::window;
-        using ::framework::system::window_position;
-        using ::framework::system::window_size;
 
         ::framework::log::set_logger(std::make_unique<::framework::log::stream_logger>(std::cout));
 
-        const window_size size640{640, 480};
+        const window::size_t size640{640, 480};
 
         window w(size640, "Test");
 
@@ -258,10 +256,11 @@ private:
         w.set_on_focus_lost_callback([](const window&) { log::info("test") << "on_focus_lost" << std::endl; });
 
         w.set_on_size_callback(
-        [](const window&, window_size size) { log::info("test") << "on_size: " << size << std::endl; });
+        [](const window&, window::size_t size) { log::info("test") << "on_size: " << size << std::endl; });
 
-        w.set_on_position_callback(
-        [](const window&, window_position position) { log::info("test") << "on_position: " << position << std::endl; });
+        w.set_on_position_callback([](const window&, window::position_t position) {
+            log::info("test") << "on_position: " << position << std::endl;
+        });
 
         w.set_on_key_press_callback([](const window&, system::key_code key, system::modifiers_state state) {
             log::info("test")

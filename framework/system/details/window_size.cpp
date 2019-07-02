@@ -29,7 +29,7 @@
 
 #include <system/details/window_size.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
 bool operator==(const window_size& lhs, const window_size& rhs)
 {
@@ -41,4 +41,4 @@ bool operator!=(const window_size& lhs, const window_size& rhs)
     return !(lhs == rhs);
 }
 
-} // namespace framework::system
+} // namespace framework::system::details

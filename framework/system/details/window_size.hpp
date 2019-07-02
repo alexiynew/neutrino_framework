@@ -32,7 +32,7 @@
 
 #include <common/types.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
 /// @addtogroup window_class
 /// @{
@@ -75,6 +75,6 @@ T& operator<<(T& ostream, const window_size& size)
 
 /// @}
 
-} // namespace framework::system
+} // namespace framework::system::details
 
 #endif

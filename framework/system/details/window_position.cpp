@@ -29,7 +29,7 @@
 
 #include <system/details/window_position.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
 bool operator==(const window_position& lhs, const window_position& rhs)
 {
@@ -41,4 +41,4 @@ bool operator!=(const window_position& lhs, const window_position& rhs)
     return !(lhs == rhs);
 }
 
-} // namespace framework::system
+} // namespace framework::system::details
