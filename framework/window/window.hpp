@@ -31,11 +31,13 @@
 #define FRAMEWORK_GRAPHICS_WINDOW_HPP
 
 #include <memory>
+#include <functional>
 
 #include <graphics/context.hpp>
-#include <window/window_callback_types.hpp>
 #include <window/window_position.hpp>
 #include <window/window_size.hpp>
+#include <window/mouse.hpp>
+#include <window/keyboard.hpp>
 
 /// @details
 ///

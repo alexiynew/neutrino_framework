@@ -206,77 +206,77 @@ bool window::focused() const
 
 #pragma region events
 
-void window::set_on_show_callback(window_event_callback callback)
+void window::set_on_show_callback(event_callback callback)
 {
     m_event_handler->m_on_show_callback = std::move(callback);
 }
 
-void window::set_on_hide_callback(window_event_callback callback)
+void window::set_on_hide_callback(event_callback callback)
 {
     m_event_handler->m_on_hide_callback = std::move(callback);
 }
 
-void window::set_on_close_callback(window_event_callback callback)
+void window::set_on_close_callback(event_callback callback)
 {
     m_event_handler->m_on_close_callback = std::move(callback);
 }
 
-void window::set_on_focus_callback(window_event_callback callback)
+void window::set_on_focus_callback(event_callback callback)
 {
     m_event_handler->m_on_focus_callback = std::move(callback);
 }
 
-void window::set_on_focus_lost_callback(window_event_callback callback)
+void window::set_on_focus_lost_callback(event_callback callback)
 {
     m_event_handler->m_on_focus_lost_callback = std::move(callback);
 }
 
-void window::set_on_size_callback(window_size_event_callback callback)
+void window::set_on_size_callback(size_event_callback callback)
 {
     m_event_handler->m_on_size_callback = std::move(callback);
 }
 
-void window::set_on_position_callback(window_position_event_callback callback)
+void window::set_on_position_callback(position_event_callback callback)
 {
     m_event_handler->m_on_position_callback = std::move(callback);
 }
 
-void window::set_on_key_press_callback(window_key_event_callback callback)
+void window::set_on_key_press_callback(key_event_callback callback)
 {
     m_event_handler->m_on_key_press_callback = std::move(callback);
 }
 
-void window::set_on_key_release_callback(window_key_event_callback callback)
+void window::set_on_key_release_callback(key_event_callback callback)
 {
     m_event_handler->m_on_key_release_callback = std::move(callback);
 }
 
-void window::set_on_character_callback(window_character_event_callback callback)
+void window::set_on_character_callback(character_event_callback callback)
 {
     m_event_handler->m_on_character_callback = std::move(callback);
 }
 
-void window::set_on_mouse_move_callback(window_mouse_move_callback callback)
+void window::set_on_mouse_move_callback(mouse_move_callback callback)
 {
     m_event_handler->m_on_mouse_move_callback = std::move(callback);
 }
 
-void window::set_on_mouse_button_press_callback(window_mouse_button_event_callback callback)
+void window::set_on_mouse_button_press_callback(mouse_button_callback callback)
 {
     m_event_handler->m_on_mouse_press_callback = std::move(callback);
 }
 
-void window::set_on_mouse_button_release_callback(window_mouse_button_event_callback callback)
+void window::set_on_mouse_button_release_callback(mouse_button_callback callback)
 {
     m_event_handler->m_on_mouse_release_callback = std::move(callback);
 }
 
-void window::set_on_mouse_enter_callback(window_event_callback callback)
+void window::set_on_mouse_enter_callback(event_callback callback)
 {
     m_event_handler->m_on_mouse_enter_callback = std::move(callback);
 }
 
-void window::set_on_mouse_leave_callback(window_event_callback callback)
+void window::set_on_mouse_leave_callback(event_callback callback)
 {
     m_event_handler->m_on_mouse_leave_callback = std::move(callback);
 }
