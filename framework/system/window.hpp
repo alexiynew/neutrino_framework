@@ -55,10 +55,10 @@ namespace framework::system
 {
 namespace details
 {
-/// @brief Base class for OS specific realisation.
+/// @brief Base class for OS specific window realisation.
 class window_implementation;
 
-/// @brief Helper class to handle events.
+/// @brief Helper class to handle window events.
 class event_handler;
 
 } // namespace details
@@ -66,9 +66,9 @@ class event_handler;
 /// @addtogroup window_class
 /// @{
 
-/// @brief A Window class.
+/// @brief Window class.
 ///
-/// OpenGL-based window, abstracts all window management, input processing, and event handling.
+/// Window, abstracts all window management, input processing, and event handling.
 class window final
 {
 public:
