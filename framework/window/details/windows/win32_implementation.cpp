@@ -30,7 +30,7 @@
 #include <window/details/implementation.hpp>
 #include <window/details/windows/win32_window.hpp>
 
-namespace framework::system::details
+namespace framework::window::details
 {
 std::unique_ptr<implementation> create_implementation(window_size size,
                                                       const std::string& title,
@@ -39,4 +39,4 @@ std::unique_ptr<implementation> create_implementation(window_size size,
     return std::make_unique<win32_window>(size, title, std::move(settings));
 }
 
-} // namespace framework::system::details
+} // namespace framework::window::details

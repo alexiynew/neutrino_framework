@@ -32,7 +32,7 @@
 
 namespace
 {
-using framework::system::key_code;
+using framework::window::key_code;
 
 constexpr key_code key_map[256] = {
 //
@@ -327,7 +327,7 @@ key_code::key_unknown,
 
 } // namespace
 
-namespace framework::system::details
+namespace framework::window::details
 {
 key_code map_system_key(uint32 key)
 {
@@ -365,4 +365,4 @@ modifiers_state get_modifiers_state()
     return static_cast<modifiers_state>(state);
 }
 
-} // namespace framework::system::details
+} // namespace framework::window::details

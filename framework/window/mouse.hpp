@@ -32,7 +32,7 @@
 
 #include <common/types.hpp>
 
-namespace framework::system
+namespace framework::window
 {
 enum class mouse_button
 {
@@ -56,6 +56,6 @@ struct cursor_position
     int32 y;
 };
 
-} // namespace framework::system
+} // namespace framework::window
 
 #endif

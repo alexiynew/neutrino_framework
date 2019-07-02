@@ -32,7 +32,7 @@
 
 #include <common/types.hpp>
 
-namespace framework::system
+namespace framework::window
 {
 enum class key_code
 {
@@ -175,6 +175,6 @@ enum modifiers_state
     mod_num_lock  = 0x0020,
 };
 
-} // namespace framework::system
+} // namespace framework::window
 
 #endif

@@ -29,7 +29,7 @@
 
 #include <window/details/implementation.hpp>
 
-namespace framework::system::details
+namespace framework::window::details
 {
 std::string implementation::application_name = "Application";
 
@@ -47,4 +47,4 @@ void implementation::set_event_handler(const details::event_handler* handler)
     m_event_handler = handler;
 }
 
-} // namespace framework::system::details
+} // namespace framework::window::details

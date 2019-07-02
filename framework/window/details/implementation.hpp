@@ -38,7 +38,7 @@
 #include <window/window_position.hpp>
 #include <window/window_size.hpp>
 
-namespace framework::system::details
+namespace framework::window::details
 {
 class implementation
 {
@@ -117,6 +117,6 @@ std::unique_ptr<implementation> create_implementation(window_size size,
                                                       const std::string& title,
                                                       opengl::context_settings settings);
 
-} // namespace framework::system::details
+} // namespace framework::window::details
 
 #endif

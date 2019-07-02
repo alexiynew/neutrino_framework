@@ -33,7 +33,7 @@
 #include <map>
 #include <windows.h>
 
-namespace framework::system::details
+namespace framework::window::details
 {
 class win32_window;
 
@@ -55,6 +55,6 @@ private:
     static HMODULE m_handle;
 };
 
-} // namespace framework::system::details
+} // namespace framework::window::details
 
 #endif

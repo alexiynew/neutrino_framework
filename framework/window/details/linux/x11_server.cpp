@@ -33,7 +33,7 @@
 
 namespace
 {
-using ::framework::system::details::x11_server;
+using ::framework::window::details::x11_server;
 
 const char* const log_tag = "x11_server";
 
@@ -77,7 +77,7 @@ void release_error_handlers()
 
 } // namespace
 
-namespace framework::system::details
+namespace framework::window::details
 {
 std::shared_ptr<x11_server> x11_server::connect()
 {
@@ -158,4 +158,4 @@ XIM x11_server::input_method() const
     return m_input_method;
 }
 
-} // namespace framework::system::details
+} // namespace framework::window::details

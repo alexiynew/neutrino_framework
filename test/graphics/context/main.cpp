@@ -45,7 +45,7 @@ private:
     {
         using framework::float32;
         using framework::opengl::context_settings;
-        using framework::system::window;
+        using framework::window::window;
         using framework::utils::random_numbers;
 
         using namespace framework::opengl;

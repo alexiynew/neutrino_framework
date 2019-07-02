@@ -41,9 +41,9 @@ public:
 private:
     void fullscreen_window()
     {
-        using ::framework::system::window;
+        using ::framework::window::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const ::framework::window::window_size size640{640, 480};
 
         window w(size640, "Test");
 
@@ -85,9 +85,9 @@ private:
 
     void iconify_window()
     {
-        using ::framework::system::window;
+        using ::framework::window::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const ::framework::window::window_size size640{640, 480};
 
         window w(size640, "Test");
 
@@ -139,9 +139,9 @@ private:
 
     void maximize_window()
     {
-        using ::framework::system::window;
+        using ::framework::window::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const ::framework::window::window_size size640{640, 480};
 
         window w(size640, "Test");
 
@@ -183,9 +183,9 @@ private:
 
     void fullscreen_before_show()
     {
-        using ::framework::system::window;
+        using ::framework::window::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const ::framework::window::window_size size640{640, 480};
 
         window w(size640, "Test");
 
@@ -201,9 +201,9 @@ private:
 
     void maximized_before_show()
     {
-        using ::framework::system::window;
+        using ::framework::window::window;
 
-        const ::framework::system::window_size size640{640, 480};
+        const ::framework::window::window_size size640{640, 480};
 
         window w(size640, "Test");
 

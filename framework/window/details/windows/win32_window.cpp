@@ -99,14 +99,14 @@ std::string utf32_to_utf8(const std::wstring& string)
 
 void unregister_window_class(ATOM*)
 {
-    using framework::system::details::win32_application;
+    using framework::window::details::win32_application;
 
     UnregisterClass(class_name, win32_application::handle());
 }
 
 std::shared_ptr<ATOM> register_window_class_details()
 {
-    using framework::system::details::win32_application;
+    using framework::window::details::win32_application;
 
     WNDCLASSEX window_class = {};
 
@@ -144,9 +144,9 @@ std::shared_ptr<ATOM> register_window_class()
     return pointer.lock();
 }
 
-framework::system::mouse_button get_mouse_button(UINT message)
+framework::window::mouse_button get_mouse_button(UINT message)
 {
-    using framework::system::mouse_button;
+    using framework::window::mouse_button;
 
     switch (message) {
         case WM_LBUTTONDOWN:
@@ -162,7 +162,7 @@ framework::system::mouse_button get_mouse_button(UINT message)
     return mouse_button::button_unknown;
 }
 
-framework::system::window_size adjust_size(framework::system::window_size size, DWORD style)
+framework::window::window_size adjust_size(framework::window::window_size size, DWORD style)
 {
     framework::int32 height = GetSystemMetrics(SM_CYCAPTION);
     height += ((style & WS_SIZEBOX) ? GetSystemMetrics(SM_CYFRAME) : GetSystemMetrics(SM_CYFIXEDFRAME)) * 2;
@@ -177,7 +177,7 @@ framework::system::window_size adjust_size(framework::system::window_size size, 
 
 } // namespace
 
-namespace framework::system::details
+namespace framework::window::details
 {
 win32_window::win32_window(window_size size, const std::string& title, opengl::context_settings settings)
 {
@@ -202,7 +202,7 @@ win32_window::win32_window(window_size size, const std::string& title, opengl::c
         throw std::runtime_error("Failed to create window.");
     }
 
-    m_context = std::make_unique<win32_context>(m_window, std::move(settings));
+    m_context = std::make_unique<graphics::win32_context>(m_window, std::move(settings));
 
     win32_application::add_window(m_window, this);
 
@@ -817,4 +817,4 @@ void win32_window::track_mouse()
 
 #pragma endregion
 
-} // namespace framework::system::details
+} // namespace framework::window::details

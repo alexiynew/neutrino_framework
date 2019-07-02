@@ -43,8 +43,8 @@ public:
 private:
     void window_size()
     {
-        using ::framework::system::window;
-        using ::framework::system::window_size;
+        using ::framework::window::window;
+        using ::framework::window::window_size;
 
         bool on_size_called = false;
 
@@ -94,8 +94,8 @@ private:
 
     void window_size_limits()
     {
-        using ::framework::system::window;
-        using ::framework::system::window_size;
+        using ::framework::window::window;
+        using ::framework::window::window_size;
 
         const window_size size640{640, 480};
         const window_size size960{960, 640};
@@ -143,8 +143,8 @@ private:
 
     void window_resizability()
     {
-        using ::framework::system::window;
-        using ::framework::system::window_size;
+        using ::framework::window::window;
+        using ::framework::window::window_size;
 
         const window_size size640{640, 480};
         const window_size no_size{0, 0};
@@ -166,8 +166,8 @@ private:
 
     void window_resizability_and_size()
     {
-        using ::framework::system::window;
-        using ::framework::system::window_size;
+        using ::framework::window::window;
+        using ::framework::window::window_size;
 
         const window_size size480{480, 320};
         const window_size size640{640, 480};
@@ -207,8 +207,8 @@ private:
 
     void window_resizability_before_show()
     {
-        using ::framework::system::window;
-        using ::framework::system::window_size;
+        using ::framework::window::window;
+        using ::framework::window::window_size;
 
         const window_size no_size{0, 0};
         const window_size size640{640, 480};
@@ -232,9 +232,9 @@ private:
 
     void window_position()
     {
-        using ::framework::system::window;
-        using ::framework::system::window_position;
-        using ::framework::system::window_size;
+        using ::framework::window::window;
+        using ::framework::window::window_position;
+        using ::framework::window::window_size;
 
         bool on_position_called = false;
         window_size size640     = {640, 480};
@@ -260,7 +260,7 @@ private:
 
     void window_title()
     {
-        using ::framework::system::window;
+        using ::framework::window::window;
 
         const std::string title      = u8"winodw_title";
         const std::string new_title  = u8"new_window_title";

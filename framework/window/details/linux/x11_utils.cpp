@@ -1,4 +1,4 @@
-/// @file ::syste::system::
+/// @file 
 /// @brief Contains several helper functions.
 /// @author Fedorov Alexey
 /// @date 05.04.2018
@@ -34,7 +34,7 @@
 #include <common/utils.hpp>
 #include <window/details/linux/x11_utils.hpp>
 
-using ::framework::system::details::x11_server;
+using ::framework::window::details::x11_server;
 
 namespace
 {
@@ -197,7 +197,7 @@ std::string create_string(Display* display, const XTextProperty& text_property)
 
 } // namespace
 
-namespace framework::system::details::utils
+namespace framework::window::details::utils
 {
 bool ewmh_supported()
 {
@@ -383,4 +383,4 @@ std::string get_window_name(const x11_server* server, Window window)
     return "";
 }
 
-} // namespace framework::system::details::utils
+} // namespace framework::window::details::utils

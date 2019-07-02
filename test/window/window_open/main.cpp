@@ -42,15 +42,15 @@ private:
         ::framework::int32 show_called = 0;
         ::framework::int32 hide_called = 0;
 
-        ::framework::system::window window({640, 480}, "Test");
+        ::framework::window::window window({640, 480}, "Test");
 
-        window.set_on_show_callback([&show_called](const ::framework::system::window& /*unused*/) { show_called++; });
+        window.set_on_show_callback([&show_called](const ::framework::window::window& /*unused*/) { show_called++; });
         window.show();
 
         TEST_ASSERT(window.visible(), "Window is not visible.");
         TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
 
-        window.set_on_hide_callback([&hide_called](const ::framework::system::window& /*unused*/) { hide_called++; });
+        window.set_on_hide_callback([&hide_called](const ::framework::window::window& /*unused*/) { hide_called++; });
         window.hide();
 
         TEST_ASSERT(!window.visible(), "Window is still visible.");
@@ -59,7 +59,7 @@ private:
 
     void open_several_windows()
     {
-        using ::framework::system::window;
+        using ::framework::window::window;
 
         window windows[5] = {
         window({640, 480}, "Test"),
