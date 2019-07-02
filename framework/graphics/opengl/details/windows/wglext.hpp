@@ -30,7 +30,7 @@
 #ifndef FRAMEWORK_GRAPHICS_OPENGL_DETAILS_WINDOWS_WGLEXT_HPP
 #define FRAMEWORK_GRAPHICS_OPENGL_DETAILS_WINDOWS_WGLEXT_HPP
 
-#include <opengl/details/windows/wglext_wrapper.hpp>
+#include <graphics/opengl/details/windows/wglext_wrapper.hpp>
 
 namespace framework::opengl
 {

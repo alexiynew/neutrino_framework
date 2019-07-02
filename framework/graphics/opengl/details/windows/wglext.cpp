@@ -28,7 +28,7 @@
 // =============================================================================
 
 #include <mutex>
-#include <opengl/details/windows/wglext.hpp>
+#include <graphics/opengl/details/windows/wglext.hpp>
 
 namespace
 {

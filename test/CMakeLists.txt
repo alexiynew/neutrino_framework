@@ -31,13 +31,14 @@ set(TEST_DIR_NAME test)
 
 add_custom_target(${TESTS_TARGET} DEPENDS ${PROJECT_NAME})
 
-message("Add tests...")
+message(STATUS "Add tests...")
 
 set(TEST_GROUPS
     "unit_test"
     "common"
     "log"
     "math"
+    "window"
     "graphics"
 )
 
@@ -45,6 +46,7 @@ foreach(GROUP ${TEST_GROUPS})
     set(GROUP_NAME ${GROUP})
     set(GROUP_DIR ${FRAMEWORK_TEST_DIR}/${GROUP})
 
+    message(STATUS "\t${GROUP_NAME}")
     include(${GROUP_DIR}/CMakeLists.txt)
 endforeach(GROUP)
 

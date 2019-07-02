@@ -328,7 +328,7 @@ void arrange(std::vector<object>& objects, framework::int32 width, framework::in
 int main()
 {
     using namespace framework::opengl;
-    using namespace framework::system;
+    using namespace framework::window;
     using framework::float32;
     using framework::int32;
     using framework::uint32;

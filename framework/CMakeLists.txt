@@ -34,12 +34,13 @@ target_include_directories(${PROJECT_NAME}
         ${FRAMEWORK_DEPENDENCIES_DIR}
 )
 
-message("Add modules...")
+message(STATUS "Add modules...")
 
 set(MODULES
     "common"
     "log"
     "math"
+    "window"
     "graphics"
     "unit_test"
 )
@@ -48,6 +49,7 @@ foreach(MODULE ${MODULES})
     set(MODULE_NAME ${MODULE})
     set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
 
+    message(STATUS "\t${MODULE_NAME}")
     include(${MODULE_DIR}/CMakeLists.txt)
 endforeach(MODULE)
 

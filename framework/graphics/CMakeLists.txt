@@ -23,10 +23,7 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${MODULE_NAME}")
-
 set_sources(PUBLIC_SOURCES
-    window.hpp
     context.hpp
     context_settings.hpp
     color_type.hpp
@@ -52,6 +49,5 @@ target_sources(${PROJECT_NAME}
 
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
-include(${MODULE_DIR}/window/CMakeLists.txt)
 include(${MODULE_DIR}/opengl/CMakeLists.txt)
 include(${MODULE_DIR}/image/CMakeLists.txt)

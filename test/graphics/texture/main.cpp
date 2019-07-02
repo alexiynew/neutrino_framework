@@ -30,7 +30,7 @@
 #include <common/version.hpp>
 #include <graphics/opengl/gl.hpp>
 #include <graphics/texture.hpp>
-#include <graphics/window.hpp>
+#include <window/window.hpp>
 #include <unit_test/suite.hpp>
 
 class texture_test : public framework::unit_test::suite
@@ -46,7 +46,7 @@ private:
     {
         using framework::float32;
         using framework::opengl::texture;
-        using framework::system::window;
+        using framework::window::window;
         using framework::utils::random_numbers;
 
         using namespace framework::opengl;

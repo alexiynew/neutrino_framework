@@ -27,7 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <opengl/details/gl_details.hpp>
+#include <graphics/opengl/details/gl_details.hpp>
 #include <windows.h>
 
 #include <common/types.hpp>

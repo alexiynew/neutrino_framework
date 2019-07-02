@@ -23,8 +23,6 @@
 # SOFTWARE.
 # =============================================================================
 
-message("${MODULE_NAME}")
-
 set_sources(PUBLIC_SOURCES
     suite.hpp
 )

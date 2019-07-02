@@ -29,7 +29,7 @@
 #include <common/utils.hpp>
 #include <common/version.hpp>
 #include <graphics/opengl/gl.hpp>
-#include <graphics/window.hpp>
+#include <window/window.hpp>
 #include <unit_test/suite.hpp>
 
 class context_test : public framework::unit_test::suite
@@ -45,7 +45,7 @@ private:
     {
         using framework::float32;
         using framework::opengl::context_settings;
-        using framework::system::window;
+        using framework::window::window;
         using framework::utils::random_numbers;
 
         using namespace framework::opengl;
