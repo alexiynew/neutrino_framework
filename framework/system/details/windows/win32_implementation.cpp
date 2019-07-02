@@ -32,9 +32,9 @@
 
 namespace framework::system::details
 {
-std::unique_ptr<implementation> create_implementation(window_size size,
-                                                      const std::string& title,
-                                                      opengl::context_settings settings)
+std::unique_ptr<window_implementation> create_implementation(window_size size,
+                                                             const std::string& title,
+                                                             opengl::context_settings settings)
 {
     return std::make_unique<win32_window>(size, title, std::move(settings));
 }

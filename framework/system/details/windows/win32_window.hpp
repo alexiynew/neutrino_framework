@@ -37,7 +37,7 @@
 
 namespace framework::system::details
 {
-class win32_window final : public implementation
+class win32_window final : public window_implementation
 {
 public:
     win32_window(window_size size, const std::string& title, opengl::context_settings settings);

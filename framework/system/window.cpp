@@ -37,7 +37,7 @@ namespace framework::system
 {
 void window::set_application_name(const std::string& name)
 {
-    details::implementation::set_application_name(name);
+    details::window_implementation::set_application_name(name);
 }
 
 window::window(size_t size, const std::string& title, opengl::context_settings settings)

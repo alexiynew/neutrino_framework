@@ -31,18 +31,18 @@
 
 namespace framework::system::details
 {
-std::string implementation::application_name = "Application";
+std::string window_implementation::application_name = "Application";
 
-implementation::implementation() = default;
+window_implementation::window_implementation() = default;
 
-implementation::~implementation() = default;
+window_implementation::~window_implementation() = default;
 
-void implementation::set_application_name(const std::string& name)
+void window_implementation::set_application_name(const std::string& name)
 {
     application_name = name;
 }
 
-void implementation::set_event_handler(const details::event_handler* handler)
+void window_implementation::set_event_handler(const details::event_handler* handler)
 {
     m_event_handler = handler;
 }

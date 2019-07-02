@@ -40,20 +40,20 @@
 
 namespace framework::system::details
 {
-class implementation
+class window_implementation
 {
 public:
     static void set_application_name(const std::string& name);
 
-    implementation();
+    window_implementation();
 
-    virtual ~implementation();
+    virtual ~window_implementation();
 
-    implementation(const implementation&) = delete;
-    implementation& operator=(const implementation&) = delete;
+    window_implementation(const window_implementation&) = delete;
+    window_implementation& operator=(const window_implementation&) = delete;
 
-    implementation(implementation&&) = default;
-    implementation& operator=(implementation&&) = default;
+    window_implementation(window_implementation&&) = default;
+    window_implementation& operator=(window_implementation&&) = default;
 
     void set_event_handler(const details::event_handler* handler);
 
@@ -113,9 +113,9 @@ protected:
 };
 
 // @brief Fabric function to make platform dependent implementation
-std::unique_ptr<implementation> create_implementation(window_size size,
-                                                      const std::string& title,
-                                                      opengl::context_settings settings);
+std::unique_ptr<window_implementation> create_implementation(window_size size,
+                                                             const std::string& title,
+                                                             opengl::context_settings settings);
 
 } // namespace framework::system::details
 

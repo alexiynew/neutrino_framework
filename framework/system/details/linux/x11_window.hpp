@@ -39,7 +39,7 @@
 
 namespace framework::system::details
 {
-class x11_window final : public implementation
+class x11_window final : public window_implementation
 {
 public:
     x11_window(window_size size, const std::string& title, opengl::context_settings settings);
