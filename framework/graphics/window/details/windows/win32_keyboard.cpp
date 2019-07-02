@@ -27,7 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <window/details/windows/win32_keyboard.hpp>
+#include <graphics/window/details/windows/win32_keyboard.hpp>
 #include <windows.h>
 
 namespace

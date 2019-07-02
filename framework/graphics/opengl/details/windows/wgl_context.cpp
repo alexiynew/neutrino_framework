@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <opengl/details/windows/wgl_context.hpp>
-#include <opengl/details/windows/wglext.hpp>
+#include <graphics/opengl/details/windows/wgl_context.hpp>
+#include <graphics/opengl/details/windows/wglext.hpp>
 #include <stdexcept>
 
 namespace framework::system

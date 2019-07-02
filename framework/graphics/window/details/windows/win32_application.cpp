@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <window/details/windows/win32_application.hpp>
-#include <window/details/windows/win32_window.hpp>
+#include <graphics/window/details/windows/win32_application.hpp>
+#include <graphics/window/details/windows/win32_window.hpp>
 
 namespace framework::system::details
 {

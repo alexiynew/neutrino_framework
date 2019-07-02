@@ -30,7 +30,7 @@
 #ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_KEYBOARD_HPP
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_KEYBOARD_HPP
 
-#include <window/keyboard.hpp>
+#include <graphics/window/keyboard.hpp>
 
 namespace framework::system::details
 {

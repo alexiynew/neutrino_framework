@@ -31,7 +31,7 @@
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 
 #include <memory>
-#include <window/details/implementation.hpp>
+#include <graphics/window/details/implementation.hpp>
 #include <windows.h>
 
 namespace framework::system::details
