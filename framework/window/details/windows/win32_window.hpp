@@ -34,7 +34,7 @@
 #include <window/details/implementation.hpp>
 #include <windows.h>
 
-namespace framework::window::details
+namespace framework::system::details
 {
 class win32_window final : public implementation
 {
@@ -143,6 +143,6 @@ private:
     void process_alt_key(LPARAM l_param);
 };
 
-} // namespace framework::window::details
+} // namespace framework::system::details
 
 #endif

@@ -31,7 +31,7 @@
 
 #include <window/details/linux/x11_mouse.hpp>
 
-namespace framework::window::details
+namespace framework::system::details
 {
 mouse_button map_mouse_button(uint32 button)
 {
@@ -46,4 +46,4 @@ mouse_button map_mouse_button(uint32 button)
     return mouse_button::button_unknown;
 }
 
-} // namespace framework::window::details
+} // namespace framework::system::details

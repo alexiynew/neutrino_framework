@@ -32,10 +32,10 @@
 
 #include <window/mouse.hpp>
 
-namespace framework::window::details
+namespace framework::system::details
 {
 mouse_button map_mouse_button(uint32 button);
 
-} // namespace framework::window::details
+} // namespace framework::system::details
 
 #endif

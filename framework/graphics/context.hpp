@@ -41,12 +41,12 @@ namespace framework::opengl
 /// @brief OpenGL graphic context.
 ///
 /// Encapsulates the platform dependent graphics context.
-/// Actual context is created by ::framework::window::window class. Each window has its own context.
+/// Actual context is created by ::framework::system::window class. Each window has its own context.
 /// The make_current should be called before perform any OpenGL functon.
 ///
 /// @thread_safety Context must be created only on main thread.
 ///
-/// @see ::framework::window::window, context_settings.
+/// @see ::framework::system::window, context_settings.
 class context
 {
 public:

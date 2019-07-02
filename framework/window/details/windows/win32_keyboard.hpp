@@ -32,11 +32,11 @@
 
 #include <window/keyboard.hpp>
 
-namespace framework::window::details
+namespace framework::system::details
 {
 key_code map_system_key(uint32 key);
 modifiers_state get_modifiers_state();
 
-} // namespace framework::window::details
+} // namespace framework::system::details
 
 #endif

@@ -37,7 +37,7 @@ public:
 private:
     void focus_window()
     {
-        using ::framework::window::window;
+        using ::framework::system::window;
 
         int alpha_focused    = 0;
         int alpha_lost_focus = 0;

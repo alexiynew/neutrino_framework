@@ -37,12 +37,12 @@
 #include <window/window_position.hpp>
 #include <window/window_size.hpp>
 
-namespace framework::window
+namespace framework::system
 {
 class window;
 }
 
-namespace framework::window::details
+namespace framework::system::details
 {
 class event_handler final
 {
@@ -80,7 +80,7 @@ public:
     void on_mouse_leave() const;
 
 private:
-    friend class framework::window::window;
+    friend class framework::system::window;
 
     window::event_callback m_on_show_callback  = nullptr;
     window::event_callback m_on_hide_callback  = nullptr;
@@ -107,6 +107,6 @@ private:
     const window* const m_window = nullptr;
 };
 
-} // namespace framework::window::details
+} // namespace framework::system::details
 
 #endif

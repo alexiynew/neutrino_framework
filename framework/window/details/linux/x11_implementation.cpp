@@ -30,7 +30,7 @@
 #include <window/details/implementation.hpp>
 #include <window/details/linux/x11_window.hpp>
 
-namespace framework::window::details
+namespace framework::system::details
 {
 std::unique_ptr<implementation> create_implementation(window_size size,
                                                       const std::string& title,
@@ -39,4 +39,4 @@ std::unique_ptr<implementation> create_implementation(window_size size,
     return std::make_unique<x11_window>(size, title, settings);
 }
 
-} // namespace framework::window::details
+} // namespace framework::system::details

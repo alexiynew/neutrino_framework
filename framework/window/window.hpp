@@ -51,7 +51,7 @@
 /// @}
 
 /// @brief Operating System related classes.
-namespace framework::window
+namespace framework::system
 {
 namespace details
 {
@@ -302,6 +302,6 @@ private:
 
 /// @}
 
-} // namespace framework::window
+} // namespace framework::system
 
 #endif

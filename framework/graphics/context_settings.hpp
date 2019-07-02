@@ -40,9 +40,9 @@ namespace framework::opengl
 
 /// @brief OpenGL graphic context settings.
 ///
-/// Structure to store context settings. Used by the @ref ::framework::window::window class to setup graphic context.
+/// Structure to store context settings. Used by the @ref ::framework::system::window class to setup graphic context.
 ///
-/// @see ::framework::window::window, context
+/// @see ::framework::system::window, context
 class context_settings
 {
 public:

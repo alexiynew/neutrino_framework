@@ -29,7 +29,7 @@
 
 #include <window/details/event_handler.hpp>
 
-namespace framework::window::details
+namespace framework::system::details
 {
 event_handler::event_handler(window* w) : m_window(w)
 {}
@@ -139,4 +139,4 @@ void event_handler::on_mouse_leave() const
     }
 }
 
-} // namespace framework::window::details
+} // namespace framework::system::details

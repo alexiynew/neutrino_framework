@@ -32,9 +32,9 @@
 
 namespace
 {
-using ::framework::window::key_code;
-using ::framework::window::modifiers_state;
-using ::framework::window::mouse_button;
+using ::framework::system::key_code;
+using ::framework::system::modifiers_state;
+using ::framework::system::mouse_button;
 
 std::string key_name(key_code key)
 {
@@ -232,10 +232,9 @@ private:
     void run()
     {
         using namespace framework;
-        using namespace framework::window;
-        using ::framework::window::window;
-        using ::framework::window::window_position;
-        using ::framework::window::window_size;
+        using ::framework::system::window;
+        using ::framework::system::window_position;
+        using ::framework::system::window_size;
 
         ::framework::log::set_logger(std::make_unique<::framework::log::stream_logger>(std::cout));
 
@@ -264,12 +263,12 @@ private:
         w.set_on_position_callback(
         [](const window&, window_position position) { log::info("test") << "on_position: " << position << std::endl; });
 
-        w.set_on_key_press_callback([](const window&, key_code key, modifiers_state state) {
+        w.set_on_key_press_callback([](const window&, system::key_code key, system::modifiers_state state) {
             log::info("test")
             << "on_key_press key: " << (int)key << " " << key_name(key) << " " << print_state(state) << std::endl;
         });
 
-        w.set_on_key_release_callback([](const window&, key_code key, modifiers_state state) {
+        w.set_on_key_release_callback([](const window&, system::key_code key, system::modifiers_state state) {
             log::info("test")
             << "on_key_release key: " << (int)key << " " << key_name(key) << " " << print_state(state) << std::endl;
         });
@@ -278,18 +277,18 @@ private:
 
         w.set_on_mouse_leave_callback([](const window&) { log::info("test") << "on_mouse_leave" << std::endl; });
 
-        w.set_on_mouse_move_callback([](const window&, cursor_position p) {
+        w.set_on_mouse_move_callback([](const window&, system::cursor_position p) {
             log::info("test") << "on_mouse_move {" << p.x << ", " << p.y << "}" << std::endl;
         });
 
         w.set_on_mouse_button_press_callback(
-        [](const window&, mouse_button button, cursor_position position, modifiers_state state) {
+        [](const window&, system::mouse_button button, system::cursor_position position, system::modifiers_state state) {
             log::info("test") << "on_mouse_press: " << button_name(button) << " {" << position.x << ", " << position.y
                               << "} " << print_state(state) << std::endl;
         });
 
         w.set_on_mouse_button_release_callback(
-        [](const window&, mouse_button button, cursor_position position, modifiers_state state) {
+        [](const window&, system::mouse_button button, system::cursor_position position, system::modifiers_state state) {
             log::info("test") << "on_mouse_release: " << button_name(button) << " {" << position.x << ", " << position.y
                               << "} " << print_state(state) << std::endl;
         });

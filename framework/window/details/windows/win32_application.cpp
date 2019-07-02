@@ -1,4 +1,4 @@
-/// @file 
+/// @file ::system::
 /// @brief Window implementation for windows.
 /// @author Fedorov Alexey
 /// @date 19.04.2017
@@ -30,7 +30,7 @@
 #include <window/details/windows/win32_application.hpp>
 #include <window/details/windows/win32_window.hpp>
 
-namespace framework::window::details
+namespace framework::system::details
 {
 win32_application::container win32_application::m_windows;
 HMODULE win32_application::m_handle = nullptr;
@@ -76,4 +76,4 @@ LRESULT CALLBACK win32_application::window_procedure(HWND window_handle, UINT me
     return DefWindowProc(window_handle, message, w_param, l_param);
 }
 
-} // namespace framework::window::details
+} // namespace framework::system::details

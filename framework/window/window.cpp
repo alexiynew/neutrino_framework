@@ -33,7 +33,7 @@
 #include <window/details/event_handler.hpp>
 #include <window/details/implementation.hpp>
 
-namespace framework::window
+namespace framework::system
 {
 void window::set_application_name(const std::string& name)
 {
@@ -283,4 +283,4 @@ void window::set_on_mouse_leave_callback(event_callback callback)
 
 #pragma endregion
 
-} // namespace framework::window
+} // namespace framework::system

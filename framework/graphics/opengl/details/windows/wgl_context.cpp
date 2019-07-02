@@ -31,7 +31,7 @@
 #include <graphics/opengl/details/windows/wglext.hpp>
 #include <stdexcept>
 
-namespace framework::graphics
+namespace framework::system
 {
 win32_context::win32_context(HWND window, opengl::context_settings settings)
     : opengl::context(settings), m_window(window)
@@ -127,4 +127,4 @@ void win32_context::swap_buffers() const
     SwapBuffers(m_hdc);
 }
 
-} // namespace framework::graphics
+} // namespace framework::system

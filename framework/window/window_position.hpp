@@ -32,7 +32,7 @@
 
 #include <common/types.hpp>
 
-namespace framework::window
+namespace framework::system
 {
 /// @addtogroup window_class
 /// @{
@@ -75,6 +75,6 @@ T& operator<<(T& ostream, const window_position& position)
 
 /// @}
 
-} // namespace framework::window
+} // namespace framework::system
 
 #endif

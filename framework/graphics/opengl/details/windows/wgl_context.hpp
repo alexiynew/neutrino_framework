@@ -33,7 +33,7 @@
 #include <graphics/context.hpp>
 #include <windows.h>
 
-namespace framework::graphics
+namespace framework::system
 {
 class win32_context : public framework::opengl::context
 {
@@ -59,6 +59,6 @@ private:
     HGLRC m_hglrc = nullptr;
 };
 
-} // namespace framework::graphics
+} // namespace framework::system
 
 #endif
