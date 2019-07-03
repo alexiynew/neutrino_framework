@@ -1,5 +1,5 @@
 /// @file
-/// @brief OpenGL graphic context settings.
+/// @brief Graphic context settings.
 /// @author Fedorov Alexey
 /// @date 12.11.2018
 
@@ -33,24 +33,33 @@
 #include <common/types.hpp>
 #include <common/version.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
-/// @addtogroup opengl_module
+/// @addtogroup graphics_module
 /// @{
 
-/// @brief OpenGL graphic context settings.
+/// @brief Graphic context settings.
 ///
 /// Structure to store context settings. Used by the @ref ::framework::system::window class to setup graphic context.
+/// Context is always double-buffered and always RGB-capable.
 ///
 /// @see ::framework::system::window, context
 class context_settings
 {
 public:
-    /// @brief Samples count
-    enum class samples
+
+    /// @brief Graphic api type
+    enum class graphic_api
+    {
+        opengl, ///< OpenGL API.
+        vulkan  ///< Vulkan API. NOT SUPPORTED!!!
+    };
+
+    /// @brief Antialiasing level values
+    enum class antialiasing
     {
         dont_care, ///< Get any suitable context.
-        best       ///< Get context with maximum samples count.
+        best       ///< Find best value.
     };
 
     /// @brief Default constructor
@@ -77,16 +86,6 @@ public:
 
 #pragma region setters
 
-    /// @brief Request double buffered context.
-    ///
-    /// @return Reference to this settings.
-    context_settings& set_double_buffered();
-
-    /// @brief Request single buffered context.
-    ///
-    /// @return Reference to this settings.
-    context_settings& set_single_buffered();
-
     /// @brief Sets required OpenGL version.
     ///
     /// @param version required OpenGl version.
@@ -108,27 +107,16 @@ public:
     /// @return Reference to this settings.
     context_settings& set_stencil_bits(int32 bits);
 
-    /// @brief Sets samples count.
+    /// @brief Sets The antialiasing level.
     ///
-    /// @param count Samples count.
+    /// @param level The antialiasing level.
     ///
     /// @return Reference to this settings.
-    context_settings& set_samples_count(samples count);
+    context_settings& antialiasing_level(antialiasing level);
 
 #pragma endregion
 
 #pragma region getters
-
-    /// @brief Check if double buffered context required.
-    ///
-    /// @return `true` if double buffered context required.
-    bool double_buffered() const;
-
-    /// @brief Check if single buffered context required.
-    ///
-    /// @return `true` if single buffered context required.
-    bool single_buffered() const;
-
     /// @brief Required OpenGl version.
     ///
     /// @return Required OpenGl version.
@@ -144,19 +132,18 @@ public:
     /// @return The stencil buffer bits count.
     int32 stencil_bits() const;
 
-    /// @brief Required samples count.
+    /// @brief Required antialiasing level.
     ///
-    /// @return The samples count.
-    samples samples_count() const;
+    /// @return The antialiasing level.
+    antialiasing antialiasing_level() const;
 
 #pragma endregion
 
 private:
-    bool m_double_buffered   = true;
-    utils::version m_version = {3, 0};
-    int32 m_depth_bits       = 24;
-    int32 m_stencil_bits     = 8;
-    samples m_samples_count  = samples::best;
+    int32 m_depth_bits         = 24;
+    int32 m_stencil_bits       = 8;
+    int32 m_antialiasing_level = antialiasing::best;
+    utils::version m_version   = {3, 0};
 };
 
 /// @}
