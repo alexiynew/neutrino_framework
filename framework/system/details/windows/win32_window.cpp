@@ -163,7 +163,7 @@ framework::system::mouse_button get_mouse_button(UINT message)
     return mouse_button::button_unknown;
 }
 
-framework::system::window_size adjust_size(framework::system::window_size size, DWORD style)
+framework::system::details::window_size adjust_size(framework::system::details::window_size size, DWORD style)
 {
     framework::int32 height = GetSystemMetrics(SM_CYCAPTION);
     height += ((style & WS_SIZEBOX) ? GetSystemMetrics(SM_CYFRAME) : GetSystemMetrics(SM_CYFIXEDFRAME)) * 2;
