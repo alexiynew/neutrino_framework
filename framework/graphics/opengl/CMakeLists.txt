@@ -29,8 +29,6 @@ set_sources(PUBLIC_SOURCES
 
 set_sources(PRIVATE_SOURCES
     gl.cpp
-    context.cpp
-    context_settings.cpp
 )
 
 target_sources(${PROJECT_NAME}

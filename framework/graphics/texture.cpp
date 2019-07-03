@@ -37,6 +37,7 @@ namespace framework::opengl
 texture::texture(min_filter minf, mag_filter magf, wrap_s ws, wrap_t wt)
 {
     using framework::int32;
+    using namespace framework::graphics::opengl::details;
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -54,6 +55,7 @@ texture::texture(min_filter minf, mag_filter magf, wrap_s ws, wrap_t wt)
 
 void texture::load(int32 width, int32 height, const void* data)
 {
+    using namespace framework::graphics::opengl::details;
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_texture_id);
 
@@ -64,12 +66,14 @@ void texture::load(int32 width, int32 height, const void* data)
 
 void texture::bind()
 {
+    using namespace framework::graphics::opengl::details;
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_texture_id);
 }
 
 void texture::unbind()
 {
+    using namespace framework::graphics::opengl::details;
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
 }

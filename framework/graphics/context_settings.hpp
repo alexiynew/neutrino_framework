@@ -47,7 +47,6 @@ namespace framework::graphics
 class context_settings
 {
 public:
-
     /// @brief Graphic api type
     enum class graphic_api
     {
@@ -86,9 +85,16 @@ public:
 
 #pragma region setters
 
-    /// @brief Sets required OpenGL version.
+    /// @brief Sets required API type.
     ///
-    /// @param version required OpenGl version.
+    /// @param api API type.
+    ///
+    /// @return Reference to this settings.
+    context_settings& set_api_type(graphic_api api);
+
+    /// @brief Sets required API version.
+    ///
+    /// @param version required version.
     ///
     /// @return Reference to this settings.
     context_settings& set_version(utils::version version);
@@ -112,14 +118,19 @@ public:
     /// @param level The antialiasing level.
     ///
     /// @return Reference to this settings.
-    context_settings& antialiasing_level(antialiasing level);
+    context_settings& set_antialiasing_level(antialiasing level);
 
 #pragma endregion
 
 #pragma region getters
-    /// @brief Required OpenGl version.
+    /// @brief Required API type.
     ///
-    /// @return Required OpenGl version.
+    /// @return Required API type.
+    graphic_api api_type() const;
+
+    /// @brief Required API version.
+    ///
+    /// @return Required API version.
     utils::version version() const;
 
     /// @brief Required detph buffer bits count.
@@ -140,14 +151,15 @@ public:
 #pragma endregion
 
 private:
-    int32 m_depth_bits         = 24;
-    int32 m_stencil_bits       = 8;
-    int32 m_antialiasing_level = antialiasing::best;
-    utils::version m_version   = {3, 0};
+    graphic_api m_api                 = graphic_api::opengl;
+    int32 m_depth_bits                = 24;
+    int32 m_stencil_bits              = 8;
+    antialiasing m_antialiasing_level = antialiasing::best;
+    utils::version m_version          = {3, 0};
 };
 
 /// @}
 
-} // namespace framework::opengl
+} // namespace framework::graphics
 
 #endif

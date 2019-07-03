@@ -30,7 +30,7 @@
 #ifndef FRAMEWORK_GRAPHICS_OPENGL_DETAILS_GL_DETAILS_HPP
 #define FRAMEWORK_GRAPHICS_OPENGL_DETAILS_GL_DETAILS_HPP
 
-namespace framework::opengl::opengl_details
+namespace framework::graphics::opengl::details
 {
 using gl_function_ptr = void (*)();
 gl_function_ptr get_function_implementation(const char* function_name);
@@ -41,6 +41,6 @@ F get_function(const char* function_name)
     return reinterpret_cast<F>(get_function_implementation(function_name));
 }
 
-} // namespace framework::opengl::opengl_details
+} // namespace framework::graphics::opengl::details
 
 #endif

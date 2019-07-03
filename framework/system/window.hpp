@@ -34,6 +34,7 @@
 #include <memory>
 
 #include <graphics/context.hpp>
+#include <graphics/context_settings.hpp>
 #include <system/details/window_position.hpp>
 #include <system/details/window_size.hpp>
 #include <system/keyboard.hpp>
@@ -87,7 +88,7 @@ public:
     /// @param settings Gpaphic context settings.
     ///
     /// @thread_safety This function can be called only from main thread.
-    window(size_t size, const std::string& title, opengl::context_settings settings = opengl::context_settings());
+    window(size_t size, const std::string& title, graphics::context_settings settings = graphics::context_settings());
 
     /// @brief Destructor.
     ~window();
@@ -204,7 +205,7 @@ public:
     /// @brief Returns graphic context associated with this window.
     ///
     /// @return Graphic context.
-    framework::opengl::context* context() const;
+    framework::graphics::context* context() const;
     /// @}
 
     /// @name state

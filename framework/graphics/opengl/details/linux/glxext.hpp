@@ -32,11 +32,11 @@
 
 #include <graphics/opengl/details/linux/glxext_wrapper.hpp>
 
-namespace framework::opengl
+namespace framework::graphics::opengl::details
 {
 /// Initialize GLX functions
 void init_glx();
 
-} // namespace framework::opengl
+} // namespace framework::graphics::opengl::details
 
 #endif

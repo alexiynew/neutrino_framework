@@ -32,7 +32,7 @@
 
 #include <GL/glx.h>
 
-namespace framework::opengl
+namespace framework::graphics::opengl::details
 {
 extern bool glx_version_1_3_supported;
 extern bool glx_version_1_4_supported;
@@ -342,12 +342,8 @@ extern PFNGLXGETTRANSPARENTINDEXSUNPROC glXGetTransparentIndexSUN;
 
 #pragma endregion
 
-} // namespace framework::opengl
-
-namespace framework::opengl::opengl_details
-{
 void init_glx_functions();
 
-} // namespace framework::opengl::opengl_details
+} // namespace framework::graphics::opengl::details
 
 #endif

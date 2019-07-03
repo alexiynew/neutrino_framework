@@ -33,7 +33,7 @@
 #include <GL/glcorearb.h>
 #include <GL/wglext.h>
 
-namespace framework::opengl
+namespace framework::graphics::opengl::details
 {
 extern bool wgl_arb_buffer_region_supported;
 extern bool wgl_arb_create_context_supported;
@@ -341,12 +341,8 @@ extern PFNWGLWAITFORSBCOMLPROC wglWaitForSbcOML;
 
 #pragma endregion
 
-} // namespace framework::opengl
-
-namespace framework::opengl::opengl_details
-{
 void init_wgl_functions();
 
-} // namespace framework::opengl::opengl_details
+} // namespace framework::graphics::opengl::details
 
 #endif

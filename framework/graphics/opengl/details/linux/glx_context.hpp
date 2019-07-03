@@ -35,12 +35,12 @@
 #include <graphics/context.hpp>
 #include <graphics/opengl/details/linux/glxext.hpp>
 
-namespace framework::system
+namespace framework::graphics::opengl::details
 {
-class glx_context : public framework::opengl::context
+class glx_context : public framework::graphics::context
 {
 public:
-    glx_context(Display* display, opengl::context_settings settings);
+    glx_context(Display* display, context_settings settings);
     ~glx_context() override;
 
     glx_context(const glx_context&) = default;
@@ -71,6 +71,6 @@ private:
     void clear();
 };
 
-} // namespace framework::system
+} // namespace framework::graphics::opengl::details
 
 #endif

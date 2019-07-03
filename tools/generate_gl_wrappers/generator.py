@@ -79,19 +79,15 @@ def generate_header(sections, dictionary):
         "\n" \
         "{includes}\n" \
         "\n" \
-        "namespace framework::opengl\n" \
+        "namespace framework::graphics::opengl::details\n" \
         "{{\n" \
         "{is_extension_supported}" \
         "\n" \
         "{declarations}" \
         "\n" \
-        "}} // namespace framework::opengl\n" \
-        "\n" \
-        "namespace framework::opengl::opengl_details\n" \
-        "{{\n" \
         "void {init_function_name}();\n" \
         "\n" \
-        "}} // namespace framework::opengl::opengl_details\n" \
+        "}} // namespace framework::graphics::opengl::details\n" \
         "\n" \
         "#endif\n"
 
@@ -138,7 +134,7 @@ def generate_null_definitions(sections):
 def generate_init_definitions(sections):
     t = Template("bool init_${lower_name}()\n"
                  "{\n"
-                 "    using ::framework::opengl::opengl_details::get_function;\n"
+                 "    using ::framework::graphics::opengl::details::get_function;\n"
                  "    bool result = true;\n"
                  "\n"
                  "    // clang-format off\n"
@@ -149,7 +145,7 @@ def generate_init_definitions(sections):
                  "    return result;\n"
                  "}\n")
 
-    impl_str = "    result = result && (framework::opengl::{0} = get_function<{1}>(\"{0}\")) != nullptr;"
+    impl_str = "    result = result && (framework::graphics::opengl::details::{0} = get_function<{1}>(\"{0}\")) != nullptr;"
 
     init_functions = "\n".join(t.substitute(name=s.name,
                                             lower_name=s.name.lower(),
@@ -177,13 +173,13 @@ def generate_source(sections, dictionary):
                  "\n"
                  "} // namespace\n"
                  "\n"
-                 "namespace framework::opengl\n"
+                 "namespace framework::graphics::opengl::details\n"
                  "{\n"
                  "${is_extension_supported}"
                  "\n"
                  "${null_definitions}"
                  "\n"
-                 "} // namespace framework::opengl\n"
+                 "} // namespace framework::graphics::opengl::details\n"
                  "\n"
                  "namespace\n"
                  "{\n"
@@ -195,7 +191,7 @@ def generate_source(sections, dictionary):
                  "\n"
                  "} // namespace\n"
                  "\n"
-                 "namespace framework::opengl::opengl_details\n"
+                 "namespace framework::graphics::opengl::details\n"
                  "{\n"
                  "void ${init_function_name}()\n"
                  "{\n"
@@ -204,7 +200,7 @@ def generate_source(sections, dictionary):
                  "    // clang-format on\n"
                  "}\n"
                  "\n"
-                 "} // namespace framework::opengl::opengl_details\n"
+                 "} // namespace framework::graphics::opengl::details\n"
                  )
 
     assignment_extensions = "\n".join("    {0}_supported = ::init_{0}();".format(

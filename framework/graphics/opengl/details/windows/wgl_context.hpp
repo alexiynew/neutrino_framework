@@ -34,12 +34,12 @@
 
 #include <graphics/context.hpp>
 
-namespace framework::system
+namespace framework::graphics::opengl
 {
-class win32_context : public framework::opengl::context
+class win32_context : public framework::graphics::context
 {
 public:
-    win32_context(HWND window, opengl::context_settings settings);
+    win32_context(HWND window, context_settings settings);
     ~win32_context() override;
 
     win32_context(const win32_context&) = default;
@@ -60,6 +60,6 @@ private:
     HGLRC m_hglrc = nullptr;
 };
 
-} // namespace framework::system
+} // namespace framework::graphics::opengl
 
 #endif

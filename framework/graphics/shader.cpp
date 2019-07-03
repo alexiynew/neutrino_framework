@@ -40,6 +40,7 @@ namespace framework::opengl
 
 shader_base::shader_base(int32 shader_type)
 {
+    using namespace framework::graphics::opengl::details;
     m_shader_id = glCreateShader(shader_type);
 }
 
@@ -61,6 +62,7 @@ shader_base& shader_base::operator=(shader_base&& other)
 
 void shader_base::set_source(const std::string& src)
 {
+    using namespace framework::graphics::opengl::details;
     const char* src_pointer = src.c_str();
     glShaderSource(m_shader_id, 1, &src_pointer, NULL);
 }
@@ -78,16 +80,19 @@ void shader_base::set_source(std::istream& src_stream)
 
 void shader_base::compile()
 {
+    using namespace framework::graphics::opengl::details;
     glCompileShader(m_shader_id);
 }
 
 void shader_base::mark_for_deletion()
 {
+    using namespace framework::graphics::opengl::details;
     glDeleteShader(m_shader_id);
 }
 
 framework::int32 shader_base::shader_type() const
 {
+    using namespace framework::graphics::opengl::details;
     framework::int32 type = 0;
     glGetShaderiv(m_shader_id, GL_SHADER_TYPE, &type);
     return type;
@@ -95,11 +100,13 @@ framework::int32 shader_base::shader_type() const
 
 bool shader_base::valid() const
 {
+    using namespace framework::graphics::opengl::details;
     return glIsShader(m_shader_id);
 }
 
 bool shader_base::compiled() const
 {
+    using namespace framework::graphics::opengl::details;
     framework::int32 status = 0;
     glGetShaderiv(m_shader_id, GL_COMPILE_STATUS, &status);
     return status;
@@ -107,6 +114,7 @@ bool shader_base::compiled() const
 
 framework::int32 shader_base::source_length() const
 {
+    using namespace framework::graphics::opengl::details;
     framework::int32 length = 0;
     glGetShaderiv(m_shader_id, GL_SHADER_SOURCE_LENGTH, &length);
 
@@ -115,6 +123,7 @@ framework::int32 shader_base::source_length() const
 
 std::string shader_base::source() const
 {
+    using namespace framework::graphics::opengl::details;
     const framework::int32 length = source_length();
 
     if (length <= 0) {
@@ -130,6 +139,7 @@ std::string shader_base::source() const
 
 std::string shader_base::info_log() const
 {
+    using namespace framework::graphics::opengl::details;
     framework::int32 length = 0;
     glGetShaderiv(m_shader_id, GL_INFO_LOG_LENGTH, &length);
 
@@ -165,48 +175,57 @@ fragment_shader::fragment_shader() : shader_base(GL_FRAGMENT_SHADER)
 
 shader_program::shader_program()
 {
+    using namespace framework::graphics::opengl::details;
     m_program_id = glCreateProgram();
 }
 
 shader_program::~shader_program()
 {
+    using namespace framework::graphics::opengl::details;
     glDeleteProgram(m_program_id);
 }
 
 void shader_program::arttach(const shader_base& shader)
 {
+    using namespace framework::graphics::opengl::details;
     glAttachShader(m_program_id, shader.shader_id());
 }
 
 void shader_program::link()
 {
+    using namespace framework::graphics::opengl::details;
     glLinkProgram(m_program_id);
 }
 
 void shader_program::use()
 {
+    using namespace framework::graphics::opengl::details;
     glUseProgram(m_program_id);
 }
 
 void shader_program::stop_using()
 {
+    using namespace framework::graphics::opengl::details;
     glUseProgram(0);
 }
 
 void shader_program::uniform(const std::string& name, int value)
 {
+    using namespace framework::graphics::opengl::details;
     const uint32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
     glUniform1i(uniform_id, value);
 }
 
 void shader_program::uniform(const std::string& name, math::matrix4f value, bool transpose)
 {
+    using namespace framework::graphics::opengl::details;
     const uint32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
     glUniformMatrix4fv(uniform_id, 1, transpose, value.data());
 }
 
 bool shader_program::linked() const
 {
+    using namespace framework::graphics::opengl::details;
     framework::int32 status = 0;
     glGetProgramiv(m_program_id, GL_LINK_STATUS, &status);
     return status;
@@ -214,6 +233,7 @@ bool shader_program::linked() const
 
 std::string shader_program::info_log() const
 {
+    using namespace framework::graphics::opengl::details;
     framework::int32 length = 0;
     glGetProgramiv(m_program_id, GL_INFO_LOG_LENGTH, &length);
 

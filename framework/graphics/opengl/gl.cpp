@@ -36,11 +36,11 @@ namespace
 std::once_flag init_flag;
 } // namespace
 
-namespace framework::opengl
+namespace framework::graphics::opengl
 {
 void init()
 {
-    std::call_once(init_flag, []() { opengl_details::init_gl_functions(); });
+    std::call_once(init_flag, []() { details::init_gl_functions(); });
 }
 
-} // namespace framework::opengl
+} // namespace framework::graphics::opengl

@@ -35,7 +35,7 @@
 namespace
 {
 using framework::int32;
-using framework::opengl::context_settings;
+using framework::graphics::context_settings;
 
 constexpr int32 glx_min_major_version = 1;
 constexpr int32 glx_min_minor_version = 4;
@@ -51,11 +51,11 @@ bool check_glx_version(Display* display)
 }
 
 GLXFBConfig find_best_config(Display* display,
-                             context_settings::samples samples_count,
+                             context_settings::antialiasing antialasing_level,
                              GLXFBConfig* configs,
                              int32 count)
 {
-    if (samples_count == context_settings::samples::dont_care && count > 0) {
+    if (antialasing_level == context_settings::antialiasing::dont_care && count > 0) {
         return configs[0];
     }
 
@@ -91,7 +91,7 @@ GLXFBConfig choose_framebuffer_config(Display* display, const context_settings& 
         GLX_ALPHA_SIZE,    8,
         GLX_DEPTH_SIZE,    settings.depth_bits(),
         GLX_STENCIL_SIZE,  settings.stencil_bits(),
-        GLX_DOUBLEBUFFER,  settings.double_buffered() ? True : False,
+        GLX_DOUBLEBUFFER,  True,
         None};
     // clang-format on
 
@@ -102,7 +102,7 @@ GLXFBConfig choose_framebuffer_config(Display* display, const context_settings& 
         return nullptr;
     }
 
-    GLXFBConfig best_config = find_best_config(display, settings.samples_count(), configs, count);
+    GLXFBConfig best_config = find_best_config(display, settings.antialiasing_level(), configs, count);
 
     XFree(configs);
 
@@ -111,8 +111,8 @@ GLXFBConfig choose_framebuffer_config(Display* display, const context_settings& 
 
 GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config, const context_settings& settings)
 {
-    if (!framework::opengl::glx_arb_create_context_supported ||
-        (framework::opengl::glXCreateContextAttribsARB == nullptr)) {
+    if (!framework::graphics::opengl::details::glx_arb_create_context_supported ||
+        (framework::graphics::opengl::details::glXCreateContextAttribsARB == nullptr)) {
         return nullptr;
     }
 
@@ -124,21 +124,24 @@ GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config, 
         None};
     // clang-format on
 
-    return framework::opengl::glXCreateContextAttribsARB(display, framebuffer_config, nullptr, True, context_attribs);
+    return framework::graphics::opengl::details::glXCreateContextAttribsARB(display,
+                                                                            framebuffer_config,
+                                                                            nullptr,
+                                                                            True,
+                                                                            context_attribs);
 }
 
 } // namespace
 
-namespace framework::system
+namespace framework::graphics::opengl::details
 {
-glx_context::glx_context(Display* display, opengl::context_settings settings)
-    : context(std::move(settings)), m_display(display)
+glx_context::glx_context(Display* display, context_settings settings) : context(std::move(settings)), m_display(display)
 {
     if (!check_glx_version(m_display)) {
         throw std::runtime_error("Invalid GLX version.");
     }
 
-    opengl::init_glx();
+    init_glx();
 
     m_framebuffer_config = choose_framebuffer_config(m_display, settings);
 
@@ -222,4 +225,4 @@ void glx_context::clear()
     }
 }
 
-} // namespace framework::system
+} // namespace framework::graphics::opengl::details

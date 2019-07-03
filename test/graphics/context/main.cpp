@@ -44,15 +44,15 @@ private:
     void main_loop()
     {
         using framework::float32;
-        using framework::opengl::context_settings;
+        using framework::graphics::context_settings;
         using framework::system::window;
         using framework::utils::random_numbers;
 
-        using namespace framework::opengl;
+        using namespace framework::graphics::opengl::details;
 
         window::set_application_name("GL Test");
 
-        framework::opengl::init();
+        framework::graphics::opengl::init();
 
         window main_window({640, 480}, "Context test");
         auto context = main_window.context();
@@ -61,12 +61,11 @@ private:
         TEST_ASSERT(context->valid(), "Graphic context is invalid.");
 
         const context_settings& settings = context->settings();
-        TEST_ASSERT(settings.double_buffered(), "Wrong context settings");
-        TEST_ASSERT(!settings.single_buffered(), "Wrong context settings");
+        TEST_ASSERT(settings.api_type() == context_settings::graphic_api::opengl, "Wrong context settings");
         TEST_ASSERT(settings.version() == framework::utils::version(3, 0), "Wrong context settings");
         TEST_ASSERT(settings.depth_bits() == 24, "Wrong context settings");
         TEST_ASSERT(settings.stencil_bits() == 8, "Wrong context settings");
-        TEST_ASSERT(settings.samples_count() == context_settings::samples::best, "Wrong context settings");
+        TEST_ASSERT(settings.antialiasing_level() == context_settings::antialiasing::best, "Wrong context settings");
 
         context->make_current();
 

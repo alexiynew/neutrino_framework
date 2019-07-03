@@ -33,20 +33,20 @@
 #include <common/types.hpp>
 #include <graphics/context_settings.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
-/// @addtogroup opengl_module
+/// @addtogroup graphics_module
 /// @{
 
-/// @brief OpenGL graphic context.
+/// @brief Graphic context.
 ///
 /// Encapsulates the platform dependent graphics context.
-/// Actual context is created by ::framework::system::window class. Each window has its own context.
+/// Actual context is created by ???. Each window has its own context.
 /// The make_current should be called before perform any OpenGL functon.
 ///
 /// @thread_safety Context must be created only on main thread.
 ///
-/// @see ::framework::system::window, context_settings.
+/// @see context_settings.
 class context
 {
 public:
@@ -109,8 +109,15 @@ private:
     context_settings m_settings; ///< Current context settings.
 };
 
+/// @brief Creates graphic context.
+///
+/// @param settings Graphic context settings.
+///
+/// @return New graphic context.
+context* create_context(context_settings settings);
+
 /// @}
 
-} // namespace framework::opengl
+} // namespace framework::graphics
 
 #endif

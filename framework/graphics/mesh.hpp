@@ -38,7 +38,7 @@
 
 namespace framework::opengl
 {
-/// @addtogroup opengl_module
+/// @addtogroup graphics_module
 /// @{
 
 /// @brief OpenGL mesh.

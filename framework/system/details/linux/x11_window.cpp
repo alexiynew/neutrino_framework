@@ -95,10 +95,10 @@ Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 
 namespace framework::system::details
 {
-x11_window::x11_window(window_size size, const std::string& title, opengl::context_settings settings)
+x11_window::x11_window(window_size size, const std::string& title, graphics::context_settings settings)
     : m_server(x11_server::connect()), m_size(size)
 {
-    auto context = std::make_unique<glx_context>(m_server->display(), std::move(settings));
+    auto context = std::make_unique<graphics::opengl::details::glx_context>(m_server->display(), std::move(settings));
     if (!context->valid()) {
         throw std::runtime_error("Can't create graphic context.");
     }
@@ -518,7 +518,7 @@ std::string x11_window::title() const
     return utils::get_window_name(m_server.get(), m_window);
 }
 
-framework::opengl::context* x11_window::context() const
+framework::graphics::context* x11_window::context() const
 {
     return m_context.get();
 }

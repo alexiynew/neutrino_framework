@@ -31,7 +31,7 @@
 
 #include <graphics/context.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
 context::context(context_settings settings) noexcept : m_settings(std::move(settings))
 {}
@@ -43,4 +43,4 @@ const context_settings& context::settings() const
     return m_settings;
 }
 
-} // namespace framework::opengl
+} // namespace framework::graphics

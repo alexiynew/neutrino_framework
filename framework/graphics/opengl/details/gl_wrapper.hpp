@@ -32,7 +32,7 @@
 
 #include <GL/glcorearb.h>
 
-namespace framework::opengl
+namespace framework::graphics::opengl::details
 {
 extern bool gl_version_1_0_supported;
 extern bool gl_version_1_1_supported;
@@ -1754,12 +1754,8 @@ extern PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC glFramebufferTextureMultiviewOVR;
 
 #pragma endregion
 
-} // namespace framework::opengl
-
-namespace framework::opengl::opengl_details
-{
 void init_gl_functions();
 
-} // namespace framework::opengl::opengl_details
+} // namespace framework::graphics::opengl::details
 
 #endif

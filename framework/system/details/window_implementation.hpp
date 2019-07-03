@@ -93,7 +93,7 @@ public:
 
     virtual std::string title() const = 0;
 
-    virtual framework::opengl::context* context() const = 0;
+    virtual framework::graphics::context* context() const = 0;
     /// @}
 
     /// @name state
@@ -115,7 +115,7 @@ protected:
 // @brief Fabric function to make platform dependent implementation
 std::unique_ptr<window_implementation> create_implementation(window_size size,
                                                              const std::string& title,
-                                                             opengl::context_settings settings);
+                                                             graphics::context_settings settings);
 
 } // namespace framework::system::details
 

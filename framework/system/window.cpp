@@ -40,7 +40,7 @@ void window::set_application_name(const std::string& name)
     details::window_implementation::set_application_name(name);
 }
 
-window::window(size_t size, const std::string& title, opengl::context_settings settings)
+window::window(size_t size, const std::string& title, graphics::context_settings settings)
     : m_implementation(details::create_implementation(size, title, std::move(settings))),
       m_event_handler(std::make_unique<details::event_handler>(this))
 {
@@ -163,7 +163,7 @@ std::string window::title() const
     return m_implementation->title();
 }
 
-framework::opengl::context* window::context() const
+framework::graphics::context* window::context() const
 {
     return m_implementation->context();
 }

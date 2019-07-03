@@ -65,13 +65,13 @@
 ///
 /// @endcode
 
-/// @defgroup opengl_module OpenGL
+/// @defgroup opengl_api_wrapper OpenGL API
 /// @{
 
 /// @brief Contails OpenGL functions.
-namespace framework::opengl
+namespace framework::graphics::opengl
 {
-/// @addtogroup opengl_module
+/// @addtogroup opengl_api_wrapper
 /// @{
 
 /// @brief Initializes GL functions.
@@ -86,7 +86,7 @@ void init();
 
 /// @}
 
-} // namespace framework::opengl
+} // namespace framework::graphics::opengl
 
 /// @}
 

@@ -1,5 +1,5 @@
 /// @file
-/// @brief OpenGL graphic context settings.
+/// @brief Graphic context settings.
 /// @author Fedorov Alexey
 /// @date 12.11.2018
 
@@ -29,19 +29,13 @@
 
 #include <graphics/context_settings.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
 #pragma region setters
 
-context_settings& context_settings::set_double_buffered()
+context_settings& context_settings::set_api_type(graphic_api api)
 {
-    m_double_buffered = true;
-    return *this;
-}
-
-context_settings& context_settings::set_single_buffered()
-{
-    m_double_buffered = false;
+    m_api = api;
     return *this;
 }
 
@@ -63,9 +57,9 @@ context_settings& context_settings::set_stencil_bits(int32 bits)
     return *this;
 }
 
-context_settings& context_settings::set_samples_count(context_settings::samples count)
+context_settings& context_settings::set_antialiasing_level(antialiasing level)
 {
-    m_samples_count = count;
+    m_antialiasing_level = level;
     return *this;
 }
 
@@ -73,14 +67,9 @@ context_settings& context_settings::set_samples_count(context_settings::samples 
 
 #pragma region getters
 
-bool context_settings::double_buffered() const
+context_settings::graphic_api context_settings::api_type() const
 {
-    return m_double_buffered;
-}
-
-bool context_settings::single_buffered() const
-{
-    return !m_double_buffered;
+    return m_api;
 }
 
 utils::version context_settings::version() const
@@ -98,11 +87,11 @@ int32 context_settings::stencil_bits() const
     return m_stencil_bits;
 }
 
-context_settings::samples context_settings::samples_count() const
+context_settings::antialiasing context_settings::antialiasing_level() const
 {
-    return m_samples_count;
+    return m_antialiasing_level;
 }
 
 #pragma endregion
 
-} // namespace framework::opengl
+} // namespace framework::graphics

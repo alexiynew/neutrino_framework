@@ -34,6 +34,8 @@ set_sources(PUBLIC_SOURCES
 )
 
 set_sources(PRIVATE_SOURCES
+    context.cpp
+    context_settings.cpp
     color_type.cpp
     mesh.cpp
     shader.cpp

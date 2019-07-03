@@ -178,9 +178,9 @@ framework::system::details::window_size adjust_size(framework::system::details::
 
 } // namespace
 
-namespace framework::system::details
+namespace framework::graphics::opengl
 {
-win32_window::win32_window(window_size size, const std::string& title, opengl::context_settings settings)
+win32_window::win32_window(window_size size, const std::string& title, context_settings settings)
 {
     m_window_class = ::register_window_class();
 
@@ -818,4 +818,4 @@ void win32_window::track_mouse()
 
 #pragma endregion
 
-} // namespace framework::system::details
+} // namespace framework::graphics::opengl
