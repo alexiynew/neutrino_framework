@@ -57,11 +57,11 @@ inline bool have_utf8_support()
 }
 
 template <typename ValueType, typename DataType>
-std::vector<ValueType> values_from_array(const DataType* data, ::framework::uint64 count)
+std::vector<ValueType> values_from_array(const DataType* data, ::framework::usize count)
 {
     std::vector<ValueType> values(count);
 
-    for (::framework::uint64 i = 0; i < count; ++i) {
+    for (::framework::usize i = 0; i < count; ++i) {
         values[i] = *(reinterpret_cast<const ValueType*>(data + i));
     }
 
@@ -75,8 +75,8 @@ std::vector<PropertyType> get_window_property(Display* display, Window window, A
 
     Atom actual_type                 = None;
     ::framework::int32 actual_format = 0;
-    ::framework::uint64 items_count  = 0;
-    ::framework::uint64 bytes_after  = 0;
+    unsigned long items_count  = 0;
+    unsigned long bytes_after  = 0;
     ::framework::uint8* data         = nullptr;
 
     ::framework::int32 result = XGetWindowProperty(display,
@@ -218,7 +218,7 @@ bool send_client_message(const x11_server* server, Window window, Atom message_t
     const int count = ::framework::utils::size(event.xclient.data.l);
 
     for (size_t i = 0; i < data.size() && i < count; ++i) {
-        event.xclient.data.l[i] = static_cast<const data_type>(data[i]);
+        event.xclient.data.l[i] = static_cast<data_type>(data[i]);
     }
 
     Status result = XSendEvent(server->display(),

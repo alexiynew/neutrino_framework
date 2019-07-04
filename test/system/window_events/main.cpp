@@ -24,6 +24,8 @@
 // =============================================================================
 
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
@@ -297,8 +299,14 @@ private:
 
         w.show();
 
-        while (w.visible() && !should_close) {
+        const float32 max_total_time = 1000;
+        float32 total_time           = 0;
+
+        while (w.visible() && !should_close && total_time < max_total_time) {
             w.process_events();
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+            total_time += 16;
         }
     }
 };

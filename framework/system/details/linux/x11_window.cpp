@@ -478,9 +478,9 @@ window_size x11_window::max_size() const
     }
 
     XSizeHints size_hints = {};
-    int64 supplied;
+    //int64 supplied;
 
-    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
+    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr) != 0;
     const bool has_max_size_hints = (size_hints.flags &= PMaxSize) != 0;
 
     if (!got_size_hints || !has_max_size_hints) {
@@ -499,9 +499,9 @@ window_size x11_window::min_size() const
     }
 
     XSizeHints size_hints = {};
-    int64 supplied;
+    //int64 supplied;
 
-    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
+    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr) != 0;
     const bool has_min_size_hints = (size_hints.flags &= PMinSize) != 0;
 
     if (!got_size_hints || !has_min_size_hints) {
@@ -565,9 +565,9 @@ bool x11_window::maximized() const
 bool x11_window::resizable() const
 {
     XSizeHints size_hints = {};
-    int64 supplied;
+    //int64 supplied;
 
-    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
+    XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr);
 
     const bool not_resizable = ((size_hints.flags & (PMinSize | PMaxSize)) != 0) &&
                                size_hints.min_width == size_hints.max_width &&
@@ -915,9 +915,9 @@ void x11_window::process_events_while(const std::function<bool()>& condition)
 void x11_window::update_size_limits(window_size min_size, window_size max_size)
 {
     XSizeHints size_hints = {};
-    int64 supplied;
+    //int64 supplied;
 
-    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
+    XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr);
 
     if (min_size.width > 0 && min_size.height > 0) {
         size_hints.flags |= PMinSize;
