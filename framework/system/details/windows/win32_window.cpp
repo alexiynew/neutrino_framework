@@ -178,9 +178,9 @@ framework::system::details::window_size adjust_size(framework::system::details::
 
 } // namespace
 
-namespace framework::graphics::opengl
+namespace framework::system::details
 {
-win32_window::win32_window(window_size size, const std::string& title, context_settings settings)
+win32_window::win32_window(window_size size, const std::string& title, graphics::context_settings settings)
 {
     m_window_class = ::register_window_class();
 
@@ -203,7 +203,7 @@ win32_window::win32_window(window_size size, const std::string& title, context_s
         throw std::runtime_error("Failed to create window.");
     }
 
-    m_context = std::make_unique<win32_context>(m_window, std::move(settings));
+    m_context = std::make_unique<graphics::opengl::details::win32_context>(m_window, std::move(settings));
 
     win32_application::add_window(m_window, this);
 
@@ -431,7 +431,7 @@ std::string win32_window::title() const
     return utf16_to_utf8(buffer.get());
 }
 
-framework::opengl::context* win32_window::context() const
+framework::graphics::context* win32_window::context() const
 {
     return m_context.get();
 }

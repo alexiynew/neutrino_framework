@@ -29,10 +29,9 @@
 
 #include <windows.h>
 
-#include <common/types.hpp>
 #include <graphics/opengl/details/gl_details.hpp>
 
-namespace framework::opengl::opengl_details
+namespace framework::graphics::opengl::details
 {
 gl_function_ptr get_function_implementation(const char* function_name)
 {
@@ -51,4 +50,4 @@ gl_function_ptr get_function_implementation(const char* function_name)
     return function;
 }
 
-} // namespace framework::opengl::opengl_details
+} // namespace framework::graphics::opengl::details

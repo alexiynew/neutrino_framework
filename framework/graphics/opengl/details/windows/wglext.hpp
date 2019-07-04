@@ -32,11 +32,11 @@
 
 #include <graphics/opengl/details/windows/wglext_wrapper.hpp>
 
-namespace framework::opengl
+namespace framework::graphics::opengl::details
 {
 /// Initialize WGL functions
 void init_wgl();
 
-} // namespace framework::opengl
+} // namespace framework::graphics::opengl::details
 
 #endif

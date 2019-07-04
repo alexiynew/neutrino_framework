@@ -34,6 +34,7 @@
 #include <string>
 
 #include <graphics/context.hpp>
+#include <graphics/context_settings.hpp>
 #include <system/details/event_handler.hpp>
 #include <system/details/window_position.hpp>
 #include <system/details/window_size.hpp>

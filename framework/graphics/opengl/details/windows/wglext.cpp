@@ -34,20 +34,13 @@
 namespace
 {
 std::once_flag init_flag;
-
-void init_extensions()
-{
-    ::framework::opengl::opengl_details::init_wgl_functions();
-}
-
 } // namespace
 
-namespace framework::opengl
+namespace framework::graphics::opengl::details
 {
 void init_wgl()
 {
-    std::call_once(init_flag, init_extensions);
+    std::call_once(init_flag, []() { init_wgl_functions(); });
 }
 
-} // namespace framework::opengl
-#pragma endregion
+} // namespace framework::graphics::opengl::details

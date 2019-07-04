@@ -40,7 +40,7 @@ namespace framework::system::details
 class win32_window final : public window_implementation
 {
 public:
-    win32_window(window_size size, const std::string& title, opengl::context_settings settings);
+    win32_window(window_size size, const std::string& title, graphics::context_settings settings);
     ~win32_window() override;
 
     win32_window(const win32_window&) = delete;
@@ -84,7 +84,7 @@ public:
 
     std::string title() const override;
 
-    framework::opengl::context* context() const override;
+    graphics::context* context() const override;
     /// @}
 
     /// @name state
@@ -130,7 +130,7 @@ private:
 
     window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
 
-    std::unique_ptr<opengl::context> m_context = nullptr;
+    std::unique_ptr<graphics::context> m_context = nullptr;
 
     modifiers_flags m_modifiers_flags = {false, false, false, false, false, false};
 
