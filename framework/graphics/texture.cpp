@@ -31,7 +31,7 @@
 #include <graphics/opengl/gl.hpp>
 #include <graphics/texture.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
 // GL_ACTIVE_TEXTURE or GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 texture::texture(min_filter minf, mag_filter magf, wrap_s ws, wrap_t wt)
@@ -88,4 +88,4 @@ framework::int32 texture::texture_unit() const
     return 0;
 }
 
-} // namespace framework::opengl
+} // namespace framework::graphics

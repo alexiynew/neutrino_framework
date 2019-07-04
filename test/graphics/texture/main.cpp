@@ -45,7 +45,7 @@ private:
     void main_loop()
     {
         using framework::float32;
-        using framework::opengl::texture;
+        using framework::graphics::texture;
         using framework::system::window;
         using framework::utils::random_numbers;
 

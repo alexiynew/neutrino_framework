@@ -33,7 +33,7 @@
 #include <common/types.hpp>
 #include <graphics/opengl/gl.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
 enum class min_filter
 {
@@ -106,6 +106,6 @@ private:
     framework::uint32 m_texture_id = 0;
 };
 
-} // namespace framework::opengl
+} // namespace framework::graphics
 
 #endif

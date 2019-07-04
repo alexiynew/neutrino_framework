@@ -75,7 +75,7 @@ enum vbo_type
 
 } // namespace
 
-namespace framework::opengl
+namespace framework::graphics
 {
 mesh::mesh()
 {
@@ -230,4 +230,4 @@ void swap(mesh& a, mesh& b)
     std::swap(a.m_vertex_array_id, b.m_vertex_array_id);
 }
 
-} // namespace framework::opengl
+} // namespace framework::graphics

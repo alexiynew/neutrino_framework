@@ -34,7 +34,7 @@
 #include <graphics/opengl/gl.hpp>
 #include <graphics/shader.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
 #pragma region shader_base
 
@@ -255,4 +255,4 @@ framework::uint32 shader_program::program_id() const
 
 #pragma endregion
 
-} // namespace framework::opengl
+} // namespace framework::graphics

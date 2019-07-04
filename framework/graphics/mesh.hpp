@@ -36,7 +36,7 @@
 #include <graphics/color_type.hpp>
 #include <math/math.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
 /// @addtogroup graphics_module
 /// @{
@@ -93,6 +93,6 @@ void swap(mesh& a, mesh& b);
 
 /// @}
 
-} // namespace framework::opengl
+} // namespace framework::graphics
 
 #endif

@@ -36,7 +36,7 @@
 #include <common/types.hpp>
 #include <math/math.hpp>
 
-namespace framework::opengl
+namespace framework::graphics
 {
 /// @addtogroup graphics_module
 /// @{
@@ -201,6 +201,6 @@ private:
     framework::uint32 m_program_id = 0;
 };
 
-} // namespace framework::opengl
+} // namespace framework::graphics
 
 #endif
