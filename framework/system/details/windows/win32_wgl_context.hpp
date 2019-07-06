@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image class.
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 11.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,65 +27,39 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_CONTEXT_HPP
+#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_CONTEXT_HPP
 
-#include <string>
-#include <vector>
+#include <windows.h>
 
-#include <common/types.hpp>
-#include <graphics/color_type.hpp>
+#include <graphics/context.hpp>
 
-/// @brief Contains image classes.
-namespace framework::graphics
+namespace framework::graphics::opengl
 {
-/// @addtogroup graphics_module
-/// @{
-
-enum class file_type
-{
-    bmp,
-    tga,
-    png
-};
-
-class image
+class win32_context : public framework::graphics::context
 {
 public:
-    using data_t = std::vector<color_t>;
+    win32_context(HWND window, context_settings settings);
+    ~win32_context() override;
 
-    image();
+    win32_context(const win32_context&) = default;
+    win32_context(win32_context&&)      = default;
 
-    image(const image&);
-    image& operator=(const image&);
+    win32_context& operator=(const win32_context&) = default;
+    win32_context& operator=(win32_context&&) = default;
 
-    image(image&&);
-    image& operator=(image&&);
+    bool valid() const override;
+    bool is_current() const override;
 
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
-
-    void flip_vertically();
-
-    int32 width() const;
-    int32 height() const;
-
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
-
-    const color_t* data() const;
+    void make_current() const override;
+    void swap_buffers() const override;
 
 private:
-    data_t m_data;
-
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
+    HWND m_window = nullptr;
+    HDC m_hdc     = nullptr;
+    HGLRC m_hglrc = nullptr;
 };
 
-/// @}
-
-} // namespace framework::graphics
+} // namespace framework::graphics::opengl
 
 #endif

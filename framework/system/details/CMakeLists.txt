@@ -23,28 +23,18 @@
 # SOFTWARE.
 # =============================================================================
 
-set_sources(PUBLIC_SOURCES
-    window_size.hpp
-    window_position.hpp
-)
-
 set_sources(PRIVATE_SOURCES
-    window_implementation.hpp
+    context.hpp
+    context.cpp
     event_handler.hpp
-
-    window_implementation.cpp
     event_handler.cpp
-    window_size.cpp
-    window_position.cpp
+    window_implementation.hpp
+    window_implementation.cpp
 )
 
 target_sources(${PROJECT_NAME}
-    PUBLIC
-        ${PUBLIC_SOURCES}
     PRIVATE
         ${PRIVATE_SOURCES}
 )
-
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
 include(${MODULE_DIR}/details/${PLATFORM_NAME}/CMakeLists.txt)

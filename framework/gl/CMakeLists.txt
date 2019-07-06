@@ -23,20 +23,22 @@
 # SOFTWARE.
 # =============================================================================
 
+set(windows_PUBLIC wglext.hpp inc/wglext_wrapper.hpp)
+set(linux_PUBLIC glxext.hpp inc/glxext_wrapper.hpp)
+
 set_sources(PUBLIC_SOURCES
-    color_type.hpp
-    image.hpp
-    mesh.hpp
-    shader.hpp
-    texture.hpp
+    gl.hpp
+    inc/gl_wrapper.hpp
+    ${${PLATFORM_NAME}_PUBLIC}
 )
 
+set(windows_PRIVATE src/wglext.cpp src/wglext_wrapper.cpp)
+set(linux_PRIVATE src/glxext.cpp src/glxext_wrapper.cpp)
+
 set_sources(PRIVATE_SOURCES
-    src/color_type.cpp
-    src/image.cpp
-    src/mesh.cpp
-    src/shader.cpp
-    src/texture.cpp
+    src/gl.cpp
+    src/gl_wrapper.cpp
+    ${${PLATFORM_NAME}_PRIVATE}
 )
 
 target_sources(${PROJECT_NAME}
@@ -48,4 +50,14 @@ target_sources(${PROJECT_NAME}
 
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
+install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/GL/glcorearb.h DESTINATION dependencies/GL)
+install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/KHR/khrplatform.h DESTINATION dependencies/KHR)
+
 include(${MODULE_DIR}/details/CMakeLists.txt)
+
+# Link with OpenGL
+find_package(OpenGL REQUIRED)
+
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${OPENGL_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME}_static ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}_shared ${OPENGL_LIBRARIES})

@@ -37,12 +37,13 @@ target_include_directories(${PROJECT_NAME}
 message(STATUS "Add modules...")
 
 set(MODULES
-    "unit_test"
     "common"
+    "gl"
+    "graphics"
     "log"
     "math"
     "system"
-    "graphics"
+    "unit_test"
 )
 
 foreach(MODULE ${MODULES})

@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image class.
+/// @brief Graphic context settings.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 12.11.2018
 
 // =============================================================================
 // MIT License
@@ -27,65 +27,60 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
+#include <system/context_settings.hpp>
 
-#include <string>
-#include <vector>
-
-#include <common/types.hpp>
-#include <graphics/color_type.hpp>
-
-/// @brief Contains image classes.
-namespace framework::graphics
+namespace framework::system
 {
-/// @addtogroup graphics_module
-/// @{
+#pragma region setters
 
-enum class file_type
+context_settings& context_settings::version(utils::version version)
 {
-    bmp,
-    tga,
-    png
-};
+    m_version = version;
+    return *this;
+}
 
-class image
+context_settings& context_settings::depth_bits(int32 bits)
 {
-public:
-    using data_t = std::vector<color_t>;
+    m_depth_bits = bits;
+    return *this;
+}
 
-    image();
+context_settings& context_settings::stencil_bits(int32 bits)
+{
+    m_stencil_bits = bits;
+    return *this;
+}
 
-    image(const image&);
-    image& operator=(const image&);
+context_settings& context_settings::antialiasing_level(antialiasing level)
+{
+    m_antialiasing_level = level;
+    return *this;
+}
 
-    image(image&&);
-    image& operator=(image&&);
+#pragma endregion
 
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
+#pragma region getters
 
-    void flip_vertically();
+utils::version context_settings::version() const
+{
+    return m_version;
+}
 
-    int32 width() const;
-    int32 height() const;
+int32 context_settings::depth_bits() const
+{
+    return m_depth_bits;
+}
 
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
+int32 context_settings::stencil_bits() const
+{
+    return m_stencil_bits;
+}
 
-    const color_t* data() const;
+context_settings::antialiasing context_settings::antialiasing_level() const
+{
+    return m_antialiasing_level;
+}
 
-private:
-    data_t m_data;
+#pragma endregion
 
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
-};
-
-/// @}
-
-} // namespace framework::graphics
-
-#endif
+} // namespace framework::system

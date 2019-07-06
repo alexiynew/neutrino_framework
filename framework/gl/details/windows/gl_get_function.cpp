@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image class.
+/// @brief Helper functions.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 05.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,65 +27,29 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
-
-#include <string>
-#include <vector>
+#include <windows.h>
 
 #include <common/types.hpp>
-#include <graphics/color_type.hpp>
 
-/// @brief Contains image classes.
-namespace framework::graphics
+#include <gl/details/gl_get_function.hpp>
+
+namespace framework::gl::details
 {
-/// @addtogroup graphics_module
-/// @{
-
-enum class file_type
+gl_function_ptr get_function_implementation(const char* function_name)
 {
-    bmp,
-    tga,
-    png
-};
+    auto function = reinterpret_cast<gl_function_ptr>(wglGetProcAddress(function_name));
+    if (function == nullptr || (function == reinterpret_cast<gl_function_ptr>(0x1)) ||
+        (function == reinterpret_cast<gl_function_ptr>(0x2)) || (function == reinterpret_cast<gl_function_ptr>(0x3)) ||
+        (function == reinterpret_cast<gl_function_ptr>(-1))) {
+        HMODULE module = LoadLibrary(L"opengl32.dll");
+        if (module != nullptr) {
+            function = reinterpret_cast<gl_function_ptr>(GetProcAddress(module, function_name));
+        } else {
+            function = nullptr;
+        }
+    }
 
-class image
-{
-public:
-    using data_t = std::vector<color_t>;
+    return function;
+}
 
-    image();
-
-    image(const image&);
-    image& operator=(const image&);
-
-    image(image&&);
-    image& operator=(image&&);
-
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
-
-    void flip_vertically();
-
-    int32 width() const;
-    int32 height() const;
-
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
-
-    const color_t* data() const;
-
-private:
-    data_t m_data;
-
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
-};
-
-/// @}
-
-} // namespace framework::graphics
-
-#endif
+} // namespace framework::gl::details

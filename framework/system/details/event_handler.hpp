@@ -32,10 +32,12 @@
 
 #include <string>
 
-#include <system/details/window_position.hpp>
-#include <system/details/window_size.hpp>
 #include <system/keyboard.hpp>
+#include <system/mouse.hpp>
 #include <system/window.hpp>
+
+#include <system/inc/window_position.hpp>
+#include <system/inc/window_size.hpp>
 
 namespace framework::system
 {

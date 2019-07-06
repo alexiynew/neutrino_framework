@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image class.
+/// @brief GL context implementation for Linux.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 14.10.2018
 
 // =============================================================================
 // MIT License
@@ -27,65 +27,51 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
+#ifndef FRAMEWORK_GRAPHICS_OPENGL_DETAILS_LINUX_GLX_CONTEXT_HPP
+#define FRAMEWORK_GRAPHICS_OPENGL_DETAILS_LINUX_GLX_CONTEXT_HPP
 
-#include <string>
-#include <vector>
+#include <X11/Xlib.h>
 
-#include <common/types.hpp>
-#include <graphics/color_type.hpp>
+#include <gl/glxext.hpp>
 
-/// @brief Contains image classes.
-namespace framework::graphics
+#include <system/details/context.hpp>
+
+namespace framework::system::details
 {
-/// @addtogroup graphics_module
-/// @{
-
-enum class file_type
-{
-    bmp,
-    tga,
-    png
-};
-
-class image
+class x11_glx_context : public context
 {
 public:
-    using data_t = std::vector<color_t>;
+    x11_glx_context(const context_settings& settings, Display* display);
+    ~x11_glx_context() override;
 
-    image();
+    x11_glx_context(const x11_glx_context&) = default;
+    x11_glx_context(x11_glx_context&&)      = default;
 
-    image(const image&);
-    image& operator=(const image&);
+    x11_glx_context& operator=(const x11_glx_context&) = default;
+    x11_glx_context& operator=(x11_glx_context&&) = default;
 
-    image(image&&);
-    image& operator=(image&&);
+    bool valid() const override;
+    bool is_current() const override;
 
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
+    void make_current() const override;
+    void swap_buffers() const override;
 
-    void flip_vertically();
+    Colormap colormap() const;
+    XVisualInfo* visual_info() const;
 
-    int32 width() const;
-    int32 height() const;
-
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
-
-    const color_t* data() const;
+    void attach_window(Window window);
 
 private:
-    data_t m_data;
+    Display* m_display               = nullptr;
+    GLXFBConfig m_framebuffer_config = nullptr;
+    GLXContext m_glx_context         = nullptr;
+    Colormap m_colormap              = None;
+    XVisualInfo* m_visual_info       = nullptr;
+    Window m_window                  = None;
 
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
+    void clear();
 };
 
-/// @}
-
-} // namespace framework::graphics
+} // namespace framework::system::details
 
 #endif

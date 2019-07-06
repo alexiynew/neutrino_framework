@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image class.
+/// @brief WGL extension functions wrapper.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 17.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,65 +27,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
+#ifndef FRAMEWORK_GRAPHICS_OPENGL_DETAILS_WINDOWS_WGLEXT_HPP
+#define FRAMEWORK_GRAPHICS_OPENGL_DETAILS_WINDOWS_WGLEXT_HPP
 
-#include <string>
-#include <vector>
+#include <gl/inc/wglext_wrapper.hpp>
 
-#include <common/types.hpp>
-#include <graphics/color_type.hpp>
-
-/// @brief Contains image classes.
-namespace framework::graphics
+namespace framework::gl::wgl
 {
-/// @addtogroup graphics_module
-/// @{
+/// Initialize WGL functions
+void init_wgl();
 
-enum class file_type
-{
-    bmp,
-    tga,
-    png
-};
-
-class image
-{
-public:
-    using data_t = std::vector<color_t>;
-
-    image();
-
-    image(const image&);
-    image& operator=(const image&);
-
-    image(image&&);
-    image& operator=(image&&);
-
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
-
-    void flip_vertically();
-
-    int32 width() const;
-    int32 height() const;
-
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
-
-    const color_t* data() const;
-
-private:
-    data_t m_data;
-
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
-};
-
-/// @}
-
-} // namespace framework::graphics
+} // namespace framework::gl::wgl
 
 #endif

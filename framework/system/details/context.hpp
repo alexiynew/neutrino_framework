@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image class.
+/// @brief Graphic context.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 11.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,65 +27,40 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
+#ifndef FRAMEWORK_GRAPHICS_CONTEXT_HPP
+#define FRAMEWORK_GRAPHICS_CONTEXT_HPP
 
-#include <string>
-#include <vector>
+#include <memory>
 
 #include <common/types.hpp>
-#include <graphics/color_type.hpp>
+#include <system/context_settings.hpp>
 
-/// @brief Contains image classes.
-namespace framework::graphics
+namespace framework::system::details
 {
-/// @addtogroup graphics_module
-/// @{
-
-enum class file_type
-{
-    bmp,
-    tga,
-    png
-};
-
-class image
+class context
 {
 public:
-    using data_t = std::vector<color_t>;
+    explicit context(context_settings settings) noexcept;
 
-    image();
+    context(const context&) = default;
+    context(context&&)      = default;
 
-    image(const image&);
-    image& operator=(const image&);
+    context& operator=(const context&) = default;
+    context& operator=(context&&) = default;
 
-    image(image&&);
-    image& operator=(image&&);
+    virtual ~context();
 
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
+    virtual bool valid() const        = 0;
+    virtual bool is_current() const   = 0;
+    virtual void make_current() const = 0;
+    virtual void swap_buffers() const = 0;
 
-    void flip_vertically();
-
-    int32 width() const;
-    int32 height() const;
-
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
-
-    const color_t* data() const;
+    const context_settings& settings() const;
 
 private:
-    data_t m_data;
-
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
+    context_settings m_settings;
 };
 
-/// @}
-
-} // namespace framework::graphics
+} // namespace framework::system::details
 
 #endif

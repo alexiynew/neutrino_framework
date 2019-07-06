@@ -23,29 +23,12 @@
 # SOFTWARE.
 # =============================================================================
 
-set_sources(PUBLIC_SOURCES
-    color_type.hpp
-    image.hpp
-    mesh.hpp
-    shader.hpp
-    texture.hpp
-)
-
 set_sources(PRIVATE_SOURCES
-    src/color_type.cpp
-    src/image.cpp
-    src/mesh.cpp
-    src/shader.cpp
-    src/texture.cpp
+    gl_get_function.hpp
+    ${PLATFORM_NAME}/gl_get_function.cpp
 )
 
 target_sources(${PROJECT_NAME}
-    PUBLIC
-        ${PUBLIC_SOURCES}
     PRIVATE
         ${PRIVATE_SOURCES}
 )
-
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
-
-include(${MODULE_DIR}/details/CMakeLists.txt)

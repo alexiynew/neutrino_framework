@@ -34,6 +34,8 @@
 #include <functional>
 
 #include <common/types.hpp>
+
+#include <system/details/context.hpp>
 #include <system/details/linux/x11_server.hpp>
 #include <system/details/window_implementation.hpp>
 
@@ -42,7 +44,7 @@ namespace framework::system::details
 class x11_window final : public window_implementation
 {
 public:
-    x11_window(window_size size, const std::string& title, graphics::context_settings settings);
+    x11_window(window_size size, const std::string& title, const context_settings& settings);
     ~x11_window() override;
 
     x11_window(const x11_window&) = delete;
@@ -60,6 +62,8 @@ public:
     void maximize() override;
     void switch_to_fullscreen() override;
     void restore() override;
+    void make_current() override;
+    void swap_buffers() override;
     /// @}
 
     /// @name setters
@@ -86,8 +90,6 @@ public:
     window_size min_size() const override;
 
     std::string title() const override;
-
-    framework::graphics::context* context() const override;
     /// @}
 
     /// @name state
@@ -127,8 +129,8 @@ private:
 
     void update_size_limits(window_size min_size, window_size max_size);
 
-    std::shared_ptr<x11_server> m_server         = nullptr;
-    std::unique_ptr<graphics::context> m_context = nullptr;
+    std::shared_ptr<x11_server> m_server = nullptr;
+    std::unique_ptr<context> m_context   = nullptr;
 
     bool m_fullscreen     = false;
     bool m_maximized      = false;

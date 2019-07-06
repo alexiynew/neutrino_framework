@@ -33,12 +33,12 @@
 #include <functional>
 #include <memory>
 
-#include <graphics/context.hpp>
-#include <graphics/context_settings.hpp>
-#include <system/details/window_position.hpp>
-#include <system/details/window_size.hpp>
+#include <system/context_settings.hpp>
 #include <system/keyboard.hpp>
 #include <system/mouse.hpp>
+
+#include <system/inc/window_position.hpp>
+#include <system/inc/window_size.hpp>
 
 /// @details
 ///
@@ -88,7 +88,7 @@ public:
     /// @param settings Gpaphic context settings.
     ///
     /// @thread_safety This function can be called only from main thread.
-    window(size_t size, const std::string& title, graphics::context_settings settings = graphics::context_settings());
+    window(size_t size, const std::string& title, context_settings settings = context_settings());
 
     /// @brief Destructor.
     ~window();
@@ -134,6 +134,13 @@ public:
 
     /// @brief Restore normal window mode.
     void restore();
+
+    /// @brief Marks the window as target for drawing operations.
+    void make_current();
+
+    /// @brief Shows on window what has been drawed.
+    void swap_buffers();
+
     /// @}
 
     /// @name setters
@@ -201,12 +208,6 @@ public:
     ///
     /// @return Current window title.
     std::string title() const;
-
-    /// @brief Returns graphic context associated with this window.
-    ///
-    /// @return Graphic context.
-    framework::graphics::context* context() const;
-    /// @}
 
     /// @name state
     /// @{

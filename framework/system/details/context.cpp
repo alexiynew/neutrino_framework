@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image class.
+/// @brief Graphic context.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 11.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,65 +27,20 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
+#include <utility>
 
-#include <string>
-#include <vector>
+#include <system/details/context.hpp>
 
-#include <common/types.hpp>
-#include <graphics/color_type.hpp>
-
-/// @brief Contains image classes.
-namespace framework::graphics
+namespace framework::system::details
 {
-/// @addtogroup graphics_module
-/// @{
+context::context(context_settings settings) noexcept : m_settings(std::move(settings))
+{}
 
-enum class file_type
+context::~context() = default;
+
+const context_settings& context::settings() const
 {
-    bmp,
-    tga,
-    png
-};
+    return m_settings;
+}
 
-class image
-{
-public:
-    using data_t = std::vector<color_t>;
-
-    image();
-
-    image(const image&);
-    image& operator=(const image&);
-
-    image(image&&);
-    image& operator=(image&&);
-
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
-
-    void flip_vertically();
-
-    int32 width() const;
-    int32 height() const;
-
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
-
-    const color_t* data() const;
-
-private:
-    data_t m_data;
-
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
-};
-
-/// @}
-
-} // namespace framework::graphics
-
-#endif
+} // namespace framework::system::details

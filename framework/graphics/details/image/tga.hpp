@@ -1,5 +1,5 @@
 /// @file
-/// @brief Image class.
+/// @brief Tga image implementation.
 /// @author Fedorov Alexey
 /// @date 04.04.2019
 
@@ -27,65 +27,28 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
+#ifndef FRAMEWORK_GRAPHICS_IMAGE_DETAILS_TGA_HPP
+#define FRAMEWORK_GRAPHICS_IMAGE_DETAILS_TGA_HPP
 
+#include <optional>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <common/types.hpp>
 #include <graphics/color_type.hpp>
 
-/// @brief Contains image classes.
-namespace framework::graphics
+#include <graphics/details/image/image_info.hpp>
+
+namespace framework::graphics::details::image::tga
 {
-/// @addtogroup graphics_module
-/// @{
+using image_data_t  = std::tuple<image_info, std::vector<color_t>>;
+using load_result_t = std::optional<image_data_t>;
 
-enum class file_type
-{
-    bmp,
-    tga,
-    png
-};
+load_result_t load(const std::string& filename);
 
-class image
-{
-public:
-    using data_t = std::vector<color_t>;
+bool is_tga(const std::string& filename);
 
-    image();
-
-    image(const image&);
-    image& operator=(const image&);
-
-    image(image&&);
-    image& operator=(image&&);
-
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
-
-    void flip_vertically();
-
-    int32 width() const;
-    int32 height() const;
-
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
-
-    const color_t* data() const;
-
-private:
-    data_t m_data;
-
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
-};
-
-/// @}
-
-} // namespace framework::graphics
+} // namespace framework::graphics::details::image::tga
 
 #endif

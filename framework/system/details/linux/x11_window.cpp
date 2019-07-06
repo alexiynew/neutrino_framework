@@ -37,7 +37,8 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
-#include <graphics/opengl/details/linux/glx_context.hpp>
+
+#include <system/details/linux/x11_glx_context.hpp>
 #include <system/details/linux/x11_keyboard.hpp>
 #include <system/details/linux/x11_mouse.hpp>
 #include <system/details/linux/x11_utils.hpp>
@@ -95,10 +96,10 @@ Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 
 namespace framework::system::details
 {
-x11_window::x11_window(window_size size, const std::string& title, graphics::context_settings settings)
+x11_window::x11_window(window_size size, const std::string& title, const context_settings& settings)
     : m_server(x11_server::connect()), m_size(size)
 {
-    auto context = std::make_unique<graphics::opengl::details::glx_context>(m_server->display(), std::move(settings));
+    auto context = std::make_unique<x11_glx_context>(settings, m_server->display());
     if (!context->valid()) {
         throw std::runtime_error("Can't create graphic context.");
     }
@@ -356,6 +357,16 @@ void x11_window::restore()
     }
 }
 
+void x11_window::make_current()
+{
+    m_context->make_current();
+}
+
+void x11_window::swap_buffers()
+{
+    m_context->swap_buffers();
+}
+
 #pragma endregion
 
 #pragma region setters
@@ -478,7 +489,7 @@ window_size x11_window::max_size() const
     }
 
     XSizeHints size_hints = {};
-    //int64 supplied;
+    // int64 supplied;
 
     const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr) != 0;
     const bool has_max_size_hints = (size_hints.flags &= PMaxSize) != 0;
@@ -499,7 +510,7 @@ window_size x11_window::min_size() const
     }
 
     XSizeHints size_hints = {};
-    //int64 supplied;
+    // int64 supplied;
 
     const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr) != 0;
     const bool has_min_size_hints = (size_hints.flags &= PMinSize) != 0;
@@ -516,11 +527,6 @@ window_size x11_window::min_size() const
 std::string x11_window::title() const
 {
     return utils::get_window_name(m_server.get(), m_window);
-}
-
-framework::graphics::context* x11_window::context() const
-{
-    return m_context.get();
 }
 
 #pragma endregion
@@ -565,7 +571,7 @@ bool x11_window::maximized() const
 bool x11_window::resizable() const
 {
     XSizeHints size_hints = {};
-    //int64 supplied;
+    // int64 supplied;
 
     XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr);
 
@@ -915,7 +921,7 @@ void x11_window::process_events_while(const std::function<bool()>& condition)
 void x11_window::update_size_limits(window_size min_size, window_size max_size)
 {
     XSizeHints size_hints = {};
-    //int64 supplied;
+    // int64 supplied;
 
     XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr);
 

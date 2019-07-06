@@ -1,7 +1,7 @@
 /// @file
-/// @brief Image class.
+/// @brief OpenGL texture.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 16.04.2019
 
 // =============================================================================
 // MIT License
@@ -27,65 +27,61 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
-
-#include <string>
-#include <vector>
-
 #include <common/types.hpp>
-#include <graphics/color_type.hpp>
+#include <gl/gl.hpp>
+#include <graphics/texture.hpp>
 
-/// @brief Contains image classes.
 namespace framework::graphics
 {
-/// @addtogroup graphics_module
-/// @{
-
-enum class file_type
+// GL_ACTIVE_TEXTURE or GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+texture::texture(min_filter minf, mag_filter magf, wrap_s ws, wrap_t wt)
 {
-    bmp,
-    tga,
-    png
-};
+    using framework::int32;
 
-class image
+    gl::glActiveTexture(GL_TEXTURE0);
+
+    gl::glGenTextures(1, &m_texture_id);
+
+    gl::glBindTexture(GL_TEXTURE_2D, m_texture_id);
+
+    gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<int32>(minf));
+    gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<int32>(magf));
+    gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<int32>(ws));
+    gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<int32>(wt));
+
+    gl::glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void texture::load(int32 width, int32 height, const void* data)
 {
-public:
-    using data_t = std::vector<color_t>;
+    gl::glActiveTexture(GL_TEXTURE0);
+    gl::glBindTexture(GL_TEXTURE_2D, m_texture_id);
 
-    image();
+    gl::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-    image(const image&);
-    image& operator=(const image&);
+    gl::glBindTexture(GL_TEXTURE_2D, 0);
+}
 
-    image(image&&);
-    image& operator=(image&&);
+void texture::bind()
+{
+    gl::glActiveTexture(GL_TEXTURE0);
+    gl::glBindTexture(GL_TEXTURE_2D, m_texture_id);
+}
 
-    bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
+void texture::unbind()
+{
+    gl::glActiveTexture(GL_TEXTURE0);
+    gl::glBindTexture(GL_TEXTURE_2D, 0);
+}
 
-    void flip_vertically();
+framework::uint32 texture::texture_id() const
+{
+    return m_texture_id;
+}
 
-    int32 width() const;
-    int32 height() const;
-
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
-
-    const color_t* data() const;
-
-private:
-    data_t m_data;
-
-    int32 m_width  = 0;
-    int32 m_height = 0;
-
-    bool m_bottom_up = false;
-};
-
-/// @}
+framework::int32 texture::texture_unit() const
+{
+    return 0;
+}
 
 } // namespace framework::graphics
-
-#endif

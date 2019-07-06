@@ -31,7 +31,7 @@
 #define FRAMEWORK_GRAPHICS_TEXTURE_HPP
 
 #include <common/types.hpp>
-#include <graphics/opengl/gl.hpp>
+#include <gl/gl.hpp>
 
 namespace framework::graphics
 {

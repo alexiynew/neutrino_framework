@@ -27,39 +27,63 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_COLOR_TYPE_HPP
-#define FRAMEWORK_GRAPHICS_COLOR_TYPE_HPP
+#include <graphics/color_type.hpp>
 
-#include <common/types.hpp>
+namespace
+{
+using framework::float32;
+using framework::uint16;
+using framework::uint32;
+using framework::uint8;
+
+constexpr inline uint8 map(float32 value) noexcept
+{
+    return static_cast<uint8>(value * 255);
+}
+
+constexpr uint16 red_565   = 0xF800;
+constexpr uint16 green_565 = 0x7E0;
+constexpr uint16 blue_565  = 0x1F;
+
+constexpr uint32 red_rgba8   = 0xFF000000;
+constexpr uint32 green_rgba8 = 0xFF0000;
+constexpr uint32 blue_rgba8  = 0xFF00;
+constexpr uint32 alpha_rgba8 = 0xFF;
+
+} // namespace
 
 namespace framework::graphics
 {
-/// @details
-/// Color type definition.
-///
-/// @addtogroup graphics_module
-/// @{
+color_t::color_t(uint8 r_value, uint8 g_value, uint8 b_value, uint8 a_value)
+    : r(r_value), g(g_value), b(b_value), a(a_value)
+{}
 
-struct color_t
+color_t::color_t(float32 r_value, float32 g_value, float32 b_value, float32 a_value)
+    : r(map(r_value)), g(map(g_value)), b(map(b_value)), a(map(a_value))
+{}
+
+color_t::color_t(uint16 value)
+    : r(static_cast<uint8>((value & red_565) >> 11)),
+      g(static_cast<uint8>((value & green_565) >> 5)),
+      b(static_cast<uint8>(value & blue_565)),
+      a(255)
+{}
+
+color_t::color_t(uint32 value)
+    : r(static_cast<uint8>((value & red_rgba8) >> 24)),
+      g(static_cast<uint8>((value & green_rgba8) >> 16)),
+      b(static_cast<uint8>((value & blue_rgba8) >> 8)),
+      a(static_cast<uint8>(value & alpha_rgba8))
+{}
+
+uint8* color_t::data()
 {
-    uint8 r = 0;
-    uint8 g = 0;
-    uint8 b = 0;
-    uint8 a = 255;
+    return &r;
+}
 
-    color_t() = default;
+const uint8* color_t::data() const
+{
+    return &r;
+}
 
-    color_t(uint8 r, uint8 g, uint8 b, uint8 a);
-    color_t(float32 r, float32 g, float32 b, float32 a);
-
-    color_t(uint16 value);
-    color_t(uint32 value);
-
-    uint8* data();
-    const uint8* data() const;
-};
-
-/// @}
 } // namespace framework::graphics
-
-#endif

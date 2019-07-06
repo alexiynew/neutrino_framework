@@ -33,11 +33,12 @@
 #include <memory>
 #include <string>
 
-#include <graphics/context.hpp>
-#include <graphics/context_settings.hpp>
+#include <system/context_settings.hpp>
+
+#include <system/inc/window_position.hpp>
+#include <system/inc/window_size.hpp>
+
 #include <system/details/event_handler.hpp>
-#include <system/details/window_position.hpp>
-#include <system/details/window_size.hpp>
 
 namespace framework::system::details
 {
@@ -69,6 +70,8 @@ public:
     virtual void maximize()             = 0;
     virtual void switch_to_fullscreen() = 0;
     virtual void restore()              = 0;
+    virtual void make_current()         = 0;
+    virtual void swap_buffers()         = 0;
     /// @}
 
     /// @name setters
@@ -93,8 +96,6 @@ public:
     virtual window_size min_size() const = 0;
 
     virtual std::string title() const = 0;
-
-    virtual framework::graphics::context* context() const = 0;
     /// @}
 
     /// @name state
@@ -116,7 +117,7 @@ protected:
 // @brief Fabric function to make platform dependent implementation
 std::unique_ptr<window_implementation> create_implementation(window_size size,
                                                              const std::string& title,
-                                                             graphics::context_settings settings);
+                                                             const context_settings& settings);
 
 } // namespace framework::system::details
 

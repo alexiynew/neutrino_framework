@@ -24,13 +24,19 @@
 # =============================================================================
 
 set_sources(PUBLIC_SOURCES
-    window.hpp
+    context_settings.hpp
     keyboard.hpp
     mouse.hpp
+    window.hpp
+    inc/window_position.hpp
+    inc/window_size.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    window.cpp
+    src/context_settings.cpp
+    src/window.cpp
+    src/window_size.cpp
+    src/window_position.cpp
 )
 
 target_sources(${PROJECT_NAME}
