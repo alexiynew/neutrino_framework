@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_DETAILS_UTILS_DETAILS_HPP
-#define FRAMEWORK_COMMON_DETAILS_UTILS_DETAILS_HPP
+#ifndef FRAMEWORK_COMMON_INC_UTILS_DETAILS_HPP
+#define FRAMEWORK_COMMON_INC_UTILS_DETAILS_HPP
 
 #include <iostream>
 #include <memory>

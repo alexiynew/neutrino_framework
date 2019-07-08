@@ -33,7 +33,7 @@
 #include <random>
 #include <vector>
 
-#include <common/details/utils_details.hpp>
+#include <common/inc/utils_details.hpp>
 
 namespace framework
 {

@@ -28,13 +28,12 @@ set_sources(PUBLIC_SOURCES
     utils.hpp
     crc.hpp
     version.hpp
-    details/utils_details.hpp
-    details/crc_details.hpp
+    inc/utils_details.hpp
+    inc/crc_details.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    version.cpp
-    details/utils_details.cpp
+    src/version.cpp
 )
 
 target_sources(${PROJECT_NAME}
