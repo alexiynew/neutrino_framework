@@ -73,7 +73,7 @@ bool init_wgl_oml_sync_control();
 
 } // namespace
 
-namespace framework::graphics::opengl::details
+namespace framework::gl::wgl
 {
 bool wgl_arb_buffer_region_supported         = false;
 bool wgl_arb_create_context_supported        = false;

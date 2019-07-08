@@ -59,6 +59,10 @@ macro(set_compiller_flags)
         set(CMAKE_CXX_FLAGS_DEBUG "-g")
         set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
         set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG")
+
+        if("${PLATFORM_NAME}" STREQUAL "windows")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -DUNICODE")
+        endif()
     elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
         message("Using Visual Studio C++ compiller settings")
         set(CMAKE_CXX_FLAGS "/std:c++17 \

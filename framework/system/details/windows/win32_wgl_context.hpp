@@ -36,17 +36,17 @@
 
 namespace framework::system::details
 {
-class win32_context : public context
+class win32_wgl_context : public context
 {
 public:
-    win32_context(const context_settings& settings, HWND window);
-    ~win32_context() override;
+    win32_wgl_context(const context_settings& settings, HWND window);
+    ~win32_wgl_context() override;
 
-    win32_context(const win32_context&) = default;
-    win32_context(win32_context&&)      = default;
+    win32_wgl_context(const win32_wgl_context&) = default;
+    win32_wgl_context(win32_wgl_context&&)      = default;
 
-    win32_context& operator=(const win32_context&) = default;
-    win32_context& operator=(win32_context&&) = default;
+    win32_wgl_context& operator=(const win32_wgl_context&) = default;
+    win32_wgl_context& operator=(win32_wgl_context&&) = default;
 
     bool valid() const override;
     bool is_current() const override;

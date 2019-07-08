@@ -64,12 +64,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(Macros)
 include(CompillerSettings)
 
-# Set compiller flags
-set_compiller_flags()
-
 # Get platform
 detect_platform_name(PLATFORM_NAME)
 message("platform name: ${PLATFORM_NAME}")
+
+# Set compiller flags
+set_compiller_flags()
 
 # Assemble framework
 include(${FRAMEWORK_SOURCE_DIR}/CMakeLists.txt)
