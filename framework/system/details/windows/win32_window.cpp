@@ -30,7 +30,7 @@
 #include <stdexcept>
 #include <windowsx.h>
 
-#include <graphics/opengl/details/windows/wgl_context.hpp>
+#include <system/details/windows/win32_wgl_context.hpp>
 #include <system/details/windows/win32_application.hpp>
 #include <system/details/windows/win32_keyboard.hpp>
 #include <system/details/windows/win32_window.hpp>
@@ -180,7 +180,7 @@ framework::system::details::window_size adjust_size(framework::system::details::
 
 namespace framework::system::details
 {
-win32_window::win32_window(window_size size, const std::string& title, graphics::context_settings settings)
+win32_window::win32_window(window_size size, const std::string& title, const context_settings& settings)
 {
     m_window_class = ::register_window_class();
 
@@ -203,7 +203,7 @@ win32_window::win32_window(window_size size, const std::string& title, graphics:
         throw std::runtime_error("Failed to create window.");
     }
 
-    m_context = std::make_unique<graphics::opengl::details::win32_context>(m_window, std::move(settings));
+    m_context = std::make_unique<win32_wgl_context>(settings, m_window);
 
     win32_application::add_window(m_window, this);
 
@@ -325,6 +325,16 @@ void win32_window::restore()
     }
 }
 
+void win32_window::make_current()
+{
+  m_context->make_current();
+}
+
+void win32_window::swap_buffers()
+{
+  m_context->swap_buffers();
+}
+
 #pragma endregion
 
 #pragma region setters
@@ -429,11 +439,6 @@ std::string win32_window::title() const
     GetWindowText(m_window, buffer.get(), title_length);
 
     return utf16_to_utf8(buffer.get());
-}
-
-framework::graphics::context* win32_window::context() const
-{
-    return m_context.get();
 }
 
 #pragma endregion

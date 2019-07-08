@@ -29,13 +29,14 @@
 
 #include <stdexcept>
 
-#include <graphics/opengl/details/windows/wgl_context.hpp>
-#include <graphics/opengl/details/windows/wglext.hpp>
+#include <system/details/windows/win32_wgl_context.hpp>
+#include <gl/wglext.hpp>
+#include <gl/gl.hpp>
 
-namespace framework::system
+namespace framework::system::details
 {
-win32_context::win32_context(HWND window, opengl::context_settings settings)
-    : opengl::context(settings), m_window(window)
+win32_context::win32_context(const context_settings& settings, HWND window)
+    : context(settings), m_window(window)
 {
     m_hdc = GetDC(m_window);
 
@@ -70,12 +71,13 @@ win32_context::win32_context(HWND window, opengl::context_settings settings)
 
     wglMakeCurrent(m_hdc, hglrc);
 
-    opengl::init_wgl();
+    gl::wgl::init_wgl();
+    gl::init();
 
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(hglrc);
 
-    if (!opengl::wgl_arb_create_context_supported) {
+    if (!gl::wgl::wgl_arb_create_context_supported) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("wglCreateContextAttribsARB not supported");
     }
@@ -91,7 +93,7 @@ win32_context::win32_context(HWND window, opengl::context_settings settings)
     };
     // clang-format on
 
-    m_hglrc = opengl::wglCreateContextAttribsARB(m_hdc, 0, attribs);
+    m_hglrc = gl::wgl::wglCreateContextAttribsARB(m_hdc, 0, attribs);
     if (m_hglrc == nullptr) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't create HRC");

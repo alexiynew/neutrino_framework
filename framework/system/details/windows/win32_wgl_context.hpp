@@ -32,14 +32,14 @@
 
 #include <windows.h>
 
-#include <graphics/context.hpp>
+#include <system/details/context.hpp>
 
-namespace framework::graphics::opengl
+namespace framework::system::details
 {
-class win32_context : public framework::graphics::context
+class win32_context : public context
 {
 public:
-    win32_context(HWND window, context_settings settings);
+    win32_context(const context_settings& settings, HWND window);
     ~win32_context() override;
 
     win32_context(const win32_context&) = default;

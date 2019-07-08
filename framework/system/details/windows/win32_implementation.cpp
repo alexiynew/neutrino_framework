@@ -34,9 +34,9 @@ namespace framework::system::details
 {
 std::unique_ptr<window_implementation> create_implementation(window_size size,
                                                              const std::string& title,
-                                                             graphics::context_settings settings)
+                                                             const context_settings& settings)
 {
-    return std::make_unique<win32_window>(size, title, std::move(settings));
+    return std::make_unique<win32_window>(size, title, settings);
 }
 
 } // namespace framework::system::details

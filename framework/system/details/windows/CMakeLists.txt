@@ -24,19 +24,18 @@
 # =============================================================================
 
 set_sources(PRIVATE_SOURCES
-    win32_window.hpp
-    win32_application.hpp
-    win32_keyboard.hpp
-
-    win32_window.cpp
     win32_application.cpp
+    win32_application.hpp
     win32_implementation.cpp
     win32_keyboard.cpp
+    win32_keyboard.hpp
+    win32_wgl_context.cpp
+    win32_wgl_context.hpp
+    win32_window.hpp
+    win32_window.cpp
 )
 
 target_sources(${PROJECT_NAME}
     PRIVATE
         ${PRIVATE_SOURCES}
 )
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE UNICODE)

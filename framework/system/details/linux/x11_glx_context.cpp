@@ -30,6 +30,7 @@
 #include <stdexcept>
 
 #include <common/types.hpp>
+#include <gl/gl.hpp>
 
 #include <system/details/linux/x11_glx_context.hpp>
 
@@ -140,6 +141,7 @@ x11_glx_context::x11_glx_context(const context_settings& settings, Display* disp
     }
 
     gl::glx::init_glx();
+    gl::init();
 
     m_framebuffer_config = choose_framebuffer_config(m_display, settings);
 

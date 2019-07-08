@@ -24,18 +24,19 @@
 # =============================================================================
 
 set_sources(PRIVATE_SOURCES
-    x11_server.hpp
-    x11_window.hpp
-    x11_utils.hpp
-    x11_keyboard.hpp
-    x11_mouse.hpp
-
-    x11_server.cpp
-    x11_window.cpp
-    x11_utils.cpp
+    x11_glx_context.cpp
+    x11_glx_context.hpp
     x11_implementation.cpp
     x11_keyboard.cpp
+    x11_keyboard.hpp
     x11_mouse.cpp
+    x11_mouse.hpp
+    x11_server.cpp
+    x11_server.hpp
+    x11_utils.cpp
+    x11_utils.hpp
+    x11_window.cpp
+    x11_window.hpp
 )
 
 target_sources(${PROJECT_NAME}

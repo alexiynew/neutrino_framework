@@ -65,7 +65,7 @@ macro(set_compiller_flags)
                              /EHsc \
                              /W4 \
                              /WX")
-        set(CMAKE_CXX_FLAGS_DEBUG "/Od /ZI")
+        set(CMAKE_CXX_FLAGS_DEBUG "/Od /ZI /DNOMINMAX /DUNICODE")
         set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
         set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/O2 /DNDEBUG")
     endif()
