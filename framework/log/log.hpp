@@ -33,8 +33,9 @@
 #include <memory>
 #include <string>
 
-#include <log/details/log_ostream.hpp>
 #include <log/logger.hpp>
+
+#include <log/inc/log_ostream.hpp>
 
 /// @details
 ///
