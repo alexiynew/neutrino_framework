@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_OPENGL_DETAILS_GL_DETAILS_HPP
-#define FRAMEWORK_GRAPHICS_OPENGL_DETAILS_GL_DETAILS_HPP
+#ifndef FRAMEWORK_GL_DETAILS_GL_GET_FUNCTION_HPP
+#define FRAMEWORK_GL_DETAILS_GL_GET_FUNCTION_HPP
 
 namespace framework::gl::details
 {

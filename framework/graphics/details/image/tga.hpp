@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_DETAILS_TGA_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_DETAILS_TGA_HPP
+#ifndef FRAMEWORK_GRAPHICS_DETAILS_IMAGE_TGA_HPP
+#define FRAMEWORK_GRAPHICS_DETAILS_IMAGE_TGA_HPP
 
 #include <optional>
 #include <string>

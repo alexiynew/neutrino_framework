@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_DETAILS_WINDOW_POSITION_HPP
-#define FRAMEWORK_SYSTEM_DETAILS_WINDOW_POSITION_HPP
+#ifndef FRAMEWORK_SYSTEM_INC_WINDOW_POSITION_HPP
+#define FRAMEWORK_SYSTEM_INC_WINDOW_POSITION_HPP
 
 #include <common/types.hpp>
 

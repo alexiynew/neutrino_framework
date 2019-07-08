@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_OPENGL_DETAILS_WINDOWS_WGLEXT_WRAPPER_HPP
-#define FRAMEWORK_GRAPHICS_OPENGL_DETAILS_WINDOWS_WGLEXT_WRAPPER_HPP
+#ifndef FRAMEWORK_GL_INC_WGLEXT_WRAPPER_HPP
+#define FRAMEWORK_GL_INC_WGLEXT_WRAPPER_HPP
 
 #include <GL/glcorearb.h>
 #include <GL/wglext.h>

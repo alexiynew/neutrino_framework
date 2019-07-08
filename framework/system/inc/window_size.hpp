@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_DETAILS_WINDOW_SIZE_HPP
-#define FRAMEWORK_SYSTEM_DETAILS_WINDOW_SIZE_HPP
+#ifndef FRAMEWORK_SYSTEM_INC_WINDOW_SIZE_HPP
+#define FRAMEWORK_SYSTEM_INC_WINDOW_SIZE_HPP
 
 #include <common/types.hpp>
 

@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_CONTEXT_SETTINGS_HPP
-#define FRAMEWORK_GRAPHICS_CONTEXT_SETTINGS_HPP
+#ifndef FRAMEWORK_SYSTEM_CONTEXT_SETTINGS_HPP
+#define FRAMEWORK_SYSTEM_CONTEXT_SETTINGS_HPP
 
 #include <common/types.hpp>
 #include <common/version.hpp>

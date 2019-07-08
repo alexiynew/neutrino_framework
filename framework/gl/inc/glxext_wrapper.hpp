@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_OPENGL_DETAILS_LINUX_GLXEXT_WRAPPER_HPP
-#define FRAMEWORK_GRAPHICS_OPENGL_DETAILS_LINUX_GLXEXT_WRAPPER_HPP
+#ifndef FRAMEWORK_GL_INC_GLXEXT_WRAPPER_HPP
+#define FRAMEWORK_GL_INC_GLXEXT_WRAPPER_HPP
 
 #include <GL/glx.h>
 

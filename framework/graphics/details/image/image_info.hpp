@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_DETAILS_IMAGE_INFO_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_DETAILS_IMAGE_INFO_HPP
+#ifndef FRAMEWORK_GRAPHICS_DETAILS_IMAGE_IMAGE_INFO_HPP
+#define FRAMEWORK_GRAPHICS_DETAILS_IMAGE_IMAGE_INFO_HPP
 
 #include <common/types.hpp>
 
