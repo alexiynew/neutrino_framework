@@ -28,7 +28,7 @@ set_sources(PUBLIC_SOURCES
 )
 
 set_sources(PRIVATE_SOURCES
-    suite.cpp
+    src/suite.cpp
 )
 
 target_sources(${PROJECT_NAME}
