@@ -24,11 +24,10 @@
 # =============================================================================
 
 set(TESTS 
-    context
+    image_bmp
     mesh
     shader
     texture
-    image_bmp
 )
 
 foreach(TEST ${TESTS})

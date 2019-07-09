@@ -24,6 +24,7 @@
 # =============================================================================
 
 set(TESTS 
+    context
     window_open
     window_focus
     window_properties

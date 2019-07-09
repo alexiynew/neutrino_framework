@@ -28,7 +28,7 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
-#include <graphics/opengl/gl.hpp>
+#include <gl/gl.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -44,32 +44,15 @@ private:
     void main_loop()
     {
         using framework::float32;
-        using framework::graphics::context_settings;
+        using framework::system::context_settings;
         using framework::system::window;
         using framework::utils::random_numbers;
 
-        using namespace framework::graphics::opengl::details;
-
         window::set_application_name("GL Test");
 
-        framework::graphics::opengl::init();
-
         window main_window({640, 480}, "Context test");
-        auto context = main_window.context();
 
-        TEST_ASSERT(context != nullptr, "No graphic context.");
-        TEST_ASSERT(context->valid(), "Graphic context is invalid.");
-
-        const context_settings& settings = context->settings();
-        TEST_ASSERT(settings.api_type() == context_settings::graphic_api::opengl, "Wrong context settings");
-        TEST_ASSERT(settings.version() == framework::utils::version(3, 0), "Wrong context settings");
-        TEST_ASSERT(settings.depth_bits() == 24, "Wrong context settings");
-        TEST_ASSERT(settings.stencil_bits() == 8, "Wrong context settings");
-        TEST_ASSERT(settings.antialiasing_level() == context_settings::antialiasing::best, "Wrong context settings");
-
-        context->make_current();
-
-        TEST_ASSERT(context->is_current(), "Can't make graphic context current.");
+        main_window.make_current();
 
         main_window.show();
 
@@ -79,10 +62,10 @@ private:
         while (main_window.visible() && total_time < max_total_time) {
             main_window.process_events();
 
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            framework::gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            framework::gl::glClear(GL_COLOR_BUFFER_BIT);
 
-            context->swap_buffers();
+            main_window.swap_buffers();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
 

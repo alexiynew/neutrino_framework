@@ -28,7 +28,7 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
-#include <graphics/opengl/gl.hpp>
+#include <gl/gl.hpp>
 #include <graphics/texture.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
@@ -44,21 +44,18 @@ public:
 private:
     void main_loop()
     {
+        using namespace framework;
+
         using framework::float32;
         using framework::graphics::texture;
         using framework::system::window;
         using framework::utils::random_numbers;
 
-        using namespace framework::graphics::opengl::details;
-
         window::set_application_name("GL texture Test");
 
-        framework::graphics::opengl::init();
-
         window main_window({640, 480}, "GL texture test");
-        auto context = main_window.context();
 
-        context->make_current();
+        main_window.make_current();
 
         main_window.show();
 
@@ -68,10 +65,10 @@ private:
         while (main_window.visible() && total_time < max_total_time) {
             main_window.process_events();
 
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            gl::glClear(GL_COLOR_BUFFER_BIT);
 
-            context->swap_buffers();
+            main_window.swap_buffers();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
 

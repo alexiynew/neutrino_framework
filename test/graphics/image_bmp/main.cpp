@@ -39,7 +39,7 @@ public:
 private:
     void bmp_load_good()
     {
-        framework::image::image img;
+        framework::graphics::image img;
         TEST_ASSERT(img.load("good_pal1.bmp"), "Loading of good_pal1.bmp failed.");
 
         TEST_ASSERT(img.width() == 127, "Loading of good_pal1.bmp failed.");
@@ -81,7 +81,7 @@ private:
 
     void bmp_load_questionable()
     {
-        framework::image::image img;
+        framework::graphics::image img;
         TEST_ASSERT(img.load("questionable_pal1p1.bmp"), "Loading of questionable_pal1p1.bmp failed.");
         TEST_ASSERT(img.load("questionable_pal2.bmp"), "Loading of questionable_pal2.bmp failed.");
         TEST_ASSERT(img.load("questionable_pal2color.bmp"), "Loading of questionable_pal2color.bmp failed.");
@@ -128,7 +128,7 @@ private:
 
     void bmp_load_bad()
     {
-        framework::image::image img;
+        framework::graphics::image img;
 
         img.load("bad_badbitcount.bmp");
         img.load("bad_badbitssize.bmp");
