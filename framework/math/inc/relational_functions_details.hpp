@@ -37,9 +37,9 @@
 #include <functional>
 
 #include <common/types.hpp>
-#include <math/details/common_functions.hpp>
-#include <math/details/matrix_type.hpp>
-#include <math/details/vector_type.hpp>
+#include <math/inc/common_functions.hpp>
+#include <math/inc/matrix_type.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework
 {

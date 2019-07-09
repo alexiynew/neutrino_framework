@@ -34,9 +34,9 @@
 #ifndef FRAMEWORK_MATH_DETAILS_GEOMETRIC_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_DETAILS_GEOMETRIC_FUNCTIONS_HPP
 
-#include <math/details/exponential_functions.hpp>
-#include <math/details/geometric_functions_details.hpp>
-#include <math/details/vector_type.hpp>
+#include <math/inc/exponential_functions.hpp>
+#include <math/inc/geometric_functions_details.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework
 {

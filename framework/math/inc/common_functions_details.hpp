@@ -36,7 +36,7 @@
 
 #include <cmath>
 
-#include <math/details/vector_type.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework
 {

@@ -37,8 +37,8 @@
 #include <cassert>
 
 #include <common/types.hpp>
-#include <math/details/matrix_type_details.hpp>
-#include <math/details/vector_type.hpp>
+#include <math/inc/matrix_type_details.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework
 {

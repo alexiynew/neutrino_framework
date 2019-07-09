@@ -37,7 +37,7 @@
 #include <cassert>
 
 #include <common/types.hpp>
-#include <math/details/vector_type_details.hpp>
+#include <math/inc/vector_type_details.hpp>
 
 namespace framework
 {

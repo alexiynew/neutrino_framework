@@ -37,16 +37,16 @@
 
 #define FRAMEWORK_MATH_DETAILS
 
-#include <math/details/common_functions.hpp>
-#include <math/details/constants.hpp>
-#include <math/details/exponential_functions.hpp>
-#include <math/details/geometric_functions.hpp>
-#include <math/details/matrix_functions.hpp>
-#include <math/details/matrix_type.hpp>
-#include <math/details/relational_functions.hpp>
-#include <math/details/transform_functions.hpp>
-#include <math/details/trigonometric_functions.hpp>
-#include <math/details/vector_type.hpp>
+#include <math/inc/common_functions.hpp>
+#include <math/inc/constants.hpp>
+#include <math/inc/exponential_functions.hpp>
+#include <math/inc/geometric_functions.hpp>
+#include <math/inc/matrix_functions.hpp>
+#include <math/inc/matrix_type.hpp>
+#include <math/inc/relational_functions.hpp>
+#include <math/inc/transform_functions.hpp>
+#include <math/inc/trigonometric_functions.hpp>
+#include <math/inc/vector_type.hpp>
 
 #undef FRAMEWORK_MATH_DETAILS
 

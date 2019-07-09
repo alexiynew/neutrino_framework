@@ -37,10 +37,10 @@
 #include <cassert>
 #include <limits>
 
-#include <math/details/common_functions.hpp>
-#include <math/details/matrix_functions.hpp>
-#include <math/details/matrix_type.hpp>
-#include <math/details/trigonometric_functions.hpp>
+#include <math/inc/common_functions.hpp>
+#include <math/inc/matrix_functions.hpp>
+#include <math/inc/matrix_type.hpp>
+#include <math/inc/trigonometric_functions.hpp>
 
 namespace framework
 {
