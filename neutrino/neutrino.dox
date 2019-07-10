@@ -28,3 +28,6 @@
 ///
 /// The lightweight game framework, with no third-party dependencies, made for fun.
 ///
+/// @namespace framework
+/// @brief Main neutrino framework namespace.
+///
