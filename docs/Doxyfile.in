@@ -573,7 +573,8 @@ INPUT                  = @FRAMEWORK_SOURCE_DIR@
 INPUT_ENCODING         = UTF-8
 
 # file extention patterns
-FILE_PATTERNS          = *.hpp
+FILE_PATTERNS          = *.hpp \
+                         *.dox 
 
 # Search in subdirectories
 RECURSIVE              = YES
@@ -585,10 +586,8 @@ EXCLUDE                = CMakeLists.txt
 EXCLUDE_SYMLINKS       = NO
 
 # Patterns to exclude from sources
-EXCLUDE_PATTERNS       = */opengl/details/* \
-                         */window/details/* \
-                         */log/details/*
-
+EXCLUDE_PATTERNS       = */details/* \
+                         */src/* 
 
 # Symbol names to exclude from documentation
 EXCLUDE_SYMBOLS        = framework::*::*_details
