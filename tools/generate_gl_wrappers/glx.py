@@ -3,8 +3,8 @@
 
 SOURCE = "./dependencies/GL/glxext.h"
 
-DESTHPP = "./framework/graphics/opengl/details/linux/glxext_wrapper.hpp"
-DESTCPP = "./framework/graphics/opengl/details/linux/glxext_wrapper.cpp"
+DESTHPP = "./neutrino/gl/inc/glxext_wrapper.hpp"
+DESTCPP = "./neutrino/gl/src/glxext_wrapper.cpp"
 
 GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
 TYPE_REGEX = r'typedef.*\(\s?\*(PFN.*PROC)\).*;'
@@ -13,12 +13,14 @@ NAME_REGEX = r'.*(glX[\w\d_]+)\s?\(.*;'
 EXCLUDE = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC",
            "PFNGLXCREATEGLXVIDEOSOURCESGIXPROC", "PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC"]
 
-HEADER_FILE = "graphics/opengl/details/linux/glxext_wrapper.hpp"
+HEADER_FILE = "gl/inc/glxext_wrapper.hpp"
 
 BRIEF = "GLX extension functions wrapper."
 DATE = "17.09.2018"
 
-INCLUDE_GUARD = "FRAMEWORK_GRAPHICS_OPENGL_DETAILS_LINUX_GLXEXT_WRAPPER_HPP"
+NAMESPACE = "framework::gl::glx"
+
+INCLUDE_GUARD = "FRAMEWORK_GL_INC_GLXEXT_WRAPPER_HPP"
 
 INCLUDE_FILES = ["GL/glx.h"]
 
@@ -58,6 +60,7 @@ data = dict(source=SOURCE,
             header_file=HEADER_FILE,
             brief=BRIEF,
             date=DATE,
+            namespace=NAMESPACE,
             include_guard=INCLUDE_GUARD,
             include_files=INCLUDE_FILES,
             init_function_name=INIT_FUNCTION_NAME,
