@@ -30,8 +30,9 @@
 #ifndef FRAMEWORK_COMMON_CRC_HPP
 #define FRAMEWORK_COMMON_CRC_HPP
 
-#include <common/inc/crc_details.hpp>
 #include <common/types.hpp>
+
+#include <common/inc/crc_details.hpp>
 
 namespace framework::utils
 {

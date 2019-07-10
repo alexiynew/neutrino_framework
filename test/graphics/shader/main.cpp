@@ -51,7 +51,6 @@ private:
         using framework::system::window;
         using framework::utils::random_numbers;
 
-
         window::set_application_name("GL shader Test");
 
         window main_window({640, 480}, "GL shader test");

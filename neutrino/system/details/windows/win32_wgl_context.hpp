@@ -60,6 +60,6 @@ private:
     HGLRC m_hglrc = nullptr;
 };
 
-} // namespace framework::graphics::opengl
+} // namespace framework::system::details
 
 #endif

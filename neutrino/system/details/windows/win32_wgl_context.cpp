@@ -29,9 +29,10 @@
 
 #include <stdexcept>
 
-#include <system/details/windows/win32_wgl_context.hpp>
-#include <gl/wglext.hpp>
 #include <gl/gl.hpp>
+#include <gl/wglext.hpp>
+
+#include <system/details/windows/win32_wgl_context.hpp>
 
 namespace framework::system::details
 {
@@ -130,4 +131,4 @@ void win32_wgl_context::swap_buffers() const
     SwapBuffers(m_hdc);
 }
 
-} // namespace framework::system
+} // namespace framework::system::details

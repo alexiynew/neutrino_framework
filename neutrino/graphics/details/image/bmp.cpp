@@ -816,4 +816,4 @@ bool is_bmp(const std::string& filename)
     return check_signature(h);
 }
 
-} // namespace framework::graphics::details::image
+} // namespace framework::graphics::details::image::bmp

@@ -31,12 +31,13 @@
 #error You should include math/math.hpp instead of exponential_functions.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_DETAILS_EXPONENTIAL_FUNCTIONS_HPP
-#define FRAMEWORK_MATH_DETAILS_EXPONENTIAL_FUNCTIONS_HPP
+#ifndef FRAMEWORK_MATH_INC_EXPONENTIAL_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_INC_EXPONENTIAL_FUNCTIONS_HPP
 
 #include <cmath>
 
 #include <common/types.hpp>
+
 #include <math/inc/vector_type.hpp>
 
 namespace framework

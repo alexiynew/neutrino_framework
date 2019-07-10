@@ -30,9 +30,9 @@
 #include <stdexcept>
 #include <windowsx.h>
 
-#include <system/details/windows/win32_wgl_context.hpp>
 #include <system/details/windows/win32_application.hpp>
 #include <system/details/windows/win32_keyboard.hpp>
+#include <system/details/windows/win32_wgl_context.hpp>
 #include <system/details/windows/win32_window.hpp>
 
 namespace
@@ -327,12 +327,12 @@ void win32_window::restore()
 
 void win32_window::make_current()
 {
-  m_context->make_current();
+    m_context->make_current();
 }
 
 void win32_window::swap_buffers()
 {
-  m_context->swap_buffers();
+    m_context->swap_buffers();
 }
 
 #pragma endregion
@@ -823,4 +823,4 @@ void win32_window::track_mouse()
 
 #pragma endregion
 
-} // namespace framework::graphics::opengl
+} // namespace framework::system::details

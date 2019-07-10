@@ -30,8 +30,9 @@
 #ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
 
-#include <system/details/linux/x11_server.hpp>
 #include <system/keyboard.hpp>
+
+#include <system/details/linux/x11_server.hpp>
 
 namespace framework::system::details
 {

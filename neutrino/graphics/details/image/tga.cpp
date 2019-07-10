@@ -50,4 +50,4 @@ bool is_tga(const std::string&)
     return false;
 }
 
-} // namespace framework::graphics::details::image
+} // namespace framework::graphics::details::image::tga

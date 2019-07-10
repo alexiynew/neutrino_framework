@@ -32,6 +32,7 @@
 #include <cstring>
 
 #include <common/utils.hpp>
+
 #include <system/details/linux/x11_utils.hpp>
 
 using ::framework::system::details::x11_server;
@@ -75,8 +76,8 @@ std::vector<PropertyType> get_window_property(Display* display, Window window, A
 
     Atom actual_type                 = None;
     ::framework::int32 actual_format = 0;
-    unsigned long items_count  = 0;
-    unsigned long bytes_after  = 0;
+    unsigned long items_count        = 0;
+    unsigned long bytes_after        = 0;
     ::framework::uint8* data         = nullptr;
 
     ::framework::int32 result = XGetWindowProperty(display,

@@ -31,10 +31,11 @@
 #error You should include math/math.hpp instead of matrix_functions.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_DETAILS_MATRIX_FUNCTIONS_HPP
-#define FRAMEWORK_MATH_DETAILS_MATRIX_FUNCTIONS_HPP
+#ifndef FRAMEWORK_MATH_INC_MATRIX_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_INC_MATRIX_FUNCTIONS_HPP
 
 #include <common/types.hpp>
+
 #include <math/inc/matrix_functions_details.hpp>
 #include <math/inc/matrix_type.hpp>
 

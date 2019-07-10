@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of transform_functions.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_DETAILS_TRANSFORM_FUNCTIONS_HPP
-#define FRAMEWORK_MATH_DETAILS_TRANSFORM_FUNCTIONS_HPP
+#ifndef FRAMEWORK_MATH_INC_TRANSFORM_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_INC_TRANSFORM_FUNCTIONS_HPP
 
 #include <cassert>
 #include <limits>

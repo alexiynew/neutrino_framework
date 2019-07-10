@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of vector_type_details.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_DETAILS_VECTOR_TYPE_DETAILS_HPP
-#define FRAMEWORK_MATH_DETAILS_VECTOR_TYPE_DETAILS_HPP
+#ifndef FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
+#define FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
 
 #include <functional>
 #include <type_traits>

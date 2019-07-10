@@ -381,7 +381,7 @@ PFNWGLWAITFORSBCOMLPROC wglWaitForSbcOML                   = nullptr;
 
 #pragma endregion
 
-} // namespace framework::graphics::opengl::details
+} // namespace framework::gl::wgl
 
 namespace
 {

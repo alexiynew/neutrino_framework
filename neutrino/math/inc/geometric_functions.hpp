@@ -31,8 +31,8 @@
 #error You should include math/math.hpp instead of geometric_functions.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_DETAILS_GEOMETRIC_FUNCTIONS_HPP
-#define FRAMEWORK_MATH_DETAILS_GEOMETRIC_FUNCTIONS_HPP
+#ifndef FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
 
 #include <math/inc/exponential_functions.hpp>
 #include <math/inc/geometric_functions_details.hpp>

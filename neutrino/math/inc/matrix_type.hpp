@@ -31,12 +31,13 @@
 #error You should include math/math.hpp instead of matrix_type.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_DETAILS_MATRIX_TYPE_HPP
-#define FRAMEWORK_MATH_DETAILS_MATRIX_TYPE_HPP
+#ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
+#define FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
 
 #include <cassert>
 
 #include <common/types.hpp>
+
 #include <math/inc/matrix_type_details.hpp>
 #include <math/inc/vector_type.hpp>
 

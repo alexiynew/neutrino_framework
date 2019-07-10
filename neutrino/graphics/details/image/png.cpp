@@ -283,4 +283,4 @@ bool is_png(const std::string& filename)
     return check_signature(read_bytes(file, 8));
 }
 
-} // namespace framework::graphics::details::image
+} // namespace framework::graphics::details::image::png

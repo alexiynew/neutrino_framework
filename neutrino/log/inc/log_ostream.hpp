@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_LOG_DETAILS_LOG_OSTREAM_HPP
-#define FRAMEWORK_LOG_DETAILS_LOG_OSTREAM_HPP
+#ifndef FRAMEWORK_LOG_INC_LOG_OSTREAM_HPP
+#define FRAMEWORK_LOG_INC_LOG_OSTREAM_HPP
 
 #include <memory>
 #include <ostream>

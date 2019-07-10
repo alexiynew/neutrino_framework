@@ -36,6 +36,7 @@
 #include <vector>
 
 #include <common/types.hpp>
+
 #include <system/details/linux/x11_server.hpp>
 
 namespace framework::system::details::utils
@@ -61,7 +62,9 @@ bool send_client_message(const x11_server* server, Window window, Atom message_t
 template <typename... Args>
 inline bool send_client_message(const x11_server* server, Window window, Atom message_type, Args... data)
 {
-    const std::vector<int64> tmp{{static_cast<int64>(data)...,}};
+    const std::vector<int64> tmp{{
+    static_cast<int64>(data)...,
+    }};
     return send_client_message(server, window, message_type, tmp);
 }
 
