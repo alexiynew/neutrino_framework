@@ -28,8 +28,8 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
-#include <graphics/mesh.hpp>
 #include <gl/gl.hpp>
+#include <graphics/mesh.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 

@@ -5,7 +5,7 @@ import os
 
 script_path = os.getcwd()
 
-path = "{}/framework".format(script_path)
+path = "{}/neutrino".format(script_path)
 
 
 def get_files(path):
