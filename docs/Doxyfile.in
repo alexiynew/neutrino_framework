@@ -33,7 +33,7 @@ OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
 
 # Brief description before the detailed description
-REPEAT_BRIEF           = YES
+REPEAT_BRIEF           = NO
 
 # This tag implements a quasi-intelligent brief description abbreviator that is
 # used to form the text in various listings. Each string in this list, if found
@@ -705,15 +705,15 @@ COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          =
 
 # Generate html
-GENERATE_HTML          = YES
+GENERATE_HTML          = NO
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 
-HTML_HEADER            = @DOCS_SOURCE_DIR@/header.html
-HTML_FOOTER            = @DOCS_SOURCE_DIR@/footer.html
+HTML_HEADER            = 
+HTML_FOOTER            = 
 HTML_STYLESHEET        =
 
-HTML_EXTRA_STYLESHEET  = @DOCS_SOURCE_DIR@/frameworkdoxygen.css
+HTML_EXTRA_STYLESHEET  = 
 HTML_EXTRA_FILES       =
 
 HTML_COLORSTYLE_HUE    = 220
@@ -757,8 +757,8 @@ GENERATE_ECLIPSEHELP   = NO
 ECLIPSE_DOC_ID         = org.doxygen.Project
 
 # Index
-DISABLE_INDEX          = NO
-GENERATE_TREEVIEW      = NO
+DISABLE_INDEX          = YES 
+GENERATE_TREEVIEW      = YES
 
 ENUM_VALUES_PER_LINE   = 4
 
@@ -793,7 +793,7 @@ GENERATE_RTF           = NO
 GENERATE_MAN           = NO
 
 # Generate XML
-GENERATE_XML           = NO
+GENERATE_XML           = YES
 XML_OUTPUT             = doxyxml
 XML_PROGRAMLISTING     = YES
 

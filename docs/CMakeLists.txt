@@ -23,48 +23,18 @@
 # SOFTWARE.
 # =============================================================================
 
-include(CTest)
-enable_testing()
+find_package(Doxygen REQUIRED)
 
-set(TESTS_TARGET ${PROJECT_NAME}_tests)
-set(TEST_DIR_NAME test)
+set(DOCS_INPUT_HEADERS $<TARGET_PROPERTY:${PROJECT_NAME},INTERFACE_SOURCES>)
 
-add_custom_target(${TESTS_TARGET} ALL 
-    DEPENDS ${PROJECT_NAME}
-    COMMENT "Build tests."
+set(DOCS_INPUT_DOX ${FRAMEWORK_SOURCE_DIR}/neutrino.dox)
+
+configure_file(${DOCS_SOURCE_DIR}/Doxyfile.in ${DOCS_BINARY_DIR}/Doxyfile @ONLY)
+configure_file(${DOCS_SOURCE_DIR}/DoxygenLayout.xml ${DOCS_BINARY_DIR}/DoxygenLayout.xml COPYONLY)
+
+add_custom_target(docs ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_OUTPUT_DIR}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOCS_BINARY_DIR}/Doxyfile
+    DEPENDS ${DOCS_INPUT_HEADERS} ${DOCS_INPUT_DOX}
+    COMMENT "Generating documentation."
 )
-
-message(STATUS "Add tests...")
-
-set(TEST_GROUPS
-    "unit_test"
-    "common"
-    "log"
-    "math"
-    "system"
-    "graphics"
-)
-
-foreach(GROUP ${TEST_GROUPS})
-    set(GROUP_NAME ${GROUP})
-    set(GROUP_DIR ${FRAMEWORK_TEST_DIR}/${GROUP})
-
-    message(STATUS "\t${GROUP_NAME}")
-    include(${GROUP_DIR}/CMakeLists.txt)
-endforeach(GROUP)
-
-add_custom_target(run_all_tests
-    COMMAND ${CMAKE_CTEST_COMMAND} --build-config $<CONFIG> --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\"
-    DEPENDS ${TESTS_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-add_custom_target(run_all_tests_verbose
-    COMMAND ${CMAKE_CTEST_COMMAND} --build-config $<CONFIG> --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\" --verbose
-    DEPENDS ${TESTS_TARGET}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
-
-set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TEST_DIR_NAME})
-set_target_properties(run_all_tests PROPERTIES FOLDER ${TEST_DIR_NAME})
-set_target_properties(run_all_tests_verbose PROPERTIES FOLDER ${TEST_DIR_NAME})
