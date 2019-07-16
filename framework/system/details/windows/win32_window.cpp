@@ -165,15 +165,15 @@ framework::system::mouse_button get_mouse_button(UINT message)
 
 framework::system::details::window_size adjust_size(framework::system::details::window_size size, DWORD style)
 {
-    framework::int32 height = GetSystemMetrics(SM_CYCAPTION);
-    height += ((style & WS_SIZEBOX) ? GetSystemMetrics(SM_CYFRAME) : GetSystemMetrics(SM_CYFIXEDFRAME)) * 2;
-    height += GetSystemMetrics(SM_CYEDGE) * 2;
+    RECT rect{0,0,size.width, size.height};
+    AdjustWindowRectEx(&rect,window_style, false, window_ex_style);
 
-    framework::int32 width = 0;
-    width += ((style & WS_SIZEBOX) ? GetSystemMetrics(SM_CXFRAME) : GetSystemMetrics(SM_CXFIXEDFRAME)) * 2;
-    width += GetSystemMetrics(SM_CXEDGE) * 2;
+    if ((style & WS_SIZEBOX) == 0) 
+    {
+        // TODO (alex): fix size without size box.
+    }
 
-    return {size.width + width, size.height + height};
+    return {rect.right - rect.left, rect.bottom - rect.top};
 }
 
 } // namespace
