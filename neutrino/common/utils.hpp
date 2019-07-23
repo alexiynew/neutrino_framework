@@ -40,18 +40,10 @@ namespace framework
 /// @details
 /// Different helper functions.
 ///
-/// @defgroup common_utils_module Common utils
+/// @defgroup common_utils_module Utility functions
 /// @{
-
 namespace utils
 {
-/// @addtogroup common_utils_module
-/// @{
-
-/// @defgroup crc_implementation Crc
-
-/// @defgroup version_abstraction Version
-
 /// @brief Determines if it is the debug build.
 ///
 /// @return `true` in debug mode, `false` otherwise.
@@ -123,8 +115,6 @@ std::string format(const std::string& str, Args&&... args)
     return format_details::make_string_impl(str, values, sizeof...(args));
 }
 */
-
-/// @}
 
 } // namespace utils
 

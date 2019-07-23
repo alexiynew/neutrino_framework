@@ -203,7 +203,7 @@ MARKDOWN_SUPPORT       = YES
 # globally by setting AUTOLINK_SUPPORT to NO.
 # The default value is: YES.
 
-AUTOLINK_SUPPORT       = YES
+AUTOLINK_SUPPORT       = NO
 
 # If you use STL classes (i.e. std::string, std::vector, etc.) but do not want
 # to include (a tag file for) the STL sources as input, then you should set this
@@ -538,7 +538,7 @@ FILE_VERSION_FILTER    =
 # DoxygenLayout.xml, doxygen will parse it automatically even if the LAYOUT_FILE
 # tag is left empty.
 
-LAYOUT_FILE            = @DOCS_SOURCE_DIR@/DoxygenLayout.xml
+LAYOUT_FILE            = DoxygenLayout.xml
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files containing
 # the reference definitions. This must be a list of .bib files. The .bib
@@ -705,15 +705,15 @@ COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          =
 
 # Generate html
-GENERATE_HTML          = NO
+GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 
-HTML_HEADER            = 
-HTML_FOOTER            = 
+HTML_HEADER            = header.html
+HTML_FOOTER            = footer.html
 HTML_STYLESHEET        =
 
-HTML_EXTRA_STYLESHEET  = 
+HTML_EXTRA_STYLESHEET  = @PROJECT_NAME@.css
 HTML_EXTRA_FILES       =
 
 HTML_COLORSTYLE_HUE    = 220
@@ -722,7 +722,8 @@ HTML_COLORSTYLE_GAMMA  = 80
 
 HTML_TIMESTAMP         = YES
 
-HTML_DYNAMIC_SECTIONS  = YES
+HTML_DYNAMIC_MENUS     = NO
+HTML_DYNAMIC_SECTIONS  = NO
 
 HTML_INDEX_NUM_ENTRIES = 100
 
@@ -758,7 +759,7 @@ ECLIPSE_DOC_ID         = org.doxygen.Project
 
 # Index
 DISABLE_INDEX          = YES 
-GENERATE_TREEVIEW      = YES
+GENERATE_TREEVIEW      = NO 
 
 ENUM_VALUES_PER_LINE   = 4
 
@@ -793,9 +794,9 @@ GENERATE_RTF           = NO
 GENERATE_MAN           = NO
 
 # Generate XML
-GENERATE_XML           = YES
+GENERATE_XML           = NO
 XML_OUTPUT             = doxyxml
-XML_PROGRAMLISTING     = YES
+XML_PROGRAMLISTING     = NO
 
 # Do not generate DOCBOOK
 GENERATE_DOCBOOK       = NO

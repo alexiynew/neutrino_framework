@@ -34,7 +34,12 @@
 
 #include <common/inc/crc_details.hpp>
 
-namespace framework::utils
+namespace framework
+{
+
+/// @addtogroup common_utils_module
+/// @{
+namespace utils
 {
 /// @details
 ///
@@ -58,9 +63,6 @@ namespace framework::utils
 /// // CRC-32
 /// std::cout << "0x" << std::hex << crc32::calculate(data.begin(), data.end()) << std::endl;
 /// @endcode
-
-/// @addtogroup crc_implementation
-/// @{
 
 /// @brief CRC implementation.
 ///
@@ -156,8 +158,6 @@ using crc32_jamcrc = crc<32, 0x04C11DB7, 0xFFFFFFFF, true,  true,  0x00000000>; 
 using crc32_xfer   = crc<32, 0x000000AF, 0x00000000, false, false, 0x00000000>; ///< Predefined CRC-32/XFER algorithm.
 // clang-format on
 
-/// @}
-
 #pragma region definitions
 
 template <usize BitsCount,
@@ -213,6 +213,10 @@ XorOut>::update(uint8 byte, value_type value) noexcept
 }
 #pragma endregion
 
-} // namespace framework::utils
+} 
+
+/// @}
+
+}
 
 #endif
