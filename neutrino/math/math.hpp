@@ -50,9 +50,11 @@
 
 #undef FRAMEWORK_MATH_DETAILS
 
+/// @brief 3D Math module
+///
 /// @details
 ///
-/// The @ref math_module module is a math library for graphics systems.@n
+/// The math library for 3D graphics systems.@n
 /// It provides types and functions for different calculations from geometric and linear algebra domains.
 ///
 /// @defgroup math_module Math
