@@ -53,18 +53,18 @@ foreach(GROUP ${TEST_GROUPS})
     include(${GROUP_DIR}/CMakeLists.txt)
 endforeach(GROUP)
 
-add_custom_target(run_all_tests
+add_custom_target(check
     COMMAND ${CMAKE_CTEST_COMMAND} --build-config $<CONFIG> --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\"
     DEPENDS ${TESTS_TARGET}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-add_custom_target(run_all_tests_verbose
+add_custom_target(check_verbose
     COMMAND ${CMAKE_CTEST_COMMAND} --build-config $<CONFIG> --output-on-failure --label-regex \"${INCLUDED_TEST_MODULES}\" --verbose
     DEPENDS ${TESTS_TARGET}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TEST_DIR_NAME})
-set_target_properties(run_all_tests PROPERTIES FOLDER ${TEST_DIR_NAME})
-set_target_properties(run_all_tests_verbose PROPERTIES FOLDER ${TEST_DIR_NAME})
+set_target_properties(check PROPERTIES FOLDER ${TEST_DIR_NAME})
+set_target_properties(check_verbose PROPERTIES FOLDER ${TEST_DIR_NAME})

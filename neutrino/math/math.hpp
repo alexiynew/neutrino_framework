@@ -53,7 +53,6 @@
 /// @brief 3D Math module
 ///
 /// @details
-///
 /// The math library for 3D graphics systems.@n
 /// It provides types and functions for different calculations from geometric and linear algebra domains.
 ///
@@ -73,12 +72,12 @@
 
 /// @}
 
+namespace framework::math
+{
+
 /// @addtogroup math_module
 /// @{
 
-/// @brief Contains all math stuff.
-namespace framework::math
-{
 /// @name Vector types.
 /// @{
 
@@ -139,8 +138,8 @@ using matrix4x3f = matrix<4, 3, float32>; ///< Matrix with 4 columns and 4 rows 
 
 /// @}
 
-} // namespace framework::math
-
 /// @}
+
+} // namespace framework::math
 
 #endif

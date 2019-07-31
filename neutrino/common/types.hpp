@@ -33,14 +33,9 @@
 #include <cstddef>
 #include <cstdint>
 
-// undefine GNU GCC backward compatibility makros.
-#undef major
-#undef minor
-
 namespace framework
 {
-/// @details
-/// Base type definitions.
+/// @brief Base type definitions
 ///
 /// @defgroup common_types_module Common types
 /// @{

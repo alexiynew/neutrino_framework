@@ -24,7 +24,6 @@
 
 /// @mainpage Neutrino framework
 ///
-/// - @ref types_section
 /// - @ref modules_section
 /// - @ref How_to_section
 ///
@@ -32,23 +31,27 @@
 /// 
 /// The lightweight game framework, with no third-party dependencies, made for fun.
 ///
-///  - It's written in C++17.@n Using the latest standards makes code simpler and more efficient.
-///  - It's crossplatform.@n    One code to rule them all. By now Linux and Windows are supported. Mac OS is not supported, because who plays games on mac anyway?
-///  - It's lightweight.@n      No need to install and build a bunch of third-party libraries. 
-///                             All that is needed is implemented inside the framework, this gives a single code base and the consistency of the modules.
-///  - It's made for fun.@n     This is a hobby project. I make it in my free time, when I have a mood. 
-///                             The main idea is to do everything with your own hands. This means that the project is develop slowly. 
-///                             It is poorly tested. It may not support something that you need. It may contain a LOT OF BUGS.
+///  #### It's written in C++17
+///    Using the latest standards makes code simpler and more efficient.
 ///
-/// @section types_section Common types
-/// @ref common_types_module
-/// @copydoc common_types_module
-/// 
+///  #### It's crossplatform
+///    One code to rule them all. By now Linux and Windows are supported. Mac OS is not supported, because who plays games on mac anyway?
+///
+///  #### It's lightweight
+///    No need to install and build a bunch of third-party libraries. 
+///    All that is needed is implemented inside the framework, this gives a single code base and the consistency of the modules.
+///
+///  #### It's made for fun
+///    This is a hobby project. I make it in my free time, when I have a mood. 
+///    The main idea is to do everything with your own hands. This means that the project is develop slowly. 
+///    It is poorly tested. It may not support something that you need. It may contain a **LOT OF BUGS**.
+///
 /// @section modules_section Modules
 ///
-/// | module           | description          |
-/// | ---------------- | -------------------- |
-/// | @ref math_module | @copydoc math_module |
+/// | module                   | description                  |
+/// | ------------------------ | ---------------------------- |
+/// | @ref common_types_module | @copydoc common_types_module |
+/// | @ref math_module         | @copydoc math_module         |
 ///
 /// @section How_to_section How to
 ///

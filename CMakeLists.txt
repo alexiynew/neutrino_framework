@@ -69,6 +69,9 @@ detect_platform_name(PLATFORM_NAME)
 message("platform name: ${PLATFORM_NAME}")
 
 # Set compiller flags
+if(NOT CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
 set_compiller_flags()
 
 # Assemble framework
