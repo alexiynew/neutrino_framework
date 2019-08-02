@@ -41,9 +41,7 @@
 #include <math/inc/constants.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework
-{
-namespace math
+namespace framework::math
 {
 /// @addtogroup math_trigonometric_functions
 /// @{
@@ -474,7 +472,5 @@ inline vector<N, R> atanh(vector<N, T> const& value)
 /// @}
 
 } // namespace math
-
-} // namespace framework
 
 #endif

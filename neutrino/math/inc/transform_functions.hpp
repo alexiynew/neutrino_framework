@@ -42,10 +42,9 @@
 #include <math/inc/matrix_type.hpp>
 #include <math/inc/trigonometric_functions.hpp>
 
-namespace framework
+namespace framework::math
 {
-namespace math
-{
+
 /// @addtogroup math_transform_functions
 /// @{
 
@@ -543,7 +542,5 @@ inline matrix<4, 4, T> look_at(const vector<3, T>& eye, const vector<3, T>& cent
 /// @}
 
 } // namespace math
-
-} // namespace framework
 
 #endif

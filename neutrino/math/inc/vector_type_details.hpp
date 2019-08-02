@@ -39,12 +39,7 @@
 
 #include <common/types.hpp>
 
-namespace framework
-{
-namespace math
-{
-/// @brief Contains vector type implementation details.
-namespace vector_type_details
+namespace framework::math::vector_type_details
 {
 /// @brief Workaround to compare float numbers without warnings.
 /// @{
@@ -195,9 +190,5 @@ struct transform_details<2>
 /// @}
 
 } // namespace vector_type_details
-
-} // namespace math
-
-} // namespace framework
 
 #endif

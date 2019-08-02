@@ -38,12 +38,7 @@
 
 #include <math/inc/vector_type.hpp>
 
-namespace framework
-{
-namespace math
-{
-/// @brief Contains implementation details of some functions.
-namespace common_functions_details
+namespace framework::math::common_functions_details
 {
 /// @brief Realization of abs function.
 /// @{
@@ -179,9 +174,5 @@ inline vector<2, R> frexp(const vector<2, T>& value, vector<2, int32>* exp)
 /// @}
 
 } // namespace common_functions_details
-
-} // namespace math
-
-} // namespace framework
 
 #endif

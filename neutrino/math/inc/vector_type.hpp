@@ -40,10 +40,10 @@
 
 #include <math/inc/vector_type_details.hpp>
 
-namespace framework
+namespace framework::math
 {
-namespace math
-{
+/// Algebraic vector. It can have 2, 3 and 4 components. A wide range of vector operations is also defined.
+///
 /// @addtogroup math_vector_implementation
 /// @{
 
@@ -65,7 +65,7 @@ struct vector<4, T> final
 
     /// @brief Default constructor.
     ///
-    /// Initializes vector as {0, 0, 0, 1}
+    /// Initializes vector as {0, 0, 0, 1}@n
     /// For bool vector initializes as {false, false, false, false}
     constexpr vector() noexcept;
 
@@ -1200,7 +1200,5 @@ inline S& operator<<(S& ostream, const vector<N, T>& vector)
 /// @}
 
 } // namespace math
-
-} // namespace framework
 
 #endif
