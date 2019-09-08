@@ -23,18 +23,35 @@
 # SOFTWARE.
 # =============================================================================
 
-set_sources(PRIVATE_SOURCES
-    image/image_info.hpp
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-    image/bmp.hpp
-    image/bmp.cpp
-    image/tga.hpp
-    image/tga.cpp
-    image/png.hpp
-    image/png.cpp
-)
+project(image_example LANGUAGES CXX VERSION 1.0.0)
 
-target_sources(${PROJECT_NAME}
-    PRIVATE
-        ${PRIVATE_SOURCES}
-)
+# Misk settings
+set(CMAKE_VERBOSE_MAKEFILE OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(SOURCES main.cpp)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+
+link_directories(../../output/lib)
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
+
+target_include_directories(${PROJECT_NAME} PRIVATE ../../output/include)
+
+target_link_libraries(${PROJECT_NAME} neutrino_static X11 GL)
+
+file(GLOB BMP_GOOD "bmp/good/*.bmp")
+file(COPY ${BMP_GOOD} DESTINATION ${CMAKE_BINARY_DIR}/bmp/good)
+
+file(GLOB BMP_BAD "bmp/bad/*.bmp")
+file(COPY ${BMP_BAD} DESTINATION ${CMAKE_BINARY_DIR}/bmp/bad)
+
+file(GLOB BMP_QUESTIONABLE "bmp/questionable/*.bmp")
+file(COPY ${BMP_QUESTIONABLE} DESTINATION ${CMAKE_BINARY_DIR}/bmp/questionable)
+
+file(GLOB PNG "png/*.png")
+file(COPY ${PNG} DESTINATION ${CMAKE_BINARY_DIR}/png)

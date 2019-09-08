@@ -78,6 +78,7 @@ void shader_base::set_source(std::istream& src_stream)
 
 void shader_base::compile()
 {
+    // TODO(alex): check for shader compiller support (glGet with argument GL_SHADER_COMPILER)
     gl::glCompileShader(m_shader_id);
 }
 

@@ -33,14 +33,15 @@
 
 #include <common/crc.hpp>
 #include <common/types.hpp>
-
-#include <graphics/details/image/png.hpp>
+#include <graphics/src/image/png.hpp>
 
 namespace
 {
 using framework::uint32;
 using framework::uint8;
 using crc32png = framework::utils::crc<32, 0xEDB88320, 0xFFFFFFFF, true, true, 0xFFFFFFFF>;
+
+constexpr int signature_length = 8;
 
 std::vector<uint8> read_bytes(std::ifstream& in, uint32 count)
 {
@@ -188,7 +189,11 @@ file_header file_header::read(std::ifstream& in)
 
 bool check_signature(const std::vector<uint8>& data)
 {
-    constexpr std::array<uint8, 8> signature = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
+    constexpr std::array<uint8, signature_length> signature = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
+
+    if (data.size() < signature.size()) {
+        return false;
+    }
 
     for (uint32 i = 0; i < signature.size(); ++i) {
         if (data[i] != signature[i]) {
@@ -241,7 +246,7 @@ load_result_t load(const std::string& filename)
         return load_result_t();
     }
 
-    auto signature = read_bytes(file, 8);
+    auto signature = read_bytes(file, signature_length);
     if (!check_signature(signature)) {
         return load_result_t();
     }
@@ -280,7 +285,7 @@ load_result_t load(const std::string& filename)
 bool is_png(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
-    return check_signature(read_bytes(file, 8));
+    return check_signature(read_bytes(file, signature_length));
 }
 
 } // namespace framework::graphics::details::image::png

@@ -1,5 +1,5 @@
 /// @file
-/// @brief Tga image implementation.
+/// @brief Png image implementation.
 /// @author Fedorov Alexey
 /// @date 04.04.2019
 
@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_DETAILS_IMAGE_TGA_HPP
-#define FRAMEWORK_GRAPHICS_DETAILS_IMAGE_TGA_HPP
+#ifndef FRAMEWORK_GRAPHICS_DETAILS_IMAGE_PNG_HPP
+#define FRAMEWORK_GRAPHICS_DETAILS_IMAGE_PNG_HPP
 
 #include <optional>
 #include <string>
@@ -37,18 +37,17 @@
 
 #include <common/types.hpp>
 #include <graphics/color_type.hpp>
+#include <graphics/src/image/image_info.hpp>
 
-#include <graphics/details/image/image_info.hpp>
-
-namespace framework::graphics::details::image::tga
+namespace framework::graphics::details::image::png
 {
 using image_data_t  = std::tuple<image_info, std::vector<color_t>>;
 using load_result_t = std::optional<image_data_t>;
 
 load_result_t load(const std::string& filename);
 
-bool is_tga(const std::string& filename);
+bool is_png(const std::string& filename);
 
-} // namespace framework::graphics::details::image::tga
+} // namespace framework::graphics::details::image::png
 
 #endif

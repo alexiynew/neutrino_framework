@@ -37,6 +37,14 @@ set_sources(PRIVATE_SOURCES
     src/mesh.cpp
     src/shader.cpp
     src/texture.cpp
+
+    src/image/image_info.hpp
+    src/image/bmp.hpp
+    src/image/bmp.cpp
+    src/image/tga.hpp
+    src/image/tga.cpp
+    src/image/png.hpp
+    src/image/png.cpp
 )
 
 target_sources(${PROJECT_NAME}
@@ -47,5 +55,3 @@ target_sources(${PROJECT_NAME}
 )
 
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
-
-include(${MODULE_DIR}/details/CMakeLists.txt)

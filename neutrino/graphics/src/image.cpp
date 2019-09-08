@@ -28,11 +28,10 @@
 // =============================================================================
 
 #include <graphics/image.hpp>
-
-#include <graphics/details/image/bmp.hpp>
-#include <graphics/details/image/image_info.hpp>
-#include <graphics/details/image/png.hpp>
-#include <graphics/details/image/tga.hpp>
+#include <graphics/src/image/bmp.hpp>
+#include <graphics/src/image/image_info.hpp>
+#include <graphics/src/image/png.hpp>
+#include <graphics/src/image/tga.hpp>
 
 namespace framework::graphics
 {

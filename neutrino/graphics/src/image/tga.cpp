@@ -1,7 +1,7 @@
 /// @file
-/// @brief Bmp image implementation.
+/// @brief Tga image implementation.
 /// @author Fedorov Alexey
-/// @date 04.04.2019
+/// @date 05.04.2019
 
 // =============================================================================
 // MIT License
@@ -27,28 +27,26 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_DETAILS_IMAGE_BMP_HPP
-#define FRAMEWORK_GRAPHICS_DETAILS_IMAGE_BMP_HPP
-
-#include <optional>
-#include <string>
-#include <tuple>
 #include <vector>
 
 #include <common/types.hpp>
-#include <graphics/color_type.hpp>
+#include <graphics/src/image/tga.hpp>
 
-#include <graphics/details/image/image_info.hpp>
-
-namespace framework::graphics::details::image::bmp
+namespace framework::graphics::details::image::tga
 {
-using image_data_t  = std::tuple<image_info, std::vector<color_t>>;
-using load_result_t = std::optional<image_data_t>;
+load_result_t load(const std::string&)
+{
+    return load_result_t();
+}
 
-load_result_t load(const std::string& filename);
+bool save(const std::string&)
+{
+    return false;
+}
 
-bool is_bmp(const std::string& filename);
+bool is_tga(const std::string&)
+{
+    return false;
+}
 
-} // namespace framework::graphics::details::image::bmp
-
-#endif
+} // namespace framework::graphics::details::image::tga
