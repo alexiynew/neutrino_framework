@@ -52,7 +52,7 @@ bool image::load(const std::string& filename, file_type type)
             case file_type::png: return details::image::png::load(f);
             default: break;
         }
-        return details::image::bmp::load_result_t();
+        return details::image::load_result_t();
     };
 
     if (auto result = load_function(filename); result.has_value()) {

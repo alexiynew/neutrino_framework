@@ -337,15 +337,16 @@ int main()
     framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
 
     // load all images
-    std::vector<image> images = load_images(mode::bmp);
+    std::vector<image> images = load_images(mode::png);
 
     if (images.empty()) {
         return 0;
     }
 
-    window::set_application_name("BMP Test");
+    window::set_application_name("Image example");
 
-    window main_window({640, 480}, "BMP test");
+    window main_window({640, 480}, "Image example");
+    main_window.make_current();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

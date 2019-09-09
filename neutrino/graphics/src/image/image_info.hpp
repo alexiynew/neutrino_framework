@@ -30,7 +30,12 @@
 #ifndef FRAMEWORK_GRAPHICS_DETAILS_IMAGE_IMAGE_INFO_HPP
 #define FRAMEWORK_GRAPHICS_DETAILS_IMAGE_IMAGE_INFO_HPP
 
+#include <optional>
+#include <tuple>
+#include <vector>
+
 #include <common/types.hpp>
+#include <graphics/color_type.hpp>
 
 namespace framework::graphics::details::image
 {
@@ -41,6 +46,9 @@ struct image_info
 
     bool bottom_up = false;
 };
+
+using image_data_t  = std::tuple<image_info, std::vector<color_t>>;
+using load_result_t = std::optional<image_data_t>;
 
 } // namespace framework::graphics::details::image
 
