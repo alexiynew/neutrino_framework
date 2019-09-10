@@ -95,20 +95,38 @@ public:
     template <typename Iterator>
     static value_type calculate(Iterator begin, const Iterator end);
 
+    /// @brief Resets crc value to the Init value.
+    void reset() noexcept;
+
     /// @brief Updates crc value.
     ///
     /// @param byte Byte to update crc.
-    /// @param crc Old crc value.
+    void update(uint8 byte) noexcept;
+
+    /// @brief Updates crc value.
     ///
-    /// @return New crc value.
+    /// @param value Value to update crc.
+    template <typename T>
+    void update(T value) noexcept;
+
+    /// @brief Updates crc value with range of values.
     ///
-    /// @note This functions uses only the Polynome parameter. All other parameters does not counted in value computation.
-    static value_type update(uint8 byte, value_type crc) noexcept;
+    /// @param begin Iterator that points to the begin of diapason.
+    /// @param end Iterator that points to the end of diapason.
+    template <typename Iterator>
+    void update(Iterator begin, const Iterator end);
+
+    /// @brief Returns crc value.
+    ///
+    /// @return The current crc value.
+    value_type current_value() const noexcept;
 
 private:
     constexpr static usize crc_table_size = 256;
     constexpr static crc_details::crc_table_t<BitsCount, crc_table_size>
     crc_table = crc_details::generate_table<BitsCount, Polynome, crc_table_size>();
+
+    value_type m_current_value = init_value;
 };
 
 // clang-format off
@@ -175,23 +193,11 @@ ReflectIn,
 ReflectOut,
 XorOut>::calculate(Iterator begin, const Iterator end)
 {
-    constexpr usize input_value_size = sizeof(typename std::iterator_traits<Iterator>::value_type);
+    crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut> calc;
 
-    value_type value = Init;
-
-    for (; begin != end; ++begin) {
-        for (usize i = 0; i < input_value_size; ++i) {
-            const uint8 byte = static_cast<uint8>(((*begin) >> (i * 8)) & 0xFF);
-
-            value = update(ReflectIn ? crc_details::reflect<8>(byte) : byte, value);
-        }
-    }
-
-    if (ReflectOut) {
-        value = crc_details::reflect<BitsCount>(value);
-    }
-
-    return (value ^ XorOut);
+    calc.reset();
+    calc.update(std::forward<Iterator>(begin), std::forward<const Iterator>(end));
+    return calc.current_value();
 }
 
 template <usize BitsCount,
@@ -200,17 +206,79 @@ template <usize BitsCount,
           bool ReflectIn,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
-inline typename crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type crc<
-BitsCount,
-Polynome,
-Init,
-ReflectIn,
-ReflectOut,
-XorOut>::update(uint8 byte, value_type value) noexcept
+inline void crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::reset() noexcept
 {
-    const uint8 index = static_cast<uint8>(byte ^ (value >> (BitsCount - 8)));
-    return static_cast<value_type>(crc_table[index] ^ (value << 8));
+    m_current_value = init_value;
 }
+
+template <usize BitsCount,
+          crc_details::value_t<BitsCount> Polynome,
+          crc_details::value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut,
+          crc_details::value_t<BitsCount> XorOut>
+inline void crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(uint8 byte) noexcept
+{
+    byte = reflect_in ? crc_details::reflect<8>(byte) : byte;
+
+    const uint8 index = static_cast<uint8>(byte ^ (m_current_value >> (BitsCount - 8)));
+    m_current_value   = static_cast<value_type>(crc_table[index] ^ (m_current_value << 8));
+}
+
+template <usize BitsCount,
+          crc_details::value_t<BitsCount> Polynome,
+          crc_details::value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut,
+          crc_details::value_t<BitsCount> XorOut>
+template <typename T>
+inline void crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(T value) noexcept
+{
+    constexpr usize input_value_size = sizeof(T);
+
+    for (usize i = 0; i < input_value_size; ++i) {
+        const uint8 byte = static_cast<uint8>((value >> (i * 8)) & 0xFF);
+        update(byte);
+    }
+}
+
+template <usize BitsCount,
+          crc_details::value_t<BitsCount> Polynome,
+          crc_details::value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut,
+          crc_details::value_t<BitsCount> XorOut>
+template <typename Iterator>
+inline void crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(Iterator begin, const Iterator end)
+{
+    for (; begin != end; ++begin) {
+        update(*begin);
+    }
+}
+
+template <usize BitsCount,
+          crc_details::value_t<BitsCount> Polynome,
+          crc_details::value_t<BitsCount> Init,
+          bool ReflectIn,
+          bool ReflectOut,
+          crc_details::value_t<BitsCount> XorOut>
+inline typename crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type crc<BitsCount,
+                                                                                              Polynome,
+                                                                                              Init,
+                                                                                              ReflectIn,
+                                                                                              ReflectOut,
+                                                                                              XorOut>::current_value()
+const noexcept
+{
+    value_type value = m_current_value;
+
+    if (reflect_out) {
+        value = crc_details::reflect<BitsCount>(value);
+    }
+
+    return (value ^ xorout_value);
+}
+
 #pragma endregion
 
 } // namespace framework::utils
