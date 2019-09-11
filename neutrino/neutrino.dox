@@ -51,6 +51,7 @@
 /// | module                   | description                  |
 /// | ------------------------ | ---------------------------- |
 /// | @ref common_types_module | @copydoc common_types_module |
+/// | @ref common_utils_module | @copydoc common_utils_module |
 /// | @ref math_module         | @copydoc math_module         |
 ///
 /// @section How_to_section How to

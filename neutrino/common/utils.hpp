@@ -35,15 +35,25 @@
 
 #include <common/inc/utils_details.hpp>
 
-namespace framework
-{
+/// @brief Different helper functions
+///
 /// @details
-/// Different helper functions.
+/// Different helper functions
 ///
 /// @defgroup common_utils_module Utility functions
 /// @{
-namespace utils
+	
+/// @defgroup common_version_implementation Version
+/// @defgroup common_crc_implementation Crc
+
+/// @}
+
+namespace framework::utils
 {
+	
+/// @addtogroup common_utils_module
+/// @{
+	
 /// @brief Determines if it is the debug build.
 ///
 /// @return `true` in debug mode, `false` otherwise.
@@ -115,8 +125,6 @@ std::string format(const std::string& str, Args&&... args)
     return format_details::make_string_impl(str, values, sizeof...(args));
 }
 */
-
-} // namespace utils
 
 /// @}
 

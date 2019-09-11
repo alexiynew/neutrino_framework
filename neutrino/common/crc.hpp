@@ -34,13 +34,13 @@
 
 #include <common/inc/crc_details.hpp>
 
-namespace framework
+namespace framework::utils
 {
-
-/// @addtogroup common_utils_module
+	
+/// @addtogroup common_crc_implementation
 /// @{
-namespace utils
-{
+	
+	
 /// @details
 ///
 /// Cyclic redundancy check implementation
@@ -212,8 +212,6 @@ XorOut>::update(uint8 byte, value_type value) noexcept
     return static_cast<value_type>(crc_table[index] ^ (value << 8));
 }
 #pragma endregion
-
-} 
 
 /// @}
 

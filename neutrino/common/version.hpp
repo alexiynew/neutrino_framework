@@ -34,14 +34,12 @@
 
 #include <common/types.hpp>
 
-namespace framework
+namespace framework::utils
 {
-
-/// @addtogroup common_utils_module
+	
+/// @addtogroup common_version_implementation
 /// @{
-namespace utils
-{
-
+	
 /// @brief Version implementation.
 struct version
 {
@@ -155,8 +153,6 @@ inline constexpr bool operator<=(const version& lhs, const version& rhs) noexcep
 inline constexpr bool operator>=(const version& lhs, const version& rhs) noexcept
 {
     return lhs > rhs || lhs == rhs;
-}
-
 }
 
 /// @}
