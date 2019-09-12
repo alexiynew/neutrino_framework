@@ -57,6 +57,9 @@
 /// | @ref math_module         | @copybrief math_module         |
 /// | @ref log_module          | @copybrief log_module          |
 /// | @ref opengl_module       | @copybrief opengl_module       |
+/// | @ref graphics_module     | @copybrief graphics_module     |
+/// | @ref system_module       | @copybrief system_module       |
+/// | @ref unit_test_module    | @copybrief unit_test_module    |
 ///
 ///
 /// @section how_to_build_section How to build
