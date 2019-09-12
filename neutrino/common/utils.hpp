@@ -35,15 +35,12 @@
 
 #include <common/inc/utils_details.hpp>
 
-/// @brief Different helper functions
+/// @brief Different helper functions and classes.
 ///
 /// @details
-/// Different helper functions
+/// The @ref common_utils_module module consist of functions and classes not related to any particular module. Or used all over the framework.
 ///
-/// TODO: More detailed description
-/// TODO: Code examples
-///
-/// @defgroup common_utils_module Utility functions
+/// @defgroup common_utils_module Utility
 /// @{
 /// @defgroup common_version_implementation Version
 /// @defgroup common_crc_implementation Crc
