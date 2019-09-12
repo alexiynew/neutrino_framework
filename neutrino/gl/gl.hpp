@@ -32,6 +32,8 @@
 
 #include <gl/inc/gl_wrapper.hpp>
 
+/// @brief OpenGL API wrapper.
+///
 /// @details
 ///
 /// The @ref opengl_module module gives access to OpenGL functionality.
@@ -64,11 +66,10 @@
 /// }
 ///
 /// @endcode
-
+///
 /// @defgroup opengl_module OpenGL API
-/// @{
 
-/// @brief Contails OpenGL functions.
+
 namespace framework::gl
 {
 /// @addtogroup opengl_module
@@ -87,7 +88,5 @@ void init();
 /// @}
 
 } // namespace framework::gl
-
-/// @}
 
 #endif

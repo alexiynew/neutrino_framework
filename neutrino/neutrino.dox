@@ -56,6 +56,7 @@
 /// | @ref common_utils_module | @copybrief common_utils_module |
 /// | @ref math_module         | @copybrief math_module         |
 /// | @ref log_module          | @copybrief log_module          |
+/// | @ref opengl_module       | @copybrief opengl_module       |
 ///
 ///
 /// @section how_to_build_section How to build
