@@ -56,9 +56,11 @@
 /// The math library for 3D graphics systems.@n
 /// It provides types and functions for different calculations from geometric and linear algebra domains.
 ///
+/// TODO: More detailed description
+/// TODO: Code examples
+///
 /// @defgroup math_module Math
 /// @{
-
 /// @defgroup math_predefined_constants Predefined constants
 /// @defgroup math_vector_implementation Vector type
 /// @defgroup math_matrix_implementation Matrix type
@@ -69,7 +71,6 @@
 /// @defgroup math_relational_functions Relational functions
 /// @defgroup math_transform_functions Transform functions
 /// @defgroup math_trigonometric_functions Trigonometric functions
-
 /// @}
 
 namespace framework::math

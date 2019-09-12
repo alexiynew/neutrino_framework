@@ -25,7 +25,9 @@
 /// @mainpage Neutrino framework
 ///
 /// - @ref modules_section
-/// - @ref How_to_section
+/// - @ref how_to_build_section
+/// - @ref dependencies_section
+/// - @ref code_example_section
 ///
 /// @section description Description
 /// 
@@ -48,12 +50,21 @@
 ///
 /// @section modules_section Modules
 ///
-/// | module                   | description                  |
-/// | ------------------------ | ---------------------------- |
-/// | @ref common_types_module | @copydoc common_types_module |
-/// | @ref common_utils_module | @copydoc common_utils_module |
-/// | @ref math_module         | @copydoc math_module         |
+/// | module                   | description                    |
+/// | ------------------------ | ------------------------------ |
+/// | @ref common_types_module | @copybrief common_types_module |
+/// | @ref common_utils_module | @copybrief common_utils_module |
+/// | @ref math_module         | @copybrief math_module         |
+/// | @ref log_module          | @copybrief log_module          |
 ///
-/// @section How_to_section How to
+///
+/// @section how_to_build_section How to build
+///    TODO
+///
+/// @section dependencies_section Dependencies
+///    TODO
+///
+/// @section code_example_section Code example
+///    TODO
 ///
 

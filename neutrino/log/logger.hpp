@@ -35,10 +35,16 @@
 
 namespace framework::log
 {
-/// @addtogroup log_logger
+/// @addtogroup log_module
+/// @{
+	
+/// @name Logger implementation
 /// @{
 
 /// @brief Severity level of log message.
+///
+/// @detail
+/// TODO: How to extend logger.
 enum class severity_level
 {
     debug,   ///< Low-level information for developers.
@@ -104,6 +110,8 @@ inline T& operator<<(T& ostream, severity_level level)
 
     return ostream;
 }
+/// @}
+
 /// @}
 
 } // namespace framework::log

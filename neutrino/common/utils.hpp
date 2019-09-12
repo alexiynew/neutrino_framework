@@ -40,12 +40,13 @@
 /// @details
 /// Different helper functions
 ///
+/// TODO: More detailed description
+/// TODO: Code examples
+///
 /// @defgroup common_utils_module Utility functions
 /// @{
-	
 /// @defgroup common_version_implementation Version
 /// @defgroup common_crc_implementation Crc
-
 /// @}
 
 namespace framework::utils
