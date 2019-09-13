@@ -69,6 +69,9 @@ detect_platform_name(PLATFORM_NAME)
 message("platform name: ${PLATFORM_NAME}")
 
 # Set compiller flags
+if(NOT CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
 set_compiller_flags()
 
 # Assemble framework
@@ -80,10 +83,6 @@ if(BUILD_TESTS)
 endif()
 
 # Generate documentation
-configure_file(${DOCS_SOURCE_DIR}/Doxyfile.in ${DOCS_BINARY_DIR}/Doxyfile @ONLY)
-configure_file(${DOCS_SOURCE_DIR}/DoxygenLayout.xml ${DOCS_BINARY_DIR}/DoxygenLayout.xml COPYONLY)
-
-add_custom_target(documentation
-    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_OUTPUT_DIR}
-    COMMAND doxygen ${DOCS_BINARY_DIR}/Doxyfile
-)
+if(BUILD_DOCS)
+    include(${DOCS_SOURCE_DIR}/CMakeLists.txt)
+endif()

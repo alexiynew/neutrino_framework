@@ -36,8 +36,8 @@
 
 #include <common/types.hpp>
 
-namespace framework
-{
+/// @brief Contains classes related to unit tests.
+///
 /// @details
 ///
 /// You should use the `unit_test::suite` as base class for your tests.
@@ -84,8 +84,7 @@ namespace framework
 /// @defgroup unit_test_module Unit test
 /// @{
 
-/// @brief Contains classes related to unit tests.
-namespace unit_test
+namespace framework::unit_test
 {
 /// @addtogroup unit_test_module
 /// @{
@@ -195,10 +194,6 @@ int32 run_tests(Arguments&&... tests)
 /// @param EXPRESSION Expression to check as test condition.
 /// @param MESSAGE Error description.
 #define TEST_ASSERT(EXPRESSION, MESSAGE) !(EXPRESSION) ? TEST_FAIL(MESSAGE) : static_cast<void>(0)
-
-/// @}
-
-} // namespace unit_test
 
 /// @}
 

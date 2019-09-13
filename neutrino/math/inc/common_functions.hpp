@@ -42,10 +42,12 @@
 // SOFTWARE.
 // =============================================================================
 
-namespace framework
+namespace framework::math
 {
-namespace math
-{
+/// @details
+///
+/// dkdkdkdkdkdk
+///
 /// @addtogroup math_common_functions
 /// @{
 
@@ -761,7 +763,5 @@ inline vector<N, R> ldexp(const vector<N, T>& value, const vector<N, int32>& exp
 /// @}
 
 } // namespace math
-
-} // namespace framework
 
 #endif

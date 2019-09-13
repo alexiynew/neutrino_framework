@@ -50,14 +50,17 @@
 
 #undef FRAMEWORK_MATH_DETAILS
 
-/// @details
+/// @brief 3D Math module
 ///
-/// The @ref math_module module is a math library for graphics systems.@n
+/// @details
+/// The math library for 3D graphics systems.@n
 /// It provides types and functions for different calculations from geometric and linear algebra domains.
+///
+/// TODO: More detailed description
+/// TODO: Code examples
 ///
 /// @defgroup math_module Math
 /// @{
-
 /// @defgroup math_predefined_constants Predefined constants
 /// @defgroup math_vector_implementation Vector type
 /// @defgroup math_matrix_implementation Matrix type
@@ -68,15 +71,14 @@
 /// @defgroup math_relational_functions Relational functions
 /// @defgroup math_transform_functions Transform functions
 /// @defgroup math_trigonometric_functions Trigonometric functions
-
 /// @}
+
+namespace framework::math
+{
 
 /// @addtogroup math_module
 /// @{
 
-/// @brief Contains all math stuff.
-namespace framework::math
-{
 /// @name Vector types.
 /// @{
 
@@ -137,8 +139,8 @@ using matrix4x3f = matrix<4, 3, float32>; ///< Matrix with 4 columns and 4 rows 
 
 /// @}
 
-} // namespace framework::math
-
 /// @}
+
+} // namespace framework::math
 
 #endif

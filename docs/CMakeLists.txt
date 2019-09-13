@@ -23,35 +23,22 @@
 # SOFTWARE.
 # =============================================================================
 
-# Detect platform and set platform name
-macro(detect_platform_name PLATFORM_NAME)
-    if(${UNIX})
-        if(${APPLE})
-            if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-                set(PLATFORM_NAME "osx")
-            endif()
-        else()
-            set(PLATFORM_NAME "linux")
-        endif()
-    elseif(${WIN32})
-        set(PLATFORM_NAME "windows")
-    endif()
-endmacro(detect_platform_name)
+find_package(Doxygen REQUIRED)
 
-# Make absolute path to source files
-macro(set_sources SOURCE_OUTPUT)
-    unset(${SOURCE_OUTPUT})
-    unset(${SOURCE_OUTPUT} CACHE)
-    foreach(ARG ${ARGN})
-        list(APPEND ${SOURCE_OUTPUT} "${CMAKE_CURRENT_LIST_DIR}/${ARG}")
-    endforeach(ARG)
-endmacro(set_sources)
+set(DOCS_INPUT_HEADERS $<TARGET_PROPERTY:${PROJECT_NAME},INTERFACE_SOURCES>)
 
-# Make install target for files
-macro(make_install_files_target PREFIX)
-    foreach(ARG ${ARGN})
-        get_filename_component(DIR ${ARG} DIRECTORY)
-        string(REGEX REPLACE "^${CMAKE_CURRENT_LIST_DIR}" "" DIR ${DIR})
-        install(FILES ${ARG} DESTINATION "${PREFIX}/${DIR}")
-    endforeach(ARG)
-endmacro(make_install_files_target)
+set(DOCS_INPUT_DOX ${FRAMEWORK_SOURCE_DIR}/neutrino.dox)
+
+configure_file(${DOCS_SOURCE_DIR}/Doxyfile.in ${DOCS_BINARY_DIR}/Doxyfile @ONLY)
+configure_file(${DOCS_SOURCE_DIR}/DoxygenLayout.xml ${DOCS_BINARY_DIR}/DoxygenLayout.xml COPYONLY)
+configure_file(${DOCS_SOURCE_DIR}/header.html ${DOCS_BINARY_DIR}/header.html COPYONLY)
+configure_file(${DOCS_SOURCE_DIR}/footer.html ${DOCS_BINARY_DIR}/footer.html COPYONLY)
+configure_file(${DOCS_SOURCE_DIR}/neutrino.css ${DOCS_BINARY_DIR}/neutrino.css COPYONLY)
+
+add_custom_target(docs ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_OUTPUT_DIR}
+    COMMAND ${DOXYGEN_EXECUTABLE} ${DOCS_BINARY_DIR}/Doxyfile
+    WORKING_DIRECTORY ${DOCS_BINARY_DIR}
+    DEPENDS ${DOCS_INPUT_HEADERS} ${DOCS_INPUT_DOX}
+    COMMENT "Generating documentation"
+)

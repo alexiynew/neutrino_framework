@@ -42,12 +42,7 @@
 #include <math/inc/matrix_type.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework
-{
-namespace math
-{
-/// @brief Contains implementation details of some functions.
-namespace relational_functions_details
+namespace framework::math::relational_functions_details
 {
 /// @brief Realization of almost_equal function.
 /// @{
@@ -123,9 +118,5 @@ inline bool all_implementation(const vector<2, bool>& v)
 /// @}
 
 } // namespace relational_functions_details
-
-} // namespace math
-
-} // namespace framework
 
 #endif

@@ -35,23 +35,23 @@
 
 #include <common/inc/utils_details.hpp>
 
-namespace framework
-{
-/// @details
-/// Different helper functions.
+/// @brief Different helper functions and classes.
 ///
-/// @defgroup common_utils_module Common utils
+/// @details
+/// The @ref common_utils_module module consist of functions and classes not related to any particular module. Or used all over the framework.
+///
+/// @defgroup common_utils_module Utility
 /// @{
+/// @defgroup common_version_implementation Version
+/// @defgroup common_crc_implementation Crc
+/// @}
 
-namespace utils
+namespace framework::utils
 {
+	
 /// @addtogroup common_utils_module
 /// @{
-
-/// @defgroup crc_implementation Crc
-
-/// @defgroup version_abstraction Version
-
+	
 /// @brief Determines if it is the debug build.
 ///
 /// @return `true` in debug mode, `false` otherwise.
@@ -123,10 +123,6 @@ std::string format(const std::string& str, Args&&... args)
     return format_details::make_string_impl(str, values, sizeof...(args));
 }
 */
-
-/// @}
-
-} // namespace utils
 
 /// @}
 

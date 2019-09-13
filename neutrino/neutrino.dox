@@ -24,10 +24,69 @@
 
 /// @mainpage Neutrino framework
 ///
-/// @section description Description
+/// - @ref modules_section
+/// - @ref how_to_build_section
+/// - @ref dependencies_section
+/// - @ref code_example_section
 ///
+/// @section description Description
+/// 
 /// The lightweight game framework, with no third-party dependencies, made for fun.
 ///
-/// @namespace framework
-/// @brief Main neutrino framework namespace.
+///  ### It's written in C++17
+///    Using the latest standards makes code simpler and more efficient.
 ///
+///  ### It's crossplatform
+///    One code to rule them all. By now Linux and Windows are supported. Mac OS is not supported, because who plays games on mac anyway?
+///
+///  ### It's lightweight
+///    No need to install and build a bunch of third-party libraries. 
+///    All that is needed is implemented inside the framework, this gives a single code base and the consistency of the modules.
+///
+///  ### It's made for fun
+///    This is a hobby project. I make it in my free time. 
+///    The main idea is to do everything with my own hands, couse it is interesting.@n
+///    On the other hand. This means that the project is developing slowly. 
+///    It is poorly tested. It may not support something that you need. It may contain a **LOT OF BUGS**.@n
+///    But it works on my computer.
+///
+/// @section modules_section Modules
+///
+/// | module                   | description                    |
+/// | ------------------------ | ------------------------------ |
+/// | @ref common_types_module | @copybrief common_types_module |
+/// | @ref common_utils_module | @copybrief common_utils_module |
+/// | @ref math_module         | @copybrief math_module         |
+/// | @ref log_module          | @copybrief log_module          |
+/// | @ref opengl_module       | @copybrief opengl_module       |
+/// | @ref graphics_module     | @copybrief graphics_module     |
+/// | @ref system_module       | @copybrief system_module       |
+/// | @ref unit_test_module    | @copybrief unit_test_module    |
+///
+///
+/// @section how_to_build_section How to build
+/// 
+/// ### Linux
+/// cmake v3.10, cpp compiller with cpp 17 support.
+///
+/// ``` bash
+/// mkdir build
+/// cd build
+/// cmake ../
+/// make 
+/// make install
+/// ```
+///
+/// ### windows
+/// cmake v3.10, visual studio 17 or compiller with cpp 17 support.
+///
+/// On Windows you may generate the VisualStudio project.
+///
+///
+/// @section dependencies_section Dependencies
+/// On Linux it's may be required to install libgl-dev and X11-dev packages.
+///
+/// @section code_example_section Code example
+///    TODO
+///
+

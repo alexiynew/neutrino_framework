@@ -39,9 +39,7 @@
 #include <math/inc/matrix_functions_details.hpp>
 #include <math/inc/matrix_type.hpp>
 
-namespace framework
-{
-namespace math
+namespace framework::math
 {
 /// @addtogroup math_matrix_functions
 /// @{
@@ -167,8 +165,6 @@ inline matrix<C, R, T> inverse_transpose(const matrix<C, R, T>& value)
 /// @}
 
 /// @}
-
-} // namespace math
 
 } // namespace framework
 

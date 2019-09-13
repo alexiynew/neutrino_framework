@@ -36,12 +36,9 @@
 
 #include <math/inc/vector_type.hpp>
 
-namespace framework
+namespace framework::math::geometric_functions_details
 {
-namespace math
-{
-namespace geometric_functions_details
-{
+
 /// @brief Realization of dot function.
 /// @{
 template <typename T>
@@ -64,9 +61,5 @@ inline constexpr T dot(const vector<2, T>& a, const vector<2, T>& b)
 /// @}
 
 } // namespace geometric_functions_details
-
-} // namespace math
-
-} // namespace framework
 
 #endif

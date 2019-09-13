@@ -34,6 +34,7 @@
 
 namespace framework::gl::glx
 {
+
 /// Initialize GLX functions
 void init_glx();
 

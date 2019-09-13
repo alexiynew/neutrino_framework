@@ -37,7 +37,7 @@
 
 namespace framework::log
 {
-/// @addtogroup log_logger
+/// @addtogroup log_module
 /// @{
 
 /// @brief Prints all messages to provided stream.

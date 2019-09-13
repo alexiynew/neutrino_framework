@@ -36,10 +36,10 @@
 
 namespace framework::utils
 {
-/// @details Version class.
-/// @addtogroup version_abstraction
+	
+/// @addtogroup common_version_implementation
 /// @{
-
+	
 /// @brief Version implementation.
 struct version
 {

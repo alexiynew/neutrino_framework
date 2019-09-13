@@ -37,6 +37,8 @@
 
 #include <log/inc/log_ostream.hpp>
 
+/// @brief Contains classes related to logging.
+///
 /// @details
 ///
 /// The @ref log_module module provides a simple logging utility that you can use to output messages.@n
@@ -76,16 +78,13 @@
 /// @endcode
 ///
 /// @defgroup log_module Logging
-/// @{
-
-/// @defgroup log_interface_functions Interface functions
-
-/// @defgroup log_logger Logger implementation
-
-/// @brief Contains classes related to logging.
+	
 namespace framework::log
 {
-/// @addtogroup log_interface_functions
+/// @addtogroup log_module
+/// @{
+
+/// @name Interface functions
 /// @{
 
 /// @brief Logs messages for debugging purposes.
@@ -149,8 +148,8 @@ logger_base* logger();
 
 /// @}
 
-} // namespace framework::log
-
 /// @}
+
+} // namespace framework::log
 
 #endif

@@ -41,9 +41,7 @@
 #include <math/inc/matrix_type_details.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework
-{
-namespace math
+namespace framework::math
 {
 /// @addtogroup math_matrix_implementation
 /// @{
@@ -3659,7 +3657,5 @@ inline constexpr bool operator!=(const matrix<2, R, T>& lhs, const matrix<2, R, 
 /// @}
 
 } // namespace math
-
-} // namespace framework
 
 #endif

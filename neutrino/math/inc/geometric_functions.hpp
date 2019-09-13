@@ -38,9 +38,7 @@
 #include <math/inc/geometric_functions_details.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework
-{
-namespace math
+namespace framework::math
 {
 ///
 /// @addtogroup math_geometric_functions
@@ -205,7 +203,5 @@ inline vector<N, T> refract(const vector<N, T>& incident, const vector<N, T>& no
 /// @}
 
 } // namespace math
-
-} // namespace framework
 
 #endif

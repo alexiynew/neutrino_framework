@@ -38,12 +38,7 @@
 
 #include <math/inc/vector_type.hpp>
 
-namespace framework
-{
-namespace math
-{
-/// @brief Contains matrix type implementation details.
-namespace matrix_type_details
+namespace framework::math::matrix_type_details
 {
 /// @brief Helper functions to implement matrix constructors.
 /// @{
@@ -98,9 +93,5 @@ template <typename... Args>
 using common_type = vector_type_details::common_type<Args...>;
 
 } // namespace matrix_type_details
-
-} // namespace math
-
-} // namespace framework
 
 #endif

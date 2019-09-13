@@ -43,10 +43,9 @@
 #include <math/inc/relational_functions_details.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework
+namespace framework::math
 {
-namespace math
-{
+
 /// @addtogroup math_relational_functions
 /// @{
 
@@ -278,7 +277,5 @@ inline bool all(const vector<N, bool>& value)
 /// @}
 
 } // namespace math
-
-} // namespace framework
 
 #endif

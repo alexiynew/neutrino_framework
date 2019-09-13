@@ -38,12 +38,9 @@
 
 #include <math/inc/matrix_type.hpp>
 
-namespace framework
+namespace framework::math::matrix_functions_details
 {
-namespace math
-{
-namespace matrix_functions_details
-{
+
 /// @brief Realization of transpose function.
 /// @{
 template <uint32 C, typename T>
@@ -308,9 +305,5 @@ inline matrix<2, 2, T> inverse_transpose(const matrix<2, 2, T>& m)
 /// @}
 
 } // namespace matrix_functions_details
-
-} // namespace math
-
-} // namespace framework
 
 #endif
