@@ -82,6 +82,6 @@ constexpr float64 euler = 0.5772156649015328606065120900824024310421593359399235
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif

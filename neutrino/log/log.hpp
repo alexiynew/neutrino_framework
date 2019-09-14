@@ -78,7 +78,7 @@
 /// @endcode
 ///
 /// @defgroup log_module Logging
-	
+
 namespace framework::log
 {
 /// @addtogroup log_module

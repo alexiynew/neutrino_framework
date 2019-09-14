@@ -173,6 +173,6 @@ inline vector<2, R> frexp(const vector<2, T>& value, vector<2, int32>* exp)
 }
 /// @}
 
-} // namespace common_functions_details
+} // namespace framework::math::common_functions_details
 
 #endif

@@ -75,7 +75,10 @@ public:
     }
 
 private:
-    [[noreturn]] void test_std_exception() { throw std::runtime_error("Test exception"); }
+    [[noreturn]] void test_std_exception()
+    {
+        throw std::runtime_error("Test exception");
+    }
 };
 
 class should_fail_test_any_exception : public framework::unit_test::suite
@@ -88,7 +91,10 @@ public:
 
 private:
     // NOLINTNEXTLINE(hicpp-exception-baseclass)
-    [[noreturn]] void test_any_exception() { throw custom_exception(); }
+    [[noreturn]] void test_any_exception()
+    {
+        throw custom_exception();
+    }
 };
 /// @}
 

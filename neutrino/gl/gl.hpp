@@ -69,7 +69,6 @@
 ///
 /// @defgroup opengl_module OpenGL API
 
-
 namespace framework::gl
 {
 /// @addtogroup opengl_module

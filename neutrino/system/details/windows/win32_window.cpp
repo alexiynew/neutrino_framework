@@ -165,11 +165,10 @@ framework::system::mouse_button get_mouse_button(UINT message)
 
 framework::system::details::window_size adjust_size(framework::system::details::window_size size, DWORD style)
 {
-    RECT rect{0,0,size.width, size.height};
-    AdjustWindowRectEx(&rect,window_style, false, window_ex_style);
+    RECT rect{0, 0, size.width, size.height};
+    AdjustWindowRectEx(&rect, window_style, false, window_ex_style);
 
-    if ((style & WS_SIZEBOX) == 0) 
-    {
+    if ((style & WS_SIZEBOX) == 0) {
         // TODO (alex): fix size without size box.
     }
 

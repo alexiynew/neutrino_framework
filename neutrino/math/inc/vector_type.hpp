@@ -1199,6 +1199,6 @@ inline S& operator<<(S& ostream, const vector<N, T>& vector)
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif

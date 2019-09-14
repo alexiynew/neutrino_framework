@@ -36,11 +36,9 @@
 
 namespace framework::utils
 {
-	
 /// @addtogroup common_crc_implementation
 /// @{
-	
-	
+
 /// @details
 ///
 /// Cyclic redundancy check implementation
@@ -283,6 +281,6 @@ const noexcept
 
 /// @}
 
-}
+} // namespace framework::utils
 
 #endif

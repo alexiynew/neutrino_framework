@@ -248,6 +248,6 @@ inline vector<N, R> invsqrt(const vector<N, T>& value)
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif

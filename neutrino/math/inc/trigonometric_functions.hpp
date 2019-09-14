@@ -471,6 +471,6 @@ inline vector<N, R> atanh(vector<N, T> const& value)
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif

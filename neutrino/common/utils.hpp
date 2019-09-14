@@ -38,7 +38,8 @@
 /// @brief Different helper functions and classes.
 ///
 /// @details
-/// The @ref common_utils_module module consist of functions and classes not related to any particular module. Or used all over the framework.
+/// The @ref common_utils_module module consist of functions and classes not related to any particular module. Or used
+/// all over the framework.
 ///
 /// @defgroup common_utils_module Utility
 /// @{
@@ -48,10 +49,9 @@
 
 namespace framework::utils
 {
-	
 /// @addtogroup common_utils_module
 /// @{
-	
+
 /// @brief Determines if it is the debug build.
 ///
 /// @return `true` in debug mode, `false` otherwise.
@@ -126,6 +126,6 @@ std::string format(const std::string& str, Args&&... args)
 
 /// @}
 
-} // namespace framework
+} // namespace framework::utils
 
 #endif

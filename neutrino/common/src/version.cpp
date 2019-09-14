@@ -51,24 +51,24 @@ framework::int32 get_number(std::istringstream& ins)
 
 namespace framework::utils
 {
-version::version(int32 major_value, int32 minor_value, int32 patch_value, int32 build_value) noexcept
-    : major(major_value), minor(minor_value), patch(patch_value), build(build_value)
+version::version(int32 major_v, int32 minor_v, int32 patch_v, int32 build_n) noexcept
+    : major_version(major_v), minor_version(minor_v), patch_version(patch_v), build_number(build_n)
 {}
 
 version::version(const std::string& version_string)
 {
     std::istringstream input(version_string);
 
-    major = get_number(input);
-    minor = get_number(input);
-    patch = get_number(input);
-    build = get_number(input);
+    major_version = get_number(input);
+    minor_version = get_number(input);
+    patch_version = get_number(input);
+    build_number  = get_number(input);
 }
 
 std::string version::as_string() const
 {
-    return std::to_string(major) + '.' + std::to_string(minor) + '.' + std::to_string(patch) + '.' +
-           std::to_string(build);
+    return std::to_string(major_version) + '.' + std::to_string(minor_version) + '.' + std::to_string(patch_version) +
+           '.' + std::to_string(build_number);
 }
 
 } // namespace framework::utils

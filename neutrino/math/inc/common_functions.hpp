@@ -762,6 +762,6 @@ inline vector<N, R> ldexp(const vector<N, T>& value, const vector<N, int32>& exp
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif

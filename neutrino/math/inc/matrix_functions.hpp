@@ -166,6 +166,6 @@ inline matrix<C, R, T> inverse_transpose(const matrix<C, R, T>& value)
 
 /// @}
 
-} // namespace framework
+} // namespace framework::math
 
 #endif

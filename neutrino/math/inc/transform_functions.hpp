@@ -44,7 +44,6 @@
 
 namespace framework::math
 {
-
 /// @addtogroup math_transform_functions
 /// @{
 
@@ -541,6 +540,6 @@ inline matrix<4, 4, T> look_at(const vector<3, T>& eye, const vector<3, T>& cent
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif

@@ -37,7 +37,7 @@ namespace framework::log
 {
 /// @addtogroup log_module
 /// @{
-	
+
 /// @name Logger implementation
 /// @{
 

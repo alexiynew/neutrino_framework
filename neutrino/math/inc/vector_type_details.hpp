@@ -189,6 +189,6 @@ struct transform_details<2>
 };
 /// @}
 
-} // namespace vector_type_details
+} // namespace framework::math::vector_type_details
 
 #endif

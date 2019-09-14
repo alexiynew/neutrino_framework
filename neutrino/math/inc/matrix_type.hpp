@@ -3656,6 +3656,6 @@ inline constexpr bool operator!=(const matrix<2, R, T>& lhs, const matrix<2, R, 
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif

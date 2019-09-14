@@ -202,6 +202,6 @@ inline vector<N, T> refract(const vector<N, T>& incident, const vector<N, T>& no
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif

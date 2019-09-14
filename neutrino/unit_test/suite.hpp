@@ -197,6 +197,6 @@ int32 run_tests(Arguments&&... tests)
 
 /// @}
 
-} // namespace framework
+} // namespace framework::unit_test
 
 #endif

@@ -86,8 +86,8 @@ win32_wgl_context::win32_wgl_context(const context_settings& settings, HWND wind
     auto version = settings.version();
     // clang-format off
     int attribs[] = {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, version.major,
-        WGL_CONTEXT_MINOR_VERSION_ARB, version.minor,
+        WGL_CONTEXT_MAJOR_VERSION_ARB, version.major_version,
+        WGL_CONTEXT_MINOR_VERSION_ARB, version.minor_version,
         WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
         WGL_CONTEXT_FLAGS_ARB, 0,
         0

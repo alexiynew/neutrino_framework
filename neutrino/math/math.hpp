@@ -75,7 +75,6 @@
 
 namespace framework::math
 {
-
 /// @addtogroup math_module
 /// @{
 

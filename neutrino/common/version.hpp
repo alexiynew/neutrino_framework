@@ -36,21 +36,20 @@
 
 namespace framework::utils
 {
-	
 /// @addtogroup common_version_implementation
 /// @{
-	
+
 /// @brief Version implementation.
 struct version
 {
 public:
     /// @brief Creates version instance.
     ///
-    /// @param major Major version number.
-    /// @param minor Minor version number.
-    /// @param patch Patch version number.
-    /// @param build Build version number.
-    version(int32 major, int32 minor, int32 patch = 0, int32 build = 0) noexcept;
+    /// @param major_v Major version number.
+    /// @param minor_v Minor version number.
+    /// @param patch_v Patch version number.
+    /// @param build_v Build version number.
+    version(int32 major_v, int32 minor_v, int32 patch_v = 0, int32 build_n = 0) noexcept;
 
     /// @brief Creates version instance from string.
     ///
@@ -80,10 +79,10 @@ public:
     /// @return Version number as string e.g. "1.2.3.4".
     std::string as_string() const;
 
-    int32 major = 0; ///< Major version number.
-    int32 minor = 0; ///< Minor version number.
-    int32 patch = 0; ///< Patch version number.
-    int32 build = 0; ///< Build version number.
+    int32 major_version = 0; ///< Major version number.
+    int32 minor_version = 0; ///< Minor version number.
+    int32 patch_version = 0; ///< Patch version number.
+    int32 build_number  = 0; ///< Build number.
 };
 
 /// @brief Equality operator.
@@ -94,7 +93,8 @@ public:
 /// @return `true` if lhs equals rhs, otherwise `false`.
 inline constexpr bool operator==(const version& lhs, const version& rhs) noexcept
 {
-    return lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch == rhs.patch && lhs.build == rhs.build;
+    return lhs.major_version == rhs.major_version && lhs.minor_version == rhs.minor_version &&
+           lhs.patch_version == rhs.patch_version && lhs.build_number == rhs.build_number;
 }
 
 /// @brief Inequality operator.
@@ -116,10 +116,12 @@ inline constexpr bool operator!=(const version& lhs, const version& rhs) noexcep
 /// @return `true` if lhs is less than rhs, otherwise `false`.
 inline constexpr bool operator<(const version& lhs, const version& rhs) noexcept
 {
-    return (lhs.major != rhs.major
-            ? lhs.major < rhs.major
-            : (lhs.minor != rhs.minor ? lhs.minor < rhs.minor
-                                      : (lhs.patch != rhs.patch ? lhs.patch < rhs.patch : lhs.build < rhs.build)));
+    return (lhs.major_version != rhs.major_version
+            ? lhs.major_version < rhs.major_version
+            : (lhs.minor_version != rhs.minor_version
+               ? lhs.minor_version < rhs.minor_version
+               : (lhs.patch_version != rhs.patch_version ? lhs.patch_version < rhs.patch_version
+                                                         : lhs.build_number < rhs.build_number)));
 }
 
 /// @brief Greater than operator.

@@ -92,6 +92,6 @@ inline constexpr V get_column(M&& matrix, V&& vector) noexcept
 template <typename... Args>
 using common_type = vector_type_details::common_type<Args...>;
 
-} // namespace matrix_type_details
+} // namespace framework::math::matrix_type_details
 
 #endif

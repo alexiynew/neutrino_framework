@@ -117,6 +117,6 @@ inline bool all_implementation(const vector<2, bool>& v)
 }
 /// @}
 
-} // namespace relational_functions_details
+} // namespace framework::math::relational_functions_details
 
 #endif

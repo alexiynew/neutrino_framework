@@ -45,7 +45,6 @@
 
 namespace framework::math
 {
-
 /// @addtogroup math_relational_functions
 /// @{
 
@@ -276,6 +275,6 @@ inline bool all(const vector<N, bool>& value)
 
 /// @}
 
-} // namespace math
+} // namespace framework::math
 
 #endif
