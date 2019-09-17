@@ -27,6 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <algorithm>
 #include <array>
 #include <fstream>
 #include <vector>
@@ -37,9 +38,13 @@
 
 namespace
 {
+using framework::int32;
+using framework::uint16;
 using framework::uint32;
 using framework::uint8;
-using crc32png = framework::utils::crc<32, 0xEDB88320, 0xFFFFFFFF, true, true, 0xFFFFFFFF>;
+using framework::usize;
+using framework::graphics::color_t;
+using framework::graphics::details::image::image_info;
 
 constexpr int signature_length = 8;
 
@@ -68,7 +73,7 @@ inline constexpr T big_endian_value(const B* buffer) noexcept
     return *(reinterpret_cast<T*>(tmp));
 }
 
-struct chunk
+struct chunk_t
 {
     enum class type_t : uint32
     {
@@ -99,12 +104,14 @@ struct chunk
 
     std::vector<uint8> data;
 
-    static chunk read(std::ifstream& in);
+    static chunk_t read(std::ifstream& in);
+
+    bool is_critical() const;
 };
 
-chunk chunk::read(std::ifstream& in)
+chunk_t chunk_t::read(std::ifstream& in)
 {
-    chunk c;
+    chunk_t c;
 
     char buffer[4];
 
@@ -112,7 +119,7 @@ chunk chunk::read(std::ifstream& in)
     c.length = big_endian_value<uint32>(buffer);
 
     in.read(buffer, 4);
-    c.type = big_endian_value<chunk::type_t>(buffer);
+    c.type = big_endian_value<chunk_t::type_t>(buffer);
 
     if (c.length > 0) {
         c.data = read_bytes(in, c.length);
@@ -124,7 +131,12 @@ chunk chunk::read(std::ifstream& in)
     return c;
 }
 
-struct file_header
+bool chunk_t::is_critical() const
+{
+    return (((static_cast<uint32>(type) >> 24) && 0xFF) & 0x20) == 0;
+}
+
+struct file_header_t
 {
     enum color_type_t : uint8
     {
@@ -159,23 +171,27 @@ struct file_header
     filter_method_t filter_method           = filter_method_t::adaptive;
     interlace_method_t interlace_method     = interlace_method_t::no;
 
-    static file_header read(std::ifstream& in);
+    static file_header_t read(std::ifstream& in);
 };
 
-bool check_crc(const chunk&)
+bool check_crc(const chunk_t& c)
 {
-    // TODO(alex) make crc checking
-    return true;
+    framework::utils::crc32 crc;
+
+    crc.update(big_endian_value<uint32>(reinterpret_cast<const char*>(&c.type)));
+    crc.update(begin(c.data), end(c.data));
+
+    return crc.current_value() == c.crc;
 }
 
-file_header file_header::read(std::ifstream& in)
+file_header_t file_header_t::read(std::ifstream& in)
 {
-    auto c = chunk::read(in);
-    if (c.type != chunk::type_t::IHDR || !check_crc(c)) {
-        return file_header();
+    auto c = chunk_t::read(in);
+    if (c.type != chunk_t::type_t::IHDR || !check_crc(c)) {
+        return file_header_t();
     }
 
-    file_header h;
+    file_header_t h;
     h.width              = big_endian_value<uint32>(&c.data[0]);
     h.height             = big_endian_value<uint32>(&c.data[4]);
     h.bit_depth          = c.data[8];
@@ -204,12 +220,12 @@ bool check_signature(const std::vector<uint8>& data)
     return true;
 }
 
-bool check_header(const file_header& h)
+bool check_header(const file_header_t& h)
 {
     bool valid = true;
 
     valid &= [&h]() {
-        using ct = file_header::color_type_t;
+        using ct = file_header_t::color_type_t;
 
         switch (h.colour_type) {
             case ct::greyscale:
@@ -224,16 +240,151 @@ bool check_header(const file_header& h)
         return false;
     }();
 
-    valid &= h.compression_method == file_header::compression_method_t::deflate_inflate;
-    valid &= h.filter_method == file_header::filter_method_t::adaptive;
-    valid &= (h.interlace_method == file_header::interlace_method_t::no ||
-              h.interlace_method == file_header::interlace_method_t::adam7);
+    valid &= h.compression_method == file_header_t::compression_method_t::deflate_inflate;
+    valid &= h.filter_method == file_header_t::filter_method_t::adaptive;
+    valid &= (h.interlace_method == file_header_t::interlace_method_t::no ||
+              h.interlace_method == file_header_t::interlace_method_t::adam7);
 
     return valid;
 }
 
-void process(const file_header&, const chunk&)
+inline image_info make_image_info(const file_header_t& header)
+{
+    return image_info{static_cast<int32>(header.width), static_cast<int32>(header.height), true};
+}
+
+struct zlib_header_t
+{
+    uint8 compression_method : 4;
+    uint8 compression_info : 4;
+    uint8 check_bits : 5;
+    uint8 dictinary : 1;
+    uint8 compression_level : 2;
+};
+
+class bit_stream
+{
+public:
+    bit_stream(const std::vector<uint8>&);
+
+    uint8 get_bits(uint8 count);
+    void skip_current_byte();
+    uint8 get_bytes(uint8);
+
+    operator bool() const;
+
+private:
+    const std::vector<uint8>& m_data;
+    usize m_byte_pos = 0;
+    usize m_bit_pos  = 0;
+};
+
+bit_stream::bit_stream(const std::vector<uint8>& data) : m_data(data)
 {}
+
+bit_stream::operator bool() const
+{
+    return m_byte_pos < m_data.size() && m_bit_pos < 8;
+}
+
+uint8 bit_stream::get_bits(uint8 count)
+{
+    constexpr std::array<uint8, 9> mask = {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
+
+    count = static_cast<uint8>(count % 8);
+
+    uint8 byte          = m_data[m_byte_pos];
+    const uint8 portion = std::min(static_cast<uint8>(7 - m_bit_pos), count);
+
+    uint8 result = static_cast<uint8>((byte >> m_bit_pos) & mask[portion]);
+
+    count = static_cast<uint8>(count - portion);
+    m_bit_pos += portion;
+
+    if (m_bit_pos == 7) {
+        m_bit_pos = 0;
+        m_byte_pos++;
+    }
+
+    if (count == 0) {
+        return result;
+    }
+
+    byte = m_data[m_byte_pos];
+
+    result = static_cast<uint8>(result | ((byte & mask[count]) << portion));
+    m_bit_pos += count;
+
+    return result;
+}
+
+void bit_stream::skip_current_byte()
+{
+    m_byte_pos++;
+    m_bit_pos = 0;
+}
+
+std::vector<color_t> inflate(const file_header_t header, const std::vector<uint8>& data)
+{
+    std::vector<color_t> result;
+
+    zlib_header_t zlib_header = *reinterpret_cast<const zlib_header_t*>(data.data());
+
+    if (header.compression_method == file_header_t::compression_method_t::deflate_inflate &&
+        zlib_header.compression_method != 8) {
+        return std::vector<color_t>();
+    }
+
+    if (zlib_header.dictinary != 0) {
+        return std::vector<color_t>();
+    }
+
+    bit_stream in(data);
+
+    while (in) {
+        uint8 block = in.get_bits(3);
+
+        if ((block & 0x6) == 0) {
+            in.skip_current_byte();
+            const uint8 len  = in.get_bits(2);
+            const uint8 nlen = in.get_bits(2);
+
+            for (usize i = 0; i < len; ++i) {
+            }
+            // no compression
+        } else {
+        }
+    }
+
+    /*
+    do
+        read block header from input stream.
+        if stored with no compression
+            skip any remaining bits in current partially processed byte
+            read LEN and NLEN (see next section)
+            copy LEN bytes of data to output
+        otherwise
+            if compressed with dynamic Huffman codes
+                read representation of code trees (see subsection below)
+            loop (until end of block code recognized)
+                decode literal/length value from input stream
+                if value < 256
+                    copy value (literal byte) to output stream
+                otherwise
+                    if value = end of block (256)
+                        break from loop
+                    otherwise (value = 257..285)
+                        decode distance from input stream
+
+                        move backwards distance bytes in the output
+                        stream, and copy length bytes from this
+                        position to the output stream.
+            end loop
+    while not last block
+    */
+
+    return result;
+}
 
 } // namespace
 
@@ -251,35 +402,43 @@ load_result_t load(const std::string& filename)
         return load_result_t();
     }
 
-    file_header h = file_header::read(file);
-    if (!check_header(h)) {
+    file_header_t header = file_header_t::read(file);
+    if (!check_header(header)) {
         return load_result_t();
     }
 
-    for (chunk c = chunk::read(file); file && c.type != chunk::type_t::IEND; c = chunk::read(file)) {
-        switch (c.type) {
-            case chunk::type_t::PLTE: process(h, c); break;
-            case chunk::type_t::IDAT: process(h, c); break;
-            case chunk::type_t::IEND: process(h, c); break;
-            case chunk::type_t::cHRM: process(h, c); break;
-            case chunk::type_t::gAMA: process(h, c); break;
-            case chunk::type_t::iCCP: process(h, c); break;
-            case chunk::type_t::sBIT: process(h, c); break;
-            case chunk::type_t::sRGB: process(h, c); break;
-            case chunk::type_t::bKGD: process(h, c); break;
-            case chunk::type_t::hIST: process(h, c); break;
-            case chunk::type_t::tRNS: process(h, c); break;
-            case chunk::type_t::pHYs: process(h, c); break;
-            case chunk::type_t::sPLT: process(h, c); break;
-            case chunk::type_t::tIME: process(h, c); break;
-            case chunk::type_t::iTXt: process(h, c); break;
-            case chunk::type_t::tEXt: process(h, c); break;
-            case chunk::type_t::zTXt: process(h, c); break;
+    std::vector<uint8> data;
+    for (chunk_t chunk = chunk_t::read(file); file && chunk.type != chunk_t::type_t::IEND;
+         chunk         = chunk_t::read(file)) {
+        if (!check_crc(chunk) && chunk.is_critical()) {
+            return load_result_t();
+        }
+
+        switch (chunk.type) {
+            case chunk_t::type_t::PLTE: break;
+            case chunk_t::type_t::IDAT: {
+                data.insert(end(data), begin(chunk.data), end(chunk.data));
+            } break;
+            case chunk_t::type_t::IEND: break;
+            case chunk_t::type_t::cHRM: break;
+            case chunk_t::type_t::gAMA: break;
+            case chunk_t::type_t::iCCP: break;
+            case chunk_t::type_t::sBIT: break;
+            case chunk_t::type_t::sRGB: break;
+            case chunk_t::type_t::bKGD: break;
+            case chunk_t::type_t::hIST: break;
+            case chunk_t::type_t::tRNS: break;
+            case chunk_t::type_t::pHYs: break;
+            case chunk_t::type_t::sPLT: break;
+            case chunk_t::type_t::tIME: break;
+            case chunk_t::type_t::iTXt: break;
+            case chunk_t::type_t::tEXt: break;
+            case chunk_t::type_t::zTXt: break;
             default: break;
         }
     }
 
-    return load_result_t();
+    return std::make_optional(std::make_tuple(make_image_info(header), inflate(header, data)));
 }
 
 bool is_png(const std::string& filename)
