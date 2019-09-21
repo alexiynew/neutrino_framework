@@ -253,139 +253,6 @@ inline image_info make_image_info(const file_header_t& header)
     return image_info{static_cast<int32>(header.width), static_cast<int32>(header.height), true};
 }
 
-struct zlib_header_t
-{
-    uint8 compression_method : 4;
-    uint8 compression_info : 4;
-    uint8 check_bits : 5;
-    uint8 dictinary : 1;
-    uint8 compression_level : 2;
-};
-
-class bit_stream
-{
-public:
-    bit_stream(const std::vector<uint8>&);
-
-    uint8 get_bits(uint8 count);
-    void skip_current_byte();
-    uint8 get_bytes(uint8);
-
-    operator bool() const;
-
-private:
-    const std::vector<uint8>& m_data;
-    usize m_byte_pos = 0;
-    usize m_bit_pos  = 0;
-};
-
-bit_stream::bit_stream(const std::vector<uint8>& data) : m_data(data)
-{}
-
-bit_stream::operator bool() const
-{
-    return m_byte_pos < m_data.size() && m_bit_pos < 8;
-}
-
-uint8 bit_stream::get_bits(uint8 count)
-{
-    constexpr std::array<uint8, 9> mask = {0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF};
-
-    count = static_cast<uint8>(count % 8);
-
-    uint8 byte          = m_data[m_byte_pos];
-    const uint8 portion = std::min(static_cast<uint8>(7 - m_bit_pos), count);
-
-    uint8 result = static_cast<uint8>((byte >> m_bit_pos) & mask[portion]);
-
-    count = static_cast<uint8>(count - portion);
-    m_bit_pos += portion;
-
-    if (m_bit_pos == 7) {
-        m_bit_pos = 0;
-        m_byte_pos++;
-    }
-
-    if (count == 0) {
-        return result;
-    }
-
-    byte = m_data[m_byte_pos];
-
-    result = static_cast<uint8>(result | ((byte & mask[count]) << portion));
-    m_bit_pos += count;
-
-    return result;
-}
-
-void bit_stream::skip_current_byte()
-{
-    m_byte_pos++;
-    m_bit_pos = 0;
-}
-
-std::vector<color_t> inflate(const file_header_t header, const std::vector<uint8>& data)
-{
-    std::vector<color_t> result;
-
-    zlib_header_t zlib_header = *reinterpret_cast<const zlib_header_t*>(data.data());
-
-    if (header.compression_method == file_header_t::compression_method_t::deflate_inflate &&
-        zlib_header.compression_method != 8) {
-        return std::vector<color_t>();
-    }
-
-    if (zlib_header.dictinary != 0) {
-        return std::vector<color_t>();
-    }
-
-    bit_stream in(data);
-
-    while (in) {
-        uint8 block = in.get_bits(3);
-
-        if ((block & 0x6) == 0) {
-            in.skip_current_byte();
-            const uint8 len  = in.get_bits(2);
-            const uint8 nlen = in.get_bits(2);
-
-            for (usize i = 0; i < len; ++i) {
-            }
-            // no compression
-        } else {
-        }
-    }
-
-    /*
-    do
-        read block header from input stream.
-        if stored with no compression
-            skip any remaining bits in current partially processed byte
-            read LEN and NLEN (see next section)
-            copy LEN bytes of data to output
-        otherwise
-            if compressed with dynamic Huffman codes
-                read representation of code trees (see subsection below)
-            loop (until end of block code recognized)
-                decode literal/length value from input stream
-                if value < 256
-                    copy value (literal byte) to output stream
-                otherwise
-                    if value = end of block (256)
-                        break from loop
-                    otherwise (value = 257..285)
-                        decode distance from input stream
-
-                        move backwards distance bytes in the output
-                        stream, and copy length bytes from this
-                        position to the output stream.
-            end loop
-    while not last block
-    */
-
-    return result;
-}
-
 } // namespace
 
 namespace framework::graphics::details::image::png
@@ -438,7 +305,9 @@ load_result_t load(const std::string& filename)
         }
     }
 
-    return std::make_optional(std::make_tuple(make_image_info(header), inflate(header, data)));
+    std::vector<color_t> res;
+
+    return std::make_optional(std::make_tuple(make_image_info(header), res));
 }
 
 bool is_png(const std::string& filename)
