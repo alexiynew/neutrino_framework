@@ -45,7 +45,7 @@
 /// @{
 /// @defgroup common_version_implementation Version
 /// @defgroup common_crc_implementation Crc
-/// @defgroup common_zlib_implementation ZLIB Compression
+/// @defgroup common_zlib_implementation ZLIB compression algorithm
 /// @}
 
 namespace framework::utils
