@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstring>
+#include <unordered_map>
 
 #include <common/zlib.hpp>
 
@@ -10,6 +11,8 @@ using framework::uint16;
 using framework::uint32;
 using framework::uint8;
 using framework::usize;
+
+using huffman_code_table = std::unordered_map<uint16, uint16>;
 
 constexpr int deflate_compression_method = 8;
 
@@ -29,6 +32,14 @@ struct zlib_header_t
 
 struct block_header
 {
+    enum type_t
+    {
+        no_compression  = 0,
+        fixed_huffman   = 1,
+        dynamic_huffman = 2,
+        reserved        = 3,
+    };
+
     uint8 bfinal : 1;
     uint8 btype : 2;
 
@@ -89,6 +100,49 @@ private:
     }
 };
 
+huffman_code_table& fixed_huffman_codes()
+{
+    /*
+     Lit Value    Bits   Count   Codes
+     ---------    ----   -----   -----
+       0 - 143     8     144     00110000  through 10111111
+     144 - 255     9     112     110010000 through 111111111
+     256 - 279     7     24      0000000   through 0010111
+     280 - 287     8     8       11000000  through 11000111
+    */
+
+    const uint8 bl_count[10] = {0, 0, 0, 0, 0, 0, 0, 24, 144 + 8, 112};
+    uint16 next_code[10]     = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    uint8 len[288]           = {};
+    memset(len, 0, sizeof(len));
+
+    for (int i = 0; i < 288; ++i) {
+        len[i] = ((i <= 143 || i >= 280) ? 8 : (i >= 144 && i <= 255 ? 9 : 7));
+    }
+
+    uint16 code = 0;
+    for (int bits = 1; bits <= 9; bits++) {
+        code = static_cast<uint16>((code + bl_count[bits - 1]) << 1);
+
+        next_code[bits] = code;
+    }
+
+    static huffman_code_table codes;
+    for (int n = 0; n <= 288; n++) {
+        int l = len[n];
+
+        if (l != 0) {
+            codes[next_code[l]] = n;
+            next_code[l]++;
+        }
+    }
+
+    return codes;
+}
+
+uint16 decode(const huffman_code_table& table, bit_stream& in)
+{}
+
 } // namespace
 
 namespace framework::utils::zlib
@@ -119,25 +173,42 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
     if (!window_size) {
     }
 
+    std::vector<uint8> output;
+
     while (true) {
-        block_header header = in.get<uint8>(3);
+        block_header header       = in.get<uint8>(3);
+        huffman_code_table& codes = fixed_huffman_codes();
 
         switch (header.btype) {
-            case 0x00: {
-                // no compression
+            case block_header::no_compression: {
+                // skip any remaining bits in current partially processed byte
+                // read LEN and NLEN (see next section)
+                // copy LEN bytes of data to output
             } break;
 
-            case 2: {
-                // dynamik huffman
+            case block_header::dynamic_huffman: {
                 // read table
+                // codes = huffman_code_table();
             }
                 [[fallthrough]];
 
-            case 1: {
-                // fixed huffman
+            case block_header::fixed_huffman: {
+                uint16 value = decode(codes, in);
+                while (value != 256) {
+                    if (value < 256) {
+                        output.push_back(static_cast<uint8>(value));
+                    } else if (value > 256) {
+                        // decode distance from input stream
+
+                        // move backwards distance bytes in the output
+                        // stream, and copy length bytes from this
+                        // position to the output stream.
+                    }
+                    value = decode(codes, in);
+                }
             } break;
 
-            case 3: [[fallthrough]];
+            case block_header::reserved:
             default:
                 // error
                 return std::vector<uint8>();
@@ -148,35 +219,8 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
         }
     }
 
-    /*do
-        read block header from input stream.
-        if stored with no compression
-            skip any remaining bits in current partially
-                processed byte
-            read LEN and NLEN (see next section)
-            copy LEN bytes of data to output
-        otherwise
-            if compressed with dynamic Huffman codes
-                read representation of code trees (see
-                    subsection below)
-            loop (until end of block code recognized)
-                decode literal/length value from input stream
-                if value < 256
-                    copy value (literal byte) to output stream
-                otherwise
-                    if value = end of block (256)
-                        break from loop
-                    otherwise (value = 257..285)
-                        decode distance from input stream
-
-                        move backwards distance bytes in the output
-                        stream, and copy length bytes from this
-                        position to the output stream.
-            end loop
-    while not last block
-    */
-    return std::vector<uint8>();
-} // namespace framework::utils::zlib
+    return output;
+}
 
 std::vector<uint8> deflate(const std::vector<uint8>& data, compression /*compr*/)
 {
