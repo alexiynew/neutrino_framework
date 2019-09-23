@@ -12,42 +12,11 @@ using framework::uint32;
 using framework::uint8;
 using framework::usize;
 
-using huffman_code_table = std::unordered_map<uint16, uint16>;
-
 constexpr int deflate_compression_method = 8;
+constexpr int huffman_alphabet_size      = 288;
+constexpr int huffman_end_of_block       = 256;
 
-struct zlib_header_t
-{
-    uint8 cm : 4;
-    uint8 cinfo : 4;
-    uint8 fcheck : 5;
-    uint8 fdict : 1;
-    uint8 flevel : 3;
-
-    zlib_header_t(uint16 value)
-    {
-        memcpy(this, &value, sizeof(value));
-    }
-};
-
-struct block_header
-{
-    enum type_t
-    {
-        no_compression  = 0,
-        fixed_huffman   = 1,
-        dynamic_huffman = 2,
-        reserved        = 3,
-    };
-
-    uint8 bfinal : 1;
-    uint8 btype : 2;
-
-    block_header(uint8 value)
-    {
-        memcpy(this, &value, sizeof(value));
-    }
-};
+using alphabet_description = std::array<uint8, huffman_alphabet_size>;
 
 class bit_stream
 {
@@ -100,6 +69,108 @@ private:
     }
 };
 
+uint16 reflect(uint16 value, uint8 size)
+{
+    uint16 ref = 0;
+
+    for (usize bit = 0; bit < size; ++bit) {
+        if (value & 1) {
+            ref = static_cast<uint16>(ref | 1 << (size - 1 - bit));
+        }
+        value = static_cast<uint16>(value >> 1);
+    }
+
+    return ref;
+}
+
+class huffman_code_table
+{
+public:
+    huffman_code_table(const alphabet_description& lengts)
+    {
+        std::vector<uint8> bl_count(8);
+
+        for (auto len : lengts) {
+            while (bl_count.size() <= len) {
+                bl_count.push_back(0);
+            }
+
+            if (len > 0 && len < m_min_length) {
+                m_min_length = len;
+            }
+
+            bl_count[len]++;
+        }
+
+        std::vector<uint16> next_code(bl_count.size() + 1);
+
+        uint16 code = 0;
+        for (usize bits = 1; bits <= bl_count.size(); bits++) {
+            code = static_cast<uint16>((code + bl_count[bits - 1]) << 1);
+
+            next_code[bits] = code;
+        }
+
+        for (usize n = 0; n < lengts.size(); n++) {
+            int len = lengts[n];
+
+            if (len != 0) {
+                m_codes[next_code[len]] = static_cast<uint16>(n);
+                next_code[len]++;
+            }
+        }
+    }
+
+    uint16 decode(bit_stream& in)
+    {
+        uint16 value = in.get<uint16>(m_min_length);
+
+        value = reflect(value, m_min_length);
+        while (m_codes.count(value) > 0) {
+            value = static_cast<uint16>((value << 1) | in.get<uint16>(1));
+        }
+
+        return m_codes[value];
+    }
+
+private:
+    std::unordered_map<uint16, uint16> m_codes;
+    uint8 m_min_length = sizeof(uint16) * 8;
+};
+
+struct zlib_header_t
+{
+    uint8 cm : 4;
+    uint8 cinfo : 4;
+    uint8 fcheck : 5;
+    uint8 fdict : 1;
+    uint8 flevel : 3;
+
+    zlib_header_t(uint16 value)
+    {
+        memcpy(this, &value, sizeof(value));
+    }
+};
+
+struct block_header
+{
+    enum type_t
+    {
+        no_compression  = 0,
+        fixed_huffman   = 1,
+        dynamic_huffman = 2,
+        reserved        = 3,
+    };
+
+    uint8 bfinal : 1;
+    uint8 btype : 2;
+
+    block_header(uint8 value)
+    {
+        memcpy(this, &value, sizeof(value));
+    }
+};
+
 huffman_code_table& fixed_huffman_codes()
 {
     /*
@@ -111,37 +182,16 @@ huffman_code_table& fixed_huffman_codes()
      280 - 287     8     8       11000000  through 11000111
     */
 
-    const uint8 bl_count[10] = {0, 0, 0, 0, 0, 0, 0, 24, 144 + 8, 112};
-    uint16 next_code[10]     = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    uint8 len[288]           = {};
-    memset(len, 0, sizeof(len));
+    alphabet_description alphabet;
 
-    for (int i = 0; i < 288; ++i) {
-        len[i] = ((i <= 143 || i >= 280) ? 8 : (i >= 144 && i <= 255 ? 9 : 7));
+    for (usize i = 0; i < alphabet.size(); ++i) {
+        alphabet[i] = ((i <= 143 || i >= 280) ? 8 : (i >= 144 && i <= 255 ? 9 : 7));
     }
 
-    uint16 code = 0;
-    for (int bits = 1; bits <= 9; bits++) {
-        code = static_cast<uint16>((code + bl_count[bits - 1]) << 1);
+    static huffman_code_table fixed(alphabet);
 
-        next_code[bits] = code;
-    }
-
-    static huffman_code_table codes;
-    for (int n = 0; n <= 288; n++) {
-        int l = len[n];
-
-        if (l != 0) {
-            codes[next_code[l]] = n;
-            next_code[l]++;
-        }
-    }
-
-    return codes;
+    return fixed;
 }
-
-uint16 decode(const huffman_code_table& table, bit_stream& in)
-{}
 
 } // namespace
 
@@ -193,18 +243,19 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
                 [[fallthrough]];
 
             case block_header::fixed_huffman: {
-                uint16 value = decode(codes, in);
-                while (value != 256) {
-                    if (value < 256) {
+                while (true) {
+                    const uint16 value = codes.decode(in);
+                    if (value < huffman_end_of_block) {
                         output.push_back(static_cast<uint8>(value));
-                    } else if (value > 256) {
+                    } else if (value > huffman_end_of_block) {
                         // decode distance from input stream
 
                         // move backwards distance bytes in the output
                         // stream, and copy length bytes from this
                         // position to the output stream.
+                    } else {
+                        break;
                     }
-                    value = decode(codes, in);
                 }
             } break;
 
