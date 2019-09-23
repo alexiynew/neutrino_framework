@@ -15,6 +15,7 @@ using framework::usize;
 constexpr int deflate_compression_method = 8;
 constexpr int huffman_alphabet_size      = 288;
 constexpr int huffman_end_of_block       = 256;
+constexpr int huffman_invalid_code       = 300;
 
 using alphabet_description = std::array<uint8, huffman_alphabet_size>;
 
@@ -111,6 +112,8 @@ public:
             next_code[bits] = code;
         }
 
+        m_codes.clear();
+        m_codes.resize(code + huffman_alphabet_size, huffman_invalid_code);
         for (usize n = 0; n < lengts.size(); n++) {
             int len = lengts[n];
 
@@ -126,7 +129,7 @@ public:
         uint16 value = in.get<uint16>(m_min_length);
 
         value = reflect(value, m_min_length);
-        while (m_codes.count(value) > 0) {
+        while (m_codes[value] == huffman_invalid_code) {
             value = static_cast<uint16>((value << 1) | in.get<uint16>(1));
         }
 
@@ -134,7 +137,7 @@ public:
     }
 
 private:
-    std::unordered_map<uint16, uint16> m_codes;
+    std::vector<uint16> m_codes;
     uint8 m_min_length = sizeof(uint16) * 8;
 };
 
@@ -157,8 +160,8 @@ struct block_header
     enum type_t
     {
         no_compression  = 0,
-        fixed_huffman   = 1,
-        dynamic_huffman = 2,
+        dynamic_huffman = 1,
+        fixed_huffman   = 2,
         reserved        = 3,
     };
 
@@ -237,6 +240,22 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
             } break;
 
             case block_header::dynamic_huffman: {
+                /*
+                HLIT -- 5 бит; [число, такое, что] количество-литералов-и-длин = HLIT + 257. Фактически HLIT это
+                количество длин, так как первые 257 элементов, которые всегда присутствуют это символы и признак конца
+                блока.
+
+                HDIST -- 5 бит; количество-смещений = HDIST + 1
+
+                HCLEN -- 4 бита; количество-команд-длин = HCLEN + 4
+                */
+                uint16 hlit  = reflect(in.get<uint16>(5), 5);
+                uint16 hdist = reflect(in.get<uint16>(5), 5);
+                uint16 hclen = reflect(in.get<uint16>(4), 4);
+
+                if (hlit && hdist && hclen) {
+                }
+
                 // read table
                 // codes = huffman_code_table();
             }
