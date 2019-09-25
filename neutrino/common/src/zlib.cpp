@@ -217,34 +217,29 @@ huffman_code_table dynamic_huffman_codes(bit_stream& in)
 
     huffman_code_table len_huffman(code_lengths);
 
-    std::vector<uint8> lit_len_alphabet_lengths(distance_codes_count + code_len_codes_count);
-    for (usize i = 0; i < lit_len_codes_codes;) {
-        uint8 len = static_cast<uint8>(len_huffman.decode(in));
+    std::vector<uint8> lengths;
+    lengths.reserve(lit_len_codes_codes + distance_codes_count);
+    for (usize i = 0; i < lit_len_codes_codes + distance_codes_count;) {
+        const uint8 len = static_cast<uint8>(len_huffman.decode(in));
         if (len <= 15) {
-            lit_len_alphabet_lengths[i] = len;
-            ++i;
-        } else if (len == 16) {
-            uint8 count = static_cast<uint8>(in.get<uint8>(2) + 3);
-            for (uint8 c = 0; c < count && i > 0 && i < lit_len_codes_codes; ++c) {
-                lit_len_alphabet_lengths[i] = lit_len_alphabet_lengths[i - 1];
-                ++i;
-            }
+            lengths.push_back(len);
+            i++;
+        } else if (len == 16 && lengths.size() > 0) {
+            const uint8 count = static_cast<uint8>(in.get<uint8>(2) + 3);
+            lengths.insert(lengths.end(), count, lengths.back());
+            i += count;
         } else if (len == 17) {
-            uint8 count = static_cast<uint8>(in.get<uint8>(3) + 3);
-            for (uint8 c = 0; c < count && i < lit_len_codes_codes; ++c) {
-                lit_len_alphabet_lengths[i] = 0;
-                ++i;
-            }
+            const uint8 count = static_cast<uint8>(in.get<uint8>(3) + 3);
+            lengths.insert(lengths.end(), count, 0);
+            i += count;
         } else if (len == 18) {
-            uint8 count = static_cast<uint8>(in.get<uint8>(7) + 11);
-            for (uint8 c = 0; c < count && i < lit_len_codes_codes; ++c) {
-                lit_len_alphabet_lengths[i] = 0;
-                ++i;
-            }
+            const uint8 count = static_cast<uint8>(in.get<uint8>(7) + 11);
+            lengths.insert(lengths.end(), count, 0);
+            i += count;
         }
     }
 
-    return huffman_code_table(lit_len_alphabet_lengths);
+    return huffman_code_table(lengths);
 }
 
 } // namespace
