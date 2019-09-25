@@ -17,8 +17,6 @@ constexpr int huffman_alphabet_size      = 288;
 constexpr int huffman_end_of_block       = 256;
 constexpr int huffman_invalid_code       = 300;
 
-using alphabet_description = std::array<uint8, huffman_alphabet_size>;
-
 class bit_stream
 {
 public:
@@ -87,7 +85,7 @@ uint16 reflect(uint16 value, uint8 size)
 class huffman_code_table
 {
 public:
-    huffman_code_table(const alphabet_description& lengts)
+    huffman_code_table(const std::vector<uint8>& lengts)
     {
         std::vector<uint8> bl_count(8);
 
@@ -102,6 +100,7 @@ public:
 
             bl_count[len]++;
         }
+        bl_count[0] = 0;
 
         std::vector<uint16> next_code(bl_count.size() + 1);
 
@@ -124,7 +123,7 @@ public:
         }
     }
 
-    uint16 decode(bit_stream& in)
+    uint16 decode(bit_stream& in) const
     {
         uint16 value = in.get<uint16>(m_min_length);
 
@@ -160,8 +159,8 @@ struct block_header
     enum type_t
     {
         no_compression  = 0,
-        dynamic_huffman = 1,
-        fixed_huffman   = 2,
+        dynamic_huffman = 2,
+        fixed_huffman   = 1,
         reserved        = 3,
     };
 
@@ -174,7 +173,7 @@ struct block_header
     }
 };
 
-huffman_code_table& fixed_huffman_codes()
+huffman_code_table fixed_huffman_codes()
 {
     /*
      Lit Value    Bits   Count   Codes
@@ -185,15 +184,67 @@ huffman_code_table& fixed_huffman_codes()
      280 - 287     8     8       11000000  through 11000111
     */
 
-    alphabet_description alphabet;
+    std::vector<uint8> alphabet(huffman_alphabet_size);
 
     for (usize i = 0; i < alphabet.size(); ++i) {
         alphabet[i] = ((i <= 143 || i >= 280) ? 8 : (i >= 144 && i <= 255 ? 9 : 7));
     }
 
-    static huffman_code_table fixed(alphabet);
+    return huffman_code_table(alphabet);
+}
 
-    return fixed;
+huffman_code_table dynamic_huffman_codes(bit_stream& in)
+{
+    const uint16 hlit  = in.get<uint16>(5);
+    const uint16 hdist = in.get<uint16>(5);
+    const uint16 hclen = in.get<uint16>(4);
+
+    const usize lit_len_codes_codes  = hlit + 257;
+    const usize distance_codes_count = hdist + 1;
+    const usize code_len_codes_count = hclen + 4;
+
+    constexpr std::array<uint8, 19> length_order = {
+    16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15,
+    };
+
+    std::vector<uint8> code_lengths = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    };
+
+    for (usize i = 0; i < code_len_codes_count; ++i) {
+        code_lengths[length_order[i]] = static_cast<uint8>(in.get<uint16>(3));
+    }
+
+    huffman_code_table len_huffman(code_lengths);
+
+    std::vector<uint8> lit_len_alphabet_lengths(distance_codes_count + code_len_codes_count);
+    for (usize i = 0; i < lit_len_codes_codes;) {
+        uint8 len = static_cast<uint8>(len_huffman.decode(in));
+        if (len <= 15) {
+            lit_len_alphabet_lengths[i] = len;
+            ++i;
+        } else if (len == 16) {
+            uint8 count = static_cast<uint8>(in.get<uint8>(2) + 3);
+            for (uint8 c = 0; c < count && i > 0 && i < lit_len_codes_codes; ++c) {
+                lit_len_alphabet_lengths[i] = lit_len_alphabet_lengths[i - 1];
+                ++i;
+            }
+        } else if (len == 17) {
+            uint8 count = static_cast<uint8>(in.get<uint8>(3) + 3);
+            for (uint8 c = 0; c < count && i < lit_len_codes_codes; ++c) {
+                lit_len_alphabet_lengths[i] = 0;
+                ++i;
+            }
+        } else if (len == 18) {
+            uint8 count = static_cast<uint8>(in.get<uint8>(7) + 11);
+            for (uint8 c = 0; c < count && i < lit_len_codes_codes; ++c) {
+                lit_len_alphabet_lengths[i] = 0;
+                ++i;
+            }
+        }
+    }
+
+    return huffman_code_table(lit_len_alphabet_lengths);
 }
 
 } // namespace
@@ -229,59 +280,41 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
     std::vector<uint8> output;
 
     while (true) {
-        block_header header       = in.get<uint8>(3);
-        huffman_code_table& codes = fixed_huffman_codes();
+        block_header header = in.get<uint8>(3);
 
-        switch (header.btype) {
-            case block_header::no_compression: {
-                // skip any remaining bits in current partially processed byte
-                // read LEN and NLEN (see next section)
-                // copy LEN bytes of data to output
-            } break;
+        if (header.btype == block_header::reserved) {
+            // error
+            return std::vector<uint8>();
+        }
 
-            case block_header::dynamic_huffman: {
-                /*
-                HLIT -- 5 бит; [число, такое, что] количество-литералов-и-длин = HLIT + 257. Фактически HLIT это
-                количество длин, так как первые 257 элементов, которые всегда присутствуют это символы и признак конца
-                блока.
+        if (header.btype == block_header::no_compression) {
+            // skip any remaining bits in current partially processed byte
+            // read LEN and NLEN (see next section)
+            // copy LEN bytes of data to output
+            continue;
+        }
 
-                HDIST -- 5 бит; количество-смещений = HDIST + 1
-
-                HCLEN -- 4 бита; количество-команд-длин = HCLEN + 4
-                */
-                uint16 hlit  = reflect(in.get<uint16>(5), 5);
-                uint16 hdist = reflect(in.get<uint16>(5), 5);
-                uint16 hclen = reflect(in.get<uint16>(4), 4);
-
-                if (hlit && hdist && hclen) {
-                }
-
-                // read table
-                // codes = huffman_code_table();
+        const huffman_code_table codes = [&in, &header]() {
+            if (header.btype == block_header::dynamic_huffman) {
+                return dynamic_huffman_codes(in);
+            } else {
+                return fixed_huffman_codes();
             }
-                [[fallthrough]];
+        }();
 
-            case block_header::fixed_huffman: {
-                while (true) {
-                    const uint16 value = codes.decode(in);
-                    if (value < huffman_end_of_block) {
-                        output.push_back(static_cast<uint8>(value));
-                    } else if (value > huffman_end_of_block) {
-                        // decode distance from input stream
+        while (true) {
+            const uint16 value = codes.decode(in);
+            if (value < huffman_end_of_block) {
+                output.push_back(static_cast<uint8>(value));
+            } else if (value > huffman_end_of_block) {
+                // decode distance from input stream
 
-                        // move backwards distance bytes in the output
-                        // stream, and copy length bytes from this
-                        // position to the output stream.
-                    } else {
-                        break;
-                    }
-                }
-            } break;
-
-            case block_header::reserved:
-            default:
-                // error
-                return std::vector<uint8>();
+                // move backwards distance bytes in the output
+                // stream, and copy length bytes from this
+                // position to the output stream.
+            } else {
+                break;
+            }
         }
 
         if (header.bfinal) {
