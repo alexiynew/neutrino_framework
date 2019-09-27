@@ -96,6 +96,10 @@ public:
 
             if (len > 0 && len < m_min_length) {
                 m_min_length = len;
+            } 
+
+            if (len > m_max_length) {
+                m_max_length = len;
             }
 
             bl_count[len]++;
@@ -112,12 +116,16 @@ public:
         }
 
         m_codes.clear();
-        m_codes.resize(code + huffman_alphabet_size, huffman_invalid_code);
+        m_codes.resize(m_max_length + 1);
+        for (usize i = 0; i < m_codes.size(); ++i) {
+            m_codes[i].resize(next_code[i] + bl_count[i], huffman_invalid_code);
+        }
+
         for (usize n = 0; n < lengts.size(); n++) {
             int len = lengts[n];
 
             if (len != 0) {
-                m_codes[next_code[len]] = static_cast<uint16>(n);
+                m_codes[len][next_code[len]] = static_cast<uint16>(n);
                 next_code[len]++;
             }
         }
@@ -126,18 +134,25 @@ public:
     uint16 decode(bit_stream& in) const
     {
         uint16 value = in.get<uint16>(m_min_length);
+        uint8 value_len = m_min_length;
 
         value = reflect(value, m_min_length);
-        while (m_codes[value] == huffman_invalid_code) {
+
+        auto c =  m_codes[value_len][value];
+
+        while (m_codes[value_len][value] == huffman_invalid_code) {
             value = static_cast<uint16>((value << 1) | in.get<uint16>(1));
+            value_len++;
+            c =  m_codes[value_len][value];
         }
 
-        return m_codes[value];
+        return c;//m_codes[value];
     }
 
 private:
-    std::vector<uint16> m_codes;
+    std::vector<std::vector<uint16>> m_codes;
     uint8 m_min_length = sizeof(uint16) * 8;
+    uint8 m_max_length = 0;
 };
 
 struct zlib_header_t
@@ -183,7 +198,6 @@ huffman_code_table fixed_huffman_codes()
      256 - 279     7     24      0000000   through 0010111
      280 - 287     8     8       11000000  through 11000111
     */
-
     std::vector<uint8> alphabet(huffman_alphabet_size);
 
     for (usize i = 0; i < alphabet.size(); ++i) {

@@ -53,8 +53,9 @@ private:
     {
         using namespace framework::utils::zlib;
 
-        std::vector<uint8> best = inflate(example);
-        // std::vector<uint8> best  = inflate(best_compression);
+//        std::vector<uint8> best = inflate(example);
+        std::vector<uint8> defdd = inflate(deflate_late);
+        std::vector<uint8> best  = inflate(best_compression);
         std::vector<uint8> speed = inflate(best_speed);
         std::vector<uint8> def   = inflate(default_compression);
         std::vector<uint8> no    = inflate(no_compression);
@@ -81,6 +82,10 @@ private:
     }
 
     std::string data = "Hello Hello Hello Hello Hello Hello!";
+
+    std::vector<framework::uint8> deflate_late= {
+        0x78, 0x9c, 0x73, 0x49, 0x4D, 0xCB, 0x49, 0x2C, 0x49, 0x55, 0x00, 0x11
+    };
 
     // blackbird_sing33_in_the_dead_of_night\ntake
 
