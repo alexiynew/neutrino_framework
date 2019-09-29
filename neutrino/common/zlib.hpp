@@ -39,14 +39,6 @@ namespace framework::utils::zlib
 /// @addtogroup common_zlib_implementation
 /// @{
 
-enum class compression
-{
-    default_compression = 6,
-    best_compression    = 9,
-    best_speed          = 1,
-    no_compression      = 0,
-};
-
 /// @brief Decompress byte sequence
 ///
 /// For details on the compression algorithm see the deflate specification [RFC-1951]
@@ -64,7 +56,7 @@ std::vector<uint8> inflate(const std::vector<uint8>& data);
 /// @param compr Compression type
 ///
 /// @return LZ77-compressed data
-std::vector<uint8> deflate(const std::vector<uint8>& data, compression compr);
+std::vector<uint8> deflate(const std::vector<uint8>& data);
 
 /// @}
 

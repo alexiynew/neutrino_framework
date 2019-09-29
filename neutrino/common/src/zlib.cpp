@@ -411,6 +411,24 @@ inline void process_dynamic_huffman(bit_stream& in, std::vector<uint8>& output)
     process_compression(codes_pair, in, output);
 }
 
+uint32 adler32(const std::vector<uint8>& data)
+{
+    constexpr uint32 base = 65521; // largest prime smaller than 65536
+
+    uint32 s1 = 1 & 0xffff;
+    uint32 s2 = (1 >> 16) & 0xffff;
+
+    for (auto v : data) {
+        s1 = (s1 + v) % base;
+        s2 = (s2 + s1) % base;
+    }
+
+    const uint32 adler = (s2 << 16) + s1;
+
+    return ((adler & 0xFF) << 24) | (((adler >> 8) & 0xFF) << 16) | (((adler >> 16) & 0xFF) << 8) |
+           ((adler >> 24) & 0xFF);
+}
+
 } // namespace
 
 namespace framework::utils::zlib
@@ -435,7 +453,6 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
     }
 
     // TODO Add DICT support;
-    // TODO Add addler32 check;
 
     std::vector<uint8> output;
 
@@ -454,10 +471,19 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
         }
     }
 
-    return output;
+    in.skip_this_byte();
+
+    if (!in) {
+        return std::vector<uint8>();
+    }
+
+    const uint32 adler          = adler32(output);
+    const uint32 original_adler = in.get<uint32>(32);
+
+    return adler == original_adler ? output : std::vector<uint8>();
 }
 
-std::vector<uint8> deflate(const std::vector<uint8>& data, compression /*compr*/)
+std::vector<uint8> deflate(const std::vector<uint8>& data)
 {
     if (data.empty()) {
         return std::vector<uint8>();
