@@ -53,13 +53,13 @@ private:
     {
         using namespace framework::utils::zlib;
 
-        std::vector<uint8> best = inflate(example);
-        // std::vector<uint8> best  = inflate(best_compression);
+        std::vector<uint8> best  = inflate(best_compression);
         std::vector<uint8> speed = inflate(best_speed);
         std::vector<uint8> def   = inflate(default_compression);
         std::vector<uint8> no    = inflate(no_compression);
 
-        TEST_ASSERT(to_string(best) == data, "Inflate error.");
+        auto bs = to_string(best);
+        TEST_ASSERT(bs == data, "Inflate error.");
         TEST_ASSERT(to_string(speed) == data, "Inflate error.");
         TEST_ASSERT(to_string(def) == data, "Inflate error.");
         TEST_ASSERT(to_string(no) == data, "Inflate error.");
@@ -82,8 +82,10 @@ private:
 
     std::string data = "Hello Hello Hello Hello Hello Hello!";
 
-    // blackbird_sing33_in_the_dead_of_night\ntake
+    std::vector<framework::uint8> deflate_late =
+    {0x78, 0x9c, 0x73, 0x49, 0x4D, 0xCB, 0x49, 0x2C, 0x49, 0x55, 0x00, 0x11, 0x00};
 
+    // blackbird_sing33_in_the_dead_of_night\ntake
     std::vector<framework::uint8> example = {
     0x78, 0x9c, 0x15, 0x8d, 0x51, 0x0a, 0xc0, 0x20, 0x0c, 0x43, 0xff, 0x3d, 0x45, 0xae, 0x56, 0x67, 0xdd, 0x8a,
     0x5d, 0x0b, 0xd5, 0x21, 0xde, 0x7e, 0x0a, 0xf9, 0x08, 0x21, 0x2f, 0xc9, 0x4a, 0x57, 0xcb, 0x12, 0x05, 0x5d,
