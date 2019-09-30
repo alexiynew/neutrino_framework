@@ -16,6 +16,7 @@ using framework::usize;
 
 constexpr uint32 max_code_size   = 16;
 constexpr uint32 max_window_size = 32768;
+constexpr uint32 max_block_size  = 65535;
 
 constexpr uint32 deflate_compression_method = 8;
 
@@ -25,10 +26,18 @@ constexpr uint32 distance_alphabet_size = 32;
 constexpr uint32 end_of_block_code = 256;
 constexpr uint32 invalid_code      = 300;
 
+enum class compression_algorithm
+{
+    fastest           = 0, // - compressor used fastest algorithm
+    fast              = 1, // - compressor used fast algorithm
+    default_algorithm = 2, // - compressor used default algorithm
+    maximum           = 3, // - compressor used maximum compression, slowest algorithm
+};
+
 class bit_stream
 {
 public:
-    bit_stream(const std::vector<uint8>& data) : m_data(data)
+    explicit bit_stream(const std::vector<uint8>& data) : m_data(data)
     {}
 
     template <typename T>
@@ -197,13 +206,24 @@ struct zlib_header_t
     uint8 fdict : 1;
     uint8 flevel : 3;
 
-    zlib_header_t(uint16 value)
+    zlib_header_t() = default;
+
+    explicit zlib_header_t(uint16 value)
     {
         memcpy(this, &value, sizeof(value));
     }
+
+    uint16 as_value() const
+    {
+        uint16 tmp;
+        memcpy(&tmp, this, sizeof(uint16));
+
+        const uint16 res = static_cast<uint16>(((tmp & 0xFF) << 8) | ((tmp >> 8) & 0xFF));
+        return res;
+    }
 };
 
-struct block_header
+struct block_header_t
 {
     enum type_t
     {
@@ -216,9 +236,19 @@ struct block_header
     uint8 bfinal : 1;
     uint8 btype : 2;
 
-    block_header(uint8 value)
+    block_header_t() : bfinal(0), btype(no_compression)
+    {}
+
+    explicit block_header_t(uint8 value)
     {
         memcpy(this, &value, sizeof(value));
+    }
+
+    operator uint8() const
+    {
+        uint8 res;
+        memcpy(&res, this, sizeof(uint8));
+        return res;
     }
 };
 
@@ -361,7 +391,7 @@ uint16 read_distance(uint16 value, bit_stream& in)
     return result;
 }
 
-void process_no_compression(bit_stream& in, std::vector<uint8>& output)
+void inflate_no_compression(bit_stream& in, std::vector<uint8>& output)
 {
     in.skip_this_byte();
     uint16 len = in.get<uint16>(16);
@@ -373,7 +403,7 @@ void process_no_compression(bit_stream& in, std::vector<uint8>& output)
     }
 }
 
-void process_compression(const litlen_distance_codes_t& codes_pair, bit_stream& in, std::vector<uint8>& output)
+void inflate_compression(const litlen_distance_codes_t& codes_pair, bit_stream& in, std::vector<uint8>& output)
 {
     const auto [codes, distances] = codes_pair;
 
@@ -399,16 +429,43 @@ void process_compression(const litlen_distance_codes_t& codes_pair, bit_stream& 
     }
 }
 
-inline void process_fixed_huffman(bit_stream& in, std::vector<uint8>& output)
+inline void inflate_fixed_huffman(bit_stream& in, std::vector<uint8>& output)
 {
     const auto codes_pair = fixed_huffman_codes();
-    process_compression(codes_pair, in, output);
+    inflate_compression(codes_pair, in, output);
 }
 
-inline void process_dynamic_huffman(bit_stream& in, std::vector<uint8>& output)
+inline void inflate_dynamic_huffman(bit_stream& in, std::vector<uint8>& output)
 {
     const auto codes_pair = dynamic_huffman_codes(in);
-    process_compression(codes_pair, in, output);
+    inflate_compression(codes_pair, in, output);
+}
+
+void deflate_no_compression(const std::vector<uint8>& data, std::vector<uint8>& output)
+{
+    const usize blocks_count = (data.size() / max_block_size) + 1;
+
+    for (usize block = 0; block < blocks_count; ++block) {
+        block_header_t b_header;
+        b_header.bfinal = ((block + 1) >= blocks_count ? 1 : 0);
+        b_header.btype  = block_header_t::no_compression;
+
+        output.push_back(static_cast<uint8>(b_header));
+
+        const uint16 len = static_cast<uint16>(
+        std::min(max_block_size, static_cast<uint32>(data.size() - block * max_block_size)));
+
+        output.push_back(static_cast<uint8>(len & 0xFF));
+        output.push_back(static_cast<uint8>((len >> 8) & 0xFF));
+
+        const uint16 nlen = static_cast<uint16>(~len);
+        output.push_back(static_cast<uint8>(nlen & 0xFF));
+        output.push_back(static_cast<uint8>((nlen >> 8) & 0xFF));
+
+        for (usize i = 0; i < max_block_size && i < data.size(); ++i) {
+            output.push_back(data[block * max_block_size + i]);
+        }
+    }
 }
 
 uint32 adler32(const std::vector<uint8>& data)
@@ -441,7 +498,7 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
 
     bit_stream in(data);
 
-    const zlib_header_t zlib_header = in.get<uint16>(16);
+    const zlib_header_t zlib_header = zlib_header_t(in.get<uint16>(16));
 
     if (zlib_header.cm != deflate_compression_method || zlib_header.cinfo > 7) {
         return std::vector<uint8>();
@@ -457,13 +514,13 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
     std::vector<uint8> output;
 
     while (in) {
-        block_header header = in.get<uint8>(3);
+        block_header_t header = block_header_t(in.get<uint8>(3));
 
         switch (header.btype) {
-            case block_header::reserved: return output; // error
-            case block_header::no_compression: process_no_compression(in, output); break;
-            case block_header::fixed_huffman: process_fixed_huffman(in, output); break;
-            case block_header::dynamic_huffman: process_dynamic_huffman(in, output); break;
+            case block_header_t::reserved: return output; // error
+            case block_header_t::no_compression: inflate_no_compression(in, output); break;
+            case block_header_t::fixed_huffman: inflate_fixed_huffman(in, output); break;
+            case block_header_t::dynamic_huffman: inflate_dynamic_huffman(in, output); break;
         }
 
         if (header.bfinal) {
@@ -489,6 +546,32 @@ std::vector<uint8> deflate(const std::vector<uint8>& data)
         return std::vector<uint8>();
     }
 
-    return std::vector<uint8>();
+    std::vector<uint8> output;
+    zlib_header_t zlib_header;
+    zlib_header.cm     = deflate_compression_method;
+    zlib_header.cinfo  = static_cast<uint8>(std::log2(max_window_size) - 8);
+    zlib_header.fdict  = 0;
+    zlib_header.flevel = static_cast<uint8>(compression_algorithm::fastest);
+    zlib_header.fcheck = 0;
+
+    uint16 header_value = zlib_header.as_value();
+    if (header_value % 31 != 0) {
+        header_value = static_cast<uint16>((header_value / 31 + 1) * 31);
+    }
+
+    output.push_back(static_cast<uint8>((header_value >> 8) & 0xFF));
+    output.push_back(static_cast<uint8>(header_value & 0xFF));
+
+    deflate_no_compression(data, output);
+
+    uint32 adler = adler32(data);
+
+    output.push_back(static_cast<uint8>(adler & 0xFF));
+    output.push_back(static_cast<uint8>((adler >> 8) & 0xFF));
+    output.push_back(static_cast<uint8>((adler >> 16) & 0xFF));
+    output.push_back(static_cast<uint8>((adler >> 24) & 0xFF));
+
+    return output;
 }
+
 } // namespace framework::utils::zlib
