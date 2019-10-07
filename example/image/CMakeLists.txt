@@ -35,12 +35,12 @@ set(SOURCES main.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
-link_directories(../../output/lib)
+link_directories(../../output/${CMAKE_BUILD_TYPE}/lib)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE ../../output/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ../../output/${CMAKE_BUILD_TYPE}/include)
 
 target_link_libraries(${PROJECT_NAME} neutrino_static X11 GL)
 

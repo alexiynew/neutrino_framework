@@ -34,6 +34,7 @@
 
 #include <common/crc.hpp>
 #include <common/types.hpp>
+#include <common/zlib.hpp>
 #include <graphics/src/image/png.hpp>
 
 namespace
@@ -46,7 +47,8 @@ using framework::usize;
 using framework::graphics::color_t;
 using framework::graphics::details::image::image_info;
 
-constexpr int signature_length = 8;
+constexpr usize signature_length = 8;
+constexpr usize pass_count       = 7;
 
 std::vector<uint8> read_bytes(std::ifstream& in, uint32 count)
 {
@@ -174,6 +176,15 @@ struct file_header_t
     static file_header_t read(std::ifstream& in);
 };
 
+enum class filter_type_t
+{
+    none    = 0,
+    sub     = 1,
+    up      = 2,
+    average = 3,
+    peath   = 4
+};
+
 bool check_crc(const chunk_t& c)
 {
     framework::utils::crc32 crc;
@@ -235,7 +246,6 @@ bool check_header(const file_header_t& h)
             case ct::indexed: return (h.bit_depth == 1 || h.bit_depth == 2 || h.bit_depth == 4 || h.bit_depth == 8);
             case ct::greyscale_alpha: return (h.bit_depth == 8 || h.bit_depth == 16);
             case ct::truecolour_alpha: return (h.bit_depth == 8 || h.bit_depth == 16);
-            default: break;
         }
         return false;
     }();
@@ -251,6 +261,74 @@ bool check_header(const file_header_t& h)
 inline image_info make_image_info(const file_header_t& header)
 {
     return image_info{static_cast<int32>(header.width), static_cast<int32>(header.height), true};
+}
+
+using scanline_size_t = std::array<std::pair<usize, usize>, pass_count>;
+inline scanline_size_t scanline_sizes(const file_header_t& header)
+{
+    scanline_size_t scl_size;
+
+    scl_size[0] = std::pair((((header.width + 7) / 8) * header.bit_depth + 7) / 8, (header.height + 7) / 8);
+    scl_size[1] = std::pair((((header.width + 3) / 8) * header.bit_depth + 7) / 8, (header.height + 7) / 8);
+    scl_size[2] = std::pair((((header.width + 3) / 4) * header.bit_depth + 7) / 8, (header.height + 3) / 8);
+    scl_size[3] = std::pair((((header.width + 1) / 4) * header.bit_depth + 7) / 8, (header.height + 3) / 4);
+    scl_size[4] = std::pair((((header.width + 1) / 2) * header.bit_depth + 7) / 8, (header.height + 1) / 4);
+    scl_size[5] = std::pair((((header.width + 0) / 2) * header.bit_depth + 7) / 8, (header.height + 1) / 2);
+    scl_size[6] = std::pair((((header.width + 0) / 1) * header.bit_depth + 7) / 8, (header.height + 0) / 2);
+
+    return scl_size;
+}
+
+std::vector<uint8> reconstruct(const file_header_t& header, std::vector<uint8>&& data)
+{
+    if (data.empty()) {
+        return std::vector<uint8>();
+    }
+
+    std::vector<uint8> res;
+
+    auto reconstruct_pass = [&res](usize length, usize count, std::vector<uint8>::iterator it) {
+        for (usize c = 0; c < count; ++c) {
+            const filter_type_t ft = static_cast<filter_type_t>(*it++);
+            for (usize l = 0; l < length; ++l) {
+                switch (ft) {
+                    case filter_type_t::none: res.push_back(*it++); break;
+                    case filter_type_t::sub: break;
+                    case filter_type_t::up: break;
+                    case filter_type_t::average: break;
+                    case filter_type_t::peath: break;
+                }
+            }
+        }
+
+        return it;
+    };
+
+    switch (header.interlace_method) {
+        case file_header_t::interlace_method_t::adam7: {
+            auto it = data.begin();
+            for (const auto& [len, count] : scanline_sizes(header)) {
+                it = reconstruct_pass(len, count, it);
+            }
+        } break;
+        case file_header_t::interlace_method_t::no: reconstruct_pass(header.width, header.height, data.begin()); break;
+    }
+
+    return res;
+}
+
+std::vector<uint8> unserialize(const file_header_t& header, std::vector<uint8>&& data)
+{
+    if (data.empty()) {
+        return std::vector<uint8>();
+    }
+
+    switch (header.interlace_method) {
+        case file_header_t::interlace_method_t::adam7 break;
+        case file_header_t::interlace_method_t::no: break;
+    }
+
+    return std::vector<uint8>();
 }
 
 } // namespace
@@ -303,6 +381,12 @@ load_result_t load(const std::string& filename)
             case chunk_t::type_t::zTXt: break;
             default: break;
         }
+    }
+
+    std::vector<uint8> raw = unserialize(header, reconstruct(header, utils::zlib::inflate(data)));
+
+    if (raw.empty()) {
+        return load_result_t();
     }
 
     std::vector<color_t> res;
