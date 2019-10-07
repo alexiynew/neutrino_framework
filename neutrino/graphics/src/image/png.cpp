@@ -324,7 +324,7 @@ std::vector<uint8> unserialize(const file_header_t& header, std::vector<uint8>&&
     }
 
     switch (header.interlace_method) {
-        case file_header_t::interlace_method_t::adam7 break;
+        case file_header_t::interlace_method_t::adam7: break;
         case file_header_t::interlace_method_t::no: break;
     }
 
