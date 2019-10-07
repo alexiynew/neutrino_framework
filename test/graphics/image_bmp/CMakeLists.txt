@@ -42,10 +42,10 @@ set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME
 add_dependencies(${TESTS_TARGET} ${TEST_NAME})
 
 file(GLOB BMP_GOOD "${TEST_DIR}/good/*.bmp")
-file(COPY ${BMP_GOOD} DESTINATION ${CMAKE_BINARY_DIR}/test/image_bmp/good)
+file(COPY ${BMP_GOOD} DESTINATION ${CMAKE_BINARY_DIR}/test/bmp/good)
 
 file(GLOB BMP_BAD "${TEST_DIR}/bad/*.bmp")
-file(COPY ${BMP_BAD} DESTINATION ${CMAKE_BINARY_DIR}/test/image_bmp/bad)
+file(COPY ${BMP_BAD} DESTINATION ${CMAKE_BINARY_DIR}/test/bmp/bad)
 
 file(GLOB BMP_QUESTIONABLE "${TEST_DIR}/questionable/*.bmp")
-file(COPY ${BMP_QUESTIONABLE} DESTINATION ${CMAKE_BINARY_DIR}/test/image_bmp/questionable)
+file(COPY ${BMP_QUESTIONABLE} DESTINATION ${CMAKE_BINARY_DIR}/test/bmp/questionable)

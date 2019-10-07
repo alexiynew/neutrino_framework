@@ -19,3 +19,6 @@ xorg.conf
 .dir-locals.*
 tags
 *.txt.user
+
+.kdev4
+*.kdev4

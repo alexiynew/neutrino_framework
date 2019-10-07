@@ -135,7 +135,7 @@ chunk_t chunk_t::read(std::ifstream& in)
 
 bool chunk_t::is_critical() const
 {
-    return (((static_cast<uint32>(type) >> 24) && 0xFF) & 0x20) == 0;
+    return (((static_cast<uint32>(type) >> 24) & 0xFF) & 0x20) == 0;
 }
 
 struct file_header_t
@@ -263,20 +263,60 @@ inline image_info make_image_info(const file_header_t& header)
     return image_info{static_cast<int32>(header.width), static_cast<int32>(header.height), true};
 }
 
-using scanline_size_t = std::array<std::pair<usize, usize>, pass_count>;
-inline scanline_size_t scanline_sizes(const file_header_t& header)
+struct pass_info
 {
-    scanline_size_t scl_size;
+    usize width;
+    usize height;
+    struct
+    {
+        usize w, h;
+    } pos;
+    struct
+    {
+        usize w, h;
+    } offset;
+};
 
-    scl_size[0] = std::pair((((header.width + 7) / 8) * header.bit_depth + 7) / 8, (header.height + 7) / 8);
-    scl_size[1] = std::pair((((header.width + 3) / 8) * header.bit_depth + 7) / 8, (header.height + 7) / 8);
-    scl_size[2] = std::pair((((header.width + 3) / 4) * header.bit_depth + 7) / 8, (header.height + 3) / 8);
-    scl_size[3] = std::pair((((header.width + 1) / 4) * header.bit_depth + 7) / 8, (header.height + 3) / 4);
-    scl_size[4] = std::pair((((header.width + 1) / 2) * header.bit_depth + 7) / 8, (header.height + 1) / 4);
-    scl_size[5] = std::pair((((header.width + 0) / 2) * header.bit_depth + 7) / 8, (header.height + 1) / 2);
-    scl_size[6] = std::pair((((header.width + 0) / 1) * header.bit_depth + 7) / 8, (header.height + 0) / 2);
+inline std::array<pass_info, pass_count> get_pass_info(const file_header_t& header)
+{
+    std::array<pass_info, pass_count> info;
 
-    return scl_size;
+    info[0].width  = (header.width + 7) / 8;
+    info[0].height = (header.height + 7) / 8;
+    info[0].pos    = {0, 0};
+    info[0].offset = {8, 8};
+
+    info[1].width  = (header.width + 3) / 8;
+    info[1].height = (header.height + 7) / 8;
+    info[1].pos    = {4, 0};
+    info[1].offset = {0, 8};
+
+    info[2].width  = (header.width + 3) / 4;
+    info[2].height = (header.height + 3) / 8;
+    info[2].pos    = {0, 4};
+    info[2].offset = {4, 8};
+
+    info[3].width  = (header.width + 1) / 4;
+    info[3].height = (header.height + 3) / 4;
+    info[3].pos    = {2, 0};
+    info[3].offset = {4, 4};
+
+    info[4].width  = (header.width + 1) / 2;
+    info[4].height = (header.height + 1) / 4;
+    info[4].pos    = {0, 2};
+    info[4].offset = {2, 4};
+
+    info[5].width  = (header.width + 0) / 2;
+    info[5].height = (header.height + 1) / 2;
+    info[5].pos    = {1, 0};
+    info[5].offset = {2, 2};
+
+    info[6].width  = (header.width + 0) / 1;
+    info[6].height = (header.height + 0) / 2;
+    info[6].pos    = {0, 1};
+    info[6].offset = {1, 2};
+
+    return info;
 }
 
 std::vector<uint8> reconstruct(const file_header_t& header, std::vector<uint8>&& data)
@@ -287,10 +327,12 @@ std::vector<uint8> reconstruct(const file_header_t& header, std::vector<uint8>&&
 
     std::vector<uint8> res;
 
-    auto reconstruct_pass = [&res](usize length, usize count, std::vector<uint8>::iterator it) {
-        for (usize c = 0; c < count; ++c) {
+    auto reconstruct_pass = [&res, bit_depth = header.bit_depth](const pass_info& pass,
+                                                                 std::vector<uint8>::iterator it) {
+        const usize bytes = (pass.width * bit_depth + 7) / 8;
+        for (usize h = 0; h < pass.height; ++h) {
             const filter_type_t ft = static_cast<filter_type_t>(*it++);
-            for (usize l = 0; l < length; ++l) {
+            for (usize b = 0; b < bytes; ++b) {
                 switch (ft) {
                     case filter_type_t::none: res.push_back(*it++); break;
                     case filter_type_t::sub: break;
@@ -307,28 +349,36 @@ std::vector<uint8> reconstruct(const file_header_t& header, std::vector<uint8>&&
     switch (header.interlace_method) {
         case file_header_t::interlace_method_t::adam7: {
             auto it = data.begin();
-            for (const auto& [len, count] : scanline_sizes(header)) {
-                it = reconstruct_pass(len, count, it);
+            for (const auto& info : get_pass_info(header)) {
+                it = reconstruct_pass(info, it);
             }
         } break;
-        case file_header_t::interlace_method_t::no: reconstruct_pass(header.width, header.height, data.begin()); break;
+        case file_header_t::interlace_method_t::no:
+            reconstruct_pass({header.width, header.height, {0, 0}, {1, 1}}, data.begin());
+            break;
     }
 
     return res;
 }
 
-std::vector<uint8> unserialize(const file_header_t& header, std::vector<uint8>&& data)
+std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>&& data)
 {
     if (data.empty()) {
-        return std::vector<uint8>();
+        return std::vector<color_t>();
     }
+
+    std::vector<uint8> res;
+
+    auto unserialize_pass = [&res](usize length, usize count, std::vector<uint8>::iterator it) {
+
+    };
 
     switch (header.interlace_method) {
         case file_header_t::interlace_method_t::adam7: break;
         case file_header_t::interlace_method_t::no: break;
     }
 
-    return std::vector<uint8>();
+    return std::vector<color_t>();
 }
 
 } // namespace
