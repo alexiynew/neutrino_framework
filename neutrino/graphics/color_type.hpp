@@ -55,6 +55,12 @@ struct color_t
     color_t(uint16 value);
     color_t(uint32 value);
 
+    color_t(const color_t&) = default;
+    color_t(color_t&&)      = default;
+
+    color_t& operator=(const color_t&) = default;
+    color_t& operator=(color_t&&) = default;
+
     uint8* data();
     const uint8* data() const;
 };

@@ -111,7 +111,7 @@ uint16 reflect(uint16 value, uint8 size)
 class huffman_code_table
 {
 public:
-    huffman_code_table(const std::vector<uint8>& codes_lengths)
+    explicit huffman_code_table(const std::vector<uint8>& codes_lengths)
     {
         build_codes(codes_lengths);
     }
@@ -271,7 +271,7 @@ litlen_distance_codes_t fixed_huffman_codes()
 
     std::vector<uint8> distance_alphabet(distance_alphabet_size, 5);
 
-    return std::make_tuple(litlen_alphabet, distance_alphabet);
+    return std::make_tuple(huffman_code_table(litlen_alphabet), huffman_code_table(distance_alphabet));
 }
 
 litlen_distance_codes_t dynamic_huffman_codes(bit_stream& in)
@@ -321,7 +321,7 @@ litlen_distance_codes_t dynamic_huffman_codes(bit_stream& in)
     const std::vector<uint8> litlen(begin(lengths), next(begin(lengths), lit_len_codes_count));
     const std::vector<uint8> dist(next(begin(lengths), lit_len_codes_count), end(lengths));
 
-    return std::make_tuple(litlen, dist);
+    return std::make_tuple(huffman_code_table(litlen), huffman_code_table(dist));
 }
 
 uint16 read_length(uint16 value, bit_stream& in)

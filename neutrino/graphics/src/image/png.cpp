@@ -367,18 +367,52 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
         return std::vector<color_t>();
     }
 
-    std::vector<uint8> res;
+    std::vector<color_t> res(header.width * header.height);
 
-    auto unserialize_pass = [&res](usize length, usize count, std::vector<uint8>::iterator it) {
+    auto unserialize_pass = [&res, &header](const pass_info& pass, std::vector<uint8>::iterator it) {
+        const usize bytes = (pass.width * header.bit_depth + 7) / 8;
 
+        auto [x, y] = pass.pos;
+        for (usize h = 0; h < pass.height; ++h) {
+            for (usize b = 0; b < bytes; ++b) {
+                switch (header.bit_depth) {
+                    case 1: {
+                        const uint8 value = *it++;
+                        for (usize i = 0; i < 8; ++i) {
+                            if (y * header.height + x >= res.size()) {
+                                throw std::runtime_error("SIZE");
+                            }
+                            if ((value >> (7 - i)) & 0x01) {
+                                res[y * header.width + x] = color_t(static_cast<uint32>(0xFFFFFFFF));
+                            } else {
+                                res[y * header.width + x] = color_t(static_cast<uint32>(0x00000000));
+                            }
+                            x += pass.offset.w;
+                        }
+                    } break;
+                    default: break;
+                }
+            }
+            x = pass.pos.w;
+            y += pass.offset.h;
+        }
+
+        return it;
     };
 
     switch (header.interlace_method) {
-        case file_header_t::interlace_method_t::adam7: break;
-        case file_header_t::interlace_method_t::no: break;
+        case file_header_t::interlace_method_t::adam7: {
+            auto it = data.begin();
+            for (const auto& info : get_pass_info(header)) {
+                it = unserialize_pass(info, it);
+            }
+        } break;
+        case file_header_t::interlace_method_t::no:
+            unserialize_pass({header.width, header.height, {0, 0}, {1, 1}}, data.begin());
+            break;
     }
 
-    return std::vector<color_t>();
+    return res;
 }
 
 } // namespace
@@ -433,15 +467,9 @@ load_result_t load(const std::string& filename)
         }
     }
 
-    std::vector<uint8> raw = unserialize(header, reconstruct(header, utils::zlib::inflate(data)));
+    std::vector<color_t> res = unserialize(header, reconstruct(header, utils::zlib::inflate(data)));
 
-    if (raw.empty()) {
-        return load_result_t();
-    }
-
-    std::vector<color_t> res;
-
-    return std::make_optional(std::make_tuple(make_image_info(header), res));
+    return std::make_optional(std::make_tuple(make_image_info(header), std::move(res)));
 }
 
 bool is_png(const std::string& filename)

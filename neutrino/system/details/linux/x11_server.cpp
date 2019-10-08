@@ -92,8 +92,10 @@ std::shared_ptr<x11_server> x11_server::connect()
     return server_instance().lock();
 }
 
-x11_server::x11_server() : m_display{XOpenDisplay(nullptr)}
+x11_server::x11_server() : m_display{nullptr}
 {
+    m_display = XOpenDisplay(nullptr);
+
     if (m_display == nullptr) {
         throw std::runtime_error("Failed to open connection to X server, there is no display.");
     }
