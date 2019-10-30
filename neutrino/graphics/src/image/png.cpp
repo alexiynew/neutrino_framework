@@ -374,19 +374,15 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
 
         auto [x, y] = pass.pos;
         for (usize h = 0; h < pass.height; ++h) {
-            for (usize b = 0; b < bytes; ++b) {
+            for (usize b = 0, w = 0; b < bytes && w < pass.width; ++b) {
                 switch (header.bit_depth) {
                     case 1: {
                         const uint8 value = *it++;
-                        for (usize i = 0; i < 8; ++i) {
-                            if (y * header.height + x >= res.size()) {
-                                throw std::runtime_error("SIZE");
-                            }
-                            if ((value >> (7 - i)) & 0x01) {
-                                res[y * header.width + x] = color_t(static_cast<uint32>(0xFFFFFFFF));
-                            } else {
-                                res[y * header.width + x] = color_t(static_cast<uint32>(0x00000000));
-                            }
+                        const std::array<color_t, 2> colors = {color_t(uint32(0x000000FF)), color_t(uint32(0xFFFFFFFF))};
+                        const usize pos = (header.height - y - 1) * header.width;
+                        
+                        for (usize i = 0; i < 8 && w < pass.width; ++i, ++w) {
+                            res[pos + x] = colors[(value >> (7 - i)) & 0x01];
                             x += pass.offset.w;
                         }
                     } break;
@@ -437,8 +433,7 @@ load_result_t load(const std::string& filename)
     }
 
     std::vector<uint8> data;
-    for (chunk_t chunk = chunk_t::read(file); file && chunk.type != chunk_t::type_t::IEND;
-         chunk         = chunk_t::read(file)) {
+    for (chunk_t chunk = chunk_t::read(file); file && chunk.type != chunk_t::type_t::IEND; chunk = chunk_t::read(file)) {
         if (!check_crc(chunk) && chunk.is_critical()) {
             return load_result_t();
         }

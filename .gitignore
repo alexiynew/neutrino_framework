@@ -11,6 +11,9 @@ _lvimrc
 _vimrc
 .DS_Store
 .idea
+.cproject
+.project
+.settings/
 
 .clang_complete
 *.log
@@ -22,3 +25,4 @@ tags
 
 .kdev4
 *.kdev4
+*.kate-swp
