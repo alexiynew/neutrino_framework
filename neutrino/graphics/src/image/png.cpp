@@ -289,7 +289,7 @@ inline std::array<pass_info, pass_count> get_pass_info(const file_header_t& head
     info[1].width  = (header.width + 3) / 8;
     info[1].height = (header.height + 7) / 8;
     info[1].pos    = {4, 0};
-    info[1].offset = {0, 8};
+    info[1].offset = {8, 8};
 
     info[2].width  = (header.width + 3) / 4;
     info[2].height = (header.height + 3) / 8;
@@ -367,19 +367,20 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
         return std::vector<color_t>();
     }
 
-    std::vector<color_t> res(header.width * header.height);
+    const std::array<color_t, 2> colors = {color_t(uint32(0x000000FF)), color_t(uint32(0xFFFFFFFF))};
+                        
+    std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
 
-    auto unserialize_pass = [&res, &header](const pass_info& pass, std::vector<uint8>::iterator it) {
+    auto unserialize_pass = [&res, &header, &colors](const pass_info& pass, std::vector<uint8>::iterator it) {
         const usize bytes = (pass.width * header.bit_depth + 7) / 8;
 
         auto [x, y] = pass.pos;
         for (usize h = 0; h < pass.height; ++h) {
+            const usize pos = (header.height - y - 1) * header.width;
             for (usize b = 0, w = 0; b < bytes && w < pass.width; ++b) {
                 switch (header.bit_depth) {
                     case 1: {
                         const uint8 value = *it++;
-                        const std::array<color_t, 2> colors = {color_t(uint32(0x000000FF)), color_t(uint32(0xFFFFFFFF))};
-                        const usize pos = (header.height - y - 1) * header.width;
                         
                         for (usize i = 0; i < 8 && w < pass.width; ++i, ++w) {
                             res[pos + x] = colors[(value >> (7 - i)) & 0x01];
@@ -399,9 +400,15 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
     switch (header.interlace_method) {
         case file_header_t::interlace_method_t::adam7: {
             auto it = data.begin();
-            for (const auto& info : get_pass_info(header)) {
-                it = unserialize_pass(info, it);
-            }
+            auto passes = get_pass_info(header);
+            
+            it = unserialize_pass(passes[0], it);
+            it = unserialize_pass(passes[1], it);
+            it = unserialize_pass(passes[2], it);
+            it = unserialize_pass(passes[3], it);
+            it = unserialize_pass(passes[4], it);
+            it = unserialize_pass(passes[5], it);
+            it = unserialize_pass(passes[6], it);
         } break;
         case file_header_t::interlace_method_t::no:
             unserialize_pass({header.width, header.height, {0, 0}, {1, 1}}, data.begin());

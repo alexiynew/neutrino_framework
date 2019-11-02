@@ -361,7 +361,7 @@ int main()
     shader_program shader = load_shader(vertex_shader_src, fragment_shader_src);
 
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
-     mvp          = scale(mvp, {4, 4, 4});
+     mvp          = scale(mvp, {5, 5, 5});
 
     std::vector<object> objects = generate_objects(images);
     arrange(objects, 640, 480);
