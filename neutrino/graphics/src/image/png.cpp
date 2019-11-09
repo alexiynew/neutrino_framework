@@ -367,26 +367,58 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
         return std::vector<color_t>();
     }
 
-    const std::array<color_t, 2> colors = {color_t(uint32(0x000000FF)), color_t(uint32(0xFFFFFFFF))};
-                        
+    const std::array<color_t, 2> colors2   = {color_t(uint32(0x000000FF)), color_t(uint32(0xFFFFFFFF))};
+    const std::array<color_t, 4> colors4   = {color_t(uint32(0x000000FF)),
+                                            color_t(uint32(0x333333FF)),
+                                            color_t(uint32(0xAAAAAAFF)),
+                                            color_t(uint32(0xFFFFFFFF))};
+    const std::array<color_t, 16> colors16 = {color_t(uint32(0x000000FF)),
+                                              color_t(uint32(0x111111FF)),
+                                              color_t(uint32(0x222222FF)),
+                                              color_t(uint32(0x333333FF)),
+                                              color_t(uint32(0x444444FF)),
+                                              color_t(uint32(0x555555FF)),
+                                              color_t(uint32(0x666666FF)),
+                                              color_t(uint32(0x777777FF)),
+                                              color_t(uint32(0x888888FF)),
+                                              color_t(uint32(0x999999FF)),
+                                              color_t(uint32(0xAAAAAAFF)),
+                                              color_t(uint32(0xBBBBBBFF)),
+                                              color_t(uint32(0xCCCCCCFF)),
+                                              color_t(uint32(0xDDDDDDFF)),
+                                              color_t(uint32(0xEEEEEEFF)),
+                                              color_t(uint32(0xFFFFFFFF))};
+
     std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
 
-    auto unserialize_pass = [&res, &header, &colors](const pass_info& pass, std::vector<uint8>::iterator it) {
+    auto unserialize_pass = [&res, &header, &colors2, &colors4, &colors16](const pass_info& pass,
+                                                                           std::vector<uint8>::iterator it) {
         const usize bytes = (pass.width * header.bit_depth + 7) / 8;
 
         auto [x, y] = pass.pos;
         for (usize h = 0; h < pass.height; ++h) {
             const usize pos = (header.height - y - 1) * header.width;
             for (usize b = 0, w = 0; b < bytes && w < pass.width; ++b) {
+                const uint8 value = *it++;
                 switch (header.bit_depth) {
-                    case 1: {
-                        const uint8 value = *it++;
-                        
+                    case 1:
                         for (usize i = 0; i < 8 && w < pass.width; ++i, ++w) {
-                            res[pos + x] = colors[(value >> (7 - i)) & 0x01];
+                            res[pos + x] = colors2[(value >> (7 - i)) & 0x01];
                             x += pass.offset.w;
                         }
-                    } break;
+                        break;
+                    case 2:
+                        for (usize i = 0; i < 8 && w < pass.width; i += 2, ++w) {
+                            res[pos + x] = colors4[(value >> (6 - i)) & 0x03];
+                            x += pass.offset.w;
+                        }
+                        break;
+                    case 4:
+                        for (usize i = 0; i < 8 && w < pass.width; i += 4, ++w) {
+                            res[pos + x] = colors16[(value >> (4 - i)) & 0x0F];
+                            x += pass.offset.w;
+                        }
+                        break;
                     default: break;
                 }
             }
@@ -399,9 +431,9 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
 
     switch (header.interlace_method) {
         case file_header_t::interlace_method_t::adam7: {
-            auto it = data.begin();
+            auto it     = data.begin();
             auto passes = get_pass_info(header);
-            
+
             it = unserialize_pass(passes[0], it);
             it = unserialize_pass(passes[1], it);
             it = unserialize_pass(passes[2], it);
@@ -440,7 +472,8 @@ load_result_t load(const std::string& filename)
     }
 
     std::vector<uint8> data;
-    for (chunk_t chunk = chunk_t::read(file); file && chunk.type != chunk_t::type_t::IEND; chunk = chunk_t::read(file)) {
+    for (chunk_t chunk = chunk_t::read(file); file && chunk.type != chunk_t::type_t::IEND;
+         chunk         = chunk_t::read(file)) {
         if (!check_crc(chunk) && chunk.is_critical()) {
             return load_result_t();
         }

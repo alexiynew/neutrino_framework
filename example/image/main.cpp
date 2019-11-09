@@ -131,8 +131,10 @@ const std::vector<std::string> bmp_names = {
 };
 
 const std::vector<std::string> png_names = {
-"png/basi0g01.png",
-//"png/basi0g02.png", "png/basi0g04.png", "png/basi0g08.png", "png/basi0g16.png", "png/basi2c08.png",
+//"png/basi0g01.png",
+//"png/basi0g02.png", 
+"png/basi0g04.png", 
+//"png/basi0g08.png", "png/basi0g16.png", "png/basi2c08.png",
 //"png/basi2c16.png", "png/basi3p01.png", "png/basi3p02.png", "png/basi3p04.png", "png/basi3p08.png", "png/basi4a08.png",
 //"png/basi4a16.png", "png/basi6a08.png", "png/basi6a16.png", "png/basn0g01.png", "png/basn0g02.png", "png/basn0g04.png",
 //"png/basn0g08.png", "png/basn0g16.png", "png/basn2c08.png", "png/basn2c16.png", "png/basn3p01.png", "png/basn3p02.png",
@@ -361,7 +363,7 @@ int main()
     shader_program shader = load_shader(vertex_shader_src, fragment_shader_src);
 
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
-     mvp          = scale(mvp, {5, 5, 5});
+    mvp          = scale(mvp, {5, 5, 5});
 
     std::vector<object> objects = generate_objects(images);
     arrange(objects, 640, 480);
