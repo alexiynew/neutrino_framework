@@ -29,6 +29,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <fstream>
 #include <vector>
 
@@ -319,6 +320,21 @@ inline std::array<pass_info, pass_count> get_pass_info(const file_header_t& head
     return info;
 }
 
+std::vector<uint8> generate_samples(uint8 bit_depth)
+{
+    std::vector<uint8> res(static_cast<usize>(std::pow(2, bit_depth)));
+
+    const uint32 maxinput  = static_cast<uint32>(std::pow(2, bit_depth) - 1);
+    const uint32 maxoutput = static_cast<uint32>(std::pow(2, 8) - 1);
+    const uint32 factor    = maxoutput / maxinput;
+
+    for (uint32 input = 0; input <= maxinput; input++) {
+        res[input] = static_cast<uint8>(input * factor);
+    }
+
+    return res;
+}
+
 std::vector<uint8> reconstruct(const file_header_t& header, std::vector<uint8>&& data)
 {
     if (data.empty()) {
@@ -367,32 +383,11 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
         return std::vector<color_t>();
     }
 
-    const std::array<color_t, 2> colors2   = {color_t(uint32(0x000000FF)), color_t(uint32(0xFFFFFFFF))};
-    const std::array<color_t, 4> colors4   = {color_t(uint32(0x000000FF)),
-                                            color_t(uint32(0x333333FF)),
-                                            color_t(uint32(0xAAAAAAFF)),
-                                            color_t(uint32(0xFFFFFFFF))};
-    const std::array<color_t, 16> colors16 = {color_t(uint32(0x000000FF)),
-                                              color_t(uint32(0x111111FF)),
-                                              color_t(uint32(0x222222FF)),
-                                              color_t(uint32(0x333333FF)),
-                                              color_t(uint32(0x444444FF)),
-                                              color_t(uint32(0x555555FF)),
-                                              color_t(uint32(0x666666FF)),
-                                              color_t(uint32(0x777777FF)),
-                                              color_t(uint32(0x888888FF)),
-                                              color_t(uint32(0x999999FF)),
-                                              color_t(uint32(0xAAAAAAFF)),
-                                              color_t(uint32(0xBBBBBBFF)),
-                                              color_t(uint32(0xCCCCCCFF)),
-                                              color_t(uint32(0xDDDDDDFF)),
-                                              color_t(uint32(0xEEEEEEFF)),
-                                              color_t(uint32(0xFFFFFFFF))};
+    const auto samples = generate_samples(header.bit_depth);
 
     std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
 
-    auto unserialize_pass = [&res, &header, &colors2, &colors4, &colors16](const pass_info& pass,
-                                                                           std::vector<uint8>::iterator it) {
+    auto unserialize_pass = [&res, &header, &samples](const pass_info& pass, std::vector<uint8>::iterator it) {
         const usize bytes = (pass.width * header.bit_depth + 7) / 8;
 
         auto [x, y] = pass.pos;
@@ -403,19 +398,22 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
                 switch (header.bit_depth) {
                     case 1:
                         for (usize i = 0; i < 8 && w < pass.width; ++i, ++w) {
-                            res[pos + x] = colors2[(value >> (7 - i)) & 0x01];
+                            const uint8 color = samples[(value >> (7 - i)) & 0x01];
+                            res[pos + x]      = color_t(color, color, color, 0xFF);
                             x += pass.offset.w;
                         }
                         break;
                     case 2:
                         for (usize i = 0; i < 8 && w < pass.width; i += 2, ++w) {
-                            res[pos + x] = colors4[(value >> (6 - i)) & 0x03];
+                            const uint8 color = samples[(value >> (6 - i)) & 0x03];
+                            res[pos + x]      = color_t(color, color, color, 0xFF);
                             x += pass.offset.w;
                         }
                         break;
                     case 4:
                         for (usize i = 0; i < 8 && w < pass.width; i += 4, ++w) {
-                            res[pos + x] = colors16[(value >> (4 - i)) & 0x0F];
+                            const uint8 color = samples[(value >> (4 - i)) & 0x0F];
+                            res[pos + x]      = color_t(color, color, color, 0xFF);
                             x += pass.offset.w;
                         }
                         break;
