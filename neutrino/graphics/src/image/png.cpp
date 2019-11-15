@@ -266,59 +266,176 @@ inline image_info make_image_info(const file_header_t& header)
 
 struct pass_info
 {
-    usize width;
-    usize height;
-    struct
+    struct position_t
     {
-        usize w, h;
-    } pos;
-    struct
+        usize x;
+        usize y;
+    };
+
+    struct offset_t
     {
-        usize w, h;
-    } offset;
+        usize x;
+        usize y;
+    };
+
+    pass_info(usize w, usize h, usize b, position_t p, offset_t o)
+        : width(w), height(h), bytes_per_scanline(b), position(p), offset(o)
+    {}
+
+    const usize width;
+    const usize height;
+    const usize bytes_per_scanline;
+    const position_t position;
+    const offset_t offset;
 };
 
-inline std::array<pass_info, pass_count> get_pass_info(const file_header_t& header)
+std::vector<pass_info> get_pass_info(const file_header_t& header)
 {
-    std::array<pass_info, pass_count> info;
+    switch (header.interlace_method) {
+        case file_header_t::interlace_method_t::adam7: {
+            std::array<usize, pass_count> widths = {
+            (header.width + 7) / 8,
+            (header.width + 3) / 8,
+            (header.width + 3) / 4,
+            (header.width + 1) / 4,
+            (header.width + 1) / 2,
+            (header.width + 0) / 2,
+            (header.width + 0) / 1,
+            };
 
-    info[0].width  = (header.width + 7) / 8;
-    info[0].height = (header.height + 7) / 8;
-    info[0].pos    = {0, 0};
-    info[0].offset = {8, 8};
+            std::vector<pass_info> info = {
+            pass_info(widths[0], (header.height + 7) / 8, (widths[0] * header.bit_depth + 7) / 8, {0, 0}, {8, 8}),
+            pass_info(widths[1], (header.height + 7) / 8, (widths[1] * header.bit_depth + 7) / 8, {4, 0}, {8, 8}),
+            pass_info(widths[2], (header.height + 3) / 8, (widths[2] * header.bit_depth + 7) / 8, {0, 4}, {4, 8}),
+            pass_info(widths[3], (header.height + 3) / 4, (widths[3] * header.bit_depth + 7) / 8, {2, 0}, {4, 4}),
+            pass_info(widths[4], (header.height + 1) / 4, (widths[4] * header.bit_depth + 7) / 8, {0, 2}, {2, 4}),
+            pass_info(widths[5], (header.height + 1) / 2, (widths[5] * header.bit_depth + 7) / 8, {1, 0}, {2, 2}),
+            pass_info(widths[6], (header.height + 0) / 2, (widths[6] * header.bit_depth + 7) / 8, {0, 1}, {1, 2}),
+            };
 
-    info[1].width  = (header.width + 3) / 8;
-    info[1].height = (header.height + 7) / 8;
-    info[1].pos    = {4, 0};
-    info[1].offset = {8, 8};
+            return info;
+        }
+        case file_header_t::interlace_method_t::no:
+            return {pass_info(header.width, header.height, (header.width * header.bit_depth + 7) / 8, {0, 0}, {1, 1})};
+    }
 
-    info[2].width  = (header.width + 3) / 4;
-    info[2].height = (header.height + 3) / 8;
-    info[2].pos    = {0, 4};
-    info[2].offset = {4, 8};
-
-    info[3].width  = (header.width + 1) / 4;
-    info[3].height = (header.height + 3) / 4;
-    info[3].pos    = {2, 0};
-    info[3].offset = {4, 4};
-
-    info[4].width  = (header.width + 1) / 2;
-    info[4].height = (header.height + 1) / 4;
-    info[4].pos    = {0, 2};
-    info[4].offset = {2, 4};
-
-    info[5].width  = (header.width + 0) / 2;
-    info[5].height = (header.height + 1) / 2;
-    info[5].pos    = {1, 0};
-    info[5].offset = {2, 2};
-
-    info[6].width  = (header.width + 0) / 1;
-    info[6].height = (header.height + 0) / 2;
-    info[6].pos    = {0, 1};
-    info[6].offset = {1, 2};
-
-    return info;
+    return std::vector<pass_info>();
 }
+
+#pragma region filter reconstruction
+
+template <typename In, typename Out>
+inline void reconstruct_sub(In first, In last, In a, Out x)
+{
+    while (first != last) {
+        *x++ = static_cast<uint8>((*a++ + *first++) & 0xFF);
+    }
+}
+
+template <typename In, typename Out>
+inline void reconstruct_up(In first, In last, In b, Out x)
+{
+    while (first != last) {
+        *x++ = static_cast<uint8>((*b++ + *first++) & 0xFF);
+    }
+}
+
+template <typename In, typename Out>
+inline void reconstruct_average(In first, In last, In a, In b, Out x)
+{
+    while (first != last) {
+        *x++ = static_cast<uint8>((((*a++ + *b++) >> 1) + *first++) & 0xFF);
+    }
+}
+
+uint8 paeth_predictor(uint8 a, uint8 b, uint8 c)
+{
+    const uint8 p  = static_cast<uint8>((a + b - c) & 0xFF);
+    const uint8 pa = static_cast<uint8>(abs(p - a) & 0xFF);
+    const uint8 pb = static_cast<uint8>(abs(p - b) & 0xFF);
+    const uint8 pc = static_cast<uint8>(abs(p - c) & 0xFF);
+
+    if (pa <= pb && pa <= pc) {
+        return a;
+    } else if (pb <= pc) {
+        return b;
+    } else {
+        return c;
+    }
+}
+
+template <typename In, typename Out>
+inline void reconstruct_peath(In first, In last, In a, In b, In c, Out x)
+{
+    while (first != last) {
+        *x++ = static_cast<uint8>((paeth_predictor(*a++, *b++, *c++) + *first++) & 0xFF);
+    }
+}
+
+std::tuple<std::vector<uint8>::iterator, std::vector<uint8>::iterator> reconstruct_pass(std::vector<uint8>::iterator in,
+                                                                                        std::vector<uint8>::iterator out,
+                                                                                        const pass_info& pass)
+{
+    const auto bytes_in_row = (pass.bytes_per_scanline + 1);
+    std::vector<uint8> res(bytes_in_row * (pass.height + 1), 0);
+
+    auto res_a = next(res.begin(), bytes_in_row);
+    auto res_b = next(res.begin(), 1);
+    auto res_c = res.begin();
+    auto res_x = next(res.begin(), bytes_in_row + 1);
+
+    for (usize h = 0; h < pass.height; ++h) {
+        const filter_type_t ft = static_cast<filter_type_t>(*in++);
+
+        auto last = next(in, pass.bytes_per_scanline);
+
+        switch (ft) {
+            case filter_type_t::none: std::copy(in, last, res_x); break;
+            case filter_type_t::sub: reconstruct_sub(in, last, res_a, res_x); break;
+            case filter_type_t::up: reconstruct_up(in, last, res_b, res_x); break;
+            case filter_type_t::average: reconstruct_average(in, last, res_a, res_b, res_x); break;
+            case filter_type_t::peath: reconstruct_peath(in, last, res_a, res_b, res_c, res_x); break;
+        }
+
+        advance(res_a, bytes_in_row);
+        advance(res_b, bytes_in_row);
+        advance(res_c, bytes_in_row);
+        advance(res_x, bytes_in_row);
+        in = last;
+    }
+
+    auto it = next(res.begin(), bytes_in_row + 1);
+    for (usize h = 0; h < pass.height; ++h) {
+        auto last = next(it, pass.bytes_per_scanline);
+
+        out = std::copy(it, last, out);
+
+        advance(it, bytes_in_row);
+    }
+
+    return std::make_tuple(in, out);
+}
+
+std::vector<uint8> reconstruct(const file_header_t& header, std::vector<uint8>&& data)
+{
+    if (data.empty()) {
+        return std::vector<uint8>();
+    }
+
+    std::vector<uint8> res(header.width * header.height, 0);
+
+    auto in  = data.begin();
+    auto out = res.begin();
+    for (const auto& pass : get_pass_info(header)) {
+        std::tie(in, out) = reconstruct_pass(in, out, pass);
+    }
+
+    return res;
+}
+
+#pragma endregion
+
+#pragma region unserialize
 
 std::vector<uint8> generate_samples(uint8 bit_depth)
 {
@@ -335,48 +452,6 @@ std::vector<uint8> generate_samples(uint8 bit_depth)
     return res;
 }
 
-std::vector<uint8> reconstruct(const file_header_t& header, std::vector<uint8>&& data)
-{
-    if (data.empty()) {
-        return std::vector<uint8>();
-    }
-
-    std::vector<uint8> res;
-
-    auto reconstruct_pass = [&res, bit_depth = header.bit_depth](const pass_info& pass,
-                                                                 std::vector<uint8>::iterator it) {
-        const usize bytes = (pass.width * bit_depth + 7) / 8;
-        for (usize h = 0; h < pass.height; ++h) {
-            const filter_type_t ft = static_cast<filter_type_t>(*it++);
-            for (usize b = 0; b < bytes; ++b) {
-                switch (ft) {
-                    case filter_type_t::none: res.push_back(*it++); break;
-                    case filter_type_t::sub: break;
-                    case filter_type_t::up: break;
-                    case filter_type_t::average: break;
-                    case filter_type_t::peath: break;
-                }
-            }
-        }
-
-        return it;
-    };
-
-    switch (header.interlace_method) {
-        case file_header_t::interlace_method_t::adam7: {
-            auto it = data.begin();
-            for (const auto& info : get_pass_info(header)) {
-                it = reconstruct_pass(info, it);
-            }
-        } break;
-        case file_header_t::interlace_method_t::no:
-            reconstruct_pass({header.width, header.height, {0, 0}, {1, 1}}, data.begin());
-            break;
-    }
-
-    return res;
-}
-
 std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>&& data)
 {
     if (data.empty()) {
@@ -388,40 +463,42 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
     std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
 
     auto unserialize_pass = [&res, &header, &samples](const pass_info& pass, std::vector<uint8>::iterator it) {
-        const usize bytes = (pass.width * header.bit_depth + 7) / 8;
-
-        auto [x, y] = pass.pos;
+        auto [x, y] = pass.position;
         for (usize h = 0; h < pass.height; ++h) {
             const usize pos = (header.height - y - 1) * header.width;
-            for (usize b = 0, w = 0; b < bytes && w < pass.width; ++b) {
+            for (usize b = 0, w = 0; b < pass.bytes_per_scanline && w < pass.width; ++b) {
                 const uint8 value = *it++;
                 switch (header.bit_depth) {
                     case 1:
                         for (usize i = 0; i < 8 && w < pass.width; ++i, ++w) {
                             const uint8 color = samples[(value >> (7 - i)) & 0x01];
                             res[pos + x]      = color_t(color, color, color, 0xFF);
-                            x += pass.offset.w;
+                            x += pass.offset.x;
                         }
                         break;
                     case 2:
                         for (usize i = 0; i < 8 && w < pass.width; i += 2, ++w) {
                             const uint8 color = samples[(value >> (6 - i)) & 0x03];
                             res[pos + x]      = color_t(color, color, color, 0xFF);
-                            x += pass.offset.w;
+                            x += pass.offset.x;
                         }
                         break;
                     case 4:
                         for (usize i = 0; i < 8 && w < pass.width; i += 4, ++w) {
                             const uint8 color = samples[(value >> (4 - i)) & 0x0F];
                             res[pos + x]      = color_t(color, color, color, 0xFF);
-                            x += pass.offset.w;
+                            x += pass.offset.x;
                         }
                         break;
+                    case 8: {
+                        res[pos + x] = color_t(value, value, value, 0xFF);
+                        x += pass.offset.x;
+                    } break;
                     default: break;
                 }
             }
-            x = pass.pos.w;
-            y += pass.offset.h;
+            x = pass.position.x;
+            y += pass.offset.y;
         }
 
         return it;
@@ -441,12 +518,19 @@ std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>
             it = unserialize_pass(passes[6], it);
         } break;
         case file_header_t::interlace_method_t::no:
-            unserialize_pass({header.width, header.height, {0, 0}, {1, 1}}, data.begin());
+            auto pass = pass_info(header.width,
+                                  header.height,
+                                  (header.width * header.bit_depth + 7) / 8,
+                                  {0, 0},
+                                  {1, 1});
+            unserialize_pass(pass, data.begin());
             break;
     }
 
     return res;
 }
+
+#pragma endregion 
 
 } // namespace
 
