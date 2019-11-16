@@ -29,6 +29,7 @@ project(neutrino LANGUAGES CXX VERSION 0.0.3)
 
 # Settings
 option(BUILD_TESTS "Should tests be inculuded in build." ON)
+option(BUILD_EXAMPLES "Should examples be inculuded in build." ON)
 option(BUILD_DOCS "Should generate documentation." ON)
 option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
 
@@ -41,6 +42,7 @@ endif()
 set(FRAMEWORK_DIR ${CMAKE_SOURCE_DIR})
 set(FRAMEWORK_SOURCE_DIR ${CMAKE_SOURCE_DIR}/neutrino)
 set(FRAMEWORK_TEST_DIR ${CMAKE_SOURCE_DIR}/test)
+set(FRAMEWORK_EXAMPLE_DIR ${CMAKE_SOURCE_DIR}/example)
 set(FRAMEWORK_DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/dependencies)
 
 # Output pathes
@@ -80,6 +82,11 @@ include(${FRAMEWORK_SOURCE_DIR}/CMakeLists.txt)
 # Add tests
 if(BUILD_TESTS)
     add_subdirectory(${FRAMEWORK_TEST_DIR})
+endif()
+
+# Add examples
+if(BUILD_EXAMPLES)
+    add_subdirectory(${FRAMEWORK_EXAMPLE_DIR})
 endif()
 
 # Generate documentation

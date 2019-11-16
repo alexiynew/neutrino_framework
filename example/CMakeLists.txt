@@ -23,30 +23,27 @@
 # SOFTWARE.
 # =============================================================================
 
-set_sources(PRIVATE_SOURCES
-    main.cpp
+set(EXAMPLES_TARGET ${PROJECT_NAME}_examples)
+set(EXAMPLES_DIR_NAME example)
+
+add_custom_target(${EXAMPLES_TARGET} ALL
+    DEPENDS ${PROJECT_NAME}
+    COMMENT "Build examples."
 )
 
-add_executable(${EXAMPLE_NAME} EXCLUDE_FROM_ALL "")
+message(STATUS "Add examples...")
 
-target_sources(${EXAMPLE_NAME} PRIVATE ${PRIVATE_SOURCES})
+set(EXAMPLES
+    "image"
+)
 
-target_link_libraries(${EXAMPLE_NAME} ${PROJECT_NAME}_static)
-target_include_directories(${EXAMPLE_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
+foreach(EXAMPLE ${EXAMPLES})
+    set(EXAMPLE_NAME ${EXAMPLE})
+    set(EXAMPLE_DIR ${FRAMEWORK_EXAMPLE_DIR}/${EXAMPLE})
 
-set_target_properties(${EXAMPLE_NAME} PROPERTIES FOLDER ${EXAMPLE_DIR_NAME}/${EXAMPLE_NAME})
+    message(STATUS "\t${EXAMPLE_NAME}")
+    include(${EXAMPLE_DIR}/CMakeLists.txt)
+endforeach(EXAMPLE)
 
-add_dependencies(${EXAMPLES_TARGET} ${EXAMPLE_NAME})
-
-file(GLOB BMP_GOOD "${EXAMPLE_DIR}/bmp/good/*.bmp")
-file(COPY ${BMP_GOOD} DESTINATION ${CMAKE_BINARY_DIR}/example/bmp/good)
-
-file(GLOB BMP_BAD "${EXAMPLE_DIR}/bmp/bad/*.bmp")
-file(COPY ${BMP_BAD} DESTINATION ${CMAKE_BINARY_DIR}/example/bmp/bad)
-
-file(GLOB BMP_QUESTIONABLE "${EXAMPLE_DIR}/bmp/questionable/*.bmp")
-file(COPY ${BMP_QUESTIONABLE} DESTINATION ${CMAKE_BINARY_DIR}/example/bmp/questionable)
-
-file(GLOB PNG_GOOD "${EXAMPLE_DIR}/png/*.png")
-file(COPY ${PNG_GOOD} DESTINATION ${CMAKE_BINARY_DIR}/example/png)
+set_target_properties(${EXAMPLES_TARGET} PROPERTIES FOLDER ${EXAMPLES_DIR_NAME})
 

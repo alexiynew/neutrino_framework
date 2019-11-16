@@ -134,8 +134,8 @@ const std::vector<std::string> png_names = {
 //"png/basi0g01.png",
 //"png/basi0g02.png",
 //"png/basi0g04.png",
-"png/basi0g08.png",
-//"png/basi0g16.png",
+//"png/basi0g08.png",
+"png/basi0g16.png",
 //"png/basi2c08.png",
 //"png/basi2c16.png", "png/basi3p01.png", "png/basi3p02.png", "png/basi3p04.png", "png/basi3p08.png",
 //"png/basi4a08.png", "png/basi4a16.png", "png/basi6a08.png", "png/basi6a16.png", "png/basn0g01.png",
@@ -183,7 +183,7 @@ struct object
     framework::graphics::mesh quad;
 };
 
-std::vector<framework::graphics::image> load_images(mode m)
+std::vector<framework::graphics::image> load_images(mode image_mode)
 {
     std::vector<framework::graphics::image> images;
 
@@ -194,7 +194,7 @@ std::vector<framework::graphics::image> load_images(mode m)
         }
 
         return std::vector<std::string>();
-    }(m);
+    }(image_mode);
 
     std::transform(cbegin(names), cend(names), std::back_inserter(images), [](const std::string& name) {
         framework::graphics::image img;
@@ -380,7 +380,10 @@ int main()
     main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
     main_window.set_on_size_callback(
     [&main_window, &objects, &mvp](const window&, ::framework::system::details::window_size size) {
-        mvp = framework::math::ortho2d<float32>(0, size.width, size.height, 0);
+        mvp = framework::math::ortho2d<float32>(0,
+                                                static_cast<float32>(size.width),
+                                                static_cast<float32>(size.height),
+                                                0);
         glViewport(0, 0, size.width, size.height);
         arrange(objects, size.width, size.height);
     });
