@@ -195,6 +195,11 @@ struct file_header_t
     static file_header_t read(std::ifstream& in);
 
     bool valid() const;
+    usize samples_per_pixel() const;
+    usize bits_per_pixel() const;
+    usize bytes_per_pixel() const;
+
+    image_info get_image_info() const;
 };
 
 file_header_t file_header_t::read(std::ifstream& in)
@@ -240,6 +245,34 @@ bool file_header_t::valid() const
     return valid;
 }
 
+usize file_header_t::samples_per_pixel() const
+{
+    switch (color_type) {
+        case color_type_t::greyscale: return 1;
+        case color_type_t::truecolor: return 3;
+        case color_type_t::indexed: return 1;
+        case color_type_t::greyscale_alpha: return 2;
+        case color_type_t::truecolor_alpha: return 4;
+    }
+
+    return 0;
+}
+
+usize file_header_t::bits_per_pixel() const
+{
+    return samples_per_pixel() * bit_depth;
+}
+
+usize file_header_t::bytes_per_pixel() const
+{
+    return (samples_per_pixel() * bit_depth + 7) / 8;
+}
+
+image_info file_header_t::get_image_info() const
+{
+    return image_info{static_cast<int32>(width), static_cast<int32>(height), true};
+}
+
 bool check_signature(const std::vector<uint8>& data)
 {
     constexpr std::array<uint8, signature_length> signature = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
@@ -255,11 +288,6 @@ bool check_signature(const std::vector<uint8>& data)
     }
 
     return true;
-}
-
-inline image_info make_image_info(const file_header_t& header)
-{
-    return image_info{static_cast<int32>(header.width), static_cast<int32>(header.height), true};
 }
 
 #pragma endregion
@@ -306,19 +334,20 @@ std::vector<pass_info> get_pass_info(const file_header_t& header)
             };
 
             std::vector<pass_info> info = {
-            pass_info(widths[0], (header.height + 7) / 8, (widths[0] * header.bit_depth + 7) / 8, {0, 0}, {8, 8}),
-            pass_info(widths[1], (header.height + 7) / 8, (widths[1] * header.bit_depth + 7) / 8, {4, 0}, {8, 8}),
-            pass_info(widths[2], (header.height + 3) / 8, (widths[2] * header.bit_depth + 7) / 8, {0, 4}, {4, 8}),
-            pass_info(widths[3], (header.height + 3) / 4, (widths[3] * header.bit_depth + 7) / 8, {2, 0}, {4, 4}),
-            pass_info(widths[4], (header.height + 1) / 4, (widths[4] * header.bit_depth + 7) / 8, {0, 2}, {2, 4}),
-            pass_info(widths[5], (header.height + 1) / 2, (widths[5] * header.bit_depth + 7) / 8, {1, 0}, {2, 2}),
-            pass_info(widths[6], (header.height + 0) / 2, (widths[6] * header.bit_depth + 7) / 8, {0, 1}, {1, 2}),
+            pass_info(widths[0], (header.height + 7) / 8, (widths[0] * header.bits_per_pixel() + 7) / 8, {0, 0}, {8, 8}),
+            pass_info(widths[1], (header.height + 7) / 8, (widths[1] * header.bits_per_pixel() + 7) / 8, {4, 0}, {8, 8}),
+            pass_info(widths[2], (header.height + 3) / 8, (widths[2] * header.bits_per_pixel() + 7) / 8, {0, 4}, {4, 8}),
+            pass_info(widths[3], (header.height + 3) / 4, (widths[3] * header.bits_per_pixel() + 7) / 8, {2, 0}, {4, 4}),
+            pass_info(widths[4], (header.height + 1) / 4, (widths[4] * header.bits_per_pixel() + 7) / 8, {0, 2}, {2, 4}),
+            pass_info(widths[5], (header.height + 1) / 2, (widths[5] * header.bits_per_pixel() + 7) / 8, {1, 0}, {2, 2}),
+            pass_info(widths[6], (header.height + 0) / 2, (widths[6] * header.bits_per_pixel() + 7) / 8, {0, 1}, {1, 2}),
             };
 
             return info;
         }
         case interlace_method_t::no:
-            return {pass_info(header.width, header.height, (header.width * header.bit_depth + 7) / 8, {0, 0}, {1, 1})};
+            return {
+            pass_info(header.width, header.height, (header.width * header.bits_per_pixel() + 7) / 8, {0, 0}, {1, 1})};
     }
 
     return std::vector<pass_info>();
@@ -332,7 +361,7 @@ template <typename In, typename Out>
 inline void reconstruct_sub(In first, In last, In a, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<uint8>((*a++ + *first++) & 0xFF);
+        *x++ = static_cast<uint8>((static_cast<int32>(*a++) + *first++) & 0xFF);
     }
 }
 
@@ -340,7 +369,7 @@ template <typename In, typename Out>
 inline void reconstruct_up(In first, In last, In b, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<uint8>((*b++ + *first++) & 0xFF);
+        *x++ = static_cast<uint8>((static_cast<int32>(*b++) + *first++) & 0xFF);
     }
 }
 
@@ -348,16 +377,16 @@ template <typename In, typename Out>
 inline void reconstruct_average(In first, In last, In a, In b, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<uint8>((((*a++ + *b++) >> 1) + *first++) & 0xFF);
+        *x++ = static_cast<uint8>((((static_cast<int32>(*a++) + *b++) >> 1) + *first++) & 0xFF);
     }
 }
 
 uint8 paeth_predictor(uint8 a, uint8 b, uint8 c)
 {
-    const uint8 p  = static_cast<uint8>((a + b - c) & 0xFF);
-    const uint8 pa = static_cast<uint8>(abs(p - a) & 0xFF);
-    const uint8 pb = static_cast<uint8>(abs(p - b) & 0xFF);
-    const uint8 pc = static_cast<uint8>(abs(p - c) & 0xFF);
+    const int32 p  = static_cast<uint8>((static_cast<int32>(a) + b - c) & 0xFF);
+    const int32 pa = static_cast<uint8>(abs(p - a) & 0xFF);
+    const int32 pb = static_cast<uint8>(abs(p - b) & 0xFF);
+    const int32 pc = static_cast<uint8>(abs(p - c) & 0xFF);
 
     if (pa <= pb && pa <= pc) {
         return a;
@@ -372,7 +401,7 @@ template <typename In, typename Out>
 inline void reconstruct_peath(In first, In last, In a, In b, In c, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<uint8>((paeth_predictor(*a++, *b++, *c++) + *first++) & 0xFF);
+        *x++ = static_cast<uint8>((static_cast<int32>(paeth_predictor(*a++, *b++, *c++)) + *first++) & 0xFF);
     }
 }
 
@@ -387,15 +416,16 @@ enum class filter_type_t : uint8
 
 std::tuple<std::vector<uint8>::iterator, std::vector<uint8>::iterator> reconstruct_pass(std::vector<uint8>::iterator in,
                                                                                         std::vector<uint8>::iterator out,
-                                                                                        const pass_info& pass)
+                                                                                        const pass_info& pass,
+                                                                                        usize bytes_per_pixel)
 {
-    const auto bytes_in_row = (pass.bytes_per_scanline + 1);
+    const usize bytes_in_row = (pass.bytes_per_scanline + bytes_per_pixel);
     std::vector<uint8> res(bytes_in_row * (pass.height + 1), 0);
 
     auto res_a = next(res.begin(), bytes_in_row);
-    auto res_b = next(res.begin(), 1);
+    auto res_b = next(res.begin(), bytes_per_pixel);
     auto res_c = res.begin();
-    auto res_x = next(res.begin(), bytes_in_row + 1);
+    auto res_x = next(res.begin(), bytes_in_row + bytes_per_pixel);
 
     for (usize h = 0; h < pass.height; ++h) {
         const filter_type_t ft = static_cast<filter_type_t>(*in++);
@@ -417,7 +447,7 @@ std::tuple<std::vector<uint8>::iterator, std::vector<uint8>::iterator> reconstru
         in = last;
     }
 
-    auto it = next(res.begin(), bytes_in_row + 1);
+    auto it = next(res.begin(), bytes_in_row + bytes_per_pixel);
     for (usize h = 0; h < pass.height; ++h) {
         auto last = next(it, pass.bytes_per_scanline);
 
@@ -440,7 +470,7 @@ std::vector<uint8> reconstruct(const file_header_t& header, std::vector<uint8>&&
     auto in  = data.begin();
     auto out = res.begin();
     for (const auto& pass : get_pass_info(header)) {
-        std::tie(in, out) = reconstruct_pass(in, out, pass);
+        std::tie(in, out) = reconstruct_pass(in, out, pass, header.bytes_per_pixel());
     }
 
     return res;
@@ -454,12 +484,12 @@ template <usize N>
 constexpr uint8 sample(usize input)
 {
     static_assert(N < 32);
-    constexpr usize maxinput  = (2 << N) - 1;
-    constexpr usize maxoutput = (2 << 8) - 1;
+    constexpr usize maxinput  = (1 << N) - 1;
+    constexpr usize maxoutput = (1 << 8) - 1;
     return static_cast<uint8>(input * maxoutput / maxinput);
 }
 
-template <usize N, usize Size = (2 << N)>
+template <usize N, usize Size = (1 << N)>
 constexpr std::array<uint8, Size> generate_samples()
 {
     static_assert(N < 32);
@@ -472,24 +502,83 @@ constexpr std::array<uint8, Size> generate_samples()
     return res;
 }
 
-template <usize N>
-std::vector<uint8>::iterator unserialize_grayscale(std::vector<uint8>::iterator in,
-                                                   const pass_info& pass,
-                                                   const file_header_t& header,
-                                                   std::vector<color_t>& out)
-{
-    constexpr auto samples = generate_samples<N>();
-    constexpr usize mask   = (2 << N) - 1;
+using sample_tuple_t = std::tuple<color_t, std::vector<uint8>::iterator>;
 
+template <color_type_t ColorType, uint8 BitDepth>
+inline sample_tuple_t get_color(std::vector<uint8>::iterator in);
+
+template <>
+inline sample_tuple_t get_color<color_type_t::greyscale, 8>(std::vector<uint8>::iterator in)
+{
+    const uint8 c = *in++;
+    return std::make_tuple(color_t(c, c, c, 0xFF), in);
+}
+
+template <>
+inline sample_tuple_t get_color<color_type_t::greyscale, 16>(std::vector<uint8>::iterator in)
+{
+    const uint8 c = *in++;
+    in++;
+    return std::make_tuple(color_t(c, c, c, 0xFF), in);
+}
+
+template <>
+inline sample_tuple_t get_color<color_type_t::truecolor, 8>(std::vector<uint8>::iterator in)
+{
+    const uint8 r = *in++;
+    const uint8 g = *in++;
+    const uint8 b = *in++;
+
+    return std::make_tuple(color_t(r, g, b, 0xFF), in);
+}
+
+template <>
+inline sample_tuple_t get_color<color_type_t::truecolor, 16>(std::vector<uint8>::iterator in)
+{
+    const uint8 r = *in++;
+    in++;
+    const uint8 g = *in++;
+    in++;
+    const uint8 b = *in++;
+    in++;
+
+    return std::make_tuple(color_t(r, g, b, 0xFF), in);
+}
+
+template <color_type_t ColorType, uint8 BitDepth>
+inline std::vector<uint8>::iterator unserialize_pass(std::vector<uint8>::iterator in,
+                                                     const pass_info& pass,
+                                                     const file_header_t& header,
+                                                     std::vector<color_t>& out)
+{
     for (usize h = 0; h < pass.height; ++h) {
         usize pos = (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x;
+        for (usize w = 0; w < pass.width; ++w) {
+            std::tie(out[pos], in) = get_color<ColorType, BitDepth>(in);
+            pos += pass.offset.x;
+        }
+    }
 
+    return in;
+}
+
+template <uint8 BitDepth>
+inline std::vector<uint8>::iterator unserialize_greyscale_pass(std::vector<uint8>::iterator in,
+                                                               const pass_info& pass,
+                                                               const file_header_t& header,
+                                                               std::vector<color_t>& out)
+{
+    constexpr auto samples = generate_samples<BitDepth>();
+    constexpr usize mask   = (1 << BitDepth) - 1;
+
+    for (usize h = 0; h < pass.height; ++h) {
+        usize pos  = (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x;
         uint8 byte = 0;
-        for (usize w = 0, i = 0; w < pass.width; ++w, i = (i + N) % 8) {
+        for (usize w = 0, i = 0; w < pass.width; ++w, i = (i + BitDepth) % 8) {
             if (i == 0) {
                 byte = *in++;
             }
-            const uint8 color = samples[(byte >> ((8 - N) - i)) & mask];
+            const uint8 color = samples[(byte >> ((8 - BitDepth) - i)) & mask];
             out[pos]          = color_t(color, color, color, 0xFF);
 
             pos += pass.offset.x;
@@ -499,203 +588,113 @@ std::vector<uint8>::iterator unserialize_grayscale(std::vector<uint8>::iterator 
     return in;
 }
 
-template <>
-std::vector<uint8>::iterator unserialize_grayscale<8>(std::vector<uint8>::iterator in,
-                                                      const pass_info& pass,
-                                                      const file_header_t& header,
-                                                      std::vector<color_t>& out)
+template <typename F>
+inline std::vector<color_t> unserialize_impl(const file_header_t& header, std::vector<uint8>&& data, F pass_function)
 {
-    for (usize h = 0; h < pass.height; ++h) {
-        usize pos = (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x;
-        for (usize w = 0; w < pass.width; ++w) {
-            const uint8 color = *in++;
-            out[pos]          = color_t(color, color, color, 0xFF);
-
-            pos += pass.offset.x;
-        }
-    }
-
-    return in;
-}
-
-template <>
-std::vector<uint8>::iterator unserialize_grayscale<16>(std::vector<uint8>::iterator in,
-                                                       const pass_info& pass,
-                                                       const file_header_t& header,
-                                                       std::vector<color_t>& out)
-{
-    for (usize h = 0; h < pass.height; ++h) {
-        usize pos = (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x;
-        for (usize w = 0; w < pass.width; ++w) {
-            const uint8 color = *in++;
-            in++;
-            out[pos] = color_t(color, color, color, 0xFF);
-
-            pos += pass.offset.x;
-        }
-    }
-
-    return in;
-}
-
-std::vector<color_t> unserialize_grayscale(const file_header_t& header, std::vector<uint8>&& data)
-{
-    if (data.empty()) {
-        return std::vector<color_t>();
-    }
-
     std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
+
     auto in = data.begin();
+    //    for (const auto& pass : get_pass_info(header)) {
+    //        in = pass_function(in, pass, header, res);
+    //    }
 
-    switch (header.bit_depth) {
-        case 1:
-            for (const auto& pass : get_pass_info(header)) {
-                in = unserialize_grayscale<1>(in, pass, header, res);
-            }
-            break;
-        case 2:
-            for (const auto& pass : get_pass_info(header)) {
-                in = unserialize_grayscale<2>(in, pass, header, res);
-            }
-            break;
-        case 4:
-            for (const auto& pass : get_pass_info(header)) {
-                in = unserialize_grayscale<4>(in, pass, header, res);
-            }
-            break;
-        case 8:
-            for (const auto& pass : get_pass_info(header)) {
-                in = unserialize_grayscale<8>(in, pass, header, res);
-            }
-            break;
-        case 16:
-            for (const auto& pass : get_pass_info(header)) {
-                in = unserialize_grayscale<16>(in, pass, header, res);
-            }
-            break;
-    }
+    const auto pass = get_pass_info(header);
+
+    in = pass_function(in, pass[0], header, res);
+    in = pass_function(in, pass[1], header, res);
+    in = pass_function(in, pass[2], header, res);
+    in = pass_function(in, pass[3], header, res);
+    in = pass_function(in, pass[4], header, res);
+    in = pass_function(in, pass[5], header, res);
+    in = pass_function(in, pass[6], header, res);
 
     return res;
 }
 
-std::vector<color_t> unserialize_truecolor(const file_header_t& header, std::vector<uint8>&& data)
+inline std::vector<color_t> unserialize_greyscale(const file_header_t& header, std::vector<uint8>&& data)
 {
     if (data.empty()) {
         return std::vector<color_t>();
     }
 
-    std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
-    //    auto in = data.begin();
-
     switch (header.bit_depth) {
-        case 8:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_truecolor<8>(in, pass, header, res);
-            //            }
-            break;
-        case 16:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_truecolor<16>(in, pass, header, res);
-            //            }
-            break;
+        case 1: return unserialize_impl(header, std::move(data), unserialize_greyscale_pass<1>);
+        case 2: return unserialize_impl(header, std::move(data), unserialize_greyscale_pass<2>);
+        case 4: return unserialize_impl(header, std::move(data), unserialize_greyscale_pass<4>);
+        case 8: return unserialize_impl(header, std::move(data), unserialize_pass<color_type_t::greyscale, 8>);
+        case 16: return unserialize_impl(header, std::move(data), unserialize_pass<color_type_t::greyscale, 16>);
     }
 
-    return res;
+    return std::vector<color_t>();
 }
 
-std::vector<color_t> unserialize_indexed(const file_header_t& header, std::vector<uint8>&& data)
+inline std::vector<color_t> unserialize_truecolor(const file_header_t& header, std::vector<uint8>&& data)
 {
     if (data.empty()) {
         return std::vector<color_t>();
     }
 
-    std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
-    //   auto in = data.begin();
-
     switch (header.bit_depth) {
-        case 1:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_indexed<1>(in, pass, header, res);
-            //            }
-            break;
-        case 2:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_indexed<2>(in, pass, header, res);
-            //            }
-            break;
-        case 4:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_indexed<4>(in, pass, header, res);
-            //            }
-            break;
-        case 8:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_indexed<8>(in, pass, header, res);
-            //            }
-            break;
+        case 8: return unserialize_impl(header, std::move(data), unserialize_pass<color_type_t::truecolor, 8>);
+        case 16: return unserialize_impl(header, std::move(data), unserialize_pass<color_type_t::truecolor, 16>);
     }
 
-    return res;
+    return std::vector<color_t>();
 }
 
-std::vector<color_t> unserialize_grayscale_alpha(const file_header_t& header, std::vector<uint8>&& data)
-{
-    if (data.empty()) {
-        return std::vector<color_t>();
-    }
-
-    std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
-    //    auto in = data.begin();
-
-    switch (header.bit_depth) {
-        case 8:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_grayscale_alpha<8>(in, pass, header, res);
-            //            }
-            break;
-        case 16:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_grayscale_alpha<16>(in, pass, header, res);
-            //            }
-            break;
-    }
-
-    return res;
-}
-
-std::vector<color_t> unserialize_truecolor_alpha(const file_header_t& header, std::vector<uint8>&& data)
-{
-    if (data.empty()) {
-        return std::vector<color_t>();
-    }
-
-    std::vector<color_t> res(header.width * header.height, color_t(uint32(0xFF0000FF)));
-    //    auto in = data.begin();
-
-    switch (header.bit_depth) {
-        case 8:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_truecolor_alpha<8>(in, pass, header, res);
-            //            }
-            break;
-        case 16:
-            //            for (const auto& pass : get_pass_info(header)) {
-            //                in = unserialize_truecolor_alpha<16>(in, pass, header, res);
-            //            }
-            break;
-    }
-
-    return res;
-}
-
-std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>&& data)
+// inline std::vector<color_t> unserialize_indexed(const file_header_t& header, std::vector<uint8>&& data)
+//{
+//    if (data.empty()) {
+//        return std::vector<color_t>();
+//    }
+//
+//    switch (header.bit_depth) {
+//        case 1: return unserialize_impl<color_type_t::indexed, 1>(header, std::move(data));
+//        case 2: return unserialize_impl<color_type_t::indexed, 2>(header, std::move(data));
+//        case 4: return unserialize_impl<color_type_t::indexed, 4>(header, std::move(data));
+//        case 8: return unserialize_impl<color_type_t::indexed, 8>(header, std::move(data));
+//    }
+//
+//    return std::vector<color_t>();
+//}
+//
+// inline std::vector<color_t> unserialize_greyscale_alpha(const file_header_t& header, std::vector<uint8>&& data)
+//{
+//    if (data.empty()) {
+//        return std::vector<color_t>();
+//    }
+//
+//    switch (header.bit_depth) {
+//        case 8: return unserialize_impl<color_type_t::greyscale_alpha, 8>(header, std::move(data));
+//        case 16: return unserialize_impl<color_type_t::greyscale_alpha, 16>(header, std::move(data));
+//    }
+//
+//    return std::vector<color_t>();
+//}
+//
+// inline std::vector<color_t> unserialize_truecolor_alpha(const file_header_t& header, std::vector<uint8>&& data)
+//{
+//    if (data.empty()) {
+//        return std::vector<color_t>();
+//    }
+//
+//    switch (header.bit_depth) {
+//        case 8: return unserialize_impl<color_type_t::truecolor_alpha, 8>(header, std::move(data));
+//        case 16: return unserialize_impl<color_type_t::truecolor_alpha, 16>(header, std::move(data));
+//    }
+//
+//    return std::vector<color_t>();
+//}
+//
+inline std::vector<color_t> unserialize(const file_header_t& header, std::vector<uint8>&& data)
 {
     switch (header.color_type) {
-        case color_type_t::greyscale: return unserialize_grayscale(header, std::move(data));
-        case color_type_t::truecolor: return unserialize_truecolor(header, std::move(data));
-        case color_type_t::indexed: return unserialize_indexed(header, std::move(data));
-        case color_type_t::greyscale_alpha: return unserialize_grayscale_alpha(header, std::move(data));
-        case color_type_t::truecolor_alpha: return unserialize_truecolor_alpha(header, std::move(data));
+        case color_type_t::greyscale: return unserialize_greyscale(header, std::move(data));
+        case color_type_t::truecolor:
+            return unserialize_truecolor(header, std::move(data));
+            //        case color_type_t::indexed: return unserialize_indexed(header, std::move(data));
+            //       case color_type_t::greyscale_alpha: return unserialize_greyscale_alpha(header, std::move(data));
+            //      case color_type_t::truecolor_alpha: return unserialize_truecolor_alpha(header, std::move(data));
         default: break;
     }
 
@@ -759,7 +758,7 @@ load_result_t load(const std::string& filename)
     std::vector<uint8> recontructed = reconstruct(header, utils::zlib::inflate(data));
     std::vector<color_t> image_data = unserialize(header, std::move(recontructed));
 
-    return std::make_optional(std::make_tuple(make_image_info(header), std::move(image_data)));
+    return std::make_optional(std::make_tuple(header.get_image_info(), std::move(image_data)));
 }
 
 bool is_png(const std::string& filename)
