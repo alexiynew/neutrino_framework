@@ -266,7 +266,7 @@ usize file_header_t::bits_per_pixel() const
 
 usize file_header_t::bytes_per_pixel() const
 {
-    return (samples_per_pixel() * bit_depth + 7) / 8;
+    return (bits_per_pixel() + 7) / 8;
 }
 
 image_info file_header_t::get_image_info() const
@@ -322,37 +322,49 @@ struct pass_info
 
 std::vector<pass_info> get_pass_info(const file_header_t& header)
 {
+    std::vector<pass_info> info;
+
     switch (header.interlace_method) {
         case interlace_method_t::adam7: {
-            std::array<usize, pass_count> widths = {
-            (header.width + 7) / 8,
-            (header.width + 3) / 8,
-            (header.width + 3) / 4,
-            (header.width + 1) / 4,
-            (header.width + 1) / 2,
-            (header.width + 0) / 2,
-            (header.width + 0) / 1,
-            };
+            const std::array<usize, pass_count> widths = {(header.width + 7) / 8,
+                                                          (header.width + 3) / 8,
+                                                          (header.width + 3) / 4,
+                                                          (header.width + 1) / 4,
+                                                          (header.width + 1) / 2,
+                                                          (header.width + 0) / 2,
+                                                          (header.width + 0) / 1};
 
-            std::vector<pass_info> info = {
-            pass_info(widths[0], (header.height + 7) / 8, (widths[0] * header.bits_per_pixel() + 7) / 8, {0, 0}, {8, 8}),
-            pass_info(widths[1], (header.height + 7) / 8, (widths[1] * header.bits_per_pixel() + 7) / 8, {4, 0}, {8, 8}),
-            pass_info(widths[2], (header.height + 3) / 8, (widths[2] * header.bits_per_pixel() + 7) / 8, {0, 4}, {4, 8}),
-            pass_info(widths[3], (header.height + 3) / 4, (widths[3] * header.bits_per_pixel() + 7) / 8, {2, 0}, {4, 4}),
-            pass_info(widths[4], (header.height + 1) / 4, (widths[4] * header.bits_per_pixel() + 7) / 8, {0, 2}, {2, 4}),
-            pass_info(widths[5], (header.height + 1) / 2, (widths[5] * header.bits_per_pixel() + 7) / 8, {1, 0}, {2, 2}),
-            pass_info(widths[6], (header.height + 0) / 2, (widths[6] * header.bits_per_pixel() + 7) / 8, {0, 1}, {1, 2}),
-            };
+            const std::array<usize, pass_count> heights = {(header.height + 7) / 8,
+                                                           (header.height + 7) / 8,
+                                                           (header.height + 3) / 8,
+                                                           (header.height + 3) / 4,
+                                                           (header.height + 1) / 4,
+                                                           (header.height + 1) / 2,
+                                                           (header.height + 0) / 2};
 
-            return info;
-        }
-        case interlace_method_t::no:
-            return {
-            pass_info(header.width, header.height, (header.width * header.bits_per_pixel() + 7) / 8, {0, 0}, {1, 1})};
+            const std::array<pass_info::position_t, pass_count> positions =
+            {pass_info::position_t{0, 0}, {4, 0}, {0, 4}, {2, 0}, {0, 2}, {1, 0}, {0, 1}};
+
+            const std::array<pass_info::offset_t, pass_count> offsets =
+            {pass_info::offset_t{8, 8}, {8, 8}, {4, 8}, {4, 4}, {2, 4}, {2, 2}, {1, 2}};
+
+            for (usize i = 0; i < pass_count; ++i) {
+                if (widths[i] == 0 || heights[i] == 0) {
+                    continue;
+                }
+
+                const usize bytes_per_scanline = (widths[i] * header.bits_per_pixel() + 7) / 8;
+                info.push_back(pass_info(widths[i], heights[i], bytes_per_scanline, positions[i], offsets[i]));
+            }
+        } break;
+        case interlace_method_t::no: {
+            info.push_back(
+            pass_info(header.width, header.height, (header.width * header.bits_per_pixel() + 7) / 8, {0, 0}, {1, 1}));
+        } break;
     }
 
-    return std::vector<pass_info>();
-}
+    return info;
+} // namespace
 
 #pragma endregion
 
@@ -382,19 +394,19 @@ inline void reconstruct_average(In first, In last, In a, In b, Out x)
     }
 }
 
-uint8 paeth_predictor(uint8 a, uint8 b, uint8 c)
+uint8 paeth_predictor(int32 a, int32 b, int32 c)
 {
-    const int32 p  = static_cast<uint8>((static_cast<int32>(a) + b - c) & 0xFF);
-    const int32 pa = static_cast<uint8>(abs(p - a) & 0xFF);
-    const int32 pb = static_cast<uint8>(abs(p - b) & 0xFF);
-    const int32 pc = static_cast<uint8>(abs(p - c) & 0xFF);
+    const int32 p  = a + b - c;
+    const int32 pa = abs(p - a);
+    const int32 pb = abs(p - b);
+    const int32 pc = abs(p - c);
 
     if (pa <= pb && pa <= pc) {
-        return a;
+        return static_cast<uint8>(a);
     } else if (pb <= pc) {
-        return b;
+        return static_cast<uint8>(b);
     } else {
-        return c;
+        return static_cast<uint8>(c);
     }
 }
 
@@ -569,6 +581,50 @@ inline sample_tuple_t get_color<color_type_t::truecolor, 16>(std::vector<uint8>:
     return std::make_tuple(color_t(r, g, b, 0xFF), in);
 }
 
+template <>
+inline sample_tuple_t get_color<color_type_t::greyscale_alpha, 8>(std::vector<uint8>::iterator in)
+{
+    const uint8 c = *in++;
+    const uint8 a = *in++;
+    return std::make_tuple(color_t(c, c, c, a), in);
+}
+
+template <>
+inline sample_tuple_t get_color<color_type_t::greyscale_alpha, 16>(std::vector<uint8>::iterator in)
+{
+    const uint8 c = *in++;
+    in++;
+    const uint8 a = *in++;
+    in++;
+    return std::make_tuple(color_t(c, c, c, a), in);
+}
+
+template <>
+inline sample_tuple_t get_color<color_type_t::truecolor_alpha, 8>(std::vector<uint8>::iterator in)
+{
+    const uint8 r = *in++;
+    const uint8 g = *in++;
+    const uint8 b = *in++;
+    const uint8 a = *in++;
+
+    return std::make_tuple(color_t(r, g, b, a), in);
+}
+
+template <>
+inline sample_tuple_t get_color<color_type_t::truecolor_alpha, 16>(std::vector<uint8>::iterator in)
+{
+    const uint8 r = *in++;
+    in++;
+    const uint8 g = *in++;
+    in++;
+    const uint8 b = *in++;
+    in++;
+    const uint8 a = *in++;
+    in++;
+
+    return std::make_tuple(color_t(r, g, b, a), in);
+}
+
 template <color_type_t ColorType, uint8 BitDepth>
 inline std::vector<uint8>::iterator unserialize_pass(std::vector<uint8>::iterator in,
                                                      const pass_info& pass,
@@ -691,34 +747,34 @@ inline std::vector<color_t> unserialize_indexed(const file_header_t& header,
     return std::vector<color_t>();
 }
 
-// inline std::vector<color_t> unserialize_greyscale_alpha(const file_header_t& header, std::vector<uint8>&& data)
-//{
-//    if (data.empty()) {
-//        return std::vector<color_t>();
-//    }
-//
-//    switch (header.bit_depth) {
-//        case 8: return unserialize_impl<color_type_t::greyscale_alpha, 8>(header, std::move(data));
-//        case 16: return unserialize_impl<color_type_t::greyscale_alpha, 16>(header, std::move(data));
-//    }
-//
-//    return std::vector<color_t>();
-//}
-//
-// inline std::vector<color_t> unserialize_truecolor_alpha(const file_header_t& header, std::vector<uint8>&& data)
-//{
-//    if (data.empty()) {
-//        return std::vector<color_t>();
-//    }
-//
-//    switch (header.bit_depth) {
-//        case 8: return unserialize_impl<color_type_t::truecolor_alpha, 8>(header, std::move(data));
-//        case 16: return unserialize_impl<color_type_t::truecolor_alpha, 16>(header, std::move(data));
-//    }
-//
-//    return std::vector<color_t>();
-//}
-//
+inline std::vector<color_t> unserialize_greyscale_alpha(const file_header_t& header, std::vector<uint8>&& data)
+{
+    if (data.empty()) {
+        return std::vector<color_t>();
+    }
+
+    switch (header.bit_depth) {
+        case 8: return unserialize_impl<color_type_t::greyscale_alpha, 8>(header, std::move(data));
+        case 16: return unserialize_impl<color_type_t::greyscale_alpha, 16>(header, std::move(data));
+    }
+
+    return std::vector<color_t>();
+}
+
+inline std::vector<color_t> unserialize_truecolor_alpha(const file_header_t& header, std::vector<uint8>&& data)
+{
+    if (data.empty()) {
+        return std::vector<color_t>();
+    }
+
+    switch (header.bit_depth) {
+        case 8: return unserialize_impl<color_type_t::truecolor_alpha, 8>(header, std::move(data));
+        case 16: return unserialize_impl<color_type_t::truecolor_alpha, 16>(header, std::move(data));
+    }
+
+    return std::vector<color_t>();
+}
+
 inline std::vector<color_t> unserialize(const file_header_t& header,
                                         const chunk_t& plte_chunk,
                                         std::vector<uint8>&& data)
@@ -726,10 +782,9 @@ inline std::vector<color_t> unserialize(const file_header_t& header,
     switch (header.color_type) {
         case color_type_t::greyscale: return unserialize_greyscale(header, std::move(data));
         case color_type_t::truecolor: return unserialize_truecolor(header, std::move(data));
-        case color_type_t::indexed:
-            return unserialize_indexed(header, plte_chunk, std::move(data));
-            //       case color_type_t::greyscale_alpha: return unserialize_greyscale_alpha(header, std::move(data));
-            //      case color_type_t::truecolor_alpha: return unserialize_truecolor_alpha(header, std::move(data));
+        case color_type_t::indexed: return unserialize_indexed(header, plte_chunk, std::move(data));
+        case color_type_t::greyscale_alpha: return unserialize_greyscale_alpha(header, std::move(data));
+        case color_type_t::truecolor_alpha: return unserialize_truecolor_alpha(header, std::move(data));
         default: break;
     }
 
@@ -775,21 +830,22 @@ load_result_t load(const std::string& filename)
             case chunk_t::type_t::IDAT: {
                 data.insert(end(data), begin(chunk.data), end(chunk.data));
             } break;
-            case chunk_t::type_t::IEND: break;
+            case chunk_t::type_t::IEND: break; // end
             case chunk_t::type_t::cHRM: break;
-            case chunk_t::type_t::gAMA: break;
+            case chunk_t::type_t::gAMA: break; // TODO (alex): gamma correction support
             case chunk_t::type_t::iCCP: break;
-            case chunk_t::type_t::sBIT: break;
+            case chunk_t::type_t::sBIT: break; // ignore
             case chunk_t::type_t::sRGB: break;
             case chunk_t::type_t::bKGD: break;
             case chunk_t::type_t::hIST: break;
             case chunk_t::type_t::tRNS: break;
             case chunk_t::type_t::pHYs: break;
-            case chunk_t::type_t::sPLT: break;
-            case chunk_t::type_t::tIME: break;
-            case chunk_t::type_t::iTXt: break;
-            case chunk_t::type_t::tEXt: break;
-            case chunk_t::type_t::zTXt: break;
+            case chunk_t::type_t::sPLT: break; // ignore
+            case chunk_t::type_t::tIME: break; // ignore
+            case chunk_t::type_t::iTXt: break; // ignore
+            case chunk_t::type_t::tEXt: break; // ignore
+            case chunk_t::type_t::zTXt: break; // ignore
+
             default: break;
         }
     }
