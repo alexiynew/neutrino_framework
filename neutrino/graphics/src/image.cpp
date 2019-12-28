@@ -61,6 +61,7 @@ bool image::load(const std::string& filename, file_type type)
         m_width     = info.width;
         m_height    = info.height;
         m_bottom_up = info.bottom_up;
+        m_gamma     = info.gamma;
 
         m_data = std::move(data);
         return true;
@@ -121,6 +122,11 @@ bool image::is_bottom_up() const
 int32 image::pixel_size() const
 {
     return 4;
+}
+
+float32 image::gamma() const
+{
+    return m_gamma;
 }
 
 const color_t* image::data() const

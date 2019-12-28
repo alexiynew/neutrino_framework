@@ -72,6 +72,7 @@ public:
 
     bool is_bottom_up() const;
     int32 pixel_size() const;
+    float32 gamma() const;
 
     const color_t* data() const;
 
@@ -82,6 +83,8 @@ private:
     int32 m_height = 0;
 
     bool m_bottom_up = false;
+
+    float32 m_gamma = 2.2f;
 };
 
 /// @}

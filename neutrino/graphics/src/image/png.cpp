@@ -41,16 +41,18 @@
 
 namespace
 {
+using framework::float32;
 using framework::int32;
 using framework::uint16;
 using framework::uint32;
 using framework::uint8;
 using framework::usize;
 using framework::graphics::color_t;
-using framework::graphics::details::image::image_info;
+using framework::graphics::details::image::image_info_t;
 
 constexpr usize signature_length = 8;
 constexpr usize pass_count       = 7;
+constexpr float32 default_gamma  = 1.0f;
 
 std::vector<uint8> read_bytes(std::ifstream& in, usize count)
 {
@@ -200,7 +202,7 @@ struct file_header_t
     usize bits_per_pixel() const;
     usize bytes_per_pixel() const;
 
-    image_info get_image_info() const;
+    image_info_t image_info() const;
 };
 
 file_header_t file_header_t::read(std::ifstream& in)
@@ -269,9 +271,9 @@ usize file_header_t::bytes_per_pixel() const
     return (bits_per_pixel() + 7) / 8;
 }
 
-image_info file_header_t::get_image_info() const
+image_info_t file_header_t::image_info() const
 {
-    return image_info{static_cast<int32>(width), static_cast<int32>(height), true};
+    return image_info_t{static_cast<int32>(width), static_cast<int32>(height), true};
 }
 
 bool check_signature(const std::vector<uint8>& data)
@@ -793,6 +795,17 @@ inline std::vector<color_t> unserialize(const file_header_t& header,
 
 #pragma endregion
 
+float32 decode_gamma(const chunk_t& chunk)
+{
+    if (chunk.type != chunk_t::type_t::gAMA) {
+        return default_gamma;
+    }
+
+    const float32 gamma = static_cast<float32>(big_endian_value<uint32>(chunk.data.data()));
+
+    return (gamma / 100000.0f);
+}
+
 } // namespace
 
 namespace framework::graphics::details::image::png
@@ -815,6 +828,7 @@ load_result_t load(const std::string& filename)
     }
 
     chunk_t plte_chunk;
+    float32 gamma = default_gamma;
 
     std::vector<uint8> data;
     for (chunk_t chunk = chunk_t::read(file); file && chunk.type != chunk_t::type_t::IEND;
@@ -831,15 +845,15 @@ load_result_t load(const std::string& filename)
                 data.insert(end(data), begin(chunk.data), end(chunk.data));
             } break;
             case chunk_t::type_t::IEND: break; // end
-            case chunk_t::type_t::cHRM: break;
-            case chunk_t::type_t::gAMA: break; // TODO (alex): gamma correction support
+            case chunk_t::type_t::cHRM: break; /// ???
+            case chunk_t::type_t::gAMA: gamma = decode_gamma(chunk); break;
             case chunk_t::type_t::iCCP: break;
             case chunk_t::type_t::sBIT: break; // ignore
             case chunk_t::type_t::sRGB: break;
-            case chunk_t::type_t::bKGD: break;
-            case chunk_t::type_t::hIST: break;
+            case chunk_t::type_t::bKGD: break; // ignore
+            case chunk_t::type_t::hIST: break; // ???
             case chunk_t::type_t::tRNS: break;
-            case chunk_t::type_t::pHYs: break;
+            case chunk_t::type_t::pHYs: break; // ignore
             case chunk_t::type_t::sPLT: break; // ignore
             case chunk_t::type_t::tIME: break; // ignore
             case chunk_t::type_t::iTXt: break; // ignore
@@ -850,10 +864,20 @@ load_result_t load(const std::string& filename)
         }
     }
 
+    if (data.empty()) {
+        return load_result_t();
+    }
+
+    if (header.color_type == color_type_t::indexed && plte_chunk.data.empty()) {
+        return load_result_t();
+    }
+
     std::vector<uint8> recontructed = reconstruct(header, utils::zlib::inflate(data));
     std::vector<color_t> image_data = unserialize(header, plte_chunk, std::move(recontructed));
 
-    return std::make_optional(std::make_tuple(header.get_image_info(), std::move(image_data)));
+    auto info  = header.image_info();
+    info.gamma = gamma;
+    return std::make_optional(std::make_tuple(info, std::move(image_data)));
 }
 
 bool is_png(const std::string& filename)

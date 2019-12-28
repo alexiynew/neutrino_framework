@@ -54,10 +54,12 @@ void main(){\n\
 
 const std::string fragment_shader_src = "#version 330 core\n\
 uniform sampler2D tex;\n\
+uniform float gamma;\n\
 out vec4 color;\n\
 in vec2 UV;\n\
 void main(){\n\
-    color = texture(tex, UV);\n\
+    vec3 g = vec3(1 / gamma);\n\
+    color = pow(texture(tex, UV), vec4(g, 1));\n\
 }";
 
 enum mode
@@ -167,15 +169,20 @@ const std::vector<std::string> png_names = {
 //"png/basn6a08.png",
 //"png/basn6a16.png",
 
-// test
-//"png/bgai4a08.png", "png/bgai4a16.png", "png/bgan6a08.png", "png/bgan6a16.png", "png/bgbn4a08.png",
-//"png/bggn4a16.png", "png/bgwn6a08.png", "png/bgyn6a16.png",
+//"png/bgai4a08.png",
+//"png/bgai4a16.png",
+//"png/bgan6a08.png",
+//"png/bgan6a16.png",
+//"png/bgbn4a08.png",
+//"png/bggn4a16.png",
+//"png/bgwn6a08.png",
+//"png/bgyn6a16.png",
 
-// test
-//"png/ccwn2c08.png", "png/ccwn3p08.png",
-//"png/cdfn2c08.png", "png/cdhn2c08.png", "png/cdsn2c08.png", "png/cdun2c08.png", "png/ch1n3p04.png",
-//"png/ch2n3p08.png", "png/cm0n0g04.png", "png/cm7n0g04.png", "png/cm9n0g04.png", "png/cs3n2c16.png",
-//"png/cs3n3p08.png", "png/cs5n2c08.png", "png/cs5n3p08.png", "png/cs8n2c08.png", "png/cs8n3p08.png",
+// "png/ccwn2c08.png", "png/ccwn3p08.png", ???
+//"png/cdfn2c08.png", "png/cdhn2c08.png", "png/cdsn2c08.png", "png/cdun2c08.png",
+// "png/ch1n3p04.png", "png/ch2n3p08.png", ???
+//"png/cm0n0g04.png", "png/cm7n0g04.png", "png/cm9n0g04.png",
+//"png/cs3n2c16.png", "png/cs3n3p08.png", "png/cs5n2c08.png", "png/cs5n3p08.png", "png/cs8n2c08.png", "png/cs8n3p08.png",
 //"png/ct0n0g04.png", "png/ct1n0g04.png", "png/cten0g04.png", "png/ctfn0g04.png", "png/ctgn0g04.png",
 //"png/cthn0g04.png", "png/ctjn0g04.png", "png/ctzn0g04.png", "png/exif2c08.png",
 
@@ -191,19 +198,29 @@ const std::vector<std::string> png_names = {
 //"png/f04n2c08.png",
 //"png/f99n0g04.png",
 
-// test
-//"png/g03n0g16.png", "png/g03n2c08.png", "png/g03n3p04.png", "png/g04n0g16.png", "png/g04n2c08.png",
-//"png/g04n3p04.png", "png/g05n0g16.png", "png/g05n2c08.png", "png/g05n3p04.png", "png/g07n0g16.png",
-//"png/g07n2c08.png", "png/g07n3p04.png", "png/g10n0g16.png", "png/g10n2c08.png", "png/g10n3p04.png",
-//"png/g25n0g16.png", "png/g25n2c08.png", "png/g25n3p04.png",
+//"png/g03n0g16.png",
+//"png/g04n0g16.png",
+//"png/g05n0g16.png",
+//"png/g07n0g16.png",
+//"png/g10n0g16.png",
+//"png/g25n0g16.png",
+//"png/g03n2c08.png",
+//"png/g04n2c08.png",
+//"png/g05n2c08.png",
+//"png/g07n2c08.png",
+//"png/g10n2c08.png",
+//"png/g25n2c08.png",
+//"png/g03n3p04.png",
+//"png/g04n3p04.png",
+//"png/g05n3p04.png",
+//"png/g07n3p04.png",
+//"png/g10n3p04.png",
+//"png/g25n3p04.png",
 
-// test
 //"png/oi1n0g16.png", "png/oi1n2c16.png", "png/oi2n0g16.png", "png/oi2n2c16.png", "png/oi4n0g16.png",
 //"png/oi4n2c16.png", "png/oi9n0g16.png", "png/oi9n2c16.png",
 
-// test
-//"png/pp0n2c16.png", "png/pp0n6a08.png", "png/ps1n0g08.png", "png/ps1n2c16.png",
-//"png/ps2n0g08.png", "png/ps2n2c16.png",
+//"png/pp0n2c16.png", "png/pp0n6a08.png", "png/ps1n0g08.png", "png/ps1n2c16.png", "png/ps2n0g08.png", "png/ps2n2c16.png",
 
 //"png/s01i3p01.png", "png/s01n3p01.png", "png/s02i3p01.png", "png/s02n3p01.png", "png/s03i3p01.png", "png/s03n3p01.png",
 //"png/s04i3p01.png", "png/s04n3p01.png", "png/s05i3p02.png", "png/s05n3p02.png", "png/s06i3p02.png", "png/s06n3p02.png",
@@ -213,15 +230,34 @@ const std::vector<std::string> png_names = {
 //"png/s38i3p04.png", "png/s38n3p04.png", "png/s39i3p04.png", "png/s39n3p04.png", "png/s40i3p04.png", "png/s40n3p04.png",
 
 // test
-//"png/tbbn0g04.png", "png/tbbn2c16.png", "png/tbbn3p08.png", "png/tbgn2c16.png", "png/tbgn3p08.png",
-//"png/tbrn2c08.png", "png/tbwn0g16.png",
-//"png/tbwn3p08.png", "png/tbyn3p08.png", "png/tm3n3p02.png", "png/tp0n0g08.png", "png/tp0n2c08.png",
-//"png/tp0n3p08.png", "png/tp1n3p08.png",
+"png/tbbn0g04.png",
+"png/tbbn2c16.png",
+"png/tbbn3p08.png",
+"png/tbgn2c16.png",
+"png/tbgn3p08.png",
+"png/tbrn2c08.png",
+"png/tbwn0g16.png",
+"png/tbwn3p08.png",
+"png/tbyn3p08.png",
+"png/tm3n3p02.png",
+"png/tp0n0g08.png",
+"png/tp0n2c08.png",
+"png/tp0n3p08.png",
+"png/tp1n3p08.png",
 
-// test
-//"png/xc1n0g08.png", "png/xc9n2c08.png", "png/xcrn0g04.png", "png/xcsn0g01.png", "png/xd0n2c08.png",
-//"png/xd3n2c08.png", "png/xd9n2c08.png", "png/xdtn0g01.png",
-//"png/xhdn0g08.png", "png/xlfn0g04.png", "png/xs1n0g01.png", "png/xs2n0g01.png", "png/xs4n0g01.png",
+//"png/xc1n0g08.png",
+//"png/xc9n2c08.png",
+//"png/xcrn0g04.png",
+//"png/xcsn0g01.png",
+//"png/xd0n2c08.png",
+//"png/xd3n2c08.png",
+//"png/xd9n2c08.png",
+//"png/xdtn0g01.png",
+//"png/xhdn0g08.png",
+//"png/xlfn0g04.png",
+//"png/xs1n0g01.png",
+//"png/xs2n0g01.png",
+//"png/xs4n0g01.png",
 //"png/xs7n0g01.png",
 
 //"png/z00n2c08.png",
@@ -230,14 +266,15 @@ const std::vector<std::string> png_names = {
 //"png/z09n2c08.png",
 };
 
-const framework::int32 image_scale = 10;
+const framework::int32 image_scale = 4;
 
 struct object
 {
-    framework::int32 width  = 0;
-    framework::int32 height = 0;
-    framework::int32 x      = 0;
-    framework::int32 y      = 0;
+    framework::int32 width   = 0;
+    framework::int32 height  = 0;
+    framework::int32 x       = 0;
+    framework::int32 y       = 0;
+    framework::float32 gamma = 2.2f;
     framework::graphics::texture texture;
     framework::graphics::mesh quad;
 };
@@ -363,7 +400,7 @@ std::vector<object> generate_objects(const std::vector<framework::graphics::imag
         auto quad = make_quad(img.width(), img.height());
         gl_error(__FILE__, __LINE__);
 
-        return object{img.width(), img.height(), 0, 0, std::move(tex), std::move(quad)};
+        return object{img.width(), img.height(), 0, 0, img.gamma(), std::move(tex), std::move(quad)};
     });
 
     return res;
@@ -421,6 +458,7 @@ int main()
     main_window.make_current();
 
     glEnable(GL_BLEND);
+    // glEnable(GL_FRAMEBUFFER_SRGB);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_CULL_FACE);
@@ -439,6 +477,8 @@ int main()
 
     gl_error(__FILE__, __LINE__);
 
+    float32 gamma = 0.0f;
+
     main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
     main_window.set_on_size_callback(
     [&main_window, &objects, &mvp](const window&, ::framework::system::details::window_size size) {
@@ -449,6 +489,16 @@ int main()
         mvp = scale(mvp, {image_scale, image_scale, image_scale});
         glViewport(0, 0, size.width, size.height);
         arrange(objects, size.width, size.height);
+    });
+
+    main_window.set_on_key_press_callback([&gamma](const window&, key_code k, modifiers_state) {
+        switch (k) {
+            case key_code::key_equal: gamma += 0.1f; break;
+            case key_code::key_minus: gamma -= 0.1f; break;
+            default: break;
+        }
+
+        gamma = framework::math::clamp(gamma, -4.0f, 4.0f);
     });
 
     main_window.show();
@@ -473,6 +523,7 @@ int main()
             o.quad.bind_texture_attrib(1);
 
             shader.uniform("tex", o.texture.texture_unit());
+            shader.uniform("gamma", o.gamma + gamma);
             shader.uniform("MVP", translate(mvp, {o.x, o.y, 0}));
 
             glDrawArrays(GL_TRIANGLE_FAN, 0, 4);

@@ -46,7 +46,7 @@ using framework::uint32;
 using framework::uint8;
 
 using framework::graphics::color_t;
-using framework::graphics::details::image::image_info;
+using framework::graphics::details::image::image_info_t;
 
 //  | signature | file size | reserved | reserved | pixel array offset |
 //  |------------------------------------------------------------------|
@@ -414,9 +414,9 @@ inline bool check_size(const info_header& h) noexcept
     return h.width > 0 && h.height != 0 && h.width * std::abs(h.height) * sizeof(color_t) < 1024 * 1024 * 1024;
 }
 
-inline image_info make_image_info(const info_header& h) noexcept
+inline image_info_t make_image_info(const info_header& h) noexcept
 {
-    return image_info{h.width, std::abs(h.height), h.bottom_up()};
+    return image_info_t{h.width, std::abs(h.height), h.bottom_up()};
 }
 
 inline uint32 get_offset(uint32 value)
