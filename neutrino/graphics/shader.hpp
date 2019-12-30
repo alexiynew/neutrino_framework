@@ -190,6 +190,7 @@ public:
     void stop_using();
 
     void uniform(const std::string& name, int value);
+    void uniform(const std::string& name, float value);
     void uniform(const std::string& name, math::matrix4f value, bool transpose = false);
 
     std::string info_log() const;

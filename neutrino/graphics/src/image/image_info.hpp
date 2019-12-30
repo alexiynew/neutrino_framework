@@ -39,15 +39,16 @@
 
 namespace framework::graphics::details::image
 {
-struct image_info
+struct image_info_t
 {
     int32 width  = 0;
     int32 height = 0;
 
     bool bottom_up = false;
+    float32 gamma  = 2.2f;
 };
 
-using image_data_t  = std::tuple<image_info, std::vector<color_t>>;
+using image_data_t  = std::tuple<image_info_t, std::vector<color_t>>;
 using load_result_t = std::optional<image_data_t>;
 
 } // namespace framework::graphics::details::image

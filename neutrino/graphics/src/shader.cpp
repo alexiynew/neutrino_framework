@@ -200,6 +200,12 @@ void shader_program::uniform(const std::string& name, int value)
     gl::glUniform1i(uniform_id, value);
 }
 
+void shader_program::uniform(const std::string& name, float value)
+{
+    const uint32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
+    gl::glUniform1f(uniform_id, value);
+}
+
 void shader_program::uniform(const std::string& name, math::matrix4f value, bool transpose)
 {
     const int32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
