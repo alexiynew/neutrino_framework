@@ -43,7 +43,7 @@ inline framework::uint32 create_buffer(const std::vector<T>& data)
     framework::gl::glGenBuffers(1, &buffer_id);
 
     framework::gl::glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-    framework::gl::glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(T), data[0].data(), GL_STATIC_DRAW);
+    framework::gl::glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(data.size() * sizeof(T)), data[0].data(), GL_STATIC_DRAW);
     framework::gl::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return buffer_id;
@@ -186,16 +186,16 @@ void mesh::load_tangents(const std::vector<math::vector3f>& data)
     gl::glBindVertexArray(0);
 }
 
-void mesh::bind_vertices_attrib(int32 index)
+void mesh::bind_vertices_attrib(uint32 index)
 {
     gl::glBindBuffer(GL_ARRAY_BUFFER, m_buffer_ids[vbo_type::vertices]);
-    gl::glVertexAttribPointer(index, m_type_sizes[vbo_type::vertices], GL_FLOAT, GL_FALSE, 0, (void*)0);
+    gl::glVertexAttribPointer(index, m_type_sizes[vbo_type::vertices], GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
-void mesh::bind_texture_attrib(int32 index)
+void mesh::bind_texture_attrib(uint32 index)
 {
     gl::glBindBuffer(GL_ARRAY_BUFFER, m_buffer_ids[vbo_type::tex_coord_1]);
-    gl::glVertexAttribPointer(index, m_type_sizes[vbo_type::tex_coord_1], GL_FLOAT, GL_FALSE, 0, (void*)0);
+    gl::glVertexAttribPointer(index, m_type_sizes[vbo_type::tex_coord_1], GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 uint32 mesh::vertex_array_id() const

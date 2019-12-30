@@ -63,14 +63,14 @@ public:
     /// @brief Move constructor.
     ///
     /// @param other Shader to move from.
-    shader_base(shader_base&&);
+    shader_base(shader_base&& other);
 
     /// @brief Move operator.
     ///
     /// @param other Shader to move from.
     ///
     /// @return Reference to moved object.
-    shader_base& operator=(shader_base&&);
+    shader_base& operator=(shader_base&& other);
 
     /// @brief Sets the new shader source code.
     ///
@@ -119,7 +119,7 @@ public:
     /// @brief Length of shader sources.
     ///
     /// @return Length of loaded shader source code.
-    framework::int32 source_length() const;
+    framework::usize source_length() const;
 
     /// @brief Shader sources.
     ///
@@ -139,7 +139,7 @@ public:
     framework::uint32 shader_id() const;
 
 protected:
-    shader_base(int32 shader_type);
+    shader_base(uint32 shader_type);
 
     framework::uint32 m_shader_id = 0;
 };

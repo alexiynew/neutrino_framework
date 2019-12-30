@@ -39,6 +39,7 @@
 /// @brief Contains classes related to unit tests.
 ///
 /// @details
+/// TODO: Add details
 ///
 /// You should use the `unit_test::suite` as base class for your tests.
 /// @code

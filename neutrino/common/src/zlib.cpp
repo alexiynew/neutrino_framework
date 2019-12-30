@@ -69,7 +69,7 @@ private:
         };
 
         while (m_bits < count && m_byte < m_data.size()) {
-            m_buffer = static_cast<uint32>(m_buffer | (m_data[m_byte] << m_bits));
+            m_buffer = static_cast<uint32>(m_buffer | static_cast<uint32>(m_data[m_byte] << m_bits));
             m_bits += 8;
             m_byte++;
         }
@@ -181,7 +181,7 @@ private:
 
         auto next_code = m_start_code;
         for (usize n = 0; n < lengths.size(); n++) {
-            int len = lengths[n];
+            usize len = lengths[n];
 
             if (len != 0) {
                 const usize index   = next_code[len] - m_start_code[len];
@@ -318,8 +318,9 @@ litlen_distance_codes_t dynamic_huffman_codes(bit_stream& in)
         }
     }
 
-    const std::vector<uint8> litlen(begin(lengths), next(begin(lengths), lit_len_codes_count));
-    const std::vector<uint8> dist(next(begin(lengths), lit_len_codes_count), end(lengths));
+    const auto first_dist_code = next(begin(lengths), static_cast<framework::ptrdiff>(lit_len_codes_count));
+    const std::vector<uint8> litlen(begin(lengths), first_dist_code);
+    const std::vector<uint8> dist(first_dist_code, end(lengths));
 
     return std::make_tuple(huffman_code_table(litlen), huffman_code_table(dist));
 }

@@ -44,6 +44,7 @@ using framework::int32;
 using framework::uint16;
 using framework::uint32;
 using framework::uint8;
+using framework::usize;
 
 using framework::graphics::color_t;
 using framework::graphics::details::image::image_info;
@@ -175,6 +176,8 @@ file_header file_header::read(std::ifstream& in)
 inline info_header::type_t info_header::type() const
 {
     switch (static_cast<type_t>(size)) {
+        case type_t::undefined: return type_t::undefined;
+
         case type_t::bitmapcoreheader:
         case type_t::os22xbitmapheader:
         case type_t::bitmapinfoheader:
@@ -183,7 +186,6 @@ inline info_header::type_t info_header::type() const
         case type_t::os22xbitmapheaderfull:
         case type_t::bitmapv4header:
         case type_t::bitmapv5header: return static_cast<type_t>(size);
-        default: break;
     }
 
     return type_t::undefined;
@@ -299,7 +301,7 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
         return info.colors_in_table;
     }();
 
-    const uint32 cell_size = [&info]() {
+    const uint32 cell_size = [&info]() -> uint32 {
         switch (info.type()) {
             case type_t::undefined: return 0;
             case type_t::bitmapcoreheader: return 3;
@@ -310,7 +312,6 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
             case type_t::os22xbitmapheaderfull:
             case type_t::bitmapv4header:
             case type_t::bitmapv5header: return 4;
-            default: break;
         }
 
         return 0;
@@ -331,9 +332,9 @@ info_header::color_table_t info_header::read_color_table(std::ifstream& in, cons
     for (uint32 i = 0; i < colors_count; ++i) {
         const uint32 offset = i * cell_size;
 
-        table[i].r = buffer[offset + 2];
-        table[i].g = buffer[offset + 1];
-        table[i].b = buffer[offset + 0];
+        table[i].r = static_cast<uint8>(buffer[offset + 2]);
+        table[i].g = static_cast<uint8>(buffer[offset + 1]);
+        table[i].b = static_cast<uint8>(buffer[offset + 0]);
         table[i].a = 255;
     }
 
@@ -369,7 +370,6 @@ inline bool check_compression(const info_header& h) noexcept
         case info_header::compression_t::bi_jpeg: return false; // unsupported
         case info_header::compression_t::bi_png: return false;  // unsupported
         case info_header::compression_t::bi_alphabitfields: return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
-        default: break;
     }
 
     return false;
@@ -387,7 +387,6 @@ inline bool check_color_space_type(const info_header& h) noexcept
         case info_header::color_space_type_t::lcs_windows_color_space: return true;
         case info_header::color_space_type_t::profile_linked: return false;   // unsupported
         case info_header::color_space_type_t::profile_embedded: return false; // unsupported
-        default: break;
     }
 
     return false;
@@ -411,7 +410,8 @@ inline bool check_bits_per_pixel(const info_header& h) noexcept
 
 inline bool check_size(const info_header& h) noexcept
 {
-    return h.width > 0 && h.height != 0 && h.width * std::abs(h.height) * sizeof(color_t) < 1024 * 1024 * 1024;
+    return h.width > 0 && h.height != 0 &&
+           h.width * std::abs(h.height) * static_cast<int32>(sizeof(color_t)) < 1024 * 1024 * 1024;
 }
 
 inline image_info make_image_info(const info_header& h) noexcept
@@ -421,7 +421,7 @@ inline image_info make_image_info(const info_header& h) noexcept
 
 inline uint32 get_offset(uint32 value)
 {
-    int32 count = 0;
+    uint32 count = 0;
     while ((value & 1) == 0) {
         count++;
         value >>= 1;
@@ -437,37 +437,34 @@ inline uint8 masked_value(uint32 pixel, uint32 mask, uint32 offset)
     return scale ? static_cast<uint8>((static_cast<float>(value) / static_cast<float>(scale)) * 255) : 0;
 }
 
-std::vector<color_t> process_row_1bpp(const std::vector<uint8>& buffer, const info_header& info)
+std::vector<color_t>::iterator process_row_1bpp(std::vector<uint8>::iterator in,
+                                                std::vector<color_t>::iterator out,
+                                                const info_header& info)
 {
-    std::vector<color_t> out(info.width);
-
-    auto it = begin(out);
-    for (int32 x = 0, byte = 0; x < info.width; ++byte) {
+    for (int32 x = 0; x < info.width; ++in) {
         for (int32 bit = 7; bit >= 0 && x < info.width; --bit, ++x) {
-            const uint32 color_index = (buffer[byte] & (1 << bit)) ? 1 : 0;
+            const uint32 color_index = (*in & (1 << bit)) ? 1 : 0;
 
-            *it++ = info.color_table[color_index];
+            *out++ = info.color_table[color_index];
         }
     }
 
     return out;
 }
 
-std::vector<color_t> process_row_2bpp(const std::vector<uint8>& buffer, const info_header& info)
+std::vector<color_t>::iterator process_row_2bpp(std::vector<uint8>::iterator in,
+                                                std::vector<color_t>::iterator out,
+                                                const info_header& info)
 {
-    std::vector<color_t> out(info.width);
-
-    auto to        = begin(out);
-    const auto end = begin(out) + info.width;
-    auto from      = begin(buffer);
+    const auto end = next(out, info.width);
 
     int32 offset = 6;
-    while (to != end) {
-        *to++ = info.color_table[(*from >> offset) & 0x03];
+    while (out != end) {
+        *out++ = info.color_table[(*in >> offset) & 0x03];
 
         if (offset == 0) {
             offset = 6;
-            from++;
+            in++;
         } else {
             offset -= 2;
         }
@@ -476,35 +473,32 @@ std::vector<color_t> process_row_2bpp(const std::vector<uint8>& buffer, const in
     return out;
 }
 
-std::vector<color_t> process_row_4bpp(const std::vector<uint8>& buffer, const info_header& info)
+std::vector<color_t>::iterator process_row_4bpp(std::vector<uint8>::iterator in,
+                                                std::vector<color_t>::iterator out,
+                                                const info_header& info)
 {
-    std::vector<color_t> out(info.width);
-
-    auto it = begin(out);
-    for (int32 x = 0, byte = 0, offset = 4; x < info.width; ++x) {
-        *it++ = info.color_table[(buffer[byte] >> offset) & 0x0F];
-        if (offset == 4) {
-            offset = 0;
-        } else {
-            offset = 4;
-            byte++;
+    for (int32 x = 0, offset = 4; x < info.width; ++x, offset = ((offset + 4) % 8)) {
+        *out++ = info.color_table[(*in >> offset) & 0x0F];
+        if (offset == 0) {
+            in++;
         }
     }
     return out;
 }
 
-std::vector<color_t> process_row_8bpp(const std::vector<uint8>& buffer, const info_header& info)
+std::vector<color_t>::iterator process_row_8bpp(std::vector<uint8>::iterator in,
+                                                std::vector<color_t>::iterator out,
+                                                const info_header& info)
 {
-    std::vector<color_t> out(info.width);
-
-    auto it = begin(out);
     for (int32 x = 0; x < info.width; ++x) {
-        *it++ = info.color_table[buffer[x]];
+        *out++ = info.color_table[*in];
     }
     return out;
 }
 
-std::vector<color_t> process_row_16bpp(const std::vector<uint8>& buffer, const info_header& info)
+std::vector<color_t>::iterator process_row_16bpp(std::vector<uint8>::iterator in,
+                                                 std::vector<color_t>::iterator out,
+                                                 const info_header& info)
 {
     const auto [red_mask, green_mask, blue_mask] = [&info]() -> std::tuple<uint32, uint32, uint32> {
         if (info.red_chanel_bitmask || info.green_chanel_bitmask || info.blue_chanel_bitmask) {
@@ -521,34 +515,35 @@ std::vector<color_t> process_row_16bpp(const std::vector<uint8>& buffer, const i
     const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask) : 0);
     const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask) : 0);
 
-    std::vector<color_t> out(info.width);
-
     for (int32 x = 0; x < info.width; ++x) {
-        const uint16 pixel = *(reinterpret_cast<const uint16*>(&buffer[x * sizeof(uint16)]));
+        const uint16 pixel = *(reinterpret_cast<const uint16*>(*in));
+        advance(in, sizeof(uint16));
 
-        out[x].r = masked_value(pixel, red_mask, red_offset);
-        out[x].g = masked_value(pixel, green_mask, green_offset);
-        out[x].b = masked_value(pixel, blue_mask, blue_offset);
-        out[x].a = (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255);
+        const color_t color(masked_value(pixel, red_mask, red_offset),
+                            masked_value(pixel, green_mask, green_offset),
+                            masked_value(pixel, blue_mask, blue_offset),
+                            (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
+        *out++ = color;
     }
 
     return out;
 }
 
-std::vector<color_t> process_row_24bpp(const std::vector<uint8>& buffer, const info_header& info)
+std::vector<color_t>::iterator process_row_24bpp(std::vector<uint8>::iterator in,
+                                                 std::vector<color_t>::iterator out,
+                                                 const info_header& info)
 {
-    std::vector<color_t> out(info.width);
     for (int32 x = 0; x < info.width; ++x) {
-        out[x].b = buffer[x * 3 + 0];
-        out[x].g = buffer[x * 3 + 1];
-        out[x].r = buffer[x * 3 + 2];
-        out[x].a = 255;
+        const color_t color(*in++, *in++, *in++, 255U);
+        *out++ = color;
     }
 
     return out;
 }
 
-std::vector<color_t> process_row_32bpp(const std::vector<uint8>& buffer, const info_header& info)
+std::vector<color_t>::iterator process_row_32bpp(std::vector<uint8>::iterator in,
+                                                 std::vector<color_t>::iterator out,
+                                                 const info_header& info)
 {
     const auto [red_mask, green_mask, blue_mask] = [&info]() -> std::tuple<uint32, uint32, uint32> {
         if (info.red_chanel_bitmask || info.green_chanel_bitmask || info.blue_chanel_bitmask) {
@@ -565,178 +560,168 @@ std::vector<color_t> process_row_32bpp(const std::vector<uint8>& buffer, const i
     const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask) : 0);
     const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask) : 0);
 
-    std::vector<color_t> out(info.width);
-
     for (int32 x = 0; x < info.width; ++x) {
-        uint32 pixel = *(reinterpret_cast<const uint32*>(&buffer[x * sizeof(uint32)]));
+        uint32 pixel = *(reinterpret_cast<const uint32*>(*in));
+        advance(in, sizeof(uint32));
 
-        out[x].r = masked_value(pixel, red_mask, red_offset);
-        out[x].g = masked_value(pixel, green_mask, green_offset);
-        out[x].b = masked_value(pixel, blue_mask, blue_offset);
-        out[x].a = (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255);
+        const color_t color(masked_value(pixel, red_mask, red_offset),
+                            masked_value(pixel, green_mask, green_offset),
+                            masked_value(pixel, blue_mask, blue_offset),
+                            (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
+        *out++ = color;
     }
 
     return out;
 }
 
-std::vector<color_t> process_row(const std::vector<uint8>& buffer, const info_header& info)
+std::vector<color_t>::iterator process_row(std::vector<uint8>::iterator in,
+                                           std::vector<color_t>::iterator out,
+                                           const info_header& info)
 {
     switch (info.bits_per_pixel) {
-        case 1: return process_row_1bpp(buffer, info);
-        case 2: return process_row_2bpp(buffer, info);
-        case 4: return process_row_4bpp(buffer, info);
-        case 8: return process_row_8bpp(buffer, info);
-        case 16: return process_row_16bpp(buffer, info);
-        case 24: return process_row_24bpp(buffer, info);
-        case 32: return process_row_32bpp(buffer, info);
+        case 1: return process_row_1bpp(in, out, info);
+        case 2: return process_row_2bpp(in, out, info);
+        case 4: return process_row_4bpp(in, out, info);
+        case 8: return process_row_8bpp(in, out, info);
+        case 16: return process_row_16bpp(in, out, info);
+        case 24: return process_row_24bpp(in, out, info);
+        case 32: return process_row_32bpp(in, out, info);
         default: break;
     }
 
-    return std::vector<color_t>();
+    return out;
 }
 
 std::vector<color_t> read_data(std::ifstream& in, const info_header& info)
 {
     const int32 height = std::abs(info.height);
-    std::vector<color_t> image_data(info.width * height);
+    std::vector<color_t> image_data(static_cast<usize>(info.width * height));
 
-    const uint32 row_size = ((info.bits_per_pixel * info.width + 31) / 32) * 4;
+    const uint32 row_size = static_cast<uint32>(((info.bits_per_pixel * info.width + 31) / 32) * 4);
     std::vector<uint8> buffer(row_size);
 
-    auto pos = begin(image_data);
+    auto out = begin(image_data);
     for (int32 y = 0; y < height; ++y) {
         in.read(reinterpret_cast<char*>(buffer.data()), row_size);
-
-        std::vector<color_t> row = process_row(buffer, info);
-
-        pos = copy(begin(row), end(row), pos);
+        out = process_row(buffer.begin(), out, info);
     }
 
     return image_data;
 }
 
-inline uint32 fill_with_color_4(std::vector<color_t>& image_data,
-                                uint32 index,
-                                const info_header::color_table_t& color_table,
-                                const std::vector<uint8>::iterator it,
-                                int32 count)
+inline std::vector<color_t>::iterator fill_with_color_4(std::vector<color_t>::iterator out,
+                                                        const info_header::color_table_t& color_table,
+                                                        const std::vector<uint8>::iterator it,
+                                                        int32 count)
 {
     for (int32 c = 0, offset = 4; c < count; ++c) {
-        image_data[index] = color_table[(*it >> offset) & 0x0F];
-
+        *out++ = color_table[(*it >> offset) & 0x0F];
         offset = (offset == 0 ? 4 : 0);
-        index++;
     }
-    return index;
+    return out;
 }
 
-inline uint32 fill_with_color_8(std::vector<color_t>& image_data,
-                                uint32 index,
-                                const info_header::color_table_t& color_table,
-                                const std::vector<uint8>::iterator it,
-                                int32 count)
+inline std::vector<color_t>::iterator fill_with_color_8(std::vector<color_t>::iterator out,
+                                                        const info_header::color_table_t& color_table,
+                                                        const std::vector<uint8>::iterator it,
+                                                        int32 count)
 {
     for (int32 c = 0; c < count; ++c) {
-        image_data[index] = color_table[*it];
-        index++;
+        *out++ = color_table[*it];
     }
-    return index;
+    return out;
 }
 
-inline uint32 fill_from_buffer_4(std::vector<color_t>& image_data,
-                                 uint32 index,
-                                 const info_header::color_table_t& color_table,
-                                 std::vector<uint8>::iterator it,
-                                 int32 count)
+inline std::vector<color_t>::iterator fill_from_buffer_4(std::vector<color_t>::iterator out,
+                                                         const info_header::color_table_t& color_table,
+                                                         std::vector<uint8>::iterator it,
+                                                         int32 count)
 {
     const int32 colors_in_byte = 2;
     while (count > 0) {
-        index = fill_with_color_4(image_data, index, color_table, it, (count >= colors_in_byte ? colors_in_byte : 1));
+        out = fill_with_color_4(out, color_table, it, (count >= colors_in_byte ? colors_in_byte : 1));
         count -= colors_in_byte;
         it++;
     }
-    return index;
+    return out;
 }
 
-inline uint32 fill_from_buffer_8(std::vector<color_t>& image_data,
-                                 uint32 index,
-                                 const info_header::color_table_t& color_table,
-                                 std::vector<uint8>::iterator it,
-                                 int32 count)
+inline std::vector<color_t>::iterator fill_from_buffer_8(std::vector<color_t>::iterator out,
+                                                         const info_header::color_table_t& color_table,
+                                                         std::vector<uint8>::iterator it,
+                                                         int32 count)
 {
     while (count-- > 0) {
-        image_data[index] = color_table[*it];
-        it++;
-        index++;
+        *out++ = color_table[*it++];
     }
-    return index;
+    return out;
 }
 
-std::vector<color_t> read_data_rle(std::ifstream& in, const info_header& info)
+std::vector<color_t> read_data_rle(std::ifstream& input, const info_header& info)
 {
-    const int32 height      = std::abs(info.height);
-    const uint32 image_size = info.width * height;
-    std::vector<color_t> image_data(image_size);
+    const int32 height     = std::abs(info.height);
+    const int32 image_size = info.width * height;
+    std::vector<color_t> image_data(static_cast<usize>(image_size));
 
     std::vector<uint8> buffer(info.image_size);
-    in.read(reinterpret_cast<char*>(buffer.data()), info.image_size);
+    input.read(reinterpret_cast<char*>(buffer.data()), info.image_size);
 
-    auto it      = begin(buffer);
-    uint32 index = 0;
+    auto in  = begin(buffer);
+    auto out = begin(image_data);
 
-    while (it != end(buffer) && index < image_size) {
-        if (*it == 0x00) {
-            ++it;
-            switch (*it) {
+    while (in != end(buffer) && out != end(image_data)) {
+        if (*in == 0x00) {
+            ++in;
+            switch (*in) {
                 case 0x00: {
-                    const int32 d = index % info.width;
+                    const int32 d = distance(image_data.begin(), out) % info.width;
                     if (d != 0) {
-                        index += info.width - d;
+                        advance(out, info.width - d);
                     }
-                    it++;
+                    in++;
                 } break;
-                case 0x01: it = end(buffer); break;
+                case 0x01: in = end(buffer); break;
                 case 0x02: {
-                    it++;
+                    in++;
 
-                    const int32 w = *it++;
-                    const int32 h = *it++;
+                    const int32 w = *in++;
+                    const int32 h = *in++;
 
-                    index += h * info.width + w;
+                    advance(out, h * info.width + w);
                 } break;
                 default: {
-                    const int32 count = *it++;
+                    const int32 count = *in++;
 
-                    if (index + count >= image_size) {
-                        index = image_size;
+                    if (next(out, count) == end(image_data)) {
+                        out = end(image_data);
                         break;
                     }
 
                     if (info.bits_per_pixel == 4) {
-                        index = fill_from_buffer_4(image_data, index, info.color_table, it, count);
-                        advance(it, ((count + 3) / 4) * 2);
+                        out = fill_from_buffer_4(out, info.color_table, in, count);
+                        advance(in, ((count + 3) / 4) * 2);
                     } else {
-                        index = fill_from_buffer_8(image_data, index, info.color_table, it, count);
-                        advance(it, ((count + 1) / 2) * 2);
+                        out = fill_from_buffer_8(out, info.color_table, in, count);
+                        advance(in, ((count + 1) / 2) * 2);
                     }
 
                 } break;
             }
         } else {
-            const int32 count = *it++;
+            const int32 count = *in++;
 
-            if (index + count >= image_size) {
-                index = image_size;
+            if (next(out, count) == end(image_data)) {
+                out = end(image_data);
                 break;
             }
 
             if (info.bits_per_pixel == 4) {
-                index = fill_with_color_4(image_data, index, info.color_table, it, count);
+                out = fill_with_color_4(out, info.color_table, in, count);
             } else {
-                index = fill_with_color_8(image_data, index, info.color_table, it, count);
+                out = fill_with_color_8(out, info.color_table, in, count);
             }
 
-            it++;
+            in++;
         }
     }
 
@@ -792,7 +777,12 @@ load_result_t load(const std::string& filename)
         switch (info.compression) {
             case info_header::compression_t::bi_rle4:
             case info_header::compression_t::bi_rle8: return read_data_rle(f, info);
-            default: return read_data(f, info);
+
+            case info_header::compression_t::bi_rgb:
+            case info_header::compression_t::bi_bitfields:
+            case info_header::compression_t::bi_jpeg:
+            case info_header::compression_t::bi_png:
+            case info_header::compression_t::bi_alphabitfields: return read_data(f, info);
         }
     }(file);
 

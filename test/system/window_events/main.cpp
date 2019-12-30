@@ -265,13 +265,13 @@ private:
         });
 
         w.set_on_key_press_callback([](const window&, system::key_code key, system::modifiers_state state) {
-            log::info("test")
-            << "on_key_press key: " << (int)key << " " << key_name(key) << " " << print_state(state) << std::endl;
+            log::info("test") << "on_key_press key: " << static_cast<int32>(key) << " " << key_name(key) << " "
+                              << print_state(state) << std::endl;
         });
 
         w.set_on_key_release_callback([](const window&, system::key_code key, system::modifiers_state state) {
-            log::info("test")
-            << "on_key_release key: " << (int)key << " " << key_name(key) << " " << print_state(state) << std::endl;
+            log::info("test") << "on_key_release key: " << static_cast<int32>(key) << " " << key_name(key) << " "
+                              << print_state(state) << std::endl;
         });
 
         w.set_on_mouse_enter_callback([](const window&) { log::info("test") << "on_mouse_enter" << std::endl; });

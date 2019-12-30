@@ -50,7 +50,6 @@ bool image::load(const std::string& filename, file_type type)
             case file_type::bmp: return details::image::bmp::load(f);
             case file_type::tga: return details::image::tga::load(f);
             case file_type::png: return details::image::png::load(f);
-            default: break;
         }
         return details::image::load_result_t();
     };

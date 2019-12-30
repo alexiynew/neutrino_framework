@@ -39,11 +39,6 @@ load_result_t load(const std::string&)
     return load_result_t();
 }
 
-bool save(const std::string&)
-{
-    return false;
-}
-
 bool is_tga(const std::string&)
 {
     return false;

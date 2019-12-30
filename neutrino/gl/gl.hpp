@@ -35,6 +35,7 @@
 /// @brief OpenGL API wrapper.
 ///
 /// @details
+/// TODO: write details section
 ///
 /// The @ref opengl_module module gives access to OpenGL functionality.
 /// Module wraps functions up to OpenGL version 4.6 and other extensions.

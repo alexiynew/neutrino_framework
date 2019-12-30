@@ -48,7 +48,7 @@ public:
     /// @param major_v Major version number.
     /// @param minor_v Minor version number.
     /// @param patch_v Patch version number.
-    /// @param build_v Build version number.
+    /// @param build_n Build version number.
     version(int32 major_v, int32 minor_v, int32 patch_v = 0, int32 build_n = 0) noexcept;
 
     /// @brief Creates version instance from string.

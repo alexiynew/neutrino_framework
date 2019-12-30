@@ -1,7 +1,7 @@
 /// @file
-/// @brief ZLIB compression algorithm implementation
+/// @brief Window implementation for OSX.
 /// @author Fedorov Alexey
-/// @date 17.09.2019
+/// @date 20.12.2019
 
 // =============================================================================
 // MIT License
@@ -27,38 +27,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_ZLIB_HPP
-#define FRAMEWORK_COMMON_ZLIB_HPP
+#include <system/details/osx/osx_window.hpp>
+#include <system/details/window_implementation.hpp>
 
-#include <vector>
-
-#include <common/types.hpp>
-
-namespace framework::utils::zlib
+namespace framework::system::details
 {
-/// @addtogroup common_zlib_implementation
-/// @{
+std::unique_ptr<window_implementation> create_implementation(window_size size,
+                                                             const std::string& title,
+                                                             const context_settings& settings)
+{
+    return std::make_unique<osx_window>(size, title, settings);
+}
 
-/// @brief Decompress byte sequence
-///
-/// For details on the compression algorithm see the deflate specification [RFC-1951]
-///
-/// @param data LZ77-compressed data
-///
-/// @return Raw (uncompressed) data
-std::vector<uint8> inflate(const std::vector<uint8>& data);
-
-/// @brief Compress byte sequence
-///
-/// For details on the compression algorithm see the deflate specification [RFC-1951]
-///
-/// @param data Data to compress
-///
-/// @return LZ77-compressed data
-std::vector<uint8> deflate(const std::vector<uint8>& data);
-
-/// @}
-
-} // namespace framework::utils::zlib
-
-#endif
+} // namespace framework::system::details

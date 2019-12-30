@@ -38,9 +38,9 @@ namespace framework::graphics
 {
 #pragma region shader_base
 
-shader_base::shader_base(int32 shader_type)
+shader_base::shader_base(uint32 shader_type)
+    : m_shader_id(gl::glCreateShader(shader_type))
 {
-    m_shader_id = gl::glCreateShader(shader_type);
 }
 
 shader_base::~shader_base()
@@ -62,7 +62,7 @@ shader_base& shader_base::operator=(shader_base&& other)
 void shader_base::set_source(const std::string& src)
 {
     const char* src_pointer = src.c_str();
-    gl::glShaderSource(m_shader_id, 1, &src_pointer, NULL);
+    gl::glShaderSource(m_shader_id, 1, &src_pointer, nullptr);
 }
 
 void shader_base::set_source(std::istream& src_stream)
@@ -106,17 +106,17 @@ bool shader_base::compiled() const
     return status;
 }
 
-framework::int32 shader_base::source_length() const
+framework::usize shader_base::source_length() const
 {
     framework::int32 length = 0;
     gl::glGetShaderiv(m_shader_id, GL_SHADER_SOURCE_LENGTH, &length);
 
-    return length;
+    return static_cast<framework::usize>(length);
 }
 
 std::string shader_base::source() const
 {
-    const framework::int32 length = source_length();
+    const auto length = source_length();
 
     if (length <= 0) {
         return std::string();
@@ -124,7 +124,7 @@ std::string shader_base::source() const
 
     std::unique_ptr<char[]> buffer(new char[length]);
 
-    gl::glGetShaderSource(m_shader_id, length, nullptr, buffer.get());
+    gl::glGetShaderSource(m_shader_id, static_cast<GLsizei>(length), nullptr, buffer.get());
 
     return std::string(buffer.get());
 }
@@ -138,7 +138,7 @@ std::string shader_base::info_log() const
         return std::string();
     }
 
-    std::unique_ptr<char[]> buffer(new char[length]);
+    std::unique_ptr<char[]> buffer(new char[static_cast<usize>(length)]);
 
     gl::glGetShaderInfoLog(m_shader_id, length, nullptr, buffer.get());
 
@@ -196,13 +196,13 @@ void shader_program::stop_using()
 
 void shader_program::uniform(const std::string& name, int value)
 {
-    const uint32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
+    const int32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
     gl::glUniform1i(uniform_id, value);
 }
 
 void shader_program::uniform(const std::string& name, math::matrix4f value, bool transpose)
 {
-    const uint32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
+    const int32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
     gl::glUniformMatrix4fv(uniform_id, 1, transpose, value.data());
 }
 
@@ -222,7 +222,7 @@ std::string shader_program::info_log() const
         return std::string();
     }
 
-    std::unique_ptr<char[]> buffer(new char[length]);
+    std::unique_ptr<char[]> buffer(new char[static_cast<usize>(length)]);
 
     gl::glGetProgramInfoLog(m_program_id, length, nullptr, buffer.get());
 

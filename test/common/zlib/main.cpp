@@ -23,11 +23,16 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <string>
+#include <vector>
+
 #include <common/types.hpp>
 #include <common/zlib.hpp>
 #include <unit_test/suite.hpp>
 
 using framework::uint8;
+
+std::vector<uint8> to_vector(const std::string& str);
 
 std::vector<uint8> to_vector(const std::string& str)
 {
@@ -39,10 +44,8 @@ std::vector<uint8> to_vector(const std::string& str)
 class zlib_test : public framework::unit_test::suite
 {
 public:
-    zlib_test() : suite("zlib_test")
+    zlib_test() : suite("zlib_test"), data(to_vector("Hello Hello Hello Hello Hello Hello!"))
     {
-        data = to_vector("Hello Hello Hello Hello Hello Hello!");
-
         add_test([this]() { inflate_test(); }, "inflate_test");
         add_test([this]() { deflate_test(); }, "daflate_test");
     }

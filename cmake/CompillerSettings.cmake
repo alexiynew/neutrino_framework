@@ -32,12 +32,14 @@ macro(set_compiller_flags)
                              -Wno-c++98-compat \
                              -Wno-c++98-compat-pedantic \
                              -Wno-c++11-extensions \
+                             -Wno-c++2a-compat \
                              -Wno-padded \
                              -Wno-weak-vtables \
                              -Wno-exit-time-destructors \
                              -Wno-global-constructors \
                              -Wno-unknown-pragmas \
                              -Wno-reserved-id-macro \
+                             -Wno-documentation-unknown-command \
                              -pthread \
                              -fPIC")
         set(CMAKE_CXX_FLAGS_DEBUG "-g")

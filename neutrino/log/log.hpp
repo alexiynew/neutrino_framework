@@ -40,6 +40,7 @@
 /// @brief Contains classes related to logging.
 ///
 /// @details
+/// TODO: Add details.
 ///
 /// The @ref log_module module provides a simple logging utility that you can use to output messages.@n
 /// The messages have associated `::framework::log::severity_level` that indicate their importance@n

@@ -56,7 +56,7 @@ std::vector<uint8> read_bytes(std::ifstream& in, usize count)
 {
     std::vector<uint8> data(count);
 
-    in.read(reinterpret_cast<char*>(data.data()), count);
+    in.read(reinterpret_cast<char*>(data.data()), static_cast<std::streamsize>(count));
 
     if (!in) {
         return std::vector<uint8>();
@@ -185,8 +185,8 @@ enum class interlace_method_t : uint8
 
 struct file_header_t
 {
-    uint32 width                            = 0;
-    uint32 height                           = 0;
+    int32 width                             = 0;
+    int32 height                            = 0;
     uint8 bit_depth                         = 0;
     color_type_t color_type                 = color_type_t::greyscale;
     compression_method_t compression_method = compression_method_t::deflate_inflate;
@@ -196,9 +196,9 @@ struct file_header_t
     static file_header_t read(std::ifstream& in);
 
     bool valid() const;
-    usize samples_per_pixel() const;
-    usize bits_per_pixel() const;
-    usize bytes_per_pixel() const;
+    int32 samples_per_pixel() const;
+    int32 bits_per_pixel() const;
+    int32 bytes_per_pixel() const;
 
     image_info get_image_info() const;
 };
@@ -211,8 +211,8 @@ file_header_t file_header_t::read(std::ifstream& in)
     }
 
     file_header_t h;
-    h.width              = big_endian_value<uint32>(&c.data[0]);
-    h.height             = big_endian_value<uint32>(&c.data[4]);
+    h.width              = big_endian_value<int32>(&c.data[0]);
+    h.height             = big_endian_value<int32>(&c.data[4]);
     h.bit_depth          = c.data[8];
     h.color_type         = static_cast<color_type_t>(c.data[9]);
     h.compression_method = static_cast<compression_method_t>(c.data[10]);
@@ -246,7 +246,7 @@ bool file_header_t::valid() const
     return valid;
 }
 
-usize file_header_t::samples_per_pixel() const
+int32 file_header_t::samples_per_pixel() const
 {
     switch (color_type) {
         case color_type_t::greyscale: return 1;
@@ -259,19 +259,19 @@ usize file_header_t::samples_per_pixel() const
     return 0;
 }
 
-usize file_header_t::bits_per_pixel() const
+int32 file_header_t::bits_per_pixel() const
 {
     return samples_per_pixel() * bit_depth;
 }
 
-usize file_header_t::bytes_per_pixel() const
+int32 file_header_t::bytes_per_pixel() const
 {
     return (bits_per_pixel() + 7) / 8;
 }
 
 image_info file_header_t::get_image_info() const
 {
-    return image_info{static_cast<int32>(width), static_cast<int32>(height), true};
+    return image_info{width, height, true};
 }
 
 bool check_signature(const std::vector<uint8>& data)
@@ -282,7 +282,7 @@ bool check_signature(const std::vector<uint8>& data)
         return false;
     }
 
-    for (uint32 i = 0; i < signature.size(); ++i) {
+    for (usize i = 0; i < signature.size(); ++i) {
         if (data[i] != signature[i]) {
             return false;
         }
@@ -299,23 +299,23 @@ struct pass_info
 {
     struct position_t
     {
-        usize x;
-        usize y;
+        int32 x;
+        int32 y;
     };
 
     struct offset_t
     {
-        usize x;
-        usize y;
+        int32 x;
+        int32 y;
     };
 
-    pass_info(usize w, usize h, usize b, position_t p, offset_t o)
+    pass_info(int32 w, int32 h, int32 b, position_t p, offset_t o)
         : width(w), height(h), bytes_per_scanline(b), position(p), offset(o)
     {}
 
-    const usize width;
-    const usize height;
-    const usize bytes_per_scanline;
+    const int32 width;
+    const int32 height;
+    const int32 bytes_per_scanline;
     const position_t position;
     const offset_t offset;
 };
@@ -326,7 +326,7 @@ std::vector<pass_info> get_pass_info(const file_header_t& header)
 
     switch (header.interlace_method) {
         case interlace_method_t::adam7: {
-            const std::array<usize, pass_count> widths = {(header.width + 7) / 8,
+            const std::array<int32, pass_count> widths = {(header.width + 7) / 8,
                                                           (header.width + 3) / 8,
                                                           (header.width + 3) / 4,
                                                           (header.width + 1) / 4,
@@ -334,7 +334,7 @@ std::vector<pass_info> get_pass_info(const file_header_t& header)
                                                           (header.width + 0) / 2,
                                                           (header.width + 0) / 1};
 
-            const std::array<usize, pass_count> heights = {(header.height + 7) / 8,
+            const std::array<int32, pass_count> heights = {(header.height + 7) / 8,
                                                            (header.height + 7) / 8,
                                                            (header.height + 3) / 8,
                                                            (header.height + 3) / 4,
@@ -353,7 +353,7 @@ std::vector<pass_info> get_pass_info(const file_header_t& header)
                     continue;
                 }
 
-                const usize bytes_per_scanline = (widths[i] * header.bits_per_pixel() + 7) / 8;
+                const int32 bytes_per_scanline = (widths[i] * header.bits_per_pixel() + 7) / 8;
                 info.push_back(pass_info(widths[i], heights[i], bytes_per_scanline, positions[i], offsets[i]));
             }
         } break;
@@ -430,17 +430,17 @@ enum class filter_type_t : uint8
 std::tuple<std::vector<uint8>::iterator, std::vector<uint8>::iterator> reconstruct_pass(std::vector<uint8>::iterator in,
                                                                                         std::vector<uint8>::iterator out,
                                                                                         const pass_info& pass,
-                                                                                        usize bytes_per_pixel)
+                                                                                        int32 bytes_per_pixel)
 {
-    const usize bytes_in_row = (pass.bytes_per_scanline + bytes_per_pixel);
-    std::vector<uint8> res(bytes_in_row * (pass.height + 1), 0);
+    const int32 bytes_in_row = (pass.bytes_per_scanline + bytes_per_pixel);
+    std::vector<uint8> res(static_cast<usize>(bytes_in_row * (pass.height + 1)), 0);
 
     auto res_a = next(res.begin(), bytes_in_row);
     auto res_b = next(res.begin(), bytes_per_pixel);
     auto res_c = res.begin();
     auto res_x = next(res.begin(), bytes_in_row + bytes_per_pixel);
 
-    for (usize h = 0; h < pass.height; ++h) {
+    for (int32 h = 0; h < pass.height; ++h) {
         const filter_type_t ft = static_cast<filter_type_t>(*in++);
 
         auto last = next(in, pass.bytes_per_scanline);
@@ -461,8 +461,8 @@ std::tuple<std::vector<uint8>::iterator, std::vector<uint8>::iterator> reconstru
     }
 
     auto it = next(res.begin(), bytes_in_row + bytes_per_pixel);
-    for (usize h = 0; h < pass.height; ++h) {
-        auto last = next(it, pass.bytes_per_scanline);
+    for (int32 h = 0; h < pass.height; ++h) {
+        auto last = next(it, static_cast<ptrdiff_t>(pass.bytes_per_scanline));
 
         out = std::copy(it, last, out);
 
@@ -632,11 +632,12 @@ inline std::vector<uint8>::iterator unserialize_pass(std::vector<uint8>::iterato
                                                      std::vector<color_t>& out)
 {
     static_assert(BitDepth == 8 || BitDepth == 16);
-    for (usize h = 0; h < pass.height; ++h) {
-        usize pos = (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x;
-        for (usize w = 0; w < pass.width; ++w) {
+    for (int32 h = 0; h < pass.height; ++h) {
+        uint32 pos = static_cast<uint32>((header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width +
+                                         pass.position.x);
+        for (int32 w = 0; w < pass.width; ++w) {
             std::tie(out[pos], in) = get_color<ColorType, BitDepth>(in);
-            pos += pass.offset.x;
+            pos += static_cast<uint32>(pass.offset.x);
         }
     }
 
@@ -653,15 +654,16 @@ inline std::vector<uint8>::iterator unserialize_palette_pass(std::vector<uint8>:
     static_assert(BitDepth <= 8);
     constexpr usize mask = (1 << BitDepth) - 1;
 
-    for (usize h = 0; h < pass.height; ++h) {
-        usize pos  = (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x;
+    for (int32 h = 0; h < pass.height; ++h) {
+        uint32 pos = static_cast<uint32>((header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width +
+                                         pass.position.x);
         uint8 byte = 0;
-        for (usize w = 0, i = 0; w < pass.width; ++w, i = (i + BitDepth) % 8) {
+        for (int32 w = 0, i = 0; w < pass.width; ++w, i = (i + BitDepth) % 8) {
             if (i == 0) {
                 byte = *in++;
             }
             out[pos] = palette[(byte >> ((8 - BitDepth) - i)) & mask];
-            pos += pass.offset.x;
+            pos += static_cast<uint32>(pass.offset.x);
         }
     }
 
@@ -672,7 +674,7 @@ template <color_type_t ColorType, uint8 BitDepth>
 inline std::vector<color_t> unserialize_impl(const file_header_t& header, std::vector<uint8>&& data)
 {
     static_assert(BitDepth == 8 || BitDepth == 16);
-    std::vector<color_t> res(header.width * header.height, color_t(uint32(0x000000FF)));
+    std::vector<color_t> res(static_cast<usize>(header.width * header.height), color_t(uint32(0x000000FF)));
 
     auto in = data.begin();
     for (const auto& pass : get_pass_info(header)) {
@@ -688,7 +690,7 @@ inline std::vector<color_t> unserialize_palette_impl(const file_header_t& header
                                                      std::vector<uint8>&& data)
 {
     static_assert(BitDepth <= 8);
-    std::vector<color_t> res(header.width * header.height, color_t(uint32(0x000000FF)));
+    std::vector<color_t> res(static_cast<usize>(header.width * header.height), color_t(uint32(0x000000FF)));
 
     auto in = data.begin();
     for (const auto& pass : get_pass_info(header)) {
@@ -785,7 +787,6 @@ inline std::vector<color_t> unserialize(const file_header_t& header,
         case color_type_t::indexed: return unserialize_indexed(header, plte_chunk, std::move(data));
         case color_type_t::greyscale_alpha: return unserialize_greyscale_alpha(header, std::move(data));
         case color_type_t::truecolor_alpha: return unserialize_truecolor_alpha(header, std::move(data));
-        default: break;
     }
 
     return std::vector<color_t>();
@@ -824,6 +825,7 @@ load_result_t load(const std::string& filename)
         }
 
         switch (chunk.type) {
+            case chunk_t::type_t::IHDR: break; // error
             case chunk_t::type_t::PLTE: {
                 plte_chunk = chunk;
             } break;
@@ -840,13 +842,12 @@ load_result_t load(const std::string& filename)
             case chunk_t::type_t::hIST: break;
             case chunk_t::type_t::tRNS: break;
             case chunk_t::type_t::pHYs: break;
-            case chunk_t::type_t::sPLT: break; // ignore
-            case chunk_t::type_t::tIME: break; // ignore
-            case chunk_t::type_t::iTXt: break; // ignore
-            case chunk_t::type_t::tEXt: break; // ignore
-            case chunk_t::type_t::zTXt: break; // ignore
-
-            default: break;
+            case chunk_t::type_t::sPLT: break;      // ignore
+            case chunk_t::type_t::tIME: break;      // ignore
+            case chunk_t::type_t::iTXt: break;      // ignore
+            case chunk_t::type_t::tEXt: break;      // ignore
+            case chunk_t::type_t::zTXt: break;      // ignore
+            case chunk_t::type_t::undefined: break; // error
         }
     }
 

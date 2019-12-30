@@ -242,6 +242,14 @@ struct object
     framework::graphics::mesh quad;
 };
 
+std::vector<framework::graphics::image> load_images(mode image_mode);
+void gl_error(const char* file, int line);
+framework::graphics::shader_program load_shader(const std::string& VertexShaderCode,
+                                                const std::string& FragmentShaderCode);
+framework::graphics::mesh make_quad(framework::int32 width, framework::int32 height);
+std::vector<object> generate_objects(const std::vector<framework::graphics::image>& images);
+void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height);
+
 std::vector<framework::graphics::image> load_images(mode image_mode)
 {
     std::vector<framework::graphics::image> images;
@@ -379,7 +387,7 @@ void arrange(std::vector<object>& objects, framework::int32 width, framework::in
     int32 w          = 1;
     int32 h          = 1;
     int32 max_height = 1;
-    for_each(begin(objects), end(objects), [&w, &h, &max_height, width, height](object& o) {
+    for_each(begin(objects), end(objects), [&w, &h, &max_height, width](object& o) {
         if (w + o.width + 1 > width) {
             h += max_height + 1;
             w = 1;
@@ -440,8 +448,7 @@ int main()
     gl_error(__FILE__, __LINE__);
 
     main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
-    main_window.set_on_size_callback(
-    [&main_window, &objects, &mvp](const window&, ::framework::system::details::window_size size) {
+    main_window.set_on_size_callback([&objects, &mvp](const window&, ::framework::system::details::window_size size) {
         mvp = framework::math::ortho2d<float32>(0,
                                                 static_cast<float32>(size.width),
                                                 static_cast<float32>(size.height),

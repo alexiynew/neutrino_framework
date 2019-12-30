@@ -49,7 +49,7 @@ namespace framework::system::details
 class event_handler final
 {
 public:
-    event_handler(window*);
+    explicit event_handler(window*);
 
     ~event_handler() = default;
 
@@ -106,7 +106,7 @@ private:
     window::event_callback m_on_mouse_enter_callback = nullptr;
     window::event_callback m_on_mouse_leave_callback = nullptr;
 
-    const window* const m_window = nullptr;
+    const window* m_window = nullptr;
 };
 
 } // namespace framework::system::details
