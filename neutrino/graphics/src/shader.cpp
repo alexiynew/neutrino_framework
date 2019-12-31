@@ -38,10 +38,8 @@ namespace framework::graphics
 {
 #pragma region shader_base
 
-shader_base::shader_base(uint32 shader_type)
-    : m_shader_id(gl::glCreateShader(shader_type))
-{
-}
+shader_base::shader_base(uint32 shader_type) : m_shader_id(gl::glCreateShader(shader_type))
+{}
 
 shader_base::~shader_base()
 {
@@ -202,7 +200,7 @@ void shader_program::uniform(const std::string& name, int value)
 
 void shader_program::uniform(const std::string& name, float value)
 {
-    const uint32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
+    const int32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
     gl::glUniform1f(uniform_id, value);
 }
 
@@ -214,14 +212,14 @@ void shader_program::uniform(const std::string& name, math::matrix4f value, bool
 
 bool shader_program::linked() const
 {
-    framework::int32 status = 0;
+    int32 status = 0;
     gl::glGetProgramiv(m_program_id, GL_LINK_STATUS, &status);
     return status;
 }
 
 std::string shader_program::info_log() const
 {
-    framework::int32 length = 0;
+    int32 length = 0;
     gl::glGetProgramiv(m_program_id, GL_INFO_LOG_LENGTH, &length);
 
     if (length <= 0) {

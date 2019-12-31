@@ -34,105 +34,105 @@ namespace framework::system::details
 event_handler::event_handler(window* w) : m_window(w)
 {}
 
-void event_handler::on_show() const
+void event_handler::on_show()
 {
     if (m_on_show_callback) {
         m_on_show_callback(*m_window);
     }
 }
 
-void event_handler::on_hide() const
+void event_handler::on_hide()
 {
     if (m_on_hide_callback) {
         m_on_hide_callback(*m_window);
     }
 }
 
-void event_handler::on_close() const
+void event_handler::on_close()
 {
     if (m_on_close_callback) {
         m_on_close_callback(*m_window);
     }
 }
 
-void event_handler::on_focus() const
+void event_handler::on_focus()
 {
     if (m_on_focus_callback) {
         m_on_focus_callback(*m_window);
     }
 }
 
-void event_handler::on_focus_lost() const
+void event_handler::on_focus_lost()
 {
     if (m_on_focus_lost_callback) {
         m_on_focus_lost_callback(*m_window);
     }
 }
 
-void event_handler::on_size(window_size size) const
+void event_handler::on_size(window_size size)
 {
     if (m_on_size_callback) {
         m_on_size_callback(*m_window, size);
     }
 }
 
-void event_handler::on_position(window_position position) const
+void event_handler::on_position(window_position position)
 {
     if (m_on_position_callback) {
         m_on_position_callback(*m_window, position);
     }
 }
 
-void event_handler::on_key_press(key_code key, modifiers_state state) const
+void event_handler::on_key_press(key_code key, modifiers_state state)
 {
     if (m_on_key_press_callback) {
         m_on_key_press_callback(*m_window, key, state);
     }
 }
 
-void event_handler::on_key_release(key_code key, modifiers_state state) const
+void event_handler::on_key_release(key_code key, modifiers_state state)
 {
     if (m_on_key_release_callback) {
         m_on_key_release_callback(*m_window, key, state);
     }
 }
 
-void event_handler::on_character(std::string ch) const
+void event_handler::on_character(std::string ch)
 {
     if (m_on_character_callback) {
         m_on_character_callback(*m_window, ch);
     }
 }
 
-void event_handler::on_mouse_move(cursor_position position) const
+void event_handler::on_mouse_move(cursor_position position)
 {
     if (m_on_mouse_move_callback) {
         m_on_mouse_move_callback(*m_window, position);
     }
 }
 
-void event_handler::on_mouse_press(mouse_button button, cursor_position position, modifiers_state state) const
+void event_handler::on_mouse_press(mouse_button button, cursor_position position, modifiers_state state)
 {
     if (m_on_mouse_press_callback) {
         m_on_mouse_press_callback(*m_window, button, position, state);
     }
 }
 
-void event_handler::on_mouse_release(mouse_button button, cursor_position position, modifiers_state state) const
+void event_handler::on_mouse_release(mouse_button button, cursor_position position, modifiers_state state)
 {
     if (m_on_mouse_release_callback) {
         m_on_mouse_release_callback(*m_window, button, position, state);
     }
 }
 
-void event_handler::on_mouse_enter() const
+void event_handler::on_mouse_enter()
 {
     if (m_on_mouse_enter_callback) {
         m_on_mouse_enter_callback(*m_window);
     }
 }
 
-void event_handler::on_mouse_leave() const
+void event_handler::on_mouse_leave()
 {
     if (m_on_mouse_leave_callback) {
         m_on_mouse_leave_callback(*m_window);

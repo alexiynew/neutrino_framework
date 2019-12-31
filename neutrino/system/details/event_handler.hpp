@@ -59,27 +59,27 @@ public:
     event_handler(event_handler&&) = default;
     event_handler& operator=(event_handler&&) = default;
 
-    void on_show() const;
-    void on_hide() const;
-    void on_close() const;
+    void on_show();
+    void on_hide();
+    void on_close();
 
-    void on_focus() const;
-    void on_focus_lost() const;
+    void on_focus();
+    void on_focus_lost();
 
-    void on_size(window_size) const;
-    void on_position(window_position) const;
+    void on_size(window_size);
+    void on_position(window_position);
 
-    void on_key_press(key_code, modifiers_state) const;
-    void on_key_release(key_code, modifiers_state) const;
+    void on_key_press(key_code, modifiers_state);
+    void on_key_release(key_code, modifiers_state);
 
-    void on_character(std::string) const;
+    void on_character(std::string);
 
-    void on_mouse_move(cursor_position) const;
-    void on_mouse_press(mouse_button, cursor_position, modifiers_state) const;
-    void on_mouse_release(mouse_button, cursor_position, modifiers_state) const;
+    void on_mouse_move(cursor_position);
+    void on_mouse_press(mouse_button, cursor_position, modifiers_state);
+    void on_mouse_release(mouse_button, cursor_position, modifiers_state);
 
-    void on_mouse_enter() const;
-    void on_mouse_leave() const;
+    void on_mouse_enter();
+    void on_mouse_leave();
 
 private:
     friend class framework::system::window;
@@ -106,7 +106,7 @@ private:
     window::event_callback m_on_mouse_enter_callback = nullptr;
     window::event_callback m_on_mouse_leave_callback = nullptr;
 
-    const window* m_window = nullptr;
+    window* m_window = nullptr;
 };
 
 } // namespace framework::system::details

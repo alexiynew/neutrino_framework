@@ -487,8 +487,8 @@ int main()
 
     float32 gamma = 0.0f;
 
-    main_window.set_on_close_callback([&main_window](const window&) { main_window.hide(); });
-    main_window.set_on_size_callback([&objects, &mvp](const window&, ::framework::system::details::window_size size) {
+    main_window.set_on_close_callback([](window& w) { w.hide(); });
+    main_window.set_on_size_callback([&objects, &mvp](window&, ::framework::system::details::window_size size) {
         mvp = framework::math::ortho2d<float32>(0,
                                                 static_cast<float32>(size.width),
                                                 static_cast<float32>(size.height),
@@ -498,7 +498,7 @@ int main()
         arrange(objects, size.width, size.height);
     });
 
-    main_window.set_on_key_press_callback([&gamma](const window&, key_code k, modifiers_state) {
+    main_window.set_on_key_press_callback([&gamma](window&, key_code k, modifiers_state) {
         switch (k) {
             case key_code::key_equal: gamma += 0.1f; break;
             case key_code::key_minus: gamma -= 0.1f; break;

@@ -40,6 +40,7 @@ macro(set_compiller_flags)
                              -Wno-unknown-pragmas \
                              -Wno-reserved-id-macro \
                              -Wno-documentation-unknown-command \
+                             -Wno-switch-enum \
                              -pthread \
                              -fPIC")
         set(CMAKE_CXX_FLAGS_DEBUG "-g")
