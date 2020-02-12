@@ -39,13 +39,14 @@
 
 namespace framework::graphics::details::image
 {
+constexpr float32 default_gamma = 2.2f;
+
 struct image_info_t
 {
     int32 width  = 0;
     int32 height = 0;
 
-    bool bottom_up = false;
-    float32 gamma  = 2.2f;
+    float32 gamma  = default_gamma;
 };
 
 using image_data_t  = std::tuple<image_info_t, std::vector<color_t>>;

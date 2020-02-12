@@ -44,7 +44,6 @@ private:
 
         TEST_ASSERT(img.width() == 127, "Loading of good_pal1.bmp failed.");
         TEST_ASSERT(img.height() == 64, "Loading of good_pal1.bmp failed.");
-        TEST_ASSERT(img.is_bottom_up() == true, "Loading of good_pal1.bmp failed.");
 
         TEST_ASSERT(img.load("bmp/good/pal1bg.bmp"), "Loading of good_pal1bg.bmp failed.");
         TEST_ASSERT(img.load("bmp/good/pal1wb.bmp"), "Loading of good_pal1wb.bmp failed.");
@@ -59,9 +58,6 @@ private:
         TEST_ASSERT(img.load("bmp/good/pal8rle.bmp"), "Loading of good_pal8rle.bmp failed.");
 
         TEST_ASSERT(img.load("bmp/good/pal8topdown.bmp"), "Loading of good_pal8topdown.bmp failed.");
-        TEST_ASSERT(img.is_bottom_up() == false, "Loading of good_pal8topdown.bmp failed.");
-        img.flip_vertically();
-        TEST_ASSERT(img.is_bottom_up() == true, "Image flip_vertically failed.");
 
         TEST_ASSERT(img.load("bmp/good/pal8v4.bmp"), "Loading of good_pal8v4.bmp failed.");
         TEST_ASSERT(img.load("bmp/good/pal8v5.bmp"), "Loading of good_pal8v5.bmp failed.");

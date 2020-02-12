@@ -42,19 +42,21 @@ namespace framework::graphics
 /// @addtogroup graphics_module
 /// @{
 
-enum class file_type
-{
-    bmp,
-    tga,
-    png
-};
-
 class image
 {
 public:
+    enum class file_type
+    {
+        bmp,
+        tga,
+        png
+    };
+
     using data_t = std::vector<color_t>;
 
     image();
+
+    image(const data_t& data, int32 width, int32 height);
 
     image(const image&);
     image& operator=(const image&);
@@ -65,13 +67,9 @@ public:
     bool load(const std::string& filename);
     bool load(const std::string& filename, file_type type);
 
-    void flip_vertically();
-
     int32 width() const;
     int32 height() const;
 
-    bool is_bottom_up() const;
-    int32 pixel_size() const;
     float32 gamma() const;
 
     const color_t* data() const;
@@ -81,8 +79,6 @@ private:
 
     int32 m_width  = 0;
     int32 m_height = 0;
-
-    bool m_bottom_up = false;
 
     float32 m_gamma = 2.2f;
 };

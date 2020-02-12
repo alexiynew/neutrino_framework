@@ -37,6 +37,12 @@ namespace framework::graphics
 {
 image::image() = default;
 
+image::image(const data_t& data, int32 width, int32 height)
+    : m_data(data)
+    , m_width(width)
+    , m_height(height)
+{}
+
 image::image(const image&) = default;
 image& image::operator=(const image&) = default;
 
@@ -59,7 +65,6 @@ bool image::load(const std::string& filename, file_type type)
 
         m_width     = info.width;
         m_height    = info.height;
-        m_bottom_up = info.bottom_up;
         m_gamma     = info.gamma;
 
         m_data = std::move(data);
@@ -82,27 +87,6 @@ bool image::load(const std::string& filename)
     return false;
 }
 
-void image::flip_vertically()
-{
-    data_t tmp(m_data.size());
-
-    auto from = begin(m_data);
-    auto to   = prev(end(tmp), width());
-
-    for (int32 y = 0; y < height(); ++y) {
-        auto next_from = next(from, width());
-
-        copy(from, next_from, to);
-
-        from = next_from;
-        to   = prev(to, width());
-    }
-
-    m_data = std::move(tmp);
-
-    m_bottom_up = !m_bottom_up;
-}
-
 int32 image::width() const
 {
     return m_width;
@@ -111,16 +95,6 @@ int32 image::width() const
 int32 image::height() const
 {
     return m_height;
-}
-
-bool image::is_bottom_up() const
-{
-    return m_bottom_up;
-}
-
-int32 image::pixel_size() const
-{
-    return 4;
 }
 
 float32 image::gamma() const

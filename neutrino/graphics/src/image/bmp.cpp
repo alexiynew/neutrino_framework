@@ -154,6 +154,7 @@ struct info_header
 
     type_t type() const;
     bool bottom_up() const;
+    std::tuple<uint32, uint32, uint32, uint32> chanel_masks() const;
 
     static info_header read(std::ifstream& in);
     static color_table_t read_color_table(std::ifstream& in, const info_header& info);
@@ -194,6 +195,22 @@ inline info_header::type_t info_header::type() const
 inline bool info_header::bottom_up() const
 {
     return type() == info_header::type_t::bitmapcoreheader ? true : height > 0;
+}
+
+inline std::tuple<uint32, uint32, uint32, uint32> info_header::chanel_masks() const
+{
+    const uint32 alpha_mask = alpha_chanel_bitmask ? alpha_chanel_bitmask : 0;
+
+    if (red_chanel_bitmask || green_chanel_bitmask || blue_chanel_bitmask) {
+        return std::make_tuple(red_chanel_bitmask, green_chanel_bitmask, blue_chanel_bitmask, alpha_mask);
+    } else if (bits_per_pixel == 16) {
+        return std::make_tuple(0x7C00, 0x03E0, 0x001F, alpha_mask);
+    } else if (bits_per_pixel == 32)
+    {
+        return std::make_tuple(0xFF0000, 0x00FF00, 0x0000FF, alpha_mask);
+    }
+    
+    return std::make_tuple(0,0,0,0);
 }
 
 info_header info_header::read(std::ifstream& in)
@@ -416,7 +433,7 @@ inline bool check_size(const info_header& h) noexcept
 
 inline image_info_t make_image_info(const info_header& h) noexcept
 {
-    return image_info_t{h.width, std::abs(h.height), h.bottom_up()};
+    return image_info_t{h.width, std::abs(h.height), framework::graphics::details::image::default_gamma};
 }
 
 inline uint32 get_offset(uint32 value)
@@ -500,24 +517,15 @@ std::vector<color_t>::iterator process_row_16bpp(std::vector<uint8>::iterator in
                                                  std::vector<color_t>::iterator out,
                                                  const info_header& info)
 {
-    const auto [red_mask, green_mask, blue_mask] = [&info]() -> std::tuple<uint32, uint32, uint32> {
-        if (info.red_chanel_bitmask || info.green_chanel_bitmask || info.blue_chanel_bitmask) {
-            return {info.red_chanel_bitmask, info.green_chanel_bitmask, info.blue_chanel_bitmask};
-        } else {
-            return {0x7C00, 0x03E0, 0x001F};
-        }
-    }();
-
-    const uint32 alpha_mask = (info.alpha_chanel_bitmask ? info.alpha_chanel_bitmask : 0);
-
+    const auto [red_mask, green_mask, blue_mask, alpha_mask] = info.chanel_masks();
     const uint32 red_offset   = (red_mask ? get_offset(red_mask) : 0);
     const uint32 green_offset = (green_mask ? get_offset(green_mask) : 0);
     const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask) : 0);
     const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask) : 0);
 
     for (int32 x = 0; x < info.width; ++x) {
-        const uint16 pixel = *(reinterpret_cast<const uint16*>(*in));
-        advance(in, sizeof(uint16));
+        uint16 pixel = static_cast<uint16>(*in++ << 8);
+        pixel += static_cast<uint16>(*in++);
 
         const color_t color(masked_value(pixel, red_mask, red_offset),
                             masked_value(pixel, green_mask, green_offset),
@@ -545,24 +553,17 @@ std::vector<color_t>::iterator process_row_32bpp(std::vector<uint8>::iterator in
                                                  std::vector<color_t>::iterator out,
                                                  const info_header& info)
 {
-    const auto [red_mask, green_mask, blue_mask] = [&info]() -> std::tuple<uint32, uint32, uint32> {
-        if (info.red_chanel_bitmask || info.green_chanel_bitmask || info.blue_chanel_bitmask) {
-            return {info.red_chanel_bitmask, info.green_chanel_bitmask, info.blue_chanel_bitmask};
-        } else {
-            return {0xFF0000, 0x00FF00, 0x0000FF};
-        }
-    }();
-
-    const uint32 alpha_mask = (info.alpha_chanel_bitmask ? info.alpha_chanel_bitmask : 0);
-
+    const auto [red_mask, green_mask, blue_mask, alpha_mask] = info.chanel_masks();
     const uint32 red_offset   = (red_mask ? get_offset(red_mask) : 0);
     const uint32 green_offset = (green_mask ? get_offset(green_mask) : 0);
     const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask) : 0);
     const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask) : 0);
 
     for (int32 x = 0; x < info.width; ++x) {
-        uint32 pixel = *(reinterpret_cast<const uint32*>(*in));
-        advance(in, sizeof(uint32));
+        uint32 pixel = static_cast<uint32>(*in++ << 24);
+        pixel += static_cast<uint32>(*in++ << 16);
+        pixel += static_cast<uint32>(*in++ << 8);
+        pixel += static_cast<uint32>(*in++);
 
         const color_t color(masked_value(pixel, red_mask, red_offset),
                             masked_value(pixel, green_mask, green_offset),
@@ -601,9 +602,11 @@ std::vector<color_t> read_data(std::ifstream& in, const info_header& info)
     std::vector<uint8> buffer(row_size);
 
     auto out = begin(image_data);
-    for (int32 y = 0; y < height; ++y) {
-        in.read(reinterpret_cast<char*>(buffer.data()), row_size);
-        out = process_row(buffer.begin(), out, info);
+    for (int32 y = 0; y < height && in; ++y) {
+        if(in.read(reinterpret_cast<char*>(buffer.data()), row_size)) 
+        {
+            out = process_row(buffer.begin(), out, info);
+        }
     }
 
     return image_data;
@@ -728,6 +731,25 @@ std::vector<color_t> read_data_rle(std::ifstream& input, const info_header& info
     return image_data;
 }
 
+std::vector<color_t> flip_vertically(const info_header& info, const std::vector<color_t>& data)
+{
+    std::vector<color_t> tmp(data.size());
+
+    auto from = begin(data);
+    auto to   = prev(end(tmp), info.width);
+
+    for (int32 y = 0; y < info.height; ++y) {
+        auto next_from = next(from, info.width);
+
+        copy(from, next_from, to);
+
+        from = next_from;
+        to   = prev(to, info.width);
+    }
+
+    return tmp;
+}
+
 } // namespace
 
 namespace framework::graphics::details::image::bmp
@@ -788,6 +810,11 @@ load_result_t load(const std::string& filename)
 
     if (data.empty()) {
         return load_result_t();
+    }
+
+    if (!info.bottom_up()) 
+    {
+        data = flip_vertically(info, data);
     }
 
     return std::make_optional(std::make_tuple(make_image_info(info), std::move(data)));

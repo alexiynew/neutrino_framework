@@ -304,10 +304,6 @@ std::vector<framework::graphics::image> load_images(mode image_mode)
         framework::graphics::image img;
         img.load(name);
 
-        if (!img.is_bottom_up()) {
-            img.flip_vertically();
-        }
-
         return img;
     });
 
