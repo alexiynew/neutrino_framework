@@ -57,7 +57,7 @@ public:
     window_implementation(window_implementation&&) = default;
     window_implementation& operator=(window_implementation&&) = default;
 
-    void set_event_handler(const details::event_handler* handler);
+    void set_event_handler(details::event_handler* handler);
 
     /// @name actions
     /// @{
@@ -111,7 +111,7 @@ public:
 protected:
     static std::string application_name;
 
-    const details::event_handler* m_event_handler = nullptr;
+    details::event_handler* m_event_handler = nullptr;
 };
 
 // @brief Fabric function to make platform dependent implementation

@@ -102,7 +102,13 @@ void log_buffer::flush_buffer()
     }
 
     const auto size = static_cast<size_t>(pptr() - pbase());
-    ::framework::log::logger()->add_message(m_level, m_tag, std::string(m_buffer.data(), size));
+    std::string str(m_buffer.data(), size);
+
+    if (str.back() != '\n') {
+        str += '\n';
+    }
+
+    ::framework::log::logger()->add_message(m_level, m_tag, str);
 }
 
 #pragma endregion

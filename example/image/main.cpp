@@ -230,35 +230,35 @@ const std::vector<std::string> png_names = {
 //"png/s38i3p04.png", "png/s38n3p04.png", "png/s39i3p04.png", "png/s39n3p04.png", "png/s40i3p04.png", "png/s40n3p04.png",
 
 // test
-"png/tbbn0g04.png",
-"png/tbbn2c16.png",
-"png/tbbn3p08.png",
-"png/tbgn2c16.png",
-"png/tbgn3p08.png",
-"png/tbrn2c08.png",
-"png/tbwn0g16.png",
-"png/tbwn3p08.png",
-"png/tbyn3p08.png",
-"png/tm3n3p02.png",
-"png/tp0n0g08.png",
-"png/tp0n2c08.png",
-"png/tp0n3p08.png",
-"png/tp1n3p08.png",
+//"png/tbbn0g04.png",
+//"png/tbbn2c16.png",
+//"png/tbbn3p08.png",
+//"png/tbgn2c16.png",
+//"png/tbgn3p08.png",
+//"png/tbrn2c08.png",
+//"png/tbwn0g16.png",
+//"png/tbwn3p08.png",
+//"png/tbyn3p08.png",
+//"png/tm3n3p02.png",
+//"png/tp0n0g08.png",
+//"png/tp0n2c08.png",
+//"png/tp0n3p08.png",
+//"png/tp1n3p08.png",
 
-//"png/xc1n0g08.png",
-//"png/xc9n2c08.png",
-//"png/xcrn0g04.png",
-//"png/xcsn0g01.png",
-//"png/xd0n2c08.png",
-//"png/xd3n2c08.png",
-//"png/xd9n2c08.png",
-//"png/xdtn0g01.png",
-//"png/xhdn0g08.png",
-//"png/xlfn0g04.png",
-//"png/xs1n0g01.png",
-//"png/xs2n0g01.png",
-//"png/xs4n0g01.png",
-//"png/xs7n0g01.png",
+"png/xc1n0g08.png",
+"png/xc9n2c08.png",
+"png/xcrn0g04.png",
+"png/xcsn0g01.png",
+"png/xd0n2c08.png",
+"png/xd3n2c08.png",
+"png/xd9n2c08.png",
+"png/xdtn0g01.png",
+"png/xhdn0g08.png",
+"png/xlfn0g04.png",
+"png/xs1n0g01.png",
+"png/xs2n0g01.png",
+"png/xs4n0g01.png",
+"png/xs7n0g01.png",
 
 //"png/z00n2c08.png",
 //"png/z03n2c08.png",
@@ -266,7 +266,7 @@ const std::vector<std::string> png_names = {
 //"png/z09n2c08.png",
 };
 
-const framework::int32 image_scale = 4;
+framework::int32 image_scale = 1;
 
 struct object
 {
@@ -437,6 +437,18 @@ void arrange(std::vector<object>& objects, framework::int32 width, framework::in
     });
 }
 
+std::vector<object> load_textures(mode m)
+{
+    std::vector<framework::graphics::image> images = load_images(m);
+
+    if (images.empty()) {
+        return std::vector<object>();
+    }
+
+    std::vector<object> objects = generate_objects(images);
+    return objects;
+}
+
 int main()
 {
     using namespace framework::graphics;
@@ -448,13 +460,6 @@ int main()
     using framework::math::matrix4f;
 
     framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
-
-    // load all images
-    std::vector<image> images = load_images(mode::png);
-
-    if (images.empty()) {
-        return 0;
-    }
 
     window::set_application_name("Image example");
 
@@ -476,7 +481,15 @@ int main()
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
     mvp          = scale(mvp, {image_scale, image_scale, image_scale});
 
-    std::vector<object> objects = generate_objects(images);
+    // load all images
+    std::vector<image> images = load_images(mode::png);
+
+    if (images.empty()) {
+        return 0;
+    }
+    mode current_mode = mode::png;
+
+    std::vector<object> objects = load_textures(current_mode);
     arrange(objects, 640, 480);
 
     gl_error(__FILE__, __LINE__);
@@ -494,14 +507,28 @@ int main()
         arrange(objects, size.width, size.height);
     });
 
-    main_window.set_on_key_press_callback([&gamma](window&, key_code k, modifiers_state) {
+    main_window.set_on_key_press_callback(
+    [&gamma, &current_mode, &objects, &mvp](window& w, key_code k, modifiers_state) {
         switch (k) {
             case key_code::key_equal: gamma += 0.1f; break;
             case key_code::key_minus: gamma -= 0.1f; break;
+            case key_code::key_1: current_mode = mode::bmp; break;
+            case key_code::key_2: current_mode = mode::png; break;
+            case key_code::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1;
             default: break;
         }
+        auto size = w.size();
 
         gamma = framework::math::clamp(gamma, -4.0f, 4.0f);
+
+        mvp = framework::math::ortho2d<float32>(0,
+                                                static_cast<float32>(size.width),
+                                                static_cast<float32>(size.height),
+                                                0);
+        mvp = scale(mvp, {image_scale, image_scale, image_scale});
+
+        objects = load_textures(current_mode);
+        arrange(objects, size.width, size.height);
     });
 
     main_window.show();

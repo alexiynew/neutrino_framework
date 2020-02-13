@@ -42,7 +42,7 @@ void window_implementation::set_application_name(const std::string& name)
     application_name = name;
 }
 
-void window_implementation::set_event_handler(const details::event_handler* handler)
+void window_implementation::set_event_handler(details::event_handler* handler)
 {
     m_event_handler = handler;
 }

@@ -37,6 +37,7 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
+#include <log/log.hpp>
 
 #include <system/details/linux/x11_glx_context.hpp>
 #include <system/details/linux/x11_keyboard.hpp>
@@ -97,7 +98,7 @@ Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 namespace framework::system::details
 {
 x11_window::x11_window(window_size size, const std::string& title, const context_settings& settings)
-    : m_server(x11_server::connect()), m_size(size)
+    : m_server(x11_server::connect()), m_size({0, 0})
 {
     auto context = std::make_unique<x11_glx_context>(settings, m_server->display());
     if (!context->valid()) {
@@ -133,8 +134,8 @@ x11_window::x11_window(window_size size, const std::string& title, const context
                              m_server->default_root_window(),
                              m_position.x,
                              m_position.y,
-                             static_cast<uint32>(m_size.width),
-                             static_cast<uint32>(m_size.height),
+                             static_cast<uint32>(size.width),
+                             static_cast<uint32>(size.height),
                              border_width,
                              context->visual_info()->depth,
                              window_class,
@@ -246,6 +247,7 @@ void x11_window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window)) != 0) {
+        log::debug("x11_window") << __FUNCTION__ << " event: " << event.xany.type << std::endl;
         switch (event.xany.type) {
                 // case KeymapNotify: return "KeymapNotify"
                 // case GenericEvent:  return "GenericEvent";
@@ -636,6 +638,8 @@ void x11_window::process(XConfigureEvent event)
     window_size new_size{event.width, event.height};
     window_position new_position{event.x, event.y};
 
+    log::debug(__FUNCTION__) << m_size << new_size;
+
     if (m_size != new_size) {
         m_size = new_size;
 
@@ -921,7 +925,6 @@ void x11_window::process_events_while(const std::function<bool()>& condition)
 void x11_window::update_size_limits(window_size min_size, window_size max_size)
 {
     XSizeHints size_hints = {};
-    // int64 supplied;
 
     XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr);
 

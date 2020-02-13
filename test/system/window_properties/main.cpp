@@ -23,6 +23,10 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <iostream>
+
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -31,6 +35,8 @@ class window_properties_test : public framework::unit_test::suite
 public:
     window_properties_test() : suite("window_properties_test")
     {
+        framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
+
         add_test([this]() { window_size(); }, "window_size");
         add_test([this]() { window_size_limits(); }, "window_size_limits");
         add_test([this]() { window_resizability(); }, "window_resizability");
@@ -94,6 +100,7 @@ private:
     void window_size_limits()
     {
         using ::framework::system::window;
+        using namespace framework;
 
         const window::size_t size640{640, 480};
         const window::size_t size960{960, 640};
@@ -103,37 +110,48 @@ private:
 
         window w({640, 480}, "Test");
 
+        log::debug(__FUNCTION__) << __LINE__;
+
         // Base values
         TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
 
+        log::debug(__FUNCTION__) << __LINE__;
         w.set_min_size(size640);
         w.set_max_size(size960);
 
+        log::debug(__FUNCTION__) << __LINE__;
         w.show();
 
+        log::debug(__FUNCTION__) << __LINE__;
         // All sizes setted up correctly
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == size640, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
 
+        log::debug(__FUNCTION__) << __LINE__;
         // Check size limits
         w.set_size(big_size);
 
+        log::debug(__FUNCTION__) << __LINE__;
         TEST_ASSERT(w.size() == size960, "Window has wrong size.");
 
+        log::debug(__FUNCTION__) << __LINE__;
         w.set_size(small_size);
 
+        log::debug(__FUNCTION__) << __LINE__;
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
         // No more limits. Can change size as we want
         w.set_min_size(no_size);
         w.set_max_size(no_size);
+        log::debug(__FUNCTION__) << __LINE__;
 
         w.set_size(small_size);
 
         TEST_ASSERT(w.size() == small_size, "Window has wrong size.");
 
+        log::debug(__FUNCTION__) << __LINE__;
         w.set_size(big_size);
 
         TEST_ASSERT(w.size() == big_size, "Window has wrong size.");
@@ -215,6 +233,9 @@ private:
         w.show();
 
         TEST_ASSERT(!w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
+        TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
 
         w.set_resizable(true);
 

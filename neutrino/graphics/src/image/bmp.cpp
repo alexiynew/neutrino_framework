@@ -205,12 +205,11 @@ inline std::tuple<uint32, uint32, uint32, uint32> info_header::chanel_masks() co
         return std::make_tuple(red_chanel_bitmask, green_chanel_bitmask, blue_chanel_bitmask, alpha_mask);
     } else if (bits_per_pixel == 16) {
         return std::make_tuple(0x7C00, 0x03E0, 0x001F, alpha_mask);
-    } else if (bits_per_pixel == 32)
-    {
+    } else if (bits_per_pixel == 32) {
         return std::make_tuple(0xFF0000, 0x00FF00, 0x0000FF, alpha_mask);
     }
-    
-    return std::make_tuple(0,0,0,0);
+
+    return std::make_tuple(0, 0, 0, 0);
 }
 
 info_header info_header::read(std::ifstream& in)
@@ -518,14 +517,14 @@ std::vector<color_t>::iterator process_row_16bpp(std::vector<uint8>::iterator in
                                                  const info_header& info)
 {
     const auto [red_mask, green_mask, blue_mask, alpha_mask] = info.chanel_masks();
-    const uint32 red_offset   = (red_mask ? get_offset(red_mask) : 0);
-    const uint32 green_offset = (green_mask ? get_offset(green_mask) : 0);
-    const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask) : 0);
-    const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask) : 0);
+    const uint32 red_offset                                  = (red_mask ? get_offset(red_mask) : 0);
+    const uint32 green_offset                                = (green_mask ? get_offset(green_mask) : 0);
+    const uint32 blue_offset                                 = (blue_mask ? get_offset(blue_mask) : 0);
+    const uint32 alpha_offset                                = (alpha_mask ? get_offset(alpha_mask) : 0);
 
     for (int32 x = 0; x < info.width; ++x) {
-        uint16 pixel = static_cast<uint16>(*in++ << 8);
-        pixel += static_cast<uint16>(*in++);
+        int32 pixel = *in++ << 8;
+        pixel += *in++;
 
         const color_t color(masked_value(pixel, red_mask, red_offset),
                             masked_value(pixel, green_mask, green_offset),
@@ -554,10 +553,10 @@ std::vector<color_t>::iterator process_row_32bpp(std::vector<uint8>::iterator in
                                                  const info_header& info)
 {
     const auto [red_mask, green_mask, blue_mask, alpha_mask] = info.chanel_masks();
-    const uint32 red_offset   = (red_mask ? get_offset(red_mask) : 0);
-    const uint32 green_offset = (green_mask ? get_offset(green_mask) : 0);
-    const uint32 blue_offset  = (blue_mask ? get_offset(blue_mask) : 0);
-    const uint32 alpha_offset = (alpha_mask ? get_offset(alpha_mask) : 0);
+    const uint32 red_offset                                  = (red_mask ? get_offset(red_mask) : 0);
+    const uint32 green_offset                                = (green_mask ? get_offset(green_mask) : 0);
+    const uint32 blue_offset                                 = (blue_mask ? get_offset(blue_mask) : 0);
+    const uint32 alpha_offset                                = (alpha_mask ? get_offset(alpha_mask) : 0);
 
     for (int32 x = 0; x < info.width; ++x) {
         uint32 pixel = static_cast<uint32>(*in++ << 24);
@@ -603,8 +602,7 @@ std::vector<color_t> read_data(std::ifstream& in, const info_header& info)
 
     auto out = begin(image_data);
     for (int32 y = 0; y < height && in; ++y) {
-        if(in.read(reinterpret_cast<char*>(buffer.data()), row_size)) 
-        {
+        if (in.read(reinterpret_cast<char*>(buffer.data()), row_size)) {
             out = process_row(buffer.begin(), out, info);
         }
     }
@@ -677,7 +675,7 @@ std::vector<color_t> read_data_rle(std::ifstream& input, const info_header& info
             ++in;
             switch (*in) {
                 case 0x00: {
-                    const int32 d = distance(image_data.begin(), out) % info.width;
+                    const int32 d = static_cast<int32>(distance(image_data.begin(), out)) % info.width;
                     if (d != 0) {
                         advance(out, info.width - d);
                     }
@@ -806,14 +804,14 @@ load_result_t load(const std::string& filename)
             case info_header::compression_t::bi_png:
             case info_header::compression_t::bi_alphabitfields: return read_data(f, info);
         }
+        return std::vector<color_t>();
     }(file);
 
     if (data.empty()) {
         return load_result_t();
     }
 
-    if (!info.bottom_up()) 
-    {
+    if (!info.bottom_up()) {
         data = flip_vertically(info, data);
     }
 

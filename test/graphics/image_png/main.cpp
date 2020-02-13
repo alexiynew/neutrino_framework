@@ -196,20 +196,22 @@ private:
         TEST_ASSERT(img.load("png/tp0n2c08.png"), "Failed to load tp0n2c08.png");
         TEST_ASSERT(img.load("png/tp0n3p08.png"), "Failed to load tp0n3p08.png");
         TEST_ASSERT(img.load("png/tp1n3p08.png"), "Failed to load tp1n3p08.png");
-        TEST_ASSERT(img.load("png/xc1n0g08.png"), "Failed to load xc1n0g08.png");
-        TEST_ASSERT(img.load("png/xc9n2c08.png"), "Failed to load xc9n2c08.png");
-        TEST_ASSERT(img.load("png/xcrn0g04.png"), "Failed to load xcrn0g04.png");
-        TEST_ASSERT(img.load("png/xcsn0g01.png"), "Failed to load xcsn0g01.png");
-        TEST_ASSERT(img.load("png/xd0n2c08.png"), "Failed to load xd0n2c08.png");
-        TEST_ASSERT(img.load("png/xd3n2c08.png"), "Failed to load xd3n2c08.png");
-        TEST_ASSERT(img.load("png/xd9n2c08.png"), "Failed to load xd9n2c08.png");
-        TEST_ASSERT(img.load("png/xdtn0g01.png"), "Failed to load xdtn0g01.png");
-        TEST_ASSERT(img.load("png/xhdn0g08.png"), "Failed to load xhdn0g08.png");
-        TEST_ASSERT(img.load("png/xlfn0g04.png"), "Failed to load xlfn0g04.png");
-        TEST_ASSERT(img.load("png/xs1n0g01.png"), "Failed to load xs1n0g01.png");
-        TEST_ASSERT(img.load("png/xs2n0g01.png"), "Failed to load xs2n0g01.png");
-        TEST_ASSERT(img.load("png/xs4n0g01.png"), "Failed to load xs4n0g01.png");
-        TEST_ASSERT(img.load("png/xs7n0g01.png"), "Failed to load xs7n0g01.png");
+
+        TEST_ASSERT(!img.load("png/xc1n0g08.png"), "Should not load xc1n0g08.png");
+        TEST_ASSERT(!img.load("png/xc9n2c08.png"), "Should not load xc9n2c08.png");
+        TEST_ASSERT(!img.load("png/xcrn0g04.png"), "Should not load xcrn0g04.png");
+        TEST_ASSERT(!img.load("png/xcsn0g01.png"), "Should not load xcsn0g01.png");
+        TEST_ASSERT(!img.load("png/xd0n2c08.png"), "Should not load xd0n2c08.png");
+        TEST_ASSERT(!img.load("png/xd3n2c08.png"), "Should not load xd3n2c08.png");
+        TEST_ASSERT(!img.load("png/xd9n2c08.png"), "Should not load xd9n2c08.png");
+        TEST_ASSERT(!img.load("png/xdtn0g01.png"), "Should not load xdtn0g01.png");
+        TEST_ASSERT(!img.load("png/xhdn0g08.png"), "Should not load xhdn0g08.png");
+        TEST_ASSERT(!img.load("png/xlfn0g04.png"), "Should not load xlfn0g04.png");
+        TEST_ASSERT(!img.load("png/xs1n0g01.png"), "Should not load xs1n0g01.png");
+        TEST_ASSERT(!img.load("png/xs2n0g01.png"), "Should not load xs2n0g01.png");
+        TEST_ASSERT(!img.load("png/xs4n0g01.png"), "Should not load xs4n0g01.png");
+        TEST_ASSERT(!img.load("png/xs7n0g01.png"), "Should not load xs7n0g01.png");
+
         TEST_ASSERT(img.load("png/z00n2c08.png"), "Failed to load z00n2c08.png");
         TEST_ASSERT(img.load("png/z03n2c08.png"), "Failed to load z03n2c08.png");
         TEST_ASSERT(img.load("png/z06n2c08.png"), "Failed to load z06n2c08.png");
