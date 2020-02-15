@@ -30,8 +30,11 @@
 #ifndef FRAMEWORK_COMMON_UTILS_HPP
 #define FRAMEWORK_COMMON_UTILS_HPP
 
+#include <algorithm>
 #include <random>
 #include <vector>
+
+#include <common/types.hpp>
 
 #include <common/inc/utils_details.hpp>
 
@@ -112,6 +115,44 @@ template <class T, std::size_t N>
 constexpr inline std::size_t size(const T (&)[N]) noexcept
 {
     return N;
+}
+
+/// @brief Interprets buffer as value of type T in big endian byte order.
+///
+/// @param buffer Buffer to read value from.
+///
+/// @return Value of type T.
+template <typename T, typename B>
+inline T big_endian_value(const B* buffer)
+{
+    constexpr uint32 size = sizeof(T);
+
+    T result;
+
+    const uint8* in = reinterpret_cast<const uint8*>(buffer);
+    uint8* out      = reinterpret_cast<uint8*>(&result);
+    std::reverse_copy(in, in + size, out);
+
+    return result;
+}
+
+/// @brief Interprets buffer as value of type T in little endian byte order.
+///
+/// @param buffer Buffer to read value from.
+///
+/// @return Value of type T.
+template <typename T, typename B>
+inline T little_endian_value(const B* buffer)
+{
+    constexpr uint32 size = sizeof(T);
+
+    T result;
+
+    const uint8* in = reinterpret_cast<const uint8*>(buffer);
+    uint8* out      = reinterpret_cast<uint8*>(&result);
+    std::copy(in, in + size, out);
+
+    return result;
 }
 
 /*

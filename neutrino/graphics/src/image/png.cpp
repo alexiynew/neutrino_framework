@@ -36,19 +36,15 @@
 
 #include <common/crc.hpp>
 #include <common/types.hpp>
+#include <common/utils.hpp>
 #include <common/zlib.hpp>
 #include <graphics/src/image/png.hpp>
 
 namespace
 {
-using framework::float32;
-using framework::int32;
-using framework::uint16;
-using framework::uint32;
-using framework::uint8;
-using framework::usize;
-using framework::graphics::color_t;
-using framework::graphics::details::image::image_info_t;
+using namespace framework;
+using graphics::color_t;
+using graphics::details::image::image_info_t;
 
 constexpr usize signature_length = 8;
 constexpr usize pass_count       = 7;
@@ -64,19 +60,6 @@ std::vector<uint8> read_bytes(std::ifstream& in, usize count)
     }
 
     return data;
-}
-
-template <typename T, typename B>
-inline constexpr T big_endian_value(const B* buffer) noexcept
-{
-    constexpr uint32 size = sizeof(T);
-
-    uint8 tmp[size];
-    for (uint32 i = 0; i < size; ++i) {
-        tmp[i] = (reinterpret_cast<const uint8*>(buffer))[size - i - 1];
-    }
-
-    return *(reinterpret_cast<T*>(tmp));
 }
 
 #pragma region chunk
@@ -125,17 +108,17 @@ chunk_t chunk_t::read(std::ifstream& in)
     char buffer[4];
 
     in.read(buffer, 4);
-    c.length = big_endian_value<uint32>(buffer);
+    c.length = utils::big_endian_value<uint32>(buffer);
 
     in.read(buffer, 4);
-    c.type = big_endian_value<chunk_t::type_t>(buffer);
+    c.type = utils::big_endian_value<chunk_t::type_t>(buffer);
 
     if (c.length > 0) {
         c.data = read_bytes(in, c.length);
     }
 
     in.read(buffer, 4);
-    c.crc = big_endian_value<uint32>(buffer);
+    c.crc = utils::big_endian_value<uint32>(buffer);
 
     return c;
 }
@@ -149,7 +132,7 @@ bool chunk_t::valid() const
 {
     framework::utils::crc32 crc_calk;
 
-    crc_calk.update(big_endian_value<uint32>(reinterpret_cast<const char*>(&type)));
+    crc_calk.update(utils::big_endian_value<uint32>(reinterpret_cast<const char*>(&type)));
     crc_calk.update(begin(data), end(data));
 
     return crc_calk.current_value() == crc;
@@ -212,8 +195,8 @@ file_header_t file_header_t::read(std::ifstream& in)
     }
 
     file_header_t h;
-    h.width              = big_endian_value<int32>(&c.data[0]);
-    h.height             = big_endian_value<int32>(&c.data[4]);
+    h.width              = utils::big_endian_value<int32>(&c.data[0]);
+    h.height             = utils::big_endian_value<int32>(&c.data[4]);
     h.bit_depth          = c.data[8];
     h.color_type         = static_cast<color_type_t>(c.data[9]);
     h.compression_method = static_cast<compression_method_t>(c.data[10]);
@@ -801,7 +784,7 @@ float32 decode_gamma(const chunk_t& chunk)
         return 1.0f;
     }
 
-    const float32 gamma = static_cast<float32>(big_endian_value<uint32>(chunk.data.data()));
+    const float32 gamma = static_cast<float32>(utils::big_endian_value<uint32>(chunk.data.data()));
 
     return (gamma / 100000.0f);
 }

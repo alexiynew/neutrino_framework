@@ -28,14 +28,18 @@
 // =============================================================================
 
 #include <fstream>
+#include <string>
 #include <vector>
 
 #include <common/types.hpp>
+#include <common/utils.hpp>
 #include <graphics/src/image/tga.hpp>
 
 namespace
 {
 using namespace framework;
+
+constexpr uint8 tga_signature[] = "TRUEVISION-XFILE";
 
 enum class image_type_t : uint8
 {
@@ -50,9 +54,7 @@ enum class image_type_t : uint8
 
 struct file_header_t
 {
-    static constexpr usize size        = 18;
-    static constexpr uint16 max_width  = 512;
-    static constexpr uint16 max_height = 482;
+    static constexpr usize size = 18;
 
     uint8 id_length;         /* 00h  Size of Image ID field */
     uint8 colormap_type;     /* 01h  Color map type 0, 1, up to 128 reserved*/
@@ -82,13 +84,13 @@ file_header_t file_header_t::read(std::ifstream& in)
     header.id_length        = static_cast<uint8>(buffer[0]);
     header.colormap_type    = static_cast<uint8>(buffer[1]);
     header.image_type       = static_cast<image_type_t>(buffer[2]);
-    header.colormap_start   = static_cast<uint16>((buffer[3] << 8) + buffer[4]);
-    header.colormap_length  = static_cast<uint16>((buffer[5] << 8) + buffer[6]);
+    header.colormap_start   = utils::little_endian_value<uint16>(&buffer[3]);
+    header.colormap_length  = utils::little_endian_value<uint16>(&buffer[5]);
     header.colormap_depth   = static_cast<uint8>(buffer[7]);
-    header.x_offset         = static_cast<uint16>((buffer[8] << 8) + buffer[9]);
-    header.y_offset         = static_cast<uint16>((buffer[10] << 8) + buffer[11]);
-    header.width            = static_cast<uint16>((buffer[12] << 8) + buffer[13]);
-    header.height           = static_cast<uint16>((buffer[14] << 8) + buffer[15]);
+    header.x_offset         = utils::little_endian_value<uint16>(&buffer[8]);
+    header.y_offset         = utils::little_endian_value<uint16>(&buffer[10]);
+    header.width            = utils::little_endian_value<uint16>(&buffer[12]);
+    header.height           = utils::little_endian_value<uint16>(&buffer[14]);
     header.pixel_depth      = static_cast<uint8>(buffer[16]);
     header.image_descriptor = static_cast<uint8>(buffer[17]);
 
@@ -116,13 +118,63 @@ bool file_header_t::valid() const
     const bool image_type_valid     = check_image_type(image_type);
     const bool colormap_depth_valid = colormap_depth == 0 || colormap_depth == 15 || colormap_depth == 16 ||
                                       colormap_depth == 24 || colormap_depth == 32;
-    const bool dimentions_valid  = width <= max_width && height <= max_height;
-    const bool pixel_depth_valid = pixel_depth == 1 || pixel_depth == 8 || pixel_depth == 16 || pixel_depth == 24 ||
-                                   pixel_depth == 32;
+    const bool pixel_depth_valid      = pixel_depth == 8 || pixel_depth == 16 || pixel_depth == 24 || pixel_depth == 32;
     const bool image_descriptor_valid = (image_descriptor & 0xC0) == 0;
 
-    return colormap_valid && image_type_valid && colormap_depth_valid && dimentions_valid && pixel_depth_valid &&
-           image_descriptor_valid;
+    return colormap_valid && image_type_valid && colormap_depth_valid && pixel_depth_valid && image_descriptor_valid;
+}
+
+struct file_footer_t
+{
+    static constexpr usize size           = 26;
+    static constexpr usize signature_size = 16;
+
+    uint32 extension_area_offset;
+    uint32 developer_directory_offset;
+    uint8 signature[signature_size];
+    uint8 dot;
+    uint8 zero_byte;
+
+    static file_footer_t read(std::ifstream& in);
+
+    bool valid() const;
+};
+
+file_footer_t file_footer_t::read(std::ifstream& in)
+{
+    char buffer[file_footer_t::size] = {};
+    in.read(buffer, file_footer_t::size);
+
+    file_footer_t footer;
+    footer.extension_area_offset      = utils::little_endian_value<uint32>(&buffer[0]);
+    footer.developer_directory_offset = utils::little_endian_value<uint32>(&buffer[4]);
+
+    std::copy(&buffer[8], &buffer[24], footer.signature);
+
+    footer.dot       = static_cast<uint8>(buffer[24]);
+    footer.zero_byte = static_cast<uint8>(buffer[25]);
+
+    return footer;
+}
+
+bool file_footer_t::valid() const
+{
+    const bool signature_valid = std::equal(signature, signature + signature_size, tga_signature);
+
+    return signature_valid && dot == 0x2E && zero_byte == 0;
+}
+
+bool check_image_footer(std::ifstream& in)
+{
+    in.seekg(-file_footer_t::size, std::ios::end);
+    file_footer_t footer = file_footer_t::read(in);
+    in.seekg(0);
+
+    if (in && footer.valid()) {
+        return true;
+    }
+
+    return false;
 }
 
 } // namespace
@@ -133,6 +185,10 @@ load_result_t load(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file) {
+        return load_result_t();
+    }
+
+    if (!check_image_footer(file)) {
         return load_result_t();
     }
 
@@ -147,6 +203,11 @@ load_result_t load(const std::string& filename)
 bool is_tga(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
+
+    if (check_image_footer(file)) {
+        return true;
+    }
+
     file_header_t header = file_header_t::read(file);
     return file && header.valid();
 }
