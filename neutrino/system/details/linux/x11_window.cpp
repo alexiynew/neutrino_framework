@@ -37,7 +37,6 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
-#include <log/log.hpp>
 
 #include <system/details/linux/x11_glx_context.hpp>
 #include <system/details/linux/x11_keyboard.hpp>
@@ -50,8 +49,6 @@ namespace
 using ::framework::int32;
 using ::framework::int64;
 using ::framework::uint8;
-
-const char* const log_tag = "x11_window";
 
 const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
 const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
@@ -247,7 +244,6 @@ void x11_window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window)) != 0) {
-        log::debug("x11_window") << __FUNCTION__ << " event: " << event.xany.type << std::endl;
         switch (event.xany.type) {
                 // case KeymapNotify: return "KeymapNotify"
                 // case GenericEvent:  return "GenericEvent";
@@ -491,9 +487,9 @@ window_size x11_window::max_size() const
     }
 
     XSizeHints size_hints = {};
-    // int64 supplied;
+    int64 supplied;
 
-    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr) != 0;
+    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
     const bool has_max_size_hints = (size_hints.flags &= PMaxSize) != 0;
 
     if (!got_size_hints || !has_max_size_hints) {
@@ -512,9 +508,9 @@ window_size x11_window::min_size() const
     }
 
     XSizeHints size_hints = {};
-    // int64 supplied;
+    int64 supplied;
 
-    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr) != 0;
+    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
     const bool has_min_size_hints = (size_hints.flags &= PMinSize) != 0;
 
     if (!got_size_hints || !has_min_size_hints) {
@@ -564,7 +560,7 @@ bool x11_window::maximized() const
                                                             m_window,
                                                             net_wm_state_maximized_horz_atom_name);
 
-        return (maximized_vert || maximized_horz); // && m_maximized;
+        return (maximized_vert || maximized_horz);
     }
 
     return false;
@@ -573,9 +569,9 @@ bool x11_window::maximized() const
 bool x11_window::resizable() const
 {
     XSizeHints size_hints = {};
-    // int64 supplied;
+    int64 supplied;
 
-    XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr);
+    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
 
     const bool not_resizable = ((size_hints.flags & (PMinSize | PMaxSize)) != 0) &&
                                size_hints.min_width == size_hints.max_width &&
@@ -637,8 +633,6 @@ void x11_window::process(XConfigureEvent event)
 {
     window_size new_size{event.width, event.height};
     window_position new_position{event.x, event.y};
-
-    log::debug(__FUNCTION__) << m_size << new_size;
 
     if (m_size != new_size) {
         m_size = new_size;
@@ -925,8 +919,9 @@ void x11_window::process_events_while(const std::function<bool()>& condition)
 void x11_window::update_size_limits(window_size min_size, window_size max_size)
 {
     XSizeHints size_hints = {};
+    int64 supplied;
 
-    XGetWMNormalHints(m_server->display(), m_window, &size_hints, nullptr);
+    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
 
     if (min_size.width > 0 && min_size.height > 0) {
         size_hints.flags |= PMinSize;

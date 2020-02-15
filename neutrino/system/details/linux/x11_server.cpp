@@ -36,8 +36,6 @@ namespace
 {
 using ::framework::system::details::x11_server;
 
-const char* const log_tag = "x11_server";
-
 std::weak_ptr<x11_server>& server_instance()
 {
     static std::weak_ptr<x11_server> instance;
@@ -46,20 +44,18 @@ std::weak_ptr<x11_server>& server_instance()
 
 [[noreturn]] ::framework::int32 fatal_error_handler(Display* /*unused*/)
 {
-    // TODO(alex): Report error
     std::terminate();
 }
 
-int error_handler(Display* display, XErrorEvent* /* unused */)
+int error_handler(Display* display, XErrorEvent* event)
 {
     auto x_server = server_instance().lock();
     if (x_server && display == x_server->display()) {
-        // TODO(alex): Report error
-        // constexpr ::framework::uint32 length = 8 * 1024;
-        // char buffer[length];
-        // XGetErrorText(display, event->error_code, buffer, length);
+        constexpr ::framework::uint32 length = 8 * 1024;
 
-        //::framework::log::error(log_tag) << buffer << std::endl;
+        char buffer[length] = {};
+        XGetErrorText(display, event->error_code, buffer, length);
+        throw std::runtime_error(buffer);
     }
 
     return 0;
