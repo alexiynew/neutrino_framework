@@ -41,5 +41,5 @@ set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME
 
 add_dependencies(${TESTS_TARGET} ${TEST_NAME})
 
-file(GLOB PNG_GOOD "${TEST_DIR}/tga/*.tga")
-file(COPY ${PNG_GOOD} DESTINATION ${CMAKE_BINARY_DIR}/test/tga)
+file(GLOB TGA "${TEST_DIR}/tga/*.tga")
+file(COPY ${TGA} DESTINATION ${CMAKE_BINARY_DIR}/test/tga)

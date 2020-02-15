@@ -52,7 +52,6 @@ using framework::graphics::details::image::image_info_t;
 
 constexpr usize signature_length = 8;
 constexpr usize pass_count       = 7;
-constexpr float32 default_gamma  = 1.0f;
 
 std::vector<uint8> read_bytes(std::ifstream& in, usize count)
 {
@@ -799,7 +798,7 @@ inline std::vector<color_t> unserialize(const file_header_t& header,
 float32 decode_gamma(const chunk_t& chunk)
 {
     if (chunk.type != chunk_t::type_t::gAMA) {
-        return default_gamma;
+        return 1.0f;
     }
 
     const float32 gamma = static_cast<float32>(big_endian_value<uint32>(chunk.data.data()));
