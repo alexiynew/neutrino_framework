@@ -39,15 +39,9 @@
 
 namespace
 {
-using framework::int16;
-using framework::int32;
-using framework::uint16;
-using framework::uint32;
-using framework::uint8;
-using framework::usize;
-
-using framework::graphics::color_t;
-using framework::graphics::details::image::image_info_t;
+using namespace framework;
+using graphics::color_t;
+using graphics::details::image::image_info_t;
 
 //  | signature | file size | reserved | reserved | pixel array offset |
 //  |------------------------------------------------------------------|
@@ -432,7 +426,7 @@ inline bool check_size(const info_header& h) noexcept
 
 inline image_info_t make_image_info(const info_header& h) noexcept
 {
-    return image_info_t{h.width, std::abs(h.height), framework::graphics::details::image::default_gamma};
+    return image_info_t{h.width, std::abs(h.height), graphics::details::image::default_gamma};
 }
 
 inline uint32 get_offset(uint32 value)

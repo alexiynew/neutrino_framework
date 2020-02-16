@@ -38,6 +38,8 @@
 namespace
 {
 using namespace framework;
+using graphics::color_t;
+using graphics::details::image::image_info_t;
 
 constexpr uint8 tga_signature[] = "TRUEVISION-XFILE";
 
@@ -177,6 +179,74 @@ bool check_image_footer(std::ifstream& in)
     return false;
 }
 
+std::vector<color_t> read_raw_data([[maybe_unused]] std::istream& in, [[maybe_unused]] const file_header_t header)
+{
+    return std::vector<color_t>();
+}
+
+std::vector<color_t>::iterator read_encoded_row(std::istream& in,
+                                                std::vector<color_t>::iterator out,
+                                                const file_header_t& header)
+{
+    for (usize w = 0; w < header.width;) {
+        uint8 block_head;
+        in >> block_head;
+
+        const bool encoded = (block_head & 0x80) == 0x80;
+        const usize count  = static_cast<usize>(block_head & 0x7F) + 1;
+
+        if (encoded) {
+            uint8 color;
+            in >> color;
+            for (usize i = 0; i < count; ++i) {
+                *out++ = color_t(color, color, color, 255);
+            }
+        } else {
+            for (usize i = 0; i < count; ++i) {
+                uint8 color;
+                in >> color;
+                *out++ = color_t(color, color, color, 255);
+            }
+        }
+
+        w += count;
+    }
+
+    return out;
+}
+
+std::vector<color_t> read_encoded_data(std::istream& in, const file_header_t header)
+{
+    std::vector<color_t> data(header.width * header.height);
+
+    auto out = data.begin();
+    for (usize h = 0; h < header.height; ++h) {
+        out = read_encoded_row(in, out, header);
+    }
+
+    return data;
+}
+
+std::vector<color_t> read_data(std::istream& in, const file_header_t header)
+{
+    switch (header.image_type) {
+        case image_type_t::no_image_data: return std::vector<color_t>();
+        case image_type_t::colormapped:
+        case image_type_t::truecolor:
+        case image_type_t::monochrome: return read_raw_data(in, header);
+        case image_type_t::colormapped_encoded:
+        case image_type_t::truecolor_encoded:
+        case image_type_t::monochrome_encoded: return read_encoded_data(in, header);
+    }
+
+    return std::vector<color_t>();
+}
+
+image_info_t make_image_info(const file_header_t header)
+{
+    return {header.width, header.height, graphics::details::image::default_gamma};
+}
+
 } // namespace
 
 namespace framework::graphics::details::image::tga
@@ -197,7 +267,14 @@ load_result_t load(const std::string& filename)
         return load_result_t();
     }
 
-    return load_result_t();
+    file.seekg(header.id_length, std::ios::cur);
+
+    if (header.colormap_type == 1) {
+        // read colormap
+    }
+
+    std::vector<color_t> data = read_data(file, header);
+    return std::make_tuple(make_image_info(header), std::move(data));
 }
 
 bool is_tga(const std::string& filename)
