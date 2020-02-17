@@ -168,7 +168,7 @@ bool file_footer_t::valid() const
 
 bool check_image_footer(std::ifstream& in)
 {
-    in.seekg(-file_footer_t::size, std::ios::end);
+    in.seekg(-static_cast<int32>(file_footer_t::size), std::ios::end);
     file_footer_t footer = file_footer_t::read(in);
     in.seekg(0);
 

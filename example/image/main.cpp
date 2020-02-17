@@ -266,8 +266,6 @@ const std::vector<std::string> png_names = {
 //"png/z09n2c08.png",
 };
 
-framework::int32 image_scale = 1;
-
 struct object
 {
     framework::int32 width   = 0;
@@ -285,7 +283,8 @@ framework::graphics::shader_program load_shader(const std::string& VertexShaderC
                                                 const std::string& FragmentShaderCode);
 framework::graphics::mesh make_quad(framework::int32 width, framework::int32 height);
 std::vector<object> generate_objects(const std::vector<framework::graphics::image>& images);
-void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height);
+void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height, framework::int32 scale);
+std::vector<object> load_textures(mode m);
 
 std::vector<framework::graphics::image> load_images(mode image_mode)
 {
@@ -410,12 +409,12 @@ std::vector<object> generate_objects(const std::vector<framework::graphics::imag
     return res;
 }
 
-void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height)
+void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height, framework::int32 scale)
 {
     using framework::int32;
 
-    width /= image_scale;
-    height /= image_scale;
+    width /= scale;
+    height /= scale;
 
     int32 w          = 1;
     int32 h          = 1;
@@ -478,6 +477,8 @@ int main()
 
     shader_program shader = load_shader(vertex_shader_src, fragment_shader_src);
 
+    int32 image_scale = 1;
+
     matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
     mvp          = scale(mvp, {image_scale, image_scale, image_scale});
 
@@ -490,31 +491,31 @@ int main()
     mode current_mode = mode::png;
 
     std::vector<object> objects = load_textures(current_mode);
-    arrange(objects, 640, 480);
+    arrange(objects, 640, 480, image_scale);
 
     gl_error(__FILE__, __LINE__);
 
     float32 gamma = 0.0f;
 
     main_window.set_on_close_callback([](window& w) { w.hide(); });
-    main_window.set_on_size_callback([&objects, &mvp](window&, ::framework::system::details::window_size size) {
+    main_window.set_on_size_callback([&objects, &mvp, image_scale](window&, ::framework::system::details::window_size size) {
         mvp = framework::math::ortho2d<float32>(0,
                                                 static_cast<float32>(size.width),
                                                 static_cast<float32>(size.height),
                                                 0);
         mvp = scale(mvp, {image_scale, image_scale, image_scale});
         glViewport(0, 0, size.width, size.height);
-        arrange(objects, size.width, size.height);
+        arrange(objects, size.width, size.height, image_scale);
     });
 
     main_window.set_on_key_press_callback(
-    [&gamma, &current_mode, &objects, &mvp](window& w, key_code k, modifiers_state) {
+    [&gamma, &current_mode, &objects, &mvp, &image_scale](window& w, key_code k, modifiers_state) {
         switch (k) {
             case key_code::key_equal: gamma += 0.1f; break;
             case key_code::key_minus: gamma -= 0.1f; break;
             case key_code::key_1: current_mode = mode::bmp; break;
             case key_code::key_2: current_mode = mode::png; break;
-            case key_code::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1;
+            case key_code::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1; break;
             default: break;
         }
         auto size = w.size();
@@ -528,7 +529,7 @@ int main()
         mvp = scale(mvp, {image_scale, image_scale, image_scale});
 
         objects = load_textures(current_mode);
-        arrange(objects, size.width, size.height);
+        arrange(objects, size.width, size.height, image_scale);
     });
 
     main_window.show();
