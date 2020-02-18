@@ -139,16 +139,16 @@ private:
         TEST_ASSERT(!img.load("bmp/bad/badheadersize.bmp"), "Should not load badheadersize.bmp.");
         TEST_ASSERT(!img.load("bmp/bad/badpalettesize.bmp"), "Should not load badpalettesize.bmp.");
         TEST_ASSERT(!img.load("bmp/bad/badplanes.bmp"), "Should not load badplanes.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badrle.bmp"), "Should not load badrle.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badrle4.bmp"), "Should not load badrle4.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badrle4bis.bmp"), "Should not load badrle4bis.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badrle4ter.bmp"), "Should not load badrle4ter.bmp.");
+        TEST_ASSERT(img.load("bmp/bad/badrle.bmp"), "Should load badrle.bmp.");
+        TEST_ASSERT(img.load("bmp/bad/badrle4.bmp"), "Should load badrle4.bmp.");
+        TEST_ASSERT(img.load("bmp/bad/badrle4bis.bmp"), "Should load badrle4bis.bmp.");
+        TEST_ASSERT(img.load("bmp/bad/badrle4ter.bmp"), "Should load badrle4ter.bmp.");
         TEST_ASSERT(!img.load("bmp/bad/badrlebis.bmp "), "Should not load badrlebis.bmp .");
-        TEST_ASSERT(!img.load("bmp/bad/badrleter.bmp"), "Should not load badrleter.bmp.");
+        TEST_ASSERT(img.load("bmp/bad/badrleter.bmp"), "Should load badrleter.bmp.");
         TEST_ASSERT(!img.load("bmp/bad/badwidth.bmp"), "Should not load badwidth.bmp.");
         TEST_ASSERT(!img.load("bmp/bad/pal8badindex.bmp "), "Should not load pal8badindex.bmp .");
         TEST_ASSERT(!img.load("bmp/bad/reallybig.bmp "), "Should not load reallybig.bmp .");
-        TEST_ASSERT(!img.load("bmp/bad/rgb16-880.bmp"), "Should not load rgb16-880.bmp.");
+        TEST_ASSERT(img.load("bmp/bad/rgb16-880.bmp"), "Should load rgb16-880.bmp.");
         TEST_ASSERT(!img.load("bmp/bad/rletopdown.bmp "), "Should not load rletopdown.bmp .");
         TEST_ASSERT(!img.load("bmp/bad/shortfile.bmp "), "Should not load shortfile.bmp .");
     }

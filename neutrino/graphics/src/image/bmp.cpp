@@ -638,8 +638,10 @@ inline std::vector<color_t>::iterator fill_with_color_4(std::vector<color_t>::it
                                                         const std::vector<uint8>::iterator it,
                                                         int32 count)
 {
+
     for (int32 c = 0, offset = 4; c < count; ++c) {
-        *out++ = color_table[(*it >> offset) & 0x0F];
+        const usize color_index = static_cast<usize>((*it >> offset) & 0x0F);
+        *out++ = color_index < color_table.size() ? color_table[color_index] : color_t(0x000000FFU);
         offset = (offset == 0 ? 4 : 0);
     }
     return out;
@@ -650,8 +652,10 @@ inline std::vector<color_t>::iterator fill_with_color_8(std::vector<color_t>::it
                                                         const std::vector<uint8>::iterator it,
                                                         int32 count)
 {
+    const usize color_index = static_cast<usize>(*it);
+    const color_t color = color_index < color_table.size() ? color_table[color_index] : color_t(0x000000FFU);
     for (int32 c = 0; c < count; ++c) {
-        *out++ = color_table[*it];
+        *out++ = color;
     }
     return out;
 }
@@ -676,7 +680,8 @@ inline std::vector<color_t>::iterator fill_from_buffer_8(std::vector<color_t>::i
                                                          int32 count)
 {
     while (count-- > 0) {
-        *out++ = color_table[*it++];
+        const usize color_index = static_cast<usize>(*it++);
+        *out++ = color_index < color_table.size() ? color_table[color_index] : color_t(0x000000FFU);
     }
     return out;
 }
@@ -716,7 +721,7 @@ std::vector<color_t> read_data_rle(std::ifstream& input, const info_header_t& in
                 default: {
                     const int32 count = *in++;
 
-                    if (next(out, count) == end(image_data)) {
+                    if (next(out, count) >= end(image_data)) {
                         out = end(image_data);
                         break;
                     }
@@ -734,7 +739,7 @@ std::vector<color_t> read_data_rle(std::ifstream& input, const info_header_t& in
         } else {
             const int32 count = *in++;
 
-            if (next(out, count) == end(image_data)) {
+            if (next(out, count) >= end(image_data)) {
                 out = end(image_data);
                 break;
             }
