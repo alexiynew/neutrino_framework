@@ -50,3 +50,5 @@ file(COPY ${BMP_QUESTIONABLE} DESTINATION ${CMAKE_BINARY_DIR}/example/bmp/questi
 file(GLOB PNG_GOOD "${EXAMPLE_DIR}/png/*.png")
 file(COPY ${PNG_GOOD} DESTINATION ${CMAKE_BINARY_DIR}/example/png)
 
+file(GLOB TGA "${EXAMPLE_DIR}/tga/*.tga")
+file(COPY ${TGA} DESTINATION ${CMAKE_BINARY_DIR}/example/tga)
