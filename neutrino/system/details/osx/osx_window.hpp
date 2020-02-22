@@ -27,82 +27,68 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_WINDOW_HPP
-#define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_WINDOW_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_OSX_OSX_WINDOW_HPP
+#define FRAMEWORK_WINDOW_DETAILS_OSX_OSX_WINDOW_HPP
 
-#include <functional>
+#import <Foundation/NSObject.h>
 
-#include <common/types.hpp>
+#include <system/details/osx/osx_window.hpp>
 
-#include <system/details/context.hpp>
-#include <system/details/window_implementation.hpp>
-
-namespace framework::system::details
-{
-class osx_window final : public window_implementation
-{
-public:
-    osx_window(window_size size, const std::string& title, const context_settings& settings);
-    ~osx_window() override;
-
-    osx_window(const osx_window&) = delete;
-    osx_window& operator=(const osx_window&) = delete;
+@interface osx_window : NSObject
+{}
 
     /// @name actions
     /// @{
-    void show() override;
-    void hide() override;
-    void focus() override;
-    void process_events() override;
+    -(void) show;
+    -(void) hide;
+    -(void) focus;
+    -(void) process_events;
 
-    // On window managers without the ewmh support, proper work is not tested, nor granted.
-    void iconify() override;
-    void maximize() override;
-    void switch_to_fullscreen() override;
-    void restore() override;
-    void make_current() override;
-    void swap_buffers() override;
-    /// @}
+@end
 
-    /// @name setters
-    /// @{
-
-    // The size() value will be updated after next event processing
-    void set_size(window_size size) override;
-    void set_position(window_position position) override;
-
-    void set_max_size(window_size max_size) override;
-    void set_min_size(window_size min_size) override;
-
-    void set_resizable(bool value) override;
-
-    void set_title(const std::string& title) override;
-    /// @}
-
-    /// @name getters
-    /// @{
-    window_position position() const override;
-    window_size size() const override;
-
-    window_size max_size() const override;
-    window_size min_size() const override;
-
-    std::string title() const override;
-    /// @}
-
-    /// @name state
-    /// @{
-    bool fullscreen() const override;
-    bool iconified() const override;
-    bool maximized() const override;
-    bool resizable() const override;
-    bool visible() const override;
-    bool focused() const override;
-    /// @}
-
-private:
-};
-
-} // namespace framework::system::details
+//    // On window managers without the ewmh support, proper work is not tested, nor granted.
+//    void iconify();
+//    void maximize();
+//    void switch_to_fullscreen();
+//    void restore();
+//    void make_current();
+//    void swap_buffers();
+//    /// @}
+//
+//    /// @name setters
+//    /// @{
+//
+//    // The size() value will be updated after next event processing
+//    void set_size(window_size size);
+//    void set_position(window_position position);
+//
+//    void set_max_size(window_size max_size);
+//    void set_min_size(window_size min_size);
+//
+//    void set_resizable(bool value);
+//
+//    void set_title(const std::string& title);
+//    /// @}
+//
+//    /// @name getters
+//    /// @{
+//    window_position position() const;
+//    window_size size() const;
+//
+//    window_size max_size() const;
+//    window_size min_size() const;
+//
+//    std::string title() const;
+//    /// @}
+//
+//    /// @name state
+//    /// @{
+//    bool fullscreen() const;
+//    bool iconified() const;
+//    bool maximized() const;
+//    bool resizable() const;
+//    bool visible() const;
+//    bool focused() const;
+//    /// @}
 
 #endif

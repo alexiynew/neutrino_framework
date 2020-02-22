@@ -31,7 +31,7 @@ add_executable(${EXAMPLE_NAME} EXCLUDE_FROM_ALL "")
 
 target_sources(${EXAMPLE_NAME} PRIVATE ${PRIVATE_SOURCES})
 
-target_link_libraries(${EXAMPLE_NAME} ${PROJECT_NAME}_static)
+target_link_libraries(${EXAMPLE_NAME} ${PROJECT_NAME})
 target_include_directories(${EXAMPLE_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 
 set_target_properties(${EXAMPLE_NAME} PROPERTIES FOLDER ${EXAMPLE_DIR_NAME}/${EXAMPLE_NAME})

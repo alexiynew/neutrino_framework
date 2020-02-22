@@ -26,7 +26,7 @@
 macro(set_compiller_flags)
     if("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
         message("Using Clang compiller settings")
-        set(CMAKE_CXX_FLAGS "-std=c++1z \
+        set(CMAKE_CXX_FLAGS "-std=c++17 \
                              -Weverything \
                              -Werror \
                              -Wno-c++98-compat \

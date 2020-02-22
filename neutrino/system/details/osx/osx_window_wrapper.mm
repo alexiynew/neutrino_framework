@@ -30,104 +30,109 @@
 #include <common/types.hpp>
 #include <common/utils.hpp>
 
+#include <system/details/osx/osx_window_wrapper.hpp>
 #include <system/details/osx/osx_window.hpp>
-
-namespace
-{
-using ::framework::int32;
-using ::framework::int64;
-using ::framework::uint8;
-
-// const char* const log_tag = "osx_window";
-} // namespace
 
 namespace framework::system::details
 {
-osx_window::osx_window(window_size /*size*/, const std::string& /*title*/, const context_settings& /*settings*/)
-{}
+osx_window_wrapper::osx_window_wrapper(window_size /*size*/, const std::string& /*title*/, const context_settings& /*settings*/)
+	:self(nullptr)
+{
+	self = [[osx_window alloc] init];
+}
 
-osx_window::~osx_window()
-{}
+osx_window_wrapper::~osx_window_wrapper()
+{
+	[reinterpret_cast<osx_window*>(self) dealloc];
+}
 
 #pragma region actions
 
-void osx_window::show()
+void osx_window_wrapper::show()
+{
+	[reinterpret_cast<osx_window*>(self) show];
+}
+
+void osx_window_wrapper::hide()
+{
+	[reinterpret_cast<osx_window*>(self) hide];
+}
+
+void osx_window_wrapper::focus()
+{
+	[reinterpret_cast<osx_window*>(self) focus];
+}
+
+void osx_window_wrapper::process_events()
+{
+	[reinterpret_cast<osx_window*>(self) process_events];
+}
+
+void osx_window_wrapper::iconify()
 {}
 
-void osx_window::hide()
+void osx_window_wrapper::maximize()
 {}
 
-void osx_window::focus()
+void osx_window_wrapper::switch_to_fullscreen()
 {}
 
-void osx_window::process_events()
+void osx_window_wrapper::restore()
 {}
 
-void osx_window::iconify()
+void osx_window_wrapper::make_current()
 {}
 
-void osx_window::maximize()
-{}
-
-void osx_window::switch_to_fullscreen()
-{}
-
-void osx_window::restore()
-{}
-
-void osx_window::make_current()
-{}
-
-void osx_window::swap_buffers()
+void osx_window_wrapper::swap_buffers()
 {}
 
 #pragma endregion
 
 #pragma region setters
 
-void osx_window::set_size(window_size /*size*/)
+void osx_window_wrapper::set_size(window_size /*size*/)
 {}
 
-void osx_window::set_position(window_position /*position*/)
+void osx_window_wrapper::set_position(window_position /*position*/)
 {}
 
-void osx_window::set_max_size(window_size /*max_size*/)
+void osx_window_wrapper::set_max_size(window_size /*max_size*/)
 {}
 
-void osx_window::set_min_size(window_size /*min_size*/)
+void osx_window_wrapper::set_min_size(window_size /*min_size*/)
 {}
 
-void osx_window::set_resizable(bool /*value*/)
+void osx_window_wrapper::set_resizable(bool /*value*/)
 {}
 
-void osx_window::set_title(const std::string& /*title*/)
+void osx_window_wrapper::set_title(const std::string& /*title*/)
 {}
 
 #pragma endregion
 
 #pragma region getters
 
-window_position osx_window::position() const
+window_position osx_window_wrapper::position() const
 {
     return {0, 0};
 }
 
-window_size osx_window::size() const
+window_size osx_window_wrapper::size() const
 {
     return {0, 0};
 }
 
-window_size osx_window::max_size() const
+window_size osx_window_wrapper::max_size() const
 {
     return {0, 0};
 }
 
-window_size osx_window::min_size() const
+window_size osx_window_wrapper::min_size() const
 {
     return {0, 0};
 }
 
-std::string osx_window::title() const
+std::string osx_window_wrapper::title() const
 {
     return "";
 }
@@ -136,32 +141,32 @@ std::string osx_window::title() const
 
 #pragma region state
 
-bool osx_window::fullscreen() const
+bool osx_window_wrapper::fullscreen() const
 {
     return false;
 }
 
-bool osx_window::iconified() const
+bool osx_window_wrapper::iconified() const
 {
     return false;
 }
 
-bool osx_window::maximized() const
+bool osx_window_wrapper::maximized() const
 {
     return false;
 }
 
-bool osx_window::resizable() const
+bool osx_window_wrapper::resizable() const
 {
     return false;
 }
 
-bool osx_window::visible() const
+bool osx_window_wrapper::visible() const
 {
     return false;
 }
 
-bool osx_window::focused() const
+bool osx_window_wrapper::focused() const
 {
     return false;
 }

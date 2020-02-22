@@ -27,7 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <system/details/osx/osx_window.hpp>
+#include <system/details/osx/osx_window_wrapper.hpp>
 #include <system/details/window_implementation.hpp>
 
 namespace framework::system::details
@@ -36,7 +36,7 @@ std::unique_ptr<window_implementation> create_implementation(window_size size,
                                                              const std::string& title,
                                                              const context_settings& settings)
 {
-    return std::make_unique<osx_window>(size, title, settings);
+    return std::make_unique<osx_window_wrapper>(size, title, settings);
 }
 
 } // namespace framework::system::details

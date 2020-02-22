@@ -59,5 +59,4 @@ include(${MODULE_DIR}/details/CMakeLists.txt)
 find_package(OpenGL REQUIRED)
 
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${OPENGL_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME}_static ${OPENGL_LIBRARIES})
-target_link_libraries(${PROJECT_NAME}_shared ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})

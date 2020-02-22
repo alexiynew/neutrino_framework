@@ -25,11 +25,16 @@
 
 set_sources(PRIVATE_SOURCES
     osx_implementation.cpp
-    osx_window.cpp
+    osx_window_wrapper.hpp
+    osx_window_wrapper.mm
     osx_window.hpp
+    osx_window.mm
 )
 
 target_sources(${PROJECT_NAME}
     PRIVATE
         ${PRIVATE_SOURCES}
 )
+
+find_library(FOUNDATION Foundation)
+target_link_libraries(${PROJECT_NAME} ${FOUNDATION})

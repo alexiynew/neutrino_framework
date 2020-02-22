@@ -48,5 +48,5 @@ target_sources(${PROJECT_NAME}
 find_package(X11 REQUIRED)
 
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${X11_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME}_static ${X11_LIBRARIES})
-target_link_libraries(${PROJECT_NAME}_shared ${X11_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${X11_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME}_shared ${X11_LIBRARIES})
