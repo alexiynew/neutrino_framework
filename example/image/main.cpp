@@ -559,7 +559,7 @@ int main()
     if (images.empty()) {
         return 0;
     }
-    mode current_mode = mode::png;
+    mode current_mode = mode::bmp;
 
     std::vector<object> objects = load_textures(current_mode);
     arrange(objects, 640, 480, image_scale);
