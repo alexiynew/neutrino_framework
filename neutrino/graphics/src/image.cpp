@@ -31,16 +31,12 @@
 #include <graphics/src/image/bmp.hpp>
 #include <graphics/src/image/image_info.hpp>
 #include <graphics/src/image/png.hpp>
-#include <graphics/src/image/tga.hpp>
 
 namespace framework::graphics
 {
 image::image() = default;
 
-image::image(const data_t& data, int32 width, int32 height)
-    : m_data(data)
-    , m_width(width)
-    , m_height(height)
+image::image(const data_t& data, int32 width, int32 height) : m_data(data), m_width(width), m_height(height)
 {}
 
 image::image(const image&) = default;
@@ -54,7 +50,6 @@ bool image::load(const std::string& filename, file_type type)
     auto load_function = [type](const std::string& f) {
         switch (type) {
             case file_type::bmp: return details::image::bmp::load(f);
-            case file_type::tga: return details::image::tga::load(f);
             case file_type::png: return details::image::png::load(f);
         }
         return details::image::load_result_t();
@@ -63,9 +58,9 @@ bool image::load(const std::string& filename, file_type type)
     if (auto result = load_function(filename); result.has_value()) {
         auto& [info, data] = *result;
 
-        m_width     = info.width;
-        m_height    = info.height;
-        m_gamma     = info.gamma;
+        m_width  = info.width;
+        m_height = info.height;
+        m_gamma  = info.gamma;
 
         m_data = std::move(data);
         return true;
@@ -78,8 +73,6 @@ bool image::load(const std::string& filename)
 {
     if (details::image::bmp::is_bmp(filename)) {
         return load(filename, file_type::bmp);
-    } else if (details::image::tga::is_tga(filename)) {
-        return load(filename, file_type::tga);
     } else if (details::image::png::is_png(filename)) {
         return load(filename, file_type::png);
     }

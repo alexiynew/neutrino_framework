@@ -48,7 +48,6 @@ public:
     enum class file_type
     {
         bmp,
-        tga,
         png
     };
 

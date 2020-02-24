@@ -26,7 +26,6 @@
 set(TESTS 
     image_bmp
     image_png
-    image_tga
     mesh
     shader
     texture

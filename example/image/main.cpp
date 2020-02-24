@@ -66,7 +66,6 @@ enum mode
 {
     bmp,
     png,
-    tga
 };
 
 const std::vector<std::string> bmp_names = {
@@ -326,16 +325,6 @@ const std::vector<std::string> png_names = {
 "png/z09n2c08.png",
 };
 
-const std::vector<std::string> tga_names = {
-"tga/cbw8.tga", //
-//"tga/ccm8.tga",  //
-//"tga/ctc16.tga", //
-//"tga/ctc24.tga", //
-//"tga/ctc32.tga",    "tga/flag_b16.tga", "tga/flag_b24.tga", "tga/flag_b32.tga", "tga/flag_t16.tga", "tga/flag_t32.tga",
-//"tga/marbles.tga",  "tga/ubw8.tga",     "tga/ucm8.tga",     "tga/utc16.tga",    "tga/utc24.tga",    "tga/utc32.tga",
-//"tga/xing_b16.tga", "tga/xing_b24.tga", "tga/xing_b32.tga", "tga/xing_t16.tga", "tga/xing_t24.tga", "tga/xing_t32.tga",
-};
-
 struct object
 {
     framework::int32 width   = 0;
@@ -364,7 +353,6 @@ std::vector<framework::graphics::image> load_images(mode image_mode)
         switch (m) {
             case mode::bmp: return bmp_names;
             case mode::png: return png_names;
-            case mode::tga: return tga_names;
         }
 
         return std::vector<std::string>();
@@ -587,7 +575,6 @@ int main()
             case key_code::key_minus: gamma -= 0.1f; break;
             case key_code::key_1: current_mode = mode::bmp; break;
             case key_code::key_2: current_mode = mode::png; break;
-            case key_code::key_3: current_mode = mode::tga; break;
             case key_code::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1; break;
             default: break;
         }
