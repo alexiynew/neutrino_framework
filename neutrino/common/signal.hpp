@@ -55,15 +55,29 @@ namespace framework
 
         SlotId connect(Slot&& slot)
         {
-            m_slots.emplace(m_current_index, std::move(slot));
+            const auto& [id, result] = m_slots.emplace(m_current_index, std::move(slot));
             m_current_index++;
-            return m_current_index;
+            return id->first;
         }
 
         template<typename T>
-        SlotId connect(T *inst, void (T::*func)(Args...) const)
+        SlotId connect(T &inst, void (T::*func)(Args...))
         {
-            return connect([inst, func](Args... args) { inst->*func(std::forward<Args...>(args...)); });
+            if constexpr (sizeof...(Args) == 0) {
+                return connect([&inst, func]() { (inst.*func)(); });
+            } else {
+                return connect([&inst, func](Args... args) { (inst.*func)(std::forward<Args...>(args...)); });
+            }
+        }
+
+        template<typename T>
+        SlotId connect(T &inst, void (T::*func)(Args...) const)
+        {
+            if constexpr (sizeof...(Args) == 0) {
+                return connect([&inst, func]() { (inst.*func)(); });
+            } else {
+                return connect([&inst, func](Args... args) { (inst.*func)(std::forward<Args...>(args...)); });
+            }
         }
 
         void disconnect(SlotId id)
@@ -80,7 +94,11 @@ namespace framework
         {
             for (const auto&[id, slot] : m_slots)
             {
-                slot(std::forward<Args...>(args...));
+                if constexpr (sizeof...(Args) == 0) {
+                    slot();
+                } else {
+                    slot(std::forward<Args...>(args...));
+                }
             }
         }
 

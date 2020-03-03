@@ -50,17 +50,60 @@ private:
 
         s(1);
 
-        TEST_ASSERT(value == 1, "Slots connect not working");
+        TEST_ASSERT(value == 1, "Signal connect not working");
 
         s.disconnect(id);
 
         s(1);
 
-        TEST_ASSERT(value == 1, "Slots disconnect not working");
+        TEST_ASSERT(value == 1, "Signal disconnect not working");
     }
 
     void slot_member()
     {
+        class Slot
+        {
+        public:
+            void plus_one()
+            {
+                m_value += 1;
+            }
+
+            void no_action() const
+            {
+            }
+
+            int32 get_value() const 
+            {
+                return m_value; 
+            }
+
+        private:
+            int32 m_value = 0;
+        };
+
+        Slot slot;
+        Signal signal;
+
+        auto id1 = signal.connect(slot, &Slot::plus_one);
+        auto id2 = signal.connect(slot, &Slot::plus_one);
+        signal.connect(slot, &Slot::no_action);
+
+        signal();
+
+        TEST_ASSERT(slot.get_value() == 2, "Signal connect not working");
+
+        signal.disconnect(id1);
+
+        signal();
+
+        TEST_ASSERT(slot.get_value() == 3, "Signal disconnect not working");
+
+        signal.disconnect(id2);
+
+        signal();
+
+        TEST_ASSERT(slot.get_value() == 3, "Signal disconnect not working");
     }
 };
 
