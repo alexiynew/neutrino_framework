@@ -23,17 +23,20 @@
 # SOFTWARE.
 # =============================================================================
 
-set(TESTS 
-    utils
-    crc
-    signal
-    version
-    zlib
+set_sources(PRIVATE_SOURCES
+    main.cpp
 )
 
-foreach(TEST ${TESTS})
-    set(TEST_NAME ${TEST})
-    set(TEST_DIR ${GROUP_DIR}/${TEST})
+add_executable(${TEST_NAME} EXCLUDE_FROM_ALL "")
 
-    include(${TEST_DIR}/CMakeLists.txt)
-endforeach(TEST)
+target_sources(${TEST_NAME} PRIVATE ${PRIVATE_SOURCES})
+
+target_link_libraries(${TEST_NAME} ${PROJECT_NAME})
+target_include_directories(${TEST_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
+
+set_target_properties(${TEST_NAME} PROPERTIES FOLDER ${TEST_DIR_NAME}/${GROUP_NAME})
+
+add_test(NAME "${GROUP_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
+set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME})
+
+add_dependencies(${TESTS_TARGET} ${TEST_NAME})

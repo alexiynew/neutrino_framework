@@ -546,7 +546,7 @@ std::vector<color_t>::iterator process_row_16bpp(std::vector<uint8>::iterator in
 
     for (int32 x = 0; x < info.width; ++x) {
         uint32 pixel = *in++;
-        pixel += *in++ << 8;
+        pixel += static_cast<uint32>(*in++ << 8);
 
         const color_t color(masked_value(pixel, red_mask, red_offset),
                             masked_value(pixel, green_mask, green_offset),
@@ -582,9 +582,9 @@ std::vector<color_t>::iterator process_row_32bpp(std::vector<uint8>::iterator in
 
     for (int32 x = 0; x < info.width; ++x) {
         uint32 pixel = *in++;
-        pixel += *in++ << 8;
-        pixel += *in++ << 16;
-        pixel += *in++ << 24;
+        pixel += static_cast<uint32>(*in++ << 8);
+        pixel += static_cast<uint32>(*in++ << 16);
+        pixel += static_cast<uint32>(*in++ << 24);
 
         const color_t color(masked_value(pixel, red_mask, red_offset),
                             masked_value(pixel, green_mask, green_offset),

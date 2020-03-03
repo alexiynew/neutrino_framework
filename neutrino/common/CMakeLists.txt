@@ -31,6 +31,7 @@ set_sources(PUBLIC_SOURCES
     zlib.hpp
     inc/utils_details.hpp
     inc/crc_details.hpp
+    signal.hpp
 )
 
 set_sources(PRIVATE_SOURCES
