@@ -32,7 +32,7 @@
 
 #include <common/types.hpp>
 
-#include <unordered_map>
+#include <vector>
 #include <functional>
 #include <algorithm>
 
@@ -43,7 +43,7 @@ namespace framework
     {
     public:
         using Slot = std::function<void(Args...)>;
-        using SlotId = int32;
+        using SlotId = usize;
 
         Signal() = default;
 
@@ -55,9 +55,15 @@ namespace framework
 
         SlotId connect(Slot&& slot)
         {
-            const auto& [id, result] = m_slots.emplace(m_current_index, std::move(slot));
-            m_current_index++;
-            return id->first;
+            if (m_free_ids.empty()) {
+                m_slots.emplace_back(std::move(slot));
+                return m_slots.size() - 1;
+            } else {
+                SlotId id = m_free_ids.back();
+                m_free_ids.pop_back();
+                m_slots[id] = std::move(slot);
+                return id;
+            }
         }
 
         template<typename T>
@@ -71,7 +77,7 @@ namespace framework
         }
 
         template<typename T>
-        SlotId connect(T &inst, void (T::*func)(Args...) const)
+        SlotId connect(const T &inst, void (T::*func)(Args...) const)
         {
             if constexpr (sizeof...(Args) == 0) {
                 return connect([&inst, func]() { (inst.*func)(); });
@@ -82,29 +88,48 @@ namespace framework
 
         void disconnect(SlotId id)
         {
-            m_slots.erase(id);
+            if (id >= 0 && id < m_slots.size()) {
+                m_slots[id] = nullptr;
+                m_free_ids.push_back(id);
+            }
         }
 
         void clear()
         {
             m_slots.clear();
+            m_free_ids.clear();
         }
 
-        void operator()(Args&&... args)
+        bool has_connections() const
         {
-            for (const auto&[id, slot] : m_slots)
+            if (m_slots.empty())
             {
+                return false;
+            }
+
+            auto it = std::find_if(m_slots.begin(), m_slots.end(), [](const Slot& slot) { return slot != nullptr; });
+            return it != m_slots.end();
+        }
+
+        void operator()(Args... args)
+        {
+            for (const auto& slot : m_slots)
+            {
+                if (slot == nullptr) {
+                    continue;
+                }
+
                 if constexpr (sizeof...(Args) == 0) {
                     slot();
                 } else {
-                    slot(std::forward<Args...>(args...));
+                    slot(std::move(args...));
                 }
             }
         }
 
     private:
-        std::unordered_map<SlotId, Slot> m_slots;
-        int32 m_current_index = 0;
+        std::vector<Slot> m_slots;
+        std::vector<SlotId> m_free_ids;
     };
 }
 

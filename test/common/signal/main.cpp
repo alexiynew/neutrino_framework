@@ -35,6 +35,7 @@ public:
     {
         add_test([this]() { slot_lambda(); }, "slot_lambda");
         add_test([this]() { slot_member(); }, "slot_member");
+        add_test([this]() { slot_self_disconnect(); }, "slot_self_disconnect");
     }
 
 private:
@@ -57,6 +58,15 @@ private:
         s(1);
 
         TEST_ASSERT(value == 1, "Signal disconnect not working");
+
+        s.disconnect(id);
+        s.disconnect(0);
+        s.disconnect(1);
+        s.disconnect(22222);
+
+        s(1);
+
+        TEST_ASSERT(value == 1, "Signal disconnect not working");
     }
 
     void slot_member()
@@ -66,20 +76,21 @@ private:
         public:
             void plus_one()
             {
-                m_value += 1;
+                value += 1;
             }
 
             void no_action() const
             {
+                no_action_called = true;
             }
 
             int32 get_value() const 
             {
-                return m_value; 
+                return value; 
             }
 
-        private:
-            int32 m_value = 0;
+        int32 value = 0;
+        mutable bool no_action_called = false;
         };
 
         Slot slot;
@@ -87,23 +98,69 @@ private:
 
         auto id1 = signal.connect(slot, &Slot::plus_one);
         auto id2 = signal.connect(slot, &Slot::plus_one);
+
+        signal();
+
+        TEST_ASSERT(slot.value == 2, "Signal connect not working");
+
+        signal.disconnect(id1);
         signal.connect(slot, &Slot::no_action);
 
         signal();
 
-        TEST_ASSERT(slot.get_value() == 2, "Signal connect not working");
-
-        signal.disconnect(id1);
-
-        signal();
-
-        TEST_ASSERT(slot.get_value() == 3, "Signal disconnect not working");
+        TEST_ASSERT(slot.value == 3, "Signal disconnect not working");
+        TEST_ASSERT(slot.no_action_called == true, "Signal connect not working");
 
         signal.disconnect(id2);
 
         signal();
 
-        TEST_ASSERT(slot.get_value() == 3, "Signal disconnect not working");
+        TEST_ASSERT(slot.value == 3, "Signal disconnect not working");
+    }
+
+    void slot_self_disconnect()
+    {
+        Signal signal1;
+
+        signal1.connect([&signal1]() {
+            signal1.clear();
+        });
+
+        signal1.connect([&signal1]() {
+            signal1.clear();
+        });
+
+        signal1.connect([&signal1]() {
+            signal1.clear();
+        });
+        
+        signal1.connect([&signal1]() {
+            signal1.clear();
+        });
+
+        signal1();
+
+        TEST_ASSERT(signal1.has_connections() == false, "Signal clear not working");
+
+        Signal<usize> signal2;
+
+        auto id1 = signal2.connect([&signal2](usize a) {
+            signal2.disconnect(a);
+        });
+
+        auto id2 = signal2.connect([&signal2](usize a) {
+            signal2.disconnect(a);
+        });
+
+        auto id3 = signal2.connect([&signal2](usize a) {
+            signal2.disconnect(a);
+        });
+
+        signal2(id1);
+        signal2(id2);
+        signal2(id3);
+
+        TEST_ASSERT(signal2.has_connections() == false, "Signal disconnect not working");
     }
 };
 
