@@ -30,42 +30,44 @@
 #include <common/types.hpp>
 #include <common/utils.hpp>
 
-#include <system/details/osx/osx_window_wrapper.hpp>
 #include <system/details/osx/osx_window.hpp>
+#include <system/details/osx/osx_window_wrapper.hpp>
 
 namespace framework::system::details
 {
-osx_window_wrapper::osx_window_wrapper(window_size /*size*/, const std::string& /*title*/, const context_settings& /*settings*/)
-	:self(nullptr)
+osx_window_wrapper::osx_window_wrapper(window_size /*size*/,
+                                       const std::string& /*title*/,
+                                       const context_settings& /*settings*/)
+    : self(nullptr)
 {
-	self = [[osx_window alloc] init];
+    self = [[osx_window alloc] init];
 }
 
 osx_window_wrapper::~osx_window_wrapper()
 {
-	[reinterpret_cast<osx_window*>(self) dealloc];
+    [reinterpret_cast<osx_window*>(self) dealloc];
 }
 
 #pragma region actions
 
 void osx_window_wrapper::show()
 {
-	[reinterpret_cast<osx_window*>(self) show];
+    [reinterpret_cast<osx_window*>(self) show];
 }
 
 void osx_window_wrapper::hide()
 {
-	[reinterpret_cast<osx_window*>(self) hide];
+    [reinterpret_cast<osx_window*>(self) hide];
 }
 
 void osx_window_wrapper::focus()
 {
-	[reinterpret_cast<osx_window*>(self) focus];
+    [reinterpret_cast<osx_window*>(self) focus];
 }
 
 void osx_window_wrapper::process_events()
 {
-	[reinterpret_cast<osx_window*>(self) process_events];
+    [reinterpret_cast<osx_window*>(self) process_events];
 }
 
 void osx_window_wrapper::iconify()

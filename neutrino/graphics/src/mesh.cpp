@@ -43,7 +43,10 @@ inline framework::uint32 create_buffer(const std::vector<T>& data)
     framework::gl::glGenBuffers(1, &buffer_id);
 
     framework::gl::glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-    framework::gl::glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(data.size() * sizeof(T)), data[0].data(), GL_STATIC_DRAW);
+    framework::gl::glBufferData(GL_ARRAY_BUFFER,
+                                static_cast<GLsizeiptr>(data.size() * sizeof(T)),
+                                data[0].data(),
+                                GL_STATIC_DRAW);
     framework::gl::glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return buffer_id;

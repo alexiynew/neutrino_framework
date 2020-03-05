@@ -46,7 +46,7 @@ struct image_info_t
     int32 width  = 0;
     int32 height = 0;
 
-    float32 gamma  = default_gamma;
+    float32 gamma = default_gamma;
 };
 
 using image_data_t  = std::tuple<image_info_t, std::vector<color_t>>;

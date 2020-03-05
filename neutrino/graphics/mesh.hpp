@@ -86,7 +86,7 @@ private:
     uint32 m_vertex_array_id = 0;
 
     uint32 m_buffer_ids[6] = {0, 0, 0, 0, 0, 0};
-    int32 m_type_sizes[6] = {0, 0, 0, 0, 0, 0};
+    int32 m_type_sizes[6]  = {0, 0, 0, 0, 0, 0};
 };
 
 void swap(mesh& a, mesh& b);

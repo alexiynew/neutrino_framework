@@ -37,12 +37,12 @@
 @interface osx_window : NSObject
 {}
 
-    /// @name actions
-    /// @{
-    -(void) show;
-    -(void) hide;
-    -(void) focus;
-    -(void) process_events;
+/// @name actions
+/// @{
+- (void)show;
+- (void)hide;
+- (void)focus;
+- (void)process_events;
 
 @end
 

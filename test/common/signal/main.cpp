@@ -45,9 +45,7 @@ private:
 
         Signal<int> s;
 
-        auto id = s.connect([&value](int a) {
-            value += a;
-        });
+        auto id = s.connect([&value](int a) { value += a; });
 
         s(1);
 
@@ -84,13 +82,13 @@ private:
                 no_action_called = true;
             }
 
-            int32 get_value() const 
+            int32 get_value() const
             {
-                return value; 
+                return value;
             }
 
-        int32 value = 0;
-        mutable bool no_action_called = false;
+            int32 value                   = 0;
+            mutable bool no_action_called = false;
         };
 
         Slot slot;
@@ -121,44 +119,59 @@ private:
     void slot_self_disconnect()
     {
         Signal signal1;
+        int count1 = 0;
 
-        signal1.connect([&signal1]() {
+        signal1.connect([&signal1, &count1]() {
             signal1.clear();
+            count1++;
         });
 
-        signal1.connect([&signal1]() {
+        signal1.connect([&signal1, &count1]() {
             signal1.clear();
+            count1++;
         });
 
-        signal1.connect([&signal1]() {
+        signal1.connect([&signal1, &count1]() {
             signal1.clear();
+            count1++;
         });
-        
-        signal1.connect([&signal1]() {
+
+        signal1.connect([&signal1, &count1]() {
             signal1.clear();
+            count1++;
         });
 
         signal1();
 
         TEST_ASSERT(signal1.has_connections() == false, "Signal clear not working");
+        TEST_ASSERT(count1 == 1, "Signal clear not working");
 
         Signal<usize> signal2;
+        int count2 = 0;
 
-        auto id1 = signal2.connect([&signal2](usize a) {
+        auto id1 = signal2.connect([&signal2, &count2](usize a) {
             signal2.disconnect(a);
+            count2++;
         });
 
-        auto id2 = signal2.connect([&signal2](usize a) {
+        auto id2 = signal2.connect([&signal2, &count2](usize a) {
             signal2.disconnect(a);
+            count2++;
         });
 
-        auto id3 = signal2.connect([&signal2](usize a) {
+        auto id3 = signal2.connect([&signal2, &count2](usize a) {
             signal2.disconnect(a);
+            count2++;
         });
 
         signal2(id1);
+        TEST_ASSERT(count2 == 3, "Signal disconnect not working");
+
         signal2(id2);
+        TEST_ASSERT(count2 == 5, "Signal disconnect not working");
+
         signal2(id3);
+        TEST_ASSERT(count2 == 6, "Signal disconnect not working");
 
         TEST_ASSERT(signal2.has_connections() == false, "Signal disconnect not working");
     }

@@ -30,107 +30,110 @@
 #ifndef FRAMEWORK_COMMON_SIGNAL_HPP
 #define FRAMEWORK_COMMON_SIGNAL_HPP
 
-#include <common/types.hpp>
-
-#include <vector>
-#include <functional>
 #include <algorithm>
+#include <functional>
+#include <memory>
+#include <vector>
+
+#include <common/types.hpp>
 
 namespace framework
 {
-    template <typename... Args>
-    class Signal
+template <typename... Args>
+class Signal
+{
+public:
+    using Slot   = std::function<void(Args...)>;
+    using SlotId = usize;
+
+    Signal() = default;
+
+    Signal(const Signal&) = delete;
+    Signal& operator=(const Signal&) = delete;
+
+    Signal(Signal&&) = default;
+    Signal& operator=(Signal&&) = default;
+
+    SlotId connect(Slot&& slot)
     {
-    public:
-        using Slot = std::function<void(Args...)>;
-        using SlotId = usize;
+        if (m_free_ids.empty()) {
+            m_slots.push_back(std::make_shared<Slot>(std::move(slot)));
+            return m_slots.size() - 1;
+        } else {
+            SlotId id = m_free_ids.back();
+            m_free_ids.pop_back();
+            m_slots[id] = std::make_shared<Slot>(std::move(slot));
+            return id;
+        }
+    }
 
-        Signal() = default;
+    template <typename T>
+    SlotId connect(T& inst, void (T::*func)(Args...))
+    {
+        if constexpr (sizeof...(Args) == 0) {
+            return connect([&inst, func]() { (inst.*func)(); });
+        } else {
+            return connect([&inst, func](Args... args) { (inst.*func)(std::forward<Args...>(args...)); });
+        }
+    }
 
-        Signal(const Signal&) = delete;
-        Signal& operator=(const Signal&) = delete;
+    template <typename T>
+    SlotId connect(const T& inst, void (T::*func)(Args...) const)
+    {
+        if constexpr (sizeof...(Args) == 0) {
+            return connect([&inst, func]() { (inst.*func)(); });
+        } else {
+            return connect([&inst, func](Args... args) { (inst.*func)(std::forward<Args...>(args...)); });
+        }
+    }
 
-        Signal(Signal&&) = default;
-        Signal& operator=(Signal&&) = default;
+    void disconnect(SlotId id)
+    {
+        if (id >= 0 && id < m_slots.size()) {
+            m_slots[id] = nullptr;
+            m_free_ids.push_back(id);
+        }
+    }
 
-        SlotId connect(Slot&& slot)
-        {
-            if (m_free_ids.empty()) {
-                m_slots.emplace_back(std::move(slot));
-                return m_slots.size() - 1;
-            } else {
-                SlotId id = m_free_ids.back();
-                m_free_ids.pop_back();
-                m_slots[id] = std::move(slot);
-                return id;
-            }
+    void clear()
+    {
+        m_slots.clear();
+        m_free_ids.clear();
+    }
+
+    bool has_connections() const
+    {
+        if (m_slots.empty()) {
+            return false;
         }
 
-        template<typename T>
-        SlotId connect(T &inst, void (T::*func)(Args...))
-        {
+        auto it = std::find_if(m_slots.begin(), m_slots.end(), [](const std::shared_ptr<Slot>& slot) {
+            return slot != nullptr;
+        });
+        return it != m_slots.end();
+    }
+
+    void operator()(Args... args)
+    {
+        for (usize index = 0; index < m_slots.size(); ++index) {
+            if (m_slots[index] == nullptr) {
+                continue;
+            }
+
+            std::shared_ptr<Slot> slot = m_slots[index];
             if constexpr (sizeof...(Args) == 0) {
-                return connect([&inst, func]() { (inst.*func)(); });
+                (*slot)();
             } else {
-                return connect([&inst, func](Args... args) { (inst.*func)(std::forward<Args...>(args...)); });
+                (*slot)(std::move(args...));
             }
         }
+    }
 
-        template<typename T>
-        SlotId connect(const T &inst, void (T::*func)(Args...) const)
-        {
-            if constexpr (sizeof...(Args) == 0) {
-                return connect([&inst, func]() { (inst.*func)(); });
-            } else {
-                return connect([&inst, func](Args... args) { (inst.*func)(std::forward<Args...>(args...)); });
-            }
-        }
+private:
+    std::vector<std::shared_ptr<Slot>> m_slots;
+    std::vector<SlotId> m_free_ids;
+};
 
-        void disconnect(SlotId id)
-        {
-            if (id >= 0 && id < m_slots.size()) {
-                m_slots[id] = nullptr;
-                m_free_ids.push_back(id);
-            }
-        }
-
-        void clear()
-        {
-            m_slots.clear();
-            m_free_ids.clear();
-        }
-
-        bool has_connections() const
-        {
-            if (m_slots.empty())
-            {
-                return false;
-            }
-
-            auto it = std::find_if(m_slots.begin(), m_slots.end(), [](const Slot& slot) { return slot != nullptr; });
-            return it != m_slots.end();
-        }
-
-        void operator()(Args... args)
-        {
-            for (const auto& slot : m_slots)
-            {
-                if (slot == nullptr) {
-                    continue;
-                }
-
-                if constexpr (sizeof...(Args) == 0) {
-                    slot();
-                } else {
-                    slot(std::move(args...));
-                }
-            }
-        }
-
-    private:
-        std::vector<Slot> m_slots;
-        std::vector<SlotId> m_free_ids;
-    };
-}
+} // namespace framework
 
 #endif
