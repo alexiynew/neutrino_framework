@@ -31,8 +31,8 @@
 
 #include <system/window.hpp>
 
-#include <system/details/event_handler.hpp>
-#include <system/details/window_implementation.hpp>
+#include <system/src/event_handler.hpp>
+#include <system/src/window_implementation.hpp>
 
 namespace framework::system
 {

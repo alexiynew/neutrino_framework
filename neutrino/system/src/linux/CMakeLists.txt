@@ -23,35 +23,29 @@
 # SOFTWARE.
 # =============================================================================
 
-set_sources(PUBLIC_SOURCES
-    context_settings.hpp
-    keyboard.hpp
-    mouse.hpp
-    window.hpp
-    inc/window_position.hpp
-    inc/window_size.hpp
-)
-
 set_sources(PRIVATE_SOURCES
-    src/context_settings.cpp
-    src/window.cpp
-    src/window_size.cpp
-    src/window_position.cpp
-    src/context.hpp
-    src/context.cpp
-    src/event_handler.hpp
-    src/event_handler.cpp
-    src/window_implementation.hpp
-    src/window_implementation.cpp
+    x11_glx_context.cpp
+    x11_glx_context.hpp
+    x11_implementation.cpp
+    x11_keyboard.cpp
+    x11_keyboard.hpp
+    x11_mouse.cpp
+    x11_mouse.hpp
+    x11_server.cpp
+    x11_server.hpp
+    x11_utils.cpp
+    x11_utils.hpp
+    x11_window.cpp
+    x11_window.hpp
 )
 
 target_sources(${PROJECT_NAME}
-    PUBLIC
-        ${PUBLIC_SOURCES}
     PRIVATE
         ${PRIVATE_SOURCES}
 )
 
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+# Link to x11
+find_package(X11 REQUIRED)
 
-include(${MODULE_DIR}/src/${PLATFORM_NAME}/CMakeLists.txt)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${X11_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${X11_LIBRARIES})
