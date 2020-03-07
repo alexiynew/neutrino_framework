@@ -24,6 +24,8 @@
 # =============================================================================
 
 set_sources(PRIVATE_SOURCES
+    osx_application_delegate.hpp
+    osx_application_delegate.mm
     osx_implementation.cpp
     osx_window_wrapper.hpp
     osx_window_wrapper.mm
