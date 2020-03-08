@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Window position.
+/// @brief Position.
 /// @author Fedorov Alexey
 /// @date 01.03.2019
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -27,54 +29,24 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_INC_WINDOW_POSITION_HPP
-#define FRAMEWORK_SYSTEM_INC_WINDOW_POSITION_HPP
+#include <common/position.hpp>
 
-#include <common/types.hpp>
-
-namespace framework::system::details
+namespace framework
 {
-/// @addtogroup window_class
-/// @{
 
-/// @brief Window position.
-struct window_position
+Position::Position(int x_value, int y_value)
+    : x(x_value)
+    , y(y_value)
+{}
+
+bool operator==(const Position& lhs, const Position& rhs)
 {
-    int32 x; ///< X coordiante.
-    int32 y; ///< Y coordinate.
-};
-
-/// @brief Equality operator for window position.
-///
-/// @param lhs Position to compare.
-/// @param rhs Position to compare.
-///
-/// @return `true` if lhs equals rhs, otherwise `false`.
-bool operator==(const window_position& lhs, const window_position& rhs);
-
-/// @brief Inequality operator for window position.
-///
-/// @param lhs Position to compare.
-/// @param rhs Position to compare.
-///
-/// @return `true` if lhs isn't equals rhs, otherwise `false`.
-bool operator!=(const window_position& lhs, const window_position& rhs);
-
-/// @brief Helper function to print window position.
-///
-/// @param ostream Output stream.
-/// @param position Window position.
-///
-/// @return Reference to output stream.
-template <typename T>
-T& operator<<(T& ostream, const window_position& position)
-{
-    ostream << "{" << position.x << ", " << position.y << "}";
-    return ostream;
+    return lhs.x == rhs.x && lhs.y == rhs.y;
 }
 
-/// @}
+bool operator!=(const Position& lhs, const Position& rhs)
+{
+    return !(lhs == rhs);
+}
 
-} // namespace framework::system::details
-
-#endif
+} // namespace framework

@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_DETAILS_CONTEXT_HPP
-#define FRAMEWORK_SYSTEM_DETAILS_CONTEXT_HPP
+#ifndef FRAMEWORK_SYSTEM_SRC_CONTEXT_HPP
+#define FRAMEWORK_SYSTEM_SRC_CONTEXT_HPP
 
 #include <memory>
 

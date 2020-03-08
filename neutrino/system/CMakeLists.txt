@@ -28,21 +28,15 @@ set_sources(PUBLIC_SOURCES
     keyboard.hpp
     mouse.hpp
     window.hpp
-    inc/window_position.hpp
-    inc/window_size.hpp
 )
 
 set_sources(PRIVATE_SOURCES
     src/context_settings.cpp
     src/window.cpp
-    src/window_size.cpp
-    src/window_position.cpp
     src/context.hpp
     src/context.cpp
-    src/event_handler.hpp
-    src/event_handler.cpp
-    src/window_implementation.hpp
-    src/window_implementation.cpp
+    src/platform_window.hpp
+    src/platform_window.cpp
 )
 
 target_sources(${PROJECT_NAME}

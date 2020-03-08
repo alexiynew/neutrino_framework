@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window position.
+/// @brief Window implementation for OSX.
 /// @author Fedorov Alexey
-/// @date 01.03.2019
+/// @date 20.12.2019
 
 // =============================================================================
 // MIT License
@@ -27,18 +27,17 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <system/inc/window_position.hpp>
+#include <system/src/osx/osx_window_wrapper.hpp>
+#include <system/src/platform_window.hpp>
 
 namespace framework::system::details
 {
-bool operator==(const window_position& lhs, const window_position& rhs)
+std::unique_ptr<PlatformWindow> create_platform_window(const Window& window, 
+                                                       Size size,
+                                                       const std::string& title,
+                                                       const context_settings& settings)
 {
-    return lhs.x == rhs.x && lhs.y == rhs.y;
-}
-
-bool operator!=(const window_position& lhs, const window_position& rhs)
-{
-    return !(lhs == rhs);
+    return std::make_unique<OsxWindowWrapper>(window, size, title, settings);
 }
 
 } // namespace framework::system::details

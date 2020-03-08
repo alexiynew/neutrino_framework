@@ -35,7 +35,7 @@
 #include <system/src/osx/osx_window.hpp>
 #include <system/src/osx/osx_application_delegate.hpp>
 
-@implementation osx_window
+@implementation OsxWindow
 
 #pragma region actions
 

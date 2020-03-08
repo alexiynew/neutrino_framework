@@ -509,19 +509,16 @@ std::vector<object> load_textures(mode m)
 
 int main()
 {
+    using namespace framework;
     using namespace framework::graphics;
     using namespace framework::system;
     using namespace framework::gl;
-    using framework::float32;
-    using framework::int32;
-    using framework::uint32;
-    using framework::math::matrix4f;
 
     framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
 
-    window::set_application_name("Image example");
+    Window::set_application_name("Image example");
 
-    window main_window({640, 480}, "Image example");
+    Window main_window({640, 480}, "Image example");
     main_window.make_current();
 
     glEnable(GL_BLEND);
@@ -538,7 +535,7 @@ int main()
 
     int32 image_scale = 1;
 
-    matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
+    math::matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
     mvp          = scale(mvp, {image_scale, image_scale, image_scale});
 
     // load all images
@@ -556,9 +553,8 @@ int main()
 
     float32 gamma = 0.0f;
 
-    main_window.set_on_close_callback([](window& w) { w.hide(); });
-    main_window.set_on_size_callback(
-    [&objects, &mvp, image_scale](window&, ::framework::system::details::window_size size) {
+    main_window.on_resize.connect(
+    [&objects, &mvp, image_scale](const Window&, Size size) {
         mvp = framework::math::ortho2d<float32>(0,
                                                 static_cast<float32>(size.width),
                                                 static_cast<float32>(size.height),
@@ -568,8 +564,8 @@ int main()
         arrange(objects, size.width, size.height, image_scale);
     });
 
-    main_window.set_on_key_press_callback(
-    [&gamma, &current_mode, &objects, &mvp, &image_scale](window& w, key_code k, modifiers_state) {
+    main_window.on_key_down.connect(
+    [&gamma, &current_mode, &objects, &mvp, &image_scale](const Window& w, key_code k, modifiers_state) {
         switch (k) {
             case key_code::key_equal: gamma += 0.1f; break;
             case key_code::key_minus: gamma -= 0.1f; break;
@@ -594,7 +590,7 @@ int main()
 
     main_window.show();
 
-    while (main_window.visible()) {
+    while (!main_window.should_close()) {
         main_window.process_events();
 
         glClearColor(0.5f, 0.2f, 0.5f, 1.0f);

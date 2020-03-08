@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window implementation for OSX.
+/// @brief Describes interface for all window implementations.
 /// @author Fedorov Alexey
-/// @date 20.12.2019
+/// @date 05.04.2017
 
 // =============================================================================
 // MIT License
@@ -27,16 +27,21 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <system/src/osx/osx_window_wrapper.hpp>
-#include <system/src/window_implementation.hpp>
+#include <system/src/platform_window.hpp>
 
 namespace framework::system::details
 {
-std::unique_ptr<window_implementation> create_implementation(window_size size,
-                                                             const std::string& title,
-                                                             const context_settings& settings)
+std::string PlatformWindow::application_name = "Application";
+
+PlatformWindow::PlatformWindow(const Window& window_interface)
+    : m_window_interface(window_interface)
+{}
+
+PlatformWindow::~PlatformWindow() = default;
+
+void PlatformWindow::set_application_name(const std::string& name)
 {
-    return std::make_unique<osx_window_wrapper>(size, title, settings);
+    application_name = name;
 }
 
 } // namespace framework::system::details

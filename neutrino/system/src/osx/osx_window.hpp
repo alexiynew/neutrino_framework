@@ -27,14 +27,14 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_OSX_OSX_WINDOW_HPP
-#define FRAMEWORK_WINDOW_DETAILS_OSX_OSX_WINDOW_HPP
+#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_WINDOW_HPP
+#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_WINDOW_HPP
 
 #import <Foundation/NSObject.h>
 
 #include <system/src/osx/osx_window.hpp>
 
-@interface osx_window : NSObject
+@interface OsxWindow : NSObject
 {}
 
 /// @name actions

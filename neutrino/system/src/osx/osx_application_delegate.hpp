@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_OSX_OSX_APPLICATION_DELEGATE_HPP
-#define FRAMEWORK_WINDOW_DETAILS_OSX_OSX_APPLICATION_DELEGATE_HPP
+#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_DELEGATE_HPP
+#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_DELEGATE_HPP
 
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>

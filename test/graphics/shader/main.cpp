@@ -45,15 +45,15 @@ private:
     void main_loop()
     {
         using namespace framework;
+        using namespace framework::system;
 
         using framework::float32;
         using framework::graphics::shader_program;
-        using framework::system::window;
         using framework::utils::random_numbers;
 
-        window::set_application_name("GL shader Test");
+        Window::set_application_name("GL shader Test");
 
-        window main_window({640, 480}, "GL shader test");
+        Window main_window({640, 480}, "GL shader test");
 
         main_window.make_current();
 
@@ -62,7 +62,7 @@ private:
         const float32 max_total_time = 1000;
         float32 total_time           = 0;
 
-        while (main_window.visible() && total_time < max_total_time) {
+        while (main_window.is_visible() && total_time < max_total_time) {
             main_window.process_events();
 
             gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

@@ -45,15 +45,12 @@ private:
     void main_loop()
     {
         using namespace framework;
+        using namespace framework::graphics;
+        using namespace framework::system;
 
-        using framework::float32;
-        using framework::graphics::texture;
-        using framework::system::window;
-        using framework::utils::random_numbers;
+        Window::set_application_name("GL texture Test");
 
-        window::set_application_name("GL texture Test");
-
-        window main_window({640, 480}, "GL texture test");
+        Window main_window({640, 480}, "GL texture test");
 
         main_window.make_current();
 
@@ -62,7 +59,7 @@ private:
         const float32 max_total_time = 1000;
         float32 total_time           = 0;
 
-        while (main_window.visible() && total_time < max_total_time) {
+        while (main_window.is_visible() && total_time < max_total_time) {
             main_window.process_events();
 
             gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

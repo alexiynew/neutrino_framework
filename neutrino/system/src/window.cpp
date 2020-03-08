@@ -31,260 +31,182 @@
 
 #include <system/window.hpp>
 
-#include <system/src/event_handler.hpp>
-#include <system/src/window_implementation.hpp>
+#include <system/src/platform_window.hpp>
 
 namespace framework::system
 {
-void window::set_application_name(const std::string& name)
+void Window::set_application_name(const std::string& name)
 {
-    details::window_implementation::set_application_name(name);
+    details::PlatformWindow::set_application_name(name);
 }
 
-window::window(size_t size, const std::string& title, context_settings settings)
-    : m_implementation(details::create_implementation(size, title, std::move(settings))),
-      m_event_handler(std::make_unique<details::event_handler>(this))
+Window::Window(Size size, const std::string& title, context_settings settings)
+    : m_platform_window(details::create_platform_window(*this, size, title, std::move(settings)))
 {
-    m_implementation->set_event_handler(m_event_handler.get());
 }
 
-window::~window() = default;
+Window::~Window() = default;
 
-window::window(window&& other) noexcept : m_implementation(std::move(other.m_implementation))
+Window::Window(Window&& other) noexcept : m_platform_window(std::move(other.m_platform_window))
 {}
 
-window& window::operator=(window&& other) noexcept
+Window& Window::operator=(Window&& other) noexcept
 {
-    m_implementation = std::move(other.m_implementation);
+    m_platform_window = std::move(other.m_platform_window);
     return *this;
 }
 
 #pragma region actions
 
-void window::show()
+void Window::show()
 {
-    m_implementation->show();
+    m_platform_window->show();
 }
 
-void window::hide()
+void Window::hide()
 {
-    m_implementation->hide();
+    m_platform_window->hide();
 }
 
-void window::focus()
+void Window::focus()
 {
-    m_implementation->focus();
+    m_platform_window->focus();
 }
 
-void window::process_events()
+void Window::iconify()
 {
-    m_implementation->process_events();
+    m_platform_window->iconify();
 }
 
-void window::iconify()
+void Window::maximize()
 {
-    m_implementation->iconify();
+    m_platform_window->maximize();
 }
 
-void window::maximize()
+void Window::fullscreen()
 {
-    m_implementation->maximize();
+    m_platform_window->fullscreen();
 }
 
-void window::switch_to_fullscreen()
+void Window::restore()
 {
-    m_implementation->switch_to_fullscreen();
+    m_platform_window->restore();
 }
 
-void window::restore()
+void Window::resize(Size size)
 {
-    m_implementation->restore();
+    m_platform_window->resize(size);
 }
 
-void window::make_current()
+void Window::move(Position position)
 {
-    m_implementation->make_current();
+    m_platform_window->move(position);
 }
 
-void window::swap_buffers()
+void Window::process_events()
 {
-    m_implementation->swap_buffers();
+    m_platform_window->process_events();
+}
+
+void Window::make_current()
+{
+    m_platform_window->make_current();
+}
+
+void Window::swap_buffers()
+{
+    m_platform_window->swap_buffers();
 }
 
 #pragma endregion
 
 #pragma region setters
 
-void window::set_size(size_t size)
+void Window::set_max_size(Size max_size)
 {
-    m_implementation->set_size(size);
+    m_platform_window->set_max_size(max_size);
 }
 
-void window::set_position(position_t position)
+void Window::set_min_size(Size min_size)
 {
-    m_implementation->set_position(position);
+    m_platform_window->set_min_size(min_size);
 }
 
-void window::set_max_size(size_t max_size)
+void Window::set_resizable(bool value)
 {
-    m_implementation->set_max_size(max_size);
+    m_platform_window->set_resizable(value);
 }
 
-void window::set_min_size(size_t min_size)
+void Window::set_title(const std::string& title)
 {
-    m_implementation->set_min_size(min_size);
-}
-
-void window::set_resizable(bool value)
-{
-    m_implementation->set_resizable(value);
-}
-
-void window::set_title(const std::string& title)
-{
-    m_implementation->set_title(title);
+    m_platform_window->set_title(title);
 }
 
 #pragma endregion
 
 #pragma region getters
 
-window::position_t window::position() const
+Position Window::position() const
 {
-    return m_implementation->position();
+    return m_platform_window->position();
 }
 
-window::size_t window::size() const
+Size Window::size() const
 {
-    return m_implementation->size();
+    return m_platform_window->size();
 }
 
-window::size_t window::max_size() const
+Size Window::max_size() const
 {
-    return m_implementation->max_size();
+    return m_platform_window->max_size();
 }
 
-window::size_t window::min_size() const
+Size Window::min_size() const
 {
-    return m_implementation->min_size();
+    return m_platform_window->min_size();
 }
 
-std::string window::title() const
+std::string Window::title() const
 {
-    return m_implementation->title();
+    return m_platform_window->title();
 }
 
 #pragma endregion
 
 #pragma region state
-
-bool window::fullscreen() const
+bool Window::should_close() const
 {
-    return m_implementation->fullscreen();
+    return m_platform_window->should_close();
 }
 
-bool window::iconified() const
+bool Window::is_fullscreen() const
 {
-    return m_implementation->iconified();
+    return m_platform_window->is_fullscreen();
 }
 
-bool window::maximized() const
+bool Window::is_iconified() const
 {
-    return m_implementation->maximized();
+    return m_platform_window->is_iconified();
 }
 
-bool window::resizable() const
+bool Window::is_maximized() const
 {
-    return m_implementation->resizable();
+    return m_platform_window->is_maximized();
 }
 
-bool window::visible() const
+bool Window::is_resizable() const
 {
-    return m_implementation->visible();
+    return m_platform_window->is_resizable();
 }
 
-bool window::focused() const
+bool Window::is_visible() const
 {
-    return m_implementation->focused();
+    return m_platform_window->is_visible();
 }
 
-#pragma endregion
-
-#pragma region events
-
-void window::set_on_show_callback(event_callback callback)
+bool Window::has_input_focus() const
 {
-    m_event_handler->m_on_show_callback = std::move(callback);
-}
-
-void window::set_on_hide_callback(event_callback callback)
-{
-    m_event_handler->m_on_hide_callback = std::move(callback);
-}
-
-void window::set_on_close_callback(event_callback callback)
-{
-    m_event_handler->m_on_close_callback = std::move(callback);
-}
-
-void window::set_on_focus_callback(event_callback callback)
-{
-    m_event_handler->m_on_focus_callback = std::move(callback);
-}
-
-void window::set_on_focus_lost_callback(event_callback callback)
-{
-    m_event_handler->m_on_focus_lost_callback = std::move(callback);
-}
-
-void window::set_on_size_callback(size_event_callback callback)
-{
-    m_event_handler->m_on_size_callback = std::move(callback);
-}
-
-void window::set_on_position_callback(position_event_callback callback)
-{
-    m_event_handler->m_on_position_callback = std::move(callback);
-}
-
-void window::set_on_key_press_callback(key_event_callback callback)
-{
-    m_event_handler->m_on_key_press_callback = std::move(callback);
-}
-
-void window::set_on_key_release_callback(key_event_callback callback)
-{
-    m_event_handler->m_on_key_release_callback = std::move(callback);
-}
-
-void window::set_on_character_callback(character_event_callback callback)
-{
-    m_event_handler->m_on_character_callback = std::move(callback);
-}
-
-void window::set_on_mouse_move_callback(mouse_move_callback callback)
-{
-    m_event_handler->m_on_mouse_move_callback = std::move(callback);
-}
-
-void window::set_on_mouse_button_press_callback(mouse_button_callback callback)
-{
-    m_event_handler->m_on_mouse_press_callback = std::move(callback);
-}
-
-void window::set_on_mouse_button_release_callback(mouse_button_callback callback)
-{
-    m_event_handler->m_on_mouse_release_callback = std::move(callback);
-}
-
-void window::set_on_mouse_enter_callback(event_callback callback)
-{
-    m_event_handler->m_on_mouse_enter_callback = std::move(callback);
-}
-
-void window::set_on_mouse_leave_callback(event_callback callback)
-{
-    m_event_handler->m_on_mouse_leave_callback = std::move(callback);
+    return m_platform_window->has_input_focus();
 }
 
 #pragma endregion

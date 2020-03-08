@@ -234,75 +234,74 @@ private:
     void run()
     {
         using namespace framework;
-        using ::framework::system::window;
+        using namespace framework::system;
 
-        ::framework::log::set_logger(std::make_unique<::framework::log::stream_logger>(std::cout));
+        framework::log::set_logger(std::make_unique<::framework::log::stream_logger>(std::cout));
 
-        const window::size_t size640{640, 480};
+        const Size size640{640, 480};
 
-        window w(size640, "Test");
+        Window w(size640, "Test");
 
         bool should_close = false;
 
-        w.set_on_show_callback([](const window&) { log::info("test") << "on_show" << std::endl; });
+        w.on_show.connect([](const Window&) { log::info("test") << "on_show" << std::endl; });
 
-        w.set_on_hide_callback([](const window&) { log::info("test") << "on_hide" << std::endl; });
+        w.on_hide.connect([](const Window&) { log::info("test") << "on_hide" << std::endl; });
 
-        w.set_on_close_callback([&should_close](const window&) {
+        w.on_close.connect([&should_close](const Window&) {
             log::info("test") << "on_close" << std::endl;
             should_close = true;
         });
 
-        w.set_on_focus_callback([](const window&) { log::info("test") << "on_focus" << std::endl; });
+        w.on_focus.connect([](const Window&) { log::info("test") << "on_focus" << std::endl; });
 
-        w.set_on_focus_lost_callback([](const window&) { log::info("test") << "on_focus_lost" << std::endl; });
+        w.on_lost_focus.connect([](const Window&) { log::info("test") << "on_focus_lost" << std::endl; });
 
-        w.set_on_size_callback(
-        [](const window&, window::size_t size) { log::info("test") << "on_size: " << size << std::endl; });
+        w.on_resize.connect([](const Window&, Size size) { log::info("test") << "on_size: " << size << std::endl; });
 
-        w.set_on_position_callback([](const window&, window::position_t position) {
+        w.on_move.connect([](const Window&, Position position) {
             log::info("test") << "on_position: " << position << std::endl;
         });
 
-        w.set_on_key_press_callback([](const window&, system::key_code key, system::modifiers_state state) {
+        w.on_key_down.connect([](const Window&, system::key_code key, system::modifiers_state state) {
             log::info("test") << "on_key_press key: " << static_cast<int32>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
-        w.set_on_key_release_callback([](const window&, system::key_code key, system::modifiers_state state) {
+        w.on_key_up.connect([](const Window&, system::key_code key, system::modifiers_state state) {
             log::info("test") << "on_key_release key: " << static_cast<int32>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
-        w.set_on_mouse_enter_callback([](const window&) { log::info("test") << "on_mouse_enter" << std::endl; });
+        w.on_mouse_enter.connect([](const Window&) { log::info("test") << "on_mouse_enter" << std::endl; });
 
-        w.set_on_mouse_leave_callback([](const window&) { log::info("test") << "on_mouse_leave" << std::endl; });
+        w.on_mouse_leave.connect([](const Window&) { log::info("test") << "on_mouse_leave" << std::endl; });
 
-        w.set_on_mouse_move_callback([](const window&, system::cursor_position p) {
+        w.on_mouse_move.connect([](const Window&, system::cursor_position p) {
             log::info("test") << "on_mouse_move {" << p.x << ", " << p.y << "}" << std::endl;
         });
 
-        w.set_on_mouse_button_press_callback(
-        [](const window&, system::mouse_button button, system::cursor_position position, system::modifiers_state state) {
+        w.on_button_down.connect(
+        [](const Window&, system::mouse_button button, system::cursor_position position, system::modifiers_state state) {
             log::info("test") << "on_mouse_press: " << button_name(button) << " {" << position.x << ", " << position.y
                               << "} " << print_state(state) << std::endl;
         });
 
-        w.set_on_mouse_button_release_callback(
-        [](const window&, system::mouse_button button, system::cursor_position position, system::modifiers_state state) {
+        w.on_button_up.connect(
+        [](const Window&, system::mouse_button button, system::cursor_position position, system::modifiers_state state) {
             log::info("test") << "on_mouse_release: " << button_name(button) << " {" << position.x << ", " << position.y
                               << "} " << print_state(state) << std::endl;
         });
 
-        w.set_on_character_callback(
-        [](const window&, std::string s) { log::info("test") << "on_character: " << s << std::endl; });
+        w.on_character.connect(
+        [](const Window&, std::string s) { log::info("test") << "on_character: " << s << std::endl; });
 
         w.show();
 
         const float32 max_total_time = 1000;
         float32 total_time           = 0;
 
-        while (w.visible() && !should_close && total_time < max_total_time) {
+        while (w.is_visible() && !should_close && total_time < max_total_time) {
             w.process_events();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));

@@ -28,6 +28,9 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
+using namespace framework;
+using namespace framework::system;
+
 class window_properties_test : public framework::unit_test::suite
 {
 public:
@@ -45,18 +48,16 @@ public:
 private:
     void window_size()
     {
-        using ::framework::system::window;
-
         bool on_size_called = false;
 
-        const window::size_t size480{480, 320};
-        const window::size_t size640{640, 480};
+        const Size size480{480, 320};
+        const Size size640{640, 480};
 
-        window::size_t size_in_callback{0, 0};
+        Size size_in_callback{0, 0};
 
-        window w({480, 320}, "Test");
+        Window w({480, 320}, "Test");
 
-        w.set_on_size_callback([&on_size_called, &size_in_callback](const window& /*unused*/, window::size_t w_size) {
+        w.on_resize.connect([&on_size_called, &size_in_callback](const Window& /*unused*/, Size w_size) {
             on_size_called   = true;
             size_in_callback = w_size;
         });
@@ -71,7 +72,7 @@ private:
 
         on_size_called   = false;
         size_in_callback = {0, 0};
-        w.set_size({640, 480});
+        w.resize({640, 480});
 
         TEST_ASSERT(on_size_called == true, "On size should be called.");
         TEST_ASSERT(size_in_callback == size640, "Wrong window size in callback.");
@@ -85,7 +86,7 @@ private:
         w.hide();
         on_size_called   = false;
         size_in_callback = {0, 0};
-        w.set_size({480, 320});
+        w.resize({480, 320});
         w.show();
 
         TEST_ASSERT(on_size_called == true, "On size should be called.");
@@ -95,16 +96,13 @@ private:
 
     void window_size_limits()
     {
-        using ::framework::system::window;
-        using namespace framework;
+        const Size size640{640, 480};
+        const Size size960{960, 640};
+        const Size no_size{0, 0};
+        const Size small_size{150, 150};
+        const Size big_size{1000, 1000};
 
-        const window::size_t size640{640, 480};
-        const window::size_t size960{960, 640};
-        const window::size_t no_size{0, 0};
-        const window::size_t small_size{150, 150};
-        const window::size_t big_size{1000, 1000};
-
-        window w({640, 480}, "Test");
+        Window w({640, 480}, "Test");
 
         // Base values
         TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
@@ -121,11 +119,11 @@ private:
         TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
 
         // Check size limits
-        w.set_size(big_size);
+        w.resize(big_size);
 
         TEST_ASSERT(w.size() == size960, "Window has wrong size.");
 
-        w.set_size(small_size);
+        w.resize(small_size);
 
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
@@ -133,32 +131,30 @@ private:
         w.set_min_size(no_size);
         w.set_max_size(no_size);
 
-        w.set_size(small_size);
+        w.resize(small_size);
 
         TEST_ASSERT(w.size() == small_size, "Window has wrong size.");
 
-        w.set_size(big_size);
+        w.resize(big_size);
 
         TEST_ASSERT(w.size() == big_size, "Window has wrong size.");
     }
 
     void window_resizability()
     {
-        using ::framework::system::window;
+        const Size size640{640, 480};
+        const Size no_size{0, 0};
 
-        const window::size_t size640{640, 480};
-        const window::size_t no_size{0, 0};
-
-        window w(size640, "Test");
+        Window w(size640, "Test");
 
         w.show();
 
-        TEST_ASSERT(w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(w.is_resizable(), "Window has wrong state.");
 
         w.set_resizable(false);
 
         // No other values were changed
-        TEST_ASSERT(!w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(!w.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
@@ -166,24 +162,22 @@ private:
 
     void window_resizability_and_size()
     {
-        using ::framework::system::window;
+        const Size size480{480, 320};
+        const Size size640{640, 480};
+        const Size size960{960, 640};
 
-        const window::size_t size480{480, 320};
-        const window::size_t size640{640, 480};
-        const window::size_t size960{960, 640};
-
-        window w(size640, "Test");
+        Window w(size640, "Test");
 
         w.show();
 
         w.set_resizable(false);
 
-        w.set_size(size480);
+        w.resize(size480);
         w.set_min_size(size480);
         w.set_max_size(size960);
 
         // Can change size limits, and window size
-        TEST_ASSERT(!w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(!w.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == size480, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
@@ -191,14 +185,14 @@ private:
         w.set_resizable(true);
 
         // Size limits and window size still are the same
-        TEST_ASSERT(w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(w.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(w.size() == size480, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == size480, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
 
-        w.set_size({1000, 1000});
+        w.resize({1000, 1000});
 
-        TEST_ASSERT(w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(w.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(w.size() == size960, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == size480, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
@@ -206,18 +200,16 @@ private:
 
     void window_resizability_before_show()
     {
-        using ::framework::system::window;
+        const Size no_size{0, 0};
+        const Size size640{640, 480};
 
-        const window::size_t no_size{0, 0};
-        const window::size_t size640{640, 480};
-
-        window w(size640, "Test");
+        Window w(size640, "Test");
 
         w.set_resizable(false);
 
         w.show();
 
-        TEST_ASSERT(!w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(!w.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
@@ -225,7 +217,7 @@ private:
         w.set_resizable(true);
 
         // No other values were changed
-        TEST_ASSERT(w.resizable(), "Window has wrong state.");
+        TEST_ASSERT(w.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(w.size() == size640, "Window has wrong size.");
         TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
         TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
@@ -233,19 +225,17 @@ private:
 
     void window_position()
     {
-        using ::framework::system::window;
-
         bool on_position_called = false;
-        window::size_t size640  = {640, 480};
+        Size size640  = {640, 480};
 
-        window w(size640, "Test");
+        Window w(size640, "Test");
 
-        w.set_on_position_callback(
-        [&on_position_called](const window& /*unused*/, window::position_t /*unused*/) { on_position_called = true; });
+        w.on_move.connect(
+        [&on_position_called](const Window& /*unused*/, Position /*unused*/) { on_position_called = true; });
 
         w.show();
 
-        w.set_position({100, 100});
+        w.move({100, 100});
 
         auto position = w.position();
 
@@ -259,13 +249,11 @@ private:
 
     void window_title()
     {
-        using ::framework::system::window;
-
         const std::string title      = u8"winodw_title";
         const std::string new_title  = u8"new_window_title";
         const std::string utf8_title = u8"พᛁቢ⠗☺w ⊤Iτსе";
 
-        window w({640, 480}, title);
+        Window w({640, 480}, title);
 
         w.show();
 

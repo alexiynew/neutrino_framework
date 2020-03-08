@@ -35,106 +35,108 @@
 
 namespace framework::system::details
 {
-osx_window_wrapper::osx_window_wrapper(window_size /*size*/,
-                                       const std::string& /*title*/,
-                                       const context_settings& /*settings*/)
-    : self(nullptr)
+OsxWindowWrapper::OsxWindowWrapper(const Window& window_interface,
+                                   Size /*size*/,
+                                   const std::string& /*title*/,
+                                   const context_settings& /*settings*/)
+    : PlatformWindow(window_interface)
+    , self(nullptr)
 {
-    self = [[osx_window alloc] init];
+    self = [[OsxWindow alloc] init];
 }
 
-osx_window_wrapper::~osx_window_wrapper()
+OsxWindowWrapper::~OsxWindowWrapper()
 {
-    [reinterpret_cast<osx_window*>(self) dealloc];
+    [reinterpret_cast<OsxWindow*>(self) dealloc];
 }
 
 #pragma region actions
 
-void osx_window_wrapper::show()
+void OsxWindowWrapper::show()
 {
-    [reinterpret_cast<osx_window*>(self) show];
+    [reinterpret_cast<OsxWindow*>(self) show];
 }
 
-void osx_window_wrapper::hide()
+void OsxWindowWrapper::hide()
 {
-    [reinterpret_cast<osx_window*>(self) hide];
+    [reinterpret_cast<OsxWindow*>(self) hide];
 }
 
-void osx_window_wrapper::focus()
+void OsxWindowWrapper::focus()
 {
-    [reinterpret_cast<osx_window*>(self) focus];
+    [reinterpret_cast<OsxWindow*>(self) focus];
 }
 
-void osx_window_wrapper::process_events()
+void OsxWindowWrapper::iconify()
+{}
+
+void OsxWindowWrapper::maximize()
+{}
+
+void OsxWindowWrapper::fullscreen()
+{}
+
+void OsxWindowWrapper::restore()
+{}
+
+void OsxWindowWrapper::resize(Size /*size*/)
+{}
+
+void OsxWindowWrapper::move(Position /*position*/)
+{}
+
+void OsxWindowWrapper::process_events()
 {
-    [reinterpret_cast<osx_window*>(self) process_events];
+    [reinterpret_cast<OsxWindow*>(self) process_events];
 }
 
-void osx_window_wrapper::iconify()
+void OsxWindowWrapper::make_current()
 {}
 
-void osx_window_wrapper::maximize()
-{}
-
-void osx_window_wrapper::switch_to_fullscreen()
-{}
-
-void osx_window_wrapper::restore()
-{}
-
-void osx_window_wrapper::make_current()
-{}
-
-void osx_window_wrapper::swap_buffers()
+void OsxWindowWrapper::swap_buffers()
 {}
 
 #pragma endregion
 
 #pragma region setters
 
-void osx_window_wrapper::set_size(window_size /*size*/)
+void OsxWindowWrapper::set_max_size(Size /*size*/)
 {}
 
-void osx_window_wrapper::set_position(window_position /*position*/)
+void OsxWindowWrapper::set_min_size(Size /*size*/)
 {}
 
-void osx_window_wrapper::set_max_size(window_size /*max_size*/)
+void OsxWindowWrapper::set_resizable(bool /*value*/)
 {}
 
-void osx_window_wrapper::set_min_size(window_size /*min_size*/)
-{}
-
-void osx_window_wrapper::set_resizable(bool /*value*/)
-{}
-
-void osx_window_wrapper::set_title(const std::string& /*title*/)
+void OsxWindowWrapper::set_title(const std::string& /*title*/)
 {}
 
 #pragma endregion
 
 #pragma region getters
 
-window_position osx_window_wrapper::position() const
+Position OsxWindowWrapper::position() const
 {
     return {0, 0};
 }
 
-window_size osx_window_wrapper::size() const
+Size OsxWindowWrapper::size() const
 {
     return {0, 0};
 }
 
-window_size osx_window_wrapper::max_size() const
+Size OsxWindowWrapper::max_size() const
 {
     return {0, 0};
 }
 
-window_size osx_window_wrapper::min_size() const
+Size OsxWindowWrapper::min_size() const
 {
     return {0, 0};
 }
 
-std::string osx_window_wrapper::title() const
+std::string OsxWindowWrapper::title() const
 {
     return "";
 }
@@ -142,36 +144,41 @@ std::string osx_window_wrapper::title() const
 #pragma endregion
 
 #pragma region state
+bool OsxWindowWrapper::should_close() const
+{
+    return true;
+}
 
-bool osx_window_wrapper::fullscreen() const
+bool OsxWindowWrapper::is_fullscreen() const
 {
     return false;
 }
 
-bool osx_window_wrapper::iconified() const
+bool OsxWindowWrapper::is_iconified() const
 {
     return false;
 }
 
-bool osx_window_wrapper::maximized() const
+bool OsxWindowWrapper::is_maximized() const
 {
     return false;
 }
 
-bool osx_window_wrapper::resizable() const
+bool OsxWindowWrapper::is_resizable() const
 {
     return false;
 }
 
-bool osx_window_wrapper::visible() const
+bool OsxWindowWrapper::is_visible() const
 {
     return false;
 }
 
-bool osx_window_wrapper::focused() const
+bool OsxWindowWrapper::has_input_focus() const
 {
     return false;
 }
 
 #pragma endregion
+
 } // namespace framework::system::details

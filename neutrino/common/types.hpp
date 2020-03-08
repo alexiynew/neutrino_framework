@@ -30,15 +30,21 @@
 #ifndef FRAMEWORK_COMMON_TYPES_HPP
 #define FRAMEWORK_COMMON_TYPES_HPP
 
+#include <common/size.hpp>
+#include <common/position.hpp>
+
 #include <cstddef>
 #include <cstdint>
 
 namespace framework
 {
+
+////////////////////////////////////////////////////////////////////////////////
 /// @brief Base type definitions
 ///
 /// @defgroup common_types_module Common types
 /// @{
+////////////////////////////////////////////////////////////////////////////////
 
 using int8  = std::int8_t;  ///< Signed integer type with size of exactly 8 bits
 using int16 = std::int16_t; ///< Signed integer type with size of exactly 16 bits
@@ -57,7 +63,9 @@ using usize = std::size_t; ///< Unsigled integer type, should be used for array 
 using float32 = float;  ///< Floating point type with size of exactly 32 bits
 using float64 = double; ///< Floating point type with size of exactly 64 bits
 
+////////////////////////////////////////////////////////////////////////////////
 /// @}
+////////////////////////////////////////////////////////////////////////////////
 
 } // namespace framework
 

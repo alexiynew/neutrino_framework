@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Window size.
+/// @brief Size.
 /// @author Fedorov Alexey
 /// @date 01.03.2019
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -27,18 +29,25 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <system/inc/window_size.hpp>
+#include <common/size.hpp>
 
-namespace framework::system::details
+namespace framework
 {
-bool operator==(const window_size& lhs, const window_size& rhs)
+
+Size::Size(int w, int h)
+    : width(w)
+    , height(h)
+{
+}
+
+bool operator==(const Size& lhs, const Size& rhs)
 {
     return lhs.width == rhs.width && lhs.height == rhs.height;
 }
 
-bool operator!=(const window_size& lhs, const window_size& rhs)
+bool operator!=(const Size& lhs, const Size& rhs)
 {
     return !(lhs == rhs);
 }
 
-} // namespace framework::system::details
+} // namespace framework
