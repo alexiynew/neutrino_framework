@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window implementation for OSX.
+/// @brief OSX application.
 /// @author Fedorov Alexey
-/// @date 06.03.2020
+/// @date 08.03.2020
 
 // =============================================================================
 // MIT License
@@ -27,20 +27,41 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_DELEGATE_HPP
-#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_DELEGATE_HPP
+#import <system/src/osx/osx_application.hpp>
 
-#import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
+@implementation OSXApplication
 
-@interface OSXApplicationDelegate : NSObject<NSApplicationDelegate>
++(void)process_events
+{
+    [OSXApplication sharedApplication];
+    NSEvent* event = nil;
 
-/// @brief React to a termination notification
--(NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app;
+    while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                       untilDate:[NSDate distantPast]
+                                          inMode:NSDefaultRunLoopMode
+                                         dequeue:YES])) 
+    {
+        [NSApp sendEvent:event];
+    }
+}
 
-/// @brief Exit the app when all windows are closed
--(BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)app;
+
++(void)setup_menu_bar
+{
+    [OSXApplication sharedApplication];
+
+    NSMenu* mainMenu = [NSApp mainMenu];
+    if (mainMenu != nil) {
+        return;
+    }
+
+    mainMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+    [NSApp setMainMenu:mainMenu];
+}
+
+-(void)sendEvent:(NSEvent *)event
+{
+    [super sendEvent:event];
+}
 
 @end
-
-#endif

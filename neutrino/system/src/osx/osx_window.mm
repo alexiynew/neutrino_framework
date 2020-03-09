@@ -33,15 +33,14 @@
 #include <common/utils.hpp>
 
 #include <system/src/osx/osx_window.hpp>
-#include <system/src/osx/osx_application_delegate.hpp>
 
-@implementation OsxWindow
+@implementation OSXWindow
 
 #pragma region actions
 
 - (void)show
 {
-    NSLog(@"SHow");
+    NSLog(@"Show");  
 }
 
 - (void)hide

@@ -39,14 +39,15 @@
 
 namespace framework::system::details
 {
-class OsxWindowWrapper final : public PlatformWindow 
+
+class OSXWindowWrapper final : public PlatformWindow 
 {
 public:
-    OsxWindowWrapper(const Window& window, Size size, const std::string& title, const context_settings& settings);
-    ~OsxWindowWrapper() override;
+    OSXWindowWrapper(const Window& window, Size size, const std::string& title, const context_settings& settings);
+    ~OSXWindowWrapper() override;
 
-    OsxWindowWrapper(const OsxWindowWrapper&) = delete;
-    OsxWindowWrapper& operator=(const OsxWindowWrapper&) = delete;
+    OSXWindowWrapper(const OSXWindowWrapper&) = delete;
+    OSXWindowWrapper& operator=(const OSXWindowWrapper&) = delete;
 
     /// @name actions
     /// @{
@@ -93,7 +94,11 @@ public:
     /// @}
 
 private:
-    void* self;
+    void setup_application();
+    void ensureThreadHasPool();
+    void drainThreadPool();
+
+    void* m_window;
 };
 
 } // namespace framework::system::details

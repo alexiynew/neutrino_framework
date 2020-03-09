@@ -29,7 +29,7 @@
 
 #import <system/src/osx/osx_application_delegate.hpp>
 
-@implementation SFApplicationDelegate
+@implementation OSXApplicationDelegate
 
 -(NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app
 {

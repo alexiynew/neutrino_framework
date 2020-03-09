@@ -24,6 +24,8 @@
 # =============================================================================
 
 set_sources(PRIVATE_SOURCES
+    osx_application.hpp
+    osx_application.mm
     osx_application_delegate.hpp
     osx_application_delegate.mm
     osx_platform_window.cpp
@@ -39,4 +41,5 @@ target_sources(${PROJECT_NAME}
 )
 
 find_library(FOUNDATION Foundation)
-target_link_libraries(${PROJECT_NAME} ${FOUNDATION})
+find_library(APPKIT AppKit)
+target_link_libraries(${PROJECT_NAME} ${FOUNDATION} ${APPKIT})

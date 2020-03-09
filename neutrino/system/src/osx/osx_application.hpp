@@ -1,7 +1,7 @@
 /// @file
-/// @brief Window implementation for OSX.
+/// @brief OSX application.
 /// @author Fedorov Alexey
-/// @date 06.03.2020
+/// @date 08.03.2020
 
 // =============================================================================
 // MIT License
@@ -27,19 +27,18 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_DELEGATE_HPP
-#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_DELEGATE_HPP
+#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_HPP
+#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_HPP
 
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
 
-@interface OSXApplicationDelegate : NSObject<NSApplicationDelegate>
+@interface OSXApplication : NSApplication
 
-/// @brief React to a termination notification
--(NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app;
++(void)process_events;
++(void)setup_menu_bar;
 
-/// @brief Exit the app when all windows are closed
--(BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)app;
+-(void)sendEvent:(NSEvent*)event;
 
 @end
 

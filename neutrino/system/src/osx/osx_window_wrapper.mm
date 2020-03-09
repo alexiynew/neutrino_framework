@@ -27,116 +27,202 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <system/src/osx/osx_window_wrapper.hpp>
+
 #include <common/types.hpp>
 #include <common/utils.hpp>
 
 #include <system/src/osx/osx_window.hpp>
-#include <system/src/osx/osx_window_wrapper.hpp>
+#include <system/src/osx/osx_application.hpp>
+#include <system/src/osx/osx_application_delegate.hpp>
 
 namespace framework::system::details
 {
-OsxWindowWrapper::OsxWindowWrapper(const Window& window_interface,
-                                   Size /*size*/,
+
+void OSXWindowWrapper::setup_application()
+{
+    static bool isTheProcessSetAsApplication = false;
+
+    if (!isTheProcessSetAsApplication)
+    {
+        isTheProcessSetAsApplication = true;
+
+        [OSXApplication sharedApplication];
+
+        [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+        [NSApp activateIgnoringOtherApps:YES];
+
+        if (![[OSXApplication sharedApplication] delegate])
+            [[NSApplication sharedApplication] setDelegate:[[OSXApplicationDelegate alloc] init]];
+
+        [OSXApplication setup_menu_bar];
+
+        [[OSXApplication sharedApplication] finishLaunching];
+    }
+}
+
+    static NSAutoreleasePool* pool;
+
+void OSXWindowWrapper::ensureThreadHasPool()
+{
+    pool = [[NSAutoreleasePool alloc] init];
+}
+
+void OSXWindowWrapper::drainThreadPool()
+{
+    [pool drain];
+    ensureThreadHasPool();
+}
+
+OSXWindowWrapper::OSXWindowWrapper(const Window& window_interface,
+                                   Size size,
                                    const std::string& /*title*/,
                                    const context_settings& /*settings*/)
     : PlatformWindow(window_interface)
-    , self(nullptr)
+    , m_window(nullptr)
 {
-    self = [[OsxWindow alloc] init];
+    setup_application();
+
+        // Ask for a pool.
+    ensureThreadHasPool();
+
+    unsigned int nsStyle = NSWindowStyleMaskBorderless;
+    //if (style & sf::Style::Titlebar)
+    nsStyle |= NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable;
+    //if (style & sf::Style::Resize)
+    nsStyle |= NSWindowStyleMaskResizable;
+    //if (style & sf::Style::Close)
+    nsStyle |= NSWindowStyleMaskClosable;
+
+    OSXWindow* window = [[OSXWindow alloc] initWithContentRect:NSMakeRect(0, 0 , size.width, size.height)
+        styleMask:nsStyle
+		backing:NSBackingStoreBuffered
+		defer:NO];
+
+    //[m_delegate changeTitle:sfStringToNSString(title)];
+    //[m_delegate setRequesterTo:this];
+    
+     // Set the view to the window as its content view.
+   // [m_window setContentView:m_oglView];
+
+    // Register for event.
+  //  [window setDelegate:window];
+    [window setAcceptsMouseMovedEvents:YES];
+    [window setIgnoresMouseEvents:NO];
+
+    // And some other things...
+    [window center];
+  //  [window setAutodisplay:YES];
+    [window setReleasedWhenClosed:NO]; // We own the class, not AppKit
+
+    m_window = window;
+
 }
 
-OsxWindowWrapper::~OsxWindowWrapper()
+OSXWindowWrapper::~OSXWindowWrapper()
 {
-    [reinterpret_cast<OsxWindow*>(self) dealloc];
+    OSXWindow* window = reinterpret_cast<OSXWindow*>(m_window);
+
+    [window close];
+    [window setDelegate:nil];
+    
+    // Put the next window in front, if any.
+  //  NSArray* windows = [NSApp orderedWindows];
+   // if ([windows count] > 0)
+     //   [[windows objectAtIndex:0] makeKeyAndOrderFront:nil];
+
+    drainThreadPool(); 
 }
 
 #pragma region actions
 
-void OsxWindowWrapper::show()
+void OSXWindowWrapper::show()
 {
-    [reinterpret_cast<OsxWindow*>(self) show];
+    OSXWindow* window = reinterpret_cast<OSXWindow*>(m_window);
+    [window makeKeyAndOrderFront:window];
 }
 
-void OsxWindowWrapper::hide()
+void OSXWindowWrapper::hide()
 {
-    [reinterpret_cast<OsxWindow*>(self) hide];
+    [reinterpret_cast<OSXWindow*>(m_window) hide];
 }
 
-void OsxWindowWrapper::focus()
+void OSXWindowWrapper::focus()
 {
-    [reinterpret_cast<OsxWindow*>(self) focus];
+    [reinterpret_cast<OSXWindow*>(m_window) focus];
 }
 
-void OsxWindowWrapper::iconify()
+void OSXWindowWrapper::iconify()
 {}
 
-void OsxWindowWrapper::maximize()
+void OSXWindowWrapper::maximize()
 {}
 
-void OsxWindowWrapper::fullscreen()
+void OSXWindowWrapper::fullscreen()
 {}
 
-void OsxWindowWrapper::restore()
+void OSXWindowWrapper::restore()
 {}
 
-void OsxWindowWrapper::resize(Size /*size*/)
+void OSXWindowWrapper::resize(Size /*size*/)
 {}
 
-void OsxWindowWrapper::move(Position /*position*/)
+void OSXWindowWrapper::move(Position /*position*/)
 {}
 
-void OsxWindowWrapper::process_events()
+void OSXWindowWrapper::process_events()
 {
-    [reinterpret_cast<OsxWindow*>(self) process_events];
+    [OSXApplication process_events];
+    drainThreadPool(); // Reduce memory footprint
 }
 
-void OsxWindowWrapper::make_current()
+void OSXWindowWrapper::make_current()
 {}
 
-void OsxWindowWrapper::swap_buffers()
+void OSXWindowWrapper::swap_buffers()
 {}
 
 #pragma endregion
 
 #pragma region setters
 
-void OsxWindowWrapper::set_max_size(Size /*size*/)
+void OSXWindowWrapper::set_max_size(Size /*size*/)
 {}
 
-void OsxWindowWrapper::set_min_size(Size /*size*/)
+void OSXWindowWrapper::set_min_size(Size /*size*/)
 {}
 
-void OsxWindowWrapper::set_resizable(bool /*value*/)
+void OSXWindowWrapper::set_resizable(bool /*value*/)
 {}
 
-void OsxWindowWrapper::set_title(const std::string& /*title*/)
+void OSXWindowWrapper::set_title(const std::string& /*title*/)
 {}
 
 #pragma endregion
 
 #pragma region getters
 
-Position OsxWindowWrapper::position() const
+Position OSXWindowWrapper::position() const
 {
     return {0, 0};
 }
 
-Size OsxWindowWrapper::size() const
+Size OSXWindowWrapper::size() const
 {
     return {0, 0};
 }
 
-Size OsxWindowWrapper::max_size() const
+Size OSXWindowWrapper::max_size() const
 {
     return {0, 0};
 }
 
-Size OsxWindowWrapper::min_size() const
+Size OSXWindowWrapper::min_size() const
 {
     return {0, 0};
 }
 
-std::string OsxWindowWrapper::title() const
+std::string OSXWindowWrapper::title() const
 {
     return "";
 }
@@ -144,37 +230,37 @@ std::string OsxWindowWrapper::title() const
 #pragma endregion
 
 #pragma region state
-bool OsxWindowWrapper::should_close() const
+bool OSXWindowWrapper::should_close() const
 {
     return true;
 }
 
-bool OsxWindowWrapper::is_fullscreen() const
+bool OSXWindowWrapper::is_fullscreen() const
 {
     return false;
 }
 
-bool OsxWindowWrapper::is_iconified() const
+bool OSXWindowWrapper::is_iconified() const
 {
     return false;
 }
 
-bool OsxWindowWrapper::is_maximized() const
+bool OSXWindowWrapper::is_maximized() const
 {
     return false;
 }
 
-bool OsxWindowWrapper::is_resizable() const
+bool OSXWindowWrapper::is_resizable() const
 {
     return false;
 }
 
-bool OsxWindowWrapper::is_visible() const
+bool OSXWindowWrapper::is_visible() const
 {
-    return false;
+    return [reinterpret_cast<OSXWindow*>(m_window) isVisible];
 }
 
-bool OsxWindowWrapper::has_input_focus() const
+bool OSXWindowWrapper::has_input_focus() const
 {
     return false;
 }
