@@ -172,6 +172,18 @@ shader_program::~shader_program()
     gl::glDeleteProgram(m_program_id);
 }
 
+
+shader_program::shader_program(shader_program&& other)
+{
+    std::swap(other.m_program_id, m_program_id);
+}
+
+shader_program& shader_program::operator=(shader_program&& other)
+{
+    std::swap(other.m_program_id, m_program_id);
+    return *this;
+}
+
 void shader_program::arttach(const shader_base& shader)
 {
     gl::glAttachShader(m_program_id, shader.shader_id());

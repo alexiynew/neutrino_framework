@@ -341,7 +341,7 @@ uint16 read_length(uint16 value, bit_stream& in)
     // 266   1  13,14      276   3   59-66
 
     constexpr uint16 start_len = 257;
-    constexpr std::array<std::pair<uint8, uint16>, 29> len_description =
+    constexpr std::array<std::pair<uint32, uint32>, 29> len_description =
     {std::pair(0, 3),   std::pair(0, 4),   std::pair(0, 5),   std::pair(0, 6),   std::pair(0, 7),  std::pair(0, 8),
      std::pair(0, 9),   std::pair(0, 10),  std::pair(1, 11),  std::pair(1, 13),  std::pair(1, 15), std::pair(1, 17),
      std::pair(2, 19),  std::pair(2, 23),  std::pair(2, 27),  std::pair(2, 31),  std::pair(3, 35), std::pair(3, 43),
@@ -350,12 +350,12 @@ uint16 read_length(uint16 value, bit_stream& in)
 
     auto [extra_bits, start_value] = len_description[value - start_len];
 
-    uint16 result = start_value;
+    uint32 result = start_value;
     if (extra_bits > 0) {
-        result = static_cast<uint16>(result + in.get<uint16>(extra_bits));
+        result += in.get<uint16>(extra_bits);
     }
 
-    return result;
+    return static_cast<uint16>(result);
 }
 
 uint16 read_distance(uint16 value, bit_stream& in)
@@ -374,7 +374,7 @@ uint16 read_distance(uint16 value, bit_stream& in)
     // 8    3  17-24   18   8    513-768    28   13   16385-24576
     // 9    3  25-32   19   8   769-1024    29   13   24577-32768
 
-    constexpr std::array<std::pair<uint8, uint16>, 30> dist_description =
+    constexpr std::array<std::pair<uint32, uint32>, 30> dist_description =
     {std::pair(0, 1),     std::pair(0, 2),     std::pair(0, 3),      std::pair(0, 4),      std::pair(1, 5),
      std::pair(1, 7),     std::pair(2, 9),     std::pair(2, 13),     std::pair(3, 17),     std::pair(3, 25),
      std::pair(4, 33),    std::pair(4, 49),    std::pair(5, 65),     std::pair(5, 97),     std::pair(6, 129),
@@ -384,12 +384,12 @@ uint16 read_distance(uint16 value, bit_stream& in)
 
     auto [extra_bits, start_value] = dist_description[value];
 
-    uint16 result = start_value;
+    uint32 result = start_value;
     if (extra_bits > 0) {
-        result = static_cast<uint16>(result + in.get<uint16>(extra_bits));
+        result += in.get<uint16>(extra_bits);
     }
 
-    return result;
+    return static_cast<uint16>(result);
 }
 
 void inflate_no_compression(bit_stream& in, std::vector<uint8>& output)

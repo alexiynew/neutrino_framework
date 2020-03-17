@@ -34,43 +34,39 @@
 #include <windows.h>
 
 #include <system/src/context.hpp>
-#include <system/src/window_implementation.hpp>
+#include <system/src/platform_window.hpp>
 
 namespace framework::system::details
 {
-class win32_window final : public window_implementation
+class Win32Window final : public PlatformWindow 
 {
 public:
-    win32_window(window_size size, const std::string& title, const context_settings& settings);
-    ~win32_window() override;
+    Win32Window(const Window& window_interface, Size size, const std::string& title, const context_settings& settings);
+    ~Win32Window() override;
 
-    win32_window(const win32_window&) = delete;
-    win32_window& operator=(const win32_window&) = delete;
+    Win32Window(const Win32Window&) = delete;
+    Win32Window& operator=(const Win32Window&) = delete;
 
     /// @name actions
     /// @{
     void show() override;
     void hide() override;
     void focus() override;
-    void process_events() override;
-
     void iconify() override;
     void maximize() override;
-    void switch_to_fullscreen() override;
+    void fullscreen() override;
     void restore() override;
+    void resize(Size size) override;
+    void move(Position position) override;
+    void process_events() override;
     void make_current() override;
     void swap_buffers() override;
     /// @}
 
     /// @name setters
     /// @{
-
-    // The size() value will be updated after next event processing
-    void set_size(window_size size) override;
-    void set_position(window_position position) override;
-
-    void set_max_size(window_size max_size) override;
-    void set_min_size(window_size min_size) override;
+    void set_max_size(Size max_size) override;
+    void set_min_size(Size min_size) override;
 
     void set_resizable(bool value) override;
 
@@ -79,24 +75,22 @@ public:
 
     /// @name getters
     /// @{
-    window_position position() const override;
-    window_size size() const override;
-
-    window_size max_size() const override;
-    window_size min_size() const override;
-
+    Position position() const override;
+    Size size() const override;
+    Size max_size() const override;
+    Size min_size() const override;
     std::string title() const override;
-
     /// @}
 
     /// @name state
     /// @{
-    bool fullscreen() const override;
-    bool iconified() const override;
-    bool maximized() const override;
-    bool resizable() const override;
-    bool visible() const override;
-    bool focused() const override;
+    bool should_close() const override;
+    bool is_fullscreen() const override;
+    bool is_iconified() const override;
+    bool is_maximized() const override;
+    bool is_resizable() const override;
+    bool is_visible() const override;
+    bool has_input_focus() const override;
     /// @}
 
 private:
@@ -124,11 +118,12 @@ private:
     HGLRC m_hglrc = nullptr;
     std::shared_ptr<ATOM> m_window_class;
 
-    window_size m_min_size = {0, 0};
-    window_size m_max_size = {0, 0};
+    Size m_min_size = {0, 0};
+    Size m_max_size = {0, 0};
 
     bool m_resizable   = true;
     bool m_mouse_hover = false;
+    bool m_should_close = false;
 
     window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
 

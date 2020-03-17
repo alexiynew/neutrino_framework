@@ -33,8 +33,7 @@ namespace framework::system::details
 {
 std::string PlatformWindow::application_name = "Application";
 
-PlatformWindow::PlatformWindow(const Window& window_interface)
-    : m_window_interface(window_interface)
+PlatformWindow::PlatformWindow(const Window& window_interface) : m_window_interface(window_interface)
 {}
 
 PlatformWindow::~PlatformWindow() = default;
@@ -42,6 +41,81 @@ PlatformWindow::~PlatformWindow() = default;
 void PlatformWindow::set_application_name(const std::string& name)
 {
     application_name = name;
+}
+
+void PlatformWindow::on_show() const
+{
+    m_window_interface.on_show(m_window_interface);
+}
+
+void PlatformWindow::on_hide() const
+{
+    m_window_interface.on_hide(m_window_interface);
+}
+
+void PlatformWindow::on_close() const
+{
+    m_window_interface.on_close(m_window_interface);
+}
+
+void PlatformWindow::on_focus() const
+{
+    m_window_interface.on_focus(m_window_interface);
+}
+
+void PlatformWindow::on_lost_focus() const
+{
+    m_window_interface.on_lost_focus(m_window_interface);
+}
+
+void PlatformWindow::on_resize(Size new_size) const
+{
+    m_window_interface.on_resize(m_window_interface, new_size);
+}
+
+void PlatformWindow::on_move(Position new_position) const
+{
+    m_window_interface.on_move(m_window_interface, new_position);
+}
+
+void PlatformWindow::on_key_down(key_code key, modifiers_state modifiers) const
+{
+    m_window_interface.on_key_down(m_window_interface, key, modifiers);
+}
+
+void PlatformWindow::on_key_up(key_code key, modifiers_state modifiers) const
+{
+    m_window_interface.on_key_up(m_window_interface, key, modifiers);
+}
+
+void PlatformWindow::on_character(const std::string& str) const
+{
+    m_window_interface.on_character(m_window_interface, str);
+}
+
+void PlatformWindow::on_mouse_move(cursor_position position) const
+{
+    m_window_interface.on_mouse_move(m_window_interface, position);
+}
+
+void PlatformWindow::on_button_down(mouse_button button, cursor_position position, modifiers_state modifiers) const
+{
+    m_window_interface.on_button_down(m_window_interface, button, position, modifiers);
+}
+
+void PlatformWindow::on_button_up(mouse_button button, cursor_position position, modifiers_state modifiers) const
+{
+    m_window_interface.on_button_up(m_window_interface, button, position, modifiers);
+}
+
+void PlatformWindow::on_mouse_enter() const
+{
+    m_window_interface.on_mouse_enter(m_window_interface);
+}
+
+void PlatformWindow::on_mouse_leave() const
+{
+    m_window_interface.on_mouse_leave(m_window_interface);
 }
 
 } // namespace framework::system::details

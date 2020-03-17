@@ -124,7 +124,23 @@ public:
             if constexpr (sizeof...(Args) == 0) {
                 (*slot)();
             } else {
-                (*slot)(std::move(args...));
+                (*slot)(std::move(args)...);
+            }
+        }
+    }
+
+    void operator()(Args... args) const
+    {
+        for (usize index = 0; index < m_slots.size(); ++index) {
+            if (m_slots[index] == nullptr) {
+                continue;
+            }
+
+            std::shared_ptr<Slot> slot = m_slots[index];
+            if constexpr (sizeof...(Args) == 0) {
+                (*slot)();
+            } else {
+                (*slot)(std::move(args)...);
             }
         }
     }

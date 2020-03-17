@@ -27,16 +27,17 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <system/src/window_implementation.hpp>
+#include <system/src/platform_window.hpp>
 #include <system/src/windows/win32_window.hpp>
 
 namespace framework::system::details
 {
-std::unique_ptr<window_implementation> create_implementation(window_size size,
-                                                             const std::string& title,
-                                                             const context_settings& settings)
+std::unique_ptr<PlatformWindow> create_platform_window(const Window& window_interface,
+                                                       Size size,
+                                                       const std::string& title,
+                                                       const context_settings& settings)
 {
-    return std::make_unique<win32_window>(size, title, settings);
+    return std::make_unique<Win32Window>(window_interface, size, title, settings);
 }
 
 } // namespace framework::system::details

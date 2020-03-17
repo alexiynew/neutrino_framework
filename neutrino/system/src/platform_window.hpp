@@ -102,12 +102,29 @@ public:
     /// @}
 
 protected:
+    void on_show() const;
+    void on_hide() const;
+    void on_close() const;
+    void on_focus() const;
+    void on_lost_focus() const;
+    void on_resize(Size new_size) const;
+    void on_move(Position new_position) const;
+    void on_key_down(key_code key, modifiers_state modifiers) const;
+    void on_key_up(key_code key, modifiers_state modifiers) const;
+    void on_character(const std::string& str) const;
+    void on_mouse_move(cursor_position position) const;
+    void on_button_down(mouse_button button, cursor_position position, modifiers_state modifiers) const;
+    void on_button_up(mouse_button button, cursor_position position, modifiers_state modifiers) const;
+    void on_mouse_enter() const;
+    void on_mouse_leave() const;
+
+private:
     static std::string application_name;
     const Window& m_window_interface;
 };
 
 // @brief Fabric function to make platform dependent implementation
-std::unique_ptr<PlatformWindow> create_platform_window(const Window& window, 
+std::unique_ptr<PlatformWindow> create_platform_window(const Window& window_interface, 
                                                        Size size,
                                                        const std::string& title,
                                                        const context_settings& settings);
