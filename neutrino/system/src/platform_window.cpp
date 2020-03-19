@@ -78,12 +78,12 @@ void PlatformWindow::on_move(Position new_position) const
     m_window_interface.on_move(m_window_interface, new_position);
 }
 
-void PlatformWindow::on_key_down(key_code key, modifiers_state modifiers) const
+void PlatformWindow::on_key_down(KeyCode key, Modifiers modifiers) const
 {
     m_window_interface.on_key_down(m_window_interface, key, modifiers);
 }
 
-void PlatformWindow::on_key_up(key_code key, modifiers_state modifiers) const
+void PlatformWindow::on_key_up(KeyCode key, Modifiers modifiers) const
 {
     m_window_interface.on_key_up(m_window_interface, key, modifiers);
 }
@@ -93,17 +93,17 @@ void PlatformWindow::on_character(const std::string& str) const
     m_window_interface.on_character(m_window_interface, str);
 }
 
-void PlatformWindow::on_mouse_move(cursor_position position) const
+void PlatformWindow::on_mouse_move(CursorPosition position) const
 {
     m_window_interface.on_mouse_move(m_window_interface, position);
 }
 
-void PlatformWindow::on_button_down(mouse_button button, cursor_position position, modifiers_state modifiers) const
+void PlatformWindow::on_button_down(MouseButton button, CursorPosition position, Modifiers modifiers) const
 {
     m_window_interface.on_button_down(m_window_interface, button, position, modifiers);
 }
 
-void PlatformWindow::on_button_up(mouse_button button, cursor_position position, modifiers_state modifiers) const
+void PlatformWindow::on_button_up(MouseButton button, CursorPosition position, Modifiers modifiers) const
 {
     m_window_interface.on_button_up(m_window_interface, button, position, modifiers);
 }

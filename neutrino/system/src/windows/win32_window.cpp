@@ -145,22 +145,22 @@ std::shared_ptr<ATOM> register_window_class()
     return pointer.lock();
 }
 
-framework::system::mouse_button get_mouse_button(UINT message)
+framework::system::MouseButton get_mouse_button(UINT message)
 {
-    using framework::system::mouse_button;
+    using framework::system::MouseButton;
 
     switch (message) {
         case WM_LBUTTONDOWN:
-        case WM_LBUTTONUP: return mouse_button::button_left;
+        case WM_LBUTTONUP: return MouseButton::button_left;
 
         case WM_MBUTTONDOWN:
-        case WM_MBUTTONUP: return mouse_button::button_middle;
+        case WM_MBUTTONUP: return MouseButton::button_middle;
 
         case WM_RBUTTONDOWN:
-        case WM_RBUTTONUP: return mouse_button::button_right;
+        case WM_RBUTTONUP: return MouseButton::button_right;
     }
 
-    return mouse_button::button_unknown;
+    return MouseButton::unknown;
 }
 
 framework::Size adjust_size(framework::Size size, DWORD style)
@@ -570,7 +570,7 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         case WM_MOUSEMOVE: {
             track_mouse();
 
-            const cursor_position position{LOWORD(l_param), HIWORD(l_param)};
+            const CursorPosition position{LOWORD(l_param), HIWORD(l_param)};
             on_mouse_move(position);
 
             return 0;
@@ -593,12 +593,12 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         case WM_LBUTTONUP:
         case WM_MBUTTONUP:
         case WM_RBUTTONUP: {
-            const mouse_button button = get_mouse_button(message);
-            const cursor_position position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
-            const modifiers_state mod_state = get_modifiers_state();
+            const MouseButton button = get_mouse_button(message);
+            const CursorPosition position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
+            const Modifiers mod_state = get_modifiers_state();
             const bool down = (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_RBUTTONDOWN);
 
-            if (button != mouse_button::button_unknown) {
+            if (button != MouseButton::unknown) {
                 if (down) {
                     on_button_down(button, position, mod_state);
                 } else {
@@ -611,10 +611,10 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
 
         case WM_XBUTTONDOWN:
         case WM_XBUTTONUP: {
-            const mouse_button button = (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? mouse_button::button_4
-                                                                                 : mouse_button::button_5);
-            const cursor_position position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
-            const modifiers_state mod_state = get_modifiers_state();
+            const MouseButton button = (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? MouseButton::button_4
+                                                                                 : MouseButton::button_5);
+            const CursorPosition position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
+            const Modifiers mod_state = get_modifiers_state();
             const bool down                 = message == WM_XBUTTONDOWN;
 
             if (down) {
@@ -680,16 +680,16 @@ LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
         default: break;
     }
 
-    const key_code key              = details::map_system_key(static_cast<uint32>(w_param));
-    const modifiers_state mod_state = details::get_modifiers_state();
+    const KeyCode key              = details::map_system_key(static_cast<uint32>(w_param));
+    const Modifiers mod_state = details::get_modifiers_state();
     const bool key_is_down          = ((l_param >> 31) & 1) == 0;
 
-    if (key == key_code::key_unknown) {
+    if (key == KeyCode::unknown) {
         return 0;
     }
 
     // Print screen does not emmit key down event.
-    if (key == key_code::key_print_screen) {
+    if (key == KeyCode::key_print_screen) {
         on_key_down(key, mod_state);
         on_key_up(key, mod_state);
         return 0;
@@ -707,23 +707,23 @@ LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
 void Win32Window::process_shift_key(LPARAM l_param)
 {
     const bool key_is_down          = ((l_param >> 31) & 1) == 0;
-    const modifiers_state mod_state = details::get_modifiers_state();
+    const Modifiers mod_state = details::get_modifiers_state();
 
     const bool left_shift  = ((GetKeyState(VK_LSHIFT) & 0x8000));
     const bool right_shift = ((GetKeyState(VK_RSHIFT) & 0x8000));
 
     if (key_is_down) {
         if (left_shift != m_modifiers_flags.left_shift) {
-            on_key_down(key_code::key_left_shift, mod_state);
+            on_key_down(KeyCode::key_left_shift, mod_state);
         } else if (right_shift != m_modifiers_flags.right_shift) {
-            on_key_down(key_code::key_right_shift, mod_state);
+            on_key_down(KeyCode::key_right_shift, mod_state);
         }
     } else {
         if (m_modifiers_flags.left_shift) {
-            on_key_up(key_code::key_left_shift, mod_state);
+            on_key_up(KeyCode::key_left_shift, mod_state);
         }
         if (m_modifiers_flags.right_shift) {
-            on_key_up(key_code::key_right_shift, mod_state);
+            on_key_up(KeyCode::key_right_shift, mod_state);
         }
     }
 
@@ -734,16 +734,16 @@ void Win32Window::process_shift_key(LPARAM l_param)
 void Win32Window::process_control_key(LPARAM l_param)
 {
     const bool key_is_down          = ((l_param >> 31) & 1) == 0;
-    const modifiers_state mod_state = details::get_modifiers_state();
+    const Modifiers mod_state = details::get_modifiers_state();
 
     const bool left_control  = ((GetKeyState(VK_LCONTROL) & 0x8000));
     const bool right_control = ((GetKeyState(VK_RCONTROL) & 0x8000));
 
-    key_code key = key_code::key_unknown;
+    KeyCode key = KeyCode::unknown;
     if (left_control != m_modifiers_flags.left_control) {
-        key = key_code::key_left_control;
+        key = KeyCode::key_left_control;
     } else if (right_control != m_modifiers_flags.right_control) {
-        key = key_code::key_right_control;
+        key = KeyCode::key_right_control;
     } else {
         return;
     }
@@ -761,16 +761,16 @@ void Win32Window::process_control_key(LPARAM l_param)
 void Win32Window::process_alt_key(LPARAM l_param)
 {
     const bool key_is_down          = ((l_param >> 31) & 1) == 0;
-    const modifiers_state mod_state = details::get_modifiers_state();
+    const Modifiers mod_state = details::get_modifiers_state();
 
     const bool left_alt  = ((GetKeyState(VK_LMENU) & 0x8000));
     const bool right_alt = ((GetKeyState(VK_RMENU) & 0x8000));
 
-    key_code key = key_code::key_unknown;
+    KeyCode key = KeyCode::unknown;
     if (left_alt != m_modifiers_flags.left_alt) {
-        key = key_code::key_left_alt;
+        key = KeyCode::key_left_alt;
     } else if (right_alt != m_modifiers_flags.right_alt) {
-        key = key_code::key_right_alt;
+        key = KeyCode::key_right_alt;
     } else {
         return;
     }

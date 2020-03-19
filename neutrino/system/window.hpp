@@ -267,22 +267,22 @@ public:
     Signal<const Window&, Position> on_move;
 
     /// @brief Set on key press callback. Called when key is pressed. Can be called multiple times.
-    Signal<const Window&, key_code, modifiers_state> on_key_down;
+    Signal<const Window&, KeyCode, Modifiers> on_key_down;
 
     /// @brief Set on key release callback. Called when key is released.
-    Signal<const Window&, key_code, modifiers_state> on_key_up;
+    Signal<const Window&, KeyCode, Modifiers> on_key_up;
 
     /// @brief Set on character callback. Called when user press the char symbol key.
     Signal<const Window&, std::string> on_character;
 
     /// @brief Set on mouse move callback. Called when the mouse is moving.
-    Signal<const Window&, cursor_position> on_mouse_move;
+    Signal<const Window&, CursorPosition> on_mouse_move;
 
     /// @brief Set on mouse button press callback. Called when the mouse button is pressed.
-    Signal<const Window&, mouse_button, cursor_position, modifiers_state> on_button_down;
+    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_down;
 
     /// @brief Set on mouse button release callback. Called when the mouse button is released.
-    Signal<const Window&, mouse_button, cursor_position, modifiers_state> on_button_up;
+    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_up;
 
     /// @brief Set on mouse enter callback. Called when the cursor enters in the window frame.
     Signal<const Window&> on_mouse_enter;

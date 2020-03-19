@@ -565,13 +565,13 @@ int main()
     });
 
     main_window.on_key_down.connect(
-    [&gamma, &current_mode, &objects, &mvp, &image_scale](const Window& w, key_code k, modifiers_state) {
+    [&gamma, &current_mode, &objects, &mvp, &image_scale](const Window& w, KeyCode k, Modifiers) {
         switch (k) {
-            case key_code::key_equal: gamma += 0.1f; break;
-            case key_code::key_minus: gamma -= 0.1f; break;
-            case key_code::key_1: current_mode = mode::bmp; break;
-            case key_code::key_2: current_mode = mode::png; break;
-            case key_code::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1; break;
+            case KeyCode::key_equal: gamma += 0.1f; break;
+            case KeyCode::key_minus: gamma -= 0.1f; break;
+            case KeyCode::key_1: current_mode = mode::bmp; break;
+            case KeyCode::key_2: current_mode = mode::png; break;
+            case KeyCode::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1; break;
             default: break;
         }
         auto size = w.size();

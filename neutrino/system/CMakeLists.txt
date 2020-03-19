@@ -37,6 +37,7 @@ set_sources(PRIVATE_SOURCES
     src/context.cpp
     src/platform_window.hpp
     src/platform_window.cpp
+    src/keyboard.cpp
 )
 
 target_sources(${PROJECT_NAME}
