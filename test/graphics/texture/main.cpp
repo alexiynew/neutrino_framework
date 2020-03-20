@@ -33,10 +33,10 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-class texture_test : public framework::unit_test::suite
+class texture_test : public framework::unit_test::Suite
 {
 public:
-    texture_test() : suite("texture_test")
+    texture_test() : Suite("texture_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }

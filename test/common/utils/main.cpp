@@ -28,10 +28,10 @@
 #include <common/utils.hpp>
 #include <unit_test/suite.hpp>
 
-class random_numbers_test : public framework::unit_test::suite
+class random_numbers_test : public framework::unit_test::Suite
 {
 public:
-    random_numbers_test() : suite("random_numbers_test")
+    random_numbers_test() : Suite("random_numbers_test")
     {
         add_test([this]() { random_numbers(); }, "random_numbers");
     }
@@ -67,10 +67,10 @@ private:
 };
 
 /*
-class format_string_test : public framework::unit_test::suite
+class format_string_test : public framework::unit_test::Suite
 {
 public:
-    format_string_test() : suite("format_string_test")
+    format_string_test() : Suite("format_string_test")
     {
         add_test([this]() { type_foramting(); }, "type_formating");
     }

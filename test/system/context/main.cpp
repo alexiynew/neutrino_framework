@@ -32,10 +32,10 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-class context_test : public framework::unit_test::suite
+class context_test : public framework::unit_test::Suite
 {
 public:
-    context_test() : suite("context_test")
+    context_test() : Suite("context_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }

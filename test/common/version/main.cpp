@@ -26,10 +26,10 @@
 #include <common/version.hpp>
 #include <unit_test/suite.hpp>
 
-class version_test : public framework::unit_test::suite
+class version_test : public framework::unit_test::Suite
 {
 public:
-    version_test() : suite("version_test")
+    version_test() : Suite("version_test")
     {
         add_test([this]() { constructor(); }, "constructor");
         add_test([this]() { from_string(); }, "from_string");

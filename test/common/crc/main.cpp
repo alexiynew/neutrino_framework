@@ -26,10 +26,10 @@
 #include <common/crc.hpp>
 #include <unit_test/suite.hpp>
 
-class crc_test : public framework::unit_test::suite
+class crc_test : public framework::unit_test::Suite
 {
 public:
-    crc_test() : suite("crc_test")
+    crc_test() : Suite("crc_test")
     {
         add_test([this]() { crc8(); }, "crc8");
         add_test([this]() { crc16(); }, "crc16");

@@ -33,10 +33,10 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-class mesh_test : public framework::unit_test::suite
+class mesh_test : public framework::unit_test::Suite
 {
 public:
-    mesh_test() : suite("mesh_test")
+    mesh_test() : Suite("mesh_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }

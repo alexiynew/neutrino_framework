@@ -36,10 +36,10 @@ using ::framework::math::matrix4x2f;
 using ::framework::math::matrix4x3f;
 using ::framework::math::matrix4x4f;
 
-class matrix_assign_test : public framework::unit_test::suite
+class matrix_assign_test : public framework::unit_test::Suite
 {
 public:
-    matrix_assign_test() : suite("matrix_assign_test")
+    matrix_assign_test() : Suite("matrix_assign_test")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
     }

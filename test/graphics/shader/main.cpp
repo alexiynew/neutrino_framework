@@ -33,10 +33,10 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-class shader_test : public framework::unit_test::suite
+class shader_test : public framework::unit_test::Suite
 {
 public:
-    shader_test() : suite("shader_test")
+    shader_test() : Suite("shader_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }

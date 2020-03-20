@@ -54,10 +54,10 @@ using ::framework::math::vector4b;
 
 using ::framework::math::almost_equal;
 
-class vector_test : public framework::unit_test::suite
+class vector_test : public framework::unit_test::Suite
 {
 public:
-    vector_test() : suite("vector_test")
+    vector_test() : Suite("vector_test")
     {
         add_test([this]() { size_check(); }, "size_check");
         add_test([this]() { default_constructor(); }, "default_constructor");
@@ -275,10 +275,10 @@ private:
     }
 };
 
-class bool_vector_test : public framework::unit_test::suite
+class bool_vector_test : public framework::unit_test::Suite
 {
 public:
-    bool_vector_test() : suite("bool_vector_test")
+    bool_vector_test() : Suite("bool_vector_test")
     {
         add_test([this]() { size_check(); }, "size_check");
         add_test([this]() { default_constructor(); }, "default_constructor");

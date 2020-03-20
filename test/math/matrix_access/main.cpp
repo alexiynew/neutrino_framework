@@ -42,10 +42,10 @@ using ::framework::math::vector4f;
 
 using ::framework::float32;
 
-class matrix_access_test : public framework::unit_test::suite
+class matrix_access_test : public framework::unit_test::Suite
 {
 public:
-    matrix_access_test() : suite("matrix_access_test")
+    matrix_access_test() : Suite("matrix_access_test")
     {
         add_test([this]() { access_operator(); }, "access_operator");
         add_test([this]() { column_function(); }, "column_function");

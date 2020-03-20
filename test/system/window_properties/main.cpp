@@ -31,10 +31,10 @@
 using namespace framework;
 using namespace framework::system;
 
-class window_properties_test : public framework::unit_test::suite
+class window_properties_test : public framework::unit_test::Suite
 {
 public:
-    window_properties_test() : suite("window_properties_test")
+    window_properties_test() : Suite("window_properties_test")
     {
         add_test([this]() { window_size(); }, "window_size");
         add_test([this]() { window_size_limits(); }, "window_size_limits");

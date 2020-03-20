@@ -29,10 +29,10 @@
 
 using namespace framework::system;
 
-class window_open_test : public framework::unit_test::suite
+class window_open_test : public framework::unit_test::Suite
 {
 public:
-    window_open_test() : suite("window_open_test")
+    window_open_test() : Suite("window_open_test")
     {
         add_test([this]() { open_window(); }, "open_window");
         add_test([this]() { open_several_windows(); }, "open_several_windows");

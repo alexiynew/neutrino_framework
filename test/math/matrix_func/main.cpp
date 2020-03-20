@@ -44,10 +44,10 @@ using ::framework::math::vector4f;
 
 using ::framework::math::almost_equal;
 
-class matrix_function_tests : public framework::unit_test::suite
+class matrix_function_tests : public framework::unit_test::Suite
 {
 public:
-    matrix_function_tests() : suite("matrix_function_tests")
+    matrix_function_tests() : Suite("matrix_function_tests")
     {
         add_test([this]() { transpose_function(); }, "transpose_function");
         add_test([this]() { cross_component_multiplication_function(); }, "cross_component_multiplication_function");
