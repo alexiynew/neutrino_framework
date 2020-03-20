@@ -37,7 +37,7 @@ namespace framework::system::details
 {
 class Win32Window;
 
-class win32_application
+class Win32Application
 {
 public:
     static void add_window(HANDLE handle, Win32Window* window);

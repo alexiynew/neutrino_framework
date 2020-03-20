@@ -35,7 +35,7 @@ namespace framework::system::details
 std::unique_ptr<PlatformWindow> create_platform_window(const Window& window_interface,
                                                        Size size,
                                                        const std::string& title,
-                                                       const context_settings& settings)
+                                                       const ContextSettings& settings)
 {
     return std::make_unique<Win32Window>(window_interface, size, title, settings);
 }

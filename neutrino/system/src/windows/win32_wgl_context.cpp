@@ -36,8 +36,8 @@
 
 namespace framework::system::details
 {
-win32_wgl_context::win32_wgl_context(const context_settings& settings, HWND window)
-    : context(settings), m_window(window)
+Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window)
+    : Context(settings), m_window(window)
 {
     m_hdc = GetDC(m_window);
 
@@ -101,32 +101,32 @@ win32_wgl_context::win32_wgl_context(const context_settings& settings, HWND wind
     }
 }
 
-win32_wgl_context::~win32_wgl_context()
+Win32WglContext::~Win32WglContext()
 {
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(m_hglrc);
     ReleaseDC(m_window, m_hdc);
 }
 
-bool win32_wgl_context::valid() const
+bool Win32WglContext::valid() const
 {
     // TODO(alex) add more robust checks
     return m_hdc != nullptr && m_hglrc != nullptr;
 }
 
-bool win32_wgl_context::is_current() const
+bool Win32WglContext::is_current() const
 {
     return valid() && wglGetCurrentContext() == m_hglrc;
 }
 
-void win32_wgl_context::make_current() const
+void Win32WglContext::make_current() const
 {
     if (!is_current()) {
         wglMakeCurrent(m_hdc, m_hglrc);
     }
 }
 
-void win32_wgl_context::swap_buffers() const
+void Win32WglContext::swap_buffers() const
 {
     SwapBuffers(m_hdc);
 }

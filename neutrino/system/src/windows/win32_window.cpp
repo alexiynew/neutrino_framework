@@ -100,23 +100,23 @@ std::string utf32_to_utf8(const std::wstring& string)
 
 void unregister_window_class(ATOM*)
 {
-    using framework::system::details::win32_application;
+    using framework::system::details::Win32Application;
 
-    UnregisterClass(class_name, win32_application::handle());
+    UnregisterClass(class_name, Win32Application::handle());
 }
 
 std::shared_ptr<ATOM> register_window_class_details()
 {
-    using framework::system::details::win32_application;
+    using framework::system::details::Win32Application;
 
     WNDCLASSEX window_class = {};
 
     window_class.cbSize        = sizeof(WNDCLASSEX);
     window_class.style         = CS_OWNDC;
-    window_class.lpfnWndProc   = win32_application::window_procedure;
+    window_class.lpfnWndProc   = Win32Application::window_procedure;
     window_class.cbClsExtra    = 0;
     window_class.cbWndExtra    = 0;
-    window_class.hInstance     = win32_application::handle();
+    window_class.hInstance     = Win32Application::handle();
     window_class.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
     window_class.hCursor       = LoadCursor(nullptr, IDC_ARROW);
     window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
@@ -182,7 +182,7 @@ namespace framework::system::details
 Win32Window::Win32Window(const Window& window_interface,
                          Size size,
                          const std::string& title,
-                         const context_settings& settings)
+                         const ContextSettings& settings)
     : PlatformWindow(window_interface)
 {
     m_window_class = ::register_window_class();
@@ -199,16 +199,16 @@ Win32Window::Win32Window(const Window& window_interface,
                               size.height,
                               nullptr,
                               nullptr,
-                              win32_application::handle(),
+                              Win32Application::handle(),
                               nullptr);
 
     if (m_window == nullptr) {
         throw std::runtime_error("Failed to create window.");
     }
 
-    m_context = std::make_unique<win32_wgl_context>(settings, m_window);
+    m_context = std::make_unique<Win32WglContext>(settings, m_window);
 
-    win32_application::add_window(m_window, this);
+    Win32Application::add_window(m_window, this);
 
     // The first call ignores its parameters
     ShowWindow(m_window, SW_HIDE);
@@ -216,7 +216,7 @@ Win32Window::Win32Window(const Window& window_interface,
 
 Win32Window::~Win32Window()
 {
-    win32_application::remove_window(m_window);
+    Win32Application::remove_window(m_window);
 
     DestroyWindow(m_window);
 }

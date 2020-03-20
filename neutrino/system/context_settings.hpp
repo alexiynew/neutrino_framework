@@ -42,37 +42,37 @@ namespace framework::system
 ///
 /// Structure to store context settings. Used by the @ref ::framework::system::window class to setup graphic context.
 /// Context is always double-buffered and always RGB-capable.
-class context_settings
+class ContextSettings
 {
 public:
     /// @brief Antialiasing level values
-    enum class antialiasing
+    enum class Antialiasing
     {
         dont_care, ///< Get any suitable context.
         best       ///< Find best value.
     };
 
     /// @brief Default constructor
-    context_settings() = default;
+    ContextSettings() = default;
 
     /// @brief Default copy constructor.
-    context_settings(const context_settings&) = default;
+    ContextSettings(const ContextSettings&) = default;
 
     /// @brief Default move constructor.
-    context_settings(context_settings&&) = default;
+    ContextSettings(ContextSettings&&) = default;
 
     /// @brief Default copy operator.
     ///
     /// @return Reference to copied object.
-    context_settings& operator=(const context_settings&) = default;
+    ContextSettings& operator=(const ContextSettings&) = default;
 
     /// @brief Default move operator.
     ///
     /// @return Reference to moved object.
-    context_settings& operator=(context_settings&&) = default;
+    ContextSettings& operator=(ContextSettings&&) = default;
 
     /// @brief Default destructor
-    ~context_settings() = default;
+    ~ContextSettings() = default;
 
 #pragma region setters
 
@@ -81,28 +81,28 @@ public:
     /// @param version required version.
     ///
     /// @return Reference to this settings.
-    context_settings& version(utils::version version);
+    ContextSettings& version(utils::version version);
 
     /// @brief Sets depth buffers bits count.
     ///
     /// @param bits Depth buffer bits count.
     ///
     /// @return Reference to this settings.
-    context_settings& depth_bits(int32 bits);
+    ContextSettings& depth_bits(int32 bits);
 
     /// @brief Sets stencil buffer bits count.
     ///
     /// @param bits Stencil buffer bits count.
     ///
     /// @return Reference to this settings.
-    context_settings& stencil_bits(int32 bits);
+    ContextSettings& stencil_bits(int32 bits);
 
-    /// @brief Sets The antialiasing level.
+    /// @brief Sets The Antialiasing level.
     ///
-    /// @param level The antialiasing level.
+    /// @param level The Antialiasing level.
     ///
     /// @return Reference to this settings.
-    context_settings& antialiasing_level(antialiasing level);
+    ContextSettings& antialiasing_level(Antialiasing level);
 
 #pragma endregion
 
@@ -123,17 +123,17 @@ public:
     /// @return The stencil buffer bits count.
     int32 stencil_bits() const;
 
-    /// @brief Required antialiasing level.
+    /// @brief Required Antialiasing level.
     ///
-    /// @return The antialiasing level.
-    antialiasing antialiasing_level() const;
+    /// @return The Antialiasing level.
+    Antialiasing antialiasing_level() const;
 
 #pragma endregion
 
 private:
     int32 m_depth_bits                = 24;
     int32 m_stencil_bits              = 8;
-    antialiasing m_antialiasing_level = antialiasing::best;
+    Antialiasing m_antialiasing_level = Antialiasing::best;
     utils::version m_version          = {3, 0};
 };
 

@@ -37,28 +37,28 @@
 
 namespace framework::system::details
 {
-class context
+class Context
 {
 public:
-    explicit context(context_settings settings) noexcept;
+    explicit Context(ContextSettings settings) noexcept;
 
-    context(const context&) = default;
-    context(context&&)      = default;
+    Context(const Context&) = default;
+    Context(Context&&)      = default;
 
-    context& operator=(const context&) = default;
-    context& operator=(context&&) = default;
+    Context& operator=(const Context&) = default;
+    Context& operator=(Context&&) = default;
 
-    virtual ~context();
+    virtual ~Context();
 
     virtual bool valid() const        = 0;
     virtual bool is_current() const   = 0;
     virtual void make_current() const = 0;
     virtual void swap_buffers() const = 0;
 
-    const context_settings& settings() const;
+    const ContextSettings& settings() const;
 
 private:
-    context_settings m_settings;
+    ContextSettings m_settings;
 };
 
 } // namespace framework::system::details

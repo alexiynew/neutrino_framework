@@ -127,7 +127,7 @@ private:
 std::unique_ptr<PlatformWindow> create_platform_window(const Window& window_interface, 
                                                        Size size,
                                                        const std::string& title,
-                                                       const context_settings& settings);
+                                                       const ContextSettings& settings);
 
 } // namespace framework::system::details
 

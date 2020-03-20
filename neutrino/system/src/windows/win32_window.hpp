@@ -41,7 +41,7 @@ namespace framework::system::details
 class Win32Window final : public PlatformWindow 
 {
 public:
-    Win32Window(const Window& window_interface, Size size, const std::string& title, const context_settings& settings);
+    Win32Window(const Window& window_interface, Size size, const std::string& title, const ContextSettings& settings);
     ~Win32Window() override;
 
     Win32Window(const Win32Window&) = delete;
@@ -111,7 +111,7 @@ private:
         bool right_alt;
     };
 
-    friend class win32_application;
+    friend class Win32Application;
 
     HWND m_window = nullptr;
     HDC m_hdc     = nullptr;
@@ -127,7 +127,7 @@ private:
 
     window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
 
-    std::unique_ptr<context> m_context = nullptr;
+    std::unique_ptr<Context> m_context = nullptr;
 
     modifiers_flags m_modifiers_flags = {false, false, false, false, false, false};
 

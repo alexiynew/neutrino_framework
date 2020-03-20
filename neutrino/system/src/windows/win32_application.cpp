@@ -34,15 +34,15 @@
 
 namespace framework::system::details
 {
-win32_application::container win32_application::m_windows;
-HMODULE win32_application::m_handle = nullptr;
+Win32Application::container Win32Application::m_windows;
+HMODULE Win32Application::m_handle = nullptr;
 
-void win32_application::add_window(HANDLE handle, Win32Window* window)
+void Win32Application::add_window(HANDLE handle, Win32Window* window)
 {
     m_windows.insert({handle, window});
 }
 
-Win32Window* win32_application::get_window(HANDLE handle)
+Win32Window* Win32Application::get_window(HANDLE handle)
 {
     if (m_windows.count(handle)) {
         return m_windows[handle];
@@ -51,12 +51,12 @@ Win32Window* win32_application::get_window(HANDLE handle)
     return nullptr;
 }
 
-void win32_application::remove_window(HANDLE handle)
+void Win32Application::remove_window(HANDLE handle)
 {
     m_windows.erase(handle);
 }
 
-HMODULE win32_application::handle()
+HMODULE Win32Application::handle()
 {
     if (m_handle == nullptr) {
         m_handle = GetModuleHandle(nullptr);
@@ -69,7 +69,7 @@ HMODULE win32_application::handle()
     return m_handle;
 }
 
-LRESULT CALLBACK win32_application::window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param)
+LRESULT CALLBACK Win32Application::window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param)
 {
     if (auto window = get_window(window_handle); window != nullptr) {
         return window->process_message(message, w_param, l_param);

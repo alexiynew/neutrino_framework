@@ -82,7 +82,7 @@ public:
     /// @param settings Gpaphic context settings.
     ///
     /// @thread_safety This function can be called only from main thread.
-    Window(Size size, const std::string& title, context_settings settings = context_settings());
+    Window(Size size, const std::string& title, ContextSettings settings = ContextSettings());
 
     /// @brief Destructor.
     ~Window();
