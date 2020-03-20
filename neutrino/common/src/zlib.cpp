@@ -9,10 +9,7 @@
 
 namespace
 {
-using framework::uint16;
-using framework::uint32;
-using framework::uint8;
-using framework::usize;
+using namespace framework;
 
 constexpr uint32 max_code_size   = 16;
 constexpr uint32 max_window_size = 32768;
@@ -26,7 +23,7 @@ constexpr uint32 distance_alphabet_size = 32;
 constexpr uint32 end_of_block_code = 256;
 constexpr uint32 invalid_code      = 300;
 
-enum class compression_algorithm
+enum class CompressionAlgorithm
 {
     fastest           = 0, // - compressor used fastest algorithm
     fast              = 1, // - compressor used fast algorithm
@@ -34,10 +31,10 @@ enum class compression_algorithm
     maximum           = 3, // - compressor used maximum compression, slowest algorithm
 };
 
-class bit_stream
+class BitStream
 {
 public:
-    explicit bit_stream(const std::vector<uint8>& data) : m_data(data)
+    explicit BitStream(const std::vector<uint8>& data) : m_data(data)
     {}
 
     template <typename T>
@@ -108,15 +105,15 @@ uint16 reflect(uint16 value, uint8 size)
     return ref;
 }
 
-class huffman_code_table
+class HuffmanCodeTable
 {
 public:
-    explicit huffman_code_table(const std::vector<uint8>& codes_lengths)
+    explicit HuffmanCodeTable(const std::vector<uint8>& codes_lengths)
     {
         build_codes(codes_lengths);
     }
 
-    uint16 decode(bit_stream& in) const
+    uint16 decode(BitStream& in) const
     {
         uint8 value_len = m_min_codes_length;
         uint16 value    = reflect(in.get<uint16>(value_len), value_len);
@@ -196,7 +193,7 @@ private:
     uint8 m_min_codes_length = sizeof(uint16) * 8;
 }; // namespace
 
-using litlen_distance_codes_t = std::tuple<huffman_code_table, huffman_code_table>;
+using LitLenDistanceCodes = std::tuple<HuffmanCodeTable, HuffmanCodeTable>;
 
 struct zlib_header_t
 {
@@ -223,9 +220,9 @@ struct zlib_header_t
     }
 };
 
-struct block_header_t
+struct BlockHeader
 {
-    enum type_t
+    enum Type
     {
         no_compression  = 0,
         dynamic_huffman = 2,
@@ -236,10 +233,10 @@ struct block_header_t
     uint8 bfinal : 1;
     uint8 btype : 2;
 
-    block_header_t() : bfinal(0), btype(no_compression)
+    BlockHeader() : bfinal(0), btype(no_compression)
     {}
 
-    explicit block_header_t(uint8 value)
+    explicit BlockHeader(uint8 value)
     {
         memcpy(this, &value, sizeof(value));
     }
@@ -252,7 +249,7 @@ struct block_header_t
     }
 };
 
-litlen_distance_codes_t fixed_huffman_codes()
+LitLenDistanceCodes fixed_huffman_codes()
 {
     /*
      Lit Value    Bits   Count   Codes
@@ -271,10 +268,10 @@ litlen_distance_codes_t fixed_huffman_codes()
 
     std::vector<uint8> distance_alphabet(distance_alphabet_size, 5);
 
-    return std::make_tuple(huffman_code_table(litlen_alphabet), huffman_code_table(distance_alphabet));
+    return std::make_tuple(HuffmanCodeTable(litlen_alphabet), HuffmanCodeTable(distance_alphabet));
 }
 
-litlen_distance_codes_t dynamic_huffman_codes(bit_stream& in)
+LitLenDistanceCodes dynamic_huffman_codes(BitStream& in)
 {
     const uint16 hlit  = in.get<uint16>(5);
     const uint16 hdist = in.get<uint16>(5);
@@ -294,7 +291,7 @@ litlen_distance_codes_t dynamic_huffman_codes(bit_stream& in)
         code_lengths[length_order[i]] = static_cast<uint8>(in.get<uint16>(3));
     }
 
-    huffman_code_table len_huffman(code_lengths);
+    HuffmanCodeTable len_huffman(code_lengths);
 
     std::vector<uint8> lengths;
     lengths.reserve(lit_len_codes_count + distance_codes_count);
@@ -322,10 +319,10 @@ litlen_distance_codes_t dynamic_huffman_codes(bit_stream& in)
     const std::vector<uint8> litlen(begin(lengths), first_dist_code);
     const std::vector<uint8> dist(first_dist_code, end(lengths));
 
-    return std::make_tuple(huffman_code_table(litlen), huffman_code_table(dist));
+    return std::make_tuple(HuffmanCodeTable(litlen), HuffmanCodeTable(dist));
 }
 
-uint16 read_length(uint16 value, bit_stream& in)
+uint16 read_length(uint16 value, BitStream& in)
 {
     //      Extra               Extra               Extra
     // Code Bits Length(s) Code Bits Lengths   Code Bits Length(s)
@@ -358,7 +355,7 @@ uint16 read_length(uint16 value, bit_stream& in)
     return static_cast<uint16>(result);
 }
 
-uint16 read_distance(uint16 value, bit_stream& in)
+uint16 read_distance(uint16 value, BitStream& in)
 {
     //      Extra           Extra                Extra
     // Code Bits Dist  Code Bits   Dist     Code Bits Distance
@@ -392,7 +389,7 @@ uint16 read_distance(uint16 value, bit_stream& in)
     return static_cast<uint16>(result);
 }
 
-void inflate_no_compression(bit_stream& in, std::vector<uint8>& output)
+void inflate_no_compression(BitStream& in, std::vector<uint8>& output)
 {
     in.skip_this_byte();
     uint16 len = in.get<uint16>(16);
@@ -404,7 +401,7 @@ void inflate_no_compression(bit_stream& in, std::vector<uint8>& output)
     }
 }
 
-void inflate_compression(const litlen_distance_codes_t& codes_pair, bit_stream& in, std::vector<uint8>& output)
+void inflate_compression(const LitLenDistanceCodes& codes_pair, BitStream& in, std::vector<uint8>& output)
 {
     const auto [codes, distances] = codes_pair;
 
@@ -430,13 +427,13 @@ void inflate_compression(const litlen_distance_codes_t& codes_pair, bit_stream& 
     }
 }
 
-inline void inflate_fixed_huffman(bit_stream& in, std::vector<uint8>& output)
+inline void inflate_fixed_huffman(BitStream& in, std::vector<uint8>& output)
 {
     const auto codes_pair = fixed_huffman_codes();
     inflate_compression(codes_pair, in, output);
 }
 
-inline void inflate_dynamic_huffman(bit_stream& in, std::vector<uint8>& output)
+inline void inflate_dynamic_huffman(BitStream& in, std::vector<uint8>& output)
 {
     const auto codes_pair = dynamic_huffman_codes(in);
     inflate_compression(codes_pair, in, output);
@@ -447,9 +444,9 @@ void deflate_no_compression(const std::vector<uint8>& data, std::vector<uint8>& 
     const usize blocks_count = (data.size() / max_block_size) + 1;
 
     for (usize block = 0; block < blocks_count; ++block) {
-        block_header_t b_header;
+        BlockHeader b_header;
         b_header.bfinal = ((block + 1) >= blocks_count ? 1 : 0);
-        b_header.btype  = block_header_t::no_compression;
+        b_header.btype  = BlockHeader::no_compression;
 
         output.push_back(static_cast<uint8>(b_header));
 
@@ -497,7 +494,7 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
         return std::vector<uint8>();
     }
 
-    bit_stream in(data);
+    BitStream in(data);
 
     const zlib_header_t zlib_header = zlib_header_t(in.get<uint16>(16));
 
@@ -515,13 +512,13 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
     std::vector<uint8> output;
 
     while (in) {
-        block_header_t header = block_header_t(in.get<uint8>(3));
+        BlockHeader header = BlockHeader(in.get<uint8>(3));
 
         switch (header.btype) {
-            case block_header_t::reserved: return output; // error
-            case block_header_t::no_compression: inflate_no_compression(in, output); break;
-            case block_header_t::fixed_huffman: inflate_fixed_huffman(in, output); break;
-            case block_header_t::dynamic_huffman: inflate_dynamic_huffman(in, output); break;
+            case BlockHeader::reserved: return output; // error
+            case BlockHeader::no_compression: inflate_no_compression(in, output); break;
+            case BlockHeader::fixed_huffman: inflate_fixed_huffman(in, output); break;
+            case BlockHeader::dynamic_huffman: inflate_dynamic_huffman(in, output); break;
         }
 
         if (header.bfinal) {
@@ -552,7 +549,7 @@ std::vector<uint8> deflate(const std::vector<uint8>& data)
     zlib_header.cm     = deflate_compression_method;
     zlib_header.cinfo  = static_cast<uint8>(std::log2(max_window_size) - 8);
     zlib_header.fdict  = 0;
-    zlib_header.flevel = static_cast<uint8>(compression_algorithm::fastest);
+    zlib_header.flevel = static_cast<uint8>(CompressionAlgorithm::fastest);
     zlib_header.fcheck = 0;
 
     uint16 header_value = zlib_header.as_value();

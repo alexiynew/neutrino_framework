@@ -37,7 +37,7 @@ public:
 private:
     void png_load()
     {
-        framework::graphics::image img;
+        framework::graphics::Image img;
 
         TEST_ASSERT(img.load("png/basi0g01.png"), "Failed to load basi0g01.png");
         TEST_ASSERT(img.load("png/basi0g02.png"), "Failed to load basi0g02.png");

@@ -40,26 +40,26 @@ namespace framework::graphics
 /// @addtogroup graphics_module
 /// @{
 
-struct color_t
+struct Color
 {
     uint8 r = 0;
     uint8 g = 0;
     uint8 b = 0;
     uint8 a = 255;
 
-    color_t() = default;
+    Color() = default;
 
-    color_t(uint8 r, uint8 g, uint8 b, uint8 a);
-    color_t(float32 r, float32 g, float32 b, float32 a);
+    Color(uint8 r, uint8 g, uint8 b, uint8 a);
+    Color(float32 r, float32 g, float32 b, float32 a);
 
-    color_t(uint16 value);
-    color_t(uint32 value);
+    Color(uint16 value);
+    Color(uint32 value);
 
-    color_t(const color_t&) = default;
-    color_t(color_t&&)      = default;
+    Color(const Color&) = default;
+    Color(Color&&)      = default;
 
-    color_t& operator=(const color_t&) = default;
-    color_t& operator=(color_t&&) = default;
+    Color& operator=(const Color&) = default;
+    Color& operator=(Color&&) = default;
 
     uint8* data();
     const uint8* data() const;

@@ -169,7 +169,7 @@ void mesh::load_texture_coord2(const std::vector<math::vector2f>& data)
     gl::glBindVertexArray(0);
 }
 
-void mesh::load_colors(const std::vector<color_t>& data)
+void mesh::load_colors(const std::vector<Color>& data)
 {
     gl::glBindVertexArray(m_vertex_array_id);
 

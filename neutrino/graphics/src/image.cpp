@@ -1,5 +1,5 @@
 /// @file
-/// @brief Image class.
+/// @brief image class.
 /// @author Fedorov Alexey
 /// @date 04.04.2019
 
@@ -34,25 +34,25 @@
 
 namespace framework::graphics
 {
-image::image() = default;
+Image::Image() = default;
 
-image::image(const data_t& data, int32 width, int32 height) : m_data(data), m_width(width), m_height(height)
+Image::Image(const data_t& data, int32 width, int32 height) : m_data(data), m_width(width), m_height(height)
 {}
 
-image::image(const image&) = default;
-image& image::operator=(const image&) = default;
+Image::Image(const Image&) = default;
+Image& Image::operator=(const Image&) = default;
 
-image::image(image&&) = default;
-image& image::operator=(image&&) = default;
+Image::Image(Image&&) = default;
+Image& Image::operator=(Image&&) = default;
 
-bool image::load(const std::string& filename, file_type type)
+bool Image::load(const std::string& filename, FileType type)
 {
     auto load_function = [type](const std::string& f) {
         switch (type) {
-            case file_type::bmp: return details::image::bmp::load(f);
-            case file_type::png: return details::image::png::load(f);
+            case FileType::bmp: return details::image::bmp::load(f);
+            case FileType::png: return details::image::png::load(f);
         }
-        return details::image::load_result_t();
+        return details::image::LoadResult();
     };
 
     if (auto result = load_function(filename); result.has_value()) {
@@ -69,33 +69,33 @@ bool image::load(const std::string& filename, file_type type)
     return false;
 }
 
-bool image::load(const std::string& filename)
+bool Image::load(const std::string& filename)
 {
     if (details::image::bmp::is_bmp(filename)) {
-        return load(filename, file_type::bmp);
+        return load(filename, FileType::bmp);
     } else if (details::image::png::is_png(filename)) {
-        return load(filename, file_type::png);
+        return load(filename, FileType::png);
     }
 
     return false;
 }
 
-int32 image::width() const
+int32 Image::width() const
 {
     return m_width;
 }
 
-int32 image::height() const
+int32 Image::height() const
 {
     return m_height;
 }
 
-float32 image::gamma() const
+float32 Image::gamma() const
 {
     return m_gamma;
 }
 
-const color_t* image::data() const
+const Color* Image::data() const
 {
     return m_data.data();
 }
