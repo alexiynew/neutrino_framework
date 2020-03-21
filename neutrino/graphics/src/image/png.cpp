@@ -90,7 +90,7 @@ struct Chunk
     };
 
     uint32 length = 0;
-    Type type   = Type::undefined;
+    Type type     = Type::undefined;
     uint32 crc    = 0;
 
     std::vector<uint8> data;
@@ -169,9 +169,9 @@ enum class InterlaceMethod : uint8
 
 struct FileHeader
 {
-    int32 width                             = 0;
-    int32 height                            = 0;
-    uint8 bit_depth                         = 0;
+    int32 width                          = 0;
+    int32 height                         = 0;
+    uint8 bit_depth                      = 0;
     ColorType color_type                 = ColorType::greyscale;
     CompressionMethod compression_method = CompressionMethod::deflate_inflate;
     FilterMethod filter_method           = FilterMethod::adaptive;
@@ -670,8 +670,8 @@ inline std::vector<Color> unserialize_impl(const FileHeader& header, std::vector
 
 template <uint8 BitDepth>
 inline std::vector<Color> unserialize_palette_impl(const FileHeader& header,
-                                                     const palette_t<BitDepth>& palette,
-                                                     std::vector<uint8>&& data)
+                                                   const palette_t<BitDepth>& palette,
+                                                   std::vector<uint8>&& data)
 {
     static_assert(BitDepth <= 8);
     std::vector<Color> res(static_cast<usize>(header.width * header.height), Color(uint32(0x000000FF)));
@@ -716,8 +716,8 @@ inline std::vector<Color> unserialize_truecolor(const FileHeader& header, std::v
 }
 
 inline std::vector<Color> unserialize_indexed(const FileHeader& header,
-                                                const Chunk& plte_chunk,
-                                                std::vector<uint8>&& data)
+                                              const Chunk& plte_chunk,
+                                              std::vector<uint8>&& data)
 {
     if (data.empty()) {
         return std::vector<Color>();
@@ -761,9 +761,7 @@ inline std::vector<Color> unserialize_truecolor_alpha(const FileHeader& header, 
     return std::vector<Color>();
 }
 
-inline std::vector<Color> unserialize(const FileHeader& header,
-                                        const Chunk& plte_chunk,
-                                        std::vector<uint8>&& data)
+inline std::vector<Color> unserialize(const FileHeader& header, const Chunk& plte_chunk, std::vector<uint8>&& data)
 {
     switch (header.color_type) {
         case ColorType::greyscale: return unserialize_greyscale(header, std::move(data));
@@ -814,8 +812,7 @@ LoadResult load(const std::string& filename)
     float32 gamma = default_gamma;
 
     std::vector<uint8> data;
-    for (Chunk chunk = Chunk::read(file); file && chunk.type != Chunk::Type::IEND;
-         chunk         = Chunk::read(file)) {
+    for (Chunk chunk = Chunk::read(file); file && chunk.type != Chunk::Type::IEND; chunk = Chunk::read(file)) {
         if (!chunk.valid() && chunk.is_critical()) {
             return LoadResult();
         }
@@ -856,7 +853,7 @@ LoadResult load(const std::string& filename)
     }
 
     std::vector<uint8> recontructed = reconstruct(header, utils::zlib::inflate(data));
-    std::vector<Color> image_data = unserialize(header, plte_chunk, std::move(recontructed));
+    std::vector<Color> image_data   = unserialize(header, plte_chunk, std::move(recontructed));
 
     auto info  = header.image_info();
     info.gamma = gamma;

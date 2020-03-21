@@ -120,11 +120,11 @@ struct InfoHeader
 
     // BITMAPINFOHEADER
     Compression compression = Compression::bi_rgb;
-    uint32 image_size         = 0;
-    int32 x_ppm               = 0;
-    int32 y_ppm               = 0;
-    uint32 colors_in_table    = 0;
-    uint32 important_colors   = 0;
+    uint32 image_size       = 0;
+    int32 x_ppm             = 0;
+    int32 y_ppm             = 0;
+    uint32 colors_in_table  = 0;
+    uint32 important_colors = 0;
 
     // BITMAPV2INFOHEADER
     uint32 red_chanel_bitmask   = 0; //  +-
@@ -475,8 +475,8 @@ inline uint8 masked_value(uint32 pixel, uint32 mask, uint32 offset)
 }
 
 std::vector<Color>::iterator process_row_1bpp(std::vector<uint8>::iterator in,
-                                                std::vector<Color>::iterator out,
-                                                const InfoHeader& info)
+                                              std::vector<Color>::iterator out,
+                                              const InfoHeader& info)
 {
     for (int32 x = 0; x < info.width; ++in) {
         for (int32 bit = 7; bit >= 0 && x < info.width; --bit, ++x) {
@@ -490,8 +490,8 @@ std::vector<Color>::iterator process_row_1bpp(std::vector<uint8>::iterator in,
 }
 
 std::vector<Color>::iterator process_row_2bpp(std::vector<uint8>::iterator in,
-                                                std::vector<Color>::iterator out,
-                                                const InfoHeader& info)
+                                              std::vector<Color>::iterator out,
+                                              const InfoHeader& info)
 {
     const auto end = next(out, info.width);
 
@@ -511,8 +511,8 @@ std::vector<Color>::iterator process_row_2bpp(std::vector<uint8>::iterator in,
 }
 
 std::vector<Color>::iterator process_row_4bpp(std::vector<uint8>::iterator in,
-                                                std::vector<Color>::iterator out,
-                                                const InfoHeader& info)
+                                              std::vector<Color>::iterator out,
+                                              const InfoHeader& info)
 {
     for (int32 x = 0, offset = 4; x < info.width; ++x, offset = ((offset + 4) % 8)) {
         *out++ = info.color_table[(*in >> offset) & 0x0F];
@@ -524,8 +524,8 @@ std::vector<Color>::iterator process_row_4bpp(std::vector<uint8>::iterator in,
 }
 
 std::vector<Color>::iterator process_row_8bpp(std::vector<uint8>::iterator in,
-                                                std::vector<Color>::iterator out,
-                                                const InfoHeader& info)
+                                              std::vector<Color>::iterator out,
+                                              const InfoHeader& info)
 {
     for (int32 x = 0; x < info.width; ++x) {
         *out++ = info.color_table[*in++];
@@ -534,8 +534,8 @@ std::vector<Color>::iterator process_row_8bpp(std::vector<uint8>::iterator in,
 }
 
 std::vector<Color>::iterator process_row_16bpp(std::vector<uint8>::iterator in,
-                                                 std::vector<Color>::iterator out,
-                                                 const InfoHeader& info)
+                                               std::vector<Color>::iterator out,
+                                               const InfoHeader& info)
 {
     const auto [red_mask, green_mask, blue_mask, alpha_mask] = info.chanel_masks();
 
@@ -549,9 +549,9 @@ std::vector<Color>::iterator process_row_16bpp(std::vector<uint8>::iterator in,
         pixel += static_cast<uint32>(*in++ << 8);
 
         const Color color(masked_value(pixel, red_mask, red_offset),
-                            masked_value(pixel, green_mask, green_offset),
-                            masked_value(pixel, blue_mask, blue_offset),
-                            (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
+                          masked_value(pixel, green_mask, green_offset),
+                          masked_value(pixel, blue_mask, blue_offset),
+                          (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
         *out++ = color;
     }
 
@@ -559,8 +559,8 @@ std::vector<Color>::iterator process_row_16bpp(std::vector<uint8>::iterator in,
 }
 
 std::vector<Color>::iterator process_row_24bpp(std::vector<uint8>::iterator in,
-                                                 std::vector<Color>::iterator out,
-                                                 const InfoHeader& info)
+                                               std::vector<Color>::iterator out,
+                                               const InfoHeader& info)
 {
     for (int32 x = 0; x < info.width; ++x) {
         const Color color(*in++, *in++, *in++, 255U);
@@ -571,8 +571,8 @@ std::vector<Color>::iterator process_row_24bpp(std::vector<uint8>::iterator in,
 }
 
 std::vector<Color>::iterator process_row_32bpp(std::vector<uint8>::iterator in,
-                                                 std::vector<Color>::iterator out,
-                                                 const InfoHeader& info)
+                                               std::vector<Color>::iterator out,
+                                               const InfoHeader& info)
 {
     const auto [red_mask, green_mask, blue_mask, alpha_mask] = info.chanel_masks();
     const uint32 red_offset                                  = (red_mask ? get_offset(red_mask) : 0);
@@ -587,9 +587,9 @@ std::vector<Color>::iterator process_row_32bpp(std::vector<uint8>::iterator in,
         pixel += static_cast<uint32>(*in++ << 24);
 
         const Color color(masked_value(pixel, red_mask, red_offset),
-                            masked_value(pixel, green_mask, green_offset),
-                            masked_value(pixel, blue_mask, blue_offset),
-                            (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
+                          masked_value(pixel, green_mask, green_offset),
+                          masked_value(pixel, blue_mask, blue_offset),
+                          (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
         *out++ = color;
     }
 
@@ -597,8 +597,8 @@ std::vector<Color>::iterator process_row_32bpp(std::vector<uint8>::iterator in,
 }
 
 std::vector<Color>::iterator process_row(std::vector<uint8>::iterator in,
-                                           std::vector<Color>::iterator out,
-                                           const InfoHeader& info)
+                                         std::vector<Color>::iterator out,
+                                         const InfoHeader& info)
 {
     switch (info.bits_per_pixel) {
         case 1: return process_row_1bpp(in, out, info);
@@ -633,9 +633,9 @@ std::vector<Color> read_data_raw(std::ifstream& in, const InfoHeader& info)
 }
 
 inline std::vector<Color>::iterator fill_with_color_4(std::vector<Color>::iterator out,
-                                                        const InfoHeader::ColorTable& color_table,
-                                                        const std::vector<uint8>::iterator it,
-                                                        int32 count)
+                                                      const InfoHeader::ColorTable& color_table,
+                                                      const std::vector<uint8>::iterator it,
+                                                      int32 count)
 {
     for (int32 c = 0, offset = 4; c < count; ++c) {
         const usize color_index = static_cast<usize>((*it >> offset) & 0x0F);
@@ -646,12 +646,12 @@ inline std::vector<Color>::iterator fill_with_color_4(std::vector<Color>::iterat
 }
 
 inline std::vector<Color>::iterator fill_with_color_8(std::vector<Color>::iterator out,
-                                                        const InfoHeader::ColorTable& color_table,
-                                                        const std::vector<uint8>::iterator it,
-                                                        int32 count)
+                                                      const InfoHeader::ColorTable& color_table,
+                                                      const std::vector<uint8>::iterator it,
+                                                      int32 count)
 {
     const usize color_index = static_cast<usize>(*it);
-    const Color color     = color_index < color_table.size() ? color_table[color_index] : Color(0x000000FFU);
+    const Color color       = color_index < color_table.size() ? color_table[color_index] : Color(0x000000FFU);
     for (int32 c = 0; c < count; ++c) {
         *out++ = color;
     }
@@ -659,9 +659,9 @@ inline std::vector<Color>::iterator fill_with_color_8(std::vector<Color>::iterat
 }
 
 inline std::vector<Color>::iterator fill_from_buffer_4(std::vector<Color>::iterator out,
-                                                         const InfoHeader::ColorTable& color_table,
-                                                         std::vector<uint8>::iterator it,
-                                                         int32 count)
+                                                       const InfoHeader::ColorTable& color_table,
+                                                       std::vector<uint8>::iterator it,
+                                                       int32 count)
 {
     const int32 colors_in_byte = 2;
     while (count > 0) {
@@ -673,9 +673,9 @@ inline std::vector<Color>::iterator fill_from_buffer_4(std::vector<Color>::itera
 }
 
 inline std::vector<Color>::iterator fill_from_buffer_8(std::vector<Color>::iterator out,
-                                                         const InfoHeader::ColorTable& color_table,
-                                                         std::vector<uint8>::iterator it,
-                                                         int32 count)
+                                                       const InfoHeader::ColorTable& color_table,
+                                                       std::vector<uint8>::iterator it,
+                                                       int32 count)
 {
     while (count-- > 0) {
         const usize color_index = static_cast<usize>(*it++);
