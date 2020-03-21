@@ -31,7 +31,6 @@
 
 #include <common/types.hpp>
 #include <gl/gl.hpp>
-
 #include <system/src/linux/x11_glx_context.hpp>
 
 namespace

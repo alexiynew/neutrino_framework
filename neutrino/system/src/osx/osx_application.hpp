@@ -35,10 +35,10 @@
 
 @interface OSXApplication : NSApplication
 
-+(void)process_events;
-+(void)setup_menu_bar;
++ (void)process_events;
++ (void)setup_menu_bar;
 
--(void)sendEvent:(NSEvent*)event;
+- (void)sendEvent:(NSEvent*)event;
 
 @end
 

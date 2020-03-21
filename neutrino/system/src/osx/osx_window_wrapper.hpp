@@ -33,14 +33,12 @@
 #include <functional>
 
 #include <common/types.hpp>
-
 #include <system/src/context.hpp>
 #include <system/src/platform_window.hpp>
 
 namespace framework::system::details
 {
-
-class OSXWindowWrapper final : public PlatformWindow 
+class OSXWindowWrapper final : public PlatformWindow
 {
 public:
     OSXWindowWrapper(const Window& window, Size size, const std::string& title, const context_settings& settings);

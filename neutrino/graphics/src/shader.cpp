@@ -172,7 +172,6 @@ shader_program::~shader_program()
     gl::glDeleteProgram(m_program_id);
 }
 
-
 shader_program::shader_program(shader_program&& other)
 {
     std::swap(other.m_program_id, m_program_id);

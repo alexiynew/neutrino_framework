@@ -33,13 +33,12 @@
 #include <functional>
 #include <memory>
 
+#include <common/position.hpp>
+#include <common/signal.hpp>
+#include <common/size.hpp>
 #include <system/context_settings.hpp>
 #include <system/keyboard.hpp>
 #include <system/mouse.hpp>
-
-#include <common/position.hpp>
-#include <common/size.hpp>
-#include <common/signal.hpp>
 
 /// @details
 ///

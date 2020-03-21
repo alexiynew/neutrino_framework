@@ -37,7 +37,6 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
-
 #include <system/src/linux/x11_glx_context.hpp>
 #include <system/src/linux/x11_keyboard.hpp>
 #include <system/src/linux/x11_mouse.hpp>

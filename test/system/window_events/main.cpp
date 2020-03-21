@@ -259,9 +259,8 @@ private:
 
         w.on_resize.connect([](const Window&, Size size) { log::info("test") << "on_size: " << size << std::endl; });
 
-        w.on_move.connect([](const Window&, Position position) {
-            log::info("test") << "on_position: " << position << std::endl;
-        });
+        w.on_move.connect(
+        [](const Window&, Position position) { log::info("test") << "on_position: " << position << std::endl; });
 
         w.on_key_down.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
             log::info("test") << "on_key_press key: " << static_cast<int32>(key) << " " << key_name(key) << " "

@@ -33,12 +33,10 @@
 #include <memory>
 #include <string>
 
-#include <system/context_settings.hpp>
-#include <system/window.hpp>
-
 #include <common/position.hpp>
 #include <common/size.hpp>
-
+#include <system/context_settings.hpp>
+#include <system/window.hpp>
 
 namespace framework::system::details
 {
@@ -75,9 +73,9 @@ public:
 
     /// @name setters
     /// @{
-    virtual void set_max_size(Size size) = 0;
-    virtual void set_min_size(Size size) = 0;
-    virtual void set_resizable(bool value) = 0;
+    virtual void set_max_size(Size size)             = 0;
+    virtual void set_min_size(Size size)             = 0;
+    virtual void set_resizable(bool value)           = 0;
     virtual void set_title(const std::string& title) = 0;
     /// @}
 
@@ -85,8 +83,8 @@ public:
     /// @{
     virtual Position position() const = 0;
     virtual Size size() const         = 0;
-    virtual Size max_size() const = 0;
-    virtual Size min_size() const = 0;
+    virtual Size max_size() const     = 0;
+    virtual Size min_size() const     = 0;
     virtual std::string title() const = 0;
     /// @}
 
@@ -124,7 +122,7 @@ private:
 };
 
 // @brief Fabric function to make platform dependent implementation
-std::unique_ptr<PlatformWindow> create_platform_window(const Window& window_interface, 
+std::unique_ptr<PlatformWindow> create_platform_window(const Window& window_interface,
                                                        Size size,
                                                        const std::string& title,
                                                        const ContextSettings& settings);

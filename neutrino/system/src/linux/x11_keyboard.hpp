@@ -31,7 +31,6 @@
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_X11_KEYBOARD_HPP
 
 #include <system/keyboard.hpp>
-
 #include <system/src/linux/x11_server.hpp>
 
 namespace framework::system::details

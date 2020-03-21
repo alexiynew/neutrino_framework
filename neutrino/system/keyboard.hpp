@@ -186,6 +186,7 @@ public:
 
     bool operator==(Modifiers rhs);
     bool operator!=(Modifiers rhs);
+
 private:
     ModifiersState m_state = none;
 };

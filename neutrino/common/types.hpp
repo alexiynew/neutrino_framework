@@ -30,15 +30,14 @@
 #ifndef FRAMEWORK_COMMON_TYPES_HPP
 #define FRAMEWORK_COMMON_TYPES_HPP
 
-#include <common/size.hpp>
-#include <common/position.hpp>
-
 #include <cstddef>
 #include <cstdint>
 
+#include <common/position.hpp>
+#include <common/size.hpp>
+
 namespace framework
 {
-
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Base type definitions
 ///

@@ -33,12 +33,8 @@
 
 namespace framework
 {
-
-Size::Size(int w, int h)
-    : width(w)
-    , height(h)
-{
-}
+Size::Size(int w, int h) : width(w), height(h)
+{}
 
 bool operator==(const Size& lhs, const Size& rhs)
 {

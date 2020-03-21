@@ -612,10 +612,10 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         case WM_XBUTTONDOWN:
         case WM_XBUTTONUP: {
             const MouseButton button = (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? MouseButton::button_4
-                                                                                 : MouseButton::button_5);
+                                                                                : MouseButton::button_5);
             const CursorPosition position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
             const Modifiers mod_state = get_modifiers_state();
-            const bool down                 = message == WM_XBUTTONDOWN;
+            const bool down           = message == WM_XBUTTONDOWN;
 
             if (down) {
                 on_button_down(button, position, mod_state);
@@ -680,9 +680,9 @@ LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
         default: break;
     }
 
-    const KeyCode key              = details::map_system_key(static_cast<uint32>(w_param));
+    const KeyCode key         = details::map_system_key(static_cast<uint32>(w_param));
     const Modifiers mod_state = details::get_modifiers_state();
-    const bool key_is_down          = ((l_param >> 31) & 1) == 0;
+    const bool key_is_down    = ((l_param >> 31) & 1) == 0;
 
     if (key == KeyCode::unknown) {
         return 0;
@@ -706,7 +706,7 @@ LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
 
 void Win32Window::process_shift_key(LPARAM l_param)
 {
-    const bool key_is_down          = ((l_param >> 31) & 1) == 0;
+    const bool key_is_down    = ((l_param >> 31) & 1) == 0;
     const Modifiers mod_state = details::get_modifiers_state();
 
     const bool left_shift  = ((GetKeyState(VK_LSHIFT) & 0x8000));
@@ -733,7 +733,7 @@ void Win32Window::process_shift_key(LPARAM l_param)
 
 void Win32Window::process_control_key(LPARAM l_param)
 {
-    const bool key_is_down          = ((l_param >> 31) & 1) == 0;
+    const bool key_is_down    = ((l_param >> 31) & 1) == 0;
     const Modifiers mod_state = details::get_modifiers_state();
 
     const bool left_control  = ((GetKeyState(VK_LCONTROL) & 0x8000));
@@ -760,7 +760,7 @@ void Win32Window::process_control_key(LPARAM l_param)
 
 void Win32Window::process_alt_key(LPARAM l_param)
 {
-    const bool key_is_down          = ((l_param >> 31) & 1) == 0;
+    const bool key_is_down    = ((l_param >> 31) & 1) == 0;
     const Modifiers mod_state = details::get_modifiers_state();
 
     const bool left_alt  = ((GetKeyState(VK_LMENU) & 0x8000));

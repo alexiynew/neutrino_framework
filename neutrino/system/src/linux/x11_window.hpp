@@ -34,7 +34,6 @@
 #include <functional>
 
 #include <common/types.hpp>
-
 #include <system/src/context.hpp>
 #include <system/src/linux/x11_server.hpp>
 #include <system/src/window_implementation.hpp>

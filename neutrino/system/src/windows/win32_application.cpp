@@ -27,10 +27,10 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <stdexcept>
+
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_window.hpp>
-
-#include <stdexcept>
 
 namespace framework::system::details
 {

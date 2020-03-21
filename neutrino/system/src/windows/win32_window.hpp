@@ -38,7 +38,7 @@
 
 namespace framework::system::details
 {
-class Win32Window final : public PlatformWindow 
+class Win32Window final : public PlatformWindow
 {
 public:
     Win32Window(const Window& window_interface, Size size, const std::string& title, const ContextSettings& settings);
@@ -121,8 +121,8 @@ private:
     Size m_min_size = {0, 0};
     Size m_max_size = {0, 0};
 
-    bool m_resizable   = true;
-    bool m_mouse_hover = false;
+    bool m_resizable    = true;
+    bool m_mouse_hover  = false;
     bool m_should_close = false;
 
     window_info m_saved_info = {0, 0, {0, 0, 0, 0}};

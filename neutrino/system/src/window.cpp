@@ -29,9 +29,8 @@
 
 #include <memory>
 
-#include <system/window.hpp>
-
 #include <system/src/platform_window.hpp>
+#include <system/window.hpp>
 
 namespace framework::system
 {
@@ -42,8 +41,7 @@ void Window::set_application_name(const std::string& name)
 
 Window::Window(Size size, const std::string& title, ContextSettings settings)
     : m_platform_window(details::create_platform_window(*this, size, title, std::move(settings)))
-{
-}
+{}
 
 Window::~Window() = default;
 

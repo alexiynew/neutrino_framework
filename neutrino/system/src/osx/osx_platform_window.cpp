@@ -32,7 +32,7 @@
 
 namespace framework::system::details
 {
-std::unique_ptr<PlatformWindow> create_platform_window(const Window& window, 
+std::unique_ptr<PlatformWindow> create_platform_window(const Window& window,
                                                        Size size,
                                                        const std::string& title,
                                                        const context_settings& settings)

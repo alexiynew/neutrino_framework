@@ -33,7 +33,6 @@
 #include <X11/Xlib.h>
 
 #include <gl/glxext.hpp>
-
 #include <system/src/context.hpp>
 
 namespace framework::system::details

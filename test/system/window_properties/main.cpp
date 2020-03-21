@@ -226,7 +226,7 @@ private:
     void window_position()
     {
         bool on_position_called = false;
-        Size size640  = {640, 480};
+        Size size640            = {640, 480};
 
         Window w(size640, "Test");
 

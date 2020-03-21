@@ -536,7 +536,7 @@ int main()
     int32 image_scale = 1;
 
     math::matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
-    mvp          = scale(mvp, {image_scale, image_scale, image_scale});
+    mvp                = scale(mvp, {image_scale, image_scale, image_scale});
 
     // load all images
     std::vector<image> images = load_images(mode::png);
@@ -553,8 +553,7 @@ int main()
 
     float32 gamma = 0.0f;
 
-    main_window.on_resize.connect(
-    [&objects, &mvp, image_scale](const Window&, Size size) {
+    main_window.on_resize.connect([&objects, &mvp, image_scale](const Window&, Size size) {
         mvp = framework::math::ortho2d<float32>(0,
                                                 static_cast<float32>(size.width),
                                                 static_cast<float32>(size.height),

@@ -31,15 +31,13 @@
 
 @implementation OSXApplicationDelegate
 
--(NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app
-{
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app {
     (void)app;
     // send close window event to all windows
     return NSTerminateCancel;
 }
 
--(BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)app
-{
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)app {
     (void)app;
     return YES;
 }

@@ -27,24 +27,20 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <system/src/osx/osx_window_wrapper.hpp>
-
 #include <common/types.hpp>
 #include <common/utils.hpp>
-
-#include <system/src/osx/osx_window.hpp>
 #include <system/src/osx/osx_application.hpp>
 #include <system/src/osx/osx_application_delegate.hpp>
+#include <system/src/osx/osx_window.hpp>
+#include <system/src/osx/osx_window_wrapper.hpp>
 
 namespace framework::system::details
 {
-
 void OSXWindowWrapper::setup_application()
 {
     static bool isTheProcessSetAsApplication = false;
 
-    if (!isTheProcessSetAsApplication)
-    {
+    if (!isTheProcessSetAsApplication) {
         isTheProcessSetAsApplication = true;
 
         [OSXApplication sharedApplication];
@@ -61,7 +57,7 @@ void OSXWindowWrapper::setup_application()
     }
 }
 
-    static NSAutoreleasePool* pool;
+static NSAutoreleasePool* pool;
 
 void OSXWindowWrapper::ensureThreadHasPool()
 {
@@ -78,45 +74,43 @@ OSXWindowWrapper::OSXWindowWrapper(const Window& window_interface,
                                    Size size,
                                    const std::string& /*title*/,
                                    const context_settings& /*settings*/)
-    : PlatformWindow(window_interface)
-    , m_window(nullptr)
+    : PlatformWindow(window_interface), m_window(nullptr)
 {
     setup_application();
 
-        // Ask for a pool.
+    // Ask for a pool.
     ensureThreadHasPool();
 
     unsigned int nsStyle = NSWindowStyleMaskBorderless;
-    //if (style & sf::Style::Titlebar)
+    // if (style & sf::Style::Titlebar)
     nsStyle |= NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable;
-    //if (style & sf::Style::Resize)
+    // if (style & sf::Style::Resize)
     nsStyle |= NSWindowStyleMaskResizable;
-    //if (style & sf::Style::Close)
+    // if (style & sf::Style::Close)
     nsStyle |= NSWindowStyleMaskClosable;
 
-    OSXWindow* window = [[OSXWindow alloc] initWithContentRect:NSMakeRect(0, 0 , size.width, size.height)
-        styleMask:nsStyle
-		backing:NSBackingStoreBuffered
-		defer:NO];
+    OSXWindow* window = [[OSXWindow alloc] initWithContentRect:NSMakeRect(0, 0, size.width, size.height)
+                                                     styleMask:nsStyle
+                                                       backing:NSBackingStoreBuffered
+                                                         defer:NO];
 
     //[m_delegate changeTitle:sfStringToNSString(title)];
     //[m_delegate setRequesterTo:this];
-    
-     // Set the view to the window as its content view.
-   // [m_window setContentView:m_oglView];
+
+    // Set the view to the window as its content view.
+    // [m_window setContentView:m_oglView];
 
     // Register for event.
-  //  [window setDelegate:window];
+    //  [window setDelegate:window];
     [window setAcceptsMouseMovedEvents:YES];
     [window setIgnoresMouseEvents:NO];
 
     // And some other things...
     [window center];
-  //  [window setAutodisplay:YES];
+    //  [window setAutodisplay:YES];
     [window setReleasedWhenClosed:NO]; // We own the class, not AppKit
 
     m_window = window;
-
 }
 
 OSXWindowWrapper::~OSXWindowWrapper()
@@ -125,13 +119,13 @@ OSXWindowWrapper::~OSXWindowWrapper()
 
     [window close];
     [window setDelegate:nil];
-    
-    // Put the next window in front, if any.
-  //  NSArray* windows = [NSApp orderedWindows];
-   // if ([windows count] > 0)
-     //   [[windows objectAtIndex:0] makeKeyAndOrderFront:nil];
 
-    drainThreadPool(); 
+    // Put the next window in front, if any.
+    //  NSArray* windows = [NSApp orderedWindows];
+    // if ([windows count] > 0)
+    //   [[windows objectAtIndex:0] makeKeyAndOrderFront:nil];
+
+    drainThreadPool();
 }
 
 #pragma region actions

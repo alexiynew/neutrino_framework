@@ -31,13 +31,11 @@
 
 #include <gl/gl.hpp>
 #include <gl/wglext.hpp>
-
 #include <system/src/windows/win32_wgl_context.hpp>
 
 namespace framework::system::details
 {
-Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window)
-    : Context(settings), m_window(window)
+Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window) : Context(settings), m_window(window)
 {
     m_hdc = GetDC(m_window);
 

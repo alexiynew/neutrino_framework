@@ -28,7 +28,6 @@
 // =============================================================================
 
 #include <common/types.hpp>
-
 #include <system/src/linux/x11_keyboard.hpp>
 #include <system/src/linux/x11_server.hpp>
 

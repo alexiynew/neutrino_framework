@@ -130,7 +130,7 @@ bool chunk_t::is_critical() const
 
 bool chunk_t::valid() const
 {
-    utils::crc32 crc_calk;
+    utils::Crc32 crc_calk;
 
     crc_calk.update(utils::big_endian_value<uint32>(reinterpret_cast<const char*>(&type)));
     crc_calk.update(begin(data), end(data));

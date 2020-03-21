@@ -36,10 +36,10 @@
 @interface OSXApplicationDelegate : NSObject<NSApplicationDelegate>
 
 /// @brief React to a termination notification
--(NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app;
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app;
 
 /// @brief Exit the app when all windows are closed
--(BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)app;
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)app;
 
 @end
 

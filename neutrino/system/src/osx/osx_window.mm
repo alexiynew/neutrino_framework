@@ -31,30 +31,25 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
-
 #include <system/src/osx/osx_window.hpp>
 
 @implementation OSXWindow
 
 #pragma region actions
 
-- (void)show
-{
-    NSLog(@"Show");  
+- (void)show {
+    NSLog(@"Show");
 }
 
-- (void)hide
-{
+- (void)hide {
     NSLog(@"Hide");
 }
 
-- (void)focus
-{
+- (void)focus {
     NSLog(@"focus");
 }
 
-- (void)process_events
-{
+- (void)process_events {
     NSLog(@"process_events");
 }
 
