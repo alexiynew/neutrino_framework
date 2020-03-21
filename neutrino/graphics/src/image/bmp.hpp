@@ -36,7 +36,7 @@
 
 namespace framework::graphics::details::image::bmp
 {
-load_result_t load(const std::string& filename);
+LoadResult load(const std::string& filename);
 
 bool is_bmp(const std::string& filename);
 

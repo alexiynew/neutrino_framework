@@ -41,7 +41,7 @@ namespace framework::graphics::details::image
 {
 constexpr float32 default_gamma = 2.2f;
 
-struct image_info_t
+struct ImageInfo
 {
     int32 width  = 0;
     int32 height = 0;
@@ -49,8 +49,8 @@ struct image_info_t
     float32 gamma = default_gamma;
 };
 
-using image_data_t  = std::tuple<image_info_t, std::vector<color_t>>;
-using load_result_t = std::optional<image_data_t>;
+using ImageData  = std::tuple<ImageInfo, std::vector<Color>>;
+using LoadResult = std::optional<ImageData>;
 
 } // namespace framework::graphics::details::image
 

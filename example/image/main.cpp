@@ -336,18 +336,18 @@ struct object
     framework::graphics::mesh quad;
 };
 
-std::vector<framework::graphics::image> load_images(mode image_mode);
+std::vector<framework::graphics::Image> load_images(mode image_mode);
 void gl_error(const char* file, int line);
 framework::graphics::shader_program load_shader(const std::string& VertexShaderCode,
                                                 const std::string& FragmentShaderCode);
 framework::graphics::mesh make_quad(framework::int32 width, framework::int32 height);
-std::vector<object> generate_objects(const std::vector<framework::graphics::image>& images);
+std::vector<object> generate_objects(const std::vector<framework::graphics::Image>& images);
 void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height, framework::int32 scale);
 std::vector<object> load_textures(mode m);
 
-std::vector<framework::graphics::image> load_images(mode image_mode)
+std::vector<framework::graphics::Image> load_images(mode image_mode)
 {
-    std::vector<framework::graphics::image> images;
+    std::vector<framework::graphics::Image> images;
 
     const auto& names = [](mode m) {
         switch (m) {
@@ -359,7 +359,7 @@ std::vector<framework::graphics::image> load_images(mode image_mode)
     }(image_mode);
 
     std::transform(cbegin(names), cend(names), std::back_inserter(images), [](const std::string& name) {
-        framework::graphics::image img;
+        framework::graphics::Image img;
         img.load(name);
 
         return img;
@@ -450,12 +450,12 @@ framework::graphics::mesh make_quad(framework::int32 width, framework::int32 hei
     return m;
 }
 
-std::vector<object> generate_objects(const std::vector<framework::graphics::image>& images)
+std::vector<object> generate_objects(const std::vector<framework::graphics::Image>& images)
 {
     using namespace framework::graphics;
 
     std::vector<object> res;
-    transform(begin(images), end(images), back_inserter(res), [](const image& img) {
+    transform(begin(images), end(images), back_inserter(res), [](const Image& img) {
         texture tex(min_filter::nearest, mag_filter::nearest, wrap_s::clamp_to_edge, wrap_t::clamp_to_edge);
         tex.load(img.width(), img.height(), img.data());
 
@@ -497,7 +497,7 @@ void arrange(std::vector<object>& objects, framework::int32 width, framework::in
 
 std::vector<object> load_textures(mode m)
 {
-    std::vector<framework::graphics::image> images = load_images(m);
+    std::vector<framework::graphics::Image> images = load_images(m);
 
     if (images.empty()) {
         return std::vector<object>();
@@ -539,7 +539,7 @@ int main()
     mvp                = scale(mvp, {image_scale, image_scale, image_scale});
 
     // load all images
-    std::vector<image> images = load_images(mode::png);
+    std::vector<Image> images = load_images(mode::png);
 
     if (images.empty()) {
         return 0;

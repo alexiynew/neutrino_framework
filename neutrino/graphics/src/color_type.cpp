@@ -54,34 +54,34 @@ constexpr uint32 alpha_rgba8 = 0xFF;
 
 namespace framework::graphics
 {
-color_t::color_t(uint8 r_value, uint8 g_value, uint8 b_value, uint8 a_value)
+Color::Color(uint8 r_value, uint8 g_value, uint8 b_value, uint8 a_value)
     : r(r_value), g(g_value), b(b_value), a(a_value)
 {}
 
-color_t::color_t(float32 r_value, float32 g_value, float32 b_value, float32 a_value)
+Color::Color(float32 r_value, float32 g_value, float32 b_value, float32 a_value)
     : r(map(r_value)), g(map(g_value)), b(map(b_value)), a(map(a_value))
 {}
 
-color_t::color_t(uint16 value)
+Color::Color(uint16 value)
     : r(static_cast<uint8>((value & red_565) >> 11)),
       g(static_cast<uint8>((value & green_565) >> 5)),
       b(static_cast<uint8>(value & blue_565)),
       a(255)
 {}
 
-color_t::color_t(uint32 value)
+Color::Color(uint32 value)
     : r(static_cast<uint8>((value & red_rgba8) >> 24)),
       g(static_cast<uint8>((value & green_rgba8) >> 16)),
       b(static_cast<uint8>((value & blue_rgba8) >> 8)),
       a(static_cast<uint8>(value & alpha_rgba8))
 {}
 
-uint8* color_t::data()
+uint8* Color::data()
 {
     return &r;
 }
 
-const uint8* color_t::data() const
+const uint8* Color::data() const
 {
     return &r;
 }

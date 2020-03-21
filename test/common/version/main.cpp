@@ -40,16 +40,16 @@ public:
 private:
     void constructor()
     {
-        using framework::utils::version;
+        using framework::utils::Version;
 
-        version v1{1, 2, 3, 4};
+        Version v1{1, 2, 3, 4};
 
         TEST_ASSERT(v1.major_version == 1, "Wrong major version number.");
         TEST_ASSERT(v1.minor_version == 2, "Wrong minor version number.");
         TEST_ASSERT(v1.patch_version == 3, "Wrong patch version number.");
         TEST_ASSERT(v1.build_number == 4, "Wrong build version number.");
 
-        version v2{1, 2};
+        Version v2{1, 2};
 
         TEST_ASSERT(v2.major_version == 1, "Wrong major version number.");
         TEST_ASSERT(v2.minor_version == 2, "Wrong minor version number.");
@@ -59,30 +59,30 @@ private:
 
     void from_string()
     {
-        using framework::utils::version;
+        using framework::utils::Version;
 
-        version v1{"1.2.3.4"};
+        Version v1{"1.2.3.4"};
 
         TEST_ASSERT(v1.major_version == 1, "Wrong major version number.");
         TEST_ASSERT(v1.minor_version == 2, "Wrong minor version number.");
         TEST_ASSERT(v1.patch_version == 3, "Wrong patch version number.");
         TEST_ASSERT(v1.build_number == 4, "Wrong build version number.");
 
-        version v2{".1.2.3.4"};
+        Version v2{".1.2.3.4"};
 
         TEST_ASSERT(v2.major_version == 0, "Wrong major version number.");
         TEST_ASSERT(v2.minor_version == 1, "Wrong minor version number.");
         TEST_ASSERT(v2.patch_version == 2, "Wrong patch version number.");
         TEST_ASSERT(v2.build_number == 3, "Wrong build version number.");
 
-        version v3{"1.2."};
+        Version v3{"1.2."};
 
         TEST_ASSERT(v3.major_version == 1, "Wrong major version number.");
         TEST_ASSERT(v3.minor_version == 2, "Wrong minor version number.");
         TEST_ASSERT(v3.patch_version == 0, "Wrong patch version number.");
         TEST_ASSERT(v3.build_number == 0, "Wrong build version number.");
 
-        version v4{"1.2.3"};
+        Version v4{"1.2.3"};
 
         TEST_ASSERT(v4.major_version == 1, "Wrong major version number.");
         TEST_ASSERT(v4.minor_version == 2, "Wrong minor version number.");
@@ -92,43 +92,43 @@ private:
 
     void as_string()
     {
-        using framework::utils::version;
+        using framework::utils::Version;
 
-        version v1(1, 2, 3, 4);
+        Version v1(1, 2, 3, 4);
 
         TEST_ASSERT(v1.as_string() == "1.2.3.4", "Worng version number string.");
 
-        version v2(1, 2);
+        Version v2(1, 2);
 
         TEST_ASSERT(v2.as_string() == "1.2.0.0", "Worng version number string.");
     }
 
     void comparations()
     {
-        using framework::utils::version;
+        using framework::utils::Version;
 
-        version v1{1, 2, 3, 4};
-        version v2{1, 2, 3, 4};
+        Version v1{1, 2, 3, 4};
+        Version v2{1, 2, 3, 4};
 
         TEST_ASSERT(v1 == v2, "Should be equal.");
         TEST_ASSERT(!(v1 != v2), "Should be equal.");
 
-        version v3{100, 0};
+        Version v3{100, 0};
 
         TEST_ASSERT(v3 > v2, "Operator > failed.");
         TEST_ASSERT(v2 < v3, "Operator < failed.");
 
-        version v4{1, 200};
+        Version v4{1, 200};
 
         TEST_ASSERT(v4 > v2, "Operator > failed.");
         TEST_ASSERT(v2 < v4, "Operator < failed.");
 
-        version v5{1, 2, 300};
+        Version v5{1, 2, 300};
 
         TEST_ASSERT(v5 > v2, "Operator > failed.");
         TEST_ASSERT(v2 < v5, "Operator < failed.");
 
-        version v6{1, 2, 3, 400};
+        Version v6{1, 2, 3, 400};
 
         TEST_ASSERT(v6 > v2, "Operator > failed.");
         TEST_ASSERT(v2 < v6, "Operator < failed.");

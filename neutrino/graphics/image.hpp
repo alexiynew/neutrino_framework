@@ -36,42 +36,42 @@
 #include <common/types.hpp>
 #include <graphics/color_type.hpp>
 
-/// @brief Contains image classes.
+/// @brief Contains Image classes.
 namespace framework::graphics
 {
 /// @addtogroup graphics_module
 /// @{
 
-class image
+class Image
 {
 public:
-    enum class file_type
+    enum class FileType
     {
         bmp,
         png
     };
 
-    using data_t = std::vector<color_t>;
+    using data_t = std::vector<Color>;
 
-    image();
+    Image();
 
-    image(const data_t& data, int32 width, int32 height);
+    Image(const data_t& data, int32 width, int32 height);
 
-    image(const image&);
-    image& operator=(const image&);
+    Image(const Image&);
+    Image& operator=(const Image&);
 
-    image(image&&);
-    image& operator=(image&&);
+    Image(Image&&);
+    Image& operator=(Image&&);
 
     bool load(const std::string& filename);
-    bool load(const std::string& filename, file_type type);
+    bool load(const std::string& filename, FileType type);
 
     int32 width() const;
     int32 height() const;
 
     float32 gamma() const;
 
-    const color_t* data() const;
+    const Color* data() const;
 
 private:
     data_t m_data;

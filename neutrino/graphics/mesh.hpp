@@ -71,7 +71,7 @@ public:
     void load_texture_coord1(const std::vector<math::vector2f>& t_coord);
     void load_texture_coord2(const std::vector<math::vector2f>& t_coord);
 
-    void load_colors(const std::vector<color_t>& colors);
+    void load_colors(const std::vector<Color>& colors);
 
     void load_tangents(const std::vector<math::vector3f>& tangents);
 
