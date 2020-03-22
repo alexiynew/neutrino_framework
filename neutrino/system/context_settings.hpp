@@ -40,7 +40,7 @@ namespace framework::system
 
 /// @brief Graphic context settings.
 ///
-/// Structure to store context settings. Used by the @ref ::framework::system::window class to setup graphic context.
+/// Structure to store context settings. Used by the @ref framework::system::window class to setup graphic context.
 /// Context is always double-buffered and always RGB-capable.
 class ContextSettings
 {

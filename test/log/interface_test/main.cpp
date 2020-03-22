@@ -34,15 +34,15 @@
 #include <log/stream_logger.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::log::debug;
-using ::framework::log::error;
-using ::framework::log::fatal;
-using ::framework::log::info;
-using ::framework::log::warning;
+using framework::log::debug;
+using framework::log::error;
+using framework::log::fatal;
+using framework::log::info;
+using framework::log::warning;
 
-using ::framework::log::set_logger;
-using ::framework::log::severity_level;
-using ::framework::log::stream_logger;
+using framework::log::set_logger;
+using framework::log::severity_level;
+using framework::log::stream_logger;
 
 class logger_interface_test : public framework::unit_test::Suite
 {

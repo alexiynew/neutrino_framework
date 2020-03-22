@@ -106,16 +106,6 @@ void Window::process_events()
     m_platform_window->process_events();
 }
 
-void Window::make_current()
-{
-    m_platform_window->make_current();
-}
-
-void Window::swap_buffers()
-{
-    m_platform_window->swap_buffers();
-}
-
 #pragma endregion
 
 #pragma region setters
@@ -167,6 +157,11 @@ Size Window::min_size() const
 std::string Window::title() const
 {
     return m_platform_window->title();
+}
+
+Context& Window::context() const
+{
+    return m_platform_window->context();
 }
 
 #pragma endregion

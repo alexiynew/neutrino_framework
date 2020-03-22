@@ -35,6 +35,7 @@
 
 #include <common/position.hpp>
 #include <common/size.hpp>
+#include <system/context.hpp>
 #include <system/context_settings.hpp>
 #include <system/window.hpp>
 
@@ -67,8 +68,6 @@ public:
     virtual void resize(Size size)       = 0;
     virtual void move(Position position) = 0;
     virtual void process_events()        = 0;
-    virtual void make_current()          = 0;
-    virtual void swap_buffers()          = 0;
     /// @}
 
     /// @name setters
@@ -86,6 +85,7 @@ public:
     virtual Size max_size() const     = 0;
     virtual Size min_size() const     = 0;
     virtual std::string title() const = 0;
+    virtual Context& context() const  = 0;
     /// @}
 
     /// @name state

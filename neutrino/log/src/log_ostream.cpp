@@ -108,7 +108,7 @@ void log_buffer::flush_buffer()
         str += '\n';
     }
 
-    ::framework::log::logger()->add_message(m_level, m_tag, str);
+    framework::log::logger()->add_message(m_level, m_tag, str);
 }
 
 #pragma endregion

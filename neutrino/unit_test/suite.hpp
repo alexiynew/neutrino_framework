@@ -175,7 +175,7 @@ int32 run_tests(Arguments&&... tests)
     const int32 count = sizeof...(tests);
     int32 passed      = 0;
 
-    std::vector<::framework::unit_test::Suite*> tests_container{&tests...};
+    std::vector<framework::unit_test::Suite*> tests_container{&tests...};
 
     for (auto* test : tests_container) {
         test->run();

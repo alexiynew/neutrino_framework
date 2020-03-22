@@ -26,17 +26,17 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::uint32;
+using framework::uint32;
 
-using ::framework::math::vector2f;
-using ::framework::math::vector3f;
-using ::framework::math::vector4f;
+using framework::math::vector2f;
+using framework::math::vector3f;
+using framework::math::vector4f;
 
-using ::framework::math::vector2d;
-using ::framework::math::vector3d;
-using ::framework::math::vector4d;
+using framework::math::vector2d;
+using framework::math::vector3d;
+using framework::math::vector4d;
 
-using ::framework::math::almost_equal;
+using framework::math::almost_equal;
 
 class exponential_function_tests : public framework::unit_test::Suite
 {

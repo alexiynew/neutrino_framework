@@ -33,7 +33,8 @@
 #include <memory>
 #include <windows.h>
 
-#include <system/src/context.hpp>
+#include <system/context.hpp>
+#include <system/context_settings.hpp>
 #include <system/src/platform_window.hpp>
 
 namespace framework::system::details
@@ -59,17 +60,13 @@ public:
     void resize(Size size) override;
     void move(Position position) override;
     void process_events() override;
-    void make_current() override;
-    void swap_buffers() override;
     /// @}
 
     /// @name setters
     /// @{
     void set_max_size(Size max_size) override;
     void set_min_size(Size min_size) override;
-
     void set_resizable(bool value) override;
-
     void set_title(const std::string& title) override;
     /// @}
 
@@ -80,6 +77,7 @@ public:
     Size max_size() const override;
     Size min_size() const override;
     std::string title() const override;
+    Context& context() const override;
     /// @}
 
     /// @name state

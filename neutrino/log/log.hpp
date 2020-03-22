@@ -43,7 +43,7 @@
 /// TODO: Add details.
 ///
 /// The @ref log_module module provides a simple logging utility that you can use to output messages.@n
-/// The messages have associated `::framework::log::severity_level` that indicate their importance@n
+/// The messages have associated `framework::log::severity_level` that indicate their importance@n
 /// and @b tags that indicate their domain.
 ///
 /// To log message use one of the @ref log_interface_functions.@n
@@ -55,12 +55,12 @@
 /// @endcode
 ///
 /// By default there is no logger implementation, so no messages would be logged.@n
-/// You need to set logger by calling `::framework::log::set_logger` function.@n
-/// Provided logger should be derived from the `::framework::log::logger_base` class.@n
+/// You need to set logger by calling `framework::log::set_logger` function.@n
+/// Provided logger should be derived from the `framework::log::logger_base` class.@n
 /// @code
 /// class my_logger : public logger_base
 /// {
-///     void add_message(::framework::log::severity_level level,
+///     void add_message(framework::log::severity_level level,
 ///                      const std::string& tag,
 ///                      const std::string& message) override
 ///     {
@@ -71,7 +71,7 @@
 /// set_logger(std::make_unique<my_logger>());
 /// @endcode
 ///
-/// The @ref log_module module provides an implementation of logger: `::framework::log::stream_logger`@n
+/// The @ref log_module module provides an implementation of logger: `framework::log::stream_logger`@n
 /// that can output messages to any output stream.@n
 /// @code
 /// std::stringstream log_stream;

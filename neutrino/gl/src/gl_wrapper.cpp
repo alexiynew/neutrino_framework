@@ -1851,7 +1851,7 @@ namespace
 
 bool init_gl_version_1_0()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -1910,7 +1910,7 @@ bool init_gl_version_1_0()
 
 bool init_gl_version_1_1()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -1935,7 +1935,7 @@ bool init_gl_version_1_1()
 
 bool init_gl_version_1_2()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -1950,7 +1950,7 @@ bool init_gl_version_1_2()
 
 bool init_gl_version_1_3()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -1970,7 +1970,7 @@ bool init_gl_version_1_3()
 
 bool init_gl_version_1_4()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -1990,7 +1990,7 @@ bool init_gl_version_1_4()
 
 bool init_gl_version_1_5()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2020,7 +2020,7 @@ bool init_gl_version_1_5()
 
 bool init_gl_version_2_0()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2124,7 +2124,7 @@ bool init_gl_version_2_0()
 
 bool init_gl_version_2_1()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2141,7 +2141,7 @@ bool init_gl_version_2_1()
 
 bool init_gl_version_3_0()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2236,7 +2236,7 @@ bool init_gl_version_3_0()
 
 bool init_gl_version_3_1()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2259,7 +2259,7 @@ bool init_gl_version_3_1()
 
 bool init_gl_version_3_2()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2289,7 +2289,7 @@ bool init_gl_version_3_2()
 
 bool init_gl_version_3_3()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2328,7 +2328,7 @@ bool init_gl_version_3_3()
 
 bool init_gl_version_4_0()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2385,7 +2385,7 @@ bool init_gl_version_4_0()
 
 bool init_gl_version_4_1()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2484,7 +2484,7 @@ bool init_gl_version_4_1()
 
 bool init_gl_version_4_2()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2507,7 +2507,7 @@ bool init_gl_version_4_2()
 
 bool init_gl_version_4_3()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2561,7 +2561,7 @@ bool init_gl_version_4_3()
 
 bool init_gl_version_4_4()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2581,7 +2581,7 @@ bool init_gl_version_4_4()
 
 bool init_gl_version_4_5()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2702,7 +2702,7 @@ bool init_gl_version_4_5()
 
 bool init_gl_version_4_6()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2717,7 +2717,7 @@ bool init_gl_version_4_6()
 
 bool init_gl_arb_es3_2_compatibility()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2729,7 +2729,7 @@ bool init_gl_arb_es3_2_compatibility()
 
 bool init_gl_arb_bindless_texture()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2756,7 +2756,7 @@ bool init_gl_arb_bindless_texture()
 
 bool init_gl_arb_cl_event()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2768,7 +2768,7 @@ bool init_gl_arb_cl_event()
 
 bool init_gl_arb_compute_variable_group_size()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2780,7 +2780,7 @@ bool init_gl_arb_compute_variable_group_size()
 
 bool init_gl_arb_debug_output()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2795,7 +2795,7 @@ bool init_gl_arb_debug_output()
 
 bool init_gl_arb_draw_buffers_blend()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2810,7 +2810,7 @@ bool init_gl_arb_draw_buffers_blend()
 
 bool init_gl_arb_draw_instanced()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2823,7 +2823,7 @@ bool init_gl_arb_draw_instanced()
 
 bool init_gl_arb_geometry_shader4()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2838,7 +2838,7 @@ bool init_gl_arb_geometry_shader4()
 
 bool init_gl_arb_gl_spirv()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2850,7 +2850,7 @@ bool init_gl_arb_gl_spirv()
 
 bool init_gl_arb_gpu_shader_int64()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2897,7 +2897,7 @@ bool init_gl_arb_gpu_shader_int64()
 
 bool init_gl_arb_indirect_parameters()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2910,7 +2910,7 @@ bool init_gl_arb_indirect_parameters()
 
 bool init_gl_arb_instanced_arrays()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2922,7 +2922,7 @@ bool init_gl_arb_instanced_arrays()
 
 bool init_gl_arb_parallel_shader_compile()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2934,7 +2934,7 @@ bool init_gl_arb_parallel_shader_compile()
 
 bool init_gl_arb_robustness()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2953,7 +2953,7 @@ bool init_gl_arb_robustness()
 
 bool init_gl_arb_sample_locations()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2967,7 +2967,7 @@ bool init_gl_arb_sample_locations()
 
 bool init_gl_arb_sample_shading()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2979,7 +2979,7 @@ bool init_gl_arb_sample_shading()
 
 bool init_gl_arb_shading_language_include()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -2996,7 +2996,7 @@ bool init_gl_arb_shading_language_include()
 
 bool init_gl_arb_sparse_buffer()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3010,7 +3010,7 @@ bool init_gl_arb_sparse_buffer()
 
 bool init_gl_arb_sparse_texture()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3022,7 +3022,7 @@ bool init_gl_arb_sparse_texture()
 
 bool init_gl_arb_texture_buffer_object()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3034,7 +3034,7 @@ bool init_gl_arb_texture_buffer_object()
 
 bool init_gl_khr_blend_equation_advanced()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3046,7 +3046,7 @@ bool init_gl_khr_blend_equation_advanced()
 
 bool init_gl_khr_parallel_shader_compile()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3058,7 +3058,7 @@ bool init_gl_khr_parallel_shader_compile()
 
 bool init_gl_amd_framebuffer_multisample_advanced()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3071,7 +3071,7 @@ bool init_gl_amd_framebuffer_multisample_advanced()
 
 bool init_gl_amd_performance_monitor()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3093,7 +3093,7 @@ bool init_gl_amd_performance_monitor()
 
 bool init_gl_ext_egl_image_storage()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3106,7 +3106,7 @@ bool init_gl_ext_egl_image_storage()
 
 bool init_gl_ext_debug_label()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3119,7 +3119,7 @@ bool init_gl_ext_debug_label()
 
 bool init_gl_ext_debug_marker()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3133,7 +3133,7 @@ bool init_gl_ext_debug_marker()
 
 bool init_gl_ext_direct_state_access()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3399,7 +3399,7 @@ bool init_gl_ext_direct_state_access()
 
 bool init_gl_ext_draw_instanced()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3412,7 +3412,7 @@ bool init_gl_ext_draw_instanced()
 
 bool init_gl_ext_polygon_offset_clamp()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3424,7 +3424,7 @@ bool init_gl_ext_polygon_offset_clamp()
 
 bool init_gl_ext_raster_multisample()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3436,7 +3436,7 @@ bool init_gl_ext_raster_multisample()
 
 bool init_gl_ext_separate_shader_objects()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3450,7 +3450,7 @@ bool init_gl_ext_separate_shader_objects()
 
 bool init_gl_ext_shader_framebuffer_fetch_non_coherent()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3462,7 +3462,7 @@ bool init_gl_ext_shader_framebuffer_fetch_non_coherent()
 
 bool init_gl_ext_window_rectangles()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3474,7 +3474,7 @@ bool init_gl_ext_window_rectangles()
 
 bool init_gl_intel_framebuffer_cmaa()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3486,7 +3486,7 @@ bool init_gl_intel_framebuffer_cmaa()
 
 bool init_gl_intel_performance_query()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3507,7 +3507,7 @@ bool init_gl_intel_performance_query()
 
 bool init_gl_nv_bindless_multi_draw_indirect()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3520,7 +3520,7 @@ bool init_gl_nv_bindless_multi_draw_indirect()
 
 bool init_gl_nv_bindless_multi_draw_indirect_count()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3533,7 +3533,7 @@ bool init_gl_nv_bindless_multi_draw_indirect_count()
 
 bool init_gl_nv_bindless_texture()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3557,7 +3557,7 @@ bool init_gl_nv_bindless_texture()
 
 bool init_gl_nv_blend_equation_advanced()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3570,7 +3570,7 @@ bool init_gl_nv_blend_equation_advanced()
 
 bool init_gl_nv_clip_space_w_scaling()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3582,7 +3582,7 @@ bool init_gl_nv_clip_space_w_scaling()
 
 bool init_gl_nv_command_list()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3610,7 +3610,7 @@ bool init_gl_nv_command_list()
 
 bool init_gl_nv_conditional_render()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3623,7 +3623,7 @@ bool init_gl_nv_conditional_render()
 
 bool init_gl_nv_conservative_raster()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3635,7 +3635,7 @@ bool init_gl_nv_conservative_raster()
 
 bool init_gl_nv_conservative_raster_dilate()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3647,7 +3647,7 @@ bool init_gl_nv_conservative_raster_dilate()
 
 bool init_gl_nv_conservative_raster_pre_snap_triangles()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3659,7 +3659,7 @@ bool init_gl_nv_conservative_raster_pre_snap_triangles()
 
 bool init_gl_nv_draw_vulkan_image()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3675,7 +3675,7 @@ bool init_gl_nv_draw_vulkan_image()
 
 bool init_gl_nv_fragment_coverage_to_color()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3687,7 +3687,7 @@ bool init_gl_nv_fragment_coverage_to_color()
 
 bool init_gl_nv_framebuffer_mixed_samples()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3701,7 +3701,7 @@ bool init_gl_nv_framebuffer_mixed_samples()
 
 bool init_gl_nv_framebuffer_multisample_coverage()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3713,7 +3713,7 @@ bool init_gl_nv_framebuffer_multisample_coverage()
 
 bool init_gl_nv_gpu_shader5()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3757,7 +3757,7 @@ bool init_gl_nv_gpu_shader5()
 
 bool init_gl_nv_internalformat_sample_query()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3769,7 +3769,7 @@ bool init_gl_nv_internalformat_sample_query()
 
 bool init_gl_nv_path_rendering()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3837,7 +3837,7 @@ bool init_gl_nv_path_rendering()
 
 bool init_gl_nv_sample_locations()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3851,7 +3851,7 @@ bool init_gl_nv_sample_locations()
 
 bool init_gl_nv_shader_buffer_load()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3876,7 +3876,7 @@ bool init_gl_nv_shader_buffer_load()
 
 bool init_gl_nv_texture_barrier()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3888,7 +3888,7 @@ bool init_gl_nv_texture_barrier()
 
 bool init_gl_nv_vertex_attrib_integer_64bit()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3918,7 +3918,7 @@ bool init_gl_nv_vertex_attrib_integer_64bit()
 
 bool init_gl_nv_vertex_buffer_unified_memory()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3941,7 +3941,7 @@ bool init_gl_nv_vertex_buffer_unified_memory()
 
 bool init_gl_nv_viewport_swizzle()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -3953,7 +3953,7 @@ bool init_gl_nv_viewport_swizzle()
 
 bool init_gl_ovr_multiview()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off

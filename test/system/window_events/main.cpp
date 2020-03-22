@@ -34,9 +34,9 @@
 
 namespace
 {
-using ::framework::system::KeyCode;
-using ::framework::system::Modifiers;
-using ::framework::system::MouseButton;
+using framework::system::KeyCode;
+using framework::system::Modifiers;
+using framework::system::MouseButton;
 
 std::string key_name(KeyCode key)
 {
@@ -236,7 +236,7 @@ private:
         using namespace framework;
         using namespace framework::system;
 
-        framework::log::set_logger(std::make_unique<::framework::log::stream_logger>(std::cout));
+        framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
 
         const Size size640{640, 480};
 

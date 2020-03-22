@@ -35,7 +35,7 @@
 #include <common/types.hpp>
 #include <system/context_settings.hpp>
 
-namespace framework::system::details
+namespace framework::system
 {
 class Context
 {
@@ -61,6 +61,6 @@ private:
     ContextSettings m_settings;
 };
 
-} // namespace framework::system::details
+} // namespace framework::system
 
 #endif

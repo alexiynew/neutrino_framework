@@ -71,10 +71,10 @@ inline R pow(const T& base, const U& exponent)
 template <uint32 N,
           typename T,
           typename U,
-          typename R = decltype(::framework::math::pow(std::declval<T>(), std::declval<U>()))>
+          typename R = decltype(framework::math::pow(std::declval<T>(), std::declval<U>()))>
 inline vector<N, R> pow(const vector<N, T>& base, const vector<N, U>& exponent)
 {
-    return transform(base, exponent, ::framework::math::pow<T, U>);
+    return transform(base, exponent, framework::math::pow<T, U>);
 }
 /// @}
 
@@ -99,10 +99,10 @@ inline R exp(const T& exponent)
 /// @return Vector of values that are equal to Euler's number raised to the given power (e ^ exponent).
 ///
 /// @see exp
-template <uint32 N, typename T, typename R = decltype(::framework::math::exp(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::exp(std::declval<T>()))>
 inline vector<N, R> exp(const vector<N, T>& exponent)
 {
-    return transform(exponent, ::framework::math::exp<T>);
+    return transform(exponent, framework::math::exp<T>);
 }
 /// @}
 
@@ -127,10 +127,10 @@ inline R exp2(const T& exponent)
 /// @return Vector of values that are equal to 2 raised to the given power (2 ^ exponent).
 ///
 /// @see exp2
-template <uint32 N, typename T, typename R = decltype(::framework::math::exp2(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::exp2(std::declval<T>()))>
 inline vector<N, R> exp2(const vector<N, T>& exponent)
 {
-    return transform(exponent, ::framework::math::exp2<T>);
+    return transform(exponent, framework::math::exp2<T>);
 }
 /// @}
 
@@ -155,10 +155,10 @@ inline R log(const T& value)
 /// @return Vector of values that are equal to the natural logarithm of the corresponding component.
 ///
 /// @see log
-template <uint32 N, typename T, typename R = decltype(::framework::math::log(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::log(std::declval<T>()))>
 inline vector<N, R> log(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::log<T>);
+    return transform(value, framework::math::log<T>);
 }
 /// @}
 
@@ -183,10 +183,10 @@ inline R log2(const T& value)
 /// @return Vector of values that are equal to the binary logarithm of the corresponding component.
 ///
 /// @see log2
-template <uint32 N, typename T, typename R = decltype(::framework::math::log2(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::log2(std::declval<T>()))>
 inline vector<N, R> log2(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::log2<T>);
+    return transform(value, framework::math::log2<T>);
 }
 /// @}
 
@@ -211,10 +211,10 @@ inline R sqrt(const T& value)
 /// @return Vector of values that are equal to the square root of the corresponding component.
 ///
 /// @see sqrt
-template <uint32 N, typename T, typename R = decltype(::framework::math::sqrt(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::sqrt(std::declval<T>()))>
 inline vector<N, R> sqrt(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::sqrt<T>);
+    return transform(value, framework::math::sqrt<T>);
 }
 /// @}
 
@@ -239,10 +239,10 @@ inline R invsqrt(const T& value)
 /// @return Vector of values that are equal to the inverse square root of the corresponding component.
 ///
 /// @see invsqrt
-template <uint32 N, typename T, typename R = decltype(::framework::math::invsqrt(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::invsqrt(std::declval<T>()))>
 inline vector<N, R> invsqrt(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::invsqrt<T>);
+    return transform(value, framework::math::invsqrt<T>);
 }
 /// @}
 

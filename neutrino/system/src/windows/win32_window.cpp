@@ -351,16 +351,6 @@ void Win32Window::process_events()
     }
 }
 
-void Win32Window::make_current()
-{
-    m_context->make_current();
-}
-
-void Win32Window::swap_buffers()
-{
-    m_context->swap_buffers();
-}
-
 #pragma endregion
 
 #pragma region setters
@@ -441,6 +431,15 @@ std::string Win32Window::title() const
     GetWindowText(m_window, buffer.get(), title_length);
 
     return utf16_to_utf8(buffer.get());
+}
+
+Context& Win32Window::context() const
+{
+    if (m_context == nullptr) {
+        throw std::runtime_error("Graphic context was not created.");
+    }
+
+    return *(m_context.get());
 }
 
 #pragma endregion

@@ -39,12 +39,12 @@ public:
 private:
     void random_numbers()
     {
-        using ::framework::float32;
-        using ::framework::float64;
-        using ::framework::int32;
-        using ::framework::uint16;
+        using framework::float32;
+        using framework::float64;
+        using framework::int32;
+        using framework::uint16;
 
-        using ::framework::utils::random_numbers;
+        using framework::utils::random_numbers;
 
         const auto no_numbers = random_numbers<float32>(-1000.0f, 1000.0f, 0);
         TEST_ASSERT(no_numbers.size() == 0, "Wrond numbers count.");

@@ -26,27 +26,27 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::math::vector2f;
-using ::framework::math::vector3f;
-using ::framework::math::vector4f;
+using framework::math::vector2f;
+using framework::math::vector3f;
+using framework::math::vector4f;
 
-using ::framework::math::vector2d;
-using ::framework::math::vector3d;
-using ::framework::math::vector4d;
+using framework::math::vector2d;
+using framework::math::vector3d;
+using framework::math::vector4d;
 
-using ::framework::math::vector2i;
-using ::framework::math::vector3i;
-using ::framework::math::vector4i;
+using framework::math::vector2i;
+using framework::math::vector3i;
+using framework::math::vector4i;
 
-using ::framework::math::vector2u;
-using ::framework::math::vector3u;
-using ::framework::math::vector4u;
+using framework::math::vector2u;
+using framework::math::vector3u;
+using framework::math::vector4u;
 
-using ::framework::math::vector2b;
-using ::framework::math::vector3b;
-using ::framework::math::vector4b;
+using framework::math::vector2b;
+using framework::math::vector3b;
+using framework::math::vector4b;
 
-using ::framework::math::mix;
+using framework::math::mix;
 
 class common_function_tests : public framework::unit_test::Suite
 {

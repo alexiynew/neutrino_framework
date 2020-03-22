@@ -26,31 +26,31 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::math::matrix2x2f;
-using ::framework::math::matrix2x3f;
-using ::framework::math::matrix2x4f;
-using ::framework::math::matrix3x2f;
-using ::framework::math::matrix3x3f;
-using ::framework::math::matrix3x4f;
-using ::framework::math::matrix4x2f;
-using ::framework::math::matrix4x3f;
-using ::framework::math::matrix4x4f;
+using framework::math::matrix2x2f;
+using framework::math::matrix2x3f;
+using framework::math::matrix2x4f;
+using framework::math::matrix3x2f;
+using framework::math::matrix3x3f;
+using framework::math::matrix3x4f;
+using framework::math::matrix4x2f;
+using framework::math::matrix4x3f;
+using framework::math::matrix4x4f;
 
-using ::framework::math::matrix2f;
-using ::framework::math::matrix3f;
-using ::framework::math::matrix4f;
+using framework::math::matrix2f;
+using framework::math::matrix3f;
+using framework::math::matrix4f;
 
-using ::framework::math::vector2d;
-using ::framework::math::vector2f;
-using ::framework::math::vector2i;
-using ::framework::math::vector3d;
-using ::framework::math::vector3f;
-using ::framework::math::vector3i;
-using ::framework::math::vector4d;
-using ::framework::math::vector4f;
-using ::framework::math::vector4i;
+using framework::math::vector2d;
+using framework::math::vector2f;
+using framework::math::vector2i;
+using framework::math::vector3d;
+using framework::math::vector3f;
+using framework::math::vector3i;
+using framework::math::vector4d;
+using framework::math::vector4f;
+using framework::math::vector4i;
 
-using ::framework::float32;
+using framework::float32;
 
 class matrix_test : public framework::unit_test::Suite
 {

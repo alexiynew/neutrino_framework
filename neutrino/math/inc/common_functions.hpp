@@ -75,7 +75,7 @@ inline constexpr T abs(const T& value)
 template <uint32 N, typename T>
 inline constexpr vector<N, T> abs(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::abs<T>);
+    return transform(value, framework::math::abs<T>);
 }
 /// @}
 
@@ -103,7 +103,7 @@ inline constexpr T sign(const T& value)
 template <uint32 N, typename T>
 inline constexpr vector<N, T> sign(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::sign<T>);
+    return transform(value, framework::math::sign<T>);
 }
 /// @}
 
@@ -128,10 +128,10 @@ inline R floor(const T& value)
 /// @return A vector of values that are the largest integer value not greater than argument.
 ///
 /// @see floor
-template <uint32 N, typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::floor(std::declval<T>()))>
 inline vector<N, R> floor(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::floor<T>);
+    return transform(value, framework::math::floor<T>);
 }
 /// @}
 
@@ -156,10 +156,10 @@ inline R round(const T& value)
 /// @return A vector of values that are equal to the nearest integer to the argument.
 ///
 /// @see round
-template <uint32 N, typename T, typename R = decltype(::framework::math::round(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::round(std::declval<T>()))>
 inline vector<N, R> round(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::round<T>);
+    return transform(value, framework::math::round<T>);
 }
 /// @}
 
@@ -184,10 +184,10 @@ inline R ceil(const T& value)
 /// @return A vector of values that are greater than or equal to the argument.
 ///
 /// @see ceil
-template <uint32 N, typename T, typename R = decltype(::framework::math::ceil(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::ceil(std::declval<T>()))>
 inline vector<N, R> ceil(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::ceil<T>);
+    return transform(value, framework::math::ceil<T>);
 }
 /// @}
 
@@ -212,10 +212,10 @@ inline R trunc(const T& value)
 /// @return A vector of values that are not greater in magnitude than argument.
 ///
 /// @see trunc
-template <uint32 N, typename T, typename R = decltype(::framework::math::trunc(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::trunc(std::declval<T>()))>
 inline vector<N, R> trunc(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::trunc<T>);
+    return transform(value, framework::math::trunc<T>);
 }
 /// @}
 
@@ -227,10 +227,10 @@ inline vector<N, R> trunc(const vector<N, T>& value)
 /// @param value Value of floating-point type.
 ///
 /// @return The fractional part of the argument.
-template <typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+template <typename T, typename R = decltype(framework::math::floor(std::declval<T>()))>
 inline R fract(const T& value)
 {
-    return static_cast<R>(value) - ::framework::math::floor(value);
+    return static_cast<R>(value) - framework::math::floor(value);
 }
 
 /// @brief Creates a vector of the fractional parts of the argument.
@@ -240,10 +240,10 @@ inline R fract(const T& value)
 /// @return A vector of the fractional parts.
 ///
 /// @see fract
-template <uint32 N, typename T, typename R = decltype(::framework::math::fract(std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::fract(std::declval<T>()))>
 inline vector<N, R> fract(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::fract<T>);
+    return transform(value, framework::math::fract<T>);
 }
 /// @}
 
@@ -259,10 +259,10 @@ inline vector<N, R> fract(const vector<N, T>& value)
 /// @param b Value of floating-point or integral type.
 ///
 /// @return The floating-point remainder of the division operation.
-template <typename T, typename R = decltype(::framework::math::floor(std::declval<T>()))>
+template <typename T, typename R = decltype(framework::math::floor(std::declval<T>()))>
 inline R mod(const T& a, const T& b)
 {
-    return static_cast<R>(a) - b * ::framework::math::floor(static_cast<R>(a) / b);
+    return static_cast<R>(a) - b * framework::math::floor(static_cast<R>(a) / b);
 }
 
 /// @brief Modulus for vector and scalar. Applies the mod function to every component of the vector.
@@ -273,10 +273,10 @@ inline R mod(const T& a, const T& b)
 /// @return A vector of the floating-point remainder of the division operation.
 ///
 /// @see mod
-template <uint32 N, typename T, typename R = decltype(::framework::math::mod(std::declval<T>(), std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::mod(std::declval<T>(), std::declval<T>()))>
 inline vector<N, R> mod(const vector<N, T>& a, const T& b)
 {
-    return transform(a, vector<N, T>{b}, ::framework::math::mod<T>);
+    return transform(a, vector<N, T>{b}, framework::math::mod<T>);
 }
 
 /// @brief Modulus for vectors. Applies the mod function to every component of the vector.
@@ -287,10 +287,10 @@ inline vector<N, R> mod(const vector<N, T>& a, const T& b)
 /// @return A vector of the floating-point remainder of the division operation.
 ///
 /// @see mod
-template <uint32 N, typename T, typename R = decltype(::framework::math::mod(std::declval<T>(), std::declval<T>()))>
+template <uint32 N, typename T, typename R = decltype(framework::math::mod(std::declval<T>(), std::declval<T>()))>
 inline vector<N, R> mod(const vector<N, T>& a, const vector<N, T>& b)
 {
-    return transform(a, b, ::framework::math::mod<T>);
+    return transform(a, b, framework::math::mod<T>);
 }
 /// @}
 
@@ -352,7 +352,7 @@ inline T min(const T& a, const T& b)
 template <uint32 N, typename T>
 inline constexpr vector<N, T> min(const vector<N, T>& a, const T& b)
 {
-    return transform(a, vector<N, T>{b}, ::framework::math::min<T>);
+    return transform(a, vector<N, T>{b}, framework::math::min<T>);
 }
 
 /// @brief Compares two vectors by components and return a vector of smaller values.
@@ -366,7 +366,7 @@ inline constexpr vector<N, T> min(const vector<N, T>& a, const T& b)
 template <uint32 N, typename T>
 inline constexpr vector<N, T> min(const vector<N, T>& a, const vector<N, T>& b)
 {
-    return transform(a, b, ::framework::math::min<T>);
+    return transform(a, b, framework::math::min<T>);
 }
 /// @}
 
@@ -396,7 +396,7 @@ inline T max(const T& a, const T& b)
 template <uint32 N, typename T>
 inline constexpr vector<N, T> max(const vector<N, T>& a, const T& b)
 {
-    return transform(a, vector<N, T>{b}, ::framework::math::max<T>);
+    return transform(a, vector<N, T>{b}, framework::math::max<T>);
 }
 
 /// @brief Compares two vectors by components and return a vector of greater values.
@@ -410,7 +410,7 @@ inline constexpr vector<N, T> max(const vector<N, T>& a, const T& b)
 template <uint32 N, typename T>
 inline constexpr vector<N, T> max(const vector<N, T>& a, const vector<N, T>& b)
 {
-    return transform(a, b, ::framework::math::max<T>);
+    return transform(a, b, framework::math::max<T>);
 }
 /// @}
 
@@ -430,7 +430,7 @@ inline constexpr vector<N, T> max(const vector<N, T>& a, const vector<N, T>& b)
 template <typename T>
 inline T clamp(const T& value, const T& min_value, const T& max_value)
 {
-    return ::framework::math::min(::framework::math::max(value, min_value), max_value);
+    return framework::math::min(framework::math::max(value, min_value), max_value);
 }
 
 /// @brief Constrain each component of the value to lie between two defined values.
@@ -445,7 +445,7 @@ inline T clamp(const T& value, const T& min_value, const T& max_value)
 template <uint32 N, typename T>
 inline vector<N, T> clamp(const vector<N, T>& value, const T& min_value, const T& max_value)
 {
-    return ::framework::math::min(::framework::math::max(value, min_value), max_value);
+    return framework::math::min(framework::math::max(value, min_value), max_value);
 }
 
 /// @brief Constrain each component of the value to lie between two defined values.
@@ -460,7 +460,7 @@ inline vector<N, T> clamp(const vector<N, T>& value, const T& min_value, const T
 template <uint32 N, typename T>
 inline vector<N, T> clamp(const vector<N, T>& value, const vector<N, T>& min_value, const vector<N, T>& max_value)
 {
-    return ::framework::math::min(::framework::math::max(value, min_value), max_value);
+    return framework::math::min(framework::math::max(value, min_value), max_value);
 }
 /// @}
 
@@ -543,7 +543,7 @@ inline T step(const T& value, const T& edge)
 template <uint32 N, typename T>
 inline vector<N, T> step(const vector<N, T>& value, const T& edge)
 {
-    return transform(value, vector<N, T>{edge}, ::framework::math::step<T>);
+    return transform(value, vector<N, T>{edge}, framework::math::step<T>);
 }
 
 /// @brief Generate a step function by comparing two values.
@@ -555,7 +555,7 @@ inline vector<N, T> step(const vector<N, T>& value, const T& edge)
 template <uint32 N, typename T>
 inline vector<N, T> step(const vector<N, T>& value, const vector<N, T>& edge)
 {
-    return transform(value, edge, ::framework::math::step<T>);
+    return transform(value, edge, framework::math::step<T>);
 }
 /// @}
 
@@ -640,7 +640,7 @@ inline bool isnan(const T& value)
 template <uint32 N, typename T>
 inline vector<N, bool> isnan(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::isnan<T>);
+    return transform(value, framework::math::isnan<T>);
 }
 /// @}
 
@@ -666,7 +666,7 @@ inline bool isinf(const T& value)
 template <uint32 N, typename T>
 inline constexpr vector<N, bool> isinf(const vector<N, T>& value)
 {
-    return transform(value, ::framework::math::isinf<T>);
+    return transform(value, framework::math::isinf<T>);
 }
 /// @}
 
@@ -756,7 +756,7 @@ inline R ldexp(const T& value, const int32 exp)
 template <uint32 N, typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int32>()))>
 inline vector<N, R> ldexp(const vector<N, T>& value, const vector<N, int32>& exp)
 {
-    return transform(value, exp, ::framework::math::ldexp<T>);
+    return transform(value, exp, framework::math::ldexp<T>);
 }
 /// @}
 

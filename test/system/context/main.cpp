@@ -50,7 +50,7 @@ private:
 
         Window main_window({640, 480}, "Context test");
 
-        main_window.make_current();
+        main_window.context().make_current();
 
         main_window.show();
 
@@ -63,7 +63,7 @@ private:
             framework::gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             framework::gl::glClear(GL_COLOR_BUFFER_BIT);
 
-            main_window.swap_buffers();
+            main_window.context().swap_buffers();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
 

@@ -389,7 +389,7 @@ namespace
 
 bool init_wgl_arb_buffer_region()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -404,7 +404,7 @@ bool init_wgl_arb_buffer_region()
 
 bool init_wgl_arb_create_context()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -416,7 +416,7 @@ bool init_wgl_arb_create_context()
 
 bool init_wgl_arb_extensions_string()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -428,7 +428,7 @@ bool init_wgl_arb_extensions_string()
 
 bool init_wgl_arb_make_current_read()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -441,7 +441,7 @@ bool init_wgl_arb_make_current_read()
 
 bool init_wgl_arb_pbuffer()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -457,7 +457,7 @@ bool init_wgl_arb_pbuffer()
 
 bool init_wgl_arb_pixel_format()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -471,7 +471,7 @@ bool init_wgl_arb_pixel_format()
 
 bool init_wgl_arb_render_texture()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -485,7 +485,7 @@ bool init_wgl_arb_render_texture()
 
 bool init_wgl_3dl_stereo_control()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -497,7 +497,7 @@ bool init_wgl_3dl_stereo_control()
 
 bool init_wgl_amd_gpu_association()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -517,7 +517,7 @@ bool init_wgl_amd_gpu_association()
 
 bool init_wgl_ext_display_color_table()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -532,7 +532,7 @@ bool init_wgl_ext_display_color_table()
 
 bool init_wgl_ext_extensions_string()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -544,7 +544,7 @@ bool init_wgl_ext_extensions_string()
 
 bool init_wgl_ext_make_current_read()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -557,7 +557,7 @@ bool init_wgl_ext_make_current_read()
 
 bool init_wgl_ext_pbuffer()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -573,7 +573,7 @@ bool init_wgl_ext_pbuffer()
 
 bool init_wgl_ext_pixel_format()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -587,7 +587,7 @@ bool init_wgl_ext_pixel_format()
 
 bool init_wgl_ext_swap_control()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -600,7 +600,7 @@ bool init_wgl_ext_swap_control()
 
 bool init_wgl_i3d_digital_video_control()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -613,7 +613,7 @@ bool init_wgl_i3d_digital_video_control()
 
 bool init_wgl_i3d_gamma()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -628,7 +628,7 @@ bool init_wgl_i3d_gamma()
 
 bool init_wgl_i3d_genlock()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -651,7 +651,7 @@ bool init_wgl_i3d_genlock()
 
 bool init_wgl_i3d_image_buffer()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -666,7 +666,7 @@ bool init_wgl_i3d_image_buffer()
 
 bool init_wgl_i3d_swap_frame_lock()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -681,7 +681,7 @@ bool init_wgl_i3d_swap_frame_lock()
 
 bool init_wgl_i3d_swap_frame_usage()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -696,7 +696,7 @@ bool init_wgl_i3d_swap_frame_usage()
 
 bool init_wgl_nv_dx_interop()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -715,7 +715,7 @@ bool init_wgl_nv_dx_interop()
 
 bool init_wgl_nv_copy_image()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -727,7 +727,7 @@ bool init_wgl_nv_copy_image()
 
 bool init_wgl_nv_delay_before_swap()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -739,7 +739,7 @@ bool init_wgl_nv_delay_before_swap()
 
 bool init_wgl_nv_gpu_affinity()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -755,7 +755,7 @@ bool init_wgl_nv_gpu_affinity()
 
 bool init_wgl_nv_present_video()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -769,7 +769,7 @@ bool init_wgl_nv_present_video()
 
 bool init_wgl_nv_swap_group()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -786,7 +786,7 @@ bool init_wgl_nv_swap_group()
 
 bool init_wgl_nv_vertex_array_range()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -799,7 +799,7 @@ bool init_wgl_nv_vertex_array_range()
 
 bool init_wgl_nv_video_capture()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -815,7 +815,7 @@ bool init_wgl_nv_video_capture()
 
 bool init_wgl_nv_video_output()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off
@@ -832,7 +832,7 @@ bool init_wgl_nv_video_output()
 
 bool init_wgl_oml_sync_control()
 {
-    using ::framework::gl::details::get_function;
+    using framework::gl::details::get_function;
     bool result = true;
 
     // clang-format off

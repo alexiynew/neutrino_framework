@@ -29,7 +29,6 @@
 
 #include <stdexcept>
 
-#include <gl/gl.hpp>
 #include <gl/wglext.hpp>
 #include <system/src/windows/win32_wgl_context.hpp>
 
@@ -71,7 +70,6 @@ Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window) :
     wglMakeCurrent(m_hdc, hglrc);
 
     gl::wgl::init_wgl();
-    gl::init();
 
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(hglrc);

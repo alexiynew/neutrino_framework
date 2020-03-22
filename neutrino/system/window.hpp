@@ -36,6 +36,7 @@
 #include <common/position.hpp>
 #include <common/signal.hpp>
 #include <common/size.hpp>
+#include <system/context.hpp>
 #include <system/context_settings.hpp>
 #include <system/keyboard.hpp>
 #include <system/mouse.hpp>
@@ -137,13 +138,6 @@ public:
 
     /// @brief Pull all system events and process it.
     void process_events();
-
-    /// @brief Marks the window as target for drawing operations.
-    void make_current();
-
-    /// @brief Shows on window what has been drawed.
-    void swap_buffers();
-
     /// @}
 
     /// @name setters
@@ -201,6 +195,11 @@ public:
     ///
     /// @return Current window title.
     std::string title() const;
+
+    /// @brief Window context.
+    ///
+    /// @return Window context.
+    Context& Window::context() const;
 
     /// @name state
     /// @{

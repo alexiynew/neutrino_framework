@@ -42,7 +42,7 @@
 ///
 /// @warning Only OpenGL core profile is supporteed.
 ///
-/// Before using any functions the ::framework::opengl::init function must be called.
+/// Before using any functions the framework::opengl::init function must be called.
 /// After initialization any supported functions will get their address and can be used.
 /// Which of them will be available depends on the current user platform, video card, and video drivers.
 ///
@@ -55,7 +55,7 @@
 /// @code
 /// using namespace framework::opengl;
 ///
-/// ::framework::opengl::init();
+/// framework::opengl::init();
 ///
 /// // check if specific version supported
 /// if (gl_version_3_2_supported) {

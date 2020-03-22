@@ -29,9 +29,9 @@
 
 #include <utility>
 
-#include <system/src/context.hpp>
+#include <system/context.hpp>
 
-namespace framework::system::details
+namespace framework::system
 {
 Context::Context(ContextSettings settings) noexcept : m_settings(std::move(settings))
 {}
@@ -43,4 +43,4 @@ const ContextSettings& Context::settings() const
     return m_settings;
 }
 
-} // namespace framework::system::details
+} // namespace framework::system

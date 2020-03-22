@@ -55,7 +55,7 @@ namespace framework::math
 template <uint32 N, typename T>
 inline T length(const vector<N, T>& value)
 {
-    return static_cast<T>(::framework::math::sqrt(geometric_functions_details::dot(value, value)));
+    return static_cast<T>(framework::math::sqrt(geometric_functions_details::dot(value, value)));
 }
 /// @}
 
@@ -122,7 +122,7 @@ inline vector<3, T> cross(const vector<3, T>& a, const vector<3, T>& b)
 template <uint32 N, typename T>
 inline vector<N, T> normalize(const vector<N, T>& value)
 {
-    return value * ::framework::math::invsqrt(dot(value, value));
+    return value * framework::math::invsqrt(dot(value, value));
 }
 /// @}
 
@@ -196,7 +196,7 @@ inline vector<N, T> refract(const vector<N, T>& incident, const vector<N, T>& no
     const T dot_value   = dot(normal, incident);
     const T coefficient = T{1} - eta * eta * (T{1} - dot_value * dot_value);
     return coefficient < T{0} ? vector<N, T>(0)
-                              : eta * incident - (eta * dot_value + ::framework::math::sqrt(coefficient)) * normal;
+                              : eta * incident - (eta * dot_value + framework::math::sqrt(coefficient)) * normal;
 }
 /// @}
 

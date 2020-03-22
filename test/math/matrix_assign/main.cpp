@@ -26,15 +26,15 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::math::matrix2x2f;
-using ::framework::math::matrix2x3f;
-using ::framework::math::matrix2x4f;
-using ::framework::math::matrix3x2f;
-using ::framework::math::matrix3x3f;
-using ::framework::math::matrix3x4f;
-using ::framework::math::matrix4x2f;
-using ::framework::math::matrix4x3f;
-using ::framework::math::matrix4x4f;
+using framework::math::matrix2x2f;
+using framework::math::matrix2x3f;
+using framework::math::matrix2x4f;
+using framework::math::matrix3x2f;
+using framework::math::matrix3x3f;
+using framework::math::matrix3x4f;
+using framework::math::matrix4x2f;
+using framework::math::matrix4x3f;
+using framework::math::matrix4x4f;
 
 class matrix_assign_test : public framework::unit_test::Suite
 {
