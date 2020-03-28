@@ -35,7 +35,6 @@ message(STATUS "Add modules...")
 
 set(MODULES
     "common"
-    "gl"
     "graphics"
     "log"
     "math"

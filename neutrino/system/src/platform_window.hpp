@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_SRC_WINDOW_IMPLEMENTATION_HPP
-#define FRAMEWORK_SYSTEM_SRC_WINDOW_IMPLEMENTATION_HPP
+#ifndef FRAMEWORK_SYSTEM_SRC_PLATFORM_WINDOW_HPP
+#define FRAMEWORK_SYSTEM_SRC_PLATFORM_WINDOW_HPP
 
 #include <memory>
 #include <string>

@@ -27,8 +27,10 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <gl/gl.hpp>
+#include <graphics/src/opengl/opengl.hpp>
 #include <graphics/mesh.hpp>
+
+using namespace framework::graphics::details::opengl;
 
 namespace
 {
@@ -40,14 +42,15 @@ inline framework::uint32 create_buffer(const std::vector<T>& data)
     }
 
     framework::uint32 buffer_id = 0;
-    framework::gl::glGenBuffers(1, &buffer_id);
+    glGenBuffers(1, &buffer_id);
 
-    framework::gl::glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-    framework::gl::glBufferData(GL_ARRAY_BUFFER,
+
+    glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
+    glBufferData(GL_ARRAY_BUFFER,
                                 static_cast<GLsizeiptr>(data.size() * sizeof(T)),
                                 data[0].data(),
                                 GL_STATIC_DRAW);
-    framework::gl::glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return buffer_id;
 }
@@ -56,7 +59,7 @@ template <typename T>
 inline void load_buffer(framework::uint32* buffer_id, const std::vector<T>& data)
 {
     if (*buffer_id != 0) {
-        framework::gl::glDeleteBuffers(1, buffer_id);
+        glDeleteBuffers(1, buffer_id);
     }
 
     *buffer_id = create_buffer(data);
@@ -78,14 +81,14 @@ namespace framework::graphics
 {
 mesh::mesh()
 {
-    gl::glGenVertexArrays(1, &m_vertex_array_id);
+    glGenVertexArrays(1, &m_vertex_array_id);
 }
 
 mesh::~mesh()
 {
     const auto count = sizeof(m_buffer_ids) / sizeof(m_buffer_ids[0]);
-    gl::glDeleteBuffers(count, m_buffer_ids);
-    gl::glDeleteVertexArrays(1, &m_vertex_array_id);
+    glDeleteBuffers(count, m_buffer_ids);
+    glDeleteVertexArrays(1, &m_vertex_array_id);
 }
 
 mesh::mesh(mesh&& other)
@@ -101,104 +104,104 @@ mesh& mesh::operator=(mesh&& other)
 
 void mesh::load_vertices(const std::vector<math::vector2f>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::vertices], data);
     m_type_sizes[vbo_type::vertices] = 2;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::load_vertices(const std::vector<math::vector3f>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::vertices], data);
     m_type_sizes[vbo_type::vertices] = 3;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::load_vertices(const std::vector<math::vector4f>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::vertices], data);
     m_type_sizes[vbo_type::vertices] = 4;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::load_normals(const std::vector<math::vector2f>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::normals], data);
     m_type_sizes[vbo_type::normals] = 2;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::load_normals(const std::vector<math::vector3f>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::normals], data);
     m_type_sizes[vbo_type::normals] = 3;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::load_texture_coord1(const std::vector<math::vector2f>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::tex_coord_1], data);
     m_type_sizes[vbo_type::tex_coord_1] = 2;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::load_texture_coord2(const std::vector<math::vector2f>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::tex_coord_2], data);
     m_type_sizes[vbo_type::tex_coord_2] = 2;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::load_colors(const std::vector<Color>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::colors], data);
     m_type_sizes[vbo_type::colors] = 4;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::load_tangents(const std::vector<math::vector3f>& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
+    glBindVertexArray(m_vertex_array_id);
 
     load_buffer(&m_buffer_ids[vbo_type::tangents], data);
     m_type_sizes[vbo_type::tangents] = 3;
 
-    gl::glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void mesh::bind_vertices_attrib(uint32 index)
 {
-    gl::glBindBuffer(GL_ARRAY_BUFFER, m_buffer_ids[vbo_type::vertices]);
-    gl::glVertexAttribPointer(index, m_type_sizes[vbo_type::vertices], GL_FLOAT, GL_FALSE, 0, nullptr);
+    glBindBuffer(GL_ARRAY_BUFFER, m_buffer_ids[vbo_type::vertices]);
+    glVertexAttribPointer(index, m_type_sizes[vbo_type::vertices], GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 void mesh::bind_texture_attrib(uint32 index)
 {
-    gl::glBindBuffer(GL_ARRAY_BUFFER, m_buffer_ids[vbo_type::tex_coord_1]);
-    gl::glVertexAttribPointer(index, m_type_sizes[vbo_type::tex_coord_1], GL_FLOAT, GL_FALSE, 0, nullptr);
+    glBindBuffer(GL_ARRAY_BUFFER, m_buffer_ids[vbo_type::tex_coord_1]);
+    glVertexAttribPointer(index, m_type_sizes[vbo_type::tex_coord_1], GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 uint32 mesh::vertex_array_id() const
@@ -217,3 +220,4 @@ void swap(mesh& a, mesh& b)
 }
 
 } // namespace framework::graphics
+

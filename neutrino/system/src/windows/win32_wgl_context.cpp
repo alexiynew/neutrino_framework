@@ -29,7 +29,7 @@
 
 #include <stdexcept>
 
-#include <gl/wglext.hpp>
+#include <system/src/windows/wglext.hpp>
 #include <system/src/windows/win32_wgl_context.hpp>
 
 namespace framework::system::details
@@ -69,12 +69,12 @@ Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window) :
 
     wglMakeCurrent(m_hdc, hglrc);
 
-    gl::wgl::init_wgl();
+    wgl::init_wgl([this](const char* function_name) { return get_function(function_name); });
 
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(hglrc);
 
-    if (!gl::wgl::wgl_arb_create_context_supported) {
+    if (!wgl::is_supported(wgl::Extension::WGL_ARB_create_context)) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("wglCreateContextAttribsARB not supported");
     }
@@ -82,15 +82,15 @@ Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window) :
     auto version = settings.version();
     // clang-format off
     int attribs[] = {
-        WGL_CONTEXT_MAJOR_VERSION_ARB, version.major_version,
-        WGL_CONTEXT_MINOR_VERSION_ARB, version.minor_version,
-        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-        WGL_CONTEXT_FLAGS_ARB, 0,
+        wgl::WGL_CONTEXT_MAJOR_VERSION_ARB, version.major_version,
+        wgl::WGL_CONTEXT_MINOR_VERSION_ARB, version.minor_version,
+        wgl::WGL_CONTEXT_PROFILE_MASK_ARB, wgl::WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+        wgl::WGL_CONTEXT_FLAGS_ARB, 0,
         0
     };
     // clang-format on
 
-    m_hglrc = gl::wgl::wglCreateContextAttribsARB(m_hdc, 0, attribs);
+    m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, 0, attribs);
     if (m_hglrc == nullptr) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't create HRC");
@@ -125,6 +125,23 @@ void Win32WglContext::make_current() const
 void Win32WglContext::swap_buffers() const
 {
     SwapBuffers(m_hdc);
+}
+
+Context::VoidFunctionPtr Win32WglContext::get_function(const char* function_name) const
+{
+    auto function = reinterpret_cast<VoidFunctionPtr>(wglGetProcAddress(function_name));
+    if (function == nullptr || (function == reinterpret_cast<VoidFunctionPtr>(0x1)) ||
+        (function == reinterpret_cast<VoidFunctionPtr>(0x2)) || (function == reinterpret_cast<VoidFunctionPtr>(0x3)) ||
+        (function == reinterpret_cast<VoidFunctionPtr>(-1))) {
+        HMODULE module = LoadLibrary(L"opengl32.dll");
+        if (module != nullptr) {
+            function = reinterpret_cast<VoidFunctionPtr>(GetProcAddress(module, function_name));
+        } else {
+            function = nullptr;
+        }
+    }
+
+    return function;
 }
 
 } // namespace framework::system::details

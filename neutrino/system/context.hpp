@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_SRC_CONTEXT_HPP
-#define FRAMEWORK_SYSTEM_SRC_CONTEXT_HPP
+#ifndef FRAMEWORK_SYSTEM_CONTEXT_HPP
+#define FRAMEWORK_SYSTEM_CONTEXT_HPP
 
 #include <memory>
 
@@ -40,6 +40,8 @@ namespace framework::system
 class Context
 {
 public:
+    using VoidFunctionPtr = void (*)();
+
     explicit Context(ContextSettings settings) noexcept;
 
     Context(const Context&) = default;
@@ -54,6 +56,8 @@ public:
     virtual bool is_current() const   = 0;
     virtual void make_current() const = 0;
     virtual void swap_buffers() const = 0;
+
+    virtual VoidFunctionPtr get_function(const char* function_name) const = 0;
 
     const ContextSettings& settings() const;
 

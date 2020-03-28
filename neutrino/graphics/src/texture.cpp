@@ -28,7 +28,7 @@
 // =============================================================================
 
 #include <common/types.hpp>
-#include <gl/gl.hpp>
+#include <graphics/src/opengl/opengl.hpp>
 #include <graphics/texture.hpp>
 
 namespace framework::graphics
@@ -36,42 +36,48 @@ namespace framework::graphics
 // GL_ACTIVE_TEXTURE or GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
 texture::texture(min_filter minf, mag_filter magf, wrap_s ws, wrap_t wt)
 {
-    using framework::int32;
+    using namespace framework::graphics::details::opengl;
 
-    gl::glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0);
 
-    gl::glGenTextures(1, &m_texture_id);
+    glGenTextures(1, &m_texture_id);
 
-    gl::glBindTexture(GL_TEXTURE_2D, m_texture_id);
+    glBindTexture(GL_TEXTURE_2D, m_texture_id);
 
-    gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<int32>(minf));
-    gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<int32>(magf));
-    gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<int32>(ws));
-    gl::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<int32>(wt));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<int32>(minf));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<int32>(magf));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<int32>(ws));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<int32>(wt));
 
-    gl::glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void texture::load(int32 width, int32 height, const void* data)
 {
-    gl::glActiveTexture(GL_TEXTURE0);
-    gl::glBindTexture(GL_TEXTURE_2D, m_texture_id);
+    using namespace framework::graphics::details::opengl;
 
-    gl::glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_texture_id);
 
-    gl::glBindTexture(GL_TEXTURE_2D, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void texture::bind()
 {
-    gl::glActiveTexture(GL_TEXTURE0);
-    gl::glBindTexture(GL_TEXTURE_2D, m_texture_id);
+    using namespace framework::graphics::details::opengl;
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_texture_id);
 }
 
 void texture::unbind()
 {
-    gl::glActiveTexture(GL_TEXTURE0);
-    gl::glBindTexture(GL_TEXTURE_2D, 0);
+    using namespace framework::graphics::details::opengl;
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 framework::uint32 texture::texture_id() const
@@ -85,3 +91,4 @@ framework::int32 texture::texture_unit() const
 }
 
 } // namespace framework::graphics
+

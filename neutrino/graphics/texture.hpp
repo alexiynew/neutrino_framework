@@ -31,56 +31,37 @@
 #define FRAMEWORK_GRAPHICS_TEXTURE_HPP
 
 #include <common/types.hpp>
-#include <gl/gl.hpp>
 
 namespace framework::graphics
 {
 enum class min_filter
 {
-    nearest = GL_NEAREST, // Returns the value of the texture element that is nearest (in Manhattan distance) to the
-                          // center of the pixel being textured.
-    linear = GL_LINEAR,   // Returns the weighted average of the four texture elements that are closest to the center of
-                          // the pixel being textured.
-    nearest_mipmap_nearest = GL_NEAREST_MIPMAP_NEAREST, // Chooses the mipmap that most closely matches the size of the
-                                                        // pixel being textured and uses the GL_NEAREST criterion (the
-                                                        // texture element nearest to the center of the pixel) to
-                                                        // produce a texture value.
-    linear_mipmap_nearest = GL_LINEAR_MIPMAP_NEAREST,   // Chooses the mipmap that most closely matches the size of the
-                                                        // pixel being textured and uses the GL_LINEAR criterion (a
-    // weighted average of the four texture elements that are closest
-    // to the center of the pixel) to produce a texture value.
-    nearest_mipmap_linear = GL_NEAREST_MIPMAP_LINEAR, // Chooses the two mipmaps that most closely match the size of the
-                                                      // pixel being textured and uses the GL_NEAREST criterion (the
-                                                      // texture element nearest to the center of the pixel) to produce
-                                                      // a texture value from each mipmap. The final texture value is a
-                                                      // weighted average of those two values.
-    linear_mipmap_linear =
-    GL_LINEAR_MIPMAP_LINEAR, // Chooses the two mipmaps that most closely match the size of the pixel being textured and
-                             // uses the GL_LINEAR criterion (a weighted average of the four texture elements that are
-                             // closest to the center of the pixel) to produce a texture value from each mipmap. The
-                             // final texture value is a weighted average of those two values.
+    nearest,
+    linear,
+    nearest_mipmap_nearest,
+    linear_mipmap_nearest,
+    nearest_mipmap_linear,
+    linear_mipmap_linear,
 };
 
 enum class mag_filter
 {
-    nearest = GL_NEAREST, // Returns the value of the texture element that is nearest (in Manhattan distance) to the
-                          // center of the pixel being textured.
-    linear = GL_LINEAR, //  Returns the weighted average of the four texture elements that are closest to the center of
-                        //  the pixel being textured.
+    nearest,
+    linear,
 };
 
 enum class wrap_s
 {
-    clamp_to_edge   = GL_CLAMP_TO_EDGE,
-    mirrored_repeat = GL_MIRRORED_REPEAT,
-    repeat          = GL_REPEAT,
+    clamp_to_edge,
+    mirrored_repeat,
+    repeat,
 };
 
 enum class wrap_t
 {
-    clamp_to_edge   = GL_CLAMP_TO_EDGE,
-    mirrored_repeat = GL_MIRRORED_REPEAT,
-    repeat          = GL_REPEAT,
+    clamp_to_edge,
+    mirrored_repeat,
+    repeat,
 };
 
 class texture

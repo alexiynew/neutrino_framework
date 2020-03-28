@@ -33,9 +33,17 @@ set_sources(PRIVATE_SOURCES
     win32_wgl_context.hpp
     win32_window.hpp
     win32_window.cpp
+    wglext.hpp
+    wglext.cpp
 )
 
 target_sources(${PROJECT_NAME}
     PRIVATE
         ${PRIVATE_SOURCES}
 )
+
+# Link with OpenGL
+find_package(OpenGL REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
+

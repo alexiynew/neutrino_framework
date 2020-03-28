@@ -54,6 +54,8 @@ public:
     void make_current() const override;
     void swap_buffers() const override;
 
+    VoidFunctionPtr get_function(const char* function_name) const override;
+
 private:
     HWND m_window = nullptr;
     HDC m_hdc     = nullptr;

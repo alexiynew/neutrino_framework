@@ -31,14 +31,16 @@
 #include <string>
 
 #include <common/types.hpp>
-#include <gl/gl.hpp>
+#include <graphics/src/opengl/opengl.hpp>
 #include <graphics/shader.hpp>
+
+using namespace framework::graphics::details::opengl;
 
 namespace framework::graphics
 {
 #pragma region shader_base
 
-shader_base::shader_base(uint32 shader_type) : m_shader_id(gl::glCreateShader(shader_type))
+shader_base::shader_base(uint32 shader_type) : m_shader_id(glCreateShader(shader_type))
 {}
 
 shader_base::~shader_base()
@@ -60,7 +62,7 @@ shader_base& shader_base::operator=(shader_base&& other)
 void shader_base::set_source(const std::string& src)
 {
     const char* src_pointer = src.c_str();
-    gl::glShaderSource(m_shader_id, 1, &src_pointer, nullptr);
+    glShaderSource(m_shader_id, 1, &src_pointer, nullptr);
 }
 
 void shader_base::set_source(std::istream& src_stream)
@@ -77,37 +79,37 @@ void shader_base::set_source(std::istream& src_stream)
 void shader_base::compile()
 {
     // TODO(alex): check for shader compiller support (glGet with argument GL_SHADER_COMPILER)
-    gl::glCompileShader(m_shader_id);
+    glCompileShader(m_shader_id);
 }
 
 void shader_base::mark_for_deletion()
 {
-    gl::glDeleteShader(m_shader_id);
+    glDeleteShader(m_shader_id);
 }
 
 framework::int32 shader_base::shader_type() const
 {
     framework::int32 type = 0;
-    gl::glGetShaderiv(m_shader_id, GL_SHADER_TYPE, &type);
+    glGetShaderiv(m_shader_id, GL_SHADER_TYPE, &type);
     return type;
 }
 
 bool shader_base::valid() const
 {
-    return gl::glIsShader(m_shader_id);
+    return glIsShader(m_shader_id);
 }
 
 bool shader_base::compiled() const
 {
     framework::int32 status = 0;
-    gl::glGetShaderiv(m_shader_id, GL_COMPILE_STATUS, &status);
+    glGetShaderiv(m_shader_id, GL_COMPILE_STATUS, &status);
     return status;
 }
 
 framework::usize shader_base::source_length() const
 {
     framework::int32 length = 0;
-    gl::glGetShaderiv(m_shader_id, GL_SHADER_SOURCE_LENGTH, &length);
+    glGetShaderiv(m_shader_id, GL_SHADER_SOURCE_LENGTH, &length);
 
     return static_cast<framework::usize>(length);
 }
@@ -122,7 +124,7 @@ std::string shader_base::source() const
 
     std::unique_ptr<char[]> buffer(new char[length]);
 
-    gl::glGetShaderSource(m_shader_id, static_cast<GLsizei>(length), nullptr, buffer.get());
+    glGetShaderSource(m_shader_id, static_cast<GLsizei>(length), nullptr, buffer.get());
 
     return std::string(buffer.get());
 }
@@ -130,7 +132,7 @@ std::string shader_base::source() const
 std::string shader_base::info_log() const
 {
     framework::int32 length = 0;
-    gl::glGetShaderiv(m_shader_id, GL_INFO_LOG_LENGTH, &length);
+    glGetShaderiv(m_shader_id, GL_INFO_LOG_LENGTH, &length);
 
     if (length <= 0) {
         return std::string();
@@ -138,7 +140,7 @@ std::string shader_base::info_log() const
 
     std::unique_ptr<char[]> buffer(new char[static_cast<usize>(length)]);
 
-    gl::glGetShaderInfoLog(m_shader_id, length, nullptr, buffer.get());
+    glGetShaderInfoLog(m_shader_id, length, nullptr, buffer.get());
 
     return std::string(buffer.get());
 }
@@ -164,12 +166,12 @@ fragment_shader::fragment_shader() : shader_base(GL_FRAGMENT_SHADER)
 
 shader_program::shader_program()
 {
-    m_program_id = gl::glCreateProgram();
+    m_program_id = glCreateProgram();
 }
 
 shader_program::~shader_program()
 {
-    gl::glDeleteProgram(m_program_id);
+    glDeleteProgram(m_program_id);
 }
 
 shader_program::shader_program(shader_program&& other)
@@ -185,53 +187,53 @@ shader_program& shader_program::operator=(shader_program&& other)
 
 void shader_program::arttach(const shader_base& shader)
 {
-    gl::glAttachShader(m_program_id, shader.shader_id());
+    glAttachShader(m_program_id, shader.shader_id());
 }
 
 void shader_program::link()
 {
-    gl::glLinkProgram(m_program_id);
+    glLinkProgram(m_program_id);
 }
 
 void shader_program::use()
 {
-    gl::glUseProgram(m_program_id);
+    glUseProgram(m_program_id);
 }
 
 void shader_program::stop_using()
 {
-    gl::glUseProgram(0);
+    glUseProgram(0);
 }
 
 void shader_program::uniform(const std::string& name, int value)
 {
-    const int32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
-    gl::glUniform1i(uniform_id, value);
+    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
+    glUniform1i(uniform_id, value);
 }
 
 void shader_program::uniform(const std::string& name, float value)
 {
-    const int32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
-    gl::glUniform1f(uniform_id, value);
+    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
+    glUniform1f(uniform_id, value);
 }
 
 void shader_program::uniform(const std::string& name, math::matrix4f value, bool transpose)
 {
-    const int32 uniform_id = gl::glGetUniformLocation(m_program_id, name.c_str());
-    gl::glUniformMatrix4fv(uniform_id, 1, transpose, value.data());
+    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
+    glUniformMatrix4fv(uniform_id, 1, transpose, value.data());
 }
 
 bool shader_program::linked() const
 {
     int32 status = 0;
-    gl::glGetProgramiv(m_program_id, GL_LINK_STATUS, &status);
+    glGetProgramiv(m_program_id, GL_LINK_STATUS, &status);
     return status;
 }
 
 std::string shader_program::info_log() const
 {
     int32 length = 0;
-    gl::glGetProgramiv(m_program_id, GL_INFO_LOG_LENGTH, &length);
+    glGetProgramiv(m_program_id, GL_INFO_LOG_LENGTH, &length);
 
     if (length <= 0) {
         return std::string();
@@ -239,7 +241,7 @@ std::string shader_program::info_log() const
 
     std::unique_ptr<char[]> buffer(new char[static_cast<usize>(length)]);
 
-    gl::glGetProgramInfoLog(m_program_id, length, nullptr, buffer.get());
+    glGetProgramInfoLog(m_program_id, length, nullptr, buffer.get());
 
     return std::string(buffer.get());
 }
@@ -252,3 +254,4 @@ framework::uint32 shader_program::program_id() const
 #pragma endregion
 
 } // namespace framework::graphics
+

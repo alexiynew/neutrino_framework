@@ -43,6 +43,9 @@ set_sources(PRIVATE_SOURCES
     src/image/bmp.cpp
     src/image/png.hpp
     src/image/png.cpp
+
+    src/opengl/opengl.hpp
+    src/opengl/opengl.cpp
 )
 
 target_sources(${PROJECT_NAME}
@@ -52,4 +55,11 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
+install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/KHR/khrplatform.h DESTINATION dependencies/KHR)
+
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+
+# Link with OpenGL
+find_package(OpenGL REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})

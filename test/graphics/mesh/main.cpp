@@ -28,7 +28,6 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
-#include <gl/gl.hpp>
 #include <graphics/mesh.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
@@ -65,8 +64,8 @@ private:
         while (main_window.is_visible() && total_time < max_total_time) {
             main_window.process_events();
 
-            gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            gl::glClear(GL_COLOR_BUFFER_BIT);
+            //gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            //gl::glClear(GL_COLOR_BUFFER_BIT);
 
             main_window.context().swap_buffers();
 
