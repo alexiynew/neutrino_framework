@@ -49,8 +49,8 @@ struct Color
 
     Color() = default;
 
-    Color(uint8 r, uint8 g, uint8 b, uint8 a);
-    Color(float32 r, float32 g, float32 b, float32 a);
+    Color(uint8 r, uint8 g, uint8 b, uint8 a = 255);
+    Color(float32 r, float32 g, float32 b, float32 a = 1.0f);
 
     Color(uint16 value);
     Color(uint32 value);

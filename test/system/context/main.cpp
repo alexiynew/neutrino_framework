@@ -30,6 +30,7 @@
 #include <common/version.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
+#include <graphics/render.hpp>
 
 class context_test : public framework::unit_test::Suite
 {
@@ -43,15 +44,17 @@ private:
     void main_loop()
     {
         using namespace framework;
+        using namespace framework::graphics;
         using namespace framework::system;
 
         Window::set_application_name("GL Test");
 
         Window main_window({640, 480}, "Context test");
-
-        main_window.context().make_current();
+        Render render(main_window.context());
 
         main_window.show();
+
+        render.set_clear_color(0xFF00FFFF);
 
         const float32 max_total_time = 1000;
         float32 total_time           = 0;
@@ -59,10 +62,7 @@ private:
         while (main_window.is_visible() && total_time < max_total_time) {
             main_window.process_events();
 
-//            framework::gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
- //           framework::gl::glClear(GL_COLOR_BUFFER_BIT);
-
-            main_window.context().swap_buffers();
+            render.display();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
 

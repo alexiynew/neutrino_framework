@@ -1,3 +1,7 @@
+/// @file
+/// @brief OpenGL render implementation.
+/// @author Fedorov Alexey
+/// @date 29.03.2020
 
 // =============================================================================
 // MIT License
@@ -23,58 +27,49 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <chrono>
-#include <thread>
+#include <graphics/src/opengl/opengl.hpp>
+#include <graphics/src/render/opengl_render.hpp>
 
-#include <common/utils.hpp>
-#include <common/version.hpp>
-#include <graphics/shader.hpp>
-#include <system/window.hpp>
-#include <unit_test/suite.hpp>
-#include <graphics/render.hpp>
+using namespace framework;
+using namespace framework::graphics::details::opengl;
 
-class shader_test : public framework::unit_test::Suite
+namespace
 {
-public:
-    shader_test() : Suite("shader_test")
-    {
-        add_test([this]() { main_loop(); }, "main_loop");
-    }
-
-private:
-    void main_loop()
-    {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
-
-        Window::set_application_name("GL shader Test");
-
-        Window main_window({640, 480}, "GL shader test");
-        Render render(main_window.context());
-
-        main_window.show();
-
-        render.set_clear_color(0xFF00FFFF);
-
-        const float32 max_total_time = 1000;
-        float32 total_time           = 0;
-
-        while (main_window.is_visible() && total_time < max_total_time) {
-            main_window.process_events();
-
-            render.display();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-
-            total_time += 16;
-        }
-
-        TEST_FAIL("Not implemented.");
-    }
-};
-
-int main()
+float map_to_float(uint8 value)
 {
-    return run_tests(shader_test());
+    return static_cast<float>(value) / 255.0f;
 }
+} // namespace
+
+namespace framework::graphics
+{
+OpenglRender::OpenglRender(system::Context& context) : m_context(context)
+{
+    init_opengl([&context](const char* function_name) { return context.get_function(function_name); });
+}
+
+OpenglRender::OpenglRender(const OpenglRender& other) = default;
+
+OpenglRender& OpenglRender::operator=(const OpenglRender& other) = default;
+
+OpenglRender::OpenglRender(OpenglRender&& other) = default;
+
+OpenglRender& OpenglRender::operator=(OpenglRender&& other) = default;
+
+OpenglRender::~OpenglRender() = default;
+
+void OpenglRender::display()
+{
+    m_context.make_current();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    m_context.swap_buffers();
+}
+
+void OpenglRender::set_clear_color(Color color)
+{
+    m_context.make_current();
+    glClearColor(map_to_float(color.r), map_to_float(color.g), map_to_float(color.b), map_to_float(color.a));
+}
+
+} // namespace framework::graphics

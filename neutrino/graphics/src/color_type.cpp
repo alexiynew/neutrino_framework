@@ -36,7 +36,7 @@ using framework::uint16;
 using framework::uint32;
 using framework::uint8;
 
-constexpr inline uint8 map(float32 value) noexcept
+constexpr inline uint8 map_to_int(float32 value) noexcept
 {
     return static_cast<uint8>(value * 255);
 }
@@ -59,7 +59,7 @@ Color::Color(uint8 r_value, uint8 g_value, uint8 b_value, uint8 a_value)
 {}
 
 Color::Color(float32 r_value, float32 g_value, float32 b_value, float32 a_value)
-    : r(map(r_value)), g(map(g_value)), b(map(b_value)), a(map(a_value))
+    : r(map_to_int(r_value)), g(map_to_int(g_value)), b(map_to_int(b_value)), a(map_to_int(a_value))
 {}
 
 Color::Color(uint16 value)

@@ -40,6 +40,11 @@ namespace framework::system
 class Context
 {
 public:
+    enum class Api
+    {
+        opengl,
+    };
+
     using VoidFunctionPtr = void (*)();
 
     explicit Context(ContextSettings settings) noexcept;
@@ -56,6 +61,8 @@ public:
     virtual bool is_current() const   = 0;
     virtual void make_current() const = 0;
     virtual void swap_buffers() const = 0;
+
+    virtual Api api_type() const = 0;
 
     virtual VoidFunctionPtr get_function(const char* function_name) const = 0;
 

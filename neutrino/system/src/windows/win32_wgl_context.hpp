@@ -50,9 +50,10 @@ public:
 
     bool valid() const override;
     bool is_current() const override;
-
     void make_current() const override;
     void swap_buffers() const override;
+
+    Api api_type() const override;
 
     VoidFunctionPtr get_function(const char* function_name) const override;
 

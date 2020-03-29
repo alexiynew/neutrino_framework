@@ -1,3 +1,7 @@
+/// @file
+/// @brief Render.
+/// @author Fedorov Alexey
+/// @date 29.03.2020
 
 // =============================================================================
 // MIT License
@@ -23,58 +27,50 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <chrono>
-#include <thread>
+#include <stdexcept>
 
-#include <common/utils.hpp>
-#include <common/version.hpp>
-#include <graphics/shader.hpp>
-#include <system/window.hpp>
-#include <unit_test/suite.hpp>
 #include <graphics/render.hpp>
+#include <graphics/src/render/opengl_render.hpp>
+#include <graphics/src/render/render_impl.hpp>
 
-class shader_test : public framework::unit_test::Suite
+using namespace framework;
+
+namespace
 {
-public:
-    shader_test() : Suite("shader_test")
-    {
-        add_test([this]() { main_loop(); }, "main_loop");
+std::unique_ptr<graphics::RenderImpl> create_impl(system::Context& context)
+{
+    if (!context.valid()) {
+        throw std::runtime_error("Context is not valid.");
     }
 
-private:
-    void main_loop()
-    {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
-
-        Window::set_application_name("GL shader Test");
-
-        Window main_window({640, 480}, "GL shader test");
-        Render render(main_window.context());
-
-        main_window.show();
-
-        render.set_clear_color(0xFF00FFFF);
-
-        const float32 max_total_time = 1000;
-        float32 total_time           = 0;
-
-        while (main_window.is_visible() && total_time < max_total_time) {
-            main_window.process_events();
-
-            render.display();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-
-            total_time += 16;
-        }
-
-        TEST_FAIL("Not implemented.");
+    switch (context.api_type()) {
+        case system::Context::Api::opengl: return std::make_unique<graphics::OpenglRender>(context);
     }
-};
 
-int main()
-{
-    return run_tests(shader_test());
+    throw std::runtime_error("Unsupported graphic api.");
 }
+
+} // namespace
+
+namespace framework::graphics
+{
+Render::Render(system::Context& context) : m_impl(create_impl(context))
+{}
+
+Render::Render(Render&& other) = default;
+
+Render& Render::operator=(Render&& other) = default;
+
+Render::~Render() = default;
+
+void Render::set_clear_color(Color color)
+{
+    m_impl->set_clear_color(color);
+}
+
+void Render::display()
+{
+    m_impl->display();
+}
+
+} // namespace framework::graphics

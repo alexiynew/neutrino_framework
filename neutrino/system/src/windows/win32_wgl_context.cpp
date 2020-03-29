@@ -127,6 +127,11 @@ void Win32WglContext::swap_buffers() const
     SwapBuffers(m_hdc);
 }
 
+Context::Api Win32WglContext::api_type() const
+{
+    return Context::Api::opengl;
+}
+
 Context::VoidFunctionPtr Win32WglContext::get_function(const char* function_name) const
 {
     auto function = reinterpret_cast<VoidFunctionPtr>(wglGetProcAddress(function_name));

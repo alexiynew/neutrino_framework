@@ -1,3 +1,7 @@
+/// @file
+/// @brief OpenGL render implementation.
+/// @author Fedorov Alexey
+/// @date 29.03.2020
 
 // =============================================================================
 // MIT License
@@ -23,58 +27,35 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <chrono>
-#include <thread>
+#ifndef FRAMEWORK_GRAPHICS_SRC_OPENGL_RENDER_HPP
+#define FRAMEWORK_GRAPHICS_SRC_OPENGL_RENDER_HPP
 
-#include <common/utils.hpp>
-#include <common/version.hpp>
-#include <graphics/shader.hpp>
-#include <system/window.hpp>
-#include <unit_test/suite.hpp>
-#include <graphics/render.hpp>
+#include <graphics/src/render/render_impl.hpp>
+#include <system/context.hpp>
 
-class shader_test : public framework::unit_test::Suite
+namespace framework::graphics
+{
+class OpenglRender final : public RenderImpl
 {
 public:
-    shader_test() : Suite("shader_test")
-    {
-        add_test([this]() { main_loop(); }, "main_loop");
-    }
+    explicit OpenglRender(system::Context& context);
+
+    OpenglRender(const OpenglRender& other);
+    OpenglRender& operator=(const OpenglRender& other);
+
+    OpenglRender(OpenglRender&& other);
+    OpenglRender& operator=(OpenglRender&& other);
+
+    ~OpenglRender() override;
+
+    void display() override;
+    
+    void set_clear_color(Color color) override;
 
 private:
-    void main_loop()
-    {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
-
-        Window::set_application_name("GL shader Test");
-
-        Window main_window({640, 480}, "GL shader test");
-        Render render(main_window.context());
-
-        main_window.show();
-
-        render.set_clear_color(0xFF00FFFF);
-
-        const float32 max_total_time = 1000;
-        float32 total_time           = 0;
-
-        while (main_window.is_visible() && total_time < max_total_time) {
-            main_window.process_events();
-
-            render.display();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-
-            total_time += 16;
-        }
-
-        TEST_FAIL("Not implemented.");
-    }
+    system::Context& m_context;
 };
 
-int main()
-{
-    return run_tests(shader_test());
-}
+} // namespace framework::graphics
+
+#endif
