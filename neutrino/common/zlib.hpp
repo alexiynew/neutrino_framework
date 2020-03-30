@@ -34,7 +34,7 @@
 
 #include <common/types.hpp>
 
-namespace framework::utils::zlib
+namespace framework::zlib
 {
 /// @addtogroup common_zlib_implementation
 /// @{

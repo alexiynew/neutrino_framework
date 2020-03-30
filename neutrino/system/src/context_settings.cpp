@@ -33,7 +33,7 @@ namespace framework::system
 {
 #pragma region setters
 
-ContextSettings& ContextSettings::version(utils::Version version)
+ContextSettings& ContextSettings::version(Version version)
 {
     m_version = version;
     return *this;
@@ -61,7 +61,7 @@ ContextSettings& ContextSettings::antialiasing_level(Antialiasing level)
 
 #pragma region getters
 
-utils::Version ContextSettings::version() const
+Version ContextSettings::version() const
 {
     return m_version;
 }

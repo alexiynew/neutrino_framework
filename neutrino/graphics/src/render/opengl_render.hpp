@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_OPENGL_RENDER_HPP
-#define FRAMEWORK_GRAPHICS_SRC_OPENGL_RENDER_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_RENDER_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_RENDER_HPP
 
 #include <graphics/src/render/render_impl.hpp>
 #include <system/context.hpp>

@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GL_INC_GL_WRAPPER_HPP
-#define FRAMEWORK_GL_INC_GL_WRAPPER_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_OPENGL_OPENGL_HPP
+#define FRAMEWORK_GRAPHICS_SRC_OPENGL_OPENGL_HPP
 
 #include <KHR/khrplatform.h>
 #include <functional>

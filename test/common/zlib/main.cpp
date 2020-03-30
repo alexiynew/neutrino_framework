@@ -53,7 +53,7 @@ public:
 private:
     void inflate_test()
     {
-        using namespace framework::utils::zlib;
+        using namespace framework::zlib;
 
         const std::vector<uint8> fixed   = inflate(fixed_huffman);
         const std::vector<uint8> dynamic = inflate(dynamic_huffman);
@@ -66,7 +66,7 @@ private:
 
     void deflate_test()
     {
-        using namespace framework::utils::zlib;
+        using namespace framework::zlib;
 
         const std::vector<uint8> compressed   = deflate(data);
         const std::vector<uint8> decompressed = inflate(compressed);

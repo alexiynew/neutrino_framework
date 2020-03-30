@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_IMPL_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_IMPL_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
 
 #include <graphics/color_type.hpp>
 

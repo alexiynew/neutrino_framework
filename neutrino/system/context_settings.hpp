@@ -81,7 +81,7 @@ public:
     /// @param version required version.
     ///
     /// @return Reference to this settings.
-    ContextSettings& version(utils::Version version);
+    ContextSettings& version(Version version);
 
     /// @brief Sets depth buffers bits count.
     ///
@@ -111,7 +111,7 @@ public:
     /// @brief Required API version.
     ///
     /// @return Required API version.
-    utils::Version version() const;
+    Version version() const;
 
     /// @brief Required detph buffer bits count.
     ///
@@ -134,7 +134,7 @@ private:
     int32 m_depth_bits                = 24;
     int32 m_stencil_bits              = 8;
     Antialiasing m_antialiasing_level = Antialiasing::best;
-    utils::Version m_version          = {3, 0};
+    Version m_version                 = {3, 0};
 };
 
 /// @}

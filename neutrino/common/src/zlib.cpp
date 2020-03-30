@@ -195,7 +195,7 @@ private:
 
 using LitLenDistanceCodes = std::tuple<HuffmanCodeTable, HuffmanCodeTable>;
 
-struct zlib_header_t
+struct ZlibHeader
 {
     uint8 cm : 4;
     uint8 cinfo : 4;
@@ -203,9 +203,9 @@ struct zlib_header_t
     uint8 fdict : 1;
     uint8 flevel : 3;
 
-    zlib_header_t() = default;
+    ZlibHeader() = default;
 
-    explicit zlib_header_t(uint16 value)
+    explicit ZlibHeader(uint16 value)
     {
         memcpy(this, &value, sizeof(value));
     }
@@ -486,7 +486,7 @@ uint32 adler32(const std::vector<uint8>& data)
 
 } // namespace
 
-namespace framework::utils::zlib
+namespace framework::zlib
 {
 std::vector<uint8> inflate(const std::vector<uint8>& data)
 {
@@ -496,7 +496,7 @@ std::vector<uint8> inflate(const std::vector<uint8>& data)
 
     BitStream in(data);
 
-    const zlib_header_t zlib_header = zlib_header_t(in.get<uint16>(16));
+    const ZlibHeader zlib_header = ZlibHeader(in.get<uint16>(16));
 
     if (zlib_header.cm != deflate_compression_method || zlib_header.cinfo > 7) {
         return std::vector<uint8>();
@@ -545,7 +545,7 @@ std::vector<uint8> deflate(const std::vector<uint8>& data)
     }
 
     std::vector<uint8> output;
-    zlib_header_t zlib_header;
+    ZlibHeader zlib_header;
     zlib_header.cm     = deflate_compression_method;
     zlib_header.cinfo  = static_cast<uint8>(std::log2(max_window_size) - 8);
     zlib_header.fdict  = 0;

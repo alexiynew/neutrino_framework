@@ -852,7 +852,7 @@ LoadResult load(const std::string& filename)
         return LoadResult();
     }
 
-    std::vector<uint8> recontructed = reconstruct(header, utils::zlib::inflate(data));
+    std::vector<uint8> recontructed = reconstruct(header, zlib::inflate(data));
     std::vector<Color> image_data   = unserialize(header, plte_chunk, std::move(recontructed));
 
     auto info  = header.image_info();

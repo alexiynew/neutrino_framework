@@ -40,7 +40,7 @@ public:
 private:
     void constructor()
     {
-        using framework::utils::Version;
+        using framework::Version;
 
         Version v1{1, 2, 3, 4};
 
@@ -59,7 +59,7 @@ private:
 
     void from_string()
     {
-        using framework::utils::Version;
+        using framework::Version;
 
         Version v1{"1.2.3.4"};
 
@@ -92,7 +92,7 @@ private:
 
     void as_string()
     {
-        using framework::utils::Version;
+        using framework::Version;
 
         Version v1(1, 2, 3, 4);
 
@@ -105,7 +105,7 @@ private:
 
     void comparations()
     {
-        using framework::utils::Version;
+        using framework::Version;
 
         Version v1{1, 2, 3, 4};
         Version v2{1, 2, 3, 4};

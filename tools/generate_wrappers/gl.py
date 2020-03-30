@@ -21,7 +21,7 @@ class GeneratorData:
 
         self.TYPEDEFS = ""
 
-        self.INCLUDE_GUARD = "FRAMEWORK_GL_INC_GL_WRAPPER_HPP"
+        self.INCLUDE_GUARD = "FRAMEWORK_GRAPHICS_SRC_OPENGL_OPENGL_HPP"
 
         self.HEADER_INCLUDE_FILES = ["functional", "KHR/khrplatform.h"]
         self.CPP_INCLUDE_FILES = ["mutex", "graphics/src/opengl/opengl.hpp"]

@@ -34,7 +34,7 @@
 
 #include <common/types.hpp>
 
-namespace framework::utils
+namespace framework
 {
 /// @addtogroup common_version_implementation
 /// @{
