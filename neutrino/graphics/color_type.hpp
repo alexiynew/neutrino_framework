@@ -30,7 +30,7 @@
 #ifndef FRAMEWORK_GRAPHICS_COLOR_TYPE_HPP
 #define FRAMEWORK_GRAPHICS_COLOR_TYPE_HPP
 
-#include <common/types.hpp>
+#include <cstdint>
 
 namespace framework::graphics
 {
@@ -42,18 +42,19 @@ namespace framework::graphics
 
 struct Color
 {
-    uint8 r = 0;
-    uint8 g = 0;
-    uint8 b = 0;
-    uint8 a = 255;
+    using ValueType = std::uint8_t;
+    ValueType r = 0;
+    ValueType g = 0;
+    ValueType b = 0;
+    ValueType a = 255;
 
     Color() = default;
 
-    Color(uint8 r, uint8 g, uint8 b, uint8 a = 255);
-    Color(float32 r, float32 g, float32 b, float32 a = 1.0f);
+    Color(ValueType r, ValueType g, ValueType b, ValueType a = 255);
+    Color(float r, float g, float b, float a = 1.0f);
 
-    Color(uint16 value);
-    Color(uint32 value);
+    Color(std::uint16_t value);
+    Color(std::uint32_t value);
 
     Color(const Color&) = default;
     Color(Color&&)      = default;
@@ -61,8 +62,8 @@ struct Color
     Color& operator=(const Color&) = default;
     Color& operator=(Color&&) = default;
 
-    uint8* data();
-    const uint8* data() const;
+    ValueType* data();
+    const ValueType* data() const;
 };
 
 /// @}

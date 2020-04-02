@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Render.
+/// @brief Render command.
 /// @author Fedorov Alexey
-/// @date 29.03.2020
+/// @date 01.04.2020
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -27,49 +29,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_RENDER_HPP
-#define FRAMEWORK_GRAPHICS_RENDER_HPP
-
-#include <memory>
-
-#include <graphics/color_type.hpp>
-#include <graphics/mesh.hpp>
-#include <system/context.hpp>
+#include <graphics/src/render/render_command.hpp>
 
 namespace framework::graphics
 {
-class RenderImpl;
-class RenderCommand;
+RenderCommand::RenderCommand(InstanceId mesh_id) : m_mesh_id(mesh_id)
+{}
 
-class Render
+InstanceId RenderCommand::mesh_id() const
 {
-public:
-    explicit Render(system::Context& context);
-
-    Render(const Render& other) = delete;
-    Render& operator=(const Render& other) = delete;
-
-    Render(Render&& other) noexcept;
-    Render& operator=(Render&& other) noexcept;
-
-    ~Render();
-
-    void set_clear_color(Color color);
-
-    bool load(const Mesh& mesh);
-
-    void render(const Mesh& mesh);
-
-    void display();
-
-private:
-    std::unique_ptr<RenderImpl> m_impl;
-    system::Context& m_context;
-    
-    std::vector<RenderCommand> m_render_commands;
-};
+    return m_mesh_id;
+}
 
 } // namespace framework::graphics
-
-#endif
-

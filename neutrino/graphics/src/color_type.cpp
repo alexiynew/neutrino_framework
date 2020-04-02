@@ -31,57 +31,53 @@
 
 namespace
 {
-using framework::float32;
-using framework::uint16;
-using framework::uint32;
-using framework::uint8;
 
-constexpr inline uint8 map_to_int(float32 value) noexcept
+constexpr inline std::uint8_t map_to_int(float value) noexcept
 {
-    return static_cast<uint8>(value * 255);
+    return static_cast<std::uint8_t>(value * 255);
 }
 
-constexpr uint16 red_565   = 0xF800;
-constexpr uint16 green_565 = 0x7E0;
-constexpr uint16 blue_565  = 0x1F;
+constexpr std::uint16_t red_565   = 0xF800;
+constexpr std::uint16_t green_565 = 0x7E0;
+constexpr std::uint16_t blue_565  = 0x1F;
 
-constexpr uint32 red_rgba8   = 0xFF000000;
-constexpr uint32 green_rgba8 = 0xFF0000;
-constexpr uint32 blue_rgba8  = 0xFF00;
-constexpr uint32 alpha_rgba8 = 0xFF;
+constexpr std::uint32_t red_rgba8   = 0xFF000000;
+constexpr std::uint32_t green_rgba8 = 0xFF0000;
+constexpr std::uint32_t blue_rgba8  = 0xFF00;
+constexpr std::uint32_t alpha_rgba8 = 0xFF;
 
 } // namespace
 
 namespace framework::graphics
 {
-Color::Color(uint8 r_value, uint8 g_value, uint8 b_value, uint8 a_value)
+Color::Color(ValueType r_value, ValueType g_value, ValueType b_value, ValueType a_value)
     : r(r_value), g(g_value), b(b_value), a(a_value)
 {}
 
-Color::Color(float32 r_value, float32 g_value, float32 b_value, float32 a_value)
+Color::Color(float r_value, float g_value, float b_value, float a_value)
     : r(map_to_int(r_value)), g(map_to_int(g_value)), b(map_to_int(b_value)), a(map_to_int(a_value))
 {}
 
-Color::Color(uint16 value)
-    : r(static_cast<uint8>((value & red_565) >> 11)),
-      g(static_cast<uint8>((value & green_565) >> 5)),
-      b(static_cast<uint8>(value & blue_565)),
+Color::Color(std::uint16_t value)
+    : r(static_cast<ValueType>((value & red_565) >> 11)),
+      g(static_cast<ValueType>((value & green_565) >> 5)),
+      b(static_cast<ValueType>(value & blue_565)),
       a(255)
 {}
 
-Color::Color(uint32 value)
-    : r(static_cast<uint8>((value & red_rgba8) >> 24)),
-      g(static_cast<uint8>((value & green_rgba8) >> 16)),
-      b(static_cast<uint8>((value & blue_rgba8) >> 8)),
-      a(static_cast<uint8>(value & alpha_rgba8))
+Color::Color(std::uint32_t value)
+    : r(static_cast<ValueType>((value & red_rgba8) >> 24)),
+      g(static_cast<ValueType>((value & green_rgba8) >> 16)),
+      b(static_cast<ValueType>((value & blue_rgba8) >> 8)),
+      a(static_cast<ValueType>(value & alpha_rgba8))
 {}
 
-uint8* Color::data()
+Color::ValueType* Color::data()
 {
     return &r;
 }
 
-const uint8* Color::data() const
+const Color::ValueType* Color::data() const
 {
     return &r;
 }

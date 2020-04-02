@@ -29,8 +29,11 @@
 
 #include <iomanip>
 #include <iostream>
+#include <memory>
 
 #include <unit_test/suite.hpp>
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 
 namespace framework
 {
@@ -45,6 +48,8 @@ void Suite::run()
 
     m_success      = true;
     m_current_test = m_tests.end();
+
+    log::set_logger(std::make_unique<log::stream_logger>(std::cout));
 
     for (auto iterator = m_tests.begin(); iterator != m_tests.end(); iterator++) {
         m_current_test = iterator;

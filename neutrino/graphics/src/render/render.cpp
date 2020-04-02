@@ -31,6 +31,7 @@
 
 #include <graphics/render.hpp>
 #include <graphics/src/render/opengl_render.hpp>
+#include <graphics/src/render/render_command.hpp>
 #include <graphics/src/render/render_impl.hpp>
 
 using namespace framework;
@@ -54,23 +55,47 @@ std::unique_ptr<graphics::RenderImpl> create_impl(system::Context& context)
 
 namespace framework::graphics
 {
-Render::Render(system::Context& context) : m_impl(create_impl(context))
+Render::Render(system::Context& context) : m_impl(create_impl(context)), m_context(context)
 {}
 
-Render::Render(Render&& other) = default;
+Render::Render(Render&& other) noexcept = default;
 
-Render& Render::operator=(Render&& other) = default;
+Render& Render::operator=(Render&& other) noexcept = default;
 
 Render::~Render() = default;
 
 void Render::set_clear_color(Color color)
 {
+    m_context.make_current();
     m_impl->set_clear_color(color);
+}
+
+bool Render::load(const Mesh& mesh)
+{
+    m_context.make_current();
+    return m_impl->load(mesh);
+}
+
+void Render::render(const Mesh& mesh)
+{
+    m_render_commands.emplace_back(mesh.instance_id());
 }
 
 void Render::display()
 {
-    m_impl->display();
+    m_context.make_current();
+
+    m_impl->start_frame();
+
+    for (const auto& command : m_render_commands) {
+        m_impl->perform(command);
+    }
+
+    m_render_commands.clear();
+
+    m_impl->end_frame();
+
+    m_context.swap_buffers();
 }
 
 } // namespace framework::graphics

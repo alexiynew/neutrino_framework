@@ -40,20 +40,34 @@ class OpenglRender final : public RenderImpl
 public:
     explicit OpenglRender(system::Context& context);
 
-    OpenglRender(const OpenglRender& other);
-    OpenglRender& operator=(const OpenglRender& other);
+    OpenglRender(const OpenglRender& other) = default;
+    OpenglRender& operator=(const OpenglRender& other) = default;
 
-    OpenglRender(OpenglRender&& other);
-    OpenglRender& operator=(OpenglRender&& other);
+    OpenglRender(OpenglRender&& other) = default;
+    OpenglRender& operator=(OpenglRender&& other) = default;
 
     ~OpenglRender() override;
 
-    void display() override;
-    
     void set_clear_color(Color color) override;
 
+    bool load(const Mesh& mesh) override;
+
+    void start_frame() override;
+    void perform(const RenderCommand& command) override;
+    void end_frame() override;
+
 private:
-    system::Context& m_context;
+    struct MeshInfo
+    {
+        std::uint32_t vertex_array_id = 0;
+        std::uint32_t vertex_buffer_id = 0; 
+        std::uint32_t index_buffer_id = 0; 
+    };
+    
+    using MeshInfoMap = std::unordered_map<InstanceId, MeshInfo>;
+
+    MeshInfoMap m_mesh_info;
+
 };
 
 } // namespace framework::graphics

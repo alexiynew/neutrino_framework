@@ -34,6 +34,7 @@ set_sources(PUBLIC_SOURCES
     signal.hpp
     size.hpp
     position.hpp
+    instance_id.hpp
 )
 
 set_sources(PRIVATE_SOURCES
@@ -41,6 +42,7 @@ set_sources(PRIVATE_SOURCES
     src/zlib.cpp
     src/size.cpp
     src/position.cpp
+    src/instance_id.cpp
 )
 
 target_sources(${PROJECT_NAME}

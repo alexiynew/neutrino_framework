@@ -52,6 +52,8 @@ set_sources(PRIVATE_SOURCES
     src/render/render_impl.hpp
     src/render/opengl_render.hpp
     src/render/opengl_render.cpp
+    src/render/render_command.hpp
+    src/render/render_command.cpp
 )
 
 target_sources(${PROJECT_NAME}

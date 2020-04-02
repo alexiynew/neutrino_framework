@@ -35,6 +35,7 @@
 
 #include <common/position.hpp>
 #include <common/size.hpp>
+#include <common/instance_id.hpp>
 
 namespace framework
 {

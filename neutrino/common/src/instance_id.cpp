@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Render.
+/// @brief Instance id.
 /// @author Fedorov Alexey
-/// @date 29.03.2020
+/// @date 31.03.2020
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -27,49 +29,49 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_RENDER_HPP
-#define FRAMEWORK_GRAPHICS_RENDER_HPP
+#include <atomic>
+#include <utility>
 
-#include <memory>
+#include <common/instance_id.hpp>
 
-#include <graphics/color_type.hpp>
-#include <graphics/mesh.hpp>
-#include <system/context.hpp>
-
-namespace framework::graphics
+namespace
 {
-class RenderImpl;
-class RenderCommand;
-
-class Render
+std::uint32_t get_id()
 {
-public:
-    explicit Render(system::Context& context);
+    static std::atomic<std::uint32_t> uid{0};
+    return ++uid;
+}
+} // namespace
 
-    Render(const Render& other) = delete;
-    Render& operator=(const Render& other) = delete;
+namespace framework
+{
+InstanceId::InstanceId() : m_id(get_id())
+{}
 
-    Render(Render&& other) noexcept;
-    Render& operator=(Render&& other) noexcept;
+bool operator==(const InstanceId& lhs, const InstanceId& rhs)
+{
+    return lhs.m_id == rhs.m_id;
+}
 
-    ~Render();
+bool operator!=(const InstanceId& lhs, const InstanceId& rhs)
+{
+    return !(lhs == rhs);
+}
 
-    void set_clear_color(Color color);
+bool operator<(const InstanceId& lhs, const InstanceId& rhs)
+{
+    return lhs.m_id < rhs.m_id;
+}
 
-    bool load(const Mesh& mesh);
+bool operator>(const InstanceId& lhs, const InstanceId& rhs)
+{
+    return rhs < lhs;
+}
 
-    void render(const Mesh& mesh);
+void swap(InstanceId& lhs, InstanceId& rhs) noexcept
+{
+    using std::swap;
+    swap(lhs.m_id, rhs.m_id);
+}
 
-    void display();
-
-private:
-    std::unique_ptr<RenderImpl> m_impl;
-    system::Context& m_context;
-    
-    std::vector<RenderCommand> m_render_commands;
-};
-
-} // namespace framework::graphics
-
-#endif
-
+} // namespace framework
