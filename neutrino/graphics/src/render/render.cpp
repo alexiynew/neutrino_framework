@@ -76,9 +76,15 @@ bool Render::load(const Mesh& mesh)
     return m_impl->load(mesh);
 }
 
-void Render::render(const Mesh& mesh)
+bool Render::load(const Shader& shader)
 {
-    m_render_commands.emplace_back(mesh.instance_id());
+    m_context.make_current();
+    return m_impl->load(shader);
+}
+
+void Render::render(const Mesh& mesh, const Shader& shader)
+{
+    m_render_commands.emplace_back(mesh.instance_id(), shader.instance_id());
 }
 
 void Render::display()

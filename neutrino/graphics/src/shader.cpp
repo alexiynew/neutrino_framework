@@ -27,230 +27,76 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <memory>
-#include <string>
-
-#include <common/types.hpp>
 #include <graphics/shader.hpp>
-#include <graphics/src/opengl/opengl.hpp>
-
-using namespace framework::graphics::details::opengl;
 
 namespace framework::graphics
 {
-#pragma region shader_base
-
-shader_base::shader_base(uint32 shader_type) : m_shader_id(glCreateShader(shader_type))
+Shader::Shader(const std::string& vertex_source, const std::string& fragment_source)
+    : m_vertex_sounrce(vertex_source), m_fragment_sounrce(fragment_source)
 {}
 
-shader_base::~shader_base()
-{
-    mark_for_deletion();
-}
+Shader::~Shader() = default;
 
-shader_base::shader_base(shader_base&& other)
-{
-    std::swap(other.m_shader_id, m_shader_id);
-}
+Shader::Shader(const Shader& other)
+    : m_vertex_sounrce(other.m_vertex_sounrce), m_fragment_sounrce(other.m_fragment_sounrce)
+{}
 
-shader_base& shader_base::operator=(shader_base&& other)
+Shader& Shader::operator=(const Shader& other)
 {
-    std::swap(other.m_shader_id, m_shader_id);
+    using std::swap;
+
+    Shader tmp(other);
+    swap(*this, tmp);
     return *this;
 }
 
-void shader_base::set_source(const std::string& src)
+Shader::Shader(Shader&& other) noexcept
 {
-    const char* src_pointer = src.c_str();
-    glShaderSource(m_shader_id, 1, &src_pointer, nullptr);
+    swap(*this, other);
 }
 
-void shader_base::set_source(std::istream& src_stream)
+Shader& Shader::operator=(Shader&& other) noexcept
 {
-    std::string src;
-    std::string line;
-    while (getline(src_stream, line)) {
-        src += line;
-    }
-
-    set_source(src);
-}
-
-void shader_base::compile()
-{
-    // TODO(alex): check for shader compiller support (glGet with argument GL_SHADER_COMPILER)
-    glCompileShader(m_shader_id);
-}
-
-void shader_base::mark_for_deletion()
-{
-    glDeleteShader(m_shader_id);
-}
-
-framework::int32 shader_base::shader_type() const
-{
-    framework::int32 type = 0;
-    glGetShaderiv(m_shader_id, GL_SHADER_TYPE, &type);
-    return type;
-}
-
-bool shader_base::valid() const
-{
-    return glIsShader(m_shader_id);
-}
-
-bool shader_base::compiled() const
-{
-    framework::int32 status = 0;
-    glGetShaderiv(m_shader_id, GL_COMPILE_STATUS, &status);
-    return status;
-}
-
-framework::usize shader_base::source_length() const
-{
-    framework::int32 length = 0;
-    glGetShaderiv(m_shader_id, GL_SHADER_SOURCE_LENGTH, &length);
-
-    return static_cast<framework::usize>(length);
-}
-
-std::string shader_base::source() const
-{
-    const auto length = source_length();
-
-    if (length <= 0) {
-        return std::string();
-    }
-
-    std::unique_ptr<char[]> buffer(new char[length]);
-
-    glGetShaderSource(m_shader_id, static_cast<GLsizei>(length), nullptr, buffer.get());
-
-    return std::string(buffer.get());
-}
-
-std::string shader_base::info_log() const
-{
-    framework::int32 length = 0;
-    glGetShaderiv(m_shader_id, GL_INFO_LOG_LENGTH, &length);
-
-    if (length <= 0) {
-        return std::string();
-    }
-
-    std::unique_ptr<char[]> buffer(new char[static_cast<usize>(length)]);
-
-    glGetShaderInfoLog(m_shader_id, length, nullptr, buffer.get());
-
-    return std::string(buffer.get());
-}
-
-framework::uint32 shader_base::shader_id() const
-{
-    return m_shader_id;
-}
-
-#pragma endregion
-
-#pragma region concrete_shaders
-
-vertex_shader::vertex_shader() : shader_base(GL_VERTEX_SHADER)
-{}
-
-fragment_shader::fragment_shader() : shader_base(GL_FRAGMENT_SHADER)
-{}
-
-#pragma endregion
-
-#pragma region shader_program
-
-shader_program::shader_program()
-{
-    m_program_id = glCreateProgram();
-}
-
-shader_program::~shader_program()
-{
-    glDeleteProgram(m_program_id);
-}
-
-shader_program::shader_program(shader_program&& other)
-{
-    std::swap(other.m_program_id, m_program_id);
-}
-
-shader_program& shader_program::operator=(shader_program&& other)
-{
-    std::swap(other.m_program_id, m_program_id);
+    swap(*this, other);
     return *this;
 }
 
-void shader_program::arttach(const shader_base& shader)
+void Shader::set_vertex_sounrce(const std::string& source)
 {
-    glAttachShader(m_program_id, shader.shader_id());
+    m_vertex_sounrce = source;
 }
 
-void shader_program::link()
+void Shader::set_fragment_sounrce(const std::string& source)
 {
-    glLinkProgram(m_program_id);
+    m_fragment_sounrce = source;
 }
 
-void shader_program::use()
+void Shader::clear()
 {
-    glUseProgram(m_program_id);
+    m_vertex_sounrce.clear();
+    m_fragment_sounrce.clear();
 }
 
-void shader_program::stop_using()
+InstanceId Shader::instance_id() const
 {
-    glUseProgram(0);
+    return m_instance_id;
 }
 
-void shader_program::uniform(const std::string& name, int value)
+const std::string& Shader::vertex_source() const
 {
-    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
-    glUniform1i(uniform_id, value);
+    return m_vertex_sounrce;
 }
 
-void shader_program::uniform(const std::string& name, float value)
+const std::string& Shader::fragment_source() const
 {
-    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
-    glUniform1f(uniform_id, value);
+    return m_fragment_sounrce;
 }
 
-void shader_program::uniform(const std::string& name, math::matrix4f value, bool transpose)
+void swap(Shader& lhs, Shader& rhs) noexcept
 {
-    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
-    glUniformMatrix4fv(uniform_id, 1, transpose, value.data());
+    using std::swap;
+    swap(lhs.m_vertex_sounrce, rhs.m_vertex_sounrce);
+    swap(lhs.m_fragment_sounrce, rhs.m_fragment_sounrce);
 }
-
-bool shader_program::linked() const
-{
-    int32 status = 0;
-    glGetProgramiv(m_program_id, GL_LINK_STATUS, &status);
-    return status;
-}
-
-std::string shader_program::info_log() const
-{
-    int32 length = 0;
-    glGetProgramiv(m_program_id, GL_INFO_LOG_LENGTH, &length);
-
-    if (length <= 0) {
-        return std::string();
-    }
-
-    std::unique_ptr<char[]> buffer(new char[static_cast<usize>(length)]);
-
-    glGetProgramInfoLog(m_program_id, length, nullptr, buffer.get());
-
-    return std::string(buffer.get());
-}
-
-framework::uint32 shader_program::program_id() const
-{
-    return m_program_id;
-}
-
-#pragma endregion
 
 } // namespace framework::graphics

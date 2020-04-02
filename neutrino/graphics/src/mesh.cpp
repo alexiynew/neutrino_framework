@@ -34,8 +34,6 @@ namespace framework::graphics
 Mesh::Mesh() = default;
 
 Mesh::~Mesh() = default;
-//{
-//}
 
 Mesh::Mesh(const Mesh& other) : m_vertices(other.m_vertices), m_indexes(other.m_indexes)
 {}
@@ -88,7 +86,7 @@ void Mesh::clear()
     m_indexes.clear();
 }
 
-const InstanceId& Mesh::instance_id() const
+InstanceId Mesh::instance_id() const
 {
     return m_instance_id;
 }

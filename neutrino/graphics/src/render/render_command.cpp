@@ -33,12 +33,17 @@
 
 namespace framework::graphics
 {
-RenderCommand::RenderCommand(InstanceId mesh_id) : m_mesh_id(mesh_id)
+RenderCommand::RenderCommand(InstanceId mesh_id, InstanceId shader_id) : m_mesh_id(mesh_id), m_shader_id(shader_id)
 {}
 
 InstanceId RenderCommand::mesh_id() const
 {
     return m_mesh_id;
+}
+
+InstanceId RenderCommand::shader_id() const
+{
+    return m_shader_id;
 }
 
 } // namespace framework::graphics

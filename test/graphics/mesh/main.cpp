@@ -33,6 +33,20 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
+const std::string vertex_shader = " \
+#version 330 core\n\
+layout(location = 0) in vec4 vertexPosition_modelspace;\n\
+void main(){\n\
+    gl_Position = vertexPosition_modelspace;\n\
+}";
+
+const std::string fragment_shader = " \
+#version 330 core\n\
+out vec3 color;\n\
+void main(){\n\
+  color = vec3(1,0,0);\n\
+}";
+
 class mesh_test : public framework::unit_test::Suite
 {
 public:
@@ -48,6 +62,14 @@ private:
         using namespace framework::graphics;
         using namespace framework::system;
 
+        const Mesh::VertexData vertices = {
+            {-1.0f, -1.0f, 0.0f, 1.0f},
+            {1.0f, -1.0f, 0.0f, 1.0f},
+            {0.0f, 1.0f, 0.0f, 1.0f},
+        };
+
+        const Mesh::IndicesData indices = {0, 1, 2};
+
         Window::set_application_name("GL mesh Test");
 
         Window main_window({640, 480}, "GL mesh test");
@@ -57,11 +79,25 @@ private:
 
         render.set_clear_color(0xFF00FFFF);
 
+        Mesh triangle;
+        triangle.set_vertices(vertices);
+        triangle.set_indices(indices);
+
+        Shader shader(vertex_shader, fragment_shader);
+
         const float32 max_total_time = 1000;
         float32 total_time           = 0;
 
+        render.load(triangle);
+        render.load(shader);
+
+        triangle.clear();
+        shader.clear();
+
         while (main_window.is_visible() && total_time < max_total_time) {
             main_window.process_events();
+
+            render.render(triangle, shader);
 
             render.display();
 

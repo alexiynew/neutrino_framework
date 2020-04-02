@@ -34,6 +34,7 @@
 
 #include <graphics/color_type.hpp>
 #include <graphics/mesh.hpp>
+#include <graphics/shader.hpp>
 #include <system/context.hpp>
 
 namespace framework::graphics
@@ -57,8 +58,9 @@ public:
     void set_clear_color(Color color);
 
     bool load(const Mesh& mesh);
+    bool load(const Shader& shader);
 
-    void render(const Mesh& mesh);
+    void render(const Mesh& mesh, const Shader& shader);
 
     void display();
 

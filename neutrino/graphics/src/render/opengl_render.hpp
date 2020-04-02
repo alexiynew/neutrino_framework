@@ -51,6 +51,7 @@ public:
     void set_clear_color(Color color) override;
 
     bool load(const Mesh& mesh) override;
+    bool load(const Shader& shader) override;
 
     void start_frame() override;
     void perform(const RenderCommand& command) override;
@@ -64,9 +65,20 @@ private:
         std::uint32_t index_buffer_id  = 0;
     };
 
-    using MeshInfoMap = std::unordered_map<InstanceId, MeshInfo>;
+    struct ShaderInfo
+    {
+        std::uint32_t vertex_shader_id   = 0;
+        std::uint32_t fragment_shader_id = 0;
+        std::uint32_t shader_program_id  = 0;
+    };
+
+    using MeshInfoMap   = std::unordered_map<InstanceId, MeshInfo>;
+    using ShaderInfoMap = std::unordered_map<InstanceId, ShaderInfo>;
+
+    void set_uniforms() const;
 
     MeshInfoMap m_mesh_info;
+    ShaderInfoMap m_shader_info;
 };
 
 } // namespace framework::graphics

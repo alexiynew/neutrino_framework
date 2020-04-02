@@ -39,12 +39,14 @@ namespace framework::graphics
 class RenderCommand
 {
 public:
-    explicit RenderCommand(InstanceId mesh_id);
+    explicit RenderCommand(InstanceId mesh_id, InstanceId shader_id);
 
     InstanceId mesh_id() const;
+    InstanceId shader_id() const;
 
 private:
     InstanceId m_mesh_id;
+    InstanceId m_shader_id;
 };
 
 } // namespace framework::graphics

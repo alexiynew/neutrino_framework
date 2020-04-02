@@ -48,10 +48,11 @@ namespace framework::graphics
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Mesh.
 ///
-/// Mesh contains vertices of triangle arrays.
-/// For every vertex there can be a coordinates, normal,
-/// two texture coordinates, color and tangent.
-/// All vertex information is stored in separate arrays.
+/// Meshes contain vertex data (positions, normals, texture coordinates etc.)
+/// and triancle indices. All vertex data must be in arrays of the same size.
+/// For example, if you have a mesh of 100 Vertices, positions, normals and
+/// other arrays must being 100 in size. Data for i-th vertex is at index "i"
+/// in each array.
 ////////////////////////////////////////////////////////////////////////////////
 class Mesh
 {
@@ -147,7 +148,7 @@ public:
     ///
     /// @return Mesh instance id.
     ////////////////////////////////////////////////////////////////////////////
-    const InstanceId& instance_id() const;
+    InstanceId instance_id() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Get vertices position data.

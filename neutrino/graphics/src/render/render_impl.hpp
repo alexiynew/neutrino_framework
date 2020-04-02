@@ -34,6 +34,7 @@
 
 #include <graphics/color_type.hpp>
 #include <graphics/mesh.hpp>
+#include <graphics/shader.hpp>
 
 namespace framework::graphics
 {
@@ -49,7 +50,8 @@ public:
 
     virtual void set_clear_color(Color color) = 0;
 
-    virtual bool load(const Mesh& mesh) = 0;
+    virtual bool load(const Mesh& mesh)     = 0;
+    virtual bool load(const Shader& shader) = 0;
 
     virtual void start_frame()                         = 0;
     virtual void perform(const RenderCommand& command) = 0;
