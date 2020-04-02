@@ -31,8 +31,8 @@
 #include <string>
 
 #include <common/types.hpp>
-#include <graphics/src/opengl/opengl.hpp>
 #include <graphics/shader.hpp>
+#include <graphics/src/opengl/opengl.hpp>
 
 using namespace framework::graphics::details::opengl;
 
@@ -254,4 +254,3 @@ framework::uint32 shader_program::program_id() const
 #pragma endregion
 
 } // namespace framework::graphics
-

@@ -59,15 +59,14 @@ public:
 private:
     struct MeshInfo
     {
-        std::uint32_t vertex_array_id = 0;
-        std::uint32_t vertex_buffer_id = 0; 
-        std::uint32_t index_buffer_id = 0; 
+        std::uint32_t vertex_array_id  = 0;
+        std::uint32_t vertex_buffer_id = 0;
+        std::uint32_t index_buffer_id  = 0;
     };
-    
+
     using MeshInfoMap = std::unordered_map<InstanceId, MeshInfo>;
 
     MeshInfoMap m_mesh_info;
-
 };
 
 } // namespace framework::graphics

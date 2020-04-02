@@ -31,7 +31,8 @@
 
 @implementation OSXApplication
 
-+ (void)process_events {
++ (void)process_events
+{
     [OSXApplication sharedApplication];
     NSEvent* event = nil;
 
@@ -43,7 +44,8 @@
     }
 }
 
-+ (void)setup_menu_bar {
++ (void)setup_menu_bar
+{
     [OSXApplication sharedApplication];
 
     NSMenu* mainMenu = [NSApp mainMenu];
@@ -55,7 +57,8 @@
     [NSApp setMainMenu:mainMenu];
 }
 
-- (void)sendEvent:(NSEvent*)event {
+- (void)sendEvent:(NSEvent*)event
+{
     [super sendEvent:event];
 }
 

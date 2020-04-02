@@ -43,6 +43,7 @@ namespace framework::graphics
 struct Color
 {
     using ValueType = std::uint8_t;
+
     ValueType r = 0;
     ValueType g = 0;
     ValueType b = 0;

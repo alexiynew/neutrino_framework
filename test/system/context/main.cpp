@@ -28,9 +28,9 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
+#include <graphics/render.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
-#include <graphics/render.hpp>
 
 class context_test : public framework::unit_test::Suite
 {

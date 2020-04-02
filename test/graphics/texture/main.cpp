@@ -28,10 +28,10 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
+#include <graphics/render.hpp>
 #include <graphics/texture.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
-#include <graphics/render.hpp>
 
 class texture_test : public framework::unit_test::Suite
 {

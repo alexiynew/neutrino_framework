@@ -71,4 +71,4 @@ std::string Version::as_string() const
            '.' + std::to_string(build_number);
 }
 
-} // namespace framework::utils
+} // namespace framework

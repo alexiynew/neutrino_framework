@@ -159,6 +159,6 @@ inline constexpr bool operator>=(const Version& lhs, const Version& rhs) noexcep
 
 /// @}
 
-} // namespace framework::utils
+} // namespace framework
 
 #endif

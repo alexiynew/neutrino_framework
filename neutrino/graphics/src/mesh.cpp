@@ -111,4 +111,3 @@ void swap(Mesh& lhs, Mesh& rhs) noexcept
 }
 
 } // namespace framework::graphics
-

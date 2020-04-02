@@ -31,9 +31,9 @@
 #include <iostream>
 #include <memory>
 
-#include <unit_test/suite.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
+#include <unit_test/suite.hpp>
 
 namespace framework
 {

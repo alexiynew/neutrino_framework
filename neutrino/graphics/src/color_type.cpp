@@ -31,7 +31,6 @@
 
 namespace
 {
-
 constexpr inline std::uint8_t map_to_int(float value) noexcept
 {
     return static_cast<std::uint8_t>(value * 255);

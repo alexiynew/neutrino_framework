@@ -29,8 +29,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_UNIQUE_ID_HPP
-#define FRAMEWORK_COMMON_UNIQUE_ID_HPP
+#ifndef FRAMEWORK_COMMON_INSTANCE_ID_HPP
+#define FRAMEWORK_COMMON_INSTANCE_ID_HPP
 
 #include <cstdint>
 #include <functional>

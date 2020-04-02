@@ -42,18 +42,18 @@ class RenderCommand;
 class RenderImpl
 {
 public:
-    using VertexData = std::vector<math::vector4f>;
+    using VertexData  = std::vector<math::vector4f>;
     using IndicesData = std::vector<int>;
 
     virtual ~RenderImpl() = default;
 
     virtual void set_clear_color(Color color) = 0;
 
-    virtual bool load(const Mesh& mesh)   = 0;
+    virtual bool load(const Mesh& mesh) = 0;
 
-    virtual void start_frame() = 0;
+    virtual void start_frame()                         = 0;
     virtual void perform(const RenderCommand& command) = 0;
-    virtual void end_frame() = 0;
+    virtual void end_frame()                           = 0;
 };
 
 } // namespace framework::graphics

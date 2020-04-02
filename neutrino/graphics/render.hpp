@@ -65,11 +65,10 @@ public:
 private:
     std::unique_ptr<RenderImpl> m_impl;
     system::Context& m_context;
-    
+
     std::vector<RenderCommand> m_render_commands;
 };
 
 } // namespace framework::graphics
 
 #endif
-
