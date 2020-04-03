@@ -29,6 +29,11 @@
 
 #include <graphics/mesh.hpp>
 
+namespace
+{
+const framework::graphics::Mesh::TextureCoordinatesData empty_texture_coordiantes;
+}
+
 namespace framework::graphics
 {
 Mesh::Mesh() = default;
@@ -69,6 +74,59 @@ void Mesh::set_vertices(VertexData&& data) noexcept
     swap(m_vertices, data);
 }
 
+void Mesh::set_normals(const VertexData& normals)
+{
+    m_normals = normals;
+}
+
+void Mesh::set_normals(VertexData&& normals) noexcept
+{
+    using std::swap;
+    swap(m_normals, normals);
+}
+
+void Mesh::set_tangents(const VertexData& tangents)
+{
+    m_tanegents = tangents;
+}
+
+void Mesh::set_tangents(VertexData&& tangents) noexcept
+{
+    using std::swap;
+    swap(m_tanegents, tangents);
+}
+
+void Mesh::set_colors(const ColorData& colors)
+{
+    m_colors = colors;
+}
+
+void Mesh::set_colors(ColorData&& colors) noexcept
+{
+    using std::swap;
+    swap(m_colors, colors);
+}
+
+void Mesh::set_texture_coordinates(int index, const TextureCoordinatesData& coordinates)
+{
+    if (index < 0 || index >= max_texture_coordinates) {
+        return;
+    }
+
+    m_texture_coordinates[index] = coordinates;
+}
+
+void Mesh::set_texture_coordinates(int index, TextureCoordinatesData&& coordinates) noexcept
+{
+    using std::swap;
+
+    if (index < 0 || index >= max_texture_coordinates) {
+        return;
+    }
+
+    swap(m_texture_coordinates[index], coordinates);
+}
+
 void Mesh::set_indices(const IndicesData& indexes)
 {
     m_indexes = indexes;
@@ -96,6 +154,30 @@ const Mesh::VertexData& Mesh::vertices() const
     return m_vertices;
 }
 
+const Mesh::VertexData& Mesh::normals() const
+{
+    return m_normals;
+}
+
+const Mesh::VertexData& Mesh::tangents() const
+{
+    return m_tanegents;
+}
+
+const Mesh::ColorData& Mesh::colors() const
+{
+    return m_colors;
+}
+
+const Mesh::TextureCoordinatesData& Mesh::texture_coordinates(int index) const
+{
+    if (index < 0 || index >= max_texture_coordinates) {
+        return empty_texture_coordiantes;
+    }
+
+    return m_texture_coordinates[index];
+}
+
 const Mesh::IndicesData& Mesh::indices() const
 {
     return m_indexes;
@@ -105,6 +187,10 @@ void swap(Mesh& lhs, Mesh& rhs) noexcept
 {
     using std::swap;
     swap(lhs.m_vertices, rhs.m_vertices);
+    swap(lhs.m_normals, rhs.m_normals);
+    swap(lhs.m_tanegents, rhs.m_tanegents);
+    swap(lhs.m_colors, rhs.m_colors);
+    swap(lhs.m_texture_coordinates, rhs.m_texture_coordinates);
     swap(lhs.m_indexes, rhs.m_indexes);
 }
 

@@ -27,7 +27,7 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/color_type.hpp>
+#include <graphics/color.hpp>
 
 namespace
 {

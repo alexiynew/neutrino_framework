@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_COLOR_TYPE_HPP
-#define FRAMEWORK_GRAPHICS_COLOR_TYPE_HPP
+#ifndef FRAMEWORK_GRAPHICS_COLOR_HPP
+#define FRAMEWORK_GRAPHICS_COLOR_HPP
 
 #include <cstdint>
 

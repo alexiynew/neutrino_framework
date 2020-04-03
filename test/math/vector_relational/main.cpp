@@ -48,8 +48,6 @@ using framework::math::matrix4x2f;
 using framework::math::matrix4x3f;
 using framework::math::matrix4x4f;
 
-// TODO(alex) add test for real32 and real64
-
 class relational_function_tests : public framework::unit_test::Suite
 {
 public:

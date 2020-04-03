@@ -32,7 +32,7 @@
 
 #include <memory>
 
-#include <graphics/color_type.hpp>
+#include <graphics/color.hpp>
 #include <graphics/mesh.hpp>
 #include <graphics/shader.hpp>
 #include <system/context.hpp>

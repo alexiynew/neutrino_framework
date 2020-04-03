@@ -35,7 +35,7 @@
 #include <vector>
 
 #include <common/types.hpp>
-#include <graphics/color_type.hpp>
+#include <graphics/color.hpp>
 
 namespace framework::graphics::details::image
 {

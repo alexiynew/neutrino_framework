@@ -24,7 +24,7 @@
 # =============================================================================
 
 set_sources(PUBLIC_SOURCES
-    color_type.hpp
+    color.hpp
     image.hpp
     mesh.hpp
     shader.hpp
@@ -33,7 +33,7 @@ set_sources(PUBLIC_SOURCES
 )
 
 set_sources(PRIVATE_SOURCES
-    src/color_type.cpp
+    src/color.cpp
     src/mesh.cpp
     src/shader.cpp
     src/texture.cpp
