@@ -34,7 +34,8 @@ enum class CompressionAlgorithm
 class BitStream
 {
 public:
-    explicit BitStream(const std::vector<uint8>& data) : m_data(data)
+    explicit BitStream(const std::vector<uint8>& data)
+        : m_data(data)
     {}
 
     template <typename T>
@@ -233,7 +234,9 @@ struct BlockHeader
     uint8 bfinal : 1;
     uint8 btype : 2;
 
-    BlockHeader() : bfinal(0), btype(no_compression)
+    BlockHeader()
+        : bfinal(0)
+        , btype(no_compression)
     {}
 
     explicit BlockHeader(uint8 value)

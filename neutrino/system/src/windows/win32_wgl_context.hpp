@@ -30,9 +30,9 @@
 #ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_CONTEXT_HPP
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_CONTEXT_HPP
 
-#include <windows.h>
-
 #include <system/context.hpp>
+
+#include <windows.h>
 
 namespace framework::system::details
 {

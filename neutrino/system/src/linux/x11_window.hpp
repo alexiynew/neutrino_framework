@@ -30,13 +30,15 @@
 #ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_WINDOW_HPP
 #define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_WINDOW_HPP
 
-#include <X11/Xlib.h>
 #include <functional>
 
 #include <common/types.hpp>
+
 #include <system/src/context.hpp>
 #include <system/src/linux/x11_server.hpp>
 #include <system/src/window_implementation.hpp>
+
+#include <X11/Xlib.h>
 
 namespace framework::system::details
 {

@@ -35,7 +35,8 @@
 class context_test : public framework::unit_test::Suite
 {
 public:
-    context_test() : Suite("context_test")
+    context_test()
+        : Suite("context_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }

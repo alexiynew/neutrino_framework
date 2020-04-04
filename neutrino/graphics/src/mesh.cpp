@@ -40,7 +40,9 @@ Mesh::Mesh() = default;
 
 Mesh::~Mesh() = default;
 
-Mesh::Mesh(const Mesh& other) : m_vertices(other.m_vertices), m_indexes(other.m_indexes)
+Mesh::Mesh(const Mesh& other)
+    : m_vertices(other.m_vertices)
+    , m_indexes(other.m_indexes)
 {}
 
 Mesh& Mesh::operator=(const Mesh& other)
@@ -145,11 +147,10 @@ void Mesh::clear()
     m_tanegents.clear();
     m_colors.clear();
 
-    for (TextureCoordinatesData& coordinates : m_texture_coordinates)
-    {
+    for (TextureCoordinatesData& coordinates : m_texture_coordinates) {
         coordinates.clear();
     }
-    
+
     m_indexes.clear();
 }
 

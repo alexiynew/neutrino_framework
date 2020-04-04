@@ -30,10 +30,11 @@
 #ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_SERVER_HPP
 #define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_SERVER_HPP
 
-#include <X11/Xlib.h>
 #include <map>
 #include <memory>
 #include <vector>
+
+#include <X11/Xlib.h>
 
 namespace framework::system::details
 {

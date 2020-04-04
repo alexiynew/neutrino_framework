@@ -38,6 +38,7 @@
 #include <common/types.hpp>
 #include <common/utils.hpp>
 #include <common/zlib.hpp>
+
 #include <graphics/src/image/png.hpp>
 
 namespace
@@ -294,7 +295,11 @@ struct pass_info
     };
 
     pass_info(int32 w, int32 h, int32 b, position_t p, offset_t o)
-        : width(w), height(h), bytes_per_scanline(b), position(p), offset(o)
+        : width(w)
+        , height(h)
+        , bytes_per_scanline(b)
+        , position(p)
+        , offset(o)
     {}
 
     const int32 width;

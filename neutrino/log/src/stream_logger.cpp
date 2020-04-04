@@ -31,7 +31,8 @@
 
 namespace framework::log
 {
-stream_logger::stream_logger(std::ostream& stream) : m_output(stream)
+stream_logger::stream_logger(std::ostream& stream)
+    : m_output(stream)
 {}
 
 void stream_logger::add_message(severity_level level, const std::string& tag, const std::string& message)

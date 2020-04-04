@@ -33,7 +33,9 @@
 
 namespace framework
 {
-Position::Position(int x_value, int y_value) : x(x_value), y(y_value)
+Position::Position(int x_value, int y_value)
+    : x(x_value)
+    , y(y_value)
 {}
 
 bool operator==(const Position& lhs, const Position& rhs)

@@ -34,7 +34,8 @@ using framework::math::almost_equal;
 class geometric_function_tests : public framework::unit_test::Suite
 {
 public:
-    geometric_function_tests() : Suite("geometric_function_tests")
+    geometric_function_tests()
+        : Suite("geometric_function_tests")
     {
         add_test([this]() { length_function(); }, "length_function");
         add_test([this]() { distance_function(); }, "distance_function");

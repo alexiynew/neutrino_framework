@@ -60,7 +60,8 @@ using framework::math::half_pi;
 class transform_2d_function_tests : public framework::unit_test::Suite
 {
 public:
-    transform_2d_function_tests() : Suite("transform_2d_function_tests")
+    transform_2d_function_tests()
+        : Suite("transform_2d_function_tests")
     {
         add_test([this]() { translate_function(); }, "translate_function");
         add_test([this]() { rotate_function(); }, "rotate_function");
@@ -264,7 +265,8 @@ private:
 class transform_3d_function_tests : public framework::unit_test::Suite
 {
 public:
-    transform_3d_function_tests() : Suite("transform_3d_function_tests")
+    transform_3d_function_tests()
+        : Suite("transform_3d_function_tests")
     {
         add_test([this]() { translate_function(); }, "translate_function");
         add_test([this]() { scale_function(); }, "scale_function");
@@ -401,7 +403,8 @@ private:
 class projection_function_tests : public framework::unit_test::Suite
 {
 public:
-    projection_function_tests() : Suite("projection_function_tests")
+    projection_function_tests()
+        : Suite("projection_function_tests")
     {
         add_test([this]() { ortho_function(); }, "ortho_function");
         add_test([this]() { ortho2d_function(); }, "ortho2d_function");
@@ -538,7 +541,8 @@ private:
 class helpers_function_test : public framework::unit_test::Suite
 {
 public:
-    helpers_function_test() : Suite("helpers_function_test")
+    helpers_function_test()
+        : Suite("helpers_function_test")
     {
         add_test([this]() { project_function(); }, "project_function");
         add_test([this]() { unproject_function(); }, "unproject_function");

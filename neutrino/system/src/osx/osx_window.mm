@@ -27,11 +27,12 @@
 // SOFTWARE.
 // =============================================================================
 
-#import <Foundation/Foundation.h>
-
 #include <common/types.hpp>
 #include <common/utils.hpp>
+
 #include <system/src/osx/osx_window.hpp>
+
+#import <Foundation/Foundation.h>
 
 @implementation OSXWindow
 

@@ -33,7 +33,8 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-const std::string vertex_shader = " \
+const std::string vertex_shader =
+" \
 #version 330 core\n\
 layout(location = 0) in vec3 vertexPosition_modelspace;\n\
 void main(){\n\
@@ -41,7 +42,8 @@ void main(){\n\
     gl_Position.w = 1.0;\n\
 }";
 
-const std::string fragment_shader = " \
+const std::string fragment_shader =
+" \
 #version 330 core\n\
 out vec3 color;\n\
 void main(){\n\
@@ -51,7 +53,8 @@ void main(){\n\
 class mesh_test : public framework::unit_test::Suite
 {
 public:
-    mesh_test() : Suite("mesh_test")
+    mesh_test()
+        : Suite("mesh_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }

@@ -31,6 +31,7 @@
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
 
 #include <map>
+
 #include <windows.h>
 
 namespace framework::system::details

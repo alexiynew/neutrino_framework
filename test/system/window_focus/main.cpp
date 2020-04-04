@@ -31,7 +31,8 @@ using namespace framework::system;
 class window_focus_test : public framework::unit_test::Suite
 {
 public:
-    window_focus_test() : Suite("window_focus_test")
+    window_focus_test()
+        : Suite("window_focus_test")
     {
         add_test([this]() { focus_window(); }, "focus_window");
     }

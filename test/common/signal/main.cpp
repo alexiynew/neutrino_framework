@@ -31,7 +31,8 @@ using namespace framework;
 class slot_test : public unit_test::Suite
 {
 public:
-    slot_test() : Suite("slot_test")
+    slot_test()
+        : Suite("slot_test")
     {
         add_test([this]() { slot_lambda(); }, "slot_lambda");
         add_test([this]() { slot_member(); }, "slot_member");

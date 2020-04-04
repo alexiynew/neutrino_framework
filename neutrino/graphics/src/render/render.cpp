@@ -30,6 +30,7 @@
 #include <stdexcept>
 
 #include <graphics/render.hpp>
+
 #include <graphics/src/render/opengl/opengl_render.hpp>
 #include <graphics/src/render/render_command.hpp>
 #include <graphics/src/render/render_impl.hpp>
@@ -55,7 +56,9 @@ std::unique_ptr<graphics::RenderImpl> create_impl(system::Context& context)
 
 namespace framework::graphics
 {
-Render::Render(system::Context& context) : m_impl(create_impl(context)), m_context(context)
+Render::Render(system::Context& context)
+    : m_impl(create_impl(context))
+    , m_context(context)
 {}
 
 Render::Render(Render&& other) noexcept = default;

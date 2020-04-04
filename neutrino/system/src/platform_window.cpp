@@ -33,7 +33,8 @@ namespace framework::system::details
 {
 std::string PlatformWindow::application_name = "Application";
 
-PlatformWindow::PlatformWindow(const Window& window_interface) : m_window_interface(window_interface)
+PlatformWindow::PlatformWindow(const Window& window_interface)
+    : m_window_interface(window_interface)
 {}
 
 PlatformWindow::~PlatformWindow() = default;

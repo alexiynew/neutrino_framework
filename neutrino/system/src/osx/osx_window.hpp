@@ -30,10 +30,10 @@
 #ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_WINDOW_HPP
 #define FRAMEWORK_SYSTEM_SRC_OSX_OSX_WINDOW_HPP
 
+#include <system/src/osx/osx_window.hpp>
+
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
-
-#include <system/src/osx/osx_window.hpp>
 
 @interface OSXWindow : NSWindow
 {}

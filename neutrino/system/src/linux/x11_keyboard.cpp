@@ -27,13 +27,14 @@
 // SOFTWARE.
 // =============================================================================
 
-#include "X11/XKBlib.h"
-#include <X11/keysym.h>
 #include <algorithm>
 #include <array>
 #include <string>
 
 #include <system/src/linux/x11_keyboard.hpp>
+
+#include "X11/XKBlib.h"
+#include <X11/keysym.h>
 
 namespace
 {

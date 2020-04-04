@@ -33,7 +33,8 @@
 
 namespace framework::system
 {
-Context::Context(ContextSettings settings) noexcept : m_settings(std::move(settings))
+Context::Context(ContextSettings settings) noexcept
+    : m_settings(std::move(settings))
 {}
 
 Context::~Context() = default;

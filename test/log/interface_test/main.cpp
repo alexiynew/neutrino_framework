@@ -47,7 +47,8 @@ using framework::log::stream_logger;
 class logger_interface_test : public framework::unit_test::Suite
 {
 public:
-    logger_interface_test() : Suite("logger_interface_test")
+    logger_interface_test()
+        : Suite("logger_interface_test")
     {
         add_test([this]() { stream_logger_test(); }, "stream_logger_test");
         add_test([this]() { long_log_string(); }, "long_log_string");
@@ -85,44 +86,72 @@ private:
         std::stringstream log_stream;
         set_logger(std::make_unique<stream_logger>(log_stream));
 
-        info(name())
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << std::endl;
+        info(name()) << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << "long string long string long string long string long string long string long string long "
+                        "string long"
+                     << std::endl;
 
         std::stringstream log_test;
 
-        log_test
-        << "[" << severity_level::info << "] " << name() << ": "
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << "long string long string long string long string long string long string long string long string long"
-        << std::endl;
+        log_test << "[" << severity_level::info << "] " << name() << ": "
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << "long string long string long string long string long string long string long string long string "
+                    "long"
+                 << std::endl;
 
         TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }

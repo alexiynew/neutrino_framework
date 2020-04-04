@@ -45,7 +45,8 @@ std::uint32_t get_id()
 
 namespace framework
 {
-InstanceId::InstanceId() : m_id(get_id())
+InstanceId::InstanceId()
+    : m_id(get_id())
 {}
 
 bool operator==(const InstanceId& lhs, const InstanceId& rhs)

@@ -31,7 +31,8 @@
 class random_numbers_test : public framework::unit_test::Suite
 {
 public:
-    random_numbers_test() : Suite("random_numbers_test")
+    random_numbers_test()
+        : Suite("random_numbers_test")
     {
         add_test([this]() { random_numbers(); }, "random_numbers");
     }

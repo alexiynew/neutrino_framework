@@ -52,7 +52,10 @@ framework::int32 get_number(std::istringstream& ins)
 namespace framework
 {
 Version::Version(int32 major_v, int32 minor_v, int32 patch_v, int32 build_n) noexcept
-    : major_version(major_v), minor_version(minor_v), patch_version(patch_v), build_number(build_n)
+    : major_version(major_v)
+    , minor_version(minor_v)
+    , patch_version(patch_v)
+    , build_number(build_n)
 {}
 
 Version::Version(const std::string& version_string)

@@ -31,7 +31,6 @@
 #include <thread>
 #include <vector>
 
-#include <gl/gl.hpp>
 #include <graphics/image.hpp>
 #include <graphics/mesh.hpp>
 #include <graphics/shader.hpp>
@@ -42,7 +41,10 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-const std::string vertex_shader_src = "#version 330 core\n\
+#include <gl/gl.hpp>
+
+const std::string vertex_shader_src =
+"#version 330 core\n\
 layout(location = 0) in vec2 vertexPosition_modelspace;\n\
 layout(location = 1) in vec2 vertexUV;\n\
 uniform mat4 MVP;\n\
@@ -52,7 +54,8 @@ void main(){\n\
     UV = vertexUV;\n\
 }";
 
-const std::string fragment_shader_src = "#version 330 core\n\
+const std::string fragment_shader_src =
+"#version 330 core\n\
 uniform sampler2D tex;\n\
 uniform float gamma;\n\
 out vec4 color;\n\

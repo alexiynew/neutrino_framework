@@ -29,8 +29,9 @@
 
 #include <memory>
 
-#include <system/src/platform_window.hpp>
 #include <system/window.hpp>
+
+#include <system/src/platform_window.hpp>
 
 namespace framework::system
 {
@@ -45,7 +46,8 @@ Window::Window(Size size, const std::string& title, ContextSettings settings)
 
 Window::~Window() = default;
 
-Window::Window(Window&& other) noexcept : m_platform_window(std::move(other.m_platform_window))
+Window::Window(Window&& other) noexcept
+    : m_platform_window(std::move(other.m_platform_window))
 {}
 
 Window& Window::operator=(Window&& other) noexcept

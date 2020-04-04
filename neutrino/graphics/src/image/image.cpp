@@ -28,6 +28,7 @@
 // =============================================================================
 
 #include <graphics/image.hpp>
+
 #include <graphics/src/image/bmp.hpp>
 #include <graphics/src/image/image_info.hpp>
 #include <graphics/src/image/png.hpp>
@@ -36,7 +37,10 @@ namespace framework::graphics
 {
 Image::Image() = default;
 
-Image::Image(const data_t& data, int32 width, int32 height) : m_data(data), m_width(width), m_height(height)
+Image::Image(const data_t& data, int32 width, int32 height)
+    : m_data(data)
+    , m_width(width)
+    , m_height(height)
 {}
 
 Image::Image(const Image&) = default;

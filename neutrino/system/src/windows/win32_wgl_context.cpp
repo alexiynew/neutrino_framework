@@ -79,7 +79,9 @@ void init_wgl(HWND window, const framework::system::details::wgl::GetFunction& g
 
 namespace framework::system::details
 {
-Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window) : Context(settings), m_window(window)
+Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window)
+    : Context(settings)
+    , m_window(window)
 {
     init_wgl(m_window, [this](const char* function_name) { return get_function(function_name); });
 

@@ -31,11 +31,13 @@
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 
 #include <memory>
-#include <windows.h>
 
 #include <system/context.hpp>
 #include <system/context_settings.hpp>
+
 #include <system/src/platform_window.hpp>
+
+#include <windows.h>
 
 namespace framework::system::details
 {

@@ -27,9 +27,9 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <X11/Xlib.h>
-
 #include <system/src/linux/x11_mouse.hpp>
+
+#include <X11/Xlib.h>
 
 namespace framework::system::details
 {

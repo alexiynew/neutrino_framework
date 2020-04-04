@@ -28,17 +28,17 @@
 // =============================================================================
 
 #ifndef FRAMEWORK_MATH_DETAILS
-#error You should include math/math.hpp instead of vector_type.hpp
+    #error You should include math/math.hpp instead of vector_type.hpp
 #endif
 
 #ifndef FRAMEWORK_MATH_INC_VECTOR_TYPE_HPP
-#define FRAMEWORK_MATH_INC_VECTOR_TYPE_HPP
+    #define FRAMEWORK_MATH_INC_VECTOR_TYPE_HPP
 
-#include <cassert>
+    #include <cassert>
 
-#include <common/types.hpp>
+    #include <common/types.hpp>
 
-#include <math/inc/vector_type_details.hpp>
+    #include <math/inc/vector_type_details.hpp>
 
 namespace framework::math
 {
@@ -431,40 +431,47 @@ struct vector<2, T> final
 /// @{
 template <typename T>
 inline constexpr vector<4, T>::vector() noexcept
-    : x{T(0)}, y{T(0)}, z{T(0)}, w{std::is_same<T, bool>::value ? T(0) : T(1)}
+    : x{T(0)}
+    , y{T(0)}
+    , z{T(0)}
+    , w{std::is_same<T, bool>::value ? T(0) : T(1)}
 {}
 
 template <typename T>
 template <typename X, typename Y, typename Z, typename W>
 inline constexpr vector<4, T>::vector(const X& x_value, const Y& y_value, const Z& z_value, const W& w_value) noexcept
-    : x{vector_type_details::cast_to<T>::from(x_value)},
-      y{vector_type_details::cast_to<T>::from(y_value)},
-      z{vector_type_details::cast_to<T>::from(z_value)},
-      w{vector_type_details::cast_to<T>::from(w_value)}
+    : x{vector_type_details::cast_to<T>::from(x_value)}
+    , y{vector_type_details::cast_to<T>::from(y_value)}
+    , z{vector_type_details::cast_to<T>::from(z_value)}
+    , w{vector_type_details::cast_to<T>::from(w_value)}
 {}
 
 template <typename T>
 template <typename U>
-inline constexpr vector<4, T>::vector(const U& value) noexcept : vector{value, value, value, value}
+inline constexpr vector<4, T>::vector(const U& value) noexcept
+    : vector{value, value, value, value}
 {}
 
 template <typename T>
 template <typename U>
-inline vector<4, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
+inline vector<4, T>::vector(const U* pointer)
+    : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline vector<4, T>::vector(U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
+inline vector<4, T>::vector(U* pointer)
+    : vector{*pointer, *(pointer + 1), *(pointer + 2), *(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline constexpr vector<4, T>::vector(const vector<4, U>& other) noexcept : vector{other.x, other.y, other.z, other.w}
+inline constexpr vector<4, T>::vector(const vector<4, U>& other) noexcept
+    : vector{other.x, other.y, other.z, other.w}
 {}
 
 template <typename T>
@@ -557,49 +564,58 @@ inline const typename vector<4, T>::value_type* vector<4, T>::data() const noexc
 /// @name vector<3, T> constructors.
 /// @{
 template <typename T>
-inline constexpr vector<3, T>::vector() noexcept : x{T(0)}, y{T(0)}, z{T(0)}
+inline constexpr vector<3, T>::vector() noexcept
+    : x{T(0)}
+    , y{T(0)}
+    , z{T(0)}
 {}
 
 template <typename T>
 template <typename X, typename Y, typename Z>
 inline constexpr vector<3, T>::vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept
-    : x{vector_type_details::cast_to<T>::from(x_value)},
-      y{vector_type_details::cast_to<T>::from(y_value)},
-      z{vector_type_details::cast_to<T>::from(z_value)}
+    : x{vector_type_details::cast_to<T>::from(x_value)}
+    , y{vector_type_details::cast_to<T>::from(y_value)}
+    , z{vector_type_details::cast_to<T>::from(z_value)}
 {}
 
 template <typename T>
 template <typename U>
-inline constexpr vector<3, T>::vector(const U& value) noexcept : vector{value, value, value}
+inline constexpr vector<3, T>::vector(const U& value) noexcept
+    : vector{value, value, value}
 {}
 
 template <typename T>
 template <typename U>
-inline vector<3, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2)}
+inline vector<3, T>::vector(const U* pointer)
+    : vector{*pointer, *(pointer + 1), *(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline vector<3, T>::vector(U* pointer) : vector{*pointer, *(pointer + 1), *(pointer + 2)}
+inline vector<3, T>::vector(U* pointer)
+    : vector{*pointer, *(pointer + 1), *(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline constexpr vector<3, T>::vector(const vector<4, U>& other) noexcept : vector{other.x, other.y, other.z}
+inline constexpr vector<3, T>::vector(const vector<4, U>& other) noexcept
+    : vector{other.x, other.y, other.z}
 {}
 
 template <typename T>
 template <typename U>
-inline constexpr vector<3, T>::vector(const vector<3, U>& other) noexcept : vector{other.x, other.y, other.z}
+inline constexpr vector<3, T>::vector(const vector<3, U>& other) noexcept
+    : vector{other.x, other.y, other.z}
 {}
 
 template <typename T>
 template <typename U>
-inline constexpr vector<3, T>::vector(const vector<2, U>& other) noexcept : vector{other.x, other.y, T(0)}
+inline constexpr vector<3, T>::vector(const vector<2, U>& other) noexcept
+    : vector{other.x, other.y, T(0)}
 {}
 
 template <typename T>
@@ -656,46 +672,55 @@ inline const typename vector<3, T>::value_type* vector<3, T>::data() const noexc
 /// @name vector<2, T> constructors.
 /// @{
 template <typename T>
-inline constexpr vector<2, T>::vector() noexcept : x{T(0)}, y{T(0)}
+inline constexpr vector<2, T>::vector() noexcept
+    : x{T(0)}
+    , y{T(0)}
 {}
 
 template <typename T>
 template <typename X, typename Y>
 inline constexpr vector<2, T>::vector(const X& x_value, const Y& y_value) noexcept
-    : x{vector_type_details::cast_to<T>::from(x_value)}, y{vector_type_details::cast_to<T>::from(y_value)}
+    : x{vector_type_details::cast_to<T>::from(x_value)}
+    , y{vector_type_details::cast_to<T>::from(y_value)}
 {}
 
 template <typename T>
 template <typename U>
-inline constexpr vector<2, T>::vector(const U& value) noexcept : vector{value, value}
+inline constexpr vector<2, T>::vector(const U& value) noexcept
+    : vector{value, value}
 {}
 
 template <typename T>
 template <typename U>
-inline vector<2, T>::vector(const U* pointer) : vector{*pointer, *(pointer + 1)}
+inline vector<2, T>::vector(const U* pointer)
+    : vector{*pointer, *(pointer + 1)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline vector<2, T>::vector(U* pointer) : vector{*pointer, *(pointer + 1)}
+inline vector<2, T>::vector(U* pointer)
+    : vector{*pointer, *(pointer + 1)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline constexpr vector<2, T>::vector(const vector<4, U>& other) noexcept : vector{other.x, other.y}
+inline constexpr vector<2, T>::vector(const vector<4, U>& other) noexcept
+    : vector{other.x, other.y}
 {}
 
 template <typename T>
 template <typename U>
-inline constexpr vector<2, T>::vector(const vector<3, U>& other) noexcept : vector{other.x, other.y}
+inline constexpr vector<2, T>::vector(const vector<3, U>& other) noexcept
+    : vector{other.x, other.y}
 {}
 template <typename T>
 template <typename U>
-inline constexpr vector<2, T>::vector(const vector<2, U>& other) noexcept : vector{other.x, other.y}
+inline constexpr vector<2, T>::vector(const vector<2, U>& other) noexcept
+    : vector{other.x, other.y}
 {}
 /// @}
 

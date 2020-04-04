@@ -31,6 +31,7 @@
 #define FRAMEWORK_SYSTEM_SRC_WINDOWS_WGLEXT_HPP
 
 #include <functional>
+
 #include <windows.h>
 
 typedef void GLvoid;

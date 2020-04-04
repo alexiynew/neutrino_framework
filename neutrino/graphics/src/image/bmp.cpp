@@ -36,6 +36,7 @@
 #include <common/types.hpp>
 #include <common/utils.hpp>
 #include <graphics/color.hpp>
+
 #include <graphics/src/image/bmp.hpp>
 
 namespace

@@ -28,16 +28,16 @@
 // =============================================================================
 
 #ifndef FRAMEWORK_MATH_DETAILS
-#error You should include math/math.hpp instead of vector_type_details.hpp
+    #error You should include math/math.hpp instead of vector_type_details.hpp
 #endif
 
 #ifndef FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
-#define FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
+    #define FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
 
-#include <functional>
-#include <type_traits>
+    #include <functional>
+    #include <type_traits>
 
-#include <common/types.hpp>
+    #include <common/types.hpp>
 
 namespace framework::math::vector_type_details
 {

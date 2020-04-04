@@ -46,7 +46,8 @@ using framework::math::almost_equal;
 class vector_operators_test : public framework::unit_test::Suite
 {
 public:
-    vector_operators_test() : Suite("vector_operators_test")
+    vector_operators_test()
+        : Suite("vector_operators_test")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
         add_test([this]() { access_operator(); }, "access_operator");
@@ -374,7 +375,8 @@ private:
 class bool_vector_operators_test : public framework::unit_test::Suite
 {
 public:
-    bool_vector_operators_test() : Suite("bool_vector_operators_test")
+    bool_vector_operators_test()
+        : Suite("bool_vector_operators_test")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
         add_test([this]() { access_operator(); }, "access_operator");

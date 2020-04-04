@@ -32,13 +32,15 @@
 namespace framework::graphics
 {
 Shader::Shader(const std::string& vertex_source, const std::string& fragment_source)
-    : m_vertex_sounrce(vertex_source), m_fragment_sounrce(fragment_source)
+    : m_vertex_sounrce(vertex_source)
+    , m_fragment_sounrce(fragment_source)
 {}
 
 Shader::~Shader() = default;
 
 Shader::Shader(const Shader& other)
-    : m_vertex_sounrce(other.m_vertex_sounrce), m_fragment_sounrce(other.m_fragment_sounrce)
+    : m_vertex_sounrce(other.m_vertex_sounrce)
+    , m_fragment_sounrce(other.m_fragment_sounrce)
 {}
 
 Shader& Shader::operator=(const Shader& other)

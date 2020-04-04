@@ -29,7 +29,8 @@
 class png_image_test : public framework::unit_test::Suite
 {
 public:
-    png_image_test() : Suite("png_image_test")
+    png_image_test()
+        : Suite("png_image_test")
     {
         add_test([this]() { png_load(); }, "png_load");
     }

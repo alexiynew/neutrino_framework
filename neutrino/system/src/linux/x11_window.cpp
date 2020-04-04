@@ -27,8 +27,6 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <X11/XKBlib.h>
-#include <X11/Xutil.h>
 #include <chrono>
 #include <exception>
 #include <set>
@@ -37,11 +35,15 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
+
 #include <system/src/linux/x11_glx_context.hpp>
 #include <system/src/linux/x11_keyboard.hpp>
 #include <system/src/linux/x11_mouse.hpp>
 #include <system/src/linux/x11_utils.hpp>
 #include <system/src/linux/x11_window.hpp>
+
+#include <X11/XKBlib.h>
+#include <X11/Xutil.h>
 
 namespace
 {
@@ -94,7 +96,8 @@ Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 namespace framework::system::details
 {
 x11_window::x11_window(window_size size, const std::string& title, const context_settings& settings)
-    : m_server(x11_server::connect()), m_size({0, 0})
+    : m_server(x11_server::connect())
+    , m_size({0, 0})
 {
     auto context = std::make_unique<x11_glx_context>(settings, m_server->display());
     if (!context->valid()) {
@@ -532,11 +535,11 @@ std::string x11_window::title() const
 
 bool x11_window::fullscreen() const
 {
-    const bool in_fullscreen_state = utils::ewmh_supported()
-                                     ? utils::window_has_state(m_server.get(),
-                                                               m_window,
-                                                               net_wm_state_fullscreen_atom_name)
-                                     : false;
+    const bool in_fullscreen_state = utils::ewmh_supported() ?
+                                     utils::window_has_state(m_server.get(),
+                                                             m_window,
+                                                             net_wm_state_fullscreen_atom_name) :
+                                     false;
 
     return in_fullscreen_state && m_fullscreen;
 }
@@ -832,8 +835,8 @@ void x11_window::fullscreen_toggle(bool enable)
         return;
     }
 
-    auto bypass_state = enable ? utils::bypass_compositor_state::disabled
-                               : utils::bypass_compositor_state::no_preferences;
+    auto bypass_state = enable ? utils::bypass_compositor_state::disabled :
+                                 utils::bypass_compositor_state::no_preferences;
     utils::set_bypass_compositor_state(m_server.get(), m_window, bypass_state);
 
     const std::vector<std::string> state = {net_wm_state_fullscreen_atom_name};

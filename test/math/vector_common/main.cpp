@@ -51,7 +51,8 @@ using framework::math::mix;
 class common_function_tests : public framework::unit_test::Suite
 {
 public:
-    common_function_tests() : Suite("common_function_tests")
+    common_function_tests()
+        : Suite("common_function_tests")
     {
         add_test([this]() { abs_function(); }, "abs_function");
         add_test([this]() { sign_function(); }, "sign_function");

@@ -36,8 +36,7 @@
     [OSXApplication sharedApplication];
     NSEvent* event = nil;
 
-    while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny
-                                       untilDate:[NSDate distantPast]
+    while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast]
                                           inMode:NSDefaultRunLoopMode
                                          dequeue:YES])) {
         [NSApp sendEvent:event];

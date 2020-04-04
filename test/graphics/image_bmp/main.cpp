@@ -29,7 +29,8 @@
 class bmp_image_test : public framework::unit_test::Suite
 {
 public:
-    bmp_image_test() : Suite("bmp_image_test")
+    bmp_image_test()
+        : Suite("bmp_image_test")
     {
         add_test([this]() { bmp_load_good(); }, "bmp_load_good");
         add_test([this]() { bmp_load_questionable(); }, "bmp_load_questionable");

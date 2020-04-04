@@ -43,7 +43,8 @@ using framework::math::vector4f;
 class matrix_operators_test : public framework::unit_test::Suite
 {
 public:
-    matrix_operators_test() : Suite("matrix_operators_test")
+    matrix_operators_test()
+        : Suite("matrix_operators_test")
     {
         add_test([this]() { unary_minus_operator(); }, "unary_minus_operator");
         add_test([this]() { unary_plus_operator(); }, "unary_plus_operator");

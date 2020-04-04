@@ -27,12 +27,14 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <X11/Xatom.h>
-#include <X11/Xutil.h>
 #include <cstring>
 
 #include <common/utils.hpp>
+
 #include <system/src/linux/x11_utils.hpp>
+
+#include <X11/Xatom.h>
+#include <X11/Xutil.h>
 
 using ::framework::system::details::x11_server;
 

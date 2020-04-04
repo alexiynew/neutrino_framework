@@ -28,9 +28,9 @@
 // =============================================================================
 
 #include <common/types.hpp>
-#include <gl/glxext.hpp>
 
 #include <gl/details/gl_get_function.hpp>
+#include <gl/glxext.hpp>
 
 namespace framework::gl::details
 {

@@ -31,12 +31,13 @@
 #define FRAMEWORK_COMMON_UTILS_HPP
 
 #include <algorithm>
-#include <random>
 #include <vector>
 
 #include <common/types.hpp>
 
 #include <common/inc/utils_details.hpp>
+
+#include <random>
 
 /// @brief Different helper functions and classes.
 ///

@@ -28,8 +28,9 @@
 // =============================================================================
 
 #include <common/types.hpp>
-#include <graphics/src/opengl/opengl.hpp>
 #include <graphics/texture.hpp>
+
+#include <graphics/src/opengl/opengl.hpp>
 
 namespace framework::graphics
 {

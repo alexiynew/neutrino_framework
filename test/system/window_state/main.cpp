@@ -32,7 +32,8 @@ using namespace framework::system;
 class window_state_test : public framework::unit_test::Suite
 {
 public:
-    window_state_test() : Suite("window_state_test")
+    window_state_test()
+        : Suite("window_state_test")
     {
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
         add_test([this]() { iconify_window(); }, "iconify_window");

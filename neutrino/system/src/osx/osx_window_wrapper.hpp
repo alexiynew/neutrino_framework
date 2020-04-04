@@ -33,6 +33,7 @@
 #include <functional>
 
 #include <common/types.hpp>
+
 #include <system/src/context.hpp>
 #include <system/src/platform_window.hpp>
 

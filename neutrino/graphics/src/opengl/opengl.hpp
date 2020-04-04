@@ -30,8 +30,9 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_OPENGL_OPENGL_HPP
 #define FRAMEWORK_GRAPHICS_SRC_OPENGL_OPENGL_HPP
 
-#include <KHR/khrplatform.h>
 #include <functional>
+
+#include <KHR/khrplatform.h>
 
 namespace framework::graphics::details::opengl
 {

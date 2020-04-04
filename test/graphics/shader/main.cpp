@@ -36,7 +36,8 @@
 class shader_test : public framework::unit_test::Suite
 {
 public:
-    shader_test() : Suite("shader_test")
+    shader_test()
+        : Suite("shader_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }

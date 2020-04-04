@@ -30,10 +30,10 @@
 #ifndef FRAMEWORK_SYSTEM_DETAILS_LINUX_X11_GLX_CONTEXT_HPP
 #define FRAMEWORK_SYSTEM_DETAILS_LINUX_X11_GLX_CONTEXT_HPP
 
-#include <X11/Xlib.h>
-
-#include <gl/glxext.hpp>
 #include <system/src/context.hpp>
+
+#include <X11/Xlib.h>
+#include <gl/glxext.hpp>
 
 namespace framework::system::details
 {

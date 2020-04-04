@@ -30,9 +30,10 @@
 #include <cstdint>
 
 #include <graphics/shader.hpp>
+#include <log/log.hpp>
+
 #include <graphics/src/opengl/opengl.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
-#include <log/log.hpp>
 
 using namespace framework::graphics;
 using namespace framework::graphics::details::opengl;

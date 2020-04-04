@@ -29,7 +29,8 @@
 class version_test : public framework::unit_test::Suite
 {
 public:
-    version_test() : Suite("version_test")
+    version_test()
+        : Suite("version_test")
     {
         add_test([this]() { constructor(); }, "constructor");
         add_test([this]() { from_string(); }, "from_string");

@@ -28,12 +28,13 @@
 // =============================================================================
 
 #include <stdexcept>
-#include <windowsx.h>
 
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_keyboard.hpp>
 #include <system/src/windows/win32_wgl_context.hpp>
 #include <system/src/windows/win32_window.hpp>
+
+#include <windowsx.h>
 
 namespace
 {
@@ -610,8 +611,8 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
 
         case WM_XBUTTONDOWN:
         case WM_XBUTTONUP: {
-            const MouseButton button = (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? MouseButton::button_4
-                                                                                : MouseButton::button_5);
+            const MouseButton button = (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? MouseButton::button_4 :
+                                                                                  MouseButton::button_5);
             const CursorPosition position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
             const Modifiers mod_state = get_modifiers_state();
             const bool down           = message == WM_XBUTTONDOWN;

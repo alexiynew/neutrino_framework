@@ -28,18 +28,18 @@
 // =============================================================================
 
 #ifndef FRAMEWORK_MATH_DETAILS
-#error You should include math/math.hpp instead of matrix_type.hpp
+    #error You should include math/math.hpp instead of matrix_type.hpp
 #endif
 
 #ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
-#define FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
+    #define FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
 
-#include <cassert>
+    #include <cassert>
 
-#include <common/types.hpp>
+    #include <common/types.hpp>
 
-#include <math/inc/matrix_type_details.hpp>
-#include <math/inc/vector_type.hpp>
+    #include <math/inc/matrix_type_details.hpp>
+    #include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {
@@ -1759,7 +1759,8 @@ private:
 /// @name matrix<4, 4, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<4, 4, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<4, 4, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -1985,7 +1986,8 @@ inline typename matrix<4, 4, T>::row_type matrix<4, 4, T>::row(uint32 index) con
 /// @name matrix<4, 3, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<4, 3, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<4, 3, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -2148,7 +2150,8 @@ inline typename matrix<4, 3, T>::row_type matrix<4, 3, T>::row(uint32 index) con
 /// @name matrix<4, 2, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<4, 2, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<4, 2, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -2284,7 +2287,8 @@ inline typename matrix<4, 2, T>::row_type matrix<4, 2, T>::row(uint32 index) con
 /// @name matrix<3, 4, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<3, 4, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<3, 4, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -2490,7 +2494,8 @@ inline typename matrix<3, 4, T>::row_type matrix<3, 4, T>::row(uint32 index) con
 /// @name matrix<3, 3, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<3, 3, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<3, 3, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -2647,7 +2652,8 @@ inline typename matrix<3, 3, T>::row_type matrix<3, 3, T>::row(uint32 index) con
 /// @name matrix<3, 2, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<3, 2, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<3, 2, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -2776,7 +2782,8 @@ inline typename matrix<3, 2, T>::row_type matrix<3, 2, T>::row(uint32 index) con
 /// @name matrix<2, 4, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<2, 4, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<2, 4, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -2800,14 +2807,16 @@ inline constexpr matrix<2, 4, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline matrix<2, 4, T>::matrix(const U* pointer) : m_data{column_type(pointer), column_type(pointer + 4)}
+inline matrix<2, 4, T>::matrix(const U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 4)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline matrix<2, 4, T>::matrix(U* pointer) : m_data{column_type(pointer), column_type(pointer + 4)}
+inline matrix<2, 4, T>::matrix(U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 4)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -2953,7 +2962,8 @@ inline typename matrix<2, 4, T>::row_type matrix<2, 4, T>::row(uint32 index) con
 /// @name matrix<2, 3, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<2, 3, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<2, 3, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -2977,14 +2987,16 @@ inline constexpr matrix<2, 3, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline matrix<2, 3, T>::matrix(const U* pointer) : m_data{column_type(pointer), column_type(pointer + 3)}
+inline matrix<2, 3, T>::matrix(const U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline matrix<2, 3, T>::matrix(U* pointer) : m_data{column_type(pointer), column_type(pointer + 3)}
+inline matrix<2, 3, T>::matrix(U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 3)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
@@ -3088,7 +3100,8 @@ inline typename matrix<2, 3, T>::row_type matrix<2, 3, T>::row(uint32 index) con
 /// @name matrix<2, 2, T> constructors.
 /// @{
 template <typename T>
-inline constexpr matrix<2, 2, T>::matrix() noexcept : matrix(T{1})
+inline constexpr matrix<2, 2, T>::matrix() noexcept
+    : matrix(T{1})
 {}
 
 // clang-format off
@@ -3112,14 +3125,16 @@ inline constexpr matrix<2, 2, T>::matrix(const T& value) noexcept
 
 template <typename T>
 template <typename U>
-inline matrix<2, 2, T>::matrix(const U* pointer) : m_data{column_type(pointer), column_type(pointer + 2)}
+inline matrix<2, 2, T>::matrix(const U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }
 
 template <typename T>
 template <typename U>
-inline matrix<2, 2, T>::matrix(U* pointer) : m_data{column_type(pointer), column_type(pointer + 2)}
+inline matrix<2, 2, T>::matrix(U* pointer)
+    : m_data{column_type(pointer), column_type(pointer + 2)}
 {
     static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
 }

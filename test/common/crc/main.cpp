@@ -29,7 +29,8 @@
 class crc_test : public framework::unit_test::Suite
 {
 public:
-    crc_test() : Suite("crc_test")
+    crc_test()
+        : Suite("crc_test")
     {
         add_test([this]() { crc8(); }, "crc8");
         add_test([this]() { crc16(); }, "crc16");

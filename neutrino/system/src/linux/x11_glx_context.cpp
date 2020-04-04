@@ -30,8 +30,10 @@
 #include <stdexcept>
 
 #include <common/types.hpp>
-#include <gl/gl.hpp>
+
 #include <system/src/linux/x11_glx_context.hpp>
+
+#include <gl/gl.hpp>
 
 namespace
 {
@@ -133,7 +135,8 @@ GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config, 
 namespace framework::system::details
 {
 x11_glx_context::x11_glx_context(const context_settings& settings, Display* display)
-    : context(settings), m_display(display)
+    : context(settings)
+    , m_display(display)
 {
     if (!check_glx_version(m_display)) {
         throw std::runtime_error("Invalid GLX version.");

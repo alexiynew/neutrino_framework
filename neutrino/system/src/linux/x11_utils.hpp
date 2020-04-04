@@ -30,13 +30,15 @@
 #ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_UTILS_HPP
 #define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_UTILS_HPP
 
-#include <X11/Xlib.h>
-#include <X11/Xmd.h>
 #include <string>
 #include <vector>
 
 #include <common/types.hpp>
+
 #include <system/src/linux/x11_server.hpp>
+
+#include <X11/Xlib.h>
+#include <X11/Xmd.h>
 
 namespace framework::system::details::utils
 {

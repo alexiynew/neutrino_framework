@@ -55,7 +55,8 @@ using framework::float32;
 class matrix_test : public framework::unit_test::Suite
 {
 public:
-    matrix_test() : Suite("matrix_test")
+    matrix_test()
+        : Suite("matrix_test")
     {
         add_test([this]() { size_check(); }, "size_check");
         add_test([this]() { default_constructor(); }, "default_constructor");
@@ -722,7 +723,8 @@ private:
 class matrix_from_matrix_test : public framework::unit_test::Suite
 {
 public:
-    matrix_from_matrix_test() : Suite("matrix_from_matrix_test")
+    matrix_from_matrix_test()
+        : Suite("matrix_from_matrix_test")
     {
         add_test([this]() { matrix4x4_constructors(); }, "matrix4x4_constructors");
         add_test([this]() { matrix4x3_constructors(); }, "matrix4x3_constructors");

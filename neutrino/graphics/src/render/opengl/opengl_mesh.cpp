@@ -28,6 +28,7 @@
 // =============================================================================
 
 #include <graphics/mesh.hpp>
+
 #include <graphics/src/opengl/opengl.hpp>
 #include <graphics/src/render/opengl/opengl_mesh.hpp>
 

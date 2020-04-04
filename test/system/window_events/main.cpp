@@ -225,7 +225,8 @@ std::string button_name(MouseButton button)
 class window_events_test : public framework::unit_test::Suite
 {
 public:
-    window_events_test() : Suite("window_events_test")
+    window_events_test()
+        : Suite("window_events_test")
     {
         add_test([this]() { run(); }, "run");
     }

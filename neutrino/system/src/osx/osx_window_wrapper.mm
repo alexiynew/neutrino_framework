@@ -29,6 +29,7 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
+
 #include <system/src/osx/osx_application.hpp>
 #include <system/src/osx/osx_application_delegate.hpp>
 #include <system/src/osx/osx_window.hpp>
@@ -74,7 +75,8 @@ OSXWindowWrapper::OSXWindowWrapper(const Window& window_interface,
                                    Size size,
                                    const std::string& /*title*/,
                                    const context_settings& /*settings*/)
-    : PlatformWindow(window_interface), m_window(nullptr)
+    : PlatformWindow(window_interface)
+    , m_window(nullptr)
 {
     setup_application();
 

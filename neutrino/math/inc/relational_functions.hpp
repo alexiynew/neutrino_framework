@@ -28,20 +28,20 @@
 // =============================================================================
 
 #ifndef FRAMEWORK_MATH_DETAILS
-#error You should include math/math.hpp instead of relational_functions.hpp
+    #error You should include math/math.hpp instead of relational_functions.hpp
 #endif
 
 #ifndef FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_HPP
-#define FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_HPP
+    #define FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_HPP
 
-#include <functional>
+    #include <functional>
 
-#include <common/types.hpp>
+    #include <common/types.hpp>
 
-#include <math/inc/common_functions.hpp>
-#include <math/inc/matrix_type.hpp>
-#include <math/inc/relational_functions_details.hpp>
-#include <math/inc/vector_type.hpp>
+    #include <math/inc/common_functions.hpp>
+    #include <math/inc/matrix_type.hpp>
+    #include <math/inc/relational_functions_details.hpp>
+    #include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {

@@ -28,15 +28,15 @@
 // =============================================================================
 
 #ifndef FRAMEWORK_MATH_DETAILS
-#error You should include math/math.hpp instead of geometric_functions.hpp
+    #error You should include math/math.hpp instead of geometric_functions.hpp
 #endif
 
 #ifndef FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
-#define FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
+    #define FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
 
-#include <math/inc/exponential_functions.hpp>
-#include <math/inc/geometric_functions_details.hpp>
-#include <math/inc/vector_type.hpp>
+    #include <math/inc/exponential_functions.hpp>
+    #include <math/inc/geometric_functions_details.hpp>
+    #include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {
@@ -195,8 +195,8 @@ inline vector<N, T> refract(const vector<N, T>& incident, const vector<N, T>& no
 {
     const T dot_value   = dot(normal, incident);
     const T coefficient = T{1} - eta * eta * (T{1} - dot_value * dot_value);
-    return coefficient < T{0} ? vector<N, T>(0)
-                              : eta * incident - (eta * dot_value + framework::math::sqrt(coefficient)) * normal;
+    return coefficient < T{0} ? vector<N, T>(0) :
+                                eta * incident - (eta * dot_value + framework::math::sqrt(coefficient)) * normal;
 }
 /// @}
 

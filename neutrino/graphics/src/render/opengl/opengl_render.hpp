@@ -32,8 +32,9 @@
 
 #include <unordered_map>
 
-#include <graphics/src/render/render_impl.hpp>
 #include <system/context.hpp>
+
+#include <graphics/src/render/render_impl.hpp>
 
 namespace framework::graphics
 {

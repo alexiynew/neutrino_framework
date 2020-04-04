@@ -116,12 +116,12 @@ inline constexpr bool operator!=(const Version& lhs, const Version& rhs) noexcep
 /// @return `true` if lhs is less than rhs, otherwise `false`.
 inline constexpr bool operator<(const Version& lhs, const Version& rhs) noexcept
 {
-    return (lhs.major_version != rhs.major_version
-            ? lhs.major_version < rhs.major_version
-            : (lhs.minor_version != rhs.minor_version
-               ? lhs.minor_version < rhs.minor_version
-               : (lhs.patch_version != rhs.patch_version ? lhs.patch_version < rhs.patch_version
-                                                         : lhs.build_number < rhs.build_number)));
+    return (lhs.major_version != rhs.major_version ?
+            lhs.major_version < rhs.major_version :
+            (lhs.minor_version != rhs.minor_version ?
+             lhs.minor_version < rhs.minor_version :
+             (lhs.patch_version != rhs.patch_version ? lhs.patch_version < rhs.patch_version :
+                                                       lhs.build_number < rhs.build_number)));
 }
 
 /// @brief Greater than operator.

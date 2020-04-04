@@ -28,6 +28,7 @@
 // =============================================================================
 
 #include <common/types.hpp>
+
 #include <system/src/linux/x11_keyboard.hpp>
 #include <system/src/linux/x11_server.hpp>
 
@@ -87,7 +88,8 @@ std::shared_ptr<x11_server> x11_server::connect()
     return server_instance().lock();
 }
 
-x11_server::x11_server() : m_display{nullptr}
+x11_server::x11_server()
+    : m_display{nullptr}
 {
     m_display = XOpenDisplay(nullptr);
 
