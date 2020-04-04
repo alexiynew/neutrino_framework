@@ -50,10 +50,16 @@ set_sources(PRIVATE_SOURCES
 
     src/render/render.cpp
     src/render/render_impl.hpp
-    src/render/opengl_render.hpp
-    src/render/opengl_render.cpp
     src/render/render_command.hpp
     src/render/render_command.cpp
+
+    src/render/opengl/attributes.hpp
+    src/render/opengl/opengl_render.hpp
+    src/render/opengl/opengl_render.cpp
+    src/render/opengl/opengl_mesh.hpp
+    src/render/opengl/opengl_mesh.cpp
+    src/render/opengl/opengl_shader.hpp
+    src/render/opengl/opengl_shader.cpp
 )
 
 target_sources(${PROJECT_NAME}

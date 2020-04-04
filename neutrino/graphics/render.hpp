@@ -42,6 +42,11 @@ namespace framework::graphics
 class RenderImpl;
 class RenderCommand;
 
+// TODO: Add documentation
+// TODO: Add tests
+// TODO: Add camera support
+// TODO: Add texture support
+
 class Render
 {
 public:
@@ -56,6 +61,49 @@ public:
     ~Render();
 
     void set_clear_color(Color color);
+
+    /*
+
+        // Set the depth buffer to be entirely cleared to 1.0 values.
+        glClearDepth(1.0f);
+
+        // Enable depth testing.
+        glEnable(GL_DEPTH_TEST);
+
+        // Set the polygon winding to front facing for the left handed system.
+        glFrontFace(GL_CW);
+
+        // Enable back face culling.
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+
+        // Initialize the world/model matrix to the identity matrix.
+        BuildIdentityMatrix(m_worldMatrix);
+
+        // Set the field of view and screen aspect ratio.
+        fieldOfView = 3.14159265358979323846f / 4.0f;
+        screenAspect = (float)screenWidth / (float)screenHeight;
+
+        // Build the perspective projection matrix.
+        BuildPerspectiveFovLHMatrix(m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
+
+        // Get the name of the video card.
+        vendorString = (char*)glGetString(GL_VENDOR);
+        rendererString = (char*)glGetString(GL_RENDERER);
+
+
+        // Turn on or off the vertical sync depending on the input bool value.
+        if(vsync)
+        {
+            result = wglSwapIntervalEXT(1);
+        }
+        else
+        {
+            result = wglSwapIntervalEXT(0);
+        }
+
+
+    */
 
     bool load(const Mesh& mesh);
     bool load(const Shader& shader);

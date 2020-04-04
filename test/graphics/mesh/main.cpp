@@ -35,9 +35,10 @@
 
 const std::string vertex_shader = " \
 #version 330 core\n\
-layout(location = 0) in vec4 vertexPosition_modelspace;\n\
+layout(location = 0) in vec3 vertexPosition_modelspace;\n\
 void main(){\n\
-    gl_Position = vertexPosition_modelspace;\n\
+    gl_Position.xyz = vertexPosition_modelspace;\n\
+    gl_Position.w = 1.0;\n\
 }";
 
 const std::string fragment_shader = " \
@@ -63,9 +64,9 @@ private:
         using namespace framework::system;
 
         const Mesh::VertexData vertices = {
-            {-1.0f, -1.0f, 0.0f, 1.0f},
-            {1.0f, -1.0f, 0.0f, 1.0f},
-            {0.0f, 1.0f, 0.0f, 1.0f},
+        {-1.0f, -1.0f, 0.0f},
+        {1.0f, -1.0f, 0.0f},
+        {0.0f, 1.0f, 0.0f},
         };
 
         const Mesh::IndicesData indices = {0, 1, 2};

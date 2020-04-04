@@ -61,7 +61,8 @@ struct vector<4, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type = T; ///< Value type
+    using value_type                                = T; ///< Value type
+    static constexpr std::uint32_t components_count = 4; ///< Components in vector
 
     /// @brief Default constructor.
     ///
@@ -214,7 +215,8 @@ struct vector<3, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type = T; ///< Value type
+    using value_type                                = T; ///< Value type
+    static constexpr std::uint32_t components_count = 3; ///< Components in vector
 
     /// @brief Default constructor.
     ///
@@ -331,7 +333,8 @@ struct vector<2, T> final
 {
     static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
 
-    using value_type = T; ///< Value type
+    using value_type                                = T; ///< Value type
+    static constexpr std::uint32_t components_count = 2; ///< Components in vector
 
     /// @brief Default constructor.
     ///

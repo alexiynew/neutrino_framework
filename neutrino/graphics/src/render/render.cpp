@@ -30,7 +30,7 @@
 #include <stdexcept>
 
 #include <graphics/render.hpp>
-#include <graphics/src/render/opengl_render.hpp>
+#include <graphics/src/render/opengl/opengl_render.hpp>
 #include <graphics/src/render/render_command.hpp>
 #include <graphics/src/render/render_impl.hpp>
 

@@ -1,7 +1,7 @@
 /// @file
-/// @brief Render implementation interface.
+/// @brief OpenGL mesh.
 /// @author Fedorov Alexey
-/// @date 29.03.2020
+/// @date 03.04.2020
 
 // =============================================================================
 // MIT License
@@ -27,36 +27,48 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_MESH_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_MESH_HPP
 
-#include <vector>
+#include <array>
+#include <cstdint>
 
-#include <math/math.hpp>
+#include <graphics/src/render/opengl/attributes.hpp>
 
 namespace framework::graphics
 {
-struct Color;
 class Mesh;
-class Shader;
-class RenderCommand;
 
-class RenderImpl
+class OpenglMesh
 {
 public:
-    using VertexData  = std::vector<math::vector4f>;
-    using IndicesData = std::vector<int>;
+    struct BufferInfo
+    {
+        std::uint32_t buffer = 0;
+        int count            = 0;
+        int type             = 0;
+    };
 
-    virtual ~RenderImpl() = default;
+    explicit OpenglMesh(const Mesh& mesh);
 
-    virtual void set_clear_color(Color color) = 0;
+    OpenglMesh(const OpenglMesh&) = delete;
+    OpenglMesh& operator=(const OpenglMesh&) = delete;
 
-    virtual bool load(const Mesh& mesh)     = 0;
-    virtual bool load(const Shader& shader) = 0;
+    OpenglMesh(OpenglMesh&&) = default;
+    OpenglMesh& operator=(OpenglMesh&&) = default;
 
-    virtual void start_frame()                         = 0;
-    virtual void perform(const RenderCommand& command) = 0;
-    virtual void end_frame()                           = 0;
+    ~OpenglMesh();
+
+    void draw() const;
+
+private:
+    void load(const Mesh& mesh);
+    void enable_attribute(Attribute attribute) const;
+
+    std::uint32_t vertex_array = 0;
+    std::uint32_t index_buffer = 0;
+
+    std::array<BufferInfo, attributes_count> vertex_buffers = {};
 };
 
 } // namespace framework::graphics

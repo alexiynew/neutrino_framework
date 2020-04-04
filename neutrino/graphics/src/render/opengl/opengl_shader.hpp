@@ -1,7 +1,7 @@
 /// @file
-/// @brief Render implementation interface.
+/// @brief OpenGL shader.
 /// @author Fedorov Alexey
-/// @date 29.03.2020
+/// @date 03.04.2020
 
 // =============================================================================
 // MIT License
@@ -27,36 +27,34 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_SHADER_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_SHADER_HPP
 
-#include <vector>
-
-#include <math/math.hpp>
+#include <cstdint>
 
 namespace framework::graphics
 {
-struct Color;
-class Mesh;
 class Shader;
-class RenderCommand;
 
-class RenderImpl
+class OpenglShader
 {
 public:
-    using VertexData  = std::vector<math::vector4f>;
-    using IndicesData = std::vector<int>;
+    explicit OpenglShader(const Shader& shader);
 
-    virtual ~RenderImpl() = default;
+    OpenglShader(const OpenglShader&) = delete;
+    OpenglShader& operator=(const OpenglShader&) = delete;
 
-    virtual void set_clear_color(Color color) = 0;
+    OpenglShader(OpenglShader&&) = default;
+    OpenglShader& operator=(OpenglShader&&) = default;
 
-    virtual bool load(const Mesh& mesh)     = 0;
-    virtual bool load(const Shader& shader) = 0;
+    ~OpenglShader();
 
-    virtual void start_frame()                         = 0;
-    virtual void perform(const RenderCommand& command) = 0;
-    virtual void end_frame()                           = 0;
+    void use() const;
+
+private:
+    std::uint32_t vertex_shader   = 0;
+    std::uint32_t fragment_shader = 0;
+    std::uint32_t shader_program  = 0;
 };
 
 } // namespace framework::graphics

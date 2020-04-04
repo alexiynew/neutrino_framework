@@ -141,6 +141,15 @@ void Mesh::set_indices(IndicesData&& indexes) noexcept
 void Mesh::clear()
 {
     m_vertices.clear();
+    m_normals.clear();
+    m_tanegents.clear();
+    m_colors.clear();
+
+    for (TextureCoordinatesData& coordinates : m_texture_coordinates)
+    {
+        coordinates.clear();
+    }
+    
     m_indexes.clear();
 }
 

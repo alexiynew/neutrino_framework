@@ -27,14 +27,19 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_RENDER_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_RENDER_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_RENDER_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_RENDER_HPP
+
+#include <unordered_map>
 
 #include <graphics/src/render/render_impl.hpp>
 #include <system/context.hpp>
 
 namespace framework::graphics
 {
+class OpenglMesh;
+class OpenglShader;
+
 class OpenglRender final : public RenderImpl
 {
 public:
@@ -58,27 +63,13 @@ public:
     void end_frame() override;
 
 private:
-    struct MeshInfo
-    {
-        std::uint32_t vertex_array_id  = 0;
-        std::uint32_t vertex_buffer_id = 0;
-        std::uint32_t index_buffer_id  = 0;
-    };
-
-    struct ShaderInfo
-    {
-        std::uint32_t vertex_shader_id   = 0;
-        std::uint32_t fragment_shader_id = 0;
-        std::uint32_t shader_program_id  = 0;
-    };
-
-    using MeshInfoMap   = std::unordered_map<InstanceId, MeshInfo>;
-    using ShaderInfoMap = std::unordered_map<InstanceId, ShaderInfo>;
+    using MeshMap   = std::unordered_map<InstanceId, OpenglMesh>;
+    using ShaderMap = std::unordered_map<InstanceId, OpenglShader>;
 
     void set_uniforms() const;
 
-    MeshInfoMap m_mesh_info;
-    ShaderInfoMap m_shader_info;
+    MeshMap m_meshes;
+    ShaderMap m_shaders;
 };
 
 } // namespace framework::graphics

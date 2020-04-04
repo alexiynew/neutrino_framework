@@ -1,7 +1,7 @@
 /// @file
-/// @brief Render implementation interface.
+/// @brief OpenGL attributes.
 /// @author Fedorov Alexey
-/// @date 29.03.2020
+/// @date 03.04.2020
 
 // =============================================================================
 // MIT License
@@ -27,37 +27,30 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_ATTRIBUTES_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_ATTRIBUTES_HPP
 
-#include <vector>
-
-#include <math/math.hpp>
+#include <array>
 
 namespace framework::graphics
 {
-struct Color;
-class Mesh;
-class Shader;
-class RenderCommand;
-
-class RenderImpl
+enum class Attribute
 {
-public:
-    using VertexData  = std::vector<math::vector4f>;
-    using IndicesData = std::vector<int>;
-
-    virtual ~RenderImpl() = default;
-
-    virtual void set_clear_color(Color color) = 0;
-
-    virtual bool load(const Mesh& mesh)     = 0;
-    virtual bool load(const Shader& shader) = 0;
-
-    virtual void start_frame()                         = 0;
-    virtual void perform(const RenderCommand& command) = 0;
-    virtual void end_frame()                           = 0;
+    position  = 0,
+    normal    = 1,
+    tangent   = 2,
+    color     = 3,
+    texcoord0 = 4,
+    texcoord1 = 5,
+    texcoord2 = 6,
+    texcoord3 = 7,
+    texcoord4 = 8,
+    texcoord5 = 9,
+    texcoord6 = 10,
+    texcoord7 = 11,
 };
+
+static constexpr int attributes_count = 12;
 
 } // namespace framework::graphics
 

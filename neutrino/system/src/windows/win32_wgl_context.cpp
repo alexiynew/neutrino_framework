@@ -32,13 +32,13 @@
 #include <system/src/windows/wglext.hpp>
 #include <system/src/windows/win32_wgl_context.hpp>
 
-namespace framework::system::details
+namespace
 {
-Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window) : Context(settings), m_window(window)
+void init_wgl(HWND window, const framework::system::details::wgl::GetFunction& get_function)
 {
-    m_hdc = GetDC(m_window);
+    HDC hdc = GetDC(window);
 
-    if (m_hdc == nullptr) {
+    if (hdc == nullptr) {
         throw std::runtime_error("GetDC failed!");
     }
 
@@ -49,34 +49,80 @@ Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window) :
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 24;
 
-    int pixelFormat = ChoosePixelFormat(m_hdc, &pfd);
+    int pixelFormat = ChoosePixelFormat(hdc, &pfd);
 
     if (pixelFormat == 0) {
-        ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Can't choose pixelformat");
+        ReleaseDC(window, hdc);
+        throw std::runtime_error("Can't choose pixel format");
     }
 
-    if (!SetPixelFormat(m_hdc, pixelFormat, &pfd)) {
-        ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Can't set pixelformat");
+    if (!SetPixelFormat(hdc, pixelFormat, &pfd)) {
+        ReleaseDC(window, hdc);
+        throw std::runtime_error("Can't set pixel format");
     }
 
-    HGLRC hglrc = wglCreateContext(m_hdc);
+    HGLRC hglrc = wglCreateContext(hdc);
     if (hglrc == nullptr) {
-        ReleaseDC(m_window, m_hdc);
+        ReleaseDC(window, hdc);
         throw std::runtime_error("Can't create temporary graphic context");
     }
 
-    wglMakeCurrent(m_hdc, hglrc);
+    wglMakeCurrent(hdc, hglrc);
 
-    wgl::init_wgl([this](const char* function_name) { return get_function(function_name); });
+    framework::system::details::wgl::init_wgl(get_function);
 
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(hglrc);
+    ReleaseDC(window, hdc);
+}
+} // namespace
+
+namespace framework::system::details
+{
+Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window) : Context(settings), m_window(window)
+{
+    init_wgl(m_window, [this](const char* function_name) { return get_function(function_name); });
 
     if (!wgl::is_supported(wgl::Extension::WGL_ARB_create_context)) {
-        ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("wglCreateContextAttribsARB not supported");
+    }
+
+    m_hdc = GetDC(m_window);
+
+    // clang-format off
+    int pixel_format_attribs [] = {
+        wgl::WGL_SUPPORT_OPENGL_ARB, TRUE,                          // Support for OpenGL rendering.
+        wgl::WGL_DRAW_TO_WINDOW_ARB, TRUE,                          // Support for rendering to a window.
+        wgl::WGL_ACCELERATION_ARB, wgl::WGL_FULL_ACCELERATION_ARB,  // Support for hardware acceleration.
+        wgl::WGL_COLOR_BITS_ARB, 24,                                // Support for 24 bit color.
+        wgl::WGL_DEPTH_BITS_ARB, 24,                                // Support for 24 bit depth buffer.
+        wgl::WGL_DOUBLE_BUFFER_ARB, TRUE,                           // Support for double buffer.
+        wgl::WGL_SWAP_METHOD_ARB, wgl::WGL_SWAP_EXCHANGE_ARB,       // Support for swapping front and back buffer.
+        wgl::WGL_PIXEL_TYPE_ARB, wgl::WGL_TYPE_RGBA_ARB,            // Support for the RGBA pixel type.
+        wgl::WGL_STENCIL_BITS_ARB, 8,                               // Support for a 8 bit stencil buffer.
+	    0
+    };
+    // clang-format on
+
+    int pixelFormat;
+    unsigned int formatCount;
+    bool pixel_format_found = wgl::wglChoosePixelFormatARB(m_hdc,
+                                                           pixel_format_attribs,
+                                                           nullptr,
+                                                           1,
+                                                           &pixelFormat,
+                                                           &formatCount);
+    if (!pixel_format_found) {
+        ReleaseDC(m_window, m_hdc);
+        throw std::runtime_error("Can't choose pixel format");
+    }
+
+    PIXELFORMATDESCRIPTOR pfd{};
+    pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+
+    if (!SetPixelFormat(m_hdc, pixelFormat, &pfd)) {
+        ReleaseDC(m_window, m_hdc);
+        throw std::runtime_error("Can't set pixel format");
     }
 
     auto version = settings.version();
