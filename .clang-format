@@ -31,7 +31,7 @@ BreakBeforeBraces: 'Custom'
 BraceWrapping:
     AfterCaseLabel: 'false'
     AfterClass: 'true'
-    AfterControlStatement: 'Never'
+    AfterControlStatement: 'false'
     AfterEnum: 'true'
     AfterFunction: 'true'
     AfterNamespace: 'true'

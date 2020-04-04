@@ -39,7 +39,7 @@ class Shader;
 class OpenglShader
 {
 public:
-    explicit OpenglShader(const Shader& shader);
+    OpenglShader() = default;
 
     OpenglShader(const OpenglShader&) = delete;
     OpenglShader& operator=(const OpenglShader&) = delete;
@@ -49,9 +49,13 @@ public:
 
     ~OpenglShader();
 
+    bool load(const Shader& shader);
+    void clear();
+
     void use() const;
 
 private:
+
     std::uint32_t vertex_shader   = 0;
     std::uint32_t fragment_shader = 0;
     std::uint32_t shader_program  = 0;

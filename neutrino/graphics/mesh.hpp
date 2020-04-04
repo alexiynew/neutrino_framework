@@ -35,7 +35,7 @@
 #include <array>
 #include <vector>
 
-#include <common/types.hpp>
+#include <common/instance_id.hpp>
 #include <graphics/color.hpp>
 #include <math/math.hpp>
 
@@ -45,9 +45,6 @@ namespace framework::graphics
 /// @addtogroup graphics_module
 /// @{
 ////////////////////////////////////////////////////////////////////////////////
-
-// TODO: Add checks for arrays sizes,
-// TODO: Add check that indices exists
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Mesh.

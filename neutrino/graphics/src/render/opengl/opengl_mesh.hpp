@@ -49,7 +49,7 @@ public:
         int type             = 0;
     };
 
-    explicit OpenglMesh(const Mesh& mesh);
+    OpenglMesh() = default;
 
     OpenglMesh(const OpenglMesh&) = delete;
     OpenglMesh& operator=(const OpenglMesh&) = delete;
@@ -59,10 +59,12 @@ public:
 
     ~OpenglMesh();
 
+    bool load(const Mesh& mesh);
+    void clear();
+
     void draw() const;
 
 private:
-    void load(const Mesh& mesh);
     void enable_attribute(Attribute attribute) const;
 
     std::uint32_t vertex_array = 0;

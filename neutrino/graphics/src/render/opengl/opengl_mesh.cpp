@@ -52,10 +52,12 @@ Attribute::texcoord6,
 Attribute::texcoord7,
 };
 
+constexpr std::size_t max_size = std::numeric_limits<Mesh::IndicesData::value_type>::max();
+
 template <typename T>
 OpenglMesh::BufferInfo create_buffer(int buffer_type, const std::vector<T>& data)
 {
-    if (data.empty()) {
+    if (data.empty() || data.size() >= max_size) {
         return OpenglMesh::BufferInfo();
     }
 
@@ -90,12 +92,12 @@ OpenglMesh::BufferInfo create_buffer(int buffer_type, const std::vector<T>& data
 
 namespace framework::graphics
 {
-OpenglMesh::OpenglMesh(const Mesh& mesh)
+OpenglMesh::~OpenglMesh()
 {
-    load(mesh);
+    clear();
 }
 
-OpenglMesh::~OpenglMesh()
+void OpenglMesh::clear()
 {
     for (const BufferInfo& info : vertex_buffers) {
         glDeleteBuffers(1, &info.buffer);
@@ -103,9 +105,16 @@ OpenglMesh::~OpenglMesh()
 
     glDeleteBuffers(1, &index_buffer);
     glDeleteVertexArrays(1, &vertex_array);
+
+    vertex_array = 0;
+    index_buffer = 0;
+
+    for (BufferInfo& info : vertex_buffers) {
+        info.buffer = 0;
+    }
 }
 
-void OpenglMesh::load(const Mesh& mesh)
+bool OpenglMesh::load(const Mesh& mesh)
 {
     glGenVertexArrays(1, &vertex_array);
     glBindVertexArray(vertex_array);
@@ -128,6 +137,8 @@ void OpenglMesh::load(const Mesh& mesh)
     index_buffer = create_buffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indices()).buffer;
 
     glBindVertexArray(0);
+
+    return vertex_array != 0 && index_buffer != 0;
 }
 
 void OpenglMesh::draw() const

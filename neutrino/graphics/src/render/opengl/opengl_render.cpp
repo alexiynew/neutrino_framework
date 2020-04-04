@@ -108,7 +108,6 @@ void get_info()
     log::info(tag) << "Renderer: " << get_string(GL_RENDERER);
     log::info(tag) << "Version: " << get_string(GL_VERSION);
     log::info(tag) << "Shading Lang Version: " << get_string(GL_SHADING_LANGUAGE_VERSION);
-    log::info(tag) << "Extensions: " << get_string(GL_EXTENSIONS);
 }
 
 void check_supported()
@@ -150,30 +149,37 @@ OpenglRender::~OpenglRender() = default;
 void OpenglRender::set_clear_color(Color color)
 {
     glClearColor(map_to_float(color.r), map_to_float(color.g), map_to_float(color.b), map_to_float(color.a));
+    log_errors();
 }
 
 bool OpenglRender::load(const Mesh& mesh)
 {
     if (m_meshes.count(mesh.instance_id())) {
-        // TODO: reload mesh
-    } else {
-        const auto& [_, inserted] = m_meshes.emplace(mesh.instance_id(), mesh);
-        return inserted;
+        m_meshes[mesh.instance_id()].clear();
     }
 
-    return false;
+    const bool loaded = m_meshes[mesh.instance_id()].load(mesh);
+    if (!loaded) {
+        log::error(tag) << "Failed ot load Mesh: " << mesh.instance_id();
+        log_errors();
+    }
+
+    return loaded;
 }
 
 bool OpenglRender::load(const Shader& shader)
 {
     if (m_shaders.count(shader.instance_id())) {
-        // TODO: realod shader
-    } else {
-        const auto& [_, inserted] = m_shaders.emplace(shader.instance_id(), shader);
-        return inserted;
+        m_shaders[shader.instance_id()].clear();
     }
 
-    return false;
+    const bool loaded = m_shaders[shader.instance_id()].load(shader);
+    if (!loaded) {
+        log::error(tag) << "Failed ot load Shader: " << shader.instance_id();
+        log_errors();
+    }
+
+    return loaded;
 }
 
 void OpenglRender::start_frame()
@@ -195,9 +201,9 @@ void OpenglRender::perform(const RenderCommand& command)
     const OpenglShader& shader = m_shaders.at(command.shader_id());
 
     shader.use();
-    mesh.draw();
-
     set_uniforms();
+
+    mesh.draw();
 
     log_errors();
 }

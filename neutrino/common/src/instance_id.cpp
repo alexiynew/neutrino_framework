@@ -75,4 +75,10 @@ void swap(InstanceId& lhs, InstanceId& rhs) noexcept
     swap(lhs.m_id, rhs.m_id);
 }
 
+std::ostream& operator<< (std::ostream& os, const InstanceId& instance_id)
+{
+    os << instance_id.m_id;
+    return os;
+}
+
 } // namespace framework

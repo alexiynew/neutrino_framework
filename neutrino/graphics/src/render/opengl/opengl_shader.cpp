@@ -140,18 +140,29 @@ std::uint32_t create_shader_program(std::uint32_t vertex_shader_id, std::uint32_
 
 namespace framework::graphics
 {
-OpenglShader::OpenglShader(const Shader& shader)
+OpenglShader::~OpenglShader()
 {
-    vertex_shader   = create_shader(GL_VERTEX_SHADER, shader.vertex_source());
-    fragment_shader = create_shader(GL_FRAGMENT_SHADER, shader.fragment_source());
-    shader_program  = create_shader_program(vertex_shader, fragment_shader);
+    clear();
 }
 
-OpenglShader::~OpenglShader()
+void OpenglShader::clear()
 {
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
     glDeleteProgram(shader_program);
+
+    vertex_shader = 0;
+    fragment_shader = 0;
+    shader_program = 0;
+}
+
+bool OpenglShader::load(const Shader& shader)
+{
+    vertex_shader   = create_shader(GL_VERTEX_SHADER, shader.vertex_source());
+    fragment_shader = create_shader(GL_FRAGMENT_SHADER, shader.fragment_source());
+    shader_program  = create_shader_program(vertex_shader, fragment_shader);
+
+    return shader_program != 0;
 }
 
 void OpenglShader::use() const

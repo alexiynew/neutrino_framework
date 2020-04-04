@@ -33,6 +33,7 @@
 #define FRAMEWORK_COMMON_INSTANCE_ID_HPP
 
 #include <cstdint>
+#include <ostream>
 #include <functional>
 
 namespace framework
@@ -70,6 +71,7 @@ private:
     friend bool operator==(const InstanceId& lhs, const InstanceId& rhs);
     friend bool operator<(const InstanceId& lhs, const InstanceId& rhs);
     friend void swap(InstanceId& lhs, InstanceId& rhs) noexcept;
+    friend std::ostream& operator<< (std::ostream& os, const InstanceId& instance_id);
 
     friend struct std::hash<InstanceId>;
 
@@ -123,6 +125,14 @@ bool operator>(const InstanceId& lhs, const InstanceId& rhs);
 /// @param rhs Id to swap.
 ////////////////////////////////////////////////////////////////////////////////
 void swap(InstanceId& lhs, InstanceId& rhs) noexcept;
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Insert InstanceId to output stream.
+///
+/// @param os Output stream.
+/// @param instance_id InstanceId to output.
+////////////////////////////////////////////////////////////////////////////////
+std::ostream& operator<< (std::ostream& os, const InstanceId& instance_id);
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @}
