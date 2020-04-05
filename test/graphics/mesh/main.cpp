@@ -67,12 +67,30 @@ private:
         using namespace framework::system;
 
         const Mesh::VertexData vertices = {
-        {-1.0f, -1.0f, 0.0f},
-        {1.0f, -1.0f, 0.0f},
-        {0.0f, 1.0f, 0.0f},
+            {-0.5, -0.5, -0.5},
+            {0.5, -0.5, -0.5},
+            {0.5, 0.5, -0.5},
+            {-0.5, 0.5, -0.5},
+            {-0.5, 0.5, 0.5},
+            {0.5, 0.5, 0.5},
+            {0.5, -0.5, 0.5},
+            {-0.5, -0.5, 0.5},
         };
 
-        const Mesh::IndicesData indices = {0, 1, 2};
+        const Mesh::IndicesData indices = {
+            0, 1, 2, //face front
+            0, 2, 3,
+            2, 4, 3, //face top
+            2, 5, 4,
+            1, 5, 2, //face right
+            1, 6, 5,
+            0, 4, 7, //face left
+            0, 3, 4,
+            5, 7, 4, //face back
+            5, 6, 7,
+            0, 7, 6, //face bottom
+            0, 6, 1,
+        };
 
         Window::set_application_name("GL mesh Test");
 
@@ -89,7 +107,7 @@ private:
 
         Shader shader(vertex_shader, fragment_shader);
 
-        const float32 max_total_time = 1000;
+        const float32 max_total_time = 1000 * 60;
         float32 total_time           = 0;
 
         render.load(triangle);
@@ -98,7 +116,7 @@ private:
         triangle.clear();
         shader.clear();
 
-        while (main_window.is_visible() && total_time < max_total_time) {
+        while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
 
             render.render(triangle, shader);

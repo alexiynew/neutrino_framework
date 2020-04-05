@@ -67,6 +67,7 @@ private:
     using MeshMap   = std::unordered_map<InstanceId, OpenglMesh>;
     using ShaderMap = std::unordered_map<InstanceId, OpenglShader>;
 
+    void init() const;
     void set_uniforms() const;
 
     MeshMap m_meshes;

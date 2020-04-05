@@ -137,11 +137,24 @@ namespace framework::graphics
 {
 OpenglRender::OpenglRender(system::Context& context)
 {
-    context.make_current();
     init_opengl([&context](const char* function_name) { return context.get_function(function_name); });
     get_info();
     check_supported();
+
+    init();
     log_errors();
+}
+
+void OpenglRender::init() const
+{
+    glClearDepth(1.0);
+
+    glEnable(GL_DEPTH_TEST);
+
+    glFrontFace(GL_CCW);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 }
 
 OpenglRender::~OpenglRender() = default;

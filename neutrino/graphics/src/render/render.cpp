@@ -44,6 +44,7 @@ std::unique_ptr<graphics::RenderImpl> create_impl(system::Context& context)
     if (!context.valid()) {
         throw std::runtime_error("Context is not valid.");
     }
+    context.make_current();
 
     switch (context.api_type()) {
         case system::Context::Api::opengl: return std::make_unique<graphics::OpenglRender>(context);
