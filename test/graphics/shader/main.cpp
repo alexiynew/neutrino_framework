@@ -28,7 +28,8 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
-#include <graphics/render.hpp>
+#include <graphics/color.hpp>
+#include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
@@ -52,11 +53,11 @@ private:
         Window::set_application_name("GL shader Test");
 
         Window main_window({640, 480}, "GL shader test");
-        Render render(main_window.context());
+        Renderer render(main_window.context());
 
         main_window.show();
 
-        render.set_clear_color(0xFF00FFFF);
+        render.set_clear_color(0xFF00FFFFU);
 
         const float32 max_total_time = 1000;
         float32 total_time           = 0;

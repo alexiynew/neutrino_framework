@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Render command.
+/// @brief Renderer command.
 /// @author Fedorov Alexey
 /// @date 01.04.2020
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,21 +32,42 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_COMMAND_HPP
 #define FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_COMMAND_HPP
 
+#include <vector>
+
 #include <common/instance_id.hpp>
+#include <math/math.hpp>
 
 namespace framework::graphics
 {
+using MatrixCache = std::vector<math::Matrix4f>;
+
+struct CachedMatrix
+{
+    const MatrixCache& cache;
+    const std::size_t index;
+
+    const MatrixCache::value_type& get() const;
+};
+
+struct Uniforms
+{
+    const math::Matrix4f model_matrix;
+    const CachedMatrix view_matrix;
+    const CachedMatrix projection_matrix;
+};
 class RenderCommand
 {
 public:
-    explicit RenderCommand(InstanceId mesh_id, InstanceId shader_id);
+    explicit RenderCommand(InstanceId mesh_id, InstanceId shader_id, const Uniforms& uniforms);
 
     InstanceId mesh_id() const;
     InstanceId shader_id() const;
+    const Uniforms& uniforms() const;
 
 private:
     InstanceId m_mesh_id;
     InstanceId m_shader_id;
+    Uniforms m_uniforms;
 };
 
 } // namespace framework::graphics

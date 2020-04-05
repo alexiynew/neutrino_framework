@@ -66,8 +66,8 @@ namespace framework::graphics
 class Mesh
 {
 public:
-    using VertexData             = std::vector<math::vector3f>;
-    using TextureCoordinatesData = std::vector<math::vector2f>;
+    using VertexData             = std::vector<math::Vector3f>;
+    using TextureCoordinatesData = std::vector<math::Vector2f>;
     using ColorData              = std::vector<Color>;
     using IndicesData            = std::vector<std::uint16_t>;
 
@@ -210,11 +210,18 @@ public:
     void set_indices(IndicesData&& indices) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
+    /// @brief Automatically generates indices.
+    ///
+    /// Basically iterate over vertices and assign every vertex new index.
+    ////////////////////////////////////////////////////////////////////////////
+    void generate_indices();
+
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Remove all data from Mesh.
     ///
-    /// If Mesh loaded to Render, it's can be freely cleaned.
+    /// If Mesh loaded to Renderer, it's can be freely cleaned.
     ///
-    /// @see Render::load.
+    /// @see Renderer::load.
     ////////////////////////////////////////////////////////////////////////////
     void clear();
 

@@ -86,7 +86,10 @@ Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window)
     init_wgl(m_window, [this](const char* function_name) { return get_function(function_name); });
 
     if (!wgl::is_supported(wgl::Extension::WGL_ARB_create_context)) {
-        throw std::runtime_error("wglCreateContextAttribsARB not supported");
+        throw std::runtime_error("WGL_ARB_create_context not supported");
+    }
+    if (!wgl::is_supported(wgl::Extension::WGL_ARB_pixel_format)) {
+        throw std::runtime_error("WGL_ARB_pixel_format not supported");
     }
 
     m_hdc = GetDC(m_window);

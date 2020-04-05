@@ -1,5 +1,5 @@
 /// @file
-/// @brief Render.
+/// @brief Renderer.
 /// @author Fedorov Alexey
 /// @date 29.03.2020
 
@@ -27,96 +27,88 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_RENDER_HPP
-#define FRAMEWORK_GRAPHICS_RENDER_HPP
+#ifndef FRAMEWORK_GRAPHICS_RENDERER_HPP
+#define FRAMEWORK_GRAPHICS_RENDERER_HPP
 
 #include <memory>
 
-#include <graphics/color.hpp>
-#include <graphics/mesh.hpp>
-#include <graphics/shader.hpp>
+#include <math/math.hpp>
 #include <system/context.hpp>
 
 namespace framework::graphics
 {
-class RenderImpl;
+class Mesh;
 class RenderCommand;
+class RendererImpl;
+class Shader;
+struct Color;
+struct Uniforms;
 
 // TODO: Add documentation
 // TODO: Add tests
 // TODO: Add camera support
 // TODO: Add texture support
 
-class Render
+class Renderer
 {
 public:
-    explicit Render(system::Context& context);
+    using MatrixCache = std::vector<math::Matrix4f>;
 
-    Render(const Render& other) = delete;
-    Render& operator=(const Render& other) = delete;
+    explicit Renderer(system::Context& context);
 
-    Render(Render&& other) noexcept;
-    Render& operator=(Render&& other) noexcept;
+    Renderer(const Renderer& other) = delete;
+    Renderer& operator=(const Renderer& other) = delete;
 
-    ~Render();
+    Renderer(Renderer&& other) noexcept;
+    Renderer& operator=(Renderer&& other) noexcept;
+
+    ~Renderer();
 
     void set_clear_color(Color color);
+    void set_projection(const math::Matrix4f& projection);
+
+    // TODO: make it with camera
+    void set_view(const math::Matrix4f& view);
 
     /*
-
-        // Set the depth buffer to be entirely cleared to 1.0 values.
-        glClearDepth(1.0f);
-
-        // Enable depth testing.
-        glEnable(GL_DEPTH_TEST);
-
-        // Set the polygon winding to front facing for the left handed system.
-        glFrontFace(GL_CW);
-
-        // Enable back face culling.
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-
-        // Initialize the world/model matrix to the identity matrix.
-        BuildIdentityMatrix(m_worldMatrix);
-
-        // Set the field of view and screen aspect ratio.
-        fieldOfView = 3.14159265358979323846f / 4.0f;
-        screenAspect = (float)screenWidth / (float)screenHeight;
-
-        // Build the perspective projection matrix.
-        BuildPerspectiveFovLHMatrix(m_projectionMatrix, fieldOfView, screenAspect, screenNear, screenDepth);
-
-        // Get the name of the video card.
-        vendorString = (char*)glGetString(GL_VENDOR);
-        rendererString = (char*)glGetString(GL_RENDERER);
+            // Get the name of the video card.
+            vendorString = (char*)glGetString(GL_VENDOR);
+            rendererString = (char*)glGetString(GL_RENDERER);
 
 
-        // Turn on or off the vertical sync depending on the input bool value.
-        if(vsync)
-        {
-            result = wglSwapIntervalEXT(1);
-        }
-        else
-        {
-            result = wglSwapIntervalEXT(0);
-        }
+            // Turn on or off the vertical sync depending on the input bool value.
+            if(vsync)
+            {
+                result = wglSwapIntervalEXT(1);
+            }
+            else
+            {
+                result = wglSwapIntervalEXT(0);
+            }
 
 
-    */
+        */
 
     bool load(const Mesh& mesh);
     bool load(const Shader& shader);
 
     void render(const Mesh& mesh, const Shader& shader);
+    void render(const Mesh& mesh, const Shader& shader, const math::Matrix4f& model_transform);
 
     void display();
 
 private:
-    std::unique_ptr<RenderImpl> m_impl;
+    Uniforms get_uniforms(const math::Matrix4f& model_transform) const;
+
+    void start_frame();
+    void end_frame();
+
+    std::unique_ptr<RendererImpl> m_impl;
     system::Context& m_context;
 
     std::vector<RenderCommand> m_render_commands;
+    MatrixCache m_projection;
+    MatrixCache m_view;
 };
 
 } // namespace framework::graphics

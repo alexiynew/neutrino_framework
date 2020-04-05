@@ -27,32 +27,33 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_RENDER_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_RENDER_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_RENDERER_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_RENDERER_HPP
 
 #include <unordered_map>
 
 #include <system/context.hpp>
 
-#include <graphics/src/render/render_impl.hpp>
+#include <graphics/src/render/renderer_impl.hpp>
 
 namespace framework::graphics
 {
 class OpenglMesh;
 class OpenglShader;
+struct Uniforms;
 
-class OpenglRender final : public RenderImpl
+class OpenglRenderer final : public RendererImpl
 {
 public:
-    explicit OpenglRender(system::Context& context);
+    explicit OpenglRenderer(system::Context& context);
 
-    OpenglRender(const OpenglRender& other) = default;
-    OpenglRender& operator=(const OpenglRender& other) = default;
+    OpenglRenderer(const OpenglRenderer& other) = default;
+    OpenglRenderer& operator=(const OpenglRenderer& other) = default;
 
-    OpenglRender(OpenglRender&& other) = default;
-    OpenglRender& operator=(OpenglRender&& other) = default;
+    OpenglRenderer(OpenglRenderer&& other) = default;
+    OpenglRenderer& operator=(OpenglRenderer&& other) = default;
 
-    ~OpenglRender() override;
+    ~OpenglRenderer() override;
 
     void set_clear_color(Color color) override;
 
@@ -60,7 +61,7 @@ public:
     bool load(const Shader& shader) override;
 
     void start_frame() override;
-    void perform(const RenderCommand& command) override;
+    void render(const RenderCommand& command) override;
     void end_frame() override;
 
 private:
@@ -68,7 +69,7 @@ private:
     using ShaderMap = std::unordered_map<InstanceId, OpenglShader>;
 
     void init() const;
-    void set_uniforms() const;
+    void set_uniforms(const OpenglShader& shader, const Uniforms& uniforms) const;
 
     MeshMap m_meshes;
     ShaderMap m_shaders;

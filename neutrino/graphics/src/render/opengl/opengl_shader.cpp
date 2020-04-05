@@ -31,16 +31,26 @@
 
 #include <graphics/shader.hpp>
 #include <log/log.hpp>
+#include <math/math.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
+#include <graphics/src/render/render_command.hpp>
 
+using namespace framework;
 using namespace framework::graphics;
 using namespace framework::graphics::details::opengl;
 
 namespace
 {
 const std::string tag = "OpenGL";
+
+namespace uniform_name
+{
+const std::string model_martix      = "modelMatrix";
+const std::string view_martix       = "viewMatrix";
+const std::string projection_martix = "projectionMatrix";
+} // namespace uniform_name
 
 std::string shader_type_string(int shader_type)
 {
@@ -136,6 +146,15 @@ std::uint32_t create_shader_program(std::uint32_t vertex_shader_id, std::uint32_
     return program_id;
 }
 
+void set_uniform(int location, const math::Matrix4f& matrix)
+{
+    if (location == -1) {
+        return;
+    }
+
+    glUniformMatrix4fv(location, 1, false, matrix.data());
+}
+
 } // namespace
 
 namespace framework::graphics
@@ -147,27 +166,42 @@ OpenglShader::~OpenglShader()
 
 void OpenglShader::clear()
 {
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader);
-    glDeleteProgram(shader_program);
+    glDeleteShader(m_vertex_shader);
+    glDeleteShader(m_fragment_shader);
+    glDeleteProgram(m_shader_program);
 
-    vertex_shader = 0;
-    fragment_shader = 0;
-    shader_program = 0;
+    m_vertex_shader   = 0;
+    m_fragment_shader = 0;
+    m_shader_program  = 0;
+
+    m_model_matrix      = -1;
+    m_view_matrix       = -1;
+    m_projection_matrix = -1;
 }
 
 bool OpenglShader::load(const Shader& shader)
 {
-    vertex_shader   = create_shader(GL_VERTEX_SHADER, shader.vertex_source());
-    fragment_shader = create_shader(GL_FRAGMENT_SHADER, shader.fragment_source());
-    shader_program  = create_shader_program(vertex_shader, fragment_shader);
+    m_vertex_shader   = create_shader(GL_VERTEX_SHADER, shader.vertex_source());
+    m_fragment_shader = create_shader(GL_FRAGMENT_SHADER, shader.fragment_source());
+    m_shader_program  = create_shader_program(m_vertex_shader, m_fragment_shader);
 
-    return shader_program != 0;
+    m_model_matrix      = glGetUniformLocation(m_shader_program, uniform_name::model_martix.c_str());
+    m_view_matrix       = glGetUniformLocation(m_shader_program, uniform_name::view_martix.c_str());
+    m_projection_matrix = glGetUniformLocation(m_shader_program, uniform_name::projection_martix.c_str());
+
+    return m_shader_program != 0;
 }
 
 void OpenglShader::use() const
 {
-    glUseProgram(shader_program);
+    glUseProgram(m_shader_program);
+}
+
+void OpenglShader::set_uniforms(const Uniforms& uniforms) const
+{
+    set_uniform(m_model_matrix, uniforms.model_matrix);
+    set_uniform(m_view_matrix, uniforms.view_matrix.get());
+    set_uniform(m_projection_matrix, uniforms.projection_matrix.get());
 }
 
 } // namespace framework::graphics

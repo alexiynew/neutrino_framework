@@ -35,8 +35,22 @@ def get_files(pathes_list):
 
     return files
 
+def convert_line_endings(filename):
+    # replacement strings
+    WINDOWS_LINE_ENDING = b'\r\n'
+    UNIX_LINE_ENDING = b'\n'
+
+    with open(filename, 'rb') as open_file:
+        content = open_file.read()
+
+    content = content.replace(WINDOWS_LINE_ENDING, UNIX_LINE_ENDING)
+
+    with open(filename, 'wb') as open_file:
+        open_file.write(content)
+
 
 files = list(filter(has_extension_filter(code_extensions), get_files(pathes)))
 
 for f in files:
     subprocess.call(["clang-format", "-style=file", "-i", f])
+    convert_line_endings(f)

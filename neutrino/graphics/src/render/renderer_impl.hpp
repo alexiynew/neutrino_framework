@@ -1,5 +1,5 @@
 /// @file
-/// @brief Render implementation interface.
+/// @brief Renderer implementation interface.
 /// @author Fedorov Alexey
 /// @date 29.03.2020
 
@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_IMPL_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_RENDERER_IMPL_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_RENDERER_IMPL_HPP
 
 #include <vector>
 
@@ -41,22 +41,22 @@ class Mesh;
 class Shader;
 class RenderCommand;
 
-class RenderImpl
+class RendererImpl
 {
 public:
-    using VertexData  = std::vector<math::vector4f>;
+    using VertexData  = std::vector<math::Vector4f>;
     using IndicesData = std::vector<int>;
 
-    virtual ~RenderImpl() = default;
+    virtual ~RendererImpl() = default;
 
     virtual void set_clear_color(Color color) = 0;
 
     virtual bool load(const Mesh& mesh)     = 0;
     virtual bool load(const Shader& shader) = 0;
 
-    virtual void start_frame()                         = 0;
-    virtual void perform(const RenderCommand& command) = 0;
-    virtual void end_frame()                           = 0;
+    virtual void start_frame()                        = 0;
+    virtual void render(const RenderCommand& command) = 0;
+    virtual void end_frame()                          = 0;
 };
 
 } // namespace framework::graphics

@@ -28,12 +28,12 @@
 
 using framework::uint32;
 
-using framework::math::vector2f;
-using framework::math::vector3f;
-using framework::math::vector4f;
+using framework::math::Vector2f;
+using framework::math::Vector3f;
+using framework::math::Vector4f;
 
-using framework::math::vector2d;
-using framework::math::vector3d;
+using framework::math::Vector2d;
+using framework::math::Vector3d;
 using framework::math::vector4d;
 
 using framework::math::almost_equal;

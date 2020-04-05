@@ -72,17 +72,21 @@ OpenglMesh::BufferInfo create_buffer(int buffer_type, const std::vector<T>& data
     glBindBuffer(buffer_type, 0);
 
     if constexpr (std::is_same_v<T, Mesh::VertexData::value_type>) {
-        info.type  = GL_FLOAT;
-        info.count = T::components_count;
+        info.type             = GL_FLOAT;
+        info.component_size   = T::components_count;
+        info.components_count = static_cast<int>(data.size());
     } else if constexpr (std::is_same_v<T, Mesh::TextureCoordinatesData::value_type>) {
-        info.type  = GL_FLOAT;
-        info.count = T::components_count;
+        info.type             = GL_FLOAT;
+        info.component_size   = T::components_count;
+        info.components_count = static_cast<int>(data.size());
     } else if constexpr (std::is_same_v<T, Mesh::ColorData::value_type>) {
-        info.type  = GL_UNSIGNED_BYTE;
-        info.count = 4;
+        info.type             = GL_UNSIGNED_BYTE;
+        info.component_size   = 4;
+        info.components_count = static_cast<int>(data.size());
     } else if constexpr (std::is_same_v<T, Mesh::IndicesData::value_type>) {
-        info.type  = GL_UNSIGNED_SHORT;
-        info.count = 1;
+        info.type             = GL_UNSIGNED_SHORT;
+        info.component_size   = 1;
+        info.components_count = static_cast<int>(data.size());
     }
 
     return info;
@@ -103,11 +107,11 @@ void OpenglMesh::clear()
         glDeleteBuffers(1, &info.buffer);
     }
 
-    glDeleteBuffers(1, &index_buffer);
+    glDeleteBuffers(1, &index_buffer.buffer);
     glDeleteVertexArrays(1, &vertex_array);
 
-    vertex_array = 0;
-    index_buffer = 0;
+    vertex_array        = 0;
+    index_buffer.buffer = 0;
 
     for (BufferInfo& info : vertex_buffers) {
         info.buffer = 0;
@@ -134,11 +138,11 @@ bool OpenglMesh::load(const Mesh& mesh)
     vertex_buffers[static_cast<std::size_t>(Attribute::texcoord7)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(7));
     // clang-format on
 
-    index_buffer = create_buffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indices()).buffer;
+    index_buffer = create_buffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indices());
 
     glBindVertexArray(0);
 
-    return vertex_array != 0 && index_buffer != 0;
+    return vertex_array != 0 && index_buffer.buffer != 0;
 }
 
 void OpenglMesh::draw() const
@@ -149,8 +153,8 @@ void OpenglMesh::draw() const
         enable_attribute(attr);
     }
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer.buffer);
+    glDrawElements(GL_TRIANGLES, index_buffer.components_count, index_buffer.type, 0);
 }
 
 void OpenglMesh::enable_attribute(Attribute attribute) const
@@ -164,7 +168,7 @@ void OpenglMesh::enable_attribute(Attribute attribute) const
 
     glEnableVertexAttribArray(attr_index);
     glBindBuffer(GL_ARRAY_BUFFER, info.buffer);
-    glVertexAttribPointer(0, info.count, info.type, GL_FALSE, 0, 0);
+    glVertexAttribPointer(attr_index, info.component_size, info.type, GL_FALSE, 0, 0);
 }
 
 } // namespace framework::graphics

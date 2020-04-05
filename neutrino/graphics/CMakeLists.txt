@@ -29,7 +29,7 @@ set_sources(PUBLIC_SOURCES
     mesh.hpp
     shader.hpp
     texture.hpp
-    render.hpp
+    renderer.hpp
 )
 
 set_sources(PRIVATE_SOURCES
@@ -48,14 +48,14 @@ set_sources(PRIVATE_SOURCES
     src/opengl/opengl.hpp
     src/opengl/opengl.cpp
 
-    src/render/render.cpp
-    src/render/render_impl.hpp
+    src/render/renderer.cpp
+    src/render/renderer_impl.hpp
     src/render/render_command.hpp
     src/render/render_command.cpp
 
     src/render/opengl/attributes.hpp
-    src/render/opengl/opengl_render.hpp
-    src/render/opengl/opengl_render.cpp
+    src/render/opengl/opengl_renderer.hpp
+    src/render/opengl/opengl_renderer.cpp
     src/render/opengl/opengl_mesh.hpp
     src/render/opengl/opengl_mesh.cpp
     src/render/opengl/opengl_shader.hpp

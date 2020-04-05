@@ -43,17 +43,11 @@
 /////////////////////
 in vec3 inputPosition;
 in vec3 inputColor;
-This next section in the vertex shader is the output variables that will be sent into the pixel shader. The only output
-variable that is defined is the color since we will be sending the color into the pixel shader. Note that the
-transformed input vertex position will also be sent into the pixel shader, but it is sent inside a special predefined
-variable called gl_Position.
 
 //////////////////////
 // OUTPUT VARIABLES //
 //////////////////////
 out vec3 color;
-The next section in the vertex shader is the uniform variables. These are variables that we set once and do not change
-for each vertex. For this tutorial we will just set the three important matrices which are world, view, and projection.
 
 ///////////////////////
 // UNIFORM VARIABLES //
@@ -61,12 +55,6 @@ for each vertex. For this tutorial we will just set the three important matrices
 uniform mat4 worldMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-The final section in the vertex shader is the code body. The code starts by multiplying the input vertex by the world,
-view, and then projection matrices. This will place the vertex in the correct location for rendering in 3D space
-according to our view and then onto the 2D screen. We store the result in the special gl_Position vector which will
-automatically get passed into the pixel shader. Also note that I do set the W value of the input position to 1.0 so we
-can do proper calculations using the 4x4 matrices. After that we set the output color from this vertex to be a copy of
-the input color. This will allow the pixel shader to access the color.
 
 ////////////////////////////////////////////////////////////////////////////////
 // Vertex Shader
@@ -122,22 +110,41 @@ namespace framework::graphics
 /// @brief Shader.
 ///
 /// Each Shader consists of two parts: vertex program and fragment program.
+///
+/// For OpenGL: @n
+/// ===========
+/// Shader has predefined vertex attribute locations listed below:
+///  - position              - 0
+///  - normal                - 1
+///  - tangent               - 2
+///  - color                 - 3
+///  - texture coordinate0-7 - 4-11 @n
+/// They can be used as follows:
+/// @code
+/// layout(location = 0) in vec3 vertexPosition;
+/// @endcode
+///
+/// There are also several predefined uniforms passed to each shader:
+/// @code
+/// uniform mat4 madelMatrix;       - model transformations
+/// uniform mat4 viewMatrix;        - view transformation
+/// uniform mat4 projectionMatrix;  - projection frustim
+/// @endcode
+///
+/// @see Mesh, Renderer
 ////////////////////////////////////////////////////////////////////////////////
 class Shader
 {
 public:
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates Shader instance.
-    ///
-    /// @param vertex_source Vertex shader source.
-    /// @param fragment_source Fragment shader source.
     ////////////////////////////////////////////////////////////////////////////
-    Shader(const std::string& vertex_source, const std::string& fragment_source);
+    Shader() = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Destructor
     ////////////////////////////////////////////////////////////////////////////
-    ~Shader();
+    ~Shader() = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Copy Shader.
@@ -180,21 +187,21 @@ public:
     ///
     /// @param vertex_source Vertex shader source.
     ////////////////////////////////////////////////////////////////////////////
-    void set_vertex_sounrce(const std::string& source);
+    void set_vertex_source(const std::string& source);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Set fragment shader source.
     ///
     /// @param vertex_source Fragment shader source.
     ////////////////////////////////////////////////////////////////////////////
-    void set_fragment_sounrce(const std::string& source);
+    void set_fragment_source(const std::string& source);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Remove all sources from Shader.
     ///
-    /// If Shader loaded to Render, it's can be freely cleaned.
+    /// If Shader loaded to Renderer, it's can be freely cleaned.
     ///
-    /// @see Render::load.
+    /// @see Renderer::load.
     ////////////////////////////////////////////////////////////////////////////
     void clear();
 
@@ -224,8 +231,8 @@ private:
 
     InstanceId m_instance_id;
 
-    std::string m_vertex_sounrce;
-    std::string m_fragment_sounrce;
+    std::string m_vertex_source;
+    std::string m_fragment_source;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

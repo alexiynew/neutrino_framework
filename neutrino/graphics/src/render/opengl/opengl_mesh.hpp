@@ -45,8 +45,9 @@ public:
     struct BufferInfo
     {
         std::uint32_t buffer = 0;
-        int count            = 0;
         int type             = 0;
+        int component_size   = 0;
+        int components_count = 0;
     };
 
     OpenglMesh() = default;
@@ -68,7 +69,7 @@ private:
     void enable_attribute(Attribute attribute) const;
 
     std::uint32_t vertex_array = 0;
-    std::uint32_t index_buffer = 0;
+    BufferInfo index_buffer;
 
     std::array<BufferInfo, attributes_count> vertex_buffers = {};
 };

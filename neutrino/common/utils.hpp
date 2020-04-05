@@ -79,7 +79,7 @@ inline constexpr bool is_debug() noexcept
 template <typename T>
 std::vector<T> random_numbers(T min, T max, size_t count)
 {
-    static_assert(std::is_arithmetic<T>::value, "Expected floating-point or integer type.");
+    static_assert(std::is_arithmetic_v<T>, "Expected floating-point or integer type.");
 
     if (count == 0) {
         return std::vector<T>();

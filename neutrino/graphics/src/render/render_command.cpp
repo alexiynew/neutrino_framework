@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Render command.
+/// @brief Renderer command.
 /// @author Fedorov Alexey
 /// @date 01.04.2020
 ////////////////////////////////////////////////////////////////////////////////
@@ -33,9 +33,16 @@
 
 namespace framework::graphics
 {
-RenderCommand::RenderCommand(InstanceId mesh_id, InstanceId shader_id)
+
+const MatrixCache::value_type& CachedMatrix::get() const
+{
+    return cache.at(index);
+}
+
+RenderCommand::RenderCommand(InstanceId mesh_id, InstanceId shader_id, const Uniforms& uniforms)
     : m_mesh_id(mesh_id)
     , m_shader_id(shader_id)
+    , m_uniforms(uniforms)
 {}
 
 InstanceId RenderCommand::mesh_id() const
@@ -46,6 +53,11 @@ InstanceId RenderCommand::mesh_id() const
 InstanceId RenderCommand::shader_id() const
 {
     return m_shader_id;
+}
+
+const Uniforms& RenderCommand::uniforms() const
+{
+    return m_uniforms;
 }
 
 } // namespace framework::graphics

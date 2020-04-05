@@ -27,6 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <limits>
+
 #include <graphics/mesh.hpp>
 
 namespace
@@ -138,6 +140,16 @@ void Mesh::set_indices(IndicesData&& indexes) noexcept
 {
     using std::swap;
     swap(m_indexes, indexes);
+}
+
+void Mesh::generate_indices()
+{
+    constexpr std::size_t max_size = std::numeric_limits<IndicesData::value_type>::max();
+
+    m_indexes.resize(m_vertices.size());
+    for (std::size_t i = 0; i < m_vertices.size() && i < max_size; ++i) {
+        m_indexes[i] = static_cast<IndicesData::value_type>(i);
+    }
 }
 
 void Mesh::clear()

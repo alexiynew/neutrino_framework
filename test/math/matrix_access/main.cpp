@@ -26,19 +26,19 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::matrix2x2f;
-using framework::math::matrix2x3f;
-using framework::math::matrix2x4f;
-using framework::math::matrix3x2f;
-using framework::math::matrix3x3f;
-using framework::math::matrix3x4f;
-using framework::math::matrix4x2f;
-using framework::math::matrix4x3f;
-using framework::math::matrix4x4f;
+using framework::math::Matrix2x2f;
+using framework::math::Matrix2x3f;
+using framework::math::Matrix2x4f;
+using framework::math::Matrix3x2f;
+using framework::math::Matrix3x3f;
+using framework::math::Matrix3x4f;
+using framework::math::Matrix4x2f;
+using framework::math::Matrix4x3f;
+using framework::math::Matrix4x4f;
 
-using framework::math::vector2f;
-using framework::math::vector3f;
-using framework::math::vector4f;
+using framework::math::Vector2f;
+using framework::math::Vector3f;
+using framework::math::Vector4f;
 
 using framework::float32;
 
@@ -54,56 +54,56 @@ public:
         add_test([this]() { data_function(); }, "data_function");
 
         // clang-format off
-        matrix44 = {
+        Matrix44 = {
             0, 1, 2, 3,
             0, 1, 2, 3,
             0, 1, 2, 3,
             0, 1, 2, 3
         };
 
-        matrix43 = {
+        Matrix43 = {
             0, 1, 2,
             0, 1, 2,
             0, 1, 2,
             0, 1, 2
         };
 
-        matrix42 = {
+        Matrix42 = {
             0, 1,
             0, 1,
             0, 1,
             0, 1
         };
 
-        matrix34 = {
+        Matrix34 = {
             0, 1, 2, 3,
             0, 1, 2, 3,
             0, 1, 2, 3
         };
 
-        matrix33 = {
+        Matrix33 = {
             0, 1, 2,
             0, 1, 2,
             0, 1, 2
         };
 
-        matrix32 = {
+        Matrix32 = {
             0, 1,
             0, 1,
             0, 1
         };
 
-        matrix24 = {
+        Matrix24 = {
             0, 1, 2, 3,
             0, 1, 2, 3
         };
 
-        matrix23 = {
+        Matrix23 = {
             0, 1, 2,
             0, 1, 2
         };
 
-        matrix22 = {
+        Matrix22 = {
             0, 1,
             0, 1
         };
@@ -114,49 +114,49 @@ private:
     void access_operator()
     {
         // clang-format off
-        TEST_ASSERT(matrix44[0] == vector4f(0, 1, 2, 3) &&
-                    matrix44[1] == vector4f(0, 1, 2, 3) &&
-                    matrix44[2] == vector4f(0, 1, 2, 3) &&
-                    matrix44[3] == vector4f(0, 1, 2, 3),
+        TEST_ASSERT(Matrix44[0] == Vector4f(0, 1, 2, 3) &&
+                    Matrix44[1] == Vector4f(0, 1, 2, 3) &&
+                    Matrix44[2] == Vector4f(0, 1, 2, 3) &&
+                    Matrix44[3] == Vector4f(0, 1, 2, 3),
                     "Matrix 4x4 access operator failed.");
 
-        TEST_ASSERT(matrix43[0] == vector3f(0, 1, 2) &&
-                    matrix43[1] == vector3f(0, 1, 2) &&
-                    matrix43[2] == vector3f(0, 1, 2) &&
-                    matrix43[3] == vector3f(0, 1, 2),
+        TEST_ASSERT(Matrix43[0] == Vector3f(0, 1, 2) &&
+                    Matrix43[1] == Vector3f(0, 1, 2) &&
+                    Matrix43[2] == Vector3f(0, 1, 2) &&
+                    Matrix43[3] == Vector3f(0, 1, 2),
                     "Matrix 4x3 access operator failed.");
 
-        TEST_ASSERT(matrix42[0] == vector2f(0, 1) &&
-                    matrix42[1] == vector2f(0, 1) &&
-                    matrix42[2] == vector2f(0, 1) &&
-                    matrix42[3] == vector2f(0, 1),
+        TEST_ASSERT(Matrix42[0] == Vector2f(0, 1) &&
+                    Matrix42[1] == Vector2f(0, 1) &&
+                    Matrix42[2] == Vector2f(0, 1) &&
+                    Matrix42[3] == Vector2f(0, 1),
                     "Matrix 4x2 access operator failed.");
 
-        TEST_ASSERT(matrix34[0] == vector4f(0, 1, 2, 3) &&
-                    matrix34[1] == vector4f(0, 1, 2, 3) &&
-                    matrix34[2] == vector4f(0, 1, 2, 3),
+        TEST_ASSERT(Matrix34[0] == Vector4f(0, 1, 2, 3) &&
+                    Matrix34[1] == Vector4f(0, 1, 2, 3) &&
+                    Matrix34[2] == Vector4f(0, 1, 2, 3),
                     "Matrix 3x4 access operator failed.");
 
-        TEST_ASSERT(matrix33[0] == vector3f(0, 1, 2) &&
-                    matrix33[1] == vector3f(0, 1, 2) &&
-                    matrix33[2] == vector3f(0, 1, 2),
+        TEST_ASSERT(Matrix33[0] == Vector3f(0, 1, 2) &&
+                    Matrix33[1] == Vector3f(0, 1, 2) &&
+                    Matrix33[2] == Vector3f(0, 1, 2),
                     "Matrix 3x3 access operator failed.");
 
-        TEST_ASSERT(matrix32[0] == vector2f(0, 1) &&
-                    matrix32[1] == vector2f(0, 1) &&
-                    matrix32[2] == vector2f(0, 1),
+        TEST_ASSERT(Matrix32[0] == Vector2f(0, 1) &&
+                    Matrix32[1] == Vector2f(0, 1) &&
+                    Matrix32[2] == Vector2f(0, 1),
                     "Matrix 3x2 access operator failed.");
 
-        TEST_ASSERT(matrix24[0] == vector4f(0, 1, 2, 3) &&
-                    matrix24[1] == vector4f(0, 1, 2, 3),
+        TEST_ASSERT(Matrix24[0] == Vector4f(0, 1, 2, 3) &&
+                    Matrix24[1] == Vector4f(0, 1, 2, 3),
                     "Matrix 2x4 access operator failed.");
 
-        TEST_ASSERT(matrix23[0] == vector3f(0, 1, 2) &&
-                    matrix23[1] == vector3f(0, 1, 2),
+        TEST_ASSERT(Matrix23[0] == Vector3f(0, 1, 2) &&
+                    Matrix23[1] == Vector3f(0, 1, 2),
                     "Matrix 2x3 access operator failed.");
 
-        TEST_ASSERT(matrix22[0] == vector2f(0, 1) &&
-                    matrix22[1] == vector2f(0, 1),
+        TEST_ASSERT(Matrix22[0] == Vector2f(0, 1) &&
+                    Matrix22[1] == Vector2f(0, 1),
                     "Matrix 2x2 access operator failed.");
         // clang-format on
     }
@@ -164,49 +164,49 @@ private:
     void column_function()
     {
         // clang-format off
-        TEST_ASSERT(matrix44.column(0) == vector4f(0, 1, 2, 3) &&
-                    matrix44.column(1) == vector4f(0, 1, 2, 3) &&
-                    matrix44.column(2) == vector4f(0, 1, 2, 3) &&
-                    matrix44.column(3) == vector4f(0, 1, 2, 3),
+        TEST_ASSERT(Matrix44.column(0) == Vector4f(0, 1, 2, 3) &&
+                    Matrix44.column(1) == Vector4f(0, 1, 2, 3) &&
+                    Matrix44.column(2) == Vector4f(0, 1, 2, 3) &&
+                    Matrix44.column(3) == Vector4f(0, 1, 2, 3),
                     "Matrix 4x4 column function failed.");
 
-        TEST_ASSERT(matrix43.column(0) == vector3f(0, 1, 2) &&
-                    matrix43.column(1) == vector3f(0, 1, 2) &&
-                    matrix43.column(2) == vector3f(0, 1, 2) &&
-                    matrix43.column(3) == vector3f(0, 1, 2),
+        TEST_ASSERT(Matrix43.column(0) == Vector3f(0, 1, 2) &&
+                    Matrix43.column(1) == Vector3f(0, 1, 2) &&
+                    Matrix43.column(2) == Vector3f(0, 1, 2) &&
+                    Matrix43.column(3) == Vector3f(0, 1, 2),
                     "Matrix 4x3 column function failed.");
 
-        TEST_ASSERT(matrix42.column(0) == vector2f(0, 1) &&
-                    matrix42.column(1) == vector2f(0, 1) &&
-                    matrix42.column(2) == vector2f(0, 1) &&
-                    matrix42.column(3) == vector2f(0, 1),
+        TEST_ASSERT(Matrix42.column(0) == Vector2f(0, 1) &&
+                    Matrix42.column(1) == Vector2f(0, 1) &&
+                    Matrix42.column(2) == Vector2f(0, 1) &&
+                    Matrix42.column(3) == Vector2f(0, 1),
                     "Matrix 4x2 column function failed.");
 
-        TEST_ASSERT(matrix34.column(0) == vector4f(0, 1, 2, 3) &&
-                    matrix34.column(1) == vector4f(0, 1, 2, 3) &&
-                    matrix34.column(2) == vector4f(0, 1, 2, 3),
+        TEST_ASSERT(Matrix34.column(0) == Vector4f(0, 1, 2, 3) &&
+                    Matrix34.column(1) == Vector4f(0, 1, 2, 3) &&
+                    Matrix34.column(2) == Vector4f(0, 1, 2, 3),
                     "Matrix 3x4 column function failed.");
 
-        TEST_ASSERT(matrix33.column(0) == vector3f(0, 1, 2) &&
-                    matrix33.column(1) == vector3f(0, 1, 2) &&
-                    matrix33.column(2) == vector3f(0, 1, 2),
+        TEST_ASSERT(Matrix33.column(0) == Vector3f(0, 1, 2) &&
+                    Matrix33.column(1) == Vector3f(0, 1, 2) &&
+                    Matrix33.column(2) == Vector3f(0, 1, 2),
                     "Matrix 3x3 column function failed.");
 
-        TEST_ASSERT(matrix32.column(0) == vector2f(0, 1) &&
-                    matrix32.column(1) == vector2f(0, 1) &&
-                    matrix32.column(2) == vector2f(0, 1),
+        TEST_ASSERT(Matrix32.column(0) == Vector2f(0, 1) &&
+                    Matrix32.column(1) == Vector2f(0, 1) &&
+                    Matrix32.column(2) == Vector2f(0, 1),
                     "Matrix 3x2 column function failed.");
 
-        TEST_ASSERT(matrix24.column(0) == vector4f(0, 1, 2, 3) &&
-                    matrix24.column(1) == vector4f(0, 1, 2, 3),
+        TEST_ASSERT(Matrix24.column(0) == Vector4f(0, 1, 2, 3) &&
+                    Matrix24.column(1) == Vector4f(0, 1, 2, 3),
                     "Matrix 2x4 column function failed.");
 
-        TEST_ASSERT(matrix23.column(0) == vector3f(0, 1, 2) &&
-                    matrix23.column(1) == vector3f(0, 1, 2),
+        TEST_ASSERT(Matrix23.column(0) == Vector3f(0, 1, 2) &&
+                    Matrix23.column(1) == Vector3f(0, 1, 2),
                     "Matrix 2x3 column function failed.");
 
-        TEST_ASSERT(matrix22.column(0) == vector2f(0, 1) &&
-                    matrix22.column(1) == vector2f(0, 1),
+        TEST_ASSERT(Matrix22.column(0) == Vector2f(0, 1) &&
+                    Matrix22.column(1) == Vector2f(0, 1),
                     "Matrix 2x2 column function failed.");
         // clang-format on
     }
@@ -214,65 +214,65 @@ private:
     void row_function()
     {
         // clang-format off
-        TEST_ASSERT(matrix44.row(0) == vector4f(0, 0, 0, 0) &&
-                    matrix44.row(1) == vector4f(1, 1, 1, 1) &&
-                    matrix44.row(2) == vector4f(2, 2, 2, 2) &&
-                    matrix44.row(3) == vector4f(3, 3, 3, 3),
+        TEST_ASSERT(Matrix44.row(0) == Vector4f(0, 0, 0, 0) &&
+                    Matrix44.row(1) == Vector4f(1, 1, 1, 1) &&
+                    Matrix44.row(2) == Vector4f(2, 2, 2, 2) &&
+                    Matrix44.row(3) == Vector4f(3, 3, 3, 3),
                     "Matrix 4x4 row function failed.");
 
-        TEST_ASSERT(matrix43.row(0) == vector4f(0, 0, 0, 0) &&
-                    matrix43.row(1) == vector4f(1, 1, 1, 1) &&
-                    matrix43.row(2) == vector4f(2, 2, 2, 2),
+        TEST_ASSERT(Matrix43.row(0) == Vector4f(0, 0, 0, 0) &&
+                    Matrix43.row(1) == Vector4f(1, 1, 1, 1) &&
+                    Matrix43.row(2) == Vector4f(2, 2, 2, 2),
                     "Matrix 4x3 row function failed.");
 
-        TEST_ASSERT(matrix42.row(0) == vector4f(0, 0, 0, 0) &&
-                    matrix42.row(1) == vector4f(1, 1, 1, 1),
+        TEST_ASSERT(Matrix42.row(0) == Vector4f(0, 0, 0, 0) &&
+                    Matrix42.row(1) == Vector4f(1, 1, 1, 1),
                     "Matrix 4x2 row function failed.");
 
-        TEST_ASSERT(matrix34.row(0) == vector3f(0, 0, 0) &&
-                    matrix34.row(1) == vector3f(1, 1, 1) &&
-                    matrix34.row(2) == vector3f(2, 2, 2) &&
-                    matrix34.row(3) == vector3f(3, 3, 3),
+        TEST_ASSERT(Matrix34.row(0) == Vector3f(0, 0, 0) &&
+                    Matrix34.row(1) == Vector3f(1, 1, 1) &&
+                    Matrix34.row(2) == Vector3f(2, 2, 2) &&
+                    Matrix34.row(3) == Vector3f(3, 3, 3),
                     "Matrix 3x4 row function failed.");
 
-        TEST_ASSERT(matrix33.row(0) == vector3f(0, 0, 0) &&
-                    matrix33.row(1) == vector3f(1, 1, 1) &&
-                    matrix33.row(2) == vector3f(2, 2, 2),
+        TEST_ASSERT(Matrix33.row(0) == Vector3f(0, 0, 0) &&
+                    Matrix33.row(1) == Vector3f(1, 1, 1) &&
+                    Matrix33.row(2) == Vector3f(2, 2, 2),
                     "Matrix 3x3 row function failed.");
 
-        TEST_ASSERT(matrix32.row(0) == vector3f(0, 0, 0) &&
-                    matrix32.row(1) == vector3f(1, 1, 1),
+        TEST_ASSERT(Matrix32.row(0) == Vector3f(0, 0, 0) &&
+                    Matrix32.row(1) == Vector3f(1, 1, 1),
                     "Matrix 3x2 row function failed.");
 
-        TEST_ASSERT(matrix24.row(0) == vector2f(0, 0) &&
-                    matrix24.row(1) == vector2f(1, 1) &&
-                    matrix24.row(2) == vector2f(2, 2) &&
-                    matrix24.row(3) == vector2f(3, 3),
+        TEST_ASSERT(Matrix24.row(0) == Vector2f(0, 0) &&
+                    Matrix24.row(1) == Vector2f(1, 1) &&
+                    Matrix24.row(2) == Vector2f(2, 2) &&
+                    Matrix24.row(3) == Vector2f(3, 3),
                     "Matrix 2x4 row function failed.");
 
-        TEST_ASSERT(matrix23.row(0) == vector2f(0, 0) &&
-                    matrix23.row(1) == vector2f(1, 1) &&
-                    matrix23.row(2) == vector2f(2, 2),
+        TEST_ASSERT(Matrix23.row(0) == Vector2f(0, 0) &&
+                    Matrix23.row(1) == Vector2f(1, 1) &&
+                    Matrix23.row(2) == Vector2f(2, 2),
                     "Matrix 2x3 row function failed.");
 
 
-        TEST_ASSERT(matrix22.row(0) == vector2f(0, 0) &&
-                    matrix22.row(1) == vector2f(1, 1),
+        TEST_ASSERT(Matrix22.row(0) == Vector2f(0, 0) &&
+                    Matrix22.row(1) == Vector2f(1, 1),
                     "Matrix 2x2 row function failed.");
         // clang-format on
     }
 
     void data_function()
     {
-        float32* p44 = matrix44.data();
-        float32* p34 = matrix34.data();
-        float32* p24 = matrix24.data();
-        float32* p43 = matrix43.data();
-        float32* p33 = matrix33.data();
-        float32* p23 = matrix23.data();
-        float32* p42 = matrix42.data();
-        float32* p32 = matrix32.data();
-        float32* p22 = matrix22.data();
+        float32* p44 = Matrix44.data();
+        float32* p34 = Matrix34.data();
+        float32* p24 = Matrix24.data();
+        float32* p43 = Matrix43.data();
+        float32* p33 = Matrix33.data();
+        float32* p23 = Matrix23.data();
+        float32* p42 = Matrix42.data();
+        float32* p32 = Matrix32.data();
+        float32* p22 = Matrix22.data();
 
         auto check = [](const float32 a, const float32 b) { return framework::math::abs(a - b) <= 0; };
 
@@ -324,17 +324,17 @@ private:
         // clang-format on
     }
 
-    matrix4x4f matrix44;
-    matrix4x3f matrix43;
-    matrix4x2f matrix42;
+    Matrix4x4f Matrix44;
+    Matrix4x3f Matrix43;
+    Matrix4x2f Matrix42;
 
-    matrix3x4f matrix34;
-    matrix3x3f matrix33;
-    matrix3x2f matrix32;
+    Matrix3x4f Matrix34;
+    Matrix3x3f Matrix33;
+    Matrix3x2f Matrix32;
 
-    matrix2x4f matrix24;
-    matrix2x3f matrix23;
-    matrix2x2f matrix22;
+    Matrix2x4f Matrix24;
+    Matrix2x3f Matrix23;
+    Matrix2x2f Matrix22;
 };
 
 int main()

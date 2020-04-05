@@ -35,6 +35,7 @@
 namespace framework::graphics
 {
 class Shader;
+struct Uniforms;
 
 class OpenglShader
 {
@@ -54,11 +55,16 @@ public:
 
     void use() const;
 
-private:
+    void set_uniforms(const Uniforms& uniforms) const;
 
-    std::uint32_t vertex_shader   = 0;
-    std::uint32_t fragment_shader = 0;
-    std::uint32_t shader_program  = 0;
+private:
+    std::uint32_t m_vertex_shader   = 0;
+    std::uint32_t m_fragment_shader = 0;
+    std::uint32_t m_shader_program  = 0;
+
+    int m_model_matrix      = -1;
+    int m_view_matrix       = -1;
+    int m_projection_matrix = -1;
 };
 
 } // namespace framework::graphics

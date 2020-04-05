@@ -31,16 +31,10 @@
 
 namespace framework::graphics
 {
-Shader::Shader(const std::string& vertex_source, const std::string& fragment_source)
-    : m_vertex_sounrce(vertex_source)
-    , m_fragment_sounrce(fragment_source)
-{}
-
-Shader::~Shader() = default;
 
 Shader::Shader(const Shader& other)
-    : m_vertex_sounrce(other.m_vertex_sounrce)
-    , m_fragment_sounrce(other.m_fragment_sounrce)
+    : m_vertex_source(other.m_vertex_source)
+    , m_fragment_source(other.m_fragment_source)
 {}
 
 Shader& Shader::operator=(const Shader& other)
@@ -63,20 +57,20 @@ Shader& Shader::operator=(Shader&& other) noexcept
     return *this;
 }
 
-void Shader::set_vertex_sounrce(const std::string& source)
+void Shader::set_vertex_source(const std::string& source)
 {
-    m_vertex_sounrce = source;
+    m_vertex_source = source;
 }
 
-void Shader::set_fragment_sounrce(const std::string& source)
+void Shader::set_fragment_source(const std::string& source)
 {
-    m_fragment_sounrce = source;
+    m_fragment_source = source;
 }
 
 void Shader::clear()
 {
-    m_vertex_sounrce.clear();
-    m_fragment_sounrce.clear();
+    m_vertex_source.clear();
+    m_fragment_source.clear();
 }
 
 InstanceId Shader::instance_id() const
@@ -86,19 +80,19 @@ InstanceId Shader::instance_id() const
 
 const std::string& Shader::vertex_source() const
 {
-    return m_vertex_sounrce;
+    return m_vertex_source;
 }
 
 const std::string& Shader::fragment_source() const
 {
-    return m_fragment_sounrce;
+    return m_fragment_source;
 }
 
 void swap(Shader& lhs, Shader& rhs) noexcept
 {
     using std::swap;
-    swap(lhs.m_vertex_sounrce, rhs.m_vertex_sounrce);
-    swap(lhs.m_fragment_sounrce, rhs.m_fragment_sounrce);
+    swap(lhs.m_vertex_source, rhs.m_vertex_source);
+    swap(lhs.m_fragment_source, rhs.m_fragment_source);
 }
 
 } // namespace framework::graphics

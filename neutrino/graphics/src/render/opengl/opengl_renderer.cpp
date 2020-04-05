@@ -36,7 +36,7 @@
 
 #include <graphics/src/opengl/opengl.hpp>
 #include <graphics/src/render/opengl/opengl_mesh.hpp>
-#include <graphics/src/render/opengl/opengl_render.hpp>
+#include <graphics/src/render/opengl/opengl_renderer.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
 #include <graphics/src/render/render_command.hpp>
 
@@ -105,7 +105,7 @@ std::string get_string(int id)
 void get_info()
 {
     log::info(tag) << "Vendor: " << get_string(GL_VENDOR);
-    log::info(tag) << "Renderer: " << get_string(GL_RENDERER);
+    log::info(tag) << "Rendererer: " << get_string(GL_RENDERER);
     log::info(tag) << "Version: " << get_string(GL_VERSION);
     log::info(tag) << "Shading Lang Version: " << get_string(GL_SHADING_LANGUAGE_VERSION);
 }
@@ -135,7 +135,7 @@ void check_supported()
 
 namespace framework::graphics
 {
-OpenglRender::OpenglRender(system::Context& context)
+OpenglRenderer::OpenglRenderer(system::Context& context)
 {
     init_opengl([&context](const char* function_name) { return context.get_function(function_name); });
     get_info();
@@ -145,7 +145,7 @@ OpenglRender::OpenglRender(system::Context& context)
     log_errors();
 }
 
-void OpenglRender::init() const
+void OpenglRenderer::init() const
 {
     glClearDepth(1.0);
 
@@ -155,17 +155,19 @@ void OpenglRender::init() const
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+
+    glViewport(0, 0, 640, 480);
 }
 
-OpenglRender::~OpenglRender() = default;
+OpenglRenderer::~OpenglRenderer() = default;
 
-void OpenglRender::set_clear_color(Color color)
+void OpenglRenderer::set_clear_color(Color color)
 {
     glClearColor(map_to_float(color.r), map_to_float(color.g), map_to_float(color.b), map_to_float(color.a));
     log_errors();
 }
 
-bool OpenglRender::load(const Mesh& mesh)
+bool OpenglRenderer::load(const Mesh& mesh)
 {
     if (m_meshes.count(mesh.instance_id())) {
         m_meshes[mesh.instance_id()].clear();
@@ -180,7 +182,7 @@ bool OpenglRender::load(const Mesh& mesh)
     return loaded;
 }
 
-bool OpenglRender::load(const Shader& shader)
+bool OpenglRenderer::load(const Shader& shader)
 {
     if (m_shaders.count(shader.instance_id())) {
         m_shaders[shader.instance_id()].clear();
@@ -195,12 +197,12 @@ bool OpenglRender::load(const Shader& shader)
     return loaded;
 }
 
-void OpenglRender::start_frame()
+void OpenglRenderer::start_frame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenglRender::perform(const RenderCommand& command)
+void OpenglRenderer::render(const RenderCommand& command)
 {
     if (m_meshes.count(command.mesh_id()) == 0) {
         return;
@@ -214,66 +216,19 @@ void OpenglRender::perform(const RenderCommand& command)
     const OpenglShader& shader = m_shaders.at(command.shader_id());
 
     shader.use();
-    set_uniforms();
+    shader.set_uniforms(command.uniforms());
 
     mesh.draw();
 
     log_errors();
 }
 
-void OpenglRender::end_frame()
+void OpenglRenderer::end_frame()
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glUseProgram(0);
-}
-
-void OpenglRender::set_uniforms() const
-{
-    // void shader_program::uniform(const std::string& name, int value)
-    //{
-    //    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
-    //    glUniform1i(uniform_id, value);
-    //}
-    //
-    // void shader_program::uniform(const std::string& name, float value)
-    //{
-    //    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
-    //    glUniform1f(uniform_id, value);
-    //}
-    //
-    // void shader_program::uniform(const std::string& name, math::matrix4f value, bool transpose)
-    //{
-    //    const int32 uniform_id = glGetUniformLocation(m_program_id, name.c_str());
-    //    glUniformMatrix4fv(uniform_id, 1, transpose, value.data());
-    //}
-    /*
-     // Set the world matrix in the vertex shader.
-     location = OpenGL->glGetUniformLocation(m_shaderProgram, "worldMatrix");
-     if(location == -1)
-     {
-         return false;
-     }
-     OpenGL->glUniformMatrix4fv(location, 1, false, worldMatrix);
-
-     // Set the view matrix in the vertex shader.
-     location = OpenGL->glGetUniformLocation(m_shaderProgram, "viewMatrix");
-     if(location == -1)
-     {
-         return false;
-     }
-     OpenGL->glUniformMatrix4fv(location, 1, false, viewMatrix);
-
-     // Set the projection matrix in the vertex shader.
-     location = OpenGL->glGetUniformLocation(m_shaderProgram, "projectionMatrix");
-     if(location == -1)
-     {
-         return false;
-     }
-     OpenGL->glUniformMatrix4fv(location, 1, false, projectionMatrix);
-     //
-    */
 }
 
 } // namespace framework::graphics

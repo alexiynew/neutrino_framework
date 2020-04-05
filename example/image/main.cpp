@@ -430,20 +430,20 @@ framework::graphics::shader_program load_shader(const std::string& VertexShaderC
 framework::graphics::mesh make_quad(framework::int32 width, framework::int32 height)
 {
     using namespace framework::graphics;
-    using framework::math::vector2f;
+    using framework::math::Vector2f;
 
-    const std::vector<vector2f> vertex_buffer_data = {
-    vector2f(0.0f, 0.0f),
-    vector2f(0.0f, height),
-    vector2f(width, height),
-    vector2f(width, 0.0f),
+    const std::vector<Vector2f> vertex_buffer_data = {
+    Vector2f(0.0f, 0.0f),
+    Vector2f(0.0f, height),
+    Vector2f(width, height),
+    Vector2f(width, 0.0f),
     };
 
-    const std::vector<vector2f> texture_buffer_data = {
-    vector2f(0.0f, 1.0f),
-    vector2f(0.0f, 0.0f),
-    vector2f(1.0f, 0.0f),
-    vector2f(1.0f, 1.0f),
+    const std::vector<Vector2f> texture_buffer_data = {
+    Vector2f(0.0f, 1.0f),
+    Vector2f(0.0f, 0.0f),
+    Vector2f(1.0f, 0.0f),
+    Vector2f(1.0f, 1.0f),
     };
 
     mesh m;
@@ -538,7 +538,7 @@ int main()
 
     int32 image_scale = 1;
 
-    math::matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
+    math::Matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
     mvp                = scale(mvp, {image_scale, image_scale, image_scale});
 
     // load all images
