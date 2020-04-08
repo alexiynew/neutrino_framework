@@ -506,6 +506,7 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         }
 
         case WM_CLOSE: {
+            m_should_close = true;
             on_close();
             return 0;
         }
