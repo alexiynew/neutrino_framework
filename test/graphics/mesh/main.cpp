@@ -33,6 +33,7 @@
 #include <graphics/shader.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
+#include <common/fps_counter.hpp>
 
 const std::string vertex_shader =
 "#version 330 core\n\
@@ -145,10 +146,8 @@ private:
         shader.set_vertex_source(vertex_shader);
         shader.set_fragment_source(fragment_shader);
 
-        const float max_total_time = 1000 * 10;
-
-        float total_time = 0;
         float angle      = 0;
+        math::Vector3f dir(1,1,0.5);
 
         renderer.load(cube);
         renderer.load(shader);
@@ -165,22 +164,41 @@ private:
         cube.clear();
         shader.clear();
 
-        while (!main_window.should_close() && total_time < max_total_time) {
+        bool should_close = false;
+
+        FpsCounter fps;
+
+        std::chrono::microseconds frame_time(static_cast<int>((1.0f / 60) * std::chrono::microseconds::period::den));
+        std::chrono::microseconds max_total_time = std::chrono::seconds(10);
+        std::chrono::microseconds total_time(0);
+
+        auto last_frame_time = std::chrono::high_resolution_clock::now();
+
+        while (!should_close) {
+            auto frame_start = std::chrono::high_resolution_clock::now();
             main_window.process_events();
-            angle += 0.1f;
+
+            auto now = std::chrono::high_resolution_clock::now();
+            auto frame_duration = std::chrono::duration_cast<std::chrono::microseconds>(now - last_frame_time);
+            last_frame_time = now;
+            total_time += frame_duration;
+
+            float period =  (frame_duration.count() / static_cast<float>(std::chrono::microseconds::period::den));
+            angle += 45.0f * period;
 
             math::Matrix4f model_transform = math::rotate(math::Matrix4f(),
-                                                          math::normalize(math::Vector3f(1, 1, 0.5)),
+                                                          math::normalize(dir),
                                                           math::radians(angle));
-            renderer.render(cube, shader, model_transform);
 
+            renderer.render(cube, shader, model_transform);
             renderer.display();
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            should_close = main_window.should_close() || total_time > max_total_time;
+            std::this_thread::sleep_for(frame_time - (std::chrono::high_resolution_clock::now() - frame_start));
 
-            total_time += 1;
+            fps.tick(); 
+            main_window.set_title(std::to_string(fps.fps())); 
         }
-
         TEST_FAIL("Not implemented.");
     }
 };
