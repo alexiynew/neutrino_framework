@@ -142,7 +142,7 @@ bool OpenglMesh::load(const Mesh& mesh)
 
     glBindVertexArray(0);
 
-    return vertex_array != 0 && index_buffer.buffer != 0;
+    return valid();
 }
 
 void OpenglMesh::draw() const
@@ -155,6 +155,11 @@ void OpenglMesh::draw() const
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer.buffer);
     glDrawElements(GL_TRIANGLES, index_buffer.components_count, index_buffer.type, 0);
+}
+
+bool OpenglMesh::valid() const
+{
+    return vertex_array != 0 && index_buffer.buffer != 0;
 }
 
 void OpenglMesh::enable_attribute(Attribute attribute) const

@@ -35,6 +35,13 @@
 #include <unit_test/suite.hpp>
 #include <common/fps_counter.hpp>
 
+        using namespace framework;
+        using namespace framework::graphics;
+        using namespace framework::system;
+
+namespace
+{
+
 const std::string vertex_shader =
 "#version 330 core\n\
 layout(location = 0) in vec3 position;\n\
@@ -61,22 +68,9 @@ void main(){\n\
     color = fragColor;\n\
 }";
 
-class mesh_test : public framework::unit_test::Suite
+
+namespace cube_mesh 
 {
-public:
-    mesh_test()
-        : Suite("mesh_test")
-    {
-        add_test([this]() { main_loop(); }, "main_loop");
-    }
-
-private:
-    void main_loop()
-    {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
-
         const Mesh::VertexData vertices = {
         // clang-format off
         // front
@@ -127,7 +121,36 @@ private:
         20, 23, 22, 20, 22, 21,
         // clang-format on
         };
+}
 
+namespace triangle_mesh
+{
+        const Mesh::VertexData vertices = {
+        {-0.5, -0.5, 0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}
+        };
+
+        const Mesh::ColorData colors = {
+            {0.1f, 0.1f, 0.7f}, {0.1f, 0.2f, 0.8f}, {0.1f, 0.3f, 0.9f}, {0.1f, 0.4f, 1.0f}
+        };
+
+        const Mesh::IndicesData indices = {
+            0, 1, 2
+        };
+}
+}
+
+class mesh_test : public unit_test::Suite
+{
+public:
+    mesh_test()
+        : Suite("mesh_test")
+    {
+        add_test([this]() { main_loop(); }, "main_loop");
+    }
+
+private:
+    void main_loop()
+    {
         Window::set_application_name("GL mesh Test");
 
         Window main_window({640, 480}, "GL mesh test");
@@ -137,69 +160,52 @@ private:
 
         renderer.set_clear_color(0xFF00FFFF);
 
-        Mesh cube;
-        cube.set_vertices(vertices);
-        cube.set_colors(colors);
-        cube.set_indices(indices);
+        Mesh mesh;
+        mesh.set_vertices(cube_mesh::vertices);
+        mesh.set_colors(cube_mesh::colors);
+        mesh.set_indices(cube_mesh::indices);
 
         Shader shader;
         shader.set_vertex_source(vertex_shader);
         shader.set_fragment_source(fragment_shader);
 
-        float angle      = 0;
-        math::Vector3f dir(1,1,0.5);
+        TEST_ASSERT(renderer.load(mesh), "Can't load mesh.");
+        TEST_ASSERT(renderer.load(shader),"Can't load shader." );
 
-        renderer.load(cube);
-        renderer.load(shader);
-
-        const auto projection = math::perspective(static_cast<float>(math::radians(45.0f)),
-                                                  640.0f / 480.0f,
-                                                  0.01f,
-                                                  6.0f);
-
-        const auto view = math::look_at(math::Vector3f(0, 0, 3), math::Vector3f(0, 0, 0), math::Vector3f(0, 1, 0));
-        renderer.set_projection(projection);
-        renderer.set_view(view);
-
-        cube.clear();
+        mesh.clear();
         shader.clear();
 
-        bool should_close = false;
+        TEST_ASSERT(mesh.vertices().empty(), "Mesh clear failed.");
+        TEST_ASSERT(mesh.colors().empty(), "Mesh clear failed.");
+        TEST_ASSERT(mesh.indices().empty(), "Mesh clear failed.");
 
-        FpsCounter fps;
+        loop(main_window, renderer, mesh, shader);
 
-        std::chrono::microseconds frame_time(static_cast<int>((1.0f / 60) * std::chrono::microseconds::period::den));
-        std::chrono::microseconds max_total_time = std::chrono::seconds(10);
+        TEST_ASSERT(!renderer.load(mesh), "Can't load empty mesh.");
+        loop(main_window, renderer, mesh, shader);
+
+        mesh.set_vertices(triangle_mesh::vertices);
+        mesh.set_colors(triangle_mesh::colors);
+        mesh.generate_indices();
+        TEST_ASSERT(mesh.indices() == triangle_mesh::indices, "Indices generation failed.");
+        TEST_ASSERT(renderer.load(mesh), "Can't load mesh.");
+        loop(main_window, renderer, mesh, shader);
+    }
+
+    void loop(Window& main_window, Renderer& renderer, Mesh& mesh, Shader& shader)
+    {
+        std::chrono::microseconds max_total_time = std::chrono::seconds(1);
         std::chrono::microseconds total_time(0);
 
-        auto last_frame_time = std::chrono::high_resolution_clock::now();
-
-        while (!should_close) {
-            auto frame_start = std::chrono::high_resolution_clock::now();
+        while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
 
-            auto now = std::chrono::high_resolution_clock::now();
-            auto frame_duration = std::chrono::duration_cast<std::chrono::microseconds>(now - last_frame_time);
-            last_frame_time = now;
-            total_time += frame_duration;
-
-            float period =  (frame_duration.count() / static_cast<float>(std::chrono::microseconds::period::den));
-            angle += 45.0f * period;
-
-            math::Matrix4f model_transform = math::rotate(math::Matrix4f(),
-                                                          math::normalize(dir),
-                                                          math::radians(angle));
-
-            renderer.render(cube, shader, model_transform);
+            renderer.render(mesh, shader);
             renderer.display();
 
-            should_close = main_window.should_close() || total_time > max_total_time;
-            std::this_thread::sleep_for(frame_time - (std::chrono::high_resolution_clock::now() - frame_start));
-
-            fps.tick(); 
-            main_window.set_title(std::to_string(fps.fps())); 
+            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+            total_time += std::chrono::milliseconds(20);
         }
-        TEST_FAIL("Not implemented.");
     }
 };
 

@@ -175,6 +175,7 @@ bool OpenglRenderer::load(const Mesh& mesh)
 
     const bool loaded = m_meshes[mesh.instance_id()].load(mesh);
     if (!loaded) {
+        m_meshes.erase(mesh.instance_id());
         log::error(tag) << "Failed ot load Mesh: " << mesh.instance_id();
         log_errors();
     }
@@ -190,6 +191,7 @@ bool OpenglRenderer::load(const Shader& shader)
 
     const bool loaded = m_shaders[shader.instance_id()].load(shader);
     if (!loaded) {
+        m_shaders.erase(shader.instance_id());
         log::error(tag) << "Failed ot load Shader: " << shader.instance_id();
         log_errors();
     }
