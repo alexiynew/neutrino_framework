@@ -33,6 +33,7 @@
 #define FRAMEWORK_COMMON_FPS_COUNTER_HPP
 
 #include <thread>
+#include <atomic>
 
 namespace framework
 {
@@ -94,9 +95,9 @@ public:
 private:
     void slice_fps();
 
-    bool m_should_stop = false;
-    int m_frames       = 0;
-    int m_fps          = 0;
+    bool m_should_stop        = false;
+    std::atomic<int> m_frames = 0;
+    std::atomic<int> m_fps    = 0;
     std::thread m_fps_thread;
 };
 

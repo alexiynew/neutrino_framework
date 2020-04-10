@@ -58,8 +58,7 @@ int FpsCounter::fps() const
 void FpsCounter::slice_fps()
 {
     while (!m_should_stop) {
-        m_fps    = m_frames;
-        m_frames = 0;
+        m_fps = m_frames.exchange(0);
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
