@@ -33,25 +33,25 @@ namespace framework::system
 {
 #pragma region setters
 
-context_settings& context_settings::version(utils::version version)
+ContextSettings& ContextSettings::version(Version version)
 {
     m_version = version;
     return *this;
 }
 
-context_settings& context_settings::depth_bits(int32 bits)
+ContextSettings& ContextSettings::depth_bits(int32 bits)
 {
     m_depth_bits = bits;
     return *this;
 }
 
-context_settings& context_settings::stencil_bits(int32 bits)
+ContextSettings& ContextSettings::stencil_bits(int32 bits)
 {
     m_stencil_bits = bits;
     return *this;
 }
 
-context_settings& context_settings::antialiasing_level(antialiasing level)
+ContextSettings& ContextSettings::antialiasing_level(Antialiasing level)
 {
     m_antialiasing_level = level;
     return *this;
@@ -61,22 +61,22 @@ context_settings& context_settings::antialiasing_level(antialiasing level)
 
 #pragma region getters
 
-utils::version context_settings::version() const
+Version ContextSettings::version() const
 {
     return m_version;
 }
 
-int32 context_settings::depth_bits() const
+int32 ContextSettings::depth_bits() const
 {
     return m_depth_bits;
 }
 
-int32 context_settings::stencil_bits() const
+int32 ContextSettings::stencil_bits() const
 {
     return m_stencil_bits;
 }
 
-context_settings::antialiasing context_settings::antialiasing_level() const
+ContextSettings::Antialiasing ContextSettings::antialiasing_level() const
 {
     return m_antialiasing_level;
 }

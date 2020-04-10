@@ -34,9 +34,9 @@
 
 namespace framework::system
 {
-enum class mouse_button
+enum class MouseButton
 {
-    button_unknown = -1,
+    unknown = -1,
 
     button_1 = 0,
     button_2 = 1,
@@ -50,11 +50,7 @@ enum class mouse_button
     button_middle = button_3,
 };
 
-struct cursor_position
-{
-    int32 x;
-    int32 y;
-};
+using CursorPosition = Position;
 
 } // namespace framework::system
 

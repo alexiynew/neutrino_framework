@@ -26,10 +26,11 @@
 #include <graphics/image.hpp>
 #include <unit_test/suite.hpp>
 
-class png_image_test : public framework::unit_test::suite
+class png_image_test : public framework::unit_test::Suite
 {
 public:
-    png_image_test() : suite("png_image_test")
+    png_image_test()
+        : Suite("png_image_test")
     {
         add_test([this]() { png_load(); }, "png_load");
     }
@@ -37,7 +38,7 @@ public:
 private:
     void png_load()
     {
-        framework::graphics::image img;
+        framework::graphics::Image img;
 
         TEST_ASSERT(img.load("png/basi0g01.png"), "Failed to load basi0g01.png");
         TEST_ASSERT(img.load("png/basi0g02.png"), "Failed to load basi0g02.png");

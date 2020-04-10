@@ -42,7 +42,9 @@ namespace framework::log::log_details
 #pragma region log_buffer
 
 log_buffer::log_buffer(severity_level level, std::string tag)
-    : m_level(level), m_tag(std::move(tag)), m_buffer(log_buffer_size)
+    : m_level(level)
+    , m_tag(std::move(tag))
+    , m_buffer(log_buffer_size)
 {
     reset_pointers();
 }
@@ -53,7 +55,10 @@ log_buffer::~log_buffer()
 }
 
 log_buffer::log_buffer(log_buffer&& other) noexcept
-    : std::streambuf(other), m_level(other.m_level), m_tag(std::move(other.m_tag)), m_buffer(std::move(other.m_buffer))
+    : std::streambuf(other)
+    , m_level(other.m_level)
+    , m_tag(std::move(other.m_tag))
+    , m_buffer(std::move(other.m_buffer))
 {}
 
 log_buffer& log_buffer::operator=(log_buffer&& other) noexcept
@@ -108,19 +113,21 @@ void log_buffer::flush_buffer()
         str += '\n';
     }
 
-    ::framework::log::logger()->add_message(m_level, m_tag, str);
+    framework::log::logger()->add_message(m_level, m_tag, str);
 }
 
 #pragma endregion
 
 log_ostream::log_ostream(std::unique_ptr<std::streambuf> buffer)
-    : std::ostream(buffer.get()), m_buffer(std::move(buffer))
+    : std::ostream(buffer.get())
+    , m_buffer(std::move(buffer))
 {}
 
 log_ostream::~log_ostream() = default;
 
 log_ostream::log_ostream(log_ostream&& other) noexcept
-    : std::ostream(other.m_buffer.get()), m_buffer(std::move(other.m_buffer))
+    : std::ostream(other.m_buffer.get())
+    , m_buffer(std::move(other.m_buffer))
 {
     rdbuf(m_buffer.get());
 }

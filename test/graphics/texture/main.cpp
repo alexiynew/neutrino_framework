@@ -28,15 +28,17 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
-#include <gl/gl.hpp>
+#include <graphics/color.hpp>
+#include <graphics/renderer.hpp>
 #include <graphics/texture.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-class texture_test : public framework::unit_test::suite
+class texture_test : public framework::unit_test::Suite
 {
 public:
-    texture_test() : suite("texture_test")
+    texture_test()
+        : Suite("texture_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }
@@ -45,30 +47,25 @@ private:
     void main_loop()
     {
         using namespace framework;
+        using namespace framework::graphics;
+        using namespace framework::system;
 
-        using framework::float32;
-        using framework::graphics::texture;
-        using framework::system::window;
-        using framework::utils::random_numbers;
+        Window::set_application_name("GL texture Test");
 
-        window::set_application_name("GL texture Test");
-
-        window main_window({640, 480}, "GL texture test");
-
-        main_window.make_current();
+        Window main_window({640, 480}, "GL texture test");
+        Renderer render(main_window.context());
 
         main_window.show();
+
+        render.set_clear_color(0xFF00FFFFU);
 
         const float32 max_total_time = 1000;
         float32 total_time           = 0;
 
-        while (main_window.visible() && total_time < max_total_time) {
+        while (main_window.is_visible() && total_time < max_total_time) {
             main_window.process_events();
 
-            gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            gl::glClear(GL_COLOR_BUFFER_BIT);
-
-            main_window.swap_buffers();
+            render.display();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
 

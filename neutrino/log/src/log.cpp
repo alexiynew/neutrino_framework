@@ -32,13 +32,13 @@
 
 namespace
 {
-using ::framework::log::logger_base;
-using ::framework::log::log_details::log_buffer;
-using ::framework::log::log_details::log_ostream;
+using framework::log::logger_base;
+using framework::log::log_details::log_buffer;
+using framework::log::log_details::log_ostream;
 
 class dummy_logger : public logger_base
 {
-    void add_message(::framework::log::severity_level /*level*/,
+    void add_message(framework::log::severity_level /*level*/,
                      const std::string& /*tag*/,
                      const std::string& /*message*/) override
     {

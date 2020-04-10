@@ -41,10 +41,12 @@ std::vector<uint8> to_vector(const std::string& str)
     return data;
 }
 
-class zlib_test : public framework::unit_test::suite
+class zlib_test : public framework::unit_test::Suite
 {
 public:
-    zlib_test() : suite("zlib_test"), data(to_vector("Hello Hello Hello Hello Hello Hello!"))
+    zlib_test()
+        : Suite("zlib_test")
+        , data(to_vector("Hello Hello Hello Hello Hello Hello!"))
     {
         add_test([this]() { inflate_test(); }, "inflate_test");
         add_test([this]() { deflate_test(); }, "daflate_test");
@@ -53,7 +55,7 @@ public:
 private:
     void inflate_test()
     {
-        using namespace framework::utils::zlib;
+        using namespace framework::zlib;
 
         const std::vector<uint8> fixed   = inflate(fixed_huffman);
         const std::vector<uint8> dynamic = inflate(dynamic_huffman);
@@ -66,7 +68,7 @@ private:
 
     void deflate_test()
     {
-        using namespace framework::utils::zlib;
+        using namespace framework::zlib;
 
         const std::vector<uint8> compressed   = deflate(data);
         const std::vector<uint8> decompressed = inflate(compressed);

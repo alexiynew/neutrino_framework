@@ -49,13 +49,16 @@ framework::int32 get_number(std::istringstream& ins)
 
 } // namespace
 
-namespace framework::utils
+namespace framework
 {
-version::version(int32 major_v, int32 minor_v, int32 patch_v, int32 build_n) noexcept
-    : major_version(major_v), minor_version(minor_v), patch_version(patch_v), build_number(build_n)
+Version::Version(int32 major_v, int32 minor_v, int32 patch_v, int32 build_n) noexcept
+    : major_version(major_v)
+    , minor_version(minor_v)
+    , patch_version(patch_v)
+    , build_number(build_n)
 {}
 
-version::version(const std::string& version_string)
+Version::Version(const std::string& version_string)
 {
     std::istringstream input(version_string);
 
@@ -65,10 +68,10 @@ version::version(const std::string& version_string)
     build_number  = get_number(input);
 }
 
-std::string version::as_string() const
+std::string Version::as_string() const
 {
     return std::to_string(major_version) + '.' + std::to_string(minor_version) + '.' + std::to_string(patch_version) +
            '.' + std::to_string(build_number);
 }
 
-} // namespace framework::utils
+} // namespace framework

@@ -31,11 +31,20 @@ set_sources(PUBLIC_SOURCES
     zlib.hpp
     inc/utils_details.hpp
     inc/crc_details.hpp
+    signal.hpp
+    size.hpp
+    position.hpp
+    instance_id.hpp
+    fps_counter.hpp
 )
 
 set_sources(PRIVATE_SOURCES
     src/version.cpp
     src/zlib.cpp
+    src/size.cpp
+    src/position.cpp
+    src/instance_id.cpp
+    src/fps_counter.cpp
 )
 
 target_sources(${PROJECT_NAME}

@@ -34,7 +34,7 @@
 
 #include <common/types.hpp>
 
-namespace framework::utils::zlib
+namespace framework::zlib
 {
 /// @addtogroup common_zlib_implementation
 /// @{
@@ -59,6 +59,6 @@ std::vector<uint8> deflate(const std::vector<uint8>& data);
 
 /// @}
 
-} // namespace framework::utils::zlib
+} // namespace framework::zlib
 
 #endif

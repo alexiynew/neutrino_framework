@@ -36,10 +36,11 @@ class custom_exception
 
 /// @name Test to fail
 /// @{
-class should_fail_test_assert : public framework::unit_test::suite
+class should_fail_test_assert : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_assert() : suite("should_fail_test_assert")
+    should_fail_test_assert()
+        : Suite("should_fail_test_assert")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -51,10 +52,11 @@ private:
     }
 };
 
-class should_fail_test_fail : public framework::unit_test::suite
+class should_fail_test_fail : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_fail() : suite("should_fail_test_fail")
+    should_fail_test_fail()
+        : Suite("should_fail_test_fail")
     {
         add_test([this]() { test_fail(); }, "test_fail");
     }
@@ -66,10 +68,11 @@ private:
     }
 };
 
-class should_fail_test_std_exception : public framework::unit_test::suite
+class should_fail_test_std_exception : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_std_exception() : suite("should_fail_test_std_exception")
+    should_fail_test_std_exception()
+        : Suite("should_fail_test_std_exception")
     {
         add_test([this]() { test_std_exception(); }, "test_std_exception");
     }
@@ -81,10 +84,11 @@ private:
     }
 };
 
-class should_fail_test_any_exception : public framework::unit_test::suite
+class should_fail_test_any_exception : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_any_exception() : suite("should_fail_test_any_exception")
+    should_fail_test_any_exception()
+        : Suite("should_fail_test_any_exception")
     {
         add_test([this]() { test_any_exception(); }, "test_any_exception");
     }
@@ -100,10 +104,11 @@ private:
 
 /// @name Test to pass
 /// @{
-class should_pass_test : public framework::unit_test::suite
+class should_pass_test : public framework::unit_test::Suite
 {
 public:
-    should_pass_test() : suite("should_pass_test")
+    should_pass_test()
+        : Suite("should_pass_test")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -118,10 +123,11 @@ private:
 
 /// @name Test to run tests
 /// @{
-class test_for_test : public framework::unit_test::suite
+class test_for_test : public framework::unit_test::Suite
 {
 public:
-    test_for_test() : suite("test_for_test")
+    test_for_test()
+        : Suite("test_for_test")
     {
         add_test([this]() { should_fail(); }, "should_fail");
         add_test([this]() { should_pass(); }, "should_pass");
@@ -131,7 +137,7 @@ private:
     void should_fail()
 
     {
-        std::vector<std::unique_ptr<framework::unit_test::suite>> tests;
+        std::vector<std::unique_ptr<framework::unit_test::Suite>> tests;
 
         tests.emplace_back(std::make_unique<should_fail_test_assert>());
         tests.emplace_back(std::make_unique<should_fail_test_fail>());
@@ -156,7 +162,7 @@ private:
         TEST_ASSERT(should_pass.is_succeeded(), "This test should pass.");
     }
 
-    void run_suite(framework::unit_test::suite* test)
+    void run_suite(framework::unit_test::Suite* test)
     {
         std::streambuf* buffer = std::cout.rdbuf();
         std::cout.rdbuf(nullptr);

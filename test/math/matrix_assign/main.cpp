@@ -26,20 +26,21 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using ::framework::math::matrix2x2f;
-using ::framework::math::matrix2x3f;
-using ::framework::math::matrix2x4f;
-using ::framework::math::matrix3x2f;
-using ::framework::math::matrix3x3f;
-using ::framework::math::matrix3x4f;
-using ::framework::math::matrix4x2f;
-using ::framework::math::matrix4x3f;
-using ::framework::math::matrix4x4f;
+using framework::math::Matrix2x2f;
+using framework::math::Matrix2x3f;
+using framework::math::Matrix2x4f;
+using framework::math::Matrix3x2f;
+using framework::math::Matrix3x3f;
+using framework::math::Matrix3x4f;
+using framework::math::Matrix4x2f;
+using framework::math::Matrix4x3f;
+using framework::math::Matrix4x4f;
 
-class matrix_assign_test : public framework::unit_test::suite
+class matrix_assign_test : public framework::unit_test::Suite
 {
 public:
-    matrix_assign_test() : suite("matrix_assign_test")
+    matrix_assign_test()
+        : Suite("matrix_assign_test")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
     }
@@ -48,7 +49,7 @@ private:
     void assign_operator()
     {
         // clang-format off
-        const matrix4x4f temp_matrix = {
+        const Matrix4x4f temp_matrix = {
             0, 1, 2, 3,
             0, 1, 2, 3,
             0, 1, 2, 3,
@@ -56,25 +57,25 @@ private:
         };
         // clang-format on
 
-        const matrix4x4f test44(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
-        const matrix4x3f test43(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
-        const matrix4x2f test42(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
-        const matrix3x4f test34(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
-        const matrix3x3f test33(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
-        const matrix3x2f test32(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
-        const matrix2x4f test24(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
-        const matrix2x3f test23(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
-        const matrix2x2f test22(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix4x4f test44(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix4x3f test43(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix4x2f test42(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix3x4f test34(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix3x3f test33(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix3x2f test32(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix2x4f test24(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix2x3f test23(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
+        const Matrix2x2f test22(temp_matrix); // NOLINT(performance-unnecessary-copy-initialization)
 
-        matrix4x4f result44;
-        matrix4x3f result43;
-        matrix4x2f result42;
-        matrix3x4f result34;
-        matrix3x3f result33;
-        matrix3x2f result32;
-        matrix2x4f result24;
-        matrix2x3f result23;
-        matrix2x2f result22;
+        Matrix4x4f result44;
+        Matrix4x3f result43;
+        Matrix4x2f result42;
+        Matrix3x4f result34;
+        Matrix3x3f result33;
+        Matrix3x2f result32;
+        Matrix2x4f result24;
+        Matrix2x3f result23;
+        Matrix2x2f result22;
 
         result44 = test44;
         result43 = test43;

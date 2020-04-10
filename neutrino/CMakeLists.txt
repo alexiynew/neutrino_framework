@@ -35,7 +35,6 @@ message(STATUS "Add modules...")
 
 set(MODULES
     "common"
-    "gl"
     "graphics"
     "log"
     "math"
@@ -50,7 +49,6 @@ foreach(MODULE ${MODULES})
     message(STATUS "\t${MODULE_NAME}")
     include(${MODULE_DIR}/CMakeLists.txt)
 endforeach(MODULE)
-
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 

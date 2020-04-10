@@ -1,5 +1,5 @@
 /// @file
-/// @brief OpenGL mesh.
+/// @brief Mesh.
 /// @author Fedorov Alexey
 /// @date 21.04.2019
 
@@ -27,190 +27,193 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <gl/gl.hpp>
+#include <limits>
+
 #include <graphics/mesh.hpp>
 
 namespace
 {
-template <typename T>
-inline framework::uint32 create_buffer(const std::vector<T>& data)
-{
-    if (data.empty()) {
-        return 0;
-    }
-
-    framework::uint32 buffer_id = 0;
-    framework::gl::glGenBuffers(1, &buffer_id);
-
-    framework::gl::glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
-    framework::gl::glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(data.size() * sizeof(T)), data[0].data(), GL_STATIC_DRAW);
-    framework::gl::glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    return buffer_id;
+const framework::graphics::Mesh::TextureCoordinatesData empty_texture_coordiantes;
 }
-
-template <typename T>
-inline void load_buffer(framework::uint32* buffer_id, const std::vector<T>& data)
-{
-    if (*buffer_id != 0) {
-        framework::gl::glDeleteBuffers(1, buffer_id);
-    }
-
-    *buffer_id = create_buffer(data);
-}
-
-enum vbo_type
-{
-    vertices    = 0,
-    normals     = 1,
-    tex_coord_1 = 2,
-    tex_coord_2 = 3,
-    colors      = 4,
-    tangents    = 5,
-};
-
-} // namespace
 
 namespace framework::graphics
 {
-mesh::mesh()
+Mesh::Mesh() = default;
+
+Mesh::~Mesh() = default;
+
+Mesh::Mesh(const Mesh& other)
+    : m_vertices(other.m_vertices)
+    , m_indexes(other.m_indexes)
+{}
+
+Mesh& Mesh::operator=(const Mesh& other)
 {
-    gl::glGenVertexArrays(1, &m_vertex_array_id);
+    using std::swap;
+
+    Mesh tmp(other);
+    swap(*this, tmp);
+    return *this;
 }
 
-mesh::~mesh()
-{
-    const auto count = sizeof(m_buffer_ids) / sizeof(m_buffer_ids[0]);
-    gl::glDeleteBuffers(count, m_buffer_ids);
-    gl::glDeleteVertexArrays(1, &m_vertex_array_id);
-}
-
-mesh::mesh(mesh&& other)
+Mesh::Mesh(Mesh&& other) noexcept
 {
     swap(*this, other);
 }
 
-mesh& mesh::operator=(mesh&& other)
+Mesh& Mesh::operator=(Mesh&& other) noexcept
 {
     swap(*this, other);
     return *this;
 }
 
-void mesh::load_vertices(const std::vector<math::vector2f>& data)
+void Mesh::set_vertices(const VertexData& data)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::vertices], data);
-    m_type_sizes[vbo_type::vertices] = 2;
-
-    gl::glBindVertexArray(0);
+    m_vertices = data;
 }
 
-void mesh::load_vertices(const std::vector<math::vector3f>& data)
+void Mesh::set_vertices(VertexData&& data) noexcept
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::vertices], data);
-    m_type_sizes[vbo_type::vertices] = 3;
-
-    gl::glBindVertexArray(0);
+    using std::swap;
+    swap(m_vertices, data);
 }
 
-void mesh::load_vertices(const std::vector<math::vector4f>& data)
+void Mesh::set_normals(const VertexData& normals)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::vertices], data);
-    m_type_sizes[vbo_type::vertices] = 4;
-
-    gl::glBindVertexArray(0);
+    m_normals = normals;
 }
 
-void mesh::load_normals(const std::vector<math::vector2f>& data)
+void Mesh::set_normals(VertexData&& normals) noexcept
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::normals], data);
-    m_type_sizes[vbo_type::normals] = 2;
-
-    gl::glBindVertexArray(0);
+    using std::swap;
+    swap(m_normals, normals);
 }
 
-void mesh::load_normals(const std::vector<math::vector3f>& data)
+void Mesh::set_tangents(const VertexData& tangents)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::normals], data);
-    m_type_sizes[vbo_type::normals] = 3;
-
-    gl::glBindVertexArray(0);
+    m_tanegents = tangents;
 }
 
-void mesh::load_texture_coord1(const std::vector<math::vector2f>& data)
+void Mesh::set_tangents(VertexData&& tangents) noexcept
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::tex_coord_1], data);
-    m_type_sizes[vbo_type::tex_coord_1] = 2;
-
-    gl::glBindVertexArray(0);
+    using std::swap;
+    swap(m_tanegents, tangents);
 }
 
-void mesh::load_texture_coord2(const std::vector<math::vector2f>& data)
+void Mesh::set_colors(const ColorData& colors)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::tex_coord_2], data);
-    m_type_sizes[vbo_type::tex_coord_2] = 2;
-
-    gl::glBindVertexArray(0);
+    m_colors = colors;
 }
 
-void mesh::load_colors(const std::vector<color_t>& data)
+void Mesh::set_colors(ColorData&& colors) noexcept
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::colors], data);
-    m_type_sizes[vbo_type::colors] = 4;
-
-    gl::glBindVertexArray(0);
+    using std::swap;
+    swap(m_colors, colors);
 }
 
-void mesh::load_tangents(const std::vector<math::vector3f>& data)
+void Mesh::set_texture_coordinates(int index, const TextureCoordinatesData& coordinates)
 {
-    gl::glBindVertexArray(m_vertex_array_id);
-
-    load_buffer(&m_buffer_ids[vbo_type::tangents], data);
-    m_type_sizes[vbo_type::tangents] = 3;
-
-    gl::glBindVertexArray(0);
-}
-
-void mesh::bind_vertices_attrib(uint32 index)
-{
-    gl::glBindBuffer(GL_ARRAY_BUFFER, m_buffer_ids[vbo_type::vertices]);
-    gl::glVertexAttribPointer(index, m_type_sizes[vbo_type::vertices], GL_FLOAT, GL_FALSE, 0, nullptr);
-}
-
-void mesh::bind_texture_attrib(uint32 index)
-{
-    gl::glBindBuffer(GL_ARRAY_BUFFER, m_buffer_ids[vbo_type::tex_coord_1]);
-    gl::glVertexAttribPointer(index, m_type_sizes[vbo_type::tex_coord_1], GL_FLOAT, GL_FALSE, 0, nullptr);
-}
-
-uint32 mesh::vertex_array_id() const
-{
-    return m_vertex_array_id;
-}
-
-void swap(mesh& a, mesh& b)
-{
-    const auto count = sizeof(a.m_buffer_ids) / sizeof(a.m_buffer_ids[0]);
-    for (uint32 i = 0; i < count; ++i) {
-        std::swap(a.m_buffer_ids[i], b.m_buffer_ids[i]);
-        std::swap(a.m_type_sizes[i], b.m_type_sizes[i]);
+    if (index < 0 || index >= max_texture_coordinates) {
+        return;
     }
-    std::swap(a.m_vertex_array_id, b.m_vertex_array_id);
+
+    m_texture_coordinates[index] = coordinates;
+}
+
+void Mesh::set_texture_coordinates(int index, TextureCoordinatesData&& coordinates) noexcept
+{
+    using std::swap;
+
+    if (index < 0 || index >= max_texture_coordinates) {
+        return;
+    }
+
+    swap(m_texture_coordinates[index], coordinates);
+}
+
+void Mesh::set_indices(const IndicesData& indexes)
+{
+    m_indexes = indexes;
+}
+
+void Mesh::set_indices(IndicesData&& indexes) noexcept
+{
+    using std::swap;
+    swap(m_indexes, indexes);
+}
+
+void Mesh::generate_indices()
+{
+    constexpr std::size_t max_size = std::numeric_limits<IndicesData::value_type>::max();
+
+    m_indexes.resize(m_vertices.size());
+    for (std::size_t i = 0; i < m_vertices.size() && i < max_size; ++i) {
+        m_indexes[i] = static_cast<IndicesData::value_type>(i);
+    }
+}
+
+void Mesh::clear()
+{
+    m_vertices.clear();
+    m_normals.clear();
+    m_tanegents.clear();
+    m_colors.clear();
+
+    for (TextureCoordinatesData& coordinates : m_texture_coordinates) {
+        coordinates.clear();
+    }
+
+    m_indexes.clear();
+}
+
+InstanceId Mesh::instance_id() const
+{
+    return m_instance_id;
+}
+
+const Mesh::VertexData& Mesh::vertices() const
+{
+    return m_vertices;
+}
+
+const Mesh::VertexData& Mesh::normals() const
+{
+    return m_normals;
+}
+
+const Mesh::VertexData& Mesh::tangents() const
+{
+    return m_tanegents;
+}
+
+const Mesh::ColorData& Mesh::colors() const
+{
+    return m_colors;
+}
+
+const Mesh::TextureCoordinatesData& Mesh::texture_coordinates(int index) const
+{
+    if (index < 0 || index >= max_texture_coordinates) {
+        return empty_texture_coordiantes;
+    }
+
+    return m_texture_coordinates[index];
+}
+
+const Mesh::IndicesData& Mesh::indices() const
+{
+    return m_indexes;
+}
+
+void swap(Mesh& lhs, Mesh& rhs) noexcept
+{
+    using std::swap;
+    swap(lhs.m_vertices, rhs.m_vertices);
+    swap(lhs.m_normals, rhs.m_normals);
+    swap(lhs.m_tanegents, rhs.m_tanegents);
+    swap(lhs.m_colors, rhs.m_colors);
+    swap(lhs.m_texture_coordinates, rhs.m_texture_coordinates);
+    swap(lhs.m_indexes, rhs.m_indexes);
 }
 
 } // namespace framework::graphics

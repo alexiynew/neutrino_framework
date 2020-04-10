@@ -41,12 +41,12 @@
 /// @details
 /// TODO: Add details
 ///
-/// You should use the `unit_test::suite` as base class for your tests.
+/// You should use the `unit_test::Suite` as base class for your tests.
 /// @code
-/// class example_test : public framework::unit_test::suite
+/// class example_test : public framework::unit_test::Suite
 /// {
 /// public:
-///     example_test() : suite("example_test_name")
+///     example_test() : Suite("example_test_name")
 ///     {
 ///         add_test([this]() { test_function(); }, "test_function_name");
 ///     }
@@ -58,12 +58,12 @@
 /// };
 /// @endcode
 ///
-/// Use the `unit_test::suite::add_test` function to add tests to curretn suite.
+/// Use the `unit_test::Suite::add_test` function to add tests to curretn Suite.
 /// @code
 /// add_test([this]() { test_function(); }, "test_function_name");
 /// @endcode
 ///
-/// Use the `unit_test::suite::test_failed` function to mark test as failed.
+/// Use the `unit_test::Suite::test_failed` function to mark test as failed.
 /// You can use @ref TEST_FAIL and @ref TEST_ASSERT macros
 /// to get @b file path and @b line number.
 /// @code
@@ -73,7 +73,7 @@
 ///
 /// And then you can run this test.
 /// @code
-/// framework::unit_test::suite* test_suite = new example_test();
+/// framework::unit_test::Suite* test_suite = new example_test();
 /// test_suite->run();
 /// @endcode
 ///
@@ -91,15 +91,15 @@ namespace framework::unit_test
 /// @{
 
 /// @brief Base class to work with tests.
-class suite
+class Suite
 {
 public:
-    /// @brief Creates test suite with provided name.
+    /// @brief Creates test Suite with provided name.
     ///
-    /// @param name Name of the test suite.
-    explicit suite(std::string name);
+    /// @param name Name of the test Suite.
+    explicit Suite(std::string name);
 
-    /// @brief Function to run all tests in the suite.
+    /// @brief Function to run all tests in the Suite.
     void run();
 
     /// @brief Checks if all tests finished successfully.
@@ -109,14 +109,14 @@ public:
 
     /// @brief Suite name.
     ///
-    /// @return The name of this suite.
+    /// @return The name of this Suite.
     std::string name() const;
 
 protected:
     /// @brief Function type shortcut, for internal usage.
     using function_type = std::function<void()>;
 
-    /// @brief Adds function to test suite.
+    /// @brief Adds function to test Suite.
     ///
     /// @param function Test function.
     /// @param name Name of the current test function.
@@ -134,7 +134,7 @@ protected:
 
 private:
     /// @brief Test description.
-    struct test_data
+    struct TestData
     {
         /// @brief Test status info.
         struct Status
@@ -150,17 +150,17 @@ private:
         // TODO(alex) Change state to enum {success, fail, exception}
         bool success;
 
-        test_data(function_type&& function_to_call, std::string test_name);
+        TestData(function_type&& function_to_call, std::string test_name);
     };
 
-    void output_fail(const test_data& test);
+    void output_fail(const TestData& test);
 
-    void output_success(const test_data& test);
+    void output_success(const TestData& test);
 
     std::string m_name;
 
-    std::vector<test_data> m_tests;
-    std::vector<test_data>::iterator m_current_test;
+    std::vector<TestData> m_tests;
+    std::vector<TestData>::iterator m_current_test;
 
     bool m_success = true;
 };
@@ -175,7 +175,7 @@ int32 run_tests(Arguments&&... tests)
     const int32 count = sizeof...(tests);
     int32 passed      = 0;
 
-    std::vector<::framework::unit_test::suite*> tests_container{&tests...};
+    std::vector<framework::unit_test::Suite*> tests_container{&tests...};
 
     for (auto* test : tests_container) {
         test->run();

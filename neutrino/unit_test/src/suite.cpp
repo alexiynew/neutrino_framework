@@ -1,4 +1,4 @@
-/// @file suite.cpp
+/// @file Suite.cpp
 /// @brief Base class for tests.
 /// @author Fedorov Alexey
 /// @date 04.03.2017
@@ -29,22 +29,29 @@
 
 #include <iomanip>
 #include <iostream>
+#include <memory>
 
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 #include <unit_test/suite.hpp>
 
 namespace framework
 {
 namespace unit_test
 {
-suite::suite(std::string name) : m_name{std::move(name)}, m_current_test{m_tests.end()}
+Suite::Suite(std::string name)
+    : m_name{std::move(name)}
+    , m_current_test{m_tests.end()}
 {}
 
-void suite::run()
+void Suite::run()
 {
     std::cout << m_name << std::endl;
 
     m_success      = true;
     m_current_test = m_tests.end();
+
+    log::set_logger(std::make_unique<log::stream_logger>(std::cout));
 
     for (auto iterator = m_tests.begin(); iterator != m_tests.end(); iterator++) {
         m_current_test = iterator;
@@ -65,22 +72,22 @@ void suite::run()
     }
 }
 
-bool suite::is_succeeded() const
+bool Suite::is_succeeded() const
 {
     return m_success;
 }
 
-std::string suite::name() const
+std::string Suite::name() const
 {
     return m_name;
 }
 
-void suite::add_test(function_type&& function, const std::string& name)
+void Suite::add_test(function_type&& function, const std::string& name)
 {
     m_tests.emplace_back(std::forward<function_type>(function), name);
 }
 
-void suite::test_failed(const std::string& file, int32 line, const std::string& message)
+void Suite::test_failed(const std::string& file, int32 line, const std::string& message)
 {
     m_success = false;
     if (m_current_test != m_tests.end()) {
@@ -90,22 +97,22 @@ void suite::test_failed(const std::string& file, int32 line, const std::string& 
     }
 }
 
-void suite::output_fail(const test_data& test)
+void Suite::output_fail(const TestData& test)
 {
     std::cout << "    " << std::setw(40) << std::left << test.name << " FAIL" << std::endl;
     std::cout << "        " << test.status.file << ":" << test.status.line << " " << test.status.message << std::endl;
 }
 
-void suite::output_success(const test_data& test)
+void Suite::output_success(const TestData& test)
 {
     std::cout << "    " << std::setw(40) << std::left << test.name << " OK" << std::endl;
 }
 
-suite::test_data::test_data(function_type&& function_to_call, std::string test_name)
-    : status{"", "", -1},
-      name{std::move(test_name)},
-      function{std::forward<function_type>(function_to_call)},
-      success{true}
+Suite::TestData::TestData(function_type&& function_to_call, std::string test_name)
+    : status{"", "", -1}
+    , name{std::move(test_name)}
+    , function{std::forward<function_type>(function_to_call)}
+    , success{true}
 {}
 
 } // namespace unit_test

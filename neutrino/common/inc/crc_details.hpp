@@ -37,25 +37,25 @@
 
 namespace framework::utils::crc_details
 {
-/// @brief Helper class to get correct type for crc::value_type.
+/// @brief Helper class to get correct type for Crc::value_type.
 template <usize BitsCount>
 struct get_crc_value_type;
 
-/// @brief Helper class to get correct type for crc::value_type.
+/// @brief Helper class to get correct type for Crc::value_type.
 template <>
 struct get_crc_value_type<8>
 {
     using type = uint8;
 };
 
-/// @brief Helper class to get correct type for crc::value_type.
+/// @brief Helper class to get correct type for Crc::value_type.
 template <>
 struct get_crc_value_type<16>
 {
     using type = uint16;
 };
 
-/// @brief Helper class to get correct type for crc::value_type.
+/// @brief Helper class to get correct type for Crc::value_type.
 template <>
 struct get_crc_value_type<32>
 {

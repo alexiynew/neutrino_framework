@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief OpenGL mesh.
+/// @brief Mesh.
 /// @author Fedorov Alexey
 /// @date 21.04.2019
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -30,69 +32,273 @@
 #ifndef FRAMEWORK_GRAPHICS_MESH_HPP
 #define FRAMEWORK_GRAPHICS_MESH_HPP
 
+#include <array>
 #include <vector>
 
-#include <common/types.hpp>
-#include <graphics/color_type.hpp>
+#include <common/instance_id.hpp>
+#include <graphics/color.hpp>
 #include <math/math.hpp>
 
 namespace framework::graphics
 {
+////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup graphics_module
 /// @{
+////////////////////////////////////////////////////////////////////////////////
 
-/// @brief OpenGL mesh.
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Mesh.
 ///
-/// Mesh contains vertices of triangle arrays.
-/// For every vertex there can be a coordinates, normal, two texture coordinates, color and tangent.
-/// All vertex information is stored in separate arrays.
+/// Meshes contain vertex data (positions, normals, texture coordinates etc.)
+/// and triangles vertex indices.
+/// All vertex data must be in arrays of the same size.
+/// For example, if you have a mesh of 100 vertices then positions, normals and
+/// other arrays must be 100 in size.
+/// Data for i-th vertex is at index "i" in each array.
 ///
-/// @thread_safety All mesh operation should be in main thread.
+/// For every vertex there can be a position, normal, tangent, color
+/// and up to 8 texture coordinates.
 ///
-class mesh
+/// The triangles are vertex indices of vertices the triangle made from.
+/// First three indices form a triangle, next three the other one and so on.
+/// So the indices array size must be divided by three.
+////////////////////////////////////////////////////////////////////////////////
+class Mesh
 {
 public:
-    mesh();
-    ~mesh();
+    using VertexData             = std::vector<math::Vector3f>;
+    using TextureCoordinatesData = std::vector<math::Vector2f>;
+    using ColorData              = std::vector<Color>;
+    using IndicesData            = std::vector<std::uint16_t>;
 
-    mesh(const mesh&) = delete;
-    mesh& operator=(const mesh&) = delete;
+    static constexpr int max_texture_coordinates = 8;
 
-    mesh(mesh&&);
-    mesh& operator=(mesh&&);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Creates Mesh instance.
+    ////////////////////////////////////////////////////////////////////////////
+    Mesh();
 
-    void load_vertices(const std::vector<math::vector2f>& vertices);
-    void load_vertices(const std::vector<math::vector3f>& vertices);
-    void load_vertices(const std::vector<math::vector4f>& vertices);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Destructor
+    ////////////////////////////////////////////////////////////////////////////
+    ~Mesh();
 
-    void load_normals(const std::vector<math::vector2f>& normals);
-    void load_normals(const std::vector<math::vector3f>& normals);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Copy Mesh.
+    ///
+    /// Creates new Mesh with new InstanceId.
+    ///
+    /// @param other Mesh to copy from.
+    ////////////////////////////////////////////////////////////////////////////
+    Mesh(const Mesh& other);
 
-    void load_texture_coord1(const std::vector<math::vector2f>& t_coord);
-    void load_texture_coord2(const std::vector<math::vector2f>& t_coord);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Copy Mesh.
+    ///
+    /// Creates new Mesh with new InstanceId.
+    ///
+    /// @param other Mesh to copy from.
+    ///
+    /// @return Copyed mesh instance.
+    ////////////////////////////////////////////////////////////////////////////
+    Mesh& operator=(const Mesh& other);
 
-    void load_colors(const std::vector<color_t>& colors);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Move Mesh.
+    ///
+    /// @param other Mesh to move from.
+    ////////////////////////////////////////////////////////////////////////////
+    Mesh(Mesh&& other) noexcept;
 
-    void load_tangents(const std::vector<math::vector3f>& tangents);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Move Mesh.
+    ///
+    /// @param other Mesh to move from.
+    ///
+    /// @return Moved mesh instance.
+    ////////////////////////////////////////////////////////////////////////////
+    Mesh& operator=(Mesh&& other) noexcept;
 
-    void bind_vertices_attrib(uint32 index);
-    void bind_texture_attrib(uint32 index);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new vertex positions to Mesh.
+    ///
+    /// @param vertices New vertex data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_vertices(const VertexData& vertices);
 
-    uint32 vertex_array_id() const;
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new vertex positions to Mesh.
+    ///
+    /// @param vertices New vertex data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_vertices(VertexData&& vertices) noexcept;
 
-    friend void swap(mesh&, mesh&);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new vertex normals to Mesh.
+    ///
+    /// @param normals New normals data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_normals(const VertexData& normals);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new vertex normals to Mesh.
+    ///
+    /// @param normals New normals data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_normals(VertexData&& normals) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new vertex tangents to Mesh.
+    ///
+    /// @param tangents New tangents data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_tangents(const VertexData& tangents);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new vertex tangents to Mesh.
+    ///
+    /// @param tangents New tangents data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_tangents(VertexData&& tangents) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new vertex colors to Mesh.
+    ///
+    /// @param colors New colors data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_colors(const ColorData& colors);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new vertex colors to Mesh.
+    ///
+    /// @param colors New colors data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_colors(ColorData&& colors) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new texture coordinates to Mesh.
+    ///
+    /// Mesh can have up to `max_texture_coordinates` texture coordinates.
+    ///
+    /// @param indox Texture coordinates array index.
+    /// @param coordinates New texture coordinates data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_texture_coordinates(int index, const TextureCoordinatesData& coordinates);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new texture coordinates to Mesh.
+    ///
+    /// Mesh can have up to `max_texture_coordinates` texture coordinates.
+    ///
+    /// @param indox Texture coordinates array index.
+    /// @param coordinates New texture coordinates data.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_texture_coordinates(int index, TextureCoordinatesData&& coordinates) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Assign new indices data to Mesh.
+    ///
+    /// @param vertices New indices.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_indices(const IndicesData& indices);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Sets new indices data to Mesh.
+    ///
+    /// @param vertices New indices.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_indices(IndicesData&& indices) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Automatically generates indices.
+    ///
+    /// Basically iterate over vertices and assign every vertex new index.
+    ////////////////////////////////////////////////////////////////////////////
+    void generate_indices();
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Remove all data from Mesh.
+    ///
+    /// If Mesh loaded to Renderer, it's can be freely cleaned.
+    ///
+    /// @see Renderer::load.
+    ////////////////////////////////////////////////////////////////////////////
+    void clear();
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get Mesh instance id. Guaranted to be unique.
+    ///
+    /// @return Mesh instance id.
+    ////////////////////////////////////////////////////////////////////////////
+    InstanceId instance_id() const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get vertex positions.
+    ///
+    /// @return Vertex positions.
+    ////////////////////////////////////////////////////////////////////////////
+    const VertexData& vertices() const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get vertex normals.
+    ///
+    /// @return Vertex normals.
+    ////////////////////////////////////////////////////////////////////////////
+    const VertexData& normals() const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get vertex tangents.
+    ///
+    /// @return Vertex tangents.
+    ////////////////////////////////////////////////////////////////////////////
+    const VertexData& tangents() const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get vertex colors.
+    ///
+    /// @return Vertex colors.
+    ////////////////////////////////////////////////////////////////////////////
+    const ColorData& colors() const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get vertex texture coordinates.
+    ///
+    /// @param index Texture coordinates array.
+    ///
+    /// @return Texture coordinates.
+    ////////////////////////////////////////////////////////////////////////////
+    const TextureCoordinatesData& texture_coordinates(int index) const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get indices data.
+    ///
+    /// @return Indices.
+    ////////////////////////////////////////////////////////////////////////////
+    const IndicesData& indices() const;
 
 private:
-    uint32 m_vertex_array_id = 0;
+    friend void swap(Mesh& lhs, Mesh& rhs) noexcept;
 
-    uint32 m_buffer_ids[6] = {0, 0, 0, 0, 0, 0};
-    int32 m_type_sizes[6] = {0, 0, 0, 0, 0, 0};
+    InstanceId m_instance_id;
+    VertexData m_vertices;
+    VertexData m_normals;
+    VertexData m_tanegents;
+    ColorData m_colors;
+    std::array<TextureCoordinatesData, max_texture_coordinates> m_texture_coordinates;
+    IndicesData m_indexes;
 };
 
-void swap(mesh& a, mesh& b);
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Swaps two Meshes.
+///
+/// @param lhs Mesh to swap.
+/// @param rhs Mesh to swap.
+////////////////////////////////////////////////////////////////////////////////
+void swap(Mesh& lhs, Mesh& rhs) noexcept;
 
+////////////////////////////////////////////////////////////////////////////////
 /// @}
-
+////////////////////////////////////////////////////////////////////////////////
 } // namespace framework::graphics
 
 #endif

@@ -24,25 +24,42 @@
 # =============================================================================
 
 set_sources(PUBLIC_SOURCES
-    color_type.hpp
+    color.hpp
     image.hpp
     mesh.hpp
     shader.hpp
     texture.hpp
+    renderer.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    src/color_type.cpp
-    src/image.cpp
+    src/color.cpp
     src/mesh.cpp
     src/shader.cpp
     src/texture.cpp
 
+    src/image/image.cpp
     src/image/image_info.hpp
     src/image/bmp.hpp
     src/image/bmp.cpp
     src/image/png.hpp
     src/image/png.cpp
+
+    src/opengl/opengl.hpp
+    src/opengl/opengl.cpp
+
+    src/render/renderer.cpp
+    src/render/renderer_impl.hpp
+    src/render/render_command.hpp
+    src/render/render_command.cpp
+
+    src/render/opengl/attributes.hpp
+    src/render/opengl/opengl_renderer.hpp
+    src/render/opengl/opengl_renderer.cpp
+    src/render/opengl/opengl_mesh.hpp
+    src/render/opengl/opengl_mesh.cpp
+    src/render/opengl/opengl_shader.hpp
+    src/render/opengl/opengl_shader.cpp
 )
 
 target_sources(${PROJECT_NAME}
@@ -52,4 +69,11 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
+install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/KHR/khrplatform.h DESTINATION dependencies/KHR)
+
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+
+# Link with OpenGL
+find_package(OpenGL REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})

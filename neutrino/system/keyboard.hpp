@@ -34,9 +34,9 @@
 
 namespace framework::system
 {
-enum class key_code
+enum class KeyCode
 {
-    key_unknown = -1,
+    unknown = -1,
 
     // Printable
     key_space         = 32,
@@ -165,16 +165,37 @@ enum class key_code
     key_right_super   = 347,
 };
 
-enum modifiers_state
+class Modifiers
 {
-    mod_shift     = 0x0001,
-    mod_control   = 0x0002,
-    mod_menu      = 0x0004,
-    mod_super     = 0x0008,
-    mod_caps_lock = 0x0010,
-    mod_num_lock  = 0x0020,
+public:
+    enum ModifiersState : int32
+    {
+        none      = 0,
+        shift     = 0x0001,
+        control   = 0x0002,
+        alt       = 0x0004,
+        super     = 0x0008,
+        caps_lock = 0x0010,
+        num_lock  = 0x0020,
+    };
+
+    operator bool();
+
+    Modifiers& operator&=(int32 mask);
+    Modifiers& operator|=(int32 mask);
+
+    bool operator==(Modifiers rhs);
+    bool operator!=(Modifiers rhs);
+
+private:
+    ModifiersState m_state = none;
 };
 
+Modifiers operator&(Modifiers modifiers, int32 mask);
+Modifiers operator|(Modifiers modifiers, int32 mask);
+
+Modifiers operator&(int32 mask, Modifiers modifiers);
+Modifiers operator|(int32 mask, Modifiers modifiers);
 } // namespace framework::system
 
 #endif

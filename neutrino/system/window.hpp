@@ -33,12 +33,13 @@
 #include <functional>
 #include <memory>
 
+#include <common/position.hpp>
+#include <common/signal.hpp>
+#include <common/size.hpp>
+#include <system/context.hpp>
 #include <system/context_settings.hpp>
 #include <system/keyboard.hpp>
 #include <system/mouse.hpp>
-
-#include <system/inc/window_position.hpp>
-#include <system/inc/window_size.hpp>
 
 /// @details
 ///
@@ -57,11 +58,7 @@ namespace framework::system
 namespace details
 {
 /// @brief Base class for OS specific window realisation.
-class window_implementation;
-
-/// @brief Helper class to handle window events.
-class event_handler;
-
+class PlatformWindow;
 } // namespace details
 
 /// @addtogroup window_class
@@ -70,20 +67,9 @@ class event_handler;
 /// @brief Window class.
 ///
 /// Window, abstracts all window management, input processing, and event handling.
-class window final
+class Window final
 {
 public:
-    using size_t     = details::window_size;
-    using position_t = details::window_position;
-
-    using event_callback           = std::function<void(window&)>;
-    using size_event_callback      = std::function<void(window&, size_t)>;
-    using position_event_callback  = std::function<void(window&, position_t)>;
-    using key_event_callback       = std::function<void(window&, key_code, modifiers_state)>;
-    using character_event_callback = std::function<void(window&, std::string)>;
-    using mouse_move_callback      = std::function<void(window&, cursor_position)>;
-    using mouse_button_callback    = std::function<void(window&, mouse_button, cursor_position, modifiers_state)>;
-
     /// @brief Sets the formal name of the application.
     ///
     /// @param name Application name.
@@ -96,25 +82,25 @@ public:
     /// @param settings Gpaphic context settings.
     ///
     /// @thread_safety This function can be called only from main thread.
-    window(size_t size, const std::string& title, context_settings settings = context_settings());
+    Window(Size size, const std::string& title, ContextSettings settings = ContextSettings());
 
     /// @brief Destructor.
-    ~window();
+    ~Window();
 
-    window(const window&) = delete;
-    window& operator=(const window&) = delete;
+    Window(const Window&) = delete;
+    Window& operator=(const Window&) = delete;
 
     /// @brief Move constructor.
     ///
     /// @param other Window to move from.
-    window(window&& other) noexcept;
+    Window(Window&& other) noexcept;
 
     /// @brief Move operator.
     ///
     /// @param other Window to move from.
     ///
     /// @return Reference to moved object.
-    window& operator=(window&& other) noexcept;
+    Window& operator=(Window&& other) noexcept;
 
     /// @name actions
     /// @{
@@ -128,9 +114,6 @@ public:
     /// @brief If window is visible, brings it to the front and may make it the focused.
     void focus();
 
-    /// @brief Pull all system events and process it.
-    void process_events();
-
     /// @brief Switch window to iconic state.
     void iconify();
 
@@ -138,41 +121,37 @@ public:
     void maximize();
 
     /// @brief Switch to fullscreen mode.
-    void switch_to_fullscreen();
+    void fullscreen();
 
     /// @brief Restore normal window mode.
     void restore();
 
-    /// @brief Marks the window as target for drawing operations.
-    void make_current();
+    /// @brief Resize window.
+    ///
+    /// @param size New window size.
+    void resize(Size size);
 
-    /// @brief Shows on window what has been drawed.
-    void swap_buffers();
+    /// @brief Move window.
+    ///
+    /// @param position New winodw position.
+    void move(Position position);
 
+    /// @brief Pull all system events and process it.
+    void process_events();
     /// @}
 
     /// @name setters
     /// @{
 
-    /// @brief Resize window.
-    ///
-    /// @param size New window size.
-    void set_size(size_t size);
-
-    /// @brief Move window.
-    ///
-    /// @param position New winodw position.
-    void set_position(position_t position);
-
     /// @brief Sets maximum window size.
     ///
-    /// @param max_size Maximum window size.
-    void set_max_size(size_t max_size);
+    /// @param size Maximum window size.
+    void set_max_size(Size size);
 
     /// @brief Sets minimum window size.
     ///
-    /// @param min_size Minimum window size.
-    void set_min_size(size_t min_size);
+    /// @param size Minimum window size.
+    void set_min_size(Size size);
 
     /// @brief Forbids/permits window resizing.
     ///
@@ -195,114 +174,123 @@ public:
     /// @brief Window position.
     ///
     /// @return Current window position.
-    position_t position() const;
+    Position position() const;
 
     /// @brief Window size.
     ///
     /// @return Current window size.
-    size_t size() const;
+    Size size() const;
 
     /// @brief Maximum window size.
     ///
     /// @return Current maximum size.
-    size_t max_size() const;
+    Size max_size() const;
 
     /// @brief Minimum window size.
     ///
     /// @return Current minimum size.
-    size_t min_size() const;
+    Size min_size() const;
 
     /// @brief Window title.
     ///
     /// @return Current window title.
     std::string title() const;
 
+    /// @brief Window context.
+    ///
+    /// @return Window context.
+    Context& Window::context() const;
+
     /// @name state
     /// @{
+
+    /// @brief Checks if window is should be destoyed.
+    ///
+    /// @return `true` if on_close signal was emited.
+    bool should_close() const;
 
     /// @brief Checks if window is in fullscreen mode.
     ///
     /// @return `true` if window is in fullscreen mode.
-    bool fullscreen() const;
+    bool is_fullscreen() const;
 
     /// @brief Checks if window is in iconic state.
     ///
     /// @return `true` if window is in iconic state.
-    bool iconified() const;
+    bool is_iconified() const;
 
     /// @brief Checks if window is maximized.
     ///
     /// @return `true` if window is maximized.
-    bool maximized() const;
+    bool is_maximized() const;
 
     /// @brief Checks if window resizing is allowed.
     ///
     /// @return `true` if window resizing is allowed.
-    bool resizable() const;
+    bool is_resizable() const;
 
     /// @brief Checks if window is visible to the user.
     ///
     /// @return `true` if window is visible.
-    bool visible() const;
+    bool is_visible() const;
 
     /// @brief Checks if window has input focus.
     ///
     /// @return `true` if window is focused.
-    bool focused() const;
+    bool has_input_focus() const;
     /// @}
 
     /// @name events
     /// @{
 
     /// @brief Set on show callback. Called when window shows after creation.
-    void set_on_show_callback(event_callback callback);
+    Signal<const Window&> on_show;
 
     /// @brief Set on hide callback. Called when window hides from screen.
-    void set_on_hide_callback(event_callback callback);
+    Signal<const Window&> on_hide;
 
     /// @brief Set on close callback. Called when the user clicks on the close window button.
-    void set_on_close_callback(event_callback callback);
+    Signal<const Window&> on_close;
 
     /// @brief Set on focus callback. Called when the window gets input focus.
-    void set_on_focus_callback(event_callback callback);
+    Signal<const Window&> on_focus;
 
     /// @brief Set on focus lost callback. Called when the window loses input focus.
-    void set_on_focus_lost_callback(event_callback callback);
+    Signal<const Window&> on_lost_focus;
 
     /// @brief Set on size callback. Called when window size changes.
-    void set_on_size_callback(size_event_callback callback);
+    Signal<const Window&, Size> on_resize;
 
     /// @brief Set on position callback. Called when window position changes.
-    void set_on_position_callback(position_event_callback callback);
+    Signal<const Window&, Position> on_move;
 
     /// @brief Set on key press callback. Called when key is pressed. Can be called multiple times.
-    void set_on_key_press_callback(key_event_callback callback);
+    Signal<const Window&, KeyCode, Modifiers> on_key_down;
 
     /// @brief Set on key release callback. Called when key is released.
-    void set_on_key_release_callback(key_event_callback callback);
+    Signal<const Window&, KeyCode, Modifiers> on_key_up;
 
     /// @brief Set on character callback. Called when user press the char symbol key.
-    void set_on_character_callback(character_event_callback callback);
+    Signal<const Window&, std::string> on_character;
 
     /// @brief Set on mouse move callback. Called when the mouse is moving.
-    void set_on_mouse_move_callback(mouse_move_callback callback);
+    Signal<const Window&, CursorPosition> on_mouse_move;
 
     /// @brief Set on mouse button press callback. Called when the mouse button is pressed.
-    void set_on_mouse_button_press_callback(mouse_button_callback callback);
+    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_down;
 
     /// @brief Set on mouse button release callback. Called when the mouse button is released.
-    void set_on_mouse_button_release_callback(mouse_button_callback callback);
+    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_up;
 
     /// @brief Set on mouse enter callback. Called when the cursor enters in the window frame.
-    void set_on_mouse_enter_callback(event_callback callback);
+    Signal<const Window&> on_mouse_enter;
 
     /// @brief Set on mouse leave callback. Called when the cursor leaves the window frame.
-    void set_on_mouse_leave_callback(event_callback callback);
+    Signal<const Window&> on_mouse_leave;
     /// @}
 
 private:
-    std::unique_ptr<details::window_implementation> m_implementation;
-    std::unique_ptr<details::event_handler> m_event_handler;
+    std::unique_ptr<details::PlatformWindow> m_platform_window;
 };
 
 /// @}

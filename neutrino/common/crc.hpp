@@ -76,7 +76,7 @@ template <usize BitsCount,
           bool ReflectIn,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
-class crc
+class Crc
 {
 public:
     /// @brief Crc value type.
@@ -130,48 +130,48 @@ private:
 };
 
 // clang-format off
-using crc8          = crc<8, 0x07, 0x00, false, false, 0x00>; ///< Predefined CRC-8 algorithm.
-using crc8_cdma2000 = crc<8, 0x9B, 0xFF, false, false, 0x00>; ///< Predefined CRC-8/CDMA2000 algorithm.
-using crc8_darc     = crc<8, 0x39, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/DARC algorithm.
-using crc8_dvb_s2   = crc<8, 0xD5, 0x00, false, false, 0x00>; ///< Predefined CRC-8/DVB-S2 algorithm.
-using crc8_ebu      = crc<8, 0x1D, 0xFF, true,  true,  0x00>; ///< Predefined CRC-8/EBU algorithm.
-using crc8_i_code   = crc<8, 0x1D, 0xFD, false, false, 0x00>; ///< Predefined CRC-8/I-CODE algorithm.
-using crc8_itu      = crc<8, 0x07, 0x00, false, false, 0x55>; ///< Predefined CRC-8/ITU algorithm.
-using crc8_maxim    = crc<8, 0x31, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/MAXIM algorithm.
-using crc8_rohc     = crc<8, 0x07, 0xFF, true,  true,  0x00>; ///< Predefined CRC-8/ROHC algorithm.
-using crc8_wcdma    = crc<8, 0x9B, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/WCDMA algorithm.
+using Crc8          = Crc<8, 0x07, 0x00, false, false, 0x00>; ///< Predefined CRC-8 algorithm.
+using Crc8Cdma2000 = Crc<8, 0x9B, 0xFF, false, false, 0x00>; ///< Predefined CRC-8/CDMA2000 algorithm.
+using Crc8Darc     = Crc<8, 0x39, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/DARC algorithm.
+using Crc8DvbS2   = Crc<8, 0xD5, 0x00, false, false, 0x00>; ///< Predefined CRC-8/DVB-S2 algorithm.
+using Crc8Ebu      = Crc<8, 0x1D, 0xFF, true,  true,  0x00>; ///< Predefined CRC-8/EBU algorithm.
+using Crc8ICode   = Crc<8, 0x1D, 0xFD, false, false, 0x00>; ///< Predefined CRC-8/I-CODE algorithm.
+using Crc8Itu      = Crc<8, 0x07, 0x00, false, false, 0x55>; ///< Predefined CRC-8/ITU algorithm.
+using Crc8Maxim    = Crc<8, 0x31, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/MAXIM algorithm.
+using Crc8Rohc     = Crc<8, 0x07, 0xFF, true,  true,  0x00>; ///< Predefined CRC-8/ROHC algorithm.
+using Crc8Wcdma    = Crc<8, 0x9B, 0x00, true,  true,  0x00>; ///< Predefined CRC-8/WCDMA algorithm.
 
-using crc16_ccitt_false = crc<16, 0x1021, 0xFFFF, false, false, 0x0000>; ///< Predefined CRC-16/CCITT-FALSE algorithm.
-using crc16_arc         = crc<16, 0x8005, 0x0000, true,  true,  0x0000>; ///< Predefined CRC-16/ARC algorithm.
-using crc16_aug_ccitt   = crc<16, 0x1021, 0x1D0F, false, false, 0x0000>; ///< Predefined CRC-16/AUG-CCITT algorithm.
-using crc16_buypas      = crc<16, 0x8005, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/BUYPAS algorithm.
-using crc16_cdma2000    = crc<16, 0xC867, 0xFFFF, false, false, 0x0000>; ///< Predefined CRC-16/CDMA2000 algorithm.
-using crc16_dds_110     = crc<16, 0x8005, 0x800D, false, false, 0x0000>; ///< Predefined CRC-16/DDS-110 algorithm.
-using crc16_dect_r      = crc<16, 0x0589, 0x0000, false, false, 0x0001>; ///< Predefined CRC-16/DECT-R algorithm.
-using crc16_dect_x      = crc<16, 0x0589, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/DECT-X algorithm.
-using crc16_genibus     = crc<16, 0x1021, 0xFFFF, false, false, 0xFFFF>; ///< Predefined CRC-16/GENIBUS algorithm.
-using crc16_maxim       = crc<16, 0x8005, 0x0000, true,  true,  0xFFFF>; ///< Predefined CRC-16/MAXIM algorithm.
-using crc16_mcrf4xx     = crc<16, 0x1021, 0xFFFF, true,  true,  0x0000>; ///< Predefined CRC-16/MCRF4XX algorithm.
-using crc16_riello      = crc<16, 0x1021, 0xB2AA, true,  true,  0x0000>; ///< Predefined CRC-16/RIELLO algorithm.
-using crc16_t0_dif      = crc<16, 0x8BB7, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/T0-DIF algorithm.
-using crc16_teledisk    = crc<16, 0xA097, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/TELEDISK algorithm.
-using crc16_tms37157    = crc<16, 0x1021, 0x89EC, true,  true,  0x0000>; ///< Predefined CRC-16/TMS37157 algorithm.
-using crc16_usb         = crc<16, 0x8005, 0xFFFF, true,  true,  0xFFFF>; ///< Predefined CRC-16/USB algorithm.
-using crc16_a           = crc<16, 0x1021, 0xC6C6, true,  true,  0x0000>; ///< Predefined CRC-A algorithm.
-using crc16_kermit      = crc<16, 0x1021, 0x0000, true,  true,  0x0000>; ///< Predefined CRC-16/KERMIT algorithm.
-using crc16_modbus      = crc<16, 0x8005, 0xFFFF, true,  true,  0x0000>; ///< Predefined CRC-16/MODBUS algorithm.
-using crc16_x_25        = crc<16, 0x1021, 0xFFFF, true,  true,  0xFFFF>; ///< Predefined CRC-16/X-25 algorithm.
-using crc16_xmodem      = crc<16, 0x1021, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/XMODEM algorithm.
+using Crc16CcittFalse = Crc<16, 0x1021, 0xFFFF, false, false, 0x0000>; ///< Predefined CRC-16/CCITT-FALSE algorithm.
+using Crc16Arc         = Crc<16, 0x8005, 0x0000, true,  true,  0x0000>; ///< Predefined CRC-16/ARC algorithm.
+using Crc16AugCcitt   = Crc<16, 0x1021, 0x1D0F, false, false, 0x0000>; ///< Predefined CRC-16/AUG-CCITT algorithm.
+using Crc16Buypas      = Crc<16, 0x8005, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/BUYPAS algorithm.
+using Crc16Cdma2000    = Crc<16, 0xC867, 0xFFFF, false, false, 0x0000>; ///< Predefined CRC-16/CDMA2000 algorithm.
+using Crc16Dds110     = Crc<16, 0x8005, 0x800D, false, false, 0x0000>; ///< Predefined CRC-16/DDS-110 algorithm.
+using Crc16DectR      = Crc<16, 0x0589, 0x0000, false, false, 0x0001>; ///< Predefined CRC-16/DECT-R algorithm.
+using Crc16DectX      = Crc<16, 0x0589, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/DECT-X algorithm.
+using Crc16Genibus     = Crc<16, 0x1021, 0xFFFF, false, false, 0xFFFF>; ///< Predefined CRC-16/GENIBUS algorithm.
+using Crc16Maxim       = Crc<16, 0x8005, 0x0000, true,  true,  0xFFFF>; ///< Predefined CRC-16/MAXIM algorithm.
+using Crc16Mcrf4xx     = Crc<16, 0x1021, 0xFFFF, true,  true,  0x0000>; ///< Predefined CRC-16/MCRF4XX algorithm.
+using Crc16Riello      = Crc<16, 0x1021, 0xB2AA, true,  true,  0x0000>; ///< Predefined CRC-16/RIELLO algorithm.
+using Crc16T0Dif      = Crc<16, 0x8BB7, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/T0-DIF algorithm.
+using Crc16Teledisk    = Crc<16, 0xA097, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/TELEDISK algorithm.
+using Crc16Tms37157    = Crc<16, 0x1021, 0x89EC, true,  true,  0x0000>; ///< Predefined CRC-16/TMS37157 algorithm.
+using Crc16Usb         = Crc<16, 0x8005, 0xFFFF, true,  true,  0xFFFF>; ///< Predefined CRC-16/USB algorithm.
+using Crc16A           = Crc<16, 0x1021, 0xC6C6, true,  true,  0x0000>; ///< Predefined CRC-A algorithm.
+using Crc16Kermit      = Crc<16, 0x1021, 0x0000, true,  true,  0x0000>; ///< Predefined CRC-16/KERMIT algorithm.
+using Crc16Modbus      = Crc<16, 0x8005, 0xFFFF, true,  true,  0x0000>; ///< Predefined CRC-16/MODBUS algorithm.
+using Crc16X25        = Crc<16, 0x1021, 0xFFFF, true,  true,  0xFFFF>; ///< Predefined CRC-16/X-25 algorithm.
+using Crc16Xmodem      = Crc<16, 0x1021, 0x0000, false, false, 0x0000>; ///< Predefined CRC-16/XMODEM algorithm.
 
-using crc32        = crc<32, 0x04C11DB7, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32 algorithm.
-using crc32_bzip2  = crc<32, 0x04C11DB7, 0xFFFFFFFF, false, false, 0xFFFFFFFF>; ///< Predefined CRC-32/BZIP2 algorithm.
-using crc32c       = crc<32, 0x1EDC6F41, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32C algorithm.
-using crc32d       = crc<32, 0xA833982B, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32D algorithm.
-using crc32_mpeg_2 = crc<32, 0x04C11DB7, 0xFFFFFFFF, false, false, 0x00000000>; ///< Predefined CRC-32/MPEG-2 algorithm.
-using crc32_posix  = crc<32, 0x04C11DB7, 0x00000000, false, false, 0xFFFFFFFF>; ///< Predefined CRC-32/POSIX algorithm.
-using crc32q       = crc<32, 0x814141AB, 0x00000000, false, false, 0x00000000>; ///< Predefined CRC-32Q algorithm.
-using crc32_jamcrc = crc<32, 0x04C11DB7, 0xFFFFFFFF, true,  true,  0x00000000>; ///< Predefined CRC-32/JAMCRC algorithm.
-using crc32_xfer   = crc<32, 0x000000AF, 0x00000000, false, false, 0x00000000>; ///< Predefined CRC-32/XFER algorithm.
+using Crc32        = Crc<32, 0x04C11DB7, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32 algorithm.
+using Crc32Bzip2  = Crc<32, 0x04C11DB7, 0xFFFFFFFF, false, false, 0xFFFFFFFF>; ///< Predefined CRC-32/BZIP2 algorithm.
+using Crc32c       = Crc<32, 0x1EDC6F41, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32C algorithm.
+using Crc32d       = Crc<32, 0xA833982B, 0xFFFFFFFF, true,  true,  0xFFFFFFFF>; ///< Predefined CRC-32D algorithm.
+using Crc32Mpeg2 = Crc<32, 0x04C11DB7, 0xFFFFFFFF, false, false, 0x00000000>; ///< Predefined CRC-32/MPEG-2 algorithm.
+using Crc32Posix  = Crc<32, 0x04C11DB7, 0x00000000, false, false, 0xFFFFFFFF>; ///< Predefined CRC-32/POSIX algorithm.
+using Crc32q       = Crc<32, 0x814141AB, 0x00000000, false, false, 0x00000000>; ///< Predefined CRC-32Q algorithm.
+using Crc32Jamcrc = Crc<32, 0x04C11DB7, 0xFFFFFFFF, true,  true,  0x00000000>; ///< Predefined CRC-32/JAMCRC algorithm.
+using Crc32Xfer   = Crc<32, 0x000000AF, 0x00000000, false, false, 0x00000000>; ///< Predefined CRC-32/XFER algorithm.
 // clang-format on
 
 #pragma region definitions
@@ -183,7 +183,7 @@ template <usize BitsCount,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
 template <typename Iterator>
-inline typename crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type crc<
+inline typename Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type Crc<
 BitsCount,
 Polynome,
 Init,
@@ -191,7 +191,7 @@ ReflectIn,
 ReflectOut,
 XorOut>::calculate(Iterator begin, const Iterator end)
 {
-    crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut> calc;
+    Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut> calc;
 
     calc.reset();
     calc.update(std::forward<Iterator>(begin), std::forward<const Iterator>(end));
@@ -204,7 +204,7 @@ template <usize BitsCount,
           bool ReflectIn,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
-inline void crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::reset() noexcept
+inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::reset() noexcept
 {
     m_current_value = init_value;
 }
@@ -215,7 +215,7 @@ template <usize BitsCount,
           bool ReflectIn,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
-inline void crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(uint8 byte) noexcept
+inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(uint8 byte) noexcept
 {
     byte = reflect_in ? crc_details::reflect<8>(byte) : byte;
 
@@ -230,7 +230,7 @@ template <usize BitsCount,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
 template <typename T>
-inline void crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(T value) noexcept
+inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(T value) noexcept
 {
     constexpr usize input_value_size = sizeof(T);
 
@@ -247,7 +247,7 @@ template <usize BitsCount,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
 template <typename Iterator>
-inline void crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(Iterator begin, const Iterator end)
+inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(Iterator begin, const Iterator end)
 {
     for (; begin != end; ++begin) {
         update(*begin);
@@ -260,7 +260,7 @@ template <usize BitsCount,
           bool ReflectIn,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
-inline typename crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type crc<BitsCount,
+inline typename Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::value_type Crc<BitsCount,
                                                                                               Polynome,
                                                                                               Init,
                                                                                               ReflectIn,

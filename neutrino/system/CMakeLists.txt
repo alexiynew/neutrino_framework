@@ -24,19 +24,20 @@
 # =============================================================================
 
 set_sources(PUBLIC_SOURCES
-    context_settings.hpp
     keyboard.hpp
     mouse.hpp
     window.hpp
-    inc/window_position.hpp
-    inc/window_size.hpp
+    context_settings.hpp
+    context.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    src/context_settings.cpp
+    src/keyboard.cpp
     src/window.cpp
-    src/window_size.cpp
-    src/window_position.cpp
+    src/context_settings.cpp
+    src/context.cpp
+    src/platform_window.hpp
+    src/platform_window.cpp
 )
 
 target_sources(${PROJECT_NAME}
@@ -48,4 +49,4 @@ target_sources(${PROJECT_NAME}
 
 make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 
-include(${MODULE_DIR}/details/CMakeLists.txt)
+include(${MODULE_DIR}/src/${PLATFORM_NAME}/CMakeLists.txt)

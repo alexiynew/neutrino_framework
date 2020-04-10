@@ -31,7 +31,6 @@
 #include <thread>
 #include <vector>
 
-#include <gl/gl.hpp>
 #include <graphics/image.hpp>
 #include <graphics/mesh.hpp>
 #include <graphics/shader.hpp>
@@ -42,7 +41,10 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-const std::string vertex_shader_src = "#version 330 core\n\
+#include <gl/gl.hpp>
+
+const std::string vertex_shader_src =
+"#version 330 core\n\
 layout(location = 0) in vec2 vertexPosition_modelspace;\n\
 layout(location = 1) in vec2 vertexUV;\n\
 uniform mat4 MVP;\n\
@@ -52,7 +54,8 @@ void main(){\n\
     UV = vertexUV;\n\
 }";
 
-const std::string fragment_shader_src = "#version 330 core\n\
+const std::string fragment_shader_src =
+"#version 330 core\n\
 uniform sampler2D tex;\n\
 uniform float gamma;\n\
 out vec4 color;\n\
@@ -336,18 +339,18 @@ struct object
     framework::graphics::mesh quad;
 };
 
-std::vector<framework::graphics::image> load_images(mode image_mode);
+std::vector<framework::graphics::Image> load_images(mode image_mode);
 void gl_error(const char* file, int line);
 framework::graphics::shader_program load_shader(const std::string& VertexShaderCode,
                                                 const std::string& FragmentShaderCode);
 framework::graphics::mesh make_quad(framework::int32 width, framework::int32 height);
-std::vector<object> generate_objects(const std::vector<framework::graphics::image>& images);
+std::vector<object> generate_objects(const std::vector<framework::graphics::Image>& images);
 void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height, framework::int32 scale);
 std::vector<object> load_textures(mode m);
 
-std::vector<framework::graphics::image> load_images(mode image_mode)
+std::vector<framework::graphics::Image> load_images(mode image_mode)
 {
-    std::vector<framework::graphics::image> images;
+    std::vector<framework::graphics::Image> images;
 
     const auto& names = [](mode m) {
         switch (m) {
@@ -359,7 +362,7 @@ std::vector<framework::graphics::image> load_images(mode image_mode)
     }(image_mode);
 
     std::transform(cbegin(names), cend(names), std::back_inserter(images), [](const std::string& name) {
-        framework::graphics::image img;
+        framework::graphics::Image img;
         img.load(name);
 
         return img;
@@ -427,20 +430,20 @@ framework::graphics::shader_program load_shader(const std::string& VertexShaderC
 framework::graphics::mesh make_quad(framework::int32 width, framework::int32 height)
 {
     using namespace framework::graphics;
-    using framework::math::vector2f;
+    using framework::math::Vector2f;
 
-    const std::vector<vector2f> vertex_buffer_data = {
-    vector2f(0.0f, 0.0f),
-    vector2f(0.0f, height),
-    vector2f(width, height),
-    vector2f(width, 0.0f),
+    const std::vector<Vector2f> vertex_buffer_data = {
+    Vector2f(0.0f, 0.0f),
+    Vector2f(0.0f, height),
+    Vector2f(width, height),
+    Vector2f(width, 0.0f),
     };
 
-    const std::vector<vector2f> texture_buffer_data = {
-    vector2f(0.0f, 1.0f),
-    vector2f(0.0f, 0.0f),
-    vector2f(1.0f, 0.0f),
-    vector2f(1.0f, 1.0f),
+    const std::vector<Vector2f> texture_buffer_data = {
+    Vector2f(0.0f, 1.0f),
+    Vector2f(0.0f, 0.0f),
+    Vector2f(1.0f, 0.0f),
+    Vector2f(1.0f, 1.0f),
     };
 
     mesh m;
@@ -450,12 +453,12 @@ framework::graphics::mesh make_quad(framework::int32 width, framework::int32 hei
     return m;
 }
 
-std::vector<object> generate_objects(const std::vector<framework::graphics::image>& images)
+std::vector<object> generate_objects(const std::vector<framework::graphics::Image>& images)
 {
     using namespace framework::graphics;
 
     std::vector<object> res;
-    transform(begin(images), end(images), back_inserter(res), [](const image& img) {
+    transform(begin(images), end(images), back_inserter(res), [](const Image& img) {
         texture tex(min_filter::nearest, mag_filter::nearest, wrap_s::clamp_to_edge, wrap_t::clamp_to_edge);
         tex.load(img.width(), img.height(), img.data());
 
@@ -497,7 +500,7 @@ void arrange(std::vector<object>& objects, framework::int32 width, framework::in
 
 std::vector<object> load_textures(mode m)
 {
-    std::vector<framework::graphics::image> images = load_images(m);
+    std::vector<framework::graphics::Image> images = load_images(m);
 
     if (images.empty()) {
         return std::vector<object>();
@@ -509,19 +512,16 @@ std::vector<object> load_textures(mode m)
 
 int main()
 {
+    using namespace framework;
     using namespace framework::graphics;
     using namespace framework::system;
     using namespace framework::gl;
-    using framework::float32;
-    using framework::int32;
-    using framework::uint32;
-    using framework::math::matrix4f;
 
     framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
 
-    window::set_application_name("Image example");
+    Window::set_application_name("Image example");
 
-    window main_window({640, 480}, "Image example");
+    Window main_window({640, 480}, "Image example");
     main_window.make_current();
 
     glEnable(GL_BLEND);
@@ -538,11 +538,11 @@ int main()
 
     int32 image_scale = 1;
 
-    matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
-    mvp          = scale(mvp, {image_scale, image_scale, image_scale});
+    math::Matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
+    mvp                = scale(mvp, {image_scale, image_scale, image_scale});
 
     // load all images
-    std::vector<image> images = load_images(mode::png);
+    std::vector<Image> images = load_images(mode::png);
 
     if (images.empty()) {
         return 0;
@@ -556,9 +556,7 @@ int main()
 
     float32 gamma = 0.0f;
 
-    main_window.set_on_close_callback([](window& w) { w.hide(); });
-    main_window.set_on_size_callback(
-    [&objects, &mvp, image_scale](window&, ::framework::system::details::window_size size) {
+    main_window.on_resize.connect([&objects, &mvp, image_scale](const Window&, Size size) {
         mvp = framework::math::ortho2d<float32>(0,
                                                 static_cast<float32>(size.width),
                                                 static_cast<float32>(size.height),
@@ -568,14 +566,14 @@ int main()
         arrange(objects, size.width, size.height, image_scale);
     });
 
-    main_window.set_on_key_press_callback(
-    [&gamma, &current_mode, &objects, &mvp, &image_scale](window& w, key_code k, modifiers_state) {
+    main_window.on_key_down.connect(
+    [&gamma, &current_mode, &objects, &mvp, &image_scale](const Window& w, KeyCode k, Modifiers) {
         switch (k) {
-            case key_code::key_equal: gamma += 0.1f; break;
-            case key_code::key_minus: gamma -= 0.1f; break;
-            case key_code::key_1: current_mode = mode::bmp; break;
-            case key_code::key_2: current_mode = mode::png; break;
-            case key_code::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1; break;
+            case KeyCode::key_equal: gamma += 0.1f; break;
+            case KeyCode::key_minus: gamma -= 0.1f; break;
+            case KeyCode::key_1: current_mode = mode::bmp; break;
+            case KeyCode::key_2: current_mode = mode::png; break;
+            case KeyCode::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1; break;
             default: break;
         }
         auto size = w.size();
@@ -594,7 +592,7 @@ int main()
 
     main_window.show();
 
-    while (main_window.visible()) {
+    while (!main_window.should_close()) {
         main_window.process_events();
 
         glClearColor(0.5f, 0.2f, 0.5f, 1.0f);

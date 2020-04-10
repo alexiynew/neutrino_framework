@@ -35,19 +35,20 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
-#include <graphics/color_type.hpp>
+#include <graphics/color.hpp>
+
 #include <graphics/src/image/bmp.hpp>
 
 namespace
 {
 using namespace framework;
-using graphics::color_t;
-using graphics::details::image::image_info_t;
+using graphics::Color;
+using graphics::details::image::ImageInfo;
 
 //  | signature | file size | reserved | reserved | pixel array offset |
 //  |------------------------------------------------------------------|
 //  | 2         | 4         | 2        | 2        | 4                  |
-struct file_header_t
+struct FileHeader
 {
     uint16 signature          = 0;
     uint32 file_size          = 0;
@@ -55,14 +56,14 @@ struct file_header_t
 
     bool valid() const;
 
-    static file_header_t read(std::ifstream& in);
+    static FileHeader read(std::ifstream& in);
 
     static constexpr uint32 size = 14;
 };
 
-struct info_header_t
+struct InfoHeader
 {
-    enum class type_t
+    enum class Type
     {
         undefined             = 0,
         bitmapcoreheader      = 12,
@@ -75,7 +76,7 @@ struct info_header_t
         bitmapv5header        = 124
     };
 
-    enum class compression_t : uint32
+    enum class Compression : uint32
     {
         bi_rgb            = 0, // none
         bi_rle8           = 1, // RLE 8-bit/pixel
@@ -86,7 +87,7 @@ struct info_header_t
         bi_alphabitfields = 6, // RGBA bit field masks
     };
 
-    enum class color_space_type_t : uint32
+    enum class ColorSpace : uint32
     {
         lcs_calibrated_rgb      = 0,          // Use endpoints
         lcs_srgb                = 0x73524742, // sRGB
@@ -95,21 +96,21 @@ struct info_header_t
         profile_embedded        = 0x4D424544, // Profile in this file
     };
 
-    struct ciexyz
+    struct CieXYZ
     {
         uint32 x = 0;
         uint32 y = 0;
         uint32 z = 0;
     };
 
-    struct ciexyztriple
+    struct CieXYZTriple
     {
-        ciexyz red;
-        ciexyz green;
-        ciexyz blue;
+        CieXYZ red;
+        CieXYZ green;
+        CieXYZ blue;
     };
 
-    using color_table_t = std::vector<color_t>;
+    using ColorTable = std::vector<Color>;
 
     // BITMAPCOREHEADER
     uint32 size           = 0;
@@ -119,12 +120,12 @@ struct info_header_t
     uint16 bits_per_pixel = 0;
 
     // BITMAPINFOHEADER
-    compression_t compression = compression_t::bi_rgb;
-    uint32 image_size         = 0;
-    int32 x_ppm               = 0;
-    int32 y_ppm               = 0;
-    uint32 colors_in_table    = 0;
-    uint32 important_colors   = 0;
+    Compression compression = Compression::bi_rgb;
+    uint32 image_size       = 0;
+    int32 x_ppm             = 0;
+    int32 y_ppm             = 0;
+    uint32 colors_in_table  = 0;
+    uint32 important_colors = 0;
 
     // BITMAPV2INFOHEADER
     uint32 red_chanel_bitmask   = 0; //  +-
@@ -135,8 +136,8 @@ struct info_header_t
     uint32 alpha_chanel_bitmask = 0; //  +-
 
     // BITMAPV4HEADER
-    color_space_type_t color_space_type = color_space_type_t::lcs_calibrated_rgb;
-    ciexyztriple endpoints; //  +-
+    ColorSpace color_space_type = ColorSpace::lcs_calibrated_rgb;
+    CieXYZTriple endpoints; //  +-
     uint32 gamma_red   = 0; //  | matter only if color_space_type == lcs_calibrated_rgb
     uint32 gamma_green = 0; //  |
     uint32 gamma_blue  = 0; //  +-
@@ -147,19 +148,19 @@ struct info_header_t
     uint32 color_profile_size   = 0;
     uint32 reserved             = 0;
 
-    color_table_t color_table;
+    ColorTable color_table;
 
     bool valid() const;
 
-    type_t type() const;
+    Type type() const;
     bool bottom_up() const;
     std::tuple<uint32, uint32, uint32, uint32> chanel_masks() const;
 
-    static info_header_t read(std::ifstream& in);
-    static color_table_t read_color_table(std::ifstream& in, const info_header_t& info);
+    static InfoHeader read(std::ifstream& in);
+    static ColorTable read_color_table(std::ifstream& in, const InfoHeader& info);
 };
 
-inline bool check_signature(const file_header_t& h) noexcept
+inline bool check_signature(const FileHeader& h) noexcept
 {
     switch (h.signature) {
         case 0x424D: return true; // BM
@@ -174,19 +175,19 @@ inline bool check_signature(const file_header_t& h) noexcept
     return false;
 }
 
-bool file_header_t::valid() const
+bool FileHeader::valid() const
 {
     constexpr usize max_file_size = 1024 * 1024 * 1024;
     return check_signature(*this) && file_size < max_file_size;
 }
 
-file_header_t file_header_t::read(std::ifstream& in)
+FileHeader FileHeader::read(std::ifstream& in)
 {
-    char buffer[file_header_t::size];
+    char buffer[FileHeader::size];
 
-    in.read(buffer, file_header_t::size);
+    in.read(buffer, FileHeader::size);
 
-    file_header_t h;
+    FileHeader h;
     h.signature          = utils::big_endian_value<uint16>(buffer);
     h.file_size          = utils::little_endian_value<uint32>(buffer + 2);
     h.pixel_array_offset = utils::little_endian_value<uint32>(buffer + 10);
@@ -194,7 +195,7 @@ file_header_t file_header_t::read(std::ifstream& in)
     return h;
 }
 
-inline bool check_size(const info_header_t& h) noexcept
+inline bool check_size(const InfoHeader& h) noexcept
 {
     constexpr int32 max_size      = 30000;
     constexpr int32 max_data_size = 1024 * 1024 * 1024;
@@ -202,47 +203,47 @@ inline bool check_size(const info_header_t& h) noexcept
     const int32 abs_height        = std::abs(h.height);
 
     return h.width > 0 && abs_height > 0 && h.width <= max_size && abs_height <= max_size &&
-           h.image_size < max_data_size && h.width * abs_height * static_cast<int32>(sizeof(color_t)) < max_data_size &&
+           h.image_size < max_data_size && h.width * abs_height * static_cast<int32>(sizeof(Color)) < max_data_size &&
            h.x_ppm < max_ppm && h.y_ppm < max_ppm;
 }
 
-inline bool check_compression(const info_header_t& h) noexcept
+inline bool check_compression(const InfoHeader& h) noexcept
 {
-    if (h.type() == info_header_t::type_t::bitmapcoreheader) {
+    if (h.type() == InfoHeader::Type::bitmapcoreheader) {
         return true;
     }
 
     switch (h.compression) {
-        case info_header_t::compression_t::bi_rgb: return h.bits_per_pixel != 0;
-        case info_header_t::compression_t::bi_rle8: return h.bits_per_pixel == 8 && h.height > 0;
-        case info_header_t::compression_t::bi_rle4: return h.bits_per_pixel == 4 && h.height > 0;
-        case info_header_t::compression_t::bi_bitfields: return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
-        case info_header_t::compression_t::bi_jpeg: return false; // unsupported
-        case info_header_t::compression_t::bi_png: return false;  // unsupported
-        case info_header_t::compression_t::bi_alphabitfields: return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
+        case InfoHeader::Compression::bi_rgb: return h.bits_per_pixel != 0;
+        case InfoHeader::Compression::bi_rle8: return h.bits_per_pixel == 8 && h.height > 0;
+        case InfoHeader::Compression::bi_rle4: return h.bits_per_pixel == 4 && h.height > 0;
+        case InfoHeader::Compression::bi_bitfields: return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
+        case InfoHeader::Compression::bi_jpeg: return false; // unsupported
+        case InfoHeader::Compression::bi_png: return false;  // unsupported
+        case InfoHeader::Compression::bi_alphabitfields: return h.bits_per_pixel == 16 || h.bits_per_pixel == 32;
     }
 
     return false;
 }
 
-inline bool check_color_space_type(const info_header_t& h) noexcept
+inline bool check_color_space_type(const InfoHeader& h) noexcept
 {
-    if (h.size < static_cast<uint32>(info_header_t::type_t::bitmapv4header)) {
+    if (h.size < static_cast<uint32>(InfoHeader::Type::bitmapv4header)) {
         return true;
     }
 
     switch (h.color_space_type) {
-        case info_header_t::color_space_type_t::lcs_calibrated_rgb: return true;
-        case info_header_t::color_space_type_t::lcs_srgb: return true;
-        case info_header_t::color_space_type_t::lcs_windows_color_space: return true;
-        case info_header_t::color_space_type_t::profile_linked: return false;   // unsupported
-        case info_header_t::color_space_type_t::profile_embedded: return false; // unsupported
+        case InfoHeader::ColorSpace::lcs_calibrated_rgb: return true;
+        case InfoHeader::ColorSpace::lcs_srgb: return true;
+        case InfoHeader::ColorSpace::lcs_windows_color_space: return true;
+        case InfoHeader::ColorSpace::profile_linked: return false;   // unsupported
+        case InfoHeader::ColorSpace::profile_embedded: return false; // unsupported
     }
 
     return false;
 }
 
-inline bool check_bits_per_pixel(const info_header_t& h) noexcept
+inline bool check_bits_per_pixel(const InfoHeader& h) noexcept
 {
     switch (h.bits_per_pixel) {
         case 1:
@@ -258,9 +259,9 @@ inline bool check_bits_per_pixel(const info_header_t& h) noexcept
     return false;
 }
 
-bool info_header_t::valid() const
+bool InfoHeader::valid() const
 {
-    bool result = type() != info_header_t::type_t::undefined;
+    bool result = type() != InfoHeader::Type::undefined;
     result      = result && planes == 1;
     result      = result && check_size(*this);
     result      = result && check_compression(*this);
@@ -270,30 +271,30 @@ bool info_header_t::valid() const
     return result;
 }
 
-inline info_header_t::type_t info_header_t::type() const
+inline InfoHeader::Type InfoHeader::type() const
 {
-    switch (static_cast<type_t>(size)) {
-        case type_t::undefined: return type_t::undefined;
+    switch (static_cast<Type>(size)) {
+        case Type::undefined: return Type::undefined;
 
-        case type_t::bitmapcoreheader:
-        case type_t::os22xbitmapheader:
-        case type_t::bitmapinfoheader:
-        case type_t::bitmapv2infoheader:
-        case type_t::bitmapv3infoheader:
-        case type_t::os22xbitmapheaderfull:
-        case type_t::bitmapv4header:
-        case type_t::bitmapv5header: return static_cast<type_t>(size);
+        case Type::bitmapcoreheader:
+        case Type::os22xbitmapheader:
+        case Type::bitmapinfoheader:
+        case Type::bitmapv2infoheader:
+        case Type::bitmapv3infoheader:
+        case Type::os22xbitmapheaderfull:
+        case Type::bitmapv4header:
+        case Type::bitmapv5header: return static_cast<Type>(size);
     }
 
-    return type_t::undefined;
+    return Type::undefined;
 }
 
-inline bool info_header_t::bottom_up() const
+inline bool InfoHeader::bottom_up() const
 {
-    return type() == info_header_t::type_t::bitmapcoreheader ? true : height > 0;
+    return type() == InfoHeader::Type::bitmapcoreheader ? true : height > 0;
 }
 
-inline std::tuple<uint32, uint32, uint32, uint32> info_header_t::chanel_masks() const
+inline std::tuple<uint32, uint32, uint32, uint32> InfoHeader::chanel_masks() const
 {
     const uint32 alpha_mask = alpha_chanel_bitmask ? alpha_chanel_bitmask : 0;
 
@@ -308,18 +309,18 @@ inline std::tuple<uint32, uint32, uint32, uint32> info_header_t::chanel_masks() 
     return std::make_tuple(0, 0, 0, 0);
 }
 
-info_header_t info_header_t::read(std::ifstream& in)
+InfoHeader InfoHeader::read(std::ifstream& in)
 {
     char size_buffer[4];
     in.read(size_buffer, sizeof(size_buffer));
 
-    info_header_t h;
+    InfoHeader h;
     h.size = utils::little_endian_value<uint32>(size_buffer);
 
     std::unique_ptr<char[]> buffer(new char[h.size - sizeof(size_buffer)]);
     in.read(buffer.get(), h.size - sizeof(size_buffer));
 
-    if (h.type() == type_t::bitmapcoreheader) {
+    if (h.type() == Type::bitmapcoreheader) {
         h.width          = utils::little_endian_value<uint16>(buffer.get());
         h.height         = utils::little_endian_value<uint16>(buffer.get() + 2);
         h.planes         = utils::little_endian_value<uint16>(buffer.get() + 4);
@@ -331,8 +332,8 @@ info_header_t info_header_t::read(std::ifstream& in)
         h.bits_per_pixel = utils::little_endian_value<uint16>(buffer.get() + 10);
     }
 
-    if (h.size >= static_cast<uint32>(info_header_t::type_t::bitmapinfoheader)) {
-        h.compression      = utils::little_endian_value<compression_t>(buffer.get() + 12);
+    if (h.size >= static_cast<uint32>(InfoHeader::Type::bitmapinfoheader)) {
+        h.compression      = utils::little_endian_value<Compression>(buffer.get() + 12);
         h.image_size       = utils::little_endian_value<uint32>(buffer.get() + 16);
         h.x_ppm            = utils::little_endian_value<int32>(buffer.get() + 20);
         h.y_ppm            = utils::little_endian_value<int32>(buffer.get() + 24);
@@ -340,8 +341,8 @@ info_header_t info_header_t::read(std::ifstream& in)
         h.important_colors = utils::little_endian_value<uint32>(buffer.get() + 32);
     }
 
-    if (h.type() == info_header_t::type_t::bitmapinfoheader &&
-        (h.compression == compression_t::bi_bitfields || h.compression == compression_t::bi_alphabitfields)) {
+    if (h.type() == InfoHeader::Type::bitmapinfoheader &&
+        (h.compression == Compression::bi_bitfields || h.compression == Compression::bi_alphabitfields)) {
         char mask_buffer[3 * sizeof(uint32)] = {};
         in.read(mask_buffer, sizeof(mask_buffer));
 
@@ -350,26 +351,26 @@ info_header_t info_header_t::read(std::ifstream& in)
         h.blue_chanel_bitmask  = utils::little_endian_value<uint32>(mask_buffer + 8);
     }
 
-    if (h.size == static_cast<uint32>(info_header_t::type_t::bitmapinfoheader) &&
-        h.compression == compression_t::bi_alphabitfields) {
+    if (h.size == static_cast<uint32>(InfoHeader::Type::bitmapinfoheader) &&
+        h.compression == Compression::bi_alphabitfields) {
         char mask_buffer[sizeof(uint32)] = {};
         in.read(mask_buffer, sizeof(mask_buffer));
 
         h.alpha_chanel_bitmask = utils::little_endian_value<uint32>(mask_buffer);
     }
 
-    if (h.size >= static_cast<uint32>(info_header_t::type_t::bitmapv2infoheader)) {
+    if (h.size >= static_cast<uint32>(InfoHeader::Type::bitmapv2infoheader)) {
         h.red_chanel_bitmask   = utils::little_endian_value<uint32>(buffer.get() + 36);
         h.green_chanel_bitmask = utils::little_endian_value<uint32>(buffer.get() + 40);
         h.blue_chanel_bitmask  = utils::little_endian_value<uint32>(buffer.get() + 44);
     }
 
-    if (h.size >= static_cast<uint32>(info_header_t::type_t::bitmapv3infoheader)) {
+    if (h.size >= static_cast<uint32>(InfoHeader::Type::bitmapv3infoheader)) {
         h.alpha_chanel_bitmask = utils::little_endian_value<uint32>(buffer.get() + 48);
     }
 
-    if (h.size >= static_cast<uint32>(info_header_t::type_t::bitmapv4header)) {
-        h.color_space_type = utils::little_endian_value<color_space_type_t>(buffer.get() + 52);
+    if (h.size >= static_cast<uint32>(InfoHeader::Type::bitmapv4header)) {
+        h.color_space_type = utils::little_endian_value<ColorSpace>(buffer.get() + 52);
 
         h.endpoints.red.x   = utils::little_endian_value<uint32>(buffer.get() + 56);
         h.endpoints.red.y   = utils::little_endian_value<uint32>(buffer.get() + 60);
@@ -386,7 +387,7 @@ info_header_t info_header_t::read(std::ifstream& in)
         h.gamma_blue  = utils::little_endian_value<uint32>(buffer.get() + 100);
     }
 
-    if (h.size >= static_cast<uint32>(info_header_t::type_t::bitmapv5header)) {
+    if (h.size >= static_cast<uint32>(InfoHeader::Type::bitmapv5header)) {
         h.intent               = utils::little_endian_value<uint32>(buffer.get() + 104);
         h.color_profile_offset = utils::little_endian_value<uint32>(buffer.get() + 108);
         h.color_profile_size   = utils::little_endian_value<uint32>(buffer.get() + 112);
@@ -400,11 +401,11 @@ info_header_t info_header_t::read(std::ifstream& in)
     return h;
 }
 
-info_header_t::color_table_t info_header_t::read_color_table(std::ifstream& in, const info_header_t& info)
+InfoHeader::ColorTable InfoHeader::read_color_table(std::ifstream& in, const InfoHeader& info)
 {
     const uint32 colors_count = [&info]() {
         if (info.bits_per_pixel >= 1 && info.bits_per_pixel <= 8 &&
-            (info.type() == type_t::bitmapcoreheader || info.colors_in_table == 0)) {
+            (info.type() == Type::bitmapcoreheader || info.colors_in_table == 0)) {
             return static_cast<uint32>(std::pow(2, info.bits_per_pixel));
         }
 
@@ -413,32 +414,32 @@ info_header_t::color_table_t info_header_t::read_color_table(std::ifstream& in, 
 
     const uint32 cell_size = [&info]() -> uint32 {
         switch (info.type()) {
-            case type_t::undefined: return 0;
-            case type_t::bitmapcoreheader: return 3;
-            case type_t::os22xbitmapheader:
-            case type_t::bitmapinfoheader:
-            case type_t::bitmapv2infoheader:
-            case type_t::bitmapv3infoheader:
-            case type_t::os22xbitmapheaderfull:
-            case type_t::bitmapv4header:
-            case type_t::bitmapv5header: return 4;
+            case Type::undefined: return 0;
+            case Type::bitmapcoreheader: return 3;
+            case Type::os22xbitmapheader:
+            case Type::bitmapinfoheader:
+            case Type::bitmapv2infoheader:
+            case Type::bitmapv3infoheader:
+            case Type::os22xbitmapheaderfull:
+            case Type::bitmapv4header:
+            case Type::bitmapv5header: return 4;
         }
 
         return 0;
     }();
 
     if (colors_count == 0 || cell_size == 0) {
-        return color_table_t();
+        return ColorTable();
     }
 
     std::unique_ptr<char[]> buffer(new char[colors_count * cell_size]);
     in.read(buffer.get(), colors_count * cell_size);
 
     if (!in) {
-        return color_table_t();
+        return ColorTable();
     }
 
-    color_table_t table(colors_count);
+    ColorTable table(colors_count);
     for (uint32 i = 0; i < colors_count; ++i) {
         const uint32 offset = i * cell_size;
 
@@ -451,9 +452,9 @@ info_header_t::color_table_t info_header_t::read_color_table(std::ifstream& in, 
     return table;
 }
 
-inline image_info_t make_image_info(const info_header_t& h) noexcept
+inline ImageInfo make_image_info(const InfoHeader& h) noexcept
 {
-    return image_info_t{h.width, std::abs(h.height), graphics::details::image::default_gamma};
+    return ImageInfo{h.width, std::abs(h.height), graphics::details::image::default_gamma};
 }
 
 inline uint32 get_offset(uint32 value)
@@ -474,9 +475,9 @@ inline uint8 masked_value(uint32 pixel, uint32 mask, uint32 offset)
     return scale ? static_cast<uint8>((static_cast<float>(value) / static_cast<float>(scale)) * 255) : 0;
 }
 
-std::vector<color_t>::iterator process_row_1bpp(std::vector<uint8>::iterator in,
-                                                std::vector<color_t>::iterator out,
-                                                const info_header_t& info)
+std::vector<Color>::iterator process_row_1bpp(std::vector<uint8>::iterator in,
+                                              std::vector<Color>::iterator out,
+                                              const InfoHeader& info)
 {
     for (int32 x = 0; x < info.width; ++in) {
         for (int32 bit = 7; bit >= 0 && x < info.width; --bit, ++x) {
@@ -489,9 +490,9 @@ std::vector<color_t>::iterator process_row_1bpp(std::vector<uint8>::iterator in,
     return out;
 }
 
-std::vector<color_t>::iterator process_row_2bpp(std::vector<uint8>::iterator in,
-                                                std::vector<color_t>::iterator out,
-                                                const info_header_t& info)
+std::vector<Color>::iterator process_row_2bpp(std::vector<uint8>::iterator in,
+                                              std::vector<Color>::iterator out,
+                                              const InfoHeader& info)
 {
     const auto end = next(out, info.width);
 
@@ -510,9 +511,9 @@ std::vector<color_t>::iterator process_row_2bpp(std::vector<uint8>::iterator in,
     return out;
 }
 
-std::vector<color_t>::iterator process_row_4bpp(std::vector<uint8>::iterator in,
-                                                std::vector<color_t>::iterator out,
-                                                const info_header_t& info)
+std::vector<Color>::iterator process_row_4bpp(std::vector<uint8>::iterator in,
+                                              std::vector<Color>::iterator out,
+                                              const InfoHeader& info)
 {
     for (int32 x = 0, offset = 4; x < info.width; ++x, offset = ((offset + 4) % 8)) {
         *out++ = info.color_table[(*in >> offset) & 0x0F];
@@ -523,9 +524,9 @@ std::vector<color_t>::iterator process_row_4bpp(std::vector<uint8>::iterator in,
     return out;
 }
 
-std::vector<color_t>::iterator process_row_8bpp(std::vector<uint8>::iterator in,
-                                                std::vector<color_t>::iterator out,
-                                                const info_header_t& info)
+std::vector<Color>::iterator process_row_8bpp(std::vector<uint8>::iterator in,
+                                              std::vector<Color>::iterator out,
+                                              const InfoHeader& info)
 {
     for (int32 x = 0; x < info.width; ++x) {
         *out++ = info.color_table[*in++];
@@ -533,9 +534,9 @@ std::vector<color_t>::iterator process_row_8bpp(std::vector<uint8>::iterator in,
     return out;
 }
 
-std::vector<color_t>::iterator process_row_16bpp(std::vector<uint8>::iterator in,
-                                                 std::vector<color_t>::iterator out,
-                                                 const info_header_t& info)
+std::vector<Color>::iterator process_row_16bpp(std::vector<uint8>::iterator in,
+                                               std::vector<Color>::iterator out,
+                                               const InfoHeader& info)
 {
     const auto [red_mask, green_mask, blue_mask, alpha_mask] = info.chanel_masks();
 
@@ -546,33 +547,33 @@ std::vector<color_t>::iterator process_row_16bpp(std::vector<uint8>::iterator in
 
     for (int32 x = 0; x < info.width; ++x) {
         uint32 pixel = *in++;
-        pixel += *in++ << 8;
+        pixel += static_cast<uint32>(*in++ << 8);
 
-        const color_t color(masked_value(pixel, red_mask, red_offset),
-                            masked_value(pixel, green_mask, green_offset),
-                            masked_value(pixel, blue_mask, blue_offset),
-                            (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
+        const Color color(masked_value(pixel, red_mask, red_offset),
+                          masked_value(pixel, green_mask, green_offset),
+                          masked_value(pixel, blue_mask, blue_offset),
+                          (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
         *out++ = color;
     }
 
     return out;
 }
 
-std::vector<color_t>::iterator process_row_24bpp(std::vector<uint8>::iterator in,
-                                                 std::vector<color_t>::iterator out,
-                                                 const info_header_t& info)
+std::vector<Color>::iterator process_row_24bpp(std::vector<uint8>::iterator in,
+                                               std::vector<Color>::iterator out,
+                                               const InfoHeader& info)
 {
     for (int32 x = 0; x < info.width; ++x) {
-        const color_t color(*in++, *in++, *in++, 255U);
+        const Color color(*in++, *in++, *in++, 255U);
         *out++ = color;
     }
 
     return out;
 }
 
-std::vector<color_t>::iterator process_row_32bpp(std::vector<uint8>::iterator in,
-                                                 std::vector<color_t>::iterator out,
-                                                 const info_header_t& info)
+std::vector<Color>::iterator process_row_32bpp(std::vector<uint8>::iterator in,
+                                               std::vector<Color>::iterator out,
+                                               const InfoHeader& info)
 {
     const auto [red_mask, green_mask, blue_mask, alpha_mask] = info.chanel_masks();
     const uint32 red_offset                                  = (red_mask ? get_offset(red_mask) : 0);
@@ -582,23 +583,23 @@ std::vector<color_t>::iterator process_row_32bpp(std::vector<uint8>::iterator in
 
     for (int32 x = 0; x < info.width; ++x) {
         uint32 pixel = *in++;
-        pixel += *in++ << 8;
-        pixel += *in++ << 16;
-        pixel += *in++ << 24;
+        pixel += static_cast<uint32>(*in++ << 8);
+        pixel += static_cast<uint32>(*in++ << 16);
+        pixel += static_cast<uint32>(*in++ << 24);
 
-        const color_t color(masked_value(pixel, red_mask, red_offset),
-                            masked_value(pixel, green_mask, green_offset),
-                            masked_value(pixel, blue_mask, blue_offset),
-                            (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
+        const Color color(masked_value(pixel, red_mask, red_offset),
+                          masked_value(pixel, green_mask, green_offset),
+                          masked_value(pixel, blue_mask, blue_offset),
+                          (alpha_mask ? masked_value(pixel, alpha_mask, alpha_offset) : 255));
         *out++ = color;
     }
 
     return out;
 }
 
-std::vector<color_t>::iterator process_row(std::vector<uint8>::iterator in,
-                                           std::vector<color_t>::iterator out,
-                                           const info_header_t& info)
+std::vector<Color>::iterator process_row(std::vector<uint8>::iterator in,
+                                         std::vector<Color>::iterator out,
+                                         const InfoHeader& info)
 {
     switch (info.bits_per_pixel) {
         case 1: return process_row_1bpp(in, out, info);
@@ -614,10 +615,10 @@ std::vector<color_t>::iterator process_row(std::vector<uint8>::iterator in,
     return out;
 }
 
-std::vector<color_t> read_data_raw(std::ifstream& in, const info_header_t& info)
+std::vector<Color> read_data_raw(std::ifstream& in, const InfoHeader& info)
 {
     const int32 height = std::abs(info.height);
-    std::vector<color_t> image_data(static_cast<usize>(info.width * height));
+    std::vector<Color> image_data(static_cast<usize>(info.width * height));
 
     const uint32 row_size = static_cast<uint32>(((info.bits_per_pixel * info.width + 31) / 32) * 4);
     std::vector<uint8> buffer(row_size);
@@ -632,36 +633,36 @@ std::vector<color_t> read_data_raw(std::ifstream& in, const info_header_t& info)
     return image_data;
 }
 
-inline std::vector<color_t>::iterator fill_with_color_4(std::vector<color_t>::iterator out,
-                                                        const info_header_t::color_table_t& color_table,
-                                                        const std::vector<uint8>::iterator it,
-                                                        int32 count)
+inline std::vector<Color>::iterator fill_with_color_4(std::vector<Color>::iterator out,
+                                                      const InfoHeader::ColorTable& color_table,
+                                                      const std::vector<uint8>::iterator it,
+                                                      int32 count)
 {
     for (int32 c = 0, offset = 4; c < count; ++c) {
         const usize color_index = static_cast<usize>((*it >> offset) & 0x0F);
-        *out++                  = color_index < color_table.size() ? color_table[color_index] : color_t(0x000000FFU);
+        *out++                  = color_index < color_table.size() ? color_table[color_index] : Color(0x000000FFU);
         offset                  = (offset == 0 ? 4 : 0);
     }
     return out;
 }
 
-inline std::vector<color_t>::iterator fill_with_color_8(std::vector<color_t>::iterator out,
-                                                        const info_header_t::color_table_t& color_table,
-                                                        const std::vector<uint8>::iterator it,
-                                                        int32 count)
+inline std::vector<Color>::iterator fill_with_color_8(std::vector<Color>::iterator out,
+                                                      const InfoHeader::ColorTable& color_table,
+                                                      const std::vector<uint8>::iterator it,
+                                                      int32 count)
 {
     const usize color_index = static_cast<usize>(*it);
-    const color_t color     = color_index < color_table.size() ? color_table[color_index] : color_t(0x000000FFU);
+    const Color color       = color_index < color_table.size() ? color_table[color_index] : Color(0x000000FFU);
     for (int32 c = 0; c < count; ++c) {
         *out++ = color;
     }
     return out;
 }
 
-inline std::vector<color_t>::iterator fill_from_buffer_4(std::vector<color_t>::iterator out,
-                                                         const info_header_t::color_table_t& color_table,
-                                                         std::vector<uint8>::iterator it,
-                                                         int32 count)
+inline std::vector<Color>::iterator fill_from_buffer_4(std::vector<Color>::iterator out,
+                                                       const InfoHeader::ColorTable& color_table,
+                                                       std::vector<uint8>::iterator it,
+                                                       int32 count)
 {
     const int32 colors_in_byte = 2;
     while (count > 0) {
@@ -672,23 +673,23 @@ inline std::vector<color_t>::iterator fill_from_buffer_4(std::vector<color_t>::i
     return out;
 }
 
-inline std::vector<color_t>::iterator fill_from_buffer_8(std::vector<color_t>::iterator out,
-                                                         const info_header_t::color_table_t& color_table,
-                                                         std::vector<uint8>::iterator it,
-                                                         int32 count)
+inline std::vector<Color>::iterator fill_from_buffer_8(std::vector<Color>::iterator out,
+                                                       const InfoHeader::ColorTable& color_table,
+                                                       std::vector<uint8>::iterator it,
+                                                       int32 count)
 {
     while (count-- > 0) {
         const usize color_index = static_cast<usize>(*it++);
-        *out++                  = color_index < color_table.size() ? color_table[color_index] : color_t(0x000000FFU);
+        *out++                  = color_index < color_table.size() ? color_table[color_index] : Color(0x000000FFU);
     }
     return out;
 }
 
-std::vector<color_t> read_data_rle(std::ifstream& input, const info_header_t& info)
+std::vector<Color> read_data_rle(std::ifstream& input, const InfoHeader& info)
 {
     const int32 height     = std::abs(info.height);
     const int32 image_size = info.width * height;
-    std::vector<color_t> image_data(static_cast<usize>(image_size));
+    std::vector<Color> image_data(static_cast<usize>(image_size));
 
     std::vector<uint8> buffer(info.image_size);
     input.read(reinterpret_cast<char*>(buffer.data()), info.image_size);
@@ -755,23 +756,23 @@ std::vector<color_t> read_data_rle(std::ifstream& input, const info_header_t& in
     return image_data;
 }
 
-std::vector<color_t> read_data(std::ifstream& in, const info_header_t& info)
+std::vector<Color> read_data(std::ifstream& in, const InfoHeader& info)
 {
     switch (info.compression) {
-        case info_header_t::compression_t::bi_rle4:
-        case info_header_t::compression_t::bi_rle8: return read_data_rle(in, info);
-        case info_header_t::compression_t::bi_rgb:
-        case info_header_t::compression_t::bi_bitfields:
-        case info_header_t::compression_t::bi_alphabitfields: return read_data_raw(in, info);
-        case info_header_t::compression_t::bi_jpeg:
-        case info_header_t::compression_t::bi_png: return std::vector<color_t>();
+        case InfoHeader::Compression::bi_rle4:
+        case InfoHeader::Compression::bi_rle8: return read_data_rle(in, info);
+        case InfoHeader::Compression::bi_rgb:
+        case InfoHeader::Compression::bi_bitfields:
+        case InfoHeader::Compression::bi_alphabitfields: return read_data_raw(in, info);
+        case InfoHeader::Compression::bi_jpeg:
+        case InfoHeader::Compression::bi_png: return std::vector<Color>();
     }
-    return std::vector<color_t>();
+    return std::vector<Color>();
 }
 
-std::vector<color_t> flip_vertically(const info_header_t& info, const std::vector<color_t>& data)
+std::vector<Color> flip_vertically(const InfoHeader& info, const std::vector<Color>& data)
 {
-    std::vector<color_t> tmp(data.size());
+    std::vector<Color> tmp(data.size());
 
     auto from = data.begin();
     auto to   = std::prev(tmp.end(), info.width);
@@ -792,31 +793,31 @@ std::vector<color_t> flip_vertically(const info_header_t& info, const std::vecto
 
 namespace framework::graphics::details::image::bmp
 {
-load_result_t load(const std::string& filename)
+LoadResult load(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file) {
-        return load_result_t();
+        return LoadResult();
     }
 
-    file_header_t file_header = file_header_t::read(file);
+    FileHeader file_header = FileHeader::read(file);
     if (!file_header.valid()) {
-        return load_result_t();
+        return LoadResult();
     }
 
-    info_header_t info = info_header_t::read(file);
+    InfoHeader info = InfoHeader::read(file);
     if (!info.valid()) {
-        return load_result_t();
+        return LoadResult();
     }
 
     file.seekg(file_header.pixel_array_offset, std::ios::beg);
     if (!file) {
-        return load_result_t();
+        return LoadResult();
     }
 
-    std::vector<color_t> data = read_data(file, info);
+    std::vector<Color> data = read_data(file, info);
     if (data.empty()) {
-        return load_result_t();
+        return LoadResult();
     }
 
     if (!info.bottom_up()) {
@@ -833,7 +834,7 @@ bool is_bmp(const std::string& filename)
         return false;
     }
 
-    file_header_t header = file_header_t::read(file);
+    FileHeader header = FileHeader::read(file);
     return header.valid();
 }
 

@@ -28,14 +28,16 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
-#include <gl/gl.hpp>
+#include <graphics/color.hpp>
+#include <graphics/renderer.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-class context_test : public framework::unit_test::suite
+class context_test : public framework::unit_test::Suite
 {
 public:
-    context_test() : suite("context_test")
+    context_test()
+        : Suite("context_test")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }
@@ -43,29 +45,26 @@ public:
 private:
     void main_loop()
     {
-        using framework::float32;
-        using framework::system::context_settings;
-        using framework::system::window;
-        using framework::utils::random_numbers;
+        using namespace framework;
+        using namespace framework::graphics;
+        using namespace framework::system;
 
-        window::set_application_name("GL Test");
+        Window::set_application_name("GL Test");
 
-        window main_window({640, 480}, "Context test");
-
-        main_window.make_current();
+        Window main_window({640, 480}, "Context test");
+        Renderer render(main_window.context());
 
         main_window.show();
+
+        render.set_clear_color(0xFF00FFFFU);
 
         const float32 max_total_time = 1000;
         float32 total_time           = 0;
 
-        while (main_window.visible() && total_time < max_total_time) {
+        while (main_window.is_visible() && total_time < max_total_time) {
             main_window.process_events();
 
-            framework::gl::glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            framework::gl::glClear(GL_COLOR_BUFFER_BIT);
-
-            main_window.swap_buffers();
+            render.display();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
 

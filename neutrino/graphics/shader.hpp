@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief OpenGL shader.
+/// @brief Shader.
 /// @author Fedorov Alexey
 /// @date 12.04.2019
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -30,178 +32,220 @@
 #ifndef FRAMEWORK_GRAPHICS_SHADER_HPP
 #define FRAMEWORK_GRAPHICS_SHADER_HPP
 
-#include <istream>
 #include <string>
 
-#include <common/types.hpp>
+#include <common/instance_id.hpp>
 #include <math/math.hpp>
 
+/*
+/////////////////////
+// INPUT VARIABLES //
+/////////////////////
+in vec3 inputPosition;
+in vec3 inputColor;
+
+//////////////////////
+// OUTPUT VARIABLES //
+//////////////////////
+out vec3 color;
+
+///////////////////////
+// UNIFORM VARIABLES //
+///////////////////////
+uniform mat4 worldMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+
+////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
+////////////////////////////////////////////////////////////////////////////////
+void main(void)
+{
+    // Calculate the position of the vertex against the world, view, and projection matrices.
+    gl_Position = worldMatrix * vec4(inputPosition, 1.0f);
+    gl_Position = viewMatrix * gl_Position;
+    gl_Position = projectionMatrix * gl_Position;
+
+    // Store the input color for the pixel shader to use.
+    color = inputColor;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Filename: color.ps
+////////////////////////////////////////////////////////////////////////////////
+#version 400
+
+
+/////////////////////
+// INPUT VARIABLES //
+/////////////////////
+in vec3 color;
+
+
+//////////////////////
+// OUTPUT VARIABLES //
+//////////////////////
+out vec4 outputColor;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Pixel Shader
+////////////////////////////////////////////////////////////////////////////////
+void main(void)
+{
+    outputColor = vec4(color, 1.0f);
+}
+
+
+*/
 namespace framework::graphics
 {
+////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup graphics_module
 /// @{
+////////////////////////////////////////////////////////////////////////////////
 
-/// @brief base class for OpenGL shaders.
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Shader.
 ///
-/// Encapsulates all base operations with shader.
-/// Provides unified interface for all kinds of shaders.
+/// Each Shader consists of two parts: vertex program and fragment program.
 ///
-/// @thread_safety All operations must be done only in main thread.
+/// For OpenGL: @n
+/// ===========
+/// Shader has predefined vertex attribute locations listed below:
+///  - position              - 0
+///  - normal                - 1
+///  - tangent               - 2
+///  - color                 - 3
+///  - texture coordinate0-7 - 4-11 @n
+/// They can be used as follows:
+/// @code
+/// layout(location = 0) in vec3 vertexPosition;
+/// @endcode
 ///
-/// @see vertex_shader fragment_shader
-class shader_base
+/// There are also several predefined uniforms passed to each shader:
+/// @code
+/// uniform mat4 madelMatrix;       - model transformations
+/// uniform mat4 viewMatrix;        - view transformation
+/// uniform mat4 projectionMatrix;  - projection frustim
+/// @endcode
+///
+/// @see Mesh, Renderer
+////////////////////////////////////////////////////////////////////////////////
+class Shader
 {
 public:
-    /// @brief Destructor.
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Creates Shader instance.
+    ////////////////////////////////////////////////////////////////////////////
+    Shader() = default;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Destructor
+    ////////////////////////////////////////////////////////////////////////////
+    ~Shader() = default;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Copy Shader.
     ///
-    /// Marks shader for deletion.
-    virtual ~shader_base() = 0;
+    /// Creates new Shader with new InstanceId.
+    ///
+    /// @param other Shader to copy from.
+    ////////////////////////////////////////////////////////////////////////////
+    Shader(const Shader& other);
 
-    shader_base(const shader_base&) = delete;
-    shader_base& operator=(const shader_base&) = delete;
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Copy Shader.
+    ///
+    /// Creates new Shader with new InstanceId.
+    ///
+    /// @param other Shader to copy from.
+    ///
+    /// @return Copyed mesh instance.
+    ////////////////////////////////////////////////////////////////////////////
+    Shader& operator=(const Shader& other);
 
-    /// @brief Move constructor.
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Move Shader.
     ///
     /// @param other Shader to move from.
-    shader_base(shader_base&& other);
+    ////////////////////////////////////////////////////////////////////////////
+    Shader(Shader&& other) noexcept;
 
-    /// @brief Move operator.
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Move Shader.
     ///
     /// @param other Shader to move from.
     ///
-    /// @return Reference to moved object.
-    shader_base& operator=(shader_base&& other);
+    /// @return Moved mesh instance.
+    ////////////////////////////////////////////////////////////////////////////
+    Shader& operator=(Shader&& other) noexcept;
 
-    /// @brief Sets the new shader source code.
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Set vertex shader source.
     ///
-    /// Deletes old shader source code and sets the new one.
-    /// After source code was set, the shader need to be compiled @ref compile.
+    /// @param vertex_source Vertex shader source.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_vertex_source(const std::string& source);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Set fragment shader source.
     ///
-    /// @param src Shader source code.
-    void set_source(const std::string& src);
+    /// @param vertex_source Fragment shader source.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_fragment_source(const std::string& source);
 
-    /// @brief Reads shader source code from input stream.
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Remove all sources from Shader.
     ///
-    /// Deletes old shader source code and sets the new one.
-    /// After source code was set, the shader need to be compiled @ref compile.
+    /// If Shader loaded to Renderer, it's can be freely cleaned.
     ///
-    /// @param src_stream Shader source code stream.
-    void set_source(std::istream& src_stream);
+    /// @see Renderer::load.
+    ////////////////////////////////////////////////////////////////////////////
+    void clear();
 
-    /// @brief Compiles the shader.
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get Shader instance id. Guaranted to be unique.
     ///
-    /// Compiles stored shader code.
-    /// Compilation status can be obtained by @ref compiled.
-    /// If compilation fails for any reason, information about errors can be obtained by @ref info_log.
-    void compile();
+    /// @return Shader instance id.
+    ////////////////////////////////////////////////////////////////////////////
+    InstanceId instance_id() const;
 
-    /// @brief Deletes OpenGL shader object.
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get vertex shader source.
     ///
-    /// If a shader is attached to a shader_program, it will be flagged for deletion, but it will not be deleted until
-    /// it is no longer attached to any shader_program.
-    void mark_for_deletion();
+    /// @return Vertex shader source.
+    ////////////////////////////////////////////////////////////////////////////
+    const std::string& vertex_source() const;
 
-    /// @brief OpenGL shader object type.
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get fragment shader source.
     ///
-    /// @retrun Shader object type (e.g: GL_VERTEX_SHADER, GL_FRAGMENT_SHADER)
-    framework::int32 shader_type() const;
-
-    /// @brief Determines if shader can be used.
-    ///
-    /// @return `true` if shader created and not yet deleted.
-    bool valid() const;
-
-    /// @brief Determines if shader sources compiled.
-    ///
-    /// @return `true` if shader source loaded and compiled successfully.
-    bool compiled() const;
-
-    /// @brief Length of shader sources.
-    ///
-    /// @return Length of loaded shader source code.
-    framework::usize source_length() const;
-
-    /// @brief Shader sources.
-    ///
-    /// @return Loaded shader source code.
-    std::string source() const;
-
-    /// @brief Shader information log.
-    ///
-    /// Shader info log updated when shader is compiled.
-    ///
-    /// @return Shader information log if any.
-    std::string info_log() const;
-
-    /// @brief Shader id.
-    ///
-    /// @return OpenGL shader object id.
-    framework::uint32 shader_id() const;
-
-protected:
-    shader_base(uint32 shader_type);
-
-    framework::uint32 m_shader_id = 0;
-};
-
-class vertex_shader : public shader_base
-{
-public:
-    vertex_shader();
-    ~vertex_shader() = default;
-
-    vertex_shader(const vertex_shader&) = delete;
-    vertex_shader& operator=(const vertex_shader&) = delete;
-
-    vertex_shader(vertex_shader&&) = default;
-    vertex_shader& operator=(vertex_shader&&) = default;
-};
-
-class fragment_shader : public shader_base
-{
-public:
-    fragment_shader();
-    ~fragment_shader() = default;
-
-    fragment_shader(const fragment_shader&) = delete;
-    fragment_shader& operator=(const fragment_shader&) = delete;
-
-    fragment_shader(fragment_shader&&) = default;
-    fragment_shader& operator=(fragment_shader&&) = default;
-};
-
-class shader_program
-{
-public:
-    shader_program();
-    ~shader_program();
-
-    shader_program(const shader_program&) = delete;
-    shader_program& operator=(const shader_program&) = delete;
-
-    shader_program(shader_program&&);
-    shader_program& operator=(shader_program&&);
-
-    void arttach(const shader_base& shader);
-
-    void link();
-
-    void use();
-    void stop_using();
-
-    void uniform(const std::string& name, int value);
-    void uniform(const std::string& name, float value);
-    void uniform(const std::string& name, math::matrix4f value, bool transpose = false);
-
-    std::string info_log() const;
-    bool linked() const;
-
-    framework::uint32 program_id() const;
+    /// @return Fragment shader source.
+    ////////////////////////////////////////////////////////////////////////////
+    const std::string& fragment_source() const;
 
 private:
-    framework::uint32 m_program_id = 0;
+    friend void swap(Shader& lhs, Shader& rhs) noexcept;
+
+    InstanceId m_instance_id;
+
+    std::string m_vertex_source;
+    std::string m_fragment_source;
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Swaps two Shaders.
+///
+/// @param lhs Shader to swap.
+/// @param rhs Shader to swap.
+////////////////////////////////////////////////////////////////////////////////
+void swap(Shader& lhs, Shader& rhs) noexcept;
+
+////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////
 } // namespace framework::graphics
 
 #endif

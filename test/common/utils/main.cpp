@@ -28,10 +28,11 @@
 #include <common/utils.hpp>
 #include <unit_test/suite.hpp>
 
-class random_numbers_test : public framework::unit_test::suite
+class random_numbers_test : public framework::unit_test::Suite
 {
 public:
-    random_numbers_test() : suite("random_numbers_test")
+    random_numbers_test()
+        : Suite("random_numbers_test")
     {
         add_test([this]() { random_numbers(); }, "random_numbers");
     }
@@ -39,12 +40,12 @@ public:
 private:
     void random_numbers()
     {
-        using ::framework::float32;
-        using ::framework::float64;
-        using ::framework::int32;
-        using ::framework::uint16;
+        using framework::float32;
+        using framework::float64;
+        using framework::int32;
+        using framework::uint16;
 
-        using ::framework::utils::random_numbers;
+        using framework::utils::random_numbers;
 
         const auto no_numbers = random_numbers<float32>(-1000.0f, 1000.0f, 0);
         TEST_ASSERT(no_numbers.size() == 0, "Wrond numbers count.");
@@ -67,10 +68,10 @@ private:
 };
 
 /*
-class format_string_test : public framework::unit_test::suite
+class format_string_test : public framework::unit_test::Suite
 {
 public:
-    format_string_test() : suite("format_string_test")
+    format_string_test() : Suite("format_string_test")
     {
         add_test([this]() { type_foramting(); }, "type_formating");
     }
