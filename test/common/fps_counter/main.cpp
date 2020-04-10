@@ -23,12 +23,11 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <chrono>
+#include <thread>
+
 #include <common/fps_counter.hpp>
 #include <unit_test/suite.hpp>
-
-#include <thread>
-#include <log/log.hpp>
-#include <chrono>
 
 using namespace framework;
 
@@ -46,8 +45,7 @@ private:
     {
         FpsCounter fps;
 
-        for (int i = 0; i < 100; ++i)
-        {
+        for (int i = 0; i < 100; ++i) {
             fps.tick();
         }
 

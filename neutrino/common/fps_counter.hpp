@@ -79,14 +79,14 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Count a frame.
-    /// 
+    ///
     /// Should be called once per frame.
     ////////////////////////////////////////////////////////////////////////////
     void tick();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Frames per second
-    /// 
+    ///
     /// @return Frames count.
     ////////////////////////////////////////////////////////////////////////////
     int fps() const;
@@ -95,11 +95,11 @@ private:
     void slice_fps();
 
     bool m_should_stop = false;
-    int m_frames = 0;
-    int m_fps = 0;
+    int m_frames       = 0;
+    int m_fps          = 0;
     std::thread m_fps_thread;
 };
 
-}
+} // namespace framework
 
 #endif
