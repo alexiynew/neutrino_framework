@@ -37,6 +37,7 @@
     #define FRAMEWORK_MATH_INC_TRIGONOMETRIC_FUNCTIONS_HPP
 
     #include <cmath>
+    #include <type_traits>
 
     #include <math/inc/constants.hpp>
     #include <math/inc/vector_type.hpp>
@@ -60,10 +61,10 @@ namespace framework::math
 ///
 /// @return The value in radians.
 ////////////////////////////////////////////////////////////////////////////////
-template <typename T, typename R = typename vector_type_details::common_type<decltype(deg_to_rad), T>::type>
+template <typename T, typename R = std::common_type_t<double, T>>
 inline R radians(const T& degrees)
 {
-    return static_cast<R>(deg_to_rad) * static_cast<R>(degrees);
+    return deg_to_rad<R> * static_cast<R>(degrees);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -94,10 +95,10 @@ inline Vector<N, T> radians(const Vector<N, T>& value)
 ///
 /// @return The value in degrees.
 ////////////////////////////////////////////////////////////////////////////////
-template <typename T, typename R = typename vector_type_details::common_type<decltype(rad_to_deg), T>::type>
+template <typename T, typename R = std::common_type_t<double, T>>
 inline R degrees(const T& radians)
 {
-    return static_cast<R>(rad_to_deg) * static_cast<R>(radians);
+    return rad_to_deg<R> * static_cast<R>(radians);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
