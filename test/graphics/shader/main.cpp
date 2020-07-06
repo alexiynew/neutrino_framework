@@ -147,7 +147,10 @@ private:
         main_window.show();
 
         renderer.set_clear_color(0xFF00FFFF);
-        renderer.set_projection(math::perspective(math::pi<float>, 640.0f/480.0f, 0.001f, 1.0f));
+        renderer.set_view(math::look_at(math::Vector3f{0.0f, 0.0f, 2.0f},
+                                        math::Vector3f{0.0f, 0.0f, 0.0f},
+                                        math::Vector3f{0.0f, 1.0f, 0.0f}));
+        renderer.set_projection(math::perspective(math::half_pi<float>, 640.0f / 480.0f, 0.001f, 10.0f));
 
         Mesh mesh;
         mesh.set_vertices(cube_mesh::vertices);
@@ -164,13 +167,18 @@ private:
         mesh.clear();
         shader.clear();
 
-        std::chrono::microseconds max_total_time = std::chrono::seconds(1);
+        std::chrono::microseconds max_total_time = std::chrono::seconds(3);
         std::chrono::microseconds total_time(0);
 
+        const float angle         = 0.1f;
+        const math::Vector3f axis = math::normalize(math::Vector3f{1.0, 1.0, 1.0});
+
+        math::Matrix4f model_transform;
         while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
 
-            renderer.render(mesh, shader);
+            model_transform = math::rotate(model_transform, axis, angle);
+            renderer.render(mesh, shader, model_transform);
             renderer.display();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
