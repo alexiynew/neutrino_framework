@@ -146,11 +146,11 @@ private:
         Window::set_application_name("GL mesh Test");
 
         Window main_window({640, 480}, "GL mesh test");
-        Renderer renderer(main_window.context());
+        Renderer renderer(main_window);
 
         main_window.show();
 
-        renderer.set_clear_color(0xFF00FFFF);
+        renderer.set_clear_color(Color(0xFF00FFFF));
 
         Mesh mesh;
         mesh.set_vertices(cube_mesh::vertices);

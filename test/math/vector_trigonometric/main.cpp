@@ -61,7 +61,8 @@ public:
 private:
     void radians_function()
     {
-        TEST_ASSERT(radians(v4d) == vector4d(pi<double>, tau<double>, pi<double> / 2, pi<double> / 4), "Radians function failed.");
+        TEST_ASSERT(radians(v4d) == vector4d(pi<double>, tau<double>, pi<double> / 2, pi<double> / 4),
+                    "Radians function failed.");
     }
 
     void degrees_function()
@@ -94,7 +95,8 @@ private:
 
     void acos_function()
     {
-        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), vector4d(pi<double>, 0, pi<double> / 2, pi<double> / 4)), "Acos function failed.");
+        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), vector4d(pi<double>, 0, pi<double> / 2, pi<double> / 4)),
+                    "Acos function failed.");
     }
 
     void atan_function()
@@ -102,8 +104,10 @@ private:
         const Vector3d result1 = atan(tan(radians(v3d)));
         const Vector3d result2 = atan(sin(radians(v3d)), cos(radians(v3d)));
 
-        TEST_ASSERT(almost_equal(result1, Vector3d(quarter_pi<double>, pi<double> / 3, atan(tan(pi<double>)))), "Atan from tan failed.");
-        TEST_ASSERT(almost_equal(result2, Vector3d(quarter_pi<double>, pi<double> / 3, pi<double>), 1), "Atan from sin and cos failed.");
+        TEST_ASSERT(almost_equal(result1, Vector3d(quarter_pi<double>, pi<double> / 3, atan(tan(pi<double>)))),
+                    "Atan from tan failed.");
+        TEST_ASSERT(almost_equal(result2, Vector3d(quarter_pi<double>, pi<double> / 3, pi<double>), 1),
+                    "Atan from sin and cos failed.");
     }
 
     void sinh_function()
@@ -126,12 +130,14 @@ private:
 
     void asinh_function()
     {
-        TEST_ASSERT(almost_equal(asinh(sinh(radians(v3d))), Vector3d(pi<double> / 4, pi<double> / 3, pi<double>), 1), "Asinh function failed.");
+        TEST_ASSERT(almost_equal(asinh(sinh(radians(v3d))), Vector3d(pi<double> / 4, pi<double> / 3, pi<double>), 1),
+                    "Asinh function failed.");
     }
 
     void acosh_function()
     {
-        TEST_ASSERT(almost_equal(acosh(cosh(radians(v3d))), Vector3d(pi<double> / 4, pi<double> / 3, pi<double>), 1), "Acosh function failed.");
+        TEST_ASSERT(almost_equal(acosh(cosh(radians(v3d))), Vector3d(pi<double> / 4, pi<double> / 3, pi<double>), 1),
+                    "Acosh function failed.");
     }
 
     void atanh_function()

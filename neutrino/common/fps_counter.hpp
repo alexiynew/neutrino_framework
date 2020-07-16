@@ -32,8 +32,8 @@
 #ifndef FRAMEWORK_COMMON_FPS_COUNTER_HPP
 #define FRAMEWORK_COMMON_FPS_COUNTER_HPP
 
-#include <thread>
 #include <atomic>
+#include <thread>
 
 namespace framework
 {
@@ -101,6 +101,9 @@ private:
     std::thread m_fps_thread;
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////
 } // namespace framework
 
 #endif

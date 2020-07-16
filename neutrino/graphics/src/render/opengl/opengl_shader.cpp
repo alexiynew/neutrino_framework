@@ -35,6 +35,7 @@
 
 #include <graphics/src/opengl/opengl.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
+#include <graphics/src/render/opengl/opengl_texture.hpp>
 #include <graphics/src/render/render_command.hpp>
 
 using namespace framework;
@@ -50,6 +51,7 @@ namespace uniform_name
 const std::string model_martix      = "modelMatrix";
 const std::string view_martix       = "viewMatrix";
 const std::string projection_martix = "projectionMatrix";
+const std::string texture0          = "texture0";
 } // namespace uniform_name
 
 std::string shader_type_string(int shader_type)
@@ -155,6 +157,15 @@ void set_uniform(int location, const math::Matrix4f& matrix)
     glUniformMatrix4fv(location, 1, false, matrix.data());
 }
 
+void set_uniform(int location, int value)
+{
+    if (location == -1) {
+        return;
+    }
+
+    glUniform1i(location, value);
+}
+
 } // namespace
 
 namespace framework::graphics
@@ -189,6 +200,8 @@ bool OpenglShader::load(const Shader& shader)
     m_view_matrix       = glGetUniformLocation(m_shader_program, uniform_name::view_martix.c_str());
     m_projection_matrix = glGetUniformLocation(m_shader_program, uniform_name::projection_martix.c_str());
 
+    m_texture = glGetUniformLocation(m_shader_program, uniform_name::texture0.c_str());
+
     return m_shader_program != 0;
 }
 
@@ -202,6 +215,11 @@ void OpenglShader::set_uniforms(const Uniforms& uniforms) const
     set_uniform(m_model_matrix, uniforms.model_matrix);
     set_uniform(m_view_matrix, uniforms.view_matrix.get());
     set_uniform(m_projection_matrix, uniforms.projection_matrix.get());
+}
+
+void OpenglShader::set_texture(int index) const
+{
+    set_uniform(m_texture, index);
 }
 
 } // namespace framework::graphics

@@ -142,11 +142,11 @@ private:
         Window::set_application_name("GL shader Test");
 
         Window main_window({640, 480}, "GL shader test");
-        Renderer renderer(main_window.context());
+        Renderer renderer(main_window);
 
         main_window.show();
 
-        renderer.set_clear_color(0xFF00FFFF);
+        renderer.set_clear_color(Color(0xFF00FFFF));
         renderer.set_view(math::look_at(math::Vector3f{0.0f, 0.0f, 2.0f},
                                         math::Vector3f{0.0f, 0.0f, 0.0f},
                                         math::Vector3f{0.0f, 1.0f, 0.0f}));

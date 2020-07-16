@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
+/// @file
+/// @brief OpenGL logger.
+/// @author Fedorov Alexey
+/// @date 09.07.2020
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -23,57 +29,20 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <chrono>
-#include <thread>
+#include <string>
 
-#include <common/utils.hpp>
-#include <common/version.hpp>
-#include <graphics/color.hpp>
-#include <graphics/renderer.hpp>
-#include <system/window.hpp>
-#include <unit_test/suite.hpp>
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_LOGGER_HPP
+    #define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_LOGGER_HPP
 
-class context_test : public framework::unit_test::Suite
+namespace framework::graphics
 {
-public:
-    context_test()
-        : Suite("context_test")
-    {
-        add_test([this]() { main_loop(); }, "main_loop");
-    }
+void log_opengl_errors(const std::string& file, int line);
 
-private:
-    void main_loop()
-    {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
+    ////////////////////////////////////////////////////////////////////////////////
+    /// @brief Log OpenGL errors.
+    ////////////////////////////////////////////////////////////////////////////////
+    #define LOG_OPENGL_ERRORS() log_opengl_errors(__FILE__, __LINE__) // NOLINT
 
-        Window::set_application_name("GL Test");
+} // namespace framework::graphics
 
-        Window main_window({640, 480}, "Context test");
-        Renderer render(main_window);
-
-        main_window.show();
-
-        render.set_clear_color(Color(0xFF00FFFFU));
-
-        const float32 max_total_time = 1000;
-        float32 total_time           = 0;
-
-        while (main_window.is_visible() && total_time < max_total_time) {
-            main_window.process_events();
-
-            render.display();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-
-            total_time += 16;
-        }
-    }
-};
-
-int main()
-{
-    return run_tests(context_test());
-}
+#endif

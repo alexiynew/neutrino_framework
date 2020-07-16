@@ -32,12 +32,15 @@
 
 #include <graphics/mesh.hpp>
 #include <graphics/shader.hpp>
+#include <graphics/texture.hpp>
 #include <log/log.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
+#include <graphics/src/render/opengl/opengl_logger.hpp>
 #include <graphics/src/render/opengl/opengl_mesh.hpp>
 #include <graphics/src/render/opengl/opengl_renderer.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
+#include <graphics/src/render/opengl/opengl_texture.hpp>
 #include <graphics/src/render/render_command.hpp>
 
 using namespace framework;
@@ -47,54 +50,6 @@ using namespace framework::graphics::details::opengl;
 namespace
 {
 const std::string tag = "OpenGL";
-
-void log_errors();
-
-float map_to_float(Color::ValueType value)
-{
-    return static_cast<float>(value) / 255.0f;
-}
-
-void log_errors()
-{
-    struct ErrorDescription
-    {
-        std::string name;
-        std::string description;
-    };
-
-    const std::map<GLenum, ErrorDescription> error_descriptions = {
-    {GL_INVALID_ENUM,
-     {"GL_INVALID_ENUM",
-      "An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no "
-      "other side effect than to set the error flag."}},
-    {GL_INVALID_VALUE,
-     {"GL_INVALID_VALUE",
-      "A numeric argument is out of range. The offending command is ignored and has no other side effect than to set "
-      "the error flag."}},
-    {GL_INVALID_OPERATION,
-     {"GL_INVALID_OPERATION",
-      "The specified operation is not allowed in the current state. The offending command is ignored and has no other "
-      "side effect than to set the error flag."}},
-    {GL_INVALID_FRAMEBUFFER_OPERATION,
-     {"GL_INVALID_FRAMEBUFFER_OPERATION",
-      "The framebuffer object is not complete. The offending command is ignored and has no other side effect than to "
-      "set the error flag."}},
-    {GL_OUT_OF_MEMORY,
-     {"GL_OUT_OF_MEMORY",
-      "There is not enough memory left to execute the command. The state of the GL is undefined, except for the state "
-      "of the error flags, after this error is recorded."}},
-    };
-
-    for (GLenum error = glGetError(); error != GL_NO_ERROR; error = glGetError()) {
-        if (error_descriptions.count(error)) {
-            const auto& desc = error_descriptions.at(error);
-            log::error(tag) << desc.name << " " << desc.description;
-        } else {
-            log::error(tag) << "Unknown error: " << error;
-        }
-    }
-}
 
 std::string get_string(int id)
 {
@@ -142,7 +97,7 @@ OpenglRenderer::OpenglRenderer(system::Context& context)
     check_supported();
 
     init();
-    log_errors();
+    LOG_OPENGL_ERRORS();
 }
 
 void OpenglRenderer::init() const
@@ -161,10 +116,16 @@ void OpenglRenderer::init() const
 
 OpenglRenderer::~OpenglRenderer() = default;
 
-void OpenglRenderer::set_clear_color(Color color)
+void OpenglRenderer::set_clear_color(const Color& color)
 {
-    glClearColor(map_to_float(color.r), map_to_float(color.g), map_to_float(color.b), map_to_float(color.a));
-    log_errors();
+    Colorf c = static_cast<Colorf>(color);
+    glClearColor(c.r, c.g, c.b, c.a);
+    LOG_OPENGL_ERRORS();
+}
+
+void OpenglRenderer::set_viewport(Size size)
+{
+    glViewport(0, 0, size.width, size.height);
 }
 
 bool OpenglRenderer::load(const Mesh& mesh)
@@ -177,9 +138,9 @@ bool OpenglRenderer::load(const Mesh& mesh)
     if (!loaded) {
         m_meshes.erase(mesh.instance_id());
         log::error(tag) << "Failed ot load Mesh: " << mesh.instance_id();
-        log_errors();
     }
 
+    LOG_OPENGL_ERRORS();
     return loaded;
 }
 
@@ -193,9 +154,25 @@ bool OpenglRenderer::load(const Shader& shader)
     if (!loaded) {
         m_shaders.erase(shader.instance_id());
         log::error(tag) << "Failed ot load Shader: " << shader.instance_id();
-        log_errors();
     }
 
+    LOG_OPENGL_ERRORS();
+    return loaded;
+}
+
+bool OpenglRenderer::load(const Texture& texture)
+{
+    if (m_textures.count(texture.instance_id())) {
+        m_textures[texture.instance_id()].clear();
+    }
+
+    const bool loaded = m_textures[texture.instance_id()].load(texture);
+    if (!loaded) {
+        m_textures.erase(texture.instance_id());
+        log::error(tag) << "Failed ot load Texture: " << texture.instance_id();
+    }
+
+    LOG_OPENGL_ERRORS();
     return loaded;
 }
 
@@ -219,10 +196,11 @@ void OpenglRenderer::render(const RenderCommand& command)
 
     shader.use();
     shader.set_uniforms(command.uniforms());
+    bind_textures(shader, command.texture_ids());
 
     mesh.draw();
 
-    log_errors();
+    LOG_OPENGL_ERRORS();
 }
 
 void OpenglRenderer::end_frame()
@@ -231,6 +209,19 @@ void OpenglRenderer::end_frame()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glUseProgram(0);
+}
+
+void OpenglRenderer::bind_textures(const OpenglShader& shader, const TextureIds& textures) const
+{
+    for (size_t i = 0; i < textures.size(); ++i) {
+        const InstanceId id = textures[i];
+        if (m_textures.count(id)) {
+            const OpenglTexture& texture = m_textures.at(id);
+
+            texture.bind(i);
+            shader.set_texture(static_cast<int>(i));
+        }
+    }
 }
 
 } // namespace framework::graphics

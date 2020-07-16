@@ -39,9 +39,13 @@ const MatrixCache::value_type& CachedMatrix::get() const
     return cache.at(index);
 }
 
-RenderCommand::RenderCommand(InstanceId mesh_id, InstanceId shader_id, const Uniforms& uniforms)
+RenderCommand::RenderCommand(InstanceId mesh_id,
+                             InstanceId shader_id,
+                             const TextureIds& textures,
+                             const Uniforms& uniforms)
     : m_mesh_id(mesh_id)
     , m_shader_id(shader_id)
+    , m_texture_ids(textures)
     , m_uniforms(uniforms)
 {}
 
@@ -53,6 +57,11 @@ InstanceId RenderCommand::mesh_id() const
 InstanceId RenderCommand::shader_id() const
 {
     return m_shader_id;
+}
+
+const TextureIds& RenderCommand::texture_ids() const
+{
+    return m_texture_ids;
 }
 
 const Uniforms& RenderCommand::uniforms() const

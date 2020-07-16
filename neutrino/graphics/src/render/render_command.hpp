@@ -40,6 +40,7 @@
 namespace framework::graphics
 {
 using MatrixCache = std::vector<math::Matrix4f>;
+using TextureIds  = std::vector<InstanceId>;
 
 struct CachedMatrix
 {
@@ -58,15 +59,20 @@ struct Uniforms
 class RenderCommand
 {
 public:
-    explicit RenderCommand(InstanceId mesh_id, InstanceId shader_id, const Uniforms& uniforms);
+    explicit RenderCommand(InstanceId mesh_id,
+                           InstanceId shader_id,
+                           const TextureIds& textures,
+                           const Uniforms& uniforms);
 
     InstanceId mesh_id() const;
     InstanceId shader_id() const;
+    const TextureIds& texture_ids() const;
     const Uniforms& uniforms() const;
 
 private:
     InstanceId m_mesh_id;
     InstanceId m_shader_id;
+    TextureIds m_texture_ids;
     Uniforms m_uniforms;
 };
 

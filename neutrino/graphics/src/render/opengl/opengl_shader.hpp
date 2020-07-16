@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
 /// @brief OpenGL shader.
 /// @author Fedorov Alexey
 /// @date 03.04.2020
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -35,6 +37,7 @@
 namespace framework::graphics
 {
 class Shader;
+class OpenglTexture;
 struct Uniforms;
 
 class OpenglShader
@@ -56,6 +59,7 @@ public:
     void use() const;
 
     void set_uniforms(const Uniforms& uniforms) const;
+    void set_texture(int index) const;
 
 private:
     std::uint32_t m_vertex_shader   = 0;
@@ -65,6 +69,8 @@ private:
     int m_model_matrix      = -1;
     int m_view_matrix       = -1;
     int m_projection_matrix = -1;
+
+    int m_texture = -1;
 };
 
 } // namespace framework::graphics

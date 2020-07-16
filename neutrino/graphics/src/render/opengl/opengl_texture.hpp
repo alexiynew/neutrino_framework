@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
+/// @file
+/// @brief OpenGL texture.
+/// @author Fedorov Alexey
+/// @date 07.07.2020
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -23,57 +29,39 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <chrono>
-#include <thread>
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_TEXTURE_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_TEXTURE_HPP
 
-#include <common/utils.hpp>
-#include <common/version.hpp>
-#include <graphics/color.hpp>
-#include <graphics/renderer.hpp>
-#include <system/window.hpp>
-#include <unit_test/suite.hpp>
+#include <cstdint>
 
-class context_test : public framework::unit_test::Suite
+namespace framework::graphics
+{
+class Texture;
+
+class OpenglTexture
 {
 public:
-    context_test()
-        : Suite("context_test")
-    {
-        add_test([this]() { main_loop(); }, "main_loop");
-    }
+    OpenglTexture() = default;
+
+    OpenglTexture(const OpenglTexture&) = delete;
+    OpenglTexture& operator=(const OpenglTexture&) = delete;
+
+    OpenglTexture(OpenglTexture&&) = default;
+    OpenglTexture& operator=(OpenglTexture&&) = default;
+
+    ~OpenglTexture();
+
+    bool load(const Texture& texture);
+
+    void clear();
+
+    void bind(size_t index) const;
+    std::uint32_t texture_id() const;
 
 private:
-    void main_loop()
-    {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
-
-        Window::set_application_name("GL Test");
-
-        Window main_window({640, 480}, "Context test");
-        Renderer render(main_window);
-
-        main_window.show();
-
-        render.set_clear_color(Color(0xFF00FFFFU));
-
-        const float32 max_total_time = 1000;
-        float32 total_time           = 0;
-
-        while (main_window.is_visible() && total_time < max_total_time) {
-            main_window.process_events();
-
-            render.display();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-
-            total_time += 16;
-        }
-    }
+    std::uint32_t m_texture = 0;
 };
 
-int main()
-{
-    return run_tests(context_test());
-}
+} // namespace framework::graphics
+
+#endif
