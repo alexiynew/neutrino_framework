@@ -33,601 +33,589 @@
 
 #include <graphics/image.hpp>
 #include <graphics/mesh.hpp>
+#include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
 #include <graphics/texture.hpp>
-#include <log/log.hpp>
-#include <log/stream_logger.hpp>
 #include <math/math.hpp>
 #include <system/window.hpp>
-#include <unit_test/suite.hpp>
 
-#include <gl/gl.hpp>
+namespace
+{
 
-const std::string vertex_shader_src =
+using namespace framework;
+using namespace framework::math;
+using namespace framework::graphics;
+using namespace framework::system;
+
+const std::string vertex_shader =
 "#version 330 core\n\
-layout(location = 0) in vec2 vertexPosition_modelspace;\n\
-layout(location = 1) in vec2 vertexUV;\n\
-uniform mat4 MVP;\n\
-out vec2 UV;\n\
-void main(){\n\
-    gl_Position = MVP * vec4(vertexPosition_modelspace, 0.0, 1.0);\n\
-    UV = vertexUV;\n\
-}";
+\n\
+layout(location = 0) in vec3 position;\n\
+layout(location = 3) in vec4 color;\n\
+layout(location = 4) in vec2 texCoord0;\n\
+\n\
+uniform mat4 modelMatrix;\n\
+uniform mat4 viewMatrix;\n\
+uniform mat4 projectionMatrix;\n\
+\n\
+out vec4 fragColor;\n\
+out vec2 texCoord;\n\
+\n\
+void main()\n\
+{\n\
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);\n\
+    fragColor = color / 256.0;\n\
+    texCoord = texCoord0;\n\
+}\n\
+";
 
-const std::string fragment_shader_src =
+const std::string fragment_shader =
 "#version 330 core\n\
-uniform sampler2D tex;\n\
-uniform float gamma;\n\
+\n\
+in vec4 fragColor;\n\
+in vec2 texCoord;\n\
+\n\
 out vec4 color;\n\
-in vec2 UV;\n\
-void main(){\n\
-    vec3 g = vec3(1 / gamma);\n\
-    color = pow(texture(tex, UV), vec4(g, 1));\n\
-}";
+\n\
+uniform sampler2D texture0;\n\
+\n\
+void main()\n\
+{\n\
+    color = texture(texture0, texCoord);\n\
+}\n\
+";
 
-enum mode
+enum Mode
 {
     bmp,
     png,
 };
 
-const std::vector<std::string> bmp_names = {
-"./bmp/good/pal1.bmp",
-"./bmp/good/pal1bg.bmp",
-"./bmp/good/pal1wb.bmp",
-"./bmp/good/pal4.bmp",
-"./bmp/good/pal4gs.bmp",
-"./bmp/good/pal4rle.bmp",
-"./bmp/good/pal8.bmp",
-"./bmp/good/pal8-0.bmp",
-"./bmp/good/pal8gs.bmp",
-"./bmp/good/pal8nonsquare.bmp",
-"./bmp/good/pal8os2.bmp",
-"./bmp/good/pal8rle.bmp",
-"./bmp/good/pal8topdown.bmp",
-"./bmp/good/pal8v4.bmp",
-"./bmp/good/pal8v5.bmp",
-"./bmp/good/pal8w124.bmp",
-"./bmp/good/pal8w125.bmp",
-"./bmp/good/pal8w126.bmp",
-"./bmp/good/rgb16.bmp",
-"./bmp/good/rgb16-565.bmp",
-"./bmp/good/rgb16-565pal.bmp",
-"./bmp/good/rgb16bfdef.bmp",
-"./bmp/good/rgb24.bmp",
-"./bmp/good/rgb24pal.bmp",
-"./bmp/good/rgb32.bmp",
-"./bmp/good/rgb32bf.bmp",
-"./bmp/good/rgb32bfdef.bmp",
-"./bmp/questionable/pal1p1.bmp",
-"./bmp/questionable/pal2.bmp",
-"./bmp/questionable/pal2color.bmp",
-"./bmp/questionable/pal4rlecut.bmp",
-"./bmp/questionable/pal4rletrns.bmp",
-"./bmp/questionable/pal8offs.bmp",
-"./bmp/questionable/pal8os2-hs.bmp",
-"./bmp/questionable/pal8os2-sz.bmp",
-"./bmp/questionable/pal8os2sp.bmp",
-"./bmp/questionable/pal8os2v2-16.bmp",
-"./bmp/questionable/pal8os2v2-40sz.bmp",
-"./bmp/questionable/pal8os2v2-sz.bmp",
-"./bmp/questionable/pal8os2v2.bmp",
-"./bmp/questionable/pal8oversizepal.bmp",
-"./bmp/questionable/pal8rlecut.bmp",
-"./bmp/questionable/pal8rletrns.bmp",
-"./bmp/questionable/rgb16-231.bmp",
-"./bmp/questionable/rgb16-3103.bmp",
-"./bmp/questionable/rgb16faketrns.bmp",
-"./bmp/questionable/rgba16-4444.bmp",
-"./bmp/questionable/rgba16-1924.bmp",
-"./bmp/questionable/rgba16-5551.bmp",
-"./bmp/questionable/rgb24largepal.bmp",
-"./bmp/questionable/rgb32-111110.bmp",
-"./bmp/questionable/rgb32-7187.bmp",
-"./bmp/questionable/rgb32-xbgr.bmp",
-"./bmp/questionable/rgb32fakealpha.bmp",
-"./bmp/questionable/rgb32h52.bmp",
-"./bmp/questionable/rgba32-1010102.bmp",
-"./bmp/questionable/rgba32-61754.bmp",
-"./bmp/questionable/rgba32-81284.bmp",
-"./bmp/questionable/rgba32.bmp",
-"./bmp/questionable/rgba32abf.bmp",
-"./bmp/questionable/rgba32h56.bmp",
-};
-
-const std::vector<std::string> png_names = {
-"png/basi0g01.png",
-"png/basi0g02.png",
-"png/basi0g04.png",
-"png/basi0g08.png",
-"png/basi0g16.png",
-"png/basi2c08.png",
-"png/basi2c16.png",
-
-"png/basi3p01.png",
-"png/basi3p02.png",
-"png/basi3p04.png",
-"png/basi3p08.png",
-
-"png/basi4a08.png",
-"png/basi4a16.png",
-"png/basi6a08.png",
-"png/basi6a16.png",
-
-"png/basn0g01.png",
-"png/basn0g02.png",
-"png/basn0g04.png",
-"png/basn0g08.png",
-"png/basn0g16.png",
-"png/basn2c08.png",
-"png/basn2c16.png",
-
-"png/basn3p01.png",
-"png/basn3p02.png",
-"png/basn3p04.png",
-"png/basn3p08.png",
-
-"png/basn4a08.png",
-"png/basn4a16.png",
-"png/basn6a08.png",
-"png/basn6a16.png",
-
-"png/bgai4a08.png",
-"png/bgai4a16.png",
-"png/bgan6a08.png",
-"png/bgan6a16.png",
-"png/bgbn4a08.png",
-"png/bggn4a16.png",
-"png/bgwn6a08.png",
-"png/bgyn6a16.png",
-
-"png/ccwn2c08.png",
-"png/ccwn3p08.png",
-"png/cdfn2c08.png",
-"png/cdhn2c08.png",
-"png/cdsn2c08.png",
-"png/cdun2c08.png",
-"png/ch1n3p04.png",
-"png/ch2n3p08.png",
-"png/cm0n0g04.png",
-"png/cm7n0g04.png",
-"png/cm9n0g04.png",
-"png/cs3n2c16.png",
-"png/cs3n3p08.png",
-"png/cs5n2c08.png",
-"png/cs5n3p08.png",
-"png/cs8n2c08.png",
-"png/cs8n3p08.png",
-"png/ct0n0g04.png",
-"png/ct1n0g04.png",
-"png/cten0g04.png",
-"png/ctfn0g04.png",
-"png/ctgn0g04.png",
-"png/cthn0g04.png",
-"png/ctjn0g04.png",
-"png/ctzn0g04.png",
-"png/exif2c08.png",
-
-"png/f00n0g08.png",
-"png/f00n2c08.png",
-"png/f01n0g08.png",
-"png/f01n2c08.png",
-"png/f02n0g08.png",
-"png/f02n2c08.png",
-"png/f03n0g08.png",
-"png/f03n2c08.png",
-"png/f04n0g08.png",
-"png/f04n2c08.png",
-"png/f99n0g04.png",
-
-"png/g03n0g16.png",
-"png/g04n0g16.png",
-"png/g05n0g16.png",
-"png/g07n0g16.png",
-"png/g10n0g16.png",
-"png/g25n0g16.png",
-"png/g03n2c08.png",
-"png/g04n2c08.png",
-"png/g05n2c08.png",
-"png/g07n2c08.png",
-"png/g10n2c08.png",
-"png/g25n2c08.png",
-"png/g03n3p04.png",
-"png/g04n3p04.png",
-"png/g05n3p04.png",
-"png/g07n3p04.png",
-"png/g10n3p04.png",
-"png/g25n3p04.png",
-
-"png/oi1n0g16.png",
-"png/oi1n2c16.png",
-"png/oi2n0g16.png",
-"png/oi2n2c16.png",
-"png/oi4n0g16.png",
-"png/oi4n2c16.png",
-"png/oi9n0g16.png",
-"png/oi9n2c16.png",
-
-"png/pp0n2c16.png",
-"png/pp0n6a08.png",
-"png/ps1n0g08.png",
-"png/ps1n2c16.png",
-"png/ps2n0g08.png",
-"png/ps2n2c16.png",
-
-"png/s01i3p01.png",
-"png/s01n3p01.png",
-"png/s02i3p01.png",
-"png/s02n3p01.png",
-"png/s03i3p01.png",
-"png/s03n3p01.png",
-"png/s04i3p01.png",
-"png/s04n3p01.png",
-"png/s05i3p02.png",
-"png/s05n3p02.png",
-"png/s06i3p02.png",
-"png/s06n3p02.png",
-"png/s07i3p02.png",
-"png/s07n3p02.png",
-"png/s08i3p02.png",
-"png/s08n3p02.png",
-"png/s09i3p02.png",
-"png/s09n3p02.png",
-"png/s32i3p04.png",
-"png/s32n3p04.png",
-"png/s33i3p04.png",
-"png/s33n3p04.png",
-"png/s34i3p04.png",
-"png/s34n3p04.png",
-"png/s35i3p04.png",
-"png/s35n3p04.png",
-"png/s36i3p04.png",
-"png/s36n3p04.png",
-"png/s37i3p04.png",
-"png/s37n3p04.png",
-"png/s38i3p04.png",
-"png/s38n3p04.png",
-"png/s39i3p04.png",
-"png/s39n3p04.png",
-"png/s40i3p04.png",
-"png/s40n3p04.png",
-
-"png/tbbn0g04.png",
-"png/tbbn2c16.png",
-"png/tbbn3p08.png",
-"png/tbgn2c16.png",
-"png/tbgn3p08.png",
-"png/tbrn2c08.png",
-"png/tbwn0g16.png",
-"png/tbwn3p08.png",
-"png/tbyn3p08.png",
-"png/tm3n3p02.png",
-"png/tp0n0g08.png",
-"png/tp0n2c08.png",
-"png/tp0n3p08.png",
-"png/tp1n3p08.png",
-
-//"png/xc1n0g08.png",
-//"png/xc9n2c08.png",
-//"png/xcrn0g04.png",
-//"png/xcsn0g01.png",
-//"png/xd0n2c08.png",
-//"png/xd3n2c08.png",
-//"png/xd9n2c08.png",
-//"png/xdtn0g01.png",
-//"png/xhdn0g08.png",
-//"png/xlfn0g04.png",
-//"png/xs1n0g01.png",
-//"png/xs2n0g01.png",
-//"png/xs4n0g01.png",
-//"png/xs7n0g01.png",
-
-"png/z00n2c08.png",
-"png/z03n2c08.png",
-"png/z06n2c08.png",
-"png/z09n2c08.png",
-};
-
-struct object
+namespace images
 {
-    framework::int32 width   = 0;
-    framework::int32 height  = 0;
-    framework::int32 x       = 0;
-    framework::int32 y       = 0;
-    framework::float32 gamma = 2.2f;
-    framework::graphics::texture texture;
-    framework::graphics::mesh quad;
+const std::vector<std::vector<std::string>> bmp_names = {{
+                                                         "./bmp/good/pal1.bmp",
+                                                         "./bmp/good/pal1bg.bmp",
+                                                         "./bmp/good/pal1wb.bmp",
+                                                         "./bmp/good/pal4.bmp",
+                                                         "./bmp/good/pal4gs.bmp",
+                                                         "./bmp/good/pal4rle.bmp",
+                                                         "./bmp/good/pal8.bmp",
+                                                         "./bmp/good/pal8-0.bmp",
+                                                         "./bmp/good/pal8gs.bmp",
+                                                         "./bmp/good/pal8nonsquare.bmp",
+                                                         "./bmp/good/pal8os2.bmp",
+                                                         "./bmp/good/pal8rle.bmp",
+                                                         "./bmp/good/pal8topdown.bmp",
+                                                         "./bmp/good/pal8v4.bmp",
+                                                         "./bmp/good/pal8v5.bmp",
+                                                         "./bmp/good/pal8w124.bmp",
+                                                         "./bmp/good/pal8w125.bmp",
+                                                         "./bmp/good/pal8w126.bmp",
+                                                         },
+                                                         {
+                                                         "./bmp/good/rgb16.bmp",
+                                                         "./bmp/good/rgb16-565.bmp",
+                                                         "./bmp/good/rgb16-565pal.bmp",
+                                                         "./bmp/good/rgb16bfdef.bmp",
+                                                         },
+                                                         {
+                                                         "./bmp/good/rgb24.bmp",
+                                                         "./bmp/good/rgb24pal.bmp",
+                                                         },
+                                                         {
+                                                         "./bmp/good/rgb32.bmp",
+                                                         "./bmp/good/rgb32bf.bmp",
+                                                         "./bmp/good/rgb32bfdef.bmp",
+                                                         },
+                                                         {
+                                                         "./bmp/questionable/pal1p1.bmp",
+                                                         "./bmp/questionable/pal2.bmp",
+                                                         "./bmp/questionable/pal2color.bmp",
+                                                         "./bmp/questionable/pal4rlecut.bmp",
+                                                         "./bmp/questionable/pal4rletrns.bmp",
+                                                         "./bmp/questionable/pal8offs.bmp",
+                                                         "./bmp/questionable/pal8os2-hs.bmp",
+                                                         "./bmp/questionable/pal8os2-sz.bmp",
+                                                         "./bmp/questionable/pal8os2sp.bmp",
+                                                         "./bmp/questionable/pal8os2v2-16.bmp",
+                                                         "./bmp/questionable/pal8os2v2-40sz.bmp",
+                                                         "./bmp/questionable/pal8os2v2-sz.bmp",
+                                                         "./bmp/questionable/pal8os2v2.bmp",
+                                                         "./bmp/questionable/pal8oversizepal.bmp",
+                                                         "./bmp/questionable/pal8rlecut.bmp",
+                                                         "./bmp/questionable/pal8rletrns.bmp",
+                                                         },
+                                                         {
+                                                         "./bmp/questionable/rgb16-231.bmp",
+                                                         "./bmp/questionable/rgb16-3103.bmp",
+                                                         "./bmp/questionable/rgb16faketrns.bmp",
+                                                         "./bmp/questionable/rgba16-4444.bmp",
+                                                         "./bmp/questionable/rgba16-1924.bmp",
+                                                         "./bmp/questionable/rgba16-5551.bmp",
+                                                         },
+                                                         {
+                                                         "./bmp/questionable/rgb24largepal.bmp",
+                                                         },
+                                                         {
+                                                         "./bmp/questionable/rgb32-111110.bmp",
+                                                         "./bmp/questionable/rgb32-7187.bmp",
+                                                         "./bmp/questionable/rgb32-xbgr.bmp",
+                                                         "./bmp/questionable/rgb32fakealpha.bmp",
+                                                         "./bmp/questionable/rgb32h52.bmp",
+                                                         "./bmp/questionable/rgba32-1010102.bmp",
+                                                         "./bmp/questionable/rgba32-61754.bmp",
+                                                         "./bmp/questionable/rgba32-81284.bmp",
+                                                         "./bmp/questionable/rgba32.bmp",
+                                                         "./bmp/questionable/rgba32abf.bmp",
+                                                         "./bmp/questionable/rgba32h56.bmp",
+                                                         }};
+
+const std::vector<std::vector<std::string>> png_names =
+{{
+ "png/basi0g01.png",
+ "png/basi0g02.png",
+ "png/basi0g04.png",
+ "png/basi0g08.png",
+ "png/basi0g16.png",
+ "png/basi2c08.png",
+ "png/basi2c16.png",
+ },
+ {
+ "png/basi3p01.png",
+ "png/basi3p02.png",
+ "png/basi3p04.png",
+ "png/basi3p08.png",
+ },
+ {
+ "png/basi4a08.png",
+ "png/basi4a16.png",
+ "png/basi6a08.png",
+ "png/basi6a16.png",
+ },
+ {
+ "png/basn0g01.png",
+ "png/basn0g02.png",
+ "png/basn0g04.png",
+ "png/basn0g08.png",
+ "png/basn0g16.png",
+ "png/basn2c08.png",
+ "png/basn2c16.png",
+ },
+ {
+ "png/basn3p01.png",
+ "png/basn3p02.png",
+ "png/basn3p04.png",
+ "png/basn3p08.png",
+ },
+ {
+ "png/basn4a08.png",
+ "png/basn4a16.png",
+ "png/basn6a08.png",
+ "png/basn6a16.png",
+ },
+ {
+ "png/bgai4a08.png",
+ "png/bgai4a16.png",
+ "png/bgan6a08.png",
+ "png/bgan6a16.png",
+ "png/bgbn4a08.png",
+ "png/bggn4a16.png",
+ "png/bgwn6a08.png",
+ "png/bgyn6a16.png",
+ },
+ {
+ "png/ccwn2c08.png", "png/ccwn3p08.png", "png/cdfn2c08.png", "png/cdhn2c08.png", "png/cdsn2c08.png", "png/cdun2c08.png",
+ "png/ch1n3p04.png", "png/ch2n3p08.png", "png/cm0n0g04.png", "png/cm7n0g04.png", "png/cm9n0g04.png", "png/cs3n2c16.png",
+ "png/cs3n3p08.png", "png/cs5n2c08.png", "png/cs5n3p08.png", "png/cs8n2c08.png", "png/cs8n3p08.png", "png/ct0n0g04.png",
+ "png/ct1n0g04.png", "png/cten0g04.png", "png/ctfn0g04.png", "png/ctgn0g04.png", "png/cthn0g04.png", "png/ctjn0g04.png",
+ "png/ctzn0g04.png", "png/exif2c08.png",
+ },
+ {
+ "png/f00n0g08.png",
+ "png/f00n2c08.png",
+ "png/f01n0g08.png",
+ "png/f01n2c08.png",
+ "png/f02n0g08.png",
+ "png/f02n2c08.png",
+ "png/f03n0g08.png",
+ "png/f03n2c08.png",
+ "png/f04n0g08.png",
+ "png/f04n2c08.png",
+ "png/f99n0g04.png",
+ },
+ {
+ "png/g03n0g16.png",
+ "png/g04n0g16.png",
+ "png/g05n0g16.png",
+ "png/g07n0g16.png",
+ "png/g10n0g16.png",
+ "png/g25n0g16.png",
+ "png/g03n2c08.png",
+ "png/g04n2c08.png",
+ "png/g05n2c08.png",
+ "png/g07n2c08.png",
+ "png/g10n2c08.png",
+ "png/g25n2c08.png",
+ "png/g03n3p04.png",
+ "png/g04n3p04.png",
+ "png/g05n3p04.png",
+ "png/g07n3p04.png",
+ "png/g10n3p04.png",
+ "png/g25n3p04.png",
+ },
+ {
+ "png/oi1n0g16.png",
+ "png/oi1n2c16.png",
+ "png/oi2n0g16.png",
+ "png/oi2n2c16.png",
+ "png/oi4n0g16.png",
+ "png/oi4n2c16.png",
+ "png/oi9n0g16.png",
+ "png/oi9n2c16.png",
+ },
+ {
+ "png/pp0n2c16.png",
+ "png/pp0n6a08.png",
+ "png/ps1n0g08.png",
+ "png/ps1n2c16.png",
+ "png/ps2n0g08.png",
+ "png/ps2n2c16.png",
+ },
+ {
+ "png/s01i3p01.png", "png/s01n3p01.png", "png/s02i3p01.png", "png/s02n3p01.png", "png/s03i3p01.png", "png/s03n3p01.png",
+ "png/s04i3p01.png", "png/s04n3p01.png", "png/s05i3p02.png", "png/s05n3p02.png", "png/s06i3p02.png", "png/s06n3p02.png",
+ "png/s07i3p02.png", "png/s07n3p02.png", "png/s08i3p02.png", "png/s08n3p02.png", "png/s09i3p02.png", "png/s09n3p02.png",
+ "png/s32i3p04.png", "png/s32n3p04.png", "png/s33i3p04.png", "png/s33n3p04.png", "png/s34i3p04.png", "png/s34n3p04.png",
+ "png/s35i3p04.png", "png/s35n3p04.png", "png/s36i3p04.png", "png/s36n3p04.png", "png/s37i3p04.png", "png/s37n3p04.png",
+ "png/s38i3p04.png", "png/s38n3p04.png", "png/s39i3p04.png", "png/s39n3p04.png", "png/s40i3p04.png", "png/s40n3p04.png",
+ },
+ {
+ "png/tbbn0g04.png",
+ "png/tbbn2c16.png",
+ "png/tbbn3p08.png",
+ "png/tbgn2c16.png",
+ "png/tbgn3p08.png",
+ "png/tbrn2c08.png",
+ "png/tbwn0g16.png",
+ "png/tbwn3p08.png",
+ "png/tbyn3p08.png",
+ "png/tm3n3p02.png",
+ "png/tp0n0g08.png",
+ "png/tp0n2c08.png",
+ "png/tp0n3p08.png",
+ "png/tp1n3p08.png",
+ },
+ //{
+ //"png/xc1n0g08.png",
+ //"png/xc9n2c08.png",
+ //"png/xcrn0g04.png",
+ //"png/xcsn0g01.png",
+ //"png/xd0n2c08.png",
+ //"png/xd3n2c08.png",
+ //"png/xd9n2c08.png",
+ //"png/xdtn0g01.png",
+ //"png/xhdn0g08.png",
+ //"png/xlfn0g04.png",
+ //"png/xs1n0g01.png",
+ //"png/xs2n0g01.png",
+ //"png/xs4n0g01.png",
+ //"png/xs7n0g01.png",
+ // },
+ {
+ "png/z00n2c08.png",
+ "png/z03n2c08.png",
+ "png/z06n2c08.png",
+ "png/z09n2c08.png",
+ }};
+} // namespace images
+
+namespace square_mesh
+{
+
+const Mesh::VertexData vertices              = {{-0.5, -0.5, 0.0}, {0.5, -0.5, 0.0}, {0.5, 0.5, 0.0}, {-0.5, 0.5, 0.0}};
+const Mesh::TextureCoordinatesData tex_coord = {{0.0, 0.0}, {1.0, 0.0}, {1.0, 1.0}, {0.0, 1.0}};
+Mesh::IndicesData indices                    = {0, 1, 2, 0, 2, 3};
+
+} // namespace square_mesh
+
+using MeshPtr    = std::unique_ptr<Mesh>;
+using TexturePtr = std::unique_ptr<Texture>;
+using ShaderPtr  = std::unique_ptr<Shader>;
+
+struct Object
+{
+    int width   = 0;
+    int height  = 0;
+    int x       = 0;
+    int y       = 0;
+    float gamma = 2.2f;
+    TexturePtr texture;
+    MeshPtr mesh;
 };
 
-std::vector<framework::graphics::Image> load_images(mode image_mode);
-void gl_error(const char* file, int line);
-framework::graphics::shader_program load_shader(const std::string& VertexShaderCode,
-                                                const std::string& FragmentShaderCode);
-framework::graphics::mesh make_quad(framework::int32 width, framework::int32 height);
-std::vector<object> generate_objects(const std::vector<framework::graphics::Image>& images);
-void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height, framework::int32 scale);
-std::vector<object> load_textures(mode m);
+using ObjectsList = std::vector<std::vector<Object>>;
+using ImagesList  = std::vector<std::vector<Image>>;
 
-std::vector<framework::graphics::Image> load_images(mode image_mode)
+ImagesList load_images(Mode image_mode)
 {
-    std::vector<framework::graphics::Image> images;
+    ImagesList images;
 
-    const auto& names = [](mode m) {
+    const auto& names = [](Mode m) {
         switch (m) {
-            case mode::bmp: return bmp_names;
-            case mode::png: return png_names;
+            case Mode::bmp: return images::bmp_names;
+            case Mode::png: return images::png_names;
         }
 
-        return std::vector<std::string>();
+        return std::vector<std::vector<std::string>>();
     }(image_mode);
 
-    std::transform(cbegin(names), cend(names), std::back_inserter(images), [](const std::string& name) {
-        framework::graphics::Image img;
-        img.load(name);
+    std::transform(cbegin(names), cend(names), std::back_inserter(images), [](const std::vector<std::string>& group) {
+        std::vector<Image> group_images;
 
-        return img;
+        std::transform(group.begin(), group.end(), std::back_inserter(group_images), [](const std::string& name) {
+            framework::graphics::Image img;
+            img.load(name);
+
+            return img;
+        });
+
+        return group_images;
     });
 
     return images;
 }
 
-void gl_error(const char* file, int line)
+MeshPtr create_mesh(int width, int height)
 {
-    using namespace framework::gl;
-    GLenum err(glGetError());
+    Mesh::VertexData scaled_vertices;
+    std::transform(square_mesh::vertices.begin(),
+                   square_mesh::vertices.end(),
+                   std::back_insert_iterator(scaled_vertices),
+                   [width, height](const Mesh::VertexData::value_type& v) {
+                       return Vector3f{v.x * width, v.y * height, v.z};
+                   });
 
-    while (err != GL_NO_ERROR) {
-        std::string error;
-
-        switch (err) {
-            case GL_INVALID_OPERATION: error = "INVALID_OPERATION"; break;
-            case GL_INVALID_ENUM: error = "INVALID_ENUM"; break;
-            case GL_INVALID_VALUE: error = "INVALID_VALUE"; break;
-            case GL_INVALID_FRAMEBUFFER_OPERATION: error = "GL_INVALID_FRAMEBUFFER_OPERATION"; break;
-            case GL_OUT_OF_MEMORY: error = "OUT_OF_MEMORY"; break;
-        }
-
-        framework::log::error("GL") << file << ":" << line << " err: " << err << " " << error << std::endl;
-        err = glGetError();
-    }
-}
-
-framework::graphics::shader_program load_shader(const std::string& VertexShaderCode,
-                                                const std::string& FragmentShaderCode)
-{
-    using namespace framework::graphics;
-    using namespace framework::log;
-
-    vertex_shader v_shader;
-    fragment_shader f_shader;
-
-    v_shader.set_source(VertexShaderCode);
-    f_shader.set_source(FragmentShaderCode);
-
-    v_shader.compile();
-    f_shader.compile();
-
-    if (!v_shader.compiled()) {
-        framework::log::error("shader") << "vertex: " << v_shader.info_log() << std::endl;
-    }
-
-    if (!f_shader.compiled()) {
-        framework::log::error("shader") << "fragment: " << f_shader.info_log() << std::endl;
-    }
-
-    shader_program program;
-
-    program.arttach(v_shader);
-    program.arttach(f_shader);
-    program.link();
-
-    if (!program.linked()) {
-        framework::log::error("shader") << "program: " << program.info_log() << std::endl;
-    }
-    return program;
-}
-
-framework::graphics::mesh make_quad(framework::int32 width, framework::int32 height)
-{
-    using namespace framework::graphics;
-    using framework::math::Vector2f;
-
-    const std::vector<Vector2f> vertex_buffer_data = {
-    Vector2f(0.0f, 0.0f),
-    Vector2f(0.0f, height),
-    Vector2f(width, height),
-    Vector2f(width, 0.0f),
-    };
-
-    const std::vector<Vector2f> texture_buffer_data = {
-    Vector2f(0.0f, 1.0f),
-    Vector2f(0.0f, 0.0f),
-    Vector2f(1.0f, 0.0f),
-    Vector2f(1.0f, 1.0f),
-    };
-
-    mesh m;
-    m.load_vertices(vertex_buffer_data);
-    m.load_texture_coord1(texture_buffer_data);
+    MeshPtr m = std::make_unique<Mesh>();
+    m->set_vertices(scaled_vertices);
+    m->set_texture_coordinates(0, square_mesh::tex_coord);
+    m->set_indices(square_mesh::indices);
 
     return m;
 }
 
-std::vector<object> generate_objects(const std::vector<framework::graphics::Image>& images)
+TexturePtr create_texture(const Image& image)
 {
-    using namespace framework::graphics;
 
-    std::vector<object> res;
-    transform(begin(images), end(images), back_inserter(res), [](const Image& img) {
-        texture tex(min_filter::nearest, mag_filter::nearest, wrap_s::clamp_to_edge, wrap_t::clamp_to_edge);
-        tex.load(img.width(), img.height(), img.data());
+    TexturePtr t = std::make_unique<Texture>();
+    t->set_image(image);
+    t->set_min_filter(MinFilter::nearest);
+    t->set_mag_filter(MagFilter::nearest);
 
-        auto quad = make_quad(img.width(), img.height());
-        gl_error(__FILE__, __LINE__);
+    return t;
+}
 
-        return object{img.width(), img.height(), 0, 0, img.gamma(), std::move(tex), std::move(quad)};
+ShaderPtr create_shader()
+{
+    ShaderPtr s = std::make_unique<Shader>();
+
+    s->set_vertex_source(vertex_shader);
+    s->set_fragment_source(fragment_shader);
+
+    return s;
+}
+
+ObjectsList generate_objects(const ImagesList& images)
+{
+    ObjectsList res;
+
+    std::transform(images.begin(), images.end(), std::back_inserter(res), [](const std::vector<Image>& group) {
+        std::vector<Object> obj_group;
+
+        std::transform(group.begin(), group.end(), std::back_inserter(obj_group), [](const Image& img) {
+            int w = img.width();
+            int h = img.height();
+            return Object{w, h, 0, 0, img.gamma(), create_texture(img), create_mesh(w, h)};
+        });
+
+        return obj_group;
     });
 
     return res;
 }
 
-void arrange(std::vector<object>& objects, framework::int32 width, framework::int32 height, framework::int32 scale)
+class Example
 {
-    using framework::int32;
+public:
+    Example();
 
-    width /= scale;
-    height /= scale;
+    void setup();
+    void arrange();
 
-    int32 w          = 1;
-    int32 h          = 1;
-    int32 max_height = 1;
-    for_each(begin(objects), end(objects), [&w, &h, &max_height, width](object& o) {
-        if (w + o.width + 1 > width) {
-            h += max_height + 1;
-            w = 1;
-        }
+    void run();
 
-        o.x = w;
-        o.y = h;
+private:
+    Mode current_mode = Mode::bmp;
+    int image_scale   = 1;
+    float gamma       = 0.0f;
 
-        w += o.width + 1;
+    Vector2f position       = {0, 0};
+    Vector2f drag_start_pos = {0, 0};
+    bool drag               = false;
 
-        if (o.height > max_height) {
-            max_height = o.height;
-        }
-    });
-}
+    ImagesList png_images;
+    ImagesList bmp_images;
 
-std::vector<object> load_textures(mode m)
+    ObjectsList png_objects;
+    ObjectsList bmp_objects;
+
+    ObjectsList* current_objects = nullptr;
+
+    Window main_window;
+    Renderer renderer;
+
+    ShaderPtr shader;
+};
+
+Example::Example()
+    : main_window({1024, 720}, "Image example")
+    , renderer(main_window)
+{}
+
+void Example::setup()
 {
-    std::vector<framework::graphics::Image> images = load_images(m);
+    png_images = load_images(Mode::png);
+    bmp_images = load_images(Mode::bmp);
 
-    if (images.empty()) {
-        return std::vector<object>();
-    }
+    png_objects = generate_objects(png_images);
+    bmp_objects = generate_objects(bmp_images);
 
-    std::vector<object> objects = generate_objects(images);
-    return objects;
-}
+    current_objects = current_mode == Mode::bmp ? &bmp_objects : &png_objects;
 
-int main()
-{
-    using namespace framework;
-    using namespace framework::graphics;
-    using namespace framework::system;
-    using namespace framework::gl;
+    renderer.set_clear_color(Color(0xFF00FFFF));
+    renderer.set_view(scale(Matrix4f(), {image_scale, image_scale, image_scale}));
 
-    framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
-
-    Window::set_application_name("Image example");
-
-    Window main_window({640, 480}, "Image example");
-    main_window.make_current();
-
-    glEnable(GL_BLEND);
-    // glEnable(GL_FRAMEBUFFER_SRGB);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-
-    glViewport(0, 0, 640, 480);
-
-    shader_program shader = load_shader(vertex_shader_src, fragment_shader_src);
-
-    int32 image_scale = 1;
-
-    math::Matrix4f mvp = framework::math::ortho2d<float32>(0, 640, 480, 0);
-    mvp                = scale(mvp, {image_scale, image_scale, image_scale});
-
-    // load all images
-    std::vector<Image> images = load_images(mode::png);
-
-    if (images.empty()) {
-        return 0;
-    }
-    mode current_mode = mode::bmp;
-
-    std::vector<object> objects = load_textures(current_mode);
-    arrange(objects, 640, 480, image_scale);
-
-    gl_error(__FILE__, __LINE__);
-
-    float32 gamma = 0.0f;
-
-    main_window.on_resize.connect([&objects, &mvp, image_scale](const Window&, Size size) {
-        mvp = framework::math::ortho2d<float32>(0,
-                                                static_cast<float32>(size.width),
-                                                static_cast<float32>(size.height),
-                                                0);
-        mvp = scale(mvp, {image_scale, image_scale, image_scale});
-        glViewport(0, 0, size.width, size.height);
-        arrange(objects, size.width, size.height, image_scale);
+    main_window.on_resize.connect([this](const Window&, Size size) {
+        renderer.set_projection(ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
+        arrange();
     });
 
-    main_window.on_key_down.connect(
-    [&gamma, &current_mode, &objects, &mvp, &image_scale](const Window& w, KeyCode k, Modifiers) {
+    main_window.on_key_down.connect([this](const Window& w, KeyCode k, Modifiers) {
         switch (k) {
             case KeyCode::key_equal: gamma += 0.1f; break;
             case KeyCode::key_minus: gamma -= 0.1f; break;
-            case KeyCode::key_1: current_mode = mode::bmp; break;
-            case KeyCode::key_2: current_mode = mode::png; break;
+            case KeyCode::key_1: current_mode = Mode::bmp; break;
+            case KeyCode::key_2: current_mode = Mode::png; break;
             case KeyCode::key_s: image_scale = image_scale > 4 ? 1 : image_scale + 1; break;
+            case KeyCode::key_0: position = {0, 0}; break;
             default: break;
         }
-        auto size = w.size();
+        const auto size = w.size();
 
         gamma = framework::math::clamp(gamma, -4.0f, 4.0f);
 
-        mvp = framework::math::ortho2d<float32>(0,
-                                                static_cast<float32>(size.width),
-                                                static_cast<float32>(size.height),
-                                                0);
-        mvp = scale(mvp, {image_scale, image_scale, image_scale});
+        renderer.set_view(scale(Matrix4f(), {image_scale, image_scale, image_scale}));
 
-        objects = load_textures(current_mode);
-        arrange(objects, size.width, size.height, image_scale);
+        current_objects = current_mode == Mode::bmp ? &bmp_objects : &png_objects;
+        arrange();
     });
 
+    main_window.on_button_down.connect([this](const Window&, MouseButton button, CursorPosition pos, Modifiers) {
+        if (button == MouseButton::button_left) {
+            drag_start_pos = Vector2f(pos.x, pos.y);
+            drag           = true;
+        }
+    });
+
+    main_window.on_button_up.connect([this](const Window&, MouseButton button, CursorPosition, Modifiers) {
+        if (button == MouseButton::button_left) {
+            drag = false;
+        }
+    });
+
+    main_window.on_mouse_move.connect([this](const Window&, Position pos) {
+        if (drag) {
+            Vector2f mouse(pos.x, pos.y);
+            Vector2f diff  = drag_start_pos - mouse;
+            drag_start_pos = mouse;
+            position += diff * Vector2f(-1, 1);
+        }
+    });
+
+    shader = create_shader();
+
+    renderer.load(*shader);
+
+    for (const auto& g : png_objects) {
+        for (const auto& o : g) {
+            renderer.load(*o.texture.get());
+            renderer.load(*o.mesh.get());
+        }
+    }
+
+    for (const auto& g : bmp_objects) {
+        for (const auto& o : g) {
+            renderer.load(*o.texture.get());
+            renderer.load(*o.mesh.get());
+        }
+    }
+}
+
+void Example::arrange()
+{
+    int height = 0;
+
+    for (auto& group : *current_objects) {
+        int width      = 0;
+        int max_height = 0;
+
+        for (auto& obj : group) {
+            obj.x = width + 1;
+            obj.y = height - 1;
+
+            if (max_height < obj.height) {
+                max_height = obj.height - 1;
+            }
+
+            width += obj.width + 1;
+        }
+
+        height -= max_height;
+    }
+}
+
+void Example::run()
+{
     main_window.show();
 
     while (!main_window.should_close()) {
         main_window.process_events();
 
-        glClearColor(0.5f, 0.2f, 0.5f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        shader.use();
-
-        for (auto& o : objects) {
-            o.texture.bind();
-
-            glBindVertexArray(o.quad.vertex_array_id());
-
-            glEnableVertexAttribArray(0);
-            o.quad.bind_vertices_attrib(0);
-
-            glEnableVertexAttribArray(1);
-            o.quad.bind_texture_attrib(1);
-
-            shader.uniform("tex", o.texture.texture_unit());
-            shader.uniform("gamma", o.gamma + gamma);
-            shader.uniform("MVP", translate(mvp, {o.x, o.y, 0}));
-
-            glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-            glBindVertexArray(0);
-
-            o.texture.unbind();
+        for (const auto& g : *current_objects) {
+            for (const auto& o : g) {
+                Matrix4f transform = translate(Matrix4f(),
+                                               Vector3f(o.x, o.y, 0.0f) +
+                                               Vector3f(0.5f * o.width, -0.5f * o.height, 0.0f) +
+                                               Vector3f(position, 0.0f));
+                renderer.render(*o.mesh, *shader, {*o.texture}, transform);
+            }
         }
 
-        shader.stop_using();
-
-        main_window.swap_buffers();
+        renderer.display();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
+}
+
+} // namespace
+
+int main()
+{
+    Window::set_application_name("Image example");
+
+    Example ex;
+    ex.setup();
+    ex.run();
 
     return 0;
 }
