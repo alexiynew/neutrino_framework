@@ -59,14 +59,14 @@ std::unique_ptr<RendererImpl> create_impl(system::Context& context)
     throw std::runtime_error("Unsupported graphic api.");
 }
 
-MatrixCache clear_matrix_cache(const MatrixCache& cache)
+Renderer::MatrixCache clear_matrix_cache(const Renderer::MatrixCache& cache)
 {
-    return MatrixCache{cache.back()};
+    return Renderer::MatrixCache{cache.back()};
 }
 
-TextureIds get_texture_ids(const Renderer::TexturesList& textures)
+RenderCommand::InstanceIdList get_texture_ids(const Renderer::TexturesList& textures)
 {
-    TextureIds ids;
+    RenderCommand::InstanceIdList ids;
     for (const auto& texture_ref : textures) {
         ids.push_back(texture_ref.get().instance_id());
     }
@@ -158,20 +158,23 @@ void Renderer::render(const Mesh& mesh,
                       const TexturesList& textures,
                       const math::Matrix4f& model_transform)
 {
-    Uniforms uniforms      = get_uniforms(model_transform);
-    TextureIds texture_ids = get_texture_ids(textures);
-    m_render_commands.emplace_back(mesh.instance_id(), shader.instance_id(), texture_ids, uniforms);
-}
-
-Uniforms Renderer::get_uniforms(const math::Matrix4f& model_transform) const
-{
     assert(!m_view.empty());
     assert(!m_projection.empty());
 
-    CachedMatrix view{m_view, m_view.size() - 1};
-    CachedMatrix projection{m_projection, m_projection.size() - 1};
+    RenderCommand::InstanceIdList texture_ids = get_texture_ids(textures);
 
-    return Uniforms{model_transform, view, projection};
+    RenderCommand::CachedMatrix view{m_view, m_view.size() - 1};
+    RenderCommand::CachedMatrix projection{m_projection, m_projection.size() - 1};
+
+    math::Matrix3f normal_matrix(transpose(inverse(view.get() * model_transform)));
+
+    m_render_commands.emplace_back(mesh.instance_id(),
+                                   shader.instance_id(),
+                                   texture_ids,
+                                   model_transform,
+                                   view,
+                                   projection,
+                                   normal_matrix);
 }
 
 void Renderer::display()

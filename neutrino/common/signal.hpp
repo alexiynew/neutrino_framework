@@ -56,7 +56,7 @@ class Signal
 {
 public:
     using Slot   = std::function<void(Args...)>; ///< Slot type
-    using SlotId = std::size_t; ///< Slot id type
+    using SlotId = std::size_t;                  ///< Slot id type
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Default constructor,

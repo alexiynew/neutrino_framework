@@ -34,39 +34,60 @@
 namespace framework::graphics
 {
 
-const MatrixCache::value_type& CachedMatrix::get() const
+const RenderCommand::CachedMatrix::MatrixType& RenderCommand::CachedMatrix::get() const
 {
     return cache.at(index);
 }
 
-RenderCommand::RenderCommand(InstanceId mesh_id,
-                             InstanceId shader_id,
-                             const TextureIds& textures,
-                             const Uniforms& uniforms)
-    : m_mesh_id(mesh_id)
-    , m_shader_id(shader_id)
-    , m_texture_ids(textures)
-    , m_uniforms(uniforms)
+RenderCommand::RenderCommand(InstanceId mesh,
+                             InstanceId shader,
+                             const InstanceIdList& textures,
+                             const math::Matrix4f model_matrix,
+                             const CachedMatrix view_matrix,
+                             const CachedMatrix projection_matrix,
+                             const math::Matrix3f normal_matrix)
+    : m_mesh(mesh)
+    , m_shader(shader)
+    , m_textures(textures)
+    , m_model_matrix(model_matrix)
+    , m_view_matrix(view_matrix)
+    , m_projection_matrix(projection_matrix)
+    , m_normal_matrix(normal_matrix)
 {}
 
-InstanceId RenderCommand::mesh_id() const
+InstanceId RenderCommand::mesh() const
 {
-    return m_mesh_id;
+    return m_mesh;
 }
 
-InstanceId RenderCommand::shader_id() const
+InstanceId RenderCommand::shader() const
 {
-    return m_shader_id;
+    return m_shader;
 }
 
-const TextureIds& RenderCommand::texture_ids() const
+const RenderCommand::InstanceIdList& RenderCommand::textures() const
 {
-    return m_texture_ids;
+    return m_textures;
 }
 
-const Uniforms& RenderCommand::uniforms() const
+const math::Matrix4f& RenderCommand::model_matrix() const
 {
-    return m_uniforms;
+    return m_model_matrix;
+}
+
+const math::Matrix4f& RenderCommand::view_matrix() const
+{
+    return m_view_matrix.get();
+}
+
+const math::Matrix4f& RenderCommand::projection_matrix() const
+{
+    return m_projection_matrix.get();
+}
+
+const math::Matrix3f& RenderCommand::normal_matrix() const
+{
+    return m_normal_matrix;
 }
 
 } // namespace framework::graphics

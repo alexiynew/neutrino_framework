@@ -76,7 +76,7 @@ private:
     using TextureMap = std::unordered_map<InstanceId, OpenglTexture>;
 
     void init() const;
-    void bind_textures(const OpenglShader& shader, const TextureIds& textures) const;
+    void bind_textures(const OpenglShader& shader, const RenderCommand::InstanceIdList& textures) const;
 
     MeshMap m_meshes;
     ShaderMap m_shaders;

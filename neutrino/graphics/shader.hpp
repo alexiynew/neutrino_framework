@@ -64,9 +64,11 @@ namespace framework::graphics
 ///
 /// There are also several predefined uniforms passed to each shader:
 /// @code
-/// uniform mat4 madelMatrix;       - model transformations
-/// uniform mat4 viewMatrix;        - view transformation
-/// uniform mat4 projectionMatrix;  - projection frustim
+/// uniform mat4 madelMatrix;      - model transformations
+/// uniform mat4 viewMatrix;       - view transformation
+/// uniform mat4 projectionMatrix; - projection frustim
+/// uniform mat3 normalMatrix;     - transpose inverse of 3x3 part
+///                                  of (viewMatrix * modelMatrix)
 /// @endcode
 ///
 /// @see Mesh, Renderer

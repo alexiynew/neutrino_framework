@@ -67,6 +67,7 @@ class Renderer
 {
 public:
     using TexturesList = std::vector<std::reference_wrapper<Texture>>;
+    using MatrixCache  = std::vector<math::Matrix4f>;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates Renderer and initialize graphic context for the window.
@@ -189,10 +190,6 @@ public:
     std::string device_name() const;
 
 private:
-    using MatrixCache = std::vector<math::Matrix4f>;
-
-    Uniforms get_uniforms(const math::Matrix4f& model_transform) const;
-
     void start_frame();
     void end_frame();
 

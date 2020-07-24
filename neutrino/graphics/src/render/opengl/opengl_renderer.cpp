@@ -183,20 +183,20 @@ void OpenglRenderer::start_frame()
 
 void OpenglRenderer::render(const RenderCommand& command)
 {
-    if (m_meshes.count(command.mesh_id()) == 0) {
+    if (m_meshes.count(command.mesh()) == 0) {
         return;
     }
 
-    if (m_shaders.count(command.shader_id()) == 0) {
+    if (m_shaders.count(command.shader()) == 0) {
         return;
     }
 
-    const OpenglMesh& mesh     = m_meshes.at(command.mesh_id());
-    const OpenglShader& shader = m_shaders.at(command.shader_id());
+    const OpenglMesh& mesh     = m_meshes.at(command.mesh());
+    const OpenglShader& shader = m_shaders.at(command.shader());
 
     shader.use();
-    shader.set_uniforms(command.uniforms());
-    bind_textures(shader, command.texture_ids());
+    shader.set_uniforms(command);
+    bind_textures(shader, command.textures());
 
     mesh.draw();
 
@@ -211,7 +211,7 @@ void OpenglRenderer::end_frame()
     glUseProgram(0);
 }
 
-void OpenglRenderer::bind_textures(const OpenglShader& shader, const TextureIds& textures) const
+void OpenglRenderer::bind_textures(const OpenglShader& shader, const RenderCommand::InstanceIdList& textures) const
 {
     for (size_t i = 0; i < textures.size(); ++i) {
         const InstanceId id = textures[i];

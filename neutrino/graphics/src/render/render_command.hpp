@@ -35,45 +35,55 @@
 #include <vector>
 
 #include <common/instance_id.hpp>
+#include <graphics/renderer.hpp>
 #include <math/math.hpp>
 
 namespace framework::graphics
 {
-using MatrixCache = std::vector<math::Matrix4f>;
-using TextureIds  = std::vector<InstanceId>;
 
-struct CachedMatrix
-{
-    const MatrixCache& cache;
-    const std::size_t index;
-
-    const MatrixCache::value_type& get() const;
-};
-
-struct Uniforms
-{
-    const math::Matrix4f model_matrix;
-    const CachedMatrix view_matrix;
-    const CachedMatrix projection_matrix;
-};
 class RenderCommand
 {
 public:
-    explicit RenderCommand(InstanceId mesh_id,
-                           InstanceId shader_id,
-                           const TextureIds& textures,
-                           const Uniforms& uniforms);
+    using InstanceIdList = std::vector<InstanceId>;
 
-    InstanceId mesh_id() const;
-    InstanceId shader_id() const;
-    const TextureIds& texture_ids() const;
-    const Uniforms& uniforms() const;
+    struct CachedMatrix
+    {
+        using MatrixType = Renderer::MatrixCache::value_type;
+
+        const Renderer::MatrixCache& cache;
+        const std::size_t index;
+
+        const MatrixType& get() const;
+    };
+
+    RenderCommand(InstanceId mesh,
+                  InstanceId shader,
+                  const InstanceIdList& textures,
+                  const math::Matrix4f model_matrix,
+                  const CachedMatrix view_matrix,
+                  const CachedMatrix projection_matrix,
+                  const math::Matrix3f normal_matrix);
+
+    InstanceId mesh() const;
+    InstanceId shader() const;
+
+    const InstanceIdList& textures() const;
+
+    const math::Matrix4f& model_matrix() const;
+    const math::Matrix4f& view_matrix() const;
+    const math::Matrix4f& projection_matrix() const;
+    const math::Matrix3f& normal_matrix() const;
 
 private:
-    InstanceId m_mesh_id;
-    InstanceId m_shader_id;
-    TextureIds m_texture_ids;
-    Uniforms m_uniforms;
+    const InstanceId m_mesh;
+    const InstanceId m_shader;
+
+    const InstanceIdList m_textures;
+
+    const math::Matrix4f m_model_matrix;
+    const CachedMatrix m_view_matrix;
+    const CachedMatrix m_projection_matrix;
+    const math::Matrix3f m_normal_matrix;
 };
 
 } // namespace framework::graphics

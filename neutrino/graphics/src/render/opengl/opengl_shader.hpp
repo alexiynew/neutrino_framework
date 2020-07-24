@@ -38,7 +38,7 @@ namespace framework::graphics
 {
 class Shader;
 class OpenglTexture;
-struct Uniforms;
+class RenderCommand;
 
 class OpenglShader
 {
@@ -58,7 +58,7 @@ public:
 
     void use() const;
 
-    void set_uniforms(const Uniforms& uniforms) const;
+    void set_uniforms(const RenderCommand& command) const;
     void set_texture(int index) const;
 
 private:
@@ -69,6 +69,7 @@ private:
     int m_model_matrix      = -1;
     int m_view_matrix       = -1;
     int m_projection_matrix = -1;
+    int m_normal_matrix     = -1;
 
     int m_texture = -1;
 };

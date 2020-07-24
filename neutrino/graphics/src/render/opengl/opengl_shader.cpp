@@ -51,6 +51,7 @@ namespace uniform_name
 const std::string model_martix      = "modelMatrix";
 const std::string view_martix       = "viewMatrix";
 const std::string projection_martix = "projectionMatrix";
+const std::string normal_martix     = "normalMatrix";
 const std::string texture0          = "texture0";
 } // namespace uniform_name
 
@@ -157,6 +158,15 @@ void set_uniform(int location, const math::Matrix4f& matrix)
     glUniformMatrix4fv(location, 1, false, matrix.data());
 }
 
+void set_uniform(int location, const math::Matrix3f& matrix)
+{
+    if (location == -1) {
+        return;
+    }
+
+    glUniformMatrix3fv(location, 1, false, matrix.data());
+}
+
 void set_uniform(int location, int value)
 {
     if (location == -1) {
@@ -188,6 +198,7 @@ void OpenglShader::clear()
     m_model_matrix      = -1;
     m_view_matrix       = -1;
     m_projection_matrix = -1;
+    m_normal_matrix     = -1;
 }
 
 bool OpenglShader::load(const Shader& shader)
@@ -199,6 +210,7 @@ bool OpenglShader::load(const Shader& shader)
     m_model_matrix      = glGetUniformLocation(m_shader_program, uniform_name::model_martix.c_str());
     m_view_matrix       = glGetUniformLocation(m_shader_program, uniform_name::view_martix.c_str());
     m_projection_matrix = glGetUniformLocation(m_shader_program, uniform_name::projection_martix.c_str());
+    m_normal_matrix     = glGetUniformLocation(m_shader_program, uniform_name::normal_martix.c_str());
 
     m_texture = glGetUniformLocation(m_shader_program, uniform_name::texture0.c_str());
 
@@ -210,11 +222,12 @@ void OpenglShader::use() const
     glUseProgram(m_shader_program);
 }
 
-void OpenglShader::set_uniforms(const Uniforms& uniforms) const
+void OpenglShader::set_uniforms(const RenderCommand& command) const
 {
-    set_uniform(m_model_matrix, uniforms.model_matrix);
-    set_uniform(m_view_matrix, uniforms.view_matrix.get());
-    set_uniform(m_projection_matrix, uniforms.projection_matrix.get());
+    set_uniform(m_model_matrix, command.model_matrix());
+    set_uniform(m_view_matrix, command.view_matrix());
+    set_uniform(m_projection_matrix, command.projection_matrix());
+    set_uniform(m_normal_matrix, command.normal_matrix());
 }
 
 void OpenglShader::set_texture(int index) const
