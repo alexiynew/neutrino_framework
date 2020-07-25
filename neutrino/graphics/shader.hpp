@@ -123,6 +123,24 @@ public:
     Shader& operator=(Shader&& other) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
+    /// @brief Load vertex shader source form file.
+    ///
+    /// @param filename Path to vertex shader source file.
+    ///
+    /// @return `true` if loadint successful.
+    ////////////////////////////////////////////////////////////////////////////
+    bool load_vertex_source(const std::string& filename);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Set fragment shader source form file.
+    ///
+    /// @param filename Path to fragment shader source file.
+    ///
+    /// @return `true` if loadint successful.
+    ////////////////////////////////////////////////////////////////////////////
+    bool load_fragment_source(const std::string& filename);
+
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Set vertex shader source.
     ///
     /// @param vertex_source Vertex shader source.

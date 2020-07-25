@@ -40,3 +40,6 @@ add_test(NAME "${GROUP_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
 set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME})
 
 add_dependencies(${TESTS_TARGET} ${TEST_NAME})
+
+file(GLOB SHADER_SRC "${TEST_DIR}/shaders/*.frag" "${TEST_DIR}/shaders/*.vert")
+file(COPY ${SHADER_SRC} DESTINATION ${CMAKE_BINARY_DIR}/test/shaders)

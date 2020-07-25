@@ -43,71 +43,8 @@ using namespace framework::math;
 namespace cube
 {
 
-const std::string vertex_shader =
-"#version 330 core\n\
-\n\
-layout(location = 0) in vec3 position;\n\
-layout(location = 1) in vec3 normal;\n\
-layout(location = 3) in vec4 color;\n\
-\n\
-uniform mat4 modelMatrix;\n\
-uniform mat4 viewMatrix;\n\
-uniform mat4 projectionMatrix;\n\
-uniform mat3 normalMatrix;\n\
-\n\
-vec3 lightPos = vec3(1.5, 0.0, 1.0);\n\
-\n\
-out vec4 fragColor;\n\
-out vec3 fragPosition;\n\
-out vec3 fragNormal;\n\
-\n\
-out vec3 lightPosition;\n\
-\n\
-void main()\n\
-{\n\
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);\n\
-\n\
-    lightPosition = vec3(viewMatrix * modelMatrix * vec4(lightPos, 1.0));\n\
-\n\
-    fragPosition = vec3(viewMatrix * modelMatrix * vec4(position, 1.0));\n\
-    fragNormal = normalize(normalMatrix * normal);\n\
-    fragColor = color / 256.0;\n\
-}\n\
-";
-
-const std::string fragment_shader =
-"#version 330 core\n\
-\n\
-in vec4 fragColor;\n\
-in vec3 fragPosition;\n\
-in vec3 fragNormal;\n\
-\n\
-in vec3 lightPosition;\n\
-\n\
-out vec4 color;\n\
-\n\
-float ambientStrength = 0.1f;\n\
-vec3 lightColor = vec3(1.0, 1.0, 1.0);\n\
-\n\
-\n\
-float specularStrength = 0.5f;\n\
-\n\
-void main()\n\
-{\n\
-    vec3 ambient = ambientStrength * lightColor;\n\
-\n\
-    vec3 lightDir = normalize(lightPosition - fragPosition);\n\
-    float diff = max(dot(fragNormal, lightDir), 0.0);\n\
-    vec3 diffuse = diff * lightColor;\n\
-\n\
-    vec3 viewDir = -fragPosition;\n\
-    vec3 reflectDir = reflect(-lightDir, fragNormal);\n\
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 2);\n\
-    vec3 specular = specularStrength * spec * lightColor;\n\
-\n\
-    color = vec4(ambient + diffuse + specular, 1.0) * fragColor;\n\
-}\n\
-";
+const std::string vertex_shader = "./shaders/phong_light.vert";
+const std::string fragment_shader = "./shaders/phong_light.frag";
 
 const Mesh::VertexData vertices = {
 // clang-format off
@@ -182,30 +119,8 @@ Mesh::IndicesData indices = {
 namespace light_cube
 {
 
-const std::string vertex_shader =
-"#version 330 core\n\
-layout(location = 0) in vec3 position;\n\
-\n\
-uniform mat4 modelMatrix;\n\
-uniform mat4 viewMatrix;\n\
-uniform mat4 projectionMatrix;\n\
-\n\
-out vec4 fragColor;\n\
-\n\
-void main()\n\
-{\n\
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);\n\
-    fragColor = vec4(1.0);\n\
-}\n\
-";
-
-const std::string fragment_shader =
-"#version 330 core\n\
-in vec4 fragColor;\n\
-out vec4 color;\n\
-void main(){\n\
-    color = fragColor;\n\
-}";
+const std::string vertex_shader = "./shaders/white_light_lamp.vert";
+const std::string fragment_shader = "./shaders/white_light_lamp.frag";
 
 const Mesh::VertexData vertices = {
 // clang-format off
@@ -262,8 +177,8 @@ Object create_cube()
     mesh->set_indices(cube::indices);
 
     ShaderPtr shader = std::make_unique<Shader>();
-    shader->set_vertex_source(cube::vertex_shader);
-    shader->set_fragment_source(cube::fragment_shader);
+    shader->load_vertex_source(cube::vertex_shader);
+    shader->load_fragment_source(cube::fragment_shader);
 
     return {std::move(mesh), std::move(shader), {0, 0, 0}};
 }
@@ -275,8 +190,8 @@ Object create_light_cube()
     mesh->set_indices(light_cube::indices);
 
     ShaderPtr shader = std::make_unique<Shader>();
-    shader->set_vertex_source(light_cube::vertex_shader);
-    shader->set_fragment_source(light_cube::fragment_shader);
+    shader->load_vertex_source(light_cube::vertex_shader);
+    shader->load_fragment_source(light_cube::fragment_shader);
 
     return {std::move(mesh), std::move(shader), {0, 0, 0}};
 }
@@ -301,13 +216,13 @@ private:
 
         Window::set_application_name("GL light Test");
 
-        Window main_window({640, 480}, "GL light test");
+        Window main_window({800, 640}, "GL light test");
         Renderer renderer(main_window);
 
         main_window.show();
 
         renderer.set_clear_color(Color(0x000000FFu));
-        renderer.set_view(math::look_at(math::Vector3f{0.0f, 0.0f, 2.0f},
+        renderer.set_view(math::look_at(math::Vector3f{0.0f, 0.0f, 3.0f},
                                         math::Vector3f{0.0f, 0.0f, 0.0f},
                                         math::Vector3f{0.0f, 1.0f, 0.0f}));
         renderer.set_projection(math::perspective(math::half_pi<float>, 640.0f / 480.0f, 0.001f, 10.0f));
@@ -331,21 +246,20 @@ private:
         std::chrono::microseconds total_time(0);
 
         const float angle   = 0.05f;
-        const Vector3f axis = math::normalize(math::Vector3f{1.0, 1.0, 1.0});
 
-        Matrix4f cube_rotation;
-
-        light_cube.position = {1.5f, 0.0f, 1.0f};
+        light_cube.position = {2.5f, 0.0f, 0.0f};
         while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
 
-            cube_rotation           = rotate(cube_rotation, axis, angle);
-            Matrix4f cube_transform = scale(cube_rotation, Vector3f(1, 1, 1));
-            cube_transform          = translate(cube_transform, cube.position);
-            renderer.render(*cube.mesh, *cube.shader, cube_transform);
+            light_cube.position = Vector3f(rotate(Matrix4f(), Vector3f(0, 0, 1), radians(1)) * Vector4f(light_cube.position));
 
-            Matrix4f light_cube_transform = scale(Matrix4f(), Vector3f(0.1f, 0.1f, 0.1f));
-            light_cube_transform          = translate(light_cube_transform, light_cube.position);
+            Matrix4f cube_transform = rotate(Matrix4f(), normalize(Vector3f(1)), radians(45));
+            cube_transform = translate(cube_transform, cube.position);
+            renderer.render(*cube.mesh, *cube.shader, {"modelMatrix", cube_transform}, {"lightPos", light_cube.position});
+
+            Matrix4f light_cube_transform;
+            light_cube_transform = translate(light_cube_transform, light_cube.position);
+            light_cube_transform = scale(light_cube_transform, Vector3f(0.2f, 0.2f, 0.2f));
             renderer.render(*light_cube.mesh, *light_cube.shader, light_cube_transform);
 
             renderer.display();
