@@ -147,10 +147,12 @@ private:
         main_window.show();
 
         renderer.set_clear_color(Color(0xFF00FFFF));
-        renderer.set_view(math::look_at(math::Vector3f{0.0f, 0.0f, 2.0f},
-                                        math::Vector3f{0.0f, 0.0f, 0.0f},
-                                        math::Vector3f{0.0f, 1.0f, 0.0f}));
-        renderer.set_projection(math::perspective(math::half_pi<float>, 640.0f / 480.0f, 0.001f, 10.0f));
+        renderer.set_uniform("viewMatrix",
+                             math::look_at(math::Vector3f{0.0f, 0.0f, 2.0f},
+                                           math::Vector3f{0.0f, 0.0f, 0.0f},
+                                           math::Vector3f{0.0f, 1.0f, 0.0f}));
+        renderer.set_uniform("projectionMatrix",
+                             math::perspective(math::half_pi<float>, 640.0f / 480.0f, 0.001f, 10.0f));
 
         Mesh mesh;
         mesh.set_vertices(cube_mesh::vertices);
@@ -178,7 +180,7 @@ private:
             main_window.process_events();
 
             model_transform = math::rotate(model_transform, axis, angle);
-            renderer.render(mesh, shader, model_transform);
+            renderer.render(mesh, shader, Uniform("modelMatrix", model_transform));
             renderer.display();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));

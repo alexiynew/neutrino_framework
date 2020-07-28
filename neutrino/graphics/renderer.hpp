@@ -35,13 +35,13 @@
 #include <memory>
 
 #include <graphics/color.hpp>
+#include <graphics/uniform.hpp>
 #include <math/math.hpp>
 #include <system/window.hpp>
 
 namespace framework::graphics
 {
 class Mesh;
-class RenderCommand;
 class RendererImpl;
 class Shader;
 class Texture;
@@ -66,8 +66,54 @@ struct Uniforms;
 class Renderer
 {
 public:
-    using TexturesList = std::vector<std::reference_wrapper<Texture>>;
-    using MatrixCache  = std::vector<math::Matrix4f>;
+    using UniformPtr     = std::unique_ptr<UniformBase>;
+    using UniformsList   = std::vector<UniformPtr>;
+    using UniformsMap    = std::unordered_map<std::string, UniformPtr>;
+
+    class TextureBinding
+    {
+    public:
+        TextureBinding(const std::string& name, const Texture& texture);
+
+        const std::string& name() const;
+        InstanceId texture() const;
+
+    private:
+        std::string m_name;
+        InstanceId m_texture;
+    };
+
+    using TexturesList   = std::vector<TextureBinding>;
+
+    class Command
+    {
+    public:
+        Command(InstanceId mesh,
+                InstanceId shader,
+                const TexturesList& m_textures,
+                const UniformsMap& global_uniforms,
+                UniformsList&& m_uniforms);
+
+        Command(const Command& other) = delete;
+        Command& operator=(const Command& other) = delete;
+
+        Command(Command&& other);
+        Command& operator=(Command&& other);
+
+        InstanceId mesh() const;
+        InstanceId shader() const;
+        const TexturesList& textures() const;
+        const UniformsMap& global_uniforms() const;
+        const UniformsList& uniforms() const;
+
+    private:
+        InstanceId m_mesh;
+        InstanceId m_shader;
+        TexturesList m_textures;
+        std::reference_wrapper<const UniformsMap> m_global_uniforms;
+        UniformsList m_uniforms;
+    };
+
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates Renderer and initialize graphic context for the window.
@@ -106,20 +152,6 @@ public:
     void set_clear_color(const Color& color);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set projection matrix
-    ///
-    /// @param projection Projection matrix.
-    ////////////////////////////////////////////////////////////////////////////
-    void set_projection(const math::Matrix4f& projection);
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set view transform matrix
-    ///
-    /// @param view View matrix.
-    ////////////////////////////////////////////////////////////////////////////
-    void set_view(const math::Matrix4f& view);
-
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Turn on or off the vertical sync.
     ///
     /// @param enable On or off vertical sync.
@@ -153,22 +185,17 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     bool load(const Texture& texture);
 
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Loads bunch of textures to renderer.
-    ///
-    /// @param textures Textures to load.
-    ///
-    /// @return `true` if loading successful
-    ////////////////////////////////////////////////////////////////////////////
-    bool load(const TexturesList& textures);
+    template <typename T>
+    void set_uniform(const std::string name, T&& value);
 
     void render(const Mesh& mesh, const Shader& shader);
     void render(const Mesh& mesh, const Shader& shader, const TexturesList& textures);
-    void render(const Mesh& mesh, const Shader& shader, const math::Matrix4f& model_transform);
-    void render(const Mesh& mesh,
-                const Shader& shader,
-                const TexturesList& textures,
-                const math::Matrix4f& model_transform);
+
+    template <typename... T>
+    void render(const Mesh& mesh, const Shader& shader, Uniform<T>&&... uniforms);
+
+    template <typename... T>
+    void render(const Mesh& mesh, const Shader& shader, const TexturesList& textures, Uniform<T>&&... uniforms);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Display on a screen all that been rendered so far.
@@ -193,18 +220,47 @@ private:
     void start_frame();
     void end_frame();
 
+    void create_render_command(const Mesh& mesh,
+                               const Shader& shader,
+                               const TexturesList& textures,
+                               UniformsList&& uniforms);
+
     std::unique_ptr<RendererImpl> m_impl;
     std::reference_wrapper<system::Window> m_window;
     Signal<const system::Window&, Size>::SlotId m_on_resize_slot_id;
 
-    std::vector<RenderCommand> m_render_commands;
-    MatrixCache m_projection;
-    MatrixCache m_view;
+    std::vector<Command> m_render_commands;
+    UniformsMap m_global_uniforms;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @}
 ////////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+inline void Renderer::set_uniform(const std::string name, T&& value)
+{
+    m_global_uniforms[name] = std::make_unique<Uniform<T>>(name, std::forward<T>(value));
+}
+
+template <typename... T>
+inline void Renderer::render(const Mesh& mesh, const Shader& shader, Uniform<T>&&... uniforms)
+{
+    render(mesh, shader, {}, std::move(uniforms)...);
+}
+
+template <typename... T>
+inline void Renderer::render(const Mesh& mesh,
+                             const Shader& shader,
+                             const TexturesList& textures,
+                             Uniform<T>&&... uniforms)
+{
+    UniformsList u;
+    (u.emplace_back(std::make_unique<Uniform<T>>(std::move(uniforms))), ...);
+
+    create_render_command(mesh, shader, textures, std::move(u));
+}
+
 } // namespace framework::graphics
 
 #endif

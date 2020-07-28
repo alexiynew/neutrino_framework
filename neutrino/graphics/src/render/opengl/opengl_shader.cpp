@@ -27,6 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <algorithm>
+#include <array>
 #include <cstdint>
 
 #include <graphics/shader.hpp>
@@ -34,9 +36,9 @@
 #include <math/math.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
+#include <graphics/src/render/opengl/opengl_logger.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
 #include <graphics/src/render/opengl/opengl_texture.hpp>
-#include <graphics/src/render/render_command.hpp>
 
 using namespace framework;
 using namespace framework::graphics;
@@ -46,14 +48,22 @@ namespace
 {
 const std::string tag = "OpenGL";
 
-namespace uniform_name
-{
-const std::string model_martix      = "modelMatrix";
-const std::string view_martix       = "viewMatrix";
-const std::string projection_martix = "projectionMatrix";
-const std::string normal_martix     = "normalMatrix";
-const std::string texture0          = "texture0";
-} // namespace uniform_name
+constexpr std::array<GLenum, 38> uniform_types = {
+GL_FLOAT,         GL_FLOAT_VEC2,        GL_FLOAT_VEC3,        GL_FLOAT_VEC4,
+GL_DOUBLE,        GL_DOUBLE_VEC2,       GL_DOUBLE_VEC3,       GL_DOUBLE_VEC4,
+GL_INT,           GL_INT_VEC2,          GL_INT_VEC3,          GL_INT_VEC4,
+GL_UNSIGNED_INT,  GL_UNSIGNED_INT_VEC2, GL_UNSIGNED_INT_VEC3, GL_UNSIGNED_INT_VEC4,
+GL_BOOL,          GL_BOOL_VEC2,         GL_BOOL_VEC3,         GL_BOOL_VEC4,
+GL_FLOAT_MAT2,    GL_FLOAT_MAT3,        GL_FLOAT_MAT4,        GL_FLOAT_MAT2x3,
+GL_FLOAT_MAT2x4,  GL_FLOAT_MAT3x2,      GL_FLOAT_MAT3x4,      GL_FLOAT_MAT4x2,
+GL_FLOAT_MAT4x3,  GL_DOUBLE_MAT2,       GL_DOUBLE_MAT3,       GL_DOUBLE_MAT4,
+GL_DOUBLE_MAT2x3, GL_DOUBLE_MAT2x4,     GL_DOUBLE_MAT3x2,     GL_DOUBLE_MAT3x4,
+GL_DOUBLE_MAT4x2, GL_DOUBLE_MAT4x3,
+};
+
+constexpr std::array<GLenum, 1> texture_types = {
+    GL_SAMPLER_2D
+};
 
 std::string shader_type_string(int shader_type)
 {
@@ -149,32 +159,230 @@ std::uint32_t create_shader_program(std::uint32_t vertex_shader_id, std::uint32_
     return program_id;
 }
 
-void set_uniform(int location, const math::Matrix4f& matrix)
+template <std::size_t N>
+OpenglShader::UniformMap get_active_uniforms(std::uint32_t shader_program, const std::array<GLenum, N>& supported_types)
 {
-    if (location == -1) {
-        return;
+    constexpr int buffer_size = 512;
+
+    int count = 0;
+    glGetProgramiv(shader_program, GL_ACTIVE_UNIFORMS, &count);
+
+    OpenglShader::UniformMap res;
+
+    for (int i = 0; i < count; ++i) {
+        char name_buffer[buffer_size] = {0};
+        int size                      = 0;
+        GLenum type                   = GL_NONE;
+        glGetActiveUniform(shader_program, static_cast<GLuint>(i), buffer_size, nullptr, &size, &type, name_buffer);
+
+        if (size != 1) {
+            continue; // array uniforms is not supported
+        }
+
+        if (std::find(supported_types.begin(), supported_types.end(), type) == supported_types.end()) {
+            continue;
+        }
+
+        const int location = glGetUniformLocation(shader_program, name_buffer);
+        res[std::string(name_buffer)] = location;
     }
 
-    glUniformMatrix4fv(location, 1, false, matrix.data());
+    return res;
 }
 
-void set_uniform(int location, const math::Matrix3f& matrix)
+class UniformSetterImpl : public UniformSetter
 {
-    if (location == -1) {
-        return;
+public:
+    void set_uniform(int location, const Uniform<float>& uniform) const override
+    {
+        glUniform1f(location, uniform.value());
     }
 
-    glUniformMatrix3fv(location, 1, false, matrix.data());
-}
-
-void set_uniform(int location, int value)
-{
-    if (location == -1) {
-        return;
+    void set_uniform(int location, const Uniform<math::Vector2f>& uniform) const override
+    {
+        glUniform2fv(location, 1, uniform.value().data());
     }
 
-    glUniform1i(location, value);
-}
+    void set_uniform(int location, const Uniform<math::Vector3f>& uniform) const override
+    {
+        glUniform3fv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector4f>& uniform) const override
+    {
+        glUniform4fv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<double>& uniform) const override
+    {
+        glUniform1d(location, uniform.value());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector2d>& uniform) const override
+    {
+        glUniform2dv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector3d>& uniform) const override
+    {
+        glUniform3dv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector4d>& uniform) const override
+    {
+        glUniform4dv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<int>& uniform) const override
+    {
+        glUniform1i(location, uniform.value());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector2i>& uniform) const override
+    {
+        glUniform2iv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector3i>& uniform) const override
+    {
+        glUniform3iv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector4i>& uniform) const override
+    {
+        glUniform4iv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<unsigned int>& uniform) const override
+    {
+        glUniform1ui(location, uniform.value());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector2u>& uniform) const override
+    {
+        glUniform2uiv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector3u>& uniform) const override
+    {
+        glUniform3uiv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector4u>& uniform) const override
+    {
+        glUniform4uiv(location, 1, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<bool>& uniform) const override
+    {
+        glUniform1i(location, uniform.value());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector2b>& uniform) const override
+    {
+        glUniform2iv(location, 1, math::Vector2i(uniform.value()).data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector3b>& uniform) const override
+    {
+        glUniform3iv(location, 1, math::Vector3i(uniform.value()).data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Vector4b>& uniform) const override
+    {
+        glUniform4iv(location, 1, math::Vector4i(uniform.value()).data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix2f>& uniform) const override
+    {
+        glUniformMatrix2fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix3f>& uniform) const override
+    {
+        glUniformMatrix3fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix4f>& uniform) const override
+    {
+        glUniformMatrix4fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix2x3f>& uniform) const override
+    {
+        glUniformMatrix2x3fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix2x4f>& uniform) const override
+    {
+        glUniformMatrix2x4fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix3x2f>& uniform) const override
+    {
+        glUniformMatrix3x2fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix3x4f>& uniform) const override
+    {
+        glUniformMatrix3x4fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix4x2f>& uniform) const override
+    {
+        glUniformMatrix4x2fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix4x3f>& uniform) const override
+    {
+        glUniformMatrix4x3fv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix2d>& uniform) const override
+    {
+        glUniformMatrix2dv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix3d>& uniform) const override
+    {
+        glUniformMatrix3dv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix4d>& uniform) const override
+    {
+        glUniformMatrix4dv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix2x3d>& uniform) const override
+    {
+        glUniformMatrix2x3dv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix2x4d>& uniform) const override
+    {
+        glUniformMatrix2x4dv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix3x2d>& uniform) const override
+    {
+        glUniformMatrix3x2dv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix3x4d>& uniform) const override
+    {
+        glUniformMatrix3x4dv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix4x2d>& uniform) const override
+    {
+        glUniformMatrix4x2dv(location, 1, false, uniform.value().data());
+    }
+
+    void set_uniform(int location, const Uniform<math::Matrix4x3d>& uniform) const override
+    {
+        glUniformMatrix4x3dv(location, 1, false, uniform.value().data());
+    }
+};
 
 } // namespace
 
@@ -195,10 +403,8 @@ void OpenglShader::clear()
     m_fragment_shader = 0;
     m_shader_program  = 0;
 
-    m_model_matrix      = -1;
-    m_view_matrix       = -1;
-    m_projection_matrix = -1;
-    m_normal_matrix     = -1;
+    m_uniforms.clear();
+    m_textures.clear();
 }
 
 bool OpenglShader::load(const Shader& shader)
@@ -207,12 +413,8 @@ bool OpenglShader::load(const Shader& shader)
     m_fragment_shader = create_shader(GL_FRAGMENT_SHADER, shader.fragment_source());
     m_shader_program  = create_shader_program(m_vertex_shader, m_fragment_shader);
 
-    m_model_matrix      = glGetUniformLocation(m_shader_program, uniform_name::model_martix.c_str());
-    m_view_matrix       = glGetUniformLocation(m_shader_program, uniform_name::view_martix.c_str());
-    m_projection_matrix = glGetUniformLocation(m_shader_program, uniform_name::projection_martix.c_str());
-    m_normal_matrix     = glGetUniformLocation(m_shader_program, uniform_name::normal_martix.c_str());
-
-    m_texture = glGetUniformLocation(m_shader_program, uniform_name::texture0.c_str());
+    m_uniforms = get_active_uniforms(m_shader_program, uniform_types);
+    m_textures = get_active_uniforms(m_shader_program, texture_types);
 
     return m_shader_program != 0;
 }
@@ -222,17 +424,30 @@ void OpenglShader::use() const
     glUseProgram(m_shader_program);
 }
 
-void OpenglShader::set_uniforms(const RenderCommand& command) const
+void OpenglShader::set_uniforms(const Renderer::Command& command) const
 {
-    set_uniform(m_model_matrix, command.model_matrix());
-    set_uniform(m_view_matrix, command.view_matrix());
-    set_uniform(m_projection_matrix, command.projection_matrix());
-    set_uniform(m_normal_matrix, command.normal_matrix());
+    UniformSetterImpl setter;
+
+    for (const auto& uniform : command.global_uniforms()) {
+        if (m_uniforms.count(uniform.first)) {
+            uniform.second->set(m_uniforms.at(uniform.first), setter);
+        }
+    }
+
+    for (const auto& uniform : command.uniforms()) {
+        if (m_uniforms.count(uniform->name())) {
+            uniform->set(m_uniforms.at(uniform->name()), setter);
+        }
+    }
 }
 
-void OpenglShader::set_texture(int index) const
+void OpenglShader::set_texture(const std::string& name, std::size_t index) const
 {
-    set_uniform(m_texture, index);
+    UniformSetterImpl setter;
+
+    if (m_textures.count(name)) {
+        glUniform1ui(m_textures.at(name), static_cast<GLuint>(index));
+    }
 }
 
 } // namespace framework::graphics

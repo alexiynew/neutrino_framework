@@ -27,7 +27,7 @@
 #include <unit_test/suite.hpp>
 
 using framework::math::Vector3d;
-using framework::math::vector4d;
+using framework::math::Vector4d;
 
 using framework::math::pi;
 using framework::math::quarter_pi;
@@ -61,7 +61,7 @@ public:
 private:
     void radians_function()
     {
-        TEST_ASSERT(radians(v4d) == vector4d(pi<double>, tau<double>, pi<double> / 2, pi<double> / 4),
+        TEST_ASSERT(radians(v4d) == Vector4d(pi<double>, tau<double>, pi<double> / 2, pi<double> / 4),
                     "Radians function failed.");
     }
 
@@ -72,13 +72,13 @@ private:
 
     void sin_function()
     {
-        const vector4d sin_vector(sin(pi<double>), sin(tau<double>), sin(pi<double> / 2), sin(pi<double> / 4));
+        const Vector4d sin_vector(sin(pi<double>), sin(tau<double>), sin(pi<double> / 2), sin(pi<double> / 4));
         TEST_ASSERT(almost_equal(sin(radians(v4d)), sin_vector, 1), "Sin function failed.");
     }
 
     void cos_function()
     {
-        const vector4d cos_vector(cos(pi<double>), cos(tau<double>), cos(pi<double> / 2), cos(pi<double> / 4));
+        const Vector4d cos_vector(cos(pi<double>), cos(tau<double>), cos(pi<double> / 2), cos(pi<double> / 4));
         TEST_ASSERT(almost_equal(cos(radians(v4d)), cos_vector, 1), "Cos function failed.");
     }
 
@@ -89,13 +89,13 @@ private:
 
     void asin_function()
     {
-        const vector4d asin_vector(asin(sin(pi<double>)), asin(sin(tau<double>)), pi<double> / 2, pi<double> / 4);
+        const Vector4d asin_vector(asin(sin(pi<double>)), asin(sin(tau<double>)), pi<double> / 2, pi<double> / 4);
         TEST_ASSERT(almost_equal(asin(sin(radians(v4d))), asin_vector, 1), "Asin function failed.");
     }
 
     void acos_function()
     {
-        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), vector4d(pi<double>, 0, pi<double> / 2, pi<double> / 4)),
+        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), Vector4d(pi<double>, 0, pi<double> / 2, pi<double> / 4)),
                     "Acos function failed.");
     }
 
@@ -145,7 +145,7 @@ private:
         TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), Vector3d(pi<double> / 4, pi<double> / 3, pi<double>), 50),
                     "Atanh function failed.");
     }
-    vector4d v4d;
+    Vector4d v4d;
     Vector3d v3d;
 };
 

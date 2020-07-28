@@ -46,7 +46,7 @@ using framework::math::Vector2i;
 using framework::math::Vector3d;
 using framework::math::Vector3f;
 using framework::math::Vector3i;
-using framework::math::vector4d;
+using framework::math::Vector4d;
 using framework::math::Vector4f;
 using framework::math::Vector4i;
 
@@ -329,7 +329,7 @@ private:
 
         const Matrix4x4f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4),
+            Vector4d(1, 2, 3, 4),
             Vector4i(1, 2, 3, 4),
             Vector4f(1, 2, 3, 4)
         };
@@ -398,7 +398,7 @@ private:
 
         const Matrix4x3f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4),
+            Vector4d(1, 2, 3, 4),
             Vector4i(1, 2, 3, 4),
             Vector4f(1, 2, 3, 4)
         };
@@ -443,7 +443,7 @@ private:
 
         const Matrix4x2f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4),
+            Vector4d(1, 2, 3, 4),
             Vector4i(1, 2, 3, 4),
             Vector4f(1, 2, 3, 4)
         };
@@ -479,7 +479,7 @@ private:
 
         const Matrix3x4f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4),
+            Vector4d(1, 2, 3, 4),
             Vector4i(1, 2, 3, 4)
         };
 
@@ -540,7 +540,7 @@ private:
 
         const Matrix3x3f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4),
+            Vector4d(1, 2, 3, 4),
             Vector4i(1, 2, 3, 4)
         };
 
@@ -580,7 +580,7 @@ private:
 
         const Matrix3x2f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4),
+            Vector4d(1, 2, 3, 4),
             Vector4i(1, 2, 3, 4)
         };
 
@@ -612,7 +612,7 @@ private:
 
         const Matrix2x4f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4)
+            Vector4d(1, 2, 3, 4)
         };
 
         const Matrix2x4f m3 = {
@@ -665,7 +665,7 @@ private:
 
         const Matrix2x3f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4)
+            Vector4d(1, 2, 3, 4)
         };
 
         const Matrix2x3f m3 = {
@@ -700,7 +700,7 @@ private:
 
         const Matrix2x2f m2 = {
             Vector4f(1, 2, 3, 4),
-            vector4d(1, 2, 3, 4)
+            Vector4d(1, 2, 3, 4)
         };
 
         const Matrix2x2f m3 = {

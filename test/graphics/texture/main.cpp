@@ -52,7 +52,6 @@ layout(location = 3) in vec4 color;\n\
 layout(location = 4) in vec2 texCoord0;\n\
 \n\
 uniform mat4 modelMatrix;\n\
-uniform mat4 viewMatrix;\n\
 uniform mat4 projectionMatrix;\n\
 \n\
 out vec4 fragColor;\n\
@@ -60,7 +59,7 @@ out vec2 texCoord;\n\
 \n\
 void main()\n\
 {\n\
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);\n\
+    gl_Position = projectionMatrix * modelMatrix * vec4(position, 1.0);\n\
     fragColor = color / 256.0;\n\
     texCoord = texCoord0;\n\
 }\n\
@@ -330,8 +329,8 @@ private:
 
         renderer.set_clear_color(Color(0xFF00FFFF));
         main_window.on_resize.connect([&renderer](const Window&, Size size) {
-            renderer.set_projection(
-            ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
+            renderer.set_uniform("projectionMatrix",
+                                 ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
         });
 
         main_window.show();
@@ -368,7 +367,7 @@ private:
 
             for (Entity& entity : entities) {
                 Matrix4f transform = translate(Matrix4f(), entity.position);
-                renderer.render(*entity.mesh, *entity.shader, {std::ref(*entity.texture)}, transform);
+                renderer.render(*entity.mesh, *entity.shader, {{"texture0", *entity.texture}}, Uniform{"modelMatrix", transform});
             }
 
             renderer.display();

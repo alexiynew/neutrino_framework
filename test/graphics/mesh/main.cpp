@@ -46,15 +46,11 @@ const std::string vertex_shader =
 layout(location = 0) in vec3 position;\n\
 layout(location = 3) in vec4 color;\n\
 \n\
-uniform mat4 modelMatrix;\n\
-uniform mat4 viewMatrix;\n\
-uniform mat4 projectionMatrix;\n\
-\n\
 out vec4 fragColor;\n\
 \n\
 void main()\n\
 {\n\
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);\n\
+    gl_Position = vec4(position, 1.0);\n\
     fragColor = color / 256.0;\n\
 }\n\
 ";

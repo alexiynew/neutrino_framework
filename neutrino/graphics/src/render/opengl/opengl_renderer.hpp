@@ -34,9 +34,9 @@
 
 #include <unordered_map>
 
+#include <graphics/renderer.hpp>
 #include <system/context.hpp>
 
-#include <graphics/src/render/render_command.hpp>
 #include <graphics/src/render/renderer_impl.hpp>
 
 namespace framework::graphics
@@ -67,7 +67,7 @@ public:
     bool load(const Texture& texture) override;
 
     void start_frame() override;
-    void render(const RenderCommand& command) override;
+    void render(const Renderer::Command& command) override;
     void end_frame() override;
 
 private:
@@ -76,7 +76,7 @@ private:
     using TextureMap = std::unordered_map<InstanceId, OpenglTexture>;
 
     void init() const;
-    void bind_textures(const OpenglShader& shader, const RenderCommand::InstanceIdList& textures) const;
+    void bind_textures(const OpenglShader& shader, const Renderer::TexturesList& textures) const;
 
     MeshMap m_meshes;
     ShaderMap m_shaders;

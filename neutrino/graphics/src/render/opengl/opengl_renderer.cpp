@@ -41,7 +41,6 @@
 #include <graphics/src/render/opengl/opengl_renderer.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
 #include <graphics/src/render/opengl/opengl_texture.hpp>
-#include <graphics/src/render/render_command.hpp>
 
 using namespace framework;
 using namespace framework::graphics;
@@ -181,7 +180,7 @@ void OpenglRenderer::start_frame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenglRenderer::render(const RenderCommand& command)
+void OpenglRenderer::render(const Renderer::Command& command)
 {
     if (m_meshes.count(command.mesh()) == 0) {
         return;
@@ -211,15 +210,16 @@ void OpenglRenderer::end_frame()
     glUseProgram(0);
 }
 
-void OpenglRenderer::bind_textures(const OpenglShader& shader, const RenderCommand::InstanceIdList& textures) const
+void OpenglRenderer::bind_textures(const OpenglShader& shader, const Renderer::TexturesList& textures) const
 {
-    for (size_t i = 0; i < textures.size(); ++i) {
-        const InstanceId id = textures[i];
-        if (m_textures.count(id)) {
-            const OpenglTexture& texture = m_textures.at(id);
+    for (size_t i = 0; i < textures.size(); ++i)
+    {
+        const auto& binding = textures[i];
+        if (m_textures.count(binding.texture())) {
+            const OpenglTexture& texture = m_textures.at(binding.texture());
 
             texture.bind(i);
-            shader.set_texture(static_cast<int>(i));
+            shader.set_texture(binding.name(), i);
         }
     }
 }

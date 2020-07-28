@@ -493,10 +493,12 @@ void Example::setup()
     current_objects = current_mode == Mode::bmp ? &bmp_objects : &png_objects;
 
     renderer.set_clear_color(Color(0xFF00FFFF));
-    renderer.set_view(scale(Matrix4f(), {image_scale, image_scale, image_scale}));
+    renderer.set_uniform("viewMatrix", scale(Matrix4f(), {image_scale, image_scale, image_scale}));
 
     main_window.on_resize.connect([this](const Window&, Size size) {
-        renderer.set_projection(ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
+        renderer.set_uniform("projectionMatrix",
+                             ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
+
         arrange();
     });
 
@@ -514,7 +516,7 @@ void Example::setup()
 
         gamma = framework::math::clamp(gamma, -4.0f, 4.0f);
 
-        renderer.set_view(scale(Matrix4f(), {image_scale, image_scale, image_scale}));
+        renderer.set_uniform("viewMatrix", scale(Matrix4f(), {image_scale, image_scale, image_scale}));
 
         current_objects = current_mode == Mode::bmp ? &bmp_objects : &png_objects;
         arrange();
@@ -597,7 +599,7 @@ void Example::run()
                                                Vector3f(o.x, o.y, 0.0f) +
                                                Vector3f(0.5f * o.width, -0.5f * o.height, 0.0f) +
                                                Vector3f(position, 0.0f));
-                renderer.render(*o.mesh, *shader, {*o.texture}, transform);
+                renderer.render(*o.mesh, *shader, {{"texture0", *o.texture}}, Uniform{"modelMatrix", transform});
             }
         }
 

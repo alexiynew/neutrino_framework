@@ -37,7 +37,6 @@
 #include <graphics/texture.hpp>
 
 #include <graphics/src/render/opengl/opengl_renderer.hpp>
-#include <graphics/src/render/render_command.hpp>
 #include <graphics/src/render/renderer_impl.hpp>
 
 using namespace framework;
@@ -59,36 +58,101 @@ std::unique_ptr<RendererImpl> create_impl(system::Context& context)
     throw std::runtime_error("Unsupported graphic api.");
 }
 
-Renderer::MatrixCache clear_matrix_cache(const Renderer::MatrixCache& cache)
-{
-    return Renderer::MatrixCache{cache.back()};
-}
-
-RenderCommand::InstanceIdList get_texture_ids(const Renderer::TexturesList& textures)
-{
-    RenderCommand::InstanceIdList ids;
-    for (const auto& texture_ref : textures) {
-        ids.push_back(texture_ref.get().instance_id());
-    }
-
-    return ids;
-}
-
 } // namespace
 
 namespace framework::graphics
 {
+
+Renderer::TextureBinding::TextureBinding(const std::string& name, const Texture& texture)
+    : m_name(name)
+    , m_texture(texture.instance_id())
+{}
+
+const std::string& Renderer::TextureBinding::name() const
+{
+    return m_name;
+}
+
+InstanceId Renderer::TextureBinding::texture() const
+{
+    return m_texture;
+}
+
+Renderer::Command::Command(InstanceId mesh,
+                           InstanceId shader,
+                           const TexturesList& textures,
+                           const UniformsMap& global_uniforms,
+                           UniformsList&& uniforms)
+    : m_mesh(mesh)
+    , m_shader(shader)
+    , m_textures(textures)
+    , m_global_uniforms(std::cref(global_uniforms))
+    , m_uniforms(std::move(uniforms))
+{}
+
+Renderer::Command::Command(Command&& other)
+    : m_mesh(other.m_mesh)
+    , m_shader(other.m_shader)
+    , m_textures(std::move(other.m_textures))
+    , m_global_uniforms(std::move(other.m_global_uniforms))
+    , m_uniforms(std::move(other.m_uniforms))
+{}
+
+Renderer::Command& Renderer::Command::operator=(Command&& other)
+{
+    using std::swap;
+
+    Command tmp(std::move(other));
+
+    swap(tmp.m_mesh, m_mesh);
+    swap(tmp.m_shader, m_shader);
+    swap(tmp.m_textures, m_textures);
+    swap(tmp.m_global_uniforms, m_global_uniforms);
+    swap(tmp.m_uniforms, m_uniforms);
+
+    return *this;
+}
+
+InstanceId Renderer::Command::mesh() const
+{
+    return m_mesh;
+}
+
+InstanceId Renderer::Command::shader() const
+{
+    return m_shader;
+}
+
+const Renderer::TexturesList& Renderer::Command::textures() const
+{
+    return m_textures;
+}
+
+const Renderer::UniformsMap& Renderer::Command::global_uniforms() const
+{
+    return m_global_uniforms.get();
+}
+
+const Renderer::UniformsList& Renderer::Command::uniforms() const
+{
+    return m_uniforms;
+}
+
 Renderer::Renderer(system::Window& window)
     : m_impl(create_impl(window.context()))
     , m_window(std::ref(window))
 {
-    set_view(math::Matrix4f{});
-    set_projection(math::Matrix4f{});
     m_on_resize_slot_id = m_window.get().on_resize.connect(
     [this](const system::Window&, Size size) { m_impl->set_viewport(size); });
 }
 
-Renderer::Renderer(Renderer&& other) noexcept = default;
+Renderer::Renderer(Renderer&& other) noexcept
+    : m_impl(std::move(other.m_impl))
+    , m_window(std::move(other.m_window))
+    , m_on_resize_slot_id(std::move(other.m_on_resize_slot_id))
+    , m_render_commands(std::move(other.m_render_commands))
+    , m_global_uniforms(std::move(other.m_global_uniforms))
+{}
 
 Renderer& Renderer::operator=(Renderer&& other) noexcept = default;
 
@@ -98,16 +162,6 @@ void Renderer::set_clear_color(const Color& color)
 {
     m_window.get().context().make_current();
     m_impl->set_clear_color(color);
-}
-
-void Renderer::set_projection(const math::Matrix4f& projection)
-{
-    m_projection.push_back(projection);
-}
-
-void Renderer::set_view(const math::Matrix4f& view)
-{
-    m_view.push_back(view);
 }
 
 bool Renderer::load(const Mesh& mesh)
@@ -128,53 +182,14 @@ bool Renderer::load(const Texture& texture)
     return m_impl->load(texture);
 }
 
-bool Renderer::load(const TexturesList& textures)
-{
-    bool loaded = true;
-    for (const auto& texture : textures) {
-        loaded &= load(texture);
-    }
-
-    return loaded;
-}
-
 void Renderer::render(const Mesh& mesh, const Shader& shader)
 {
-    render(mesh, shader, {}, math::Matrix4f{});
+    create_render_command(mesh, shader, {}, {});
 }
 
 void Renderer::render(const Mesh& mesh, const Shader& shader, const TexturesList& textures)
 {
-    render(mesh, shader, textures, math::Matrix4f{});
-}
-
-void Renderer::render(const Mesh& mesh, const Shader& shader, const math::Matrix4f& model_transform)
-{
-    render(mesh, shader, {}, model_transform);
-}
-
-void Renderer::render(const Mesh& mesh,
-                      const Shader& shader,
-                      const TexturesList& textures,
-                      const math::Matrix4f& model_transform)
-{
-    assert(!m_view.empty());
-    assert(!m_projection.empty());
-
-    RenderCommand::InstanceIdList texture_ids = get_texture_ids(textures);
-
-    RenderCommand::CachedMatrix view{m_view, m_view.size() - 1};
-    RenderCommand::CachedMatrix projection{m_projection, m_projection.size() - 1};
-
-    math::Matrix3f normal_matrix(transpose(inverse(view.get() * model_transform)));
-
-    m_render_commands.emplace_back(mesh.instance_id(),
-                                   shader.instance_id(),
-                                   texture_ids,
-                                   model_transform,
-                                   view,
-                                   projection,
-                                   normal_matrix);
+    create_render_command(mesh, shader, textures, {});
 }
 
 void Renderer::display()
@@ -201,11 +216,19 @@ void Renderer::end_frame()
 {
     m_render_commands.clear();
 
-    // delete all cached matrices exept last one
-    m_view       = clear_matrix_cache(m_view);
-    m_projection = clear_matrix_cache(m_projection);
-
     m_impl->end_frame();
+}
+
+void Renderer::create_render_command(const Mesh& mesh,
+                                     const Shader& shader,
+                                     const TexturesList& textures,
+                                     UniformsList&& uniforms)
+{
+    m_render_commands.push_back(Command(mesh.instance_id(),
+                                        shader.instance_id(),
+                                        textures,
+                                        m_global_uniforms,
+                                        std::move(uniforms)));
 }
 
 } // namespace framework::graphics

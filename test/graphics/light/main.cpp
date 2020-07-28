@@ -43,7 +43,7 @@ using namespace framework::math;
 namespace cube
 {
 
-const std::string vertex_shader = "./shaders/phong_light.vert";
+const std::string vertex_shader   = "./shaders/phong_light.vert";
 const std::string fragment_shader = "./shaders/phong_light.frag";
 
 const Mesh::VertexData vertices = {
@@ -119,7 +119,7 @@ Mesh::IndicesData indices = {
 namespace light_cube
 {
 
-const std::string vertex_shader = "./shaders/white_light_lamp.vert";
+const std::string vertex_shader   = "./shaders/white_light_lamp.vert";
 const std::string fragment_shader = "./shaders/white_light_lamp.frag";
 
 const Mesh::VertexData vertices = {
@@ -222,10 +222,12 @@ private:
         main_window.show();
 
         renderer.set_clear_color(Color(0x000000FFu));
-        renderer.set_view(math::look_at(math::Vector3f{0.0f, 0.0f, 3.0f},
-                                        math::Vector3f{0.0f, 0.0f, 0.0f},
-                                        math::Vector3f{0.0f, 1.0f, 0.0f}));
-        renderer.set_projection(math::perspective(math::half_pi<float>, 640.0f / 480.0f, 0.001f, 10.0f));
+        renderer.set_uniform("viewMatrix",
+                             math::look_at(math::Vector3f{0.0f, 0.0f, 3.0f},
+                                           math::Vector3f{0.0f, 0.0f, 0.0f},
+                                           math::Vector3f{0.0f, 1.0f, 0.0f}));
+        renderer.set_uniform("projectionMatrix",
+                             math::perspective(math::half_pi<float>, 640.0f / 480.0f, 0.001f, 10.0f));
 
         Object cube       = create_cube();
         Object light_cube = create_light_cube();
@@ -245,22 +247,26 @@ private:
         std::chrono::microseconds max_total_time = std::chrono::seconds(30);
         std::chrono::microseconds total_time(0);
 
-        const float angle   = 0.05f;
+        const float angle = 0.05f;
 
         light_cube.position = {2.5f, 0.0f, 0.0f};
         while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
 
-            light_cube.position = Vector3f(rotate(Matrix4f(), Vector3f(0, 0, 1), radians(1)) * Vector4f(light_cube.position));
+            light_cube.position = Vector3f(rotate(Matrix4f(), Vector3f(0, 0, 1), radians(1)) *
+                                           Vector4f(light_cube.position));
 
             Matrix4f cube_transform = rotate(Matrix4f(), normalize(Vector3f(1)), radians(45));
-            cube_transform = translate(cube_transform, cube.position);
-            renderer.render(*cube.mesh, *cube.shader, {"modelMatrix", cube_transform}, {"lightPos", light_cube.position});
+            cube_transform          = translate(cube_transform, cube.position);
+            renderer.render(*cube.mesh,
+                            *cube.shader,
+                            Uniform{"modelMatrix", cube_transform},
+                            Uniform{"lightPos", light_cube.position});
 
             Matrix4f light_cube_transform;
             light_cube_transform = translate(light_cube_transform, light_cube.position);
             light_cube_transform = scale(light_cube_transform, Vector3f(0.2f, 0.2f, 0.2f));
-            renderer.render(*light_cube.mesh, *light_cube.shader, light_cube_transform);
+            renderer.render(*light_cube.mesh, *light_cube.shader, Uniform{"modelMatrix", light_cube_transform});
 
             renderer.display();
 

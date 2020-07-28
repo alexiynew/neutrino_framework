@@ -35,7 +35,7 @@ using framework::math::Vector3d;
 using framework::math::Vector3f;
 using framework::math::Vector3i;
 using framework::math::Vector4b;
-using framework::math::vector4d;
+using framework::math::Vector4d;
 using framework::math::Vector4i;
 
 using framework::math::Matrix2x2f;
@@ -109,12 +109,12 @@ private:
 
     void almost_equal_function()
     {
-        const vector4d v4d = {1.1, -1.5, 0.0, -1.8};
+        const Vector4d v4d = {1.1, -1.5, 0.0, -1.8};
         const Vector3f v3f = {1.6f, -1.5f, 0.0f};
         const Vector3i v3i = {1, -5, 0};
         const Vector2u v2u = {10, 0};
 
-        TEST_ASSERT(almost_equal(v4d, vector4d(1.1, -1.5, 0.0, -1.8)), "Almost_equal function failed.");
+        TEST_ASSERT(almost_equal(v4d, Vector4d(1.1, -1.5, 0.0, -1.8)), "Almost_equal function failed.");
         TEST_ASSERT(almost_equal(v3f, Vector3f(1.6f, -1.5f, 0.0f)), "Almost_equal function failed.");
         TEST_ASSERT(almost_equal(v3i, Vector3i(1, -5, 0)), "Almost_equal function failed.");
         TEST_ASSERT(almost_equal(v2u, Vector2u(10, 0)), "Almost_equal function failed.");

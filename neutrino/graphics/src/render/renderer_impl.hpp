@@ -35,12 +35,12 @@
 #include <vector>
 
 #include <graphics/color.hpp>
+#include <graphics/renderer.hpp>
 #include <math/math.hpp>
 
 namespace framework::graphics
 {
 class Mesh;
-class RenderCommand;
 class Shader;
 class Texture;
 
@@ -59,9 +59,9 @@ public:
     virtual bool load(const Shader& shader)   = 0;
     virtual bool load(const Texture& texture) = 0;
 
-    virtual void start_frame()                        = 0;
-    virtual void render(const RenderCommand& command) = 0;
-    virtual void end_frame()                          = 0;
+    virtual void start_frame()                            = 0;
+    virtual void render(const Renderer::Command& command) = 0;
+    virtual void end_frame()                              = 0;
 };
 
 } // namespace framework::graphics

@@ -34,15 +34,18 @@
 
 #include <cstdint>
 
+#include <graphics/renderer.hpp>
+
 namespace framework::graphics
 {
 class Shader;
 class OpenglTexture;
-class RenderCommand;
 
 class OpenglShader
 {
 public:
+    using UniformMap = std::unordered_map<std::string, int>;
+
     OpenglShader() = default;
 
     OpenglShader(const OpenglShader&) = delete;
@@ -58,20 +61,17 @@ public:
 
     void use() const;
 
-    void set_uniforms(const RenderCommand& command) const;
-    void set_texture(int index) const;
+    void set_uniforms(const Renderer::Command& command) const;
+
+    void set_texture(const std::string& name, std::size_t index) const;
 
 private:
     std::uint32_t m_vertex_shader   = 0;
     std::uint32_t m_fragment_shader = 0;
     std::uint32_t m_shader_program  = 0;
 
-    int m_model_matrix      = -1;
-    int m_view_matrix       = -1;
-    int m_projection_matrix = -1;
-    int m_normal_matrix     = -1;
-
-    int m_texture = -1;
+    UniformMap m_uniforms;
+    UniformMap m_textures;
 };
 
 } // namespace framework::graphics
