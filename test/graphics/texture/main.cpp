@@ -367,7 +367,10 @@ private:
 
             for (Entity& entity : entities) {
                 Matrix4f transform = translate(Matrix4f(), entity.position);
-                renderer.render(*entity.mesh, *entity.shader, {{"texture0", *entity.texture}}, Uniform{"modelMatrix", transform});
+                renderer.render(*entity.mesh,
+                                *entity.shader,
+                                {{"texture0", *entity.texture}},
+                                Uniform{"modelMatrix", transform});
             }
 
             renderer.display();
