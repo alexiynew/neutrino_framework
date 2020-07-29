@@ -61,9 +61,7 @@ GL_DOUBLE_MAT2x3, GL_DOUBLE_MAT2x4,     GL_DOUBLE_MAT3x2,     GL_DOUBLE_MAT3x4,
 GL_DOUBLE_MAT4x2, GL_DOUBLE_MAT4x3,
 };
 
-constexpr std::array<GLenum, 1> texture_types = {
-    GL_SAMPLER_2D
-};
+constexpr std::array<GLenum, 1> texture_types = {GL_SAMPLER_2D};
 
 std::string shader_type_string(int shader_type)
 {
@@ -183,7 +181,7 @@ OpenglShader::UniformMap get_active_uniforms(std::uint32_t shader_program, const
             continue;
         }
 
-        const int location = glGetUniformLocation(shader_program, name_buffer);
+        const int location            = glGetUniformLocation(shader_program, name_buffer);
         res[std::string(name_buffer)] = location;
     }
 

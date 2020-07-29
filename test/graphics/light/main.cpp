@@ -37,8 +37,10 @@
 namespace
 {
 
+using namespace framework;
 using namespace framework::graphics;
 using namespace framework::math;
+using namespace framework::system;
 
 namespace cube
 {
@@ -210,24 +212,56 @@ public:
 private:
     void main_loop()
     {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
-
         Window::set_application_name("GL light Test");
 
         Window main_window({800, 640}, "GL light test");
         Renderer renderer(main_window);
 
-        main_window.show();
-
         renderer.set_clear_color(Color(0x000000FFu));
-        renderer.set_uniform("viewMatrix",
-                             math::look_at(math::Vector3f{0.0f, 0.0f, 3.0f},
-                                           math::Vector3f{0.0f, 0.0f, 0.0f},
-                                           math::Vector3f{0.0f, 1.0f, 0.0f}));
-        renderer.set_uniform("projectionMatrix",
-                             math::perspective(math::half_pi<float>, 640.0f / 480.0f, 0.001f, 10.0f));
+
+        struct Camera
+        {
+            Vector3f eye    = {0.0f, 0.0f, 10.0f};
+            Vector3f center = {0.0f, 0.0f, 0.0f};
+            Vector3f up     = {0.0f, 1.0f, 0.0f};
+
+            Position move_start = {0, 0};
+
+            Matrix4f get_view()
+            {
+                return look_at(eye, center, up);
+            }
+        };
+
+        Camera camera;
+
+        renderer.set_uniform("viewMatrix", camera.get_view());
+
+        main_window.on_resize.connect([&renderer](const Window&, Size size) {
+            const float aspect = static_cast<float>(size.width) / static_cast<float>(size.height);
+            renderer.set_uniform("projectionMatrix", perspective(half_pi<float>, aspect, 0.001f, 100.0f));
+        });
+
+        main_window.on_mouse_move.connect([&camera, &renderer](const Window&, Position p) {
+            if (camera.move_start.x != 0 && camera.move_start.y != 0) {
+                int dx = camera.move_start.x - p.x;
+                int dy = camera.move_start.y - p.y;
+
+                if (dx < 0) {
+                    camera.eye = Vector3f(rotate(Matrix4f(), Vector3f(0, 1, 0), radians(3)) * Vector4f(camera.eye));
+                } else if (dx > 0) {
+                    camera.eye = Vector3f(rotate(Matrix4f(), Vector3f(0, -1, 0), radians(3)) * Vector4f(camera.eye));
+                }
+                if (dy < 0) {
+                    camera.eye = Vector3f(rotate(Matrix4f(), Vector3f(1, 0, 0), radians(3)) * Vector4f(camera.eye));
+                } else if (dy > 0) {
+                    camera.eye = Vector3f(rotate(Matrix4f(), Vector3f(-1, 0, 0), radians(3)) * Vector4f(camera.eye));
+                }
+            }
+            camera.move_start = p;
+
+            renderer.set_uniform("viewMatrix", camera.get_view());
+        });
 
         Object cube       = create_cube();
         Object light_cube = create_light_cube();
@@ -244,29 +278,41 @@ private:
         light_cube.mesh->clear();
         light_cube.shader->clear();
 
-        std::chrono::microseconds max_total_time = std::chrono::seconds(30);
+        main_window.show();
+
+        std::chrono::microseconds max_total_time = std::chrono::seconds(300);
         std::chrono::microseconds total_time(0);
 
         const float angle = 0.05f;
 
-        light_cube.position = {2.5f, 0.0f, 0.0f};
+        light_cube.position = {7.0f, 0.0f, 0.0f};
+
+        Matrix4f cube_transform;
+
+        cube_transform = scale(cube_transform, Vector3f(5));
+
         while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
 
-            light_cube.position = Vector3f(rotate(Matrix4f(), Vector3f(0, 0, 1), radians(1)) *
+            cube_transform = translate(cube_transform, cube.position);
+            cube_transform = rotate(cube_transform, normalize(Vector3f(0, 1, 0)), radians(0.5));
+
+            light_cube.position = Vector3f(rotate(Matrix4f(), normalize(Vector3f(0, 0, 1)), radians(0.7)) *
                                            Vector4f(light_cube.position));
 
-            Matrix4f cube_transform = rotate(Matrix4f(), normalize(Vector3f(1)), radians(45));
-            cube_transform          = translate(cube_transform, cube.position);
+            Matrix4f light_transform;
+            light_transform = translate(light_transform, light_cube.position);
+            light_transform = scale(light_transform, Vector3f(0.2f, 0.2f, 0.2f));
+
+            renderer.render(*light_cube.mesh, *light_cube.shader, Uniform{"modelMatrix", light_transform});
+
+            Matrix3f normal_matrix = Matrix3f(transpose(inverse(camera.get_view() * cube_transform)));
             renderer.render(*cube.mesh,
                             *cube.shader,
                             Uniform{"modelMatrix", cube_transform},
-                            Uniform{"lightPos", light_cube.position});
-
-            Matrix4f light_cube_transform;
-            light_cube_transform = translate(light_cube_transform, light_cube.position);
-            light_cube_transform = scale(light_cube_transform, Vector3f(0.2f, 0.2f, 0.2f));
-            renderer.render(*light_cube.mesh, *light_cube.shader, Uniform{"modelMatrix", light_cube_transform});
+                            Uniform{"normalMatrix", normal_matrix},
+                            Uniform{"lightPos", light_cube.position},
+                            Uniform{"lightMatrix", light_transform});
 
             renderer.display();
 

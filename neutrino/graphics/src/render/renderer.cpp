@@ -224,11 +224,8 @@ void Renderer::create_render_command(const Mesh& mesh,
                                      const TexturesList& textures,
                                      UniformsList&& uniforms)
 {
-    m_render_commands.push_back(Command(mesh.instance_id(),
-                                        shader.instance_id(),
-                                        textures,
-                                        m_global_uniforms,
-                                        std::move(uniforms)));
+    m_render_commands.push_back(
+    Command(mesh.instance_id(), shader.instance_id(), textures, m_global_uniforms, std::move(uniforms)));
 }
 
 } // namespace framework::graphics

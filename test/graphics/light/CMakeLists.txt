@@ -41,5 +41,7 @@ set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME
 
 add_dependencies(${TESTS_TARGET} ${TEST_NAME})
 
-file(GLOB SHADER_SRC "${TEST_DIR}/shaders/*.frag" "${TEST_DIR}/shaders/*.vert")
-file(COPY ${SHADER_SRC} DESTINATION ${CMAKE_BINARY_DIR}/test/shaders)
+configure_file(${TEST_DIR}/shaders/phong_light.frag ${CMAKE_BINARY_DIR}/test/shaders/phong_light.frag COPYONLY)
+configure_file(${TEST_DIR}/shaders/phong_light.vert ${CMAKE_BINARY_DIR}/test/shaders/phong_light.vert COPYONLY)
+configure_file(${TEST_DIR}/shaders/white_light_lamp.frag ${CMAKE_BINARY_DIR}/test/shaders/white_light_lamp.frag COPYONLY)
+configure_file(${TEST_DIR}/shaders/white_light_lamp.vert ${CMAKE_BINARY_DIR}/test/shaders/white_light_lamp.vert COPYONLY)

@@ -66,9 +66,9 @@ struct Uniforms;
 class Renderer
 {
 public:
-    using UniformPtr     = std::unique_ptr<UniformBase>;
-    using UniformsList   = std::vector<UniformPtr>;
-    using UniformsMap    = std::unordered_map<std::string, UniformPtr>;
+    using UniformPtr   = std::unique_ptr<UniformBase>;
+    using UniformsList = std::vector<UniformPtr>;
+    using UniformsMap  = std::unordered_map<std::string, UniformPtr>;
 
     class TextureBinding
     {
@@ -83,7 +83,7 @@ public:
         InstanceId m_texture;
     };
 
-    using TexturesList   = std::vector<TextureBinding>;
+    using TexturesList = std::vector<TextureBinding>;
 
     class Command
     {
@@ -113,7 +113,6 @@ public:
         std::reference_wrapper<const UniformsMap> m_global_uniforms;
         UniformsList m_uniforms;
     };
-
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates Renderer and initialize graphic context for the window.
@@ -186,6 +185,9 @@ public:
     bool load(const Texture& texture);
 
     template <typename T>
+    void set_uniform(const std::string name, const T& value);
+
+    template <typename T>
     void set_uniform(const std::string name, T&& value);
 
     void render(const Mesh& mesh, const Shader& shader);
@@ -238,9 +240,15 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
+inline void Renderer::set_uniform(const std::string name, const T& value)
+{
+    m_global_uniforms[name] = std::make_unique<Uniform<std::remove_reference_t<T>>>(name, value);
+}
+
+template <typename T>
 inline void Renderer::set_uniform(const std::string name, T&& value)
 {
-    m_global_uniforms[name] = std::make_unique<Uniform<T>>(name, std::forward<T>(value));
+    m_global_uniforms[name] = std::make_unique<Uniform<std::remove_reference_t<T>>>(name, std::forward<T>(value));
 }
 
 template <typename... T>

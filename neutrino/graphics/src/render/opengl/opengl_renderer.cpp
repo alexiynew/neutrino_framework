@@ -212,8 +212,7 @@ void OpenglRenderer::end_frame()
 
 void OpenglRenderer::bind_textures(const OpenglShader& shader, const Renderer::TexturesList& textures) const
 {
-    for (size_t i = 0; i < textures.size(); ++i)
-    {
+    for (size_t i = 0; i < textures.size(); ++i) {
         const auto& binding = textures[i];
         if (m_textures.count(binding.texture())) {
             const OpenglTexture& texture = m_textures.at(binding.texture());
