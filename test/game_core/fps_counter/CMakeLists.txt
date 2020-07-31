@@ -23,37 +23,20 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} STATIC "")
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+set_sources(PRIVATE_SOURCES
+    main.cpp
 )
 
-message(STATUS "Add modules...")
+add_executable(${TEST_NAME} EXCLUDE_FROM_ALL "")
 
-set(MODULES
-    "common"
-    "unit_test"
-    "log"
-    "math"
-    "system"
-    "graphics"
-    "game_core"
-)
+target_sources(${TEST_NAME} PRIVATE ${PRIVATE_SOURCES})
 
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
+target_link_libraries(${TEST_NAME} ${PROJECT_NAME})
+target_include_directories(${TEST_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 
-    message(STATUS "\t${MODULE_NAME}")
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
+set_target_properties(${TEST_NAME} PROPERTIES FOLDER ${TEST_DIR_NAME}/${GROUP_NAME})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
+add_test(NAME "${GROUP_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
+set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME})
 
-get_target_property(${PROJECT_NAME}_SOURCES ${PROJECT_NAME} SOURCES)
-source_group(TREE ${FRAMEWORK_SOURCE_DIR} FILES ${${PROJECT_NAME}_SOURCES})
-
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+add_dependencies(${TESTS_TARGET} ${TEST_NAME})

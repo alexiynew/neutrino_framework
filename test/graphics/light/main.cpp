@@ -28,6 +28,7 @@
 
 #include <common/utils.hpp>
 #include <common/version.hpp>
+#include <game_core/camera.hpp>
 #include <graphics/mesh.hpp>
 #include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
@@ -41,6 +42,7 @@ using namespace framework;
 using namespace framework::graphics;
 using namespace framework::math;
 using namespace framework::system;
+using namespace framework::game_core;
 
 namespace cube
 {
@@ -217,23 +219,10 @@ private:
         Window main_window({800, 640}, "GL light test");
         Renderer renderer(main_window);
 
-        renderer.set_clear_color(Color(0x000000FFu));
+        renderer.set_clear_color(Color(0x202020FFu));
 
-        struct Camera
-        {
-            Vector3f eye    = {0.0f, 0.0f, 10.0f};
-            Vector3f center = {0.0f, 0.0f, 0.0f};
-            Vector3f up     = {0.0f, 1.0f, 0.0f};
-
-            Position move_start = {0, 0};
-
-            Matrix4f get_view()
-            {
-                return look_at(eye, center, up);
-            }
-        };
-
-        Camera camera;
+        Camera camera({0.0f, 0.0f, 10.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f});
+        camera.set_speed(5);
 
         renderer.set_uniform("viewMatrix", camera.get_view());
 
@@ -242,25 +231,26 @@ private:
             renderer.set_uniform("projectionMatrix", perspective(half_pi<float>, aspect, 0.001f, 100.0f));
         });
 
-        main_window.on_mouse_move.connect([&camera, &renderer](const Window&, Position p) {
-            if (camera.move_start.x != 0 && camera.move_start.y != 0) {
-                int dx = camera.move_start.x - p.x;
-                int dy = camera.move_start.y - p.y;
-
-                if (dx < 0) {
-                    camera.eye = Vector3f(rotate(Matrix4f(), Vector3f(0, 1, 0), radians(3)) * Vector4f(camera.eye));
-                } else if (dx > 0) {
-                    camera.eye = Vector3f(rotate(Matrix4f(), Vector3f(0, -1, 0), radians(3)) * Vector4f(camera.eye));
-                }
-                if (dy < 0) {
-                    camera.eye = Vector3f(rotate(Matrix4f(), Vector3f(1, 0, 0), radians(3)) * Vector4f(camera.eye));
-                } else if (dy > 0) {
-                    camera.eye = Vector3f(rotate(Matrix4f(), Vector3f(-1, 0, 0), radians(3)) * Vector4f(camera.eye));
-                }
+        main_window.on_key_down.connect([&camera](const Window&, KeyCode key, Modifiers) {
+            switch (key) {
+                case KeyCode::key_w: camera.set_action(Camera::ActionState::moveForward, true); break;
+                case KeyCode::key_s: camera.set_action(Camera::ActionState::moveBackward, true); break;
+                case KeyCode::key_a: camera.set_action(Camera::ActionState::moveLeft, true); break;
+                case KeyCode::key_d: camera.set_action(Camera::ActionState::moveRight, true); break;
+                case KeyCode::key_q: camera.set_action(Camera::ActionState::moveUp, true); break;
+                case KeyCode::key_e: camera.set_action(Camera::ActionState::moveDown, true); break;
             }
-            camera.move_start = p;
+        });
 
-            renderer.set_uniform("viewMatrix", camera.get_view());
+        main_window.on_key_up.connect([&camera](const Window&, KeyCode key, Modifiers) {
+            switch (key) {
+                case KeyCode::key_w: camera.set_action(Camera::ActionState::moveForward, false); break;
+                case KeyCode::key_s: camera.set_action(Camera::ActionState::moveBackward, false); break;
+                case KeyCode::key_a: camera.set_action(Camera::ActionState::moveLeft, false); break;
+                case KeyCode::key_d: camera.set_action(Camera::ActionState::moveRight, false); break;
+                case KeyCode::key_q: camera.set_action(Camera::ActionState::moveUp, false); break;
+                case KeyCode::key_e: camera.set_action(Camera::ActionState::moveDown, false); break;
+            }
         });
 
         Object cube       = create_cube();
@@ -282,6 +272,7 @@ private:
 
         std::chrono::microseconds max_total_time = std::chrono::seconds(300);
         std::chrono::microseconds total_time(0);
+        std::chrono::milliseconds delta_time(16);
 
         const float angle = 0.05f;
 
@@ -293,6 +284,9 @@ private:
 
         while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
+
+            camera.update(delta_time);
+            renderer.set_uniform("viewMatrix", camera.get_view());
 
             cube_transform = translate(cube_transform, cube.position);
             cube_transform = rotate(cube_transform, normalize(Vector3f(0, 1, 0)), radians(0.5));
@@ -316,8 +310,8 @@ private:
 
             renderer.display();
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-            total_time += std::chrono::milliseconds(20);
+            std::this_thread::sleep_for(delta_time);
+            total_time += delta_time;
         }
     }
 };

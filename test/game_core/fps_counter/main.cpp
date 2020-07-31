@@ -26,16 +26,17 @@
 #include <chrono>
 #include <thread>
 
-#include <common/fps_counter.hpp>
+#include <game_core/fps_counter.hpp>
 #include <unit_test/suite.hpp>
 
 using namespace framework;
+using namespace framework::game_core;
 
-class fps_counter_test : public unit_test::Suite
+class FpsCounterTest : public unit_test::Suite
 {
 public:
-    fps_counter_test()
-        : Suite("fps_counter_test")
+    FpsCounterTest()
+        : Suite("FpsCounterTest")
     {
         add_test([this]() { fps_count(); }, "fps_count");
     }
@@ -65,5 +66,5 @@ private:
 
 int main()
 {
-    return run_tests(fps_counter_test());
+    return run_tests(FpsCounterTest());
 }

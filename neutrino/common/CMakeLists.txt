@@ -35,7 +35,6 @@ set_sources(PUBLIC_SOURCES
     size.hpp
     position.hpp
     instance_id.hpp
-    fps_counter.hpp
 )
 
 set_sources(PRIVATE_SOURCES
@@ -44,7 +43,6 @@ set_sources(PRIVATE_SOURCES
     src/size.cpp
     src/position.cpp
     src/instance_id.cpp
-    src/fps_counter.cpp
 )
 
 target_sources(${PROJECT_NAME}

@@ -43,6 +43,7 @@ set(TEST_GROUPS
     "math"
     "system"
     "graphics"
+    "game_core"
 )
 
 foreach(GROUP ${TEST_GROUPS})

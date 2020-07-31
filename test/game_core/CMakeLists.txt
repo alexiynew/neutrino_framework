@@ -23,37 +23,14 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} STATIC "")
-
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+set(TESTS 
+    fps_counter
+    camera
 )
 
-message(STATUS "Add modules...")
+foreach(TEST ${TESTS})
+    set(TEST_NAME ${TEST})
+    set(TEST_DIR ${GROUP_DIR}/${TEST})
 
-set(MODULES
-    "common"
-    "unit_test"
-    "log"
-    "math"
-    "system"
-    "graphics"
-    "game_core"
-)
-
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
-
-    message(STATUS "\t${MODULE_NAME}")
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-get_target_property(${PROJECT_NAME}_SOURCES ${PROJECT_NAME} SOURCES)
-source_group(TREE ${FRAMEWORK_SOURCE_DIR} FILES ${${PROJECT_NAME}_SOURCES})
-
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+    include(${TEST_DIR}/CMakeLists.txt)
+endforeach(TEST)

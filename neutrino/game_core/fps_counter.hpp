@@ -29,16 +29,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_FPS_COUNTER_HPP
-#define FRAMEWORK_COMMON_FPS_COUNTER_HPP
+#ifndef FRAMEWORK_GAME_CORE_FPS_COUNTER_HPP
+#define FRAMEWORK_GAME_CORE_FPS_COUNTER_HPP
 
 #include <atomic>
 #include <thread>
 
-namespace framework
+namespace framework::game_core
 {
 ////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup common_utils_module
+/// @addtogroup game_core_module
 /// @{
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -23,37 +23,21 @@
 # SOFTWARE.
 # =============================================================================
 
-add_library(${PROJECT_NAME} STATIC "")
+set_sources(PUBLIC_SOURCES
+    camera.hpp
+    fps_counter.hpp
+)
 
-target_include_directories(${PROJECT_NAME}
+set_sources(PRIVATE_SOURCES
+    src/camera.cpp
+    src/fps_counter.cpp
+)
+
+target_sources(${PROJECT_NAME}
+    PUBLIC
+        ${PUBLIC_SOURCES}
     PRIVATE
-        ${FRAMEWORK_SOURCE_DIR}
-        ${FRAMEWORK_DEPENDENCIES_DIR}
+        ${PRIVATE_SOURCES}
 )
 
-message(STATUS "Add modules...")
-
-set(MODULES
-    "common"
-    "unit_test"
-    "log"
-    "math"
-    "system"
-    "graphics"
-    "game_core"
-)
-
-foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
-
-    message(STATUS "\t${MODULE_NAME}")
-    include(${MODULE_DIR}/CMakeLists.txt)
-endforeach(MODULE)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-
-get_target_property(${PROJECT_NAME}_SOURCES ${PROJECT_NAME} SOURCES)
-source_group(TREE ${FRAMEWORK_SOURCE_DIR} FILES ${${PROJECT_NAME}_SOURCES})
-
-install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})

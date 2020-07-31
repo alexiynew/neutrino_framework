@@ -31,9 +31,9 @@
 
 #include <chrono>
 
-#include <common/fps_counter.hpp>
+#include <game_core/fps_counter.hpp>
 
-namespace framework
+namespace framework::game_core
 {
 FpsCounter::FpsCounter()
     : m_fps_thread(&FpsCounter::slice_fps, this)
