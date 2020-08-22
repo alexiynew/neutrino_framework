@@ -103,6 +103,16 @@ void Window::move(Position position)
     m_platform_window->move(position);
 }
 
+void Window::grab_cursor()
+{
+    m_platform_window->grab_cursor();
+}
+
+void Window::release_cursor()
+{
+    m_platform_window->release_cursor();
+}
+
 void Window::process_events()
 {
     m_platform_window->process_events();
@@ -130,6 +140,11 @@ void Window::set_resizable(bool value)
 void Window::set_title(const std::string& title)
 {
     m_platform_window->set_title(title);
+}
+
+void Window::set_cursor_visibility(bool visible)
+{
+    m_platform_window->set_cursor_visibility(visible);
 }
 
 #pragma endregion
@@ -202,6 +217,16 @@ bool Window::is_visible() const
 bool Window::has_input_focus() const
 {
     return m_platform_window->has_input_focus();
+}
+
+bool Window::is_cursor_visible() const
+{
+    return m_platform_window->is_cursor_visible();
+}
+
+bool Window::is_cursor_grabbed() const
+{
+    return m_platform_window->is_cursor_grabbed();
 }
 
 #pragma endregion

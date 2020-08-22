@@ -61,6 +61,8 @@ public:
     void restore() override;
     void resize(Size size) override;
     void move(Position position) override;
+    void grab_cursor() override;
+    void release_cursor() override;
     void process_events() override;
     /// @}
 
@@ -70,6 +72,7 @@ public:
     void set_min_size(Size min_size) override;
     void set_resizable(bool value) override;
     void set_title(const std::string& title) override;
+    void set_cursor_visibility(bool visible) override;
     /// @}
 
     /// @name getters
@@ -91,17 +94,21 @@ public:
     bool is_resizable() const override;
     bool is_visible() const override;
     bool has_input_focus() const override;
+    bool is_cursor_visible() const override;
+    bool is_cursor_grabbed() const override;
     /// @}
 
 private:
-    struct window_info
+    friend class Win32Application;
+
+    struct WindowInfo
     {
         LONG style;
         LONG ex_style;
         RECT rect;
     };
 
-    struct modifiers_flags
+    struct ModifiersFlags
     {
         bool left_shift;
         bool right_shift;
@@ -111,8 +118,6 @@ private:
         bool right_alt;
     };
 
-    friend class Win32Application;
-
     HWND m_window = nullptr;
     HDC m_hdc     = nullptr;
     HGLRC m_hglrc = nullptr;
@@ -121,24 +126,33 @@ private:
     Size m_min_size = {0, 0};
     Size m_max_size = {0, 0};
 
-    bool m_resizable    = true;
-    bool m_mouse_hover  = false;
-    bool m_should_close = false;
+    bool m_resizable      = true;
+    bool m_mouse_hover    = false;
+    bool m_should_close   = false;
+    bool m_cursor_visible = true;
+    bool m_cursor_grabbed = false;
 
-    window_info m_saved_info = {0, 0, {0, 0, 0, 0}};
+    CursorPosition m_grabbed_cursor_diff = {0, 0};
+    CursorPosition m_cursor_position     = {0, 0};
+
+    WindowInfo m_saved_info = {0, 0, {0, 0, 0, 0}};
 
     std::unique_ptr<Context> m_context = nullptr;
 
-    modifiers_flags m_modifiers_flags = {false, false, false, false, false, false};
+    ModifiersFlags m_modifiers_flags = {false, false, false, false, false, false};
 
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 
     void track_mouse();
+    void update_cursor();
+    void enable_raw_input();
+    void disable_raw_input();
 
     LRESULT process_key_event(WPARAM w_param, LPARAM l_param);
     void process_shift_key(LPARAM l_param);
     void process_control_key(LPARAM l_param);
     void process_alt_key(LPARAM l_param);
+    void process_raw_input(LPARAM l_param);
 };
 
 } // namespace framework::system::details

@@ -40,6 +40,7 @@ void stream_logger::add_message(severity_level level, const std::string& tag, co
     std::lock_guard lock(m_output_mutex);
 
     m_output << "[" << level << "] " << tag << ": " << message;
+    m_output.flush();
 }
 
 } // namespace framework::log

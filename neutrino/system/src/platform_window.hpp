@@ -67,6 +67,8 @@ public:
     virtual void restore()               = 0;
     virtual void resize(Size size)       = 0;
     virtual void move(Position position) = 0;
+    virtual void grab_cursor()           = 0;
+    virtual void release_cursor()        = 0;
     virtual void process_events()        = 0;
     /// @}
 
@@ -76,6 +78,7 @@ public:
     virtual void set_min_size(Size size)             = 0;
     virtual void set_resizable(bool value)           = 0;
     virtual void set_title(const std::string& title) = 0;
+    virtual void set_cursor_visibility(bool visible) = 0;
     /// @}
 
     /// @name getters
@@ -90,13 +93,15 @@ public:
 
     /// @name state
     /// @{
-    virtual bool should_close() const    = 0;
-    virtual bool is_fullscreen() const   = 0;
-    virtual bool is_iconified() const    = 0;
-    virtual bool is_maximized() const    = 0;
-    virtual bool is_resizable() const    = 0;
-    virtual bool is_visible() const      = 0;
-    virtual bool has_input_focus() const = 0;
+    virtual bool should_close() const      = 0;
+    virtual bool is_fullscreen() const     = 0;
+    virtual bool is_iconified() const      = 0;
+    virtual bool is_maximized() const      = 0;
+    virtual bool is_resizable() const      = 0;
+    virtual bool is_visible() const        = 0;
+    virtual bool has_input_focus() const   = 0;
+    virtual bool is_cursor_visible() const = 0;
+    virtual bool is_cursor_grabbed() const = 0;
     /// @}
 
 protected:

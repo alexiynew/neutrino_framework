@@ -29,11 +29,14 @@
 
 #include <stdexcept>
 
+#include <log/log.hpp>
+
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_keyboard.hpp>
 #include <system/src/windows/win32_wgl_context.hpp>
 #include <system/src/windows/win32_window.hpp>
 
+#include <hidusage.h>
 #include <windowsx.h>
 
 namespace
@@ -176,6 +179,62 @@ framework::Size adjust_size(framework::Size size, DWORD style)
     return {rect.right - rect.left, rect.bottom - rect.top};
 }
 
+void set_cursor_in_center(HWND window)
+{
+    RECT rect;
+    GetClientRect(window, &rect);
+
+    POINT p = {rect.right / 2, rect.bottom / 2};
+    ClientToScreen(window, &p);
+    SetCursorPos(p.x, p.y);
+}
+
+void set_cursor_cliping(HWND window, bool enable)
+{
+    if (enable) {
+        RECT rect;
+        GetClientRect(window, &rect);
+
+        POINT left_top{rect.left, rect.top};
+        ClientToScreen(window, &left_top);
+
+        POINT right_bottom{rect.right, rect.bottom};
+        ClientToScreen(window, &right_bottom);
+
+        rect = {left_top.x, left_top.y, right_bottom.x, right_bottom.y};
+
+        ClipCursor(&rect);
+    } else {
+        ClipCursor(nullptr);
+    }
+}
+
+framework::system::CursorPosition get_cursor_position(HWND window)
+{
+    POINT p;
+    GetCursorPos(&p);
+    ScreenToClient(window, &p);
+
+    return {p.x, p.y};
+}
+
+void set_cursor_position(HWND window, framework::system::CursorPosition pos)
+{
+    POINT p = {pos.x, pos.y};
+    ClientToScreen(window, &p);
+    SetCursorPos(p.x, p.y);
+}
+
+bool is_cursor_in_client_area(HWND window)
+{
+    RECT rect;
+    GetClientRect(window, &rect);
+
+    framework::system::CursorPosition pos = get_cursor_position(window);
+
+    return pos.x >= 0 && pos.y >= 0 && pos.x <= rect.right && pos.y <= rect.bottom;
+}
+
 } // namespace
 
 namespace framework::system::details
@@ -233,8 +292,7 @@ void Win32Window::show()
     }
     UpdateWindow(m_window);
 
-    // TODO: Get mouse position and set m_mouse_hover correctly.
-    // m_mouse_hover = cursor inside window?
+    m_mouse_hover = is_cursor_in_client_area(m_window);
 }
 
 void Win32Window::hide()
@@ -337,6 +395,34 @@ void Win32Window::move(Position position)
                  SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
+void Win32Window::grab_cursor()
+{
+    if (m_cursor_grabbed) {
+        return;
+    }
+
+    m_grabbed_cursor_diff = {0, 0};
+
+    m_cursor_grabbed = true;
+
+    m_cursor_position = get_cursor_position(m_window);
+    update_cursor();
+    enable_raw_input();
+}
+
+void Win32Window::release_cursor()
+{
+    if (!m_cursor_grabbed) {
+        return;
+    }
+
+    m_cursor_grabbed = false;
+    set_cursor_cliping(m_window, false);
+    set_cursor_position(m_window, m_cursor_position);
+
+    disable_raw_input();
+}
+
 void Win32Window::process_events()
 {
     MSG message = {};
@@ -388,6 +474,11 @@ void Win32Window::set_title(const std::string& title)
 {
     const auto whide_char_title = utf8_to_utf16(title);
     SetWindowText(m_window, &whide_char_title[0]);
+}
+
+void Win32Window::set_cursor_visibility(bool visible)
+{
+    m_cursor_visible = visible;
 }
 
 #pragma endregion
@@ -488,6 +579,16 @@ bool Win32Window::has_input_focus() const
     return GetActiveWindow() == m_window && GetFocus() == m_window;
 }
 
+bool Win32Window::is_cursor_visible() const
+{
+    return false;
+}
+
+bool Win32Window::is_cursor_grabbed() const
+{
+    return m_cursor_grabbed;
+}
+
 #pragma endregion
 
 #pragma region message processing
@@ -524,11 +625,13 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         }
 
         case WM_SIZE: {
+            update_cursor();
             on_resize(size());
             return 0;
         }
 
         case WM_MOVE: {
+            update_cursor();
             on_move(position());
             return 0;
         }
@@ -571,8 +674,12 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         case WM_MOUSEMOVE: {
             track_mouse();
 
-            const CursorPosition position{LOWORD(l_param), HIWORD(l_param)};
-            on_mouse_move(position);
+            CursorPosition pos{LOWORD(l_param), HIWORD(l_param)};
+
+            if (!m_cursor_grabbed) {
+                m_cursor_position = pos;
+                on_mouse_move(pos);
+            }
 
             return 0;
         }
@@ -665,6 +772,11 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
 
                 case SC_KEYMENU: return 0;
             }
+            break;
+        }
+
+        case WM_INPUT: {
+            process_raw_input(l_param);
             break;
         }
     }
@@ -799,6 +911,76 @@ void Win32Window::track_mouse()
     track_info.dwHoverTime = 1;
 
     TrackMouseEvent(&track_info);
+}
+
+void Win32Window::update_cursor()
+{
+    if (m_cursor_grabbed) {
+        set_cursor_in_center(m_window);
+        set_cursor_cliping(m_window, true);
+    }
+}
+
+void Win32Window::enable_raw_input()
+{
+    const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
+
+    if (!RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
+        log::error(log_tag) << "Failed to register raw input device";
+    }
+}
+
+void Win32Window::disable_raw_input()
+{
+    const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
+
+    if (!RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
+        log::error(log_tag) << "Failed to reset raw input device";
+    }
+}
+
+void Win32Window::process_raw_input(LPARAM l_param)
+{
+    if (!m_cursor_grabbed) {
+        return;
+    }
+
+    HRAWINPUT handle = reinterpret_cast<HRAWINPUT>(l_param);
+
+    UINT size = 0;
+    GetRawInputData(handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
+
+    RAWINPUT raw_input = {0};
+    if (GetRawInputData(handle, RID_INPUT, &raw_input, &size, sizeof(RAWINPUTHEADER)) == static_cast<UINT>(-1)) {
+        log::error(log_tag) << "Failed to get raw input data";
+        return;
+    }
+
+    CursorPosition pos = m_cursor_position;
+    pos.x += m_grabbed_cursor_diff.x;
+    pos.y += m_grabbed_cursor_diff.y;
+
+    int dx = 0;
+    int dy = 0;
+
+    if (raw_input.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE) {
+        dx = raw_input.data.mouse.lLastX - pos.x;
+        dy = raw_input.data.mouse.lLastY - pos.y;
+    } else {
+        dx = raw_input.data.mouse.lLastX;
+        dy = raw_input.data.mouse.lLastY;
+    }
+
+    m_grabbed_cursor_diff.x += dx;
+    m_grabbed_cursor_diff.y += dy;
+    pos.x += dx;
+    pos.y += dy;
+
+    if (dx != 0 || dy != 0) {
+        set_cursor_in_center(m_window);
+    }
+
+    on_mouse_move(pos);
 }
 
 #pragma endregion
