@@ -113,6 +113,7 @@ public:
         : Suite("WindowCursorTest")
     {
         add_test([this]() { grab_cursor(); }, "grub_cursor");
+        add_test([this]() { cursor_visibility(); }, "cursor_visibility");
     }
 
 private:
@@ -161,6 +162,26 @@ private:
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
         TEST_ASSERT(!window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
+    }
+
+    void cursor_visibility()
+    {
+        Window window({640, 480}, name());
+
+        window.show();
+
+        TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
+
+        window.set_cursor_visibility(false);
+
+        while (!window.should_close())
+            window.process_events();
+
+        TEST_ASSERT(!window.is_cursor_visible(), "Cursor should not be visible.");
+
+        window.set_cursor_visibility(true);
+
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
     }
 };

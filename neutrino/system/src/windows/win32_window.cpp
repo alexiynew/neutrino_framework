@@ -479,6 +479,11 @@ void Win32Window::set_title(const std::string& title)
 void Win32Window::set_cursor_visibility(bool visible)
 {
     m_cursor_visible = visible;
+    if (m_cursor_visible) {
+        SetCursor(LoadCursor(nullptr, IDC_ARROW));
+    } else {
+        SetCursor(nullptr);
+    }
 }
 
 #pragma endregion
@@ -581,7 +586,7 @@ bool Win32Window::has_input_focus() const
 
 bool Win32Window::is_cursor_visible() const
 {
-    return false;
+    return GetCursor() != nullptr;
 }
 
 bool Win32Window::is_cursor_grabbed() const
@@ -682,6 +687,17 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
             }
 
             return 0;
+        }
+
+        case WM_SETCURSOR:
+        {
+            if (LOWORD(l_param) == HTCLIENT)
+            {
+                set_cursor_visibility(m_cursor_visible);
+                return TRUE;
+            }
+
+            break;
         }
 
         case WM_SYSKEYDOWN:
