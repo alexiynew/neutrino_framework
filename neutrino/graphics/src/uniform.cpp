@@ -34,14 +34,14 @@
 namespace framework::graphics
 {
 
-UniformBase::UniformBase(const std::string& name)
-    : m_name(name)
-{}
-
-UniformBase::~UniformBase() = default;
-
-const std::string& UniformBase::name() const
+const std::string& Uniform::name() const
 {
     return m_name;
 }
+
+const UniformValue& Uniform::value() const
+{
+    return m_value;
+}
+
 } // namespace framework::graphics

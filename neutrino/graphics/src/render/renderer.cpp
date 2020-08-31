@@ -63,8 +63,8 @@ std::unique_ptr<RendererImpl> create_impl(system::Context& context)
 namespace framework::graphics
 {
 
-Renderer::TextureBinding::TextureBinding(const std::string& name, const Texture& texture)
-    : m_name(name)
+Renderer::TextureBinding::TextureBinding(std::string name, const Texture& texture)
+    : m_name(std::move(name))
     , m_texture(texture.instance_id())
 {}
 
@@ -82,12 +82,12 @@ Renderer::Command::Command(InstanceId mesh,
                            InstanceId shader,
                            const TexturesList& textures,
                            const UniformsMap& global_uniforms,
-                           UniformsList&& uniforms)
+                           const UniformsList& uniforms)
     : m_mesh(mesh)
     , m_shader(shader)
     , m_textures(textures)
     , m_global_uniforms(std::cref(global_uniforms))
-    , m_uniforms(std::move(uniforms))
+    , m_uniforms(uniforms)
 {}
 
 Renderer::Command::Command(Command&& other)
@@ -184,12 +184,23 @@ bool Renderer::load(const Texture& texture)
 
 void Renderer::render(const Mesh& mesh, const Shader& shader)
 {
-    create_render_command(mesh, shader, {}, {});
+    render(mesh, shader, {}, {});
 }
 
 void Renderer::render(const Mesh& mesh, const Shader& shader, const TexturesList& textures)
 {
-    create_render_command(mesh, shader, textures, {});
+    render(mesh, shader, textures, {});
+}
+
+void Renderer::render(const Mesh& mesh, const Shader& shader, const UniformsList& uniforms)
+{
+    render(mesh, shader, {}, uniforms);
+}
+
+void Renderer::render(const Mesh& mesh, const Shader& shader, const TexturesList& textures, const UniformsList& uniforms)
+{
+    m_render_commands.push_back(
+    Command(mesh.instance_id(), shader.instance_id(), textures, m_global_uniforms, uniforms));
 }
 
 void Renderer::display()
@@ -217,15 +228,6 @@ void Renderer::end_frame()
     m_render_commands.clear();
 
     m_impl->end_frame();
-}
-
-void Renderer::create_render_command(const Mesh& mesh,
-                                     const Shader& shader,
-                                     const TexturesList& textures,
-                                     UniformsList&& uniforms)
-{
-    m_render_commands.push_back(
-    Command(mesh.instance_id(), shader.instance_id(), textures, m_global_uniforms, std::move(uniforms)));
 }
 
 } // namespace framework::graphics

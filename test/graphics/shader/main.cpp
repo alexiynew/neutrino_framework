@@ -180,7 +180,7 @@ private:
             main_window.process_events();
 
             model_transform = math::rotate(model_transform, axis, angle);
-            renderer.render(mesh, shader, Uniform("modelMatrix", model_transform));
+            renderer.render(mesh, shader, {Uniform("modelMatrix", model_transform)});
             renderer.display();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(16));

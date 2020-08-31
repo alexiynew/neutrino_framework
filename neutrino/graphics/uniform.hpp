@@ -33,6 +33,7 @@
 #define FRAMEWORK_GRAPHICS_UNIFORM_HPP
 
 #include <string>
+#include <variant>
 
 #include <math/math.hpp>
 
@@ -43,99 +44,80 @@ namespace framework::graphics
 /// @{
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename T>
-class Uniform;
+using UniformValue = std::variant<float,
+                                  math::Vector2f,
+                                  math::Vector3f,
+                                  math::Vector4f,
+                                  //
+                                  double,
+                                  math::Vector2d,
+                                  math::Vector3d,
+                                  math::Vector4d,
+                                  //
+                                  int,
+                                  math::Vector2i,
+                                  math::Vector3i,
+                                  math::Vector4i,
+                                  //
+                                  unsigned int,
+                                  math::Vector2u,
+                                  math::Vector3u,
+                                  math::Vector4u,
+                                  //
+                                  bool,
+                                  math::Vector2b,
+                                  math::Vector3b,
+                                  math::Vector4b,
+                                  //
+                                  math::Matrix2f,
+                                  math::Matrix3f,
+                                  math::Matrix4f,
+                                  math::Matrix2x3f,
+                                  math::Matrix2x4f,
+                                  math::Matrix3x2f,
+                                  math::Matrix3x4f,
+                                  math::Matrix4x2f,
+                                  math::Matrix4x3f,
+                                  //
+                                  math::Matrix2d,
+                                  math::Matrix3d,
+                                  math::Matrix4d,
+                                  math::Matrix2x3d,
+                                  math::Matrix2x4d,
+                                  math::Matrix3x2d,
+                                  math::Matrix3x4d,
+                                  math::Matrix4x2d,
+                                  math::Matrix4x3d>;
 
-class UniformSetter
+class Uniform
 {
 public:
-    virtual ~UniformSetter() = default;
-
-    virtual void set_uniform(int location, const Uniform<float>& uniform) const          = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector2f>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector3f>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector4f>& uniform) const = 0;
-
-    virtual void set_uniform(int location, const Uniform<double>& uniform) const         = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector2d>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector3d>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector4d>& uniform) const = 0;
-
-    virtual void set_uniform(int location, const Uniform<int>& uniform) const            = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector2i>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector3i>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector4i>& uniform) const = 0;
-
-    virtual void set_uniform(int location, const Uniform<unsigned int>& uniform) const   = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector2u>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector3u>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector4u>& uniform) const = 0;
-
-    virtual void set_uniform(int location, const Uniform<bool>& uniform) const           = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector2b>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector3b>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Vector4b>& uniform) const = 0;
-
-    virtual void set_uniform(int location, const Uniform<math::Matrix2f>& uniform) const   = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix3f>& uniform) const   = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix4f>& uniform) const   = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix2x3f>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix2x4f>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix3x2f>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix3x4f>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix4x2f>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix4x3f>& uniform) const = 0;
-
-    virtual void set_uniform(int location, const Uniform<math::Matrix2d>& uniform) const   = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix3d>& uniform) const   = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix4d>& uniform) const   = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix2x3d>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix2x4d>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix3x2d>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix3x4d>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix4x2d>& uniform) const = 0;
-    virtual void set_uniform(int location, const Uniform<math::Matrix4x3d>& uniform) const = 0;
-};
-
-class UniformBase
-{
-public:
-    explicit UniformBase(const std::string& name);
-
-    virtual ~UniformBase();
-
-    virtual void set(int location, const UniformSetter& setter) const = 0;
-
-    const std::string& name() const;
-
-private:
-    const std::string m_name;
-};
-
-template <typename T>
-class Uniform : public UniformBase
-{
-public:
-    Uniform(const std::string& name, const T& value)
-        : UniformBase(name)
+    template <typename T>
+    Uniform(std::string name, const T& value) noexcept
+        : m_name(std::move(name))
         , m_value(value)
     {}
+
+    template <typename T>
+    Uniform(std::string name, T&& value) noexcept
+        : m_name(std::move(name))
+        , m_value(std::forward<T>(value))
+    {}
+
+    Uniform() = default;
+
+    Uniform(const Uniform&) = default;
+    Uniform& operator=(const Uniform&) = default;
 
     Uniform(Uniform&&) = default;
     Uniform& operator=(Uniform&&) = default;
 
-    void set(int location, const UniformSetter& setter) const override
-    {
-        setter.set_uniform(location, *this);
-    }
-
-    const T& value() const
-    {
-        return m_value;
-    }
+    const std::string& name() const;
+    const UniformValue& value() const;
 
 private:
-    const T m_value;
+    std::string m_name;
+    UniformValue m_value;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

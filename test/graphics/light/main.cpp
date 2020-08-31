@@ -312,15 +312,15 @@ private:
             light_transform = translate(light_transform, light_cube.position);
             light_transform = scale(light_transform, Vector3f(0.2f, 0.2f, 0.2f));
 
-            renderer.render(*light_cube.mesh, *light_cube.shader, Uniform{"modelMatrix", light_transform});
+            renderer.render(*light_cube.mesh, *light_cube.shader, {Uniform{"modelMatrix", light_transform}});
 
             Matrix3f normal_matrix = Matrix3f(transpose(inverse(camera.get_view() * cube_transform)));
             renderer.render(*cube.mesh,
                             *cube.shader,
-                            Uniform{"modelMatrix", cube_transform},
-                            Uniform{"normalMatrix", normal_matrix},
-                            Uniform{"lightPos", light_cube.position},
-                            Uniform{"lightMatrix", light_transform});
+                            {Uniform{"modelMatrix", cube_transform},
+                             Uniform{"normalMatrix", normal_matrix},
+                             Uniform{"lightPos", light_cube.position},
+                             Uniform{"lightMatrix", light_transform}});
 
             renderer.display();
 

@@ -370,7 +370,7 @@ private:
                 renderer.render(*entity.mesh,
                                 *entity.shader,
                                 {{"texture0", *entity.texture}},
-                                Uniform{"modelMatrix", transform});
+                                {Uniform{"modelMatrix", transform}});
             }
 
             renderer.display();

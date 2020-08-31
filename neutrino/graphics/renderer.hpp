@@ -66,14 +66,13 @@ struct Uniforms;
 class Renderer
 {
 public:
-    using UniformPtr   = std::unique_ptr<UniformBase>;
-    using UniformsList = std::vector<UniformPtr>;
-    using UniformsMap  = std::unordered_map<std::string, UniformPtr>;
+    using UniformsList = std::vector<Uniform>;
+    using UniformsMap  = std::unordered_map<std::string, Uniform>;
 
     class TextureBinding
     {
     public:
-        TextureBinding(const std::string& name, const Texture& texture);
+        TextureBinding(std::string name, const Texture& texture);
 
         const std::string& name() const;
         InstanceId texture() const;
@@ -92,7 +91,7 @@ public:
                 InstanceId shader,
                 const TexturesList& m_textures,
                 const UniformsMap& global_uniforms,
-                UniformsList&& m_uniforms);
+                const UniformsList& m_uniforms);
 
         Command(const Command& other) = delete;
         Command& operator=(const Command& other) = delete;
@@ -185,19 +184,15 @@ public:
     bool load(const Texture& texture);
 
     template <typename T>
-    void set_uniform(const std::string name, const T& value);
+    void set_uniform(const std::string& name, const T& value);
 
     template <typename T>
-    void set_uniform(const std::string name, T&& value);
+    void set_uniform(const std::string& name, T&& value);
 
     void render(const Mesh& mesh, const Shader& shader);
     void render(const Mesh& mesh, const Shader& shader, const TexturesList& textures);
-
-    template <typename... T>
-    void render(const Mesh& mesh, const Shader& shader, Uniform<T>&&... uniforms);
-
-    template <typename... T>
-    void render(const Mesh& mesh, const Shader& shader, const TexturesList& textures, Uniform<T>&&... uniforms);
+    void render(const Mesh& mesh, const Shader& shader, const UniformsList& uniforms);
+    void render(const Mesh& mesh, const Shader& shader, const TexturesList& textures, const UniformsList& uniforms);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Display on a screen all that been rendered so far.
@@ -222,11 +217,6 @@ private:
     void start_frame();
     void end_frame();
 
-    void create_render_command(const Mesh& mesh,
-                               const Shader& shader,
-                               const TexturesList& textures,
-                               UniformsList&& uniforms);
-
     std::unique_ptr<RendererImpl> m_impl;
     std::reference_wrapper<system::Window> m_window;
     Signal<const system::Window&, Size>::SlotId m_on_resize_slot_id;
@@ -240,33 +230,15 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
-inline void Renderer::set_uniform(const std::string name, const T& value)
+inline void Renderer::set_uniform(const std::string& name, const T& value)
 {
-    m_global_uniforms[name] = std::make_unique<Uniform<std::remove_reference_t<T>>>(name, value);
+    m_global_uniforms[name] = Uniform(name, value);
 }
 
 template <typename T>
-inline void Renderer::set_uniform(const std::string name, T&& value)
+inline void Renderer::set_uniform(const std::string& name, T&& value)
 {
-    m_global_uniforms[name] = std::make_unique<Uniform<std::remove_reference_t<T>>>(name, std::forward<T>(value));
-}
-
-template <typename... T>
-inline void Renderer::render(const Mesh& mesh, const Shader& shader, Uniform<T>&&... uniforms)
-{
-    render(mesh, shader, {}, std::move(uniforms)...);
-}
-
-template <typename... T>
-inline void Renderer::render(const Mesh& mesh,
-                             const Shader& shader,
-                             const TexturesList& textures,
-                             Uniform<T>&&... uniforms)
-{
-    UniformsList u;
-    (u.emplace_back(std::make_unique<Uniform<T>>(std::move(uniforms))), ...);
-
-    create_render_command(mesh, shader, textures, std::move(u));
+    m_global_uniforms[name] = Uniform(name, std::forward<T>(value));
 }
 
 } // namespace framework::graphics
