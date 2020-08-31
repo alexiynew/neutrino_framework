@@ -175,8 +175,7 @@ private:
 
         window.set_cursor_visibility(false);
 
-        while (!window.should_close())
-            window.process_events();
+        window.process_events();
 
         TEST_ASSERT(!window.is_cursor_visible(), "Cursor should not be visible.");
 

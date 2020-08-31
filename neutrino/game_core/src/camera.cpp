@@ -57,12 +57,38 @@ void Camera::set_speed(float speed)
     m_speed = speed;
 }
 
+void Camera::set_sensitivity(float sensitivity)
+{
+    m_sensitivity = sensitivity;
+}
+
+void Camera::set_offset(math::Vector2f offset)
+{
+    m_yaw += offset.x * m_sensitivity;
+    m_pitch += offset.y * m_sensitivity;
+
+    if (m_pitch > 89.0f) {
+        m_pitch = 89.0f;
+    }
+    if (m_pitch < -89.0f) {
+        m_pitch = -89.0f;
+    }
+}
+
 void Camera::update(std::chrono::nanoseconds delata_time)
 {
     using FloatSecond = std::chrono::duration<double>;
 
     const FloatSecond delta  = std::chrono::duration_cast<FloatSecond>(delata_time);
     const float camera_speed = static_cast<float>(m_speed * delta.count());
+
+    math::Vector3f front;
+
+    front.x = static_cast<float>(cos(math::radians(m_pitch)) * cos(math::radians(m_yaw)));
+    front.y = static_cast<float>(sin(math::radians(m_pitch)));
+    front.z = static_cast<float>(cos(math::radians(m_pitch)) * sin(math::radians(m_yaw)));
+
+    m_front = normalize(front);
 
     math::Vector3f direction(0, 0, 0);
 

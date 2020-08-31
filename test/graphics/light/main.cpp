@@ -226,10 +226,15 @@ private:
 
         renderer.set_uniform("viewMatrix", camera.get_view());
 
+        main_window.set_cursor_visibility(false);
+
         main_window.on_resize.connect([&renderer](const Window&, Size size) {
             const float aspect = static_cast<float>(size.width) / static_cast<float>(size.height);
             renderer.set_uniform("projectionMatrix", perspective(half_pi<float>, aspect, 0.001f, 100.0f));
         });
+
+        main_window.on_focus.connect([&main_window](const Window&) { main_window.grab_cursor(); });
+        main_window.on_lost_focus.connect([&main_window](const Window&) { main_window.release_cursor(); });
 
         main_window.on_key_down.connect([&camera](const Window&, KeyCode key, Modifiers) {
             switch (key) {
@@ -253,6 +258,15 @@ private:
             }
         });
 
+        CursorPosition last_mouse_pos{main_window.size().width / 2, main_window.size().height / 2};
+        main_window.on_mouse_move.connect([&camera, &last_mouse_pos](const Window&, CursorPosition pos) {
+            int dx = pos.x - last_mouse_pos.x;
+            int dy = last_mouse_pos.y - pos.y;
+
+            camera.set_offset({dx, dy});
+            last_mouse_pos = pos;
+        });
+
         Object cube       = create_cube();
         Object light_cube = create_light_cube();
 
@@ -270,7 +284,7 @@ private:
 
         main_window.show();
 
-        std::chrono::microseconds max_total_time = std::chrono::seconds(300);
+        std::chrono::microseconds max_total_time = std::chrono::seconds(100);
         std::chrono::microseconds total_time(0);
         std::chrono::milliseconds delta_time(16);
 

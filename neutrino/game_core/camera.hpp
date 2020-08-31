@@ -66,6 +66,8 @@ public:
 
     void set_action(ActionState state, bool value);
     void set_speed(float speed);
+    void set_sensitivity(float sensitivity);
+    void set_offset(math::Vector2f offset);
 
     void update(std::chrono::nanoseconds delata_time);
 
@@ -88,7 +90,11 @@ private:
     math::Vector3f m_front    = {0, 0, 0};
     math::Vector3f m_up       = {0, 0, 0};
 
-    float m_speed = 0;
+    float m_yaw   = -90.0f;
+    float m_pitch = 0.0f;
+
+    float m_speed       = 0.0f;
+    float m_sensitivity = 0.05f;
 
     State m_state = {0};
 };
