@@ -222,7 +222,7 @@ private:
         renderer.set_clear_color(Color(0x202020FFu));
 
         Camera camera({0.0f, 0.0f, 10.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f});
-        camera.set_speed(5);
+        camera.set_speed(10);
 
         renderer.set_uniform("viewMatrix", camera.get_view());
 
@@ -304,9 +304,6 @@ private:
 
             cube_transform = translate(cube_transform, cube.position);
             cube_transform = rotate(cube_transform, normalize(Vector3f(0, 1, 0)), radians(0.5));
-
-            light_cube.position = Vector3f(rotate(Matrix4f(), normalize(Vector3f(0, 0, 1)), radians(0.7)) *
-                                           Vector4f(light_cube.position));
 
             Matrix4f light_transform;
             light_transform = translate(light_transform, light_cube.position);

@@ -25,6 +25,6 @@ void main()
     lightPosition = vec3(viewMatrix * lightMatrix * vec4(lightPos, 1.0));
 
     fragPosition = vec3(viewMatrix * modelMatrix * vec4(position, 1.0));
-    fragNormal = normalMatrix * normal;
+    fragNormal = normalize(normalMatrix * normal);
     fragColor = color / 256.0;
 }
