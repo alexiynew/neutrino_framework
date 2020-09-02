@@ -388,6 +388,9 @@ public:
         glUniformMatrix4x3dv(m_location, 1, false, value.data());
     }
 
+    void operator()(const TextureBinding&) const
+    {}
+
 private:
     int m_location = 0;
 };
@@ -450,7 +453,7 @@ void OpenglShader::set_uniforms(const Renderer::Command& command) const
 void OpenglShader::set_texture(const std::string& name, std::size_t index) const
 {
     if (m_textures.count(name)) {
-        glUniform1ui(m_textures.at(name), static_cast<GLuint>(index));
+        glUniform1i(m_textures.at(name), static_cast<GLint>(index));
     }
 }
 

@@ -75,12 +75,22 @@ private:
     using ShaderMap  = std::unordered_map<InstanceId, OpenglShader>;
     using TextureMap = std::unordered_map<InstanceId, OpenglTexture>;
 
-    void init() const;
-    void bind_textures(const OpenglShader& shader, const Renderer::TexturesList& textures) const;
+    void init();
+
+    void get_info();
+    void bind_textures(const OpenglShader& shader, const Renderer::Command& command) const;
 
     MeshMap m_meshes;
     ShaderMap m_shaders;
     TextureMap m_textures;
+
+    std::string m_vendor;
+    std::string m_rendererer;
+    std::string m_gl_version;
+    std::string m_shading_lang_version;
+
+    int m_max_texture_units = 48;
+    std::vector<int> m_free_texture_units;
 };
 
 } // namespace framework::graphics

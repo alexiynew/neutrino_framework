@@ -599,7 +599,7 @@ void Example::run()
                                                Vector3f(o.x, o.y, 0.0f) +
                                                Vector3f(0.5f * o.width, -0.5f * o.height, 0.0f) +
                                                Vector3f(position, 0.0f));
-                renderer.render(*o.mesh, *shader, {{"texture0", *o.texture}}, {Uniform{"modelMatrix", transform}});
+                renderer.render(*o.mesh, *shader, {Uniform{"texture0", *o.texture}, Uniform{"modelMatrix", transform}});
             }
         }
 

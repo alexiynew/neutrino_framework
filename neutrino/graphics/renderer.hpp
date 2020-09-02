@@ -69,29 +69,10 @@ public:
     using UniformsList = std::vector<Uniform>;
     using UniformsMap  = std::unordered_map<std::string, Uniform>;
 
-    class TextureBinding
-    {
-    public:
-        TextureBinding(std::string name, const Texture& texture);
-
-        const std::string& name() const;
-        InstanceId texture() const;
-
-    private:
-        std::string m_name;
-        InstanceId m_texture;
-    };
-
-    using TexturesList = std::vector<TextureBinding>;
-
     class Command
     {
     public:
-        Command(InstanceId mesh,
-                InstanceId shader,
-                const TexturesList& m_textures,
-                const UniformsMap& global_uniforms,
-                const UniformsList& m_uniforms);
+        Command(InstanceId mesh, InstanceId shader, const UniformsMap& global_uniforms, const UniformsList& m_uniforms);
 
         Command(const Command& other) = delete;
         Command& operator=(const Command& other) = delete;
@@ -101,14 +82,12 @@ public:
 
         InstanceId mesh() const;
         InstanceId shader() const;
-        const TexturesList& textures() const;
         const UniformsMap& global_uniforms() const;
         const UniformsList& uniforms() const;
 
     private:
         InstanceId m_mesh;
         InstanceId m_shader;
-        TexturesList m_textures;
         std::reference_wrapper<const UniformsMap> m_global_uniforms;
         UniformsList m_uniforms;
     };
@@ -190,9 +169,7 @@ public:
     void set_uniform(const std::string& name, T&& value);
 
     void render(const Mesh& mesh, const Shader& shader);
-    void render(const Mesh& mesh, const Shader& shader, const TexturesList& textures);
     void render(const Mesh& mesh, const Shader& shader, const UniformsList& uniforms);
-    void render(const Mesh& mesh, const Shader& shader, const TexturesList& textures, const UniformsList& uniforms);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Display on a screen all that been rendered so far.

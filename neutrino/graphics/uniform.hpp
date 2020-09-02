@@ -35,14 +35,28 @@
 #include <string>
 #include <variant>
 
+#include <common/instance_id.hpp>
 #include <math/math.hpp>
 
 namespace framework::graphics
 {
+class Texture;
+
 ////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup graphics_module
 /// @{
 ////////////////////////////////////////////////////////////////////////////////
+
+class TextureBinding
+{
+public:
+    TextureBinding(const Texture& texture);
+
+    InstanceId texture() const;
+
+private:
+    InstanceId m_texture;
+};
 
 using UniformValue = std::variant<float,
                                   math::Vector2f,
@@ -87,7 +101,9 @@ using UniformValue = std::variant<float,
                                   math::Matrix3x2d,
                                   math::Matrix3x4d,
                                   math::Matrix4x2d,
-                                  math::Matrix4x3d>;
+                                  math::Matrix4x3d,
+                                  //
+                                  TextureBinding>;
 
 class Uniform
 {

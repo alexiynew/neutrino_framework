@@ -27,12 +27,16 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <algorithm>
 #include <array>
+#include <functional>
 #include <map>
+#include <numeric>
 
 #include <graphics/mesh.hpp>
 #include <graphics/shader.hpp>
 #include <graphics/texture.hpp>
+#include <graphics/uniform.hpp>
 #include <log/log.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
@@ -50,18 +54,17 @@ namespace
 {
 const std::string tag = "OpenGL";
 
+int get_int(int id)
+{
+    int value;
+    glGetIntegerv(id, &value);
+    return value;
+}
+
 std::string get_string(int id)
 {
     const char* str = reinterpret_cast<const char*>(glGetString(id));
     return str ? std::string(str) : std::string();
-}
-
-void get_info()
-{
-    log::info(tag) << "Vendor: " << get_string(GL_VENDOR);
-    log::info(tag) << "Rendererer: " << get_string(GL_RENDERER);
-    log::info(tag) << "Version: " << get_string(GL_VERSION);
-    log::info(tag) << "Shading Lang Version: " << get_string(GL_SHADING_LANGUAGE_VERSION);
 }
 
 void check_supported()
@@ -99,8 +102,14 @@ OpenglRenderer::OpenglRenderer(system::Context& context)
     LOG_OPENGL_ERRORS();
 }
 
-void OpenglRenderer::init() const
+OpenglRenderer::~OpenglRenderer() = default;
+
+void OpenglRenderer::init()
 {
+    m_free_texture_units.resize(m_max_texture_units);
+    std::iota(m_free_texture_units.begin(), m_free_texture_units.end(), 0);
+    std::sort(m_free_texture_units.begin(), m_free_texture_units.end(), std::greater());
+
     glClearDepth(1.0);
 
     glEnable(GL_DEPTH_TEST);
@@ -113,7 +122,15 @@ void OpenglRenderer::init() const
     glViewport(0, 0, 640, 480);
 }
 
-OpenglRenderer::~OpenglRenderer() = default;
+void OpenglRenderer::get_info()
+{
+    m_vendor               = get_string(GL_VENDOR);
+    m_rendererer           = get_string(GL_RENDERER);
+    m_gl_version           = get_string(GL_VERSION);
+    m_shading_lang_version = get_string(GL_SHADING_LANGUAGE_VERSION);
+
+    m_max_texture_units = get_int(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+}
 
 void OpenglRenderer::set_clear_color(const Color& color)
 {
@@ -130,10 +147,12 @@ void OpenglRenderer::set_viewport(Size size)
 bool OpenglRenderer::load(const Mesh& mesh)
 {
     if (m_meshes.count(mesh.instance_id())) {
-        m_meshes[mesh.instance_id()].clear();
+        m_meshes.at(mesh.instance_id()).clear();
+    } else {
+        m_meshes.try_emplace(mesh.instance_id());
     }
 
-    const bool loaded = m_meshes[mesh.instance_id()].load(mesh);
+    const bool loaded = m_meshes.at(mesh.instance_id()).load(mesh);
     if (!loaded) {
         m_meshes.erase(mesh.instance_id());
         log::error(tag) << "Failed ot load Mesh: " << mesh.instance_id();
@@ -146,10 +165,12 @@ bool OpenglRenderer::load(const Mesh& mesh)
 bool OpenglRenderer::load(const Shader& shader)
 {
     if (m_shaders.count(shader.instance_id())) {
-        m_shaders[shader.instance_id()].clear();
+        m_shaders.at(shader.instance_id()).clear();
+    } else {
+        m_shaders.try_emplace(shader.instance_id());
     }
 
-    const bool loaded = m_shaders[shader.instance_id()].load(shader);
+    const bool loaded = m_shaders.at(shader.instance_id()).load(shader);
     if (!loaded) {
         m_shaders.erase(shader.instance_id());
         log::error(tag) << "Failed ot load Shader: " << shader.instance_id();
@@ -162,11 +183,18 @@ bool OpenglRenderer::load(const Shader& shader)
 bool OpenglRenderer::load(const Texture& texture)
 {
     if (m_textures.count(texture.instance_id())) {
-        m_textures[texture.instance_id()].clear();
+        m_textures.at(texture.instance_id()).clear();
+    } else {
+        const std::uint32_t texture_unit = static_cast<std::uint32_t>(m_free_texture_units.back());
+        m_free_texture_units.pop_back();
+        m_textures.try_emplace(texture.instance_id(), texture_unit);
     }
 
-    const bool loaded = m_textures[texture.instance_id()].load(texture);
+    OpenglTexture& opengl_texture = m_textures.at(texture.instance_id());
+
+    const bool loaded = opengl_texture.load(texture);
     if (!loaded) {
+        m_free_texture_units.push_back(opengl_texture.texture_unit());
         m_textures.erase(texture.instance_id());
         log::error(tag) << "Failed ot load Texture: " << texture.instance_id();
     }
@@ -195,7 +223,7 @@ void OpenglRenderer::render(const Renderer::Command& command)
 
     shader.use();
     shader.set_uniforms(command);
-    bind_textures(shader, command.textures());
+    bind_textures(shader, command);
 
     mesh.draw();
 
@@ -210,15 +238,15 @@ void OpenglRenderer::end_frame()
     glUseProgram(0);
 }
 
-void OpenglRenderer::bind_textures(const OpenglShader& shader, const Renderer::TexturesList& textures) const
+void OpenglRenderer::bind_textures(const OpenglShader& shader, const Renderer::Command& command) const
 {
-    for (size_t i = 0; i < textures.size(); ++i) {
-        const auto& binding = textures[i];
-        if (m_textures.count(binding.texture())) {
-            const OpenglTexture& texture = m_textures.at(binding.texture());
+    for (const auto& uniform : command.uniforms()) {
+        if (std::holds_alternative<TextureBinding>(uniform.value())) {
+            const TextureBinding& binding = std::get<TextureBinding>(uniform.value());
+            const OpenglTexture& texture  = m_textures.at(binding.texture());
 
-            texture.bind(i);
-            shader.set_texture(binding.name(), i);
+            texture.bind();
+            shader.set_texture(uniform.name(), texture.texture_unit());
         }
     }
 }

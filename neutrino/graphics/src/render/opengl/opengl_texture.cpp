@@ -83,6 +83,11 @@ int convert_wrap_parameter(Wrap wrap) noexcept
 
 namespace framework::graphics
 {
+
+OpenglTexture::OpenglTexture(std::uint32_t texture_unit)
+    : m_texture_unit(texture_unit)
+{}
+
 OpenglTexture::~OpenglTexture()
 {
     clear();
@@ -124,15 +129,20 @@ bool OpenglTexture::load(const Texture& texture)
     return true;
 }
 
-void OpenglTexture::bind(size_t index) const
+void OpenglTexture::bind() const
 {
-    glActiveTexture(static_cast<int>(GL_TEXTURE0 + index));
+    glActiveTexture(static_cast<int>(GL_TEXTURE0 + m_texture_unit));
     glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
 std::uint32_t OpenglTexture::texture_id() const
 {
     return m_texture;
+}
+
+std::uint32_t OpenglTexture::texture_unit() const
+{
+    return m_texture_unit;
 }
 
 void OpenglTexture::clear()

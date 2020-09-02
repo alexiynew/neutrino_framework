@@ -29,10 +29,20 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <graphics/texture.hpp>
 #include <graphics/uniform.hpp>
 
 namespace framework::graphics
 {
+
+TextureBinding::TextureBinding(const Texture& texture)
+    : m_texture(texture.instance_id())
+{}
+
+InstanceId TextureBinding::texture() const
+{
+    return m_texture;
+}
 
 const std::string& Uniform::name() const
 {
