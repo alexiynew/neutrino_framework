@@ -91,7 +91,7 @@ namespace framework::math
 
 using Vector2d = Vector<2, double>; ///< Vector of 2 double values.
 using Vector3d = Vector<3, double>; ///< Vector of 3 double values.
-using vector4d = Vector<4, double>; ///< Vector of 4 double values.
+using Vector4d = Vector<4, double>; ///< Vector of 4 double values.
 
 using Vector2f = Vector<2, float>; ///< Vector of 2 float values.
 using Vector3f = Vector<3, float>; ///< Vector of 3 float values.

@@ -623,7 +623,7 @@ inline Matrix<4, 4, T> pick_matrix(const Vector<2, T>& center, const Vector<2, T
 /// @param eye Position of the camera
 /// @param center Position where the camera is looking at
 /// @param up Normalized up vector, how the camera is oriented.
-///           Typically (0, 0, 1)
+///           Typically (0, 1, 0)
 ///
 /// @return The viewing Matrix.
 ////////////////////////////////////////////////////////////////////////////////

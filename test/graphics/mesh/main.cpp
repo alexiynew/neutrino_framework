@@ -33,11 +33,10 @@
 #include <graphics/shader.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
-#include <common/fps_counter.hpp>
 
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
+using namespace framework;
+using namespace framework::graphics;
+using namespace framework::system;
 
 namespace
 {
@@ -47,15 +46,11 @@ const std::string vertex_shader =
 layout(location = 0) in vec3 position;\n\
 layout(location = 3) in vec4 color;\n\
 \n\
-uniform mat4 modelMatrix;\n\
-uniform mat4 viewMatrix;\n\
-uniform mat4 projectionMatrix;\n\
-\n\
 out vec4 fragColor;\n\
 \n\
 void main()\n\
 {\n\
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);\n\
+    gl_Position = vec4(position, 1.0);\n\
     fragColor = color / 256.0;\n\
 }\n\
 ";
@@ -68,11 +63,10 @@ void main(){\n\
     color = fragColor;\n\
 }";
 
-
-namespace cube_mesh 
+namespace cube_mesh
 {
-        const Mesh::VertexData vertices = {
-        // clang-format off
+const Mesh::VertexData vertices = {
+// clang-format off
         // front
         {-0.5, -0.5, 0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}, {-0.5, 0.5, 0.5},
         // back
@@ -85,11 +79,11 @@ namespace cube_mesh
         {0.5, 0.5, 0.5}, {0.5, 0.5, -0.5}, {-0.5, 0.5, -0.5}, {-0.5, 0.5, 0.5},
         // bottom
         {0.5, -0.5, 0.5}, {0.5, -0.5, -0.5}, {-0.5, -0.5, -0.5}, {-0.5, -0.5, 0.5},
-        // clang-format on
-        };
+// clang-format on
+};
 
-        const Mesh::ColorData colors = {
-        // clang-format off
+const Mesh::ColorData colors = {
+// clang-format off
         // front
         {0.7f, 0.1f, 0.1f}, {0.8f, 0.2f, 0.1f}, {0.9f, 0.3f, 0.1f}, {1.0f, 0.4f, 0.1f},
         // back
@@ -102,11 +96,11 @@ namespace cube_mesh
         {0.1f, 0.7f, 1.0f}, {0.1f, 0.8f, 0.9f}, {0.1f, 0.9f, 0.8f}, {0.1f, 1.0f, 0.7f},
         // bottom
         {1.0f, 0.1f, 0.7f}, {0.9f, 0.2f, 0.8f}, {0.8f, 0.3f, 0.9f}, {0.7f, 0.4f, 1.0f},
-        // clang-format on
-        };
+// clang-format on
+};
 
-        Mesh::IndicesData indices = {
-        // clang-format off
+Mesh::IndicesData indices = {
+// clang-format off
         // front
         0, 1, 2, 0, 2, 3,
         // back
@@ -119,25 +113,19 @@ namespace cube_mesh
         16, 17, 18, 16, 18, 19,
         // bottom
         20, 23, 22, 20, 22, 21,
-        // clang-format on
-        };
-}
+// clang-format on
+};
+} // namespace cube_mesh
 
 namespace triangle_mesh
 {
-        const Mesh::VertexData vertices = {
-        {-0.5, -0.5, 0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}
-        };
+const Mesh::VertexData vertices = {{-0.5, -0.5, 0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}};
 
-        const Mesh::ColorData colors = {
-            {0.1f, 0.1f, 0.7f}, {0.1f, 0.2f, 0.8f}, {0.1f, 0.3f, 0.9f}, {0.1f, 0.4f, 1.0f}
-        };
+const Mesh::ColorData colors = {{0.1f, 0.1f, 0.7f}, {0.1f, 0.2f, 0.8f}, {0.1f, 0.3f, 0.9f}, {0.1f, 0.4f, 1.0f}};
 
-        const Mesh::IndicesData indices = {
-            0, 1, 2
-        };
-}
-}
+const Mesh::IndicesData indices = {0, 1, 2};
+} // namespace triangle_mesh
+} // namespace
 
 class mesh_test : public unit_test::Suite
 {
@@ -154,11 +142,11 @@ private:
         Window::set_application_name("GL mesh Test");
 
         Window main_window({640, 480}, "GL mesh test");
-        Renderer renderer(main_window.context());
+        Renderer renderer(main_window);
 
         main_window.show();
 
-        renderer.set_clear_color(0xFF00FFFF);
+        renderer.set_clear_color(Color(0xFF00FFFF));
 
         Mesh mesh;
         mesh.set_vertices(cube_mesh::vertices);
@@ -170,7 +158,7 @@ private:
         shader.set_fragment_source(fragment_shader);
 
         TEST_ASSERT(renderer.load(mesh), "Can't load mesh.");
-        TEST_ASSERT(renderer.load(shader),"Can't load shader." );
+        TEST_ASSERT(renderer.load(shader), "Can't load shader.");
 
         mesh.clear();
         shader.clear();

@@ -35,11 +35,12 @@ message(STATUS "Add modules...")
 
 set(MODULES
     "common"
-    "graphics"
+    "unit_test"
     "log"
     "math"
     "system"
-    "unit_test"
+    "graphics"
+    "game_core"
 )
 
 foreach(MODULE ${MODULES})

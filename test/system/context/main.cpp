@@ -52,11 +52,11 @@ private:
         Window::set_application_name("GL Test");
 
         Window main_window({640, 480}, "Context test");
-        Renderer render(main_window.context());
+        Renderer render(main_window);
 
         main_window.show();
 
-        render.set_clear_color(0xFF00FFFFU);
+        render.set_clear_color(Color(0xFF00FFFFU));
 
         const float32 max_total_time = 1000;
         float32 total_time           = 0;

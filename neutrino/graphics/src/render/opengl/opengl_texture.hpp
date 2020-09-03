@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Fps counter.
+/// @brief OpenGL texture.
 /// @author Fedorov Alexey
-/// @date 09.04.2020
+/// @date 07.07.2020
 ////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
@@ -29,39 +29,42 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <common/fps_counter.hpp>
-#include <chrono>
+#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_TEXTURE_HPP
+#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_TEXTURE_HPP
 
-namespace framework
-{
-FpsCounter::FpsCounter()
-    : m_fps_thread(&FpsCounter::slice_fps, this)
-{
-}
+#include <cstdint>
 
-FpsCounter::~FpsCounter()
+namespace framework::graphics
 {
-    m_should_stop = true;
-    m_fps_thread.join();
-}
+class Texture;
 
-void FpsCounter::tick()
+class OpenglTexture
 {
-    m_frames++;
-}
+public:
+    explicit OpenglTexture(std::uint32_t texture_unit);
 
-int FpsCounter::fps() const
-{
-    return m_fps;
-}
+    OpenglTexture(const OpenglTexture&) = delete;
+    OpenglTexture& operator=(const OpenglTexture&) = delete;
 
-void FpsCounter::slice_fps()
-{
-    while (!m_should_stop){
-        m_fps = m_frames;
-        m_frames = 0;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-}
+    OpenglTexture(OpenglTexture&&) = default;
+    OpenglTexture& operator=(OpenglTexture&&) = default;
 
-}
+    ~OpenglTexture();
+
+    bool load(const Texture& texture);
+
+    void clear();
+
+    void bind() const;
+
+    std::uint32_t texture_id() const;
+    std::uint32_t texture_unit() const;
+
+private:
+    std::uint32_t m_texture      = 0;
+    std::uint32_t m_texture_unit = 0;
+};
+
+} // namespace framework::graphics
+
+#endif

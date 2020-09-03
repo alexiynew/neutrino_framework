@@ -25,7 +25,6 @@
 
 set(TESTS 
     utils
-    fps_counter
     crc
     signal
     version

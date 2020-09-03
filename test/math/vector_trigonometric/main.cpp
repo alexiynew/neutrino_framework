@@ -27,7 +27,7 @@
 #include <unit_test/suite.hpp>
 
 using framework::math::Vector3d;
-using framework::math::vector4d;
+using framework::math::Vector4d;
 
 using framework::math::pi;
 using framework::math::quarter_pi;
@@ -61,7 +61,8 @@ public:
 private:
     void radians_function()
     {
-        TEST_ASSERT(radians(v4d) == vector4d(pi, tau, pi / 2, pi / 4), "Radians function failed.");
+        TEST_ASSERT(radians(v4d) == Vector4d(pi<double>, tau<double>, pi<double> / 2, pi<double> / 4),
+                    "Radians function failed.");
     }
 
     void degrees_function()
@@ -71,13 +72,13 @@ private:
 
     void sin_function()
     {
-        const vector4d sin_vector(sin(pi), sin(tau), sin(pi / 2), sin(pi / 4));
+        const Vector4d sin_vector(sin(pi<double>), sin(tau<double>), sin(pi<double> / 2), sin(pi<double> / 4));
         TEST_ASSERT(almost_equal(sin(radians(v4d)), sin_vector, 1), "Sin function failed.");
     }
 
     void cos_function()
     {
-        const vector4d cos_vector(cos(pi), cos(tau), cos(pi / 2), cos(pi / 4));
+        const Vector4d cos_vector(cos(pi<double>), cos(tau<double>), cos(pi<double> / 2), cos(pi<double> / 4));
         TEST_ASSERT(almost_equal(cos(radians(v4d)), cos_vector, 1), "Cos function failed.");
     }
 
@@ -88,13 +89,14 @@ private:
 
     void asin_function()
     {
-        const vector4d asin_vector(asin(sin(pi)), asin(sin(tau)), pi / 2, pi / 4);
+        const Vector4d asin_vector(asin(sin(pi<double>)), asin(sin(tau<double>)), pi<double> / 2, pi<double> / 4);
         TEST_ASSERT(almost_equal(asin(sin(radians(v4d))), asin_vector, 1), "Asin function failed.");
     }
 
     void acos_function()
     {
-        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), vector4d(pi, 0, pi / 2, pi / 4)), "Acos function failed.");
+        TEST_ASSERT(almost_equal(acos(cos(radians(v4d))), Vector4d(pi<double>, 0, pi<double> / 2, pi<double> / 4)),
+                    "Acos function failed.");
     }
 
     void atan_function()
@@ -102,8 +104,10 @@ private:
         const Vector3d result1 = atan(tan(radians(v3d)));
         const Vector3d result2 = atan(sin(radians(v3d)), cos(radians(v3d)));
 
-        TEST_ASSERT(almost_equal(result1, Vector3d(quarter_pi, pi / 3, atan(tan(pi)))), "Atan from tan failed.");
-        TEST_ASSERT(almost_equal(result2, Vector3d(quarter_pi, pi / 3, pi), 1), "Atan from sin and cos failed.");
+        TEST_ASSERT(almost_equal(result1, Vector3d(quarter_pi<double>, pi<double> / 3, atan(tan(pi<double>)))),
+                    "Atan from tan failed.");
+        TEST_ASSERT(almost_equal(result2, Vector3d(quarter_pi<double>, pi<double> / 3, pi<double>), 1),
+                    "Atan from sin and cos failed.");
     }
 
     void sinh_function()
@@ -126,20 +130,22 @@ private:
 
     void asinh_function()
     {
-        TEST_ASSERT(almost_equal(asinh(sinh(radians(v3d))), Vector3d(pi / 4, pi / 3, pi), 1), "Asinh function failed.");
+        TEST_ASSERT(almost_equal(asinh(sinh(radians(v3d))), Vector3d(pi<double> / 4, pi<double> / 3, pi<double>), 1),
+                    "Asinh function failed.");
     }
 
     void acosh_function()
     {
-        TEST_ASSERT(almost_equal(acosh(cosh(radians(v3d))), Vector3d(pi / 4, pi / 3, pi), 1), "Acosh function failed.");
+        TEST_ASSERT(almost_equal(acosh(cosh(radians(v3d))), Vector3d(pi<double> / 4, pi<double> / 3, pi<double>), 1),
+                    "Acosh function failed.");
     }
 
     void atanh_function()
     {
-        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), Vector3d(pi / 4, pi / 3, pi), 50),
+        TEST_ASSERT(almost_equal(atanh(tanh(radians(v3d))), Vector3d(pi<double> / 4, pi<double> / 3, pi<double>), 50),
                     "Atanh function failed.");
     }
-    vector4d v4d;
+    Vector4d v4d;
     Vector3d v3d;
 };
 

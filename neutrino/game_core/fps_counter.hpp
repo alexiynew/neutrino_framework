@@ -29,15 +29,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_FPS_COUNTER_HPP
-#define FRAMEWORK_COMMON_FPS_COUNTER_HPP
+#ifndef FRAMEWORK_GAME_CORE_FPS_COUNTER_HPP
+#define FRAMEWORK_GAME_CORE_FPS_COUNTER_HPP
 
+#include <atomic>
 #include <thread>
 
-namespace framework
+namespace framework::game_core
 {
 ////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup common_utils_module
+/// @addtogroup game_core_module
 /// @{
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -79,14 +80,14 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Count a frame.
-    /// 
+    ///
     /// Should be called once per frame.
     ////////////////////////////////////////////////////////////////////////////
     void tick();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Frames per second
-    /// 
+    ///
     /// @return Frames count.
     ////////////////////////////////////////////////////////////////////////////
     int fps() const;
@@ -94,12 +95,15 @@ public:
 private:
     void slice_fps();
 
-    bool m_should_stop = false;
-    int m_frames = 0;
-    int m_fps = 0;
+    bool m_should_stop        = false;
+    std::atomic<int> m_frames = 0;
+    std::atomic<int> m_fps    = 0;
     std::thread m_fps_thread;
 };
 
-}
+////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////
+} // namespace framework
 
 #endif

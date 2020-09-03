@@ -29,6 +29,7 @@ set(TESTS
     mesh
     shader
     texture
+    light
 )
 
 foreach(TEST ${TESTS})

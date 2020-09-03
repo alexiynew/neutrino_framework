@@ -30,13 +30,14 @@ set_sources(PUBLIC_SOURCES
     shader.hpp
     texture.hpp
     renderer.hpp
+    uniform.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    src/color.cpp
     src/mesh.cpp
     src/shader.cpp
     src/texture.cpp
+    src/uniform.cpp
 
     src/image/image.cpp
     src/image/image_info.hpp
@@ -50,16 +51,20 @@ set_sources(PRIVATE_SOURCES
 
     src/render/renderer.cpp
     src/render/renderer_impl.hpp
-    src/render/render_command.hpp
-    src/render/render_command.cpp
+    #src/render/render_command.hpp
+    #src/render/render_command.cpp
 
     src/render/opengl/attributes.hpp
+    src/render/opengl/opengl_logger.hpp
+    src/render/opengl/opengl_logger.cpp
     src/render/opengl/opengl_renderer.hpp
     src/render/opengl/opengl_renderer.cpp
     src/render/opengl/opengl_mesh.hpp
     src/render/opengl/opengl_mesh.cpp
     src/render/opengl/opengl_shader.hpp
     src/render/opengl/opengl_shader.cpp
+    src/render/opengl/opengl_texture.hpp
+    src/render/opengl/opengl_texture.cpp
 )
 
 target_sources(${PROJECT_NAME}

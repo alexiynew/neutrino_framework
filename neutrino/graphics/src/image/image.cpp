@@ -37,7 +37,7 @@ namespace framework::graphics
 {
 Image::Image() = default;
 
-Image::Image(const data_t& data, int32 width, int32 height)
+Image::Image(const DataType& data, int width, int height)
     : m_data(data)
     , m_width(width)
     , m_height(height)
@@ -84,17 +84,17 @@ bool Image::load(const std::string& filename)
     return false;
 }
 
-int32 Image::width() const
+int Image::width() const
 {
     return m_width;
 }
 
-int32 Image::height() const
+int Image::height() const
 {
     return m_height;
 }
 
-float32 Image::gamma() const
+float Image::gamma() const
 {
     return m_gamma;
 }
@@ -102,6 +102,16 @@ float32 Image::gamma() const
 const Color* Image::data() const
 {
     return m_data.data();
+}
+
+void swap(Image& lhs, Image& rhs) noexcept
+{
+    using std::swap;
+
+    swap(lhs.m_data, rhs.m_data);
+    swap(lhs.m_width, rhs.m_width);
+    swap(lhs.m_height, rhs.m_height);
+    swap(lhs.m_gamma, rhs.m_gamma);
 }
 
 } // namespace framework::graphics

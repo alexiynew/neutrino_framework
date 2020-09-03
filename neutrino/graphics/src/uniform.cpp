@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Renderer command.
+/// @brief Uniform.
 /// @author Fedorov Alexey
-/// @date 01.04.2020
+/// @date 25.07.2019
 ////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
@@ -29,47 +29,29 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_COMMAND_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_RENDER_COMMAND_HPP
-
-#include <vector>
-
-#include <common/instance_id.hpp>
-#include <math/math.hpp>
+#include <graphics/texture.hpp>
+#include <graphics/uniform.hpp>
 
 namespace framework::graphics
 {
-using MatrixCache = std::vector<math::Matrix4f>;
 
-struct CachedMatrix
+TextureBinding::TextureBinding(const Texture& texture)
+    : m_texture(texture.instance_id())
+{}
+
+InstanceId TextureBinding::texture() const
 {
-    const MatrixCache& cache;
-    const std::size_t index;
+    return m_texture;
+}
 
-    const MatrixCache::value_type& get() const;
-};
-
-struct Uniforms
+const std::string& Uniform::name() const
 {
-    const math::Matrix4f model_matrix;
-    const CachedMatrix view_matrix;
-    const CachedMatrix projection_matrix;
-};
-class RenderCommand
+    return m_name;
+}
+
+const UniformValue& Uniform::value() const
 {
-public:
-    explicit RenderCommand(InstanceId mesh_id, InstanceId shader_id, const Uniforms& uniforms);
-
-    InstanceId mesh_id() const;
-    InstanceId shader_id() const;
-    const Uniforms& uniforms() const;
-
-private:
-    InstanceId m_mesh_id;
-    InstanceId m_shader_id;
-    Uniforms m_uniforms;
-};
+    return m_value;
+}
 
 } // namespace framework::graphics
-
-#endif

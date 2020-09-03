@@ -37,68 +37,6 @@
 #include <common/instance_id.hpp>
 #include <math/math.hpp>
 
-/*
-/////////////////////
-// INPUT VARIABLES //
-/////////////////////
-in vec3 inputPosition;
-in vec3 inputColor;
-
-//////////////////////
-// OUTPUT VARIABLES //
-//////////////////////
-out vec3 color;
-
-///////////////////////
-// UNIFORM VARIABLES //
-///////////////////////
-uniform mat4 worldMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
-
-////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
-////////////////////////////////////////////////////////////////////////////////
-void main(void)
-{
-    // Calculate the position of the vertex against the world, view, and projection matrices.
-    gl_Position = worldMatrix * vec4(inputPosition, 1.0f);
-    gl_Position = viewMatrix * gl_Position;
-    gl_Position = projectionMatrix * gl_Position;
-
-    // Store the input color for the pixel shader to use.
-    color = inputColor;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Filename: color.ps
-////////////////////////////////////////////////////////////////////////////////
-#version 400
-
-
-/////////////////////
-// INPUT VARIABLES //
-/////////////////////
-in vec3 color;
-
-
-//////////////////////
-// OUTPUT VARIABLES //
-//////////////////////
-out vec4 outputColor;
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
-////////////////////////////////////////////////////////////////////////////////
-void main(void)
-{
-    outputColor = vec4(color, 1.0f);
-}
-
-
-*/
 namespace framework::graphics
 {
 ////////////////////////////////////////////////////////////////////////////////
@@ -126,9 +64,11 @@ namespace framework::graphics
 ///
 /// There are also several predefined uniforms passed to each shader:
 /// @code
-/// uniform mat4 madelMatrix;       - model transformations
-/// uniform mat4 viewMatrix;        - view transformation
-/// uniform mat4 projectionMatrix;  - projection frustim
+/// uniform mat4 madelMatrix;      - model transformations
+/// uniform mat4 viewMatrix;       - view transformation
+/// uniform mat4 projectionMatrix; - projection frustim
+/// uniform mat3 normalMatrix;     - transpose inverse of 3x3 part
+///                                  of (viewMatrix * modelMatrix)
 /// @endcode
 ///
 /// @see Mesh, Renderer
@@ -181,6 +121,24 @@ public:
     /// @return Moved mesh instance.
     ////////////////////////////////////////////////////////////////////////////
     Shader& operator=(Shader&& other) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Load vertex shader source form file.
+    ///
+    /// @param filename Path to vertex shader source file.
+    ///
+    /// @return `true` if loadint successful.
+    ////////////////////////////////////////////////////////////////////////////
+    bool load_vertex_source(const std::string& filename);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Set fragment shader source form file.
+    ///
+    /// @param filename Path to fragment shader source file.
+    ///
+    /// @return `true` if loadint successful.
+    ////////////////////////////////////////////////////////////////////////////
+    bool load_fragment_source(const std::string& filename);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Set vertex shader source.

@@ -38,7 +38,7 @@ using framework::math::Vector4f;
 
 using framework::math::Vector2d;
 using framework::math::Vector3d;
-using framework::math::vector4d;
+using framework::math::Vector4d;
 
 using framework::math::Vector2i;
 using framework::math::Vector3i;
@@ -78,7 +78,7 @@ public:
 private:
     void size_check()
     {
-        constexpr vector4d v4d;
+        constexpr Vector4d v4d;
         constexpr Vector3f v3f;
         constexpr Vector2i v2i;
 
@@ -89,22 +89,22 @@ private:
 
     void default_constructor()
     {
-        constexpr vector4d v4d;
+        constexpr Vector4d v4d;
         constexpr Vector3f v3f;
         constexpr Vector2i v2i;
 
-        static_assert(v4d == vector4d(0, 0, 0, 1), "Vector4d default constructor failed.");
+        static_assert(v4d == Vector4d(0, 0, 0, 1), "Vector4d default constructor failed.");
         static_assert(v3f == Vector3f(0, 0, 0), "Vector3f default constructor failed.");
         static_assert(v2i == Vector2i(0, 0), "Vector2i default constructor failed.");
     }
 
     void copy_constructor()
     {
-        constexpr vector4d v4d;
+        constexpr Vector4d v4d;
         constexpr Vector3f v3f;
         constexpr Vector2i v2i;
 
-        constexpr vector4d v4d2 = v4d;
+        constexpr Vector4d v4d2 = v4d;
         constexpr Vector3f v3f2 = v3f;
         constexpr Vector2i v2i2 = v2i;
 
@@ -115,18 +115,18 @@ private:
 
     void one_argument_constructor()
     {
-        constexpr vector4d v4d = vector4d(1.4);
+        constexpr Vector4d v4d = Vector4d(1.4);
         constexpr Vector3f v3f = Vector3f(2.4f);
         constexpr Vector2i v2i = Vector2i(3);
 
-        static_assert(v4d == vector4d(1.4, 1.4, 1.4, 1.4), "Vector4d one argument constructor failed.");
+        static_assert(v4d == Vector4d(1.4, 1.4, 1.4, 1.4), "Vector4d one argument constructor failed.");
         static_assert(v3f == Vector3f(2.4f, 2.4f, 2.4f), "Vector3f one argument constructor failed.");
         static_assert(v2i == Vector2i(3, 3), "Vector2i one argument constructor failed.");
     }
 
     void non_default_constructor()
     {
-        const vector4d v4d = {1.1, 2.2, 3.3, 4.4};
+        const Vector4d v4d = {1.1, 2.2, 3.3, 4.4};
         const Vector3f v3f = {5.5f, 6.6f, 7.7f};
         const Vector2i v2i = {1, 2};
 
@@ -148,7 +148,7 @@ private:
 
     void type_cast_constructor()
     {
-        constexpr vector4d v4d = {1.1, 2.2, 3.3, 4.4};
+        constexpr Vector4d v4d = {1.1, 2.2, 3.3, 4.4};
         constexpr Vector3f v3f = {5.5f, 6.6f, 7.7f};
         constexpr Vector2i v2i = {1, 2};
 
@@ -167,11 +167,11 @@ private:
         constexpr Vector3b v3b = Vector3b(false, true, false);
         constexpr Vector2b v2b = Vector2b(false, true);
 
-        constexpr vector4d v4d = vector4d(v4b);
+        constexpr Vector4d v4d = Vector4d(v4b);
         constexpr Vector3f v3f = Vector3f(v3b);
         constexpr Vector2i v2i = Vector2i(v2b);
 
-        static_assert(v4d == vector4d(0.0, 1.0, 0.0, 1.0), "Vector4d from bool cast constructor failed.");
+        static_assert(v4d == Vector4d(0.0, 1.0, 0.0, 1.0), "Vector4d from bool cast constructor failed.");
         static_assert(v3f == Vector3f(0.0f, 1.0f, 0.0f), "Vector3f from bool cast constructor failed.");
         static_assert(v2i == Vector2i(0, 1), "Vector2i from bool cast constructor failed.");
     }
@@ -183,12 +183,12 @@ private:
         const int32 data_i[2]   = {1, 2};
         const uint32 data_u[2]  = {1, 2};
 
-        const vector4d v4d(data_d);
+        const Vector4d v4d(data_d);
         const Vector3f v3f(data_f);
         const Vector2i v2i(data_i);
         const Vector2u v2u(data_u);
 
-        TEST_ASSERT(v4d == vector4d(1.0, 2.0, 3.0, 4.0), "Vector4d pointer constructor failed.");
+        TEST_ASSERT(v4d == Vector4d(1.0, 2.0, 3.0, 4.0), "Vector4d pointer constructor failed.");
         TEST_ASSERT(v3f == Vector3f(1.0f, 2.0f, 3.0f), "Vector3f pointer constructor failed.");
         TEST_ASSERT(v2i == Vector2i(1, 2), "Vector2i pointer constructor failed.");
         TEST_ASSERT(v2u == Vector2u(1, 2), "Vector2u pointer constructor failed.");
@@ -201,12 +201,12 @@ private:
         int32 data_i[2]   = {1, 2};
         uint32 data_u[2]  = {1, 2};
 
-        const vector4d v4d(data_d);
+        const Vector4d v4d(data_d);
         const Vector3f v3f(data_f);
         const Vector2i v2i(data_i);
         const Vector2u v2u(data_u);
 
-        TEST_ASSERT(v4d == vector4d(1.0, 2.0, 3.0, 4.0), "Vector4d pointer constructor failed.");
+        TEST_ASSERT(v4d == Vector4d(1.0, 2.0, 3.0, 4.0), "Vector4d pointer constructor failed.");
         TEST_ASSERT(v3f == Vector3f(1.0f, 2.0f, 3.0f), "Vector3f pointer constructor failed.");
         TEST_ASSERT(v2i == Vector2i(1, 2), "Vector2i pointer constructor failed.");
         TEST_ASSERT(v2u == Vector2u(1, 2), "Vector2u pointer constructor failed.");
@@ -223,28 +223,28 @@ private:
 
     void from_vector4d_constructor()
     {
-        constexpr vector4d v4d = {1.1, 2.2, 3.3, 4.4};
+        constexpr Vector4d v4d = {1.1, 2.2, 3.3, 4.4};
 
         constexpr Vector3d v3d = Vector3d(v4d);
         constexpr Vector2d v2d = Vector2d(v4d);
 
-        static_assert(v3d == Vector3d(1.1, 2.2, 3.3), "Vector3d from vector4d constructor failed.");
-        static_assert(v2d == Vector2d(1.1, 2.2), "Vector2d from vector4d constructor failed.");
+        static_assert(v3d == Vector3d(1.1, 2.2, 3.3), "Vector3d from Vector4d constructor failed.");
+        static_assert(v2d == Vector2d(1.1, 2.2), "Vector2d from Vector4d constructor failed.");
     }
 
     void from_vector3d_constructor()
     {
         constexpr Vector3d v3d = {1.1, 2.2, 3.3};
 
-        constexpr vector4d v4d1 = vector4d(v3d);
-        constexpr vector4d v4d2 = vector4d(v3d, 4.4);
-        constexpr vector4d v4d3 = vector4d(4.4, v3d);
+        constexpr Vector4d v4d1 = Vector4d(v3d);
+        constexpr Vector4d v4d2 = Vector4d(v3d, 4.4);
+        constexpr Vector4d v4d3 = Vector4d(4.4, v3d);
 
         constexpr Vector2d v2d = Vector2d(v3d);
 
-        static_assert(v4d1 == vector4d(1.1, 2.2, 3.3, 1.0), "Vector4d from Vector3d constructor failed.");
-        static_assert(v4d2 == vector4d(1.1, 2.2, 3.3, 4.4), "Vector4d from Vector3d and scalar constructor failed.");
-        static_assert(v4d3 == vector4d(4.4, 1.1, 2.2, 3.3), "Vector4d from scalar and Vector3d constructor failed.");
+        static_assert(v4d1 == Vector4d(1.1, 2.2, 3.3, 1.0), "Vector4d from Vector3d constructor failed.");
+        static_assert(v4d2 == Vector4d(1.1, 2.2, 3.3, 4.4), "Vector4d from Vector3d and scalar constructor failed.");
+        static_assert(v4d3 == Vector4d(4.4, 1.1, 2.2, 3.3), "Vector4d from scalar and Vector3d constructor failed.");
 
         static_assert(v2d == Vector2d(1.1, 2.2), "Vector2d from Vector3d constructor failed.");
     }
@@ -253,22 +253,22 @@ private:
     {
         constexpr Vector2d v2d = {1.1, 2.2};
 
-        constexpr vector4d v4d1 = vector4d(v2d);
-        constexpr vector4d v4d2 = vector4d(v2d, 3.3, 4.4);
-        constexpr vector4d v4d3 = vector4d(3.3, v2d, 4.4);
-        constexpr vector4d v4d4 = vector4d(3.3, 4.4, v2d);
-        constexpr vector4d v4d5 = vector4d(v2d, v2d);
+        constexpr Vector4d v4d1 = Vector4d(v2d);
+        constexpr Vector4d v4d2 = Vector4d(v2d, 3.3, 4.4);
+        constexpr Vector4d v4d3 = Vector4d(3.3, v2d, 4.4);
+        constexpr Vector4d v4d4 = Vector4d(3.3, 4.4, v2d);
+        constexpr Vector4d v4d5 = Vector4d(v2d, v2d);
 
         constexpr Vector3d v3d1 = Vector3d(v2d);
         constexpr Vector3d v3d2 = Vector3d(v2d, 3.3);
         constexpr Vector3d v3d3 = Vector3d(3.3, v2d);
 
-        static_assert(v4d1 == vector4d(1.1, 2.2, 0.0, 1.0), "Vector4d from Vector2d constructor failed.");
-        static_assert(v4d2 == vector4d(1.1, 2.2, 3.3, 4.4), "Vector4d from Vector2d and 2 scalars constructor failed.");
-        static_assert(v4d3 == vector4d(3.3, 1.1, 2.2, 4.4),
+        static_assert(v4d1 == Vector4d(1.1, 2.2, 0.0, 1.0), "Vector4d from Vector2d constructor failed.");
+        static_assert(v4d2 == Vector4d(1.1, 2.2, 3.3, 4.4), "Vector4d from Vector2d and 2 scalars constructor failed.");
+        static_assert(v4d3 == Vector4d(3.3, 1.1, 2.2, 4.4),
                       "Vector4d from scalar, Vector2d and scalar constructor failed.");
-        static_assert(v4d4 == vector4d(3.3, 4.4, 1.1, 2.2), "Vector4d from 2 scalars and Vector2d constructor failed.");
-        static_assert(v4d5 == vector4d(1.1, 2.2, 1.1, 2.2), "Vector4d from 2 Vector2d constructor failed.");
+        static_assert(v4d4 == Vector4d(3.3, 4.4, 1.1, 2.2), "Vector4d from 2 scalars and Vector2d constructor failed.");
+        static_assert(v4d5 == Vector4d(1.1, 2.2, 1.1, 2.2), "Vector4d from 2 Vector2d constructor failed.");
 
         static_assert(v3d1 == Vector3d(1.1, 2.2, 0.0), "Vector3d from Vector2d constructor failed.");
         static_assert(v3d2 == Vector3d(1.1, 2.2, 3.3), "Vector3d from Vector2d and scalar constructor failed.");

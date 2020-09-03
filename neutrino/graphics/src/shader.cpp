@@ -27,6 +27,9 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <fstream>
+#include <sstream>
+
 #include <graphics/shader.hpp>
 
 namespace framework::graphics
@@ -55,6 +58,36 @@ Shader& Shader::operator=(Shader&& other) noexcept
 {
     swap(*this, other);
     return *this;
+}
+
+bool Shader::load_vertex_source(const std::string& filename)
+{
+    std::ifstream file(filename, std::ios::in);
+    if (!file) {
+        return false;
+    }
+
+    std::stringstream source;
+    source << file.rdbuf();
+
+    set_vertex_source(source.str());
+
+    return true;
+}
+
+bool Shader::load_fragment_source(const std::string& filename)
+{
+    std::ifstream file(filename, std::ios::in);
+    if (!file) {
+        return false;
+    }
+
+    std::stringstream source;
+    source << file.rdbuf();
+
+    set_fragment_source(source.str());
+
+    return true;
 }
 
 void Shader::set_vertex_source(const std::string& source)

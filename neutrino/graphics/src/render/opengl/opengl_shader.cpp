@@ -27,6 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <algorithm>
+#include <array>
 #include <cstdint>
 
 #include <graphics/shader.hpp>
@@ -34,8 +36,9 @@
 #include <math/math.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
+#include <graphics/src/render/opengl/opengl_logger.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
-#include <graphics/src/render/render_command.hpp>
+#include <graphics/src/render/opengl/opengl_texture.hpp>
 
 using namespace framework;
 using namespace framework::graphics;
@@ -45,12 +48,20 @@ namespace
 {
 const std::string tag = "OpenGL";
 
-namespace uniform_name
-{
-const std::string model_martix      = "modelMatrix";
-const std::string view_martix       = "viewMatrix";
-const std::string projection_martix = "projectionMatrix";
-} // namespace uniform_name
+constexpr std::array<GLenum, 38> uniform_types = {
+GL_FLOAT,         GL_FLOAT_VEC2,        GL_FLOAT_VEC3,        GL_FLOAT_VEC4,
+GL_DOUBLE,        GL_DOUBLE_VEC2,       GL_DOUBLE_VEC3,       GL_DOUBLE_VEC4,
+GL_INT,           GL_INT_VEC2,          GL_INT_VEC3,          GL_INT_VEC4,
+GL_UNSIGNED_INT,  GL_UNSIGNED_INT_VEC2, GL_UNSIGNED_INT_VEC3, GL_UNSIGNED_INT_VEC4,
+GL_BOOL,          GL_BOOL_VEC2,         GL_BOOL_VEC3,         GL_BOOL_VEC4,
+GL_FLOAT_MAT2,    GL_FLOAT_MAT3,        GL_FLOAT_MAT4,        GL_FLOAT_MAT2x3,
+GL_FLOAT_MAT2x4,  GL_FLOAT_MAT3x2,      GL_FLOAT_MAT3x4,      GL_FLOAT_MAT4x2,
+GL_FLOAT_MAT4x3,  GL_DOUBLE_MAT2,       GL_DOUBLE_MAT3,       GL_DOUBLE_MAT4,
+GL_DOUBLE_MAT2x3, GL_DOUBLE_MAT2x4,     GL_DOUBLE_MAT3x2,     GL_DOUBLE_MAT3x4,
+GL_DOUBLE_MAT4x2, GL_DOUBLE_MAT4x3,
+};
+
+constexpr std::array<GLenum, 1> texture_types = {GL_SAMPLER_2D};
 
 std::string shader_type_string(int shader_type)
 {
@@ -146,14 +157,243 @@ std::uint32_t create_shader_program(std::uint32_t vertex_shader_id, std::uint32_
     return program_id;
 }
 
-void set_uniform(int location, const math::Matrix4f& matrix)
+template <std::size_t N>
+OpenglShader::UniformMap get_active_uniforms(std::uint32_t shader_program, const std::array<GLenum, N>& supported_types)
 {
-    if (location == -1) {
-        return;
+    constexpr int buffer_size = 512;
+
+    int count = 0;
+    glGetProgramiv(shader_program, GL_ACTIVE_UNIFORMS, &count);
+
+    OpenglShader::UniformMap res;
+
+    for (int i = 0; i < count; ++i) {
+        char name_buffer[buffer_size] = {0};
+        int size                      = 0;
+        GLenum type                   = GL_NONE;
+        glGetActiveUniform(shader_program, static_cast<GLuint>(i), buffer_size, nullptr, &size, &type, name_buffer);
+
+        if (size != 1) {
+            continue; // array uniforms is not supported
+        }
+
+        if (std::find(supported_types.begin(), supported_types.end(), type) == supported_types.end()) {
+            continue;
+        }
+
+        const int location            = glGetUniformLocation(shader_program, name_buffer);
+        res[std::string(name_buffer)] = location;
     }
 
-    glUniformMatrix4fv(location, 1, false, matrix.data());
+    return res;
 }
+
+class UniformSetter
+{
+public:
+    explicit UniformSetter(int location)
+        : m_location(location)
+    {}
+
+    void operator()(float value) const
+    {
+        glUniform1f(m_location, value);
+    }
+
+    void operator()(const math::Vector2f& value) const
+    {
+        glUniform2fv(m_location, 1, value.data());
+    }
+
+    void operator()(const math::Vector3f& value) const
+    {
+        glUniform3fv(m_location, 1, value.data());
+    }
+
+    void operator()(const math::Vector4f& value) const
+    {
+        glUniform4fv(m_location, 1, value.data());
+    }
+
+    void operator()(double value) const
+    {
+        glUniform1d(m_location, value);
+    }
+
+    void operator()(const math::Vector2d& value) const
+    {
+        glUniform2dv(m_location, 1, value.data());
+    }
+
+    void operator()(const math::Vector3d& value) const
+    {
+        glUniform3dv(m_location, 1, value.data());
+    }
+
+    void operator()(const math::Vector4d& value) const
+    {
+        glUniform4dv(m_location, 1, value.data());
+    }
+
+    void operator()(int value) const
+    {
+        glUniform1i(m_location, value);
+    }
+
+    void operator()(const math::Vector2i& value) const
+    {
+        glUniform2iv(m_location, 1, value.data());
+    }
+
+    void operator()(const math::Vector3i& value) const
+    {
+        glUniform3iv(m_location, 1, value.data());
+    }
+
+    void operator()(const math::Vector4i& value) const
+    {
+        glUniform4iv(m_location, 1, value.data());
+    }
+
+    void operator()(unsigned int value) const
+    {
+        glUniform1ui(m_location, value);
+    }
+
+    void operator()(const math::Vector2u& value) const
+    {
+        glUniform2uiv(m_location, 1, value.data());
+    }
+
+    void operator()(const math::Vector3u& value) const
+    {
+        glUniform3uiv(m_location, 1, value.data());
+    }
+
+    void operator()(const math::Vector4u& value) const
+    {
+        glUniform4uiv(m_location, 1, value.data());
+    }
+
+    void operator()(bool value) const
+    {
+        glUniform1i(m_location, value);
+    }
+
+    void operator()(const math::Vector2b& value) const
+    {
+        math::Vector2i tmp(value);
+        glUniform2iv(m_location, 1, tmp.data());
+    }
+
+    void operator()(const math::Vector3b& value) const
+    {
+        math::Vector3i tmp(value);
+        glUniform3iv(m_location, 1, tmp.data());
+    }
+
+    void operator()(const math::Vector4b& value) const
+    {
+        math::Vector4i tmp(value);
+        glUniform4iv(m_location, 1, tmp.data());
+    }
+
+    void operator()(const math::Matrix2f& value) const
+    {
+        glUniformMatrix2fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix3f& value) const
+    {
+        glUniformMatrix3fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix4f& value) const
+    {
+        glUniformMatrix4fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix2x3f& value) const
+    {
+        glUniformMatrix2x3fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix2x4f& value) const
+    {
+        glUniformMatrix2x4fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix3x2f& value) const
+    {
+        glUniformMatrix3x2fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix3x4f& value) const
+    {
+        glUniformMatrix3x4fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix4x2f& value) const
+    {
+        glUniformMatrix4x2fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix4x3f& value) const
+    {
+        glUniformMatrix4x3fv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix2d& value) const
+    {
+        glUniformMatrix2dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix3d& value) const
+    {
+        glUniformMatrix3dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix4d& value) const
+    {
+        glUniformMatrix4dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix2x3d& value) const
+    {
+        glUniformMatrix2x3dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix2x4d& value) const
+    {
+        glUniformMatrix2x4dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix3x2d& value) const
+    {
+        glUniformMatrix3x2dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix3x4d& value) const
+    {
+        glUniformMatrix3x4dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix4x2d& value) const
+    {
+        glUniformMatrix4x2dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const math::Matrix4x3d& value) const
+    {
+        glUniformMatrix4x3dv(m_location, 1, false, value.data());
+    }
+
+    void operator()(const TextureBinding&) const
+    {}
+
+private:
+    int m_location = 0;
+};
 
 } // namespace
 
@@ -174,9 +414,8 @@ void OpenglShader::clear()
     m_fragment_shader = 0;
     m_shader_program  = 0;
 
-    m_model_matrix      = -1;
-    m_view_matrix       = -1;
-    m_projection_matrix = -1;
+    m_uniforms.clear();
+    m_textures.clear();
 }
 
 bool OpenglShader::load(const Shader& shader)
@@ -185,9 +424,8 @@ bool OpenglShader::load(const Shader& shader)
     m_fragment_shader = create_shader(GL_FRAGMENT_SHADER, shader.fragment_source());
     m_shader_program  = create_shader_program(m_vertex_shader, m_fragment_shader);
 
-    m_model_matrix      = glGetUniformLocation(m_shader_program, uniform_name::model_martix.c_str());
-    m_view_matrix       = glGetUniformLocation(m_shader_program, uniform_name::view_martix.c_str());
-    m_projection_matrix = glGetUniformLocation(m_shader_program, uniform_name::projection_martix.c_str());
+    m_uniforms = get_active_uniforms(m_shader_program, uniform_types);
+    m_textures = get_active_uniforms(m_shader_program, texture_types);
 
     return m_shader_program != 0;
 }
@@ -197,11 +435,26 @@ void OpenglShader::use() const
     glUseProgram(m_shader_program);
 }
 
-void OpenglShader::set_uniforms(const Uniforms& uniforms) const
+void OpenglShader::set_uniforms(const Renderer::Command& command) const
 {
-    set_uniform(m_model_matrix, uniforms.model_matrix);
-    set_uniform(m_view_matrix, uniforms.view_matrix.get());
-    set_uniform(m_projection_matrix, uniforms.projection_matrix.get());
+    for (const auto& uniform : command.global_uniforms()) {
+        if (m_uniforms.count(uniform.first)) {
+            std::visit(UniformSetter(m_uniforms.at(uniform.first)), uniform.second.value());
+        }
+    }
+
+    for (const auto& uniform : command.uniforms()) {
+        if (m_uniforms.count(uniform.name())) {
+            std::visit(UniformSetter(m_uniforms.at(uniform.name())), uniform.value());
+        }
+    }
+}
+
+void OpenglShader::set_texture(const std::string& name, std::size_t index) const
+{
+    if (m_textures.count(name)) {
+        glUniform1i(m_textures.at(name), static_cast<GLint>(index));
+    }
 }
 
 } // namespace framework::graphics

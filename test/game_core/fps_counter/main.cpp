@@ -23,20 +23,20 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <common/fps_counter.hpp>
+#include <chrono>
+#include <thread>
+
+#include <game_core/fps_counter.hpp>
 #include <unit_test/suite.hpp>
 
-#include <thread>
-#include <log/log.hpp>
-#include <chrono>
-
 using namespace framework;
+using namespace framework::game_core;
 
-class fps_counter_test : public unit_test::Suite
+class FpsCounterTest : public unit_test::Suite
 {
 public:
-    fps_counter_test()
-        : Suite("fps_counter_test")
+    FpsCounterTest()
+        : Suite("FpsCounterTest")
     {
         add_test([this]() { fps_count(); }, "fps_count");
     }
@@ -46,8 +46,7 @@ private:
     {
         FpsCounter fps;
 
-        for (int i = 0; i < 100; ++i)
-        {
+        for (int i = 0; i < 100; ++i) {
             fps.tick();
         }
 
@@ -67,5 +66,5 @@ private:
 
 int main()
 {
-    return run_tests(fps_counter_test());
+    return run_tests(FpsCounterTest());
 }

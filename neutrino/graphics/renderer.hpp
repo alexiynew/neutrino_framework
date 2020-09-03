@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
 /// @brief Renderer.
 /// @author Fedorov Alexey
 /// @date 29.03.2020
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -32,84 +34,189 @@
 
 #include <memory>
 
+#include <graphics/color.hpp>
+#include <graphics/uniform.hpp>
 #include <math/math.hpp>
-#include <system/context.hpp>
+#include <system/window.hpp>
 
 namespace framework::graphics
 {
 class Mesh;
-class RenderCommand;
 class RendererImpl;
 class Shader;
-struct Color;
+class Texture;
 struct Uniforms;
 
-// TODO: Add documentation
-// TODO: Add tests
-// TODO: Add camera support
-// TODO: Add texture support
+////////////////////////////////////////////////////////////////////////////////
+/// @addtogroup graphics_module
+/// @{
+////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Renderer
+///
+/// Provides an interface to display 3d objects on the screen.
+/// Renderer attaches to the window. Several renderers can be attached to
+/// one window, in that case, they all share the same context.
+///
+/// Meshes, Shaders, and Textures need to be loaded in renderer before usage.
+/// Projection and view matrices saved for every render call, so the different
+/// objects can be rendered with different transformations.
+////////////////////////////////////////////////////////////////////////////////
 class Renderer
 {
 public:
-    using MatrixCache = std::vector<math::Matrix4f>;
+    using UniformsList = std::vector<Uniform>;
+    using UniformsMap  = std::unordered_map<std::string, Uniform>;
 
-    explicit Renderer(system::Context& context);
+    class Command
+    {
+    public:
+        Command(InstanceId mesh, InstanceId shader, const UniformsMap& global_uniforms, const UniformsList& m_uniforms);
 
-    Renderer(const Renderer& other) = delete;
-    Renderer& operator=(const Renderer& other) = delete;
+        Command(const Command& other) = delete;
+        Command& operator=(const Command& other) = delete;
 
+        Command(Command&& other);
+        Command& operator=(Command&& other);
+
+        InstanceId mesh() const;
+        InstanceId shader() const;
+        const UniformsMap& global_uniforms() const;
+        const UniformsList& uniforms() const;
+
+    private:
+        InstanceId m_mesh;
+        InstanceId m_shader;
+        std::reference_wrapper<const UniformsMap> m_global_uniforms;
+        UniformsList m_uniforms;
+    };
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Creates Renderer and initialize graphic context for the window.
+    ///
+    /// @param window Window for rendering.
+    ////////////////////////////////////////////////////////////////////////////
+    explicit Renderer(system::Window& window);
+
+    Renderer(const Renderer&) = delete;
+    Renderer& operator=(const Renderer&) = delete;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Move Renderer.
+    ///
+    /// @param other Renderer to move from.
+    ////////////////////////////////////////////////////////////////////////////
     Renderer(Renderer&& other) noexcept;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Move Renderer.
+    ///
+    /// @param other Renderer to move from.
+    ////////////////////////////////////////////////////////////////////////////
     Renderer& operator=(Renderer&& other) noexcept;
 
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Destructor.
+    ////////////////////////////////////////////////////////////////////////////
     ~Renderer();
 
-    void set_clear_color(Color color);
-    void set_projection(const math::Matrix4f& projection);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Set color to paint window before every frame.
+    ///
+    /// @param color Clear Color.
+    ////////////////////////////////////////////////////////////////////////////
+    void set_clear_color(const Color& color);
 
-    // TODO: make it with camera
-    void set_view(const math::Matrix4f& view);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Turn on or off the vertical sync.
+    ///
+    /// @param enable On or off vertical sync.
+    ////////////////////////////////////////////////////////////////////////////
+    void enable_vertical_sync(bool enable);
 
-    /*
-            // Get the name of the video card.
-            vendorString = (char*)glGetString(GL_VENDOR);
-            rendererString = (char*)glGetString(GL_RENDERER);
-
-
-            // Turn on or off the vertical sync depending on the input bool value.
-            if(vsync)
-            {
-                result = wglSwapIntervalEXT(1);
-            }
-            else
-            {
-                result = wglSwapIntervalEXT(0);
-            }
-
-
-        */
-
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Loads Mesh to renderer.
+    ///
+    /// @param mesh Mesh to load.
+    ///
+    /// @return `true` if loading successful
+    ////////////////////////////////////////////////////////////////////////////
     bool load(const Mesh& mesh);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Loads Shader to renderer.
+    ///
+    /// @param shader Shader to load.
+    ///
+    /// @return `true` if loading successful
+    ////////////////////////////////////////////////////////////////////////////
     bool load(const Shader& shader);
 
-    void render(const Mesh& mesh, const Shader& shader);
-    void render(const Mesh& mesh, const Shader& shader, const math::Matrix4f& model_transform);
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Loads Texture to renderer.
+    ///
+    /// @param texture Texture to load.
+    ///
+    /// @return `true` if loading successful
+    ////////////////////////////////////////////////////////////////////////////
+    bool load(const Texture& texture);
 
+    template <typename T>
+    void set_uniform(const std::string& name, const T& value);
+
+    template <typename T>
+    void set_uniform(const std::string& name, T&& value);
+
+    void render(const Mesh& mesh, const Shader& shader);
+    void render(const Mesh& mesh, const Shader& shader, const UniformsList& uniforms);
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Display on a screen all that been rendered so far.
+    ////////////////////////////////////////////////////////////////////////////
     void display();
 
-private:
-    Uniforms get_uniforms(const math::Matrix4f& model_transform) const;
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get video card venor name.
+    ///
+    /// @return Vendor name.
+    ////////////////////////////////////////////////////////////////////////////
+    std::string vendor_name() const;
 
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Get video card device name.
+    ///
+    /// @return Device name.
+    ////////////////////////////////////////////////////////////////////////////
+    std::string device_name() const;
+
+private:
     void start_frame();
     void end_frame();
 
     std::unique_ptr<RendererImpl> m_impl;
-    system::Context& m_context;
+    std::reference_wrapper<system::Window> m_window;
+    Signal<const system::Window&, Size>::SlotId m_on_resize_slot_id;
 
-    std::vector<RenderCommand> m_render_commands;
-    MatrixCache m_projection;
-    MatrixCache m_view;
+    std::vector<Command> m_render_commands;
+    UniformsMap m_global_uniforms;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////
+
+template <typename T>
+inline void Renderer::set_uniform(const std::string& name, const T& value)
+{
+    m_global_uniforms[name] = Uniform(name, value);
+}
+
+template <typename T>
+inline void Renderer::set_uniform(const std::string& name, T&& value)
+{
+    m_global_uniforms[name] = Uniform(name, std::forward<T>(value));
+}
 
 } // namespace framework::graphics
 
