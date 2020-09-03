@@ -165,11 +165,20 @@ Mesh::IndicesData indices = {
 using MeshPtr   = std::unique_ptr<Mesh>;
 using ShaderPtr = std::unique_ptr<Shader>;
 
+struct Material
+{
+    Vector3f ambient  = {1.0f, 1.0f, 1.0f};
+    Vector3f diffuse  = {1.0f, 1.0f, 1.0f};
+    Vector3f specular = {1.0f, 1.0f, 1.0f};
+    float shininess   = 1.0f;
+};
+
 struct Object
 {
     MeshPtr mesh;
     ShaderPtr shader;
     Vector3f position;
+    Material material;
 };
 
 Object create_cube()
@@ -177,14 +186,20 @@ Object create_cube()
     MeshPtr mesh = std::make_unique<Mesh>();
     mesh->set_vertices(cube::vertices);
     mesh->set_normals(cube::normals);
-    mesh->set_colors(cube::colors);
+    // mesh->set_colors(cube::colors);
     mesh->set_indices(cube::indices);
 
     ShaderPtr shader = std::make_unique<Shader>();
     shader->load_vertex_source(cube::vertex_shader);
     shader->load_fragment_source(cube::fragment_shader);
 
-    return {std::move(mesh), std::move(shader), {0, 0, 0}};
+    Material material;
+    material.ambient   = {1.0f, 0.5f, 0.31f};
+    material.diffuse   = {1.0f, 0.5f, 0.31f};
+    material.specular  = {0.5f, 0.5f, 0.5f};
+    material.shininess = {32.0f};
+
+    return {std::move(mesh), std::move(shader), {0, 0, 0}, material};
 }
 
 Object create_light_cube()
@@ -227,6 +242,10 @@ private:
         renderer.set_uniform("viewMatrix", camera.get_view());
 
         main_window.set_cursor_visibility(false);
+
+        renderer.set_uniform("light.ambient", Vector3f{0.2f, 0.2f, 0.2f});
+        renderer.set_uniform("light.diffuse", Vector3f{0.5f, 0.5f, 0.5f});
+        renderer.set_uniform("light.specular", Vector3f{1.0f, 1.0f, 1.0f});
 
         main_window.on_resize.connect([&renderer](const Window&, Size size) {
             const float aspect = static_cast<float>(size.width) / static_cast<float>(size.height);
@@ -314,10 +333,14 @@ private:
             Matrix3f normal_matrix = Matrix3f(transpose(inverse(camera.get_view() * cube_transform)));
             renderer.render(*cube.mesh,
                             *cube.shader,
-                            {Uniform{"modelMatrix", cube_transform},
-                             Uniform{"normalMatrix", normal_matrix},
-                             Uniform{"lightPos", light_cube.position},
-                             Uniform{"lightMatrix", light_transform}});
+                            {{"modelMatrix", cube_transform},
+                             {"normalMatrix", normal_matrix},
+                             {"lightPos", light_cube.position},
+                             {"lightMatrix", light_transform},
+                             {"material.ambient", cube.material.ambient},
+                             {"material.diffuse", cube.material.diffuse},
+                             {"material.specular", cube.material.specular},
+                             {"material.shininess", cube.material.shininess}});
 
             renderer.display();
 
