@@ -69,3 +69,4 @@ add_custom_target(check_verbose
 set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TEST_DIR_NAME})
 set_target_properties(check PROPERTIES FOLDER ${TEST_DIR_NAME})
 set_target_properties(check_verbose PROPERTIES FOLDER ${TEST_DIR_NAME})
+

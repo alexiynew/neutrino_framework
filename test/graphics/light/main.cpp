@@ -303,7 +303,7 @@ private:
 
         main_window.show();
 
-        std::chrono::microseconds max_total_time = std::chrono::seconds(100);
+        std::chrono::microseconds max_total_time = std::chrono::seconds(3);
         std::chrono::microseconds total_time(0);
         std::chrono::milliseconds delta_time(16);
 

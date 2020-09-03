@@ -25,7 +25,6 @@
 
 set(TESTS 
     fps_counter
-    camera
 )
 
 foreach(TEST ${TESTS})
