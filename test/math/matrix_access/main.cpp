@@ -42,11 +42,11 @@ using framework::math::Vector4f;
 
 using framework::float32;
 
-class matrix_access_test : public framework::unit_test::Suite
+class MatrixAccessTest : public framework::unit_test::Suite
 {
 public:
-    matrix_access_test()
-        : Suite("matrix_access_test")
+    MatrixAccessTest()
+        : Suite("MatrixAccessTest")
     {
         add_test([this]() { access_operator(); }, "access_operator");
         add_test([this]() { column_function(); }, "column_function");
@@ -339,5 +339,5 @@ private:
 
 int main()
 {
-    return run_tests(matrix_access_test());
+    return run_tests(MatrixAccessTest());
 }

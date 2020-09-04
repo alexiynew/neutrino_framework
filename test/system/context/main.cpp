@@ -33,11 +33,11 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-class context_test : public framework::unit_test::Suite
+class ContextTest : public framework::unit_test::Suite
 {
 public:
-    context_test()
-        : Suite("context_test")
+    ContextTest()
+        : Suite("ContextTest")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }
@@ -75,5 +75,5 @@ private:
 
 int main()
 {
-    return run_tests(context_test());
+    return run_tests(ContextTest());
 }

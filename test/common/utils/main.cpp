@@ -28,11 +28,11 @@
 #include <common/utils.hpp>
 #include <unit_test/suite.hpp>
 
-class random_numbers_test : public framework::unit_test::Suite
+class RandomNumbersTest : public framework::unit_test::Suite
 {
 public:
-    random_numbers_test()
-        : Suite("random_numbers_test")
+    RandomNumbersTest()
+        : Suite("RandomNumbersTest")
     {
         add_test([this]() { random_numbers(); }, "random_numbers");
     }
@@ -101,5 +101,5 @@ private:
 
 int main()
 {
-    return run_tests(random_numbers_test());
+    return run_tests(RandomNumbersTest());
 }

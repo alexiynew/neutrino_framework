@@ -33,11 +33,11 @@ using framework::math::pi;
 using framework::math::quarter_pi;
 using framework::math::tau;
 
-class trigonometric_function_tests : public framework::unit_test::Suite
+class TirgonometricFunctionsTest : public framework::unit_test::Suite
 {
 public:
-    trigonometric_function_tests()
-        : Suite("trigonometric_function_tests")
+    TirgonometricFunctionsTest()
+        : Suite("TirgonometricFunctionsTest")
     {
         add_test([this]() { radians_function(); }, "radians_function");
         add_test([this]() { degrees_function(); }, "degrees_function");
@@ -151,5 +151,5 @@ private:
 
 int main()
 {
-    return run_tests(trigonometric_function_tests());
+    return run_tests(TirgonometricFunctionsTest());
 }

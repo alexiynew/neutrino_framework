@@ -31,16 +31,16 @@
 
 #include <unit_test/suite.hpp>
 
-class custom_exception
+class CustomException
 {};
 
 /// @name Test to fail
 /// @{
-class should_fail_test_assert : public framework::unit_test::Suite
+class ShouldFailTestAssert : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_assert()
-        : Suite("should_fail_test_assert")
+    ShouldFailTestAssert()
+        : Suite("ShouldFailTestAssert")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -52,11 +52,11 @@ private:
     }
 };
 
-class should_fail_test_fail : public framework::unit_test::Suite
+class ShouldFailTestFail : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_fail()
-        : Suite("should_fail_test_fail")
+    ShouldFailTestFail()
+        : Suite("ShouldFailTestFail")
     {
         add_test([this]() { test_fail(); }, "test_fail");
     }
@@ -68,11 +68,11 @@ private:
     }
 };
 
-class should_fail_test_std_exception : public framework::unit_test::Suite
+class ShouldFailTestStdException : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_std_exception()
-        : Suite("should_fail_test_std_exception")
+    ShouldFailTestStdException()
+        : Suite("ShouldFailTestStdException")
     {
         add_test([this]() { test_std_exception(); }, "test_std_exception");
     }
@@ -84,11 +84,11 @@ private:
     }
 };
 
-class should_fail_test_any_exception : public framework::unit_test::Suite
+class ShouldFailTestAnyException : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_any_exception()
-        : Suite("should_fail_test_any_exception")
+    ShouldFailTestAnyException()
+        : Suite("ShouldFailTestAnyException")
     {
         add_test([this]() { test_any_exception(); }, "test_any_exception");
     }
@@ -97,18 +97,18 @@ private:
     // NOLINTNEXTLINE(hicpp-exception-baseclass)
     [[noreturn]] void test_any_exception()
     {
-        throw custom_exception();
+        throw CustomException();
     }
 };
 /// @}
 
 /// @name Test to pass
 /// @{
-class should_pass_test : public framework::unit_test::Suite
+class ShouldPassTest : public framework::unit_test::Suite
 {
 public:
-    should_pass_test()
-        : Suite("should_pass_test")
+    ShouldPassTest()
+        : Suite("ShouldPassTest")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -123,11 +123,11 @@ private:
 
 /// @name Test to run tests
 /// @{
-class test_for_test : public framework::unit_test::Suite
+class TestForTest : public framework::unit_test::Suite
 {
 public:
-    test_for_test()
-        : Suite("test_for_test")
+    TestForTest()
+        : Suite("TestForTest")
     {
         add_test([this]() { should_fail(); }, "should_fail");
         add_test([this]() { should_pass(); }, "should_pass");
@@ -139,10 +139,10 @@ private:
     {
         std::vector<std::unique_ptr<framework::unit_test::Suite>> tests;
 
-        tests.emplace_back(std::make_unique<should_fail_test_assert>());
-        tests.emplace_back(std::make_unique<should_fail_test_fail>());
-        tests.emplace_back(std::make_unique<should_fail_test_std_exception>());
-        tests.emplace_back(std::make_unique<should_fail_test_any_exception>());
+        tests.emplace_back(std::make_unique<ShouldFailTestAssert>());
+        tests.emplace_back(std::make_unique<ShouldFailTestFail>());
+        tests.emplace_back(std::make_unique<ShouldFailTestStdException>());
+        tests.emplace_back(std::make_unique<ShouldFailTestAnyException>());
 
         for (auto& test : tests) {
             run_suite(test.get());
@@ -155,7 +155,7 @@ private:
 
     void should_pass()
     {
-        should_pass_test should_pass;
+        ShouldPassTest should_pass;
 
         run_suite(&should_pass);
 
@@ -180,5 +180,5 @@ private:
 
 int main()
 {
-    return run_tests(test_for_test());
+    return run_tests(TestForTest());
 }

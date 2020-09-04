@@ -26,11 +26,11 @@
 #include <common/version.hpp>
 #include <unit_test/suite.hpp>
 
-class version_test : public framework::unit_test::Suite
+class VersionTest : public framework::unit_test::Suite
 {
 public:
-    version_test()
-        : Suite("version_test")
+    VersionTest()
+        : Suite("VersionTest")
     {
         add_test([this]() { constructor(); }, "constructor");
         add_test([this]() { from_string(); }, "from_string");
@@ -144,5 +144,5 @@ private:
 
 int main()
 {
-    return run_tests(version_test());
+    return run_tests(VersionTest());
 }

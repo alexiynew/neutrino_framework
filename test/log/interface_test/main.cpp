@@ -44,11 +44,11 @@ using framework::log::set_logger;
 using framework::log::severity_level;
 using framework::log::stream_logger;
 
-class logger_interface_test : public framework::unit_test::Suite
+class LoggerInterfaceTest : public framework::unit_test::Suite
 {
 public:
-    logger_interface_test()
-        : Suite("logger_interface_test")
+    LoggerInterfaceTest()
+        : Suite("LoggerInterfaceTest")
     {
         add_test([this]() { stream_logger_test(); }, "stream_logger_test");
         add_test([this]() { long_log_string(); }, "long_log_string");
@@ -184,5 +184,5 @@ private:
 
 int main()
 {
-    return run_tests(logger_interface_test());
+    return run_tests(LoggerInterfaceTest());
 }

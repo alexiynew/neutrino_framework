@@ -43,11 +43,11 @@ using framework::math::Vector4i;
 
 using framework::math::almost_equal;
 
-class vector_operators_test : public framework::unit_test::Suite
+class VectorOperatorsTest : public framework::unit_test::Suite
 {
 public:
-    vector_operators_test()
-        : Suite("vector_operators_test")
+    VectorOperatorsTest()
+        : Suite("VectorOperatorsTest")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
         add_test([this]() { access_operator(); }, "access_operator");
@@ -372,11 +372,11 @@ private:
     }
 };
 
-class bool_vector_operators_test : public framework::unit_test::Suite
+class BoolVectorOperatorsTest : public framework::unit_test::Suite
 {
 public:
-    bool_vector_operators_test()
-        : Suite("bool_vector_operators_test")
+    BoolVectorOperatorsTest()
+        : Suite("BoolVectorOperatorsTest")
     {
         add_test([this]() { assign_operator(); }, "assign_operator");
         add_test([this]() { access_operator(); }, "access_operator");
@@ -444,5 +444,5 @@ private:
 
 int main()
 {
-    return run_tests(vector_operators_test(), bool_vector_operators_test());
+    return run_tests(VectorOperatorsTest(), BoolVectorOperatorsTest());
 }

@@ -41,11 +41,11 @@ std::vector<uint8> to_vector(const std::string& str)
     return data;
 }
 
-class zlib_test : public framework::unit_test::Suite
+class ZlibTest : public framework::unit_test::Suite
 {
 public:
-    zlib_test()
-        : Suite("zlib_test")
+    ZlibTest()
+        : Suite("ZlibTest")
         , data(to_vector("Hello Hello Hello Hello Hello Hello!"))
     {
         add_test([this]() { inflate_test(); }, "inflate_test");
@@ -97,5 +97,5 @@ private:
 
 int main()
 {
-    return run_tests(zlib_test());
+    return run_tests(ZlibTest());
 }

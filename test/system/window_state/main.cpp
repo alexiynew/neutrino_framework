@@ -29,11 +29,11 @@
 using namespace framework;
 using namespace framework::system;
 
-class window_state_test : public framework::unit_test::Suite
+class WindowStateTest : public framework::unit_test::Suite
 {
 public:
-    window_state_test()
-        : Suite("window_state_test")
+    WindowStateTest()
+        : Suite("WindowStateTest")
     {
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
         add_test([this]() { iconify_window(); }, "iconify_window");
@@ -214,5 +214,5 @@ private:
 
 int main()
 {
-    return run_tests(window_state_test());
+    return run_tests(WindowStateTest());
 }

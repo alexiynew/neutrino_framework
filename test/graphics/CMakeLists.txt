@@ -30,6 +30,7 @@ set(TESTS
     shader
     texture
     light
+    font
 )
 
 foreach(TEST ${TESTS})

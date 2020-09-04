@@ -48,11 +48,11 @@ using framework::math::Matrix4x2f;
 using framework::math::Matrix4x3f;
 using framework::math::Matrix4x4f;
 
-class relational_function_tests : public framework::unit_test::Suite
+class RelationalFunctionsTest : public framework::unit_test::Suite
 {
 public:
-    relational_function_tests()
-        : Suite("relational_function_tests")
+    RelationalFunctionsTest()
+        : Suite("RelationalFunctionsTest")
     {
         add_test([this]() { less_function(); }, "less_function");
         add_test([this]() { less_equal_function(); }, "less_equal_function");
@@ -275,5 +275,5 @@ private:
 
 int main()
 {
-    return run_tests(relational_function_tests());
+    return run_tests(RelationalFunctionsTest());
 }

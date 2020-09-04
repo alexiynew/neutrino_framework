@@ -306,11 +306,11 @@ Entity create_entity_12()
 }
 } // namespace
 
-class texture_test : public framework::unit_test::Suite
+class TextureTest : public framework::unit_test::Suite
 {
 public:
-    texture_test()
-        : Suite("texture_test")
+    TextureTest()
+        : Suite("TextureTest")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }
@@ -382,5 +382,5 @@ private:
 
 int main()
 {
-    return run_tests(texture_test());
+    return run_tests(TextureTest());
 }

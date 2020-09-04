@@ -127,11 +127,11 @@ const Mesh::IndicesData indices = {0, 1, 2};
 } // namespace triangle_mesh
 } // namespace
 
-class mesh_test : public unit_test::Suite
+class MeshTest : public unit_test::Suite
 {
 public:
-    mesh_test()
-        : Suite("mesh_test")
+    MeshTest()
+        : Suite("MeshTest")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }
@@ -199,5 +199,5 @@ private:
 
 int main()
 {
-    return run_tests(mesh_test());
+    return run_tests(MeshTest());
 }

@@ -28,11 +28,11 @@
 
 using namespace framework;
 
-class slot_test : public unit_test::Suite
+class SlotTest : public unit_test::Suite
 {
 public:
-    slot_test()
-        : Suite("slot_test")
+    SlotTest()
+        : Suite("SlotTest")
     {
         add_test([this]() { slot_lambda_0(); }, "slot_lambda_0");
         add_test([this]() { slot_lambda_1(); }, "slot_lambda_1");
@@ -338,5 +338,5 @@ private:
 
 int main()
 {
-    return run_tests(slot_test());
+    return run_tests(SlotTest());
 }

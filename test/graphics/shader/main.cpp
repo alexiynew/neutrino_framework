@@ -123,11 +123,11 @@ Mesh::IndicesData indices = {
 
 } // namespace
 
-class shader_test : public framework::unit_test::Suite
+class ShaderTest : public framework::unit_test::Suite
 {
 public:
-    shader_test()
-        : Suite("shader_test")
+    ShaderTest()
+        : Suite("ShaderTest")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }
@@ -191,5 +191,5 @@ private:
 
 int main()
 {
-    return run_tests(shader_test());
+    return run_tests(ShaderTest());
 }

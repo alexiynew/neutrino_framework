@@ -29,11 +29,11 @@
 
 using namespace framework::system;
 
-class window_open_test : public framework::unit_test::Suite
+class WindowOpenTest : public framework::unit_test::Suite
 {
 public:
-    window_open_test()
-        : Suite("window_open_test")
+    WindowOpenTest()
+        : Suite("WindowOpenTest")
     {
         add_test([this]() { open_window(); }, "open_window");
         add_test([this]() { open_several_windows(); }, "open_several_windows");
@@ -104,5 +104,5 @@ private:
 
 int main()
 {
-    return run_tests(window_open_test());
+    return run_tests(WindowOpenTest());
 }

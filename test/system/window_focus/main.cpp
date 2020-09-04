@@ -187,6 +187,5 @@ private:
 
 int main()
 {
-    // return run_tests(WindowFocusTest());
-    return run_tests(WindowCursorTest());
+    return run_tests(WindowFocusTest(), WindowCursorTest());
 }

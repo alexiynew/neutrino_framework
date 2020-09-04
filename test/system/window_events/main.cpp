@@ -222,11 +222,11 @@ std::string button_name(MouseButton button)
 
 } // namespace
 
-class window_events_test : public framework::unit_test::Suite
+class WindowEventTest : public framework::unit_test::Suite
 {
 public:
-    window_events_test()
-        : Suite("window_events_test")
+    WindowEventTest()
+        : Suite("WindowEventTest")
     {
         add_test([this]() { run(); }, "run");
     }
@@ -312,5 +312,5 @@ private:
 
 int main()
 {
-    return run_tests(window_events_test());
+    return run_tests(WindowEventTest());
 }

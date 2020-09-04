@@ -48,11 +48,11 @@ using framework::math::Vector4b;
 
 using framework::math::mix;
 
-class common_function_tests : public framework::unit_test::Suite
+class CommonFunctionsTest : public framework::unit_test::Suite
 {
 public:
-    common_function_tests()
-        : Suite("common_function_tests")
+    CommonFunctionsTest()
+        : Suite("CommonFunctionsTest")
     {
         add_test([this]() { abs_function(); }, "abs_function");
         add_test([this]() { sign_function(); }, "sign_function");
@@ -283,5 +283,5 @@ private:
 
 int main()
 {
-    return run_tests(common_function_tests());
+    return run_tests(CommonFunctionsTest());
 }

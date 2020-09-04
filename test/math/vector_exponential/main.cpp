@@ -38,11 +38,11 @@ using framework::math::Vector4d;
 
 using framework::math::almost_equal;
 
-class exponential_function_tests : public framework::unit_test::Suite
+class ExponentialFunctionsTest : public framework::unit_test::Suite
 {
 public:
-    exponential_function_tests()
-        : Suite("exponential_function_tests")
+    ExponentialFunctionsTest()
+        : Suite("ExponentialFunctionsTest")
     {
         add_test([this]() { pow_function(); }, "pow_function");
         add_test([this]() { exp_function(); }, "exp_function");
@@ -102,5 +102,5 @@ private:
 
 int main()
 {
-    return run_tests(exponential_function_tests());
+    return run_tests(ExponentialFunctionsTest());
 }

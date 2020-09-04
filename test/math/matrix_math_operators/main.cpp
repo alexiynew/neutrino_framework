@@ -40,11 +40,11 @@ using framework::math::Vector2f;
 using framework::math::Vector3f;
 using framework::math::Vector4f;
 
-class matrix_operators_test : public framework::unit_test::Suite
+class MatrixOperatorsTest : public framework::unit_test::Suite
 {
 public:
-    matrix_operators_test()
-        : Suite("matrix_operators_test")
+    MatrixOperatorsTest()
+        : Suite("MatrixOperatorsTest")
     {
         add_test([this]() { unary_minus_operator(); }, "unary_minus_operator");
         add_test([this]() { unary_plus_operator(); }, "unary_plus_operator");
@@ -638,5 +638,5 @@ private:
 
 int main()
 {
-    return run_tests(matrix_operators_test());
+    return run_tests(MatrixOperatorsTest());
 }

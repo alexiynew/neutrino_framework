@@ -26,11 +26,11 @@
 #include <graphics/image.hpp>
 #include <unit_test/suite.hpp>
 
-class png_image_test : public framework::unit_test::Suite
+class PngImageTest : public framework::unit_test::Suite
 {
 public:
-    png_image_test()
-        : Suite("png_image_test")
+    PngImageTest()
+        : Suite("PngImageTest")
     {
         add_test([this]() { png_load(); }, "png_load");
     }
@@ -222,5 +222,5 @@ private:
 
 int main()
 {
-    return run_tests(png_image_test());
+    return run_tests(PngImageTest());
 }
