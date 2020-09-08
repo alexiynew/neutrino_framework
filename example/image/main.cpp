@@ -38,6 +38,8 @@
 #include <graphics/texture.hpp>
 #include <math/math.hpp>
 #include <system/window.hpp>
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 
 namespace
 {
@@ -51,20 +53,17 @@ const std::string vertex_shader =
 "#version 330 core\n\
 \n\
 layout(location = 0) in vec3 position;\n\
-layout(location = 3) in vec4 color;\n\
 layout(location = 4) in vec2 texCoord0;\n\
 \n\
 uniform mat4 modelMatrix;\n\
 uniform mat4 viewMatrix;\n\
 uniform mat4 projectionMatrix;\n\
 \n\
-out vec4 fragColor;\n\
 out vec2 texCoord;\n\
 \n\
 void main()\n\
 {\n\
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);\n\
-    fragColor = color / 256.0;\n\
     texCoord = texCoord0;\n\
 }\n\
 ";
@@ -72,7 +71,6 @@ void main()\n\
 const std::string fragment_shader =
 "#version 330 core\n\
 \n\
-in vec4 fragColor;\n\
 in vec2 texCoord;\n\
 \n\
 out vec4 color;\n\
@@ -85,7 +83,7 @@ void main()\n\
 }\n\
 ";
 
-enum Mode
+enum class Mode
 {
     bmp,
     png,
@@ -615,6 +613,8 @@ void Example::run()
 
 int main()
 {
+    log::set_logger(std::make_unique<log::stream_logger>(std::cout));
+
     Window::set_application_name("Image example");
 
     Example ex;

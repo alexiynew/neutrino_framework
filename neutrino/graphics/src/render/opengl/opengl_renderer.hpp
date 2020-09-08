@@ -89,8 +89,7 @@ private:
     std::string m_gl_version;
     std::string m_shading_lang_version;
 
-    int m_max_texture_units = 48;
-    std::vector<int> m_free_texture_units;
+    std::uint32_t m_max_texture_units = 48;
 };
 
 } // namespace framework::graphics

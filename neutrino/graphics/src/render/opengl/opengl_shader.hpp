@@ -59,6 +59,8 @@ public:
     bool load(const Shader& shader);
     void clear();
 
+    int get_attribute_location(const std::string& name) const;
+
     void use() const;
 
     void set_uniforms(const Renderer::Command& command) const;

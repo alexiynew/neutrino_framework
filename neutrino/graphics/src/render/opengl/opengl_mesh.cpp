@@ -87,7 +87,7 @@ OpenglMesh::BufferInfo create_buffer(int buffer_type, const std::vector<T>& data
         info.components_count = static_cast<int>(data.size());
     } else if constexpr (std::is_same_v<T, Mesh::IndicesData::value_type>) {
         info.type             = GL_UNSIGNED_SHORT;
-        info.component_size   = 1;
+        info.component_size   = 1; // not used in indices buffer
         info.components_count = static_cast<int>(data.size());
     }
 
@@ -158,7 +158,6 @@ void OpenglMesh::draw() const
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer.buffer);
     glDrawElements(GL_TRIANGLES, index_buffer.components_count, index_buffer.type, nullptr);
 }
-
 bool OpenglMesh::valid() const
 {
     return vertex_array != 0 && index_buffer.buffer != 0;

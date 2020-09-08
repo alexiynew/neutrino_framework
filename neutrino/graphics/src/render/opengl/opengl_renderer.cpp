@@ -106,10 +106,6 @@ OpenglRenderer::~OpenglRenderer() = default;
 
 void OpenglRenderer::init()
 {
-    m_free_texture_units.resize(m_max_texture_units);
-    std::iota(m_free_texture_units.begin(), m_free_texture_units.end(), 0);
-    std::sort(m_free_texture_units.begin(), m_free_texture_units.end(), std::greater());
-
     glClearDepth(1.0);
 
     glEnable(GL_DEPTH_TEST);
@@ -129,7 +125,7 @@ void OpenglRenderer::get_info()
     m_gl_version           = get_string(GL_VERSION);
     m_shading_lang_version = get_string(GL_SHADING_LANGUAGE_VERSION);
 
-    m_max_texture_units = get_int(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+    m_max_texture_units = static_cast<std::uint32_t>(get_int(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS));
 }
 
 void OpenglRenderer::set_clear_color(const Color& color)
@@ -185,16 +181,13 @@ bool OpenglRenderer::load(const Texture& texture)
     if (m_textures.count(texture.instance_id())) {
         m_textures.at(texture.instance_id()).clear();
     } else {
-        const std::uint32_t texture_unit = static_cast<std::uint32_t>(m_free_texture_units.back());
-        m_free_texture_units.pop_back();
-        m_textures.try_emplace(texture.instance_id(), texture_unit);
+        m_textures.try_emplace(texture.instance_id());
     }
 
     OpenglTexture& opengl_texture = m_textures.at(texture.instance_id());
 
     const bool loaded = opengl_texture.load(texture);
     if (!loaded) {
-        m_free_texture_units.push_back(opengl_texture.texture_unit());
         m_textures.erase(texture.instance_id());
         log::error(tag) << "Failed ot load Texture: " << texture.instance_id();
     }
@@ -240,13 +233,24 @@ void OpenglRenderer::end_frame()
 
 void OpenglRenderer::bind_textures(const OpenglShader& shader, const Renderer::Command& command) const
 {
+    std::uint32_t texture_unit = 0;
+
     for (const auto& uniform : command.uniforms()) {
         if (std::holds_alternative<TextureBinding>(uniform.value())) {
             const TextureBinding& binding = std::get<TextureBinding>(uniform.value());
-            const OpenglTexture& texture  = m_textures.at(binding.texture());
+            if (m_textures.count(binding.texture()) != 0) {
 
-            texture.bind();
-            shader.set_texture(uniform.name(), texture.texture_unit());
+                if (texture_unit >= m_max_texture_units) {
+                    log::error(tag) << "To many texture bindings, max is: " << m_max_texture_units;
+                    return;
+                }
+
+                const OpenglTexture& texture = m_textures.at(binding.texture());
+
+                texture.bind(texture_unit);
+                shader.set_texture(uniform.name(), texture_unit);
+                texture_unit++;
+            }
         }
     }
 }

@@ -41,7 +41,7 @@ class Texture;
 class OpenglTexture
 {
 public:
-    explicit OpenglTexture(std::uint32_t texture_unit);
+    OpenglTexture() = default;
 
     OpenglTexture(const OpenglTexture&) = delete;
     OpenglTexture& operator=(const OpenglTexture&) = delete;
@@ -55,14 +55,12 @@ public:
 
     void clear();
 
-    void bind() const;
+    void bind(std::uint32_t texture_unit) const;
 
     std::uint32_t texture_id() const;
-    std::uint32_t texture_unit() const;
 
 private:
     std::uint32_t m_texture      = 0;
-    std::uint32_t m_texture_unit = 0;
 };
 
 } // namespace framework::graphics

@@ -430,6 +430,11 @@ bool OpenglShader::load(const Shader& shader)
     return m_shader_program != 0;
 }
 
+int OpenglShader::get_attribute_location(const std::string& name) const
+{
+    return glGetAttribLocation(m_shader_program, name.c_str());
+}
+
 void OpenglShader::use() const
 {
     glUseProgram(m_shader_program);
