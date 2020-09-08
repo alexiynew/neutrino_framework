@@ -24,6 +24,9 @@
 // =============================================================================
 
 #include <unit_test/suite.hpp>
+#include <graphics/font.hpp>
+
+using namespace framework::graphics;
 
 namespace
 {
@@ -42,7 +45,9 @@ public:
 private:
     void render_font()
     {
-        TEST_FAIL("Not implemented");
+        Font font;            
+
+        TEST_ASSERT(font.load("font/Arial.otf"), "Should load Arial font");
     }
 };
 

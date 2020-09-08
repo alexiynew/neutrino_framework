@@ -31,6 +31,7 @@ set_sources(PUBLIC_SOURCES
     texture.hpp
     renderer.hpp
     uniform.hpp
+    font.hpp
 )
 
 set_sources(PRIVATE_SOURCES
@@ -38,6 +39,11 @@ set_sources(PRIVATE_SOURCES
     src/shader.cpp
     src/texture.cpp
     src/uniform.cpp
+
+    src/font/font.cpp
+    src/font/tags.hpp
+    src/font/tables.hpp
+    src/font/tables.cpp
 
     src/image/image.cpp
     src/image/image_info.hpp
