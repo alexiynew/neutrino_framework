@@ -156,7 +156,7 @@ void OpenglMesh::draw() const
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer.buffer);
-    glDrawElements(GL_TRIANGLES, index_buffer.components_count, index_buffer.type, 0);
+    glDrawElements(GL_TRIANGLES, index_buffer.components_count, index_buffer.type, nullptr);
 }
 
 bool OpenglMesh::valid() const

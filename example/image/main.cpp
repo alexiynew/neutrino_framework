@@ -375,7 +375,9 @@ ImagesList load_images(Mode image_mode)
 
         std::transform(group.begin(), group.end(), std::back_inserter(group_images), [](const std::string& name) {
             framework::graphics::Image img;
-            img.load(name);
+            if (!img.load(name)) {
+                throw std::runtime_error("Can't load " + name);
+            }
 
             return img;
         });
