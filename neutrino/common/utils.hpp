@@ -119,18 +119,35 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     return result;
 }
 
-template <class C>
-constexpr inline auto size(const C& container) -> decltype(container.size())
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Returns elements count in container.
+///
+/// @param containter To get size
+///
+/// @return Elements count in container.
+///////////////////////////////////////////////////////////////////////////////
+template <typename C>
+constexpr inline std::size_t size(const C& container) noexcept
 {
     return container.size();
 }
 
-template <class T, std::size_t N>
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Returns elements count in array.
+///
+/// @return Elements count in array.
+///////////////////////////////////////////////////////////////////////////////
+template <typename T, std::size_t N>
 constexpr inline std::size_t size(const T (&)[N]) noexcept
 {
     return N;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Size of type T as it is was packed, i.e. without pabbind bytes.
+///////////////////////////////////////////////////////////////////////////////
+template <typename T>
+inline constexpr size_t packed_sizeof_v = details::PackedSizeof<T>::value;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Interprets buffer as value of type T in big endian byte order.
@@ -183,7 +200,6 @@ inline T little_endian_value(std::istream& in)
 {
     return details::StreamReader::tagged_endian_value_impl<T, details::LittleEndianTag>(in);
 }
-
 
 /*
 template <typename... Args>

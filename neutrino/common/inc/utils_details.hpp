@@ -51,7 +51,7 @@ auto get_distribution(T min_value, T max_value)
 
 #pragma endregion
 
-#pragma region Read Value Form
+#pragma region To Tuple
 
 namespace members_count
 {
@@ -162,6 +162,10 @@ inline TupleType<T> to_tuple(const T& value) noexcept
     return to_tuple_impl<T, members_count::members_count<T>()>(value);
 }
 
+#pragma endregion
+
+#pragma region From Tuple
+
 template <typename T, typename Tuple, size_t... I>
 inline T from_tuple_impl(const Tuple& tuple, const std::index_sequence<I...>&) noexcept
 {
@@ -175,6 +179,10 @@ inline T from_tuple(const Tuple& tuple) noexcept
     return from_tuple_impl<T>(tuple, std::make_index_sequence<std::tuple_size_v<Tuple>>());
 }
 
+#pragma endregion
+
+#pragma region Read Value Form Buffer
+
 struct BigEndianTag
 {};
 
@@ -182,10 +190,16 @@ struct LittleEndianTag
 {};
 
 template <typename T>
-using FundamentalOrEnumReturnType = std::enable_if_t<std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>, T>;
+inline constexpr bool is_fundamental_or_enum_v = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
 
 template <typename T>
-using TrivialConstructableReturnType = std::enable_if_t<std::conjunction_v<std::is_class<T>, std::is_standard_layout<T>>, T>;
+inline constexpr bool is_standard_aggregate_class_v = std::conjunction_v<std::is_class<T>, std::is_standard_layout<T>, std::is_aggregate<T>>;
+
+template <typename T>
+using FundamentalOrEnumReturnType = std::enable_if_t<is_fundamental_or_enum_v<T>, T>;
+
+template <typename T>
+using AggregateClassReturnType = std::enable_if_t<is_standard_aggregate_class_v<T>, T>;
 
 struct BufferReader
 {
@@ -229,7 +243,7 @@ struct BufferReader
     // Interprets buffer as value of type T in specified endian byte order.
     // overload for structures
     template <typename T, typename EndianTag, typename BufferType>
-    static TrivialConstructableReturnType<T> tagged_endian_value_impl(const BufferType* buffer)
+    static AggregateClassReturnType<T> tagged_endian_value_impl(const BufferType* buffer)
     {
         constexpr size_t count = members_count::members_count<T>();
 
@@ -242,11 +256,19 @@ struct BufferReader
     }
 };
 
+#pragma endregion
+
+#pragma region Read Value From Stream
+
 template <typename... Args>
 constexpr inline std::size_t size_in_bytes(const std::tuple<Args...>&) noexcept
 {
     return (sizeof(Args) + ...);
 }
+
+template <typename T>
+inline constexpr size_t size_of_tuple_members_v = size_in_bytes(T{});
+
 
 struct StreamReader
 {
@@ -266,9 +288,9 @@ struct StreamReader
     // Read value of type T in specified endian byte order.
     // overload for structures
     template <typename T, typename EndianTag, typename Stream>
-    static TrivialConstructableReturnType<T> tagged_endian_value_impl(Stream& in)
+    static AggregateClassReturnType<T> tagged_endian_value_impl(Stream& in)
     {
-        constexpr size_t buffer_size = size_in_bytes(TupleType<T>{});
+        constexpr size_t buffer_size = size_of_tuple_members_v<TupleType<T>>;
 
         char buffer[buffer_size] = {0};
         in.read(buffer, buffer_size);
@@ -278,6 +300,23 @@ struct StreamReader
 };
 
 #pragma endregion
+
+template <typename T>
+struct PackedSizeof
+{
+    static constexpr size_t calc_size()
+    {
+        if constexpr (details::is_fundamental_or_enum_v<T>) {
+            return sizeof(T);
+        } else if constexpr (details::is_standard_aggregate_class_v<T>) {
+             return details::size_of_tuple_members_v<details::TupleType<T>>;
+        } else {
+            static_assert(false, "T is not a proper type");
+        }
+    };
+
+    static constexpr size_t value = calc_size();
+};
 
 /*
 namespace format_details

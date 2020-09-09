@@ -120,19 +120,134 @@ bool Table::valid() const
 
 #pragma region headTable
 
+FontHeaderTable FontHeaderTable::read(const std::vector<std::uint8_t>& data)
+{
+    constexpr size_t table_size = utils::packed_sizeof_v<FontHeaderTable>;
+
+    if (table_size <= data.size()) {
+        return utils::big_endian_value<FontHeaderTable>(data.data());
+    }
+
+    return FontHeaderTable();
+}
 
 #pragma endregion
 
-#pragma region cmapTable
+#pragma region CharacterToGlyphIndexMappingTable
 
-// cmapTable cmapTable::read(std::ifstream& in, const TableRecord& record)
-//{
-//    char buffer[TableRecord::size];
-//    in.read(buffer, TableRecord::size);
-//}
-//
-// bool cmapTable::valid() const
-//{}
+CharacterToGlyphIndexMappingTable CharacterToGlyphIndexMappingTable::read(const std::vector<std::uint8_t>& data)
+{
+    constexpr size_t table_header_size = (sizeof(CharacterToGlyphIndexMappingTable::version) + sizeof(CharacterToGlyphIndexMappingTable::num_tables));
+    constexpr size_t record_size = utils::packed_sizeof_v<CharacterToGlyphIndexMappingTable::EncodingRecord>;
+    constexpr size_t version_size = sizeof(CharacterToGlyphIndexMappingTable::version);
+    
+    if (data.size() < table_header_size) {
+        return CharacterToGlyphIndexMappingTable();
+    }
+
+    CharacterToGlyphIndexMappingTable table;
+    table.version    = utils::big_endian_value<decltype(CharacterToGlyphIndexMappingTable::version)>(data.data());
+    table.num_tables = utils::big_endian_value<decltype(CharacterToGlyphIndexMappingTable::num_tables)>(data.data() + version_size);
+
+    if (data.size() < table_header_size + table.num_tables * record_size) {
+        return CharacterToGlyphIndexMappingTable();
+    }
+
+    table.encoding_records.reserve(table.num_tables);
+
+    size_t offset = table_header_size;
+    for (size_t i = 0; i < table.num_tables; ++i) {
+        table.encoding_records.push_back(
+        utils::big_endian_value<CharacterToGlyphIndexMappingTable::EncodingRecord>(data.data() + offset));
+        offset += record_size;
+    }
+
+    return table;
+}
+
+#pragma endregion
+
+#pragma region HorizontalHeaderTable
+
+HorizontalHeaderTable HorizontalHeaderTable::read(const std::vector<std::uint8_t>& data)
+{
+    constexpr size_t table_size = utils::packed_sizeof_v<HorizontalHeaderTable>;
+    
+    if (table_size <= data.size()) {
+        return utils::big_endian_value<HorizontalHeaderTable>(data.data());
+    }
+
+    return HorizontalHeaderTable();
+}
+
+#pragma endregion
+
+#pragma region MaximumProfileTable
+
+MaximumProfileTable MaximumProfileTable::read(std::uint32_t sfnt_version, const std::vector<std::uint8_t>& data)
+{
+    constexpr size_t true_type_table_size = utils::packed_sizeof_v<MaximumProfileTable>;
+    constexpr size_t open_type_table_size = (sizeof(MaximumProfileTable::version) + sizeof(MaximumProfileTable::num_glyphs));
+
+
+    switch (sfnt_version) {
+        case OffsetTable::true_type_tag: 
+            if (true_type_table_size <= data.size()) {
+                return utils::big_endian_value<MaximumProfileTable>(data.data());
+            }
+        case OffsetTable::open_type_tag:
+            if (open_type_table_size <= data.size()) {
+                MaximumProfileTable table;
+                table.version    = utils::big_endian_value<decltype(MaximumProfileTable::version)>(data.data());
+                table.num_glyphs = utils::big_endian_value<decltype(MaximumProfileTable::num_glyphs)>(data.data());
+                return table;
+            }
+    }
+
+    return MaximumProfileTable();
+}
+
+#pragma endregion
+
+#pragma region HorizontalMetricsTable
+
+HorizontalMetricsTable HorizontalMetricsTable::read(std::uint16_t number_of_h_metrics,
+                                                    std::uint16_t num_glyphs,
+                                                    const std::vector<std::uint8_t>& data)
+{
+    constexpr size_t metric_size = utils::packed_sizeof_v<HorizontalMetricsTable::Metric>;
+
+    if (data.size() < metric_size * number_of_h_metrics) {
+        return HorizontalMetricsTable();
+    }
+
+    size_t offset = 0;
+
+    HorizontalMetricsTable table;
+    table.metrics.reserve(number_of_h_metrics);
+    for (size_t i = 0; i < number_of_h_metrics; ++i) {
+        table.metrics.push_back(utils::big_endian_value<HorizontalMetricsTable::Metric>(data.data() + offset));
+        offset += metric_size;
+    }
+
+    if (num_glyphs > number_of_h_metrics) {
+        using LeftSideBearingsType = decltype(HorizontalMetricsTable::left_side_bearings)::value_type;
+
+        constexpr size_t left_side_bearings_size = sizeof(LeftSideBearingsType);
+        const size_t left_side_bearings_count = num_glyphs - number_of_h_metrics;
+
+        if (data.size() < offset + left_side_bearings_count * left_side_bearings_size) {
+            return HorizontalMetricsTable();
+        }
+
+        for (size_t i = 0; i < number_of_h_metrics; ++i) {
+            table.left_side_bearings.push_back(utils::big_endian_value<LeftSideBearingsType>(data.data() + offset));
+            offset += left_side_bearings_size;
+        }
+    }
+
+    return table;
+}
 
 #pragma endregion
 
@@ -144,6 +259,9 @@ std::vector<TableRecord> read_table_records(std::ifstream& in, std::uint32_t num
 
     for (std::uint32_t i = 0; i < num_tables; i++) {
         records[i] = utils::big_endian_value<TableRecord>(in);
+        if (!in) {
+            return std::vector<TableRecord>();
+        }
     }
 
     std::sort(records.begin(), records.end(), [](const TableRecord& a, const TableRecord& b) {

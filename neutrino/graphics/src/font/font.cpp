@@ -73,7 +73,7 @@ bool Font::load(const std::string& filename)
     }
 
     std::vector<TableRecord> records = read_table_records(file, offset_table.num_tables);
-    if (!has_required_tables(records)) {
+    if (!file || records.size() != offset_table.num_tables || !has_required_tables(records)) {
         return false;
     }
 
@@ -83,7 +83,7 @@ bool Font::load(const std::string& filename)
         return std::pair{record.tag, Table{record, {}}};
     });
 
-    for (auto& table: tables) {
+    for (auto& table : tables) {
         if (!table.second.read_data(file)) {
             return false;
         }
@@ -93,7 +93,13 @@ bool Font::load(const std::string& filename)
         }
     }
 
-    headTable head = utils::big_endian_value<headTable>(tables.at(Tag::head).data.data());
+    FontHeaderTable head                   = FontHeaderTable::read(tables.at(Tag::head).data);
+    CharacterToGlyphIndexMappingTable cmap = CharacterToGlyphIndexMappingTable::read(tables.at(Tag::cmap).data);
+    HorizontalHeaderTable hhea             = HorizontalHeaderTable::read(tables.at(Tag::hhea).data);
+    MaximumProfileTable maxp    = MaximumProfileTable::read(offset_table.sfnt_version, tables.at(Tag::maxp).data);
+    HorizontalMetricsTable hmtx = HorizontalMetricsTable::read(hhea.number_of_h_metrics,
+                                                               maxp.num_glyphs,
+                                                               tables.at(Tag::hmtx).data);
 
     return false;
 }
