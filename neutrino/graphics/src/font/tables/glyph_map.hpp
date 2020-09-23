@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
+/// @file
+/// @brief Character to glyph index mapping table
+/// @author Fedorov Alexey
+/// @date 18.09.2020
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -23,33 +29,36 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/font.hpp>
-#include <unit_test/suite.hpp>
+#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
+#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
 
-using namespace framework::graphics;
+#include <graphics/src/font/types.hpp>
+#include <vector>
 
-namespace
-{}
-
-class FontTest : public framework::unit_test::Suite
+namespace framework::graphics::details::font
 {
-public:
-    FontTest()
-        : Suite("FontTest")
-    {
-        add_test([this]() { render_font(); }, "render_font");
-    }
 
-private:
-    void render_font()
-    {
-        Font font;
+struct GlyphMap
+{
+    using GlyphIndexMap = std::unordered_map<std::string, std::uint32_t>;
 
-        TEST_ASSERT(font.load("font/Arial.otf"), "Should load Arial font");
-    }
+    struct EncodingRecord
+    {
+        PlatformId platform_id    = PlatformId::Undefined;
+        std::uint16_t encoding_id = 0;
+        std::uint32_t offset      = 0; // Byte offset from beginning of table to the subtable for this encoding.
+    };
+
+    static GlyphMap parse(const std::vector<std::uint8_t>& data);
+
+    std::uint16_t version    = 0;
+    std::uint16_t num_tables = 0;
+    std::vector<EncodingRecord> encoding_records;
+
+    GlyphIndexMap glyphs;
 };
 
-int main()
-{
-    return run_tests(FontTest());
 }
+
+#endif
+

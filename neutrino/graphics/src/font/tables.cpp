@@ -37,256 +37,73 @@
 
 namespace
 {
-int inline max_power_of_2(int n)
-{
-    int exp = 0;
-
-    while (n != 0) {
-        n = n >> 1;
-        exp++;
-    }
-
-    return std::max(exp - 1, 0);
-}
-
-std::uint32_t table_checksum(const std::vector<std::uint8_t>& data)
-{
-    std::uint32_t sum = 0;
-    size_t count      = ((data.size() + 3) / 4) * 4;
-    for (size_t i = 0; i < count; i += 4) {
-        std::uint32_t value = 0;
-        value += (i + 0 < data.size() ? data[i + 0] : 0) << 24;
-        value += (i + 1 < data.size() ? data[i + 1] : 0) << 16;
-        value += (i + 2 < data.size() ? data[i + 2] : 0) << 8;
-        value += (i + 3 < data.size() ? data[i + 3] : 0) << 0;
-
-        sum += value;
-    }
-
-    return sum;
-}
-
-} // namespace
-
-namespace framework::graphics::details::font
-{
-
-#pragma region OffsetTable
-
-bool OffsetTable::valid() const
-{
-    const int exp = max_power_of_2(num_tables);
-
-    const int check_search_range   = static_cast<int>(std::pow(2, exp) * 16);
-    const int check_entry_selector = exp;
-    const int check_range_shift    = std::max(0, num_tables * 16 - search_range);
-
-    return (sfnt_version == OffsetTable::true_type_tag || sfnt_version == OffsetTable::open_type_tag) &&
-           num_tables != 0 && search_range == check_search_range && entry_selector == check_entry_selector &&
-           range_shift == check_range_shift;
-}
-
-#pragma endregion
-
-#pragma region TableRecord
-
-bool Table::read_data(std::ifstream& in)
-{
-    in.seekg(record.offset, in.beg);
-
-    data.resize(record.length);
-    in.read(reinterpret_cast<char*>(data.data()), record.length);
-
-    return in.good();
-}
-
-bool Table::valid() const
-{
-    auto get_check_sum = [this](const auto& data) {
-        std::uint32_t data_check_sum = table_checksum(data);
-
-        if (record.tag == Tag::head) {
-            data_check_sum -= utils::big_endian_value<std::uint32_t>(data.data() + 8);
-        }
-
-        return data_check_sum;
-    };
-
-    const std::uint32_t data_check_sum = get_check_sum(data);
-    return data_check_sum == record.check_sum;
-}
-
-#pragma endregion
-
-#pragma region headTable
-
-FontHeaderTable FontHeaderTable::read(const std::vector<std::uint8_t>& data)
-{
-    constexpr size_t table_size = utils::packed_sizeof_v<FontHeaderTable>;
-
-    if (table_size <= data.size()) {
-        return utils::big_endian_value<FontHeaderTable>(data.data());
-    }
-
-    return FontHeaderTable();
-}
-
-#pragma endregion
-
-#pragma region CharacterToGlyphIndexMappingTable
-
-CharacterToGlyphIndexMappingTable CharacterToGlyphIndexMappingTable::read(const std::vector<std::uint8_t>& data)
-{
-    constexpr size_t table_header_size = (sizeof(CharacterToGlyphIndexMappingTable::version) + sizeof(CharacterToGlyphIndexMappingTable::num_tables));
-    constexpr size_t record_size = utils::packed_sizeof_v<CharacterToGlyphIndexMappingTable::EncodingRecord>;
-    constexpr size_t version_size = sizeof(CharacterToGlyphIndexMappingTable::version);
-    
-    if (data.size() < table_header_size) {
-        return CharacterToGlyphIndexMappingTable();
-    }
-
-    CharacterToGlyphIndexMappingTable table;
-    table.version    = utils::big_endian_value<decltype(CharacterToGlyphIndexMappingTable::version)>(data.data());
-    table.num_tables = utils::big_endian_value<decltype(CharacterToGlyphIndexMappingTable::num_tables)>(data.data() + version_size);
-
-    if (data.size() < table_header_size + table.num_tables * record_size) {
-        return CharacterToGlyphIndexMappingTable();
-    }
-
-    table.encoding_records.reserve(table.num_tables);
-
-    size_t offset = table_header_size;
-    for (size_t i = 0; i < table.num_tables; ++i) {
-        table.encoding_records.push_back(
-        utils::big_endian_value<CharacterToGlyphIndexMappingTable::EncodingRecord>(data.data() + offset));
-        offset += record_size;
-    }
-
-    return table;
-}
-
-#pragma endregion
-
-#pragma region HorizontalHeaderTable
-
-HorizontalHeaderTable HorizontalHeaderTable::read(const std::vector<std::uint8_t>& data)
-{
-    constexpr size_t table_size = utils::packed_sizeof_v<HorizontalHeaderTable>;
-    
-    if (table_size <= data.size()) {
-        return utils::big_endian_value<HorizontalHeaderTable>(data.data());
-    }
-
-    return HorizontalHeaderTable();
-}
-
-#pragma endregion
-
-#pragma region MaximumProfileTable
-
-MaximumProfileTable MaximumProfileTable::read(std::uint32_t sfnt_version, const std::vector<std::uint8_t>& data)
-{
-    constexpr size_t true_type_table_size = utils::packed_sizeof_v<MaximumProfileTable>;
-    constexpr size_t open_type_table_size = (sizeof(MaximumProfileTable::version) + sizeof(MaximumProfileTable::num_glyphs));
-
-
-    switch (sfnt_version) {
-        case OffsetTable::true_type_tag: 
-            if (true_type_table_size <= data.size()) {
-                return utils::big_endian_value<MaximumProfileTable>(data.data());
-            }
-        case OffsetTable::open_type_tag:
-            if (open_type_table_size <= data.size()) {
-                MaximumProfileTable table;
-                table.version    = utils::big_endian_value<decltype(MaximumProfileTable::version)>(data.data());
-                table.num_glyphs = utils::big_endian_value<decltype(MaximumProfileTable::num_glyphs)>(data.data());
-                return table;
-            }
-    }
-
-    return MaximumProfileTable();
-}
-
-#pragma endregion
 
 #pragma region HorizontalMetricsTable
 
-HorizontalMetricsTable HorizontalMetricsTable::read(std::uint16_t number_of_h_metrics,
-                                                    std::uint16_t num_glyphs,
-                                                    const std::vector<std::uint8_t>& data)
-{
-    constexpr size_t metric_size = utils::packed_sizeof_v<HorizontalMetricsTable::Metric>;
+#pragma endregion
 
-    if (data.size() < metric_size * number_of_h_metrics) {
-        return HorizontalMetricsTable();
-    }
-
-    size_t offset = 0;
-
-    HorizontalMetricsTable table;
-    table.metrics.reserve(number_of_h_metrics);
-    for (size_t i = 0; i < number_of_h_metrics; ++i) {
-        table.metrics.push_back(utils::big_endian_value<HorizontalMetricsTable::Metric>(data.data() + offset));
-        offset += metric_size;
-    }
-
-    if (num_glyphs > number_of_h_metrics) {
-        using LeftSideBearingsType = decltype(HorizontalMetricsTable::left_side_bearings)::value_type;
-
-        constexpr size_t left_side_bearings_size = sizeof(LeftSideBearingsType);
-        const size_t left_side_bearings_count = num_glyphs - number_of_h_metrics;
-
-        if (data.size() < offset + left_side_bearings_count * left_side_bearings_size) {
-            return HorizontalMetricsTable();
-        }
-
-        for (size_t i = 0; i < number_of_h_metrics; ++i) {
-            table.left_side_bearings.push_back(utils::big_endian_value<LeftSideBearingsType>(data.data() + offset));
-            offset += left_side_bearings_size;
-        }
-    }
-
-    return table;
-}
+#pragma region NamingTable
 
 #pragma endregion
 
-#pragma region Helper Functions
+#pragma region Os2Table
 
-std::vector<TableRecord> read_table_records(std::ifstream& in, std::uint32_t num_tables)
+Os2Table Os2Table::parse(const std::vector<std::uint8_t>& data)
 {
-    std::vector<TableRecord> records(num_tables);
+    Os2Table table;
 
-    for (std::uint32_t i = 0; i < num_tables; i++) {
-        records[i] = utils::big_endian_value<TableRecord>(in);
-        if (!in) {
-            return std::vector<TableRecord>();
-        }
+    table.version              = utils::big_endian_value<std::uint16_t>(data.begin() + 0, data.end());
+    table.avg_char_width       = utils::big_endian_value<std::int16_t>(data.begin() + 2, data.end());
+    table.weight_class         = utils::big_endian_value<std::uint16_t>(data.begin() + 4, data.end());
+    table.width_class          = utils::big_endian_value<std::uint16_t>(data.begin() + 6, data.end());
+    table.type                 = utils::big_endian_value<std::uint16_t>(data.begin() + 8, data.end());
+    table.subscript_x_size     = utils::big_endian_value<std::int16_t>(data.begin() + 10, data.end());
+    table.subscript_y_size     = utils::big_endian_value<std::int16_t>(data.begin() + 12, data.end());
+    table.subscript_x_offset   = utils::big_endian_value<std::int16_t>(data.begin() + 14, data.end());
+    table.subscript_y_offset   = utils::big_endian_value<std::int16_t>(data.begin() + 16, data.end());
+    table.superscript_x_size   = utils::big_endian_value<std::int16_t>(data.begin() + 18, data.end());
+    table.superscript_y_size   = utils::big_endian_value<std::int16_t>(data.begin() + 20, data.end());
+    table.superscript_x_offset = utils::big_endian_value<std::int16_t>(data.begin() + 22, data.end());
+    table.superscript_y_offset = utils::big_endian_value<std::int16_t>(data.begin() + 24, data.end());
+    table.strikeout_size       = utils::big_endian_value<std::int16_t>(data.begin() + 26, data.end());
+    table.strikeout_position   = utils::big_endian_value<std::int16_t>(data.begin() + 28, data.end());
+    table.family_class         = utils::big_endian_value<std::int16_t>(data.begin() + 30, data.end());
+
+    std::reverse_copy(data.begin() + 32, data.begin() + 42, table.panose.begin());
+
+    table.unicode_range1   = utils::big_endian_value<std::uint32_t>(data.begin() + 42, data.end());
+    table.unicode_range2   = utils::big_endian_value<std::uint32_t>(data.begin() + 46, data.end());
+    table.unicode_range3   = utils::big_endian_value<std::uint32_t>(data.begin() + 50, data.end());
+    table.unicode_range4   = utils::big_endian_value<std::uint32_t>(data.begin() + 54, data.end());
+    table.ach_vend_id      = utils::big_endian_value<Tag>(data.begin() + 58, data.end());
+    table.selection        = utils::big_endian_value<std::uint16_t>(data.begin() + 62, data.end());
+    table.first_char_index = utils::big_endian_value<std::uint16_t>(data.begin() + 64, data.end());
+    table.last_char_index  = utils::big_endian_value<std::uint16_t>(data.begin() + 66, data.end());
+    table.typo_ascender    = utils::big_endian_value<std::int16_t>(data.begin() + 68, data.end());
+    table.typo_descender   = utils::big_endian_value<std::int16_t>(data.begin() + 70, data.end());
+    table.typo_linegap     = utils::big_endian_value<std::int16_t>(data.begin() + 72, data.end());
+    table.win_ascent       = utils::big_endian_value<std::uint16_t>(data.begin() + 74, data.end());
+    table.win_descent      = utils::big_endian_value<std::uint16_t>(data.begin() + 76, data.end());
+
+    if (table.version >= 1) {
+        table.code_page_range1 = utils::big_endian_value<std::uint32_t>(data.begin() + 78, data.end());
+        table.code_page_range2 = utils::big_endian_value<std::uint32_t>(data.begin() + 82, data.end());
     }
 
-    std::sort(records.begin(), records.end(), [](const TableRecord& a, const TableRecord& b) {
-        return a.offset < b.offset;
-    });
-
-    return records;
-}
-
-bool has_required_tables(const std::vector<TableRecord>& records)
-{
-    constexpr std::array<Tag, 8> common_required_tags =
-    {Tag::cmap, Tag::head, Tag::hhea, Tag::hmtx, Tag::maxp, Tag::name, Tag::OS2, Tag::post};
-
-    for (const Tag tag : common_required_tags) {
-        const auto it = std::find_if(records.begin(), records.end(), [tag](const TableRecord& record) {
-            return record.tag == tag;
-        });
-
-        if (it == records.end()) {
-            return false;
-        }
+    if (table.version >= 2) {
+        table.height       = utils::big_endian_value<std::int16_t>(data.begin() + 86, data.end());
+        table.capheight    = utils::big_endian_value<std::int16_t>(data.begin() + 88, data.end());
+        table.default_char = utils::big_endian_value<std::uint16_t>(data.begin() + 90, data.end());
+        table.break_char   = utils::big_endian_value<std::uint16_t>(data.begin() + 92, data.end());
+        table.max_context  = utils::big_endian_value<std::uint16_t>(data.begin() + 94, data.end());
     }
 
-    return true;
+    if (table.version == 5) {
+        table.lower_optical_point_size = utils::big_endian_value<std::uint16_t>(data.begin() + 96, data.end());
+        table.upper_optical_point_size = utils::big_endian_value<std::uint16_t>(data.begin() + 98, data.end());
+    }
+
+    return table;
 }
 
 #pragma endregion

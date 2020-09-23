@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
+/// @file
+/// @brief Horizontal metrics table
+/// @author Fedorov Alexey
+/// @date 21.09.2020
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -23,33 +29,34 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <graphics/font.hpp>
-#include <unit_test/suite.hpp>
+#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_HORIZONTAL_METRICS_HPP
+#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_HORIZONTAL_METRICS_HPP
 
-using namespace framework::graphics;
+#include <graphics/src/font/types.hpp>
+#include <vector>
 
-namespace
-{}
-
-class FontTest : public framework::unit_test::Suite
+namespace framework::graphics::details::font
 {
-public:
-    FontTest()
-        : Suite("FontTest")
-    {
-        add_test([this]() { render_font(); }, "render_font");
-    }
 
-private:
-    void render_font()
+struct HorizontalMetrics
+{
+    struct Metric
     {
-        Font font;
+        std::uint16_t advance_width = 0;
+        std::int16_t lsb            = 0;
+    };
 
-        TEST_ASSERT(font.load("font/Arial.otf"), "Should load Arial font");
-    }
+    static HorizontalMetrics parse(std::uint16_t number_of_h_metrics,
+                                   std::uint16_t num_glyphs,
+                                   const std::vector<std::uint8_t>& data);
+
+    bool valid() const;
+
+    std::vector<Metric> metrics;
+    std::vector<std::int16_t> left_side_bearings;
 };
 
-int main()
-{
-    return run_tests(FontTest());
 }
+
+#endif
+

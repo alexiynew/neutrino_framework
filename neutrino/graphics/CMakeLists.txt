@@ -41,9 +41,17 @@ set_sources(PRIVATE_SOURCES
     src/uniform.cpp
 
     src/font/font.cpp
-    src/font/tags.hpp
-    src/font/tables.hpp
-    src/font/tables.cpp
+    src/font/types.hpp
+    src/font/tables/font_header.hpp
+    src/font/tables/font_header.cpp
+    src/font/tables/horizontal_header.hpp
+    src/font/tables/horizontal_header.cpp
+    src/font/tables/maximum_profile.hpp
+    src/font/tables/maximum_profile.cpp
+    src/font/tables/horizontal_metrics.hpp
+    src/font/tables/horizontal_metrics.cpp
+    src/font/tables/naming.hpp
+    src/font/tables/naming.cpp
 
     src/image/image.cpp
     src/image/image_info.hpp
