@@ -44,12 +44,6 @@ namespace framework::graphics::details::font
 
 #pragma region Font Tables
 
-
-
-
-
-
-
 struct Os2Table
 {
     static Os2Table parse(const std::vector<std::uint8_t>& data);

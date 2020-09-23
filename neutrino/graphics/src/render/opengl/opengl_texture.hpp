@@ -60,7 +60,7 @@ public:
     std::uint32_t texture_id() const;
 
 private:
-    std::uint32_t m_texture      = 0;
+    std::uint32_t m_texture = 0;
 };
 
 } // namespace framework::graphics

@@ -81,7 +81,7 @@ class PlatformWindow;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Window class.
 ///
-/// Window, abstracts all window management, input processing, 
+/// Window, abstracts all window management, input processing,
 /// and event handling.
 ////////////////////////////////////////////////////////////////////////////////
 class Window final
@@ -145,7 +145,7 @@ public:
     void hide();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief If window is visible, brings it to the front and may make 
+    /// @brief If window is visible, brings it to the front and may make
     ///        it the focused.
     ////////////////////////////////////////////////////////////////////////////
     void focus();
@@ -185,7 +185,7 @@ public:
     void move(Position position);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Grabs the cursor, providing unlimited cursor movement. 
+    /// @brief Grabs the cursor, providing unlimited cursor movement.
     ///
     /// This is useful for implementing for example 3D camera controls.
     ////////////////////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ public:
     void set_title(const std::string& title);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Makes the cursor invisible when set to `false` if it is over 
+    /// @brief Makes the cursor invisible when set to `false` if it is over
     ///        the window.
     ///
     /// @param visible New cursor visibility.
@@ -392,7 +392,7 @@ public:
     Signal<const Window&> on_hide;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on close callback. Called when the user clicks on the close 
+    /// @brief Set on close callback. Called when the user clicks on the close
     ///        window button.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&> on_close;
@@ -403,7 +403,7 @@ public:
     Signal<const Window&> on_focus;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on focus lost callback. Called when the window loses input 
+    /// @brief Set on focus lost callback. Called when the window loses input
     ///        focus.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&> on_lost_focus;
@@ -419,7 +419,7 @@ public:
     Signal<const Window&, Position> on_move;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on key press callback. Called when key is pressed. 
+    /// @brief Set on key press callback. Called when key is pressed.
     ///        Can be called multiple times.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&, KeyCode, Modifiers> on_key_down;
@@ -430,7 +430,7 @@ public:
     Signal<const Window&, KeyCode, Modifiers> on_key_up;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on character callback. Called when user press the char 
+    /// @brief Set on character callback. Called when user press the char
     ///        symbol key.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&, std::string> on_character;
@@ -441,25 +441,25 @@ public:
     Signal<const Window&, CursorPosition> on_mouse_move;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on mouse button press callback. Called when 
+    /// @brief Set on mouse button press callback. Called when
     ///        the mouse button is pressed.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_down;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on mouse button release callback. Called when 
+    /// @brief Set on mouse button release callback. Called when
     ///        the mouse button is released.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_up;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on mouse enter callback. Called when the cursor enters in 
+    /// @brief Set on mouse enter callback. Called when the cursor enters in
     ///        the window frame.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&> on_mouse_enter;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on mouse leave callback. Called when the cursor leaves 
+    /// @brief Set on mouse leave callback. Called when the cursor leaves
     ///        the window frame.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&> on_mouse_leave;

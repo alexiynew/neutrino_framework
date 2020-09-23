@@ -32,8 +32,9 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_NAMING_HPP
 #define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_NAMING_HPP
 
-#include <graphics/src/font/types.hpp>
 #include <vector>
+
+#include <graphics/src/font/types.hpp>
 
 namespace framework::graphics::details::font
 {
@@ -90,7 +91,6 @@ private:
     NamesMap m_strings;
 };
 
-}
+} // namespace framework::graphics::details::font
 
 #endif
-

@@ -32,8 +32,9 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_MAXIMUM_PROFILE_HPP
 #define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_MAXIMUM_PROFILE_HPP
 
-#include <graphics/src/font/types.hpp>
 #include <vector>
+
+#include <graphics/src/font/types.hpp>
 
 namespace framework::graphics::details::font
 {
@@ -63,7 +64,6 @@ struct MaximumProfile
     std::uint16_t max_component_depth      = 0;
 };
 
-}
+} // namespace framework::graphics::details::font
 
 #endif
-

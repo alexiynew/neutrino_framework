@@ -90,7 +90,7 @@ struct Chunk
     };
 
     std::uint32_t length = 0;
-    Type type     = Type::undefined;
+    Type type            = Type::undefined;
     std::uint32_t crc    = 0;
 
     std::vector<std::uint8_t> data;
@@ -175,9 +175,9 @@ enum class InterlaceMethod : std::uint8_t
 
 struct FileHeader
 {
-    std::int32_t width                          = 0;
-    std::int32_t height                         = 0;
-    std::uint8_t bit_depth                      = 0;
+    std::int32_t width                   = 0;
+    std::int32_t height                  = 0;
+    std::uint8_t bit_depth               = 0;
     ColorType color_type                 = ColorType::greyscale;
     CompressionMethod compression_method = CompressionMethod::deflate_inflate;
     FilterMethod filter_method           = FilterMethod::adaptive;
@@ -321,20 +321,20 @@ std::vector<PassInfo> get_pass_info(const FileHeader& header)
     switch (header.interlace_method) {
         case InterlaceMethod::adam7: {
             const std::array<std::int32_t, pass_count> widths = {(header.width + 7) / 8,
-                                                          (header.width + 3) / 8,
-                                                          (header.width + 3) / 4,
-                                                          (header.width + 1) / 4,
-                                                          (header.width + 1) / 2,
-                                                          (header.width + 0) / 2,
-                                                          (header.width + 0) / 1};
+                                                                 (header.width + 3) / 8,
+                                                                 (header.width + 3) / 4,
+                                                                 (header.width + 1) / 4,
+                                                                 (header.width + 1) / 2,
+                                                                 (header.width + 0) / 2,
+                                                                 (header.width + 0) / 1};
 
             const std::array<std::int32_t, pass_count> heights = {(header.height + 7) / 8,
-                                                           (header.height + 7) / 8,
-                                                           (header.height + 3) / 8,
-                                                           (header.height + 3) / 4,
-                                                           (header.height + 1) / 4,
-                                                           (header.height + 1) / 2,
-                                                           (header.height + 0) / 2};
+                                                                  (header.height + 7) / 8,
+                                                                  (header.height + 3) / 8,
+                                                                  (header.height + 3) / 4,
+                                                                  (header.height + 1) / 4,
+                                                                  (header.height + 1) / 2,
+                                                                  (header.height + 0) / 2};
 
             const std::array<PassInfo::Position, pass_count> positions =
             {PassInfo::Position{0, 0}, {4, 0}, {0, 4}, {2, 0}, {0, 2}, {1, 0}, {0, 1}};
@@ -408,7 +408,8 @@ template <typename In, typename Out>
 inline void reconstruct_peath(In first, In last, In a, In b, In c, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<std::uint8_t>((static_cast<std::int32_t>(paeth_predictor(*a++, *b++, *c++)) + *first++) & 0xFF);
+        *x++ = static_cast<std::uint8_t>((static_cast<std::int32_t>(paeth_predictor(*a++, *b++, *c++)) + *first++) &
+                                         0xFF);
     }
 }
 
@@ -421,10 +422,11 @@ enum class filter_type_t : std::uint8_t
     peath   = 4
 };
 
-std::tuple<std::vector<std::uint8_t>::iterator, std::vector<std::uint8_t>::iterator> reconstruct_pass(std::vector<std::uint8_t>::iterator in,
-                                                                                        std::vector<std::uint8_t>::iterator out,
-                                                                                        const PassInfo& pass,
-                                                                                        std::int32_t bytes_per_pixel)
+std::tuple<std::vector<std::uint8_t>::iterator, std::vector<std::uint8_t>::iterator> reconstruct_pass(
+std::vector<std::uint8_t>::iterator in,
+std::vector<std::uint8_t>::iterator out,
+const PassInfo& pass,
+std::int32_t bytes_per_pixel)
 {
     const std::int32_t bytes_in_row = (pass.bytes_per_scanline + bytes_per_pixel);
     const size_t result_size        = static_cast<size_t>(bytes_in_row) * (static_cast<size_t>(pass.height) + 1);
@@ -510,7 +512,7 @@ constexpr Palette<BitDepth> greyscale_palette()
 
     for (size_t input = 0; input < res.size(); input++) {
         const std::uint8_t c = sample<BitDepth>(input);
-        res[input]    = Color(c, c, c, 0xFF);
+        res[input]           = Color(c, c, c, 0xFF);
     }
 
     return res;
@@ -624,14 +626,14 @@ inline SampleTuple get_color<ColorType::truecolor_alpha, 16>(std::vector<std::ui
 
 template <ColorType ColorType, std::uint8_t BitDepth>
 inline std::vector<std::uint8_t>::iterator unserialize_pass(std::vector<std::uint8_t>::iterator in,
-                                                     const PassInfo& pass,
-                                                     const FileHeader& header,
-                                                     std::vector<Color>& out)
+                                                            const PassInfo& pass,
+                                                            const FileHeader& header,
+                                                            std::vector<Color>& out)
 {
     static_assert(BitDepth == 8 || BitDepth == 16);
     for (std::int32_t h = 0; h < pass.height; ++h) {
-        std::uint32_t pos = static_cast<std::uint32_t>((header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width +
-                                         pass.position.x);
+        std::uint32_t pos = static_cast<std::uint32_t>(
+        (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x);
         for (std::int32_t w = 0; w < pass.width; ++w) {
             std::tie(out[pos], in) = get_color<ColorType, BitDepth>(in);
             pos += static_cast<std::uint32_t>(pass.offset.x);
@@ -643,17 +645,17 @@ inline std::vector<std::uint8_t>::iterator unserialize_pass(std::vector<std::uin
 
 template <std::uint8_t BitDepth>
 inline std::vector<std::uint8_t>::iterator unserialize_palette_pass(std::vector<std::uint8_t>::iterator in,
-                                                             const PassInfo& pass,
-                                                             const FileHeader& header,
-                                                             const Palette<BitDepth>& palette,
-                                                             std::vector<Color>& out)
+                                                                    const PassInfo& pass,
+                                                                    const FileHeader& header,
+                                                                    const Palette<BitDepth>& palette,
+                                                                    std::vector<Color>& out)
 {
     static_assert(BitDepth <= 8);
     constexpr size_t mask = (1 << BitDepth) - 1;
 
     for (std::int32_t h = 0; h < pass.height; ++h) {
-        std::uint32_t pos = static_cast<std::uint32_t>((header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width +
-                                         pass.position.x);
+        std::uint32_t pos = static_cast<std::uint32_t>(
+        (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x);
         std::uint8_t byte = 0;
         for (std::int32_t w = 0, i = 0; w < pass.width; ++w, i = (i + BitDepth) % 8) {
             if (i == 0) {
@@ -780,7 +782,9 @@ inline std::vector<Color> unserialize_truecolor_alpha(const FileHeader& header, 
     return std::vector<Color>();
 }
 
-inline std::vector<Color> unserialize(const FileHeader& header, const Chunk& plte_chunk, std::vector<std::uint8_t>&& data)
+inline std::vector<Color> unserialize(const FileHeader& header,
+                                      const Chunk& plte_chunk,
+                                      std::vector<std::uint8_t>&& data)
 {
     switch (header.color_type) {
         case ColorType::greyscale: return unserialize_greyscale(header, std::move(data));
@@ -873,7 +877,7 @@ LoadResult load(const std::string& filename)
     }
 
     std::vector<std::uint8_t> recontructed = reconstruct(header, zlib::inflate(data));
-    std::vector<Color> image_data   = unserialize(header, plte_chunk, std::move(recontructed));
+    std::vector<Color> image_data          = unserialize(header, plte_chunk, std::move(recontructed));
 
     auto info  = header.image_info();
     info.gamma = gamma;

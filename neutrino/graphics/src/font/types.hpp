@@ -135,6 +135,6 @@ enum class Tag : std::uint32_t
     Vmtx = make_tag('v', 'm', 't', 'x'), //	Vertical Metrics
 };
 
-}
+} // namespace framework::graphics::details::font
 
 #endif

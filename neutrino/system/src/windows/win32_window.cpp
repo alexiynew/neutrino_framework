@@ -689,10 +689,8 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
             return 0;
         }
 
-        case WM_SETCURSOR:
-        {
-            if (LOWORD(l_param) == HTCLIENT)
-            {
+        case WM_SETCURSOR: {
+            if (LOWORD(l_param) == HTCLIENT) {
                 set_cursor_visibility(m_cursor_visible);
                 return TRUE;
             }

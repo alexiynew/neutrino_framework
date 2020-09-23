@@ -36,10 +36,10 @@
 #include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
 #include <graphics/texture.hpp>
-#include <math/math.hpp>
-#include <system/window.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
+#include <math/math.hpp>
+#include <system/window.hpp>
 
 namespace
 {

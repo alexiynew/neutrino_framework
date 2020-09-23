@@ -32,8 +32,9 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_HEADER_HPP
 #define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_HEADER_HPP
 
-#include <graphics/src/font/types.hpp>
 #include <vector>
+
+#include <graphics/src/font/types.hpp>
 
 namespace framework::graphics::details::font
 {
@@ -64,6 +65,6 @@ struct FontHeader
     std::int16_t glyph_data_format     = 0;
 };
 
-}
+} // namespace framework::graphics::details::font
 
-#endif 
+#endif

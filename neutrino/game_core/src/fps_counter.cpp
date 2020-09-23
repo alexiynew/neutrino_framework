@@ -63,4 +63,4 @@ void FpsCounter::slice_fps()
     }
 }
 
-} // namespace framework
+} // namespace framework::game_core

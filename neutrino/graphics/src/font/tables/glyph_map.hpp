@@ -32,8 +32,9 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
 #define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
 
-#include <graphics/src/font/types.hpp>
 #include <vector>
+
+#include <graphics/src/font/types.hpp>
 
 namespace framework::graphics::details::font
 {
@@ -58,7 +59,6 @@ struct GlyphMap
     GlyphIndexMap glyphs;
 };
 
-}
+} // namespace framework::graphics::details::font
 
 #endif
-

@@ -29,8 +29,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <common/utils.hpp>
 #include <common/utf.hpp>
+#include <common/utils.hpp>
 
 #include <graphics/src/font/tables/naming.hpp>
 

@@ -108,4 +108,4 @@ Os2Table Os2Table::parse(const std::vector<std::uint8_t>& data)
 
 #pragma endregion
 
-} // namespace framework::graphics::details::font
+} // namespace
