@@ -103,22 +103,25 @@ struct Chunk
 
 Chunk Chunk::read(std::ifstream& in)
 {
+    using std::begin;
+    using std::end;
+
+    char buffer[4] = {0};
+
     Chunk c;
 
-    char buffer[4];
+    in.read(buffer, 4);
+    c.length = utils::big_endian_value<std::uint32_t>(begin(buffer), end(buffer));
 
     in.read(buffer, 4);
-    c.length = utils::big_endian_value<std::uint32_t>(buffer);
-
-    in.read(buffer, 4);
-    c.type = utils::big_endian_value<Chunk::Type>(buffer);
+    c.type = utils::big_endian_value<Chunk::Type>(begin(buffer), end(buffer));
 
     if (c.length > 0) {
         c.data = read_bytes(in, c.length);
     }
 
     in.read(buffer, 4);
-    c.crc = utils::big_endian_value<std::uint32_t>(buffer);
+    c.crc = utils::big_endian_value<std::uint32_t>(begin(buffer), end(buffer));
 
     return c;
 }
@@ -130,10 +133,13 @@ bool Chunk::is_critical() const
 
 bool Chunk::valid() const
 {
-    utils::Crc32 crc_calk;
+    const char* begin         = reinterpret_cast<const char*>(&type);
+    const char* end           = begin + 4;
+    const std::uint32_t first = utils::big_endian_value<std::uint32_t>(begin, end);
 
-    crc_calk.update(utils::big_endian_value<std::uint32_t>(reinterpret_cast<const char*>(&type)));
-    crc_calk.update(begin(data), end(data));
+    utils::Crc32 crc_calk;
+    crc_calk.update(first);
+    crc_calk.update(std::begin(data), std::end(data));
 
     return crc_calk.current_value() == crc;
 }
@@ -195,8 +201,8 @@ FileHeader FileHeader::read(std::ifstream& in)
     }
 
     FileHeader h;
-    h.width              = utils::big_endian_value<std::int32_t>(&c.data[0]);
-    h.height             = utils::big_endian_value<std::int32_t>(&c.data[4]);
+    h.width              = utils::big_endian_value<std::int32_t>(c.data.begin(), c.data.end());
+    h.height             = utils::big_endian_value<std::int32_t>(c.data.begin() + 4, c.data.end());
     h.bit_depth          = c.data[8];
     h.color_type         = static_cast<ColorType>(c.data[9]);
     h.compression_method = static_cast<CompressionMethod>(c.data[10]);
@@ -795,7 +801,8 @@ float32 decode_gamma(const Chunk& chunk)
         return 1.0f;
     }
 
-    const float32 gamma = static_cast<float32>(utils::big_endian_value<std::uint32_t>(chunk.data.data()));
+    const float32 gamma = static_cast<float32>(
+    utils::big_endian_value<std::uint32_t>(chunk.data.begin(), chunk.data.end()));
 
     return (gamma / 100000.0f);
 }

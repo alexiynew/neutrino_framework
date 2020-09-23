@@ -71,37 +71,9 @@ public:
     {
         add_test([this]() { read_big_endian_value_from_buffer(); }, "read_big_endian_value_from_buffer");
         add_test([this]() { read_little_endian_value_from_buffer(); }, "read_little_endian_value_from_buffer");
-        add_test([this]() { read_big_endian_value_from_stream(); }, "read_big_endian_value_from_stream");
-        add_test([this]() { read_little_endian_value_from_stream(); }, "read_little_endian_value_from_stream");
-        add_test([this]() { read_big_endian_struct_from_buffer(); }, "read_big_endian_struct_from_buffer");
-        add_test([this]() { read_little_endian_struct_from_buffer(); }, "read_little_endian_struct_from_buffer");
-        add_test([this]() { read_big_endian_struct_from_stream(); }, "read_big_endian_struct_from_stream");
-        add_test([this]() { read_little_endian_struct_from_stream(); }, "read_little_endian_struct_from_stream");
     }
 
 private:
-
-    class membuf : public std::basic_streambuf<char> {
-    public:
-      membuf(const std::uint8_t *p, std::size_t l) {
-        setg((char*)p, (char*)p, (char*)p + l);
-      }
-    };
-
-    class memstream : public std::istream
-    {
-    public:
-        memstream(const std::uint8_t* p, size_t l)
-            : std::istream(&_buffer)
-            , _buffer(p, l)
-        {
-            rdbuf(&_buffer);
-        }
-
-    private:
-        membuf _buffer;
-    };
-
     void read_big_endian_value_from_buffer()
     {
         using namespace framework::utils;
@@ -110,9 +82,9 @@ private:
         char buffer2[] = {0x1, 0x0};
         char buffer3[] = {0x1, 0x0, 0x0, 0x0};
 
-        char value1  = big_endian_value<char>(buffer1);
-        short value2 = big_endian_value<short>(buffer2);
-        int value3   = big_endian_value<int>(buffer3);
+        char value1  = big_endian_value<char>(std::begin(buffer1), std::end(buffer1));
+        short value2 = big_endian_value<short>(std::begin(buffer2), std::end(buffer2));
+        int value3   = big_endian_value<int>(std::begin(buffer3), std::end(buffer3));
 
         TEST_ASSERT(value1 == 0x01, "Wrong value");
         TEST_ASSERT(value2 == 0x0100, "Wrong value");
@@ -127,139 +99,14 @@ private:
         char buffer2[] = {0x1, 0x0};
         char buffer3[] = {0x1, 0x0, 0x0, 0x0};
 
-        char value1  = little_endian_value<char>(buffer1);
-        short value2 = little_endian_value<short>(buffer2);
-        int value3   = little_endian_value<int>(buffer3);
+        char value1  = little_endian_value<char>(std::begin(buffer1), std::end(buffer1));
+        short value2 = little_endian_value<short>(std::begin(buffer2), std::end(buffer2));
+        int value3   = little_endian_value<int>(std::begin(buffer3), std::end(buffer3));
 
         TEST_ASSERT(value1 == 0x01, "Wrong value");
         TEST_ASSERT(value2 == 0x0001, "Wrong value");
         TEST_ASSERT(value3 == 0x00000001, "Wrong value");
     }
-
-    void read_big_endian_value_from_stream()
-    {
-        using namespace framework::utils;
-
-        std::uint8_t buffer[] = {0x1, 0x1, 0x0, 0x1, 0x0, 0x0, 0x0};
-        memstream stream(buffer, size(buffer));
-
-        char value1  = big_endian_value<char>(stream);
-        short value2 = big_endian_value<short>(stream);
-        int value3   = big_endian_value<int>(stream);
-
-        TEST_ASSERT(value1 == 0x01, "Wrong value");
-        TEST_ASSERT(value2 == 0x0100, "Wrong value");
-        TEST_ASSERT(value3 == 0x01000000, "Wrong value");
-    }
-
-    void read_little_endian_value_from_stream()
-    {
-        using namespace framework::utils;
-
-        std::uint8_t buffer[] = {0x1, 0x1, 0x0, 0x1, 0x0, 0x0, 0x0};
-        memstream stream(buffer, size(buffer));
-
-        char value1  = little_endian_value<char>(stream);
-        short value2 = little_endian_value<short>(stream);
-        int value3   = little_endian_value<int>(stream);
-
-        TEST_ASSERT(value1 == 0x01, "Wrong value");
-        TEST_ASSERT(value2 == 0x0001, "Wrong value");
-        TEST_ASSERT(value3 == 0x00000001, "Wrong value");
-    }
-
-    void read_big_endian_struct_from_buffer()
-    {
-        using namespace framework::utils;
-
-        std::uint8_t buffer[] = {0x1, 0x1, 0x0, 0x1, 0x0, 0x0, 0x0};
-
-        struct S {
-            char v1;
-            short v2;
-            int v3;
-        };
-
-        S s = big_endian_value<S>(buffer);
-
-        TEST_ASSERT(s.v1== 0x01, "Wrong value");
-        TEST_ASSERT(s.v2== 0x0100, "Wrong value");
-        TEST_ASSERT(s.v3== 0x01000000, "Wrong value");
-    }
-
-    void read_little_endian_struct_from_buffer()
-    {
-        using namespace framework::utils;
-
-        std::uint8_t buffer[] = {0x1, 0x1, 0x0, 0x1, 0x0, 0x0, 0x0};
-
-        struct S {
-            char v1;
-            short v2;
-            int v3;
-        };
-
-        S s = little_endian_value<S>(buffer);
-
-        TEST_ASSERT(s.v1 == 0x01, "Wrong value");
-        TEST_ASSERT(s.v2 == 0x0001, "Wrong value");
-        TEST_ASSERT(s.v3 == 0x00000001, "Wrong value");
-    }
-
-    void read_big_endian_struct_from_stream()
-    {
-        using namespace framework::utils;
-
-        std::uint8_t buffer[] = {0x1, 0x1, 0x0, 0x1, 0x0, 0x0, 0x0};
-        memstream stream(buffer, size(buffer));
-
-        struct S {
-            char v1;
-            short v2;
-            int v3;
-        };
-
-        S s = big_endian_value<S>(stream);
-
-        TEST_ASSERT(s.v1== 0x01, "Wrong value");
-        TEST_ASSERT(s.v2== 0x0100, "Wrong value");
-        TEST_ASSERT(s.v3== 0x01000000, "Wrong value");
-    }
-
-    void read_little_endian_struct_from_stream()
-    {
-        using namespace framework::utils;
-
-        std::uint8_t buffer[] = {0x1, 0x1, 0x0, 0x1, 0x0, 0x0, 0x0};
-        memstream stream(buffer, size(buffer));
-
-        struct S {
-            char v1;
-            short v2;
-            int v3;
-        };
-
-        S s = little_endian_value<S>(stream);
-
-        TEST_ASSERT(s.v1 == 0x01, "Wrong value");
-        TEST_ASSERT(s.v2 == 0x0001, "Wrong value");
-        TEST_ASSERT(s.v3 == 0x00000001, "Wrong value");
-    }
-
-    //void read_little_endian_value_tuple()
-    //{
-    //    using namespace framework::utils;
-
-    //    std::uint8_t buffer[] = {0x1, 0x1, 0x0, 0x1, 0x0, 0x0, 0x0};
-
-    //    memstream stream(buffer, size(buffer));
-
-    //    auto [value1, value2, value3] = little_endian_values_tuple<char, short, int>(stream);
-
-    //    TEST_ASSERT(value1 == 0x01, "Wrong value");
-    //    TEST_ASSERT(value2 == 0x0001, "Wrong value");
-    //    TEST_ASSERT(value3 == 0x00000001, "Wrong value");
-    //}
 };
 
 /*
