@@ -23,35 +23,20 @@
 # SOFTWARE.
 # =============================================================================
 
-set_sources(PUBLIC_SOURCES
-    types.hpp
-    utils.hpp
-    crc.hpp
-    version.hpp
-    zlib.hpp
-    inc/utils_details.hpp
-    inc/crc_details.hpp
-    signal.hpp
-    size.hpp
-    position.hpp
-    instance_id.hpp
-    utf.hpp
-)
-
 set_sources(PRIVATE_SOURCES
-    src/version.cpp
-    src/zlib.cpp
-    src/size.cpp
-    src/position.cpp
-    src/instance_id.cpp
-    src/utf.cpp
+    main.cpp
 )
 
-target_sources(${PROJECT_NAME}
-    PUBLIC
-        ${PUBLIC_SOURCES}
-    PRIVATE
-        ${PRIVATE_SOURCES}
-)
+add_executable(${TEST_NAME} EXCLUDE_FROM_ALL "")
 
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+target_sources(${TEST_NAME} PRIVATE ${PRIVATE_SOURCES})
+
+target_link_libraries(${TEST_NAME} ${PROJECT_NAME})
+target_include_directories(${TEST_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
+
+set_target_properties(${TEST_NAME} PROPERTIES FOLDER ${TEST_DIR_NAME}/${GROUP_NAME})
+
+add_test(NAME "${GROUP_NAME}/${TEST_NAME}" COMMAND ${TEST_NAME})
+set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME})
+
+add_dependencies(${TESTS_TARGET} ${TEST_NAME})

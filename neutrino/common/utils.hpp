@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <array>
 #include <istream>
+#include <string>
 #include <tuple>
 #include <vector>
 
@@ -144,22 +145,76 @@ constexpr inline std::size_t size(const T (&)[N]) noexcept
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// @brief Size of type T as it is was packed, i.e. without pabbind bytes.
-///////////////////////////////////////////////////////////////////////////////
-template <typename T>
-inline constexpr size_t packed_sizeof_v = details::PackedSizeof<T>::value;
-
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Interprets buffer as value of type T in big endian byte order.
 ///
 /// @param buffer Buffer to read value from.
 ///
 /// @return Value of type T.
 ///////////////////////////////////////////////////////////////////////////////
-template <typename T, typename BufferType>
-inline T big_endian_value(const BufferType* buffer)
+template <typename T, typename Iterator>
+inline T big_endian_value(const Iterator begin, const Iterator end)
 {
-    return details::BufferReader::tagged_endian_value_impl<T, details::BigEndianTag>(buffer);
+    if constexpr (sizeof(typename std::iterator_traits<Iterator>::value_type) != 1) {
+        static_assert("Usupported buffer type");
+    }
+
+    if constexpr (sizeof(T) > 4) {
+        static_assert("Usupported return type");
+    }
+
+    constexpr bool
+    is_forward_iterator = std::is_convertible_v<typename std::iterator_traits<Iterator>::iterator_category,
+                                                std::forward_iterator_tag>;
+    if constexpr (!is_forward_iterator) {
+        static_assert("Iterator is not forward iterator");
+    }
+
+    constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
+    if constexpr (!can_read_from_buffer) {
+        static_assert("Can't read value of type T from buffer");
+    }
+
+    constexpr std::size_t size = sizeof(T);
+
+    const auto dist = (std::distance(begin, end));
+    if (dist < size) {
+        throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
+    }
+
+    using std::next;
+    using std::uint16_t;
+    using std::uint32_t;
+    using std::uint64_t;
+    using std::uint8_t;
+
+    if constexpr (size == 1) {
+        return static_cast<T>(*begin);
+    } else if constexpr (size == 2) {
+        uint16_t v = 0;
+        v += static_cast<uint8_t>(*begin) << 8;
+        v += static_cast<uint8_t>(*next(begin));
+        return static_cast<T>(v);
+    } else if constexpr (size == 4) {
+        uint32_t v = 0;
+        v += static_cast<uint8_t>(*begin) << 24;
+        v += static_cast<uint8_t>(*next(begin)) << 16;
+        v += static_cast<uint8_t>(*next(begin, 2)) << 8;
+        v += static_cast<uint8_t>(*next(begin, 3));
+        return static_cast<T>(v);
+    } else if constexpr (size == 8) {
+        uint64_t v = 0;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*begin)) << 56;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin))) << 48;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 2))) << 40;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 3))) << 32;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 4))) << 24;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 5))) << 16;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 6))) << 8;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 7)));
+        return static_cast<T>(v);
+    }
+
+    static_assert("Unsupported type size.");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -169,36 +224,71 @@ inline T big_endian_value(const BufferType* buffer)
 ///
 /// @return Value of type T.
 ///////////////////////////////////////////////////////////////////////////////
-template <typename T, typename BufferType>
-inline T little_endian_value(const BufferType* buffer)
+template <typename T, typename Iterator>
+inline T little_endian_value(const Iterator begin, const Iterator end)
 {
-    return details::BufferReader::tagged_endian_value_impl<T, details::LittleEndianTag>(buffer);
-}
 
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Read tuple of values from binary stream in big endian byte order.
-///
-/// @param in Byte stream.
-///
-/// @return Tuple of values.
-///////////////////////////////////////////////////////////////////////////////
-template <typename T>
-inline T big_endian_value(std::istream& in)
-{
-    return details::StreamReader::tagged_endian_value_impl<T, details::BigEndianTag>(in);
-}
+    if constexpr (sizeof(typename std::iterator_traits<Iterator>::value_type) != 1) {
+        static_assert("Usupported buffer type");
+    }
 
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Read tuple of values from binary stream in little endian byte order.
-///
-/// @param in Byte stream.
-///
-/// @return Tuple of values.
-///////////////////////////////////////////////////////////////////////////////
-template <typename T>
-inline T little_endian_value(std::istream& in)
-{
-    return details::StreamReader::tagged_endian_value_impl<T, details::LittleEndianTag>(in);
+    if constexpr (sizeof(T) > 4) {
+        static_assert("Usupported return type");
+    }
+
+    constexpr bool
+    is_forward_iterator = std::is_convertible_v<typename std::iterator_traits<Iterator>::iterator_category,
+                                                std::forward_iterator_tag>;
+    if constexpr (!is_forward_iterator) {
+        static_assert("Iterator is not forward iterator");
+    }
+
+    constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
+    if constexpr (!can_read_from_buffer) {
+        static_assert("Can't read value of type T from buffer");
+    }
+
+    constexpr std::size_t size = sizeof(T);
+
+    const auto dist = (std::distance(begin, end));
+    if (dist < size) {
+        throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
+    }
+
+    using std::next;
+    using std::uint16_t;
+    using std::uint32_t;
+    using std::uint64_t;
+    using std::uint8_t;
+
+    if constexpr (size == 1) {
+        return static_cast<T>(*begin);
+    } else if constexpr (size == 2) {
+        uint16_t v = 0;
+        v += static_cast<uint8_t>(*begin);
+        v += static_cast<uint8_t>(*next(begin)) << 8;
+        return static_cast<T>(v);
+    } else if constexpr (size == 4) {
+        uint32_t v = 0;
+        v += static_cast<uint8_t>(*begin);
+        v += static_cast<uint8_t>(*next(begin)) << 8;
+        v += static_cast<uint8_t>(*next(begin, 2)) << 16;
+        v += static_cast<uint8_t>(*next(begin, 3)) << 24;
+        return static_cast<T>(v);
+    } else if constexpr (size == 8) {
+        uint64_t v = 0;
+        v += static_cast<uint8_t>(*begin);
+        v += static_cast<uint8_t>(*next(begin)) << 8;
+        v += static_cast<uint8_t>(*next(begin, 2)) << 16;
+        v += static_cast<uint8_t>(*next(begin, 3)) << 24;
+        v += static_cast<uint8_t>(*next(begin, 4)) << 32;
+        v += static_cast<uint8_t>(*next(begin, 5)) << 40;
+        v += static_cast<uint8_t>(*next(begin, 6)) << 48;
+        v += static_cast<uint8_t>(*next(begin, 7)) << 56;
+        return static_cast<T>(v);
+    }
+
+    static_assert("Unsupported type size.");
 }
 
 /*

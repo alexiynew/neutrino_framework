@@ -29,6 +29,7 @@ set(TESTS
     signal
     version
     zlib
+    utf
 )
 
 foreach(TEST ${TESTS})
