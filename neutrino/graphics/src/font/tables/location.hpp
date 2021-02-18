@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Character to glyph index mapping table
+/// @brief Index ot location table
 /// @author Fedorov Alexey
-/// @date 18.09.2020
+/// @date 28.09.2020
 ////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
@@ -29,41 +29,24 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_LOCATION_HPP
+#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_LOCATION_HPP
 
 #include <vector>
-#include <unordered_map>
 
 #include <graphics/src/font/types.hpp>
-#include <common/utf.hpp>
 
 namespace framework::graphics::details::font
 {
 
-struct GlyphMap
+struct Location
 {
-    using GlyphIndex = std::uint32_t;
-    using GlyphIndexMap = std::unordered_map<utf::CodePoint, GlyphIndex>;
+    static Location parse(std::int16_t format, std::uint16_t num_glyphs, const std::vector<std::uint8_t>& data);
 
-    struct EncodingRecord
-    {
-        PlatformId platform_id    = PlatformId::Undefined;
-        std::uint16_t encoding_id = 0;
-        std::uint32_t offset      = 0; // Byte offset from beginning of table to the subtable for this encoding.
-    };
-
-    static GlyphMap parse(const std::vector<std::uint8_t>& data);
-
-    bool valid() const;
-
-    std::uint16_t version    = 0;
-    std::uint16_t num_tables = 0;
-    std::vector<EncodingRecord> encoding_records;
-
-    GlyphIndexMap glyphs;
+    std::vector<Offset32> offsets;
 };
 
 } // namespace framework::graphics::details::font
 
 #endif
+

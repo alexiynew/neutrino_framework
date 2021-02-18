@@ -41,10 +41,13 @@
 #include <graphics/font.hpp>
 
 #include <graphics/src/font/tables/font_header.hpp>
+#include <graphics/src/font/tables/glyph_map.hpp>
 #include <graphics/src/font/tables/horizontal_header.hpp>
 #include <graphics/src/font/tables/horizontal_metrics.hpp>
 #include <graphics/src/font/tables/maximum_profile.hpp>
 #include <graphics/src/font/tables/naming.hpp>
+#include <graphics/src/font/tables/os2.hpp>
+#include <graphics/src/font/tables/location.hpp>
 
 using namespace framework;
 using namespace framework::graphics::details::font;
@@ -349,7 +352,10 @@ bool Font::parse(const std::string& filename)
         return false;
     }
 
-    // CharacterToGlyphIndexMappingTable cmap = CharacterToGlyphIndexMappingTable::parse(tables.at(Tag::cmap).data);
+    GlyphMap cmap = GlyphMap::parse(tables.at(Tag::Cmap).data);
+    if (!cmap.valid()) {
+        return false;
+    }
 
     HorizontalHeader hhea = HorizontalHeader::parse(tables.at(Tag::Hhea).data);
     if (!hhea.valid()) {
@@ -373,7 +379,16 @@ bool Font::parse(const std::string& filename)
         return false;
     }
 
-    // Os2Table os2                = Os2Table::parse(tables.at(Tag::OS4
+    Os2 os2 = Os2::parse(tables.at(Tag::Os2).data);
+    if (!os2.valid()) {
+        return false;
+    }
+
+    if (offset_table.sfnt_version == OffsetTable::true_type_tag) {
+        Location loca = Location::parse(head.index_to_loc_format, maxp.num_glyphs, tables.at(Tag::Loca).data);
+
+        return true;
+    }
 
     return true;
 }

@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Character to glyph index mapping table
+/// @brief Index ot location table
 /// @author Fedorov Alexey
-/// @date 18.09.2020
+/// @date 28.09.2020
 ////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
@@ -29,41 +29,38 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
+#include <common/utils.hpp>
 
-#include <vector>
-#include <unordered_map>
-
-#include <graphics/src/font/types.hpp>
-#include <common/utf.hpp>
+#include <graphics/src/font/tables/location.hpp>
 
 namespace framework::graphics::details::font
 {
 
-struct GlyphMap
+Location Location::parse(std::int16_t format, std::uint16_t num_glyphs, const std::vector<std::uint8_t>& data)
 {
-    using GlyphIndex = std::uint32_t;
-    using GlyphIndexMap = std::unordered_map<utf::CodePoint, GlyphIndex>;
+    const size_t size = num_glyphs + 1;
 
-    struct EncodingRecord
-    {
-        PlatformId platform_id    = PlatformId::Undefined;
-        std::uint16_t encoding_id = 0;
-        std::uint32_t offset      = 0; // Byte offset from beginning of table to the subtable for this encoding.
-    };
+    Location table;
 
-    static GlyphMap parse(const std::vector<std::uint8_t>& data);
+    table.offsets.reserve(size);
 
-    bool valid() const;
+    auto from = data.begin();
+    for (size_t i = 0; i < num_glyphs; ++i) {
+        switch (format) {
+            case 0:
+                table.offsets.push_back(utils::big_endian_value<Offset16>(from, data.end()));
+                std::advance(from, sizeof(Offset16));
+                break;
 
-    std::uint16_t version    = 0;
-    std::uint16_t num_tables = 0;
-    std::vector<EncodingRecord> encoding_records;
+            case 1:
+                table.offsets.push_back(utils::big_endian_value<Offset32>(from, data.end()));
+                std::advance(from, sizeof(Offset32));
+                break;
+        }
+    }
 
-    GlyphIndexMap glyphs;
-};
+    return table;
+}
 
 } // namespace framework::graphics::details::font
 
-#endif

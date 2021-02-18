@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Font tables
+/// @brief Os2 table
 /// @author Fedorov Alexey
-/// @date 04.09.2020
+/// @date 24.09.2020
 ////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
@@ -29,24 +29,20 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_OS2_HPP
+#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_OS2_HPP
 
-#include <cstdint>
-#include <fstream>
-#include <string>
-#include <unordered_map>
+#include <vector>
 
-#include <graphics/src/font/tags.hpp>
+#include <graphics/src/font/types.hpp>
 
 namespace framework::graphics::details::font
 {
 
-#pragma region Font Tables
-
-struct Os2Table
+struct Os2
 {
-    static Os2Table parse(const std::vector<std::uint8_t>& data);
+    static Os2 parse(const std::vector<std::uint8_t>& data);
+    bool valid() const;
 
     std::uint16_t version             = 0;
     std::int16_t avg_char_width       = 0;
@@ -69,7 +65,7 @@ struct Os2Table
     std::uint32_t unicode_range2   = 0; // Bits 32–63
     std::uint32_t unicode_range3   = 0; // Bits 64–95
     std::uint32_t unicode_range4   = 0; // Bits 96–127
-    Tag ach_vend_id                = Tag::invalid;
+    Tag ach_vend_id                = Tag::Invalid;
     std::uint16_t selection        = 0;
     std::uint16_t first_char_index = 0;
     std::uint16_t last_char_index  = 0;
@@ -95,16 +91,7 @@ struct Os2Table
     std::uint16_t upper_optical_point_size = 0;
 };
 
-#pragma endregion
-
-#pragma region Helper Functions
-
-std::vector<TableRecord> read_table_records(std::ifstream& in, std::uint32_t num_tables);
-
-bool has_required_tables(const std::vector<TableRecord>& records);
-
-#pragma endregion
-
-} // namespace framework::graphics::details::font
+}
 
 #endif
+

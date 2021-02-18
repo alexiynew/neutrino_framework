@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// @file
-/// @brief Font tables
+/// @brief Os2 table
 /// @author Fedorov Alexey
-/// @date 04.09.2020
+/// @date 24.09.2020
 ////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
@@ -29,28 +29,16 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <array>
-
 #include <common/utils.hpp>
 
-#include <graphics/src/font/tables.hpp>
+#include <graphics/src/font/tables/os2.hpp>
 
-namespace
+namespace framework::graphics::details::font
 {
 
-#pragma region HorizontalMetricsTable
-
-#pragma endregion
-
-#pragma region NamingTable
-
-#pragma endregion
-
-#pragma region Os2Table
-
-Os2Table Os2Table::parse(const std::vector<std::uint8_t>& data)
+Os2 Os2::parse(const std::vector<std::uint8_t>& data)
 {
-    Os2Table table;
+    Os2 table;
 
     table.version              = utils::big_endian_value<std::uint16_t>(data.begin() + 0, data.end());
     table.avg_char_width       = utils::big_endian_value<std::int16_t>(data.begin() + 2, data.end());
@@ -106,6 +94,15 @@ Os2Table Os2Table::parse(const std::vector<std::uint8_t>& data)
     return table;
 }
 
-#pragma endregion
+bool Os2::valid() const
+{
+    bool valid = true;
 
-} // namespace
+    valid &= version <= 5;
+    valid &= weight_class >= 1 && weight_class <= 1000;
+    valid &= width_class >= 1 && width_class <= 9;
+        
+    return valid;
+}
+
+} // namespace framework::graphics::details::font

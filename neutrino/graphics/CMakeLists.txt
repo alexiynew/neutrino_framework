@@ -44,6 +44,8 @@ set_sources(PRIVATE_SOURCES
     src/font/types.hpp
     src/font/tables/font_header.hpp
     src/font/tables/font_header.cpp
+    src/font/tables/glyph_map.hpp
+    src/font/tables/glyph_map.cpp
     src/font/tables/horizontal_header.hpp
     src/font/tables/horizontal_header.cpp
     src/font/tables/maximum_profile.hpp
@@ -52,6 +54,10 @@ set_sources(PRIVATE_SOURCES
     src/font/tables/horizontal_metrics.cpp
     src/font/tables/naming.hpp
     src/font/tables/naming.cpp
+    src/font/tables/os2.hpp
+    src/font/tables/os2.cpp
+    src/font/tables/location.hpp
+    src/font/tables/location.cpp
 
     src/image/image.cpp
     src/image/image_info.hpp
