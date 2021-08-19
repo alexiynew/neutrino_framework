@@ -27,8 +27,6 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::float32;
-using framework::float64;
 using framework::int32;
 using framework::uint32;
 
@@ -82,8 +80,8 @@ private:
         constexpr Vector3f v3f;
         constexpr Vector2i v2i;
 
-        static_assert(sizeof(v4d) == sizeof(float64) * 4 && v4d.size() == 4, "Vector4d size check failed.");
-        static_assert(sizeof(v3f) == sizeof(float32) * 3 && v3f.size() == 3, "Vector3f size check failed.");
+        static_assert(sizeof(v4d) == sizeof(double) * 4 && v4d.size() == 4, "Vector4d size check failed.");
+        static_assert(sizeof(v3f) == sizeof(float) * 3 && v3f.size() == 3, "Vector3f size check failed.");
         static_assert(sizeof(v2i) == sizeof(int) * 2 && v2i.size() == 2, "Vector2i size check failed.");
     }
 
@@ -178,10 +176,10 @@ private:
 
     void const_pointer_constructor()
     {
-        const float64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
-        const float32 data_f[3] = {1.0f, 2.0f, 3.0f};
-        const int32 data_i[2]   = {1, 2};
-        const uint32 data_u[2]  = {1, 2};
+        const double data_d[4] = {1.0, 2.0, 3.0, 4.0};
+        const float data_f[3]  = {1.0f, 2.0f, 3.0f};
+        const int32 data_i[2]  = {1, 2};
+        const uint32 data_u[2] = {1, 2};
 
         const Vector4d v4d(data_d);
         const Vector3f v3f(data_f);
@@ -196,10 +194,10 @@ private:
 
     void pointer_constructor()
     {
-        float64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
-        float32 data_f[3] = {1.0f, 2.0f, 3.0f};
-        int32 data_i[2]   = {1, 2};
-        uint32 data_u[2]  = {1, 2};
+        double data_d[4] = {1.0, 2.0, 3.0, 4.0};
+        float data_f[3]  = {1.0f, 2.0f, 3.0f};
+        int32 data_i[2]  = {1, 2};
+        uint32 data_u[2] = {1, 2};
 
         const Vector4d v4d(data_d);
         const Vector3f v3f(data_f);

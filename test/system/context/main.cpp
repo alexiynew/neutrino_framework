@@ -58,8 +58,8 @@ private:
 
         render.set_clear_color(Color(0xFF00FFFFU));
 
-        const float32 max_total_time = 1000;
-        float32 total_time           = 0;
+        const float max_total_time = 1000;
+        float total_time           = 0;
 
         while (main_window.is_visible() && total_time < max_total_time) {
             main_window.process_events();
