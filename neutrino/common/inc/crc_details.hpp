@@ -38,7 +38,7 @@
 namespace framework::utils::crc_details
 {
 /// @brief Helper class to get correct type for Crc::value_type.
-template <usize BitsCount>
+template <std::size_t BitsCount>
 struct get_crc_value_type;
 
 /// @brief Helper class to get correct type for Crc::value_type.
@@ -63,15 +63,15 @@ struct get_crc_value_type<32>
 };
 
 /// @brief Value type short cut.
-template <usize BitsCount>
+template <std::size_t BitsCount>
 using value_t = typename get_crc_value_type<BitsCount>::type;
 
 /// @brieaf crc table type
-template <usize BitsCount, usize Size>
+template <std::size_t BitsCount, std::size_t Size>
 using crc_table_t = std::array<value_t<BitsCount>, Size>;
 
-template <usize BitsCount, value_t<BitsCount> Polynome>
-constexpr value_t<BitsCount> generate_value(usize dividend) noexcept
+template <std::size_t BitsCount, value_t<BitsCount> Polynome>
+constexpr value_t<BitsCount> generate_value(std::size_t dividend) noexcept
 {
     constexpr value_t<BitsCount> topbit = (1u << (BitsCount - 1));
 
@@ -84,26 +84,26 @@ constexpr value_t<BitsCount> generate_value(usize dividend) noexcept
     return static_cast<value_t<BitsCount>>(value);
 }
 
-template <usize BitsCount, value_t<BitsCount> Polynome, usize Size, usize... I>
+template <std::size_t BitsCount, value_t<BitsCount> Polynome, std::size_t Size, std::size_t... I>
 constexpr inline crc_table_t<BitsCount, Size> generate_table_impl(std::index_sequence<I...>) noexcept
 {
     return {generate_value<BitsCount, Polynome>(I)...};
 }
 
 /// @brief Geneates crc table at compile time.
-template <usize BitsCount, value_t<BitsCount> Polynome, usize Size>
+template <std::size_t BitsCount, value_t<BitsCount> Polynome, std::size_t Size>
 constexpr inline crc_table_t<BitsCount, Size> generate_table() noexcept
 {
     return generate_table_impl<BitsCount, Polynome, Size>(std::make_index_sequence<Size>());
 }
 
 /// @brief Reflects bits in value.
-template <usize BitsCount>
+template <std::size_t BitsCount>
 value_t<BitsCount> reflect(value_t<BitsCount> value)
 {
     value_t<BitsCount> ref = 0;
 
-    for (usize bit = 0; bit < BitsCount; ++bit) {
+    for (std::size_t bit = 0; bit < BitsCount; ++bit) {
         if (value & 1) {
             ref = static_cast<value_t<BitsCount>>(ref | 1 << (BitsCount - 1 - bit));
         }

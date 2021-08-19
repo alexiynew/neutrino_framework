@@ -70,7 +70,7 @@ namespace framework::utils
 /// @t_param ReflectIn Should reflect input bytes.
 /// @t_param ReflectOut Should reflect output value.
 /// @t_param XorOut Value to 'xor' with the result at the end.
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -122,7 +122,7 @@ public:
     value_type current_value() const noexcept;
 
 private:
-    constexpr static usize crc_table_size = 256;
+    constexpr static std::size_t crc_table_size = 256;
     constexpr static crc_details::crc_table_t<BitsCount, crc_table_size>
     crc_table = crc_details::generate_table<BitsCount, Polynome, crc_table_size>();
 
@@ -176,7 +176,7 @@ using Crc32Xfer   = Crc<32, 0x000000AF, 0x00000000, false, false, 0x00000000>; /
 
 #pragma region definitions
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -198,7 +198,7 @@ XorOut>::calculate(Iterator begin, const Iterator end)
     return calc.current_value();
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -209,7 +209,7 @@ inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::reset
     m_current_value = init_value;
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -223,7 +223,7 @@ inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::updat
     m_current_value   = static_cast<value_type>(crc_table[index] ^ (m_current_value << 8));
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -232,15 +232,15 @@ template <usize BitsCount,
 template <typename T>
 inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(T value) noexcept
 {
-    constexpr usize input_value_size = sizeof(T);
+    constexpr std::size_t input_value_size = sizeof(T);
 
-    for (usize i = 0; i < input_value_size; ++i) {
+    for (std::size_t i = 0; i < input_value_size; ++i) {
         const uint8 byte = static_cast<uint8>((value >> (i * 8)) & 0xFF);
         update(byte);
     }
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -254,7 +254,7 @@ inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::updat
     }
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,

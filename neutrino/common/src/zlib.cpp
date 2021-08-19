@@ -88,7 +88,7 @@ private:
 
     uint32 m_buffer = 0;
     uint32 m_bits   = 0;
-    usize m_byte    = 0;
+    std::size_t m_byte    = 0;
     const std::vector<uint8>& m_data;
 };
 
@@ -96,7 +96,7 @@ uint16 reflect(uint16 value, uint8 size)
 {
     uint16 ref = 0;
 
-    for (usize bit = 0; bit < size; ++bit) {
+    for (std::size_t bit = 0; bit < size; ++bit) {
         if (value & 1) {
             ref = static_cast<uint16>(ref | 1 << (size - 1 - bit));
         }
@@ -124,7 +124,7 @@ public:
                 return invalid_code;
             }
 
-            const usize index = val - m_start_code[len];
+            const std::size_t index = val - m_start_code[len];
             if (index >= m_codes[len].size()) {
                 return invalid_code;
             }
@@ -164,7 +164,7 @@ private:
         m_start_code.resize(max_code_size);
 
         uint16 code = 0;
-        for (usize bits = 1; bits <= bl_count.size(); bits++) {
+        for (std::size_t bits = 1; bits <= bl_count.size(); bits++) {
             code = static_cast<uint16>((code + bl_count[bits - 1]) << 1);
 
             m_start_code[bits] = code;
@@ -173,16 +173,16 @@ private:
         m_codes.clear();
         m_codes.resize(max_code_size);
 
-        for (usize i = 0; i < bl_count.size(); ++i) {
+        for (std::size_t i = 0; i < bl_count.size(); ++i) {
             m_codes[i].resize(bl_count[i], invalid_code);
         }
 
         auto next_code = m_start_code;
-        for (usize n = 0; n < lengths.size(); n++) {
-            usize len = lengths[n];
+        for (std::size_t n = 0; n < lengths.size(); n++) {
+            std::size_t len = lengths[n];
 
             if (len != 0) {
-                const usize index   = next_code[len] - m_start_code[len];
+                const std::size_t index   = next_code[len] - m_start_code[len];
                 m_codes[len][index] = static_cast<uint16>(n);
                 next_code[len]++;
             }
@@ -265,7 +265,7 @@ LitLenDistanceCodes fixed_huffman_codes()
 
     std::vector<uint8> litlen_alphabet(litlen_alphabet_size);
 
-    for (usize i = 0; i < litlen_alphabet.size(); ++i) {
+    for (std::size_t i = 0; i < litlen_alphabet.size(); ++i) {
         litlen_alphabet[i] = ((i <= 143 || i >= 280) ? 8 : (i >= 144 && i <= 255 ? 9 : 7));
     }
 
@@ -280,9 +280,9 @@ LitLenDistanceCodes dynamic_huffman_codes(BitStream& in)
     const uint16 hdist = in.get<uint16>(5);
     const uint16 hclen = in.get<uint16>(4);
 
-    const usize lit_len_codes_count  = hlit + 257;
-    const usize distance_codes_count = hdist + 1;
-    const usize code_len_codes_count = hclen + 4;
+    const std::size_t lit_len_codes_count  = hlit + 257;
+    const std::size_t distance_codes_count = hdist + 1;
+    const std::size_t code_len_codes_count = hclen + 4;
 
     constexpr std::array<uint8, 19> length_order = {
     16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15,
@@ -290,7 +290,7 @@ LitLenDistanceCodes dynamic_huffman_codes(BitStream& in)
 
     std::vector<uint8> code_lengths(19);
 
-    for (usize i = 0; i < code_len_codes_count; ++i) {
+    for (std::size_t i = 0; i < code_len_codes_count; ++i) {
         code_lengths[length_order[i]] = static_cast<uint8>(in.get<uint16>(3));
     }
 
@@ -298,7 +298,7 @@ LitLenDistanceCodes dynamic_huffman_codes(BitStream& in)
 
     std::vector<uint8> lengths;
     lengths.reserve(lit_len_codes_count + distance_codes_count);
-    for (usize i = 0; i < lit_len_codes_count + distance_codes_count;) {
+    for (std::size_t i = 0; i < lit_len_codes_count + distance_codes_count;) {
         const uint8 len = static_cast<uint8>(len_huffman.decode(in));
         if (len <= 15) {
             lengths.push_back(len);
@@ -318,7 +318,7 @@ LitLenDistanceCodes dynamic_huffman_codes(BitStream& in)
         }
     }
 
-    const auto first_dist_code = next(begin(lengths), static_cast<framework::ptrdiff>(lit_len_codes_count));
+    const auto first_dist_code = next(begin(lengths), static_cast<std::ptrdiff_t>(lit_len_codes_count));
     const std::vector<uint8> litlen(begin(lengths), first_dist_code);
     const std::vector<uint8> dist(first_dist_code, end(lengths));
 
@@ -399,7 +399,7 @@ void inflate_no_compression(BitStream& in, std::vector<uint8>& output)
 
     [[maybe_unused]] uint16 nlen = in.get<uint16>(16);
 
-    for (usize i = 0; i < len; ++i) {
+    for (std::size_t i = 0; i < len; ++i) {
         output.push_back(in.get<uint8>(8));
     }
 }
@@ -421,7 +421,7 @@ void inflate_compression(const LitLenDistanceCodes& codes_pair, BitStream& in, s
                 break; // error
             }
 
-            for (usize i = 0, pos = output.size() - distance; i < length; ++i, ++pos) {
+            for (std::size_t i = 0, pos = output.size() - distance; i < length; ++i, ++pos) {
                 output.push_back(output[pos]);
             }
         } else {
@@ -444,9 +444,9 @@ inline void inflate_dynamic_huffman(BitStream& in, std::vector<uint8>& output)
 
 void deflate_no_compression(const std::vector<uint8>& data, std::vector<uint8>& output)
 {
-    const usize blocks_count = (data.size() / max_block_size) + 1;
+    const std::size_t blocks_count = (data.size() / max_block_size) + 1;
 
-    for (usize block = 0; block < blocks_count; ++block) {
+    for (std::size_t block = 0; block < blocks_count; ++block) {
         BlockHeader b_header;
         b_header.bfinal = ((block + 1) >= blocks_count ? 1 : 0);
         b_header.btype  = BlockHeader::no_compression;
@@ -463,7 +463,7 @@ void deflate_no_compression(const std::vector<uint8>& data, std::vector<uint8>& 
         output.push_back(static_cast<uint8>(nlen & 0xFF));
         output.push_back(static_cast<uint8>((nlen >> 8) & 0xFF));
 
-        for (usize i = 0; i < max_block_size && i < data.size(); ++i) {
+        for (std::size_t i = 0; i < max_block_size && i < data.size(); ++i) {
             output.push_back(data[block * max_block_size + i]);
         }
     }

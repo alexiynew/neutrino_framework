@@ -305,20 +305,20 @@ private:
         TEST_ASSERT(signal1.has_connections() == false, "Signal clear not working");
         TEST_ASSERT(count1 == 1, "Signal clear not working");
 
-        Signal<usize> signal2;
+        Signal<std::size_t> signal2;
         int count2 = 0;
 
-        auto id1 = signal2.connect([&signal2, &count2](usize a) {
+        auto id1 = signal2.connect([&signal2, &count2](std::size_t a) {
             signal2.disconnect(a);
             count2++;
         });
 
-        auto id2 = signal2.connect([&signal2, &count2](usize a) {
+        auto id2 = signal2.connect([&signal2, &count2](std::size_t a) {
             signal2.disconnect(a);
             count2++;
         });
 
-        auto id3 = signal2.connect([&signal2, &count2](usize a) {
+        auto id3 = signal2.connect([&signal2, &count2](std::size_t a) {
             signal2.disconnect(a);
             count2++;
         });

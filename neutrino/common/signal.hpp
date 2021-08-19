@@ -217,7 +217,7 @@ inline bool Signal<Args...>::has_connections() const
 template <typename... Args>
 inline void Signal<Args...>::operator()(Args... args)
 {
-    for (usize index = 0; index < m_slots.size(); ++index) {
+    for (std::size_t index = 0; index < m_slots.size(); ++index) {
         if (m_slots[index] == nullptr) {
             continue;
         }
@@ -234,7 +234,7 @@ inline void Signal<Args...>::operator()(Args... args)
 template <typename... Args>
 inline void Signal<Args...>::operator()(Args... args) const
 {
-    for (usize index = 0; index < m_slots.size(); ++index) {
+    for (std::size_t index = 0; index < m_slots.size(); ++index) {
         if (m_slots[index] == nullptr) {
             continue;
         }
