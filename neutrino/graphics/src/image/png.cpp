@@ -799,13 +799,13 @@ inline std::vector<Color> unserialize(const FileHeader& header,
 
 #pragma endregion
 
-float32 decode_gamma(const Chunk& chunk)
+float decode_gamma(const Chunk& chunk)
 {
     if (chunk.type != Chunk::Type::gAMA) {
         return 1.0f;
     }
 
-    const float32 gamma = static_cast<float32>(
+    const float gamma = static_cast<float>(
     utils::big_endian_value<std::uint32_t>(chunk.data.begin(), chunk.data.end()));
 
     return (gamma / 100000.0f);
@@ -833,7 +833,7 @@ LoadResult load(const std::string& filename)
     }
 
     Chunk plte_chunk;
-    float32 gamma = default_gamma;
+    float gamma = default_gamma;
 
     std::vector<std::uint8_t> data;
     for (Chunk chunk = Chunk::read(file); file && chunk.type != Chunk::Type::IEND; chunk = Chunk::read(file)) {

@@ -26,8 +26,6 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::float32;
-using framework::float64;
 using framework::int32;
 
 using framework::math::Vector2b;
@@ -92,7 +90,7 @@ private:
         TEST_ASSERT(v4i_result == Vector4i(1, 2, 3, 4), "Assign to Vector4i failed.");
         TEST_ASSERT(v4d_result == Vector4d(1.1, 2.2, 3.3, 4), "Assign to Vector4d failed.");
 
-        TEST_ASSERT(v3d_result == Vector3d(float64(5.5f), float64(6.6f), float64(7.7f)), "Assign to Vector3d failed.");
+        TEST_ASSERT(v3d_result == Vector3d(double(5.5f), double(6.6f), double(7.7f)), "Assign to Vector3d failed.");
         TEST_ASSERT(v3f_result == Vector3f(5.5f, 6.6f, 7.7f), "Assign to Vector3f failed.");
 
         TEST_ASSERT(v2f_result == Vector2f(1, 2), "Assign to Vector2f failed.");
@@ -127,20 +125,20 @@ private:
         const Vector3f v3f(5.5f, 6.6f, 7.7f);
         const Vector2i v2i(1, 2);
 
-        const float64* float64_pointer = v4d.data();
-        const float32* float32_pointer = v3f.data();
-        const int32* int_pointer       = v2i.data();
+        const double* double_pointer = v4d.data();
+        const float* float_pointer   = v3f.data();
+        const int32* int_pointer     = v2i.data();
 
         // clang-format off
-        TEST_ASSERT(almost_equal(float64_pointer[0], 1.1) &&
-                    almost_equal(float64_pointer[1], 2.2) &&
-                    almost_equal(float64_pointer[2], 3.3) &&
-                    almost_equal(float64_pointer[3], 4.4),
+        TEST_ASSERT(almost_equal(double_pointer[0], 1.1) &&
+                    almost_equal(double_pointer[1], 2.2) &&
+                    almost_equal(double_pointer[2], 3.3) &&
+                    almost_equal(double_pointer[3], 4.4),
                     "Access to data of Vector4d filed.");
 
-        TEST_ASSERT(almost_equal(float32_pointer[0], 5.5f) &&
-                    almost_equal(float32_pointer[1], 6.6f) &&
-                    almost_equal(float32_pointer[2], 7.7f),
+        TEST_ASSERT(almost_equal(float_pointer[0], 5.5f) &&
+                    almost_equal(float_pointer[1], 6.6f) &&
+                    almost_equal(float_pointer[2], 7.7f),
                     "Access to data of Vector3f failed.");
 
         TEST_ASSERT(int_pointer[0] == 1 && int_pointer[1] == 2, "Access to data of Vector2i failed.");

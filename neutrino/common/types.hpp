@@ -60,9 +60,6 @@ using uint64 = std::uint64_t; ///< Unsigned integer type with size of exactly 64
 
 using usize = std::size_t; ///< Unsigled integer type, should be used for array indexing and loop counting
 
-using float32 = float;  ///< Floating point type with size of exactly 32 bits
-using float64 = double; ///< Floating point type with size of exactly 64 bits
-
 ////////////////////////////////////////////////////////////////////////////////
 /// @}
 ////////////////////////////////////////////////////////////////////////////////

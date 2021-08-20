@@ -40,8 +40,6 @@ using framework::math::Vector2f;
 using framework::math::Vector3f;
 using framework::math::Vector4f;
 
-using framework::float32;
-
 class MatrixAccessTest : public framework::unit_test::Suite
 {
 public:
@@ -264,17 +262,17 @@ private:
 
     void data_function()
     {
-        float32* p44 = Matrix44.data();
-        float32* p34 = Matrix34.data();
-        float32* p24 = Matrix24.data();
-        float32* p43 = Matrix43.data();
-        float32* p33 = Matrix33.data();
-        float32* p23 = Matrix23.data();
-        float32* p42 = Matrix42.data();
-        float32* p32 = Matrix32.data();
-        float32* p22 = Matrix22.data();
+        float* p44 = Matrix44.data();
+        float* p34 = Matrix34.data();
+        float* p24 = Matrix24.data();
+        float* p43 = Matrix43.data();
+        float* p33 = Matrix33.data();
+        float* p23 = Matrix23.data();
+        float* p42 = Matrix42.data();
+        float* p32 = Matrix32.data();
+        float* p22 = Matrix22.data();
 
-        auto check = [](const float32 a, const float32 b) { return framework::math::abs(a - b) <= 0; };
+        auto check = [](const float a, const float b) { return framework::math::abs(a - b) <= 0; };
 
         // clang-format off
         TEST_ASSERT(check(p44[0],  0.0f) && check(p44[1], 1.0f)  && check(p44[2], 2.0f)  && check(p44[3], 3.0f)  &&

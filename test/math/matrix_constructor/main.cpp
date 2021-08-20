@@ -50,8 +50,6 @@ using framework::math::Vector4d;
 using framework::math::Vector4f;
 using framework::math::Vector4i;
 
-using framework::float32;
-
 class matrix_test : public framework::unit_test::Suite
 {
 public:
@@ -90,23 +88,23 @@ private:
         constexpr Matrix4x3f Matrix43;
         constexpr Matrix4x4f Matrix44;
 
-        static_assert(sizeof(Matrix22) == sizeof(float32) * 2 * 2 && Matrix22.size() == 2,
+        static_assert(sizeof(Matrix22) == sizeof(float) * 2 * 2 && Matrix22.size() == 2,
                       "Matrix2x2 size check failed.");
-        static_assert(sizeof(Matrix23) == sizeof(float32) * 2 * 3 && Matrix23.size() == 2,
+        static_assert(sizeof(Matrix23) == sizeof(float) * 2 * 3 && Matrix23.size() == 2,
                       "Matrix2x3 size check failed.");
-        static_assert(sizeof(Matrix24) == sizeof(float32) * 2 * 4 && Matrix24.size() == 2,
+        static_assert(sizeof(Matrix24) == sizeof(float) * 2 * 4 && Matrix24.size() == 2,
                       "Matrix2x4 size check failed.");
-        static_assert(sizeof(Matrix32) == sizeof(float32) * 3 * 2 && Matrix32.size() == 3,
+        static_assert(sizeof(Matrix32) == sizeof(float) * 3 * 2 && Matrix32.size() == 3,
                       "Matrix3x2 size check failed.");
-        static_assert(sizeof(Matrix33) == sizeof(float32) * 3 * 3 && Matrix33.size() == 3,
+        static_assert(sizeof(Matrix33) == sizeof(float) * 3 * 3 && Matrix33.size() == 3,
                       "Matrix3x3 size check failed.");
-        static_assert(sizeof(Matrix34) == sizeof(float32) * 3 * 4 && Matrix34.size() == 3,
+        static_assert(sizeof(Matrix34) == sizeof(float) * 3 * 4 && Matrix34.size() == 3,
                       "Matrix3x4 size check failed.");
-        static_assert(sizeof(Matrix42) == sizeof(float32) * 4 * 2 && Matrix42.size() == 4,
+        static_assert(sizeof(Matrix42) == sizeof(float) * 4 * 2 && Matrix42.size() == 4,
                       "Matrix4x2 size check failed.");
-        static_assert(sizeof(Matrix43) == sizeof(float32) * 4 * 3 && Matrix43.size() == 4,
+        static_assert(sizeof(Matrix43) == sizeof(float) * 4 * 3 && Matrix43.size() == 4,
                       "Matrix4x3 size check failed.");
-        static_assert(sizeof(Matrix44) == sizeof(float32) * 4 * 4 && Matrix44.size() == 4,
+        static_assert(sizeof(Matrix44) == sizeof(float) * 4 * 4 && Matrix44.size() == 4,
                       "Matrix4x4 size check failed.");
     }
 
@@ -249,9 +247,9 @@ private:
 
     void const_pointer_constructor()
     {
-        const float32 data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-        const float32 data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
-        const float32 data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
+        const float data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+        const float data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
+        const float data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
 
         const Matrix4x4f m44(data4);
         const Matrix3x4f m34(data4);
@@ -284,9 +282,9 @@ private:
 
     void pointer_constructor()
     {
-        float32 data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-        float32 data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
-        float32 data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
+        float data4[] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+        float data3[] = {0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2};
+        float data2[] = {0, 1, 0, 1, 0, 1, 0, 1};
 
         const Matrix4x4f m44(data4);
         const Matrix3x4f m34(data4);

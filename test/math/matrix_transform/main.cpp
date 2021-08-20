@@ -45,8 +45,6 @@ using framework::math::Vector2f;
 using framework::math::Vector3f;
 using framework::math::Vector4f;
 
-using framework::float32;
-
 using framework::math::frustum;
 using framework::math::infinite_perspective;
 using framework::math::ortho;
@@ -553,11 +551,11 @@ public:
 private:
     void project_function()
     {
-        const float32 near = 1.0f;
-        const float32 far  = 10.0f;
+        const float near = 1.0f;
+        const float far  = 10.0f;
 
-        const float32 width  = 480.0f;
-        const float32 height = 320.0f;
+        const float width  = 480.0f;
+        const float height = 320.0f;
 
         const Matrix4f model;
         const Matrix4f projection = perspective_fov(half_pi<float>, width, height, near, far);
@@ -591,11 +589,11 @@ private:
 
     void unproject_function()
     {
-        const float32 near = 1.0f;
-        const float32 far  = 10.0f;
+        const float near = 1.0f;
+        const float far  = 10.0f;
 
-        const float32 width  = 480.0f;
-        const float32 height = 320.0f;
+        const float width  = 480.0f;
+        const float height = 320.0f;
 
         const Matrix4f model;
         const Matrix4f projection = perspective_fov(half_pi<float>, width, height, near, far);
@@ -638,8 +636,8 @@ private:
         };
         // clang-format on
 
-        const float32 width  = 480.0f;
-        const float32 height = 320.0f;
+        const float width  = 480.0f;
+        const float height = 320.0f;
 
         const Vector4f viewport{0, 0, width, height};
 

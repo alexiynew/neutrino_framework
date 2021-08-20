@@ -298,8 +298,8 @@ private:
 
         w.show();
 
-        const float32 max_total_time = 1000;
-        float32 total_time           = 0;
+        const float max_total_time = 1000;
+        float total_time           = 0;
 
         while (w.is_visible() && !should_close && total_time < max_total_time) {
             w.process_events();
