@@ -127,7 +127,7 @@ bool OpenglTexture::load(const Texture& texture)
 
 void OpenglTexture::bind(std::uint32_t texture_unit) const
 {
-    glActiveTexture(static_cast<int>(GL_TEXTURE0 + texture_unit));
+    glActiveTexture(static_cast<GLenum>(GL_TEXTURE0 + texture_unit));
     glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 

@@ -29,8 +29,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_GLYPH_MAP_HPP
+#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_GLYPH_MAP_HPP
 
 #include <unordered_map>
 #include <vector>

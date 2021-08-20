@@ -48,6 +48,7 @@ typedef unsigned short GLushort;
 
 namespace framework::system::details::wgl
 {
+
 #pragma region WGL_3DFX_multisample
 
 constexpr int WGL_SAMPLE_BUFFERS_3DFX = 0x2060;

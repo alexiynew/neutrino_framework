@@ -41,5 +41,5 @@ set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME
 
 add_dependencies(${TESTS_TARGET} ${TEST_NAME})
 
-file(GLOB IMAGES "${TEST_DIR}/font/*.otf")
-file(COPY ${IMAGES} DESTINATION ${CMAKE_BINARY_DIR}/test/font)
+file(GLOB IMAGES "${TEST_DIR}/fonts/*.otf")
+file(COPY ${IMAGES} DESTINATION ${CMAKE_BINARY_DIR}/test/fonts)

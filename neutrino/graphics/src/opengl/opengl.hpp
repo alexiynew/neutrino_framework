@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,6 +36,7 @@
 
 namespace framework::graphics::details::opengl
 {
+
 #pragma region GL_VERSION_1_0
 
 typedef void GLvoid;
@@ -1662,7 +1663,7 @@ constexpr int GL_FRAGMENT_SHADER_BIT              = 0x00000002;
 constexpr int GL_GEOMETRY_SHADER_BIT              = 0x00000004;
 constexpr int GL_TESS_CONTROL_SHADER_BIT          = 0x00000008;
 constexpr int GL_TESS_EVALUATION_SHADER_BIT       = 0x00000010;
-constexpr int GL_ALL_SHADER_BITS                  = 0xFFFFFFFF;
+constexpr int GL_ALL_SHADER_BITS                  = int(0xFFFFFFFF);
 constexpr int GL_PROGRAM_SEPARABLE                = 0x8258;
 constexpr int GL_ACTIVE_PROGRAM                   = 0x8259;
 constexpr int GL_PROGRAM_PIPELINE_BINDING         = 0x825A;
@@ -1881,7 +1882,7 @@ constexpr int GL_BUFFER_UPDATE_BARRIER_BIT                                  = 0x
 constexpr int GL_FRAMEBUFFER_BARRIER_BIT                                    = 0x00000400;
 constexpr int GL_TRANSFORM_FEEDBACK_BARRIER_BIT                             = 0x00000800;
 constexpr int GL_ATOMIC_COUNTER_BARRIER_BIT                                 = 0x00001000;
-constexpr int GL_ALL_BARRIER_BITS                                           = 0xFFFFFFFF;
+constexpr int GL_ALL_BARRIER_BITS                                           = int(0xFFFFFFFF);
 constexpr int GL_MAX_IMAGE_UNITS                                            = 0x8F38;
 constexpr int GL_MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS              = 0x8F39;
 constexpr int GL_IMAGE_BINDING_NAME                                         = 0x8F3A;
@@ -4609,7 +4610,7 @@ void glRasterSamplesEXT(GLuint samples, GLboolean fixedsamplelocations);
 constexpr int GL_ACTIVE_PROGRAM_EXT           = 0x8B8D;
 constexpr int GL_VERTEX_SHADER_BIT_EXT        = 0x00000001;
 constexpr int GL_FRAGMENT_SHADER_BIT_EXT      = 0x00000002;
-constexpr int GL_ALL_SHADER_BITS_EXT          = 0xFFFFFFFF;
+constexpr int GL_ALL_SHADER_BITS_EXT          = int(0xFFFFFFFF);
 constexpr int GL_PROGRAM_SEPARABLE_EXT        = 0x8258;
 constexpr int GL_PROGRAM_PIPELINE_BINDING_EXT = 0x825A;
 

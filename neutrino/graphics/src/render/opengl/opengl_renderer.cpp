@@ -57,13 +57,13 @@ const std::string tag = "OpenGL";
 int get_int(int id)
 {
     int value;
-    glGetIntegerv(id, &value);
+    glGetIntegerv(static_cast<GLenum>(id), &value);
     return value;
 }
 
 std::string get_string(int id)
 {
-    const char* str = reinterpret_cast<const char*>(glGetString(id));
+    const char* str = reinterpret_cast<const char*>(glGetString(static_cast<GLenum>(id)));
     return str ? std::string(str) : std::string();
 }
 

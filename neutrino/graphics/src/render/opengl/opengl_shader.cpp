@@ -73,7 +73,7 @@ std::string shader_type_string(int shader_type)
     return "UNKNOWN_SHADER";
 }
 
-std::string shader_info_log(int shader_id)
+std::string shader_info_log(std::uint32_t shader_id)
 {
     int length = 0;
     glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &length);
@@ -107,7 +107,7 @@ std::uint32_t create_shader(int shader_type, const std::string& source)
 {
     using namespace framework;
 
-    std::uint32_t shader_id = glCreateShader(shader_type);
+    std::uint32_t shader_id = glCreateShader(static_cast<GLenum>(shader_type));
 
     const char* source_pointer = source.c_str();
     glShaderSource(shader_id, 1, &source_pointer, nullptr);

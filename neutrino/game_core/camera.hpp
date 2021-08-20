@@ -96,7 +96,7 @@ private:
     float m_speed       = 0.0f;
     float m_sensitivity = 0.05f;
 
-    State m_state = {0};
+    State m_state = {0, 0, 0, 0, 0, 0};
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -35,6 +35,7 @@
 #include <log/log.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
+#include <graphics/src/render/opengl/opengl_logger.hpp>
 
 using namespace framework::graphics::details::opengl;
 

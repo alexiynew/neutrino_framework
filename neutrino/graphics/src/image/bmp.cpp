@@ -324,7 +324,7 @@ InfoHeader InfoHeader::read(std::ifstream& in)
 
     const size_t data_size = h.size - sizeof(size_buffer);
     std::unique_ptr<char[]> buffer(new char[data_size]);
-    in.read(buffer.get(), data_size);
+    in.read(buffer.get(), static_cast<std::streamsize>(data_size));
 
     char* buffer_end = buffer.get() + data_size;
     if (h.type() == Type::bitmapcoreheader) {
@@ -443,7 +443,7 @@ InfoHeader::ColorTable InfoHeader::read_color_table(std::ifstream& in, const Inf
 
     const size_t buffer_size = colors_count * static_cast<size_t>(cell_size);
     std::unique_ptr<char[]> buffer(new char[buffer_size]);
-    in.read(buffer.get(), buffer_size);
+    in.read(buffer.get(), static_cast<std::streamsize>(buffer_size));
 
     if (!in) {
         return ColorTable();
@@ -628,7 +628,7 @@ std::vector<Color>::iterator process_row(std::vector<std::uint8_t>::iterator in,
 std::vector<Color> read_data_raw(std::ifstream& in, const InfoHeader& info)
 {
     const std::int32_t height = std::abs(info.height);
-    const size_t image_size   = info.width * static_cast<size_t>(height);
+    const size_t image_size   = static_cast<size_t>(info.width * height);
     std::vector<Color> image_data(image_size);
 
     const std::uint32_t row_size = static_cast<std::uint32_t>(((info.bits_per_pixel * info.width + 31) / 32) * 4);

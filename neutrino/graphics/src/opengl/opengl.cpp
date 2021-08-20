@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@
 
 namespace
 {
+
 using namespace framework::graphics::details::opengl;
 
 #pragma region GL_VERSION_1_0
@@ -7291,6 +7292,7 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
 
 namespace framework::graphics::details::opengl
 {
+
 #pragma region GL_VERSION_1_0
 
 void glCullFace(GLenum mode)

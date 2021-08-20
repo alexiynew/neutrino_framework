@@ -27,8 +27,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_OSX_CONTEXT_HPP
-#define FRAMEWORK_WINDOW_DETAILS_WINDOWS_OSX_CONTEXT_HPP
+#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_CONTEXT_HPP
+#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_CONTEXT_HPP
 
 #include <system/context.hpp>
 

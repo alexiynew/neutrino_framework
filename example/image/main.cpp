@@ -502,7 +502,7 @@ void Example::setup()
         arrange();
     });
 
-    main_window.on_key_down.connect([this](const Window& w, KeyCode k, Modifiers) {
+    main_window.on_key_down.connect([this](const Window&, KeyCode k, Modifiers) {
         switch (k) {
             case KeyCode::key_equal: gamma += 0.1f; break;
             case KeyCode::key_minus: gamma -= 0.1f; break;
@@ -512,8 +512,6 @@ void Example::setup()
             case KeyCode::key_0: position = {0, 0}; break;
             default: break;
         }
-        const auto size = w.size();
-
         gamma = framework::math::clamp(gamma, -4.0f, 4.0f);
 
         renderer.set_uniform("viewMatrix", scale(Matrix4f(), {image_scale, image_scale, image_scale}));

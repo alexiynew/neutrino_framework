@@ -39,7 +39,7 @@ namespace framework::graphics::details::font
 
 std::uint32_t inline constexpr make_tag(char c1, char c2, char c3, char c4)
 {
-    return (c1 << 24 | c2 << 16 | c3 << 8 | c4);
+    return static_cast<std::uint32_t>(c1 << 24 | c2 << 16 | c3 << 8 | c4);
 }
 
 using FWord    = std::int16_t;  // int16 that describes a quantity in font design units.

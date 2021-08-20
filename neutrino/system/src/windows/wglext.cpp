@@ -34,6 +34,7 @@
 
 namespace
 {
+
 using namespace framework::system::details::wgl;
 
 #pragma region WGL_3DFX_multisample
@@ -1227,6 +1228,7 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
 
 namespace framework::system::details::wgl
 {
+
 #pragma region WGL_3DFX_multisample
 
 #pragma endregion

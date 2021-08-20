@@ -57,6 +57,7 @@ Window::Window(Window&& other) noexcept
 Window& Window::operator=(Window&& other) noexcept
 {
     swap(*this, other);
+    return *this;
 }
 
 #pragma region actions

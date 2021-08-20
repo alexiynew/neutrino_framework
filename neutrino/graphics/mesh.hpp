@@ -183,7 +183,7 @@ public:
     /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
     ////////////////////////////////////////////////////////////////////////////
-    void set_texture_coordinates(int index, const TextureCoordinatesData& coordinates);
+    void set_texture_coordinates(std::size_t index, const TextureCoordinatesData& coordinates);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Assign new texture coordinates to Mesh.
@@ -193,7 +193,7 @@ public:
     /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
     ////////////////////////////////////////////////////////////////////////////
-    void set_texture_coordinates(int index, TextureCoordinatesData&& coordinates) noexcept;
+    void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Assign new indices data to Mesh.
@@ -267,7 +267,7 @@ public:
     ///
     /// @return Texture coordinates.
     ////////////////////////////////////////////////////////////////////////////
-    const TextureCoordinatesData& texture_coordinates(int index) const;
+    const TextureCoordinatesData& texture_coordinates(std::size_t index) const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Get indices data.

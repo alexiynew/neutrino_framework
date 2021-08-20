@@ -203,10 +203,10 @@ std::uint32_t table_checksum(const std::vector<std::uint8_t>& data)
     const size_t count = ((data.size() + 3) / 4) * 4;
     for (size_t i = 0; i < count; i += 4) {
         std::uint32_t value = 0;
-        value += (i + 0 < data.size() ? data[i + 0] : 0) << 24;
-        value += (i + 1 < data.size() ? data[i + 1] : 0) << 16;
-        value += (i + 2 < data.size() ? data[i + 2] : 0) << 8;
-        value += (i + 3 < data.size() ? data[i + 3] : 0) << 0;
+        value += static_cast<std::uint32_t>((i + 0 < data.size() ? data[i + 0] : 0) << 24);
+        value += static_cast<std::uint32_t>((i + 1 < data.size() ? data[i + 1] : 0) << 16);
+        value += static_cast<std::uint32_t>((i + 2 < data.size() ? data[i + 2] : 0) << 8);
+        value += static_cast<std::uint32_t>((i + 3 < data.size() ? data[i + 3] : 0) << 0);
 
         sum += value;
     }
@@ -216,11 +216,11 @@ std::uint32_t table_checksum(const std::vector<std::uint8_t>& data)
 
 bool Table::valid() const
 {
-    auto get_check_sum = [this](const auto& data) {
+    auto get_check_sum = [this](const auto& container) {
         std::uint32_t data_check_sum = table_checksum(data);
 
         if (record.tag == Tag::Head) {
-            data_check_sum -= utils::big_endian_value<std::uint32_t>(data.data() + 8, data.data() + 12);
+            data_check_sum -= utils::big_endian_value<std::uint32_t>(container.data() + 8, container.data() + 12);
         }
 
         return data_check_sum;

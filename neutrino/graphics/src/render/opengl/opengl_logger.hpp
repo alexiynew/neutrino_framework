@@ -36,6 +36,7 @@
 
 namespace framework::graphics
 {
+
 void log_opengl_errors(const std::string& file, int line);
 
     ////////////////////////////////////////////////////////////////////////////////

@@ -45,7 +45,7 @@ private:
     {
         Font font;
 
-        TEST_ASSERT(font.load("font/Arial.otf"), "Should load Arial font");
+        TEST_ASSERT(font.load("fonts/Arial.otf"), "Should load Arial font");
     }
 };
 

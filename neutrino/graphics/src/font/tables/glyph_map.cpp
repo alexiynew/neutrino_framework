@@ -53,7 +53,7 @@ struct Format0
 
 Format0 Format0::parse(std::uint32_t offset, const std::vector<std::uint8_t>& data)
 {
-    constexpr size_t glyphs_count = 256;
+    constexpr int glyphs_count = 256;
 
     auto from = std::next(data.begin(), offset);
 
@@ -64,7 +64,7 @@ Format0 Format0::parse(std::uint32_t offset, const std::vector<std::uint8_t>& da
     table.glyph_id_array.reserve(glyphs_count);
 
     std::advance(from, 6);
-    for (size_t i = 0; i < glyphs_count; ++i) {
+    for (int i = 0; i < glyphs_count; ++i) {
         table.glyph_id_array.push_back(utils::big_endian_value<std::uint8_t>(from + i, data.end()));
     }
 
@@ -139,7 +139,7 @@ Format4 Format4::parse(std::uint32_t offset, const std::vector<std::uint8_t>& da
     }
 
     const auto end    = std::next(data.begin(), table.length);
-    const size_t size = std::distance(from, end) / 2;
+    const size_t size = static_cast<size_t>(std::distance(from, end) / 2);
 
     table.glyph_id_array.reserve(size);
     while (from != end) {
@@ -229,7 +229,7 @@ GlyphMap::GlyphIndexMap parse_glyphs(const Format4& table)
     GlyphMap::GlyphIndexMap map;
     auto insert_no_offset = [&map](std::uint16_t start, std::uint16_t end, std::int16_t delta) {
         for (utf::CodePoint cp = start; cp <= end; ++cp) {
-            map[cp] = static_cast<GlyphMap::GlyphIndex>((cp + delta) % 65536);
+            map[cp] = static_cast<GlyphMap::GlyphIndex>((static_cast<std::int32_t>(cp) + delta) % 65536);
         }
     };
 
@@ -247,7 +247,7 @@ GlyphMap::GlyphIndexMap parse_glyphs(const Format4& table)
             GlyphMap::GlyphIndex glyph = glyphs[index];
 
             if (glyph != 0) {
-                glyph = static_cast<GlyphMap::GlyphIndex>((glyph + delta) % 65536);
+                glyph = static_cast<GlyphMap::GlyphIndex>((static_cast<std::int32_t>(glyph) + delta) % 65536);
             }
             map[cp] = glyph;
         }

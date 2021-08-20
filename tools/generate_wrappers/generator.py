@@ -6,8 +6,13 @@ from string import Template
 def enum_declaration(enum):
     type_map = {"": "int", "u": "unsigned int", "ull": "unsigned long long"}
 
-    result = "constexpr {} {} = {};".format(
-        type_map[enum.type], enum.name, enum.value)
+    value_type = type_map[enum.type]
+
+    value = enum.value
+    if enum.value == "0xFFFFFFFF" and value_type == "int":
+        value = "int({})".format(enum.value)
+
+    result = "constexpr {} {} = {};".format(value_type, enum.name, value)
 
     return result
 

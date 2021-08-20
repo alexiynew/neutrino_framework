@@ -61,7 +61,7 @@ Context::Api OsxContext::api_type() const
     return Context::Api::opengl;
 }
 
-Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
+Context::VoidFunctionPtr OsxContext::get_function(const char* /*function_name*/) const
 {
     return nullptr;
 }

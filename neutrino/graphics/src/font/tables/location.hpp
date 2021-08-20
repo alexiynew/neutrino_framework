@@ -29,8 +29,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_LOCATION_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_LOCATION_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_LOCATION_HPP
+#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_LOCATION_HPP
 
 #include <vector>
 
