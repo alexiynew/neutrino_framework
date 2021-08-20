@@ -101,7 +101,7 @@ bool Os2::valid() const
     valid &= version <= 5;
     valid &= weight_class >= 1 && weight_class <= 1000;
     valid &= width_class >= 1 && width_class <= 9;
-        
+
     return valid;
 }
 

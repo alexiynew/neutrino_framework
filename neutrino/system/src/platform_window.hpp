@@ -46,7 +46,7 @@ class PlatformWindow
 public:
     static void set_application_name(const std::string& name);
 
-    PlatformWindow(const Window& window_interface);
+    PlatformWindow();
 
     virtual ~PlatformWindow();
 
@@ -83,12 +83,12 @@ public:
 
     /// @name getters
     /// @{
-    virtual Position position() const = 0;
-    virtual Size size() const         = 0;
-    virtual Size max_size() const     = 0;
-    virtual Size min_size() const     = 0;
-    virtual std::string title() const = 0;
-    virtual Context& context() const  = 0;
+    virtual Position position() const      = 0;
+    virtual Size size() const              = 0;
+    virtual Size max_size() const          = 0;
+    virtual Size min_size() const          = 0;
+    virtual std::string title() const      = 0;
+    virtual const Context& context() const = 0;
     /// @}
 
     /// @name state
@@ -103,6 +103,8 @@ public:
     virtual bool is_cursor_visible() const = 0;
     virtual bool is_cursor_grabbed() const = 0;
     /// @}
+
+    void set_window_instance(const Window* window);
 
 protected:
     void on_show() const;
@@ -123,12 +125,11 @@ protected:
 
 private:
     static std::string application_name;
-    const Window& m_window_interface;
+    const Window* m_window_interface = nullptr;
 };
 
 // @brief Fabric function to make platform dependent implementation
-std::unique_ptr<PlatformWindow> create_platform_window(const Window& window_interface,
-                                                       Size size,
+std::unique_ptr<PlatformWindow> create_platform_window(Size size,
                                                        const std::string& title,
                                                        const ContextSettings& settings);
 

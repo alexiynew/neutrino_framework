@@ -32,19 +32,23 @@
 
 #include <memory>
 
-#include <system/context.hpp>
 #include <system/context_settings.hpp>
 
 #include <system/src/platform_window.hpp>
 
 #include <windows.h>
 
+namespace framework::system
+{
+class Context;
+}
+
 namespace framework::system::details
 {
 class Win32Window final : public PlatformWindow
 {
 public:
-    Win32Window(const Window& window_interface, Size size, const std::string& title, const ContextSettings& settings);
+    Win32Window(Size size, const std::string& title, const ContextSettings& settings);
     ~Win32Window() override;
 
     Win32Window(const Win32Window&) = delete;

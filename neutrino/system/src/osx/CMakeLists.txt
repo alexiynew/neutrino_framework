@@ -33,6 +33,8 @@ set_sources(PRIVATE_SOURCES
     osx_window_wrapper.mm
     osx_window.hpp
     osx_window.mm
+    osx_context.hpp
+    osx_context.mm
 )
 
 target_sources(${PROJECT_NAME}

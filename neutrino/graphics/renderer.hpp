@@ -33,6 +33,7 @@
 #define FRAMEWORK_GRAPHICS_RENDERER_HPP
 
 #include <memory>
+#include <unordered_map>
 
 #include <graphics/color.hpp>
 #include <graphics/uniform.hpp>

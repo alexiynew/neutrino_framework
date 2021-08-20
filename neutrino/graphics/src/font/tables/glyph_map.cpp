@@ -186,7 +186,7 @@ GlyphMap::GlyphIndexMap parse_glyphs(const GlyphMap table, const std::vector<std
     constexpr std::uint16_t unicode_engiding_id              = 3;
     constexpr std::array<std::uint16_t, 3> supported_formats = {0, 4, 6};
 
-    auto unicode_platform = [unicode_engiding_id](const GlyphMap::EncodingRecord& record) {
+    auto unicode_platform = [](const GlyphMap::EncodingRecord& record) {
         return record.platform_id == PlatformId::Unicode && record.encoding_id == unicode_engiding_id;
     };
 
@@ -233,7 +233,11 @@ GlyphMap::GlyphIndexMap parse_glyphs(const Format4& table)
         }
     };
 
-    auto insert_with_offset = [&map](const std::vector<std::uint16_t>& glyphs, std::uint16_t start, std::uint16_t end, std::int16_t delta, std::uint16_t offset) {
+    auto insert_with_offset = [&map](const std::vector<std::uint16_t>& glyphs,
+                                     std::uint16_t start,
+                                     std::uint16_t end,
+                                     std::int16_t delta,
+                                     std::uint16_t offset) {
         for (utf::CodePoint cp = start; cp <= end; ++cp) {
             const size_t index = offset + (cp - start);
             if (index >= glyphs.size()) {

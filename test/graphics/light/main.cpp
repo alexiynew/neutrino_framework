@@ -263,6 +263,7 @@ private:
                 case KeyCode::key_d: camera.set_action(Camera::ActionState::moveRight, true); break;
                 case KeyCode::key_q: camera.set_action(Camera::ActionState::moveUp, true); break;
                 case KeyCode::key_e: camera.set_action(Camera::ActionState::moveDown, true); break;
+                default: break;
             }
         });
 
@@ -274,6 +275,7 @@ private:
                 case KeyCode::key_d: camera.set_action(Camera::ActionState::moveRight, false); break;
                 case KeyCode::key_q: camera.set_action(Camera::ActionState::moveUp, false); break;
                 case KeyCode::key_e: camera.set_action(Camera::ActionState::moveDown, false); break;
+                default: break;
             }
         });
 

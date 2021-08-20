@@ -180,7 +180,7 @@ public:
     ///
     /// Mesh can have up to `max_texture_coordinates` texture coordinates.
     ///
-    /// @param indox Texture coordinates array index.
+    /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
     ////////////////////////////////////////////////////////////////////////////
     void set_texture_coordinates(int index, const TextureCoordinatesData& coordinates);
@@ -190,7 +190,7 @@ public:
     ///
     /// Mesh can have up to `max_texture_coordinates` texture coordinates.
     ///
-    /// @param indox Texture coordinates array index.
+    /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
     ////////////////////////////////////////////////////////////////////////////
     void set_texture_coordinates(int index, TextureCoordinatesData&& coordinates) noexcept;
@@ -198,14 +198,14 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Assign new indices data to Mesh.
     ///
-    /// @param vertices New indices.
+    /// @param indices New indices.
     ////////////////////////////////////////////////////////////////////////////
     void set_indices(const IndicesData& indices);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Sets new indices data to Mesh.
     ///
-    /// @param vertices New indices.
+    /// @param indices New indices.
     ////////////////////////////////////////////////////////////////////////////
     void set_indices(IndicesData&& indices) noexcept;
 

@@ -41,19 +41,22 @@ void Window::set_application_name(const std::string& name)
 }
 
 Window::Window(Size size, const std::string& title, ContextSettings settings)
-    : m_platform_window(details::create_platform_window(*this, size, title, std::move(settings)))
-{}
+    : m_platform_window(details::create_platform_window(size, title, std::move(settings)))
+{
+    m_platform_window->set_window_instance(this);
+}
 
 Window::~Window() = default;
 
 Window::Window(Window&& other) noexcept
-    : m_platform_window(std::move(other.m_platform_window))
-{}
+    : m_platform_window(nullptr)
+{
+    swap(*this, other);
+}
 
 Window& Window::operator=(Window&& other) noexcept
 {
-    m_platform_window = std::move(other.m_platform_window);
-    return *this;
+    swap(*this, other);
 }
 
 #pragma region actions
@@ -176,7 +179,7 @@ std::string Window::title() const
     return m_platform_window->title();
 }
 
-Context& Window::context() const
+const Context& Window::context() const
 {
     return m_platform_window->context();
 }
@@ -230,5 +233,29 @@ bool Window::is_cursor_grabbed() const
 }
 
 #pragma endregion
+
+void swap(Window& lhs, Window& rhs) noexcept
+{
+    using std::swap;
+    swap(lhs.m_platform_window, rhs.m_platform_window);
+    swap(lhs.on_show, rhs.on_show);
+    swap(lhs.on_hide, rhs.on_hide);
+    swap(lhs.on_close, rhs.on_close);
+    swap(lhs.on_focus, rhs.on_focus);
+    swap(lhs.on_lost_focus, rhs.on_lost_focus);
+    swap(lhs.on_resize, rhs.on_resize);
+    swap(lhs.on_move, rhs.on_move);
+    swap(lhs.on_key_down, rhs.on_key_down);
+    swap(lhs.on_key_up, rhs.on_key_up);
+    swap(lhs.on_character, rhs.on_character);
+    swap(lhs.on_mouse_move, rhs.on_mouse_move);
+    swap(lhs.on_button_down, rhs.on_button_down);
+    swap(lhs.on_button_up, rhs.on_button_up);
+    swap(lhs.on_mouse_enter, rhs.on_mouse_enter);
+    swap(lhs.on_mouse_leave, rhs.on_mouse_leave);
+
+    lhs.m_platform_window->set_window_instance(&rhs);
+    rhs.m_platform_window->set_window_instance(&lhs);
+}
 
 } // namespace framework::system

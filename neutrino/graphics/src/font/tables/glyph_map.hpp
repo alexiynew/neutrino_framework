@@ -32,18 +32,19 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
 #define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
 
-#include <vector>
 #include <unordered_map>
+#include <vector>
+
+#include <common/utf.hpp>
 
 #include <graphics/src/font/types.hpp>
-#include <common/utf.hpp>
 
 namespace framework::graphics::details::font
 {
 
 struct GlyphMap
 {
-    using GlyphIndex = std::uint32_t;
+    using GlyphIndex    = std::uint32_t;
     using GlyphIndexMap = std::unordered_map<utf::CodePoint, GlyphIndex>;
 
     struct EncodingRecord

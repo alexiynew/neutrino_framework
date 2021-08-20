@@ -46,7 +46,9 @@ Naming Naming::parse(const std::vector<std::uint8_t>& data)
     table.string_offset = utils::big_endian_value<Offset16>(data.begin() + 4, data.end());
 
     auto from = std::next(data.begin(), 6);
+
     table.name_records.reserve(table.count);
+
     for (size_t i = 0; i < table.count; ++i) {
 
         NameRecord record;
@@ -112,12 +114,12 @@ std::string Naming::read_string(Naming table, Naming::NameId name_id, const std:
     constexpr std::uint16_t unicode_engiding_id = 3;
     constexpr std::uint16_t windows_engiding_id = 1;
 
-    auto unicode_platform = [unicode_engiding_id, name_id](const NameRecord& record) {
+    auto unicode_platform = [name_id](const NameRecord& record) {
         return record.name_id == name_id && record.platform_id == PlatformId::Unicode &&
                record.encoding_id == unicode_engiding_id;
     };
 
-    auto windows_platform = [windows_engiding_id, name_id](const NameRecord& record) {
+    auto windows_platform = [name_id](const NameRecord& record) {
         return record.name_id == name_id && record.platform_id == PlatformId::Windows &&
                record.encoding_id == windows_engiding_id;
     };

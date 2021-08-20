@@ -32,6 +32,7 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_NAMING_HPP
 #define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_NAMING_HPP
 
+#include <unordered_map>
 #include <vector>
 
 #include <graphics/src/font/types.hpp>

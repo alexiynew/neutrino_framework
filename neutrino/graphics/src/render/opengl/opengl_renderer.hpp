@@ -49,7 +49,7 @@ class OpenglTexture;
 class OpenglRenderer final : public RendererImpl
 {
 public:
-    explicit OpenglRenderer(system::Context& context);
+    explicit OpenglRenderer(const system::Context& context);
 
     OpenglRenderer(const OpenglRenderer& other) = default;
     OpenglRenderer& operator=(const OpenglRenderer& other) = default;

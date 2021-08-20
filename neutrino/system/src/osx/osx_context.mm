@@ -1,7 +1,7 @@
 /// @file
 /// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 03.03.2019
+/// @date 11.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,16 +27,43 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <system/src/platform_window.hpp>
-#include <system/src/windows/win32_window.hpp>
+#include <stdexcept>
+
+#include <system/src/osx/osx_context.hpp>
 
 namespace framework::system::details
 {
-std::unique_ptr<PlatformWindow> create_platform_window(Size size,
-                                                       const std::string& title,
-                                                       const ContextSettings& settings)
+OsxContext::OsxContext(const ContextSettings& settings)
+    : Context(settings)
+{}
+
+OsxContext::~OsxContext()
+{}
+
+bool OsxContext::valid() const
 {
-    return std::make_unique<Win32Window>(size, title, settings);
+    return false;
+}
+
+bool OsxContext::is_current() const
+{
+    return false;
+}
+
+void OsxContext::make_current() const
+{}
+
+void OsxContext::swap_buffers() const
+{}
+
+Context::Api OsxContext::api_type() const
+{
+    return Context::Api::opengl;
+}
+
+Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
+{
+    return nullptr;
 }
 
 } // namespace framework::system::details

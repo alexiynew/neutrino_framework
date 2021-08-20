@@ -33,6 +33,7 @@
 #define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_SHADER_HPP
 
 #include <cstdint>
+#include <unordered_map>
 
 #include <graphics/renderer.hpp>
 

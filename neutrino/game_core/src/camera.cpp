@@ -77,7 +77,7 @@ void Camera::set_offset(math::Vector2f offset)
 
 void Camera::update(std::chrono::nanoseconds delata_time)
 {
-    using FloatSecond = std::chrono::duration<double>;
+    using FloatSecond = std::chrono::duration<float>;
 
     const FloatSecond delta  = std::chrono::duration_cast<FloatSecond>(delata_time);
     const float camera_speed = static_cast<float>(m_speed * delta.count());

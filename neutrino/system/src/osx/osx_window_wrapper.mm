@@ -32,6 +32,7 @@
 
 #include <system/src/osx/osx_application.hpp>
 #include <system/src/osx/osx_application_delegate.hpp>
+#include <system/src/osx/osx_context.hpp>
 #include <system/src/osx/osx_window.hpp>
 #include <system/src/osx/osx_window_wrapper.hpp>
 
@@ -71,11 +72,8 @@ void OSXWindowWrapper::drainThreadPool()
     ensureThreadHasPool();
 }
 
-OSXWindowWrapper::OSXWindowWrapper(const Window& window_interface,
-                                   Size size,
-                                   const std::string& /*title*/,
-                                   const context_settings& /*settings*/)
-    : PlatformWindow(window_interface)
+OSXWindowWrapper::OSXWindowWrapper(Size size, const std::string& /*title*/, const ContextSettings& context_settings)
+    : PlatformWindow()
     , m_window(nullptr)
 {
     setup_application();
@@ -112,7 +110,8 @@ OSXWindowWrapper::OSXWindowWrapper(const Window& window_interface,
     //  [window setAutodisplay:YES];
     [window setReleasedWhenClosed:NO]; // We own the class, not AppKit
 
-    m_window = window;
+    m_window  = window;
+    m_context = std::make_unique<OsxContext>(context_settings);
 }
 
 OSXWindowWrapper::~OSXWindowWrapper()
@@ -172,10 +171,10 @@ void OSXWindowWrapper::process_events()
     drainThreadPool(); // Reduce memory footprint
 }
 
-void OSXWindowWrapper::make_current()
+void OSXWindowWrapper::grab_cursor()
 {}
 
-void OSXWindowWrapper::swap_buffers()
+void OSXWindowWrapper::release_cursor()
 {}
 
 #pragma endregion
@@ -192,6 +191,9 @@ void OSXWindowWrapper::set_resizable(bool /*value*/)
 {}
 
 void OSXWindowWrapper::set_title(const std::string& /*title*/)
+{}
+
+void OSXWindowWrapper::set_cursor_visibility(bool /*visible*/)
 {}
 
 #pragma endregion
@@ -221,6 +223,11 @@ Size OSXWindowWrapper::min_size() const
 std::string OSXWindowWrapper::title() const
 {
     return "";
+}
+
+const Context& OSXWindowWrapper::context() const
+{
+    return *m_context.get();
 }
 
 #pragma endregion
@@ -257,6 +264,16 @@ bool OSXWindowWrapper::is_visible() const
 }
 
 bool OSXWindowWrapper::has_input_focus() const
+{
+    return false;
+}
+
+bool OSXWindowWrapper::is_cursor_visible() const
+{
+    return false;
+}
+
+bool OSXWindowWrapper::is_cursor_grabbed() const
 {
     return false;
 }

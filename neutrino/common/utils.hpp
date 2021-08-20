@@ -84,8 +84,8 @@ inline constexpr bool is_debug() noexcept
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Generates bunch of random numbers.
 ///
-/// @param min Minimum of the range.
-/// @param max Maximum of the range.
+/// @param min Minimum of the generated numbers.
+/// @param max Maximum of the generated numbers.
 /// @param count How much numbers to generate.
 ///
 /// @return Vector of the `count` size of random numbers in range [min, max].
@@ -123,7 +123,7 @@ std::vector<T> random_numbers(T min, T max, size_t count)
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Returns elements count in container.
 ///
-/// @param containter To get size
+/// @param container To get size
 ///
 /// @return Elements count in container.
 ///////////////////////////////////////////////////////////////////////////////
@@ -145,9 +145,10 @@ constexpr inline std::size_t size(const T (&)[N]) noexcept
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets buffer as value of type T in big endian byte order.
+/// @brief Interprets range [begin, end) as value of type T in big endian byte order.
 ///
-/// @param buffer Buffer to read value from.
+/// @param begin Range to read value from.
+/// @param end Range to read value from.
 ///
 /// @return Value of type T.
 ///////////////////////////////////////////////////////////////////////////////
@@ -176,7 +177,7 @@ inline T big_endian_value(const Iterator begin, const Iterator end)
 
     constexpr std::size_t size = sizeof(T);
 
-    const auto dist = (std::distance(begin, end));
+    const auto dist = static_cast<std::size_t>(std::distance(begin, end));
     if (dist < size) {
         throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
     }
@@ -196,10 +197,10 @@ inline T big_endian_value(const Iterator begin, const Iterator end)
         return static_cast<T>(v);
     } else if constexpr (size == 4) {
         uint32_t v = 0;
-        v += static_cast<uint8_t>(*begin) << 24;
-        v += static_cast<uint8_t>(*next(begin)) << 16;
-        v += static_cast<uint8_t>(*next(begin, 2)) << 8;
-        v += static_cast<uint8_t>(*next(begin, 3));
+        v += static_cast<uint32_t>(*begin) << 24;
+        v += static_cast<uint32_t>(*next(begin)) << 16;
+        v += static_cast<uint32_t>(*next(begin, 2)) << 8;
+        v += static_cast<uint32_t>(*next(begin, 3));
         return static_cast<T>(v);
     } else if constexpr (size == 8) {
         uint64_t v = 0;
@@ -218,9 +219,10 @@ inline T big_endian_value(const Iterator begin, const Iterator end)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets buffer as value of type T in little endian byte order.
+/// @brief Interprets range [begin, end) as value of type T in little endian byte order.
 ///
-/// @param buffer Buffer to read value from.
+/// @param begin Range to read value from.
+/// @param end Range to read value from.
 ///
 /// @return Value of type T.
 ///////////////////////////////////////////////////////////////////////////////
@@ -250,7 +252,7 @@ inline T little_endian_value(const Iterator begin, const Iterator end)
 
     constexpr std::size_t size = sizeof(T);
 
-    const auto dist = (std::distance(begin, end));
+    const auto dist = static_cast<std::size_t>(std::distance(begin, end));
     if (dist < size) {
         throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
     }
@@ -270,21 +272,21 @@ inline T little_endian_value(const Iterator begin, const Iterator end)
         return static_cast<T>(v);
     } else if constexpr (size == 4) {
         uint32_t v = 0;
-        v += static_cast<uint8_t>(*begin);
-        v += static_cast<uint8_t>(*next(begin)) << 8;
-        v += static_cast<uint8_t>(*next(begin, 2)) << 16;
-        v += static_cast<uint8_t>(*next(begin, 3)) << 24;
+        v += static_cast<uint32_t>(*begin);
+        v += static_cast<uint32_t>(*next(begin)) << 8;
+        v += static_cast<uint32_t>(*next(begin, 2)) << 16;
+        v += static_cast<uint32_t>(*next(begin, 3)) << 24;
         return static_cast<T>(v);
     } else if constexpr (size == 8) {
         uint64_t v = 0;
-        v += static_cast<uint8_t>(*begin);
-        v += static_cast<uint8_t>(*next(begin)) << 8;
-        v += static_cast<uint8_t>(*next(begin, 2)) << 16;
-        v += static_cast<uint8_t>(*next(begin, 3)) << 24;
-        v += static_cast<uint8_t>(*next(begin, 4)) << 32;
-        v += static_cast<uint8_t>(*next(begin, 5)) << 40;
-        v += static_cast<uint8_t>(*next(begin, 6)) << 48;
-        v += static_cast<uint8_t>(*next(begin, 7)) << 56;
+        v += static_cast<uint64_t>(*begin);
+        v += static_cast<uint64_t>(*next(begin)) << 8;
+        v += static_cast<uint64_t>(*next(begin, 2)) << 16;
+        v += static_cast<uint64_t>(*next(begin, 3)) << 24;
+        v += static_cast<uint64_t>(*next(begin, 4)) << 32;
+        v += static_cast<uint64_t>(*next(begin, 5)) << 40;
+        v += static_cast<uint64_t>(*next(begin, 6)) << 48;
+        v += static_cast<uint64_t>(*next(begin, 7)) << 56;
         return static_cast<T>(v);
     }
 

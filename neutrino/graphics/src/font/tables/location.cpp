@@ -63,4 +63,3 @@ Location Location::parse(std::int16_t format, std::uint16_t num_glyphs, const st
 }
 
 } // namespace framework::graphics::details::font
-

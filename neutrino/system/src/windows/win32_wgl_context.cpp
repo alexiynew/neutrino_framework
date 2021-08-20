@@ -1,5 +1,5 @@
 /// @file
-/// @brief Window implementation for windows.
+/// @brief Wgl context implementation for windows.
 /// @author Fedorov Alexey
 /// @date 11.09.2018
 

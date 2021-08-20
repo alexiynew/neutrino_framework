@@ -239,11 +239,8 @@ bool is_cursor_in_client_area(HWND window)
 
 namespace framework::system::details
 {
-Win32Window::Win32Window(const Window& window_interface,
-                         Size size,
-                         const std::string& title,
-                         const ContextSettings& settings)
-    : PlatformWindow(window_interface)
+Win32Window::Win32Window(Size size, const std::string& title, const ContextSettings& settings)
+    : PlatformWindow()
 {
     m_window_class = ::register_window_class();
 

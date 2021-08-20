@@ -47,12 +47,12 @@ namespace
 int convert_min_filter(MinFilter filter) noexcept
 {
     switch (filter) {
-        case MinFilter::nearest: return GL_NEAREST; break;
-        case MinFilter::linear: return GL_LINEAR; break;
-        case MinFilter::nearest_mipmap_nearest: return GL_NEAREST_MIPMAP_NEAREST; break;
-        case MinFilter::linear_mipmap_nearest: return GL_LINEAR_MIPMAP_NEAREST; break;
-        case MinFilter::nearest_mipmap_linear: return GL_NEAREST_MIPMAP_LINEAR; break;
-        case MinFilter::linear_mipmap_linear: return GL_LINEAR_MIPMAP_LINEAR; break;
+        case MinFilter::nearest: return GL_NEAREST;
+        case MinFilter::linear: return GL_LINEAR;
+        case MinFilter::nearest_mipmap_nearest: return GL_NEAREST_MIPMAP_NEAREST;
+        case MinFilter::linear_mipmap_nearest: return GL_LINEAR_MIPMAP_NEAREST;
+        case MinFilter::nearest_mipmap_linear: return GL_NEAREST_MIPMAP_LINEAR;
+        case MinFilter::linear_mipmap_linear: return GL_LINEAR_MIPMAP_LINEAR;
     }
 
     return 0;
@@ -61,8 +61,8 @@ int convert_min_filter(MinFilter filter) noexcept
 int convert_mag_filter(MagFilter filter) noexcept
 {
     switch (filter) {
-        case MagFilter::nearest: return GL_NEAREST; break;
-        case MagFilter::linear: return GL_LINEAR; break;
+        case MagFilter::nearest: return GL_NEAREST;
+        case MagFilter::linear: return GL_LINEAR;
     }
 
     return 0;
@@ -71,10 +71,10 @@ int convert_mag_filter(MagFilter filter) noexcept
 int convert_wrap_parameter(Wrap wrap) noexcept
 {
     switch (wrap) {
-        case Wrap::repeat: return GL_REPEAT; break;
-        case Wrap::mirrored_repeat: return GL_MIRRORED_REPEAT; break;
-        case Wrap::clamp_to_edge: return GL_CLAMP_TO_EDGE; break;
-        case Wrap::clamp_to_border: return GL_CLAMP_TO_BORDER; break;
+        case Wrap::repeat: return GL_REPEAT;
+        case Wrap::mirrored_repeat: return GL_MIRRORED_REPEAT;
+        case Wrap::clamp_to_edge: return GL_CLAMP_TO_EDGE;
+        case Wrap::clamp_to_border: return GL_CLAMP_TO_BORDER;
     }
 
     return 0;

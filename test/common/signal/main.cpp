@@ -153,7 +153,7 @@ private:
         };
 
         Slot slot;
-        Signal signal;
+        Signal<> signal;
 
         auto id1 = signal.connect(slot, &Slot::plus_one);
         auto id2 = signal.connect(slot, &Slot::plus_one);
@@ -277,7 +277,7 @@ private:
 
     void slot_self_disconnect()
     {
-        Signal signal1;
+        Signal<> signal1;
         int count1 = 0;
 
         signal1.connect([&signal1, &count1]() {

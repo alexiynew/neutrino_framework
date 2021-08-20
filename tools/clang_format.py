@@ -52,5 +52,6 @@ def convert_line_endings(filename):
 files = list(filter(has_extension_filter(code_extensions), get_files(pathes)))
 
 for f in files:
+    print(f)
     subprocess.call(["clang-format", "-style=file", "-i", f])
     convert_line_endings(f)

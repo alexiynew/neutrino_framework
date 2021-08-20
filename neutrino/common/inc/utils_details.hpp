@@ -34,6 +34,8 @@
 #include <istream>
 #include <memory>
 
+#include <random>
+
 namespace framework::utils::details
 {
 

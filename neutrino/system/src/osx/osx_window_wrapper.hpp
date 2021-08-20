@@ -31,18 +31,23 @@
 #define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_WINDOW_HPP
 
 #include <functional>
+#include <memory>
 
 #include <common/types.hpp>
 
-#include <system/src/context.hpp>
 #include <system/src/platform_window.hpp>
+
+namespace framework::system
+{
+class Context;
+}
 
 namespace framework::system::details
 {
 class OSXWindowWrapper final : public PlatformWindow
 {
 public:
-    OSXWindowWrapper(const Window& window, Size size, const std::string& title, const context_settings& settings);
+    OSXWindowWrapper(Size size, const std::string& title, const ContextSettings& settings);
     ~OSXWindowWrapper() override;
 
     OSXWindowWrapper(const OSXWindowWrapper&) = delete;
@@ -59,9 +64,9 @@ public:
     void restore() override;
     void resize(Size size) override;
     void move(Position position) override;
+    void grab_cursor() override;
+    void release_cursor() override;
     void process_events() override;
-    void make_current() override;
-    void swap_buffers() override;
     /// @}
 
     /// @name setters
@@ -70,6 +75,7 @@ public:
     void set_min_size(Size size) override;
     void set_resizable(bool value) override;
     void set_title(const std::string& title) override;
+    void set_cursor_visibility(bool visible) override;
     /// @}
 
     /// @name getters
@@ -79,6 +85,7 @@ public:
     Size max_size() const override;
     Size min_size() const override;
     std::string title() const override;
+    const Context& context() const override;
     /// @}
 
     /// @name state
@@ -90,6 +97,8 @@ public:
     bool is_resizable() const override;
     bool is_visible() const override;
     bool has_input_focus() const override;
+    bool is_cursor_visible() const override;
+    bool is_cursor_grabbed() const override;
     /// @}
 
 private:
@@ -98,6 +107,8 @@ private:
     void drainThreadPool();
 
     void* m_window;
+
+    std::unique_ptr<Context> m_context = nullptr;
 };
 
 } // namespace framework::system::details

@@ -49,4 +49,3 @@ struct Location
 } // namespace framework::graphics::details::font
 
 #endif
-

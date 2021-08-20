@@ -44,10 +44,10 @@
 #include <graphics/src/font/tables/glyph_map.hpp>
 #include <graphics/src/font/tables/horizontal_header.hpp>
 #include <graphics/src/font/tables/horizontal_metrics.hpp>
+#include <graphics/src/font/tables/location.hpp>
 #include <graphics/src/font/tables/maximum_profile.hpp>
 #include <graphics/src/font/tables/naming.hpp>
 #include <graphics/src/font/tables/os2.hpp>
-#include <graphics/src/font/tables/location.hpp>
 
 using namespace framework;
 using namespace framework::graphics::details::font;

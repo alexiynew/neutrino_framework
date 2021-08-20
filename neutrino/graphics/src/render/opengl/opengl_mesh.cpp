@@ -174,7 +174,7 @@ void OpenglMesh::enable_attribute(Attribute attribute) const
 
     glEnableVertexAttribArray(attr_index);
     glBindBuffer(GL_ARRAY_BUFFER, info.buffer);
-    glVertexAttribPointer(attr_index, info.component_size, info.type, GL_FALSE, 0, 0);
+    glVertexAttribPointer(attr_index, info.component_size, info.type, GL_FALSE, 0, nullptr);
 }
 
 } // namespace framework::graphics

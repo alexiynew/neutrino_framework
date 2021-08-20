@@ -91,7 +91,6 @@ struct Os2
     std::uint16_t upper_optical_point_size = 0;
 };
 
-}
+} // namespace framework::graphics::details::font
 
 #endif
-
