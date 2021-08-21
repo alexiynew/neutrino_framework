@@ -35,7 +35,8 @@ option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
 
 # Test modules to run
 if(NOT INCLUDED_TEST_MODULES)
-    set(INCLUDED_TEST_MODULES ".*" CACHE STRING "Test modules that will be launched in the test command. An empty string means all modules." FORCE)
+    set(INCLUDED_TEST_MODULES ".*" 
+        CACHE STRING "Test modules that will be launched in the test command. An empty string means all modules." FORCE)
 endif()
 
 # Directories
