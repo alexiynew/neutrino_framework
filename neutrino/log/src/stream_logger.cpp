@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
 /// @brief Stream logger implementation.
 /// @author Fedorov Alexey
 /// @date 24.08.2017
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -31,11 +33,11 @@
 
 namespace framework::log
 {
-stream_logger::stream_logger(std::ostream& stream)
+StreamLogger::StreamLogger(std::ostream& stream)
     : m_output(stream)
 {}
 
-void stream_logger::add_message(severity_level level, const std::string& tag, const std::string& message)
+void StreamLogger::add_message(SeverityLevel level, const std::string& tag, const std::string& message)
 {
     std::lock_guard<std::mutex> lock(m_output_mutex);
 

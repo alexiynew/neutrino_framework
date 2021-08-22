@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
 /// @brief Logging interface implementation.
 /// @author Fedorov Alexey
 /// @date 08.03.2017
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -32,13 +34,13 @@
 
 namespace
 {
-using framework::log::logger_base;
-using framework::log::log_details::log_buffer;
-using framework::log::log_details::log_ostream;
+using framework::log::Logger;
+using framework::log::log_details::LogBuffer;
+using framework::log::log_details::LogStream;
 
-class dummy_logger : public logger_base
+class DummyLogger : public Logger
 {
-    void add_message(framework::log::severity_level /*level*/,
+    void add_message(framework::log::SeverityLevel /*level*/,
                      const std::string& /*tag*/,
                      const std::string& /*message*/) override
     {
@@ -46,12 +48,12 @@ class dummy_logger : public logger_base
     }
 };
 
-std::unique_ptr<logger_base>& logger_instance()
+std::unique_ptr<Logger>& logger_instance()
 {
-    static std::unique_ptr<logger_base> instance;
+    static std::unique_ptr<Logger> instance;
 
     if (!instance) {
-        instance = std::make_unique<dummy_logger>();
+        instance = std::make_unique<DummyLogger>();
     }
 
     return instance;
@@ -63,39 +65,39 @@ namespace framework::log
 {
 #pragma region log functions
 
-log_ostream debug(const std::string& tag)
+LogStream debug(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::debug, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::debug, tag));
 }
 
-log_ostream info(const std::string& tag)
+LogStream info(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::info, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::info, tag));
 }
 
-log_ostream warning(const std::string& tag)
+LogStream warning(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::warning, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::warning, tag));
 }
 
-log_ostream error(const std::string& tag)
+LogStream error(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::error, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::error, tag));
 }
 
-log_ostream fatal(const std::string& tag)
+LogStream fatal(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::fatal, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::fatal, tag));
 }
 
 #pragma endregion
 
-void set_logger(std::unique_ptr<logger_base> implementation)
+void set_logger(std::unique_ptr<Logger> implementation)
 {
     ::logger_instance() = std::move(implementation);
 }
 
-logger_base* logger()
+Logger* logger()
 {
     return ::logger_instance().get();
 }

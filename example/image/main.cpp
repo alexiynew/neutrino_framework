@@ -611,7 +611,7 @@ void Example::run()
 
 int main()
 {
-    log::set_logger(std::make_unique<log::stream_logger>(std::cout));
+    log::set_logger(std::make_unique<log::StreamLogger>(std::cout));
 
     Window::set_application_name("Image example");
 

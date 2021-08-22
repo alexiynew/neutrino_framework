@@ -1,7 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////
 /// @file
 /// @brief The realisation details of the logging system.
 /// @author Fedorov Alexey
 /// @date 03.03.2018
+////////////////////////////////////////////////////////////////////////////////
 
 // =============================================================================
 // MIT License
@@ -29,19 +31,18 @@
 
 #include <log/log.hpp>
 
-#include <log/inc/log_ostream.hpp>
+#include <log/inc/log_stream.hpp>
 
 namespace
 {
 constexpr size_t log_buffer_size = 64;
-
 } // namespace
 
 namespace framework::log::log_details
 {
-#pragma region log_buffer
+#pragma region LogBuffer
 
-log_buffer::log_buffer(severity_level level, std::string tag)
+LogBuffer::LogBuffer(SeverityLevel level, std::string tag)
     : m_level(level)
     , m_tag(std::move(tag))
     , m_buffer(log_buffer_size)
@@ -49,19 +50,19 @@ log_buffer::log_buffer(severity_level level, std::string tag)
     reset_pointers();
 }
 
-log_buffer::~log_buffer()
+LogBuffer::~LogBuffer()
 {
     flush_buffer();
 }
 
-log_buffer::log_buffer(log_buffer&& other) noexcept
+LogBuffer::LogBuffer(LogBuffer&& other) noexcept
     : std::streambuf(other)
     , m_level(other.m_level)
     , m_tag(std::move(other.m_tag))
     , m_buffer(std::move(other.m_buffer))
 {}
 
-log_buffer& log_buffer::operator=(log_buffer&& other) noexcept
+LogBuffer& LogBuffer::operator=(LogBuffer&& other) noexcept
 {
     std::streambuf::operator=(other);
 
@@ -72,7 +73,7 @@ log_buffer& log_buffer::operator=(log_buffer&& other) noexcept
     return *this;
 }
 
-int log_buffer::overflow(int character)
+int LogBuffer::overflow(int character)
 {
     if (character == traits_type::eof()) {
         return traits_type::eof();
@@ -86,7 +87,7 @@ int log_buffer::overflow(int character)
     return sputc(static_cast<char>(character));
 }
 
-int log_buffer::sync()
+int LogBuffer::sync()
 {
     flush_buffer();
 
@@ -95,12 +96,12 @@ int log_buffer::sync()
     return 0;
 }
 
-void log_buffer::reset_pointers()
+void LogBuffer::reset_pointers()
 {
     setp(m_buffer.data(), m_buffer.data() + m_buffer.size());
 }
 
-void log_buffer::flush_buffer()
+void LogBuffer::flush_buffer()
 {
     if (pptr() == pbase()) {
         return;
@@ -118,21 +119,21 @@ void log_buffer::flush_buffer()
 
 #pragma endregion
 
-log_ostream::log_ostream(std::unique_ptr<std::streambuf> buffer)
+LogStream::LogStream(std::unique_ptr<std::streambuf> buffer)
     : std::ostream(buffer.get())
     , m_buffer(std::move(buffer))
 {}
 
-log_ostream::~log_ostream() = default;
+LogStream::~LogStream() = default;
 
-log_ostream::log_ostream(log_ostream&& other) noexcept
+LogStream::LogStream(LogStream&& other) noexcept
     : std::ostream(other.m_buffer.get())
     , m_buffer(std::move(other.m_buffer))
 {
     rdbuf(m_buffer.get());
 }
 
-log_ostream& log_ostream::operator=(log_ostream&& other) noexcept
+LogStream& LogStream::operator=(LogStream&& other) noexcept
 {
     m_buffer = std::move(other.m_buffer);
 

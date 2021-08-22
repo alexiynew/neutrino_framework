@@ -237,7 +237,7 @@ private:
         using namespace framework;
         using namespace framework::system;
 
-        framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
+        framework::log::set_logger(std::make_unique<framework::log::StreamLogger>(std::cout));
 
         const Size size640{640, 480};
 
