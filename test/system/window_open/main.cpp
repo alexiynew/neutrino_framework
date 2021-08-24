@@ -35,11 +35,30 @@ public:
     WindowOpenTest()
         : Suite("WindowOpenTest")
     {
+        add_test([this]() { create_window(); }, "create_window");
         add_test([this]() { open_window(); }, "open_window");
         add_test([this]() { open_several_windows(); }, "open_several_windows");
     }
 
 private:
+    Window create_window_internal()
+    {
+
+        Window window({640, 480}, "Test");
+        window.on_show.connect([](const Window& /*unused*/) { });
+        window.on_hide.connect([](const Window& /*unused*/) { });
+
+        return window;
+    }
+
+    void create_window()
+    {
+        Window window = create_window_internal();
+
+        window.show();
+        window.hide();
+    }
+
     void open_window()
     {
         int show_called = 0;
