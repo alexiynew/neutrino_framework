@@ -1,12 +1,12 @@
 /// @file
-/// @brief Window implementation for windows.
+/// @brief Wgl context implementation for windows.
 /// @author Fedorov Alexey
 /// @date 11.09.2018
 
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

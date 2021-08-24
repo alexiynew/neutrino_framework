@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -69,9 +69,9 @@ OpenglMesh::BufferInfo create_buffer(int buffer_type, const std::vector<T>& data
 
     glGenBuffers(1, &info.buffer);
 
-    glBindBuffer(buffer_type, info.buffer);
-    glBufferData(buffer_type, data_size, data.data(), GL_STATIC_DRAW);
-    glBindBuffer(buffer_type, 0);
+    glBindBuffer(static_cast<GLenum>(buffer_type), info.buffer);
+    glBufferData(static_cast<GLenum>(buffer_type), data_size, data.data(), GL_STATIC_DRAW);
+    glBindBuffer(static_cast<GLenum>(buffer_type), 0);
 
     if constexpr (std::is_same_v<T, Mesh::VertexData::value_type>) {
         info.type             = GL_FLOAT;
@@ -156,7 +156,7 @@ void OpenglMesh::draw() const
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer.buffer);
-    glDrawElements(GL_TRIANGLES, index_buffer.components_count, index_buffer.type, nullptr);
+    glDrawElements(GL_TRIANGLES, index_buffer.components_count, static_cast<GLenum>(index_buffer.type), nullptr);
 }
 bool OpenglMesh::valid() const
 {
@@ -174,7 +174,7 @@ void OpenglMesh::enable_attribute(Attribute attribute) const
 
     glEnableVertexAttribArray(attr_index);
     glBindBuffer(GL_ARRAY_BUFFER, info.buffer);
-    glVertexAttribPointer(attr_index, info.component_size, info.type, GL_FALSE, 0, 0);
+    glVertexAttribPointer(attr_index, info.component_size, static_cast<GLenum>(info.type), GL_FALSE, 0, nullptr);
 }
 
 } // namespace framework::graphics

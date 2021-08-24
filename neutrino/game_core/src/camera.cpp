@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -77,7 +77,7 @@ void Camera::set_offset(math::Vector2f offset)
 
 void Camera::update(std::chrono::nanoseconds delata_time)
 {
-    using FloatSecond = std::chrono::duration<double>;
+    using FloatSecond = std::chrono::duration<float>;
 
     const FloatSecond delta  = std::chrono::duration_cast<FloatSecond>(delata_time);
     const float camera_speed = static_cast<float>(m_speed * delta.count());

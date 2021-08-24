@@ -2,7 +2,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -391,7 +391,7 @@ MeshPtr create_mesh(int width, int height)
     Mesh::VertexData scaled_vertices;
     std::transform(square_mesh::vertices.begin(),
                    square_mesh::vertices.end(),
-                   std::back_insert_iterator(scaled_vertices),
+                   std::back_insert_iterator<Mesh::VertexData>(scaled_vertices),
                    [width, height](const Mesh::VertexData::value_type& v) {
                        return Vector3f{v.x * width, v.y * height, v.z};
                    });
@@ -502,7 +502,7 @@ void Example::setup()
         arrange();
     });
 
-    main_window.on_key_down.connect([this](const Window& w, KeyCode k, Modifiers) {
+    main_window.on_key_down.connect([this](const Window&, KeyCode k, Modifiers) {
         switch (k) {
             case KeyCode::key_equal: gamma += 0.1f; break;
             case KeyCode::key_minus: gamma -= 0.1f; break;
@@ -512,8 +512,6 @@ void Example::setup()
             case KeyCode::key_0: position = {0, 0}; break;
             default: break;
         }
-        const auto size = w.size();
-
         gamma = framework::math::clamp(gamma, -4.0f, 4.0f);
 
         renderer.set_uniform("viewMatrix", scale(Matrix4f(), {image_scale, image_scale, image_scale}));
@@ -613,7 +611,7 @@ void Example::run()
 
 int main()
 {
-    log::set_logger(std::make_unique<log::stream_logger>(std::cout));
+    log::set_logger(std::make_unique<log::StreamLogger>(std::cout));
 
     Window::set_application_name("Image example");
 

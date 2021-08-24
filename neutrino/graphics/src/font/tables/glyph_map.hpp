@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,21 +29,22 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_GLYPH_MAP_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_GLYPH_MAP_HPP
+#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_GLYPH_MAP_HPP
 
-#include <vector>
 #include <unordered_map>
+#include <vector>
+
+#include <common/utf.hpp>
 
 #include <graphics/src/font/types.hpp>
-#include <common/utf.hpp>
 
 namespace framework::graphics::details::font
 {
 
 struct GlyphMap
 {
-    using GlyphIndex = std::uint32_t;
+    using GlyphIndex    = std::uint32_t;
     using GlyphIndexMap = std::unordered_map<utf::CodePoint, GlyphIndex>;
 
     struct EncodingRecord

@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -298,7 +298,7 @@ public:
     ///
     /// @return Window context.
     ////////////////////////////////////////////////////////////////////////////
-    Context& Window::context() const;
+    const Context& context() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -469,8 +469,18 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
 private:
+    friend void swap(Window& lhs, Window& rhs) noexcept;
+
     std::unique_ptr<details::PlatformWindow> m_platform_window;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Swaps two Windows.
+///
+/// @param lhs Winodw to swap.
+/// @param rhs Window  to swap.
+////////////////////////////////////////////////////////////////////////////////
+void swap(Window& lhs, Window& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @}

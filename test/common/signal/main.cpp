@@ -2,7 +2,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -153,7 +153,7 @@ private:
         };
 
         Slot slot;
-        Signal signal;
+        Signal<> signal;
 
         auto id1 = signal.connect(slot, &Slot::plus_one);
         auto id2 = signal.connect(slot, &Slot::plus_one);
@@ -277,7 +277,7 @@ private:
 
     void slot_self_disconnect()
     {
-        Signal signal1;
+        Signal<> signal1;
         int count1 = 0;
 
         signal1.connect([&signal1, &count1]() {

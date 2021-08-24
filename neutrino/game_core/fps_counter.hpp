@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -67,16 +67,6 @@ public:
     /// @brief FpsCounter can't be copied
     ////////////////////////////////////////////////////////////////////////////
     FpsCounter& operator=(const FpsCounter&) = delete;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Default move constructor
-    ////////////////////////////////////////////////////////////////////////////
-    FpsCounter(FpsCounter&&) = default;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Default move assignment
-    ////////////////////////////////////////////////////////////////////////////
-    FpsCounter& operator=(FpsCounter&&) = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Count a frame.

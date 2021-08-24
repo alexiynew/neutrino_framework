@@ -2,7 +2,7 @@
 # =============================================================================
 # MIT License
 #
-# Copyright (c) 2017-2019 Fedorov Alexey
+# Copyright (c) 2017-2021 Fedorov Alexey
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -41,5 +41,5 @@ set_tests_properties("${GROUP_NAME}/${TEST_NAME}" PROPERTIES LABELS ${GROUP_NAME
 
 add_dependencies(${TESTS_TARGET} ${TEST_NAME})
 
-file(GLOB IMAGES "${TEST_DIR}/font/*.otf")
-file(COPY ${IMAGES} DESTINATION ${CMAKE_BINARY_DIR}/test/font)
+file(GLOB IMAGES "${TEST_DIR}/fonts/*.otf")
+file(COPY ${IMAGES} DESTINATION ${CMAKE_BINARY_DIR}/test/fonts)

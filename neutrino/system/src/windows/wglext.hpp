@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,7 @@ typedef unsigned short GLushort;
 
 namespace framework::system::details::wgl
 {
+
 #pragma region WGL_3DFX_multisample
 
 constexpr int WGL_SAMPLE_BUFFERS_3DFX = 0x2060;

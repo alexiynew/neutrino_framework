@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@
 #include <log/log.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
+#include <graphics/src/render/opengl/opengl_logger.hpp>
 
 using namespace framework::graphics::details::opengl;
 

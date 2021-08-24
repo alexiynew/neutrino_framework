@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -61,10 +61,10 @@ struct Os2
     std::int16_t strikeout_position   = 0;
     std::int16_t family_class         = 0;
     std::array<std::uint8_t, 10> panose;
-    std::uint32_t unicode_range1   = 0; // Bits 0–31
-    std::uint32_t unicode_range2   = 0; // Bits 32–63
-    std::uint32_t unicode_range3   = 0; // Bits 64–95
-    std::uint32_t unicode_range4   = 0; // Bits 96–127
+    std::uint32_t unicode_range1   = 0; // Bits 0-31
+    std::uint32_t unicode_range2   = 0; // Bits 32-63
+    std::uint32_t unicode_range3   = 0; // Bits 64-95
+    std::uint32_t unicode_range4   = 0; // Bits 96-127
     Tag ach_vend_id                = Tag::Invalid;
     std::uint16_t selection        = 0;
     std::uint16_t first_char_index = 0;
@@ -91,7 +91,6 @@ struct Os2
     std::uint16_t upper_optical_point_size = 0;
 };
 
-}
+} // namespace framework::graphics::details::font
 
 #endif
-

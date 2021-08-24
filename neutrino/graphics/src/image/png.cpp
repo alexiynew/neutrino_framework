@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -428,9 +428,9 @@ std::vector<std::uint8_t>::iterator out,
 const PassInfo& pass,
 std::int32_t bytes_per_pixel)
 {
-    const std::int32_t bytes_in_row = (pass.bytes_per_scanline + bytes_per_pixel);
-    const size_t result_size        = static_cast<size_t>(bytes_in_row) * (static_cast<size_t>(pass.height) + 1);
-    const size_t second_row_offset  = static_cast<size_t>(bytes_in_row) + bytes_per_pixel;
+    const std::int32_t bytes_in_row        = (pass.bytes_per_scanline + bytes_per_pixel);
+    const size_t result_size               = static_cast<size_t>(bytes_in_row) * (static_cast<size_t>(pass.height) + 1);
+    const std::ptrdiff_t second_row_offset = static_cast<std::ptrdiff_t>(bytes_in_row + bytes_per_pixel);
 
     std::vector<std::uint8_t> res(result_size, 0);
 
@@ -674,7 +674,7 @@ inline std::vector<Color> unserialize_impl(const FileHeader& header, std::vector
 {
     static_assert(BitDepth == 8 || BitDepth == 16);
 
-    const size_t result_size = static_cast<size_t>(header.width) * header.height;
+    const size_t result_size = static_cast<size_t>(header.width * header.height);
 
     std::vector<Color> res(result_size, Color(std::uint32_t(0x000000FF)));
 
@@ -693,7 +693,7 @@ inline std::vector<Color> unserialize_palette_impl(const FileHeader& header,
 {
     static_assert(BitDepth <= 8);
 
-    const size_t result_size = static_cast<size_t>(header.width) * header.height;
+    const size_t result_size = static_cast<size_t>(header.width * header.height);
 
     std::vector<Color> res(result_size, Color(std::uint32_t(0x000000FF)));
 

@@ -1,7 +1,7 @@
 /// @file
-/// @brief Utf confertions
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 23.09.2020
+/// @date 11.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,19 +27,43 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_UTF_HPP
-#define FRAMEWORK_COMMON_UTF_HPP
+#include <stdexcept>
 
-#include <cstdint>
-#include <string>
+#include <system/src/osx/osx_context.hpp>
 
-namespace framework::utf
+namespace framework::system::details
 {
+OsxContext::OsxContext(const ContextSettings& settings)
+    : Context(settings)
+{}
 
-using CodePoint = std::uint32_t;
+OsxContext::~OsxContext()
+{}
 
-std::string to_utf8(const std::u16string& str);
+bool OsxContext::valid() const
+{
+    return false;
+}
 
-} // namespace framework::utf
+bool OsxContext::is_current() const
+{
+    return false;
+}
 
-#endif
+void OsxContext::make_current() const
+{}
+
+void OsxContext::swap_buffers() const
+{}
+
+Context::Api OsxContext::api_type() const
+{
+    return Context::Api::opengl;
+}
+
+Context::VoidFunctionPtr OsxContext::get_function(const char* /*function_name*/) const
+{
+    return nullptr;
+}
+
+} // namespace framework::system::details

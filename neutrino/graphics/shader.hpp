@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -143,14 +143,14 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Set vertex shader source.
     ///
-    /// @param vertex_source Vertex shader source.
+    /// @param source Vertex shader source.
     ////////////////////////////////////////////////////////////////////////////
     void set_vertex_source(const std::string& source);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Set fragment shader source.
     ///
-    /// @param vertex_source Fragment shader source.
+    /// @param source Fragment shader source.
     ////////////////////////////////////////////////////////////////////////////
     void set_fragment_source(const std::string& source);
 

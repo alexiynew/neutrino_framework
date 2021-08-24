@@ -2,7 +2,7 @@
 # =============================================================================
 # MIT License
 #
-# Copyright (c) 2017-2019 Fedorov Alexey
+# Copyright (c) 2017-2021 Fedorov Alexey
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,13 +27,13 @@ set_sources(PUBLIC_SOURCES
     log.hpp
     logger.hpp
     stream_logger.hpp
-    inc/log_ostream.hpp
+    inc/log_stream.hpp
 )
 
 set_sources(PRIVATE_SOURCES
     src/log.cpp
     src/stream_logger.cpp
-    src/log_ostream.cpp
+    src/log_stream.cpp
 )
 
 target_sources(${PROJECT_NAME}

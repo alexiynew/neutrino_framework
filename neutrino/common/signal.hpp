@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -186,7 +186,7 @@ inline typename Signal<Args...>::SlotId Signal<Args...>::connect(const T& inst, 
 }
 
 template <typename... Args>
-inline void typename Signal<Args...>::disconnect(typename Signal<Args...>::SlotId id)
+inline void Signal<Args...>::disconnect(typename Signal<Args...>::SlotId id)
 {
     if (id >= 0 && id < m_slots.size()) {
         m_slots[id] = nullptr;

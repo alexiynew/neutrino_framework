@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@
 #define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_SHADER_HPP
 
 #include <cstdint>
+#include <unordered_map>
 
 #include <graphics/renderer.hpp>
 

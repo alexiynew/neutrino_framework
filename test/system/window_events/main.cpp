@@ -2,7 +2,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -237,7 +237,7 @@ private:
         using namespace framework;
         using namespace framework::system;
 
-        framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
+        framework::log::set_logger(std::make_unique<framework::log::StreamLogger>(std::cout));
 
         const Size size640{640, 480};
 

@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -239,11 +239,8 @@ bool is_cursor_in_client_area(HWND window)
 
 namespace framework::system::details
 {
-Win32Window::Win32Window(const Window& window_interface,
-                         Size size,
-                         const std::string& title,
-                         const ContextSettings& settings)
-    : PlatformWindow(window_interface)
+Win32Window::Win32Window(Size size, const std::string& title, const ContextSettings& settings)
+    : PlatformWindow()
 {
     m_window_class = ::register_window_class();
 

@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ class OpenglTexture;
 class OpenglRenderer final : public RendererImpl
 {
 public:
-    explicit OpenglRenderer(system::Context& context);
+    explicit OpenglRenderer(const system::Context& context);
 
     OpenglRenderer(const OpenglRenderer& other) = default;
     OpenglRenderer& operator=(const OpenglRenderer& other) = default;

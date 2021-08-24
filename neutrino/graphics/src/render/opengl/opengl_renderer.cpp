@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -57,13 +57,13 @@ const std::string tag = "OpenGL";
 int get_int(int id)
 {
     int value;
-    glGetIntegerv(id, &value);
+    glGetIntegerv(static_cast<GLenum>(id), &value);
     return value;
 }
 
 std::string get_string(int id)
 {
-    const char* str = reinterpret_cast<const char*>(glGetString(id));
+    const char* str = reinterpret_cast<const char*>(glGetString(static_cast<GLenum>(id)));
     return str ? std::string(str) : std::string();
 }
 
@@ -92,7 +92,7 @@ void check_supported()
 
 namespace framework::graphics
 {
-OpenglRenderer::OpenglRenderer(system::Context& context)
+OpenglRenderer::OpenglRenderer(const system::Context& context)
 {
     init_opengl([&context](const char* function_name) { return context.get_function(function_name); });
     get_info();

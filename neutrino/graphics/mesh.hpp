@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -180,32 +180,32 @@ public:
     ///
     /// Mesh can have up to `max_texture_coordinates` texture coordinates.
     ///
-    /// @param indox Texture coordinates array index.
+    /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
     ////////////////////////////////////////////////////////////////////////////
-    void set_texture_coordinates(int index, const TextureCoordinatesData& coordinates);
+    void set_texture_coordinates(std::size_t index, const TextureCoordinatesData& coordinates);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Assign new texture coordinates to Mesh.
     ///
     /// Mesh can have up to `max_texture_coordinates` texture coordinates.
     ///
-    /// @param indox Texture coordinates array index.
+    /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
     ////////////////////////////////////////////////////////////////////////////
-    void set_texture_coordinates(int index, TextureCoordinatesData&& coordinates) noexcept;
+    void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates) noexcept;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Assign new indices data to Mesh.
     ///
-    /// @param vertices New indices.
+    /// @param indices New indices.
     ////////////////////////////////////////////////////////////////////////////
     void set_indices(const IndicesData& indices);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Sets new indices data to Mesh.
     ///
-    /// @param vertices New indices.
+    /// @param indices New indices.
     ////////////////////////////////////////////////////////////////////////////
     void set_indices(IndicesData&& indices) noexcept;
 
@@ -267,7 +267,7 @@ public:
     ///
     /// @return Texture coordinates.
     ////////////////////////////////////////////////////////////////////////////
-    const TextureCoordinatesData& texture_coordinates(int index) const;
+    const TextureCoordinatesData& texture_coordinates(std::size_t index) const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Get indices data.

@@ -1,7 +1,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -59,7 +59,7 @@
 /// | @ref math_module         | @copybrief math_module         |
 /// | @ref log_module          | @copybrief log_module          |
 /// | @ref graphics_module     | @copybrief graphics_module     |
-/// | @ref game_core_module    | @copybrief game_core_module     |
+/// | @ref game_core_module    | @copybrief game_core_module    |
 /// | @ref system_module       | @copybrief system_module       |
 /// | @ref unit_test_module    | @copybrief unit_test_module    |
 ///

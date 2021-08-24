@@ -2,7 +2,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,8 +34,6 @@
 class CustomException
 {};
 
-/// @name Test to fail
-/// @{
 class ShouldFailTestAssert : public framework::unit_test::Suite
 {
 public:
@@ -100,15 +98,26 @@ private:
         throw CustomException();
     }
 };
-/// @}
 
-/// @name Test to pass
-/// @{
 class ShouldPassTest : public framework::unit_test::Suite
 {
 public:
     ShouldPassTest()
         : Suite("ShouldPassTest")
+    {
+        add_test([this]() { test_pass(); }, "test_pass");
+    }
+
+private:
+    void test_pass()
+    {}
+};
+
+class ShouldPassTestAssert : public framework::unit_test::Suite
+{
+public:
+    ShouldPassTestAssert()
+        : Suite("ShouldPassTestAssert")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -119,10 +128,7 @@ private:
         TEST_ASSERT(true, "Test assert message.");
     }
 };
-/// @}
 
-/// @name Test to run tests
-/// @{
 class TestForTest : public framework::unit_test::Suite
 {
 public:
@@ -135,7 +141,6 @@ public:
 
 private:
     void should_fail()
-
     {
         std::vector<std::unique_ptr<framework::unit_test::Suite>> tests;
 
@@ -155,11 +160,17 @@ private:
 
     void should_pass()
     {
-        ShouldPassTest should_pass;
+        std::vector<std::unique_ptr<framework::unit_test::Suite>> tests;
+        tests.emplace_back(std::make_unique<ShouldPassTest>());
+        tests.emplace_back(std::make_unique<ShouldPassTestAssert>());
 
-        run_suite(&should_pass);
+        for (auto& test : tests) {
+            run_suite(test.get());
 
-        TEST_ASSERT(should_pass.is_succeeded(), "This test should pass.");
+            std::stringstream error_stream;
+            error_stream << "Test [" << test->name() << "] should pass.";
+            TEST_ASSERT(test->is_succeeded(), error_stream.str());
+        }
     }
 
     void run_suite(framework::unit_test::Suite* test)
@@ -176,7 +187,6 @@ private:
         std::cout << std::setw(0);
     }
 };
-/// @}
 
 int main()
 {

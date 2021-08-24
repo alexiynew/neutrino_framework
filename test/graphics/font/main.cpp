@@ -2,7 +2,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ private:
     {
         Font font;
 
-        TEST_ASSERT(font.load("font/Arial.otf"), "Should load Arial font");
+        TEST_ASSERT(font.load("fonts/Arial.otf"), "Should load Arial font");
     }
 };
 

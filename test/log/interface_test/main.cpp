@@ -2,7 +2,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,8 +41,8 @@ using framework::log::info;
 using framework::log::warning;
 
 using framework::log::set_logger;
-using framework::log::severity_level;
-using framework::log::stream_logger;
+using framework::log::SeverityLevel;
+using framework::log::StreamLogger;
 
 class LoggerInterfaceTest : public framework::unit_test::Suite
 {
@@ -59,7 +59,7 @@ private:
     void stream_logger_test()
     {
         std::stringstream log_stream;
-        set_logger(std::make_unique<stream_logger>(log_stream));
+        set_logger(std::make_unique<StreamLogger>(log_stream));
 
         debug(name()) << "message_1" << std::endl;
         info(name()) << "message_2" << std::endl;
@@ -70,13 +70,13 @@ private:
         std::stringstream log_test;
 
         if (framework::utils::is_debug()) {
-            log_test << "[" << severity_level::debug << "] " << name() << ": message_1" << std::endl;
+            log_test << "[" << SeverityLevel::debug << "] " << name() << ": message_1" << std::endl;
         }
 
-        log_test << "[" << severity_level::info << "] " << name() << ": message_2" << std::endl;
-        log_test << "[" << severity_level::warning << "] " << name() << ": message_3" << std::endl;
-        log_test << "[" << severity_level::error << "] " << name() << ": message_4" << std::endl;
-        log_test << "[" << severity_level::fatal << "] " << name() << ": message_5" << std::endl;
+        log_test << "[" << SeverityLevel::info << "] " << name() << ": message_2" << std::endl;
+        log_test << "[" << SeverityLevel::warning << "] " << name() << ": message_3" << std::endl;
+        log_test << "[" << SeverityLevel::error << "] " << name() << ": message_4" << std::endl;
+        log_test << "[" << SeverityLevel::fatal << "] " << name() << ": message_5" << std::endl;
 
         TEST_ASSERT(log_test.str() == log_stream.str(), "Log messages are not correct.");
     }
@@ -84,7 +84,7 @@ private:
     void long_log_string()
     {
         std::stringstream log_stream;
-        set_logger(std::make_unique<stream_logger>(log_stream));
+        set_logger(std::make_unique<StreamLogger>(log_stream));
 
         info(name()) << "long string long string long string long string long string long string long string long "
                         "string long"
@@ -120,7 +120,7 @@ private:
 
         std::stringstream log_test;
 
-        log_test << "[" << severity_level::info << "] " << name() << ": "
+        log_test << "[" << SeverityLevel::info << "] " << name() << ": "
                  << "long string long string long string long string long string long string long string long string "
                     "long"
                  << "long string long string long string long string long string long string long string long string "
@@ -159,7 +159,7 @@ private:
     void thread_safety()
     {
         std::stringstream log_stream;
-        set_logger(std::make_unique<stream_logger>(log_stream));
+        set_logger(std::make_unique<StreamLogger>(log_stream));
 
         std::thread t1([this]() {
             for (int i = 0; i < 100; ++i) {

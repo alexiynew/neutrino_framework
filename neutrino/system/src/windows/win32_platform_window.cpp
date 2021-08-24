@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,12 +32,11 @@
 
 namespace framework::system::details
 {
-std::unique_ptr<PlatformWindow> create_platform_window(const Window& window_interface,
-                                                       Size size,
+std::unique_ptr<PlatformWindow> create_platform_window(Size size,
                                                        const std::string& title,
                                                        const ContextSettings& settings)
 {
-    return std::make_unique<Win32Window>(window_interface, size, title, settings);
+    return std::make_unique<Win32Window>(size, title, settings);
 }
 
 } // namespace framework::system::details

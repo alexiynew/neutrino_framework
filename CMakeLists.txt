@@ -2,7 +2,7 @@
 # =============================================================================
 # MIT License
 #
-# Copyright (c) 2017-2019 Fedorov Alexey
+# Copyright (c) 2017-2021 Fedorov Alexey
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,8 @@ option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
 
 # Test modules to run
 if(NOT INCLUDED_TEST_MODULES)
-    set(INCLUDED_TEST_MODULES ".*" CACHE STRING "Test modules that will be launched in the test command. An empty string means all modules." FORCE)
+    set(INCLUDED_TEST_MODULES ".*" 
+        CACHE STRING "Test modules that will be launched in the test command. An empty string means all modules." FORCE)
 endif()
 
 # Directories

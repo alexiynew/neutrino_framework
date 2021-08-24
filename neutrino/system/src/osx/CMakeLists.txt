@@ -2,7 +2,7 @@
 # =============================================================================
 # MIT License
 #
-# Copyright (c) 2017-2019 Fedorov Alexey
+# Copyright (c) 2017-2021 Fedorov Alexey
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,8 @@ set_sources(PRIVATE_SOURCES
     osx_window_wrapper.mm
     osx_window.hpp
     osx_window.mm
+    osx_context.hpp
+    osx_context.mm
 )
 
 target_sources(${PROJECT_NAME}

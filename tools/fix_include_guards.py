@@ -43,11 +43,11 @@ headers = list(filter(lambda f: f.endswith('.hpp'), get_files(path)))
 
 
 for header in headers:
+    print(header)
+
     f = open(header, 'r')
     filedata = f.read()
     f.close()
-
-    print(header)
 
     guard = include_gurad(header)
 

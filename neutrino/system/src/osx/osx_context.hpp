@@ -1,7 +1,7 @@
 /// @file
-/// @brief Utf confertions
+/// @brief Window implementation for windows.
 /// @author Fedorov Alexey
-/// @date 23.09.2020
+/// @date 11.09.2018
 
 // =============================================================================
 // MIT License
@@ -27,19 +27,35 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_COMMON_UTF_HPP
-#define FRAMEWORK_COMMON_UTF_HPP
+#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_CONTEXT_HPP
+#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_CONTEXT_HPP
 
-#include <cstdint>
-#include <string>
+#include <system/context.hpp>
 
-namespace framework::utf
+namespace framework::system::details
 {
+class OsxContext : public Context
+{
+public:
+    OsxContext(const ContextSettings& settings);
+    ~OsxContext() override;
 
-using CodePoint = std::uint32_t;
+    OsxContext(const OsxContext&) = default;
+    OsxContext(OsxContext&&)      = default;
 
-std::string to_utf8(const std::u16string& str);
+    OsxContext& operator=(const OsxContext&) = default;
+    OsxContext& operator=(OsxContext&&) = default;
 
-} // namespace framework::utf
+    bool valid() const override;
+    bool is_current() const override;
+    void make_current() const override;
+    void swap_buffers() const override;
+
+    Api api_type() const override;
+
+    VoidFunctionPtr get_function(const char* function_name) const override;
+};
+
+} // namespace framework::system::details
 
 #endif

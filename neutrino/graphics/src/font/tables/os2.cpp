@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -101,7 +101,7 @@ bool Os2::valid() const
     valid &= version <= 5;
     valid &= weight_class >= 1 && weight_class <= 1000;
     valid &= width_class >= 1 && width_class <= 9;
-        
+
     return valid;
 }
 

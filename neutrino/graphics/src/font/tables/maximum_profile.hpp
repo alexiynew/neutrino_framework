@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,8 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_MAXIMUM_PROFILE_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_FONT_MAXIMUM_PROFILE_HPP
+#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_MAXIMUM_PROFILE_HPP
+#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_MAXIMUM_PROFILE_HPP
 
 #include <vector>
 

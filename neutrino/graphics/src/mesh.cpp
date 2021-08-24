@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -111,20 +111,20 @@ void Mesh::set_colors(ColorData&& colors) noexcept
     swap(m_colors, colors);
 }
 
-void Mesh::set_texture_coordinates(int index, const TextureCoordinatesData& coordinates)
+void Mesh::set_texture_coordinates(std::size_t index, const TextureCoordinatesData& coordinates)
 {
-    if (index < 0 || index >= max_texture_coordinates) {
+    if (index >= max_texture_coordinates) {
         return;
     }
 
     m_texture_coordinates[index] = coordinates;
 }
 
-void Mesh::set_texture_coordinates(int index, TextureCoordinatesData&& coordinates) noexcept
+void Mesh::set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates) noexcept
 {
     using std::swap;
 
-    if (index < 0 || index >= max_texture_coordinates) {
+    if (index >= max_texture_coordinates) {
         return;
     }
 
@@ -191,9 +191,9 @@ const Mesh::ColorData& Mesh::colors() const
     return m_colors;
 }
 
-const Mesh::TextureCoordinatesData& Mesh::texture_coordinates(int index) const
+const Mesh::TextureCoordinatesData& Mesh::texture_coordinates(std::size_t index) const
 {
-    if (index < 0 || index >= max_texture_coordinates) {
+    if (index >= max_texture_coordinates) {
         return empty_texture_coordiantes;
     }
 

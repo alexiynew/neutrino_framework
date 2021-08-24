@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +33,7 @@
 #define FRAMEWORK_GRAPHICS_RENDERER_HPP
 
 #include <memory>
+#include <unordered_map>
 
 #include <graphics/color.hpp>
 #include <graphics/uniform.hpp>

@@ -6,7 +6,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ using namespace framework::graphics;
 
 namespace
 {
-std::unique_ptr<RendererImpl> create_impl(system::Context& context)
+std::unique_ptr<RendererImpl> create_impl(const system::Context& context)
 {
     if (!context.valid()) {
         throw std::runtime_error("Context is not valid.");

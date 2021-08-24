@@ -8,7 +8,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -96,7 +96,7 @@ private:
     float m_speed       = 0.0f;
     float m_sensitivity = 0.05f;
 
-    State m_state = {0};
+    State m_state = {0, 0, 0, 0, 0, 0};
 };
 
 ////////////////////////////////////////////////////////////////////////////////

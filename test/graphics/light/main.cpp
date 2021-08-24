@@ -2,7 +2,7 @@
 // =============================================================================
 // MIT License
 //
-// Copyright (c) 2017-2019 Fedorov Alexey
+// Copyright (c) 2017-2021 Fedorov Alexey
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -212,7 +212,9 @@ Object create_light_cube()
     shader->load_vertex_source(light_cube::vertex_shader);
     shader->load_fragment_source(light_cube::fragment_shader);
 
-    return {std::move(mesh), std::move(shader), {0, 0, 0}};
+    Material material;
+
+    return {std::move(mesh), std::move(shader), {0, 0, 0}, material};
 }
 
 } // namespace
@@ -263,6 +265,7 @@ private:
                 case KeyCode::key_d: camera.set_action(Camera::ActionState::moveRight, true); break;
                 case KeyCode::key_q: camera.set_action(Camera::ActionState::moveUp, true); break;
                 case KeyCode::key_e: camera.set_action(Camera::ActionState::moveDown, true); break;
+                default: break;
             }
         });
 
@@ -274,6 +277,7 @@ private:
                 case KeyCode::key_d: camera.set_action(Camera::ActionState::moveRight, false); break;
                 case KeyCode::key_q: camera.set_action(Camera::ActionState::moveUp, false); break;
                 case KeyCode::key_e: camera.set_action(Camera::ActionState::moveDown, false); break;
+                default: break;
             }
         });
 
@@ -306,8 +310,6 @@ private:
         std::chrono::microseconds max_total_time = std::chrono::seconds(3);
         std::chrono::microseconds total_time(0);
         std::chrono::milliseconds delta_time(16);
-
-        const float angle = 0.05f;
 
         light_cube.position = {7.0f, 0.0f, 0.0f};
 
