@@ -86,9 +86,9 @@ private:
         return res;
     }
 
-    uint32 m_buffer = 0;
-    uint32 m_bits   = 0;
-    std::size_t m_byte    = 0;
+    uint32 m_buffer    = 0;
+    uint32 m_bits      = 0;
+    std::size_t m_byte = 0;
     const std::vector<uint8>& m_data;
 };
 
@@ -164,7 +164,7 @@ private:
         m_start_code.resize(max_code_size);
 
         uint16 code = 0;
-        for (std::size_t bits = 1; bits <= bl_count.size(); bits++) {
+        for (std::size_t bits = 1; bits < bl_count.size(); bits++) {
             code = static_cast<uint16>((code + bl_count[bits - 1]) << 1);
 
             m_start_code[bits] = code;
@@ -182,8 +182,8 @@ private:
             std::size_t len = lengths[n];
 
             if (len != 0) {
-                const std::size_t index   = next_code[len] - m_start_code[len];
-                m_codes[len][index] = static_cast<uint16>(n);
+                const std::size_t index = next_code[len] - m_start_code[len];
+                m_codes[len][index]     = static_cast<uint16>(n);
                 next_code[len]++;
             }
         }
