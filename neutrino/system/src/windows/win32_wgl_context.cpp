@@ -141,7 +141,7 @@ Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window)
     };
     // clang-format on
 
-    m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, 0, attribs);
+    m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, nullptr, attribs);
     if (m_hglrc == nullptr) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't create HRC");

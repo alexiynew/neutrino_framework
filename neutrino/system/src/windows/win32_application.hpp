@@ -32,7 +32,7 @@
 
 #include <map>
 
-#include <windows.h>
+#include <Windows.h>
 
 namespace framework::system::details
 {

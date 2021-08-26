@@ -34,7 +34,7 @@ class GeneratorData:
 
         self.INCLUDE_GUARD = "FRAMEWORK_SYSTEM_SRC_WINDOWS_WGLEXT_HPP"
 
-        self.HEADER_INCLUDE_FILES = ["windows.h", "functional"]
+        self.HEADER_INCLUDE_FILES = ["Windows.h", "functional"]
         self.CPP_INCLUDE_FILES = ["type_traits", "mutex",
                                   "system/src/windows/wglext.hpp"]
 

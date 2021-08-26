@@ -45,8 +45,8 @@ private:
     {
 
         Window window({640, 480}, "Test");
-        window.on_show.connect([](const Window& /*unused*/) { });
-        window.on_hide.connect([](const Window& /*unused*/) { });
+        window.on_show.connect([](const Window& /*unused*/) {});
+        window.on_hide.connect([](const Window& /*unused*/) {});
 
         return window;
     }

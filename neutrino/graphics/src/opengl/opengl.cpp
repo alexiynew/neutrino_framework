@@ -1698,16 +1698,16 @@ bool init_gl_version_4_1([[maybe_unused]] const GetFunction& get_function)
 
 using glDrawArraysInstancedBaseInstancePtr   = std::add_pointer_t<decltype(glDrawArraysInstancedBaseInstance)>;
 using glDrawElementsInstancedBaseInstancePtr = std::add_pointer_t<decltype(glDrawElementsInstancedBaseInstance)>;
-using glDrawElementsInstancedBaseVertexBaseInstancePtr = std::add_pointer_t<
-decltype(glDrawElementsInstancedBaseVertexBaseInstance)>;
-using glGetInternalformativPtr                  = std::add_pointer_t<decltype(glGetInternalformativ)>;
-using glGetActiveAtomicCounterBufferivPtr       = std::add_pointer_t<decltype(glGetActiveAtomicCounterBufferiv)>;
-using glBindImageTexturePtr                     = std::add_pointer_t<decltype(glBindImageTexture)>;
-using glMemoryBarrierPtr                        = std::add_pointer_t<decltype(glMemoryBarrier)>;
-using glTexStorage1DPtr                         = std::add_pointer_t<decltype(glTexStorage1D)>;
-using glTexStorage2DPtr                         = std::add_pointer_t<decltype(glTexStorage2D)>;
-using glTexStorage3DPtr                         = std::add_pointer_t<decltype(glTexStorage3D)>;
-using glDrawTransformFeedbackInstancedPtr       = std::add_pointer_t<decltype(glDrawTransformFeedbackInstanced)>;
+using glDrawElementsInstancedBaseVertexBaseInstancePtr = std::add_pointer_t<decltype(
+glDrawElementsInstancedBaseVertexBaseInstance)>;
+using glGetInternalformativPtr                         = std::add_pointer_t<decltype(glGetInternalformativ)>;
+using glGetActiveAtomicCounterBufferivPtr              = std::add_pointer_t<decltype(glGetActiveAtomicCounterBufferiv)>;
+using glBindImageTexturePtr                            = std::add_pointer_t<decltype(glBindImageTexture)>;
+using glMemoryBarrierPtr                               = std::add_pointer_t<decltype(glMemoryBarrier)>;
+using glTexStorage1DPtr                                = std::add_pointer_t<decltype(glTexStorage1D)>;
+using glTexStorage2DPtr                                = std::add_pointer_t<decltype(glTexStorage2D)>;
+using glTexStorage3DPtr                                = std::add_pointer_t<decltype(glTexStorage3D)>;
+using glDrawTransformFeedbackInstancedPtr              = std::add_pointer_t<decltype(glDrawTransformFeedbackInstanced)>;
 using glDrawTransformFeedbackStreamInstancedPtr = std::add_pointer_t<decltype(glDrawTransformFeedbackStreamInstanced)>;
 
 glDrawArraysInstancedBaseInstancePtr glDrawArraysInstancedBaseInstance_ptr                         = nullptr;
@@ -1976,10 +1976,10 @@ using glClearNamedFramebufferfiPtr                  = std::add_pointer_t<decltyp
 using glBlitNamedFramebufferPtr                     = std::add_pointer_t<decltype(glBlitNamedFramebuffer)>;
 using glCheckNamedFramebufferStatusPtr              = std::add_pointer_t<decltype(glCheckNamedFramebufferStatus)>;
 using glGetNamedFramebufferParameterivPtr           = std::add_pointer_t<decltype(glGetNamedFramebufferParameteriv)>;
-using glGetNamedFramebufferAttachmentParameterivPtr = std::add_pointer_t<
-decltype(glGetNamedFramebufferAttachmentParameteriv)>;
-using glCreateRenderbuffersPtr                 = std::add_pointer_t<decltype(glCreateRenderbuffers)>;
-using glNamedRenderbufferStoragePtr            = std::add_pointer_t<decltype(glNamedRenderbufferStorage)>;
+using glGetNamedFramebufferAttachmentParameterivPtr = std::add_pointer_t<decltype(
+glGetNamedFramebufferAttachmentParameteriv)>;
+using glCreateRenderbuffersPtr                      = std::add_pointer_t<decltype(glCreateRenderbuffers)>;
+using glNamedRenderbufferStoragePtr                 = std::add_pointer_t<decltype(glNamedRenderbufferStorage)>;
 using glNamedRenderbufferStorageMultisamplePtr = std::add_pointer_t<decltype(glNamedRenderbufferStorageMultisample)>;
 using glGetNamedRenderbufferParameterivPtr     = std::add_pointer_t<decltype(glGetNamedRenderbufferParameteriv)>;
 using glCreateTexturesPtr                      = std::add_pointer_t<decltype(glCreateTextures)>;
@@ -2312,10 +2312,10 @@ bool init_gl_version_4_6([[maybe_unused]] const GetFunction& get_function)
 
 #pragma region GL_AMD_framebuffer_multisample_advanced
 
-using glRenderbufferStorageMultisampleAdvancedAMDPtr = std::add_pointer_t<
-decltype(glRenderbufferStorageMultisampleAdvancedAMD)>;
-using glNamedRenderbufferStorageMultisampleAdvancedAMDPtr = std::add_pointer_t<
-decltype(glNamedRenderbufferStorageMultisampleAdvancedAMD)>;
+using glRenderbufferStorageMultisampleAdvancedAMDPtr      = std::add_pointer_t<decltype(
+glRenderbufferStorageMultisampleAdvancedAMD)>;
+using glNamedRenderbufferStorageMultisampleAdvancedAMDPtr = std::add_pointer_t<decltype(
+glNamedRenderbufferStorageMultisampleAdvancedAMD)>;
 
 glRenderbufferStorageMultisampleAdvancedAMDPtr glRenderbufferStorageMultisampleAdvancedAMD_ptr           = nullptr;
 glNamedRenderbufferStorageMultisampleAdvancedAMDPtr glNamedRenderbufferStorageMultisampleAdvancedAMD_ptr = nullptr;
@@ -4454,25 +4454,25 @@ using glGetNamedProgramivEXTPtr                 = std::add_pointer_t<decltype(gl
 using glGetNamedProgramStringEXTPtr             = std::add_pointer_t<decltype(glGetNamedProgramStringEXT)>;
 using glNamedRenderbufferStorageEXTPtr          = std::add_pointer_t<decltype(glNamedRenderbufferStorageEXT)>;
 using glGetNamedRenderbufferParameterivEXTPtr   = std::add_pointer_t<decltype(glGetNamedRenderbufferParameterivEXT)>;
-using glNamedRenderbufferStorageMultisampleEXTPtr = std::add_pointer_t<
-decltype(glNamedRenderbufferStorageMultisampleEXT)>;
-using glNamedRenderbufferStorageMultisampleCoverageEXTPtr = std::add_pointer_t<
-decltype(glNamedRenderbufferStorageMultisampleCoverageEXT)>;
+using glNamedRenderbufferStorageMultisampleEXTPtr         = std::add_pointer_t<decltype(
+glNamedRenderbufferStorageMultisampleEXT)>;
+using glNamedRenderbufferStorageMultisampleCoverageEXTPtr = std::add_pointer_t<decltype(
+glNamedRenderbufferStorageMultisampleCoverageEXT)>;
 using glCheckNamedFramebufferStatusEXTPtr  = std::add_pointer_t<decltype(glCheckNamedFramebufferStatusEXT)>;
 using glNamedFramebufferTexture1DEXTPtr    = std::add_pointer_t<decltype(glNamedFramebufferTexture1DEXT)>;
 using glNamedFramebufferTexture2DEXTPtr    = std::add_pointer_t<decltype(glNamedFramebufferTexture2DEXT)>;
 using glNamedFramebufferTexture3DEXTPtr    = std::add_pointer_t<decltype(glNamedFramebufferTexture3DEXT)>;
 using glNamedFramebufferRenderbufferEXTPtr = std::add_pointer_t<decltype(glNamedFramebufferRenderbufferEXT)>;
-using glGetNamedFramebufferAttachmentParameterivEXTPtr = std::add_pointer_t<
-decltype(glGetNamedFramebufferAttachmentParameterivEXT)>;
-using glGenerateTextureMipmapEXTPtr           = std::add_pointer_t<decltype(glGenerateTextureMipmapEXT)>;
-using glGenerateMultiTexMipmapEXTPtr          = std::add_pointer_t<decltype(glGenerateMultiTexMipmapEXT)>;
-using glFramebufferDrawBufferEXTPtr           = std::add_pointer_t<decltype(glFramebufferDrawBufferEXT)>;
-using glFramebufferDrawBuffersEXTPtr          = std::add_pointer_t<decltype(glFramebufferDrawBuffersEXT)>;
-using glFramebufferReadBufferEXTPtr           = std::add_pointer_t<decltype(glFramebufferReadBufferEXT)>;
-using glGetFramebufferParameterivEXTPtr       = std::add_pointer_t<decltype(glGetFramebufferParameterivEXT)>;
-using glNamedCopyBufferSubDataEXTPtr          = std::add_pointer_t<decltype(glNamedCopyBufferSubDataEXT)>;
-using glNamedFramebufferTextureEXTPtr         = std::add_pointer_t<decltype(glNamedFramebufferTextureEXT)>;
+using glGetNamedFramebufferAttachmentParameterivEXTPtr = std::add_pointer_t<decltype(
+glGetNamedFramebufferAttachmentParameterivEXT)>;
+using glGenerateTextureMipmapEXTPtr                    = std::add_pointer_t<decltype(glGenerateTextureMipmapEXT)>;
+using glGenerateMultiTexMipmapEXTPtr                   = std::add_pointer_t<decltype(glGenerateMultiTexMipmapEXT)>;
+using glFramebufferDrawBufferEXTPtr                    = std::add_pointer_t<decltype(glFramebufferDrawBufferEXT)>;
+using glFramebufferDrawBuffersEXTPtr                   = std::add_pointer_t<decltype(glFramebufferDrawBuffersEXT)>;
+using glFramebufferReadBufferEXTPtr                    = std::add_pointer_t<decltype(glFramebufferReadBufferEXT)>;
+using glGetFramebufferParameterivEXTPtr                = std::add_pointer_t<decltype(glGetFramebufferParameterivEXT)>;
+using glNamedCopyBufferSubDataEXTPtr                   = std::add_pointer_t<decltype(glNamedCopyBufferSubDataEXT)>;
+using glNamedFramebufferTextureEXTPtr                  = std::add_pointer_t<decltype(glNamedFramebufferTextureEXT)>;
 using glNamedFramebufferTextureLayerEXTPtr    = std::add_pointer_t<decltype(glNamedFramebufferTextureLayerEXT)>;
 using glNamedFramebufferTextureFaceEXTPtr     = std::add_pointer_t<decltype(glNamedFramebufferTextureFaceEXT)>;
 using glTextureRenderbufferEXTPtr             = std::add_pointer_t<decltype(glTextureRenderbufferEXT)>;
@@ -5644,10 +5644,10 @@ bool init_gl_nv_bindless_multi_draw_indirect([[maybe_unused]] const GetFunction&
 
 #pragma region GL_NV_bindless_multi_draw_indirect_count
 
-using glMultiDrawArraysIndirectBindlessCountNVPtr = std::add_pointer_t<
-decltype(glMultiDrawArraysIndirectBindlessCountNV)>;
-using glMultiDrawElementsIndirectBindlessCountNVPtr = std::add_pointer_t<
-decltype(glMultiDrawElementsIndirectBindlessCountNV)>;
+using glMultiDrawArraysIndirectBindlessCountNVPtr   = std::add_pointer_t<decltype(
+glMultiDrawArraysIndirectBindlessCountNV)>;
+using glMultiDrawElementsIndirectBindlessCountNVPtr = std::add_pointer_t<decltype(
+glMultiDrawElementsIndirectBindlessCountNV)>;
 
 glMultiDrawArraysIndirectBindlessCountNVPtr glMultiDrawArraysIndirectBindlessCountNV_ptr     = nullptr;
 glMultiDrawElementsIndirectBindlessCountNVPtr glMultiDrawElementsIndirectBindlessCountNV_ptr = nullptr;
@@ -6090,8 +6090,8 @@ bool init_gl_nv_framebuffer_mixed_samples([[maybe_unused]] const GetFunction& ge
 
 #pragma region GL_NV_framebuffer_multisample_coverage
 
-using glRenderbufferStorageMultisampleCoverageNVPtr = std::add_pointer_t<
-decltype(glRenderbufferStorageMultisampleCoverageNV)>;
+using glRenderbufferStorageMultisampleCoverageNVPtr = std::add_pointer_t<decltype(
+glRenderbufferStorageMultisampleCoverageNV)>;
 
 glRenderbufferStorageMultisampleCoverageNVPtr glRenderbufferStorageMultisampleCoverageNV_ptr = nullptr;
 

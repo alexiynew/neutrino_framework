@@ -86,9 +86,9 @@ private:
         return res;
     }
 
-    uint32 m_buffer = 0;
-    uint32 m_bits   = 0;
-    std::size_t m_byte    = 0;
+    uint32 m_buffer    = 0;
+    uint32 m_bits      = 0;
+    std::size_t m_byte = 0;
     const std::vector<uint8>& m_data;
 };
 
@@ -182,8 +182,8 @@ private:
             std::size_t len = lengths[n];
 
             if (len != 0) {
-                const std::size_t index   = next_code[len] - m_start_code[len];
-                m_codes[len][index] = static_cast<uint16>(n);
+                const std::size_t index = next_code[len] - m_start_code[len];
+                m_codes[len][index]     = static_cast<uint16>(n);
                 next_code[len]++;
             }
         }

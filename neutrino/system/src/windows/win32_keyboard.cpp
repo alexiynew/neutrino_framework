@@ -29,7 +29,7 @@
 
 #include <system/src/windows/win32_keyboard.hpp>
 
-#include <windows.h>
+#include <Windows.h>
 
 namespace
 {

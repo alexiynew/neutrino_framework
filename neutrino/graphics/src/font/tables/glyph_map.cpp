@@ -183,10 +183,10 @@ GlyphMap::GlyphIndexMap parse_glyphs(const GlyphMap table, const std::vector<std
 {
     using framework::graphics::details::font::PlatformId;
 
-    constexpr std::uint16_t unicode_engiding_id              = 3;
     constexpr std::array<std::uint16_t, 3> supported_formats = {0, 4, 6};
 
     auto unicode_platform = [](const GlyphMap::EncodingRecord& record) {
+        constexpr std::uint16_t unicode_engiding_id              = 3;
         return record.platform_id == PlatformId::Unicode && record.encoding_id == unicode_engiding_id;
     };
 
