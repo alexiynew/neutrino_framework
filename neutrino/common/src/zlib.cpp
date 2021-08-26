@@ -164,7 +164,7 @@ private:
         m_start_code.resize(max_code_size);
 
         uint16 code = 0;
-        for (std::size_t bits = 1; bits <= bl_count.size(); bits++) {
+        for (std::size_t bits = 1; bits < bl_count.size(); bits++) {
             code = static_cast<uint16>((code + bl_count[bits - 1]) << 1);
 
             m_start_code[bits] = code;
