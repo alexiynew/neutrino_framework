@@ -1,4 +1,4 @@
-﻿
+
 // =============================================================================
 // MIT License
 //
@@ -56,7 +56,7 @@ private:
 
         Size size_in_callback{0, 0};
 
-        Window w({480, 320}, "Test");
+        Window w("Test", {480, 320});
 
         w.on_resize.connect([&on_size_called, &size_in_callback](const Window& /*unused*/, Size w_size) {
             on_size_called   = true;
@@ -103,7 +103,7 @@ private:
         const Size small_size{150, 150};
         const Size big_size{1000, 1000};
 
-        Window w({640, 480}, "Test");
+        Window w("Test", {640, 480});
 
         // Base values
         TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
@@ -146,7 +146,7 @@ private:
         const Size size640{640, 480};
         const Size no_size{0, 0};
 
-        Window w(size640, "Test");
+        Window w( "Test", size640);
 
         w.show();
 
@@ -167,7 +167,7 @@ private:
         const Size size640{640, 480};
         const Size size960{960, 640};
 
-        Window w(size640, "Test");
+        Window w("Test", size640);
 
         w.show();
 
@@ -204,7 +204,7 @@ private:
         const Size no_size{0, 0};
         const Size size640{640, 480};
 
-        Window w(size640, "Test");
+        Window w("Test", size640);
 
         w.set_resizable(false);
 
@@ -229,7 +229,7 @@ private:
         bool on_position_called = false;
         Size size640            = {640, 480};
 
-        Window w(size640, "Test");
+        Window w("Test", size640);
 
         w.on_move.connect(
         [&on_position_called](const Window& /*unused*/, Position /*unused*/) { on_position_called = true; });
@@ -254,7 +254,7 @@ private:
         const std::string new_title  = u8"new_window_title";
         const std::string utf8_title = u8"พᛁቢ⠗☺w ⊤Iτსе";
 
-        Window w({640, 480}, title);
+        Window w(title, {640, 480});
 
         w.show();
 

@@ -40,8 +40,8 @@ void Window::set_application_name(const std::string& name)
     details::PlatformWindow::set_application_name(name);
 }
 
-Window::Window(Size size, const std::string& title, ContextSettings settings)
-    : m_platform_window(details::create_platform_window(size, title, std::move(settings)))
+Window::Window(const std::string& title, Size size, ContextSettings settings)
+    : m_platform_window(details::create_platform_window(title, size, std::move(settings)))
 {
     m_platform_window->set_window_instance(this);
 }

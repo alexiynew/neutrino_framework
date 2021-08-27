@@ -47,7 +47,7 @@ private:
     {
         const Size size640{640, 480};
 
-        Window w(size640, "Test");
+        Window w(name(), size640);
 
         w.show();
 
@@ -89,7 +89,7 @@ private:
     {
         const Size size640{640, 480};
 
-        Window w(size640, "Test");
+        Window w(name(), size640);
 
         w.show();
 
@@ -141,7 +141,7 @@ private:
     {
         const Size size640{640, 480};
 
-        Window w(size640, "Test");
+        Window w(name(), size640);
 
         w.show();
 
@@ -183,7 +183,7 @@ private:
     {
         const Size size640{640, 480};
 
-        Window w(size640, "Test");
+        Window w(name(), size640);
 
         w.fullscreen();
         w.show();
@@ -199,7 +199,7 @@ private:
     {
         const Size size640{640, 480};
 
-        Window w(size640, "Test");
+        Window w(name(), size640);
 
         w.maximize();
         w.show();

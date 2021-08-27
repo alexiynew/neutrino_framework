@@ -32,11 +32,11 @@
 
 namespace framework::system::details
 {
-std::unique_ptr<PlatformWindow> create_platform_window(Size size,
-                                                       const std::string& title,
+std::unique_ptr<PlatformWindow> create_platform_window(const std::string& title,
+                                                       Size size,
                                                        const ContextSettings& settings)
 {
-    return std::make_unique<OSXWindowWrapper>(size, title, settings);
+    return std::make_unique<OSXWindowWrapper>(title, size, settings);
 }
 
 } // namespace framework::system::details

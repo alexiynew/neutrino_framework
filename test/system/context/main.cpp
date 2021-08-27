@@ -51,7 +51,7 @@ private:
 
         Window::set_application_name("GL Test");
 
-        Window main_window({640, 480}, "Context test");
+        Window main_window(name(), {640, 480});
         Renderer render(main_window);
 
         main_window.show();

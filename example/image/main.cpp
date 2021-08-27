@@ -478,7 +478,7 @@ private:
 };
 
 Example::Example()
-    : main_window({1024, 720}, "Image example")
+    : main_window("Image example", {1024, 720})
     , renderer(main_window)
 {}
 

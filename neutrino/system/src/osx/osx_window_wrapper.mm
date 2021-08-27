@@ -72,7 +72,7 @@ void OSXWindowWrapper::drainThreadPool()
     ensureThreadHasPool();
 }
 
-OSXWindowWrapper::OSXWindowWrapper(Size size, const std::string& /*title*/, const ContextSettings& context_settings)
+OSXWindowWrapper::OSXWindowWrapper(const std::string& /*title*/, Size size, const ContextSettings& context_settings)
     : PlatformWindow()
     , m_window(nullptr)
 {

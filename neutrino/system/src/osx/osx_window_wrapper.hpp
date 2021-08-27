@@ -47,14 +47,16 @@ namespace framework::system::details
 class OSXWindowWrapper final : public PlatformWindow
 {
 public:
-    OSXWindowWrapper(Size size, const std::string& title, const ContextSettings& settings);
+    OSXWindowWrapper(const std::string& title, Size size, const ContextSettings& settings);
     ~OSXWindowWrapper() override;
 
     OSXWindowWrapper(const OSXWindowWrapper&) = delete;
     OSXWindowWrapper& operator=(const OSXWindowWrapper&) = delete;
+    
+    OSXWindowWrapper(OSXWindowWrapper&&) noexcept = default;
+    OSXWindowWrapper& operator=(OSXWindowWrapper&&) noexcept = default;
 
-    /// @name actions
-    /// @{
+#pragma region actions
     void show() override;
     void hide() override;
     void focus() override;
@@ -67,29 +69,26 @@ public:
     void grab_cursor() override;
     void release_cursor() override;
     void process_events() override;
-    /// @}
+#pragma endregion
 
-    /// @name setters
-    /// @{
+#pragma region setters
     void set_max_size(Size size) override;
     void set_min_size(Size size) override;
     void set_resizable(bool value) override;
     void set_title(const std::string& title) override;
     void set_cursor_visibility(bool visible) override;
-    /// @}
+#pragma endregion
 
-    /// @name getters
-    /// @{
+#pragma region getters
     Position position() const override;
     Size size() const override;
     Size max_size() const override;
     Size min_size() const override;
     std::string title() const override;
     const Context& context() const override;
-    /// @}
+#pragma endregion
 
-    /// @name state
-    /// @{
+#pragma region state
     bool should_close() const override;
     bool is_fullscreen() const override;
     bool is_iconified() const override;
@@ -99,7 +98,7 @@ public:
     bool has_input_focus() const override;
     bool is_cursor_visible() const override;
     bool is_cursor_grabbed() const override;
-    /// @}
+#pragma endregion
 
 private:
     void setup_application();

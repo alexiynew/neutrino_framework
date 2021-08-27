@@ -241,7 +241,7 @@ private:
 
         const Size size640{640, 480};
 
-        Window w(size640, "Test");
+        Window w(name(), size640);
 
         bool should_close = false;
 

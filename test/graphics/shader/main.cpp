@@ -141,7 +141,7 @@ private:
 
         Window::set_application_name("GL shader Test");
 
-        Window main_window({640, 480}, "GL shader test");
+        Window main_window(name(), {640, 480});
         Renderer renderer(main_window);
 
         main_window.show();

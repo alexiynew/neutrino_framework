@@ -233,7 +233,7 @@ private:
     {
         Window::set_application_name("GL light Test");
 
-        Window main_window({800, 640}, "GL light test");
+        Window main_window(name(), {800, 640});
         Renderer renderer(main_window);
 
         renderer.set_clear_color(Color(0x202020FFu));

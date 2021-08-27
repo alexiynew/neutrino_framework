@@ -49,8 +49,8 @@ private:
         int betta_focused    = 0;
         int betta_lost_focus = 0;
 
-        Window alpha({640, 480}, "alpha");
-        Window betta({640, 480}, "betta");
+        Window alpha("alpha", {640, 480});
+        Window betta("betta", {640, 480});
 
         alpha.on_focus.connect([&alpha_focused](const Window& /*unused*/) { alpha_focused++; });
         betta.on_focus.connect([&betta_focused](const Window& /*unused*/) { betta_focused++; });
@@ -119,7 +119,7 @@ public:
 private:
     void grab_cursor()
     {
-        Window window({640, 480}, name());
+        Window window(name(), {640, 480});
 
         window.show();
 
@@ -142,7 +142,7 @@ private:
         TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
-        Window tmp({640, 480}, "Tmp");
+        Window tmp("Tmp", {640, 480});
         tmp.show();
 
         tmp.process_events();
@@ -167,7 +167,7 @@ private:
 
     void cursor_visibility()
     {
-        Window window({640, 480}, name());
+        Window window(name(), {640, 480});
 
         window.show();
 

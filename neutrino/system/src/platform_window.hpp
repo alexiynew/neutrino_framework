@@ -53,11 +53,10 @@ public:
     PlatformWindow(const PlatformWindow&) = delete;
     PlatformWindow& operator=(const PlatformWindow&) = delete;
 
-    PlatformWindow(PlatformWindow&&) = default;
-    PlatformWindow& operator=(PlatformWindow&&) = default;
+    PlatformWindow(PlatformWindow&&) noexcept = default;
+    PlatformWindow& operator=(PlatformWindow&&) noexcept = default;
 
-    /// @name actions
-    /// @{
+#pragma region actions
     virtual void show()                  = 0;
     virtual void hide()                  = 0;
     virtual void focus()                 = 0;
@@ -70,29 +69,26 @@ public:
     virtual void grab_cursor()           = 0;
     virtual void release_cursor()        = 0;
     virtual void process_events()        = 0;
-    /// @}
+#pragma endregion
 
-    /// @name setters
-    /// @{
+#pragma region setters
     virtual void set_max_size(Size size)             = 0;
     virtual void set_min_size(Size size)             = 0;
     virtual void set_resizable(bool value)           = 0;
     virtual void set_title(const std::string& title) = 0;
     virtual void set_cursor_visibility(bool visible) = 0;
-    /// @}
+#pragma endregion
 
-    /// @name getters
-    /// @{
+#pragma region getters
     virtual Position position() const      = 0;
     virtual Size size() const              = 0;
     virtual Size max_size() const          = 0;
     virtual Size min_size() const          = 0;
     virtual std::string title() const      = 0;
     virtual const Context& context() const = 0;
-    /// @}
+#pragma endregion
 
-    /// @name state
-    /// @{
+#pragma region state
     virtual bool should_close() const      = 0;
     virtual bool is_fullscreen() const     = 0;
     virtual bool is_iconified() const      = 0;
@@ -102,7 +98,7 @@ public:
     virtual bool has_input_focus() const   = 0;
     virtual bool is_cursor_visible() const = 0;
     virtual bool is_cursor_grabbed() const = 0;
-    /// @}
+#pragma endregion
 
     void set_window_instance(const Window* window);
 
@@ -128,9 +124,8 @@ private:
     const Window* m_window_interface = nullptr;
 };
 
-// @brief Fabric function to make platform dependent implementation
-std::unique_ptr<PlatformWindow> create_platform_window(Size size,
-                                                       const std::string& title,
+std::unique_ptr<PlatformWindow> create_platform_window(const std::string& title,
+                                                       Size size,
                                                        const ContextSettings& settings);
 
 } // namespace framework::system::details
