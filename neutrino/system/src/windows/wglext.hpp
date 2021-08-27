@@ -32,7 +32,7 @@
 
 #include <functional>
 
-#include <windows.h>
+#include <Windows.h>
 
 typedef void GLvoid;
 typedef unsigned int GLenum;

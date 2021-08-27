@@ -60,7 +60,7 @@ std::wstring utf8_to_utf16(const std::string& string)
         return std::wstring();
     }
 
-    std::unique_ptr<wchar_t[]> buffer(new wchar_t[size]);
+    std::unique_ptr<wchar_t[]> buffer(new wchar_t[static_cast<std::size_t>(size)]);
     MultiByteToWideChar(CP_UTF8, 0, &string[0], -1, buffer.get(), size);
 
     return std::wstring(buffer.get());
@@ -78,7 +78,7 @@ std::string utf16_to_utf8(const std::wstring& string)
         return std::string();
     }
 
-    std::unique_ptr<char[]> buffer(new char[size]);
+    std::unique_ptr<char[]> buffer(new char[static_cast<std::size_t>(size)]);
     WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
 
     return std::string(buffer.get());
@@ -96,7 +96,7 @@ std::string utf32_to_utf8(const std::wstring& string)
         return std::string();
     }
 
-    std::unique_ptr<char[]> buffer(new char[size]);
+    std::unique_ptr<char[]> buffer(new char[static_cast<std::size_t>(size)]);
     WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
 
     return std::string(buffer.get());
@@ -123,7 +123,7 @@ std::shared_ptr<ATOM> register_window_class_details()
     window_class.hInstance     = Win32Application::handle();
     window_class.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
     window_class.hCursor       = LoadCursor(nullptr, IDC_ARROW);
-    window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    window_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
     window_class.lpszMenuName  = nullptr;
     window_class.lpszClassName = class_name;
     window_class.hIconSm       = LoadIcon(nullptr, IDI_APPLICATION);
@@ -167,7 +167,7 @@ framework::system::MouseButton get_mouse_button(UINT message)
     return MouseButton::unknown;
 }
 
-framework::Size adjust_size(framework::Size size, DWORD style)
+framework::Size adjust_size(framework::Size size, long style)
 {
     RECT rect{0, 0, size.width, size.height};
     AdjustWindowRectEx(&rect, window_style, false, window_ex_style);
@@ -521,7 +521,7 @@ std::string Win32Window::title() const
         return std::string();
     }
 
-    std::unique_ptr<wchar_t[]> buffer(new wchar_t[title_length]);
+    std::unique_ptr<wchar_t[]> buffer(new wchar_t[static_cast<std::size_t>(title_length)]);
     GetWindowText(m_window, buffer.get(), title_length);
 
     return utf16_to_utf8(buffer.get());
@@ -961,7 +961,7 @@ void Win32Window::process_raw_input(LPARAM l_param)
     UINT size = 0;
     GetRawInputData(handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
 
-    RAWINPUT raw_input = {0};
+    RAWINPUT raw_input = RAWINPUT();
     if (GetRawInputData(handle, RID_INPUT, &raw_input, &size, sizeof(RAWINPUTHEADER)) == static_cast<UINT>(-1)) {
         log::error(log_tag) << "Failed to get raw input data";
         return;

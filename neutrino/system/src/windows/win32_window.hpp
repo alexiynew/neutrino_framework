@@ -36,7 +36,7 @@
 
 #include <system/src/platform_window.hpp>
 
-#include <windows.h>
+#include <Windows.h>
 
 namespace framework::system
 {

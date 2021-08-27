@@ -111,15 +111,16 @@ std::string Naming::get_string(NameId name_id) const
 
 std::string Naming::read_string(Naming table, Naming::NameId name_id, const std::vector<std::uint8_t>& data)
 {
-    constexpr std::uint16_t unicode_engiding_id = 3;
-    constexpr std::uint16_t windows_engiding_id = 1;
-
     auto unicode_platform = [name_id](const NameRecord& record) {
+        constexpr std::uint16_t unicode_engiding_id = 3;
+
         return record.name_id == name_id && record.platform_id == PlatformId::Unicode &&
                record.encoding_id == unicode_engiding_id;
     };
 
     auto windows_platform = [name_id](const NameRecord& record) {
+        constexpr std::uint16_t windows_engiding_id = 1;
+        
         return record.name_id == name_id && record.platform_id == PlatformId::Windows &&
                record.encoding_id == windows_engiding_id;
     };

@@ -211,8 +211,6 @@ inline T big_endian_value(const Iterator begin, const Iterator end)
         v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 7)));
         return static_cast<T>(v);
     }
-
-    return T(0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -282,8 +280,6 @@ inline T little_endian_value(const Iterator begin, const Iterator end)
         v += static_cast<uint64_t>(*next(begin, 7)) << 56;
         return static_cast<T>(v);
     }
-
-    return T(0);
 }
 
 /*

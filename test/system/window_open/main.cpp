@@ -44,7 +44,7 @@ private:
     Window create_window_internal()
     {
 
-        Window window("Test", {640, 480});
+        Window window(name(), {640, 480});
         window.on_show.connect([](const Window& /*unused*/) {});
         window.on_hide.connect([](const Window& /*unused*/) {});
 
@@ -64,7 +64,7 @@ private:
         int show_called = 0;
         int hide_called = 0;
 
-        Window window("Test", {640, 480});
+        Window window(name(), {640, 480});
 
         window.on_show.connect([&show_called](const Window& /*unused*/) { show_called++; });
         window.show();
@@ -82,11 +82,11 @@ private:
     void open_several_windows()
     {
         Window windows[5] = {
-        Window("Test", {640, 480}),
-        Window("Test", {640, 480}),
-        Window("Test", {640, 480}),
-        Window("Test", {640, 480}),
-        Window("Test", {640, 480}),
+        Window(name(), {640, 480}),
+        Window(name(), {640, 480}),
+        Window(name(), {640, 480}),
+        Window(name(), {640, 480}),
+        Window(name(), {640, 480}),
         };
 
         for (auto& w : windows) {
