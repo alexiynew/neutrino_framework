@@ -24,64 +24,78 @@
 # =============================================================================
 
 macro(set_compiller_flags)
-    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
-        message("Using Clang compiller settings")
-        set(CMAKE_CXX_FLAGS "-std=c++17 \
-                             -Weverything \
-                             -Werror \
-                             -Wno-c++98-compat \
-                             -Wno-c++98-compat-pedantic \
-                             -Wno-c++11-extensions \
-                             -Wno-c++2a-compat \
-                             -Wno-padded \
-                             -Wno-weak-vtables \
-                             -Wno-exit-time-destructors \
-                             -Wno-global-constructors \
-                             -Wno-unknown-pragmas \
-                             -Wno-reserved-id-macro \
-                             -Wno-documentation-unknown-command \
-                             -Wno-switch-enum \
-                             -pthread \
-                             -fPIC")
-        set(CMAKE_CXX_FLAGS_DEBUG "-g")
-        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG")
-    elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
-        message("Using GNU compiller settings")
-        set(CMAKE_CXX_FLAGS "-std=c++17 \
-                             -Wall \
-                             -Wextra \
-                             -Wpedantic \
-                             -Werror \
-                             -Wfloat-equal \
-                             -Wshadow \
-                             -Wconversion \
-                             -Wno-unknown-pragmas \
-                             -pthread \
-                             -fPIC")
-        set(CMAKE_CXX_FLAGS_DEBUG "-g")
-        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -DNDEBUG")
+    message("${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
-        if("${PLATFORM_NAME}" STREQUAL "windows")
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNOMINMAX -DUNICODE")
-        endif()
+    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
+        set(COMPILER_FLAGS -std=c++17
+                           -Weverything
+                           -Werror
+                           -Wno-c++98-compat
+                           -Wno-c++98-compat-pedantic
+                           -Wno-c++11-extensions
+                           -Wno-c++2a-compat
+                           -Wno-padded
+                           -Wno-weak-vtables
+                           -Wno-exit-time-destructors
+                           -Wno-global-constructors
+                           -Wno-unknown-pragmas
+                           -Wno-reserved-id-macro
+                           -Wno-documentation-unknown-command
+                           -Wno-switch-enum
+                           -pthread
+                           -fPIC)
+
+        set(DEBUG_FLAGS -g)
+
+        set(RELEASE_FLAGS -O3 -DNDEBUG)
+
+    elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+        set(COMPILER_FLAGS -std=c++17
+                           -Wall
+                           -Wextra
+                           -Wpedantic
+                           -Werror
+                           -Wfloat-equal
+                           -Wshadow
+                           -Wconversion
+                           -Wno-unknown-pragmas
+                           -pthread
+                           -fPIC)
+
+        set(DEBUG_FLAGS -g)
+
+        set(RELEASE_FLAGS -O3 -DNDEBUG)
+
     elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
-        message("Using Visual Studio C++ compiller settings")
-        set(CMAKE_CXX_FLAGS "/std:c++17 \
-                             /EHsc \
-                             /W4 \
-                             /WX")
-        set(CMAKE_CXX_FLAGS_DEBUG "/Od /ZI /DNOMINMAX /DUNICODE")
-        set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
-        set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/O2 /DNDEBUG")
+        set(COMPILER_FLAGS /std:c++17
+                           /EHsc
+                           /W4
+                           /WX)
+
+        set(DEBUG_FLAGS /Od /ZI)
+
+        set(RELEASE_FLAGS /O2 /DNDEBUG)
+
     endif()
 
-    set(CMAKE_CXX_FLAGS_COVERAGE
-        "-g -O0 --coverage -fprofile-arcs -ftest-coverage"
-        CACHE STRING "Flags used by the C++ compiler during coverage builds." FORCE)
+    if("${PLATFORM_NAME}" STREQUAL "windows")
+        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
+            list(APPEND COMPILER_FLAGS /DNOMINMAX /DUNICODE)
+        else() 
+            list(APPEND COMPILER_FLAGS -DNOMINMAX -DUNICODE)
+        endif()
+    endif()
 
     if(ENABLE_TEST_COVERAGE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
-        set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_COVERAGE})
+        list(APPEND COMPILER_FLAGS -O0 
+                                   --coverage 
+                                   -fprofile-arcs 
+                                   -ftest-coverage)
     endif()
+
+    list(JOIN COMPILER_FLAGS " " CMAKE_CXX_FLAGS)
+    list(JOIN DEBUG_FLAGS " " CMAKE_CXX_FLAGS_DEBUG)
+    list(JOIN RELEASE_FLAGS " " CMAKE_CXX_FLAGS_RELEASE)
+    list(JOIN RELEASE_FLAGS " " CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+
 endmacro()
