@@ -225,6 +225,11 @@ const Context& OSXWindowWrapper::context() const
     return *m_context.get();
 }
 
+Context& OSXWindowWrapper::context()
+{
+    return *m_context.get();
+}
+
 #pragma endregion
 
 #pragma region state

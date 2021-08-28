@@ -39,7 +39,7 @@ using namespace framework::graphics;
 
 namespace
 {
-std::unique_ptr<RendererImpl> create_impl(const system::Context& context)
+std::unique_ptr<RendererImpl> create_impl(system::Context& context)
 {
     if (!context.valid()) {
         throw std::runtime_error("Context is not valid.");

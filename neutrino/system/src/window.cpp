@@ -180,6 +180,11 @@ const Context& Window::context() const
     return m_platform_window->context();
 }
 
+Context& Window::context()
+{
+    return m_platform_window->context();
+}
+
 #pragma endregion
 
 #pragma region state

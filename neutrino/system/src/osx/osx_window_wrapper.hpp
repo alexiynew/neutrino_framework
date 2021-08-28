@@ -81,6 +81,7 @@ public:
     Size min_size() const override;
     std::string title() const override;
     const Context& context() const override;
+    Context& context() override;
 #pragma endregion
 
 #pragma region state

@@ -45,12 +45,6 @@ bool OsxContext::is_current() const
     return false;
 }
 
-void OsxContext::make_current() const
-{}
-
-void OsxContext::swap_buffers() const
-{}
-
 Context::Api OsxContext::api_type() const
 {
     return Context::Api::opengl;
@@ -60,5 +54,11 @@ Context::VoidFunctionPtr OsxContext::get_function(const char* /*function_name*/)
 {
     return nullptr;
 }
+
+void OsxContext::make_current()
+{}
+
+void OsxContext::swap_buffers()
+{}
 
 } // namespace framework::system::details

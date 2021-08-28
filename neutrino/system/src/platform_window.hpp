@@ -81,6 +81,7 @@ public:
     virtual Size min_size() const          = 0;
     virtual std::string title() const      = 0;
     virtual const Context& context() const = 0;
+    virtual Context& context()             = 0;
 #pragma endregion
 
 #pragma region state
