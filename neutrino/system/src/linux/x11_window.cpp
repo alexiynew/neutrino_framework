@@ -1,8 +1,3 @@
-/// @file
-/// @brief Window implementation for Linux.
-/// @author Fedorov Alexey
-/// @date 05.04.2017
-
 // =============================================================================
 // MIT License
 //

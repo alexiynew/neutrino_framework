@@ -1,8 +1,3 @@
-/// @file
-/// @brief Utf confertions
-/// @author Fedorov Alexey
-/// @date 23.09.2020
-
 // =============================================================================
 // MIT License
 //

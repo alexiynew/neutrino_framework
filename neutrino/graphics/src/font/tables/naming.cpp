@@ -1,10 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-/// @file
-/// @brief Naming table
-/// @author Fedorov Alexey
-/// @date 22.09.2020
-////////////////////////////////////////////////////////////////////////////////
-
 // =============================================================================
 // MIT License
 //
@@ -120,7 +113,7 @@ std::string Naming::read_string(Naming table, Naming::NameId name_id, const std:
 
     auto windows_platform = [name_id](const NameRecord& record) {
         constexpr std::uint16_t windows_engiding_id = 1;
-        
+
         return record.name_id == name_id && record.platform_id == PlatformId::Windows &&
                record.encoding_id == windows_engiding_id;
     };

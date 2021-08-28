@@ -1,8 +1,3 @@
-/// @file
-/// @brief CRC implementation.
-/// @author Fedorov Alexey
-/// @date 20.09.2018
-
 // =============================================================================
 // MIT License
 //

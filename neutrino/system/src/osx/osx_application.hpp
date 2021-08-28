@@ -1,8 +1,3 @@
-/// @file
-/// @brief OSX application.
-/// @author Fedorov Alexey
-/// @date 08.03.2020
-
 // =============================================================================
 // MIT License
 //

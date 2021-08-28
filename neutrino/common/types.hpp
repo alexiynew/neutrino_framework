@@ -1,8 +1,3 @@
-/// @file
-/// @brief Definition of basic primitive types.
-/// @author Fedorov Alexey
-/// @date 31.07.2017
-
 // =============================================================================
 // MIT License
 //

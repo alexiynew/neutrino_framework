@@ -1,8 +1,3 @@
-/// @file
-/// @brief Graphic context settings.
-/// @author Fedorov Alexey
-/// @date 12.11.2018
-
 // =============================================================================
 // MIT License
 //

@@ -217,12 +217,7 @@ class Generator:
                 used.commands.extend(c.prototype.name for c in group.commands)
 
     def generate_header(self):
-        t = Template("/// @file\n"
-                     "/// @brief ${brief}\n"
-                     "/// @author Fedorov Alexey\n"
-                     "/// @date ${date}\n"
-                     "\n"
-                     "${license}"
+        t = Template("${license}"
                      "\n"
                      "#ifndef ${include_guard}\n"
                      "#define ${include_guard}\n"
@@ -286,12 +281,7 @@ class Generator:
         hpp.close()
 
     def generate_source(self):
-        t = Template("/// @file\n"
-                     "/// @brief ${brief}\n"
-                     "/// @author Fedorov Alexey\n"
-                     "/// @date ${date}\n"
-                     "\n"
-                     "${license}"
+        t = Template("${license}"
                      "\n"
                      "${cpp_includes}\n"
                      "\n"

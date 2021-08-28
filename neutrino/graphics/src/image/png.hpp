@@ -1,8 +1,3 @@
-/// @file
-/// @brief Png image implementation.
-/// @author Fedorov Alexey
-/// @date 04.04.2019
-
 // =============================================================================
 // MIT License
 //

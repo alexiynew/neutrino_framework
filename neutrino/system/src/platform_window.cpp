@@ -1,8 +1,3 @@
-/// @file
-/// @brief Describes interface for all window implementations.
-/// @author Fedorov Alexey
-/// @date 05.04.2017
-
 // =============================================================================
 // MIT License
 //

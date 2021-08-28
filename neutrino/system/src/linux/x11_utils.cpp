@@ -1,8 +1,3 @@
-/// @file ::syste::system::
-/// @brief Contains several helper functions.
-/// @author Fedorov Alexey
-/// @date 05.04.2018
-
 // =============================================================================
 // MIT License
 //

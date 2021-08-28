@@ -1,8 +1,3 @@
-/// @file
-/// @brief GL context implementation for Linux.
-/// @author Fedorov Alexey
-/// @date 14.10.2018
-
 // =============================================================================
 // MIT License
 //

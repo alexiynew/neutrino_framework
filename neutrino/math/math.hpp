@@ -1,14 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-/// @file
-/// @brief Main file in math module.
-/// @author Fedorov Alexey
-/// @date 04.03.2017
-///
-/// You should include this file only.
-/// It includes all math stuff and declarations of main types for vectors
-/// and matrices.
-////////////////////////////////////////////////////////////////////////////////
-
 // =============================================================================
 // MIT License
 //

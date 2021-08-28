@@ -1,4 +1,3 @@
-
 // =============================================================================
 // MIT License
 //
@@ -146,7 +145,7 @@ private:
         const Size size640{640, 480};
         const Size no_size{0, 0};
 
-        Window w( "Test", size640);
+        Window w("Test", size640);
 
         w.show();
 

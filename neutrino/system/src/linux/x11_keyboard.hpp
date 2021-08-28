@@ -1,8 +1,3 @@
-/// @file
-/// @brief Helper functions for keyboard handling.
-/// @author Fedorov Alexey
-/// @date 11.03.2019
-
 // =============================================================================
 // MIT License
 //

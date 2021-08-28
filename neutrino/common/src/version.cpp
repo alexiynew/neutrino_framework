@@ -1,8 +1,3 @@
-/// @file
-/// @brief Version number abstraction
-/// @author Fedorov Alexey
-/// @date 13.09.2018
-
 // =============================================================================
 // MIT License
 //

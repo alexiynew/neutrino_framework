@@ -1,8 +1,3 @@
-/// @file
-/// @brief Types and functions for keyboard support.
-/// @author Fedorov Alexey
-/// @date 15.12.2018
-
 // =============================================================================
 // MIT License
 //

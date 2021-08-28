@@ -1,8 +1,3 @@
-/// @file
-/// @brief Window implementation for OSX.
-/// @author Fedorov Alexey
-/// @date 20.12.2017
-
 // =============================================================================
 // MIT License
 //
@@ -52,7 +47,7 @@ public:
 
     OSXWindowWrapper(const OSXWindowWrapper&) = delete;
     OSXWindowWrapper& operator=(const OSXWindowWrapper&) = delete;
-    
+
     OSXWindowWrapper(OSXWindowWrapper&&) noexcept = default;
     OSXWindowWrapper& operator=(OSXWindowWrapper&&) noexcept = default;
 

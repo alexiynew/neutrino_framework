@@ -1,8 +1,3 @@
-/// @file
-/// @brief Types and functions for mouse support.
-/// @author Fedorov Alexey
-/// @date 29.03.2019
-
 // =============================================================================
 // MIT License
 //

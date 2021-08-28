@@ -1,8 +1,3 @@
-/// @file
-/// @brief Window implementation for keyboard handling.
-/// @author Fedorov Alexey
-/// @date 03.03.2019
-
 // =============================================================================
 // MIT License
 //

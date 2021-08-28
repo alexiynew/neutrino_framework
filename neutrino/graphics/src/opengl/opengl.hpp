@@ -1,8 +1,3 @@
-/// @file
-/// @brief OpneGL functions wrapper.
-/// @author Fedorov Alexey
-/// @date 17.09.2018
-
 // =============================================================================
 // MIT License
 //

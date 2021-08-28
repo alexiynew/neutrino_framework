@@ -1,8 +1,3 @@
-/// @file
-/// @brief Window interface class.
-/// @author Fedorov Alexey
-/// @date 04.04.2017
-
 // =============================================================================
 // MIT License
 //

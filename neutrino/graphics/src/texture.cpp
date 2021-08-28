@@ -1,8 +1,3 @@
-/// @file
-/// @brief OpenGL texture.
-/// @author Fedorov Alexey
-/// @date 16.04.2019
-
 // =============================================================================
 // MIT License
 //

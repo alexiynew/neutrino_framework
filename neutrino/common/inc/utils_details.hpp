@@ -1,8 +1,3 @@
-/// @file
-/// @brief Implementation details of utils functions
-/// @author Fedorov Alexey
-/// @date 11.07.2018
-
 // =============================================================================
 // MIT License
 //

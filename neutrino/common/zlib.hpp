@@ -1,8 +1,3 @@
-/// @file
-/// @brief ZLIB compression algorithm implementation
-/// @author Fedorov Alexey
-/// @date 17.09.2019
-
 // =============================================================================
 // MIT License
 //

@@ -1,8 +1,3 @@
-/// @file
-/// @brief Window implementation for OSX.
-/// @author Fedorov Alexey
-/// @date 06.03.2020
-
 // =============================================================================
 // MIT License
 //

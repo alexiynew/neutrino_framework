@@ -1,8 +1,3 @@
-/// @file
-/// @brief Defines connection to the X server.
-/// @author Fedorov Alexey
-/// @date 08.08.2017
-
 // =============================================================================
 // MIT License
 //

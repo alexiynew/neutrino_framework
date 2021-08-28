@@ -1,8 +1,3 @@
-/// @file
-/// @brief WGL extension functions wrapper.
-/// @author Fedorov Alexey
-/// @date 17.09.2018
-
 // =============================================================================
 // MIT License
 //

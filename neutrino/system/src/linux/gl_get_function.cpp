@@ -1,8 +1,3 @@
-/// @file
-/// @brief Helper functions.
-/// @author Fedorov Alexey
-/// @date 21.06.2018
-
 // =============================================================================
 // MIT License
 //
