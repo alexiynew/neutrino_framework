@@ -161,18 +161,6 @@ bool Win32WglContext::is_current() const
     return valid() && wglGetCurrentContext() == m_hglrc;
 }
 
-void Win32WglContext::make_current() const
-{
-    if (!is_current()) {
-        wglMakeCurrent(m_hdc, m_hglrc);
-    }
-}
-
-void Win32WglContext::swap_buffers() const
-{
-    SwapBuffers(m_hdc);
-}
-
 Context::Api Win32WglContext::api_type() const
 {
     return Context::Api::opengl;
@@ -193,6 +181,18 @@ Context::VoidFunctionPtr Win32WglContext::get_function(const char* function_name
     }
 
     return function;
+}
+
+void Win32WglContext::make_current()
+{
+    if (!is_current()) {
+        wglMakeCurrent(m_hdc, m_hglrc);
+    }
+}
+
+void Win32WglContext::swap_buffers()
+{
+    SwapBuffers(m_hdc);
 }
 
 } // namespace framework::system::details
