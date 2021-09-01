@@ -238,7 +238,14 @@ bool Window::is_cursor_grabbed() const
 void swap(Window& lhs, Window& rhs) noexcept
 {
     using std::swap;
+    if (lhs.m_platform_window) {
+        lhs.m_platform_window->set_window_instance(&rhs);
+    }
+    if (rhs.m_platform_window) {
+        rhs.m_platform_window->set_window_instance(&lhs);
+    }
     swap(lhs.m_platform_window, rhs.m_platform_window);
+
     swap(lhs.on_show, rhs.on_show);
     swap(lhs.on_hide, rhs.on_hide);
     swap(lhs.on_close, rhs.on_close);
@@ -254,9 +261,6 @@ void swap(Window& lhs, Window& rhs) noexcept
     swap(lhs.on_button_up, rhs.on_button_up);
     swap(lhs.on_mouse_enter, rhs.on_mouse_enter);
     swap(lhs.on_mouse_leave, rhs.on_mouse_leave);
-
-    lhs.m_platform_window->set_window_instance(&rhs);
-    rhs.m_platform_window->set_window_instance(&lhs);
 }
 
 } // namespace framework::system
