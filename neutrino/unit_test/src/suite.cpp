@@ -84,7 +84,7 @@ void Suite::test_failed(const std::string& file, int32 line, const std::string& 
     m_success = false;
     if (m_current_test != m_tests.end()) {
         m_current_test->reslut = TestData::Result::fail;
-        m_current_test->status = {message, file, line};
+        m_current_test->status.push_back({message, file, line});
     }
 }
 
@@ -102,10 +102,13 @@ void Suite::output(const TestData& test)
               << "]" << std::endl;
 
     if (test.reslut == TestData::Result::fail) {
-        std::cout << "        " << test.status.file << ":" << test.status.line << " " << test.status.message
-                  << std::endl;
+        for (const auto& item : test.status) {
+            std::cout << "        " << item.file << ":" << item.line << " " << item.message << std::endl;
+        }
     } else if (test.reslut == TestData::Result::exception) {
-        std::cout << "        " << test.status.message << std::endl;
+        for (const auto& item : test.status) {
+            std::cout << "        " << item.message << std::endl;
+        }
     }
 }
 

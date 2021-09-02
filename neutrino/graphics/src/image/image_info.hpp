@@ -27,6 +27,7 @@
 
 #include <optional>
 #include <tuple>
+#include <variant>
 #include <vector>
 
 #include <common/types.hpp>
@@ -36,16 +37,29 @@ namespace framework::graphics::details::image
 {
 constexpr float default_gamma = 2.2f;
 
+namespace error
+{
+inline constexpr char invalid_file_type[]      = "Invalid file type.";
+inline constexpr char invalid_file_signature[] = "Invalid file signature.";
+inline constexpr char open_file_error[]        = "Can't open file.";
+inline constexpr char file_offset_error[]      = "File offset error.";
+inline constexpr char read_header_error[]      = "Can't read image header.";
+inline constexpr char read_data_error[]        = "Can't read image data.";
+inline constexpr char unknown_error[]          = "Unknown error.";
+} // namespace error
+
 struct ImageInfo
 {
     int32 width  = 0;
     int32 height = 0;
 
     float gamma = default_gamma;
+
+    std::vector<Color> data;
 };
 
-using ImageData  = std::tuple<ImageInfo, std::vector<Color>>;
-using LoadResult = std::optional<ImageData>;
+using ErrorDescription = std::string;
+using LoadResult       = std::variant<ImageInfo, ErrorDescription>;
 
 } // namespace framework::graphics::details::image
 

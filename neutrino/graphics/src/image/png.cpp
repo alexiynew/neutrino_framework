@@ -814,17 +814,17 @@ LoadResult load(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file) {
-        return LoadResult();
+        return LoadResult(error::open_file_error);
     }
 
     auto signature = read_bytes(file, signature_length);
     if (!check_signature(signature)) {
-        return LoadResult();
+        return LoadResult(error::invalid_file_signature);
     }
 
     FileHeader header = FileHeader::read(file);
     if (!header.valid()) {
-        return LoadResult();
+        return LoadResult(error::read_header_error);
     }
 
     Chunk plte_chunk;
@@ -833,7 +833,7 @@ LoadResult load(const std::string& filename)
     std::vector<std::uint8_t> data;
     for (Chunk chunk = Chunk::read(file); file && chunk.type != Chunk::Type::IEND; chunk = Chunk::read(file)) {
         if (!chunk.valid() && chunk.is_critical()) {
-            return LoadResult();
+            return LoadResult(error::read_data_error);
         }
 
         switch (chunk.type) {
@@ -864,11 +864,11 @@ LoadResult load(const std::string& filename)
     }
 
     if (data.empty()) {
-        return LoadResult();
+        return LoadResult(error::read_data_error);
     }
 
     if (header.color_type == ColorType::indexed && plte_chunk.data.empty()) {
-        return LoadResult();
+        return LoadResult(error::read_data_error);
     }
 
     std::vector<std::uint8_t> recontructed = reconstruct(header, zlib::inflate(data));
@@ -876,7 +876,8 @@ LoadResult load(const std::string& filename)
 
     auto info  = header.image_info();
     info.gamma = gamma;
-    return std::make_optional(std::make_tuple(info, std::move(image_data)));
+    info.data  = std::move(image_data);
+    return LoadResult(info);
 }
 
 bool is_png(const std::string& filename)

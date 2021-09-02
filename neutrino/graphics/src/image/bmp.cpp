@@ -44,9 +44,9 @@ using graphics::details::image::ImageInfo;
 //  | 2         | 4         | 2        | 2        | 4                  |
 struct FileHeader
 {
-    bool valid() const;
-
     static FileHeader read(std::ifstream& in);
+
+    bool valid() const;
 
     std::uint16_t signature          = 0;
     std::uint32_t file_size          = 0;
@@ -457,9 +457,9 @@ InfoHeader::ColorTable InfoHeader::read_color_table(std::ifstream& in, const Inf
     return table;
 }
 
-inline ImageInfo make_image_info(const InfoHeader& h) noexcept
+inline ImageInfo make_image_info(const InfoHeader& h, std::vector<Color>&& data) noexcept
 {
-    return ImageInfo{h.width, std::abs(h.height), graphics::details::image::default_gamma};
+    return ImageInfo{h.width, std::abs(h.height), graphics::details::image::default_gamma, std::move(data)};
 }
 
 inline std::uint32_t get_offset(std::uint32_t value)
@@ -803,34 +803,40 @@ LoadResult load(const std::string& filename)
 {
     std::ifstream file(filename, std::ios::in | std::ios::binary);
     if (!file) {
-        return LoadResult();
+        return LoadResult(error::open_file_error);
     }
 
     FileHeader file_header = FileHeader::read(file);
     if (!file_header.valid()) {
-        return LoadResult();
+        return LoadResult(error::read_header_error);
+    }
+    if (!file) {
+        return LoadResult(error::file_offset_error);
     }
 
     InfoHeader info = InfoHeader::read(file);
     if (!info.valid()) {
-        return LoadResult();
+        return LoadResult(error::read_header_error);
+    }
+    if (!file) {
+        return LoadResult(error::file_offset_error);
     }
 
     file.seekg(file_header.pixel_array_offset, std::ios::beg);
     if (!file) {
-        return LoadResult();
+        return LoadResult(error::file_offset_error);
     }
 
     std::vector<Color> data = read_data(file, info);
     if (data.empty()) {
-        return LoadResult();
+        return LoadResult(error::read_data_error);
     }
 
     if (!info.bottom_up()) {
         data = flip_vertically(info, data);
     }
 
-    return std::make_optional(std::make_tuple(make_image_info(info), std::move(data)));
+    return LoadResult(make_image_info(info, std::move(data)));
 }
 
 bool is_bmp(const std::string& filename)

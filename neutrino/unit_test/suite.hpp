@@ -176,7 +176,7 @@ private:
         };
 
         std::string name;
-        Status status         = {"", "", 0};
+        std::vector<Status> status;
         FunctionType function = nullptr;
         Result reslut         = Result::success;
 

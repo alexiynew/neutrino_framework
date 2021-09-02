@@ -185,10 +185,10 @@ inline T big_endian_value(const Iterator begin, const Iterator end)
         using std::uint32_t;
 
         uint32_t v = 0;
-        v += static_cast<uint32_t>(*begin) << 24;
-        v += static_cast<uint32_t>(*next(begin)) << 16;
-        v += static_cast<uint32_t>(*next(begin, 2)) << 8;
-        v += static_cast<uint32_t>(*next(begin, 3));
+        v += static_cast<uint32_t>(static_cast<uint8_t>(*begin)) << 24;
+        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin))) << 16;
+        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin, 2))) << 8;
+        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin, 3)));
         return static_cast<T>(v);
     } else if constexpr (size == 8) {
         using std::uint64_t;
@@ -254,23 +254,23 @@ inline T little_endian_value(const Iterator begin, const Iterator end)
         using std::uint32_t;
 
         uint32_t v = 0;
-        v += static_cast<uint32_t>(*begin);
-        v += static_cast<uint32_t>(*next(begin)) << 8;
-        v += static_cast<uint32_t>(*next(begin, 2)) << 16;
-        v += static_cast<uint32_t>(*next(begin, 3)) << 24;
+        v += static_cast<uint32_t>(static_cast<uint8_t>(*begin));
+        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin))) << 8;
+        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin, 2))) << 16;
+        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin, 3))) << 24;
         return static_cast<T>(v);
     } else if constexpr (size == 8) {
         using std::uint64_t;
 
         uint64_t v = 0;
-        v += static_cast<uint64_t>(*begin);
-        v += static_cast<uint64_t>(*next(begin)) << 8;
-        v += static_cast<uint64_t>(*next(begin, 2)) << 16;
-        v += static_cast<uint64_t>(*next(begin, 3)) << 24;
-        v += static_cast<uint64_t>(*next(begin, 4)) << 32;
-        v += static_cast<uint64_t>(*next(begin, 5)) << 40;
-        v += static_cast<uint64_t>(*next(begin, 6)) << 48;
-        v += static_cast<uint64_t>(*next(begin, 7)) << 56;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*begin));
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin))) << 8;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 2))) << 16;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 3))) << 24;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 4))) << 32;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 5))) << 40;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 6))) << 48;
+        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 7))) << 56;
         return static_cast<T>(v);
     }
 }
