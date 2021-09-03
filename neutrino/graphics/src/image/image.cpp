@@ -28,6 +28,21 @@
 #include <graphics/src/image/image_info.hpp>
 #include <graphics/src/image/png.hpp>
 
+namespace
+{
+
+inline framework::graphics::Image::LoadResult load_result_error(const std::string& error)
+{
+    return std::make_tuple(false, error);
+}
+
+inline framework::graphics::Image::LoadResult load_result_success()
+{
+    return std::make_tuple(true, "");
+}
+
+} // namespace
+
 namespace framework::graphics
 {
 Image::Image() = default;
@@ -38,45 +53,53 @@ Image::Image(const DataType& data, int width, int height)
     , m_height(height)
 {}
 
-Image::Image(const Image&) = default;
-Image& Image::operator=(const Image&) = default;
-
-Image::Image(Image&&) = default;
-Image& Image::operator=(Image&&) = default;
-
-bool Image::load(const std::string& filename, FileType type)
+Image::LoadResult Image::load(const std::string& filename, FileType type)
 {
+    using namespace details::image;
+
     auto load_function = [type](const std::string& f) {
         switch (type) {
-            case FileType::bmp: return details::image::bmp::load(f);
-            case FileType::png: return details::image::png::load(f);
+            case FileType::bmp: return bmp::load(f);
+            case FileType::png: return png::load(f);
         }
-        return details::image::LoadResult();
+        return details::image::LoadResult(error::invalid_file_type);
     };
 
-    if (auto result = load_function(filename); result.has_value()) {
-        auto& [info, data] = *result;
+    try {
+        const auto& result = load_function(filename);
 
-        m_width  = info.width;
-        m_height = info.height;
-        m_gamma  = info.gamma;
+        if (std::holds_alternative<ImageInfo>(result)) {
+            const ImageInfo info = std::get<ImageInfo>(result);
 
-        m_data = std::move(data);
-        return true;
+            m_width  = info.width;
+            m_height = info.height;
+            m_gamma  = info.gamma;
+            m_data   = std::move(info.data);
+
+            return load_result_success();
+        } else {
+            return load_result_error(std::get<ErrorDescription>(result));
+        }
+    } catch (const std::bad_variant_access& acces_exception) {
+        return load_result_error(acces_exception.what());
+    } catch (const std::exception& exception) {
+        return load_result_error(exception.what());
+    } catch (...) {
+        return load_result_error(error::unknown_error);
     }
-
-    return false;
 }
 
-bool Image::load(const std::string& filename)
+Image::LoadResult Image::load(const std::string& filename)
 {
-    if (details::image::bmp::is_bmp(filename)) {
+    using namespace details::image;
+
+    if (bmp::is_bmp(filename)) {
         return load(filename, FileType::bmp);
-    } else if (details::image::png::is_png(filename)) {
+    } else if (png::is_png(filename)) {
         return load(filename, FileType::png);
     }
 
-    return false;
+    return load_result_error(error::invalid_file_type);
 }
 
 int Image::width() const

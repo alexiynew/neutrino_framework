@@ -234,7 +234,7 @@ bool is_cursor_in_client_area(HWND window)
 
 namespace framework::system::details
 {
-Win32Window::Win32Window(Size size, const std::string& title, const ContextSettings& settings)
+Win32Window::Win32Window(const std::string& title, Size size, const ContextSettings& settings)
     : PlatformWindow()
 {
     m_window_class = ::register_window_class();
@@ -522,7 +522,16 @@ std::string Win32Window::title() const
     return utf16_to_utf8(buffer.get());
 }
 
-Context& Win32Window::context() const
+const Context& Win32Window::context() const
+{
+    if (m_context == nullptr) {
+        throw std::runtime_error("Graphic context was not created.");
+    }
+
+    return *(m_context.get());
+}
+
+Context& Win32Window::context()
 {
     if (m_context == nullptr) {
         throw std::runtime_error("Graphic context was not created.");

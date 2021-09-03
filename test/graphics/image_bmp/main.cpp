@@ -22,6 +22,8 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <sstream>
+
 #include <graphics/image.hpp>
 #include <unit_test/suite.hpp>
 
@@ -39,118 +41,120 @@ public:
 private:
     void bmp_load_good()
     {
-        framework::graphics::Image img;
-        TEST_ASSERT(img.load("bmp/good/pal1.bmp"), "Loading of good_pal1.bmp failed.");
+        const std::vector<std::string> files =
+        {"bmp/good/pal1.bmp",          "bmp/good/pal1bg.bmp",       "bmp/good/pal1wb.bmp",
+         "bmp/good/pal4.bmp",          "bmp/good/pal4gs.bmp",       "bmp/good/pal4rle.bmp",
+         "bmp/good/pal8-0.bmp",        "bmp/good/pal8.bmp",         "bmp/good/pal8gs.bmp",
+         "bmp/good/pal8nonsquare.bmp", "bmp/good/pal8os2.bmp",      "bmp/good/pal8rle.bmp",
+         "bmp/good/pal8topdown.bmp",   "bmp/good/pal8v4.bmp",       "bmp/good/pal8v5.bmp",
+         "bmp/good/pal8w124.bmp",      "bmp/good/pal8w125.bmp",     "bmp/good/pal8w126.bmp",
+         "bmp/good/rgb16-565.bmp",     "bmp/good/rgb16-565pal.bmp", "bmp/good/rgb16.bmp",
+         "bmp/good/rgb16bfdef.bmp",    "bmp/good/rgb24.bmp",        "bmp/good/rgb24pal.bmp",
+         "bmp/good/rgb32.bmp",         "bmp/good/rgb32bf.bmp",      "bmp/good/rgb32bfdef.bmp"};
 
-        TEST_ASSERT(img.width() == 127, "Loading of good_pal1.bmp failed.");
-        TEST_ASSERT(img.height() == 64, "Loading of good_pal1.bmp failed.");
+        for (const auto& file : files) {
+            framework::graphics::Image img;
+            const auto& [loaded, error] = img.load(file);
 
-        TEST_ASSERT(img.load("bmp/good/pal1bg.bmp"), "Loading of good_pal1bg.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal1wb.bmp"), "Loading of good_pal1wb.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal4.bmp"), "Loading of good_pal4.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal4gs.bmp"), "Loading of good_pal4gs.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal4rle.bmp"), "Loading of good_pal4rle.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8-0.bmp"), "Loading of good_pal8-0 failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8.bmp"), "Loading of good_pal8.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8gs.bmp"), "Loading of good_pal8gs.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8nonsquare.bmp"), "Loading of good_pal8nonsquare.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8os2.bmp"), "Loading of good_pal8os2.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8rle.bmp"), "Loading of good_pal8rle.bmp failed.");
+            std::stringstream out;
+            out << "Loading of " << file << " failed, error: " << error;
 
-        TEST_ASSERT(img.load("bmp/good/pal8topdown.bmp"), "Loading of good_pal8topdown.bmp failed.");
-
-        TEST_ASSERT(img.load("bmp/good/pal8v4.bmp"), "Loading of good_pal8v4.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8v5.bmp"), "Loading of good_pal8v5.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8w124.bmp"), "Loading of good_pal8w124.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8w125.bmp"), "Loading of good_pal8w125.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/pal8w126.bmp"), "Loading of good_pal8w126.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb16-565.bmp"), "Loading of good_rgb16-565.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb16-565pal.bmp"), "Loading of good_rgb16-565pal.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb16.bmp"), "Loading of good_rgb16.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb16bfdef.bmp"), "Loading of good_rgb16bfdef.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb24.bmp"), "Loading of good_rgb24.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb24pal.bmp"), "Loading of good_rgb24pal.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb32.bmp"), "Loading of good_rgb32.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb32bf.bmp"), "Loading of good_rgb32bf.bmp failed.");
-        TEST_ASSERT(img.load("bmp/good/rgb32bfdef.bmp"), "Loading of good_rgb32bfdef.bmp failed.");
+            TEST_ASSERT(loaded && error.empty(), out.str());
+        }
     }
 
     void bmp_load_questionable()
     {
-        framework::graphics::Image img;
-        TEST_ASSERT(img.load("bmp/questionable/pal1p1.bmp"), "Loading of questionable_pal1p1.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal2.bmp"), "Loading of questionable_pal2.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal2color.bmp"), "Loading of questionable_pal2color.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal4rlecut.bmp"), "Loading of questionable_pal4rlecut.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal4rletrns.bmp"), "Loading of questionable_pal4rletrns.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8offs.bmp"), "Loading of questionable_pal8offs.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8os2-hs.bmp"), "Loading of questionable_pal8os2-hs.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8os2-sz.bmp"), "Loading of questionable_pal8os2-sz.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8os2sp.bmp"), "Loading of questionable_pal8os2sp.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8os2v2-16.bmp"), "Loading of questionable_pal8os2v2-16.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8os2v2-40sz.bmp"),
-                    "Loading of questionable_pal8os2v2-40sz.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8os2v2-sz.bmp"), "Loading of questionable_pal8os2v2-sz.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8os2v2.bmp"), "Loading of questionable_pal8os2v2.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8oversizepal.bmp"),
-                    "Loading of questionable_pal8oversizepal.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8rlecut.bmp"), "Loading of questionable_pal8rlecut.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/pal8rletrns.bmp"), "Loading of questionable_pal8rletrns.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb16-231.bmp"), "Loading of questionable_rgb16-231.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb16-3103.bmp"), "Loading of questionable_rgb16-3103.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb16faketrns.bmp"),
-                    "Loading of questionable_rgb16faketrns.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb24largepal.bmp"),
-                    "Loading of questionable_rgb24largepal.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb32-111110.bmp"), "Loading of questionable_rgb32-111110.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb32-7187.bmp"), "Loading of questionable_rgb32-7187.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb32-xbgr.bmp"), "Loading of questionable_rgb32-xbgr.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb32fakealpha.bmp"),
-                    "Loading of questionable_rgb32fakealpha.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgb32h52.bmp"), "Loading of questionable_rgb32h52.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba16-1924.bmp"), "Loading of questionable_rgba16-1924.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba16-4444.bmp"), "Loading of questionable_rgba16-4444.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba16-5551.bmp"), "Loading of questionable_rgba16-5551.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba32-1010102.bmp"),
-                    "Loading of questionable_rgba32-1010102.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba32-61754.bmp"), "Loading of questionable_rgba32-61754.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba32-81284.bmp"), "Loading of questionable_rgba32-81284.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba32.bmp"), "Loading of questionable_rgba32.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba32abf.bmp"), "Loading of questionable_rgba32abf.bmp failed.");
-        TEST_ASSERT(img.load("bmp/questionable/rgba32h56.bmp"), "Loading of questionable_rgba32h56.bmp failed.");
+        const std::vector<std::string> good_files =
+        {"bmp/questionable/pal1p1.bmp",         "bmp/questionable/pal2.bmp",
+         "bmp/questionable/pal2color.bmp",      "bmp/questionable/pal4rlecut.bmp",
+         "bmp/questionable/pal4rletrns.bmp",    "bmp/questionable/pal8offs.bmp",
+         "bmp/questionable/pal8os2-hs.bmp",     "bmp/questionable/pal8os2-sz.bmp",
+         "bmp/questionable/pal8os2sp.bmp",      "bmp/questionable/pal8os2v2-16.bmp",
+         "bmp/questionable/pal8os2v2-40sz.bmp", "bmp/questionable/pal8os2v2-sz.bmp",
+         "bmp/questionable/pal8os2v2.bmp",      "bmp/questionable/pal8oversizepal.bmp",
+         "bmp/questionable/pal8rlecut.bmp",     "bmp/questionable/pal8rletrns.bmp",
+         "bmp/questionable/rgb16-231.bmp",      "bmp/questionable/rgb16-3103.bmp",
+         "bmp/questionable/rgb16faketrns.bmp",  "bmp/questionable/rgb24largepal.bmp",
+         "bmp/questionable/rgb32-111110.bmp",   "bmp/questionable/rgb32-7187.bmp",
+         "bmp/questionable/rgb32-xbgr.bmp",     "bmp/questionable/rgb32fakealpha.bmp",
+         "bmp/questionable/rgb32h52.bmp",       "bmp/questionable/rgba16-1924.bmp",
+         "bmp/questionable/rgba16-4444.bmp",    "bmp/questionable/rgba16-5551.bmp",
+         "bmp/questionable/rgba32-1010102.bmp", "bmp/questionable/rgba32-61754.bmp",
+         "bmp/questionable/rgba32-81284.bmp",   "bmp/questionable/rgba32.bmp",
+         "bmp/questionable/rgba32abf.bmp",      "bmp/questionable/rgba32h56.bmp"};
 
-        TEST_ASSERT(!img.load("bmp/questionable/pal1huff.bmp"), "Loading of questionable_pal1huff.bmp failed.");
-        TEST_ASSERT(!img.load("bmp/questionable/rgb24jpeg.bmp"), "Loading of questionable_rgb24jpeg.bmp failed.");
-        TEST_ASSERT(!img.load("bmp/questionable/rgb24lprof.bmp"), "Loading of questionable_rgb24lprof.bmp failed.");
-        TEST_ASSERT(!img.load("bmp/questionable/rgb24png.bmp"), "Loading of questionable_rgb24png.bmp failed.");
-        TEST_ASSERT(!img.load("bmp/questionable/rgb24prof.bmp"), "Loading of questionable_rgb24prof.bmp failed.");
-        TEST_ASSERT(!img.load("bmp/questionable/rgb24prof2.bmp"), "Loading of questionable_rgb24prof2.bmp failed.");
+        for (const auto& file : good_files) {
+            framework::graphics::Image img;
+            const auto& [loaded, error] = img.load(file);
+
+            std::stringstream out;
+            out << "Loading of " << file << " failed, error: " << error;
+
+            TEST_ASSERT(loaded && error.empty(), out.str());
+        }
+
+        const std::vector<std::string> bad_files = {"bmp/questionable/pal1huff.bmp",
+                                                    "bmp/questionable/rgb24jpeg.bmp",
+                                                    "bmp/questionable/rgb24lprof.bmp",
+                                                    "bmp/questionable/rgb24png.bmp",
+                                                    "bmp/questionable/rgb24prof.bmp",
+                                                    "bmp/questionable/rgb24prof2.bmp"};
+
+        for (const auto& file : bad_files) {
+            framework::graphics::Image img;
+            const auto& [loaded, error] = img.load(file);
+
+            std::stringstream out;
+            out << "Loading of " << file << " failed, error: " << error;
+
+            TEST_ASSERT(!loaded && !error.empty(), out.str());
+        }
     }
 
     void bmp_load_bad()
     {
-        framework::graphics::Image img;
+        const std::vector<std::string> good_files = {"bmp/bad/badrle.bmp",
+                                                     "bmp/bad/badrle4.bmp",
+                                                     "bmp/bad/badrle4bis.bmp",
+                                                     "bmp/bad/badrle4ter.bmp",
+                                                     "bmp/bad/badrlebis.bmp ",
+                                                     "bmp/bad/badrleter.bmp",
+                                                     "bmp/bad/pal8badindex.bmp ",
+                                                     "bmp/bad/rgb16-880.bmp",
+                                                     "bmp/bad/shortfile.bmp "};
 
-        TEST_ASSERT(!img.load("bmp/bad/badbitcount.bmp"), "Should not load badbitcount.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badbitssize.bmp"), "Should not load badbitssize.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/baddens1.bmp"), "Should not load baddens1.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/baddens2.bmp"), "Should not load baddens2.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badfilesize.bmp"), "Should not load badfilesize.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badheadersize.bmp"), "Should not load badheadersize.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badpalettesize.bmp"), "Should not load badpalettesize.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badplanes.bmp"), "Should not load badplanes.bmp.");
-        TEST_ASSERT(img.load("bmp/bad/badrle.bmp"), "Should load badrle.bmp.");
-        TEST_ASSERT(img.load("bmp/bad/badrle4.bmp"), "Should load badrle4.bmp.");
-        TEST_ASSERT(img.load("bmp/bad/badrle4bis.bmp"), "Should load badrle4bis.bmp.");
-        TEST_ASSERT(img.load("bmp/bad/badrle4ter.bmp"), "Should load badrle4ter.bmp.");
-        TEST_ASSERT(img.load("bmp/bad/badrlebis.bmp "), "Should load badrlebis.bmp .");
-        TEST_ASSERT(img.load("bmp/bad/badrleter.bmp"), "Should load badrleter.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/badwidth.bmp"), "Should not load badwidth.bmp.");
-        TEST_ASSERT(img.load("bmp/bad/pal8badindex.bmp "), "Should load pal8badindex.bmp .");
-        TEST_ASSERT(!img.load("bmp/bad/reallybig.bmp "), "Should not load reallybig.bmp .");
-        TEST_ASSERT(img.load("bmp/bad/rgb16-880.bmp"), "Should load rgb16-880.bmp.");
-        TEST_ASSERT(!img.load("bmp/bad/rletopdown.bmp "), "Should not load rletopdown.bmp .");
-        TEST_ASSERT(img.load("bmp/bad/shortfile.bmp "), "Should load shortfile.bmp .");
+        for (const auto& file : good_files) {
+            framework::graphics::Image img;
+            const auto& [loaded, error] = img.load(file);
+
+            std::stringstream out;
+            out << "Loading of " << file << " failed, error: " << error;
+
+            TEST_ASSERT(loaded && error.empty(), out.str());
+        }
+
+        const std::vector<std::string> bad_files = {"bmp/bad/badbitcount.bmp",
+                                                    "bmp/bad/badbitssize.bmp",
+                                                    "bmp/bad/baddens1.bmp",
+                                                    "bmp/bad/baddens2.bmp",
+                                                    "bmp/bad/badfilesize.bmp",
+                                                    "bmp/bad/badheadersize.bmp",
+                                                    "bmp/bad/badpalettesize.bmp",
+                                                    "bmp/bad/badplanes.bmp",
+                                                    "bmp/bad/badwidth.bmp",
+                                                    "bmp/bad/reallybig.bmp ",
+                                                    "bmp/bad/rletopdown.bmp "};
+
+        for (const auto& file : bad_files) {
+            framework::graphics::Image img;
+            const auto& [loaded, error] = img.load(file);
+
+            std::stringstream out;
+            out << "Loading of " << file << " failed, error: " << error;
+
+            TEST_ASSERT(!loaded && !error.empty(), out.str());
+        }
     }
 };
 
