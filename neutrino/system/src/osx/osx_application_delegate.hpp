@@ -30,11 +30,17 @@
 
 @interface OSXApplicationDelegate : NSObject<NSApplicationDelegate>
 
-/// @brief React to a termination notification
+// React to a termination notification
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app;
 
-/// @brief Exit the app when all windows are closed
+// Do not exit the app when all windows are closed
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)app;
+
+- (void)applicationDidChangeScreenParameters:(NSNotification*)notification;
+
+- (void)applicationWillFinishLaunching:(NSNotification*)notification;
+
+- (void)applicationDidFinishLaunching:(NSNotification*)notification;
 
 @end
 

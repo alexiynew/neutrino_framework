@@ -297,7 +297,7 @@ private:
 
         w.show();
 
-        const float max_total_time = 1000;
+        const float max_total_time = 10000;
         float total_time           = 0;
 
         while (w.is_visible() && !should_close && total_time < max_total_time) {

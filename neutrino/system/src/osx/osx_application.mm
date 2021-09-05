@@ -23,25 +23,47 @@
 // =============================================================================
 
 #import <system/src/osx/osx_application.hpp>
+#import <system/src/osx/osx_application_delegate.hpp>
 
 @implementation OSXApplication
 
-+ (void)process_events
-{
-    [OSXApplication sharedApplication];
-    NSEvent* event = nil;
+static NSAutoreleasePool* pool = nil;
 
-    while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast]
-                                          inMode:NSDefaultRunLoopMode
-                                         dequeue:YES])) {
-        [NSApp sendEvent:event];
++ (void)ensure_thread_has_pool
+{
+    pool = [[NSAutoreleasePool alloc] init];
+}
+
++ (void)drain_thread_pool
+{
+    [pool drain];
+    [OSXApplication ensure_thread_has_pool];
+}
+
++ (void)setup
+{
+    static bool isTheProcessSetAsApplication = false;
+
+    if (!isTheProcessSetAsApplication) {
+        isTheProcessSetAsApplication = true;
+
+        [OSXApplication sharedApplication];
+
+        [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+        [NSApp activateIgnoringOtherApps:YES];
+
+        if (![NSApp delegate])
+            [NSApp setDelegate:[[OSXApplicationDelegate alloc] init]];
+
+        [OSXApplication setup_menu_bar];
+        [OSXApplication ensure_thread_has_pool];
+
+        [NSApp finishLaunching];
     }
 }
 
 + (void)setup_menu_bar
 {
-    [OSXApplication sharedApplication];
-
     NSMenu* mainMenu = [NSApp mainMenu];
     if (mainMenu != nil) {
         return;
@@ -49,6 +71,17 @@
 
     mainMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
     [NSApp setMainMenu:mainMenu];
+}
+
++ (void)process_events
+{
+    NSEvent* event = nil;
+
+    while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast]
+                                          inMode:NSDefaultRunLoopMode
+                                         dequeue:YES])) {
+        [NSApp sendEvent:event];
+    }
 }
 
 - (void)sendEvent:(NSEvent*)event

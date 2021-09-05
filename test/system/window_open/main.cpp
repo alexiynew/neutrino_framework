@@ -22,6 +22,9 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <chrono>
+#include <thread>
+
 #include <common/types.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
@@ -42,7 +45,6 @@ public:
 private:
     Window create_window_internal()
     {
-
         Window window(name(), {640, 480});
         window.on_show.connect([](const Window& /*unused*/) {});
         window.on_hide.connect([](const Window& /*unused*/) {});
@@ -66,14 +68,14 @@ private:
         Window window(name(), {640, 480});
 
         window.on_show.connect([&show_called](const Window& /*unused*/) { show_called++; });
-        window.show();
+        window.on_hide.connect([&hide_called](const Window& /*unused*/) { hide_called++; });
 
+        window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
         TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
 
-        window.on_hide.connect([&hide_called](const Window& /*unused*/) { hide_called++; });
+        std::this_thread::sleep_for(std::chrono::milliseconds(10000));
         window.hide();
-
         TEST_ASSERT(!window.is_visible(), "Window is still visible.");
         TEST_ASSERT(show_called == 1 && hide_called == 1, "Wrong callbacks call.");
     }
@@ -98,6 +100,7 @@ private:
         TEST_ASSERT(windows[3].is_visible(), "Window is not visidle.");
         TEST_ASSERT(windows[4].is_visible(), "Window is not visidle.");
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         for (auto& w : windows) {
             w.hide();
         }
@@ -108,6 +111,7 @@ private:
         TEST_ASSERT(!windows[3].is_visible(), "Window is still visidle.");
         TEST_ASSERT(!windows[4].is_visible(), "Window is still visidle.");
 
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         for (auto& w : windows) {
             w.show();
         }

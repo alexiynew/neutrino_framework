@@ -30,8 +30,12 @@
 
 @interface OSXApplication : NSApplication
 
-+ (void)process_events;
++ (void)setup;
 + (void)setup_menu_bar;
+
++ (void)process_events;
+
++ (void)drain_thread_pool;
 
 - (void)sendEvent:(NSEvent*)event;
 

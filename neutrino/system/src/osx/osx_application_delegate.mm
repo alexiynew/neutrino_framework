@@ -28,15 +28,32 @@
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app
 {
-    (void)app;
     // send close window event to all windows
+    NSLog(@"applicationShouldTerminate");
     return NSTerminateCancel;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)app
 {
-    (void)app;
-    return YES;
+    return NO;
+}
+
+- (void)applicationDidChangeScreenParameters:(NSNotification*)notification
+{
+    NSLog(@"applicationDidChangeScreenParameters");
+}
+
+- (void)applicationWillFinishLaunching:(NSNotification*)notification
+{
+    // Menu bar setup must go between sharedApplication and finishLaunching
+    // in order to properly emulate the behavior of NSApplicationMain
+    // createMenuBar();
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification*)notification
+{
+    // PostEmptyEvent();
+    [NSApp stop:nil];
 }
 
 @end

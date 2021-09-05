@@ -25,66 +25,86 @@
 #ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_WINDOW_HPP
 #define FRAMEWORK_SYSTEM_SRC_OSX_OSX_WINDOW_HPP
 
-#include <system/src/osx/osx_window.hpp>
+#include <functional>
+#include <memory>
 
-#import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
+#include <system/src/platform_window.hpp>
 
-@interface OSXWindow : NSWindow
-{}
+namespace framework::system
+{
+class Context;
+}
 
-/// @name actions
-/// @{
-- (void)show;
-- (void)hide;
-- (void)focus;
-- (void)process_events;
+namespace framework::system::details
+{
+class NSWindowWrapper;
 
-@end
+class OSXWindow final : public PlatformWindow
+{
+public:
+    OSXWindow(const std::string& title, Size size, const ContextSettings& settings);
 
-//    // On window managers without the ewmh support, proper work is not tested, nor granted.
-//    void iconify();
-//    void maximize();
-//    void switch_to_fullscreen();
-//    void restore();
-//    void make_current();
-//    void swap_buffers();
-//    /// @}
-//
-//    /// @name setters
-//    /// @{
-//
-//    // The size() value will be updated after next event processing
-//    void set_size(window_size size);
-//    void set_position(window_position position);
-//
-//    void set_max_size(window_size max_size);
-//    void set_min_size(window_size min_size);
-//
-//    void set_resizable(bool value);
-//
-//    void set_title(const std::string& title);
-//    /// @}
-//
-//    /// @name getters
-//    /// @{
-//    window_position position() const;
-//    window_size size() const;
-//
-//    window_size max_size() const;
-//    window_size min_size() const;
-//
-//    std::string title() const;
-//    /// @}
-//
-//    /// @name state
-//    /// @{
-//    bool fullscreen() const;
-//    bool iconified() const;
-//    bool maximized() const;
-//    bool resizable() const;
-//    bool visible() const;
-//    bool focused() const;
-//    /// @}
+    OSXWindow(const OSXWindow&)     = delete;
+    OSXWindow(OSXWindow&&) noexcept = default;
+
+    ~OSXWindow() override;
+
+    OSXWindow& operator=(const OSXWindow&) = delete;
+    OSXWindow& operator=(OSXWindow&&) noexcept = default;
+
+#pragma region actions
+    void show() override;
+    void hide() override;
+    void focus() override;
+    void iconify() override;
+    void maximize() override;
+    void fullscreen() override;
+    void restore() override;
+    void resize(Size size) override;
+    void move(Position position) override;
+    void grab_cursor() override;
+    void release_cursor() override;
+    void process_events() override;
+#pragma endregion
+
+#pragma region setters
+    void set_max_size(Size size) override;
+    void set_min_size(Size size) override;
+    void set_resizable(bool value) override;
+    void set_title(const std::string& title) override;
+    void set_cursor_visibility(bool visible) override;
+#pragma endregion
+
+#pragma region getters
+    Position position() const override;
+    Size size() const override;
+    Size max_size() const override;
+    Size min_size() const override;
+    std::string title() const override;
+    const Context& context() const override;
+    Context& context() override;
+#pragma endregion
+
+#pragma region state
+    bool should_close() const override;
+    bool is_fullscreen() const override;
+    bool is_iconified() const override;
+    bool is_maximized() const override;
+    bool is_resizable() const override;
+    bool is_visible() const override;
+    bool has_input_focus() const override;
+    bool is_cursor_visible() const override;
+    bool is_cursor_grabbed() const override;
+#pragma endregion
+
+private:
+    void ensureThreadHasPool();
+    void drainThreadPool();
+
+    std::unique_ptr<NSWindowWrapper> m_window_wrapper;
+    std::unique_ptr<Context> m_context;
+};
+
+} // namespace framework::system::details
 
 #endif
