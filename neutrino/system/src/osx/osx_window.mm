@@ -99,6 +99,17 @@
 
 #pragma endregion
 
+#pragma region OSXContentView
+
+@interface OSXContentView : NSView
+{}
+@end
+
+@implementation OSXContentView
+@end
+
+#pragma endregion
+
 namespace framework::system::details
 {
 
@@ -138,12 +149,10 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
 
     m_window_wrapper = std::make_unique<NSWindowWrapper>(window);
 
-    //[m_delegate changeTitle:sfStringToNSString(title)];
-    //[m_delegate setRequesterTo:this];
-
     // Set the view to the window as its content view.
-    // [m_window setContentView:view];
-    // [window->ns.object makeFirstResponder:view];
+    OSXContentView* view = [OSXContentView alloc];
+    [m_window_wrapper->get() setContentView:view];
+    [m_window_wrapper->get() makeFirstResponder:view];
 
     // Set title
     NSString* ns_title = [NSString stringWithUTF8String:title.c_str()];
@@ -181,13 +190,23 @@ OSXWindow::~OSXWindow()
 void OSXWindow::show()
 {
     [m_window_wrapper->get() makeKeyAndOrderFront:m_window_wrapper->get()];
-    process_events();
+    
+    do {
+        process_events();
+    } while (!is_visible());
+    
+    on_show();
 }
 
 void OSXWindow::hide()
 {
     [m_window_wrapper->get() orderOut:m_window_wrapper->get()];
-    process_events();
+
+    do {
+        process_events();
+    } while (is_visible());
+    
+    on_hide();
 }
 
 void OSXWindow::focus()

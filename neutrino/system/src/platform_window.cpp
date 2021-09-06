@@ -52,7 +52,6 @@ void PlatformWindow::on_show() const
 
 void PlatformWindow::on_hide() const
 {
-
     if (m_window_interface) {
         m_window_interface->on_hide(*m_window_interface);
     }
@@ -60,7 +59,6 @@ void PlatformWindow::on_hide() const
 
 void PlatformWindow::on_close() const
 {
-
     if (m_window_interface) {
         m_window_interface->on_close(*m_window_interface);
     }
@@ -68,7 +66,6 @@ void PlatformWindow::on_close() const
 
 void PlatformWindow::on_focus() const
 {
-
     if (m_window_interface) {
         m_window_interface->on_focus(*m_window_interface);
     }

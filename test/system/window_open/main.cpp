@@ -74,7 +74,7 @@ private:
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
         TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         window.hide();
         TEST_ASSERT(!window.is_visible(), "Window is still visible.");
         TEST_ASSERT(show_called == 1 && hide_called == 1, "Wrong callbacks call.");
@@ -100,7 +100,7 @@ private:
         TEST_ASSERT(windows[3].is_visible(), "Window is not visidle.");
         TEST_ASSERT(windows[4].is_visible(), "Window is not visidle.");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         for (auto& w : windows) {
             w.hide();
         }
@@ -111,7 +111,7 @@ private:
         TEST_ASSERT(!windows[3].is_visible(), "Window is still visidle.");
         TEST_ASSERT(!windows[4].is_visible(), "Window is still visidle.");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         for (auto& w : windows) {
             w.show();
         }
