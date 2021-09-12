@@ -24,6 +24,7 @@
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
+#include <log/log.hpp>
 
 #include <system/src/osx/osx_application.hpp>
 #include <system/src/osx/osx_context.hpp>
@@ -61,12 +62,16 @@
 {}
 
 @property(assign, nonatomic) std::function<void()> on_close;
+@property(assign, nonatomic) std::function<void()> on_focus;
+@property(assign, nonatomic) std::function<void()> on_lost_focus;
 
 @end
 
 @implementation OSXWindowDelegate
 
 @synthesize on_close;
+@synthesize on_focus;
+@synthesize on_lost_focus;
 
 - (BOOL)windowShouldClose:(id)sender
 {
@@ -87,10 +92,18 @@
 {}
 
 - (void)windowDidBecomeKey:(NSNotification*)notification
-{}
+{
+    framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " " <<
+    [[reinterpret_cast<NSWindow*>(notification.object) title] cStringUsingEncoding:NSUTF8StringEncoding];
+    self.on_focus();
+}
 
 - (void)windowDidResignKey:(NSNotification*)notification
-{}
+{
+    framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " " <<
+    [[reinterpret_cast<NSWindow*>(notification.object) title] cStringUsingEncoding:NSUTF8StringEncoding];
+    self.on_lost_focus();
+}
 
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
 {}
@@ -162,7 +175,10 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
 
     // Setup delegate
     OSXWindowDelegate* delegate = [OSXWindowDelegate alloc];
-    delegate.on_close           = std::bind(&OSXWindow::on_close, this);
+
+    delegate.on_close      = std::bind(&OSXWindow::on_close, this);
+    delegate.on_focus      = std::bind(&OSXWindow::on_focus, this);
+    delegate.on_lost_focus = std::bind(&OSXWindow::on_lost_focus, this);
 
     [m_window_wrapper->get() setDelegate:delegate];
 
@@ -189,28 +205,76 @@ OSXWindow::~OSXWindow()
 
 void OSXWindow::show()
 {
-    [m_window_wrapper->get() makeKeyAndOrderFront:m_window_wrapper->get()];
-    
+    framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " "
+                                 << [[m_window_wrapper->get() title] cStringUsingEncoding:NSUTF8StringEncoding];
+
+    if (is_visible()) {
+        framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " RETURN";
+        return;
+    }
+
+    [NSApp activateIgnoringOtherApps:YES];
+    [m_window_wrapper->get() orderFrontRegardless];
     do {
+        framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " loop !is_visible";
         process_events();
     } while (!is_visible());
-    
     on_show();
+
+    [m_window_wrapper->get() makeKeyWindow];
+    do {
+        framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " loop !has_input_focus";
+        process_events();
+    } while (!has_input_focus());
 }
 
 void OSXWindow::hide()
 {
+    framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " "
+                                 << [[m_window_wrapper->get() title] cStringUsingEncoding:NSUTF8StringEncoding];
+
+    if (!is_visible()) {
+        framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " RETURN";
+        return;
+    }
+
     [m_window_wrapper->get() orderOut:m_window_wrapper->get()];
 
+    for (NSWindow* window in [NSApp orderedWindows]) {
+        if (window != m_window_wrapper->get()) {
+            [window orderFrontRegardless];
+            [window makeKeyWindow];
+            break;
+        }
+    }
+
     do {
+        framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " loop is_visible()";
         process_events();
     } while (is_visible());
-    
+
     on_hide();
 }
 
 void OSXWindow::focus()
-{}
+{
+    framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " "
+                                 << [[m_window_wrapper->get() title] cStringUsingEncoding:NSUTF8StringEncoding];
+
+    if (!is_visible()) {
+        framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " RETURN";
+        return;
+    }
+
+    [NSApp activateIgnoringOtherApps:YES];
+    [m_window_wrapper->get() orderFrontRegardless];
+    [m_window_wrapper->get() makeKeyWindow];
+
+    do {
+        framework::log::info("main") << __FUNCTION__ << ":" << __LINE__ << " loop !has_input_focus()";
+        process_events();
+    } while (!has_input_focus());
+}
 
 void OSXWindow::iconify()
 {}
@@ -334,7 +398,7 @@ bool OSXWindow::is_visible() const
 
 bool OSXWindow::has_input_focus() const
 {
-    return false;
+    return [m_window_wrapper->get() isKeyWindow];
 }
 
 bool OSXWindow::is_cursor_visible() const
