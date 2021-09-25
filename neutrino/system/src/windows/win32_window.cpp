@@ -258,7 +258,7 @@ Win32Window::Win32Window(const std::string& title, Size size, const ContextSetti
         throw std::runtime_error("Failed to create window.");
     }
 
-    m_context = std::make_unique<Win32WglContext>(settings, m_window);
+    m_context = std::make_unique<Win32WglContext>(m_window, settings);
 
     Win32Application::add_window(m_window, this);
 

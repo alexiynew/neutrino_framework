@@ -81,15 +81,15 @@ macro(set_compiller_flags)
     if("${PLATFORM_NAME}" STREQUAL "windows")
         if("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
             list(APPEND COMPILER_FLAGS /DNOMINMAX /DUNICODE)
-        else() 
+        else()
             list(APPEND COMPILER_FLAGS -DNOMINMAX -DUNICODE)
         endif()
     endif()
 
     if(ENABLE_TEST_COVERAGE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
-        list(APPEND COMPILER_FLAGS -O0 
-                                   --coverage 
-                                   -fprofile-arcs 
+        list(APPEND COMPILER_FLAGS -O0
+                                   --coverage
+                                   -fprofile-arcs
                                    -ftest-coverage)
     endif()
 

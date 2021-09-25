@@ -34,7 +34,7 @@ namespace framework::system::details
 class Win32WglContext : public Context
 {
 public:
-    Win32WglContext(const ContextSettings& settings, HWND window);
+    Win32WglContext(HWND window, const ContextSettings& settings);
     ~Win32WglContext() override;
 
     Win32WglContext(const Win32WglContext&) = default;

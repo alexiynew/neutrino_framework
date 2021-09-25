@@ -105,6 +105,7 @@ public:
     ///
     /// @return Reference to this settings.
     ////////////////////////////////////////////////////////////////////////////
+    // TODO: redo as samples
     ContextSettings& antialiasing_level(Antialiasing level);
 
     ////////////////////////////////////////////////////////////////////////////
@@ -152,6 +153,7 @@ public:
 #pragma endregion
 
 private:
+    // TODO: Make dont_cara as default value
     int32 m_depth_bits                = 24;
     int32 m_stencil_bits              = 8;
     Antialiasing m_antialiasing_level = Antialiasing::best;

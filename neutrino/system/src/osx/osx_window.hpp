@@ -103,6 +103,8 @@ private:
 
     std::unique_ptr<NSWindowWrapper> m_window_wrapper;
     std::unique_ptr<Context> m_context;
+
+    bool m_should_close = false;
 };
 
 } // namespace framework::system::details

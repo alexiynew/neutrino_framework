@@ -28,21 +28,71 @@
 
 namespace framework::system::details
 {
-OsxContext::OsxContext(const ContextSettings& settings)
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     : Context(settings)
-{}
+    , m_view(view)
+{
+    auto get_profile = [](const Version& version) {
+        if (version.major_version >= 4) {
+            return NSOpenGLProfileVersion4_1Core;
+        }
+
+        return NSOpenGLProfileVersion3_2Core;
+    };
+
+    // clang-format off
+    // TODO: Do nit apply settings if dont care
+    NSOpenGLPixelFormatAttribute attribs[] =
+    {
+        NSOpenGLPFAAccelerated,
+        NSOpenGLPFAClosestPolicy,
+        NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFAOpenGLProfile, get_profile(settings.version()),
+        NSOpenGLPFAColorSize, 24,
+        NSOpenGLPFAAlphaSize, 8,
+        NSOpenGLPFADepthSize, static_cast<NSOpenGLPixelFormatAttribute>(settings.depth_bits()),
+        NSOpenGLPFAStencilSize, static_cast<NSOpenGLPixelFormatAttribute>(settings.stencil_bits()),
+        // TODO: apply samples 
+        0
+    };
+    // clang-format on
+
+    NSOpenGLPixelFormat* pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
+    if (pixelFormat == nullptr) {
+        throw std::runtime_error("Can't get a suitable pixel format");
+    }
+
+    NSOpenGLContext* share = nil;
+    m_context              = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:share];
+    if (m_context == nullptr) {
+        throw std::runtime_error("Failed to create OpenGL context");
+    }
+
+    [m_view setWantsBestResolutionOpenGLSurface:true];
+    [m_context setView:m_view];
+}
 
 OsxContext::~OsxContext()
-{}
+{
+    [m_context release];
+    m_context = nullptr;
+
+    [NSOpenGLContext clearCurrentContext];
+}
 
 bool OsxContext::valid() const
 {
-    return false;
+    return m_context != nullptr;
 }
 
 bool OsxContext::is_current() const
 {
-    return false;
+    NSOpenGLContext* current = [NSOpenGLContext currentContext];
+    return current != nullptr && current == m_context;
 }
 
 Context::Api OsxContext::api_type() const
@@ -50,15 +100,30 @@ Context::Api OsxContext::api_type() const
     return Context::Api::opengl;
 }
 
-Context::VoidFunctionPtr OsxContext::get_function(const char* /*function_name*/) const
+Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
 {
-    return nullptr;
+    CFStringRef symbolName = CFStringCreateWithCString(kCFAllocatorDefault, function_name, kCFStringEncodingASCII);
+
+    VoidFunctionPtr function = reinterpret_cast<VoidFunctionPtr>(
+    CFBundleGetFunctionPointerForName(CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl")), symbolName));
+    CFRelease(symbolName);
+
+    return function;
 }
 
 void OsxContext::make_current()
-{}
+{
+    if (m_context) {
+        [m_context makeCurrentContext];
+    }
+}
 
 void OsxContext::swap_buffers()
-{}
+{
+    if (m_context) {
+        [m_context flushBuffer];
+    }
+}
 
+#pragma clang diagnostic pop
 } // namespace framework::system::details

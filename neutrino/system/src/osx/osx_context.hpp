@@ -27,12 +27,14 @@
 
 #include <system/context.hpp>
 
+#import <AppKit/AppKit.h>
+
 namespace framework::system::details
 {
 class OsxContext : public Context
 {
 public:
-    OsxContext(const ContextSettings& settings);
+    OsxContext(NSView* view, const ContextSettings& settings);
     ~OsxContext() override;
 
     OsxContext(const OsxContext&) = default;
@@ -49,6 +51,13 @@ public:
 
     void make_current() override;
     void swap_buffers() override;
+
+private:
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    NSView* m_view             = nullptr;
+    NSOpenGLContext* m_context = nullptr;
+#pragma clang diagnostic pop
 };
 
 } // namespace framework::system::details

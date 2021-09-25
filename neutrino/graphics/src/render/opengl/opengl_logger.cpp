@@ -44,7 +44,7 @@ void log_opengl_errors(const std::string& file, int line)
         std::string description;
     };
 
-    const std::map<GLenum, ErrorDescription> error_descriptions = {
+    static const std::map<GLenum, ErrorDescription> error_descriptions = {
     {GL_INVALID_ENUM,
      {"GL_INVALID_ENUM",
       "An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no "

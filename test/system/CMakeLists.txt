@@ -23,7 +23,7 @@
 # SOFTWARE.
 # =============================================================================
 
-set(TESTS 
+set(TESTS
     context
     window_open
     window_focus

@@ -256,7 +256,7 @@ std::int32_t FileHeader::bytes_per_pixel() const
 
 ImageInfo FileHeader::image_info() const
 {
-    return ImageInfo{width, height, true};
+    return ImageInfo{width, height, true, {}};
 }
 
 bool check_signature(const std::vector<std::uint8_t>& data)

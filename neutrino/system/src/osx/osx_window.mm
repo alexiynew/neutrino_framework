@@ -52,7 +52,7 @@
     return YES;
 }
 
-@end
+@end // OSXWindowInternal
 
 #pragma endregion
 
@@ -65,7 +65,7 @@
 @property(assign, nonatomic) std::function<void()> on_focus;
 @property(assign, nonatomic) std::function<void()> on_lost_focus;
 
-@end
+@end // OSXWindowDelegate
 
 @implementation OSXWindowDelegate
 
@@ -75,6 +75,7 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
+    framework::log::info("main") << __FUNCTION__ << ":" << __LINE__;
     self.on_close();
     return NO;
 }
@@ -108,7 +109,7 @@
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
 {}
 
-@end
+@end // OSXWindowDelegate
 
 #pragma endregion
 
@@ -119,7 +120,28 @@
 @end
 
 @implementation OSXContentView
-@end
+
+- (BOOL)isOpaque
+{
+    return YES;
+}
+
+- (BOOL)canBecomeKeyView
+{
+    return YES;
+}
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
+- (BOOL)wantsUpdateLayer
+{
+    return YES;
+}
+
+@end // OSXContentView
 
 #pragma endregion
 
@@ -167,6 +189,8 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
     [m_window_wrapper->get() setContentView:view];
     [m_window_wrapper->get() makeFirstResponder:view];
 
+    m_context = std::make_unique<OsxContext>(view, context_settings);
+
     // Set title
     NSString* ns_title = [NSString stringWithUTF8String:title.c_str()];
     if (ns_title != nil) {
@@ -176,7 +200,10 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
     // Setup delegate
     OSXWindowDelegate* delegate = [OSXWindowDelegate alloc];
 
-    delegate.on_close      = std::bind(&OSXWindow::on_close, this);
+    delegate.on_close = [this]() {
+        m_should_close = true;
+        on_close();
+    };
     delegate.on_focus      = std::bind(&OSXWindow::on_focus, this);
     delegate.on_lost_focus = std::bind(&OSXWindow::on_lost_focus, this);
 
@@ -189,8 +216,6 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
 
     [m_window_wrapper->get() center];
     [m_window_wrapper->get() setReleasedWhenClosed:NO]; // We own the class, not AppKit
-
-    m_context = std::make_unique<OsxContext>(context_settings);
 }
 
 OSXWindow::~OSXWindow()
@@ -368,7 +393,7 @@ Context& OSXWindow::context()
 #pragma region state
 bool OSXWindow::should_close() const
 {
-    return true;
+    return m_should_close;
 }
 
 bool OSXWindow::is_fullscreen() const
