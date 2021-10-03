@@ -37,7 +37,7 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     , m_view(view)
 {
     auto get_profile = [](const Version& version) {
-        if (version.major_version >= 4) {
+        if (version.major() >= 4) {
             return NSOpenGLProfileVersion4_1Core;
         }
 
@@ -56,7 +56,7 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
         NSOpenGLPFAAlphaSize, 8,
         NSOpenGLPFADepthSize, static_cast<NSOpenGLPixelFormatAttribute>(settings.depth_bits()),
         NSOpenGLPFAStencilSize, static_cast<NSOpenGLPixelFormatAttribute>(settings.stencil_bits()),
-        // TODO: apply samples 
+        // TODO: apply samples
         0
     };
     // clang-format on

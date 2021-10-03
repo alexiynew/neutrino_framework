@@ -116,8 +116,8 @@ GLXContext create_glx_context(Display* display, GLXFBConfig framebuffer_config, 
 
     // clang-format off
     int32 context_attribs[] = {
-        GLX_CONTEXT_MAJOR_VERSION_ARB, settings.version().major_version,
-        GLX_CONTEXT_MINOR_VERSION_ARB, settings.version().minor_version,
+        GLX_CONTEXT_MAJOR_VERSION_ARB, settings.version().major(),
+        GLX_CONTEXT_MINOR_VERSION_ARB, settings.version().minor(),
         GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
         None};
     // clang-format on
