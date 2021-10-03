@@ -41,11 +41,17 @@ FpsCounter::~FpsCounter()
 void FpsCounter::tick()
 {
     m_frames++;
+    m_frames_total++;
 }
 
-int FpsCounter::fps() const
+std::uint32_t FpsCounter::fps() const
 {
     return m_fps;
+}
+
+std::uint32_t FpsCounter::total_fames() const
+{
+    return m_frames_total;
 }
 
 void FpsCounter::slice_fps()

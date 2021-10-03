@@ -69,18 +69,26 @@ public:
     void tick();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Frames per second
+    /// @brief Frames per second.
     ///
     /// @return Frames count.
     ////////////////////////////////////////////////////////////////////////////
-    int fps() const;
+    std::uint32_t fps() const;
+    
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Total frames count.
+    ///
+    /// @return Total frames count.
+    ////////////////////////////////////////////////////////////////////////////
+    std::uint32_t total_fames() const;
 
 private:
     void slice_fps();
 
-    bool m_should_stop        = false;
-    std::atomic<int> m_frames = 0;
-    std::atomic<int> m_fps    = 0;
+    std::atomic<bool> m_should_stop = false;
+    std::atomic<std::uint32_t> m_frames_total = 0;
+    std::atomic<std::uint32_t> m_frames       = 0;
+    std::atomic<std::uint32_t> m_fps          = 0;
     std::thread m_fps_thread;
 };
 

@@ -60,6 +60,7 @@ private:
         }
 
         TEST_ASSERT(fps.fps() == 0, "Should be 0 frames");
+        TEST_ASSERT(fps.total_fames() == 100, "Should be 100 frames");
     }
 };
 
