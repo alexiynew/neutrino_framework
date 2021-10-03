@@ -25,7 +25,6 @@
 #ifndef FRAMEWORK_SYSTEM_CONTEXT_SETTINGS_HPP
 #define FRAMEWORK_SYSTEM_CONTEXT_SETTINGS_HPP
 
-#include <common/types.hpp>
 #include <common/version.hpp>
 
 namespace framework::system
@@ -60,10 +59,10 @@ public:
     ContextSettings(const ContextSettings&) = default;
     ContextSettings(ContextSettings&&)      = default;
 
+    ~ContextSettings() = default;
+
     ContextSettings& operator=(const ContextSettings&) noexcept = default;
     ContextSettings& operator=(ContextSettings&&) noexcept = default;
-
-    ~ContextSettings() = default;
 
 #pragma region setters
     ////////////////////////////////////////////////////////////////////////////
@@ -87,7 +86,7 @@ public:
     ///
     /// @return Reference to this settings.
     ////////////////////////////////////////////////////////////////////////////
-    ContextSettings& depth_bits(int32 bits);
+    ContextSettings& depth_bits(std::uint32_t bits);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Sets stencil buffer bits count.
@@ -96,7 +95,7 @@ public:
     ///
     /// @return Reference to this settings.
     ////////////////////////////////////////////////////////////////////////////
-    ContextSettings& stencil_bits(int32 bits);
+    ContextSettings& stencil_bits(std::uint32_t bits);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Sets The Antialiasing level.
@@ -131,14 +130,14 @@ public:
     ///
     /// @return The detph buffer bits count.
     ////////////////////////////////////////////////////////////////////////////
-    int32 depth_bits() const;
+    std::uint32_t depth_bits() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Required stencil buffer bits count.
     ///
     /// @return The stencil buffer bits count.
     ////////////////////////////////////////////////////////////////////////////
-    int32 stencil_bits() const;
+    std::uint32_t stencil_bits() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Required Antialiasing level.
@@ -154,10 +153,10 @@ public:
 
 private:
     // TODO: Make dont_cara as default value
-    int32 m_depth_bits                = 24;
-    int32 m_stencil_bits              = 8;
+    std::uint32_t m_depth_bits        = 24;
+    std::uint32_t m_stencil_bits      = 8;
     Antialiasing m_antialiasing_level = Antialiasing::best;
-    Version m_version                 = {3, 0};
+    Version m_version                 = {3, 2};
 };
 
 ////////////////////////////////////////////////////////////////////////////////

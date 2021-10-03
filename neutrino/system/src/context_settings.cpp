@@ -26,6 +26,7 @@
 
 namespace framework::system
 {
+
 #pragma region setters
 
 ContextSettings& ContextSettings::version(Version version)
@@ -34,13 +35,13 @@ ContextSettings& ContextSettings::version(Version version)
     return *this;
 }
 
-ContextSettings& ContextSettings::depth_bits(int32 bits)
+ContextSettings& ContextSettings::depth_bits(std::uint32_t bits)
 {
     m_depth_bits = bits;
     return *this;
 }
 
-ContextSettings& ContextSettings::stencil_bits(int32 bits)
+ContextSettings& ContextSettings::stencil_bits(std::uint32_t bits)
 {
     m_stencil_bits = bits;
     return *this;
@@ -61,12 +62,12 @@ Version ContextSettings::version() const
     return m_version;
 }
 
-int32 ContextSettings::depth_bits() const
+std::uint32_t ContextSettings::depth_bits() const
 {
     return m_depth_bits;
 }
 
-int32 ContextSettings::stencil_bits() const
+std::uint32_t ContextSettings::stencil_bits() const
 {
     return m_stencil_bits;
 }

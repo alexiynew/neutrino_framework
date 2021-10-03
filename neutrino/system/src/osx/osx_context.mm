@@ -23,76 +23,167 @@
 // =============================================================================
 
 #include <stdexcept>
+#include <vector>
 
 #include <system/src/osx/osx_context.hpp>
 
-namespace framework::system::details
-{
+#include <dlfcn.h>
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+namespace
+{
+
+framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelFormat* pixel_format)
+{
+    using framework::system::ContextSettings;
+    using framework::Version;
+
+    auto get_attribute = [](NSOpenGLPixelFormat* pixel_format, NSOpenGLPixelFormatAttribute attrib) {
+        const int screen_number = 0;
+        std::int32_t value      = 0;
+
+        [pixel_format getValues:&value forAttribute:attrib forVirtualScreen:screen_number];
+
+        return static_cast<NSOpenGLPixelFormatAttribute>(value);
+    };
+
+    if (pixel_format == nullptr) {
+        return ContextSettings()
+        .version(Version(0, 0))
+        .depth_bits(0)
+        .stencil_bits(0)
+        .antialiasing_level(ContextSettings::Antialiasing::dont_care);
+    }
+
+    const auto profile       = get_attribute(pixel_format, NSOpenGLPFAOpenGLProfile);
+    const auto depth_bits    = get_attribute(pixel_format, NSOpenGLPFADepthSize);
+    const auto stencil_bits  = get_attribute(pixel_format, NSOpenGLPFAStencilSize);
+    const auto samples_count = get_attribute(pixel_format, NSOpenGLPFASamples);
+
+    ContextSettings settings;
+    if (profile == NSOpenGLProfileVersion3_2Core) {
+        settings.version(Version(3, 2));
+    } else if (profile == NSOpenGLProfileVersion4_1Core) {
+        settings.version(Version(4, 1));
+    } else {
+        settings.version(Version(0, 0));
+    }
+
+    settings.depth_bits(depth_bits);
+    settings.stencil_bits(stencil_bits);
+
+    if (samples_count != 0) {
+        settings.antialiasing_level(ContextSettings::Antialiasing::best);
+    } else {
+        settings.antialiasing_level(ContextSettings::Antialiasing::dont_care);
+    }
+
+    return settings;
+}
+
+} // namespace
+
+namespace framework::system::details
+{
 
 OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     : Context(settings)
     , m_view(view)
 {
-    auto get_profile = [](const Version& version) {
-        if (version.major() >= 4) {
-            return NSOpenGLProfileVersion4_1Core;
+    @autoreleasepool {
+        auto get_profile = [](const Version& version) {
+            if (version > Version(3,2)) {
+                return NSOpenGLProfileVersion4_1Core;
+            }
+
+            return NSOpenGLProfileVersion3_2Core;
+        };
+
+        std::vector<NSOpenGLPixelFormatAttribute> attribs;
+        attribs.push_back(NSOpenGLPFAAccelerated);
+        attribs.push_back(NSOpenGLPFAClosestPolicy);
+        attribs.push_back(NSOpenGLPFADoubleBuffer);
+
+        // Profile
+        attribs.push_back(NSOpenGLPFAOpenGLProfile);
+        attribs.push_back(get_profile(settings.version()));
+
+        // Color
+        attribs.push_back(NSOpenGLPFAColorSize);
+        attribs.push_back(24);
+        attribs.push_back(NSOpenGLPFAAlphaSize);
+        attribs.push_back(8);
+
+        // Depth buffer size
+        attribs.push_back(NSOpenGLPFADepthSize);
+        attribs.push_back(settings.depth_bits());
+
+        // Stencil buffer size
+        attribs.push_back(NSOpenGLPFAStencilSize);
+        attribs.push_back(settings.stencil_bits());
+
+        // Antialiasing
+        if (settings.antialiasing_level() == ContextSettings::Antialiasing::best) {
+            attribs.push_back(NSOpenGLPFAMultisample);
+
+            // Only one buffer is currently available
+            attribs.push_back(NSOpenGLPFASampleBuffers);
+            attribs.push_back(1);
+
+            // Antialiasing level
+            attribs.push_back(NSOpenGLPFASamples);
+            attribs.push_back(32);
         }
 
-        return NSOpenGLProfileVersion3_2Core;
-    };
+        // End of attributes
+        attribs.push_back(0);
 
-    // clang-format off
-    // TODO: Do nit apply settings if dont care
-    NSOpenGLPixelFormatAttribute attribs[] =
-    {
-        NSOpenGLPFAAccelerated,
-        NSOpenGLPFAClosestPolicy,
-        NSOpenGLPFADoubleBuffer,
-        NSOpenGLPFAOpenGLProfile, get_profile(settings.version()),
-        NSOpenGLPFAColorSize, 24,
-        NSOpenGLPFAAlphaSize, 8,
-        NSOpenGLPFADepthSize, static_cast<NSOpenGLPixelFormatAttribute>(settings.depth_bits()),
-        NSOpenGLPFAStencilSize, static_cast<NSOpenGLPixelFormatAttribute>(settings.stencil_bits()),
-        // TODO: apply samples
-        0
-    };
-    // clang-format on
+        NSOpenGLPixelFormat* pixel_format = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs.data()];
+        if (pixel_format == nullptr) {
+            throw std::runtime_error("Can't get a suitable pixel format");
+        }
 
-    NSOpenGLPixelFormat* pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
-    if (pixelFormat == nullptr) {
-        throw std::runtime_error("Can't get a suitable pixel format");
+        update_settings(get_actual_context_settings(pixel_format));
+
+        NSOpenGLContext* share = nullptr;
+
+        m_context = [[NSOpenGLContext alloc] initWithFormat:pixel_format shareContext:share];
+        if (m_context == nullptr) {
+            throw std::runtime_error("Failed to create OpenGL context");
+        }
+
+        [m_view setWantsBestResolutionOpenGLSurface:true];
+        [m_context setView:m_view];
     }
-
-    NSOpenGLContext* share = nil;
-    m_context              = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:share];
-    if (m_context == nullptr) {
-        throw std::runtime_error("Failed to create OpenGL context");
-    }
-
-    [m_view setWantsBestResolutionOpenGLSurface:true];
-    [m_context setView:m_view];
 }
 
 OsxContext::~OsxContext()
 {
-    [m_context release];
-    m_context = nullptr;
+    @autoreleasepool {
+        [m_context clearDrawable];
 
-    [NSOpenGLContext clearCurrentContext];
+        if (m_context == [NSOpenGLContext currentContext]) {
+            [NSOpenGLContext clearCurrentContext];
+        }
+
+        [m_context release];
+
+        m_context = nullptr;
+    }
 }
 
 bool OsxContext::valid() const
 {
-    return m_context != nullptr;
+    return m_context != nullptr && m_view != nullptr;
 }
 
 bool OsxContext::is_current() const
 {
-    NSOpenGLContext* current = [NSOpenGLContext currentContext];
-    return current != nullptr && current == m_context;
+    @autoreleasepool {
+        return m_context == [NSOpenGLContext currentContext];
+    }
 }
 
 Context::Api OsxContext::api_type() const
@@ -102,28 +193,36 @@ Context::Api OsxContext::api_type() const
 
 Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
 {
-    CFStringRef symbolName = CFStringCreateWithCString(kCFAllocatorDefault, function_name, kCFStringEncodingASCII);
+    @autoreleasepool {
+        static void* gl_lib = nullptr;
 
-    VoidFunctionPtr function = reinterpret_cast<VoidFunctionPtr>(
-    CFBundleGetFunctionPointerForName(CFBundleGetBundleWithIdentifier(CFSTR("com.apple.opengl")), symbolName));
-    CFRelease(symbolName);
+        if (!gl_lib) {
+            gl_lib = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
+        }
 
-    return function;
+        return (gl_lib ? reinterpret_cast<VoidFunctionPtr>(reinterpret_cast<intptr_t>(dlsym(gl_lib, function_name))) :
+                         nullptr);
+    }
 }
 
 void OsxContext::make_current()
 {
-    if (m_context) {
-        [m_context makeCurrentContext];
+    @autoreleasepool {
+        if (m_context) {
+            [m_context makeCurrentContext];
+        }
     }
 }
 
 void OsxContext::swap_buffers()
 {
-    if (m_context) {
-        [m_context flushBuffer];
+    @autoreleasepool {
+        if (m_context) {
+            [m_context flushBuffer];
+        }
     }
 }
 
-#pragma clang diagnostic pop
 } // namespace framework::system::details
+
+#pragma clang diagnostic pop

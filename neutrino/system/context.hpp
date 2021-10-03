@@ -114,6 +114,9 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     const ContextSettings& settings() const;
 
+protected:
+    void update_settings(const ContextSettings& settings);
+
 private:
     ContextSettings m_settings;
 };

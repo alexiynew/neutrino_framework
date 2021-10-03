@@ -64,10 +64,10 @@ public:
     Version(const Version&) = default;
     Version(Version&&)      = default;
 
+    ~Version() = default;
+
     Version& operator=(const Version&) = default;
     Version& operator=(Version&&) = default;
-
-    ~Version() = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Version string.

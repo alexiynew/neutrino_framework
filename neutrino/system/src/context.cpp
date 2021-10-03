@@ -39,4 +39,9 @@ const ContextSettings& Context::settings() const
     return m_settings;
 }
 
+void Context::update_settings(const ContextSettings& settings)
+{
+    m_settings = settings;
+}
+
 } // namespace framework::system

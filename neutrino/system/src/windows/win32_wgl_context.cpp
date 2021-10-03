@@ -136,6 +136,8 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
     };
     // clang-format on
 
+    // TODO: Update actual context settings
+
     m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, nullptr, attribs);
     if (m_hglrc == nullptr) {
         ReleaseDC(m_window, m_hdc);
