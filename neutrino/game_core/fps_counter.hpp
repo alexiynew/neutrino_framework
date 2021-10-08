@@ -74,7 +74,7 @@ public:
     /// @return Frames count.
     ////////////////////////////////////////////////////////////////////////////
     std::uint32_t fps() const;
-    
+
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Total frames count.
     ///
@@ -85,7 +85,7 @@ public:
 private:
     void slice_fps();
 
-    std::atomic<bool> m_should_stop = false;
+    std::atomic<bool> m_should_stop           = false;
     std::atomic<std::uint32_t> m_frames_total = 0;
     std::atomic<std::uint32_t> m_frames       = 0;
     std::atomic<std::uint32_t> m_fps          = 0;

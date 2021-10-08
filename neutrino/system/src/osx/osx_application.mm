@@ -27,19 +27,6 @@
 
 @implementation OSXApplication
 
-static NSAutoreleasePool* pool = nil;
-
-+ (void)ensure_thread_has_pool
-{
-    pool = [[NSAutoreleasePool alloc] init];
-}
-
-+ (void)drain_thread_pool
-{
-    [pool drain];
-    [OSXApplication ensure_thread_has_pool];
-}
-
 + (void)setup
 {
     static bool isTheProcessSetAsApplication = false;
@@ -56,7 +43,6 @@ static NSAutoreleasePool* pool = nil;
             [NSApp setDelegate:[[OSXApplicationDelegate alloc] init]];
 
         [OSXApplication setup_menu_bar];
-        [OSXApplication ensure_thread_has_pool];
 
         [NSApp finishLaunching];
     }
@@ -64,23 +50,26 @@ static NSAutoreleasePool* pool = nil;
 
 + (void)setup_menu_bar
 {
-    NSMenu* mainMenu = [NSApp mainMenu];
-    if (mainMenu != nil) {
-        return;
-    }
+    @autoreleasepool {
+        NSMenu* mainMenu = [NSApp mainMenu];
+        if (mainMenu != nil) {
+            return;
+        }
 
-    mainMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
-    [NSApp setMainMenu:mainMenu];
+        mainMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+    }
 }
 
 + (void)process_events
 {
-    NSEvent* event = nil;
+    @autoreleasepool {
+        NSEvent* event = nil;
 
-    while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast]
-                                          inMode:NSDefaultRunLoopMode
-                                         dequeue:YES])) {
-        [NSApp sendEvent:event];
+        while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:[NSDate distantPast]
+                                              inMode:NSDefaultRunLoopMode
+                                             dequeue:YES])) {
+            [NSApp sendEvent:event];
+        }
     }
 }
 

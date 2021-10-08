@@ -24,6 +24,8 @@
 # =============================================================================
 
 set_sources(PRIVATE_SOURCES
+    osx_autorelease_pool.hpp
+    osx_autorelease_pool.mm
     osx_application.hpp
     osx_application.mm
     osx_application_delegate.hpp

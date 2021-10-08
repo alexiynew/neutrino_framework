@@ -22,21 +22,30 @@
 // SOFTWARE.
 // =============================================================================
 
-#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_HPP
-#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_APPLICATION_HPP
+#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_AUTORELEASE_POOL_HPP
+#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_AUTORELEASE_POOL_HPP
 
-#import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
 
-@interface OSXApplication : NSApplication
+namespace framework::system::details
+{
 
-+ (void)setup;
-+ (void)setup_menu_bar;
+class AutoreleasePool
+{
+public:
+    AutoreleasePool();
+    ~AutoreleasePool();
 
-+ (void)process_events;
+    AutoreleasePool(const AutoreleasePool&) = delete;
+    AutoreleasePool(AutoreleasePool&&)      = delete;
 
-- (void)sendEvent:(NSEvent*)event;
+    AutoreleasePool& operator=(const AutoreleasePool&) = delete;
+    AutoreleasePool& operator=(AutoreleasePool&&) = delete;
 
-@end
+private:
+    NSAutoreleasePool* m_pool = nullptr;
+};
+
+} // namespace framework::system::details
 
 #endif

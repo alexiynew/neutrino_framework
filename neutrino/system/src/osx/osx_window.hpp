@@ -37,7 +37,9 @@ class Context;
 
 namespace framework::system::details
 {
+
 class NSWindowWrapper;
+class NSViewWrapper;
 
 class OSXWindow final : public PlatformWindow
 {
@@ -98,10 +100,16 @@ public:
 #pragma endregion
 
 private:
-    void ensureThreadHasPool();
-    void drainThreadPool();
+    void window_should_close();
+    void window_did_resize();
+    void window_did_move();
+    void window_did_miniaturize();
+    void window_did_deminiaturize();
+    void window_did_becomekey();
+    void window_did_resignkey();
 
-    std::unique_ptr<NSWindowWrapper> m_window_wrapper;
+    std::unique_ptr<NSWindowWrapper> m_window;
+    std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<Context> m_context;
 
     bool m_should_close = false;
