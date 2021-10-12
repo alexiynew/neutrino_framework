@@ -119,7 +119,7 @@ private:
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-inline constexpr bool operator==(const Version& lhs, const Version& rhs) noexcept
+inline bool operator==(const Version& lhs, const Version& rhs) noexcept
 {
     return lhs.major() == rhs.major() && lhs.minor() == rhs.minor() && lhs.patch() == rhs.patch() &&
            lhs.build_number() == rhs.build_number();
@@ -133,7 +133,7 @@ inline constexpr bool operator==(const Version& lhs, const Version& rhs) noexcep
 ///
 /// @return `true` if lhs isn't equal rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-inline constexpr bool operator!=(const Version& lhs, const Version& rhs) noexcept
+inline bool operator!=(const Version& lhs, const Version& rhs) noexcept
 {
     return !(lhs == rhs);
 }
@@ -146,7 +146,7 @@ inline constexpr bool operator!=(const Version& lhs, const Version& rhs) noexcep
 ///
 /// @return `true` if lhs is less than rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-inline constexpr bool operator<(const Version& lhs, const Version& rhs) noexcept
+inline bool operator<(const Version& lhs, const Version& rhs) noexcept
 {
     return (lhs.major() != rhs.major() ?
             lhs.major() < rhs.major() :
@@ -163,7 +163,7 @@ inline constexpr bool operator<(const Version& lhs, const Version& rhs) noexcept
 ///
 /// @return `true` if lhs is greater than rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-inline constexpr bool operator>(const Version& lhs, const Version& rhs) noexcept
+inline bool operator>(const Version& lhs, const Version& rhs) noexcept
 {
     return !(lhs < rhs) && lhs != rhs;
 }
@@ -176,7 +176,7 @@ inline constexpr bool operator>(const Version& lhs, const Version& rhs) noexcept
 ///
 /// @return `true` if lhs is less than or euqal rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-inline constexpr bool operator<=(const Version& lhs, const Version& rhs) noexcept
+inline bool operator<=(const Version& lhs, const Version& rhs) noexcept
 {
     return lhs < rhs || lhs == rhs;
 }
@@ -189,7 +189,7 @@ inline constexpr bool operator<=(const Version& lhs, const Version& rhs) noexcep
 ///
 /// @return `true` if lhs is greater than or equal rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-inline constexpr bool operator>=(const Version& lhs, const Version& rhs) noexcept
+inline bool operator>=(const Version& lhs, const Version& rhs) noexcept
 {
     return lhs > rhs || lhs == rhs;
 }
