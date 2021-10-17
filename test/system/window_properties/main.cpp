@@ -22,8 +22,10 @@
 // SOFTWARE.
 // =============================================================================
 
-#include <iostream>
+#include <chrono>
+#include <thread>
 
+#include <log/log.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -48,50 +50,104 @@ public:
 private:
     void window_size()
     {
-        bool on_size_called = false;
+        Stats stats;
 
         const Size size480{480, 320};
         const Size size640{640, 480};
 
         Size size_in_callback{0, 0};
 
-        Window w("Test", {480, 320});
+        Window window(name(), {480, 320});
 
-        w.on_resize.connect([&on_size_called, &size_in_callback](const Window& /*unused*/, Size w_size) {
-            on_size_called   = true;
-            size_in_callback = w_size;
+        window.on_show.connect([&stats](const Window& /*unused*/) { stats.show_called++; });
+
+        window.on_resize.connect([&stats, this](const Window& w, Size w_size) {
+            stats.size_called++;
+            stats.last_size = w_size;
+
+            TEST_ASSERT(w.is_visible(), "Window must be visible to send on_resize callbacks.");
         });
 
-        TEST_ASSERT(w.size() == size480, "Window has wrong size.");
+        // Check stats
+        TEST_ASSERT(stats.size_called == 0, "Wrong stats.size_called count in begining.");
+        TEST_ASSERT(stats.show_called == 0, "Wrong stats.show_called count in begining.");
+        TEST_ASSERT(stats.last_size == Size(), "Wrong stats.last_size in begining.");
 
-        w.show();
+        // Window stats on creation
+        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
 
-        TEST_ASSERT(on_size_called == true, "On size should be called.");
-        TEST_ASSERT(size_in_callback == size480, "Wrong window size in callback.");
-        TEST_ASSERT(w.size() == size480, "Window has wrong size.");
+        // Show window - must be 480
+        window.show();
 
-        on_size_called   = false;
-        size_in_callback = {0, 0};
-        w.resize({640, 480});
+        TEST_ASSERT(stats.show_called == 1, "On_show callback must be called once.");
+        TEST_ASSERT(stats.size_called == 1, "On_resize callback must be called once.");
+        TEST_ASSERT(stats.last_size == size480, "Wrong window size in callback.");
+        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+        TEST_ASSERT(window.is_visible(), "Window must be visible.");
 
-        TEST_ASSERT(on_size_called == true, "On size should be called.");
-        TEST_ASSERT(size_in_callback == size640, "Wrong window size in callback.");
-        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        w.hide();
-        w.show();
+        // Resize window - must be 640
+        window.resize({640, 480});
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(stats.show_called == 1, "On_show callback must be called once.");
+        TEST_ASSERT(stats.size_called == 2, "On_resize callback must be called twice.");
+        TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
 
-        w.hide();
-        on_size_called   = false;
-        size_in_callback = {0, 0};
-        w.resize({480, 320});
-        w.show();
+        // Hide and show window - must be stil 640
+        window.hide();
+        TEST_ASSERT(!window.is_visible(), "Window must not be visible.");
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        TEST_ASSERT(on_size_called == true, "On size should be called.");
-        TEST_ASSERT(size_in_callback == size480, "Wrong window size in callback.");
-        TEST_ASSERT(w.size() == size480, "Window has wrong size.");
+        window.show();
+        TEST_ASSERT(stats.show_called == 2, "On_show callback must be called twice.");
+        TEST_ASSERT(stats.size_called == 3, "On_resize callback must be called 3 times.");
+        TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.is_visible(), "Window must be visible.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        // Resize hidden window - no callbacks, size changed
+        window.hide();
+        TEST_ASSERT(!window.is_visible(), "Window must not be visible.");
+
+        window.resize(size480);
+
+        TEST_ASSERT(stats.show_called == 2, "On_show callback must not be called while size changed.");
+        TEST_ASSERT(stats.size_called == 3, "On_resize callback must not be called while window is not visible.");
+        TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
+        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+
+        window.resize(size640);
+
+        TEST_ASSERT(stats.show_called == 2, "On_show callback must not be called while size changed.");
+        TEST_ASSERT(stats.size_called == 3, "On_resize callback must not be called while window is not visible.");
+        TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+
+        window.resize(size480);
+
+        TEST_ASSERT(stats.show_called == 2, "On_show callback must not be called while size changed.");
+        TEST_ASSERT(stats.size_called == 3, "On_resize callback must not be called while window is not visible.");
+        TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
+        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+
+        // For some reason on macOS if to show window immediately after resizing it won't be shown.
+        // Some time needs to pass and after that window.process_events() will force the window to appear on the screen.
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        window.show();
+
+        TEST_ASSERT(stats.show_called == 3, "On_show callback must be called 3 times.");
+        TEST_ASSERT(stats.size_called == 4, "On_resize callback must be called 4 times.");
+        TEST_ASSERT(stats.last_size == size480, "Wrong window size in callback.");
+        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+        TEST_ASSERT(window.is_visible(), "Window must be visible.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     void window_size_limits()
@@ -102,42 +158,42 @@ private:
         const Size small_size{150, 150};
         const Size big_size{1000, 1000};
 
-        Window w("Test", {640, 480});
+        Window window(name(), {640, 480});
 
         // Base values
-        TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
-        TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
+        TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
 
-        w.set_min_size(size640);
-        w.set_max_size(size960);
+        window.set_min_size(size640);
+        window.set_max_size(size960);
 
-        w.show();
+        window.show();
 
         // All sizes setted up correctly
-        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
-        TEST_ASSERT(w.min_size() == size640, "Window has wrong min size.");
-        TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size640, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
 
         // Check size limits
-        w.resize(big_size);
+        window.resize(big_size);
 
-        TEST_ASSERT(w.size() == size960, "Window has wrong size.");
+        TEST_ASSERT(window.size() == size960, "Window has wrong size.");
 
-        w.resize(small_size);
+        window.resize(small_size);
 
-        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
 
         // No more limits. Can change size as we want
-        w.set_min_size(no_size);
-        w.set_max_size(no_size);
+        window.set_min_size(no_size);
+        window.set_max_size(no_size);
 
-        w.resize(small_size);
+        window.resize(small_size);
 
-        TEST_ASSERT(w.size() == small_size, "Window has wrong size.");
+        TEST_ASSERT(window.size() == small_size, "Window has wrong size.");
 
-        w.resize(big_size);
+        window.resize(big_size);
 
-        TEST_ASSERT(w.size() == big_size, "Window has wrong size.");
+        TEST_ASSERT(window.size() == big_size, "Window has wrong size.");
     }
 
     void window_resizability()
@@ -145,19 +201,19 @@ private:
         const Size size640{640, 480};
         const Size no_size{0, 0};
 
-        Window w("Test", size640);
+        Window window(name(), size640);
 
-        w.show();
+        window.show();
 
-        TEST_ASSERT(w.is_resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
 
-        w.set_resizable(false);
+        window.set_resizable(false);
 
         // No other values were changed
-        TEST_ASSERT(!w.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
-        TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
-        TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
+        TEST_ASSERT(!window.is_resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
     }
 
     void window_resizability_and_size()
@@ -166,36 +222,36 @@ private:
         const Size size640{640, 480};
         const Size size960{960, 640};
 
-        Window w("Test", size640);
+        Window window(name(), size640);
 
-        w.show();
+        window.show();
 
-        w.set_resizable(false);
+        window.set_resizable(false);
 
-        w.resize(size480);
-        w.set_min_size(size480);
-        w.set_max_size(size960);
+        window.resize(size480);
+        window.set_min_size(size480);
+        window.set_max_size(size960);
 
         // Can change size limits, and window size
-        TEST_ASSERT(!w.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(w.size() == size480, "Window has wrong size.");
-        TEST_ASSERT(w.min_size() == size480, "Window has wrong min size.");
-        TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
+        TEST_ASSERT(!window.is_resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
 
-        w.set_resizable(true);
+        window.set_resizable(true);
 
         // Size limits and window size still are the same
-        TEST_ASSERT(w.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(w.size() == size480, "Window has wrong size.");
-        TEST_ASSERT(w.min_size() == size480, "Window has wrong min size.");
-        TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
+        TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
 
-        w.resize({1000, 1000});
+        window.resize({1000, 1000});
 
-        TEST_ASSERT(w.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(w.size() == size960, "Window has wrong size.");
-        TEST_ASSERT(w.min_size() == size480, "Window has wrong min size.");
-        TEST_ASSERT(w.max_size() == size960, "Window has wrong max size.");
+        TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size960, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
     }
 
     void window_resizability_before_show()
@@ -203,24 +259,24 @@ private:
         const Size no_size{0, 0};
         const Size size640{640, 480};
 
-        Window w("Test", size640);
+        Window window(name(), size640);
 
-        w.set_resizable(false);
+        window.set_resizable(false);
 
-        w.show();
+        window.show();
 
-        TEST_ASSERT(!w.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
-        TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
-        TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
+        TEST_ASSERT(!window.is_resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
 
-        w.set_resizable(true);
+        window.set_resizable(true);
 
         // No other values were changed
-        TEST_ASSERT(w.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(w.size() == size640, "Window has wrong size.");
-        TEST_ASSERT(w.min_size() == no_size, "Window has wrong min size.");
-        TEST_ASSERT(w.max_size() == no_size, "Window has wrong max size.");
+        TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
+        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
+        TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
+        TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
     }
 
     void window_position()
@@ -228,23 +284,23 @@ private:
         bool on_position_called = false;
         Size size640            = {640, 480};
 
-        Window w("Test", size640);
+        Window window(name(), size640);
 
-        w.on_move.connect(
+        window.on_move.connect(
         [&on_position_called](const Window& /*unused*/, Position /*unused*/) { on_position_called = true; });
 
-        w.show();
+        window.show();
 
-        w.move({100, 100});
+        window.move({100, 100});
 
-        auto position = w.position();
+        auto position = window.position();
 
         TEST_ASSERT(on_position_called == true, "On position should be called.");
 
         // Can't really check window position. Different WM can give different values.
         TEST_ASSERT(position.x > -100000 && position.y > -100000, "Window always has position.");
 
-        TEST_ASSERT(w.size() == size640, "Window should save its size.");
+        TEST_ASSERT(window.size() == size640, "Window should save its size.");
     }
 
     void window_title()
@@ -253,20 +309,34 @@ private:
         const std::string new_title  = u8"new_window_title";
         const std::string utf8_title = u8"พᛁቢ⠗☺w ⊤Iτსе";
 
-        Window w(title, {640, 480});
+        Window window(title, {640, 480});
 
-        w.show();
+        window.show();
 
-        TEST_ASSERT(w.title() == title, "Window has wrong title");
+        TEST_ASSERT(window.title() == title, "Window has wrong title");
 
-        w.set_title(new_title);
+        window.set_title(new_title);
 
-        TEST_ASSERT(w.title() == new_title, "Window has wrong title");
+        TEST_ASSERT(window.title() == new_title, "Window has wrong title");
 
-        w.set_title(utf8_title);
+        window.set_title(utf8_title);
 
-        TEST_ASSERT(w.title() == utf8_title, "Window has wrong title");
+        TEST_ASSERT(window.title() == utf8_title, "Window has wrong title");
     }
+
+    struct Stats
+    {
+        int show_called = 0;
+        int size_called = 0;
+        Size last_size;
+
+        void reset()
+        {
+            show_called = 0;
+            size_called = 0;
+            last_size   = Size();
+        }
+    };
 };
 
 int main()

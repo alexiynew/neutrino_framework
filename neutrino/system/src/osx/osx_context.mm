@@ -36,19 +36,20 @@
 namespace
 {
 
+NSOpenGLPixelFormatAttribute get_attribute(NSOpenGLPixelFormat* pixel_format, NSOpenGLPixelFormatAttribute attrib)
+{
+    const int screen_number = 0;
+    std::int32_t value      = 0;
+
+    [pixel_format getValues:&value forAttribute:attrib forVirtualScreen:screen_number];
+
+    return static_cast<NSOpenGLPixelFormatAttribute>(value);
+};
+
 framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelFormat* pixel_format)
 {
     using framework::system::ContextSettings;
     using framework::Version;
-
-    auto get_attribute = [](NSOpenGLPixelFormat* pixel_format, NSOpenGLPixelFormatAttribute attrib) {
-        const int screen_number = 0;
-        std::int32_t value      = 0;
-
-        [pixel_format getValues:&value forAttribute:attrib forVirtualScreen:screen_number];
-
-        return static_cast<NSOpenGLPixelFormatAttribute>(value);
-    };
 
     if (pixel_format == nullptr) {
         return ContextSettings()
@@ -89,7 +90,7 @@ framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelForm
 namespace framework::system::details
 {
 
-OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
+OSXContext::OSXContext(NSView* view, const ContextSettings& settings)
     : Context(settings)
     , m_view(view)
 {
@@ -160,7 +161,7 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     [m_context setView:m_view];
 }
 
-OsxContext::~OsxContext()
+OSXContext::~OSXContext()
 {
     AutoreleasePool pool;
 
@@ -175,24 +176,24 @@ OsxContext::~OsxContext()
     m_context = nullptr;
 }
 
-bool OsxContext::valid() const
+bool OSXContext::valid() const
 {
     return m_context != nullptr && m_view != nullptr;
 }
 
-bool OsxContext::is_current() const
+bool OSXContext::is_current() const
 {
     AutoreleasePool pool;
 
     return m_context == [NSOpenGLContext currentContext];
 }
 
-Context::Api OsxContext::api_type() const
+Context::Api OSXContext::api_type() const
 {
     return Context::Api::opengl;
 }
 
-Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
+Context::VoidFunctionPtr OSXContext::get_function(const char* function_name) const
 {
     static void* gl_lib = nullptr;
 
@@ -204,17 +205,24 @@ Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) con
                      nullptr);
 }
 
-void OsxContext::make_current()
+void OSXContext::make_current()
 {
     if (m_context) {
         [m_context makeCurrentContext];
     }
 }
 
-void OsxContext::swap_buffers()
+void OSXContext::swap_buffers()
 {
     if (m_context) {
         [m_context flushBuffer];
+    }
+}
+
+void OSXContext::update()
+{
+    if (m_context) {
+        [m_context update];
     }
 }
 

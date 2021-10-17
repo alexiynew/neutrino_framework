@@ -164,7 +164,7 @@
 
 #pragma endregion
 
-namespace framework::system::details
+namespace
 {
 
 // Transforms a y-coordinate between the CG display and NS screen spaces
@@ -173,6 +173,11 @@ CGFloat transform_y(CGFloat y)
     const CGFloat h = CGDisplayBounds(CGMainDisplayID()).size.height;
     return h - y - 1;
 }
+
+} // namespace
+
+namespace framework::system::details
+{
 
 template <typename T>
 class Wrapper
@@ -239,7 +244,7 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
     if (!m_window) {
         throw std::runtime_error("Can't create NSWindow");
     }
-    
+
     // Setup callbacks
     m_window->get().window_should_close      = std::bind(&OSXWindow::window_should_close, this);
     m_window->get().window_did_resize        = std::bind(&OSXWindow::window_did_resize, this);
@@ -257,7 +262,7 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
     [m_window->get() setRestorable:NO];
 
     [m_window->get() setReleasedWhenClosed:NO];
-    
+
     set_title(title);
 
     // Create view
@@ -270,8 +275,7 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
     [m_window->get() makeFirstResponder:m_view->get()];
 
     // Create context
-    m_context = std::make_unique<OsxContext>(m_view->get(), context_settings);
-
+    m_context = std::make_unique<OSXContext>(m_view->get(), context_settings);
 }
 
 OSXWindow::~OSXWindow()
@@ -293,15 +297,18 @@ void OSXWindow::show()
         return;
     }
 
-    [NSApp activateIgnoringOtherApps:YES];
-    [m_window->get() orderFrontRegardless];
+    [m_window->get() orderFront:m_window->get()];
     do {
         log::info(title()) << __FUNCTION__ << ":" << __LINE__ << " loop !is_visible";
         process_events();
     } while (!is_visible());
+    // explicitly call on_show callback
     on_show();
-    
+
     [m_window->get() center];
+
+    // explicitly call on_resize callback
+    on_resize(size());
 
     [m_window->get() makeKeyWindow];
     do {
@@ -379,16 +386,18 @@ void OSXWindow::restore()
     AutoreleasePool pool;
 }
 
-void OSXWindow::resize(Size size)
+void OSXWindow::resize(Size new_size)
 {
     AutoreleasePool pool;
 
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
     NSRect rect = [m_window->get() contentRectForFrameRect:[m_window->get() frame]];
-    rect.origin.y += rect.size.height - size.height;
-    rect.size = NSMakeSize(size.width, size.height);
+    rect.origin.y += rect.size.height - new_size.height;
+    rect.size = NSMakeSize(new_size.width, new_size.height);
     [m_window->get() setFrame:[m_window->get() frameRectForContentRect:rect] display:YES];
+
+    process_events();
 }
 
 void OSXWindow::move(Position position)
@@ -402,6 +411,8 @@ void OSXWindow::move(Position position)
     const NSRect frame = [m_window->get() frameRectForContentRect:dummy];
 
     [m_window->get() setFrameOrigin:frame.origin];
+
+    process_events();
 }
 
 void OSXWindow::grab_cursor()
@@ -416,6 +427,7 @@ void OSXWindow::release_cursor()
 
 void OSXWindow::process_events()
 {
+    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
     [OSXApplication process_events];
 }
 
@@ -466,8 +478,8 @@ Position OSXWindow::position() const
 
     const NSRect contentRect = [m_window->get() contentRectForFrameRect:[m_window->get() frame]];
 
-    position.x = contentRect.origin.x;
-    position.y = transform_y(contentRect.origin.y + contentRect.size.height - 1);
+    position.x = static_cast<int>(contentRect.origin.x);
+    position.y = static_cast<int>(transform_y(contentRect.origin.y + contentRect.size.height - 1));
 
     log::info(title()) << "   position:" << position;
 
@@ -483,8 +495,8 @@ Size OSXWindow::size() const
 
     const NSRect contentRect = [m_view->get() frame];
 
-    size.width  = contentRect.size.width;
-    size.height = contentRect.size.height;
+    size.width  = static_cast<int>(contentRect.size.width);
+    size.height = static_cast<int>(contentRect.size.height);
 
     log::info(title()) << "   size:" << size;
     return size;
@@ -584,39 +596,32 @@ void OSXWindow::window_did_resize()
 {
     AutoreleasePool pool;
 
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    // self.on_focus();
+    if (is_visible()) {
+        log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
-    // [window->context.nsgl.object update];
+        m_context->update();
 
-    // if (_glfw.ns.disabledCursorWindow == window)
-    //    _glfwCenterCursorInContentArea(window);
+        // if (_glfw.ns.disabledCursorWindow == window)
+        //    _glfwCenterCursorInContentArea(window);
 
-    // const NSRect rect = [m_view->get() frame];
-    // const NSRect fbRect = [m_view->get() convertRectToBacking:contentRect];
-
-    //  if (fbRect.size.width != window->ns.fbWidth ||
-    //     fbRect.size.height != window->ns.fbHeight)
-    // {
-    //     window->ns.fbWidth  = fbRect.size.width;
-    //     window->ns.fbHeight = fbRect.size.height;
-    //     _glfwInputFramebufferSize(window, fbRect.size.width, fbRect.size.height);
-    // }
+        on_resize(size());
+    }
 }
 
 void OSXWindow::window_did_move()
 {
     AutoreleasePool pool;
 
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    //[window->context.nsgl.object update];
+    if (is_visible()) {
+        log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
-    // if (_glfw.ns.disabledCursorWindow == window)
-    //    _glfwCenterCursorInContentArea(window);
+        m_context->update();
 
-    // int x, y;
-    // _glfwPlatformGetWindowPos(window, &x, &y);
-    // _glfwInputWindowPos(window, x, y);
+        // if (_glfw.ns.disabledCursorWindow == window)
+        //    _glfwCenterCursorInContentArea(window);
+
+        on_move(position());
+    }
 }
 
 void OSXWindow::window_did_miniaturize()

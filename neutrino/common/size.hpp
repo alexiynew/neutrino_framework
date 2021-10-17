@@ -37,6 +37,8 @@ namespace framework
 ////////////////////////////////////////////////////////////////////////////////
 struct Size
 {
+    Size() = default;
+
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates the Size object.
     ///
@@ -45,8 +47,8 @@ struct Size
     ////////////////////////////////////////////////////////////////////////////
     Size(int w, int h);
 
-    int width;  ///< Width.
-    int height; ///< Height.
+    int width  = 0; ///< Width.
+    int height = 0; ///< Height.
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +59,7 @@ struct Size
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-bool operator==(const Size& lhs, const Size& rhs);
+bool operator==(const Size& lhs, const Size& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Inequality operator for Size values.
@@ -67,7 +69,7 @@ bool operator==(const Size& lhs, const Size& rhs);
 ///
 /// @return `true` if lhs isn't equals rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-bool operator!=(const Size& lhs, const Size& rhs);
+bool operator!=(const Size& lhs, const Size& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Stream operator to print the Size value.
@@ -78,7 +80,7 @@ bool operator!=(const Size& lhs, const Size& rhs);
 /// @return Reference to output stream.
 ////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-T& operator<<(T& ostream, const Size& size)
+inline T& operator<<(T& ostream, const Size& size)
 {
     ostream << "{" << size.width << ", " << size.height << "}";
     return ostream;

@@ -31,17 +31,17 @@
 
 namespace framework::system::details
 {
-class OsxContext : public Context
+class OSXContext : public Context
 {
 public:
-    OsxContext(NSView* view, const ContextSettings& settings);
-    ~OsxContext() override;
+    OSXContext(NSView* view, const ContextSettings& settings);
+    ~OSXContext() override;
 
-    OsxContext(const OsxContext&) = default;
-    OsxContext(OsxContext&&)      = default;
+    OSXContext(const OSXContext&) = default;
+    OSXContext(OSXContext&&)      = default;
 
-    OsxContext& operator=(const OsxContext&) noexcept = default;
-    OsxContext& operator=(OsxContext&&) noexcept = default;
+    OSXContext& operator=(const OSXContext&) noexcept = default;
+    OSXContext& operator=(OSXContext&&) noexcept = default;
 
     bool valid() const override;
     bool is_current() const override;
@@ -51,6 +51,8 @@ public:
 
     void make_current() override;
     void swap_buffers() override;
+
+    void update();
 
 private:
 #pragma clang diagnostic push

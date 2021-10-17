@@ -30,16 +30,12 @@
 
 #include <system/src/platform_window.hpp>
 
-namespace framework::system
-{
-class Context;
-}
-
 namespace framework::system::details
 {
 
 class NSWindowWrapper;
 class NSViewWrapper;
+class OSXContext;
 
 class OSXWindow final : public PlatformWindow
 {
@@ -110,7 +106,7 @@ private:
 
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
-    std::unique_ptr<Context> m_context;
+    std::unique_ptr<OSXContext> m_context;
 
     bool m_should_close = false;
 };

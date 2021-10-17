@@ -37,6 +37,8 @@ namespace framework
 ////////////////////////////////////////////////////////////////////////////////
 struct Position
 {
+    Position() = default;
+
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates the Position object.
     ///
@@ -45,8 +47,8 @@ struct Position
     ////////////////////////////////////////////////////////////////////////////
     Position(int x_value, int y_value);
 
-    int x; ///< X coordiante.
-    int y; ///< Y coordinate.
+    int x = 0; ///< X coordiante.
+    int y = 0; ///< Y coordinate.
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +59,7 @@ struct Position
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-bool operator==(const Position& lhs, const Position& rhs);
+bool operator==(const Position& lhs, const Position& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Inequality operator for Position values.
@@ -67,7 +69,7 @@ bool operator==(const Position& lhs, const Position& rhs);
 ///
 /// @return `true` if lhs isn't equals rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-bool operator!=(const Position& lhs, const Position& rhs);
+bool operator!=(const Position& lhs, const Position& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Stream operator to print the Position value.
@@ -78,7 +80,7 @@ bool operator!=(const Position& lhs, const Position& rhs);
 /// @return Reference to output stream.
 ////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-T& operator<<(T& ostream, const Position& position)
+inline T& operator<<(T& ostream, const Position& position)
 {
     ostream << "{" << position.x << ", " << position.y << "}";
     return ostream;

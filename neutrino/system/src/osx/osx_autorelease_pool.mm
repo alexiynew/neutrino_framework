@@ -12,4 +12,4 @@ AutoreleasePool::~AutoreleasePool()
     [m_pool release];
 }
 
-}
+} // framework::system::details
