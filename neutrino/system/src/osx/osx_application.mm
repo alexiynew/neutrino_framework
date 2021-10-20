@@ -25,7 +25,7 @@
 #import <system/src/osx/osx_application.hpp>
 #import <system/src/osx/osx_application_delegate.hpp>
 
-@implementation OSXApplication
+@implementation OsxApplication
 
 + (void)setup
 {
@@ -34,15 +34,15 @@
     if (!isTheProcessSetAsApplication) {
         isTheProcessSetAsApplication = true;
 
-        [OSXApplication sharedApplication];
+        [OsxApplication sharedApplication];
 
         [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
         [NSApp activateIgnoringOtherApps:YES];
 
         if (![NSApp delegate])
-            [NSApp setDelegate:[[OSXApplicationDelegate alloc] init]];
+            [NSApp setDelegate:[[OsxApplicationDelegate alloc] init]];
 
-        [OSXApplication setup_menu_bar];
+        [OsxApplication setup_menu_bar];
 
         [NSApp finishLaunching];
     }

@@ -31,7 +31,7 @@ std::unique_ptr<PlatformWindow> create_platform_window(const std::string& title,
                                                        Size size,
                                                        const ContextSettings& settings)
 {
-    return std::make_unique<OSXWindow>(title, size, settings);
+    return std::make_unique<OsxWindow>(title, size, settings);
 }
 
 } // namespace framework::system::details

@@ -24,7 +24,7 @@
 
 #import <system/src/osx/osx_application_delegate.hpp>
 
-@implementation OSXApplicationDelegate
+@implementation OsxApplicationDelegate
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app
 {

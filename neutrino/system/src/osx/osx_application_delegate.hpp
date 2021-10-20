@@ -28,7 +28,7 @@
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
 
-@interface OSXApplicationDelegate : NSObject<NSApplicationDelegate>
+@interface OsxApplicationDelegate : NSObject<NSApplicationDelegate>
 
 // React to a termination notification
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app;

@@ -90,7 +90,7 @@ framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelForm
 namespace framework::system::details
 {
 
-OSXContext::OSXContext(NSView* view, const ContextSettings& settings)
+OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     : Context(settings)
     , m_view(view)
 {
@@ -161,7 +161,7 @@ OSXContext::OSXContext(NSView* view, const ContextSettings& settings)
     [m_context setView:m_view];
 }
 
-OSXContext::~OSXContext()
+OsxContext::~OsxContext()
 {
     AutoreleasePool pool;
 
@@ -176,24 +176,24 @@ OSXContext::~OSXContext()
     m_context = nullptr;
 }
 
-bool OSXContext::valid() const
+bool OsxContext::valid() const
 {
     return m_context != nullptr && m_view != nullptr;
 }
 
-bool OSXContext::is_current() const
+bool OsxContext::is_current() const
 {
     AutoreleasePool pool;
 
     return m_context == [NSOpenGLContext currentContext];
 }
 
-Context::Api OSXContext::api_type() const
+Context::Api OsxContext::api_type() const
 {
     return Context::Api::opengl;
 }
 
-Context::VoidFunctionPtr OSXContext::get_function(const char* function_name) const
+Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
 {
     static void* gl_lib = nullptr;
 
@@ -205,21 +205,21 @@ Context::VoidFunctionPtr OSXContext::get_function(const char* function_name) con
                      nullptr);
 }
 
-void OSXContext::make_current()
+void OsxContext::make_current()
 {
     if (m_context) {
         [m_context makeCurrentContext];
     }
 }
 
-void OSXContext::swap_buffers()
+void OsxContext::swap_buffers()
 {
     if (m_context) {
         [m_context flushBuffer];
     }
 }
 
-void OSXContext::update()
+void OsxContext::update()
 {
     if (m_context) {
         [m_context update];

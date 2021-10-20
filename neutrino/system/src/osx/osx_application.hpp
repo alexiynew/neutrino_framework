@@ -28,7 +28,7 @@
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
 
-@interface OSXApplication : NSApplication
+@interface OsxApplication : NSApplication
 
 + (void)setup;
 + (void)setup_menu_bar;

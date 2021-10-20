@@ -35,20 +35,20 @@ namespace framework::system::details
 
 class NSWindowWrapper;
 class NSViewWrapper;
-class OSXContext;
+class OsxContext;
 
-class OSXWindow final : public PlatformWindow
+class OsxWindow final : public PlatformWindow
 {
 public:
-    OSXWindow(const std::string& title, Size size, const ContextSettings& settings);
+    OsxWindow(const std::string& title, Size size, const ContextSettings& settings);
 
-    OSXWindow(const OSXWindow&)     = delete;
-    OSXWindow(OSXWindow&&) noexcept = default;
+    OsxWindow(const OsxWindow&)     = delete;
+    OsxWindow(OsxWindow&&) noexcept = default;
 
-    ~OSXWindow() override;
+    ~OsxWindow() override;
 
-    OSXWindow& operator=(const OSXWindow&) = delete;
-    OSXWindow& operator=(OSXWindow&&) noexcept = default;
+    OsxWindow& operator=(const OsxWindow&) = delete;
+    OsxWindow& operator=(OsxWindow&&) noexcept = default;
 
 #pragma region actions
     void show() override;
@@ -106,7 +106,7 @@ private:
 
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
-    std::unique_ptr<OSXContext> m_context;
+    std::unique_ptr<OsxContext> m_context;
 
     bool m_should_close = false;
 };

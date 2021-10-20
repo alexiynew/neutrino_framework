@@ -79,9 +79,9 @@
 
 #pragma endregion
 
-#pragma region OSXWindowInternal
+#pragma region OsxWindowInternal
 
-@interface OSXWindowInternal : NSWindow<NSWindowDelegate>
+@interface OsxWindowInternal : NSWindow<NSWindowDelegate>
 
 @property(assign, nonatomic) std::function<void()> window_should_close;
 @property(assign, nonatomic) std::function<void()> window_did_resize;
@@ -93,7 +93,7 @@
 
 @end
 
-@implementation OSXWindowInternal
+@implementation OsxWindowInternal
 
 @synthesize window_should_close;
 @synthesize window_did_resize;
@@ -160,7 +160,7 @@
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
 {}
 
-@end // OSXWindowInternal
+@end // OsxWindowInternal
 
 #pragma endregion
 
@@ -206,7 +206,7 @@ private:
     T* m_value = nullptr;
 };
 
-class NSWindowWrapper : public Wrapper<OSXWindowInternal>
+class NSWindowWrapper : public Wrapper<OsxWindowInternal>
 {
     using Wrapper::Wrapper;
 };
@@ -216,7 +216,7 @@ class NSViewWrapper : public Wrapper<OSXContentView>
     using Wrapper::Wrapper;
 };
 
-OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings& context_settings)
+OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings& context_settings)
     : PlatformWindow()
 {
     AutoreleasePool pool;
@@ -225,7 +225,7 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
         throw std::runtime_error("Cannot create a window from a non-main thread");
     }
 
-    [OSXApplication setup];
+    [OsxApplication setup];
 
     unsigned int nsStyle = NSWindowStyleMaskBorderless;
     // if (style & sf::Style::Titlebar)
@@ -238,7 +238,7 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
     // Create window
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);
 
-    m_window = std::make_unique<NSWindowWrapper>([[OSXWindowInternal alloc] initWithContentRect:rect styleMask:nsStyle
+    m_window = std::make_unique<NSWindowWrapper>([[OsxWindowInternal alloc] initWithContentRect:rect styleMask:nsStyle
                                                                                         backing:NSBackingStoreBuffered
                                                                                           defer:NO]);
     if (!m_window) {
@@ -246,13 +246,13 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
     }
 
     // Setup callbacks
-    m_window->get().window_should_close      = std::bind(&OSXWindow::window_should_close, this);
-    m_window->get().window_did_resize        = std::bind(&OSXWindow::window_did_resize, this);
-    m_window->get().window_did_move          = std::bind(&OSXWindow::window_did_move, this);
-    m_window->get().window_did_miniaturize   = std::bind(&OSXWindow::window_did_miniaturize, this);
-    m_window->get().window_did_deminiaturize = std::bind(&OSXWindow::window_did_deminiaturize, this);
-    m_window->get().window_did_becomekey     = std::bind(&OSXWindow::window_did_becomekey, this);
-    m_window->get().window_did_resignkey     = std::bind(&OSXWindow::window_did_resignkey, this);
+    m_window->get().window_should_close      = std::bind(&OsxWindow::window_should_close, this);
+    m_window->get().window_did_resize        = std::bind(&OsxWindow::window_did_resize, this);
+    m_window->get().window_did_move          = std::bind(&OsxWindow::window_did_move, this);
+    m_window->get().window_did_miniaturize   = std::bind(&OsxWindow::window_did_miniaturize, this);
+    m_window->get().window_did_deminiaturize = std::bind(&OsxWindow::window_did_deminiaturize, this);
+    m_window->get().window_did_becomekey     = std::bind(&OsxWindow::window_did_becomekey, this);
+    m_window->get().window_did_resignkey     = std::bind(&OsxWindow::window_did_resignkey, this);
 
     // Setup window
     [m_window->get() setDelegate:m_window->get()];
@@ -275,10 +275,10 @@ OSXWindow::OSXWindow(const std::string& title, Size size, const ContextSettings&
     [m_window->get() makeFirstResponder:m_view->get()];
 
     // Create context
-    m_context = std::make_unique<OSXContext>(m_view->get(), context_settings);
+    m_context = std::make_unique<OsxContext>(m_view->get(), context_settings);
 }
 
-OSXWindow::~OSXWindow()
+OsxWindow::~OsxWindow()
 {
     [m_window->get() setDelegate:nil];
     [m_window->get() close];
@@ -286,7 +286,7 @@ OSXWindow::~OSXWindow()
 
 #pragma region actions
 
-void OSXWindow::show()
+void OsxWindow::show()
 {
     AutoreleasePool pool;
 
@@ -317,7 +317,7 @@ void OSXWindow::show()
     } while (!has_input_focus());
 }
 
-void OSXWindow::hide()
+void OsxWindow::hide()
 {
     AutoreleasePool pool;
 
@@ -346,7 +346,7 @@ void OSXWindow::hide()
     on_hide();
 }
 
-void OSXWindow::focus()
+void OsxWindow::focus()
 {
     AutoreleasePool pool;
 
@@ -366,27 +366,27 @@ void OSXWindow::focus()
     } while (!has_input_focus());
 }
 
-void OSXWindow::iconify()
+void OsxWindow::iconify()
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::maximize()
+void OsxWindow::maximize()
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::fullscreen()
+void OsxWindow::fullscreen()
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::restore()
+void OsxWindow::restore()
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::resize(Size new_size)
+void OsxWindow::resize(Size new_size)
 {
     AutoreleasePool pool;
 
@@ -400,7 +400,7 @@ void OSXWindow::resize(Size new_size)
     process_events();
 }
 
-void OSXWindow::move(Position position)
+void OsxWindow::move(Position position)
 {
     AutoreleasePool pool;
 
@@ -415,42 +415,42 @@ void OSXWindow::move(Position position)
     process_events();
 }
 
-void OSXWindow::grab_cursor()
+void OsxWindow::grab_cursor()
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::release_cursor()
+void OsxWindow::release_cursor()
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::process_events()
+void OsxWindow::process_events()
 {
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    [OSXApplication process_events];
+    [OsxApplication process_events];
 }
 
 #pragma endregion
 
 #pragma region setters
 
-void OSXWindow::set_max_size(Size /*size*/)
+void OsxWindow::set_max_size(Size /*size*/)
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::set_min_size(Size /*size*/)
+void OsxWindow::set_min_size(Size /*size*/)
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::set_resizable(bool /*value*/)
+void OsxWindow::set_resizable(bool /*value*/)
 {
     AutoreleasePool pool;
 }
 
-void OSXWindow::set_title(const std::string& title)
+void OsxWindow::set_title(const std::string& title)
 {
     AutoreleasePool pool;
 
@@ -460,7 +460,7 @@ void OSXWindow::set_title(const std::string& title)
     }
 }
 
-void OSXWindow::set_cursor_visibility(bool /*visible*/)
+void OsxWindow::set_cursor_visibility(bool /*visible*/)
 {
     AutoreleasePool pool;
 }
@@ -469,7 +469,7 @@ void OSXWindow::set_cursor_visibility(bool /*visible*/)
 
 #pragma region getters
 
-Position OSXWindow::position() const
+Position OsxWindow::position() const
 {
     AutoreleasePool pool;
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
@@ -486,7 +486,7 @@ Position OSXWindow::position() const
     return position;
 }
 
-Size OSXWindow::size() const
+Size OsxWindow::size() const
 {
     AutoreleasePool pool;
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
@@ -502,33 +502,33 @@ Size OSXWindow::size() const
     return size;
 }
 
-Size OSXWindow::max_size() const
+Size OsxWindow::max_size() const
 {
     AutoreleasePool pool;
 
     return {0, 0};
 }
 
-Size OSXWindow::min_size() const
+Size OsxWindow::min_size() const
 {
     AutoreleasePool pool;
 
     return {0, 0};
 }
 
-std::string OSXWindow::title() const
+std::string OsxWindow::title() const
 {
     AutoreleasePool pool;
 
     return std::string([[m_window->get() title] UTF8String]);
 }
 
-const Context& OSXWindow::context() const
+const Context& OsxWindow::context() const
 {
     return *m_context;
 }
 
-Context& OSXWindow::context()
+Context& OsxWindow::context()
 {
     return *m_context;
 }
@@ -536,47 +536,47 @@ Context& OSXWindow::context()
 #pragma endregion
 
 #pragma region state
-bool OSXWindow::should_close() const
+bool OsxWindow::should_close() const
 {
     return m_should_close;
 }
 
-bool OSXWindow::is_fullscreen() const
+bool OsxWindow::is_fullscreen() const
 {
     return false;
 }
 
-bool OSXWindow::is_iconified() const
+bool OsxWindow::is_iconified() const
 {
     return false;
 }
 
-bool OSXWindow::is_maximized() const
+bool OsxWindow::is_maximized() const
 {
     return false;
 }
 
-bool OSXWindow::is_resizable() const
+bool OsxWindow::is_resizable() const
 {
     return false;
 }
 
-bool OSXWindow::is_visible() const
+bool OsxWindow::is_visible() const
 {
     return [m_window->get() isVisible];
 }
 
-bool OSXWindow::has_input_focus() const
+bool OsxWindow::has_input_focus() const
 {
     return [m_window->get() isKeyWindow];
 }
 
-bool OSXWindow::is_cursor_visible() const
+bool OsxWindow::is_cursor_visible() const
 {
     return false;
 }
 
-bool OSXWindow::is_cursor_grabbed() const
+bool OsxWindow::is_cursor_grabbed() const
 {
     return false;
 }
@@ -585,14 +585,14 @@ bool OSXWindow::is_cursor_grabbed() const
 
 #pragma region NSWindowDelegate callbacks
 
-void OSXWindow::window_should_close()
+void OsxWindow::window_should_close()
 {
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
     m_should_close = true;
     on_close();
 }
 
-void OSXWindow::window_did_resize()
+void OsxWindow::window_did_resize()
 {
     AutoreleasePool pool;
 
@@ -608,7 +608,7 @@ void OSXWindow::window_did_resize()
     }
 }
 
-void OSXWindow::window_did_move()
+void OsxWindow::window_did_move()
 {
     AutoreleasePool pool;
 
@@ -624,25 +624,25 @@ void OSXWindow::window_did_move()
     }
 }
 
-void OSXWindow::window_did_miniaturize()
+void OsxWindow::window_did_miniaturize()
 {
     AutoreleasePool pool;
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 }
 
-void OSXWindow::window_did_deminiaturize()
+void OsxWindow::window_did_deminiaturize()
 {
     AutoreleasePool pool;
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 }
 
-void OSXWindow::window_did_becomekey()
+void OsxWindow::window_did_becomekey()
 {
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
     on_focus();
 }
 
-void OSXWindow::window_did_resignkey()
+void OsxWindow::window_did_resignkey()
 {
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
     on_lost_focus();

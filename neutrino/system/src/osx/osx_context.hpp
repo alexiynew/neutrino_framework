@@ -31,17 +31,17 @@
 
 namespace framework::system::details
 {
-class OSXContext : public Context
+class OsxContext : public Context
 {
 public:
-    OSXContext(NSView* view, const ContextSettings& settings);
-    ~OSXContext() override;
+    OsxContext(NSView* view, const ContextSettings& settings);
+    ~OsxContext() override;
 
-    OSXContext(const OSXContext&) = default;
-    OSXContext(OSXContext&&)      = default;
+    OsxContext(const OsxContext&) = default;
+    OsxContext(OsxContext&&)      = default;
 
-    OSXContext& operator=(const OSXContext&) noexcept = default;
-    OSXContext& operator=(OSXContext&&) noexcept = default;
+    OsxContext& operator=(const OsxContext&) noexcept = default;
+    OsxContext& operator=(OsxContext&&) noexcept = default;
 
     bool valid() const override;
     bool is_current() const override;
