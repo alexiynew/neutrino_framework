@@ -22,6 +22,9 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <functional>
+#include <limits>
+
 #include <common/types.hpp>
 #include <common/utils.hpp>
 #include <log/log.hpp>
@@ -391,6 +394,28 @@ void OSXWindow::resize(Size new_size)
     AutoreleasePool pool;
 
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
+    log::info(title()) << "    size:" << new_size;
+
+    if (new_size.width <= 0 || new_size.height <= 0) {
+        log::info(title()) << "    BAD SIZE, RETURN";
+        return;
+    }
+
+    if (m_min_size.width > 0) {
+        new_size.width = std::max(new_size.width, m_min_size.width);
+    }
+
+    if (m_min_size.height > 0) {
+        new_size.height = std::max(new_size.height, m_min_size.height);
+    }
+
+    if (m_max_size.width > 0) {
+        new_size.width = std::min(new_size.width, m_max_size.width);
+    }
+
+    if (m_max_size.height > 0) {
+        new_size.height = std::min(new_size.height, m_max_size.height);
+    }
 
     NSRect rect = [m_window->get() contentRectForFrameRect:[m_window->get() frame]];
     rect.origin.y += rect.size.height - new_size.height;
@@ -405,6 +430,7 @@ void OSXWindow::move(Position position)
     AutoreleasePool pool;
 
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
+    log::info(title()) << "    position:" << position;
 
     const NSRect rect  = [m_view->get() frame];
     const NSRect dummy = NSMakeRect(position.x, transform_y(position.y + rect.size.height - 1.0), 0.0, 0.0);
@@ -435,14 +461,62 @@ void OSXWindow::process_events()
 
 #pragma region setters
 
-void OSXWindow::set_max_size(Size /*size*/)
+void OSXWindow::set_max_size(Size max_size)
 {
     AutoreleasePool pool;
+
+    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
+    log::info(title()) << "   max_size:" << max_size;
+
+    if (max_size.width >= 0) {
+        m_max_size.width = max_size.width;
+    }
+    if (max_size.height >= 0) {
+        m_max_size.height = max_size.height;
+    }
+
+    NSSize ns_size = [m_window->get() contentMaxSize];
+
+    if (m_max_size.width > 0) {
+        ns_size.width = m_max_size.width;
+    } else if (m_max_size.width == 0) {
+        ns_size.width = std::numeric_limits<float>::max();
+    }
+
+    if (m_max_size.height > 0) {
+        ns_size.height = max_size.height;
+    } else if (max_size.height == 0) {
+        ns_size.height = std::numeric_limits<float>::max();
+    }
+
+    [m_window->get() setContentMaxSize:ns_size];
 }
 
-void OSXWindow::set_min_size(Size /*size*/)
+void OSXWindow::set_min_size(Size min_size)
 {
     AutoreleasePool pool;
+
+    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
+    log::info(title()) << "   min_size:" << min_size;
+
+    if (min_size.width >= 0) {
+        m_min_size.width = min_size.width;
+    }
+    if (min_size.height >= 0) {
+        m_min_size.height = min_size.height;
+    }
+
+    NSSize ns_size = [m_window->get() contentMinSize];
+
+    if (min_size.width >= 0) {
+        ns_size.width = min_size.width;
+    }
+
+    if (min_size.height >= 0) {
+        ns_size.height = min_size.height;
+    }
+
+    [m_window->get() setContentMinSize:ns_size];
 }
 
 void OSXWindow::set_resizable(bool /*value*/)
@@ -450,14 +524,19 @@ void OSXWindow::set_resizable(bool /*value*/)
     AutoreleasePool pool;
 }
 
-void OSXWindow::set_title(const std::string& title)
+void OSXWindow::set_title(const std::string& new_title)
 {
     AutoreleasePool pool;
 
-    NSString* ns_title = [NSString stringWithUTF8String:title.c_str()];
+    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
+    log::info(title()) << "   " << title() << " -> " << new_title;
+
+    NSString* ns_title = [NSString stringWithUTF8String:new_title.c_str()];
     if (ns_title != nil) {
         [m_window->get() setTitle:ns_title];
     }
+
+    process_events();
 }
 
 void OSXWindow::set_cursor_visibility(bool /*visible*/)
@@ -474,7 +553,7 @@ Position OSXWindow::position() const
     AutoreleasePool pool;
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
-    Position position(0, 0);
+    Position position;
 
     const NSRect contentRect = [m_window->get() contentRectForFrameRect:[m_window->get() frame]];
 
@@ -491,7 +570,7 @@ Size OSXWindow::size() const
     AutoreleasePool pool;
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
-    Size size(0, 0);
+    Size size;
 
     const NSRect contentRect = [m_view->get() frame];
 
@@ -506,14 +585,36 @@ Size OSXWindow::max_size() const
 {
     AutoreleasePool pool;
 
-    return {0, 0};
+    Size size;
+    NSSize ns_size = [m_window->get() contentMaxSize];
+
+    size.width  = std::equal_to<double>()(ns_size.width, std::numeric_limits<float>::max()) ?
+                  0 :
+                  static_cast<int>(ns_size.width);
+    size.height = std::equal_to<double>()(ns_size.height, std::numeric_limits<float>::max()) ?
+                  0 :
+                  static_cast<int>(ns_size.height);
+
+    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
+    log::info(title()) << "   size:" << size;
+
+    return size;
 }
 
 Size OSXWindow::min_size() const
 {
     AutoreleasePool pool;
 
-    return {0, 0};
+    Size size;
+    NSSize ns_size = [m_window->get() contentMinSize];
+
+    size.width  = static_cast<int>(ns_size.width);
+    size.height = static_cast<int>(ns_size.height);
+
+    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
+    log::info(title()) << "   size:" << size;
+
+    return size;
 }
 
 std::string OSXWindow::title() const
