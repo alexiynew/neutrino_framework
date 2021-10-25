@@ -296,13 +296,11 @@ void OSXWindow::show()
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
     if (is_visible()) {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__ << " ALREADY VISIBLE RETURN";
         return;
     }
 
     [m_window->get() orderFront:m_window->get()];
     do {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__ << " loop !is_visible";
         process_events();
     } while (!is_visible());
     // explicitly call on_show callback
@@ -315,7 +313,6 @@ void OSXWindow::show()
 
     [m_window->get() makeKeyWindow];
     do {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__ << " loop !has_input_focus";
         process_events();
     } while (!has_input_focus());
 }
@@ -327,7 +324,6 @@ void OSXWindow::hide()
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
     if (!is_visible()) {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__ << " ALREADY HIDDEN RETURN";
         return;
     }
 
@@ -342,7 +338,6 @@ void OSXWindow::hide()
     }
 
     do {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__ << " loop is_visible()";
         process_events();
     } while (is_visible());
 
@@ -356,7 +351,6 @@ void OSXWindow::focus()
     log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
     if (!is_visible()) {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__ << " NOT VISIBLE RETURN";
         return;
     }
 
@@ -364,7 +358,6 @@ void OSXWindow::focus()
     [m_window->get() makeKeyWindow];
 
     do {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__ << " loop !has_input_focus()";
         process_events();
     } while (!has_input_focus());
 }
@@ -393,11 +386,7 @@ void OSXWindow::resize(Size new_size)
 {
     AutoreleasePool pool;
 
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    log::info(title()) << "    size:" << new_size;
-
     if (new_size.width <= 0 || new_size.height <= 0) {
-        log::info(title()) << "    BAD SIZE, RETURN";
         return;
     }
 
@@ -429,9 +418,6 @@ void OSXWindow::move(Position position)
 {
     AutoreleasePool pool;
 
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    log::info(title()) << "    position:" << position;
-
     const NSRect rect  = [m_view->get() frame];
     const NSRect dummy = NSMakeRect(position.x, transform_y(position.y + rect.size.height - 1.0), 0.0, 0.0);
     const NSRect frame = [m_window->get() frameRectForContentRect:dummy];
@@ -453,7 +439,6 @@ void OSXWindow::release_cursor()
 
 void OSXWindow::process_events()
 {
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
     [OSXApplication process_events];
 }
 
@@ -464,9 +449,6 @@ void OSXWindow::process_events()
 void OSXWindow::set_max_size(Size max_size)
 {
     AutoreleasePool pool;
-
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    log::info(title()) << "   max_size:" << max_size;
 
     if (max_size.width >= 0) {
         m_max_size.width = max_size.width;
@@ -495,9 +477,6 @@ void OSXWindow::set_max_size(Size max_size)
 void OSXWindow::set_min_size(Size min_size)
 {
     AutoreleasePool pool;
-
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    log::info(title()) << "   min_size:" << min_size;
 
     if (min_size.width >= 0) {
         m_min_size.width = min_size.width;
@@ -528,9 +507,6 @@ void OSXWindow::set_title(const std::string& new_title)
 {
     AutoreleasePool pool;
 
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    log::info(title()) << "   " << title() << " -> " << new_title;
-
     NSString* ns_title = [NSString stringWithUTF8String:new_title.c_str()];
     if (ns_title != nil) {
         [m_window->get() setTitle:ns_title];
@@ -551,7 +527,6 @@ void OSXWindow::set_cursor_visibility(bool /*visible*/)
 Position OSXWindow::position() const
 {
     AutoreleasePool pool;
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
     Position position;
 
@@ -560,15 +535,12 @@ Position OSXWindow::position() const
     position.x = static_cast<int>(contentRect.origin.x);
     position.y = static_cast<int>(transform_y(contentRect.origin.y + contentRect.size.height - 1));
 
-    log::info(title()) << "   position:" << position;
-
     return position;
 }
 
 Size OSXWindow::size() const
 {
     AutoreleasePool pool;
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
     Size size;
 
@@ -577,7 +549,6 @@ Size OSXWindow::size() const
     size.width  = static_cast<int>(contentRect.size.width);
     size.height = static_cast<int>(contentRect.size.height);
 
-    log::info(title()) << "   size:" << size;
     return size;
 }
 
@@ -595,9 +566,6 @@ Size OSXWindow::max_size() const
                   0 :
                   static_cast<int>(ns_size.height);
 
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    log::info(title()) << "   size:" << size;
-
     return size;
 }
 
@@ -610,9 +578,6 @@ Size OSXWindow::min_size() const
 
     size.width  = static_cast<int>(ns_size.width);
     size.height = static_cast<int>(ns_size.height);
-
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-    log::info(title()) << "   size:" << size;
 
     return size;
 }
@@ -688,7 +653,6 @@ bool OSXWindow::is_cursor_grabbed() const
 
 void OSXWindow::window_should_close()
 {
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
     m_should_close = true;
     on_close();
 }
@@ -698,8 +662,6 @@ void OSXWindow::window_did_resize()
     AutoreleasePool pool;
 
     if (is_visible()) {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-
         m_context->update();
 
         // if (_glfw.ns.disabledCursorWindow == window)
@@ -714,8 +676,6 @@ void OSXWindow::window_did_move()
     AutoreleasePool pool;
 
     if (is_visible()) {
-        log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-
         m_context->update();
 
         // if (_glfw.ns.disabledCursorWindow == window)
@@ -739,13 +699,11 @@ void OSXWindow::window_did_deminiaturize()
 
 void OSXWindow::window_did_becomekey()
 {
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
     on_focus();
 }
 
 void OSXWindow::window_did_resignkey()
 {
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
     on_lost_focus();
 }
 
