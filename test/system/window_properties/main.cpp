@@ -241,7 +241,7 @@ private:
 
         window.move({0, 0});
 
-        // MacOS does not allow to set vertical window position less than window title bar.
+        // MacOS does not allow to set vertical window position less than window title bar height.
         // So we check the window is located at some reasonable point.
         TEST_ASSERT(window.position().x == 0 && window.position().y >= 0 && window.position().y < 100,
                     "Wrong window position.");
@@ -255,11 +255,17 @@ private:
 
         TEST_ASSERT(window.position() == position_100, "Window must be in (100, 100) position.");
         TEST_ASSERT(stats.last_position == position_100, "Wrong position in callback.");
-        TEST_ASSERT(stats.position_called == 3, "On position must be called 2 times.");
+        TEST_ASSERT(stats.position_called == 3, "On position must be called 3 times.");
         TEST_ASSERT(window.size() == size640, "Window should save its size.");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // TODO: Add tests for negative position values.
+        window.move({-100, 100});
+
+        TEST_ASSERT(window.position() == Position(-100, 100), "Window must be in (-100, 100) position.");
+        TEST_ASSERT(stats.last_position == Position(-100, 100), "Wrong position in callback.");
+        TEST_ASSERT(stats.position_called == 4, "On position must be called 4 times.");
+        TEST_ASSERT(window.size() == size640, "Window should save its size.");
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     void window_title()

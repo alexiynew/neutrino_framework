@@ -313,6 +313,9 @@ void OsxWindow::show()
     // explicitly call on_show callback
     on_show();
 
+    // explicitly call on_move callback
+    on_move(position());
+
     // explicitly call on_resize callback
     on_resize(size());
 
