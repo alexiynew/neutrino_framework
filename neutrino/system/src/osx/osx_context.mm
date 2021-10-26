@@ -28,7 +28,7 @@
 #include <system/src/osx/osx_autorelease_pool.hpp>
 #include <system/src/osx/osx_context.hpp>
 
-#include <dlfcn.h>
+#import <mach-o/dyld.h>
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -195,14 +195,13 @@ Context::Api OsxContext::api_type() const
 
 Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
 {
-    static void* gl_lib = nullptr;
-
-    if (!gl_lib) {
-        gl_lib = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
+    std::string name = std::string("_") + std::string(function_name);
+    NSSymbol symbol  = nullptr;
+    if (NSIsSymbolNameDefined(name.c_str())) {
+        symbol = NSLookupAndBindSymbol(name.c_str());
     }
 
-    return (gl_lib ? reinterpret_cast<VoidFunctionPtr>(reinterpret_cast<intptr_t>(dlsym(gl_lib, function_name))) :
-                     nullptr);
+    return reinterpret_cast<VoidFunctionPtr>(symbol ? NSAddressOfSymbol(symbol) : nullptr);
 }
 
 void OsxContext::make_current()

@@ -439,7 +439,7 @@ void OsxWindow::release_cursor()
 
 void OsxWindow::process_events()
 {
-    [OSXApplication process_events];
+    [OsxApplication process_events];
 }
 
 #pragma endregion
