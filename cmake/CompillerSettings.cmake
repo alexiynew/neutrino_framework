@@ -42,6 +42,7 @@ macro(set_compiller_flags)
                            -Wno-reserved-id-macro
                            -Wno-documentation-unknown-command
                            -Wno-switch-enum
+                           -Wno-double-promotion
                            -pthread
                            -fPIC)
 

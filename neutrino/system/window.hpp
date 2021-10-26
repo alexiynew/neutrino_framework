@@ -155,7 +155,7 @@ public:
     void restore();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Resize window.
+    /// @brief Set the size of the window content.
     ///
     /// @param size New window size.
     ///
@@ -207,18 +207,32 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Sets maximum window size.
+    /// @brief Sets the maximum size of the window content.
     ///
-    /// @param size Maximum window size.
+    /// The maximum size constraint is enforced for resizing by the user as
+    /// well as for the @ref resize function.
+    /// The default maximum size is @ref Size(0, 0), which means there are no
+    /// maximum size constrictions set. Setting size to @ref Size(0, 0) resets
+    /// the maximum size of a window to its default system-dependent values.
+    /// Setting size of the negative value has no effect.
+    ///
+    /// @param size Maximum window content size.
     ///
     /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void set_max_size(Size size);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Sets minimum window size.
+    /// @brief Sets the minimum size of the window content.
     ///
-    /// @param size Minimum window size.
+    /// The minimum size constraint is enforced for resizing by the user as
+    /// well as for the @ref resize function.
+    /// The default minimum size is @ref Size(0, 0), which means there are no
+    /// minimum size constrictions set. Setting size to @ref Size(0, 0) resets
+    /// the minimum size of a window to its default system-dependent values.
+    /// Setting size of the negative value has no effect.
+    ///
+    /// @param size Minimum window content size.
     ///
     /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////

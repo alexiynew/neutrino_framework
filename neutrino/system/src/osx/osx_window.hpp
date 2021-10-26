@@ -109,6 +109,9 @@ private:
     std::unique_ptr<OsxContext> m_context;
 
     bool m_should_close = false;
+
+    Size m_min_size;
+    Size m_max_size;
 };
 
 } // namespace framework::system::details
