@@ -157,7 +157,8 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
         throw std::runtime_error("Failed to create OpenGL context");
     }
 
-    [m_view setWantsBestResolutionOpenGLSurface:true];
+    // 1 pixel per point framebuffer regardless of the backing scale factor for the display the view occupies.
+    [m_view setWantsBestResolutionOpenGLSurface:NO];
     [m_context setView:m_view];
 }
 

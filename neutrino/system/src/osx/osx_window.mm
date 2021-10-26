@@ -40,10 +40,14 @@
 #pragma region OsxContentView
 
 @interface OsxContentView : NSView
-{}
+
+@property(assign, nonatomic) std::function<void()> update_context;
+
 @end
 
 @implementation OsxContentView
+
+@synthesize update_context;
 
 - (BOOL)isOpaque
 {
@@ -67,10 +71,7 @@
 
 - (void)updateLayer
 {
-    // if (window->context.source == GLFW_NATIVE_CONTEXT_API)
-    //    [window->context.nsgl.object update];
-
-    //_glfwInputWindowDamage(window);
+    self.update_context();
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent*)event
@@ -274,6 +275,10 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
         throw std::runtime_error("Can't create NSView");
     }
 
+    [m_view->get() setWantsLayer:YES];
+    [[m_view->get() layer] setContentsScale:[m_window->get() backingScaleFactor]];
+    m_view->get().update_context = std::bind(&OsxWindow::update_context, this);
+
     [m_window->get() setContentView:m_view->get()];
     [m_window->get() makeFirstResponder:m_view->get()];
 
@@ -299,14 +304,14 @@ void OsxWindow::show()
         return;
     }
 
+    [m_window->get() center];
+
     [m_window->get() orderFront:m_window->get()];
     do {
         process_events();
     } while (!is_visible());
     // explicitly call on_show callback
     on_show();
-
-    [m_window->get() center];
 
     // explicitly call on_resize callback
     on_resize(size());
@@ -705,6 +710,11 @@ void OsxWindow::window_did_becomekey()
 void OsxWindow::window_did_resignkey()
 {
     on_lost_focus();
+}
+
+void OsxWindow::update_context()
+{
+    m_context->update();
 }
 
 #pragma endregion
