@@ -299,14 +299,14 @@ void OsxWindow::show()
         return;
     }
 
+    [m_window->get() center];
+
     [m_window->get() orderFront:m_window->get()];
     do {
         process_events();
     } while (!is_visible());
     // explicitly call on_show callback
     on_show();
-
-    [m_window->get() center];
 
     // explicitly call on_resize callback
     on_resize(size());
