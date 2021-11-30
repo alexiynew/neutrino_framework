@@ -104,6 +104,8 @@ private:
     void window_did_becomekey();
     void window_did_resignkey();
 
+    void update_context();
+
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
