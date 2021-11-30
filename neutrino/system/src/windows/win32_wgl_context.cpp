@@ -87,34 +87,73 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
         throw std::runtime_error("WGL_ARB_pixel_format not supported");
     }
 
+    std::vector<int> attribs;
+
+    // OpenGL rendering
+    attribs.push_back(wgl::WGL_SUPPORT_OPENGL_ARB);
+    attribs.push_back(1);
+
+    // Rendering to a window
+    attribs.push_back(wgl::WGL_DRAW_TO_WINDOW_ARB);
+    attribs.push_back(1);
+
+    // Double buffer
+    attribs.push_back(wgl::WGL_DOUBLE_BUFFER_ARB);
+    attribs.push_back(1);
+
+    // Swapping method
+    attribs.push_back(wgl::WGL_SWAP_METHOD_ARB);
+    attribs.push_back(wgl::WGL_SWAP_EXCHANGE_ARB);
+
+    // Hardware acceleration
+    attribs.push_back(wgl::WGL_ACCELERATION_ARB);
+    attribs.push_back(wgl::WGL_FULL_ACCELERATION_ARB);
+
+    // RGBA pixel type
+    attribs.push_back(wgl::WGL_PIXEL_TYPE_ARB);
+    attribs.push_back(wgl::WGL_TYPE_RGBA_ARB);
+
+    // Support for 24 bit color
+    attribs.push_back(wgl::WGL_COLOR_BITS_ARB);
+    attribs.push_back(24);
+
+    // The number of alpha bitplanes in each RGBA color buffer
+    attribs.push_back(wgl::WGL_ALPHA_BITS_ARB);
+    attribs.push_back(8);
+
+    // Depth buffer
+    attribs.push_back(wgl::WGL_DEPTH_BITS_ARB);
+    attribs.push_back(static_cast<int>(settings.depth_bits()));
+
+    // Stencil buffer
+    attribs.push_back(wgl::WGL_STENCIL_BITS_ARB);
+    attribs.push_back(static_cast<int>(settings.stencil_bits()));
+
+    // Antialiasing
+    if (settings.antialiasing_level() == ContextSettings::Antialiasing::best) {
+        attribs.push_back(wgl::WGL_SAMPLE_BUFFERS_ARB);
+        attribs.push_back(1);
+
+        attribs.push_back(wgl::WGL_SAMPLES_ARB);
+        attribs.push_back(32);
+    }
+
+    // End of attributes
+    attribs.push_back(0);
+
     m_hdc = GetDC(m_window);
 
-    // clang-format off
-    int pixel_format_attribs [] = {
-        wgl::WGL_SUPPORT_OPENGL_ARB, TRUE,                          // Support for OpenGL rendering.
-        wgl::WGL_DRAW_TO_WINDOW_ARB, TRUE,                          // Support for rendering to a window.
-        wgl::WGL_ACCELERATION_ARB, wgl::WGL_FULL_ACCELERATION_ARB,  // Support for hardware acceleration.
-        wgl::WGL_COLOR_BITS_ARB, 24,                                // Support for 24 bit color.
-        wgl::WGL_DEPTH_BITS_ARB, 24,                                // Support for 24 bit depth buffer.
-        wgl::WGL_DOUBLE_BUFFER_ARB, TRUE,                           // Support for double buffer.
-        wgl::WGL_SWAP_METHOD_ARB, wgl::WGL_SWAP_EXCHANGE_ARB,       // Support for swapping front and back buffer.
-        wgl::WGL_PIXEL_TYPE_ARB, wgl::WGL_TYPE_RGBA_ARB,            // Support for the RGBA pixel type.
-        wgl::WGL_STENCIL_BITS_ARB, 8,                               // Support for a 8 bit stencil buffer.
-	    0
-    };
-    // clang-format on
-
-    int pixelFormat;
-    unsigned int formatCount;
-    bool pixel_format_found = wgl::wglChoosePixelFormatARB(m_hdc,
-                                                           pixel_format_attribs,
-                                                           nullptr,
-                                                           1,
-                                                           &pixelFormat,
-                                                           &formatCount);
+    int pixelFormat               = 0;
+    unsigned int formatCount      = 0;
+    const bool pixel_format_found = wgl::wglChoosePixelFormatARB(m_hdc,
+                                                                 attribs.data(),
+                                                                 nullptr,
+                                                                 1,
+                                                                 &pixelFormat,
+                                                                 &formatCount);
     if (!pixel_format_found) {
         ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Can't choose pixel format");
+        throw std::runtime_error("Can't get a suitable pixel format");
     }
 
     PIXELFORMATDESCRIPTOR pfd{};
@@ -125,23 +164,31 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
         throw std::runtime_error("Can't set pixel format");
     }
 
-    auto version = settings.version();
-    // clang-format off
-    int attribs[] = {
-        wgl::WGL_CONTEXT_MAJOR_VERSION_ARB, version.major(),
-        wgl::WGL_CONTEXT_MINOR_VERSION_ARB, version.minor(),
-        wgl::WGL_CONTEXT_PROFILE_MASK_ARB, wgl::WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-        wgl::WGL_CONTEXT_FLAGS_ARB, 0,
-        0
-    };
-    // clang-format on
+    std::vector<int> contextAttribs;
+
+    contextAttribs.push_back(wgl::WGL_CONTEXT_MAJOR_VERSION_ARB);
+    contextAttribs.push_back(settings.version().major());
+
+    contextAttribs.push_back(wgl::WGL_CONTEXT_MINOR_VERSION_ARB);
+    contextAttribs.push_back(settings.version().minor());
+
+    contextAttribs.push_back(wgl::WGL_CONTEXT_PROFILE_MASK_ARB);
+    contextAttribs.push_back(wgl::WGL_CONTEXT_CORE_PROFILE_BIT_ARB);
+
+    if (settings.version().major() >= 3) {
+        contextAttribs.push_back(wgl::WGL_CONTEXT_FLAGS_ARB);
+        contextAttribs.push_back(wgl::WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB);
+    }
+
+    // End of attributes
+    contextAttribs.push_back(0);
 
     // TODO: Update actual context settings
 
-    m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, nullptr, attribs);
+    m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, nullptr, contextAttribs.data());
     if (m_hglrc == nullptr) {
         ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Can't create HRC");
+        throw std::runtime_error("Failed to create OpenGL context");
     }
 }
 
