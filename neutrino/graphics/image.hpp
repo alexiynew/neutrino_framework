@@ -25,7 +25,7 @@
 #ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
 #define FRAMEWORK_GRAPHICS_IMAGE_HPP
 
-#include <string>
+#include <filesystem>
 #include <tuple>
 #include <vector>
 
@@ -99,23 +99,23 @@ public:
     ///
     /// FileType detected automatically.
     ///
-    /// @param filename File to load.
+    /// @param file File to load.
     ///
     /// @return `LoadResult<true, "">` if load successful or
     ///         `LoadResult<false, "error description">` otherwise.
     ////////////////////////////////////////////////////////////////////////////
-    LoadResult load(const std::string& filename);
+    LoadResult load(const std::filesystem::path& file);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Load image from file.
     ///
-    /// @param filename File to load.
+    /// @param file File to load.
     /// @param type Image Ffle type.
     ///
     /// @return `LoadResult<true, "">` if load successful or
     ///         `LoadResult<false, "error description">` otherwise.
     ////////////////////////////////////////////////////////////////////////////
-    LoadResult load(const std::string& filename, FileType type);
+    LoadResult load(const std::filesystem::path& file, FileType type);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Get image width.

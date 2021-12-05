@@ -25,15 +25,15 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_IMAGE_PNG_HPP
 #define FRAMEWORK_GRAPHICS_SRC_IMAGE_PNG_HPP
 
-#include <string>
+#include <filesystem>
 
 #include <graphics/src/image/image_info.hpp>
 
 namespace framework::graphics::details::image::png
 {
-LoadResult load(const std::string& filename);
+LoadResult load(const std::filesystem::path& filepath);
 
-bool is_png(const std::string& filename);
+bool is_png(const std::filesystem::path& filepath);
 
 } // namespace framework::graphics::details::image::png
 

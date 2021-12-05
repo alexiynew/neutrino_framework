@@ -799,9 +799,9 @@ std::vector<Color> flip_vertically(const InfoHeader& info, const std::vector<Col
 
 namespace framework::graphics::details::image::bmp
 {
-LoadResult load(const std::string& filename)
+LoadResult load(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+    std::ifstream file(filepath, std::ios::in | std::ios::binary);
     if (!file) {
         return LoadResult(error::open_file_error);
     }
@@ -839,9 +839,9 @@ LoadResult load(const std::string& filename)
     return LoadResult(make_image_info(info, std::move(data)));
 }
 
-bool is_bmp(const std::string& filename)
+bool is_bmp(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+    std::ifstream file(filepath, std::ios::in | std::ios::binary);
     if (!file) {
         return false;
     }

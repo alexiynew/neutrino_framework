@@ -118,11 +118,11 @@ private:
                                                      "bmp/bad/badrle4.bmp",
                                                      "bmp/bad/badrle4bis.bmp",
                                                      "bmp/bad/badrle4ter.bmp",
-                                                     "bmp/bad/badrlebis.bmp ",
+                                                     "bmp/bad/badrlebis.bmp",
                                                      "bmp/bad/badrleter.bmp",
-                                                     "bmp/bad/pal8badindex.bmp ",
+                                                     "bmp/bad/pal8badindex.bmp",
                                                      "bmp/bad/rgb16-880.bmp",
-                                                     "bmp/bad/shortfile.bmp "};
+                                                     "bmp/bad/shortfile.bmp"};
 
         for (const auto& file : good_files) {
             framework::graphics::Image img;
@@ -143,8 +143,8 @@ private:
                                                     "bmp/bad/badpalettesize.bmp",
                                                     "bmp/bad/badplanes.bmp",
                                                     "bmp/bad/badwidth.bmp",
-                                                    "bmp/bad/reallybig.bmp ",
-                                                    "bmp/bad/rletopdown.bmp "};
+                                                    "bmp/bad/reallybig.bmp",
+                                                    "bmp/bad/rletopdown.bmp"};
 
         for (const auto& file : bad_files) {
             framework::graphics::Image img;

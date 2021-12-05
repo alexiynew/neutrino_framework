@@ -53,11 +53,11 @@ Image::Image(const DataType& data, int width, int height)
     , m_height(height)
 {}
 
-Image::LoadResult Image::load(const std::string& filename, FileType type)
+Image::LoadResult Image::load(const std::filesystem::path& file, FileType type)
 {
     using namespace details::image;
 
-    auto load_function = [type](const std::string& f) {
+    auto load_function = [type](const std::filesystem::path& f) {
         switch (type) {
             case FileType::bmp: return bmp::load(f);
             case FileType::png: return png::load(f);
@@ -66,7 +66,7 @@ Image::LoadResult Image::load(const std::string& filename, FileType type)
     };
 
     try {
-        const auto& result = load_function(filename);
+        const auto& result = load_function(file);
 
         if (std::holds_alternative<ImageInfo>(result)) {
             const ImageInfo info = std::get<ImageInfo>(result);
@@ -89,14 +89,18 @@ Image::LoadResult Image::load(const std::string& filename, FileType type)
     }
 }
 
-Image::LoadResult Image::load(const std::string& filename)
+Image::LoadResult Image::load(const std::filesystem::path& file)
 {
     using namespace details::image;
 
-    if (bmp::is_bmp(filename)) {
-        return load(filename, FileType::bmp);
-    } else if (png::is_png(filename)) {
-        return load(filename, FileType::png);
+    if (!std::filesystem::exists(file)) {
+        return load_result_error(error::open_file_error);
+    }
+
+    if (bmp::is_bmp(file)) {
+        return load(file, FileType::bmp);
+    } else if (png::is_png(file)) {
+        return load(file, FileType::png);
     }
 
     return load_result_error(error::invalid_file_type);

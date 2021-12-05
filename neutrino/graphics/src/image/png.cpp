@@ -810,9 +810,9 @@ float decode_gamma(const Chunk& chunk)
 
 namespace framework::graphics::details::image::png
 {
-LoadResult load(const std::string& filename)
+LoadResult load(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+    std::ifstream file(filepath, std::ios::in | std::ios::binary);
     if (!file) {
         return LoadResult(error::open_file_error);
     }
@@ -880,9 +880,9 @@ LoadResult load(const std::string& filename)
     return LoadResult(info);
 }
 
-bool is_png(const std::string& filename)
+bool is_png(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+    std::ifstream file(filepath, std::ios::in | std::ios::binary);
     return check_signature(read_bytes(file, signature_length));
 }
 
