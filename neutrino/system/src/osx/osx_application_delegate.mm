@@ -29,7 +29,6 @@
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)app
 {
     // send close window event to all windows
-    NSLog(@"applicationShouldTerminate");
     return NSTerminateCancel;
 }
 
@@ -39,9 +38,7 @@
 }
 
 - (void)applicationDidChangeScreenParameters:(NSNotification*)notification
-{
-    NSLog(@"applicationDidChangeScreenParameters");
-}
+{}
 
 - (void)applicationWillFinishLaunching:(NSNotification*)notification
 {
@@ -52,7 +49,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification*)notification
 {
-    // PostEmptyEvent();
     [NSApp stop:nil];
 }
 

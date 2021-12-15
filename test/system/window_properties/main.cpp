@@ -25,7 +25,6 @@
 #include <chrono>
 #include <thread>
 
-#include <log/log.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 

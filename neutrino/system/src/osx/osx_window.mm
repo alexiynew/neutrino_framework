@@ -22,8 +22,10 @@
 // SOFTWARE.
 // =============================================================================
 
+#include <chrono>
 #include <functional>
 #include <limits>
+#include <thread>
 
 #include <common/types.hpp>
 #include <common/utils.hpp>
@@ -94,6 +96,8 @@
 @property(assign, nonatomic) std::function<void()> window_did_deminiaturize;
 @property(assign, nonatomic) std::function<void()> window_did_becomekey;
 @property(assign, nonatomic) std::function<void()> window_did_resignkey;
+@property(assign, nonatomic) std::function<void()> window_did_enter_full_screen;
+@property(assign, nonatomic) std::function<void()> window_did_exit_full_screen;
 
 @end
 
@@ -106,6 +110,8 @@
 @synthesize window_did_deminiaturize;
 @synthesize window_did_becomekey;
 @synthesize window_did_resignkey;
+@synthesize window_did_enter_full_screen;
+@synthesize window_did_exit_full_screen;
 
 - (BOOL)acceptsFirstResponder
 {
@@ -161,6 +167,16 @@
     self.window_did_resignkey();
 }
 
+- (void)windowDidEnterFullScreen:(NSNotification*)notification
+{
+    self.window_did_enter_full_screen();
+}
+
+- (void)windowDidExitFullScreen:(NSNotification*)notification
+{
+    self.window_did_exit_full_screen();
+}
+
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
 {}
 
@@ -171,6 +187,7 @@
 namespace
 {
 
+// TODO: figure out why we need this function
 // Transforms a y-coordinate between the CG display and NS screen spaces
 CGFloat transform_y(CGFloat y)
 {
@@ -231,18 +248,18 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
 
     [OsxApplication setup];
 
-    unsigned int nsStyle = NSWindowStyleMaskBorderless;
+    NSWindowStyleMask ns_style = NSWindowStyleMaskBorderless;
     // if (style & sf::Style::Titlebar)
-    nsStyle |= NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable;
+    ns_style |= NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable;
     // if (style & sf::Style::Resize)
-    nsStyle |= NSWindowStyleMaskResizable;
+    ns_style |= NSWindowStyleMaskResizable;
     // if (style & sf::Style::Close)
-    nsStyle |= NSWindowStyleMaskClosable;
+    ns_style |= NSWindowStyleMaskClosable;
 
     // Create window
     NSRect rect = NSMakeRect(0, 0, size.width, size.height);
 
-    m_window = std::make_unique<NSWindowWrapper>([[OsxWindowInternal alloc] initWithContentRect:rect styleMask:nsStyle
+    m_window = std::make_unique<NSWindowWrapper>([[OsxWindowInternal alloc] initWithContentRect:rect styleMask:ns_style
                                                                                         backing:NSBackingStoreBuffered
                                                                                           defer:NO]);
     if (!m_window) {
@@ -250,13 +267,15 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     }
 
     // Setup callbacks
-    m_window->get().window_should_close      = std::bind(&OsxWindow::window_should_close, this);
-    m_window->get().window_did_resize        = std::bind(&OsxWindow::window_did_resize, this);
-    m_window->get().window_did_move          = std::bind(&OsxWindow::window_did_move, this);
-    m_window->get().window_did_miniaturize   = std::bind(&OsxWindow::window_did_miniaturize, this);
-    m_window->get().window_did_deminiaturize = std::bind(&OsxWindow::window_did_deminiaturize, this);
-    m_window->get().window_did_becomekey     = std::bind(&OsxWindow::window_did_becomekey, this);
-    m_window->get().window_did_resignkey     = std::bind(&OsxWindow::window_did_resignkey, this);
+    m_window->get().window_should_close          = std::bind(&OsxWindow::window_should_close, this);
+    m_window->get().window_did_resize            = std::bind(&OsxWindow::window_did_resize, this);
+    m_window->get().window_did_move              = std::bind(&OsxWindow::window_did_move, this);
+    m_window->get().window_did_miniaturize       = std::bind(&OsxWindow::window_did_miniaturize, this);
+    m_window->get().window_did_deminiaturize     = std::bind(&OsxWindow::window_did_deminiaturize, this);
+    m_window->get().window_did_becomekey         = std::bind(&OsxWindow::window_did_becomekey, this);
+    m_window->get().window_did_resignkey         = std::bind(&OsxWindow::window_did_resignkey, this);
+    m_window->get().window_did_enter_full_screen = std::bind(&OsxWindow::window_did_enter_full_screen, this);
+    m_window->get().window_did_exit_full_screen  = std::bind(&OsxWindow::window_did_exit_full_screen, this);
 
     // Setup window
     [m_window->get() setDelegate:m_window->get()];
@@ -266,6 +285,10 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     [m_window->get() setRestorable:NO];
 
     [m_window->get() setReleasedWhenClosed:NO];
+
+    const NSWindowCollectionBehavior behavior = NSWindowCollectionBehaviorFullScreenPrimary |
+                                                NSWindowCollectionBehaviorManaged;
+    [m_window->get() setCollectionBehavior:behavior];
 
     set_title(title);
 
@@ -298,8 +321,6 @@ void OsxWindow::show()
 {
     AutoreleasePool pool;
 
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-
     if (is_visible()) {
         return;
     }
@@ -307,18 +328,26 @@ void OsxWindow::show()
     [m_window->get() center];
 
     [m_window->get() orderFront:m_window->get()];
+
     do {
         process_events();
     } while (!is_visible());
-    // explicitly call on_show callback
+
+    if (m_actually_fullscreen) {
+        m_actually_fullscreen = false; // Unset flag here
+        enter_fullscreen();            // The enter_fullscreen method would set it again
+    }
+
+    // Explicitly call on_show callback
     on_show();
 
-    // explicitly call on_move callback
+    // Explicitly call on_move callback
     on_move(position());
 
-    // explicitly call on_resize callback
+    // Explicitly call on_resize callback
     on_resize(size());
 
+    // This would call on_focus callback
     [m_window->get() makeKeyWindow];
     do {
         process_events();
@@ -335,11 +364,18 @@ void OsxWindow::hide()
         return;
     }
 
+    if (m_actually_fullscreen) {
+        exit_fullscreen();
+
+        // Set flag again for a window to be in fullscreen if it would show again.
+        m_actually_fullscreen = true;
+    }
+
     [m_window->get() orderOut:m_window->get()];
 
     for (NSWindow* window in [NSApp orderedWindows]) {
         if (window != m_window->get()) {
-            [window orderFrontRegardless];
+            [window orderFront:nil];
             [window makeKeyWindow];
             break;
         }
@@ -349,6 +385,7 @@ void OsxWindow::hide()
         process_events();
     } while (is_visible());
 
+    // Explicitly call on_hide callback
     on_hide();
 }
 
@@ -383,11 +420,31 @@ void OsxWindow::maximize()
 void OsxWindow::fullscreen()
 {
     AutoreleasePool pool;
+
+    if (m_actually_fullscreen) {
+        return;
+    }
+
+    if (!is_visible()) {
+        m_actually_fullscreen = true;
+        return;
+    }
+
+    enter_fullscreen();
 }
 
 void OsxWindow::restore()
 {
     AutoreleasePool pool;
+
+    if (!is_visible()) {
+        m_actually_fullscreen = false;
+        return;
+    }
+
+    if (m_actually_fullscreen) {
+        exit_fullscreen();
+    }
 }
 
 void OsxWindow::resize(Size new_size)
@@ -617,7 +674,7 @@ bool OsxWindow::should_close() const
 
 bool OsxWindow::is_fullscreen() const
 {
-    return false;
+    return m_actually_fullscreen;
 }
 
 bool OsxWindow::is_iconified() const
@@ -670,7 +727,7 @@ void OsxWindow::window_did_resize()
     AutoreleasePool pool;
 
     if (is_visible()) {
-        m_context->update();
+        update_context();
 
         // if (_glfw.ns.disabledCursorWindow == window)
         //    _glfwCenterCursorInContentArea(window);
@@ -684,7 +741,7 @@ void OsxWindow::window_did_move()
     AutoreleasePool pool;
 
     if (is_visible()) {
-        m_context->update();
+        update_context();
 
         // if (_glfw.ns.disabledCursorWindow == window)
         //    _glfwCenterCursorInContentArea(window);
@@ -715,11 +772,51 @@ void OsxWindow::window_did_resignkey()
     on_lost_focus();
 }
 
+void OsxWindow::window_did_enter_full_screen()
+{
+    m_actually_fullscreen = true;
+    update_context();
+}
+
+void OsxWindow::window_did_exit_full_screen()
+{
+    m_actually_fullscreen = false;
+    update_context();
+}
+
+#pragma endregion
+
+void OsxWindow::enter_fullscreen()
+{
+    if (m_actually_fullscreen) {
+        return;
+    }
+
+    [m_window->get() toggleFullScreen:m_window->get()];
+
+    do {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        process_events();
+    } while (!m_actually_fullscreen);
+}
+
+void OsxWindow::exit_fullscreen()
+{
+    if (!m_actually_fullscreen) {
+        return;
+    }
+
+    [m_window->get() toggleFullScreen:m_window->get()];
+
+    do {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        process_events();
+    } while (m_actually_fullscreen);
+}
+
 void OsxWindow::update_context()
 {
     m_context->update();
 }
-
-#pragma endregion
 
 } // namespace framework::system::details

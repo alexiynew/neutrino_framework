@@ -96,6 +96,7 @@ public:
 #pragma endregion
 
 private:
+#pragma region NSWindowDelegate callbacks
     void window_should_close();
     void window_did_resize();
     void window_did_move();
@@ -103,6 +104,12 @@ private:
     void window_did_deminiaturize();
     void window_did_becomekey();
     void window_did_resignkey();
+    void window_did_enter_full_screen();
+    void window_did_exit_full_screen();
+#pragma endregion
+
+    void enter_fullscreen();
+    void exit_fullscreen();
 
     void update_context();
 
@@ -110,7 +117,8 @@ private:
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
 
-    bool m_should_close = false;
+    bool m_should_close        = false;
+    bool m_actually_fullscreen = false;
 
     Size m_min_size;
     Size m_max_size;
