@@ -39,7 +39,7 @@ public:
         : Suite("WindowStateTest")
     {
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
-        // add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
+        add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
         // add_test([this]() { iconify_window(); }, "iconify_window");
         // add_test([this]() { maximize_window(); }, "maximize_window");
         // add_test([this]() { maximized_before_show(); }, "maximized_before_show");
@@ -127,6 +127,8 @@ private:
         TEST_ASSERT(window.is_fullscreen(), "Invalid window state.");
         window.fullscreen();
         TEST_ASSERT(window.is_fullscreen(), "Invalid window state.");
+        
+        TEST_ASSERT(window.has_input_focus(), "Invalid window state.");
 
         // Stress test for hiden window
         window.hide();
@@ -151,6 +153,12 @@ private:
         TEST_ASSERT(window.is_fullscreen(), "Invalid window state.");
 
         window.show();
+        
+        TEST_ASSERT(window.is_fullscreen(), "Invalid window state.");
+        TEST_ASSERT(!window.is_iconified(), "Invalid window state.");
+        TEST_ASSERT(!window.is_maximized(), "Invalid window state.");
+        TEST_ASSERT(window.is_visible(), "Invalid window state.");
+        TEST_ASSERT(window.has_input_focus(), "Invalid window state.");
     }
 
     void fullscreen_before_show()

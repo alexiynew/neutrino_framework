@@ -311,6 +311,10 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
 
 OsxWindow::~OsxWindow()
 {
+    if (m_actually_fullscreen) {
+        exit_fullscreen();
+    }
+    
     [m_window->get() setDelegate:nil];
     [m_window->get() close];
 }
