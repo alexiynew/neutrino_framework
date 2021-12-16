@@ -41,7 +41,10 @@ Window::Window(const std::string& title, Size size, ContextSettings settings)
     m_platform_window->set_window_instance(this);
 }
 
-Window::~Window() = default;
+Window::~Window()
+{
+    m_platform_window->set_window_instance(nullptr);
+}
 
 Window::Window(Window&& other) noexcept
     : m_platform_window(nullptr)

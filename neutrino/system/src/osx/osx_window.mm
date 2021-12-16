@@ -133,48 +133,66 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
-    self.window_should_close();
+    if (self.window_should_close) {
+        self.window_should_close();
+    }
     return NO;
 }
 
 - (void)windowDidResize:(NSNotification*)notification
 {
-    self.window_did_resize();
+    if (self.window_did_resize) {
+        self.window_did_resize();
+    }
 }
 
 - (void)windowDidMove:(NSNotification*)notification
 {
-    self.window_did_move();
+    if (self.window_did_move) {
+        self.window_did_move();
+    }
 }
 
 - (void)windowDidMiniaturize:(NSNotification*)notification
 {
-    self.window_did_miniaturize();
+    if (self.window_did_miniaturize) {
+        self.window_did_miniaturize();
+    }
 }
 
 - (void)windowDidDeminiaturize:(NSNotification*)notification
 {
-    self.window_did_deminiaturize();
+    if (self.window_did_deminiaturize) {
+        self.window_did_deminiaturize();
+    }
 }
 
 - (void)windowDidBecomeKey:(NSNotification*)notification
 {
-    self.window_did_becomekey();
+    if (self.window_did_becomekey) {
+        self.window_did_becomekey();
+    }
 }
 
 - (void)windowDidResignKey:(NSNotification*)notification
 {
-    self.window_did_resignkey();
+    if (self.window_did_resignkey) {
+        self.window_did_resignkey();
+    }
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification*)notification
 {
-    self.window_did_enter_full_screen();
+    if (self.window_did_enter_full_screen) {
+        self.window_did_enter_full_screen();
+    }
 }
 
 - (void)windowDidExitFullScreen:(NSNotification*)notification
 {
-    self.window_did_exit_full_screen();
+    if (self.window_did_exit_full_screen) {
+        self.window_did_exit_full_screen();
+    }
 }
 
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
@@ -795,13 +813,19 @@ void OsxWindow::enter_fullscreen()
     if (m_actually_fullscreen) {
         return;
     }
-
+    
+    // Turn off on_resize callback
+    m_window->get().window_did_resize = nullptr;
+    
     [m_window->get() toggleFullScreen:m_window->get()];
 
     do {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         process_events();
     } while (!m_actually_fullscreen);
+    
+    // Turn on on_resize callback
+    m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
 }
 
 void OsxWindow::exit_fullscreen()
@@ -809,6 +833,9 @@ void OsxWindow::exit_fullscreen()
     if (!m_actually_fullscreen) {
         return;
     }
+    
+    // Turn off on_resize callback
+    m_window->get().window_did_resize = nullptr;
 
     [m_window->get() toggleFullScreen:m_window->get()];
 
@@ -816,6 +843,9 @@ void OsxWindow::exit_fullscreen()
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         process_events();
     } while (m_actually_fullscreen);
+    
+    // Turn on on_resize callback
+    m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
 }
 
 void OsxWindow::update_context()
