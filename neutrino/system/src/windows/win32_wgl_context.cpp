@@ -32,14 +32,10 @@ namespace
 {
 LRESULT CALLBACK tmp_win_proc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
-    switch(uiMsg)
-    {
-        case WM_CLOSE:
-            PostQuitMessage(0);
-            break;
+    switch (uiMsg) {
+        case WM_CLOSE: PostQuitMessage(0); break;
 
-        default:
-            return DefWindowProc(hWnd, uiMsg, wParam, lParam);
+        default: return DefWindowProc(hWnd, uiMsg, wParam, lParam);
     }
 
     return 0;
@@ -47,37 +43,37 @@ LRESULT CALLBACK tmp_win_proc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lPara
 
 HWND create_tmp_window()
 {
-     using framework::system::details::Win32Application;
+    using framework::system::details::Win32Application;
 
-     DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-     WNDCLASSEX tmp_win_class;
-     memset(&tmp_win_class, 0, sizeof(WNDCLASSEX));
+    DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+    WNDCLASSEX tmp_win_class;
+    memset(&tmp_win_class, 0, sizeof(WNDCLASSEX));
 
-     tmp_win_class.cbSize = sizeof(WNDCLASSEX);
-     tmp_win_class.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-     tmp_win_class.lpfnWndProc = tmp_win_proc;
-     tmp_win_class.hInstance = Win32Application::handle();
-     tmp_win_class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-     tmp_win_class.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-     tmp_win_class.hCursor = LoadCursor(NULL, IDC_ARROW);
-     tmp_win_class.lpszClassName = L"Win32OpenGLWindow";
+    tmp_win_class.cbSize        = sizeof(WNDCLASSEX);
+    tmp_win_class.style         = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+    tmp_win_class.lpfnWndProc   = tmp_win_proc;
+    tmp_win_class.hInstance     = Win32Application::handle();
+    tmp_win_class.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
+    tmp_win_class.hIconSm       = LoadIcon(NULL, IDI_APPLICATION);
+    tmp_win_class.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    tmp_win_class.lpszClassName = L"Win32OpenGLWindow";
 
-     if (!RegisterClassEx(&tmp_win_class)) {
-         throw std::runtime_error("Failed to register tmp window class for OpenGL initialization.");
-     }
+    if (!RegisterClassEx(&tmp_win_class)) {
+        throw std::runtime_error("Failed to register tmp window class for OpenGL initialization.");
+    }
 
-     HWND tmp_window = CreateWindowEx(WS_EX_APPWINDOW,
-                                      tmp_win_class.lpszClassName,
-                                      L"TmpOpenGLInitWIndow",
-                                      style,
-                                      0,
-                                      0,
-                                      100,
-                                      100,
-                                      NULL,
-                                      NULL,
-                                      Win32Application::handle(),
-                                      NULL);
+    HWND tmp_window = CreateWindowEx(WS_EX_APPWINDOW,
+                                     tmp_win_class.lpszClassName,
+                                     L"TmpOpenGLInitWIndow",
+                                     style,
+                                     0,
+                                     0,
+                                     100,
+                                     100,
+                                     NULL,
+                                     NULL,
+                                     Win32Application::handle(),
+                                     NULL);
 
     if (tmp_window == nullptr) {
         throw std::runtime_error("Failed to create tmp window for OpenGL initialization.");
@@ -89,7 +85,7 @@ HWND create_tmp_window()
 void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
 {
     HWND tmp_window = create_tmp_window();
-    HDC hdc = GetDC(tmp_window);
+    HDC hdc         = GetDC(tmp_window);
 
     if (hdc == nullptr) {
         DestroyWindow(tmp_window);
@@ -207,8 +203,8 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
 
     m_hdc = GetDC(m_window);
 
-    int pixelFormat               = 0;
-    unsigned int formatCount      = 0;
+    int pixelFormat          = 0;
+    unsigned int formatCount = 0;
 
     // TODO: choose pixel format with maximum number of samples
     const bool pixel_format_found = wgl::wglChoosePixelFormatARB(m_hdc,

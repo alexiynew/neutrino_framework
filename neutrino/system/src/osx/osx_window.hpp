@@ -111,6 +111,8 @@ private:
     void enter_fullscreen();
     void exit_fullscreen();
 
+    bool switch_to_other_window();
+
     void update_context();
 
     std::unique_ptr<NSWindowWrapper> m_window;

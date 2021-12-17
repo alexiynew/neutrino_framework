@@ -39,7 +39,7 @@
         [NSApp activateIgnoringOtherApps:YES];
 
         if (![NSApp delegate])
-            [NSApp setDelegate:static_cast<OsxApplication*> (NSApp)];
+            [NSApp setDelegate:static_cast<OsxApplication*>(NSApp)];
 
         [OsxApplication setup_menu_bar];
 

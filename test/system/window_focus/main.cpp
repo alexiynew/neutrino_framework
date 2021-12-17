@@ -75,6 +75,7 @@ private:
         TEST_ASSERT(alpha_lost_focus == 0, "Window should not lost focus.");
         TEST_ASSERT(betta_focused == 0, "Window should not has focus.");
         TEST_ASSERT(betta_lost_focus == 0, "Window should not lost focus.");
+
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Show the alpha window, should get focus
@@ -90,6 +91,7 @@ private:
 
         TEST_ASSERT(alpha.has_input_focus(), "Focus function is not working.");
         TEST_ASSERT(!betta.has_input_focus(), "Focus function is not working.");
+
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Show the betta window, alpha should lost focus, betta should get focus
@@ -106,6 +108,7 @@ private:
 
         TEST_ASSERT(!alpha.has_input_focus(), "Focus function is not working.");
         TEST_ASSERT(betta.has_input_focus(), "Focus function is not working.");
+
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Return focus to alpha, betta should lost focus
@@ -122,6 +125,7 @@ private:
 
         TEST_ASSERT(alpha.has_input_focus(), "Focus function is not working.");
         TEST_ASSERT(!betta.has_input_focus(), "Focus function is not working.");
+
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Return focus to betta, alpha should lost focus
@@ -138,6 +142,7 @@ private:
 
         TEST_ASSERT(!alpha.has_input_focus(), "Focus function is not working.");
         TEST_ASSERT(betta.has_input_focus(), "Focus function is not working.");
+
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Hide betta, should lost focus
@@ -145,7 +150,10 @@ private:
 
         TEST_ASSERT(!betta.is_visible(), "Window should be visible.");
         TEST_ASSERT(!betta.has_input_focus(), "Focus function is not working.");
+
+        TEST_ASSERT(betta_focused == 2, "Window should get focus twice.");
         TEST_ASSERT(betta_lost_focus == 2, "Window should lost focus twice.");
+
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Hide alpha, should lost focus
@@ -153,6 +161,9 @@ private:
 
         TEST_ASSERT(!alpha.is_visible(), "Window should be visible.");
         TEST_ASSERT(!alpha.has_input_focus(), "Focus function is not working.");
+
+        TEST_ASSERT(alpha_focused == 3, "Window should get focus twice.");
+        TEST_ASSERT(alpha_lost_focus == 3, "Window should lost focus twice.");
     }
 };
 

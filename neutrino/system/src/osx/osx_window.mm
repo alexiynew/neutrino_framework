@@ -332,7 +332,7 @@ OsxWindow::~OsxWindow()
     if (m_actually_fullscreen) {
         exit_fullscreen();
     }
-    
+
     [m_window->get() setDelegate:nil];
     [m_window->get() close];
 }
@@ -347,9 +347,11 @@ void OsxWindow::show()
         return;
     }
 
-    [m_window->get() center];
+    // Turn off on_resize callback to call it in order we want
+    m_window->get().window_did_becomekey = nullptr;
 
-    [m_window->get() orderFront:m_window->get()];
+    [m_window->get() center];
+    [m_window->get() makeKeyAndOrderFront:m_window->get()];
 
     do {
         process_events();
@@ -357,8 +359,11 @@ void OsxWindow::show()
 
     if (m_actually_fullscreen) {
         m_actually_fullscreen = false; // Unset flag here
-        enter_fullscreen();            // The enter_fullscreen method would set it again
+        enter_fullscreen();            // The enter_fullscreen method gonna set it again
     }
+
+    // Turn on on_resize callback
+    m_window->get().window_did_becomekey = std::bind(&OsxWindow::window_did_becomekey, this);
 
     // Explicitly call on_show callback
     on_show();
@@ -370,10 +375,15 @@ void OsxWindow::show()
     on_resize(size());
 
     // This would call on_focus callback
-    [m_window->get() makeKeyWindow];
-    do {
-        process_events();
-    } while (!has_input_focus());
+    if (!has_input_focus()) {
+        [m_window->get() makeKeyWindow];
+        do {
+            process_events();
+        } while (!has_input_focus());
+    } else {
+        // Or call the on_focus callback explicitly
+        on_focus();
+    }
 }
 
 void OsxWindow::hide()
@@ -393,15 +403,13 @@ void OsxWindow::hide()
         m_actually_fullscreen = true;
     }
 
-    [m_window->get() orderOut:m_window->get()];
-
-    for (NSWindow* window in [NSApp orderedWindows]) {
-        if (window != m_window->get()) {
-            [window orderFront:nil];
-            [window makeKeyWindow];
-            break;
-        }
+    // This would focus other window and call on_lost_focus callback for this window
+    if (!switch_to_other_window()) {
+        // Or call the on_lost_focus callback explicitly
+        on_lost_focus();
     }
+
+    [m_window->get() orderOut:m_window->get()];
 
     do {
         process_events();
@@ -414,8 +422,6 @@ void OsxWindow::hide()
 void OsxWindow::focus()
 {
     AutoreleasePool pool;
-
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 
     if (!is_visible()) {
         return;
@@ -453,6 +459,12 @@ void OsxWindow::fullscreen()
     }
 
     enter_fullscreen();
+
+    // Explicitly call on_move callback
+    on_move(position());
+
+    // Explicitly call on_resize callback
+    on_resize(size());
 }
 
 void OsxWindow::restore()
@@ -466,6 +478,12 @@ void OsxWindow::restore()
 
     if (m_actually_fullscreen) {
         exit_fullscreen();
+
+        // Explicitly call on_move callback
+        on_move(position());
+
+        // Explicitly call on_resize callback
+        on_resize(size());
     }
 }
 
@@ -813,18 +831,18 @@ void OsxWindow::enter_fullscreen()
     if (m_actually_fullscreen) {
         return;
     }
-    
-    // Turn off on_resize callback
+
+    // Turn off the on_resize callback
     m_window->get().window_did_resize = nullptr;
-    
+
     [m_window->get() toggleFullScreen:m_window->get()];
 
     do {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         process_events();
     } while (!m_actually_fullscreen);
-    
-    // Turn on on_resize callback
+
+    // Turn on the on_resize callback
     m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
 }
 
@@ -833,8 +851,8 @@ void OsxWindow::exit_fullscreen()
     if (!m_actually_fullscreen) {
         return;
     }
-    
-    // Turn off on_resize callback
+
+    // Turn off the on_resize callback
     m_window->get().window_did_resize = nullptr;
 
     [m_window->get() toggleFullScreen:m_window->get()];
@@ -843,9 +861,22 @@ void OsxWindow::exit_fullscreen()
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         process_events();
     } while (m_actually_fullscreen);
-    
-    // Turn on on_resize callback
+
+    // Turn on the on_resize callback
     m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
+}
+
+bool OsxWindow::switch_to_other_window()
+{
+    for (NSWindow* window in [NSApp orderedWindows]) {
+        if (window != m_window->get()) {
+            [window orderFront:nil];
+            [window makeKeyWindow];
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void OsxWindow::update_context()

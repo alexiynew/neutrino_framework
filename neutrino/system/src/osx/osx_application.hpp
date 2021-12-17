@@ -37,7 +37,6 @@
 
 - (void)sendEvent:(NSEvent*)event;
 
-
 #pragma region NSApplicationDelegate
 
 // React to a termination notification
