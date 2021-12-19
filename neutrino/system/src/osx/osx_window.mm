@@ -390,9 +390,7 @@ void OsxWindow::hide()
 {
     AutoreleasePool pool;
 
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
-
-    if (!is_visible()) {
+    if (!is_visible() && !is_iconified()) {
         return;
     }
 
@@ -403,10 +401,12 @@ void OsxWindow::hide()
         m_actually_fullscreen = true;
     }
 
-    // This would focus other window and call on_lost_focus callback for this window
-    if (!switch_to_other_window()) {
-        // Or call the on_lost_focus callback explicitly
-        on_lost_focus();
+    if (has_input_focus()) {
+        // This would focus other window and call on_lost_focus callback for this window
+        if (!switch_to_other_window()) {
+            // Or call the on_lost_focus callback explicitly
+            on_lost_focus();
+        }
     }
 
     [m_window->get() orderOut:m_window->get()];
@@ -414,6 +414,8 @@ void OsxWindow::hide()
     do {
         process_events();
     } while (is_visible());
+    
+    [m_window->get() close];
 
     // Explicitly call on_hide callback
     on_hide();
@@ -438,6 +440,15 @@ void OsxWindow::focus()
 void OsxWindow::iconify()
 {
     AutoreleasePool pool;
+    
+    if (!is_visible() || is_iconified()) {
+        return;
+    }
+    
+    // Explicitly call the on_lost_focus callback
+    on_lost_focus();
+    
+    [m_window->get() miniaturize:m_window->get()];
 }
 
 void OsxWindow::maximize()
@@ -471,14 +482,22 @@ void OsxWindow::restore()
 {
     AutoreleasePool pool;
 
-    if (!is_visible()) {
+    if (!is_visible() && !is_iconified()) {
         m_actually_fullscreen = false;
         return;
     }
 
     if (m_actually_fullscreen) {
         exit_fullscreen();
+        
+        // Explicitly call on_move callback
+        on_move(position());
 
+        // Explicitly call on_resize callback
+        on_resize(size());
+    } else if (is_iconified()){
+        [m_window->get() deminiaturize:m_window->get()];
+        
         // Explicitly call on_move callback
         on_move(position());
 
@@ -719,7 +738,7 @@ bool OsxWindow::is_fullscreen() const
 
 bool OsxWindow::is_iconified() const
 {
-    return false;
+    return [m_window->get() isMiniaturized];
 }
 
 bool OsxWindow::is_maximized() const
@@ -764,8 +783,6 @@ void OsxWindow::window_should_close()
 
 void OsxWindow::window_did_resize()
 {
-    AutoreleasePool pool;
-
     if (is_visible()) {
         update_context();
 
@@ -778,8 +795,6 @@ void OsxWindow::window_did_resize()
 
 void OsxWindow::window_did_move()
 {
-    AutoreleasePool pool;
-
     if (is_visible()) {
         update_context();
 
@@ -792,24 +807,25 @@ void OsxWindow::window_did_move()
 
 void OsxWindow::window_did_miniaturize()
 {
-    AutoreleasePool pool;
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
 }
 
 void OsxWindow::window_did_deminiaturize()
 {
-    AutoreleasePool pool;
-    log::info(title()) << __FUNCTION__ << ":" << __LINE__;
+    update_context();
 }
 
 void OsxWindow::window_did_becomekey()
 {
-    on_focus();
+    if (is_visible()) {
+        on_focus();
+    }
 }
 
 void OsxWindow::window_did_resignkey()
 {
-    on_lost_focus();
+    if (is_visible()) {
+        on_lost_focus();
+    }
 }
 
 void OsxWindow::window_did_enter_full_screen()
