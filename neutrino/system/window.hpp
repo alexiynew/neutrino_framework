@@ -80,7 +80,7 @@ public:
     static void set_application_name(const std::string& name);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Creates window.
+    /// @brief Creates a window.
     ///
     /// @param title Window name.
     /// @param size Window size.
@@ -105,14 +105,30 @@ public:
     ////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Makes the window visible.
+    /// @brief Makes the window visible on the screen.
+    ///
+    /// If the window is already visible, this function does nothing.@n
+    /// If the window is iconified, this function restores it to its previous
+    /// state.@n
+    /// If the window has been shown this function calls the
+    ///     - @ref on_show
+    ///     - @ref on_move
+    ///     - @ref on_resize
+    ///     - @ref on_focus
+    ///     .
+    /// callbacks in the specified order.
     ///
     /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void show();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Hides the window.
+    /// @brief Removes the window from the screen.
+    ///
+    /// If the window has input focus then before hiding the window,
+    /// his function tries to switch focus to another window. In this case, the
+    /// @ref on_lost_focus callback would be called.@n
+    /// At the end of execution, it calls the @ref on_hide callback.
     ///
     /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
@@ -401,6 +417,9 @@ public:
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Checks if window is visible to the user.
+    ///
+    /// The window is visible to the user if the show function was called and
+    /// the window was not iconified.
     ///
     /// @return `true` if window is visible.
     ///
