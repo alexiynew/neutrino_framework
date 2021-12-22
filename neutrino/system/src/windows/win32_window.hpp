@@ -117,7 +117,6 @@ private:
     HWND m_window = nullptr;
     HDC m_hdc     = nullptr;
     HGLRC m_hglrc = nullptr;
-    std::shared_ptr<ATOM> m_window_class;
 
     Size m_min_size = {0, 0};
     Size m_max_size = {0, 0};

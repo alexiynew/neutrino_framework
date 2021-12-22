@@ -43,7 +43,9 @@ Window::Window(const std::string& title, Size size, ContextSettings settings)
 
 Window::~Window()
 {
-    m_platform_window->set_window_instance(nullptr);
+    if (m_platform_window) {
+        m_platform_window->set_window_instance(nullptr);
+    }
 }
 
 Window::Window(Window&& other) noexcept

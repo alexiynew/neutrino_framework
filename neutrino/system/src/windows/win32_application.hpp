@@ -42,13 +42,17 @@ public:
 
     static HMODULE handle();
 
-    static LRESULT CALLBACK window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param);
+    static LPCWSTR get_window_class();
+
+    static LRESULT CALLBACK main_window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param);
 
 private:
     using container = std::map<HANDLE, Win32Window*>;
 
     static container m_windows;
     static HMODULE m_handle;
+
+    static LPCWSTR m_window_class;
 };
 
 } // namespace framework::system::details

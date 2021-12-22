@@ -414,7 +414,7 @@ void OsxWindow::hide()
     do {
         process_events();
     } while (is_visible());
-    
+
     [m_window->get() close];
 
     // Explicitly call on_hide callback
@@ -440,14 +440,14 @@ void OsxWindow::focus()
 void OsxWindow::iconify()
 {
     AutoreleasePool pool;
-    
+
     if (!is_visible() || is_iconified()) {
         return;
     }
-    
+
     // Explicitly call the on_lost_focus callback
     on_lost_focus();
-    
+
     [m_window->get() miniaturize:m_window->get()];
 }
 
@@ -489,15 +489,15 @@ void OsxWindow::restore()
 
     if (m_actually_fullscreen) {
         exit_fullscreen();
-        
+
         // Explicitly call on_move callback
         on_move(position());
 
         // Explicitly call on_resize callback
         on_resize(size());
-    } else if (is_iconified()){
+    } else if (is_iconified()) {
         [m_window->get() deminiaturize:m_window->get()];
-        
+
         // Explicitly call on_move callback
         on_move(position());
 
@@ -806,8 +806,7 @@ void OsxWindow::window_did_move()
 }
 
 void OsxWindow::window_did_miniaturize()
-{
-}
+{}
 
 void OsxWindow::window_did_deminiaturize()
 {

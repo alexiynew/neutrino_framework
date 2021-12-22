@@ -30,40 +30,13 @@
 
 namespace
 {
-LRESULT CALLBACK tmp_win_proc(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uiMsg) {
-        case WM_CLOSE: PostQuitMessage(0); break;
-
-        default: return DefWindowProc(hWnd, uiMsg, wParam, lParam);
-    }
-
-    return 0;
-}
-
 HWND create_tmp_window()
 {
     using framework::system::details::Win32Application;
 
-    DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-    WNDCLASSEX tmp_win_class;
-    memset(&tmp_win_class, 0, sizeof(WNDCLASSEX));
-
-    tmp_win_class.cbSize        = sizeof(WNDCLASSEX);
-    tmp_win_class.style         = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-    tmp_win_class.lpfnWndProc   = tmp_win_proc;
-    tmp_win_class.hInstance     = Win32Application::handle();
-    tmp_win_class.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
-    tmp_win_class.hIconSm       = LoadIcon(NULL, IDI_APPLICATION);
-    tmp_win_class.hCursor       = LoadCursor(NULL, IDC_ARROW);
-    tmp_win_class.lpszClassName = L"Win32OpenGLWindow";
-
-    if (!RegisterClassEx(&tmp_win_class)) {
-        throw std::runtime_error("Failed to register tmp window class for OpenGL initialization.");
-    }
-
+    DWORD style     = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     HWND tmp_window = CreateWindowEx(WS_EX_APPWINDOW,
-                                     tmp_win_class.lpszClassName,
+                                     Win32Application::get_window_class(),
                                      L"TmpOpenGLInitWIndow",
                                      style,
                                      0,
@@ -76,7 +49,8 @@ HWND create_tmp_window()
                                      NULL);
 
     if (tmp_window == nullptr) {
-        throw std::runtime_error("Failed to create tmp window for OpenGL initialization.");
+        throw std::runtime_error("Failed to create tmp window for OpenGL initialization, error" +
+                                 std::to_string(GetLastError()));
     }
 
     return tmp_window;
@@ -89,7 +63,7 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
 
     if (hdc == nullptr) {
         DestroyWindow(tmp_window);
-        throw std::runtime_error("GetDC failed!");
+        throw std::runtime_error("GetDC failed, error: " + std::to_string(GetLastError()));
     }
 
     PIXELFORMATDESCRIPTOR pfd{};
@@ -104,20 +78,20 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
     if (pixelFormat == 0) {
         ReleaseDC(tmp_window, hdc);
         DestroyWindow(tmp_window);
-        throw std::runtime_error("Can't choose pixel format");
+        throw std::runtime_error("Can't choose pixel format, error: " + std::to_string(GetLastError()));
     }
 
     if (!SetPixelFormat(hdc, pixelFormat, &pfd)) {
         ReleaseDC(tmp_window, hdc);
         DestroyWindow(tmp_window);
-        throw std::runtime_error("Can't set pixel format");
+        throw std::runtime_error("Can't set pixel format, error: " + std::to_string(GetLastError()));
     }
 
     HGLRC hglrc = wglCreateContext(hdc);
     if (hglrc == nullptr) {
         ReleaseDC(tmp_window, hdc);
         DestroyWindow(tmp_window);
-        throw std::runtime_error("Can't create temporary graphic context");
+        throw std::runtime_error("Can't create temporary graphic context, error: " + std::to_string(GetLastError()));
     }
 
     wglMakeCurrent(hdc, hglrc);
@@ -215,7 +189,7 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
                                                                  &formatCount);
     if (!pixel_format_found) {
         ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Can't get a suitable pixel format");
+        throw std::runtime_error("Can't get a suitable pixel format, error: " + std::to_string(GetLastError()));
     }
 
     PIXELFORMATDESCRIPTOR pfd{};
@@ -223,7 +197,6 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
 
     if (!SetPixelFormat(m_hdc, pixelFormat, &pfd)) {
         ReleaseDC(m_window, m_hdc);
-        // TODO: make error handling on windows more verbose
         throw std::runtime_error("Can't set pixel format, error: " + std::to_string(GetLastError()));
     }
 
@@ -251,7 +224,7 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
     m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, nullptr, contextAttribs.data());
     if (m_hglrc == nullptr) {
         ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Failed to create OpenGL context");
+        throw std::runtime_error("Failed to create OpenGL context, error: " + std::to_string(GetLastError()));
     }
 }
 

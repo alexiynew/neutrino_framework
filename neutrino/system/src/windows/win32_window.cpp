@@ -36,8 +36,7 @@
 
 namespace
 {
-const char* const log_tag  = "Win32Window";
-const wchar_t class_name[] = L"my_window_class";
+const char* const log_tag = "Win32Window";
 
 const DWORD window_style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_CLIPCHILDREN |
                            WS_CLIPSIBLINGS;
@@ -95,53 +94,6 @@ std::string utf32_to_utf8(const std::wstring& string)
     WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
 
     return std::string(buffer.get());
-}
-
-void unregister_window_class(ATOM*)
-{
-    using framework::system::details::Win32Application;
-
-    UnregisterClass(class_name, Win32Application::handle());
-}
-
-std::shared_ptr<ATOM> register_window_class_details()
-{
-    using framework::system::details::Win32Application;
-
-    WNDCLASSEX window_class = {};
-
-    window_class.cbSize        = sizeof(WNDCLASSEX);
-    window_class.style         = CS_OWNDC;
-    window_class.lpfnWndProc   = Win32Application::window_procedure;
-    window_class.cbClsExtra    = 0;
-    window_class.cbWndExtra    = 0;
-    window_class.hInstance     = Win32Application::handle();
-    window_class.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
-    window_class.hCursor       = LoadCursor(nullptr, IDC_ARROW);
-    window_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
-    window_class.lpszMenuName  = nullptr;
-    window_class.lpszClassName = class_name;
-    window_class.hIconSm       = LoadIcon(nullptr, IDI_APPLICATION);
-
-    if (!RegisterClassEx(&window_class)) {
-        throw std::runtime_error("Failed to register window class.");
-    }
-
-    return std::shared_ptr<ATOM>(nullptr, unregister_window_class);
-}
-
-std::shared_ptr<ATOM> register_window_class()
-{
-    static std::weak_ptr<ATOM> pointer;
-
-    if (pointer.expired()) {
-        std::shared_ptr<ATOM> temp = ::register_window_class_details();
-
-        pointer = temp;
-        return temp;
-    }
-
-    return pointer.lock();
 }
 
 framework::system::MouseButton get_mouse_button(UINT message)
@@ -237,12 +189,10 @@ namespace framework::system::details
 Win32Window::Win32Window(const std::string& title, Size size, const ContextSettings& settings)
     : PlatformWindow()
 {
-    m_window_class = ::register_window_class();
-
     size = adjust_size(size, window_style);
 
     m_window = CreateWindowEx(window_ex_style,
-                              class_name,
+                              Win32Application::get_window_class(),
                               utf8_to_utf16(title).c_str(),
                               window_style,
                               CW_USEDEFAULT,
@@ -255,7 +205,7 @@ Win32Window::Win32Window(const std::string& title, Size size, const ContextSetti
                               nullptr);
 
     if (m_window == nullptr) {
-        throw std::runtime_error("Failed to create window.");
+        throw std::runtime_error("Failed to create window, error: " + std::to_string(GetLastError()));
     }
 
     m_context = std::make_unique<Win32WglContext>(m_window, settings);
@@ -268,9 +218,8 @@ Win32Window::Win32Window(const std::string& title, Size size, const ContextSetti
 
 Win32Window::~Win32Window()
 {
-    Win32Application::remove_window(m_window);
-
     DestroyWindow(m_window);
+    Win32Application::remove_window(m_window);
 }
 
 #pragma region actions
