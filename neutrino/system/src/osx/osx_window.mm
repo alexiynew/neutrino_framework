@@ -454,6 +454,17 @@ void OsxWindow::iconify()
 void OsxWindow::maximize()
 {
     AutoreleasePool pool;
+
+    if (is_maximized()) {
+        return;
+    }
+
+    [m_window->get() zoom:m_window->get()];
+
+    if (is_visible()) {
+        // Explicitly call the on_move callback
+        on_move(position());
+    }
 }
 
 void OsxWindow::fullscreen()
@@ -497,6 +508,14 @@ void OsxWindow::restore()
         on_resize(size());
     } else if (is_iconified()) {
         [m_window->get() deminiaturize:m_window->get()];
+
+        // Explicitly call on_move callback
+        on_move(position());
+
+        // Explicitly call on_resize callback
+        on_resize(size());
+    } else if (is_maximized()) {
+        [m_window->get() zoom:m_window->get()];
 
         // Explicitly call on_move callback
         on_move(position());
@@ -743,7 +762,7 @@ bool OsxWindow::is_iconified() const
 
 bool OsxWindow::is_maximized() const
 {
-    return false;
+    return !m_actually_fullscreen && [m_window->get() isZoomed];
 }
 
 bool OsxWindow::is_resizable() const
@@ -758,7 +777,7 @@ bool OsxWindow::is_visible() const
 
 bool OsxWindow::has_input_focus() const
 {
-    return [m_window->get() isKeyWindow];
+    return is_visible() && [m_window->get() isKeyWindow];
 }
 
 bool OsxWindow::is_cursor_visible() const
