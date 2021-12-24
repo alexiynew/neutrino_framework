@@ -125,8 +125,8 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Removes the window from the screen.
     ///
-    /// If the window has input focus then before hiding the window,
-    /// his function tries to switch focus to another window. In this case, the
+    /// If the window has input focus then before hiding it,
+    /// function tries to switch focus to another window. In this case, the
     /// @ref on_lost_focus callback would be called.@n
     /// At the end of execution, it calls the @ref on_hide callback.
     ///
@@ -135,15 +135,25 @@ public:
     void hide();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief If window is visible, brings it to the front and may make
-    ///        it the focused.
+    /// @brief Bring the window to the front and switch input focus to it.
+    ///
+    /// If the window is not visible function has no effect.@n
+    /// If the window gets input focus the @ref on_focus callback
+    /// would be called.
     ///
     /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void focus();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Switch window to iconic state.
+    /// @brief Iconify the window (i.e. minimize).
+    ///
+    /// In iconified state window is not visible to the user and the icon
+    /// is displayed in the taskbar.@n
+    /// When the window is iconified it loses input focus i.e.
+    /// the @ref on_lost_focus callback would be called.@n
+    ///
+    /// The window can be restored with @ref restore or @ref show function.
     ///
     /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
