@@ -44,62 +44,62 @@ public:
 private:
     void focus_one_window()
     {
-        int on_focus_called    = 0;
+        int on_focus_called      = 0;
         int on_lost_focus_called = 0;
-        
+
         Window w(name(), {640, 480});
-        
+
         w.on_focus.connect([&on_focus_called](const Window& /*unused*/) { on_focus_called++; });
         w.on_lost_focus.connect([&on_lost_focus_called](const Window& /*unused*/) { on_lost_focus_called++; });
-        
+
         w.focus();
-        
+
         TEST_ASSERT(on_focus_called == 0, "Invalid callback call.");
         TEST_ASSERT(on_lost_focus_called == 0, "Invalid callback call.");
-        
+
         w.show();
-        
+
         TEST_ASSERT(w.is_visible(), "Window should be visible.");
         TEST_ASSERT(w.has_input_focus(), "Window should has focus.");
-        
+
         TEST_ASSERT(on_focus_called == 1, "Invalid callback call.");
         TEST_ASSERT(on_lost_focus_called == 0, "Invalid callback call.");
-        
+
         w.focus();
-        
+
         TEST_ASSERT(on_focus_called == 1, "Invalid callback call.");
         TEST_ASSERT(on_lost_focus_called == 0, "Invalid callback call.");
-        
+
         w.hide();
-        
+
         TEST_ASSERT(!w.is_visible(), "Window should be visible.");
         TEST_ASSERT(!w.has_input_focus(), "Window should has focus.");
-        
+
         TEST_ASSERT(on_focus_called == 1, "Invalid callback call.");
         TEST_ASSERT(on_lost_focus_called == 1, "Invalid callback call.");
-        
+
         w.focus();
-        
+
         TEST_ASSERT(on_focus_called == 1, "Invalid callback call.");
         TEST_ASSERT(on_lost_focus_called == 1, "Invalid callback call.");
-        
+
         w.show();
-        
+
         TEST_ASSERT(w.is_visible(), "Window should be visible.");
         TEST_ASSERT(w.has_input_focus(), "Window should has focus.");
-        
+
         TEST_ASSERT(on_focus_called == 2, "Invalid callback call.");
         TEST_ASSERT(on_lost_focus_called == 1, "Invalid callback call.");
-        
+
         w.hide();
-        
+
         TEST_ASSERT(!w.is_visible(), "Window should be visible.");
         TEST_ASSERT(!w.has_input_focus(), "Window should has focus.");
-        
+
         TEST_ASSERT(on_focus_called == 2, "Invalid callback call.");
         TEST_ASSERT(on_lost_focus_called == 2, "Invalid callback call.");
     }
-    
+
     void focus_two_windows()
     {
         int alpha_focused    = 0;

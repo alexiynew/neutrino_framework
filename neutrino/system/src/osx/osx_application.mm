@@ -28,22 +28,24 @@
 
 + (void)setup
 {
-    static bool isTheProcessSetAsApplication = false;
+    @autoreleasepool {
+        static bool isTheProcessSetAsApplication = false;
 
-    if (!isTheProcessSetAsApplication) {
-        isTheProcessSetAsApplication = true;
+        if (!isTheProcessSetAsApplication) {
+            isTheProcessSetAsApplication = true;
 
-        [OsxApplication sharedApplication];
+            [OsxApplication sharedApplication];
 
-        [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-        [NSApp activateIgnoringOtherApps:YES];
+            [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+            [NSApp activateIgnoringOtherApps:YES];
 
-        if (![NSApp delegate])
-            [NSApp setDelegate:static_cast<OsxApplication*>(NSApp)];
+            if (![NSApp delegate])
+                [NSApp setDelegate:static_cast<OsxApplication*>(NSApp)];
 
-        [OsxApplication setup_menu_bar];
+            [OsxApplication setup_menu_bar];
 
-        [NSApp finishLaunching];
+            [NSApp finishLaunching];
+        }
     }
 }
 
@@ -74,7 +76,9 @@
 
 - (void)sendEvent:(NSEvent*)event
 {
-    [super sendEvent:event];
+    @autoreleasepool {
+        [super sendEvent:event];
+    }
 }
 
 #pragma region NSApplicationDelegate

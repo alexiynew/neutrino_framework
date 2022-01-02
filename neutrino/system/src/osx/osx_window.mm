@@ -228,7 +228,9 @@ public:
 
     ~Wrapper()
     {
-        [m_value release];
+        AutoreleasePool pool;
+
+        [m_value autorelease];
     }
 
     operator T*()
@@ -329,6 +331,8 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
 
 OsxWindow::~OsxWindow()
 {
+    AutoreleasePool pool;
+
     if (m_actually_fullscreen) {
         exit_fullscreen();
     }
@@ -445,6 +449,13 @@ void OsxWindow::iconify()
         return;
     }
 
+    if (m_actually_fullscreen) {
+        exit_fullscreen();
+
+        // Set flag again for a window to be in fullscreen if it would show again.
+        m_actually_fullscreen = true;
+    }
+
     // Explicitly call the on_lost_focus callback
     on_lost_focus();
 
@@ -469,8 +480,6 @@ void OsxWindow::maximize()
 
 void OsxWindow::fullscreen()
 {
-    AutoreleasePool pool;
-
     if (m_actually_fullscreen) {
         return;
     }
@@ -498,25 +507,25 @@ void OsxWindow::restore()
         return;
     }
 
-    if (m_actually_fullscreen) {
-        exit_fullscreen();
+    bool restored = false;
 
-        // Explicitly call on_move callback
-        on_move(position());
-
-        // Explicitly call on_resize callback
-        on_resize(size());
-    } else if (is_iconified()) {
+    if (is_iconified()) {
         [m_window->get() deminiaturize:m_window->get()];
+        m_actually_fullscreen = false;
+        restored              = true;
+    }
 
-        // Explicitly call on_move callback
-        on_move(position());
-
-        // Explicitly call on_resize callback
-        on_resize(size());
-    } else if (is_maximized()) {
+    if (is_maximized()) {
         [m_window->get() zoom:m_window->get()];
+        restored = true;
+    }
 
+    if (is_fullscreen()) {
+        exit_fullscreen();
+        restored = true;
+    }
+
+    if (restored) {
         // Explicitly call on_move callback
         on_move(position());
 
@@ -582,6 +591,8 @@ void OsxWindow::release_cursor()
 
 void OsxWindow::process_events()
 {
+    AutoreleasePool pool;
+
     [OsxApplication process_events];
 }
 
@@ -757,11 +768,15 @@ bool OsxWindow::is_fullscreen() const
 
 bool OsxWindow::is_iconified() const
 {
+    AutoreleasePool pool;
+
     return [m_window->get() isMiniaturized];
 }
 
 bool OsxWindow::is_maximized() const
 {
+    AutoreleasePool pool;
+
     return !m_actually_fullscreen && [m_window->get() isZoomed];
 }
 
@@ -772,11 +787,15 @@ bool OsxWindow::is_resizable() const
 
 bool OsxWindow::is_visible() const
 {
+    AutoreleasePool pool;
+
     return [m_window->get() isVisible];
 }
 
 bool OsxWindow::has_input_focus() const
 {
+    AutoreleasePool pool;
+
     return is_visible() && [m_window->get() isKeyWindow];
 }
 
@@ -862,6 +881,8 @@ void OsxWindow::window_did_exit_full_screen()
 
 void OsxWindow::enter_fullscreen()
 {
+    AutoreleasePool pool;
+
     if (m_actually_fullscreen) {
         return;
     }
@@ -882,6 +903,8 @@ void OsxWindow::enter_fullscreen()
 
 void OsxWindow::exit_fullscreen()
 {
+    AutoreleasePool pool;
+
     if (!m_actually_fullscreen) {
         return;
     }
@@ -902,6 +925,8 @@ void OsxWindow::exit_fullscreen()
 
 bool OsxWindow::switch_to_other_window()
 {
+    AutoreleasePool pool;
+
     for (NSWindow* window in [NSApp orderedWindows]) {
         if (window != m_window->get()) {
             [window orderFront:nil];
