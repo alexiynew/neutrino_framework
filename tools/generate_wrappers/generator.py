@@ -217,9 +217,7 @@ class Generator:
                 used.commands.extend(c.prototype.name for c in group.commands)
 
     def generate_header(self):
-        t = Template("${license}"
-                     "\n"
-                     "#ifndef ${include_guard}\n"
+        t = Template("#ifndef ${include_guard}\n"
                      "#define ${include_guard}\n"
                      "\n"
                      "${includes}\n"
@@ -268,7 +266,6 @@ class Generator:
         hpp = open(self.data.DESTHPP, "w")
         hpp.write(t.substitute(brief=self.data.BRIEF,
                                date=self.data.DATE,
-                               license=self.data.LICENSE,
                                include_guard=self.data.INCLUDE_GUARD,
                                namespace=self.data.NAMESPACE,
                                init_function_name=self.data.INIT_FUNCTION_NAME,
@@ -281,9 +278,7 @@ class Generator:
         hpp.close()
 
     def generate_source(self):
-        t = Template("${license}"
-                     "\n"
-                     "${cpp_includes}\n"
+        t = Template("${cpp_includes}\n"
                      "\n"
                      "namespace\n"
                      "{\n"
@@ -381,7 +376,6 @@ class Generator:
 
         d = dict(brief=self.data.BRIEF,
                  date=self.data.DATE,
-                 license=self.data.LICENSE,
                  namespace=self.data.NAMESPACE,
                  init_function_name=self.data.INIT_FUNCTION_NAME,
                  cpp_includes=cpp_includes,
