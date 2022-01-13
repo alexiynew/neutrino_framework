@@ -1,18 +1,18 @@
 set_sources(PUBLIC_SOURCES
+    context_settings.hpp
+    context.hpp
     keyboard.hpp
     mouse.hpp
     window.hpp
-    context_settings.hpp
-    context.hpp
 )
 
 set_sources(PRIVATE_SOURCES
-    src/keyboard.cpp
-    src/window.cpp
     src/context_settings.cpp
     src/context.cpp
-    src/platform_window.hpp
+    src/keyboard.cpp
     src/platform_window.cpp
+    src/platform_window.hpp
+    src/window.cpp
 )
 
 target_sources(${PROJECT_NAME}

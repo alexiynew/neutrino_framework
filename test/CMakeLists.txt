@@ -12,13 +12,13 @@ add_custom_target(${TESTS_TARGET} ALL
 message(STATUS "Add tests...")
 
 set(TEST_GROUPS
-    "unit_test"
-    "common"
-    "log"
-    "math"
-    "system"
-    "graphics"
-    "game_core"
+    common
+    game_core
+    graphics
+    log
+    math
+    system
+    unit_test
 )
 
 foreach(GROUP ${TEST_GROUPS})

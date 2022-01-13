@@ -1,11 +1,11 @@
 set(TESTS 
+    font
     image_bmp
     image_png
+    light
     mesh
     shader
     texture
-    light
-    font
 )
 
 foreach(TEST ${TESTS})

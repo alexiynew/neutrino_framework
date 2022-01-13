@@ -1,25 +1,26 @@
 set_sources(PUBLIC_SOURCES
-    types.hpp
-    utils.hpp
     crc.hpp
-    version.hpp
-    zlib.hpp
-    inc/utils_details.hpp
-    inc/crc_details.hpp
+    instance_id.hpp
+    position.hpp
     signal.hpp
     size.hpp
-    position.hpp
-    instance_id.hpp
+    types.hpp
     utf.hpp
+    utils.hpp
+    version.hpp
+    zlib.hpp
+    
+    inc/crc_details.hpp
+    inc/utils_details.hpp
 )
 
 set_sources(PRIVATE_SOURCES
+    src/instance_id.cpp
+    src/position.cpp
+    src/size.cpp
+    src/utf.cpp
     src/version.cpp
     src/zlib.cpp
-    src/size.cpp
-    src/position.cpp
-    src/instance_id.cpp
-    src/utf.cpp
 )
 
 target_sources(${PROJECT_NAME}

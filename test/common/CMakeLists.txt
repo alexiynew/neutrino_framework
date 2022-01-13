@@ -1,10 +1,10 @@
 set(TESTS 
-    utils
     crc
     signal
+    utf
+    utils
     version
     zlib
-    utf
 )
 
 foreach(TEST ${TESTS})

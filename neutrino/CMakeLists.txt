@@ -9,13 +9,13 @@ target_include_directories(${PROJECT_NAME}
 message(STATUS "Add modules...")
 
 set(MODULES
-    "common"
-    "unit_test"
-    "log"
-    "math"
-    "system"
-    "graphics"
-    "game_core"
+    common
+    game_core
+    graphics
+    log
+    math
+    system
+    unit_test
 )
 
 foreach(MODULE ${MODULES})

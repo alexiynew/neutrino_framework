@@ -1,17 +1,17 @@
 set(TESTS 
-    vector_constructor
-    vector_operators
-    vector_common
-    vector_exponential
-    vector_geometric
-    vector_relational
-    vector_trigonometric
-    matrix_constructor
-    matrix_math_operators
     matrix_access
     matrix_assign
+    matrix_constructor
     matrix_func
+    matrix_math_operators
     matrix_transform
+    vector_common
+    vector_constructor
+    vector_exponential
+    vector_geometric
+    vector_operators
+    vector_relational
+    vector_trigonometric
 )
 
 foreach(TEST ${TESTS})

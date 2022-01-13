@@ -4,16 +4,16 @@ set_sources(PUBLIC_SOURCES
     inc/matrix_type.hpp
     inc/vector_type.hpp
 
-    inc/constants.hpp
     inc/common_functions.hpp
+    inc/constants.hpp
     inc/exponential_functions.hpp
     inc/geometric_functions.hpp
     inc/matrix_functions.hpp
     inc/relational_functions.hpp
     inc/transform_functions.hpp
 
-    inc/vector_type_details.hpp
     inc/matrix_type_details.hpp
+    inc/vector_type_details.hpp
 
     inc/common_functions_details.hpp
     inc/geometric_functions_details.hpp

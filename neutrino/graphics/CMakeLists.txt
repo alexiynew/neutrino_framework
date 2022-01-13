@@ -1,12 +1,12 @@
 set_sources(PUBLIC_SOURCES
     color.hpp
+    font.hpp
     image.hpp
     mesh.hpp
+    renderer.hpp
     shader.hpp
     texture.hpp
-    renderer.hpp
     uniform.hpp
-    font.hpp
 )
 
 set_sources(PRIVATE_SOURCES
@@ -16,50 +16,48 @@ set_sources(PRIVATE_SOURCES
     src/uniform.cpp
 
     src/font/font.cpp
-    src/font/types.hpp
-    src/font/tables/font_header.hpp
     src/font/tables/font_header.cpp
-    src/font/tables/glyph_map.hpp
+    src/font/tables/font_header.hpp
     src/font/tables/glyph_map.cpp
-    src/font/tables/horizontal_header.hpp
+    src/font/tables/glyph_map.hpp
     src/font/tables/horizontal_header.cpp
-    src/font/tables/maximum_profile.hpp
-    src/font/tables/maximum_profile.cpp
-    src/font/tables/horizontal_metrics.hpp
+    src/font/tables/horizontal_header.hpp
     src/font/tables/horizontal_metrics.cpp
-    src/font/tables/naming.hpp
-    src/font/tables/naming.cpp
-    src/font/tables/os2.hpp
-    src/font/tables/os2.cpp
-    src/font/tables/location.hpp
+    src/font/tables/horizontal_metrics.hpp
     src/font/tables/location.cpp
+    src/font/tables/location.hpp
+    src/font/tables/maximum_profile.cpp
+    src/font/tables/maximum_profile.hpp
+    src/font/tables/naming.cpp
+    src/font/tables/naming.hpp
+    src/font/tables/os2.cpp
+    src/font/tables/os2.hpp
+    src/font/types.hpp
 
-    src/image/image.cpp
-    src/image/image_info.hpp
-    src/image/bmp.hpp
     src/image/bmp.cpp
-    src/image/png.hpp
+    src/image/bmp.hpp
+    src/image/image_info.hpp
+    src/image/image.cpp
     src/image/png.cpp
+    src/image/png.hpp
 
-    src/opengl/opengl.hpp
     src/opengl/opengl.cpp
+    src/opengl/opengl.hpp
 
-    src/render/renderer.cpp
     src/render/renderer_impl.hpp
-    #src/render/render_command.hpp
-    #src/render/render_command.cpp
+    src/render/renderer.cpp
 
     src/render/opengl/attributes.hpp
-    src/render/opengl/opengl_logger.hpp
     src/render/opengl/opengl_logger.cpp
-    src/render/opengl/opengl_renderer.hpp
-    src/render/opengl/opengl_renderer.cpp
-    src/render/opengl/opengl_mesh.hpp
+    src/render/opengl/opengl_logger.hpp
     src/render/opengl/opengl_mesh.cpp
-    src/render/opengl/opengl_shader.hpp
+    src/render/opengl/opengl_mesh.hpp
+    src/render/opengl/opengl_renderer.cpp
+    src/render/opengl/opengl_renderer.hpp
     src/render/opengl/opengl_shader.cpp
-    src/render/opengl/opengl_texture.hpp
+    src/render/opengl/opengl_shader.hpp
     src/render/opengl/opengl_texture.cpp
+    src/render/opengl/opengl_texture.hpp
 )
 
 target_sources(${PROJECT_NAME}
