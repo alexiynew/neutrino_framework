@@ -219,6 +219,10 @@ void Win32Window::hide()
 
 void Win32Window::focus()
 {
+    if (!is_visible()) {
+        return;
+    }
+
     BringWindowToTop(m_window);
     SetForegroundWindow(m_window);
 }
@@ -528,7 +532,9 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
 {
     switch (message) {
         case WM_SETFOCUS: {
-            on_focus();
+            if (is_visible()) {
+                on_focus();
+            }
             return 0;
         }
 
