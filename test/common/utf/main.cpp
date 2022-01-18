@@ -14,6 +14,7 @@ public:
         : Suite("UtfTest")
     {
         add_test([this]() { utf16_to_utf8(); }, "utf16_to_utf8");
+        add_test([this]() { utf32_to_utf8(); }, "utf32_to_utf8");
     }
 
 private:
@@ -39,6 +40,32 @@ private:
         TEST_ASSERT(utf::to_utf8(utf16_4) == utf8_4, "Convertation failed.");
         TEST_ASSERT(utf::to_utf8(utf16_5) == utf8_5, "Convertation failed.");
         TEST_ASSERT(utf::to_utf8(utf16_6) == utf8_6, "Convertation failed.");
+
+        // TODO: Add tests with broken codepoints
+    }
+
+    void utf32_to_utf8()
+    {
+        const std::u32string utf32_1(U"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
+        const std::u32string utf32_2(U"\u00a3\u00a4\u00a5");
+        const std::u32string utf32_3(U"\u7cc2\u7cc3\u7cc4");
+        const std::u32string utf32_4(U"\ud7f8\ud7f9\ud7fa\ud7fb");
+        const std::u32string utf32_5(U"\uf900\uf901\uf902\uf903");
+        const std::u32string utf32_6(U"\U00010000\U00010001\U00010002\U00010003");
+
+        const std::string utf8_1(u8"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
+        const std::string utf8_2(u8"\u00a3\u00a4\u00a5");
+        const std::string utf8_3(u8"\u7cc2\u7cc3\u7cc4");
+        const std::string utf8_4(u8"\ud7f8\ud7f9\ud7fa\ud7fb");
+        const std::string utf8_5(u8"\uf900\uf901\uf902\uf903");
+        const std::string utf8_6(u8"\U00010000\U00010001\U00010002\U00010003");
+
+        TEST_ASSERT(utf::to_utf8(utf32_1) == utf8_1, "Convertation failed.");
+        TEST_ASSERT(utf::to_utf8(utf32_2) == utf8_2, "Convertation failed.");
+        TEST_ASSERT(utf::to_utf8(utf32_3) == utf8_3, "Convertation failed.");
+        TEST_ASSERT(utf::to_utf8(utf32_4) == utf8_4, "Convertation failed.");
+        TEST_ASSERT(utf::to_utf8(utf32_5) == utf8_5, "Convertation failed.");
+        TEST_ASSERT(utf::to_utf8(utf32_6) == utf8_6, "Convertation failed.");
 
         // TODO: Add tests with broken codepoints
     }

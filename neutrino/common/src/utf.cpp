@@ -28,6 +28,15 @@ std::pair<CodePoint, size_t> get_code_point(const std::u16string& str, size_t po
     return std::make_pair(cp, 2);
 };
 
+std::pair<CodePoint, size_t> get_code_point(const std::u32string& str, size_t pos)
+{
+    if (pos >= str.length()) {
+        return std::make_pair(0, 0);
+    }
+
+    return std::make_pair(static_cast<CodePoint>(str[pos]), 1);
+};
+
 std::vector<char>::iterator set_as_utf8(std::vector<char>::iterator to, CodePoint cp)
 {
     // 1-byte UTF-8 = 0xxxxxxx = 7 bits = 0x00 - 0x7F
@@ -64,6 +73,24 @@ namespace framework::utf
 {
 
 std::string to_utf8(const std::u16string& str)
+{
+    const size_t buffer_size = str.length() * 4;
+
+    std::vector<char> buffer(buffer_size, '\0');
+
+    size_t begin = 0;
+    size_t end   = str.length();
+    auto to      = buffer.begin();
+    while (begin != end) {
+        auto [cp, size] = get_code_point(str, begin);
+        to              = set_as_utf8(to, cp);
+        begin += size;
+    }
+
+    return std::string(buffer.data());
+}
+
+std::string to_utf8(const std::u32string& str)
 {
     const size_t buffer_size = str.length() * 4;
 
