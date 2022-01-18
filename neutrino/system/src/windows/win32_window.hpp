@@ -114,16 +114,16 @@ private:
 
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 
-    void track_mouse();
-    void update_cursor();
-    void enable_raw_input();
-    void disable_raw_input();
-
     LRESULT process_key_event(WPARAM w_param, LPARAM l_param);
     void process_shift_key(LPARAM l_param);
     void process_control_key(LPARAM l_param);
     void process_alt_key(LPARAM l_param);
     void process_raw_input(LPARAM l_param);
+
+    void track_mouse();
+    void update_cursor();
+    void enable_raw_input();
+    void disable_raw_input();
 };
 
 } // namespace framework::system::details

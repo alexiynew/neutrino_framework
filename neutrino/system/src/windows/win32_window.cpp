@@ -1,7 +1,5 @@
 #include <stdexcept>
 
-#include <log/log.hpp>
-
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_keyboard.hpp>
 #include <system/src/windows/win32_wgl_context.hpp>
@@ -202,6 +200,10 @@ Win32Window::~Win32Window()
 
 void Win32Window::show()
 {
+    if (is_visible()) {
+        return; 
+    }
+
     if (is_iconified()) {
         ShowWindow(m_window, SW_RESTORE);
     } else {
@@ -210,11 +212,26 @@ void Win32Window::show()
     UpdateWindow(m_window);
 
     m_mouse_hover = is_cursor_in_client_area(m_window);
+
+    // Explicitly call on_show callback
+    on_show();
 }
 
 void Win32Window::hide()
 {
+    if (!is_visible()) {
+        return; 
+    }
+
+    if (has_input_focus()) {
+        // Call the on_lost_focus callback explicitly
+        on_lost_focus();
+    }
+
     ShowWindow(m_window, SW_HIDE);
+
+    // Explicitly call on_hide callback
+    on_hide();
 }
 
 void Win32Window::focus()
@@ -539,7 +556,9 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         }
 
         case WM_KILLFOCUS: {
-            on_lost_focus();
+            if (is_visible()) {
+                on_lost_focus();
+            }
             return 0;
         }
 
@@ -550,14 +569,6 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         }
 
         case WM_SHOWWINDOW: {
-            if (l_param == 0) {
-                if (w_param == TRUE) {
-                    on_show();
-                } else {
-                    on_hide();
-                }
-            }
-
             return 0;
         }
 
@@ -730,6 +741,10 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
     return DefWindowProc(m_window, message, w_param, l_param);
 }
 
+#pragma endregion
+
+#pragma region keyboard processing
+
 LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
 {
     switch (w_param) {
@@ -846,7 +861,7 @@ void Win32Window::process_alt_key(LPARAM l_param)
 
 #pragma endregion
 
-#pragma region helper functions
+#pragma region mouse processing
 
 void Win32Window::track_mouse()
 {
@@ -870,19 +885,13 @@ void Win32Window::update_cursor()
 void Win32Window::enable_raw_input()
 {
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
-
-    if (!RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
-        log::error(log_tag) << "Failed to register raw input device";
-    }
+    RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
 void Win32Window::disable_raw_input()
 {
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
-
-    if (!RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
-        log::error(log_tag) << "Failed to reset raw input device";
-    }
+    RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
 void Win32Window::process_raw_input(LPARAM l_param)
@@ -898,7 +907,6 @@ void Win32Window::process_raw_input(LPARAM l_param)
 
     RAWINPUT raw_input = RAWINPUT();
     if (GetRawInputData(handle, RID_INPUT, &raw_input, &size, sizeof(RAWINPUTHEADER)) == static_cast<UINT>(-1)) {
-        log::error(log_tag) << "Failed to get raw input data";
         return;
     }
 

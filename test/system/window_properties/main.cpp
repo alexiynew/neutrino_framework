@@ -41,9 +41,9 @@ private:
         });
 
         // Check stats
-        TEST_ASSERT(stats.size_called == 0, "Wrong stats.size_called count in begining.");
-        TEST_ASSERT(stats.show_called == 0, "Wrong stats.show_called count in begining.");
-        TEST_ASSERT(stats.last_size == Size(), "Wrong stats.last_size in begining.");
+        TEST_ASSERT(stats.size_called == 0, "Wrong stats.size_called count at the beginning.");
+        TEST_ASSERT(stats.show_called == 0, "Wrong stats.show_called count at the beginning.");
+        TEST_ASSERT(stats.last_size == Size(), "Wrong stats.last_size at the beginning.");
 
         // Window stats on creation
         TEST_ASSERT(window.size() == size480, "Window has wrong size.");
@@ -174,8 +174,9 @@ private:
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // TODO: Size limits should resize the window if it does not fit within the constraints
-        //// Set size limits while the window is oversized
+        // TODO: Size limits should resize the window if it does not fit 
+        // within the constraints. 
+        // Set size limits while the window is oversized.
         // window.set_max_size(size960);
         // TEST_ASSERT(window.size() == size960, "Window has wrong size.");
         // std::this_thread::sleep_for(std::chrono::seconds(1));
