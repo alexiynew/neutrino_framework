@@ -1,4 +1,4 @@
-#include <common/utils.hpp>
+﻿#include <common/utils.hpp>
 #include <log/log.hpp>
 
 namespace
@@ -7,7 +7,7 @@ using framework::log::Logger;
 using framework::log::log_details::LogBuffer;
 using framework::log::log_details::LogStream;
 
-class DummyLogger : public Logger
+class LoggerStub final : public Logger
 {
     void add_message(framework::log::SeverityLevel /*level*/,
                      const std::string& /*tag*/,
@@ -22,7 +22,7 @@ std::unique_ptr<Logger>& logger_instance()
     static std::unique_ptr<Logger> instance;
 
     if (!instance) {
-        instance = std::make_unique<DummyLogger>();
+        instance = std::make_unique<LoggerStub>();
     }
 
     return instance;
@@ -36,7 +36,10 @@ namespace framework::log
 
 LogStream debug(const std::string& tag)
 {
-    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::debug, tag));
+    if (utils::is_debug()) {
+        return LogStream(std::make_unique<LogBuffer>(SeverityLevel::debug, tag));
+    }
+    return LogStream(nullptr);
 }
 
 LogStream info(const std::string& tag)
