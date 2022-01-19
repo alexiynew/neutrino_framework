@@ -1,4 +1,4 @@
-#include <vector>
+﻿#include <vector>
 
 #include <common/utf.hpp>
 
@@ -67,14 +67,10 @@ std::vector<char>::iterator set_as_utf8(std::vector<char>::iterator to, CodePoin
     return to;
 }
 
-} // namespace
-
-namespace framework::utf
+template <typename T>
+std::string to_utf8_impl(const T& str)
 {
-
-std::string to_utf8(const std::u16string& str)
-{
-    const size_t buffer_size = str.length() * 4;
+    const size_t buffer_size = str.length() * 4 + 1;
 
     std::vector<char> buffer(buffer_size, '\0');
 
@@ -90,22 +86,19 @@ std::string to_utf8(const std::u16string& str)
     return std::string(buffer.data());
 }
 
+} // namespace
+
+namespace framework::utf
+{
+
+std::string to_utf8(const std::u16string& str)
+{
+    return to_utf8_impl(str);
+}
+
 std::string to_utf8(const std::u32string& str)
 {
-    const size_t buffer_size = str.length() * 4;
-
-    std::vector<char> buffer(buffer_size, '\0');
-
-    size_t begin = 0;
-    size_t end   = str.length();
-    auto to      = buffer.begin();
-    while (begin != end) {
-        auto [cp, size] = get_code_point(str, begin);
-        to              = set_as_utf8(to, cp);
-        begin += size;
-    }
-
-    return std::string(buffer.data());
+    return to_utf8_impl(str);
 }
 
 } // namespace framework::utf
