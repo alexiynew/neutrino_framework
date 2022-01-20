@@ -8,7 +8,7 @@ class GeneratorData:
         self.DESTHPP = "./neutrino/system/src/linux/glxext.hpp"
         self.DESTCPP = "./neutrino/system/src/linux/glxext.cpp"
 
-        self.API = ""
+        self.API = "glx"
         self.SUPPORTED = "glx"
         self.PROFILE = ""
 
@@ -18,7 +18,7 @@ class GeneratorData:
 
         self.INCLUDE_GUARD = "FRAMEWORK_SYSTEM_SRC_LINUX_GLXEXT_HPP"
 
-        self.HEADER_INCLUDE_FILES = ["GL/glx.h", "functional"]
+        self.HEADER_INCLUDE_FILES = ["X11/Xlib.h", "X11/Xutil.h", "GL/gl.h", "functional"]
         self.CPP_INCLUDE_FILES = ["type_traits", "mutex",
                                   "system/src/linux/glxext.hpp"]
 

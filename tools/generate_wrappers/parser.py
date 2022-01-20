@@ -101,6 +101,7 @@ class Feature:
         self.name = feature.get('name')
         self.api = feature.get('api')
         self.number = feature.get('number')
+        self.protect = feature.get('protect');
 
         self.require = []
         for r in feature.findall('require'):
@@ -115,6 +116,7 @@ class Extension:
     def __init__(self, extension):
         self.name = extension.get('name')
         self.supported = extension.get('supported').split('|')
+        self.protect = extension.get('protect');
 
         self.require = []
         for r in extension.findall('require'):

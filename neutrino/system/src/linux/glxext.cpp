@@ -8,6 +8,203 @@ namespace
 
 using namespace framework::system::details::glx;
 
+#pragma region GLX_VERSION_1_0
+
+using glXChooseVisualPtr       = std::add_pointer_t<decltype(glXChooseVisual)>;
+using glXCreateContextPtr      = std::add_pointer_t<decltype(glXCreateContext)>;
+using glXDestroyContextPtr     = std::add_pointer_t<decltype(glXDestroyContext)>;
+using glXMakeCurrentPtr        = std::add_pointer_t<decltype(glXMakeCurrent)>;
+using glXCopyContextPtr        = std::add_pointer_t<decltype(glXCopyContext)>;
+using glXSwapBuffersPtr        = std::add_pointer_t<decltype(glXSwapBuffers)>;
+using glXCreateGLXPixmapPtr    = std::add_pointer_t<decltype(glXCreateGLXPixmap)>;
+using glXDestroyGLXPixmapPtr   = std::add_pointer_t<decltype(glXDestroyGLXPixmap)>;
+using glXQueryExtensionPtr     = std::add_pointer_t<decltype(glXQueryExtension)>;
+using glXQueryVersionPtr       = std::add_pointer_t<decltype(glXQueryVersion)>;
+using glXIsDirectPtr           = std::add_pointer_t<decltype(glXIsDirect)>;
+using glXGetConfigPtr          = std::add_pointer_t<decltype(glXGetConfig)>;
+using glXGetCurrentContextPtr  = std::add_pointer_t<decltype(glXGetCurrentContext)>;
+using glXGetCurrentDrawablePtr = std::add_pointer_t<decltype(glXGetCurrentDrawable)>;
+using glXWaitGLPtr             = std::add_pointer_t<decltype(glXWaitGL)>;
+using glXWaitXPtr              = std::add_pointer_t<decltype(glXWaitX)>;
+using glXUseXFontPtr           = std::add_pointer_t<decltype(glXUseXFont)>;
+
+glXChooseVisualPtr glXChooseVisual_ptr             = nullptr;
+glXCreateContextPtr glXCreateContext_ptr           = nullptr;
+glXDestroyContextPtr glXDestroyContext_ptr         = nullptr;
+glXMakeCurrentPtr glXMakeCurrent_ptr               = nullptr;
+glXCopyContextPtr glXCopyContext_ptr               = nullptr;
+glXSwapBuffersPtr glXSwapBuffers_ptr               = nullptr;
+glXCreateGLXPixmapPtr glXCreateGLXPixmap_ptr       = nullptr;
+glXDestroyGLXPixmapPtr glXDestroyGLXPixmap_ptr     = nullptr;
+glXQueryExtensionPtr glXQueryExtension_ptr         = nullptr;
+glXQueryVersionPtr glXQueryVersion_ptr             = nullptr;
+glXIsDirectPtr glXIsDirect_ptr                     = nullptr;
+glXGetConfigPtr glXGetConfig_ptr                   = nullptr;
+glXGetCurrentContextPtr glXGetCurrentContext_ptr   = nullptr;
+glXGetCurrentDrawablePtr glXGetCurrentDrawable_ptr = nullptr;
+glXWaitGLPtr glXWaitGL_ptr                         = nullptr;
+glXWaitXPtr glXWaitX_ptr                           = nullptr;
+glXUseXFontPtr glXUseXFont_ptr                     = nullptr;
+
+bool init_glx_version_1_0([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+
+    // clang-format off
+    result = (glXChooseVisual_ptr = reinterpret_cast<glXChooseVisualPtr>(get_function("glXChooseVisual"))) == nullptr || result;
+    result = (glXCreateContext_ptr = reinterpret_cast<glXCreateContextPtr>(get_function("glXCreateContext"))) == nullptr || result;
+    result = (glXDestroyContext_ptr = reinterpret_cast<glXDestroyContextPtr>(get_function("glXDestroyContext"))) == nullptr || result;
+    result = (glXMakeCurrent_ptr = reinterpret_cast<glXMakeCurrentPtr>(get_function("glXMakeCurrent"))) == nullptr || result;
+    result = (glXCopyContext_ptr = reinterpret_cast<glXCopyContextPtr>(get_function("glXCopyContext"))) == nullptr || result;
+    result = (glXSwapBuffers_ptr = reinterpret_cast<glXSwapBuffersPtr>(get_function("glXSwapBuffers"))) == nullptr || result;
+    result = (glXCreateGLXPixmap_ptr = reinterpret_cast<glXCreateGLXPixmapPtr>(get_function("glXCreateGLXPixmap"))) == nullptr || result;
+    result = (glXDestroyGLXPixmap_ptr = reinterpret_cast<glXDestroyGLXPixmapPtr>(get_function("glXDestroyGLXPixmap"))) == nullptr || result;
+    result = (glXQueryExtension_ptr = reinterpret_cast<glXQueryExtensionPtr>(get_function("glXQueryExtension"))) == nullptr || result;
+    result = (glXQueryVersion_ptr = reinterpret_cast<glXQueryVersionPtr>(get_function("glXQueryVersion"))) == nullptr || result;
+    result = (glXIsDirect_ptr = reinterpret_cast<glXIsDirectPtr>(get_function("glXIsDirect"))) == nullptr || result;
+    result = (glXGetConfig_ptr = reinterpret_cast<glXGetConfigPtr>(get_function("glXGetConfig"))) == nullptr || result;
+    result = (glXGetCurrentContext_ptr = reinterpret_cast<glXGetCurrentContextPtr>(get_function("glXGetCurrentContext"))) == nullptr || result;
+    result = (glXGetCurrentDrawable_ptr = reinterpret_cast<glXGetCurrentDrawablePtr>(get_function("glXGetCurrentDrawable"))) == nullptr || result;
+    result = (glXWaitGL_ptr = reinterpret_cast<glXWaitGLPtr>(get_function("glXWaitGL"))) == nullptr || result;
+    result = (glXWaitX_ptr = reinterpret_cast<glXWaitXPtr>(get_function("glXWaitX"))) == nullptr || result;
+    result = (glXUseXFont_ptr = reinterpret_cast<glXUseXFontPtr>(get_function("glXUseXFont"))) == nullptr || result;
+    // clang-format on
+
+    return !result;
+}
+
+#pragma endregion
+
+#pragma region GLX_VERSION_1_1
+
+using glXQueryExtensionsStringPtr = std::add_pointer_t<decltype(glXQueryExtensionsString)>;
+using glXQueryServerStringPtr     = std::add_pointer_t<decltype(glXQueryServerString)>;
+using glXGetClientStringPtr       = std::add_pointer_t<decltype(glXGetClientString)>;
+
+glXQueryExtensionsStringPtr glXQueryExtensionsString_ptr = nullptr;
+glXQueryServerStringPtr glXQueryServerString_ptr         = nullptr;
+glXGetClientStringPtr glXGetClientString_ptr             = nullptr;
+
+bool init_glx_version_1_1([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+
+    // clang-format off
+    result = (glXQueryExtensionsString_ptr = reinterpret_cast<glXQueryExtensionsStringPtr>(get_function("glXQueryExtensionsString"))) == nullptr || result;
+    result = (glXQueryServerString_ptr = reinterpret_cast<glXQueryServerStringPtr>(get_function("glXQueryServerString"))) == nullptr || result;
+    result = (glXGetClientString_ptr = reinterpret_cast<glXGetClientStringPtr>(get_function("glXGetClientString"))) == nullptr || result;
+    // clang-format on
+
+    return !result;
+}
+
+#pragma endregion
+
+#pragma region GLX_VERSION_1_2
+
+using glXGetCurrentDisplayPtr = std::add_pointer_t<decltype(glXGetCurrentDisplay)>;
+
+glXGetCurrentDisplayPtr glXGetCurrentDisplay_ptr = nullptr;
+
+bool init_glx_version_1_2([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+
+    // clang-format off
+    result = (glXGetCurrentDisplay_ptr = reinterpret_cast<glXGetCurrentDisplayPtr>(get_function("glXGetCurrentDisplay"))) == nullptr || result;
+    // clang-format on
+
+    return !result;
+}
+
+#pragma endregion
+
+#pragma region GLX_VERSION_1_3
+
+using glXGetFBConfigsPtr           = std::add_pointer_t<decltype(glXGetFBConfigs)>;
+using glXChooseFBConfigPtr         = std::add_pointer_t<decltype(glXChooseFBConfig)>;
+using glXGetFBConfigAttribPtr      = std::add_pointer_t<decltype(glXGetFBConfigAttrib)>;
+using glXGetVisualFromFBConfigPtr  = std::add_pointer_t<decltype(glXGetVisualFromFBConfig)>;
+using glXCreateWindowPtr           = std::add_pointer_t<decltype(glXCreateWindow)>;
+using glXDestroyWindowPtr          = std::add_pointer_t<decltype(glXDestroyWindow)>;
+using glXCreatePixmapPtr           = std::add_pointer_t<decltype(glXCreatePixmap)>;
+using glXDestroyPixmapPtr          = std::add_pointer_t<decltype(glXDestroyPixmap)>;
+using glXCreatePbufferPtr          = std::add_pointer_t<decltype(glXCreatePbuffer)>;
+using glXDestroyPbufferPtr         = std::add_pointer_t<decltype(glXDestroyPbuffer)>;
+using glXQueryDrawablePtr          = std::add_pointer_t<decltype(glXQueryDrawable)>;
+using glXCreateNewContextPtr       = std::add_pointer_t<decltype(glXCreateNewContext)>;
+using glXMakeContextCurrentPtr     = std::add_pointer_t<decltype(glXMakeContextCurrent)>;
+using glXGetCurrentReadDrawablePtr = std::add_pointer_t<decltype(glXGetCurrentReadDrawable)>;
+using glXQueryContextPtr           = std::add_pointer_t<decltype(glXQueryContext)>;
+using glXSelectEventPtr            = std::add_pointer_t<decltype(glXSelectEvent)>;
+using glXGetSelectedEventPtr       = std::add_pointer_t<decltype(glXGetSelectedEvent)>;
+
+glXGetFBConfigsPtr glXGetFBConfigs_ptr                     = nullptr;
+glXChooseFBConfigPtr glXChooseFBConfig_ptr                 = nullptr;
+glXGetFBConfigAttribPtr glXGetFBConfigAttrib_ptr           = nullptr;
+glXGetVisualFromFBConfigPtr glXGetVisualFromFBConfig_ptr   = nullptr;
+glXCreateWindowPtr glXCreateWindow_ptr                     = nullptr;
+glXDestroyWindowPtr glXDestroyWindow_ptr                   = nullptr;
+glXCreatePixmapPtr glXCreatePixmap_ptr                     = nullptr;
+glXDestroyPixmapPtr glXDestroyPixmap_ptr                   = nullptr;
+glXCreatePbufferPtr glXCreatePbuffer_ptr                   = nullptr;
+glXDestroyPbufferPtr glXDestroyPbuffer_ptr                 = nullptr;
+glXQueryDrawablePtr glXQueryDrawable_ptr                   = nullptr;
+glXCreateNewContextPtr glXCreateNewContext_ptr             = nullptr;
+glXMakeContextCurrentPtr glXMakeContextCurrent_ptr         = nullptr;
+glXGetCurrentReadDrawablePtr glXGetCurrentReadDrawable_ptr = nullptr;
+glXQueryContextPtr glXQueryContext_ptr                     = nullptr;
+glXSelectEventPtr glXSelectEvent_ptr                       = nullptr;
+glXGetSelectedEventPtr glXGetSelectedEvent_ptr             = nullptr;
+
+bool init_glx_version_1_3([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+
+    // clang-format off
+    result = (glXGetFBConfigs_ptr = reinterpret_cast<glXGetFBConfigsPtr>(get_function("glXGetFBConfigs"))) == nullptr || result;
+    result = (glXChooseFBConfig_ptr = reinterpret_cast<glXChooseFBConfigPtr>(get_function("glXChooseFBConfig"))) == nullptr || result;
+    result = (glXGetFBConfigAttrib_ptr = reinterpret_cast<glXGetFBConfigAttribPtr>(get_function("glXGetFBConfigAttrib"))) == nullptr || result;
+    result = (glXGetVisualFromFBConfig_ptr = reinterpret_cast<glXGetVisualFromFBConfigPtr>(get_function("glXGetVisualFromFBConfig"))) == nullptr || result;
+    result = (glXCreateWindow_ptr = reinterpret_cast<glXCreateWindowPtr>(get_function("glXCreateWindow"))) == nullptr || result;
+    result = (glXDestroyWindow_ptr = reinterpret_cast<glXDestroyWindowPtr>(get_function("glXDestroyWindow"))) == nullptr || result;
+    result = (glXCreatePixmap_ptr = reinterpret_cast<glXCreatePixmapPtr>(get_function("glXCreatePixmap"))) == nullptr || result;
+    result = (glXDestroyPixmap_ptr = reinterpret_cast<glXDestroyPixmapPtr>(get_function("glXDestroyPixmap"))) == nullptr || result;
+    result = (glXCreatePbuffer_ptr = reinterpret_cast<glXCreatePbufferPtr>(get_function("glXCreatePbuffer"))) == nullptr || result;
+    result = (glXDestroyPbuffer_ptr = reinterpret_cast<glXDestroyPbufferPtr>(get_function("glXDestroyPbuffer"))) == nullptr || result;
+    result = (glXQueryDrawable_ptr = reinterpret_cast<glXQueryDrawablePtr>(get_function("glXQueryDrawable"))) == nullptr || result;
+    result = (glXCreateNewContext_ptr = reinterpret_cast<glXCreateNewContextPtr>(get_function("glXCreateNewContext"))) == nullptr || result;
+    result = (glXMakeContextCurrent_ptr = reinterpret_cast<glXMakeContextCurrentPtr>(get_function("glXMakeContextCurrent"))) == nullptr || result;
+    result = (glXGetCurrentReadDrawable_ptr = reinterpret_cast<glXGetCurrentReadDrawablePtr>(get_function("glXGetCurrentReadDrawable"))) == nullptr || result;
+    result = (glXQueryContext_ptr = reinterpret_cast<glXQueryContextPtr>(get_function("glXQueryContext"))) == nullptr || result;
+    result = (glXSelectEvent_ptr = reinterpret_cast<glXSelectEventPtr>(get_function("glXSelectEvent"))) == nullptr || result;
+    result = (glXGetSelectedEvent_ptr = reinterpret_cast<glXGetSelectedEventPtr>(get_function("glXGetSelectedEvent"))) == nullptr || result;
+    // clang-format on
+
+    return !result;
+}
+
+#pragma endregion
+
+#pragma region GLX_VERSION_1_4
+
+using glXGetProcAddressPtr = std::add_pointer_t<decltype(glXGetProcAddress)>;
+
+glXGetProcAddressPtr glXGetProcAddress_ptr = nullptr;
+
+bool init_glx_version_1_4([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+
+    // clang-format off
+    result = (glXGetProcAddress_ptr = reinterpret_cast<glXGetProcAddressPtr>(get_function("glXGetProcAddress"))) == nullptr || result;
+    // clang-format on
+
+    return !result;
+}
+
+#pragma endregion
+
 #pragma region GLX_3DFX_multisample
 
 bool init_glx_3dfx_multisample([[maybe_unused]] const GetFunction& get_function)
@@ -922,6 +1119,7 @@ bool init_glx_sgis_shared_multisample([[maybe_unused]] const GetFunction& get_fu
 
 #pragma region GLX_SGIX_dmbuffer
 
+#ifdef _DM_BUFFER_H_
 using glXAssociateDMPbufferSGIXPtr = std::add_pointer_t<decltype(glXAssociateDMPbufferSGIX)>;
 
 glXAssociateDMPbufferSGIXPtr glXAssociateDMPbufferSGIX_ptr = nullptr;
@@ -936,6 +1134,7 @@ bool init_glx_sgix_dmbuffer([[maybe_unused]] const GetFunction& get_function)
 
     return !result;
 }
+#endif // _DM_BUFFER_H_
 
 #pragma endregion
 
@@ -1118,6 +1317,7 @@ bool init_glx_sgix_video_resize([[maybe_unused]] const GetFunction& get_function
 
 #pragma region GLX_SGIX_video_source
 
+#ifdef _VL_H
 using glXCreateGLXVideoSourceSGIXPtr  = std::add_pointer_t<decltype(glXCreateGLXVideoSourceSGIX)>;
 using glXDestroyGLXVideoSourceSGIXPtr = std::add_pointer_t<decltype(glXDestroyGLXVideoSourceSGIX)>;
 
@@ -1135,6 +1335,7 @@ bool init_glx_sgix_video_source([[maybe_unused]] const GetFunction& get_function
 
     return !result;
 }
+#endif // _VL_H
 
 #pragma endregion
 
@@ -1179,12 +1380,18 @@ bool init_glx_nv_multigpu_context([[maybe_unused]] const GetFunction& get_functi
 
 std::once_flag init_flag;
 
+bool feature_cache[5] = {};
+
 bool extension_cache[68] = {};
 
 void init_features([[maybe_unused]] const GetFunction& get_function)
 {
     // clang-format off
-
+    feature_cache[static_cast<int>(Feature::GLX_VERSION_1_0)] = init_glx_version_1_0(get_function);
+    feature_cache[static_cast<int>(Feature::GLX_VERSION_1_1)] = init_glx_version_1_1(get_function);
+    feature_cache[static_cast<int>(Feature::GLX_VERSION_1_2)] = init_glx_version_1_2(get_function);
+    feature_cache[static_cast<int>(Feature::GLX_VERSION_1_3)] = init_glx_version_1_3(get_function);
+    feature_cache[static_cast<int>(Feature::GLX_VERSION_1_4)] = init_glx_version_1_4(get_function);
     // clang-format on
 }
 
@@ -1248,14 +1455,18 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
     extension_cache[static_cast<int>(Extension::GLX_SGIS_blended_overlay)] = init_glx_sgis_blended_overlay(get_function);
     extension_cache[static_cast<int>(Extension::GLX_SGIS_multisample)] = init_glx_sgis_multisample(get_function);
     extension_cache[static_cast<int>(Extension::GLX_SGIS_shared_multisample)] = init_glx_sgis_shared_multisample(get_function);
+#ifdef _DM_BUFFER_H_
     extension_cache[static_cast<int>(Extension::GLX_SGIX_dmbuffer)] = init_glx_sgix_dmbuffer(get_function);
+#endif // _DM_BUFFER_H_
     extension_cache[static_cast<int>(Extension::GLX_SGIX_fbconfig)] = init_glx_sgix_fbconfig(get_function);
     extension_cache[static_cast<int>(Extension::GLX_SGIX_hyperpipe)] = init_glx_sgix_hyperpipe(get_function);
     extension_cache[static_cast<int>(Extension::GLX_SGIX_pbuffer)] = init_glx_sgix_pbuffer(get_function);
     extension_cache[static_cast<int>(Extension::GLX_SGIX_swap_barrier)] = init_glx_sgix_swap_barrier(get_function);
     extension_cache[static_cast<int>(Extension::GLX_SGIX_swap_group)] = init_glx_sgix_swap_group(get_function);
     extension_cache[static_cast<int>(Extension::GLX_SGIX_video_resize)] = init_glx_sgix_video_resize(get_function);
+#ifdef _VL_H
     extension_cache[static_cast<int>(Extension::GLX_SGIX_video_source)] = init_glx_sgix_video_source(get_function);
+#endif // _VL_H
     extension_cache[static_cast<int>(Extension::GLX_SGIX_visual_select_group)] = init_glx_sgix_visual_select_group(get_function);
     extension_cache[static_cast<int>(Extension::GLX_SUN_get_transparent_index)] = init_glx_sun_get_transparent_index(get_function);
     extension_cache[static_cast<int>(Extension::GLX_NV_multigpu_context)] = init_glx_nv_multigpu_context(get_function);
@@ -1266,6 +1477,221 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
 
 namespace framework::system::details::glx
 {
+
+#pragma region GLX_VERSION_1_0
+
+XVisualInfo* glXChooseVisual(Display* dpy, int screen, int* attribList)
+{
+    return glXChooseVisual_ptr(dpy, screen, attribList);
+}
+
+GLXContext glXCreateContext(Display* dpy, XVisualInfo* vis, GLXContext shareList, Bool direct)
+{
+    return glXCreateContext_ptr(dpy, vis, shareList, direct);
+}
+
+void glXDestroyContext(Display* dpy, GLXContext ctx)
+{
+    glXDestroyContext_ptr(dpy, ctx);
+}
+
+Bool glXMakeCurrent(Display* dpy, GLXDrawable drawable, GLXContext ctx)
+{
+    return glXMakeCurrent_ptr(dpy, drawable, ctx);
+}
+
+void glXCopyContext(Display* dpy, GLXContext src, GLXContext dst, unsigned long mask)
+{
+    glXCopyContext_ptr(dpy, src, dst, mask);
+}
+
+void glXSwapBuffers(Display* dpy, GLXDrawable drawable)
+{
+    glXSwapBuffers_ptr(dpy, drawable);
+}
+
+GLXPixmap glXCreateGLXPixmap(Display* dpy, XVisualInfo* visual, Pixmap pixmap)
+{
+    return glXCreateGLXPixmap_ptr(dpy, visual, pixmap);
+}
+
+void glXDestroyGLXPixmap(Display* dpy, GLXPixmap pixmap)
+{
+    glXDestroyGLXPixmap_ptr(dpy, pixmap);
+}
+
+Bool glXQueryExtension(Display* dpy, int* errorb, int* event)
+{
+    return glXQueryExtension_ptr(dpy, errorb, event);
+}
+
+Bool glXQueryVersion(Display* dpy, int* maj, int* min)
+{
+    return glXQueryVersion_ptr(dpy, maj, min);
+}
+
+Bool glXIsDirect(Display* dpy, GLXContext ctx)
+{
+    return glXIsDirect_ptr(dpy, ctx);
+}
+
+int glXGetConfig(Display* dpy, XVisualInfo* visual, int attrib, int* value)
+{
+    return glXGetConfig_ptr(dpy, visual, attrib, value);
+}
+
+GLXContext glXGetCurrentContext()
+{
+    return glXGetCurrentContext_ptr();
+}
+
+GLXDrawable glXGetCurrentDrawable()
+{
+    return glXGetCurrentDrawable_ptr();
+}
+
+void glXWaitGL()
+{
+    glXWaitGL_ptr();
+}
+
+void glXWaitX()
+{
+    glXWaitX_ptr();
+}
+
+void glXUseXFont(Font font, int first, int count, int list)
+{
+    glXUseXFont_ptr(font, first, count, list);
+}
+
+#pragma endregion
+
+#pragma region GLX_VERSION_1_1
+
+const char* glXQueryExtensionsString(Display* dpy, int screen)
+{
+    return glXQueryExtensionsString_ptr(dpy, screen);
+}
+
+const char* glXQueryServerString(Display* dpy, int screen, int name)
+{
+    return glXQueryServerString_ptr(dpy, screen, name);
+}
+
+const char* glXGetClientString(Display* dpy, int name)
+{
+    return glXGetClientString_ptr(dpy, name);
+}
+
+#pragma endregion
+
+#pragma region GLX_VERSION_1_2
+
+Display* glXGetCurrentDisplay()
+{
+    return glXGetCurrentDisplay_ptr();
+}
+
+#pragma endregion
+
+#pragma region GLX_VERSION_1_3
+
+GLXFBConfig* glXGetFBConfigs(Display* dpy, int screen, int* nelements)
+{
+    return glXGetFBConfigs_ptr(dpy, screen, nelements);
+}
+
+GLXFBConfig* glXChooseFBConfig(Display* dpy, int screen, const int* attrib_list, int* nelements)
+{
+    return glXChooseFBConfig_ptr(dpy, screen, attrib_list, nelements);
+}
+
+int glXGetFBConfigAttrib(Display* dpy, GLXFBConfig config, int attribute, int* value)
+{
+    return glXGetFBConfigAttrib_ptr(dpy, config, attribute, value);
+}
+
+XVisualInfo* glXGetVisualFromFBConfig(Display* dpy, GLXFBConfig config)
+{
+    return glXGetVisualFromFBConfig_ptr(dpy, config);
+}
+
+GLXWindow glXCreateWindow(Display* dpy, GLXFBConfig config, Window win, const int* attrib_list)
+{
+    return glXCreateWindow_ptr(dpy, config, win, attrib_list);
+}
+
+void glXDestroyWindow(Display* dpy, GLXWindow win)
+{
+    glXDestroyWindow_ptr(dpy, win);
+}
+
+GLXPixmap glXCreatePixmap(Display* dpy, GLXFBConfig config, Pixmap pixmap, const int* attrib_list)
+{
+    return glXCreatePixmap_ptr(dpy, config, pixmap, attrib_list);
+}
+
+void glXDestroyPixmap(Display* dpy, GLXPixmap pixmap)
+{
+    glXDestroyPixmap_ptr(dpy, pixmap);
+}
+
+GLXPbuffer glXCreatePbuffer(Display* dpy, GLXFBConfig config, const int* attrib_list)
+{
+    return glXCreatePbuffer_ptr(dpy, config, attrib_list);
+}
+
+void glXDestroyPbuffer(Display* dpy, GLXPbuffer pbuf)
+{
+    glXDestroyPbuffer_ptr(dpy, pbuf);
+}
+
+void glXQueryDrawable(Display* dpy, GLXDrawable draw, int attribute, unsigned int* value)
+{
+    glXQueryDrawable_ptr(dpy, draw, attribute, value);
+}
+
+GLXContext glXCreateNewContext(Display* dpy, GLXFBConfig config, int render_type, GLXContext share_list, Bool direct)
+{
+    return glXCreateNewContext_ptr(dpy, config, render_type, share_list, direct);
+}
+
+Bool glXMakeContextCurrent(Display* dpy, GLXDrawable draw, GLXDrawable read, GLXContext ctx)
+{
+    return glXMakeContextCurrent_ptr(dpy, draw, read, ctx);
+}
+
+GLXDrawable glXGetCurrentReadDrawable()
+{
+    return glXGetCurrentReadDrawable_ptr();
+}
+
+int glXQueryContext(Display* dpy, GLXContext ctx, int attribute, int* value)
+{
+    return glXQueryContext_ptr(dpy, ctx, attribute, value);
+}
+
+void glXSelectEvent(Display* dpy, GLXDrawable draw, unsigned long event_mask)
+{
+    glXSelectEvent_ptr(dpy, draw, event_mask);
+}
+
+void glXGetSelectedEvent(Display* dpy, GLXDrawable draw, unsigned long* event_mask)
+{
+    glXGetSelectedEvent_ptr(dpy, draw, event_mask);
+}
+
+#pragma endregion
+
+#pragma region GLX_VERSION_1_4
+
+__GLXextFuncPtr glXGetProcAddress(const GLubyte* procName)
+{
+    return glXGetProcAddress_ptr(procName);
+}
+
+#pragma endregion
 
 #pragma region GLX_3DFX_multisample
 
@@ -1894,10 +2320,12 @@ int glXWaitVideoSyncSGI(int divisor, int remainder, unsigned int* count)
 
 #pragma region GLX_SGIX_dmbuffer
 
+#ifdef _DM_BUFFER_H_
 Bool glXAssociateDMPbufferSGIX(Display* dpy, GLXPbufferSGIX pbuffer, DMparams* params, DMbuffer dmbuffer)
 {
     return glXAssociateDMPbufferSGIX_ptr(dpy, pbuffer, params, dmbuffer);
 }
+#endif // _DM_BUFFER_H_
 
 #pragma endregion
 
@@ -2075,6 +2503,7 @@ int glXChannelRectSyncSGIX(Display* display, int screen, int channel, GLenum syn
 
 #pragma region GLX_SGIX_video_source
 
+#ifdef _VL_H
 GLXVideoSourceSGIX glXCreateGLXVideoSourceSGIX(Display* display,
                                                int screen,
                                                VLServer server,
@@ -2089,6 +2518,7 @@ void glXDestroyGLXVideoSourceSGIX(Display* dpy, GLXVideoSourceSGIX glxvideosourc
 {
     glXDestroyGLXVideoSourceSGIX_ptr(dpy, glxvideosource);
 }
+#endif // _VL_H
 
 #pragma endregion
 
@@ -2115,6 +2545,11 @@ void init_glx(const GetFunction& get_function)
         init_features(get_function);
         init_extensions(get_function);
     });
+}
+
+bool is_supported(Feature feature)
+{
+    return feature_cache[static_cast<int>(feature)];
 }
 
 bool is_supported(Extension extension)
