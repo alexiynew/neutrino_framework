@@ -1,42 +1,25 @@
 #!/usr/bin/python3
 """Generates extension wrapper for glx functions."""
 
-SOURCE = "./dependencies/GL/glxext.h"
+class GeneratorData:
+    def __init__(self):
+        self.XML = "glx.xml"
 
-DESTHPP = "./neutrino/gl/inc/glxext_wrapper.hpp"
-DESTCPP = "./neutrino/gl/src/glxext_wrapper.cpp"
+        self.DESTHPP = "./neutrino/system/src/linux/glxext.hpp"
+        self.DESTCPP = "./neutrino/system/src/linux/glxext.cpp"
 
-GROUP_REGEX = r'#ifndef\s([\w\d_]+)\s#define\s\1\s1\s(.*?)#endif\s/\*\s\1\s\*/'
-TYPE_REGEX = r'typedef.*\(\s?\*(PFN.*PROC)\).*;'
-NAME_REGEX = r'.*(glX[\w\d_]+)\s?\(.*;'
+        self.API = ""
+        self.SUPPORTED = "glx"
+        self.PROFILE = ""
 
-EXCLUDE = ["PFNGLXGETPROCADDRESSARBPROC", "PFNGLXASSOCIATEDMPBUFFERSGIXPROC",
-           "PFNGLXCREATEGLXVIDEOSOURCESGIXPROC", "PFNGLXDESTROYGLXVIDEOSOURCESGIXPROC"]
+        self.NAMESPACE = "framework::system::details::glx"
 
-HEADER_FILE = "gl/inc/glxext_wrapper.hpp"
+        self.TYPEDEFS = ""
 
-BRIEF = "GLX extension functions wrapper."
-DATE = "17.09.2018"
+        self.INCLUDE_GUARD = "FRAMEWORK_SYSTEM_SRC_LINUX_GLXEXT_HPP"
 
-NAMESPACE = "framework::gl::glx"
+        self.HEADER_INCLUDE_FILES = ["GL/glx.h", "functional"]
+        self.CPP_INCLUDE_FILES = ["type_traits", "mutex",
+                                  "system/src/linux/glxext.hpp"]
 
-INCLUDE_GUARD = "FRAMEWORK_GL_INC_GLXEXT_WRAPPER_HPP"
-
-INCLUDE_FILES = ["GL/glx.h"]
-
-INIT_FUNCTION_NAME = "init_glx_functions"
-
-data = dict(source=SOURCE,
-            desthpp=DESTHPP,
-            destcpp=DESTCPP,
-            group_regex=GROUP_REGEX,
-            type_regex=TYPE_REGEX,
-            name_regex=NAME_REGEX,
-            exclude=EXCLUDE,
-            header_file=HEADER_FILE,
-            brief=BRIEF,
-            date=DATE,
-            namespace=NAMESPACE,
-            include_guard=INCLUDE_GUARD,
-            include_files=INCLUDE_FILES,
-            init_function_name=INIT_FUNCTION_NAME)
+        self.INIT_FUNCTION_NAME = "init_glx"

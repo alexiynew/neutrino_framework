@@ -4,7 +4,6 @@
 
 class GeneratorData:
     def __init__(self):
-        self.URL = "https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml"
         self.XML = "wgl.xml"
 
         self.DESTHPP = "./neutrino/system/src/windows/wglext.hpp"
@@ -13,9 +12,6 @@ class GeneratorData:
         self.API = ""
         self.SUPPORTED = "wgl"
         self.PROFILE = ""
-
-        self.BRIEF = "WGL extension functions wrapper."
-        self.DATE = "17.09.2018"
 
         self.NAMESPACE = "framework::system::details::wgl"
 

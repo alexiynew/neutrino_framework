@@ -4,7 +4,6 @@
 
 class GeneratorData:
     def __init__(self):
-        self.URL = "https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/master/xml"
         self.XML = "gl.xml"
 
         self.DESTHPP = "./neutrino/graphics/src/opengl/opengl.hpp"
@@ -13,9 +12,6 @@ class GeneratorData:
         self.API = "gl"
         self.SUPPORTED = "glcore"
         self.PROFILE = "core"
-
-        self.BRIEF = "OpneGL functions wrapper."
-        self.DATE = "17.09.2018"
 
         self.NAMESPACE = "framework::graphics::details::opengl"
 

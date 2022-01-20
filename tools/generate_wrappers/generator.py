@@ -264,9 +264,7 @@ class Generator:
                                     for f in self.extensions)
 
         hpp = open(self.data.DESTHPP, "w")
-        hpp.write(t.substitute(brief=self.data.BRIEF,
-                               date=self.data.DATE,
-                               include_guard=self.data.INCLUDE_GUARD,
+        hpp.write(t.substitute(include_guard=self.data.INCLUDE_GUARD,
                                namespace=self.data.NAMESPACE,
                                init_function_name=self.data.INIT_FUNCTION_NAME,
                                includes=includes,
@@ -374,9 +372,7 @@ class Generator:
         extension_definitions = "\n".join(
             group_definition(g) for g in self.extensions)
 
-        d = dict(brief=self.data.BRIEF,
-                 date=self.data.DATE,
-                 namespace=self.data.NAMESPACE,
+        d = dict(namespace=self.data.NAMESPACE,
                  init_function_name=self.data.INIT_FUNCTION_NAME,
                  cpp_includes=cpp_includes,
                  feture_declarations=feture_declarations,

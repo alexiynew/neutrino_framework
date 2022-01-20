@@ -1,4 +1,6 @@
 set_sources(PRIVATE_SOURCES
+    glxext.cpp
+    glxext.hpp
     x11_glx_context.cpp
     x11_glx_context.hpp
     x11_keyboard.cpp

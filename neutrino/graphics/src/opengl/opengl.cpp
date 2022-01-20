@@ -5257,11 +5257,46 @@ bool init_gl_ext_texture_srgb_r8([[maybe_unused]] const GetFunction& get_functio
 
 #pragma endregion
 
+#pragma region GL_EXT_texture_sRGB_RG8
+
+bool init_gl_ext_texture_srgb_rg8([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+    return !result;
+}
+
+#pragma endregion
+
 #pragma region GL_EXT_texture_sRGB_decode
 
 bool init_gl_ext_texture_srgb_decode([[maybe_unused]] const GetFunction& get_function)
 {
     bool result = false;
+    return !result;
+}
+
+#pragma endregion
+
+#pragma region GL_EXT_texture_storage
+
+using glTexStorage1DEXTPtr = std::add_pointer_t<decltype(glTexStorage1DEXT)>;
+using glTexStorage2DEXTPtr = std::add_pointer_t<decltype(glTexStorage2DEXT)>;
+using glTexStorage3DEXTPtr = std::add_pointer_t<decltype(glTexStorage3DEXT)>;
+
+glTexStorage1DEXTPtr glTexStorage1DEXT_ptr = nullptr;
+glTexStorage2DEXTPtr glTexStorage2DEXT_ptr = nullptr;
+glTexStorage3DEXTPtr glTexStorage3DEXT_ptr = nullptr;
+
+bool init_gl_ext_texture_storage([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+
+    // clang-format off
+    result = (glTexStorage1DEXT_ptr = reinterpret_cast<glTexStorage1DEXTPtr>(get_function("glTexStorage1DEXT"))) == nullptr || result;
+    result = (glTexStorage2DEXT_ptr = reinterpret_cast<glTexStorage2DEXTPtr>(get_function("glTexStorage2DEXT"))) == nullptr || result;
+    result = (glTexStorage3DEXT_ptr = reinterpret_cast<glTexStorage3DEXTPtr>(get_function("glTexStorage3DEXT"))) == nullptr || result;
+    // clang-format on
+
     return !result;
 }
 
@@ -5569,6 +5604,16 @@ bool init_gl_khr_parallel_shader_compile([[maybe_unused]] const GetFunction& get
 
 #pragma endregion
 
+#pragma region GL_MESA_framebuffer_flip_x
+
+bool init_gl_mesa_framebuffer_flip_x([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+    return !result;
+}
+
+#pragma endregion
+
 #pragma region GL_MESA_framebuffer_flip_y
 
 using glFramebufferParameteriMESAPtr     = std::add_pointer_t<decltype(glFramebufferParameteriMESA)>;
@@ -5586,6 +5631,16 @@ bool init_gl_mesa_framebuffer_flip_y([[maybe_unused]] const GetFunction& get_fun
     result = (glGetFramebufferParameterivMESA_ptr = reinterpret_cast<glGetFramebufferParameterivMESAPtr>(get_function("glGetFramebufferParameterivMESA"))) == nullptr || result;
     // clang-format on
 
+    return !result;
+}
+
+#pragma endregion
+
+#pragma region GL_MESA_framebuffer_swap_xy
+
+bool init_gl_mesa_framebuffer_swap_xy([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
     return !result;
 }
 
@@ -6257,6 +6312,34 @@ bool init_gl_nv_memory_attachment([[maybe_unused]] const GetFunction& get_functi
 
 #pragma endregion
 
+#pragma region GL_NV_memory_object_sparse
+
+using glBufferPageCommitmentMemNVPtr      = std::add_pointer_t<decltype(glBufferPageCommitmentMemNV)>;
+using glTexPageCommitmentMemNVPtr         = std::add_pointer_t<decltype(glTexPageCommitmentMemNV)>;
+using glNamedBufferPageCommitmentMemNVPtr = std::add_pointer_t<decltype(glNamedBufferPageCommitmentMemNV)>;
+using glTexturePageCommitmentMemNVPtr     = std::add_pointer_t<decltype(glTexturePageCommitmentMemNV)>;
+
+glBufferPageCommitmentMemNVPtr glBufferPageCommitmentMemNV_ptr           = nullptr;
+glTexPageCommitmentMemNVPtr glTexPageCommitmentMemNV_ptr                 = nullptr;
+glNamedBufferPageCommitmentMemNVPtr glNamedBufferPageCommitmentMemNV_ptr = nullptr;
+glTexturePageCommitmentMemNVPtr glTexturePageCommitmentMemNV_ptr         = nullptr;
+
+bool init_gl_nv_memory_object_sparse([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+
+    // clang-format off
+    result = (glBufferPageCommitmentMemNV_ptr = reinterpret_cast<glBufferPageCommitmentMemNVPtr>(get_function("glBufferPageCommitmentMemNV"))) == nullptr || result;
+    result = (glTexPageCommitmentMemNV_ptr = reinterpret_cast<glTexPageCommitmentMemNVPtr>(get_function("glTexPageCommitmentMemNV"))) == nullptr || result;
+    result = (glNamedBufferPageCommitmentMemNV_ptr = reinterpret_cast<glNamedBufferPageCommitmentMemNVPtr>(get_function("glNamedBufferPageCommitmentMemNV"))) == nullptr || result;
+    result = (glTexturePageCommitmentMemNV_ptr = reinterpret_cast<glTexturePageCommitmentMemNVPtr>(get_function("glTexturePageCommitmentMemNV"))) == nullptr || result;
+    // clang-format on
+
+    return !result;
+}
+
+#pragma endregion
+
 #pragma region GL_NV_mesh_shader
 
 using glDrawMeshTasksNVPtr                   = std::add_pointer_t<decltype(glDrawMeshTasksNV)>;
@@ -6475,6 +6558,16 @@ bool init_gl_nv_path_rendering([[maybe_unused]] const GetFunction& get_function)
 #pragma region GL_NV_path_rendering_shared_edge
 
 bool init_gl_nv_path_rendering_shared_edge([[maybe_unused]] const GetFunction& get_function)
+{
+    bool result = false;
+    return !result;
+}
+
+#pragma endregion
+
+#pragma region GL_NV_primitive_shading_rate
+
+bool init_gl_nv_primitive_shading_rate([[maybe_unused]] const GetFunction& get_function)
 {
     bool result = false;
     return !result;
@@ -6990,7 +7083,7 @@ std::once_flag init_flag;
 
 bool feature_cache[19] = {};
 
-bool extension_cache[236] = {};
+bool extension_cache[242] = {};
 
 void init_features([[maybe_unused]] const GetFunction& get_function)
 {
@@ -7180,7 +7273,9 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
     extension_cache[static_cast<int>(Extension::GL_EXT_texture_compression_s3tc)] = init_gl_ext_texture_compression_s3tc(get_function);
     extension_cache[static_cast<int>(Extension::GL_EXT_texture_filter_minmax)] = init_gl_ext_texture_filter_minmax(get_function);
     extension_cache[static_cast<int>(Extension::GL_EXT_texture_sRGB_R8)] = init_gl_ext_texture_srgb_r8(get_function);
+    extension_cache[static_cast<int>(Extension::GL_EXT_texture_sRGB_RG8)] = init_gl_ext_texture_srgb_rg8(get_function);
     extension_cache[static_cast<int>(Extension::GL_EXT_texture_sRGB_decode)] = init_gl_ext_texture_srgb_decode(get_function);
+    extension_cache[static_cast<int>(Extension::GL_EXT_texture_storage)] = init_gl_ext_texture_storage(get_function);
     extension_cache[static_cast<int>(Extension::GL_EXT_window_rectangles)] = init_gl_ext_window_rectangles(get_function);
     extension_cache[static_cast<int>(Extension::GL_INTEL_conservative_rasterization)] = init_gl_intel_conservative_rasterization(get_function);
     extension_cache[static_cast<int>(Extension::GL_INTEL_framebuffer_CMAA)] = init_gl_intel_framebuffer_cmaa(get_function);
@@ -7198,7 +7293,9 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
     extension_cache[static_cast<int>(Extension::GL_KHR_texture_compression_astc_ldr)] = init_gl_khr_texture_compression_astc_ldr(get_function);
     extension_cache[static_cast<int>(Extension::GL_KHR_texture_compression_astc_sliced_3d)] = init_gl_khr_texture_compression_astc_sliced_3d(get_function);
     extension_cache[static_cast<int>(Extension::GL_KHR_parallel_shader_compile)] = init_gl_khr_parallel_shader_compile(get_function);
+    extension_cache[static_cast<int>(Extension::GL_MESA_framebuffer_flip_x)] = init_gl_mesa_framebuffer_flip_x(get_function);
     extension_cache[static_cast<int>(Extension::GL_MESA_framebuffer_flip_y)] = init_gl_mesa_framebuffer_flip_y(get_function);
+    extension_cache[static_cast<int>(Extension::GL_MESA_framebuffer_swap_xy)] = init_gl_mesa_framebuffer_swap_xy(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_bindless_multi_draw_indirect)] = init_gl_nv_bindless_multi_draw_indirect(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_bindless_multi_draw_indirect_count)] = init_gl_nv_bindless_multi_draw_indirect_count(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_bindless_texture)] = init_gl_nv_bindless_texture(get_function);
@@ -7226,9 +7323,11 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
     extension_cache[static_cast<int>(Extension::GL_NV_gpu_shader5)] = init_gl_nv_gpu_shader5(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_internalformat_sample_query)] = init_gl_nv_internalformat_sample_query(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_memory_attachment)] = init_gl_nv_memory_attachment(get_function);
+    extension_cache[static_cast<int>(Extension::GL_NV_memory_object_sparse)] = init_gl_nv_memory_object_sparse(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_mesh_shader)] = init_gl_nv_mesh_shader(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_path_rendering)] = init_gl_nv_path_rendering(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_path_rendering_shared_edge)] = init_gl_nv_path_rendering_shared_edge(get_function);
+    extension_cache[static_cast<int>(Extension::GL_NV_primitive_shading_rate)] = init_gl_nv_primitive_shading_rate(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_representative_fragment_test)] = init_gl_nv_representative_fragment_test(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_sample_locations)] = init_gl_nv_sample_locations(get_function);
     extension_cache[static_cast<int>(Extension::GL_NV_sample_mask_override_coverage)] = init_gl_nv_sample_mask_override_coverage(get_function);
@@ -9488,9 +9587,9 @@ void glReleaseShaderCompiler()
     glReleaseShaderCompiler_ptr();
 }
 
-void glShaderBinary(GLsizei count, const GLuint* shaders, GLenum binaryformat, const void* binary, GLsizei length)
+void glShaderBinary(GLsizei count, const GLuint* shaders, GLenum binaryFormat, const void* binary, GLsizei length)
 {
-    glShaderBinary_ptr(count, shaders, binaryformat, binary, length);
+    glShaderBinary_ptr(count, shaders, binaryFormat, binary, length);
 }
 
 void glGetShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype, GLint* range, GLint* precision)
@@ -14506,7 +14605,35 @@ void glFramebufferFetchBarrierEXT()
 
 #pragma endregion
 
+#pragma region GL_EXT_texture_sRGB_RG8
+
+#pragma endregion
+
 #pragma region GL_EXT_texture_sRGB_decode
+
+#pragma endregion
+
+#pragma region GL_EXT_texture_storage
+
+void glTexStorage1DEXT(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width)
+{
+    glTexStorage1DEXT_ptr(target, levels, internalformat, width);
+}
+
+void glTexStorage2DEXT(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
+{
+    glTexStorage2DEXT_ptr(target, levels, internalformat, width, height);
+}
+
+void glTexStorage3DEXT(GLenum target,
+                       GLsizei levels,
+                       GLenum internalformat,
+                       GLsizei width,
+                       GLsizei height,
+                       GLsizei depth)
+{
+    glTexStorage3DEXT_ptr(target, levels, internalformat, width, height, depth);
+}
 
 #pragma endregion
 
@@ -14773,6 +14900,10 @@ void glMaxShaderCompilerThreadsKHR(GLuint count)
 
 #pragma endregion
 
+#pragma region GL_MESA_framebuffer_flip_x
+
+#pragma endregion
+
 #pragma region GL_MESA_framebuffer_flip_y
 
 void glFramebufferParameteriMESA(GLenum target, GLenum pname, GLint param)
@@ -14784,6 +14915,10 @@ void glGetFramebufferParameterivMESA(GLenum target, GLenum pname, GLint* params)
 {
     glGetFramebufferParameterivMESA_ptr(target, pname, params);
 }
+
+#pragma endregion
+
+#pragma region GL_MESA_framebuffer_swap_xy
 
 #pragma endregion
 
@@ -15431,6 +15566,84 @@ void glNamedBufferAttachMemoryNV(GLuint buffer, GLuint memory, GLuint64 offset)
 
 #pragma endregion
 
+#pragma region GL_NV_memory_object_sparse
+
+void glBufferPageCommitmentMemNV(GLenum target,
+                                 GLintptr offset,
+                                 GLsizeiptr size,
+                                 GLuint memory,
+                                 GLuint64 memOffset,
+                                 GLboolean commit)
+{
+    glBufferPageCommitmentMemNV_ptr(target, offset, size, memory, memOffset, commit);
+}
+
+void glTexPageCommitmentMemNV(GLenum target,
+                              GLint layer,
+                              GLint level,
+                              GLint xoffset,
+                              GLint yoffset,
+                              GLint zoffset,
+                              GLsizei width,
+                              GLsizei height,
+                              GLsizei depth,
+                              GLuint memory,
+                              GLuint64 offset,
+                              GLboolean commit)
+{
+    glTexPageCommitmentMemNV_ptr(target,
+                                 layer,
+                                 level,
+                                 xoffset,
+                                 yoffset,
+                                 zoffset,
+                                 width,
+                                 height,
+                                 depth,
+                                 memory,
+                                 offset,
+                                 commit);
+}
+
+void glNamedBufferPageCommitmentMemNV(GLuint buffer,
+                                      GLintptr offset,
+                                      GLsizeiptr size,
+                                      GLuint memory,
+                                      GLuint64 memOffset,
+                                      GLboolean commit)
+{
+    glNamedBufferPageCommitmentMemNV_ptr(buffer, offset, size, memory, memOffset, commit);
+}
+
+void glTexturePageCommitmentMemNV(GLuint texture,
+                                  GLint layer,
+                                  GLint level,
+                                  GLint xoffset,
+                                  GLint yoffset,
+                                  GLint zoffset,
+                                  GLsizei width,
+                                  GLsizei height,
+                                  GLsizei depth,
+                                  GLuint memory,
+                                  GLuint64 offset,
+                                  GLboolean commit)
+{
+    glTexturePageCommitmentMemNV_ptr(texture,
+                                     layer,
+                                     level,
+                                     xoffset,
+                                     yoffset,
+                                     zoffset,
+                                     width,
+                                     height,
+                                     depth,
+                                     memory,
+                                     offset,
+                                     commit);
+}
+
+#pragma endregion
+
 #pragma region GL_NV_mesh_shader
 
 void glDrawMeshTasksNV(GLuint first, GLuint count)
@@ -15873,7 +16086,7 @@ GLenum glPathGlyphIndexRangeNV(GLenum fontTarget,
                                GLbitfield fontStyle,
                                GLuint pathParameterTemplate,
                                GLfloat emScale,
-                               GLuint baseAndCount[2])
+                               GLuint* baseAndCount)
 {
     return glPathGlyphIndexRangeNV_ptr(fontTarget, fontName, fontStyle, pathParameterTemplate, emScale, baseAndCount);
 }
@@ -15942,6 +16155,10 @@ void glGetProgramResourcefvNV(GLuint program,
 #pragma endregion
 
 #pragma region GL_NV_path_rendering_shared_edge
+
+#pragma endregion
+
+#pragma region GL_NV_primitive_shading_rate
 
 #pragma endregion
 
