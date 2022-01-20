@@ -6,15 +6,13 @@
 #include <graphics/renderer.hpp>
 #include <system/context.hpp>
 
+#include <graphics/src/render/opengl/opengl_mesh.hpp>
+#include <graphics/src/render/opengl/opengl_shader.hpp>
+#include <graphics/src/render/opengl/opengl_texture.hpp>
 #include <graphics/src/render/renderer_impl.hpp>
 
 namespace framework::graphics
 {
-struct Uniforms;
-class OpenglMesh;
-class OpenglShader;
-class OpenglTexture;
-
 class OpenglRenderer final : public RendererImpl
 {
 public:

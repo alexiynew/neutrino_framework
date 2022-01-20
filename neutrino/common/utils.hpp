@@ -154,7 +154,7 @@ inline T big_endian_value(const Iterator begin, const Iterator end)
         using std::uint16_t;
 
         uint16_t v = 0;
-        v += static_cast<uint8_t>(*begin) << 8;
+        v += static_cast<uint8_t>(*begin << 8);
         v += static_cast<uint8_t>(*next(begin));
         return static_cast<T>(v);
     } else if constexpr (size == 4) {
@@ -224,7 +224,7 @@ inline T little_endian_value(const Iterator begin, const Iterator end)
 
         uint16_t v = 0;
         v += static_cast<uint8_t>(*begin);
-        v += static_cast<uint8_t>(*next(begin)) << 8;
+        v += static_cast<uint8_t>(*next(begin) << 8);
         return static_cast<T>(v);
     } else if constexpr (size == 4) {
         using std::uint32_t;

@@ -15,7 +15,6 @@ class Mesh;
 class RendererImpl;
 class Shader;
 class Texture;
-struct Uniforms;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup graphics_module
