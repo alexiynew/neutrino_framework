@@ -269,17 +269,17 @@ inline constexpr Colorf::ColorTemplate(ValueType r_value,
 {}
 
 inline constexpr Colorf::ColorTemplate(std::uint16_t value) noexcept
-    : r(((value & 0xF800) >> 11) / 255.0f)
-    , g(((value & 0x7E0) >> 5) / 255.0f)
-    , b((value & 0x1F) / 255.0f)
+    : r(static_cast<ValueType>((value & 0xF800) >> 11) / 255.0f)
+    , g(static_cast<ValueType>((value & 0x7E0) >> 5) / 255.0f)
+    , b(static_cast<ValueType>(value & 0x1F) / 255.0f)
     , a(default_alpha)
 {}
 
 inline constexpr Colorf::ColorTemplate(std::uint32_t value) noexcept
-    : r(((value & 0xFF000000) >> 24) / 255.0f)
-    , g(((value & 0xFF0000) >> 16) / 255.0f)
-    , b(((value & 0xFF00) >> 8) / 255.0f)
-    , a((value & 0xFF) / 255.0f)
+    : r(static_cast<ValueType>((value & 0xFF000000) >> 24) / 255.0f)
+    , g(static_cast<ValueType>((value & 0xFF0000) >> 16) / 255.0f)
+    , b(static_cast<ValueType>((value & 0xFF00) >> 8) / 255.0f)
+    , a(static_cast<ValueType>(value & 0xFF) / 255.0f)
 {}
 
 inline constexpr Colorf::ColorTemplate(const ColorTemplate<std::uint8_t>& other) noexcept
