@@ -7,7 +7,7 @@
 
 namespace framework::system::details
 {
-class Win32WglContext : public Context
+class Win32WglContext final : public Context
 {
 public:
     Win32WglContext(HWND window, const ContextSettings& settings);

@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <vector>
 
 #include <system/src/windows/wglext.hpp>
 #include <system/src/windows/win32_application.hpp>
