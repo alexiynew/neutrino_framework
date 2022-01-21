@@ -474,7 +474,7 @@ const Context& Win32Window::context() const
         throw std::runtime_error("Graphic context was not created.");
     }
 
-    return *(m_context.get());
+    return *m_context;
 }
 
 Context& Win32Window::context()
@@ -483,7 +483,7 @@ Context& Win32Window::context()
         throw std::runtime_error("Graphic context was not created.");
     }
 
-    return *(m_context.get());
+    return *m_context;
 }
 
 #pragma endregion

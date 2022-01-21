@@ -75,6 +75,8 @@ public:
     void set_window_instance(const Window* window);
 
 protected:
+    static std::string application_name;
+
     void on_show() const;
     void on_hide() const;
     void on_close() const;
@@ -92,7 +94,6 @@ protected:
     void on_mouse_leave() const;
 
 private:
-    static std::string application_name;
     const Window* m_window_interface = nullptr;
 };
 
