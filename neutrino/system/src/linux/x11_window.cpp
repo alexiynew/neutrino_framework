@@ -18,10 +18,6 @@
 
 namespace
 {
-using ::framework::int32;
-using ::framework::int64;
-using ::framework::uint8;
-
 const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
 const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
 const char* const net_wm_state_fullscreen_atom_name     = u8"_NET_WM_STATE_FULLSCREEN";
@@ -29,19 +25,19 @@ const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDE
 const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
 const char* const wm_delete_window_atom_name            = u8"WM_DELETE_WINDOW";
 
-const int64 event_mask = VisibilityChangeMask  // Any change in visibility wanted
-                         | FocusChangeMask     // Any change in input focus wanted
-                         | StructureNotifyMask // Any change in window structure wanted
-                         | PropertyChangeMask  // Any change in property wanted
-                         | ExposureMask        // Any exposure wanted
-                         | KeyPressMask        // Keyboard down events wanted
-                         | KeyReleaseMask      // Keyboard up events wanted
-                         | ButtonPressMask     // Pointer button down events wanted
-                         | ButtonReleaseMask   // Pointer button up events wanted
-                         | EnterWindowMask     // Pointer window entry events wanted
-                         | LeaveWindowMask     // Pointer window leave events wanted
-                         | PointerMotionMask   // Pointer motion events wanted
-                         | ButtonMotionMask;   // Pointer motion while any button down
+const std::int64_t event_mask = VisibilityChangeMask  // Any change in visibility wanted
+                                | FocusChangeMask     // Any change in input focus wanted
+                                | StructureNotifyMask // Any change in window structure wanted
+                                | PropertyChangeMask  // Any change in property wanted
+                                | ExposureMask        // Any exposure wanted
+                                | KeyPressMask        // Keyboard down events wanted
+                                | KeyReleaseMask      // Keyboard up events wanted
+                                | ButtonPressMask     // Pointer button down events wanted
+                                | ButtonReleaseMask   // Pointer button up events wanted
+                                | EnterWindowMask     // Pointer window entry events wanted
+                                | LeaveWindowMask     // Pointer window leave events wanted
+                                | PointerMotionMask   // Pointer motion events wanted
+                                | ButtonMotionMask;   // Pointer motion while any button down
 
 // | Button1MotionMask        // Pointer motion while button 1 down
 // | Button2MotionMask        // Pointer motion while button 2 down
@@ -66,11 +62,11 @@ Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 
 namespace framework::system::details
 {
-x11_window::x11_window(window_size size, const std::string& title, const context_settings& settings)
-    : m_server(x11_server::connect())
+X11Window::X11Window(const std::string& title, Size size, const ContextSettings& settings)
+    : m_server(X11Server::connect())
     , m_size({0, 0})
 {
-    auto context = std::make_unique<x11_glx_context>(settings, m_server->display());
+    auto context = std::make_unique<X11GlxContext>(settings, m_server->display());
     if (!context->valid()) {
         throw std::runtime_error("Can't create graphic context.");
     }
@@ -96,16 +92,16 @@ x11_window::x11_window(window_size size, const std::string& title, const context
     //  attributes.colormap;              // color map to be associated with window   >> CWColormap
     //  attributes.cursor;                // cursor to be displayed (or None)         >> CWCursor
 
-    const uint32 border_width = 0;
-    const uint32 window_class = InputOutput;
-    const uint64 valuemask    = CWBackPixel | CWEventMask | CWColormap;
+    const std::uint32_t border_width = 0;
+    const std::uint32_t window_class = InputOutput;
+    const std::uint64_t valuemask    = CWBackPixel | CWEventMask | CWColormap;
 
     m_window = XCreateWindow(m_server->display(),
                              m_server->default_root_window(),
                              m_position.x,
                              m_position.y,
-                             static_cast<uint32>(size.width),
-                             static_cast<uint32>(size.height),
+                             static_cast<std::uint32_t>(size.width),
+                             static_cast<std::uint32_t>(size.height),
                              border_width,
                              context->visual_info()->depth,
                              window_class,
@@ -134,7 +130,7 @@ x11_window::x11_window(window_size size, const std::string& title, const context
     set_title(title);
 }
 
-x11_window::~x11_window()
+X11Window::~X11Window()
 {
     if (m_server->display() != nullptr && m_window != None) {
         XDestroyWindow(m_server->display(), m_window);
@@ -149,7 +145,7 @@ x11_window::~x11_window()
 
 #pragma region actions
 
-void x11_window::show()
+void X11Window::show()
 {
     if (m_mapped) {
         return;
@@ -175,7 +171,7 @@ void x11_window::show()
     }
 }
 
-void x11_window::hide()
+void X11Window::hide()
 {
     if (!m_mapped) {
         return;
@@ -187,7 +183,7 @@ void x11_window::hide()
     process_events_while([this]() { return m_mapped; });
 }
 
-void x11_window::focus()
+void X11Window::focus()
 {
     XWindowAttributes attributes;
     XGetWindowAttributes(m_server->display(), m_window, &attributes);
@@ -213,7 +209,7 @@ void x11_window::focus()
     process_events_while([this]() { return !focused(); });
 }
 
-void x11_window::process_events()
+void X11Window::process_events()
 {
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window)) != 0) {
@@ -243,7 +239,7 @@ void x11_window::process_events()
     }
 }
 
-void x11_window::iconify()
+void X11Window::iconify()
 {
     if (XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen())) == 0) {
         return;
@@ -254,7 +250,7 @@ void x11_window::iconify()
     process_events_while([this]() { return !iconified(); });
 }
 
-void x11_window::maximize()
+void X11Window::maximize()
 {
     if (!m_mapped) {
         m_maximized = true;
@@ -274,7 +270,7 @@ void x11_window::maximize()
     process_events_while([this]() { return !maximized(); });
 }
 
-void x11_window::switch_to_fullscreen()
+void X11Window::switch_to_fullscreen()
 {
     if (!m_mapped) {
         m_fullscreen = true;
@@ -296,7 +292,7 @@ void x11_window::switch_to_fullscreen()
     process_events_while([this]() { return !fullscreen(); });
 }
 
-void x11_window::restore()
+void X11Window::restore()
 {
     if (fullscreen()) {
         fullscreen_toggle(false);
@@ -328,12 +324,12 @@ void x11_window::restore()
     }
 }
 
-void x11_window::make_current()
+void X11Window::make_current()
 {
     m_context->make_current();
 }
 
-void x11_window::swap_buffers()
+void X11Window::swap_buffers()
 {
     m_context->swap_buffers();
 }
@@ -342,7 +338,7 @@ void x11_window::swap_buffers()
 
 #pragma region setters
 
-void x11_window::set_size(window_size size)
+void X11Window::set_size(Size size)
 {
     if (size.width <= 0 || size.height <= 0) {
         return;
@@ -368,20 +364,23 @@ void x11_window::set_size(window_size size)
         update_size_limits(size, size);
     }
 
-    XResizeWindow(m_server->display(), m_window, static_cast<uint32>(size.width), static_cast<uint32>(size.height));
+    XResizeWindow(m_server->display(),
+                  m_window,
+                  static_cast<std::uint32_t>(size.width),
+                  static_cast<std::uint32_t>(size.height));
     XFlush(m_server->display());
 
     process_events_while([this, size]() { return m_size != size; });
 }
 
-void x11_window::set_position(window_position position)
+void X11Window::set_position(Position position)
 {
     XMoveWindow(m_server->display(), m_window, position.x, position.y);
     XFlush(m_server->display());
     process_events();
 }
 
-void x11_window::set_max_size(window_size max_size)
+void X11Window::set_max_size(Size max_size)
 {
     m_max_size = max_size;
 
@@ -390,7 +389,7 @@ void x11_window::set_max_size(window_size max_size)
     }
 }
 
-void x11_window::set_min_size(window_size min_size)
+void X11Window::set_min_size(Size min_size)
 {
     m_min_size = min_size;
 
@@ -399,7 +398,7 @@ void x11_window::set_min_size(window_size min_size)
     }
 }
 
-void x11_window::set_resizable(bool value)
+void X11Window::set_resizable(bool value)
 {
     m_resizable = value;
 
@@ -417,7 +416,7 @@ void x11_window::set_resizable(bool value)
     process_events_while([this]() { return resizable() != m_resizable; });
 }
 
-void x11_window::set_title(const std::string& title)
+void X11Window::set_title(const std::string& title)
 {
     utils::set_window_name(m_server.get(), m_window, title);
     XFlush(m_server->display());
@@ -428,10 +427,11 @@ void x11_window::set_title(const std::string& title)
 
 #pragma region getters
 
-window_position x11_window::position() const
+Position X11Window::position() const
 {
-    int32 x_return, y_return;
-    Window child_return;
+    int x_return        = 0;
+    int y_return        = 0;
+    Window child_return = nullptr;
 
     XTranslateCoordinates(m_server->display(),
                           m_window,
@@ -445,7 +445,7 @@ window_position x11_window::position() const
     return {x_return, y_return};
 }
 
-window_size x11_window::size() const
+Size X11Window::size() const
 {
     XWindowAttributes attributes = {};
     XGetWindowAttributes(m_server->display(), m_window, &attributes);
@@ -453,49 +453,49 @@ window_size x11_window::size() const
     return {attributes.width, attributes.height};
 }
 
-window_size x11_window::max_size() const
+Size X11Window::max_size() const
 {
     if (!m_resizable) {
         return m_max_size;
     }
 
     XSizeHints size_hints = {};
-    int64 supplied;
+    std::int64_t supplied;
 
     const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
     const bool has_max_size_hints = (size_hints.flags &= PMaxSize) != 0;
 
     if (!got_size_hints || !has_max_size_hints) {
-        m_max_size = window_size{0, 0};
+        m_max_size = Size{0, 0};
     } else {
-        m_max_size = window_size{size_hints.max_width, size_hints.max_height};
+        m_max_size = Size{size_hints.max_width, size_hints.max_height};
     }
 
     return m_max_size;
 }
 
-window_size x11_window::min_size() const
+Size X11Window::min_size() const
 {
     if (!m_resizable) {
         return m_min_size;
     }
 
     XSizeHints size_hints = {};
-    int64 supplied;
+    std::int64_t supplied;
 
     const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
     const bool has_min_size_hints = (size_hints.flags &= PMinSize) != 0;
 
     if (!got_size_hints || !has_min_size_hints) {
-        m_min_size = window_size{0, 0};
+        m_min_size = Size{0, 0};
     } else {
-        m_min_size = window_size{size_hints.min_width, size_hints.min_height};
+        m_min_size = Size{size_hints.min_width, size_hints.min_height};
     }
 
     return m_min_size;
 }
 
-std::string x11_window::title() const
+std::string X11Window::title() const
 {
     return utils::get_window_name(m_server.get(), m_window);
 }
@@ -504,7 +504,7 @@ std::string x11_window::title() const
 
 #pragma region state
 
-bool x11_window::fullscreen() const
+bool X11Window::fullscreen() const
 {
     const bool in_fullscreen_state = utils::ewmh_supported() ?
                                      utils::window_has_state(m_server.get(),
@@ -515,7 +515,7 @@ bool x11_window::fullscreen() const
     return in_fullscreen_state && m_fullscreen;
 }
 
-bool x11_window::iconified() const
+bool X11Window::iconified() const
 {
     const auto window_state = utils::get_window_wm_state(m_server.get(), m_window);
     const bool hidden       = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden_atom_name);
@@ -523,7 +523,7 @@ bool x11_window::iconified() const
     return window_state == IconicState || hidden;
 }
 
-bool x11_window::maximized() const
+bool X11Window::maximized() const
 {
     if (utils::ewmh_supported()) {
         const bool maximized_vert = utils::window_has_state(m_server.get(),
@@ -539,10 +539,10 @@ bool x11_window::maximized() const
     return false;
 }
 
-bool x11_window::resizable() const
+bool X11Window::resizable() const
 {
     XSizeHints size_hints = {};
-    int64 supplied;
+    std::int64_t supplied;
 
     XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
 
@@ -553,7 +553,7 @@ bool x11_window::resizable() const
     return !not_resizable;
 }
 
-bool x11_window::visible() const
+bool X11Window::visible() const
 {
     if (!m_mapped) {
         return false;
@@ -567,7 +567,7 @@ bool x11_window::visible() const
     return false;
 }
 
-bool x11_window::focused() const
+bool X11Window::focused() const
 {
     return m_window == m_server->active_window();
 }
@@ -576,10 +576,10 @@ bool x11_window::focused() const
 
 #pragma region event processing
 
-void x11_window::process(XDestroyWindowEvent /*unused*/)
+void X11Window::process(XDestroyWindowEvent /*unused*/)
 {}
 
-void x11_window::process(XUnmapEvent /*unused*/)
+void X11Window::process(XUnmapEvent /*unused*/)
 {
     m_mapped = false;
     if (m_event_handler) {
@@ -587,7 +587,7 @@ void x11_window::process(XUnmapEvent /*unused*/)
     }
 }
 
-void x11_window::process(XVisibilityEvent event)
+void X11Window::process(XVisibilityEvent event)
 {
     if (event.state == VisibilityFullyObscured) {
         return;
@@ -602,10 +602,10 @@ void x11_window::process(XVisibilityEvent event)
     }
 }
 
-void x11_window::process(XConfigureEvent event)
+void X11Window::process(XConfigureEvent event)
 {
-    window_size new_size{event.width, event.height};
-    window_position new_position{event.x, event.y};
+    Size new_size{event.width, event.height};
+    Position new_position{event.x, event.y};
 
     if (m_size != new_size) {
         m_size = new_size;
@@ -624,7 +624,7 @@ void x11_window::process(XConfigureEvent event)
     }
 }
 
-void x11_window::process(XFocusChangeEvent event)
+void X11Window::process(XFocusChangeEvent event)
 {
     switch (event.type) {
         case FocusIn:
@@ -673,12 +673,12 @@ void x11_window::process(XFocusChangeEvent event)
     }
 }
 
-void x11_window::process(XPropertyEvent event)
+void X11Window::process(XPropertyEvent event)
 {
     m_lastInputTime = event.time;
 }
 
-void x11_window::process(XClientMessageEvent event)
+void X11Window::process(XClientMessageEvent event)
 {
     Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
     if (static_cast<Atom>(event.data.l[0]) == delete_window && m_event_handler) {
@@ -686,7 +686,7 @@ void x11_window::process(XClientMessageEvent event)
     }
 }
 
-void x11_window::process(XKeyEvent event)
+void X11Window::process(XKeyEvent event)
 {
     if (!m_event_handler) {
         return;
@@ -706,7 +706,7 @@ void x11_window::process(XKeyEvent event)
             if (X_HAVE_UTF8_STRING) {
                 char buffer[64] = {0};
                 KeySym sym;
-                int32 count = Xutf8LookupString(m_input_context, &event, buffer, sizeof(buffer), &sym, nullptr);
+                int count = Xutf8LookupString(m_input_context, &event, buffer, sizeof(buffer), &sym, nullptr);
 
                 if (count > 0) {
                     m_event_handler->on_character(std::string(buffer));
@@ -733,7 +733,7 @@ void x11_window::process(XKeyEvent event)
     }
 }
 
-void x11_window::process(XButtonEvent event)
+void X11Window::process(XButtonEvent event)
 {
     if (!m_event_handler) {
         return;
@@ -753,7 +753,7 @@ void x11_window::process(XButtonEvent event)
     }
 }
 
-void x11_window::process(XCrossingEvent event)
+void X11Window::process(XCrossingEvent event)
 {
     if (!m_event_handler) {
         return;
@@ -765,14 +765,14 @@ void x11_window::process(XCrossingEvent event)
     }
 }
 
-void x11_window::process(XMotionEvent event)
+void X11Window::process(XMotionEvent event)
 {
     if (m_event_handler) {
         m_event_handler->on_mouse_move({event.x, event.y});
     }
 }
 
-void x11_window::process(XMappingEvent event)
+void X11Window::process(XMappingEvent event)
 {
     XRefreshKeyboardMapping(&event);
 }
@@ -781,7 +781,7 @@ void x11_window::process(XMappingEvent event)
 
 #pragma region helper_functions
 
-void x11_window::maximize_toggle(bool enable)
+void X11Window::maximize_toggle(bool enable)
 {
     // We can't maximize window without EWMH.
     if (!utils::ewmh_supported()) {
@@ -791,7 +791,7 @@ void x11_window::maximize_toggle(bool enable)
     const std::vector<std::string> state = {net_wm_state_maximized_vert_atom_name,
                                             net_wm_state_maximized_horz_atom_name};
 
-    auto action = enable ? utils::window_state_action::add : utils::window_state_action::remove;
+    auto action = enable ? utils::WindowStateAction::add : utils::WindowStateAction::remove;
 
     if (!utils::window_change_state(m_server.get(), m_window, action, state)) {
         // report error
@@ -799,20 +799,19 @@ void x11_window::maximize_toggle(bool enable)
     }
 }
 
-void x11_window::fullscreen_toggle(bool enable)
+void X11Window::fullscreen_toggle(bool enable)
 {
     // We can't create fullscreen window without EWMH.
     if (!utils::ewmh_supported()) {
         return;
     }
 
-    auto bypass_state = enable ? utils::bypass_compositor_state::disabled :
-                                 utils::bypass_compositor_state::no_preferences;
+    auto bypass_state = enable ? utils::BypassCompositorState::disabled : utils::BypassCompositorState::no_preferences;
     utils::set_bypass_compositor_state(m_server.get(), m_window, bypass_state);
 
     const std::vector<std::string> state = {net_wm_state_fullscreen_atom_name};
 
-    auto action = enable ? utils::window_state_action::add : utils::window_state_action::remove;
+    auto action = enable ? utils::WindowStateAction::add : utils::WindowStateAction::remove;
 
     if (!utils::window_change_state(m_server.get(), m_window, action, state)) {
         // report error
@@ -820,7 +819,7 @@ void x11_window::fullscreen_toggle(bool enable)
     }
 }
 
-void x11_window::set_wm_hints()
+void X11Window::set_wm_hints()
 {
     XWMHints wm_hints      = {};
     wm_hints.flags         = StateHint | InputHint;
@@ -830,7 +829,7 @@ void x11_window::set_wm_hints()
     XSetWMHints(m_server->display(), m_window, &wm_hints);
 }
 
-void x11_window::set_class_hints()
+void X11Window::set_class_hints()
 {
     std::string class_name = application_name + "_class";
 
@@ -844,7 +843,7 @@ void x11_window::set_class_hints()
     XSetClassHint(m_server->display(), m_window, &class_hint);
 }
 
-void x11_window::add_protocols(const std::vector<std::string>& protocol_names)
+void X11Window::add_protocols(const std::vector<std::string>& protocol_names)
 {
     std::vector<Atom> protocols;
 
@@ -856,11 +855,11 @@ void x11_window::add_protocols(const std::vector<std::string>& protocol_names)
     }
 
     if (!protocols.empty()) {
-        XSetWMProtocols(m_server->display(), m_window, protocols.data(), static_cast<int32>(protocols.size()));
+        XSetWMProtocols(m_server->display(), m_window, protocols.data(), static_cast<int>(protocols.size()));
     }
 }
 
-void x11_window::create_input_context()
+void X11Window::create_input_context()
 {
     if (m_server->input_method() != nullptr) {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
@@ -875,7 +874,7 @@ void x11_window::create_input_context()
     }
 }
 
-void x11_window::process_events_while(const std::function<bool()>& condition)
+void X11Window::process_events_while(const std::function<bool()>& condition)
 {
     using std::chrono::milliseconds;
 
@@ -889,10 +888,10 @@ void x11_window::process_events_while(const std::function<bool()>& condition)
     }
 }
 
-void x11_window::update_size_limits(window_size min_size, window_size max_size)
+void X11Window::update_size_limits(Size min_size, Size max_size)
 {
     XSizeHints size_hints = {};
-    int64 supplied;
+    std::int64_t supplied;
 
     XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
 

@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include <common/types.hpp>
-
 #include <system/src/linux/x11_server.hpp>
 
 #include <X11/Xlib.h>
@@ -13,15 +11,15 @@
 
 namespace framework::system::details::utils
 {
-constexpr int32 message_source_application = 1;
+constexpr int message_source_application = 1;
 
-enum class bypass_compositor_state
+enum class BypassCompositorState
 {
     no_preferences = 0,
     disabled       = 1
 };
 
-enum class window_state_action
+enum class WindowStateAction
 {
     remove = 0,
     add    = 1
@@ -29,10 +27,10 @@ enum class window_state_action
 
 bool ewmh_supported();
 
-bool send_client_message(const x11_server* server, Window window, Atom message_type, const std::vector<int64>& data);
+bool send_client_message(const X11Server* server, ::Window window, Atom message_type, const std::vector<int64>& data);
 
 template <typename... Args>
-inline bool send_client_message(const x11_server* server, Window window, Atom message_type, Args... data)
+inline bool send_client_message(const X11Server* server, ::Window window, Atom message_type, Args... data)
 {
     const std::vector<int64> tmp{{
     static_cast<int64>(data)...,
@@ -40,18 +38,18 @@ inline bool send_client_message(const x11_server* server, Window window, Atom me
     return send_client_message(server, window, message_type, tmp);
 }
 
-CARD32 get_window_wm_state(const x11_server* server, Window window);
+CARD32 get_window_wm_state(const X11Server* server, ::Window window);
 
-bool window_has_state(const x11_server* server, Window window, const std::string& atom_name);
-bool window_change_state(const x11_server* server,
-                         Window window,
-                         window_state_action action,
+bool window_has_state(const X11Server* server, ::Window window, const std::string& atom_name);
+bool window_change_state(const X11Server* server,
+                         ::Window window,
+                         WindowStateAction action,
                          const std::vector<std::string>& atom_names);
 
-void set_bypass_compositor_state(const x11_server* server, Window window, bypass_compositor_state state);
+void set_bypass_compositor_state(const X11Server* server, ::Window window, BypassCompositorState state);
 
-void set_window_name(const x11_server* server, Window window, const std::string& title);
-std::string get_window_name(const x11_server* server, Window window);
+void set_window_name(const X11Server* server, ::Window window, const std::string& title);
+std::string get_window_name(const X11Server* server, ::Window window);
 
 } // namespace framework::system::details::utils
 

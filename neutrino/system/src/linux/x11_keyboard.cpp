@@ -155,7 +155,7 @@ KeyNamePair key_name_map[] = {
 
 namespace framework::system::details
 {
-void init_key_code_map(const x11_server* server)
+void init_key_code_map(const X11Server* server)
 {
     d = server->display();
 
