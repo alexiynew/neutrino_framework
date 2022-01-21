@@ -9,8 +9,8 @@ namespace framework::system::details
 {
 void init_key_code_map(const x11_server* server);
 
-key_code map_system_key(uint32 key);
-modifiers_state get_modifiers_state(uint32 state);
+KeyCode map_system_key(std::uint32_t key);
+Modifiers get_modifiers_state(std::uint32_t state);
 
 } // namespace framework::system::details
 

@@ -9,144 +9,146 @@
 
 namespace
 {
-constexpr framework::int32 key_codes_count = 256;
+using framework::system::KeyCode;
 
-framework::system::key_code key_codes[key_codes_count] = {framework::system::key_code::key_unknown};
+constexpr int key_codes_count = 256;
+
+KeyCode key_codes[key_codes_count] = {KeyCode::unknown};
 
 Display* d;
 
-struct key_name_pair
+struct KeyNamePair
 {
     std::string name;
-    framework::system::key_code code;
+    KeyCode code;
 };
 
-key_name_pair key_name_map[] = {
-{"SPCE", framework::system::key_code::key_space},
-{"AC11", framework::system::key_code::key_apostrophe},
-{"AB08", framework::system::key_code::key_comma},
-{"AE11", framework::system::key_code::key_minus},
-{"AB09", framework::system::key_code::key_period},
-{"AB10", framework::system::key_code::key_slash},
-{"AE10", framework::system::key_code::key_0},
-{"AE01", framework::system::key_code::key_1},
-{"AE02", framework::system::key_code::key_2},
-{"AE03", framework::system::key_code::key_3},
-{"AE04", framework::system::key_code::key_4},
-{"AE05", framework::system::key_code::key_5},
-{"AE06", framework::system::key_code::key_6},
-{"AE07", framework::system::key_code::key_7},
-{"AE08", framework::system::key_code::key_8},
-{"AE09", framework::system::key_code::key_9},
-{"AC10", framework::system::key_code::key_semicolon},
-{"AE12", framework::system::key_code::key_equal},
-{"AC01", framework::system::key_code::key_a},
-{"AB05", framework::system::key_code::key_b},
-{"AB03", framework::system::key_code::key_c},
-{"AC03", framework::system::key_code::key_d},
-{"AD03", framework::system::key_code::key_e},
-{"AC04", framework::system::key_code::key_f},
-{"AC05", framework::system::key_code::key_g},
-{"AC06", framework::system::key_code::key_h},
-{"AD08", framework::system::key_code::key_i},
-{"AC07", framework::system::key_code::key_j},
-{"AC08", framework::system::key_code::key_k},
-{"AC09", framework::system::key_code::key_l},
-{"AB07", framework::system::key_code::key_m},
-{"AB06", framework::system::key_code::key_n},
-{"AD09", framework::system::key_code::key_o},
-{"AD10", framework::system::key_code::key_p},
-{"AD01", framework::system::key_code::key_q},
-{"AD04", framework::system::key_code::key_r},
-{"AC02", framework::system::key_code::key_s},
-{"AD05", framework::system::key_code::key_t},
-{"AD07", framework::system::key_code::key_u},
-{"AB04", framework::system::key_code::key_v},
-{"AD02", framework::system::key_code::key_w},
-{"AB02", framework::system::key_code::key_x},
-{"AD06", framework::system::key_code::key_y},
-{"AB01", framework::system::key_code::key_z},
-{"AD11", framework::system::key_code::key_left_bracket},
-{"BKSL", framework::system::key_code::key_backslash},
-{"AD12", framework::system::key_code::key_right_bracket},
-{"TLDE", framework::system::key_code::key_grave_accent},
+KeyNamePair key_name_map[] = {
+{"SPCE", KeyCode::key_space},
+{"AC11", KeyCode::key_apostrophe},
+{"AB08", KeyCode::key_comma},
+{"AE11", KeyCode::key_minus},
+{"AB09", KeyCode::key_period},
+{"AB10", KeyCode::key_slash},
+{"AE10", KeyCode::key_0},
+{"AE01", KeyCode::key_1},
+{"AE02", KeyCode::key_2},
+{"AE03", KeyCode::key_3},
+{"AE04", KeyCode::key_4},
+{"AE05", KeyCode::key_5},
+{"AE06", KeyCode::key_6},
+{"AE07", KeyCode::key_7},
+{"AE08", KeyCode::key_8},
+{"AE09", KeyCode::key_9},
+{"AC10", KeyCode::key_semicolon},
+{"AE12", KeyCode::key_equal},
+{"AC01", KeyCode::key_a},
+{"AB05", KeyCode::key_b},
+{"AB03", KeyCode::key_c},
+{"AC03", KeyCode::key_d},
+{"AD03", KeyCode::key_e},
+{"AC04", KeyCode::key_f},
+{"AC05", KeyCode::key_g},
+{"AC06", KeyCode::key_h},
+{"AD08", KeyCode::key_i},
+{"AC07", KeyCode::key_j},
+{"AC08", KeyCode::key_k},
+{"AC09", KeyCode::key_l},
+{"AB07", KeyCode::key_m},
+{"AB06", KeyCode::key_n},
+{"AD09", KeyCode::key_o},
+{"AD10", KeyCode::key_p},
+{"AD01", KeyCode::key_q},
+{"AD04", KeyCode::key_r},
+{"AC02", KeyCode::key_s},
+{"AD05", KeyCode::key_t},
+{"AD07", KeyCode::key_u},
+{"AB04", KeyCode::key_v},
+{"AD02", KeyCode::key_w},
+{"AB02", KeyCode::key_x},
+{"AD06", KeyCode::key_y},
+{"AB01", KeyCode::key_z},
+{"AD11", KeyCode::key_left_bracket},
+{"BKSL", KeyCode::key_backslash},
+{"AD12", KeyCode::key_right_bracket},
+{"TLDE", KeyCode::key_grave_accent},
 
 // navigation
-{"ESC", framework::system::key_code::key_escape},
-{"RTRN", framework::system::key_code::key_enter},
-{"TAB", framework::system::key_code::key_tab},
-{"BKSP", framework::system::key_code::key_backspace},
-{"INS", framework::system::key_code::key_insert},
-{"DELE", framework::system::key_code::key_delete},
-{"RGHT", framework::system::key_code::key_right},
-{"LEFT", framework::system::key_code::key_left},
-{"DOWN", framework::system::key_code::key_down},
-{"UP", framework::system::key_code::key_up},
-{"PGUP", framework::system::key_code::key_page_up},
-{"PGDN", framework::system::key_code::key_page_down},
-{"HOME", framework::system::key_code::key_home},
-{"END", framework::system::key_code::key_end},
-{"CAPS", framework::system::key_code::key_caps_lock},
-{"SCLK", framework::system::key_code::key_scroll_lock},
-{"NMLK", framework::system::key_code::key_num_lock},
-{"PRSK", framework::system::key_code::key_print_screen},
-{"PAUS", framework::system::key_code::key_pause},
+{"ESC", KeyCode::key_escape},
+{"RTRN", KeyCode::key_enter},
+{"TAB", KeyCode::key_tab},
+{"BKSP", KeyCode::key_backspace},
+{"INS", KeyCode::key_insert},
+{"DELE", KeyCode::key_delete},
+{"RGHT", KeyCode::key_right},
+{"LEFT", KeyCode::key_left},
+{"DOWN", KeyCode::key_down},
+{"UP", KeyCode::key_up},
+{"PGUP", KeyCode::key_page_up},
+{"PGDN", KeyCode::key_page_down},
+{"HOME", KeyCode::key_home},
+{"END", KeyCode::key_end},
+{"CAPS", KeyCode::key_caps_lock},
+{"SCLK", KeyCode::key_scroll_lock},
+{"NMLK", KeyCode::key_num_lock},
+{"PRSK", KeyCode::key_print_screen},
+{"PAUS", KeyCode::key_pause},
 
 // Function keys
-{"FK01", framework::system::key_code::key_f1},
-{"FK02", framework::system::key_code::key_f2},
-{"FK03", framework::system::key_code::key_f3},
-{"FK04", framework::system::key_code::key_f4},
-{"FK05", framework::system::key_code::key_f5},
-{"FK06", framework::system::key_code::key_f6},
-{"FK07", framework::system::key_code::key_f7},
-{"FK08", framework::system::key_code::key_f8},
-{"FK09", framework::system::key_code::key_f9},
-{"FK10", framework::system::key_code::key_f10},
-{"FK11", framework::system::key_code::key_f11},
-{"FK12", framework::system::key_code::key_f12},
-{"FK13", framework::system::key_code::key_f13},
-{"FK14", framework::system::key_code::key_f14},
-{"FK15", framework::system::key_code::key_f15},
-{"FK16", framework::system::key_code::key_f16},
-{"FK17", framework::system::key_code::key_f17},
-{"FK18", framework::system::key_code::key_f18},
-{"FK19", framework::system::key_code::key_f19},
-{"FK20", framework::system::key_code::key_f20},
-{"FK21", framework::system::key_code::key_f21},
-{"FK22", framework::system::key_code::key_f22},
-{"FK23", framework::system::key_code::key_f23},
-{"FK24", framework::system::key_code::key_f24},
+{"FK01", KeyCode::key_f1},
+{"FK02", KeyCode::key_f2},
+{"FK03", KeyCode::key_f3},
+{"FK04", KeyCode::key_f4},
+{"FK05", KeyCode::key_f5},
+{"FK06", KeyCode::key_f6},
+{"FK07", KeyCode::key_f7},
+{"FK08", KeyCode::key_f8},
+{"FK09", KeyCode::key_f9},
+{"FK10", KeyCode::key_f10},
+{"FK11", KeyCode::key_f11},
+{"FK12", KeyCode::key_f12},
+{"FK13", KeyCode::key_f13},
+{"FK14", KeyCode::key_f14},
+{"FK15", KeyCode::key_f15},
+{"FK16", KeyCode::key_f16},
+{"FK17", KeyCode::key_f17},
+{"FK18", KeyCode::key_f18},
+{"FK19", KeyCode::key_f19},
+{"FK20", KeyCode::key_f20},
+{"FK21", KeyCode::key_f21},
+{"FK22", KeyCode::key_f22},
+{"FK23", KeyCode::key_f23},
+{"FK24", KeyCode::key_f24},
 
 // numpad
-{"KP0", framework::system::key_code::key_num_0},
-{"KP1", framework::system::key_code::key_num_1},
-{"KP2", framework::system::key_code::key_num_2},
-{"KP3", framework::system::key_code::key_num_3},
-{"KP4", framework::system::key_code::key_num_4},
-{"KP5", framework::system::key_code::key_num_5},
-{"KP6", framework::system::key_code::key_num_6},
-{"KP7", framework::system::key_code::key_num_7},
-{"KP8", framework::system::key_code::key_num_8},
-{"KP9", framework::system::key_code::key_num_9},
-{"KPDL", framework::system::key_code::key_num_decimal},
-{"KPDV", framework::system::key_code::key_num_divide},
-{"KPMU", framework::system::key_code::key_num_multiply},
-{"KPSU", framework::system::key_code::key_num_subtract},
-{"KPAD", framework::system::key_code::key_num_add},
-{"KPEN", framework::system::key_code::key_enter},
-{"", framework::system::key_code::key_num_separator}, // TODO detect this key
+{"KP0", KeyCode::key_num_0},
+{"KP1", KeyCode::key_num_1},
+{"KP2", KeyCode::key_num_2},
+{"KP3", KeyCode::key_num_3},
+{"KP4", KeyCode::key_num_4},
+{"KP5", KeyCode::key_num_5},
+{"KP6", KeyCode::key_num_6},
+{"KP7", KeyCode::key_num_7},
+{"KP8", KeyCode::key_num_8},
+{"KP9", KeyCode::key_num_9},
+{"KPDL", KeyCode::key_num_decimal},
+{"KPDV", KeyCode::key_num_divide},
+{"KPMU", KeyCode::key_num_multiply},
+{"KPSU", KeyCode::key_num_subtract},
+{"KPAD", KeyCode::key_num_add},
+{"KPEN", KeyCode::key_enter},
+{"", KeyCode::key_num_separator}, // TODO detect this key
 
 // modifiers
-{"LFSH", framework::system::key_code::key_left_shift},
-{"LCTL", framework::system::key_code::key_left_control},
-{"LALT", framework::system::key_code::key_left_alt},
-{"LWIN", framework::system::key_code::key_left_super},
+{"LFSH", KeyCode::key_left_shift},
+{"LCTL", KeyCode::key_left_control},
+{"LALT", KeyCode::key_left_alt},
+{"LWIN", KeyCode::key_left_super},
 
-{"RTSH", framework::system::key_code::key_right_shift},
-{"RCTL", framework::system::key_code::key_right_control},
-{"RALT", framework::system::key_code::key_right_alt},
-{"RWIN", framework::system::key_code::key_right_super},
+{"RTSH", KeyCode::key_right_shift},
+{"RCTL", KeyCode::key_right_control},
+{"RALT", KeyCode::key_right_alt},
+{"RWIN", KeyCode::key_right_super},
 };
 
 } // namespace
@@ -160,11 +162,11 @@ void init_key_code_map(const x11_server* server)
     XkbDescPtr desc = XkbGetMap(server->display(), 0, XkbUseCoreKbd);
     XkbGetNames(server->display(), XkbKeyNamesMask, desc);
 
-    for (int32 key = desc->min_key_code; key <= desc->max_key_code; ++key) {
+    for (int key = desc->min_key_code; key <= desc->max_key_code; ++key) {
         char name[XkbKeyNameLength + 1] = {0};
         std::copy(desc->names->keys[key].name, desc->names->keys[key].name + XkbKeyNameLength, name);
 
-        auto iterator = std::find_if(std::begin(key_name_map), std::end(key_name_map), [&name](const key_name_pair& k) {
+        auto iterator = std::find_if(std::begin(key_name_map), std::end(key_name_map), [&name](const KeyNamePair& k) {
             return k.name == name;
         });
 
@@ -174,29 +176,29 @@ void init_key_code_map(const x11_server* server)
     }
 }
 
-key_code map_system_key(uint32 key)
+KeyCode map_system_key(std::uint32_t key)
 {
     return key_codes[key];
 }
 
-modifiers_state get_modifiers_state(uint32 state)
+Modifiers get_modifiers_state(std::uint32_t state)
 {
-    int32 mods = 0;
+    Modifiers mods;
 
     if (state & ShiftMask)
-        mods |= modifiers_state::mod_shift;
+        mods |= Modifiers::shift;
     if (state & ControlMask)
-        mods |= modifiers_state::mod_control;
+        mods |= Modifiers::control;
     if (state & Mod1Mask)
-        mods |= modifiers_state::mod_menu;
+        mods |= Modifiers::alt;
     if (state & Mod4Mask)
-        mods |= modifiers_state::mod_super;
+        mods |= Modifiers::super;
     if (state & LockMask)
-        mods |= modifiers_state::mod_caps_lock;
+        mods |= Modifiers::caps_lock;
     if (state & Mod2Mask)
-        mods |= modifiers_state::mod_num_lock;
+        mods |= Modifiers::num_lock;
 
-    return static_cast<modifiers_state>(mods);
+    return mods;
 }
 
 } // namespace framework::system::details

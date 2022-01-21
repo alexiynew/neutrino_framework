@@ -201,7 +201,7 @@ Win32Window::~Win32Window()
 void Win32Window::show()
 {
     if (is_visible()) {
-        return; 
+        return;
     }
 
     if (is_iconified()) {
@@ -220,7 +220,7 @@ void Win32Window::show()
 void Win32Window::hide()
 {
     if (!is_visible()) {
-        return; 
+        return;
     }
 
     if (has_input_focus()) {
@@ -754,7 +754,7 @@ LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
         default: break;
     }
 
-    const KeyCode key         = details::map_system_key(static_cast<uint32>(w_param));
+    const KeyCode key         = details::map_system_key(static_cast<std::uint32_t>(w_param));
     const Modifiers mod_state = details::get_modifiers_state();
     const bool key_is_down    = ((l_param >> 31) & 1) == 0;
 

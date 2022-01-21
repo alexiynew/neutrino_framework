@@ -301,7 +301,7 @@ KeyCode::unknown,
 
 namespace framework::system::details
 {
-KeyCode map_system_key(uint32 key)
+KeyCode map_system_key(std::uint32_t key)
 {
     return key_map[key];
 }

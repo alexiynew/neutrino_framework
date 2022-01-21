@@ -1,8 +1,6 @@
 #ifndef FRAMEWORK_SYSTEM_KEYBOARD_HPP
 #define FRAMEWORK_SYSTEM_KEYBOARD_HPP
 
-#include <common/types.hpp>
-
 namespace framework::system
 {
 
@@ -154,7 +152,7 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Modifiers state.
     ////////////////////////////////////////////////////////////////////////////
-    enum ModifiersState : int32
+    enum ModifiersState : int
     {
         none      = 0,
         shift     = 0x0001,
@@ -170,8 +168,8 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     operator bool();
 
-    Modifiers& operator&=(int32 mask);
-    Modifiers& operator|=(int32 mask);
+    Modifiers& operator&=(int mask);
+    Modifiers& operator|=(int mask);
 
     bool operator==(Modifiers rhs);
     bool operator!=(Modifiers rhs);
@@ -180,11 +178,11 @@ private:
     ModifiersState m_state = none;
 };
 
-Modifiers operator&(Modifiers modifiers, int32 mask);
-Modifiers operator|(Modifiers modifiers, int32 mask);
+Modifiers operator&(Modifiers modifiers, int mask);
+Modifiers operator|(Modifiers modifiers, int mask);
 
-Modifiers operator&(int32 mask, Modifiers modifiers);
-Modifiers operator|(int32 mask, Modifiers modifiers);
+Modifiers operator&(int mask, Modifiers modifiers);
+Modifiers operator|(int mask, Modifiers modifiers);
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @}
