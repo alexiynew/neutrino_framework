@@ -5,7 +5,7 @@
 
 namespace framework::system::details
 {
-mouse_button map_mouse_button(uint32 button);
+MouseButton map_mouse_button(std::uint32_t button);
 
 } // namespace framework::system::details
 

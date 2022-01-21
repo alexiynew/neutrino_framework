@@ -4,17 +4,17 @@
 
 namespace framework::system::details
 {
-mouse_button map_mouse_button(uint32 button)
+MouseButton map_mouse_button(std::uint32_t button)
 {
     switch (button) {
-        case Button1: return mouse_button::button_left;
-        case Button2: return mouse_button::button_middle;
-        case Button3: return mouse_button::button_right;
-        case Button4: return mouse_button::button_unknown; // whell up
-        case Button5: return mouse_button::button_unknown; // whell down
+        case Button1: return MouseButton::button_left;
+        case Button2: return MouseButton::button_middle;
+        case Button3: return MouseButton::button_right;
+        case Button4: return MouseButton::unknown; // whell up
+        case Button5: return MouseButton::unknown; // whell down
     }
 
-    return mouse_button::button_unknown;
+    return MouseButton::unknown;
 }
 
 } // namespace framework::system::details
