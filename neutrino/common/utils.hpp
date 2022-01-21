@@ -138,48 +138,20 @@ inline T big_endian_value(const Iterator begin, const Iterator end)
     constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
     static_assert(can_read_from_buffer, "Can't read value of type T from buffer");
 
-    constexpr std::size_t size = sizeof(T);
+    constexpr int size = sizeof(T);
 
-    const auto dist = static_cast<std::size_t>(std::distance(begin, end));
+    const auto dist = std::distance(begin, end);
     if (dist < size) {
         throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
     }
 
-    using std::next;
-    using std::uint8_t;
+    typename std::iterator_traits<Iterator>::value_type buffer[size] = {};
 
-    if constexpr (size == 1) {
-        return static_cast<T>(*begin);
-    } else if constexpr (size == 2) {
-        using std::uint16_t;
-
-        uint16_t v = 0;
-        v += static_cast<uint8_t>(*begin << 8);
-        v += static_cast<uint8_t>(*next(begin));
-        return static_cast<T>(v);
-    } else if constexpr (size == 4) {
-        using std::uint32_t;
-
-        uint32_t v = 0;
-        v += static_cast<uint32_t>(static_cast<uint8_t>(*begin)) << 24;
-        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin))) << 16;
-        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin, 2))) << 8;
-        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin, 3)));
-        return static_cast<T>(v);
-    } else if constexpr (size == 8) {
-        using std::uint64_t;
-
-        uint64_t v = 0;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*begin)) << 56;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin))) << 48;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 2))) << 40;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 3))) << 32;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 4))) << 24;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 5))) << 16;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 6))) << 8;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 7)));
-        return static_cast<T>(v);
+    for (int i = 0; i < size; ++i) {
+        buffer[i] = *(begin + ((size - i) - 1));
     }
+
+    return *reinterpret_cast<T*>(buffer);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -207,48 +179,20 @@ inline T little_endian_value(const Iterator begin, const Iterator end)
     constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
     static_assert(can_read_from_buffer, "Can't read value of type T from buffer");
 
-    constexpr std::size_t size = sizeof(T);
+    constexpr int size = sizeof(T);
 
-    const auto dist = static_cast<std::size_t>(std::distance(begin, end));
+    const auto dist = std::distance(begin, end);
     if (dist < size) {
         throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
     }
 
-    using std::next;
-    using std::uint8_t;
+    typename std::iterator_traits<Iterator>::value_type buffer[size] = {};
 
-    if constexpr (size == 1) {
-        return static_cast<T>(*begin);
-    } else if constexpr (size == 2) {
-        using std::uint16_t;
-
-        uint16_t v = 0;
-        v += static_cast<uint8_t>(*begin);
-        v += static_cast<uint8_t>(*next(begin) << 8);
-        return static_cast<T>(v);
-    } else if constexpr (size == 4) {
-        using std::uint32_t;
-
-        uint32_t v = 0;
-        v += static_cast<uint32_t>(static_cast<uint8_t>(*begin));
-        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin))) << 8;
-        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin, 2))) << 16;
-        v += static_cast<uint32_t>(static_cast<uint8_t>(*next(begin, 3))) << 24;
-        return static_cast<T>(v);
-    } else if constexpr (size == 8) {
-        using std::uint64_t;
-
-        uint64_t v = 0;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*begin));
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin))) << 8;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 2))) << 16;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 3))) << 24;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 4))) << 32;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 5))) << 40;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 6))) << 48;
-        v += static_cast<uint64_t>(static_cast<uint8_t>(*next(begin, 7))) << 56;
-        return static_cast<T>(v);
+    for (int i = 0; i < size; ++i) {
+        buffer[i] = *(begin + i);
     }
+
+    return *reinterpret_cast<T*>(buffer);
 }
 
 /*
