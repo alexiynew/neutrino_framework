@@ -14,8 +14,8 @@ def enum_declaration(enum):
         value = "int({})".format(enum.value)
 
     if '"' in enum.value:
-        value_type = "char*"
-        constnes = "const"
+        value_type = "char* const"
+        constnes = "inline const"
 
     result = "{} {} {} = {};".format(constnes, value_type, enum.name, value)
 

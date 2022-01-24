@@ -157,7 +157,7 @@ inline typename Signal<Args...>::SlotId Signal<Args...>::connect(const T& inst, 
 template <typename... Args>
 inline void Signal<Args...>::disconnect(typename Signal<Args...>::SlotId id)
 {
-    if (id >= 0 && id < m_slots.size()) {
+    if (id < m_slots.size()) {
         m_slots[id] = nullptr;
         m_free_ids.push_back(id);
     }

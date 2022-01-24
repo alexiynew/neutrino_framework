@@ -174,8 +174,8 @@ private:
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // TODO: Size limits should resize the window if it does not fit 
-        // within the constraints. 
+        // TODO: Size limits should resize the window if it does not fit
+        // within the constraints.
         // Set size limits while the window is oversized.
         // window.set_max_size(size960);
         // TEST_ASSERT(window.size() == size960, "Window has wrong size.");
@@ -193,9 +193,8 @@ private:
     void window_position()
     {
         Stats stats;
-        const Size size640           = {640, 480};
-        const Position position_zero = {0, 0};
-        const Position position_100  = {100, 100};
+        const Size size640          = {640, 480};
+        const Position position_100 = {100, 100};
 
         Window window(name(), size640);
 

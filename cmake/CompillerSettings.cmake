@@ -33,7 +33,6 @@ macro(set_compiller_flags)
                            -Werror
                            -Wfloat-equal
                            -Wshadow
-                           -Wconversion
                            -Wno-unknown-pragmas
                            -pthread
                            -fPIC)
