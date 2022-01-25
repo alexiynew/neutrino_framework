@@ -26,7 +26,7 @@ std::pair<CodePoint, size_t> get_code_point(const std::u16string& str, size_t po
     const CodePoint cp     = ((first ^ 0xD800) << 10) | (second ^ 0xDC00) | 0x10000;
 
     return std::make_pair(cp, 2);
-};
+}
 
 std::pair<CodePoint, size_t> get_code_point(const std::u32string& str, size_t pos)
 {
@@ -35,7 +35,7 @@ std::pair<CodePoint, size_t> get_code_point(const std::u32string& str, size_t po
     }
 
     return std::make_pair(static_cast<CodePoint>(str[pos]), 1);
-};
+}
 
 std::vector<char>::iterator set_as_utf8(std::vector<char>::iterator to, CodePoint cp)
 {
