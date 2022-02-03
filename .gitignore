@@ -13,6 +13,7 @@ _vimrc
 .idea
 .cproject
 .project
+.cache
 .settings/
 .vs
 CMakeSettings.json

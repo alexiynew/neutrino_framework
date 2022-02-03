@@ -1,28 +1,3 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <algorithm>
 #include <chrono>
 #include <iostream>
@@ -36,6 +11,8 @@
 #include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
 #include <graphics/texture.hpp>
+#include <log/log.hpp>
+#include <log/stream_logger.hpp>
 #include <math/math.hpp>
 #include <system/window.hpp>
 
@@ -51,20 +28,17 @@ const std::string vertex_shader =
 "#version 330 core\n\
 \n\
 layout(location = 0) in vec3 position;\n\
-layout(location = 3) in vec4 color;\n\
 layout(location = 4) in vec2 texCoord0;\n\
 \n\
 uniform mat4 modelMatrix;\n\
 uniform mat4 viewMatrix;\n\
 uniform mat4 projectionMatrix;\n\
 \n\
-out vec4 fragColor;\n\
 out vec2 texCoord;\n\
 \n\
 void main()\n\
 {\n\
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);\n\
-    fragColor = color / 256.0;\n\
     texCoord = texCoord0;\n\
 }\n\
 ";
@@ -72,7 +46,6 @@ void main()\n\
 const std::string fragment_shader =
 "#version 330 core\n\
 \n\
-in vec4 fragColor;\n\
 in vec2 texCoord;\n\
 \n\
 out vec4 color;\n\
@@ -85,7 +58,7 @@ void main()\n\
 }\n\
 ";
 
-enum Mode
+enum class Mode
 {
     bmp,
     png,
@@ -375,7 +348,9 @@ ImagesList load_images(Mode image_mode)
 
         std::transform(group.begin(), group.end(), std::back_inserter(group_images), [](const std::string& name) {
             framework::graphics::Image img;
-            img.load(name);
+            if (const auto& [loaded, error] = img.load(name); !loaded) {
+                throw std::runtime_error("Can't load file " + name + " error: " + error);
+            }
 
             return img;
         });
@@ -391,7 +366,7 @@ MeshPtr create_mesh(int width, int height)
     Mesh::VertexData scaled_vertices;
     std::transform(square_mesh::vertices.begin(),
                    square_mesh::vertices.end(),
-                   std::back_insert_iterator(scaled_vertices),
+                   std::back_insert_iterator<Mesh::VertexData>(scaled_vertices),
                    [width, height](const Mesh::VertexData::value_type& v) {
                        return Vector3f{v.x * width, v.y * height, v.z};
                    });
@@ -478,7 +453,7 @@ private:
 };
 
 Example::Example()
-    : main_window({1024, 720}, "Image example")
+    : main_window("Image example", {1024, 720})
     , renderer(main_window)
 {}
 
@@ -502,7 +477,7 @@ void Example::setup()
         arrange();
     });
 
-    main_window.on_key_down.connect([this](const Window& w, KeyCode k, Modifiers) {
+    main_window.on_key_down.connect([this](const Window&, KeyCode k, Modifiers) {
         switch (k) {
             case KeyCode::key_equal: gamma += 0.1f; break;
             case KeyCode::key_minus: gamma -= 0.1f; break;
@@ -512,8 +487,6 @@ void Example::setup()
             case KeyCode::key_0: position = {0, 0}; break;
             default: break;
         }
-        const auto size = w.size();
-
         gamma = framework::math::clamp(gamma, -4.0f, 4.0f);
 
         renderer.set_uniform("viewMatrix", scale(Matrix4f(), {image_scale, image_scale, image_scale}));
@@ -613,6 +586,8 @@ void Example::run()
 
 int main()
 {
+    log::set_logger(std::make_unique<log::StreamLogger>(std::cout));
+
     Window::set_application_name("Image example");
 
     Example ex;

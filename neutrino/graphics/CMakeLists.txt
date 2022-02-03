@@ -1,35 +1,11 @@
-
-# =============================================================================
-# MIT License
-#
-# Copyright (c) 2017-2019 Fedorov Alexey
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-# =============================================================================
-
 set_sources(PUBLIC_SOURCES
     color.hpp
+    font.hpp
     image.hpp
     mesh.hpp
+    renderer.hpp
     shader.hpp
     texture.hpp
-    renderer.hpp
     uniform.hpp
 )
 
@@ -39,32 +15,49 @@ set_sources(PRIVATE_SOURCES
     src/texture.cpp
     src/uniform.cpp
 
-    src/image/image.cpp
-    src/image/image_info.hpp
-    src/image/bmp.hpp
+    src/font/font.cpp
+    src/font/tables/font_header.cpp
+    src/font/tables/font_header.hpp
+    src/font/tables/glyph_map.cpp
+    src/font/tables/glyph_map.hpp
+    src/font/tables/horizontal_header.cpp
+    src/font/tables/horizontal_header.hpp
+    src/font/tables/horizontal_metrics.cpp
+    src/font/tables/horizontal_metrics.hpp
+    src/font/tables/location.cpp
+    src/font/tables/location.hpp
+    src/font/tables/maximum_profile.cpp
+    src/font/tables/maximum_profile.hpp
+    src/font/tables/naming.cpp
+    src/font/tables/naming.hpp
+    src/font/tables/os2.cpp
+    src/font/tables/os2.hpp
+    src/font/types.hpp
+
     src/image/bmp.cpp
-    src/image/png.hpp
+    src/image/bmp.hpp
+    src/image/image_info.hpp
+    src/image/image.cpp
     src/image/png.cpp
+    src/image/png.hpp
 
-    src/opengl/opengl.hpp
     src/opengl/opengl.cpp
+    src/opengl/opengl.hpp
 
-    src/render/renderer.cpp
     src/render/renderer_impl.hpp
-    #src/render/render_command.hpp
-    #src/render/render_command.cpp
+    src/render/renderer.cpp
 
     src/render/opengl/attributes.hpp
-    src/render/opengl/opengl_logger.hpp
     src/render/opengl/opengl_logger.cpp
-    src/render/opengl/opengl_renderer.hpp
-    src/render/opengl/opengl_renderer.cpp
-    src/render/opengl/opengl_mesh.hpp
+    src/render/opengl/opengl_logger.hpp
     src/render/opengl/opengl_mesh.cpp
-    src/render/opengl/opengl_shader.hpp
+    src/render/opengl/opengl_mesh.hpp
+    src/render/opengl/opengl_renderer.cpp
+    src/render/opengl/opengl_renderer.hpp
     src/render/opengl/opengl_shader.cpp
-    src/render/opengl/opengl_texture.hpp
+    src/render/opengl/opengl_shader.hpp
     src/render/opengl/opengl_texture.cpp
+    src/render/opengl/opengl_texture.hpp
 )
 
 target_sources(${PROJECT_NAME}

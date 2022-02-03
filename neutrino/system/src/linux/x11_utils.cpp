@@ -1,32 +1,3 @@
-/// @file ::syste::system::
-/// @brief Contains several helper functions.
-/// @author Fedorov Alexey
-/// @date 05.04.2018
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <cstring>
 
 #include <common/utils.hpp>
@@ -36,7 +7,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
-using ::framework::system::details::x11_server;
+using framework::system::details::X11Server;
 
 namespace
 {
@@ -59,11 +30,11 @@ inline bool have_utf8_support()
 }
 
 template <typename ValueType, typename DataType>
-std::vector<ValueType> values_from_array(const DataType* data, ::framework::usize count)
+std::vector<ValueType> values_from_array(const DataType* data, std::size_t count)
 {
     std::vector<ValueType> values(count);
 
-    for (::framework::usize i = 0; i < count; ++i) {
+    for (std::size_t i = 0; i < count; ++i) {
         values[i] = *(reinterpret_cast<const ValueType*>(data + i));
     }
 
@@ -71,28 +42,28 @@ std::vector<ValueType> values_from_array(const DataType* data, ::framework::usiz
 }
 
 template <typename PropertyType>
-std::vector<PropertyType> get_window_property(Display* display, Window window, Atom property, Atom type)
+std::vector<PropertyType> get_window_property(Display* display, ::Window window, Atom property, Atom type)
 {
     const ::framework::int64 max_items_count = 1024;
 
-    Atom actual_type                 = None;
-    ::framework::int32 actual_format = 0;
-    unsigned long items_count        = 0;
-    unsigned long bytes_after        = 0;
-    ::framework::uint8* data         = nullptr;
+    Atom actual_type          = None;
+    int actual_format         = 0;
+    unsigned long items_count = 0;
+    unsigned long bytes_after = 0;
+    std::uint8_t* data        = nullptr;
 
-    ::framework::int32 result = XGetWindowProperty(display,
-                                                   window,
-                                                   property,
-                                                   0,
-                                                   max_items_count,
-                                                   False,
-                                                   type,
-                                                   &actual_type,
-                                                   &actual_format,
-                                                   &items_count,
-                                                   &bytes_after,
-                                                   &data);
+    int result = XGetWindowProperty(display,
+                                    window,
+                                    property,
+                                    0,
+                                    max_items_count,
+                                    False,
+                                    type,
+                                    &actual_type,
+                                    &actual_format,
+                                    &items_count,
+                                    &bytes_after,
+                                    &data);
 
     if (result != Success || actual_type != type || items_count == 0 || data == nullptr) {
         if (data) {
@@ -103,15 +74,9 @@ std::vector<PropertyType> get_window_property(Display* display, Window window, A
 
     std::vector<PropertyType> values;
     switch (actual_format) {
-        case 8:
-            values = values_from_array<PropertyType>(reinterpret_cast<::framework::uint8*>(data), items_count);
-            break;
-        case 16:
-            values = values_from_array<PropertyType>(reinterpret_cast<::framework::uint16*>(data), items_count);
-            break;
-        case 32:
-            values = values_from_array<PropertyType>(reinterpret_cast<::framework::uint32*>(data), items_count);
-            break;
+        case 8: values = values_from_array<PropertyType>(reinterpret_cast<std::uint8_t*>(data), items_count); break;
+        case 16: values = values_from_array<PropertyType>(reinterpret_cast<std::uint16_t*>(data), items_count); break;
+        case 32: values = values_from_array<PropertyType>(reinterpret_cast<std::uint32_t*>(data), items_count); break;
     };
 
     XFree(data);
@@ -119,7 +84,7 @@ std::vector<PropertyType> get_window_property(Display* display, Window window, A
     return values;
 }
 
-bool is_ewmh_compliant(const x11_server* server)
+bool is_ewmh_compliant(const X11Server* server)
 {
     const Atom net_supporting_wm_check = server->get_atom(net_supporting_wm_check_atom_name);
     const Atom net_supported           = server->get_atom(net_supported_atom_name);
@@ -130,13 +95,13 @@ bool is_ewmh_compliant(const x11_server* server)
 
     const auto root_window = server->default_root_window();
 
-    auto root = get_window_property<Window>(server->display(), root_window, net_supporting_wm_check, XA_WINDOW);
+    auto root = get_window_property<::Window>(server->display(), root_window, net_supporting_wm_check, XA_WINDOW);
 
     if (root.empty() || root[0] == None) {
         return false;
     }
 
-    auto child = get_window_property<Window>(server->display(), root[0], net_supporting_wm_check, XA_WINDOW);
+    auto child = get_window_property<::Window>(server->display(), root[0], net_supporting_wm_check, XA_WINDOW);
 
     if (child.empty() || child[0] == None) {
         return false;
@@ -145,7 +110,7 @@ bool is_ewmh_compliant(const x11_server* server)
     return root[0] == child[0];
 }
 
-std::vector<Atom> get_window_state(const x11_server* server, Window window)
+std::vector<Atom> get_window_state(const X11Server* server, ::Window window)
 {
     Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
     if (net_wm_state == None) {
@@ -203,11 +168,11 @@ namespace framework::system::details::utils
 {
 bool ewmh_supported()
 {
-    static bool supported = is_ewmh_compliant(x11_server::connect().get());
+    static bool supported = is_ewmh_compliant(X11Server::connect().get());
     return supported;
 }
 
-bool send_client_message(const x11_server* server, Window window, Atom message_type, const std::vector<int64>& data)
+bool send_client_message(const X11Server* server, ::Window window, Atom message_type, const std::vector<int64>& data)
 {
     XEvent event               = {0};
     event.type                 = ClientMessage;
@@ -232,7 +197,7 @@ bool send_client_message(const x11_server* server, Window window, Atom message_t
     return result != 0;
 }
 
-bool window_has_state(const x11_server* server, Window window, const std::string& atom_name)
+bool window_has_state(const X11Server* server, ::Window window, const std::string& atom_name)
 {
     if (!ewmh_supported()) {
         return false;
@@ -255,9 +220,9 @@ bool window_has_state(const x11_server* server, Window window, const std::string
     return false;
 }
 
-bool window_change_state(const x11_server* server,
-                         Window window,
-                         window_state_action action,
+bool window_change_state(const X11Server* server,
+                         ::Window window,
+                         WindowStateAction action,
                          const std::vector<std::string>& atom_names)
 {
     Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
@@ -279,7 +244,7 @@ bool window_change_state(const x11_server* server,
                                message_source_application);
 }
 
-void set_bypass_compositor_state(const x11_server* server, Window window, bypass_compositor_state state)
+void set_bypass_compositor_state(const X11Server* server, ::Window window, BypassCompositorState state)
 {
     if (!ewmh_supported()) {
         return;
@@ -300,7 +265,7 @@ void set_bypass_compositor_state(const x11_server* server, Window window, bypass
                     1);
 }
 
-CARD32 get_window_wm_state(const x11_server* server, Window window)
+CARD32 get_window_wm_state(const X11Server* server, ::Window window)
 {
     Atom net_wm_state = server->get_atom(wm_state_atom_name);
 
@@ -317,7 +282,7 @@ CARD32 get_window_wm_state(const x11_server* server, Window window)
     return state[0];
 }
 
-void set_window_name(const x11_server* server, Window window, const std::string& title)
+void set_window_name(const X11Server* server, ::Window window, const std::string& title)
 {
     Atom net_wm_name      = server->get_atom(net_wm_name_atom_name);
     Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
@@ -352,7 +317,7 @@ void set_window_name(const x11_server* server, Window window, const std::string&
     }
 }
 
-std::string get_window_name(const x11_server* server, Window window)
+std::string get_window_name(const X11Server* server, ::Window window)
 {
     Atom net_wm_name      = server->get_atom(net_wm_name_atom_name);
     Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);

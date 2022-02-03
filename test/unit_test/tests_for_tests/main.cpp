@@ -1,28 +1,3 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -31,16 +6,14 @@
 
 #include <unit_test/suite.hpp>
 
-class custom_exception
+class CustomException
 {};
 
-/// @name Test to fail
-/// @{
-class should_fail_test_assert : public framework::unit_test::Suite
+class ShouldFailTestAssert : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_assert()
-        : Suite("should_fail_test_assert")
+    ShouldFailTestAssert()
+        : Suite("ShouldFailTestAssert")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -52,11 +25,11 @@ private:
     }
 };
 
-class should_fail_test_fail : public framework::unit_test::Suite
+class ShouldFailTestFail : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_fail()
-        : Suite("should_fail_test_fail")
+    ShouldFailTestFail()
+        : Suite("ShouldFailTestFail")
     {
         add_test([this]() { test_fail(); }, "test_fail");
     }
@@ -68,11 +41,11 @@ private:
     }
 };
 
-class should_fail_test_std_exception : public framework::unit_test::Suite
+class ShouldFailTestStdException : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_std_exception()
-        : Suite("should_fail_test_std_exception")
+    ShouldFailTestStdException()
+        : Suite("ShouldFailTestStdException")
     {
         add_test([this]() { test_std_exception(); }, "test_std_exception");
     }
@@ -84,11 +57,11 @@ private:
     }
 };
 
-class should_fail_test_any_exception : public framework::unit_test::Suite
+class ShouldFailTestAnyException : public framework::unit_test::Suite
 {
 public:
-    should_fail_test_any_exception()
-        : Suite("should_fail_test_any_exception")
+    ShouldFailTestAnyException()
+        : Suite("ShouldFailTestAnyException")
     {
         add_test([this]() { test_any_exception(); }, "test_any_exception");
     }
@@ -97,18 +70,29 @@ private:
     // NOLINTNEXTLINE(hicpp-exception-baseclass)
     [[noreturn]] void test_any_exception()
     {
-        throw custom_exception();
+        throw CustomException();
     }
 };
-/// @}
 
-/// @name Test to pass
-/// @{
-class should_pass_test : public framework::unit_test::Suite
+class ShouldPassTest : public framework::unit_test::Suite
 {
 public:
-    should_pass_test()
-        : Suite("should_pass_test")
+    ShouldPassTest()
+        : Suite("ShouldPassTest")
+    {
+        add_test([this]() { test_pass(); }, "test_pass");
+    }
+
+private:
+    void test_pass()
+    {}
+};
+
+class ShouldPassTestAssert : public framework::unit_test::Suite
+{
+public:
+    ShouldPassTestAssert()
+        : Suite("ShouldPassTestAssert")
     {
         add_test([this]() { test_assert(); }, "test_assert");
     }
@@ -119,15 +103,12 @@ private:
         TEST_ASSERT(true, "Test assert message.");
     }
 };
-/// @}
 
-/// @name Test to run tests
-/// @{
-class test_for_test : public framework::unit_test::Suite
+class TestForTest : public framework::unit_test::Suite
 {
 public:
-    test_for_test()
-        : Suite("test_for_test")
+    TestForTest()
+        : Suite("TestForTest")
     {
         add_test([this]() { should_fail(); }, "should_fail");
         add_test([this]() { should_pass(); }, "should_pass");
@@ -135,14 +116,13 @@ public:
 
 private:
     void should_fail()
-
     {
         std::vector<std::unique_ptr<framework::unit_test::Suite>> tests;
 
-        tests.emplace_back(std::make_unique<should_fail_test_assert>());
-        tests.emplace_back(std::make_unique<should_fail_test_fail>());
-        tests.emplace_back(std::make_unique<should_fail_test_std_exception>());
-        tests.emplace_back(std::make_unique<should_fail_test_any_exception>());
+        tests.emplace_back(std::make_unique<ShouldFailTestAssert>());
+        tests.emplace_back(std::make_unique<ShouldFailTestFail>());
+        tests.emplace_back(std::make_unique<ShouldFailTestStdException>());
+        tests.emplace_back(std::make_unique<ShouldFailTestAnyException>());
 
         for (auto& test : tests) {
             run_suite(test.get());
@@ -155,11 +135,17 @@ private:
 
     void should_pass()
     {
-        should_pass_test should_pass;
+        std::vector<std::unique_ptr<framework::unit_test::Suite>> tests;
+        tests.emplace_back(std::make_unique<ShouldPassTest>());
+        tests.emplace_back(std::make_unique<ShouldPassTestAssert>());
 
-        run_suite(&should_pass);
+        for (auto& test : tests) {
+            run_suite(test.get());
 
-        TEST_ASSERT(should_pass.is_succeeded(), "This test should pass.");
+            std::stringstream error_stream;
+            error_stream << "Test [" << test->name() << "] should pass.";
+            TEST_ASSERT(test->is_succeeded(), error_stream.str());
+        }
     }
 
     void run_suite(framework::unit_test::Suite* test)
@@ -176,9 +162,8 @@ private:
         std::cout << std::setw(0);
     }
 };
-/// @}
 
 int main()
 {
-    return run_tests(test_for_test());
+    return run_tests(TestForTest());
 }

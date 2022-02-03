@@ -1,34 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-/// @file
-/// @brief Size.
-/// @author Fedorov Alexey
-/// @date 01.03.2019
-////////////////////////////////////////////////////////////////////////////////
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_COMMON_SIZE_HPP
 #define FRAMEWORK_COMMON_SIZE_HPP
 
@@ -44,6 +13,8 @@ namespace framework
 ////////////////////////////////////////////////////////////////////////////////
 struct Size
 {
+    Size() = default;
+
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates the Size object.
     ///
@@ -52,8 +23,8 @@ struct Size
     ////////////////////////////////////////////////////////////////////////////
     Size(int w, int h);
 
-    int width;  ///< Width.
-    int height; ///< Height.
+    int width  = 0; ///< Width.
+    int height = 0; ///< Height.
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +35,7 @@ struct Size
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-bool operator==(const Size& lhs, const Size& rhs);
+bool operator==(const Size& lhs, const Size& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Inequality operator for Size values.
@@ -74,7 +45,7 @@ bool operator==(const Size& lhs, const Size& rhs);
 ///
 /// @return `true` if lhs isn't equals rhs, otherwise `false`.
 ////////////////////////////////////////////////////////////////////////////////
-bool operator!=(const Size& lhs, const Size& rhs);
+bool operator!=(const Size& lhs, const Size& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Stream operator to print the Size value.
@@ -85,7 +56,7 @@ bool operator!=(const Size& lhs, const Size& rhs);
 /// @return Reference to output stream.
 ////////////////////////////////////////////////////////////////////////////////
 template <typename T>
-T& operator<<(T& ostream, const Size& size)
+inline T& operator<<(T& ostream, const Size& size)
 {
     ostream << "{" << size.width << ", " << size.height << "}";
     return ostream;

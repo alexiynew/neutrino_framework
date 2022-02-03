@@ -1,32 +1,3 @@
-/// @file
-/// @brief CRC implementation.
-/// @author Fedorov Alexey
-/// @date 20.09.2018
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_COMMON_CRC_HPP
 #define FRAMEWORK_COMMON_CRC_HPP
 
@@ -70,7 +41,7 @@ namespace framework::utils
 /// @t_param ReflectIn Should reflect input bytes.
 /// @t_param ReflectOut Should reflect output value.
 /// @t_param XorOut Value to 'xor' with the result at the end.
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -122,7 +93,7 @@ public:
     value_type current_value() const noexcept;
 
 private:
-    constexpr static usize crc_table_size = 256;
+    constexpr static std::size_t crc_table_size = 256;
     constexpr static crc_details::crc_table_t<BitsCount, crc_table_size>
     crc_table = crc_details::generate_table<BitsCount, Polynome, crc_table_size>();
 
@@ -176,7 +147,7 @@ using Crc32Xfer   = Crc<32, 0x000000AF, 0x00000000, false, false, 0x00000000>; /
 
 #pragma region definitions
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -198,7 +169,7 @@ XorOut>::calculate(Iterator begin, const Iterator end)
     return calc.current_value();
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -209,7 +180,7 @@ inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::reset
     m_current_value = init_value;
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -223,7 +194,7 @@ inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::updat
     m_current_value   = static_cast<value_type>(crc_table[index] ^ (m_current_value << 8));
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -232,15 +203,15 @@ template <usize BitsCount,
 template <typename T>
 inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(T value) noexcept
 {
-    constexpr usize input_value_size = sizeof(T);
+    constexpr std::size_t input_value_size = sizeof(T);
 
-    for (usize i = 0; i < input_value_size; ++i) {
+    for (std::size_t i = 0; i < input_value_size; ++i) {
         const uint8 byte = static_cast<uint8>((value >> (i * 8)) & 0xFF);
         update(byte);
     }
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,
@@ -254,7 +225,7 @@ inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::updat
     }
 }
 
-template <usize BitsCount,
+template <std::size_t BitsCount,
           crc_details::value_t<BitsCount> Polynome,
           crc_details::value_t<BitsCount> Init,
           bool ReflectIn,

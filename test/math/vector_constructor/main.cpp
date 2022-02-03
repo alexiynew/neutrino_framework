@@ -1,34 +1,7 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <common/types.hpp>
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::float32;
-using framework::float64;
 using framework::int32;
 using framework::uint32;
 
@@ -54,11 +27,11 @@ using framework::math::Vector4b;
 
 using framework::math::almost_equal;
 
-class vector_test : public framework::unit_test::Suite
+class VectorTest : public framework::unit_test::Suite
 {
 public:
-    vector_test()
-        : Suite("vector_test")
+    VectorTest()
+        : Suite("VectorTest")
     {
         add_test([this]() { size_check(); }, "size_check");
         add_test([this]() { default_constructor(); }, "default_constructor");
@@ -82,8 +55,8 @@ private:
         constexpr Vector3f v3f;
         constexpr Vector2i v2i;
 
-        static_assert(sizeof(v4d) == sizeof(float64) * 4 && v4d.size() == 4, "Vector4d size check failed.");
-        static_assert(sizeof(v3f) == sizeof(float32) * 3 && v3f.size() == 3, "Vector3f size check failed.");
+        static_assert(sizeof(v4d) == sizeof(double) * 4 && v4d.size() == 4, "Vector4d size check failed.");
+        static_assert(sizeof(v3f) == sizeof(float) * 3 && v3f.size() == 3, "Vector3f size check failed.");
         static_assert(sizeof(v2i) == sizeof(int) * 2 && v2i.size() == 2, "Vector2i size check failed.");
     }
 
@@ -178,10 +151,10 @@ private:
 
     void const_pointer_constructor()
     {
-        const float64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
-        const float32 data_f[3] = {1.0f, 2.0f, 3.0f};
-        const int32 data_i[2]   = {1, 2};
-        const uint32 data_u[2]  = {1, 2};
+        const double data_d[4] = {1.0, 2.0, 3.0, 4.0};
+        const float data_f[3]  = {1.0f, 2.0f, 3.0f};
+        const int32 data_i[2]  = {1, 2};
+        const uint32 data_u[2] = {1, 2};
 
         const Vector4d v4d(data_d);
         const Vector3f v3f(data_f);
@@ -196,10 +169,10 @@ private:
 
     void pointer_constructor()
     {
-        float64 data_d[4] = {1.0, 2.0, 3.0, 4.0};
-        float32 data_f[3] = {1.0f, 2.0f, 3.0f};
-        int32 data_i[2]   = {1, 2};
-        uint32 data_u[2]  = {1, 2};
+        double data_d[4] = {1.0, 2.0, 3.0, 4.0};
+        float data_f[3]  = {1.0f, 2.0f, 3.0f};
+        int32 data_i[2]  = {1, 2};
+        uint32 data_u[2] = {1, 2};
 
         const Vector4d v4d(data_d);
         const Vector3f v3f(data_f);
@@ -276,11 +249,11 @@ private:
     }
 };
 
-class bool_vector_test : public framework::unit_test::Suite
+class BoolVectorTest : public framework::unit_test::Suite
 {
 public:
-    bool_vector_test()
-        : Suite("bool_vector_test")
+    BoolVectorTest()
+        : Suite("BoolVectorTest")
     {
         add_test([this]() { size_check(); }, "size_check");
         add_test([this]() { default_constructor(); }, "default_constructor");
@@ -425,5 +398,5 @@ private:
 
 int main()
 {
-    return run_tests(vector_test(), bool_vector_test());
+    return run_tests(VectorTest(), BoolVectorTest());
 }

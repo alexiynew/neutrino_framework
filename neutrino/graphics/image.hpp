@@ -1,38 +1,8 @@
-////////////////////////////////////////////////////////////////////////////////
-/// @file
-/// @brief Image class.
-/// @author Fedorov Alexey
-/// @date 04.04.2019
-////////////////////////////////////////////////////////////////////////////////
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
 #define FRAMEWORK_GRAPHICS_IMAGE_HPP
 
-#include <string>
+#include <filesystem>
+#include <tuple>
 #include <vector>
 
 #include <graphics/color.hpp>
@@ -67,12 +37,18 @@ public:
     enum class FileType
     {
         bmp,
-        png
+        png,
     };
 
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Type of data container
+    ////////////////////////////////////////////////////////////////////////////
     using DataType = std::vector<Color>;
 
-    static constexpr float default_gamma = 2.2f;
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Result of loading operation.
+    ////////////////////////////////////////////////////////////////////////////
+    using LoadResult = std::tuple<bool, std::string>;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Default constructor.
@@ -88,46 +64,34 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     Image(const DataType& data, int width, int height);
 
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Copy Image.
-    ////////////////////////////////////////////////////////////////////////////
-    Image(const Image&);
+    Image(const Image&) = default;
+    Image& operator=(const Image&) = default;
 
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Copy Image.
-    ////////////////////////////////////////////////////////////////////////////
-    Image& operator=(const Image&);
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Move Image.
-    ////////////////////////////////////////////////////////////////////////////
-    Image(Image&&);
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Move Image.
-    ////////////////////////////////////////////////////////////////////////////
-    Image& operator=(Image&&);
+    Image(Image&&) noexcept = default;
+    Image& operator=(Image&&) noexcept = default;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Load image from file.
     ///
     /// FileType detected automatically.
     ///
-    /// @param filename File to load.
+    /// @param file File to load.
     ///
-    /// @return `true` if file loaded successfully.
+    /// @return `LoadResult<true, "">` if load successful or
+    ///         `LoadResult<false, "error description">` otherwise.
     ////////////////////////////////////////////////////////////////////////////
-    bool load(const std::string& filename);
+    LoadResult load(const std::filesystem::path& file);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Load image from file.
     ///
-    /// @param filename File to load.
+    /// @param file File to load.
     /// @param type Image Ffle type.
     ///
-    /// @return `true` if file loaded successfully.
+    /// @return `LoadResult<true, "">` if load successful or
+    ///         `LoadResult<false, "error description">` otherwise.
     ////////////////////////////////////////////////////////////////////////////
-    bool load(const std::string& filename, FileType type);
+    LoadResult load(const std::filesystem::path& file, FileType type);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Get image width.
@@ -158,6 +122,8 @@ public:
     const Color* data() const;
 
 private:
+    static constexpr float default_gamma = 2.2f;
+
     friend void swap(Image& lhs, Image& rhs) noexcept;
 
     DataType m_data;

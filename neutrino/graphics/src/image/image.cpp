@@ -1,37 +1,23 @@
-/// @file
-/// @brief image class.
-/// @author Fedorov Alexey
-/// @date 04.04.2019
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <graphics/image.hpp>
 
 #include <graphics/src/image/bmp.hpp>
 #include <graphics/src/image/image_info.hpp>
 #include <graphics/src/image/png.hpp>
+
+namespace
+{
+
+inline framework::graphics::Image::LoadResult load_result_error(const std::string& error)
+{
+    return std::make_tuple(false, error);
+}
+
+inline framework::graphics::Image::LoadResult load_result_success()
+{
+    return std::make_tuple(true, "");
+}
+
+} // namespace
 
 namespace framework::graphics
 {
@@ -43,45 +29,57 @@ Image::Image(const DataType& data, int width, int height)
     , m_height(height)
 {}
 
-Image::Image(const Image&) = default;
-Image& Image::operator=(const Image&) = default;
-
-Image::Image(Image&&) = default;
-Image& Image::operator=(Image&&) = default;
-
-bool Image::load(const std::string& filename, FileType type)
+Image::LoadResult Image::load(const std::filesystem::path& file, FileType type)
 {
-    auto load_function = [type](const std::string& f) {
+    using namespace details::image;
+
+    auto load_function = [type](const std::filesystem::path& f) {
         switch (type) {
-            case FileType::bmp: return details::image::bmp::load(f);
-            case FileType::png: return details::image::png::load(f);
+            case FileType::bmp: return bmp::load(f);
+            case FileType::png: return png::load(f);
         }
-        return details::image::LoadResult();
+        return details::image::LoadResult(error::invalid_file_type);
     };
 
-    if (auto result = load_function(filename); result.has_value()) {
-        auto& [info, data] = *result;
+    try {
+        const auto& result = load_function(file);
 
-        m_width  = info.width;
-        m_height = info.height;
-        m_gamma  = info.gamma;
+        if (std::holds_alternative<ImageInfo>(result)) {
+            const ImageInfo info = std::get<ImageInfo>(result);
 
-        m_data = std::move(data);
-        return true;
+            m_width  = info.width;
+            m_height = info.height;
+            m_gamma  = info.gamma;
+            m_data   = std::move(info.data);
+
+            return load_result_success();
+        } else {
+            return load_result_error(std::get<ErrorDescription>(result));
+        }
+    } catch (const std::bad_variant_access& acces_exception) {
+        return load_result_error(acces_exception.what());
+    } catch (const std::exception& exception) {
+        return load_result_error(exception.what());
+    } catch (...) {
+        return load_result_error(error::unknown_error);
     }
-
-    return false;
 }
 
-bool Image::load(const std::string& filename)
+Image::LoadResult Image::load(const std::filesystem::path& file)
 {
-    if (details::image::bmp::is_bmp(filename)) {
-        return load(filename, FileType::bmp);
-    } else if (details::image::png::is_png(filename)) {
-        return load(filename, FileType::png);
+    using namespace details::image;
+
+    if (!std::filesystem::exists(file)) {
+        return load_result_error(error::open_file_error);
     }
 
-    return false;
+    if (bmp::is_bmp(file)) {
+        return load(file, FileType::bmp);
+    } else if (png::is_png(file)) {
+        return load(file, FileType::png);
+    }
+
+    return load_result_error(error::invalid_file_type);
 }
 
 int Image::width() const

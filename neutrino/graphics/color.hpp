@@ -1,34 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-/// @file
-/// @brief Color.
-/// @author Fedorov Alexey
-/// @date 26.04.2019
-////////////////////////////////////////////////////////////////////////////////
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_GRAPHICS_COLOR_HPP
 #define FRAMEWORK_GRAPHICS_COLOR_HPP
 
@@ -300,17 +269,17 @@ inline constexpr Colorf::ColorTemplate(ValueType r_value,
 {}
 
 inline constexpr Colorf::ColorTemplate(std::uint16_t value) noexcept
-    : r(((value & 0xF800) >> 11) / 255.0f)
-    , g(((value & 0x7E0) >> 5) / 255.0f)
-    , b((value & 0x1F) / 255.0f)
+    : r(static_cast<ValueType>((value & 0xF800) >> 11) / 255.0f)
+    , g(static_cast<ValueType>((value & 0x7E0) >> 5) / 255.0f)
+    , b(static_cast<ValueType>(value & 0x1F) / 255.0f)
     , a(default_alpha)
 {}
 
 inline constexpr Colorf::ColorTemplate(std::uint32_t value) noexcept
-    : r(((value & 0xFF000000) >> 24) / 255.0f)
-    , g(((value & 0xFF0000) >> 16) / 255.0f)
-    , b(((value & 0xFF00) >> 8) / 255.0f)
-    , a((value & 0xFF) / 255.0f)
+    : r(static_cast<ValueType>((value & 0xFF000000) >> 24) / 255.0f)
+    , g(static_cast<ValueType>((value & 0xFF0000) >> 16) / 255.0f)
+    , b(static_cast<ValueType>((value & 0xFF00) >> 8) / 255.0f)
+    , a(static_cast<ValueType>(value & 0xFF) / 255.0f)
 {}
 
 inline constexpr Colorf::ColorTemplate(const ColorTemplate<std::uint8_t>& other) noexcept

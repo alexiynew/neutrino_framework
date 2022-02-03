@@ -1,44 +1,15 @@
-/// @file
-/// @brief Logging interface implementation.
-/// @author Fedorov Alexey
-/// @date 08.03.2017
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
-#include <common/utils.hpp>
+﻿#include <common/utils.hpp>
 #include <log/log.hpp>
 
 namespace
 {
-using framework::log::logger_base;
-using framework::log::log_details::log_buffer;
-using framework::log::log_details::log_ostream;
+using framework::log::Logger;
+using framework::log::log_details::LogBuffer;
+using framework::log::log_details::LogStream;
 
-class dummy_logger : public logger_base
+class LoggerStub final : public Logger
 {
-    void add_message(framework::log::severity_level /*level*/,
+    void add_message(framework::log::SeverityLevel /*level*/,
                      const std::string& /*tag*/,
                      const std::string& /*message*/) override
     {
@@ -46,12 +17,12 @@ class dummy_logger : public logger_base
     }
 };
 
-std::unique_ptr<logger_base>& logger_instance()
+std::unique_ptr<Logger>& logger_instance()
 {
-    static std::unique_ptr<logger_base> instance;
+    static std::unique_ptr<Logger> instance;
 
     if (!instance) {
-        instance = std::make_unique<dummy_logger>();
+        instance = std::make_unique<LoggerStub>();
     }
 
     return instance;
@@ -63,39 +34,42 @@ namespace framework::log
 {
 #pragma region log functions
 
-log_ostream debug(const std::string& tag)
+LogStream debug(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::debug, tag));
+    if (utils::is_debug()) {
+        return LogStream(std::make_unique<LogBuffer>(SeverityLevel::debug, tag));
+    }
+    return LogStream(nullptr);
 }
 
-log_ostream info(const std::string& tag)
+LogStream info(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::info, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::info, tag));
 }
 
-log_ostream warning(const std::string& tag)
+LogStream warning(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::warning, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::warning, tag));
 }
 
-log_ostream error(const std::string& tag)
+LogStream error(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::error, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::error, tag));
 }
 
-log_ostream fatal(const std::string& tag)
+LogStream fatal(const std::string& tag)
 {
-    return log_ostream(std::make_unique<log_buffer>(severity_level::fatal, tag));
+    return LogStream(std::make_unique<LogBuffer>(SeverityLevel::fatal, tag));
 }
 
 #pragma endregion
 
-void set_logger(std::unique_ptr<logger_base> implementation)
+void set_logger(std::unique_ptr<Logger> implementation)
 {
     ::logger_instance() = std::move(implementation);
 }
 
-logger_base* logger()
+Logger* logger()
 {
     return ::logger_instance().get();
 }

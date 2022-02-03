@@ -1,45 +1,46 @@
-/// @file
-/// @brief Window implementation for windows.
-/// @author Fedorov Alexey
-/// @date 11.09.2018
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <stdexcept>
+#include <vector>
 
 #include <system/src/windows/wglext.hpp>
+#include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_wgl_context.hpp>
 
 namespace
 {
-void init_wgl(HWND window, const framework::system::details::wgl::GetFunction& get_function)
+HWND create_tmp_window()
 {
-    HDC hdc = GetDC(window);
+    using framework::system::details::Win32Application;
+
+    DWORD style     = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+    HWND tmp_window = CreateWindowEx(WS_EX_APPWINDOW,
+                                     Win32Application::get_window_class(),
+                                     L"TmpOpenGLInitWIndow",
+                                     style,
+                                     0,
+                                     0,
+                                     100,
+                                     100,
+                                     NULL,
+                                     NULL,
+                                     Win32Application::handle(),
+                                     NULL);
+
+    if (tmp_window == nullptr) {
+        throw std::runtime_error("Failed to create tmp window for OpenGL initialization, error" +
+                                 std::to_string(GetLastError()));
+    }
+
+    return tmp_window;
+}
+
+void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
+{
+    HWND tmp_window = create_tmp_window();
+    HDC hdc         = GetDC(tmp_window);
 
     if (hdc == nullptr) {
-        throw std::runtime_error("GetDC failed!");
+        DestroyWindow(tmp_window);
+        throw std::runtime_error("GetDC failed, error: " + std::to_string(GetLastError()));
     }
 
     PIXELFORMATDESCRIPTOR pfd{};
@@ -52,19 +53,22 @@ void init_wgl(HWND window, const framework::system::details::wgl::GetFunction& g
     int pixelFormat = ChoosePixelFormat(hdc, &pfd);
 
     if (pixelFormat == 0) {
-        ReleaseDC(window, hdc);
-        throw std::runtime_error("Can't choose pixel format");
+        ReleaseDC(tmp_window, hdc);
+        DestroyWindow(tmp_window);
+        throw std::runtime_error("Can't choose pixel format, error: " + std::to_string(GetLastError()));
     }
 
     if (!SetPixelFormat(hdc, pixelFormat, &pfd)) {
-        ReleaseDC(window, hdc);
-        throw std::runtime_error("Can't set pixel format");
+        ReleaseDC(tmp_window, hdc);
+        DestroyWindow(tmp_window);
+        throw std::runtime_error("Can't set pixel format, error: " + std::to_string(GetLastError()));
     }
 
     HGLRC hglrc = wglCreateContext(hdc);
     if (hglrc == nullptr) {
-        ReleaseDC(window, hdc);
-        throw std::runtime_error("Can't create temporary graphic context");
+        ReleaseDC(tmp_window, hdc);
+        DestroyWindow(tmp_window);
+        throw std::runtime_error("Can't create temporary graphic context, error: " + std::to_string(GetLastError()));
     }
 
     wglMakeCurrent(hdc, hglrc);
@@ -73,17 +77,19 @@ void init_wgl(HWND window, const framework::system::details::wgl::GetFunction& g
 
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(hglrc);
-    ReleaseDC(window, hdc);
+    ReleaseDC(tmp_window, hdc);
+    DestroyWindow(tmp_window);
 }
+
 } // namespace
 
 namespace framework::system::details
 {
-Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window)
+Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
     : Context(settings)
     , m_window(window)
 {
-    init_wgl(m_window, [this](const char* function_name) { return get_function(function_name); });
+    init_wgl([this](const char* function_name) { return get_function(function_name); });
 
     if (!wgl::is_supported(wgl::Extension::WGL_ARB_create_context)) {
         throw std::runtime_error("WGL_ARB_create_context not supported");
@@ -92,34 +98,75 @@ Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window)
         throw std::runtime_error("WGL_ARB_pixel_format not supported");
     }
 
+    std::vector<int> attribs;
+
+    // OpenGL rendering
+    attribs.push_back(wgl::WGL_SUPPORT_OPENGL_ARB);
+    attribs.push_back(1);
+
+    // Rendering to a window
+    attribs.push_back(wgl::WGL_DRAW_TO_WINDOW_ARB);
+    attribs.push_back(1);
+
+    // Double buffer
+    attribs.push_back(wgl::WGL_DOUBLE_BUFFER_ARB);
+    attribs.push_back(1);
+
+    // Swapping method
+    attribs.push_back(wgl::WGL_SWAP_METHOD_ARB);
+    attribs.push_back(wgl::WGL_SWAP_EXCHANGE_ARB);
+
+    // Hardware acceleration
+    attribs.push_back(wgl::WGL_ACCELERATION_ARB);
+    attribs.push_back(wgl::WGL_FULL_ACCELERATION_ARB);
+
+    // RGBA pixel type
+    attribs.push_back(wgl::WGL_PIXEL_TYPE_ARB);
+    attribs.push_back(wgl::WGL_TYPE_RGBA_ARB);
+
+    // Support for 24 bit color
+    attribs.push_back(wgl::WGL_COLOR_BITS_ARB);
+    attribs.push_back(24);
+
+    // The number of alpha bitplanes in each RGBA color buffer
+    attribs.push_back(wgl::WGL_ALPHA_BITS_ARB);
+    attribs.push_back(8);
+
+    // Depth buffer
+    attribs.push_back(wgl::WGL_DEPTH_BITS_ARB);
+    attribs.push_back(static_cast<int>(settings.depth_bits()));
+
+    // Stencil buffer
+    attribs.push_back(wgl::WGL_STENCIL_BITS_ARB);
+    attribs.push_back(static_cast<int>(settings.stencil_bits()));
+
+    // Antialiasing
+    if (settings.antialiasing_level() == ContextSettings::Antialiasing::best) {
+        attribs.push_back(wgl::WGL_SAMPLE_BUFFERS_ARB);
+        attribs.push_back(1);
+
+        attribs.push_back(wgl::WGL_SAMPLES_ARB);
+        attribs.push_back(16);
+    }
+
+    // End of attributes
+    attribs.push_back(0);
+
     m_hdc = GetDC(m_window);
 
-    // clang-format off
-    int pixel_format_attribs [] = {
-        wgl::WGL_SUPPORT_OPENGL_ARB, TRUE,                          // Support for OpenGL rendering.
-        wgl::WGL_DRAW_TO_WINDOW_ARB, TRUE,                          // Support for rendering to a window.
-        wgl::WGL_ACCELERATION_ARB, wgl::WGL_FULL_ACCELERATION_ARB,  // Support for hardware acceleration.
-        wgl::WGL_COLOR_BITS_ARB, 24,                                // Support for 24 bit color.
-        wgl::WGL_DEPTH_BITS_ARB, 24,                                // Support for 24 bit depth buffer.
-        wgl::WGL_DOUBLE_BUFFER_ARB, TRUE,                           // Support for double buffer.
-        wgl::WGL_SWAP_METHOD_ARB, wgl::WGL_SWAP_EXCHANGE_ARB,       // Support for swapping front and back buffer.
-        wgl::WGL_PIXEL_TYPE_ARB, wgl::WGL_TYPE_RGBA_ARB,            // Support for the RGBA pixel type.
-        wgl::WGL_STENCIL_BITS_ARB, 8,                               // Support for a 8 bit stencil buffer.
-	    0
-    };
-    // clang-format on
+    int pixelFormat          = 0;
+    unsigned int formatCount = 0;
 
-    int pixelFormat;
-    unsigned int formatCount;
-    bool pixel_format_found = wgl::wglChoosePixelFormatARB(m_hdc,
-                                                           pixel_format_attribs,
-                                                           nullptr,
-                                                           1,
-                                                           &pixelFormat,
-                                                           &formatCount);
+    // TODO: choose pixel format with maximum number of samples
+    const bool pixel_format_found = wgl::wglChoosePixelFormatARB(m_hdc,
+                                                                 attribs.data(),
+                                                                 nullptr,
+                                                                 1,
+                                                                 &pixelFormat,
+                                                                 &formatCount);
     if (!pixel_format_found) {
         ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Can't choose pixel format");
+        throw std::runtime_error("Can't get a suitable pixel format, error: " + std::to_string(GetLastError()));
     }
 
     PIXELFORMATDESCRIPTOR pfd{};
@@ -127,24 +174,34 @@ Win32WglContext::Win32WglContext(const ContextSettings& settings, HWND window)
 
     if (!SetPixelFormat(m_hdc, pixelFormat, &pfd)) {
         ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Can't set pixel format");
+        throw std::runtime_error("Can't set pixel format, error: " + std::to_string(GetLastError()));
     }
 
-    auto version = settings.version();
-    // clang-format off
-    int attribs[] = {
-        wgl::WGL_CONTEXT_MAJOR_VERSION_ARB, version.major_version,
-        wgl::WGL_CONTEXT_MINOR_VERSION_ARB, version.minor_version,
-        wgl::WGL_CONTEXT_PROFILE_MASK_ARB, wgl::WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-        wgl::WGL_CONTEXT_FLAGS_ARB, 0,
-        0
-    };
-    // clang-format on
+    std::vector<int> contextAttribs;
 
-    m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, 0, attribs);
+    contextAttribs.push_back(wgl::WGL_CONTEXT_MAJOR_VERSION_ARB);
+    contextAttribs.push_back(settings.version().major());
+
+    contextAttribs.push_back(wgl::WGL_CONTEXT_MINOR_VERSION_ARB);
+    contextAttribs.push_back(settings.version().minor());
+
+    contextAttribs.push_back(wgl::WGL_CONTEXT_PROFILE_MASK_ARB);
+    contextAttribs.push_back(wgl::WGL_CONTEXT_CORE_PROFILE_BIT_ARB);
+
+    if (settings.version().major() >= 3) {
+        contextAttribs.push_back(wgl::WGL_CONTEXT_FLAGS_ARB);
+        contextAttribs.push_back(wgl::WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB);
+    }
+
+    // End of attributes
+    contextAttribs.push_back(0);
+
+    // TODO: Update actual context settings
+
+    m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, nullptr, contextAttribs.data());
     if (m_hglrc == nullptr) {
         ReleaseDC(m_window, m_hdc);
-        throw std::runtime_error("Can't create HRC");
+        throw std::runtime_error("Failed to create OpenGL context, error: " + std::to_string(GetLastError()));
     }
 }
 
@@ -164,18 +221,6 @@ bool Win32WglContext::valid() const
 bool Win32WglContext::is_current() const
 {
     return valid() && wglGetCurrentContext() == m_hglrc;
-}
-
-void Win32WglContext::make_current() const
-{
-    if (!is_current()) {
-        wglMakeCurrent(m_hdc, m_hglrc);
-    }
-}
-
-void Win32WglContext::swap_buffers() const
-{
-    SwapBuffers(m_hdc);
 }
 
 Context::Api Win32WglContext::api_type() const
@@ -198,6 +243,18 @@ Context::VoidFunctionPtr Win32WglContext::get_function(const char* function_name
     }
 
     return function;
+}
+
+void Win32WglContext::make_current()
+{
+    if (!is_current()) {
+        wglMakeCurrent(m_hdc, m_hglrc);
+    }
+}
+
+void Win32WglContext::swap_buffers()
+{
+    SwapBuffers(m_hdc);
 }
 
 } // namespace framework::system::details

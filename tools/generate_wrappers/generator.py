@@ -6,8 +6,18 @@ from string import Template
 def enum_declaration(enum):
     type_map = {"": "int", "u": "unsigned int", "ull": "unsigned long long"}
 
-    result = "constexpr {} {} = {};".format(
-        type_map[enum.type], enum.name, enum.value)
+    value_type = type_map[enum.type]
+    value = enum.value
+    constnes = "constexpr"
+
+    if enum.value == "0xFFFFFFFF" and value_type == "int":
+        value = "int({})".format(enum.value)
+
+    if '"' in enum.value:
+        value_type = "char* const"
+        constnes = "inline const"
+
+    result = "{} {} {} = {};".format(constnes, value_type, enum.name, value)
 
     return result
 
@@ -59,6 +69,12 @@ def group_declaration(group):
     enums = "\n".join(enum_declaration(e) for e in group.enums)
     commands = "\n".join(command_declaration(c) for c in group.commands)
 
+    if group.protect is not None:
+        protect_t = Template("#ifdef ${protect}\n"
+                             "${commands}\n"
+                             "#endif // ${protect}\n")
+        commands = protect_t.substitute(protect=group.protect, commands=commands);
+
     return t.substitute(name=group.name, types=types, enums=enums, commands=commands)
 
 
@@ -85,25 +101,32 @@ def group_init_function(group):
 
 
 def group_pointers_declaration(group):
+    decl_t = Template("${types}\n"
+                      "\n"
+                      "${definition}\n"
+                      "\n"
+                      "${function}")
+
+    types = "\n".join(command_pointer_declaration(c) for c in group.commands)
+    definition = "\n".join(command_pointer_definition(c) for c in group.commands)
+    function = group_init_function(group)
+
+    declaration = decl_t.substitute(types=types, definition=definition, function=function)
+
+    if group.protect is not None:
+        protect_t = Template("#ifdef ${protect}\n"
+                             "${declaration}"
+                             "#endif // ${protect}\n")
+        declaration = protect_t.substitute(protect=group.protect, declaration=declaration);
+
     t = Template("\n"
                  "#pragma region ${name}\n"
                  "\n"
-                 "${types}\n"
-                 "\n"
-                 "${definition}\n"
-                 "\n"
-                 "${function}\n"
+                 "${declaration}"
                  "\n"
                  "#pragma endregion\n")
 
-    types = "\n".join(command_pointer_declaration(c) for c in group.commands)
-    definition = "\n".join(command_pointer_definition(c)
-                           for c in group.commands)
-
-    return t.substitute(dict(name=group.name,
-                             types=types,
-                             definition=definition,
-                             function=group_init_function(group)))
+    return t.substitute(name=group.name, declaration=declaration)
 
 
 def group_definition(group):
@@ -116,8 +139,37 @@ def group_definition(group):
 
     commands = "\n".join(command_definition(c) for c in group.commands)
 
+    if group.protect is not None:
+        protect_t = Template("#ifdef ${protect}\n"
+                             "${commands}"
+                             "#endif // ${protect}\n")
+        commands = protect_t.substitute(protect=group.protect, commands=commands);
+
     return t.substitute(name=group.name, commands=commands)
 
+
+def feature_init(group):
+    init = "    feature_cache[static_cast<int>(Feature::{})] = init_{}(get_function);".format(group.name, group.name.lower())
+
+    if group.protect is not None:
+        protect_t = Template("#ifdef ${protect}\n"
+                             "${init}\n"
+                             "#endif // ${protect}")
+        init = protect_t.substitute(protect=group.protect, init=init);
+
+    return init
+
+
+def extension_init(group):
+    init = "    extension_cache[static_cast<int>(Extension::{})] = init_{}(get_function);".format(group.name, group.name.lower())
+
+    if group.protect is not None:
+        protect_t = Template("#ifdef ${protect}\n"
+                             "${init}\n"
+                             "#endif // ${protect}")
+        init = protect_t.substitute(protect=group.protect, init=init);
+
+    return init
 
 class Used:
     def __init__(self):
@@ -135,6 +187,7 @@ class Remove:
 class Group:
     def __init__(self, feature, reg, data, used, remove):
         self.name = feature.name
+        self.protect = feature.protect
         self.types = []
         self.enums = []
         self.commands = []
@@ -212,14 +265,7 @@ class Generator:
                 used.commands.extend(c.prototype.name for c in group.commands)
 
     def generate_header(self):
-        t = Template("/// @file\n"
-                     "/// @brief ${brief}\n"
-                     "/// @author Fedorov Alexey\n"
-                     "/// @date ${date}\n"
-                     "\n"
-                     "${license}"
-                     "\n"
-                     "#ifndef ${include_guard}\n"
+        t = Template("#ifndef ${include_guard}\n"
                      "#define ${include_guard}\n"
                      "\n"
                      "${includes}\n"
@@ -266,10 +312,7 @@ class Generator:
                                     for f in self.extensions)
 
         hpp = open(self.data.DESTHPP, "w")
-        hpp.write(t.substitute(brief=self.data.BRIEF,
-                               date=self.data.DATE,
-                               license=self.data.LICENSE,
-                               include_guard=self.data.INCLUDE_GUARD,
+        hpp.write(t.substitute(include_guard=self.data.INCLUDE_GUARD,
                                namespace=self.data.NAMESPACE,
                                init_function_name=self.data.INIT_FUNCTION_NAME,
                                includes=includes,
@@ -281,14 +324,7 @@ class Generator:
         hpp.close()
 
     def generate_source(self):
-        t = Template("/// @file\n"
-                     "/// @brief ${brief}\n"
-                     "/// @author Fedorov Alexey\n"
-                     "/// @date ${date}\n"
-                     "\n"
-                     "${license}"
-                     "\n"
-                     "${cpp_includes}\n"
+        t = Template("${cpp_includes}\n"
                      "\n"
                      "namespace\n"
                      "{\n"
@@ -372,22 +408,13 @@ class Generator:
             "    return extension_cache[static_cast<int>(extension)];\n"\
             "}\n" if extensions_count else ""
 
-        init_features = "\n".join("    feature_cache[static_cast<int>(Feature::{})] = init_{}(get_function);".format(
-            g.name, g.name.lower()) for g in self.features)
+        init_features = "\n".join(feature_init(g) for g in self.features)
+        init_extensions = "\n".join(extension_init(g) for g in self.extensions)
 
-        init_extensions = "\n".join("    extension_cache[static_cast<int>(Extension::{})] = init_{}(get_function);".format(
-            g.name, g.name.lower()) for g in self.extensions)
+        feature_definitions = "\n".join(group_definition(g) for g in self.features)
+        extension_definitions = "\n".join(group_definition(g) for g in self.extensions)
 
-        feature_definitions = "\n".join(
-            group_definition(g) for g in self.features)
-
-        extension_definitions = "\n".join(
-            group_definition(g) for g in self.extensions)
-
-        d = dict(brief=self.data.BRIEF,
-                 date=self.data.DATE,
-                 license=self.data.LICENSE,
-                 namespace=self.data.NAMESPACE,
+        d = dict(namespace=self.data.NAMESPACE,
                  init_function_name=self.data.INIT_FUNCTION_NAME,
                  cpp_includes=cpp_includes,
                  feture_declarations=feture_declarations,

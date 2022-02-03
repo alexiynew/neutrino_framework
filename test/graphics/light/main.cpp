@@ -1,28 +1,3 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <chrono>
 #include <thread>
 
@@ -212,7 +187,9 @@ Object create_light_cube()
     shader->load_vertex_source(light_cube::vertex_shader);
     shader->load_fragment_source(light_cube::fragment_shader);
 
-    return {std::move(mesh), std::move(shader), {0, 0, 0}};
+    Material material;
+
+    return {std::move(mesh), std::move(shader), {0, 0, 0}, material};
 }
 
 } // namespace
@@ -231,7 +208,7 @@ private:
     {
         Window::set_application_name("GL light Test");
 
-        Window main_window({800, 640}, "GL light test");
+        Window main_window(name(), {800, 640});
         Renderer renderer(main_window);
 
         renderer.set_clear_color(Color(0x202020FFu));
@@ -263,6 +240,7 @@ private:
                 case KeyCode::key_d: camera.set_action(Camera::ActionState::moveRight, true); break;
                 case KeyCode::key_q: camera.set_action(Camera::ActionState::moveUp, true); break;
                 case KeyCode::key_e: camera.set_action(Camera::ActionState::moveDown, true); break;
+                default: break;
             }
         });
 
@@ -274,6 +252,7 @@ private:
                 case KeyCode::key_d: camera.set_action(Camera::ActionState::moveRight, false); break;
                 case KeyCode::key_q: camera.set_action(Camera::ActionState::moveUp, false); break;
                 case KeyCode::key_e: camera.set_action(Camera::ActionState::moveDown, false); break;
+                default: break;
             }
         });
 
@@ -303,11 +282,9 @@ private:
 
         main_window.show();
 
-        std::chrono::microseconds max_total_time = std::chrono::seconds(100);
+        std::chrono::microseconds max_total_time = std::chrono::seconds(3);
         std::chrono::microseconds total_time(0);
         std::chrono::milliseconds delta_time(16);
-
-        const float angle = 0.05f;
 
         light_cube.position = {7.0f, 0.0f, 0.0f};
 

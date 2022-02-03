@@ -1,34 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-/// @file
-/// @brief OpenGL texture.
-/// @author Fedorov Alexey
-/// @date 07.07.2020
-////////////////////////////////////////////////////////////////////////////////
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <cstdint>
 
 #include <graphics/texture.hpp>
@@ -47,12 +16,12 @@ namespace
 int convert_min_filter(MinFilter filter) noexcept
 {
     switch (filter) {
-        case MinFilter::nearest: return GL_NEAREST; break;
-        case MinFilter::linear: return GL_LINEAR; break;
-        case MinFilter::nearest_mipmap_nearest: return GL_NEAREST_MIPMAP_NEAREST; break;
-        case MinFilter::linear_mipmap_nearest: return GL_LINEAR_MIPMAP_NEAREST; break;
-        case MinFilter::nearest_mipmap_linear: return GL_NEAREST_MIPMAP_LINEAR; break;
-        case MinFilter::linear_mipmap_linear: return GL_LINEAR_MIPMAP_LINEAR; break;
+        case MinFilter::nearest: return GL_NEAREST;
+        case MinFilter::linear: return GL_LINEAR;
+        case MinFilter::nearest_mipmap_nearest: return GL_NEAREST_MIPMAP_NEAREST;
+        case MinFilter::linear_mipmap_nearest: return GL_LINEAR_MIPMAP_NEAREST;
+        case MinFilter::nearest_mipmap_linear: return GL_NEAREST_MIPMAP_LINEAR;
+        case MinFilter::linear_mipmap_linear: return GL_LINEAR_MIPMAP_LINEAR;
     }
 
     return 0;
@@ -61,8 +30,8 @@ int convert_min_filter(MinFilter filter) noexcept
 int convert_mag_filter(MagFilter filter) noexcept
 {
     switch (filter) {
-        case MagFilter::nearest: return GL_NEAREST; break;
-        case MagFilter::linear: return GL_LINEAR; break;
+        case MagFilter::nearest: return GL_NEAREST;
+        case MagFilter::linear: return GL_LINEAR;
     }
 
     return 0;
@@ -71,10 +40,10 @@ int convert_mag_filter(MagFilter filter) noexcept
 int convert_wrap_parameter(Wrap wrap) noexcept
 {
     switch (wrap) {
-        case Wrap::repeat: return GL_REPEAT; break;
-        case Wrap::mirrored_repeat: return GL_MIRRORED_REPEAT; break;
-        case Wrap::clamp_to_edge: return GL_CLAMP_TO_EDGE; break;
-        case Wrap::clamp_to_border: return GL_CLAMP_TO_BORDER; break;
+        case Wrap::repeat: return GL_REPEAT;
+        case Wrap::mirrored_repeat: return GL_MIRRORED_REPEAT;
+        case Wrap::clamp_to_edge: return GL_CLAMP_TO_EDGE;
+        case Wrap::clamp_to_border: return GL_CLAMP_TO_BORDER;
     }
 
     return 0;
@@ -83,10 +52,6 @@ int convert_wrap_parameter(Wrap wrap) noexcept
 
 namespace framework::graphics
 {
-
-OpenglTexture::OpenglTexture(std::uint32_t texture_unit)
-    : m_texture_unit(texture_unit)
-{}
 
 OpenglTexture::~OpenglTexture()
 {
@@ -129,20 +94,15 @@ bool OpenglTexture::load(const Texture& texture)
     return true;
 }
 
-void OpenglTexture::bind() const
+void OpenglTexture::bind(std::uint32_t texture_unit) const
 {
-    glActiveTexture(static_cast<int>(GL_TEXTURE0 + m_texture_unit));
+    glActiveTexture(static_cast<GLenum>(GL_TEXTURE0 + texture_unit));
     glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
 std::uint32_t OpenglTexture::texture_id() const
 {
     return m_texture;
-}
-
-std::uint32_t OpenglTexture::texture_unit() const
-{
-    return m_texture_unit;
 }
 
 void OpenglTexture::clear()

@@ -1,39 +1,17 @@
-/// @file
-/// @brief Types and functions for keyboard support.
-/// @author Fedorov Alexey
-/// @date 15.12.2018
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_SYSTEM_KEYBOARD_HPP
 #define FRAMEWORK_SYSTEM_KEYBOARD_HPP
 
-#include <common/types.hpp>
-
 namespace framework::system
 {
+
+////////////////////////////////////////////////////////////////////////////////
+/// @addtogroup input_module
+/// @{
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Keyboard keys definition.
+////////////////////////////////////////////////////////////////////////////////
 enum class KeyCode
 {
     unknown = -1,
@@ -165,10 +143,16 @@ enum class KeyCode
     key_right_super   = 347,
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Keyboard state modifiers.
+////////////////////////////////////////////////////////////////////////////////
 class Modifiers
 {
 public:
-    enum ModifiersState : int32
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Modifiers state.
+    ////////////////////////////////////////////////////////////////////////////
+    enum ModifiersState : int
     {
         none      = 0,
         shift     = 0x0001,
@@ -179,10 +163,13 @@ public:
         num_lock  = 0x0020,
     };
 
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief True if any state is set.
+    ////////////////////////////////////////////////////////////////////////////
     operator bool();
 
-    Modifiers& operator&=(int32 mask);
-    Modifiers& operator|=(int32 mask);
+    Modifiers& operator&=(int mask);
+    Modifiers& operator|=(int mask);
 
     bool operator==(Modifiers rhs);
     bool operator!=(Modifiers rhs);
@@ -191,11 +178,16 @@ private:
     ModifiersState m_state = none;
 };
 
-Modifiers operator&(Modifiers modifiers, int32 mask);
-Modifiers operator|(Modifiers modifiers, int32 mask);
+Modifiers operator&(Modifiers modifiers, int mask);
+Modifiers operator|(Modifiers modifiers, int mask);
 
-Modifiers operator&(int32 mask, Modifiers modifiers);
-Modifiers operator|(int32 mask, Modifiers modifiers);
+Modifiers operator&(int mask, Modifiers modifiers);
+Modifiers operator|(int mask, Modifiers modifiers);
+
+////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////
+
 } // namespace framework::system
 
 #endif

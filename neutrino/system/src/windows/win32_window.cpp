@@ -1,35 +1,4 @@
-/// @file
-/// @brief Window implementation for windows.
-/// @author Fedorov Alexey
-/// @date 19.04.2017
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <stdexcept>
-
-#include <log/log.hpp>
 
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_keyboard.hpp>
@@ -41,8 +10,7 @@
 
 namespace
 {
-const char* const log_tag  = "Win32Window";
-const wchar_t class_name[] = L"my_window_class";
+const char* const log_tag = "Win32Window";
 
 const DWORD window_style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_CLIPCHILDREN |
                            WS_CLIPSIBLINGS;
@@ -60,7 +28,7 @@ std::wstring utf8_to_utf16(const std::string& string)
         return std::wstring();
     }
 
-    std::unique_ptr<wchar_t[]> buffer(new wchar_t[size]);
+    std::unique_ptr<wchar_t[]> buffer(new wchar_t[static_cast<std::size_t>(size)]);
     MultiByteToWideChar(CP_UTF8, 0, &string[0], -1, buffer.get(), size);
 
     return std::wstring(buffer.get());
@@ -78,7 +46,7 @@ std::string utf16_to_utf8(const std::wstring& string)
         return std::string();
     }
 
-    std::unique_ptr<char[]> buffer(new char[size]);
+    std::unique_ptr<char[]> buffer(new char[static_cast<std::size_t>(size)]);
     WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
 
     return std::string(buffer.get());
@@ -96,57 +64,10 @@ std::string utf32_to_utf8(const std::wstring& string)
         return std::string();
     }
 
-    std::unique_ptr<char[]> buffer(new char[size]);
+    std::unique_ptr<char[]> buffer(new char[static_cast<std::size_t>(size)]);
     WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
 
     return std::string(buffer.get());
-}
-
-void unregister_window_class(ATOM*)
-{
-    using framework::system::details::Win32Application;
-
-    UnregisterClass(class_name, Win32Application::handle());
-}
-
-std::shared_ptr<ATOM> register_window_class_details()
-{
-    using framework::system::details::Win32Application;
-
-    WNDCLASSEX window_class = {};
-
-    window_class.cbSize        = sizeof(WNDCLASSEX);
-    window_class.style         = CS_OWNDC;
-    window_class.lpfnWndProc   = Win32Application::window_procedure;
-    window_class.cbClsExtra    = 0;
-    window_class.cbWndExtra    = 0;
-    window_class.hInstance     = Win32Application::handle();
-    window_class.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
-    window_class.hCursor       = LoadCursor(nullptr, IDC_ARROW);
-    window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    window_class.lpszMenuName  = nullptr;
-    window_class.lpszClassName = class_name;
-    window_class.hIconSm       = LoadIcon(nullptr, IDI_APPLICATION);
-
-    if (!RegisterClassEx(&window_class)) {
-        throw std::runtime_error("Failed to register window class.");
-    }
-
-    return std::shared_ptr<ATOM>(nullptr, unregister_window_class);
-}
-
-std::shared_ptr<ATOM> register_window_class()
-{
-    static std::weak_ptr<ATOM> pointer;
-
-    if (pointer.expired()) {
-        std::shared_ptr<ATOM> temp = ::register_window_class_details();
-
-        pointer = temp;
-        return temp;
-    }
-
-    return pointer.lock();
 }
 
 framework::system::MouseButton get_mouse_button(UINT message)
@@ -167,7 +88,7 @@ framework::system::MouseButton get_mouse_button(UINT message)
     return MouseButton::unknown;
 }
 
-framework::Size adjust_size(framework::Size size, DWORD style)
+framework::Size adjust_size(framework::Size size, long style)
 {
     RECT rect{0, 0, size.width, size.height};
     AdjustWindowRectEx(&rect, window_style, false, window_ex_style);
@@ -239,18 +160,13 @@ bool is_cursor_in_client_area(HWND window)
 
 namespace framework::system::details
 {
-Win32Window::Win32Window(const Window& window_interface,
-                         Size size,
-                         const std::string& title,
-                         const ContextSettings& settings)
-    : PlatformWindow(window_interface)
+Win32Window::Win32Window(const std::string& title, Size size, const ContextSettings& settings)
+    : PlatformWindow()
 {
-    m_window_class = ::register_window_class();
-
     size = adjust_size(size, window_style);
 
     m_window = CreateWindowEx(window_ex_style,
-                              class_name,
+                              Win32Application::get_window_class(),
                               utf8_to_utf16(title).c_str(),
                               window_style,
                               CW_USEDEFAULT,
@@ -263,10 +179,10 @@ Win32Window::Win32Window(const Window& window_interface,
                               nullptr);
 
     if (m_window == nullptr) {
-        throw std::runtime_error("Failed to create window.");
+        throw std::runtime_error("Failed to create window, error: " + std::to_string(GetLastError()));
     }
 
-    m_context = std::make_unique<Win32WglContext>(settings, m_window);
+    m_context = std::make_unique<Win32WglContext>(m_window, settings);
 
     Win32Application::add_window(m_window, this);
 
@@ -276,15 +192,18 @@ Win32Window::Win32Window(const Window& window_interface,
 
 Win32Window::~Win32Window()
 {
-    Win32Application::remove_window(m_window);
-
     DestroyWindow(m_window);
+    Win32Application::remove_window(m_window);
 }
 
 #pragma region actions
 
 void Win32Window::show()
 {
+    if (is_visible()) {
+        return;
+    }
+
     if (is_iconified()) {
         ShowWindow(m_window, SW_RESTORE);
     } else {
@@ -293,15 +212,34 @@ void Win32Window::show()
     UpdateWindow(m_window);
 
     m_mouse_hover = is_cursor_in_client_area(m_window);
+
+    // Explicitly call on_show callback
+    on_show();
 }
 
 void Win32Window::hide()
 {
+    if (!is_visible()) {
+        return;
+    }
+
+    if (has_input_focus()) {
+        // Call the on_lost_focus callback explicitly
+        on_lost_focus();
+    }
+
     ShowWindow(m_window, SW_HIDE);
+
+    // Explicitly call on_hide callback
+    on_hide();
 }
 
 void Win32Window::focus()
 {
+    if (!is_visible()) {
+        return;
+    }
+
     BringWindowToTop(m_window);
     SetForegroundWindow(m_window);
 }
@@ -524,19 +462,28 @@ std::string Win32Window::title() const
         return std::string();
     }
 
-    std::unique_ptr<wchar_t[]> buffer(new wchar_t[title_length]);
+    std::unique_ptr<wchar_t[]> buffer(new wchar_t[static_cast<std::size_t>(title_length)]);
     GetWindowText(m_window, buffer.get(), title_length);
 
     return utf16_to_utf8(buffer.get());
 }
 
-Context& Win32Window::context() const
+const Context& Win32Window::context() const
 {
     if (m_context == nullptr) {
         throw std::runtime_error("Graphic context was not created.");
     }
 
-    return *(m_context.get());
+    return *m_context;
+}
+
+Context& Win32Window::context()
+{
+    if (m_context == nullptr) {
+        throw std::runtime_error("Graphic context was not created.");
+    }
+
+    return *m_context;
 }
 
 #pragma endregion
@@ -602,12 +549,16 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
 {
     switch (message) {
         case WM_SETFOCUS: {
-            on_focus();
+            if (is_visible()) {
+                on_focus();
+            }
             return 0;
         }
 
         case WM_KILLFOCUS: {
-            on_lost_focus();
+            if (is_visible()) {
+                on_lost_focus();
+            }
             return 0;
         }
 
@@ -618,14 +569,6 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         }
 
         case WM_SHOWWINDOW: {
-            if (l_param == 0) {
-                if (w_param == TRUE) {
-                    on_show();
-                } else {
-                    on_hide();
-                }
-            }
-
             return 0;
         }
 
@@ -689,10 +632,8 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
             return 0;
         }
 
-        case WM_SETCURSOR:
-        {
-            if (LOWORD(l_param) == HTCLIENT)
-            {
+        case WM_SETCURSOR: {
+            if (LOWORD(l_param) == HTCLIENT) {
                 set_cursor_visibility(m_cursor_visible);
                 return TRUE;
             }
@@ -800,6 +741,10 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
     return DefWindowProc(m_window, message, w_param, l_param);
 }
 
+#pragma endregion
+
+#pragma region keyboard processing
+
 LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
 {
     switch (w_param) {
@@ -809,7 +754,7 @@ LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
         default: break;
     }
 
-    const KeyCode key         = details::map_system_key(static_cast<uint32>(w_param));
+    const KeyCode key         = details::map_system_key(static_cast<std::uint32_t>(w_param));
     const Modifiers mod_state = details::get_modifiers_state();
     const bool key_is_down    = ((l_param >> 31) & 1) == 0;
 
@@ -916,7 +861,7 @@ void Win32Window::process_alt_key(LPARAM l_param)
 
 #pragma endregion
 
-#pragma region helper functions
+#pragma region mouse processing
 
 void Win32Window::track_mouse()
 {
@@ -940,19 +885,13 @@ void Win32Window::update_cursor()
 void Win32Window::enable_raw_input()
 {
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
-
-    if (!RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
-        log::error(log_tag) << "Failed to register raw input device";
-    }
+    RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
 void Win32Window::disable_raw_input()
 {
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
-
-    if (!RegisterRawInputDevices(&rid, 1, sizeof(rid))) {
-        log::error(log_tag) << "Failed to reset raw input device";
-    }
+    RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
 void Win32Window::process_raw_input(LPARAM l_param)
@@ -966,9 +905,8 @@ void Win32Window::process_raw_input(LPARAM l_param)
     UINT size = 0;
     GetRawInputData(handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
 
-    RAWINPUT raw_input = {0};
+    RAWINPUT raw_input = RAWINPUT();
     if (GetRawInputData(handle, RID_INPUT, &raw_input, &size, sizeof(RAWINPUTHEADER)) == static_cast<UINT>(-1)) {
-        log::error(log_tag) << "Failed to get raw input data";
         return;
     }
 

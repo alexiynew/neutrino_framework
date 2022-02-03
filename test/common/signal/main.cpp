@@ -1,38 +1,13 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <common/signal.hpp>
 #include <unit_test/suite.hpp>
 
 using namespace framework;
 
-class slot_test : public unit_test::Suite
+class SlotTest : public unit_test::Suite
 {
 public:
-    slot_test()
-        : Suite("slot_test")
+    SlotTest()
+        : Suite("SlotTest")
     {
         add_test([this]() { slot_lambda_0(); }, "slot_lambda_0");
         add_test([this]() { slot_lambda_1(); }, "slot_lambda_1");
@@ -153,7 +128,7 @@ private:
         };
 
         Slot slot;
-        Signal signal;
+        Signal<> signal;
 
         auto id1 = signal.connect(slot, &Slot::plus_one);
         auto id2 = signal.connect(slot, &Slot::plus_one);
@@ -277,7 +252,7 @@ private:
 
     void slot_self_disconnect()
     {
-        Signal signal1;
+        Signal<> signal1;
         int count1 = 0;
 
         signal1.connect([&signal1, &count1]() {
@@ -305,20 +280,20 @@ private:
         TEST_ASSERT(signal1.has_connections() == false, "Signal clear not working");
         TEST_ASSERT(count1 == 1, "Signal clear not working");
 
-        Signal<usize> signal2;
+        Signal<std::size_t> signal2;
         int count2 = 0;
 
-        auto id1 = signal2.connect([&signal2, &count2](usize a) {
+        auto id1 = signal2.connect([&signal2, &count2](std::size_t a) {
             signal2.disconnect(a);
             count2++;
         });
 
-        auto id2 = signal2.connect([&signal2, &count2](usize a) {
+        auto id2 = signal2.connect([&signal2, &count2](std::size_t a) {
             signal2.disconnect(a);
             count2++;
         });
 
-        auto id3 = signal2.connect([&signal2, &count2](usize a) {
+        auto id3 = signal2.connect([&signal2, &count2](std::size_t a) {
             signal2.disconnect(a);
             count2++;
         });
@@ -338,5 +313,5 @@ private:
 
 int main()
 {
-    return run_tests(slot_test());
+    return run_tests(SlotTest());
 }

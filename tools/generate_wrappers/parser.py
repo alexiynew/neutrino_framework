@@ -1,5 +1,7 @@
 from xml.etree import ElementTree
-import urllib.request
+import requests
+import urllib.parse
+import os
 
 
 class Type:
@@ -99,6 +101,7 @@ class Feature:
         self.name = feature.get('name')
         self.api = feature.get('api')
         self.number = feature.get('number')
+        self.protect = feature.get('protect');
 
         self.require = []
         for r in feature.findall('require'):
@@ -113,6 +116,7 @@ class Extension:
     def __init__(self, extension):
         self.name = extension.get('name')
         self.supported = extension.get('supported').split('|')
+        self.protect = extension.get('protect');
 
         self.require = []
         for r in extension.findall('require'):
@@ -149,11 +153,17 @@ class Registry:
             self.features.append(f)
 
 
-def parse(url, file):
-    #    with urllib.request.urlopen(xml_url) as response, open("tmp.xml", 'wb') as out_file:
-    #        data = response.read()
-    #        out_file.write(data)
+def parse(file):
+    url_base = "https://raw.githubusercontent.com/KhronosGroup/OpenGL-Registry/main/xml/"
 
-    r = Registry('./tools/generate_wrappers/' + file)
+    xml_url = url_base + file
+
+    print(f"Geting: {xml_url}")
+    with requests.get(xml_url) as response, open(file, 'wb') as out_file:
+        out_file.write(response.content)
+
+    r = Registry(file)
+
+    os.remove(file)
 
     return r

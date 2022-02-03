@@ -1,48 +1,19 @@
-/// @file
-/// @brief Defines connection to the X server.
-/// @author Fedorov Alexey
-/// @date 08.08.2017
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
-#include <common/types.hpp>
+#include <stdexcept>
 
 #include <system/src/linux/x11_keyboard.hpp>
 #include <system/src/linux/x11_server.hpp>
 
 namespace
 {
-using ::framework::system::details::x11_server;
+using ::framework::system::details::X11Server;
 
-std::weak_ptr<x11_server>& server_instance()
+std::weak_ptr<X11Server>& server_instance()
 {
-    static std::weak_ptr<x11_server> instance;
+    static std::weak_ptr<X11Server> instance;
     return instance;
 }
 
-[[noreturn]] ::framework::int32 fatal_error_handler(Display* /*unused*/)
+[[noreturn]] int fatal_error_handler(Display* /*unused*/)
 {
     std::terminate();
 }
@@ -51,7 +22,7 @@ int error_handler(Display* display, XErrorEvent* event)
 {
     auto x_server = server_instance().lock();
     if (x_server && display == x_server->display()) {
-        constexpr ::framework::uint32 length = 8 * 1024;
+        constexpr std::uint32_t length = 8 * 1024;
 
         char buffer[length] = {};
         XGetErrorText(display, event->error_code, buffer, length);
@@ -77,10 +48,10 @@ void release_error_handlers()
 
 namespace framework::system::details
 {
-std::shared_ptr<x11_server> x11_server::connect()
+std::shared_ptr<X11Server> X11Server::connect()
 {
     if (server_instance().expired()) {
-        std::shared_ptr<x11_server> temp{new x11_server()};
+        std::shared_ptr<X11Server> temp{new X11Server()};
         server_instance() = temp;
         return temp;
     }
@@ -88,7 +59,7 @@ std::shared_ptr<x11_server> x11_server::connect()
     return server_instance().lock();
 }
 
-x11_server::x11_server()
+X11Server::X11Server()
     : m_display{nullptr}
 {
     m_display = XOpenDisplay(nullptr);
@@ -104,7 +75,7 @@ x11_server::x11_server()
     init_key_code_map(this);
 }
 
-x11_server::~x11_server()
+X11Server::~X11Server()
 {
     if (m_input_method != nullptr) {
         XCloseIM(m_input_method);
@@ -117,34 +88,32 @@ x11_server::~x11_server()
     release_error_handlers();
 }
 
-Display* x11_server::display() const
+Display* X11Server::display() const
 {
     return m_display;
 }
 
-XID x11_server::default_root_window() const
+XID X11Server::default_root_window() const
 {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     return DefaultRootWindow(display());
 }
 
-XID x11_server::default_screen() const
+XID X11Server::default_screen() const
 {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
     return static_cast<XID>(DefaultScreen(display()));
 }
 
-Window x11_server::active_window() const
+::Window X11Server::active_window() const
 {
-    Window window;
-    int state;
+    ::Window window = None;
+    int state       = 0;
 
     XGetInputFocus(m_display, &window, &state);
 
     return window;
 }
 
-Atom x11_server::get_atom(const std::string& name, bool only_if_exists) const
+Atom X11Server::get_atom(const std::string& name, bool only_if_exists) const
 {
     if (m_atoms.count(name) == 0) {
         Atom atom = XInternAtom(m_display, name.c_str(), only_if_exists ? True : False);
@@ -154,7 +123,7 @@ Atom x11_server::get_atom(const std::string& name, bool only_if_exists) const
     return m_atoms[name];
 }
 
-XIM x11_server::input_method() const
+XIM X11Server::input_method() const
 {
     return m_input_method;
 }

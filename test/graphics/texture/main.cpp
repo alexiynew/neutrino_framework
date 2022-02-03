@@ -1,28 +1,3 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <array>
 #include <chrono>
 #include <thread>
@@ -87,8 +62,8 @@ const std::string lena_png_1024 = "texture_img/lena_1024.png";
 Image load_image(const std::string& file)
 {
     Image img;
-    if (!img.load(file)) {
-        throw std::runtime_error(std::string("Can't load image: ") + file);
+    if (const auto& [loaded, error] = img.load(file); !loaded) {
+        throw std::runtime_error(std::string("Can't load image: ") + file + " error: " + error);
     }
 
     return img;
@@ -155,7 +130,7 @@ MeshPtr create_mesh(int width, int height, const Mesh::TextureCoordinatesData te
     Mesh::VertexData scaled_vertices;
     std::transform(square_mesh::vertices.begin(),
                    square_mesh::vertices.end(),
-                   std::back_insert_iterator(scaled_vertices),
+                   std::back_insert_iterator<Mesh::VertexData>(scaled_vertices),
                    [width, height](const Mesh::VertexData::value_type& v) {
                        return Vector3f{v.x * width, v.y * height, v.z};
                    });
@@ -306,11 +281,11 @@ Entity create_entity_12()
 }
 } // namespace
 
-class texture_test : public framework::unit_test::Suite
+class TextureTest : public framework::unit_test::Suite
 {
 public:
-    texture_test()
-        : Suite("texture_test")
+    TextureTest()
+        : Suite("TextureTest")
     {
         add_test([this]() { main_loop(); }, "main_loop");
     }
@@ -324,7 +299,7 @@ private:
 
         Window::set_application_name("GL shader Test");
 
-        Window main_window({256 * 4, 256 * 3}, "GL shader test");
+        Window main_window(name(), {256 * 4, 256 * 3});
         Renderer renderer(main_window);
 
         renderer.set_clear_color(Color(0xFF00FFFF));
@@ -382,5 +357,5 @@ private:
 
 int main()
 {
-    return run_tests(texture_test());
+    return run_tests(TextureTest());
 }

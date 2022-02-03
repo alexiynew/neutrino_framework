@@ -1,28 +1,3 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <cassert>
 
 #include <math/math.hpp>
@@ -45,8 +20,6 @@ using framework::math::Vector2f;
 using framework::math::Vector3f;
 using framework::math::Vector4f;
 
-using framework::float32;
-
 using framework::math::frustum;
 using framework::math::infinite_perspective;
 using framework::math::ortho;
@@ -57,11 +30,11 @@ using framework::math::radians;
 
 using framework::math::half_pi;
 
-class transform_2d_function_tests : public framework::unit_test::Suite
+class Transform2DFunctionsTest : public framework::unit_test::Suite
 {
 public:
-    transform_2d_function_tests()
-        : Suite("transform_2d_function_tests")
+    Transform2DFunctionsTest()
+        : Suite("Transform2DFunctionsTest")
     {
         add_test([this]() { translate_function(); }, "translate_function");
         add_test([this]() { rotate_function(); }, "rotate_function");
@@ -262,11 +235,11 @@ private:
     }
 };
 
-class transform_3d_function_tests : public framework::unit_test::Suite
+class Transform3DFunctionsTest : public framework::unit_test::Suite
 {
 public:
-    transform_3d_function_tests()
-        : Suite("transform_3d_function_tests")
+    Transform3DFunctionsTest()
+        : Suite("Transform3DFunctionsTest")
     {
         add_test([this]() { translate_function(); }, "translate_function");
         add_test([this]() { scale_function(); }, "scale_function");
@@ -400,11 +373,11 @@ private:
     }
 };
 
-class projection_function_tests : public framework::unit_test::Suite
+class ProjectionFunctionsTest : public framework::unit_test::Suite
 {
 public:
-    projection_function_tests()
-        : Suite("projection_function_tests")
+    ProjectionFunctionsTest()
+        : Suite("ProjectionFunctionsTest")
     {
         add_test([this]() { ortho_function(); }, "ortho_function");
         add_test([this]() { ortho2d_function(); }, "ortho2d_function");
@@ -538,11 +511,11 @@ private:
     }
 };
 
-class helpers_function_test : public framework::unit_test::Suite
+class HelperFunctionsTest : public framework::unit_test::Suite
 {
 public:
-    helpers_function_test()
-        : Suite("helpers_function_test")
+    HelperFunctionsTest()
+        : Suite("HelperFunctionsTest")
     {
         add_test([this]() { project_function(); }, "project_function");
         add_test([this]() { unproject_function(); }, "unproject_function");
@@ -553,11 +526,11 @@ public:
 private:
     void project_function()
     {
-        const float32 near = 1.0f;
-        const float32 far  = 10.0f;
+        const float near = 1.0f;
+        const float far  = 10.0f;
 
-        const float32 width  = 480.0f;
-        const float32 height = 320.0f;
+        const float width  = 480.0f;
+        const float height = 320.0f;
 
         const Matrix4f model;
         const Matrix4f projection = perspective_fov(half_pi<float>, width, height, near, far);
@@ -591,11 +564,11 @@ private:
 
     void unproject_function()
     {
-        const float32 near = 1.0f;
-        const float32 far  = 10.0f;
+        const float near = 1.0f;
+        const float far  = 10.0f;
 
-        const float32 width  = 480.0f;
-        const float32 height = 320.0f;
+        const float width  = 480.0f;
+        const float height = 320.0f;
 
         const Matrix4f model;
         const Matrix4f projection = perspective_fov(half_pi<float>, width, height, near, far);
@@ -638,8 +611,8 @@ private:
         };
         // clang-format on
 
-        const float32 width  = 480.0f;
-        const float32 height = 320.0f;
+        const float width  = 480.0f;
+        const float height = 320.0f;
 
         const Vector4f viewport{0, 0, width, height};
 
@@ -671,8 +644,8 @@ private:
 
 int main()
 {
-    return run_tests(transform_2d_function_tests(),
-                     transform_3d_function_tests(),
-                     projection_function_tests(),
-                     helpers_function_test());
+    return run_tests(Transform2DFunctionsTest(),
+                     Transform3DFunctionsTest(),
+                     ProjectionFunctionsTest(),
+                     HelperFunctionsTest());
 }

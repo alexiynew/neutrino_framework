@@ -1,28 +1,3 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
@@ -40,13 +15,11 @@ using framework::math::Vector2f;
 using framework::math::Vector3f;
 using framework::math::Vector4f;
 
-using framework::float32;
-
-class matrix_access_test : public framework::unit_test::Suite
+class MatrixAccessTest : public framework::unit_test::Suite
 {
 public:
-    matrix_access_test()
-        : Suite("matrix_access_test")
+    MatrixAccessTest()
+        : Suite("MatrixAccessTest")
     {
         add_test([this]() { access_operator(); }, "access_operator");
         add_test([this]() { column_function(); }, "column_function");
@@ -264,17 +237,17 @@ private:
 
     void data_function()
     {
-        float32* p44 = Matrix44.data();
-        float32* p34 = Matrix34.data();
-        float32* p24 = Matrix24.data();
-        float32* p43 = Matrix43.data();
-        float32* p33 = Matrix33.data();
-        float32* p23 = Matrix23.data();
-        float32* p42 = Matrix42.data();
-        float32* p32 = Matrix32.data();
-        float32* p22 = Matrix22.data();
+        float* p44 = Matrix44.data();
+        float* p34 = Matrix34.data();
+        float* p24 = Matrix24.data();
+        float* p43 = Matrix43.data();
+        float* p33 = Matrix33.data();
+        float* p23 = Matrix23.data();
+        float* p42 = Matrix42.data();
+        float* p32 = Matrix32.data();
+        float* p22 = Matrix22.data();
 
-        auto check = [](const float32 a, const float32 b) { return framework::math::abs(a - b) <= 0; };
+        auto check = [](const float a, const float b) { return framework::math::abs(a - b) <= 0; };
 
         // clang-format off
         TEST_ASSERT(check(p44[0],  0.0f) && check(p44[1], 1.0f)  && check(p44[2], 2.0f)  && check(p44[3], 3.0f)  &&
@@ -339,5 +312,5 @@ private:
 
 int main()
 {
-    return run_tests(matrix_access_test());
+    return run_tests(MatrixAccessTest());
 }

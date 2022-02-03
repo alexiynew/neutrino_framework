@@ -1,32 +1,3 @@
-/// @file
-/// @brief OpneGL functions wrapper.
-/// @author Fedorov Alexey
-/// @date 17.09.2018
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_GRAPHICS_SRC_OPENGL_OPENGL_HPP
 #define FRAMEWORK_GRAPHICS_SRC_OPENGL_OPENGL_HPP
 
@@ -36,6 +7,7 @@
 
 namespace framework::graphics::details::opengl
 {
+
 #pragma region GL_VERSION_1_0
 
 typedef void GLvoid;
@@ -1662,7 +1634,7 @@ constexpr int GL_FRAGMENT_SHADER_BIT              = 0x00000002;
 constexpr int GL_GEOMETRY_SHADER_BIT              = 0x00000004;
 constexpr int GL_TESS_CONTROL_SHADER_BIT          = 0x00000008;
 constexpr int GL_TESS_EVALUATION_SHADER_BIT       = 0x00000010;
-constexpr int GL_ALL_SHADER_BITS                  = 0xFFFFFFFF;
+constexpr int GL_ALL_SHADER_BITS                  = int(0xFFFFFFFF);
 constexpr int GL_PROGRAM_SEPARABLE                = 0x8258;
 constexpr int GL_ACTIVE_PROGRAM                   = 0x8259;
 constexpr int GL_PROGRAM_PIPELINE_BINDING         = 0x825A;
@@ -1674,7 +1646,7 @@ constexpr int GL_VIEWPORT_INDEX_PROVOKING_VERTEX  = 0x825F;
 constexpr int GL_UNDEFINED_VERTEX                 = 0x8260;
 
 void glReleaseShaderCompiler();
-void glShaderBinary(GLsizei count, const GLuint* shaders, GLenum binaryformat, const void* binary, GLsizei length);
+void glShaderBinary(GLsizei count, const GLuint* shaders, GLenum binaryFormat, const void* binary, GLsizei length);
 void glGetShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype, GLint* range, GLint* precision);
 void glDepthRangef(GLfloat n, GLfloat f);
 void glClearDepthf(GLfloat d);
@@ -1881,7 +1853,7 @@ constexpr int GL_BUFFER_UPDATE_BARRIER_BIT                                  = 0x
 constexpr int GL_FRAMEBUFFER_BARRIER_BIT                                    = 0x00000400;
 constexpr int GL_TRANSFORM_FEEDBACK_BARRIER_BIT                             = 0x00000800;
 constexpr int GL_ATOMIC_COUNTER_BARRIER_BIT                                 = 0x00001000;
-constexpr int GL_ALL_BARRIER_BITS                                           = 0xFFFFFFFF;
+constexpr int GL_ALL_BARRIER_BITS                                           = int(0xFFFFFFFF);
 constexpr int GL_MAX_IMAGE_UNITS                                            = 0x8F38;
 constexpr int GL_MAX_COMBINED_IMAGE_UNITS_AND_FRAGMENT_OUTPUTS              = 0x8F39;
 constexpr int GL_IMAGE_BINDING_NAME                                         = 0x8F3A;
@@ -4609,7 +4581,7 @@ void glRasterSamplesEXT(GLuint samples, GLboolean fixedsamplelocations);
 constexpr int GL_ACTIVE_PROGRAM_EXT           = 0x8B8D;
 constexpr int GL_VERTEX_SHADER_BIT_EXT        = 0x00000001;
 constexpr int GL_FRAGMENT_SHADER_BIT_EXT      = 0x00000002;
-constexpr int GL_ALL_SHADER_BITS_EXT          = 0xFFFFFFFF;
+constexpr int GL_ALL_SHADER_BITS_EXT          = int(0xFFFFFFFF);
 constexpr int GL_PROGRAM_SEPARABLE_EXT        = 0x8258;
 constexpr int GL_PROGRAM_PIPELINE_BINDING_EXT = 0x825A;
 
@@ -4668,11 +4640,54 @@ constexpr int GL_SR8_EXT = 0x8FBD;
 
 #pragma endregion
 
+#pragma region GL_EXT_texture_sRGB_RG8
+
+constexpr int GL_SRG8_EXT = 0x8FBE;
+
+#pragma endregion
+
 #pragma region GL_EXT_texture_sRGB_decode
 
 constexpr int GL_TEXTURE_SRGB_DECODE_EXT = 0x8A48;
 constexpr int GL_DECODE_EXT              = 0x8A49;
 constexpr int GL_SKIP_DECODE_EXT         = 0x8A4A;
+
+#pragma endregion
+
+#pragma region GL_EXT_texture_storage
+
+constexpr int GL_TEXTURE_IMMUTABLE_FORMAT_EXT = 0x912F;
+constexpr int GL_ALPHA8_EXT                   = 0x803C;
+constexpr int GL_LUMINANCE8_EXT               = 0x8040;
+constexpr int GL_LUMINANCE8_ALPHA8_EXT        = 0x8045;
+constexpr int GL_RGBA32F_EXT                  = 0x8814;
+constexpr int GL_RGB32F_EXT                   = 0x8815;
+constexpr int GL_ALPHA32F_EXT                 = 0x8816;
+constexpr int GL_LUMINANCE32F_EXT             = 0x8818;
+constexpr int GL_LUMINANCE_ALPHA32F_EXT       = 0x8819;
+constexpr int GL_RGBA16F_EXT                  = 0x881A;
+constexpr int GL_RGB16F_EXT                   = 0x881B;
+constexpr int GL_ALPHA16F_EXT                 = 0x881C;
+constexpr int GL_LUMINANCE16F_EXT             = 0x881E;
+constexpr int GL_LUMINANCE_ALPHA16F_EXT       = 0x881F;
+constexpr int GL_RGB10_A2_EXT                 = 0x8059;
+constexpr int GL_RGB10_EXT                    = 0x8052;
+constexpr int GL_BGRA8_EXT                    = 0x93A1;
+constexpr int GL_R8_EXT                       = 0x8229;
+constexpr int GL_RG8_EXT                      = 0x822B;
+constexpr int GL_R32F_EXT                     = 0x822E;
+constexpr int GL_RG32F_EXT                    = 0x8230;
+constexpr int GL_R16F_EXT                     = 0x822D;
+constexpr int GL_RG16F_EXT                    = 0x822F;
+
+void glTexStorage1DEXT(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width);
+void glTexStorage2DEXT(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
+void glTexStorage3DEXT(GLenum target,
+                       GLsizei levels,
+                       GLenum internalformat,
+                       GLsizei width,
+                       GLsizei height,
+                       GLsizei depth);
 
 #pragma endregion
 
@@ -4975,12 +4990,24 @@ void glMaxShaderCompilerThreadsKHR(GLuint count);
 
 #pragma endregion
 
+#pragma region GL_MESA_framebuffer_flip_x
+
+constexpr int GL_FRAMEBUFFER_FLIP_X_MESA = 0x8BBC;
+
+#pragma endregion
+
 #pragma region GL_MESA_framebuffer_flip_y
 
 constexpr int GL_FRAMEBUFFER_FLIP_Y_MESA = 0x8BBB;
 
 void glFramebufferParameteriMESA(GLenum target, GLenum pname, GLint param);
 void glGetFramebufferParameterivMESA(GLenum target, GLenum pname, GLint* params);
+
+#pragma endregion
+
+#pragma region GL_MESA_framebuffer_swap_xy
+
+constexpr int GL_FRAMEBUFFER_SWAP_XY_MESA = 0x8BBD;
 
 #pragma endregion
 
@@ -5436,6 +5463,47 @@ void glNamedBufferAttachMemoryNV(GLuint buffer, GLuint memory, GLuint64 offset);
 
 #pragma endregion
 
+#pragma region GL_NV_memory_object_sparse
+
+void glBufferPageCommitmentMemNV(GLenum target,
+                                 GLintptr offset,
+                                 GLsizeiptr size,
+                                 GLuint memory,
+                                 GLuint64 memOffset,
+                                 GLboolean commit);
+void glTexPageCommitmentMemNV(GLenum target,
+                              GLint layer,
+                              GLint level,
+                              GLint xoffset,
+                              GLint yoffset,
+                              GLint zoffset,
+                              GLsizei width,
+                              GLsizei height,
+                              GLsizei depth,
+                              GLuint memory,
+                              GLuint64 offset,
+                              GLboolean commit);
+void glNamedBufferPageCommitmentMemNV(GLuint buffer,
+                                      GLintptr offset,
+                                      GLsizeiptr size,
+                                      GLuint memory,
+                                      GLuint64 memOffset,
+                                      GLboolean commit);
+void glTexturePageCommitmentMemNV(GLuint texture,
+                                  GLint layer,
+                                  GLint level,
+                                  GLint xoffset,
+                                  GLint yoffset,
+                                  GLint zoffset,
+                                  GLsizei width,
+                                  GLsizei height,
+                                  GLsizei depth,
+                                  GLuint memory,
+                                  GLuint64 offset,
+                                  GLboolean commit);
+
+#pragma endregion
+
 #pragma region GL_NV_mesh_shader
 
 constexpr int GL_MESH_SHADER_NV                                     = 0x9559;
@@ -5803,7 +5871,7 @@ GLenum glPathGlyphIndexRangeNV(GLenum fontTarget,
                                GLbitfield fontStyle,
                                GLuint pathParameterTemplate,
                                GLfloat emScale,
-                               GLuint baseAndCount[2]);
+                               GLuint* baseAndCount);
 GLenum glPathGlyphIndexArrayNV(GLuint firstPathName,
                                GLenum fontTarget,
                                const void* fontName,
@@ -5840,6 +5908,13 @@ void glGetProgramResourcefvNV(GLuint program,
 #pragma region GL_NV_path_rendering_shared_edge
 
 constexpr int GL_SHARED_EDGE_NV = 0xC0;
+
+#pragma endregion
+
+#pragma region GL_NV_primitive_shading_rate
+
+constexpr int GL_SHADING_RATE_IMAGE_PER_PRIMITIVE_NV = 0x95B1;
+constexpr int GL_SHADING_RATE_IMAGE_PALETTE_COUNT_NV = 0x95B2;
 
 #pragma endregion
 
@@ -6306,7 +6381,9 @@ enum class Extension
     GL_EXT_texture_compression_s3tc,
     GL_EXT_texture_filter_minmax,
     GL_EXT_texture_sRGB_R8,
+    GL_EXT_texture_sRGB_RG8,
     GL_EXT_texture_sRGB_decode,
+    GL_EXT_texture_storage,
     GL_EXT_window_rectangles,
     GL_INTEL_conservative_rasterization,
     GL_INTEL_framebuffer_CMAA,
@@ -6324,7 +6401,9 @@ enum class Extension
     GL_KHR_texture_compression_astc_ldr,
     GL_KHR_texture_compression_astc_sliced_3d,
     GL_KHR_parallel_shader_compile,
+    GL_MESA_framebuffer_flip_x,
     GL_MESA_framebuffer_flip_y,
+    GL_MESA_framebuffer_swap_xy,
     GL_NV_bindless_multi_draw_indirect,
     GL_NV_bindless_multi_draw_indirect_count,
     GL_NV_bindless_texture,
@@ -6352,9 +6431,11 @@ enum class Extension
     GL_NV_gpu_shader5,
     GL_NV_internalformat_sample_query,
     GL_NV_memory_attachment,
+    GL_NV_memory_object_sparse,
     GL_NV_mesh_shader,
     GL_NV_path_rendering,
     GL_NV_path_rendering_shared_edge,
+    GL_NV_primitive_shading_rate,
     GL_NV_representative_fragment_test,
     GL_NV_sample_locations,
     GL_NV_sample_mask_override_coverage,

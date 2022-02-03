@@ -1,28 +1,3 @@
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -222,11 +197,11 @@ std::string button_name(MouseButton button)
 
 } // namespace
 
-class window_events_test : public framework::unit_test::Suite
+class WindowEventTest : public framework::unit_test::Suite
 {
 public:
-    window_events_test()
-        : Suite("window_events_test")
+    WindowEventTest()
+        : Suite("WindowEventTest")
     {
         add_test([this]() { run(); }, "run");
     }
@@ -237,11 +212,11 @@ private:
         using namespace framework;
         using namespace framework::system;
 
-        framework::log::set_logger(std::make_unique<framework::log::stream_logger>(std::cout));
+        framework::log::set_logger(std::make_unique<framework::log::StreamLogger>(std::cout));
 
         const Size size640{640, 480};
 
-        Window w(size640, "Test");
+        Window w(name(), size640);
 
         bool should_close = false;
 
@@ -298,8 +273,8 @@ private:
 
         w.show();
 
-        const float32 max_total_time = 1000;
-        float32 total_time           = 0;
+        const float max_total_time = 10000;
+        float total_time           = 0;
 
         while (w.is_visible() && !should_close && total_time < max_total_time) {
             w.process_events();
@@ -312,5 +287,5 @@ private:
 
 int main()
 {
-    return run_tests(window_events_test());
+    return run_tests(WindowEventTest());
 }

@@ -1,32 +1,3 @@
-/// @file
-/// @brief Declaration of base class for tests.
-/// @author Fedorov Alexey
-/// @date 04.03.2017
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_UNIT_TEST_SUITE_HPP
 #define FRAMEWORK_UNIT_TEST_SUITE_HPP
 
@@ -36,10 +7,12 @@
 
 #include <common/types.hpp>
 
+////////////////////////////////////////////////////////////////////////////////
 /// @brief Contains classes related to unit tests.
-///
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 /// @details
-/// TODO: Add details
 ///
 /// You should use the `unit_test::Suite` as base class for your tests.
 /// @code
@@ -81,47 +54,66 @@
 /// @code
 /// run_tests(example_test(), other_example_test());
 /// @endcode
-///
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 /// @defgroup unit_test_module Unit test
-/// @{
+////////////////////////////////////////////////////////////////////////////////
 
 namespace framework::unit_test
 {
+////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup unit_test_module
 /// @{
+////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////
 /// @brief Base class to work with tests.
+////////////////////////////////////////////////////////////////////////////////
 class Suite
 {
 public:
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates test Suite with provided name.
     ///
     /// @param name Name of the test Suite.
+    ////////////////////////////////////////////////////////////////////////////
     explicit Suite(std::string name);
 
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Function to run all tests in the Suite.
+    ////////////////////////////////////////////////////////////////////////////
     void run();
 
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Checks if all tests finished successfully.
     ///
     /// @return @b true if all tests were successful.
+    ////////////////////////////////////////////////////////////////////////////
     bool is_succeeded() const;
 
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Suite name.
     ///
     /// @return The name of this Suite.
+    ////////////////////////////////////////////////////////////////////////////
     std::string name() const;
 
 protected:
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Function type shortcut, for internal usage.
-    using function_type = std::function<void()>;
+    ////////////////////////////////////////////////////////////////////////////
+    using FunctionType = std::function<void()>;
 
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Adds function to test Suite.
     ///
     /// @param function Test function.
     /// @param name Name of the current test function.
-    void add_test(function_type&& function, const std::string& name);
+    ////////////////////////////////////////////////////////////////////////////
+    void add_test(FunctionType&& function, const std::string& name);
 
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Fails current test.
     ///
     /// @param file Path to the source file.
@@ -130,13 +122,18 @@ protected:
     ///
     /// @note You can use @ref TEST_FAIL and @ref TEST_ASSERT macros
     ///       to get @b file path and @b line number.
+    ////////////////////////////////////////////////////////////////////////////
     void test_failed(const std::string& file, int32 line, const std::string& message);
 
 private:
+    ////////////////////////////////////////////////////////////////////////////
     /// @brief Test description.
+    ////////////////////////////////////////////////////////////////////////////
     struct TestData
     {
+        ////////////////////////////////////////////////////////////////////////
         /// @brief Test status info.
+        ////////////////////////////////////////////////////////////////////////
         struct Status
         {
             std::string message; ///< Error message.
@@ -144,18 +141,25 @@ private:
             int32 line;          ///< Line which cause error.
         };
 
-        Status status;
-        std::string name;
-        function_type function;
-        // TODO(alex) Change state to enum {success, fail, exception}
-        bool success;
+        ////////////////////////////////////////////////////////////////////////
+        /// @brief Test result.
+        ////////////////////////////////////////////////////////////////////////
+        enum class Result
+        {
+            success,
+            fail,
+            exception,
+        };
 
-        TestData(function_type&& function_to_call, std::string test_name);
+        std::string name;
+        std::vector<Status> status;
+        FunctionType function = nullptr;
+        Result reslut         = Result::success;
+
+        TestData(std::string test_name, FunctionType&& function_to_call);
     };
 
-    void output_fail(const TestData& test);
-
-    void output_success(const TestData& test);
+    void output(const TestData& test);
 
     std::string m_name;
 
@@ -165,10 +169,13 @@ private:
     bool m_success = true;
 };
 
+////////////////////////////////////////////////////////////////////////////////
 /// @brief Runs test in all test suites.
 ///
 /// @param tests Test suites to run.
+///
 /// @return Number of test suites that failed.
+////////////////////////////////////////////////////////////////////////////////
 template <typename... Arguments>
 int32 run_tests(Arguments&&... tests)
 {
@@ -185,18 +192,24 @@ int32 run_tests(Arguments&&... tests)
     return count - passed;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 /// @brief Unconditionally fails current test.
 ///
 /// @param MESSAGE Error description.
+////////////////////////////////////////////////////////////////////////////////
 #define TEST_FAIL(MESSAGE) test_failed(__FILE__, __LINE__, (MESSAGE)) // NOLINT
 
+////////////////////////////////////////////////////////////////////////////////
 /// @brief Fails current test if EXPRESSION evaluates to @b false.
 ///
 /// @param EXPRESSION Expression to check as test condition.
 /// @param MESSAGE Error description.
+////////////////////////////////////////////////////////////////////////////////
 #define TEST_ASSERT(EXPRESSION, MESSAGE) !(EXPRESSION) ? TEST_FAIL(MESSAGE) : static_cast<void>(0)
 
+////////////////////////////////////////////////////////////////////////////////
 /// @}
+////////////////////////////////////////////////////////////////////////////////
 
 } // namespace framework::unit_test
 

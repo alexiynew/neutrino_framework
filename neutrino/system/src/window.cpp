@@ -1,32 +1,3 @@
-/// @file
-/// @brief Window interface class.
-/// @author Fedorov Alexey
-/// @date 04.04.2017
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <memory>
 
 #include <system/window.hpp>
@@ -40,19 +11,28 @@ void Window::set_application_name(const std::string& name)
     details::PlatformWindow::set_application_name(name);
 }
 
-Window::Window(Size size, const std::string& title, ContextSettings settings)
-    : m_platform_window(details::create_platform_window(*this, size, title, std::move(settings)))
-{}
+Window::Window(const std::string& title, Size size, ContextSettings settings)
+    : m_platform_window(details::create_platform_window(title, size, std::move(settings)))
+{
+    m_platform_window->set_window_instance(this);
+}
 
-Window::~Window() = default;
+Window::~Window()
+{
+    if (m_platform_window) {
+        m_platform_window->set_window_instance(nullptr);
+    }
+}
 
 Window::Window(Window&& other) noexcept
-    : m_platform_window(std::move(other.m_platform_window))
-{}
+    : m_platform_window(nullptr)
+{
+    swap(*this, other);
+}
 
 Window& Window::operator=(Window&& other) noexcept
 {
-    m_platform_window = std::move(other.m_platform_window);
+    swap(*this, other);
     return *this;
 }
 
@@ -176,7 +156,12 @@ std::string Window::title() const
     return m_platform_window->title();
 }
 
-Context& Window::context() const
+const Context& Window::context() const
+{
+    return m_platform_window->context();
+}
+
+Context& Window::context()
 {
     return m_platform_window->context();
 }
@@ -230,5 +215,33 @@ bool Window::is_cursor_grabbed() const
 }
 
 #pragma endregion
+
+void swap(Window& lhs, Window& rhs) noexcept
+{
+    using std::swap;
+    if (lhs.m_platform_window) {
+        lhs.m_platform_window->set_window_instance(&rhs);
+    }
+    if (rhs.m_platform_window) {
+        rhs.m_platform_window->set_window_instance(&lhs);
+    }
+    swap(lhs.m_platform_window, rhs.m_platform_window);
+
+    swap(lhs.on_show, rhs.on_show);
+    swap(lhs.on_hide, rhs.on_hide);
+    swap(lhs.on_close, rhs.on_close);
+    swap(lhs.on_focus, rhs.on_focus);
+    swap(lhs.on_lost_focus, rhs.on_lost_focus);
+    swap(lhs.on_resize, rhs.on_resize);
+    swap(lhs.on_move, rhs.on_move);
+    swap(lhs.on_key_down, rhs.on_key_down);
+    swap(lhs.on_key_up, rhs.on_key_up);
+    swap(lhs.on_character, rhs.on_character);
+    swap(lhs.on_mouse_move, rhs.on_mouse_move);
+    swap(lhs.on_button_down, rhs.on_button_down);
+    swap(lhs.on_button_up, rhs.on_button_up);
+    swap(lhs.on_mouse_enter, rhs.on_mouse_enter);
+    swap(lhs.on_mouse_leave, rhs.on_mouse_leave);
+}
 
 } // namespace framework::system

@@ -1,32 +1,3 @@
-/// @file
-/// @brief Png image implementation.
-/// @author Fedorov Alexey
-/// @date 05.04.2019
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -35,7 +6,6 @@
 #include <vector>
 
 #include <common/crc.hpp>
-#include <common/types.hpp>
 #include <common/utils.hpp>
 #include <common/zlib.hpp>
 
@@ -47,17 +17,17 @@ using namespace framework;
 using graphics::Color;
 using graphics::details::image::ImageInfo;
 
-constexpr usize signature_length = 8;
-constexpr usize pass_count       = 7;
+inline constexpr size_t signature_length = 8;
+inline constexpr size_t pass_count       = 7;
 
-std::vector<uint8> read_bytes(std::ifstream& in, usize count)
+std::vector<std::uint8_t> read_bytes(std::ifstream& in, size_t count)
 {
-    std::vector<uint8> data(count);
+    std::vector<std::uint8_t> data(count);
 
     in.read(reinterpret_cast<char*>(data.data()), static_cast<std::streamsize>(count));
 
     if (!in) {
-        return std::vector<uint8>();
+        return std::vector<std::uint8_t>();
     }
 
     return data;
@@ -67,7 +37,7 @@ std::vector<uint8> read_bytes(std::ifstream& in, usize count)
 
 struct Chunk
 {
-    enum class Type : uint32
+    enum class Type : std::uint32_t
     {
         undefined = 0,
         IHDR      = 0x49484452,
@@ -90,11 +60,11 @@ struct Chunk
         zTXt      = 0x7a545874,
     };
 
-    uint32 length = 0;
-    Type type     = Type::undefined;
-    uint32 crc    = 0;
+    std::uint32_t length = 0;
+    Type type            = Type::undefined;
+    std::uint32_t crc    = 0;
 
-    std::vector<uint8> data;
+    std::vector<std::uint8_t> data;
 
     static Chunk read(std::ifstream& in);
 
@@ -104,37 +74,43 @@ struct Chunk
 
 Chunk Chunk::read(std::ifstream& in)
 {
+    using std::begin;
+    using std::end;
+
+    char buffer[4] = {0};
+
     Chunk c;
 
-    char buffer[4];
+    in.read(buffer, 4);
+    c.length = utils::big_endian_value<std::uint32_t>(begin(buffer), end(buffer));
 
     in.read(buffer, 4);
-    c.length = utils::big_endian_value<uint32>(buffer);
-
-    in.read(buffer, 4);
-    c.type = utils::big_endian_value<Chunk::Type>(buffer);
+    c.type = utils::big_endian_value<Chunk::Type>(begin(buffer), end(buffer));
 
     if (c.length > 0) {
         c.data = read_bytes(in, c.length);
     }
 
     in.read(buffer, 4);
-    c.crc = utils::big_endian_value<uint32>(buffer);
+    c.crc = utils::big_endian_value<std::uint32_t>(begin(buffer), end(buffer));
 
     return c;
 }
 
 bool Chunk::is_critical() const
 {
-    return (((static_cast<uint32>(type) >> 24) & 0xFF) & 0x20) == 0;
+    return (((static_cast<std::uint32_t>(type) >> 24) & 0xFF) & 0x20) == 0;
 }
 
 bool Chunk::valid() const
 {
-    utils::Crc32 crc_calk;
+    const char* begin         = reinterpret_cast<const char*>(&type);
+    const char* end           = begin + 4;
+    const std::uint32_t first = utils::big_endian_value<std::uint32_t>(begin, end);
 
-    crc_calk.update(utils::big_endian_value<uint32>(reinterpret_cast<const char*>(&type)));
-    crc_calk.update(begin(data), end(data));
+    utils::Crc32 crc_calk;
+    crc_calk.update(first);
+    crc_calk.update(std::begin(data), std::end(data));
 
     return crc_calk.current_value() == crc;
 }
@@ -143,7 +119,7 @@ bool Chunk::valid() const
 
 #pragma region file header
 
-enum class ColorType : uint8
+enum class ColorType : std::uint8_t
 {
     greyscale       = 0,
     truecolor       = 2,
@@ -152,17 +128,17 @@ enum class ColorType : uint8
     truecolor_alpha = 6,
 };
 
-enum class CompressionMethod : uint8
+enum class CompressionMethod : std::uint8_t
 {
     deflate_inflate = 0,
 };
 
-enum class FilterMethod : uint8
+enum class FilterMethod : std::uint8_t
 {
     adaptive = 0,
 };
 
-enum class InterlaceMethod : uint8
+enum class InterlaceMethod : std::uint8_t
 {
     no    = 0,
     adam7 = 1,
@@ -170,9 +146,9 @@ enum class InterlaceMethod : uint8
 
 struct FileHeader
 {
-    int32 width                          = 0;
-    int32 height                         = 0;
-    uint8 bit_depth                      = 0;
+    std::int32_t width                   = 0;
+    std::int32_t height                  = 0;
+    std::uint8_t bit_depth               = 0;
     ColorType color_type                 = ColorType::greyscale;
     CompressionMethod compression_method = CompressionMethod::deflate_inflate;
     FilterMethod filter_method           = FilterMethod::adaptive;
@@ -181,9 +157,9 @@ struct FileHeader
     static FileHeader read(std::ifstream& in);
 
     bool valid() const;
-    int32 samples_per_pixel() const;
-    int32 bits_per_pixel() const;
-    int32 bytes_per_pixel() const;
+    std::int32_t samples_per_pixel() const;
+    std::int32_t bits_per_pixel() const;
+    std::int32_t bytes_per_pixel() const;
 
     ImageInfo image_info() const;
 };
@@ -196,8 +172,8 @@ FileHeader FileHeader::read(std::ifstream& in)
     }
 
     FileHeader h;
-    h.width              = utils::big_endian_value<int32>(&c.data[0]);
-    h.height             = utils::big_endian_value<int32>(&c.data[4]);
+    h.width              = utils::big_endian_value<std::int32_t>(c.data.begin(), c.data.end());
+    h.height             = utils::big_endian_value<std::int32_t>(c.data.begin() + 4, c.data.end());
     h.bit_depth          = c.data[8];
     h.color_type         = static_cast<ColorType>(c.data[9]);
     h.compression_method = static_cast<CompressionMethod>(c.data[10]);
@@ -231,7 +207,7 @@ bool FileHeader::valid() const
     return valid;
 }
 
-int32 FileHeader::samples_per_pixel() const
+std::int32_t FileHeader::samples_per_pixel() const
 {
     switch (color_type) {
         case ColorType::greyscale: return 1;
@@ -244,30 +220,30 @@ int32 FileHeader::samples_per_pixel() const
     return 0;
 }
 
-int32 FileHeader::bits_per_pixel() const
+std::int32_t FileHeader::bits_per_pixel() const
 {
     return samples_per_pixel() * bit_depth;
 }
 
-int32 FileHeader::bytes_per_pixel() const
+std::int32_t FileHeader::bytes_per_pixel() const
 {
     return (bits_per_pixel() + 7) / 8;
 }
 
 ImageInfo FileHeader::image_info() const
 {
-    return ImageInfo{width, height, true};
+    return ImageInfo{width, height, true, {}};
 }
 
-bool check_signature(const std::vector<uint8>& data)
+bool check_signature(const std::vector<std::uint8_t>& data)
 {
-    constexpr std::array<uint8, signature_length> signature = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
+    constexpr std::array<std::uint8_t, signature_length> signature = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a};
 
     if (data.size() < signature.size()) {
         return false;
     }
 
-    for (usize i = 0; i < signature.size(); ++i) {
+    for (size_t i = 0; i < signature.size(); ++i) {
         if (data[i] != signature[i]) {
             return false;
         }
@@ -280,21 +256,21 @@ bool check_signature(const std::vector<uint8>& data)
 
 #pragma region pass info
 
-struct pass_info
+struct PassInfo
 {
-    struct position_t
+    struct Position
     {
-        int32 x;
-        int32 y;
+        std::int32_t x;
+        std::int32_t y;
     };
 
-    struct offset_t
+    struct Offset
     {
-        int32 x;
-        int32 y;
+        std::int32_t x;
+        std::int32_t y;
     };
 
-    pass_info(int32 w, int32 h, int32 b, position_t p, offset_t o)
+    PassInfo(std::int32_t w, std::int32_t h, std::int32_t b, Position p, Offset o)
         : width(w)
         , height(h)
         , bytes_per_scanline(b)
@@ -302,53 +278,53 @@ struct pass_info
         , offset(o)
     {}
 
-    const int32 width;
-    const int32 height;
-    const int32 bytes_per_scanline;
-    const position_t position;
-    const offset_t offset;
+    const std::int32_t width;
+    const std::int32_t height;
+    const std::int32_t bytes_per_scanline;
+    const Position position;
+    const Offset offset;
 };
 
-std::vector<pass_info> get_pass_info(const FileHeader& header)
+std::vector<PassInfo> get_pass_info(const FileHeader& header)
 {
-    std::vector<pass_info> info;
+    std::vector<PassInfo> info;
 
     switch (header.interlace_method) {
         case InterlaceMethod::adam7: {
-            const std::array<int32, pass_count> widths = {(header.width + 7) / 8,
-                                                          (header.width + 3) / 8,
-                                                          (header.width + 3) / 4,
-                                                          (header.width + 1) / 4,
-                                                          (header.width + 1) / 2,
-                                                          (header.width + 0) / 2,
-                                                          (header.width + 0) / 1};
+            const std::array<std::int32_t, pass_count> widths = {(header.width + 7) / 8,
+                                                                 (header.width + 3) / 8,
+                                                                 (header.width + 3) / 4,
+                                                                 (header.width + 1) / 4,
+                                                                 (header.width + 1) / 2,
+                                                                 (header.width + 0) / 2,
+                                                                 (header.width + 0) / 1};
 
-            const std::array<int32, pass_count> heights = {(header.height + 7) / 8,
-                                                           (header.height + 7) / 8,
-                                                           (header.height + 3) / 8,
-                                                           (header.height + 3) / 4,
-                                                           (header.height + 1) / 4,
-                                                           (header.height + 1) / 2,
-                                                           (header.height + 0) / 2};
+            const std::array<std::int32_t, pass_count> heights = {(header.height + 7) / 8,
+                                                                  (header.height + 7) / 8,
+                                                                  (header.height + 3) / 8,
+                                                                  (header.height + 3) / 4,
+                                                                  (header.height + 1) / 4,
+                                                                  (header.height + 1) / 2,
+                                                                  (header.height + 0) / 2};
 
-            const std::array<pass_info::position_t, pass_count> positions =
-            {pass_info::position_t{0, 0}, {4, 0}, {0, 4}, {2, 0}, {0, 2}, {1, 0}, {0, 1}};
+            const std::array<PassInfo::Position, pass_count> positions =
+            {PassInfo::Position{0, 0}, {4, 0}, {0, 4}, {2, 0}, {0, 2}, {1, 0}, {0, 1}};
 
-            const std::array<pass_info::offset_t, pass_count> offsets =
-            {pass_info::offset_t{8, 8}, {8, 8}, {4, 8}, {4, 4}, {2, 4}, {2, 2}, {1, 2}};
+            const std::array<PassInfo::Offset, pass_count> offsets =
+            {PassInfo::Offset{8, 8}, {8, 8}, {4, 8}, {4, 4}, {2, 4}, {2, 2}, {1, 2}};
 
-            for (usize i = 0; i < pass_count; ++i) {
+            for (size_t i = 0; i < pass_count; ++i) {
                 if (widths[i] == 0 || heights[i] == 0) {
                     continue;
                 }
 
-                const int32 bytes_per_scanline = (widths[i] * header.bits_per_pixel() + 7) / 8;
-                info.push_back(pass_info(widths[i], heights[i], bytes_per_scanline, positions[i], offsets[i]));
+                const std::int32_t bytes_per_scanline = (widths[i] * header.bits_per_pixel() + 7) / 8;
+                info.push_back(PassInfo(widths[i], heights[i], bytes_per_scanline, positions[i], offsets[i]));
             }
         } break;
         case InterlaceMethod::no: {
             info.push_back(
-            pass_info(header.width, header.height, (header.width * header.bits_per_pixel() + 7) / 8, {0, 0}, {1, 1}));
+            PassInfo(header.width, header.height, (header.width * header.bits_per_pixel() + 7) / 8, {0, 0}, {1, 1}));
         } break;
     }
 
@@ -363,7 +339,7 @@ template <typename In, typename Out>
 inline void reconstruct_sub(In first, In last, In a, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<uint8>((static_cast<int32>(*a++) + *first++) & 0xFF);
+        *x++ = static_cast<std::uint8_t>((static_cast<std::int32_t>(*a++) + *first++) & 0xFF);
     }
 }
 
@@ -371,7 +347,7 @@ template <typename In, typename Out>
 inline void reconstruct_up(In first, In last, In b, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<uint8>((static_cast<int32>(*b++) + *first++) & 0xFF);
+        *x++ = static_cast<std::uint8_t>((static_cast<std::int32_t>(*b++) + *first++) & 0xFF);
     }
 }
 
@@ -379,23 +355,23 @@ template <typename In, typename Out>
 inline void reconstruct_average(In first, In last, In a, In b, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<uint8>((((static_cast<int32>(*a++) + *b++) >> 1) + *first++) & 0xFF);
+        *x++ = static_cast<std::uint8_t>((((static_cast<std::int32_t>(*a++) + *b++) >> 1) + *first++) & 0xFF);
     }
 }
 
-uint8 paeth_predictor(int32 a, int32 b, int32 c)
+std::uint8_t paeth_predictor(std::int32_t a, std::int32_t b, std::int32_t c)
 {
-    const int32 p  = a + b - c;
-    const int32 pa = abs(p - a);
-    const int32 pb = abs(p - b);
-    const int32 pc = abs(p - c);
+    const std::int32_t p  = a + b - c;
+    const std::int32_t pa = abs(p - a);
+    const std::int32_t pb = abs(p - b);
+    const std::int32_t pc = abs(p - c);
 
     if (pa <= pb && pa <= pc) {
-        return static_cast<uint8>(a);
+        return static_cast<std::uint8_t>(a);
     } else if (pb <= pc) {
-        return static_cast<uint8>(b);
+        return static_cast<std::uint8_t>(b);
     } else {
-        return static_cast<uint8>(c);
+        return static_cast<std::uint8_t>(c);
     }
 }
 
@@ -403,11 +379,12 @@ template <typename In, typename Out>
 inline void reconstruct_peath(In first, In last, In a, In b, In c, Out x)
 {
     while (first != last) {
-        *x++ = static_cast<uint8>((static_cast<int32>(paeth_predictor(*a++, *b++, *c++)) + *first++) & 0xFF);
+        *x++ = static_cast<std::uint8_t>((static_cast<std::int32_t>(paeth_predictor(*a++, *b++, *c++)) + *first++) &
+                                         0xFF);
     }
 }
 
-enum class filter_type_t : uint8
+enum class filter_type_t : std::uint8_t
 {
     none    = 0,
     sub     = 1,
@@ -416,20 +393,24 @@ enum class filter_type_t : uint8
     peath   = 4
 };
 
-std::tuple<std::vector<uint8>::iterator, std::vector<uint8>::iterator> reconstruct_pass(std::vector<uint8>::iterator in,
-                                                                                        std::vector<uint8>::iterator out,
-                                                                                        const pass_info& pass,
-                                                                                        int32 bytes_per_pixel)
+std::tuple<std::vector<std::uint8_t>::iterator, std::vector<std::uint8_t>::iterator> reconstruct_pass(
+std::vector<std::uint8_t>::iterator in,
+std::vector<std::uint8_t>::iterator out,
+const PassInfo& pass,
+std::int32_t bytes_per_pixel)
 {
-    const int32 bytes_in_row = (pass.bytes_per_scanline + bytes_per_pixel);
-    std::vector<uint8> res(static_cast<usize>(bytes_in_row * (pass.height + 1)), 0);
+    const std::int32_t bytes_in_row        = (pass.bytes_per_scanline + bytes_per_pixel);
+    const size_t result_size               = static_cast<size_t>(bytes_in_row) * (static_cast<size_t>(pass.height) + 1);
+    const std::ptrdiff_t second_row_offset = static_cast<std::ptrdiff_t>(bytes_in_row + bytes_per_pixel);
+
+    std::vector<std::uint8_t> res(result_size, 0);
 
     auto res_a = next(res.begin(), bytes_in_row);
     auto res_b = next(res.begin(), bytes_per_pixel);
     auto res_c = res.begin();
-    auto res_x = next(res.begin(), bytes_in_row + bytes_per_pixel);
+    auto res_x = next(res.begin(), second_row_offset);
 
-    for (int32 h = 0; h < pass.height; ++h) {
+    for (std::int32_t h = 0; h < pass.height; ++h) {
         const filter_type_t ft = static_cast<filter_type_t>(*in++);
 
         auto last = next(in, pass.bytes_per_scanline);
@@ -449,8 +430,8 @@ std::tuple<std::vector<uint8>::iterator, std::vector<uint8>::iterator> reconstru
         in = last;
     }
 
-    auto it = next(res.begin(), bytes_in_row + bytes_per_pixel);
-    for (int32 h = 0; h < pass.height; ++h) {
+    auto it = next(res.begin(), second_row_offset);
+    for (std::int32_t h = 0; h < pass.height; ++h) {
         auto last = next(it, static_cast<ptrdiff_t>(pass.bytes_per_scanline));
 
         out = std::copy(it, last, out);
@@ -461,13 +442,13 @@ std::tuple<std::vector<uint8>::iterator, std::vector<uint8>::iterator> reconstru
     return std::make_tuple(in, out);
 }
 
-std::vector<uint8> reconstruct(const FileHeader& header, std::vector<uint8>&& data)
+std::vector<std::uint8_t> reconstruct(const FileHeader& header, std::vector<std::uint8_t>&& data)
 {
     if (data.empty()) {
-        return std::vector<uint8>();
+        return std::vector<std::uint8_t>();
     }
 
-    std::vector<uint8> res(data.size(), 0);
+    std::vector<std::uint8_t> res(data.size(), 0);
 
     auto in  = data.begin();
     auto out = res.begin();
@@ -482,43 +463,43 @@ std::vector<uint8> reconstruct(const FileHeader& header, std::vector<uint8>&& da
 
 #pragma region unserialize
 
-template <usize BitDepth>
-constexpr uint8 sample(usize input)
+template <size_t BitDepth>
+constexpr std::uint8_t sample(size_t input)
 {
     static_assert(BitDepth < 8);
-    constexpr usize maxinput  = (1 << BitDepth) - 1;
-    constexpr usize maxoutput = (1 << 8) - 1;
-    return static_cast<uint8>(input * maxoutput / maxinput);
+    constexpr size_t maxinput  = (1 << BitDepth) - 1;
+    constexpr size_t maxoutput = (1 << 8) - 1;
+    return static_cast<std::uint8_t>(input * maxoutput / maxinput);
 }
 
-template <usize N, usize Size = (1 << N)>
-using palette_t = std::array<Color, Size>;
+template <size_t N, size_t Size = (1 << N)>
+using Palette = std::array<Color, Size>;
 
-template <usize BitDepth>
-constexpr palette_t<BitDepth> greyscale_palette()
+template <size_t BitDepth>
+constexpr Palette<BitDepth> greyscale_palette()
 {
     static_assert(BitDepth < 8);
-    palette_t<BitDepth> res = {Color(0x000000FFU)};
+    Palette<BitDepth> res = {Color(0x000000FFU)};
 
-    for (usize input = 0; input < res.size(); input++) {
-        const uint8 c = sample<BitDepth>(input);
-        res[input]    = Color(c, c, c, 0xFF);
+    for (size_t input = 0; input < res.size(); input++) {
+        const std::uint8_t c = sample<BitDepth>(input);
+        res[input]           = Color(c, c, c, 0xFF);
     }
 
     return res;
 }
 
-template <usize BitDepth>
-palette_t<BitDepth> read_palette(const Chunk chunk)
+template <size_t BitDepth>
+Palette<BitDepth> read_palette(const Chunk chunk)
 {
     static_assert(BitDepth <= 8);
-    palette_t<BitDepth> res = {Color(0x000000FFU)};
+    Palette<BitDepth> res = {Color(0x000000FFU)};
 
     if (chunk.type != Chunk::Type::PLTE || (chunk.data.size() % 3 != 0)) {
         return res;
     }
 
-    for (usize i = 0; i < chunk.data.size() / 3; ++i) {
+    for (size_t i = 0; i < chunk.data.size() / 3; ++i) {
         res[i].r = chunk.data[i * 3];
         res[i].g = chunk.data[i * 3 + 1];
         res[i].b = chunk.data[i * 3 + 2];
@@ -527,143 +508,146 @@ palette_t<BitDepth> read_palette(const Chunk chunk)
     return res;
 }
 
-using sample_tuple_t = std::tuple<Color, std::vector<uint8>::iterator>;
+using SampleTuple = std::tuple<Color, std::vector<std::uint8_t>::iterator>;
 
-template <ColorType ColorType, uint8 BitDepth>
-inline sample_tuple_t get_color(std::vector<uint8>::iterator in);
+template <ColorType CType, std::uint8_t BitDepth>
+inline SampleTuple get_color(std::vector<std::uint8_t>::iterator in);
 
 template <>
-inline sample_tuple_t get_color<ColorType::greyscale, 8>(std::vector<uint8>::iterator in)
+inline SampleTuple get_color<ColorType::greyscale, 8>(std::vector<std::uint8_t>::iterator in)
 {
-    const uint8 c = *in++;
+    const std::uint8_t c = *in++;
     return std::make_tuple(Color(c, c, c, 0xFF), in);
 }
 
 template <>
-inline sample_tuple_t get_color<ColorType::greyscale, 16>(std::vector<uint8>::iterator in)
+inline SampleTuple get_color<ColorType::greyscale, 16>(std::vector<std::uint8_t>::iterator in)
 {
-    const uint8 c = *in++;
+    const std::uint8_t c = *in++;
     in++;
     return std::make_tuple(Color(c, c, c, 0xFF), in);
 }
 
 template <>
-inline sample_tuple_t get_color<ColorType::truecolor, 8>(std::vector<uint8>::iterator in)
+inline SampleTuple get_color<ColorType::truecolor, 8>(std::vector<std::uint8_t>::iterator in)
 {
-    const uint8 r = *in++;
-    const uint8 g = *in++;
-    const uint8 b = *in++;
+    const std::uint8_t r = *in++;
+    const std::uint8_t g = *in++;
+    const std::uint8_t b = *in++;
 
     return std::make_tuple(Color(r, g, b, 0xFF), in);
 }
 
 template <>
-inline sample_tuple_t get_color<ColorType::truecolor, 16>(std::vector<uint8>::iterator in)
+inline SampleTuple get_color<ColorType::truecolor, 16>(std::vector<std::uint8_t>::iterator in)
 {
-    const uint8 r = *in++;
+    const std::uint8_t r = *in++;
     in++;
-    const uint8 g = *in++;
+    const std::uint8_t g = *in++;
     in++;
-    const uint8 b = *in++;
+    const std::uint8_t b = *in++;
     in++;
 
     return std::make_tuple(Color(r, g, b, 0xFF), in);
 }
 
 template <>
-inline sample_tuple_t get_color<ColorType::greyscale_alpha, 8>(std::vector<uint8>::iterator in)
+inline SampleTuple get_color<ColorType::greyscale_alpha, 8>(std::vector<std::uint8_t>::iterator in)
 {
-    const uint8 c = *in++;
-    const uint8 a = *in++;
+    const std::uint8_t c = *in++;
+    const std::uint8_t a = *in++;
     return std::make_tuple(Color(c, c, c, a), in);
 }
 
 template <>
-inline sample_tuple_t get_color<ColorType::greyscale_alpha, 16>(std::vector<uint8>::iterator in)
+inline SampleTuple get_color<ColorType::greyscale_alpha, 16>(std::vector<std::uint8_t>::iterator in)
 {
-    const uint8 c = *in++;
+    const std::uint8_t c = *in++;
     in++;
-    const uint8 a = *in++;
+    const std::uint8_t a = *in++;
     in++;
     return std::make_tuple(Color(c, c, c, a), in);
 }
 
 template <>
-inline sample_tuple_t get_color<ColorType::truecolor_alpha, 8>(std::vector<uint8>::iterator in)
+inline SampleTuple get_color<ColorType::truecolor_alpha, 8>(std::vector<std::uint8_t>::iterator in)
 {
-    const uint8 r = *in++;
-    const uint8 g = *in++;
-    const uint8 b = *in++;
-    const uint8 a = *in++;
+    const std::uint8_t r = *in++;
+    const std::uint8_t g = *in++;
+    const std::uint8_t b = *in++;
+    const std::uint8_t a = *in++;
 
     return std::make_tuple(Color(r, g, b, a), in);
 }
 
 template <>
-inline sample_tuple_t get_color<ColorType::truecolor_alpha, 16>(std::vector<uint8>::iterator in)
+inline SampleTuple get_color<ColorType::truecolor_alpha, 16>(std::vector<std::uint8_t>::iterator in)
 {
-    const uint8 r = *in++;
+    const std::uint8_t r = *in++;
     in++;
-    const uint8 g = *in++;
+    const std::uint8_t g = *in++;
     in++;
-    const uint8 b = *in++;
+    const std::uint8_t b = *in++;
     in++;
-    const uint8 a = *in++;
+    const std::uint8_t a = *in++;
     in++;
 
     return std::make_tuple(Color(r, g, b, a), in);
 }
 
-template <ColorType ColorType, uint8 BitDepth>
-inline std::vector<uint8>::iterator unserialize_pass(std::vector<uint8>::iterator in,
-                                                     const pass_info& pass,
-                                                     const FileHeader& header,
-                                                     std::vector<Color>& out)
+template <ColorType ColorType, std::uint8_t BitDepth>
+inline std::vector<std::uint8_t>::iterator unserialize_pass(std::vector<std::uint8_t>::iterator in,
+                                                            const PassInfo& pass,
+                                                            const FileHeader& header,
+                                                            std::vector<Color>& out)
 {
     static_assert(BitDepth == 8 || BitDepth == 16);
-    for (int32 h = 0; h < pass.height; ++h) {
-        uint32 pos = static_cast<uint32>((header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width +
-                                         pass.position.x);
-        for (int32 w = 0; w < pass.width; ++w) {
+    for (std::int32_t h = 0; h < pass.height; ++h) {
+        std::uint32_t pos = static_cast<std::uint32_t>(
+        (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x);
+        for (std::int32_t w = 0; w < pass.width; ++w) {
             std::tie(out[pos], in) = get_color<ColorType, BitDepth>(in);
-            pos += static_cast<uint32>(pass.offset.x);
+            pos += static_cast<std::uint32_t>(pass.offset.x);
         }
     }
 
     return in;
 }
 
-template <uint8 BitDepth>
-inline std::vector<uint8>::iterator unserialize_palette_pass(std::vector<uint8>::iterator in,
-                                                             const pass_info& pass,
-                                                             const FileHeader& header,
-                                                             const palette_t<BitDepth>& palette,
-                                                             std::vector<Color>& out)
+template <std::uint8_t BitDepth>
+inline std::vector<std::uint8_t>::iterator unserialize_palette_pass(std::vector<std::uint8_t>::iterator in,
+                                                                    const PassInfo& pass,
+                                                                    const FileHeader& header,
+                                                                    const Palette<BitDepth>& palette,
+                                                                    std::vector<Color>& out)
 {
     static_assert(BitDepth <= 8);
-    constexpr usize mask = (1 << BitDepth) - 1;
+    constexpr size_t mask = (1 << BitDepth) - 1;
 
-    for (int32 h = 0; h < pass.height; ++h) {
-        uint32 pos = static_cast<uint32>((header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width +
-                                         pass.position.x);
-        uint8 byte = 0;
-        for (int32 w = 0, i = 0; w < pass.width; ++w, i = (i + BitDepth) % 8) {
+    for (std::int32_t h = 0; h < pass.height; ++h) {
+        std::uint32_t pos = static_cast<std::uint32_t>(
+        (header.height - 1 - (pass.position.y + pass.offset.y * h)) * header.width + pass.position.x);
+        std::uint8_t byte = 0;
+        for (std::int32_t w = 0, i = 0; w < pass.width; ++w, i = (i + BitDepth) % 8) {
             if (i == 0) {
                 byte = *in++;
             }
             out[pos] = palette[(byte >> ((8 - BitDepth) - i)) & mask];
-            pos += static_cast<uint32>(pass.offset.x);
+            pos += static_cast<std::uint32_t>(pass.offset.x);
         }
     }
 
     return in;
 }
 
-template <ColorType ColorType, uint8 BitDepth>
-inline std::vector<Color> unserialize_impl(const FileHeader& header, std::vector<uint8>&& data)
+template <ColorType ColorType, std::uint8_t BitDepth>
+inline std::vector<Color> unserialize_impl(const FileHeader& header, std::vector<std::uint8_t>&& data)
 {
     static_assert(BitDepth == 8 || BitDepth == 16);
-    std::vector<Color> res(static_cast<usize>(header.width * header.height), Color(uint32(0x000000FF)));
+
+    const size_t result_size = static_cast<size_t>(header.width * header.height);
+
+    std::vector<Color> res(result_size, Color(std::uint32_t(0x000000FF)));
 
     auto in = data.begin();
     for (const auto& pass : get_pass_info(header)) {
@@ -673,13 +657,16 @@ inline std::vector<Color> unserialize_impl(const FileHeader& header, std::vector
     return res;
 }
 
-template <uint8 BitDepth>
+template <std::uint8_t BitDepth>
 inline std::vector<Color> unserialize_palette_impl(const FileHeader& header,
-                                                   const palette_t<BitDepth>& palette,
-                                                   std::vector<uint8>&& data)
+                                                   const Palette<BitDepth>& palette,
+                                                   std::vector<std::uint8_t>&& data)
 {
     static_assert(BitDepth <= 8);
-    std::vector<Color> res(static_cast<usize>(header.width * header.height), Color(uint32(0x000000FF)));
+
+    const size_t result_size = static_cast<size_t>(header.width * header.height);
+
+    std::vector<Color> res(result_size, Color(std::uint32_t(0x000000FF)));
 
     auto in = data.begin();
     for (const auto& pass : get_pass_info(header)) {
@@ -689,7 +676,7 @@ inline std::vector<Color> unserialize_palette_impl(const FileHeader& header,
     return res;
 }
 
-inline std::vector<Color> unserialize_greyscale(const FileHeader& header, std::vector<uint8>&& data)
+inline std::vector<Color> unserialize_greyscale(const FileHeader& header, std::vector<std::uint8_t>&& data)
 {
     if (data.empty()) {
         return std::vector<Color>();
@@ -706,7 +693,7 @@ inline std::vector<Color> unserialize_greyscale(const FileHeader& header, std::v
     return std::vector<Color>();
 }
 
-inline std::vector<Color> unserialize_truecolor(const FileHeader& header, std::vector<uint8>&& data)
+inline std::vector<Color> unserialize_truecolor(const FileHeader& header, std::vector<std::uint8_t>&& data)
 {
     if (data.empty()) {
         return std::vector<Color>();
@@ -722,7 +709,7 @@ inline std::vector<Color> unserialize_truecolor(const FileHeader& header, std::v
 
 inline std::vector<Color> unserialize_indexed(const FileHeader& header,
                                               const Chunk& plte_chunk,
-                                              std::vector<uint8>&& data)
+                                              std::vector<std::uint8_t>&& data)
 {
     if (data.empty()) {
         return std::vector<Color>();
@@ -738,7 +725,7 @@ inline std::vector<Color> unserialize_indexed(const FileHeader& header,
     return std::vector<Color>();
 }
 
-inline std::vector<Color> unserialize_greyscale_alpha(const FileHeader& header, std::vector<uint8>&& data)
+inline std::vector<Color> unserialize_greyscale_alpha(const FileHeader& header, std::vector<std::uint8_t>&& data)
 {
     if (data.empty()) {
         return std::vector<Color>();
@@ -752,7 +739,7 @@ inline std::vector<Color> unserialize_greyscale_alpha(const FileHeader& header, 
     return std::vector<Color>();
 }
 
-inline std::vector<Color> unserialize_truecolor_alpha(const FileHeader& header, std::vector<uint8>&& data)
+inline std::vector<Color> unserialize_truecolor_alpha(const FileHeader& header, std::vector<std::uint8_t>&& data)
 {
     if (data.empty()) {
         return std::vector<Color>();
@@ -766,7 +753,9 @@ inline std::vector<Color> unserialize_truecolor_alpha(const FileHeader& header, 
     return std::vector<Color>();
 }
 
-inline std::vector<Color> unserialize(const FileHeader& header, const Chunk& plte_chunk, std::vector<uint8>&& data)
+inline std::vector<Color> unserialize(const FileHeader& header,
+                                      const Chunk& plte_chunk,
+                                      std::vector<std::uint8_t>&& data)
 {
     switch (header.color_type) {
         case ColorType::greyscale: return unserialize_greyscale(header, std::move(data));
@@ -781,13 +770,14 @@ inline std::vector<Color> unserialize(const FileHeader& header, const Chunk& plt
 
 #pragma endregion
 
-float32 decode_gamma(const Chunk& chunk)
+float decode_gamma(const Chunk& chunk)
 {
     if (chunk.type != Chunk::Type::gAMA) {
         return 1.0f;
     }
 
-    const float32 gamma = static_cast<float32>(utils::big_endian_value<uint32>(chunk.data.data()));
+    const float gamma = static_cast<float>(
+    utils::big_endian_value<std::uint32_t>(chunk.data.begin(), chunk.data.end()));
 
     return (gamma / 100000.0f);
 }
@@ -796,30 +786,30 @@ float32 decode_gamma(const Chunk& chunk)
 
 namespace framework::graphics::details::image::png
 {
-LoadResult load(const std::string& filename)
+LoadResult load(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+    std::ifstream file(filepath, std::ios::in | std::ios::binary);
     if (!file) {
-        return LoadResult();
+        return LoadResult(error::open_file_error);
     }
 
     auto signature = read_bytes(file, signature_length);
     if (!check_signature(signature)) {
-        return LoadResult();
+        return LoadResult(error::invalid_file_signature);
     }
 
     FileHeader header = FileHeader::read(file);
     if (!header.valid()) {
-        return LoadResult();
+        return LoadResult(error::read_header_error);
     }
 
     Chunk plte_chunk;
-    float32 gamma = default_gamma;
+    float gamma = default_gamma;
 
-    std::vector<uint8> data;
+    std::vector<std::uint8_t> data;
     for (Chunk chunk = Chunk::read(file); file && chunk.type != Chunk::Type::IEND; chunk = Chunk::read(file)) {
         if (!chunk.valid() && chunk.is_critical()) {
-            return LoadResult();
+            return LoadResult(error::read_data_error);
         }
 
         switch (chunk.type) {
@@ -850,24 +840,25 @@ LoadResult load(const std::string& filename)
     }
 
     if (data.empty()) {
-        return LoadResult();
+        return LoadResult(error::read_data_error);
     }
 
     if (header.color_type == ColorType::indexed && plte_chunk.data.empty()) {
-        return LoadResult();
+        return LoadResult(error::read_data_error);
     }
 
-    std::vector<uint8> recontructed = reconstruct(header, zlib::inflate(data));
-    std::vector<Color> image_data   = unserialize(header, plte_chunk, std::move(recontructed));
+    std::vector<std::uint8_t> recontructed = reconstruct(header, zlib::inflate(data));
+    std::vector<Color> image_data          = unserialize(header, plte_chunk, std::move(recontructed));
 
     auto info  = header.image_info();
     info.gamma = gamma;
-    return std::make_optional(std::make_tuple(info, std::move(image_data)));
+    info.data  = std::move(image_data);
+    return LoadResult(info);
 }
 
-bool is_png(const std::string& filename)
+bool is_png(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+    std::ifstream file(filepath, std::ios::in | std::ios::binary);
     return check_signature(read_bytes(file, signature_length));
 }
 

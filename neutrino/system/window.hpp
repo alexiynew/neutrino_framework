@@ -1,34 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-/// @file
-/// @brief Window interface class.
-/// @author Fedorov Alexey
-/// @date 04.04.2017
-////////////////////////////////////////////////////////////////////////////////
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_SYSTEM_WINDOW_HPP
 #define FRAMEWORK_SYSTEM_WINDOW_HPP
 
@@ -44,32 +13,24 @@
 #include <system/mouse.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
-/// @details
+/// @brief System module
 ///
+/// @details
 /// Contains different OS related stuff.
 ///
 /// @defgroup system_module System
 /// @{
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
 /// @defgroup window_class Window
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
+/// @defgroup graphic_context Context
+/// @defgroup input_module Input
 /// @}
 ////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////
-/// @brief Operating System related classes.
-////////////////////////////////////////////////////////////////////////////////
 namespace framework::system
 {
+
 namespace details
 {
-////////////////////////////////////////////////////////////////////////////////
-/// @brief Base class for OS specific window realisation.
-////////////////////////////////////////////////////////////////////////////////
 class PlatformWindow;
 } // namespace details
 
@@ -81,7 +42,7 @@ class PlatformWindow;
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Window class.
 ///
-/// Window, abstracts all window management, input processing, 
+/// Window, abstracts all window management, input processing,
 /// and event handling.
 ////////////////////////////////////////////////////////////////////////////////
 class Window final
@@ -95,85 +56,112 @@ public:
     static void set_application_name(const std::string& name);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Creates window.
+    /// @brief Creates a window.
     ///
-    /// @param size Window size.
     /// @param title Window name.
+    /// @param size Window size.
     /// @param settings Gpaphic context settings.
     ///
     /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
-    Window(Size size, const std::string& title, ContextSettings settings = ContextSettings());
+    Window(const std::string& title, Size size, ContextSettings settings = ContextSettings());
 
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Destructor.
-    ////////////////////////////////////////////////////////////////////////////
     ~Window();
 
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
 
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Move constructor.
-    ///
-    /// @param other Window to move from.
-    ////////////////////////////////////////////////////////////////////////////
     Window(Window&& other) noexcept;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Move operator.
-    ///
-    /// @param other Window to move from.
-    ///
-    /// @return Reference to moved object.
-    ////////////////////////////////////////////////////////////////////////////
     Window& operator=(Window&& other) noexcept;
 
+#pragma region actions
     ////////////////////////////////////////////////////////////////////////////
     /// @name actions
     /// @{
     ////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Makes the window visible.
+    /// @brief Makes the window visible on the screen.
+    ///
+    /// If the window is already visible, this function does nothing.@n
+    /// If the window is iconified, this function restores it to its previous
+    /// state.@n
+    /// If the window has been shown this function calls the
+    ///     - @ref on_show
+    ///     - @ref on_move
+    ///     - @ref on_resize
+    ///     - @ref on_focus
+    ///     .
+    /// callbacks in the specified order.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void show();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Hides the window.
+    /// @brief Removes the window from the screen.
+    ///
+    /// If the window has input focus then before hiding it,
+    /// function tries to switch focus to another window. In this case, the
+    /// @ref on_lost_focus callback would be called.@n
+    /// At the end of execution, it calls the @ref on_hide callback.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void hide();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief If window is visible, brings it to the front and may make 
-    ///        it the focused.
+    /// @brief Bring the window to the front and switch input focus to it.
+    ///
+    /// If the window is not visible function has no effect.@n
+    /// If the window gets input focus the @ref on_focus callback
+    /// would be called.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void focus();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Switch window to iconic state.
+    /// @brief Iconify the window (i.e. minimize).
+    ///
+    /// In iconified state window is not visible to the user and the icon
+    /// is displayed in the taskbar.@n
+    /// When the window is iconified it loses input focus i.e.
+    /// the @ref on_lost_focus callback would be called.@n
+    ///
+    /// The window can be restored with @ref restore or @ref show function.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void iconify();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Maximize window.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void maximize();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Switch to fullscreen mode.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void fullscreen();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Restore normal window mode.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void restore();
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Resize window.
+    /// @brief Set the size of the window content.
     ///
     /// @param size New window size.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void resize(Size size);
 
@@ -181,46 +169,74 @@ public:
     /// @brief Move window.
     ///
     /// @param position New winodw position.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void move(Position position);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Grabs the cursor, providing unlimited cursor movement. 
+    /// @brief Grabs the cursor, providing unlimited cursor movement.
     ///
     /// This is useful for implementing for example 3D camera controls.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void grab_cursor();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Releases the cursor, if it is gabbed.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void release_cursor();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Pull all system events and process it.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void process_events();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @}
     ////////////////////////////////////////////////////////////////////////////
+#pragma endregion
 
+#pragma region setters
     ////////////////////////////////////////////////////////////////////////////
     /// @name setters
     /// @{
     ////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Sets maximum window size.
+    /// @brief Sets the maximum size of the window content.
     ///
-    /// @param size Maximum window size.
+    /// The maximum size constraint is enforced for resizing by the user as
+    /// well as for the @ref resize function.
+    /// The default maximum size is @ref Size(0, 0), which means there are no
+    /// maximum size constrictions set. Setting size to @ref Size(0, 0) resets
+    /// the maximum size of a window to its default system-dependent values.
+    /// Setting size of the negative value has no effect.
+    ///
+    /// @param size Maximum window content size.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void set_max_size(Size size);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Sets minimum window size.
+    /// @brief Sets the minimum size of the window content.
     ///
-    /// @param size Minimum window size.
+    /// The minimum size constraint is enforced for resizing by the user as
+    /// well as for the @ref resize function.
+    /// The default minimum size is @ref Size(0, 0), which means there are no
+    /// minimum size constrictions set. Setting size to @ref Size(0, 0) resets
+    /// the minimum size of a window to its default system-dependent values.
+    /// Setting size of the negative value has no effect.
+    ///
+    /// @param size Minimum window content size.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void set_min_size(Size size);
 
@@ -231,6 +247,8 @@ public:
     /// The @ref size function can still change the window size.
     ///
     /// @param value Is window resizable.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void set_resizable(bool value);
 
@@ -238,21 +256,27 @@ public:
     /// @brief Sets window title.
     ///
     /// @param title New window title.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void set_title(const std::string& title);
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Makes the cursor invisible when set to `false` if it is over 
+    /// @brief Makes the cursor invisible when set to `false` if it is over
     ///        the window.
     ///
     /// @param visible New cursor visibility.
+    ///
+    /// @thread_safety This function can be called only from main thread.
     ////////////////////////////////////////////////////////////////////////////
     void set_cursor_visibility(bool visible);
 
     ////////////////////////////////////////////////////////////////////////////
     /// @}
     ////////////////////////////////////////////////////////////////////////////
+#pragma endregion
 
+#pragma region getters
     ////////////////////////////////////////////////////////////////////////////
     /// @name getters
     /// @{
@@ -262,6 +286,8 @@ public:
     /// @brief Window position.
     ///
     /// @return Current window position.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     Position position() const;
 
@@ -269,6 +295,8 @@ public:
     /// @brief Window size.
     ///
     /// @return Current window size.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     Size size() const;
 
@@ -276,6 +304,8 @@ public:
     /// @brief Maximum window size.
     ///
     /// @return Current maximum size.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     Size max_size() const;
 
@@ -283,6 +313,8 @@ public:
     /// @brief Minimum window size.
     ///
     /// @return Current minimum size.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     Size min_size() const;
 
@@ -290,6 +322,8 @@ public:
     /// @brief Window title.
     ///
     /// @return Current window title.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     std::string title() const;
 
@@ -297,13 +331,26 @@ public:
     /// @brief Window context.
     ///
     /// @return Window context.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
-    Context& Window::context() const;
+    const Context& context() const;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// @brief Window context.
+    ///
+    /// @return Window context.
+    ///
+    /// @thread_safety This function can be called from any thread.
+    ////////////////////////////////////////////////////////////////////////////
+    Context& context();
 
     ////////////////////////////////////////////////////////////////////////////
     /// @}
     ////////////////////////////////////////////////////////////////////////////
+#pragma endregion
 
+#pragma region state
     ////////////////////////////////////////////////////////////////////////////
     /// @name state
     /// @{
@@ -313,6 +360,8 @@ public:
     /// @brief Checks if window is should be destoyed.
     ///
     /// @return `true` if on_close signal was emited.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool should_close() const;
 
@@ -320,6 +369,8 @@ public:
     /// @brief Checks if window is in fullscreen mode.
     ///
     /// @return `true` if window is in fullscreen mode.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool is_fullscreen() const;
 
@@ -327,6 +378,8 @@ public:
     /// @brief Checks if window is in iconic state.
     ///
     /// @return `true` if window is in iconic state.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool is_iconified() const;
 
@@ -334,6 +387,8 @@ public:
     /// @brief Checks if window is maximized.
     ///
     /// @return `true` if window is maximized.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool is_maximized() const;
 
@@ -341,13 +396,20 @@ public:
     /// @brief Checks if window resizing is allowed.
     ///
     /// @return `true` if window resizing is allowed.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool is_resizable() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Checks if window is visible to the user.
     ///
+    /// The window is visible to the user if the show function was called and
+    /// the window was not iconified.
+    ///
     /// @return `true` if window is visible.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool is_visible() const;
 
@@ -355,6 +417,8 @@ public:
     /// @brief Checks if window has input focus.
     ///
     /// @return `true` if window is focused.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool has_input_focus() const;
 
@@ -362,6 +426,8 @@ public:
     /// @brief Checks if cursor visible in the window.
     ///
     /// @return `true` if cursor is visible.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool is_cursor_visible() const;
 
@@ -369,13 +435,17 @@ public:
     /// @brief Checks if cursor grabbed.
     ///
     /// @return `true` if cursor is grabbed.
+    ///
+    /// @thread_safety This function can be called from any thread.
     ////////////////////////////////////////////////////////////////////////////
     bool is_cursor_grabbed() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @}
     ////////////////////////////////////////////////////////////////////////////
+#pragma endregion
 
+#pragma region events
     ////////////////////////////////////////////////////////////////////////////
     /// @name events
     /// @{
@@ -392,7 +462,7 @@ public:
     Signal<const Window&> on_hide;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on close callback. Called when the user clicks on the close 
+    /// @brief Set on close callback. Called when the user clicks on the close
     ///        window button.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&> on_close;
@@ -403,7 +473,7 @@ public:
     Signal<const Window&> on_focus;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on focus lost callback. Called when the window loses input 
+    /// @brief Set on focus lost callback. Called when the window loses input
     ///        focus.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&> on_lost_focus;
@@ -419,7 +489,7 @@ public:
     Signal<const Window&, Position> on_move;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on key press callback. Called when key is pressed. 
+    /// @brief Set on key press callback. Called when key is pressed.
     ///        Can be called multiple times.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&, KeyCode, Modifiers> on_key_down;
@@ -430,7 +500,7 @@ public:
     Signal<const Window&, KeyCode, Modifiers> on_key_up;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on character callback. Called when user press the char 
+    /// @brief Set on character callback. Called when user press the char
     ///        symbol key.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&, std::string> on_character;
@@ -441,25 +511,25 @@ public:
     Signal<const Window&, CursorPosition> on_mouse_move;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on mouse button press callback. Called when 
+    /// @brief Set on mouse button press callback. Called when
     ///        the mouse button is pressed.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_down;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on mouse button release callback. Called when 
+    /// @brief Set on mouse button release callback. Called when
     ///        the mouse button is released.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_up;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on mouse enter callback. Called when the cursor enters in 
+    /// @brief Set on mouse enter callback. Called when the cursor enters in
     ///        the window frame.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&> on_mouse_enter;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Set on mouse leave callback. Called when the cursor leaves 
+    /// @brief Set on mouse leave callback. Called when the cursor leaves
     ///        the window frame.
     ////////////////////////////////////////////////////////////////////////////
     Signal<const Window&> on_mouse_leave;
@@ -467,10 +537,21 @@ public:
     ////////////////////////////////////////////////////////////////////////////
     /// @}
     ////////////////////////////////////////////////////////////////////////////
+#pragma endregion
 
 private:
+    friend void swap(Window& lhs, Window& rhs) noexcept;
+
     std::unique_ptr<details::PlatformWindow> m_platform_window;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Swaps two Windows.
+///
+/// @param lhs Winodw to swap.
+/// @param rhs Window  to swap.
+////////////////////////////////////////////////////////////////////////////////
+void swap(Window& lhs, Window& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @}

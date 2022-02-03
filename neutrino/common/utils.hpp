@@ -1,36 +1,11 @@
-/// @file
-/// @brief Different helper functions
-/// @author Fedorov Alexey
-/// @date 03.03.2018
-
-// =============================================================================
-// MIT License
-//
-// Copyright (c) 2017-2019 Fedorov Alexey
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-// =============================================================================
-
 #ifndef FRAMEWORK_COMMON_UTILS_HPP
 #define FRAMEWORK_COMMON_UTILS_HPP
 
 #include <algorithm>
+#include <array>
+#include <istream>
+#include <string>
+#include <tuple>
 #include <vector>
 
 #include <common/types.hpp>
@@ -39,11 +14,12 @@
 
 #include <random>
 
+///////////////////////////////////////////////////////////////////////////////
 /// @brief Different helper functions and classes.
 ///
 /// @details
-/// The @ref common_utils_module module consist of functions and classes not related to any particular module. Or used
-/// all over the framework.
+/// The @ref common_utils_module module consist of functions and classes not
+/// related to any particular module. Or used all over the framework.
 ///
 /// @defgroup common_utils_module Utility
 /// @{
@@ -51,15 +27,20 @@
 /// @defgroup common_crc_implementation Crc
 /// @defgroup common_zlib_implementation ZLIB compression algorithm
 /// @}
+///////////////////////////////////////////////////////////////////////////////
 
 namespace framework::utils
 {
+///////////////////////////////////////////////////////////////////////////////
 /// @addtogroup common_utils_module
 /// @{
+///////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////
 /// @brief Determines if it is the debug build.
 ///
 /// @return `true` in debug mode, `false` otherwise.
+///////////////////////////////////////////////////////////////////////////////
 inline constexpr bool is_debug() noexcept
 {
 #ifndef NDEBUG
@@ -69,13 +50,15 @@ inline constexpr bool is_debug() noexcept
 #endif
 }
 
-/// @brief Genertes bunch of random numbers.
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Generates bunch of random numbers.
 ///
-/// @param min Minimum of the range.
-/// @param max Maximum of the range.
+/// @param min Minimum of the generated numbers.
+/// @param max Maximum of the generated numbers.
 /// @param count How much numbers to generate.
 ///
 /// @return Vector of the `count` size of random numbers in range [min, max].
+///////////////////////////////////////////////////////////////////////////////
 template <typename T>
 std::vector<T> random_numbers(T min, T max, size_t count)
 {
@@ -106,54 +89,110 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     return result;
 }
 
-template <class C>
-constexpr inline auto size(const C& container) -> decltype(container.size())
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Returns elements count in container.
+///
+/// @param container To get size
+///
+/// @return Elements count in container.
+///////////////////////////////////////////////////////////////////////////////
+template <typename C>
+constexpr inline std::size_t size(const C& container) noexcept
 {
     return container.size();
 }
 
-template <class T, std::size_t N>
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Returns elements count in array.
+///
+/// @return Elements count in array.
+///////////////////////////////////////////////////////////////////////////////
+template <typename T, std::size_t N>
 constexpr inline std::size_t size(const T (&)[N]) noexcept
 {
     return N;
 }
 
-/// @brief Interprets buffer as value of type T in big endian byte order.
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Interprets range [begin, end) as value of type T in big endian byte order.
 ///
-/// @param buffer Buffer to read value from.
+/// @param begin Range to read value from.
+/// @param end Range to read value from.
 ///
 /// @return Value of type T.
-template <typename T, typename B>
-inline T big_endian_value(const B* buffer)
+///////////////////////////////////////////////////////////////////////////////
+template <typename T, typename Iterator>
+inline T big_endian_value(const Iterator begin, const Iterator end)
 {
-    constexpr uint32 size = sizeof(T);
+    constexpr bool supported_buffer_type = sizeof(typename std::iterator_traits<Iterator>::value_type) == 1;
+    static_assert(supported_buffer_type, "Usupported buffer type");
 
-    T result;
+    constexpr bool supported_return_type = sizeof(T) <= 8;
+    static_assert(supported_return_type, "Usupported return type");
 
-    const uint8* in = reinterpret_cast<const uint8*>(buffer);
-    uint8* out      = reinterpret_cast<uint8*>(&result);
-    std::reverse_copy(in, in + size, out);
+    constexpr bool
+    is_forward_iterator = std::is_convertible_v<typename std::iterator_traits<Iterator>::iterator_category,
+                                                std::forward_iterator_tag>;
+    static_assert(is_forward_iterator, "Iterator is not forward iterator");
 
-    return result;
+    constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
+    static_assert(can_read_from_buffer, "Can't read value of type T from buffer");
+
+    constexpr int size = sizeof(T);
+
+    const auto dist = std::distance(begin, end);
+    if (dist < size) {
+        throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
+    }
+
+    typename std::iterator_traits<Iterator>::value_type buffer[size] = {};
+
+    for (int i = 0; i < size; ++i) {
+        buffer[i] = *(begin + ((size - i) - 1));
+    }
+
+    return *reinterpret_cast<T*>(buffer);
 }
 
-/// @brief Interprets buffer as value of type T in little endian byte order.
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Interprets range [begin, end) as value of type T in little endian byte order.
 ///
-/// @param buffer Buffer to read value from.
+/// @param begin Range to read value from.
+/// @param end Range to read value from.
 ///
 /// @return Value of type T.
-template <typename T, typename B>
-inline T little_endian_value(const B* buffer)
+///////////////////////////////////////////////////////////////////////////////
+template <typename T, typename Iterator>
+inline T little_endian_value(const Iterator begin, const Iterator end)
 {
-    constexpr uint32 size = sizeof(T);
+    constexpr bool supported_buffer_type = sizeof(typename std::iterator_traits<Iterator>::value_type) == 1;
+    static_assert(supported_buffer_type, "Usupported buffer type");
 
-    T result;
+    constexpr bool supported_return_type = sizeof(T) <= 8;
+    static_assert(supported_return_type, "Usupported return type");
 
-    const uint8* in = reinterpret_cast<const uint8*>(buffer);
-    uint8* out      = reinterpret_cast<uint8*>(&result);
-    std::copy(in, in + size, out);
+    constexpr bool
+    is_forward_iterator = std::is_convertible_v<typename std::iterator_traits<Iterator>::iterator_category,
+                                                std::forward_iterator_tag>;
+    static_assert(is_forward_iterator, "Iterator is not forward iterator");
 
-    return result;
+    constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
+    static_assert(can_read_from_buffer, "Can't read value of type T from buffer");
+
+    constexpr int size = sizeof(T);
+
+    const auto dist = std::distance(begin, end);
+    if (dist < size) {
+        throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
+    }
+
+    typename std::iterator_traits<Iterator>::value_type buffer[size] = {};
+
+    for (int i = 0; i < size; ++i) {
+        buffer[i] = *(begin + i);
+    }
+
+    return *reinterpret_cast<T*>(buffer);
 }
 
 /*
@@ -167,7 +206,9 @@ std::string format(const std::string& str, Args&&... args)
 }
 */
 
+///////////////////////////////////////////////////////////////////////////////
 /// @}
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace framework::utils
 
