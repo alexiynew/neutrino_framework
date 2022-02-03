@@ -590,7 +590,6 @@ private:
 
     void iconify_fullscreen()
     {
-
         const Size size640{640, 480};
 
         m_stats.reset();
