@@ -20,7 +20,7 @@ private:
     {
         Font font;
 
-        TEST_ASSERT(font.load("fonts/Arial.otf"), "Should load Arial font");
+        TEST_ASSERT(font.load("fonts/Arial.otf") == Font::LoadResult::Success, "Should load Arial font");
     }
 };
 

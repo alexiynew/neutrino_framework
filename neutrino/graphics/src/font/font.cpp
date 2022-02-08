@@ -247,34 +247,29 @@ bool has_required_tables(const std::vector<TableRecord>& records)
 namespace framework::graphics
 {
 
-Font::Font()
-{}
-
-Font::Font(const Font&) = default;
-Font& Font::operator=(const Font&) = default;
-
-Font::Font(Font&&) noexcept = default;
-Font& Font::operator=(Font&&) noexcept = default;
-
-bool Font::load(const std::string& filename)
+Font::LoadResult Font::load(const std::filesystem::path& file)
 {
+    if (!std::filesystem::exists(file)) {
+        return LoadResult::FileNotExists;
+    }
+
     try {
-        return parse(filename);
+        return parse(file);
     } catch (std::exception&) {
-        return false;
+        return LoadResult::UnknownError;
     }
 }
 
-bool Font::parse(const std::string& filename)
+Font::LoadResult Font::parse(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in | std::ios::binary);
+    std::ifstream file(filepath, std::ios::in | std::ios::binary);
     if (!file) {
-        return false;
+        return LoadResult::OpenFileError;
     }
 
     OffsetTable offset_table = OffsetTable::read(file);
     if (!file || !offset_table.valid()) {
-        return false;
+        return LoadResult::InvalidOffsetTable;
     }
 
     std::vector<TableRecord> records = read_table_records(file, offset_table.num_tables);
@@ -285,7 +280,7 @@ bool Font::parse(const std::string& filename)
 
     const bool has_tables = has_required_tables(records);
     if (!file || !records_valid || records.size() != offset_table.num_tables || !has_tables) {
-        return false;
+        return LoadResult::FileStructureError;
     }
 
     std::unordered_map<Tag, Table> tables;
@@ -294,72 +289,76 @@ bool Font::parse(const std::string& filename)
         return std::pair{record.tag, Table{record, {}}};
     });
 
-    for (auto& table : tables) {
-        if (!table.second.read_data(file)) {
-            return false;
+    for (auto& [_, table] : tables) {
+        if (!table.read_data(file)) {
+            return LoadResult::TableReadError;
         }
 
-        if (!table.second.valid()) {
-            return false;
+        if (!table.valid()) {
+            return LoadResult::TableReadError;
+        }
+
+        if (!file) {
+            return LoadResult::TableReadError;
         }
     }
 
     if (offset_table.sfnt_version == OffsetTable::true_type_tag) {
         if (!(tables.count(Tag::Glyf) && tables.count(Tag::Loca))) {
-            return false;
+            return LoadResult::FileStructureError;
         }
     }
 
     if (offset_table.sfnt_version == OffsetTable::open_type_tag) {
         if (!(tables.count(Tag::Cff) || tables.count(Tag::Cff2))) {
-            return false;
+            return LoadResult::FileStructureError;
         }
     }
 
     FontHeader head = FontHeader::parse(tables.at(Tag::Head).data);
     if (!head.valid()) {
-        return false;
+        return LoadResult::TableParsingError;
     }
 
     GlyphMap cmap = GlyphMap::parse(tables.at(Tag::Cmap).data);
     if (!cmap.valid()) {
-        return false;
+        return LoadResult::TableParsingError;
     }
 
     HorizontalHeader hhea = HorizontalHeader::parse(tables.at(Tag::Hhea).data);
     if (!hhea.valid()) {
-        return false;
+        return LoadResult::TableParsingError;
     }
 
     MaximumProfile maxp = MaximumProfile::parse(tables.at(Tag::Maxp).data);
     if (!maxp.valid()) {
-        return false;
+        return LoadResult::TableParsingError;
     }
 
     HorizontalMetrics hmtx = HorizontalMetrics::parse(hhea.number_of_h_metrics,
                                                       maxp.num_glyphs,
                                                       tables.at(Tag::Hmtx).data);
     if (!hmtx.valid()) {
-        return false;
+        return LoadResult::TableParsingError;
     }
 
     Naming name = Naming::parse(tables.at(Tag::Name).data);
     if (!name.valid()) {
-        return false;
+        return LoadResult::TableParsingError;
     }
 
     Os2 os2 = Os2::parse(tables.at(Tag::Os2).data);
     if (!os2.valid()) {
-        return false;
+        return LoadResult::TableParsingError;
     }
 
     if (offset_table.sfnt_version == OffsetTable::true_type_tag) {
         Location loca = Location::parse(head.index_to_loc_format, maxp.num_glyphs, tables.at(Tag::Loca).data);
 
-        return true;
+        return LoadResult::TableParsingError;
     }
 
-    return true;
+    return LoadResult::Success;
 }
 
 } // namespace framework::graphics

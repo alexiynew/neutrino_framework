@@ -1,8 +1,8 @@
 #ifndef FRAMEWORK_GRAPHICS_FONT_HPP
 #define FRAMEWORK_GRAPHICS_FONT_HPP
 
+#include <filesystem>
 #include <string>
-#include <unordered_map>
 
 namespace framework::graphics
 {
@@ -18,41 +18,32 @@ class Font
 {
 public:
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Default constructor.
+    /// @brief Result of loading operation.
     ////////////////////////////////////////////////////////////////////////////
-    Font();
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Copy Font.
-    ////////////////////////////////////////////////////////////////////////////
-    Font(const Font&);
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Copy Font.
-    ////////////////////////////////////////////////////////////////////////////
-    Font& operator=(const Font&);
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Move Font.
-    ////////////////////////////////////////////////////////////////////////////
-    Font(Font&&) noexcept;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Move Font.
-    ////////////////////////////////////////////////////////////////////////////
-    Font& operator=(Font&&) noexcept;
+    enum class LoadResult
+    {
+        Success,            ///< Succes loading
+        FileNotExists,      ///< Can't find file
+        OpenFileError,      ///< Can't open file for reading
+        InvalidOffsetTable, ///< Can't read information about tables
+        FileStructureError, ///< File is invalid
+        TableReadError,     ///< Can't read data from file or data is invalid
+        TableParsingError,  ///< Table data is corrupted
+        UnknownError,       ///< Unknown error
+    };
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Load font from file.
     ///
-    /// @param filename Font to load.
+    /// @param filepath File to load.
     ///
-    /// @return `true` if file loaded successfully.
+    /// @return LoadResult::Success if loading is successful
+    ///         or error code otherwise.
     ////////////////////////////////////////////////////////////////////////////
-    bool load(const std::string& filename);
+    LoadResult load(const std::filesystem::path& filepath);
 
 private:
-    bool parse(const std::string& filename);
+    LoadResult parse(const std::filesystem::path& filepath);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
