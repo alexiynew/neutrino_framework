@@ -29,77 +29,81 @@ public:
     void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) override;
     bool valid() const override;
 
-    std::uint16_t format         = 0;
-    std::uint16_t length         = 0;
-    std::uint16_t language       = 0;
-    std::uint16_t seg_count_x2   = 0;
-    std::uint16_t search_range   = 0;
-    std::uint16_t entry_selector = 0;
-    std::uint16_t range_shift    = 0;
-    std::vector<std::uint16_t> end_code; //[segcount]
-    std::uint16_t reserved_pad = 0;
-    std::vector<std::uint16_t> start_code;      //[segcount]
-    std::vector<std::int16_t> id_delta;         //[segcount]
-    std::vector<std::uint16_t> id_range_offset; //[segcount]
-    std::vector<std::uint16_t> glyph_id_array;
+private:
+    std::uint16_t m_format         = 0;
+    std::uint16_t m_length         = 0;
+    std::uint16_t m_language       = 0;
+    std::uint16_t m_seg_count_x2   = 0;
+    std::uint16_t m_search_range   = 0;
+    std::uint16_t m_entry_selector = 0;
+    std::uint16_t m_range_shift    = 0;
+    std::vector<std::uint16_t> m_end_code; //[segcount]
+    std::uint16_t m_reserved_pad = 0;
+    std::vector<std::uint16_t> m_start_code;      //[segcount]
+    std::vector<std::int16_t> m_id_delta;         //[segcount]
+    std::vector<std::uint16_t> m_id_range_offset; //[segcount]
+    std::vector<std::uint16_t> m_glyph_id_array;
 };
 
 void SubtableFormat4::parse(std::uint32_t offset, const std::vector<std::uint8_t>& data)
 {
     auto from = std::next(data.begin(), offset);
 
-    format         = utils::big_endian_value<std::uint16_t>(from, data.end());
-    length         = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
-    language       = utils::big_endian_value<std::uint16_t>(from + 4, data.end());
-    seg_count_x2   = utils::big_endian_value<std::uint16_t>(from + 6, data.end());
-    search_range   = utils::big_endian_value<std::uint16_t>(from + 8, data.end());
-    entry_selector = utils::big_endian_value<std::uint16_t>(from + 10, data.end());
-    range_shift    = utils::big_endian_value<std::uint16_t>(from + 12, data.end());
+    m_format         = utils::big_endian_value<std::uint16_t>(from, data.end());
+    m_length         = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
+    m_language       = utils::big_endian_value<std::uint16_t>(from + 4, data.end());
+    m_seg_count_x2   = utils::big_endian_value<std::uint16_t>(from + 6, data.end());
+    m_search_range   = utils::big_endian_value<std::uint16_t>(from + 8, data.end());
+    m_entry_selector = utils::big_endian_value<std::uint16_t>(from + 10, data.end());
+    m_range_shift    = utils::big_endian_value<std::uint16_t>(from + 12, data.end());
 
     std::advance(from, 14);
 
-    const size_t seg_count = seg_count_x2 / 2;
+    const size_t seg_count = m_seg_count_x2 / 2;
 
-    end_code.reserve(seg_count);
+    m_end_code.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        end_code.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        m_end_code.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
         std::advance(from, 2);
     }
 
-    reserved_pad = utils::big_endian_value<std::uint16_t>(from, data.end());
+    m_reserved_pad = utils::big_endian_value<std::uint16_t>(from, data.end());
     std::advance(from, 2);
 
-    start_code.reserve(seg_count);
+    m_start_code.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        start_code.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        m_start_code.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
         std::advance(from, 2);
     }
 
-    id_delta.reserve(seg_count);
+    m_id_delta.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        id_delta.push_back(utils::big_endian_value<std::int16_t>(from, data.end()));
+        m_id_delta.push_back(utils::big_endian_value<std::int16_t>(from, data.end()));
         std::advance(from, 2);
     }
 
-    id_range_offset.reserve(seg_count);
+    m_id_range_offset.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        id_range_offset.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        m_id_range_offset.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
         std::advance(from, 2);
     }
 
-    const auto end    = std::next(data.begin(), length);
+    const auto end    = std::next(data.begin(), m_length);
     const size_t size = static_cast<size_t>(std::distance(from, end) / 2);
 
-    glyph_id_array.reserve(size);
+    m_glyph_id_array.reserve(size);
     while (from != end) {
-        glyph_id_array.push_back(utils::big_endian_value<std::uint16_t>(from, end));
+        m_glyph_id_array.push_back(utils::big_endian_value<std::uint16_t>(from, end));
         std::advance(from, 2);
     }
 }
 
 bool SubtableFormat4::valid() const
 {
-    return false;
+    const size_t seg_count = m_seg_count_x2 / 2;
+
+    return m_format == 4 && m_end_code.size() == seg_count && m_start_code.size() == seg_count &&
+           m_id_delta.size() == seg_count && m_id_range_offset.size() == seg_count && !m_glyph_id_array.empty();
 }
 
 #pragma endregion
@@ -112,12 +116,13 @@ public:
     void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) override;
     bool valid() const override;
 
-    std::uint16_t format      = 0;
-    std::uint16_t length      = 0;
-    std::uint16_t language    = 0;
-    std::uint16_t first_code  = 0;
-    std::uint16_t entry_count = 0;
-    std::vector<std::uint16_t> glyph_id_array; //[entrycount]
+private:
+    // std::uint16_t m_format      = 0;
+    // std::uint16_t m_length      = 0;
+    // std::uint16_t m_language    = 0;
+    // std::uint16_t m_first_code  = 0;
+    // std::uint16_t m_entry_count = 0;
+    // std::vector<std::uint16_t> m_glyph_id_array; //[entrycount]
 };
 
 void SubtableFormat6::parse(std::uint32_t, const std::vector<std::uint8_t>&)
