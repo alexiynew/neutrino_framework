@@ -273,9 +273,9 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
 
     try {
         return parse(file);
-    } catch(UnsupportedError&) {
+    } catch (UnsupportedError&) {
         return LoadResult::Unsupported;
-    } catch(UnimplementedError&) {
+    } catch (UnimplementedError&) {
         return LoadResult::Unsupported;
     } catch (std::exception&) {
         return LoadResult::UnknownError;
@@ -322,39 +322,39 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::FileStructureError;
     }
 
-    FontHeader head = FontHeader::parse(tables.at(Tag::Head).data);
+    const FontHeader head(tables.at(Tag::Head).data);
     if (!head.valid()) {
         return LoadResult::TableParsingError;
     }
 
-    CharacterToGlyphIndexMapping cmap(tables.at(Tag::Cmap).data);
+    const CharacterToGlyphIndexMapping cmap(tables.at(Tag::Cmap).data);
     if (!cmap.valid()) {
         return LoadResult::TableParsingError;
     }
 
-    HorizontalHeader hhea = HorizontalHeader::parse(tables.at(Tag::Hhea).data);
+    const HorizontalHeader hhea = HorizontalHeader::parse(tables.at(Tag::Hhea).data);
     if (!hhea.valid()) {
         return LoadResult::TableParsingError;
     }
 
-    MaximumProfile maxp = MaximumProfile::parse(tables.at(Tag::Maxp).data);
+    const MaximumProfile maxp = MaximumProfile::parse(tables.at(Tag::Maxp).data);
     if (!maxp.valid()) {
         return LoadResult::TableParsingError;
     }
 
-    HorizontalMetrics hmtx = HorizontalMetrics::parse(hhea.number_of_h_metrics,
-                                                      maxp.num_glyphs,
-                                                      tables.at(Tag::Hmtx).data);
+    const HorizontalMetrics hmtx = HorizontalMetrics::parse(hhea.number_of_h_metrics,
+                                                            maxp.num_glyphs,
+                                                            tables.at(Tag::Hmtx).data);
     if (!hmtx.valid()) {
         return LoadResult::TableParsingError;
     }
 
-    Naming name = Naming::parse(tables.at(Tag::Name).data);
+    const Naming name = Naming::parse(tables.at(Tag::Name).data);
     if (!name.valid()) {
         return LoadResult::TableParsingError;
     }
 
-    Os2 os2 = Os2::parse(tables.at(Tag::Os2).data);
+    const Os2 os2 = Os2::parse(tables.at(Tag::Os2).data);
     if (!os2.valid()) {
         return LoadResult::TableParsingError;
     }
@@ -362,15 +362,15 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     // No need to read Tag::Post table
 
     if (table_directory.sfnt_version == TableDirectory::true_type_tag) {
-        //Location loca = Location::parse(head.index_to_loc_format, maxp.num_glyphs, tables.at(Tag::Loca).data);
-        //if (!loca.valid()) {
-        //    return LoadResult::TableParsingError;
-        //}
+        // Location loca = Location::parse(head.index_to_loc_format, maxp.num_glyphs, tables.at(Tag::Loca).data);
+        // if (!loca.valid()) {
+        //     return LoadResult::TableParsingError;
+        // }
 
-        //Glyf glyf = Glyf::parse(tables.at(Tag::Glyf).data);
-        //if (!glyf.valid()) {
-        //    return LoadResult::TableParsingError;
-        //}
+        // Glyf glyf = Glyf::parse(tables.at(Tag::Glyf).data);
+        // if (!glyf.valid()) {
+        //     return LoadResult::TableParsingError;
+        // }
     }
 
     return LoadResult::Success;
