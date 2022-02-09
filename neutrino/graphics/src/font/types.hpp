@@ -2,6 +2,7 @@
 #define FRAMEWORK_GRAPHICS_SRC_FONT_TYPES_HPP
 
 #include <cstdint>
+#include <stdexcept>
 
 namespace framework::graphics::details::font
 {
@@ -102,6 +103,16 @@ enum class Tag : std::uint32_t
     Vdmx = make_tag('V', 'D', 'M', 'X'), //	Vertical device metrics
     Vhea = make_tag('v', 'h', 'e', 'a'), //	Vertical Metrics header
     Vmtx = make_tag('v', 'm', 't', 'x'), //	Vertical Metrics
+};
+
+class UnsupportedError final : public std::runtime_error
+{
+    using std::runtime_error::runtime_error;
+};
+
+class UnimplementedError final : public std::runtime_error
+{
+    using std::runtime_error::runtime_error;
 };
 
 } // namespace framework::graphics::details::font

@@ -27,6 +27,8 @@ struct FontHeader
     std::int16_t y_min                 = 0;
     std::int16_t x_max                 = 0;
     std::int16_t y_max                 = 0;
+    // TODO:  macStyle bits must agree with the OS/2 table fsSelection. Add this check.
+    //        The fsSelection bits are used over the macStyle bits in Microsoft Windows.
     std::uint16_t mac_style            = 0;
     std::uint16_t lowest_rec_ppem      = 0;
     std::int16_t font_direction_hint   = 0;

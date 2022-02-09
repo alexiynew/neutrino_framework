@@ -9,8 +9,8 @@
 #include <common/utils.hpp>
 #include <graphics/font.hpp>
 
+#include <graphics/src/font/tables/character_to_glyph_index_mapping.hpp>
 #include <graphics/src/font/tables/font_header.hpp>
-#include <graphics/src/font/tables/glyph_map.hpp>
 #include <graphics/src/font/tables/horizontal_header.hpp>
 #include <graphics/src/font/tables/horizontal_metrics.hpp>
 #include <graphics/src/font/tables/location.hpp>
@@ -143,8 +143,7 @@ bool TableDirectory::valid() const
     const int check_entry_selector = max_pow2;
     const int check_range_shift    = std::max(0, num_tables * 16 - search_range);
 
-    const bool is_valid_version    = (sfnt_version == TableDirectory::true_type_tag ||
-                                   sfnt_version == TableDirectory::open_type_tag);
+    const bool is_valid_version    = sfnt_version == TableDirectory::true_type_tag;
     const bool is_valid_num_tables = num_tables > 0 && num_tables <= 4096;
 
     const bool records_valid = std::all_of(table_records.begin(), table_records.end(), [](const TableRecord& record) {
@@ -234,16 +233,9 @@ bool has_required_tables(const TableDirectory& table_directory)
         }
     }
 
-    // TODO: why we check specific tables here
+    // Specific tables to ttf
     if (table_directory.sfnt_version == TableDirectory::true_type_tag) {
         if (!has_record(Tag::Glyf) || !has_record(Tag::Loca)) {
-            return false;
-        }
-    }
-
-    // TODO: why we check specific tables here, check condition
-    if (table_directory.sfnt_version == TableDirectory::open_type_tag) {
-        if (!(has_record(Tag::Cff) || has_record(Tag::Cff2))) {
             return false;
         }
     }
@@ -281,6 +273,10 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
 
     try {
         return parse(file);
+    } catch(UnsupportedError&) {
+        return LoadResult::Unsupported;
+    } catch(UnimplementedError&) {
+        return LoadResult::Unsupported;
     } catch (std::exception&) {
         return LoadResult::UnknownError;
     }
@@ -294,6 +290,10 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     }
 
     TableDirectory table_directory = TableDirectory::read(file);
+    if (table_directory.sfnt_version == TableDirectory::open_type_tag) {
+        return LoadResult::Unsupported;
+    }
+
     if (table_directory.sfnt_version == TableDirectory::font_collection_tag) {
         return LoadResult::Unsupported;
     }
@@ -311,7 +311,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     if (!file || tables.size() != table_directory.table_records.size()) {
         return LoadResult::FileStructureError;
     }
-    
+
     file.close();
 
     const bool tables_valid = std::all_of(tables.begin(), tables.end(), [](const auto& it) {
@@ -327,7 +327,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    GlyphMap cmap = GlyphMap::parse(tables.at(Tag::Cmap).data);
+    CharacterToGlyphIndexMapping cmap(tables.at(Tag::Cmap).data);
     if (!cmap.valid()) {
         return LoadResult::TableParsingError;
     }
@@ -359,12 +359,18 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    //TODO: read Tag::Post table
+    // No need to read Tag::Post table
 
     if (table_directory.sfnt_version == TableDirectory::true_type_tag) {
-        Location loca = Location::parse(head.index_to_loc_format, maxp.num_glyphs, tables.at(Tag::Loca).data);
+        //Location loca = Location::parse(head.index_to_loc_format, maxp.num_glyphs, tables.at(Tag::Loca).data);
+        //if (!loca.valid()) {
+        //    return LoadResult::TableParsingError;
+        //}
 
-        return LoadResult::TableParsingError;
+        //Glyf glyf = Glyf::parse(tables.at(Tag::Glyf).data);
+        //if (!glyf.valid()) {
+        //    return LoadResult::TableParsingError;
+        //}
     }
 
     return LoadResult::Success;
