@@ -29,6 +29,7 @@ public:
         FileStructureError, ///< File is invalid
         TableReadError,     ///< Can't read data from file or data is invalid
         TableParsingError,  ///< Table data is corrupted
+        Unsupported,        ///< Unsupported version of table or data
         UnknownError,       ///< Unknown error
     };
 
