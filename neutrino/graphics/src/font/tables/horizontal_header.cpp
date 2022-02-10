@@ -35,7 +35,7 @@ bool HorizontalHeader::valid() const
     return valid;
 }
 
-std::uint16_t HorizontalHeader::get_number_of_h_metrics() const
+std::uint16_t HorizontalHeader::number_of_h_metrics() const
 {
     return m_number_of_h_metrics;
 }

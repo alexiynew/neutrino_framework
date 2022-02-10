@@ -322,6 +322,21 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::FileStructureError;
     }
 
+    const MaximumProfile maxp(tables.at(Tag::Maxp).data);
+    if (!maxp.valid()) {
+        return LoadResult::TableParsingError;
+    }
+
+    if (table_directory.sfnt_version == TableDirectory::true_type_tag &&
+        maxp.version() != MaximumProfile::true_type_version) {
+        return LoadResult::FileStructureError;
+    }
+
+    if (table_directory.sfnt_version == TableDirectory::open_type_tag &&
+        maxp.version() != MaximumProfile::open_type_vetsion) {
+        return LoadResult::FileStructureError;
+    }
+
     const FontHeader head(tables.at(Tag::Head).data);
     if (!head.valid()) {
         return LoadResult::TableParsingError;
@@ -337,13 +352,8 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    const MaximumProfile maxp = MaximumProfile::parse(tables.at(Tag::Maxp).data);
-    if (!maxp.valid()) {
-        return LoadResult::TableParsingError;
-    }
-
-    const HorizontalMetrics hmtx = HorizontalMetrics::parse(hhea.get_number_of_h_metrics(),
-                                                            maxp.num_glyphs,
+    const HorizontalMetrics hmtx = HorizontalMetrics::parse(hhea.number_of_h_metrics(),
+                                                            maxp.num_glyphs(),
                                                             tables.at(Tag::Hmtx).data);
     if (!hmtx.valid()) {
         return LoadResult::TableParsingError;
@@ -371,6 +381,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         // if (!glyf.valid()) {
         //     return LoadResult::TableParsingError;
         // }
+        return LoadResult::Unsupported;
     }
 
     return LoadResult::Success;

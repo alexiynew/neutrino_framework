@@ -15,7 +15,7 @@ public:
 
     bool valid() const;
 
-    std::uint16_t get_number_of_h_metrics() const;
+    std::uint16_t number_of_h_metrics() const;
 
 private:
     std::uint16_t m_major_version       = 0;
