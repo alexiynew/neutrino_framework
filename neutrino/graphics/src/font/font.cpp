@@ -362,7 +362,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    const Os2 os2 = Os2::parse(tables.at(Tag::Os2).data);
+    const Os2 os2(tables.at(Tag::Os2).data);
     if (!os2.valid()) {
         return LoadResult::TableParsingError;
     }
