@@ -352,9 +352,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    const HorizontalMetrics hmtx = HorizontalMetrics::parse(hhea.number_of_h_metrics(),
-                                                            maxp.num_glyphs(),
-                                                            tables.at(Tag::Hmtx).data);
+    const HorizontalMetrics hmtx(hhea.number_of_h_metrics(), maxp.num_glyphs(), tables.at(Tag::Hmtx).data);
     if (!hmtx.valid()) {
         return LoadResult::TableParsingError;
     }
