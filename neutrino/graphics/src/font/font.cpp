@@ -332,7 +332,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    const HorizontalHeader hhea = HorizontalHeader::parse(tables.at(Tag::Hhea).data);
+    const HorizontalHeader hhea(tables.at(Tag::Hhea).data);
     if (!hhea.valid()) {
         return LoadResult::TableParsingError;
     }
@@ -342,7 +342,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    const HorizontalMetrics hmtx = HorizontalMetrics::parse(hhea.number_of_h_metrics,
+    const HorizontalMetrics hmtx = HorizontalMetrics::parse(hhea.get_number_of_h_metrics(),
                                                             maxp.num_glyphs,
                                                             tables.at(Tag::Hmtx).data);
     if (!hmtx.valid()) {
