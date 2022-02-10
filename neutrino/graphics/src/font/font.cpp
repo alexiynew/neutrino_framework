@@ -357,8 +357,8 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    const Naming name = Naming::parse(tables.at(Tag::Name).data);
-    if (!name.valid()) {
+    const Naming naming(tables.at(Tag::Name).data);
+    if (!naming.valid()) {
         return LoadResult::TableParsingError;
     }
 
