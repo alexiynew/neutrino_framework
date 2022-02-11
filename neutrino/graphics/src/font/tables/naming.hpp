@@ -9,7 +9,7 @@
 namespace framework::graphics::details::font
 {
 
-class Naming
+class Naming final
 {
 public:
     // Some name id's

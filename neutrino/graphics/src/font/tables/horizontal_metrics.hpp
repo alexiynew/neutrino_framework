@@ -8,7 +8,7 @@
 namespace framework::graphics::details::font
 {
 
-class HorizontalMetrics
+class HorizontalMetrics final
 {
 public:
     HorizontalMetrics(std::uint16_t number_of_h_metrics,

@@ -32,7 +32,12 @@ IndexToLocation::IndexToLocation(std::int16_t index_to_loc_format,
 
 bool IndexToLocation::valid() const
 {
-    return m_offsets.size() != 0;
+    return m_offsets.size() != 0 && m_offsets[0] == 0;
+}
+
+const std::vector<Offset32>& IndexToLocation::offsets() const
+{
+    return m_offsets;
 }
 
 } // namespace framework::graphics::details::font

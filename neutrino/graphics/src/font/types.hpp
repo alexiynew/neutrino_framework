@@ -20,6 +20,8 @@ using F2Dot14  = std::int16_t;  // 16-bit signed fixed number with the low 14 bi
 using Offset16 = std::uint16_t;
 using Offset32 = std::uint32_t;
 
+using GlyphId = std::uint16_t;
+
 enum class PlatformId : std::uint16_t
 {
     Unicode   = 0,

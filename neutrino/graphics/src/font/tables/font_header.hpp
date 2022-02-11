@@ -8,7 +8,7 @@
 namespace framework::graphics::details::font
 {
 
-class FontHeader
+class FontHeader final
 {
 public:
     explicit FontHeader(const std::vector<std::uint8_t>& data);

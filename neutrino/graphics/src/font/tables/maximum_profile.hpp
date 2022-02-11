@@ -8,7 +8,7 @@
 namespace framework::graphics::details::font
 {
 
-class MaximumProfile
+class MaximumProfile final
 {
 public:
     inline static constexpr std::uint32_t true_type_version = 0x00010000;

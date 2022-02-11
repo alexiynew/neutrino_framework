@@ -11,6 +11,7 @@
 
 #include <graphics/src/font/tables/character_to_glyph_index_mapping.hpp>
 #include <graphics/src/font/tables/font_header.hpp>
+#include <graphics/src/font/tables/glyph_data.hpp>
 #include <graphics/src/font/tables/horizontal_header.hpp>
 #include <graphics/src/font/tables/horizontal_metrics.hpp>
 #include <graphics/src/font/tables/index_to_location.hpp>
@@ -375,10 +376,11 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
             return LoadResult::TableParsingError;
         }
 
-        // Glyf glyf = Glyf::parse(tables.at(Tag::Glyf).data);
-        // if (!glyf.valid()) {
-        //     return LoadResult::TableParsingError;
-        // }
+        const GlyphData glyf(maxp.num_glyphs(), loca.offsets(), tables.at(Tag::Glyf).data);
+        if (!glyf.valid()) {
+            return LoadResult::TableParsingError;
+        }
+        
         return LoadResult::Unsupported;
     }
 

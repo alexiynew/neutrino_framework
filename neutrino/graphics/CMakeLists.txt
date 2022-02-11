@@ -16,10 +16,12 @@ set_sources(PRIVATE_SOURCES
     src/uniform.cpp
 
     src/font/font.cpp
-    src/font/tables/font_header.cpp
-    src/font/tables/font_header.hpp
     src/font/tables/character_to_glyph_index_mapping.cpp
     src/font/tables/character_to_glyph_index_mapping.hpp
+    src/font/tables/font_header.cpp
+    src/font/tables/font_header.hpp
+    src/font/tables/glyph_data.cpp
+    src/font/tables/glyph_data.hpp
     src/font/tables/horizontal_header.cpp
     src/font/tables/horizontal_header.hpp
     src/font/tables/horizontal_metrics.cpp
