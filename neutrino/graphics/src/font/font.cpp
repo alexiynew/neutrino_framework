@@ -13,7 +13,7 @@
 #include <graphics/src/font/tables/font_header.hpp>
 #include <graphics/src/font/tables/horizontal_header.hpp>
 #include <graphics/src/font/tables/horizontal_metrics.hpp>
-#include <graphics/src/font/tables/location.hpp>
+#include <graphics/src/font/tables/index_to_location.hpp>
 #include <graphics/src/font/tables/maximum_profile.hpp>
 #include <graphics/src/font/tables/naming.hpp>
 #include <graphics/src/font/tables/os2.hpp>
@@ -370,10 +370,10 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     // No need to read Tag::Post table
 
     if (table_directory.sfnt_version == TableDirectory::true_type_tag) {
-        // Location loca = Location::parse(head.index_to_loc_format, maxp.num_glyphs, tables.at(Tag::Loca).data);
-        // if (!loca.valid()) {
-        //     return LoadResult::TableParsingError;
-        // }
+        const IndexToLocation loca(head.index_to_loc_format(), maxp.num_glyphs(), tables.at(Tag::Loca).data);
+        if (!loca.valid()) {
+            return LoadResult::TableParsingError;
+        }
 
         // Glyf glyf = Glyf::parse(tables.at(Tag::Glyf).data);
         // if (!glyf.valid()) {

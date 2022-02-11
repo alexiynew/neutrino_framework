@@ -15,6 +15,8 @@ public:
 
     bool valid() const;
 
+    std::int16_t index_to_loc_format() const;
+
 private:
     std::uint16_t m_major_version        = 0;
     std::uint16_t m_minor_version        = 0;
