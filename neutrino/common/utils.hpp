@@ -114,7 +114,8 @@ constexpr inline std::size_t size(const T (&)[N]) noexcept
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets range [begin, end) as value of type T in big endian byte order.
+/// @brief Interprets range [begin, end) as value of type T in
+///        big endian byte order. No bounds checking is performed.
 ///
 /// @param begin Range to read value from.
 /// @param end Range to read value from.
@@ -122,40 +123,36 @@ constexpr inline std::size_t size(const T (&)[N]) noexcept
 /// @return Value of type T.
 ///////////////////////////////////////////////////////////////////////////////
 template <typename T, typename Iterator>
-inline T big_endian_value(const Iterator begin, const Iterator end)
+inline T big_endian_value(Iterator begin, const Iterator end)
 {
-    constexpr bool supported_buffer_type = sizeof(typename std::iterator_traits<Iterator>::value_type) == 1;
+    using ValueType        = typename std::iterator_traits<Iterator>::value_type;
+    using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
+
+    constexpr bool supported_buffer_type = sizeof(ValueType) == 1;
     static_assert(supported_buffer_type, "Usupported buffer type");
 
     constexpr bool supported_return_type = sizeof(T) <= 8;
     static_assert(supported_return_type, "Usupported return type");
 
-    constexpr bool
-    is_forward_iterator = std::is_convertible_v<typename std::iterator_traits<Iterator>::iterator_category,
-                                                std::forward_iterator_tag>;
+    constexpr bool is_forward_iterator = std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>;
     static_assert(is_forward_iterator, "Iterator is not forward iterator");
 
     constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
     static_assert(can_read_from_buffer, "Can't read value of type T from buffer");
 
     constexpr int size = sizeof(T);
+    ValueType buffer[size];
 
-    const auto dist = std::distance(begin, end);
-    if (dist < size) {
-        throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
-    }
-
-    typename std::iterator_traits<Iterator>::value_type buffer[size] = {};
-
-    for (int i = 0; i < size; ++i) {
-        buffer[i] = *(begin + ((size - i) - 1));
+    for (int i = size - 1; i >= 0; --i) {
+        buffer[i] = *(begin++);
     }
 
     return *reinterpret_cast<T*>(buffer);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets range [begin, end) as value of type T in little endian byte order.
+/// @brief Interprets range [begin, end) as value of type T in
+///        little endian byte order. No bounds checking is performed.
 ///
 /// @param begin Range to read value from.
 /// @param end Range to read value from.
@@ -163,36 +160,210 @@ inline T big_endian_value(const Iterator begin, const Iterator end)
 /// @return Value of type T.
 ///////////////////////////////////////////////////////////////////////////////
 template <typename T, typename Iterator>
-inline T little_endian_value(const Iterator begin, const Iterator end)
+inline T little_endian_value(Iterator begin, const Iterator end)
 {
-    constexpr bool supported_buffer_type = sizeof(typename std::iterator_traits<Iterator>::value_type) == 1;
+    using ValueType        = typename std::iterator_traits<Iterator>::value_type;
+    using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
+
+    constexpr bool supported_buffer_type = sizeof(ValueType) == 1;
     static_assert(supported_buffer_type, "Usupported buffer type");
 
     constexpr bool supported_return_type = sizeof(T) <= 8;
     static_assert(supported_return_type, "Usupported return type");
 
-    constexpr bool
-    is_forward_iterator = std::is_convertible_v<typename std::iterator_traits<Iterator>::iterator_category,
-                                                std::forward_iterator_tag>;
+    constexpr bool is_forward_iterator = std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>;
     static_assert(is_forward_iterator, "Iterator is not forward iterator");
 
     constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
     static_assert(can_read_from_buffer, "Can't read value of type T from buffer");
 
     constexpr int size = sizeof(T);
-
-    const auto dist = std::distance(begin, end);
-    if (dist < size) {
-        throw std::range_error("Not enough bytes to read value of size " + std::to_string(size));
-    }
-
-    typename std::iterator_traits<Iterator>::value_type buffer[size] = {};
+    ValueType buffer[size];
 
     for (int i = 0; i < size; ++i) {
-        buffer[i] = *(begin + i);
+        buffer[i] = *(begin++);
     }
 
     return *reinterpret_cast<T*>(buffer);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Wrapper for @ref big_endian_value which takes care of iterators.
+///////////////////////////////////////////////////////////////////////////////
+template <typename Iterator>
+class BigEndianBufferReader final
+{
+public:
+    using DifferenceType   = typename std::iterator_traits<Iterator>::difference_type;
+    using ValueType        = typename std::iterator_traits<Iterator>::value_type;
+    using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
+
+    template <typename = std::enable_if_t<std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>, void>>
+    BigEndianBufferReader(const Iterator begin, const Iterator end) noexcept
+        : m_current(begin)
+        , m_end(end)
+        , m_distance(std::distance(begin, end))
+    {}
+
+    template <typename T>
+    T get()
+    {
+        constexpr DifferenceType size = sizeof(T);
+        if (m_distance < size) {
+            throw std::out_of_range("Not enough bytes to read value of size " + std::to_string(size));
+        }
+        T value = big_endian_value<T>(m_current, m_end);
+
+        skip<T>();
+
+        return value;
+    }
+
+    template <typename T>
+    BigEndianBufferReader& operator>>(T& value)
+    {
+        value = get<T>();
+        return *this;
+    }
+
+    template <typename T>
+    void skip(DifferenceType count = 1) noexcept
+    {
+        DifferenceType step = count * sizeof(T);
+
+        step = std::clamp(step, DifferenceType(0), m_distance);
+        std::advance(m_current, step);
+        m_distance -= step;
+    }
+
+    operator bool() const noexcept
+    {
+        return m_distance > 0;
+    }
+
+    bool good() const noexcept
+
+    {
+        return m_distance > 0;
+    }
+
+private:
+    Iterator m_current;
+    const Iterator m_end;
+    DifferenceType m_distance = 0;
+};
+
+// additional deduction guide
+template <class Iterator>
+BigEndianBufferReader(Iterator, Iterator) -> BigEndianBufferReader<Iterator>;
+
+// maker function
+template <typename Iterator>
+inline BigEndianBufferReader<Iterator> make_big_endian_buffer_reader(const Iterator begin, const Iterator end) noexcept
+{
+    return BigEndianBufferReader(begin, end);
+}
+
+template <typename Container>
+inline auto make_big_endian_buffer_reader(const Container& container) noexcept
+{
+    return make_big_endian_buffer_reader(std::begin(container), std::end(container));
+}
+
+template <typename T, std::size_t N>
+inline auto make_big_endian_buffer_reader(const T (&buffer)[N]) noexcept
+{
+    return make_big_endian_buffer_reader(std::begin(buffer), std::end(buffer));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Wrapper for @ref little_endian_value which takes care of iterators.
+///////////////////////////////////////////////////////////////////////////////
+template <typename Iterator>
+class LittleEndianBufferReader final
+{
+public:
+    using DifferenceType   = typename std::iterator_traits<Iterator>::difference_type;
+    using ValueType        = typename std::iterator_traits<Iterator>::value_type;
+    using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
+
+    template <typename = std::enable_if_t<std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>, void>>
+    LittleEndianBufferReader(const Iterator begin, const Iterator end) noexcept
+        : m_current(begin)
+        , m_end(end)
+        , m_distance(std::distance(begin, end))
+    {}
+
+    template <typename T>
+    T get()
+    {
+        constexpr DifferenceType size = sizeof(T);
+        if (m_distance < size) {
+            throw std::out_of_range("Not enough bytes to read value of size " + std::to_string(size));
+        }
+        T value = little_endian_value<T>(m_current, m_end);
+
+        skip<T>();
+
+        return value;
+    }
+
+    template <typename T>
+    LittleEndianBufferReader& operator>>(T& value)
+    {
+        value = get<T>();
+        return *this;
+    }
+
+    template <typename T>
+    void skip(DifferenceType count = 1) noexcept
+    {
+        DifferenceType step = count * sizeof(T);
+
+        step = std::clamp(step, DifferenceType(0), m_distance);
+        std::advance(m_current, step);
+        m_distance -= step;
+    }
+
+    operator bool() const noexcept
+    {
+        return m_distance > 0;
+    }
+
+    bool good() const noexcept
+
+    {
+        return m_distance > 0;
+    }
+
+private:
+    Iterator m_current;
+    const Iterator m_end;
+    DifferenceType m_distance = 0;
+};
+
+// additional deduction guide
+template <class Iterator>
+LittleEndianBufferReader(Iterator, Iterator) -> LittleEndianBufferReader<Iterator>;
+
+// maker function
+template <typename Iterator>
+inline LittleEndianBufferReader<Iterator> make_little_endian_buffer_reader(const Iterator begin,
+                                                                           const Iterator end) noexcept
+{
+    return LittleEndianBufferReader(begin, end);
+}
+
+template <typename Container>
+inline auto make_little_endian_buffer_reader(const Container& container) noexcept
+{
+    return make_little_endian_buffer_reader(std::begin(container), std::end(container));
+}
+
+template <typename T, std::size_t N>
+inline auto make_little_endian_buffer_reader(const T (&buffer)[N]) noexcept
+{
+    return make_little_endian_buffer_reader(std::begin(buffer), std::end(buffer));
 }
 
 /*
