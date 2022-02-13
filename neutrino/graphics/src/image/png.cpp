@@ -82,17 +82,17 @@ Chunk Chunk::read(std::ifstream& in)
     Chunk c;
 
     in.read(buffer, 4);
-    c.length = utils::big_endian_value<std::uint32_t>(begin(buffer), end(buffer));
+    c.length = utils::big_endian_value<std::uint32_t>(begin(buffer));
 
     in.read(buffer, 4);
-    c.type = utils::big_endian_value<Chunk::Type>(begin(buffer), end(buffer));
+    c.type = utils::big_endian_value<Chunk::Type>(begin(buffer));
 
     if (c.length > 0) {
         c.data = read_bytes(in, c.length);
     }
 
     in.read(buffer, 4);
-    c.crc = utils::big_endian_value<std::uint32_t>(begin(buffer), end(buffer));
+    c.crc = utils::big_endian_value<std::uint32_t>(begin(buffer));
 
     return c;
 }
@@ -105,8 +105,7 @@ bool Chunk::is_critical() const
 bool Chunk::valid() const
 {
     const char* begin         = reinterpret_cast<const char*>(&type);
-    const char* end           = begin + 4;
-    const std::uint32_t first = utils::big_endian_value<std::uint32_t>(begin, end);
+    const std::uint32_t first = utils::big_endian_value<std::uint32_t>(begin);
 
     utils::Crc32 crc_calk;
     crc_calk.update(first);
@@ -172,8 +171,8 @@ FileHeader FileHeader::read(std::ifstream& in)
     }
 
     FileHeader h;
-    h.width              = utils::big_endian_value<std::int32_t>(c.data.begin(), c.data.end());
-    h.height             = utils::big_endian_value<std::int32_t>(c.data.begin() + 4, c.data.end());
+    h.width              = utils::big_endian_value<std::int32_t>(c.data.begin());
+    h.height             = utils::big_endian_value<std::int32_t>(c.data.begin() + 4);
     h.bit_depth          = c.data[8];
     h.color_type         = static_cast<ColorType>(c.data[9]);
     h.compression_method = static_cast<CompressionMethod>(c.data[10]);
@@ -776,8 +775,7 @@ float decode_gamma(const Chunk& chunk)
         return 1.0f;
     }
 
-    const float gamma = static_cast<float>(
-    utils::big_endian_value<std::uint32_t>(chunk.data.begin(), chunk.data.end()));
+    const float gamma = static_cast<float>(utils::big_endian_value<std::uint32_t>(chunk.data.begin()));
 
     return (gamma / 100000.0f);
 }

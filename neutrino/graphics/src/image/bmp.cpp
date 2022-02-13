@@ -40,9 +40,9 @@ FileHeader FileHeader::read(std::ifstream& in)
     in.read(buffer, size);
 
     FileHeader header;
-    header.signature          = utils::little_endian_value<std::uint16_t>(begin(buffer), end(buffer));
-    header.file_size          = utils::little_endian_value<std::uint32_t>(begin(buffer) + 2, end(buffer));
-    header.pixel_array_offset = utils::little_endian_value<std::uint32_t>(begin(buffer) + 10, end(buffer));
+    header.signature          = utils::little_endian_value<std::uint16_t>(begin(buffer));
+    header.file_size          = utils::little_endian_value<std::uint32_t>(begin(buffer) + 2);
+    header.pixel_array_offset = utils::little_endian_value<std::uint32_t>(begin(buffer) + 10);
 
     return header;
 }
@@ -291,32 +291,31 @@ InfoHeader InfoHeader::read(std::ifstream& in)
     in.read(size_buffer, sizeof(size_buffer));
 
     InfoHeader h;
-    h.size = utils::little_endian_value<std::uint32_t>(begin(size_buffer), end(size_buffer));
+    h.size = utils::little_endian_value<std::uint32_t>(begin(size_buffer));
 
     const size_t data_size = h.size - sizeof(size_buffer);
     std::unique_ptr<char[]> buffer(new char[data_size]);
     in.read(buffer.get(), static_cast<std::streamsize>(data_size));
 
-    char* buffer_end = buffer.get() + data_size;
     if (h.type() == Type::bitmapcoreheader) {
-        h.width          = utils::little_endian_value<std::uint16_t>(buffer.get(), buffer_end);
-        h.height         = utils::little_endian_value<std::uint16_t>(buffer.get() + 2, buffer_end);
-        h.planes         = utils::little_endian_value<std::uint16_t>(buffer.get() + 4, buffer_end);
-        h.bits_per_pixel = utils::little_endian_value<std::uint16_t>(buffer.get() + 6, buffer_end);
+        h.width          = utils::little_endian_value<std::uint16_t>(buffer.get());
+        h.height         = utils::little_endian_value<std::uint16_t>(buffer.get() + 2);
+        h.planes         = utils::little_endian_value<std::uint16_t>(buffer.get() + 4);
+        h.bits_per_pixel = utils::little_endian_value<std::uint16_t>(buffer.get() + 6);
     } else {
-        h.width          = utils::little_endian_value<std::int32_t>(buffer.get(), buffer_end);
-        h.height         = utils::little_endian_value<std::int32_t>(buffer.get() + 4, buffer_end);
-        h.planes         = utils::little_endian_value<std::uint16_t>(buffer.get() + 8, buffer_end);
-        h.bits_per_pixel = utils::little_endian_value<std::uint16_t>(buffer.get() + 10, buffer_end);
+        h.width          = utils::little_endian_value<std::int32_t>(buffer.get());
+        h.height         = utils::little_endian_value<std::int32_t>(buffer.get() + 4);
+        h.planes         = utils::little_endian_value<std::uint16_t>(buffer.get() + 8);
+        h.bits_per_pixel = utils::little_endian_value<std::uint16_t>(buffer.get() + 10);
     }
 
     if (h.size >= static_cast<std::uint32_t>(InfoHeader::Type::bitmapinfoheader)) {
-        h.compression      = utils::little_endian_value<Compression>(buffer.get() + 12, buffer_end);
-        h.image_size       = utils::little_endian_value<std::uint32_t>(buffer.get() + 16, buffer_end);
-        h.x_ppm            = utils::little_endian_value<std::int32_t>(buffer.get() + 20, buffer_end);
-        h.y_ppm            = utils::little_endian_value<std::int32_t>(buffer.get() + 24, buffer_end);
-        h.colors_in_table  = utils::little_endian_value<std::uint32_t>(buffer.get() + 28, buffer_end);
-        h.important_colors = utils::little_endian_value<std::uint32_t>(buffer.get() + 32, buffer_end);
+        h.compression      = utils::little_endian_value<Compression>(buffer.get() + 12);
+        h.image_size       = utils::little_endian_value<std::uint32_t>(buffer.get() + 16);
+        h.x_ppm            = utils::little_endian_value<std::int32_t>(buffer.get() + 20);
+        h.y_ppm            = utils::little_endian_value<std::int32_t>(buffer.get() + 24);
+        h.colors_in_table  = utils::little_endian_value<std::uint32_t>(buffer.get() + 28);
+        h.important_colors = utils::little_endian_value<std::uint32_t>(buffer.get() + 32);
     }
 
     if (h.type() == InfoHeader::Type::bitmapinfoheader &&
@@ -326,9 +325,9 @@ InfoHeader InfoHeader::read(std::ifstream& in)
         char mask_buffer[mask_buffer_size] = {};
         in.read(mask_buffer, sizeof(mask_buffer_size));
 
-        h.red_chanel_bitmask   = utils::little_endian_value<std::uint32_t>(begin(mask_buffer), end(mask_buffer));
-        h.green_chanel_bitmask = utils::little_endian_value<std::uint32_t>(begin(mask_buffer) + 4, end(mask_buffer));
-        h.blue_chanel_bitmask  = utils::little_endian_value<std::uint32_t>(begin(mask_buffer) + 8, end(mask_buffer));
+        h.red_chanel_bitmask   = utils::little_endian_value<std::uint32_t>(begin(mask_buffer));
+        h.green_chanel_bitmask = utils::little_endian_value<std::uint32_t>(begin(mask_buffer) + 4);
+        h.blue_chanel_bitmask  = utils::little_endian_value<std::uint32_t>(begin(mask_buffer) + 8);
     }
 
     if (h.size == static_cast<std::uint32_t>(InfoHeader::Type::bitmapinfoheader) &&
@@ -336,42 +335,42 @@ InfoHeader InfoHeader::read(std::ifstream& in)
         char mask_buffer[sizeof(std::uint32_t)] = {};
         in.read(mask_buffer, sizeof(mask_buffer));
 
-        h.alpha_chanel_bitmask = utils::little_endian_value<std::uint32_t>(begin(mask_buffer), end(mask_buffer));
+        h.alpha_chanel_bitmask = utils::little_endian_value<std::uint32_t>(begin(mask_buffer));
     }
 
     if (h.size >= static_cast<std::uint32_t>(InfoHeader::Type::bitmapv2infoheader)) {
-        h.red_chanel_bitmask   = utils::little_endian_value<std::uint32_t>(buffer.get() + 36, buffer_end);
-        h.green_chanel_bitmask = utils::little_endian_value<std::uint32_t>(buffer.get() + 40, buffer_end);
-        h.blue_chanel_bitmask  = utils::little_endian_value<std::uint32_t>(buffer.get() + 44, buffer_end);
+        h.red_chanel_bitmask   = utils::little_endian_value<std::uint32_t>(buffer.get() + 36);
+        h.green_chanel_bitmask = utils::little_endian_value<std::uint32_t>(buffer.get() + 40);
+        h.blue_chanel_bitmask  = utils::little_endian_value<std::uint32_t>(buffer.get() + 44);
     }
 
     if (h.size >= static_cast<std::uint32_t>(InfoHeader::Type::bitmapv3infoheader)) {
-        h.alpha_chanel_bitmask = utils::little_endian_value<std::uint32_t>(buffer.get() + 48, buffer_end);
+        h.alpha_chanel_bitmask = utils::little_endian_value<std::uint32_t>(buffer.get() + 48);
     }
 
     if (h.size >= static_cast<std::uint32_t>(InfoHeader::Type::bitmapv4header)) {
-        h.color_space_type = utils::little_endian_value<ColorSpace>(buffer.get() + 52, buffer_end);
+        h.color_space_type = utils::little_endian_value<ColorSpace>(buffer.get() + 52);
 
-        h.endpoints.red.x   = utils::little_endian_value<std::uint32_t>(buffer.get() + 56, buffer_end);
-        h.endpoints.red.y   = utils::little_endian_value<std::uint32_t>(buffer.get() + 60, buffer_end);
-        h.endpoints.red.z   = utils::little_endian_value<std::uint32_t>(buffer.get() + 64, buffer_end);
-        h.endpoints.green.x = utils::little_endian_value<std::uint32_t>(buffer.get() + 68, buffer_end);
-        h.endpoints.green.y = utils::little_endian_value<std::uint32_t>(buffer.get() + 72, buffer_end);
-        h.endpoints.green.z = utils::little_endian_value<std::uint32_t>(buffer.get() + 76, buffer_end);
-        h.endpoints.blue.x  = utils::little_endian_value<std::uint32_t>(buffer.get() + 80, buffer_end);
-        h.endpoints.blue.y  = utils::little_endian_value<std::uint32_t>(buffer.get() + 84, buffer_end);
-        h.endpoints.blue.z  = utils::little_endian_value<std::uint32_t>(buffer.get() + 88, buffer_end);
+        h.endpoints.red.x   = utils::little_endian_value<std::uint32_t>(buffer.get() + 56);
+        h.endpoints.red.y   = utils::little_endian_value<std::uint32_t>(buffer.get() + 60);
+        h.endpoints.red.z   = utils::little_endian_value<std::uint32_t>(buffer.get() + 64);
+        h.endpoints.green.x = utils::little_endian_value<std::uint32_t>(buffer.get() + 68);
+        h.endpoints.green.y = utils::little_endian_value<std::uint32_t>(buffer.get() + 72);
+        h.endpoints.green.z = utils::little_endian_value<std::uint32_t>(buffer.get() + 76);
+        h.endpoints.blue.x  = utils::little_endian_value<std::uint32_t>(buffer.get() + 80);
+        h.endpoints.blue.y  = utils::little_endian_value<std::uint32_t>(buffer.get() + 84);
+        h.endpoints.blue.z  = utils::little_endian_value<std::uint32_t>(buffer.get() + 88);
 
-        h.gamma_red   = utils::little_endian_value<std::uint32_t>(buffer.get() + 92, buffer_end);
-        h.gamma_green = utils::little_endian_value<std::uint32_t>(buffer.get() + 96, buffer_end);
-        h.gamma_blue  = utils::little_endian_value<std::uint32_t>(buffer.get() + 100, buffer_end);
+        h.gamma_red   = utils::little_endian_value<std::uint32_t>(buffer.get() + 92);
+        h.gamma_green = utils::little_endian_value<std::uint32_t>(buffer.get() + 96);
+        h.gamma_blue  = utils::little_endian_value<std::uint32_t>(buffer.get() + 100);
     }
 
     if (h.size >= static_cast<std::uint32_t>(InfoHeader::Type::bitmapv5header)) {
-        h.intent               = utils::little_endian_value<std::uint32_t>(buffer.get() + 104, buffer_end);
-        h.color_profile_offset = utils::little_endian_value<std::uint32_t>(buffer.get() + 108, buffer_end);
-        h.color_profile_size   = utils::little_endian_value<std::uint32_t>(buffer.get() + 112, buffer_end);
-        h.reserved             = utils::little_endian_value<std::uint32_t>(buffer.get() + 116, buffer_end);
+        h.intent               = utils::little_endian_value<std::uint32_t>(buffer.get() + 104);
+        h.color_profile_offset = utils::little_endian_value<std::uint32_t>(buffer.get() + 108);
+        h.color_profile_size   = utils::little_endian_value<std::uint32_t>(buffer.get() + 112);
+        h.reserved             = utils::little_endian_value<std::uint32_t>(buffer.get() + 116);
     }
 
     if (h.bits_per_pixel <= 8) {
