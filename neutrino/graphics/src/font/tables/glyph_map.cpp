@@ -27,14 +27,14 @@ Format0 Format0::parse(std::uint32_t offset, const std::vector<std::uint8_t>& da
     auto from = std::next(data.begin(), offset);
 
     Format0 table;
-    table.format   = utils::big_endian_value<std::uint16_t>(from, data.end());
-    table.length   = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
-    table.language = utils::big_endian_value<std::uint16_t>(from + 4, data.end());
+    table.format   = utils::big_endian_value<std::uint16_t>(from);
+    table.length   = utils::big_endian_value<std::uint16_t>(from + 2);
+    table.language = utils::big_endian_value<std::uint16_t>(from + 4);
     table.glyph_id_array.reserve(glyphs_count);
 
     std::advance(from, 6);
     for (int i = 0; i < glyphs_count; ++i) {
-        table.glyph_id_array.push_back(utils::big_endian_value<std::uint8_t>(from + i, data.end()));
+        table.glyph_id_array.push_back(utils::big_endian_value<std::uint8_t>(from + i));
     }
 
     return table;
@@ -68,13 +68,13 @@ Format4 Format4::parse(std::uint32_t offset, const std::vector<std::uint8_t>& da
     auto from = std::next(data.begin(), offset);
 
     Format4 table;
-    table.format         = utils::big_endian_value<std::uint16_t>(from, data.end());
-    table.length         = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
-    table.language       = utils::big_endian_value<std::uint16_t>(from + 4, data.end());
-    table.seg_count_x2   = utils::big_endian_value<std::uint16_t>(from + 6, data.end());
-    table.search_range   = utils::big_endian_value<std::uint16_t>(from + 8, data.end());
-    table.entry_selector = utils::big_endian_value<std::uint16_t>(from + 10, data.end());
-    table.range_shift    = utils::big_endian_value<std::uint16_t>(from + 12, data.end());
+    table.format         = utils::big_endian_value<std::uint16_t>(from);
+    table.length         = utils::big_endian_value<std::uint16_t>(from + 2);
+    table.language       = utils::big_endian_value<std::uint16_t>(from + 4);
+    table.seg_count_x2   = utils::big_endian_value<std::uint16_t>(from + 6);
+    table.search_range   = utils::big_endian_value<std::uint16_t>(from + 8);
+    table.entry_selector = utils::big_endian_value<std::uint16_t>(from + 10);
+    table.range_shift    = utils::big_endian_value<std::uint16_t>(from + 12);
 
     std::advance(from, 14);
 
@@ -82,28 +82,28 @@ Format4 Format4::parse(std::uint32_t offset, const std::vector<std::uint8_t>& da
 
     table.end_code.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        table.end_code.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        table.end_code.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 
-    table.reserved_pad = utils::big_endian_value<std::uint16_t>(from, data.end());
+    table.reserved_pad = utils::big_endian_value<std::uint16_t>(from);
     std::advance(from, 2);
 
     table.start_code.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        table.start_code.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        table.start_code.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 
     table.id_delta.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        table.id_delta.push_back(utils::big_endian_value<std::int16_t>(from, data.end()));
+        table.id_delta.push_back(utils::big_endian_value<std::int16_t>(from));
         std::advance(from, 2);
     }
 
     table.id_range_offset.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        table.id_range_offset.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        table.id_range_offset.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 
@@ -112,7 +112,7 @@ Format4 Format4::parse(std::uint32_t offset, const std::vector<std::uint8_t>& da
 
     table.glyph_id_array.reserve(size);
     while (from != end) {
-        table.glyph_id_array.push_back(utils::big_endian_value<std::uint16_t>(from, end));
+        table.glyph_id_array.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 
@@ -165,7 +165,7 @@ GlyphMap::GlyphIndexMap parse_glyphs(const GlyphMap table, const std::vector<std
         GlyphMap::GlyphIndexMap();
     }
 
-    std::uint16_t format = utils::big_endian_value<std::uint16_t>(data.begin() + it->offset, data.end());
+    std::uint16_t format = utils::big_endian_value<std::uint16_t>(data.begin() + it->offset);
 
     const bool supported = std::any_of(supported_formats.begin(), supported_formats.end(), [format](std::uint16_t f) {
         return f == format;
@@ -253,8 +253,8 @@ GlyphMap GlyphMap::parse(const std::vector<std::uint8_t>& data)
     constexpr size_t record_size = 8;
 
     GlyphMap table;
-    table.version    = utils::big_endian_value<std::uint16_t>(data.begin(), data.end());
-    table.num_tables = utils::big_endian_value<std::uint16_t>(data.begin() + 2, data.end());
+    table.version    = utils::big_endian_value<std::uint16_t>(data.begin());
+    table.num_tables = utils::big_endian_value<std::uint16_t>(data.begin() + 2);
 
     table.encoding_records.reserve(table.num_tables);
 
@@ -262,9 +262,9 @@ GlyphMap GlyphMap::parse(const std::vector<std::uint8_t>& data)
     for (size_t i = 0; i < table.num_tables; ++i) {
 
         EncodingRecord record;
-        record.platform_id = utils::big_endian_value<PlatformId>(from, data.end());
-        record.encoding_id = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
-        record.offset      = utils::big_endian_value<std::uint32_t>(from + 4, data.end());
+        record.platform_id = utils::big_endian_value<PlatformId>(from);
+        record.encoding_id = utils::big_endian_value<std::uint16_t>(from + 2);
+        record.offset      = utils::big_endian_value<std::uint32_t>(from + 4);
 
         table.encoding_records.push_back(record);
         std::advance(from, record_size);

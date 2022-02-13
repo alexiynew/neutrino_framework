@@ -35,7 +35,7 @@ private:
         window.show();
 
         Window window2 = std::move(window);
-        
+
         TEST_ASSERT(window2.is_visible(), "Window should keep its state.");
 
         window = std::move(window2);
@@ -52,14 +52,14 @@ private:
 
         Window window(name(), {640, 480});
 
-        window.on_show.connect([&show_called, this](const Window& w){ 
+        window.on_show.connect([&show_called, this](const Window& w) {
             TEST_ASSERT(w.is_visible(), "The on_show callback called for non visible window.");
-            show_called++; 
+            show_called++;
         });
 
         window.on_hide.connect([&hide_called, this](const Window& w) {
             TEST_ASSERT(!w.is_visible(), "The on_hide callback called for visible window.");
-            hide_called++; 
+            hide_called++;
         });
 
         TEST_ASSERT(!window.is_visible(), "Window is visible before been shown.");

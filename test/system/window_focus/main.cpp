@@ -196,7 +196,7 @@ private:
         TEST_ASSERT(betta.has_input_focus(), "Focus function is not working.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
-            
+
         // Show alpha
         alpha.show();
         betta.process_events();

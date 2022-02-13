@@ -10,9 +10,9 @@ Naming Naming::parse(const std::vector<std::uint8_t>& data)
 {
     Naming table;
 
-    table.format        = utils::big_endian_value<std::uint16_t>(data.begin(), data.end());
-    table.count         = utils::big_endian_value<std::uint16_t>(data.begin() + 2, data.end());
-    table.string_offset = utils::big_endian_value<Offset16>(data.begin() + 4, data.end());
+    table.format        = utils::big_endian_value<std::uint16_t>(data.begin());
+    table.count         = utils::big_endian_value<std::uint16_t>(data.begin() + 2);
+    table.string_offset = utils::big_endian_value<Offset16>(data.begin() + 4);
 
     auto from = std::next(data.begin(), 6);
 
@@ -22,27 +22,27 @@ Naming Naming::parse(const std::vector<std::uint8_t>& data)
 
         NameRecord record;
 
-        record.platform_id = utils::big_endian_value<PlatformId>(from, data.end());
-        record.encoding_id = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
-        record.language_id = utils::big_endian_value<std::uint16_t>(from + 4, data.end());
-        record.name_id     = utils::big_endian_value<NameId>(from + 6, data.end());
-        record.length      = utils::big_endian_value<std::uint16_t>(from + 8, data.end());
-        record.offset      = utils::big_endian_value<Offset16>(from + 10, data.end());
+        record.platform_id = utils::big_endian_value<PlatformId>(from);
+        record.encoding_id = utils::big_endian_value<std::uint16_t>(from + 2);
+        record.language_id = utils::big_endian_value<std::uint16_t>(from + 4);
+        record.name_id     = utils::big_endian_value<NameId>(from + 6);
+        record.length      = utils::big_endian_value<std::uint16_t>(from + 8);
+        record.offset      = utils::big_endian_value<Offset16>(from + 10);
 
         table.name_records.push_back(std::move(record));
         std::advance(from, 12);
     }
 
     if (table.format == 1) {
-        table.lang_tag_count = utils::big_endian_value<std::uint16_t>(from, data.end());
+        table.lang_tag_count = utils::big_endian_value<std::uint16_t>(from);
         std::advance(from, 2);
 
         table.lang_tag_records.reserve(table.lang_tag_count);
         for (size_t i = 0; i < table.lang_tag_count; ++i) {
 
             LangTagRecord record;
-            record.length = utils::big_endian_value<std::uint16_t>(from, data.end());
-            record.offset = utils::big_endian_value<Offset16>(from + 2, data.end());
+            record.length = utils::big_endian_value<std::uint16_t>(from);
+            record.offset = utils::big_endian_value<Offset16>(from + 2);
 
             table.lang_tag_records.push_back(std::move(record));
             std::advance(from, 4);
@@ -111,12 +111,10 @@ std::string Naming::read_string(Naming table, Naming::NameId name_id, const std:
 
     const size_t length = it->length / sizeof(char16_t);
 
-    auto from      = data.begin() + static_cast<std::ptrdiff_t>(offset);
-    const auto end = std::next(data.begin(), static_cast<std::ptrdiff_t>(offset + it->length));
-
+    auto from = data.begin() + static_cast<std::ptrdiff_t>(offset);
     std::u16string str(length, '\0');
     for (size_t i = 0; i < length; i++) {
-        str[i] = utils::big_endian_value<char16_t>(from, end);
+        str[i] = utils::big_endian_value<char16_t>(from);
         std::advance(from, sizeof(char16_t));
     }
 

@@ -9,55 +9,55 @@ Os2 Os2::parse(const std::vector<std::uint8_t>& data)
 {
     Os2 table;
 
-    table.version              = utils::big_endian_value<std::uint16_t>(data.begin() + 0, data.end());
-    table.avg_char_width       = utils::big_endian_value<std::int16_t>(data.begin() + 2, data.end());
-    table.weight_class         = utils::big_endian_value<std::uint16_t>(data.begin() + 4, data.end());
-    table.width_class          = utils::big_endian_value<std::uint16_t>(data.begin() + 6, data.end());
-    table.type                 = utils::big_endian_value<std::uint16_t>(data.begin() + 8, data.end());
-    table.subscript_x_size     = utils::big_endian_value<std::int16_t>(data.begin() + 10, data.end());
-    table.subscript_y_size     = utils::big_endian_value<std::int16_t>(data.begin() + 12, data.end());
-    table.subscript_x_offset   = utils::big_endian_value<std::int16_t>(data.begin() + 14, data.end());
-    table.subscript_y_offset   = utils::big_endian_value<std::int16_t>(data.begin() + 16, data.end());
-    table.superscript_x_size   = utils::big_endian_value<std::int16_t>(data.begin() + 18, data.end());
-    table.superscript_y_size   = utils::big_endian_value<std::int16_t>(data.begin() + 20, data.end());
-    table.superscript_x_offset = utils::big_endian_value<std::int16_t>(data.begin() + 22, data.end());
-    table.superscript_y_offset = utils::big_endian_value<std::int16_t>(data.begin() + 24, data.end());
-    table.strikeout_size       = utils::big_endian_value<std::int16_t>(data.begin() + 26, data.end());
-    table.strikeout_position   = utils::big_endian_value<std::int16_t>(data.begin() + 28, data.end());
-    table.family_class         = utils::big_endian_value<std::int16_t>(data.begin() + 30, data.end());
+    table.version              = utils::big_endian_value<std::uint16_t>(data.begin() + 0);
+    table.avg_char_width       = utils::big_endian_value<std::int16_t>(data.begin() + 2);
+    table.weight_class         = utils::big_endian_value<std::uint16_t>(data.begin() + 4);
+    table.width_class          = utils::big_endian_value<std::uint16_t>(data.begin() + 6);
+    table.type                 = utils::big_endian_value<std::uint16_t>(data.begin() + 8);
+    table.subscript_x_size     = utils::big_endian_value<std::int16_t>(data.begin() + 10);
+    table.subscript_y_size     = utils::big_endian_value<std::int16_t>(data.begin() + 12);
+    table.subscript_x_offset   = utils::big_endian_value<std::int16_t>(data.begin() + 14);
+    table.subscript_y_offset   = utils::big_endian_value<std::int16_t>(data.begin() + 16);
+    table.superscript_x_size   = utils::big_endian_value<std::int16_t>(data.begin() + 18);
+    table.superscript_y_size   = utils::big_endian_value<std::int16_t>(data.begin() + 20);
+    table.superscript_x_offset = utils::big_endian_value<std::int16_t>(data.begin() + 22);
+    table.superscript_y_offset = utils::big_endian_value<std::int16_t>(data.begin() + 24);
+    table.strikeout_size       = utils::big_endian_value<std::int16_t>(data.begin() + 26);
+    table.strikeout_position   = utils::big_endian_value<std::int16_t>(data.begin() + 28);
+    table.family_class         = utils::big_endian_value<std::int16_t>(data.begin() + 30);
 
     std::reverse_copy(data.begin() + 32, data.begin() + 42, table.panose.begin());
 
-    table.unicode_range1   = utils::big_endian_value<std::uint32_t>(data.begin() + 42, data.end());
-    table.unicode_range2   = utils::big_endian_value<std::uint32_t>(data.begin() + 46, data.end());
-    table.unicode_range3   = utils::big_endian_value<std::uint32_t>(data.begin() + 50, data.end());
-    table.unicode_range4   = utils::big_endian_value<std::uint32_t>(data.begin() + 54, data.end());
-    table.ach_vend_id      = utils::big_endian_value<Tag>(data.begin() + 58, data.end());
-    table.selection        = utils::big_endian_value<std::uint16_t>(data.begin() + 62, data.end());
-    table.first_char_index = utils::big_endian_value<std::uint16_t>(data.begin() + 64, data.end());
-    table.last_char_index  = utils::big_endian_value<std::uint16_t>(data.begin() + 66, data.end());
-    table.typo_ascender    = utils::big_endian_value<std::int16_t>(data.begin() + 68, data.end());
-    table.typo_descender   = utils::big_endian_value<std::int16_t>(data.begin() + 70, data.end());
-    table.typo_linegap     = utils::big_endian_value<std::int16_t>(data.begin() + 72, data.end());
-    table.win_ascent       = utils::big_endian_value<std::uint16_t>(data.begin() + 74, data.end());
-    table.win_descent      = utils::big_endian_value<std::uint16_t>(data.begin() + 76, data.end());
+    table.unicode_range1   = utils::big_endian_value<std::uint32_t>(data.begin() + 42);
+    table.unicode_range2   = utils::big_endian_value<std::uint32_t>(data.begin() + 46);
+    table.unicode_range3   = utils::big_endian_value<std::uint32_t>(data.begin() + 50);
+    table.unicode_range4   = utils::big_endian_value<std::uint32_t>(data.begin() + 54);
+    table.ach_vend_id      = utils::big_endian_value<Tag>(data.begin() + 58);
+    table.selection        = utils::big_endian_value<std::uint16_t>(data.begin() + 62);
+    table.first_char_index = utils::big_endian_value<std::uint16_t>(data.begin() + 64);
+    table.last_char_index  = utils::big_endian_value<std::uint16_t>(data.begin() + 66);
+    table.typo_ascender    = utils::big_endian_value<std::int16_t>(data.begin() + 68);
+    table.typo_descender   = utils::big_endian_value<std::int16_t>(data.begin() + 70);
+    table.typo_linegap     = utils::big_endian_value<std::int16_t>(data.begin() + 72);
+    table.win_ascent       = utils::big_endian_value<std::uint16_t>(data.begin() + 74);
+    table.win_descent      = utils::big_endian_value<std::uint16_t>(data.begin() + 76);
 
     if (table.version >= 1) {
-        table.code_page_range1 = utils::big_endian_value<std::uint32_t>(data.begin() + 78, data.end());
-        table.code_page_range2 = utils::big_endian_value<std::uint32_t>(data.begin() + 82, data.end());
+        table.code_page_range1 = utils::big_endian_value<std::uint32_t>(data.begin() + 78);
+        table.code_page_range2 = utils::big_endian_value<std::uint32_t>(data.begin() + 82);
     }
 
     if (table.version >= 2) {
-        table.height       = utils::big_endian_value<std::int16_t>(data.begin() + 86, data.end());
-        table.capheight    = utils::big_endian_value<std::int16_t>(data.begin() + 88, data.end());
-        table.default_char = utils::big_endian_value<std::uint16_t>(data.begin() + 90, data.end());
-        table.break_char   = utils::big_endian_value<std::uint16_t>(data.begin() + 92, data.end());
-        table.max_context  = utils::big_endian_value<std::uint16_t>(data.begin() + 94, data.end());
+        table.height       = utils::big_endian_value<std::int16_t>(data.begin() + 86);
+        table.capheight    = utils::big_endian_value<std::int16_t>(data.begin() + 88);
+        table.default_char = utils::big_endian_value<std::uint16_t>(data.begin() + 90);
+        table.break_char   = utils::big_endian_value<std::uint16_t>(data.begin() + 92);
+        table.max_context  = utils::big_endian_value<std::uint16_t>(data.begin() + 94);
     }
 
     if (table.version == 5) {
-        table.lower_optical_point_size = utils::big_endian_value<std::uint16_t>(data.begin() + 96, data.end());
-        table.upper_optical_point_size = utils::big_endian_value<std::uint16_t>(data.begin() + 98, data.end());
+        table.lower_optical_point_size = utils::big_endian_value<std::uint16_t>(data.begin() + 96);
+        table.upper_optical_point_size = utils::big_endian_value<std::uint16_t>(data.begin() + 98);
     }
 
     return table;

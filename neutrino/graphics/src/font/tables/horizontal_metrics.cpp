@@ -15,8 +15,8 @@ HorizontalMetrics HorizontalMetrics::parse(std::uint16_t number_of_h_metrics,
     table.metrics.reserve(number_of_h_metrics);
     for (size_t i = 0; i < number_of_h_metrics; ++i) {
         HorizontalMetrics::Metric metric;
-        metric.advance_width = utils::big_endian_value<std::uint16_t>(from, data.end());
-        metric.lsb           = utils::big_endian_value<std::int16_t>(from + 2, data.end());
+        metric.advance_width = utils::big_endian_value<std::uint16_t>(from);
+        metric.lsb           = utils::big_endian_value<std::int16_t>(from + 2);
 
         table.metrics.push_back(metric);
         std::advance(from, 4);
@@ -24,7 +24,7 @@ HorizontalMetrics HorizontalMetrics::parse(std::uint16_t number_of_h_metrics,
 
     if (num_glyphs > number_of_h_metrics) {
         for (size_t i = 0; i < number_of_h_metrics; ++i) {
-            table.left_side_bearings.push_back(utils::big_endian_value<std::int16_t>(from, data.end()));
+            table.left_side_bearings.push_back(utils::big_endian_value<std::int16_t>(from));
             std::advance(from, 2);
         }
     }
