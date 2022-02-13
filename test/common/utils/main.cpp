@@ -186,7 +186,7 @@ public:
 
         bool exception_occurred = false;
         try {
-            int value2 = reader.get<int>();
+            reader.get<int>();
         } catch (std::out_of_range&) {
             exception_occurred = true;
         }
@@ -238,7 +238,7 @@ public:
 
         bool exception_occurred = false;
         try {
-            int value2 = reader.get<int>();
+            reader.get<int>();
         } catch (std::out_of_range&) {
             exception_occurred = true;
         }

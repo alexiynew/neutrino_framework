@@ -227,7 +227,7 @@ public:
     template <typename T>
     void skip(DifferenceType count = 1) noexcept
     {
-        DifferenceType step = count * sizeof(T);
+        DifferenceType step = count * static_cast<DifferenceType>(sizeof(T));
 
         step = std::clamp(step, DifferenceType(0), m_distance);
         std::advance(m_current, step);
@@ -316,7 +316,7 @@ public:
     template <typename T>
     void skip(DifferenceType count = 1) noexcept
     {
-        DifferenceType step = count * sizeof(T);
+        DifferenceType step = count * static_cast<DifferenceType>(sizeof(T));
 
         step = std::clamp(step, DifferenceType(0), m_distance);
         std::advance(m_current, step);
