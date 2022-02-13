@@ -76,22 +76,21 @@ private:
     const std::vector<std::uint8_t>& m_flags;
 };
 
-GlyphData::GlyphHeader parse_header(const DataIterator& begin, const DataIterator& end)
+GlyphData::GlyphHeader parse_header(const DataIterator& begin)
 {
     GlyphData::GlyphHeader header;
 
-    header.number_of_contours = utils::big_endian_value<std::int16_t>(begin, end);
-    header.x_min              = utils::big_endian_value<std::int16_t>(begin + 2, end);
-    header.y_min              = utils::big_endian_value<std::int16_t>(begin + 4, end);
-    header.x_max              = utils::big_endian_value<std::int16_t>(begin + 6, end);
-    header.y_max              = utils::big_endian_value<std::int16_t>(begin + 8, end);
+    header.number_of_contours = utils::big_endian_value<std::int16_t>(begin);
+    header.x_min              = utils::big_endian_value<std::int16_t>(begin + 2);
+    header.y_min              = utils::big_endian_value<std::int16_t>(begin + 4);
+    header.x_max              = utils::big_endian_value<std::int16_t>(begin + 6);
+    header.y_max              = utils::big_endian_value<std::int16_t>(begin + 8);
 
     return header;
 }
 
 std::pair<std::vector<std::uint8_t>, DataIterator> parse_flags(const std::uint16_t points_count,
-                                                               const DataIterator& begin,
-                                                               const DataIterator& end)
+                                                               const DataIterator& begin)
 {
     DataIterator from = begin;
 
@@ -99,13 +98,13 @@ std::pair<std::vector<std::uint8_t>, DataIterator> parse_flags(const std::uint16
     flags.reserve(points_count);
 
     for (size_t i = 0; i < points_count; ++i) {
-        const std::uint8_t flag = utils::big_endian_value<std::uint8_t>(from, end);
+        const std::uint8_t flag = utils::big_endian_value<std::uint8_t>(from);
         std::advance(from, 1);
 
         flags.push_back(flag);
 
         if (flag & Flags::repeat_flag) {
-            const std::uint8_t repeat_count = utils::big_endian_value<std::uint8_t>(from, end);
+            const std::uint8_t repeat_count = utils::big_endian_value<std::uint8_t>(from);
             std::advance(from, 1);
 
             flags.insert(flags.end(), repeat_count, flag);
@@ -127,8 +126,7 @@ std::pair<std::vector<std::uint8_t>, DataIterator> parse_flags(const std::uint16
 template <typename CoordinatesInterpretator>
 std::pair<std::vector<std::int16_t>, DataIterator> parse_coordinates(const size_t points_count,
                                                                      const CoordinatesInterpretator& flags_interpretator,
-                                                                     const DataIterator& begin,
-                                                                     const DataIterator& end)
+                                                                     const DataIterator& begin)
 {
     DataIterator from = begin;
 
@@ -143,7 +141,7 @@ std::pair<std::vector<std::int16_t>, DataIterator> parse_coordinates(const size_
         std::uint16_t offset = 0;
         if (is_short) {
             // offset is 1 byte long
-            offset = utils::big_endian_value<std::uint8_t>(from, end);
+            offset = utils::big_endian_value<std::uint8_t>(from);
             offset *= (1 - (2 * static_cast<int>(!is_positive)));
 
             std::advance(from, 1);
@@ -151,7 +149,7 @@ std::pair<std::vector<std::int16_t>, DataIterator> parse_coordinates(const size_
             // If the coordinate is the same there is no offset. so offset == 0.
             // Otherwise offset is two bytes long
 
-            offset = utils::big_endian_value<std::int16_t>(from, end);
+            offset = utils::big_endian_value<std::int16_t>(from);
             std::advance(from, 2);
         }
 
@@ -161,9 +159,7 @@ std::pair<std::vector<std::int16_t>, DataIterator> parse_coordinates(const size_
     return std::make_pair(std::move(coordinates), from);
 }
 
-GlyphData::SimpleGlyph parse_simple_glyph(const GlyphData::GlyphHeader& header,
-                                          const DataIterator& begin,
-                                          const DataIterator& end)
+GlyphData::SimpleGlyph parse_simple_glyph(const GlyphData::GlyphHeader& header, const DataIterator& begin)
 {
     DataIterator from = begin;
 
@@ -171,16 +167,16 @@ GlyphData::SimpleGlyph parse_simple_glyph(const GlyphData::GlyphHeader& header,
 
     data.end_pts_of_contours.reserve(header.number_of_contours);
     for (int i = 0; i < header.number_of_contours; ++i) {
-        data.end_pts_of_contours.push_back(utils::big_endian_value<std::uint16_t>(from, end));
+        data.end_pts_of_contours.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 
-    data.instruction_length = utils::big_endian_value<std::uint16_t>(from, end);
+    data.instruction_length = utils::big_endian_value<std::uint16_t>(from);
     std::advance(from, 2);
 
     if (data.instruction_length > 0) {
         for (size_t i = 0; i < data.instruction_length; ++i) {
-            data.instructions.push_back(utils::big_endian_value<std::uint8_t>(from, end));
+            data.instructions.push_back(utils::big_endian_value<std::uint8_t>(from));
             std::advance(from, 1);
         }
     }
@@ -189,29 +185,23 @@ GlyphData::SimpleGlyph parse_simple_glyph(const GlyphData::GlyphHeader& header,
     // Therefore the number of coordinates is the last index + 1
     const std::uint16_t count = data.end_pts_of_contours.back() + 1;
 
-    std::tie(data.flags, from)         = parse_flags(count, from, end);
-    std::tie(data.x_coordinates, from) = parse_coordinates(count, XCoordinatesInterpretator(data.flags), from, end);
-    std::tie(data.y_coordinates, from) = parse_coordinates(count, YCoordinatesInterpretator(data.flags), from, end);
-
-    int diff = std::distance(from, end);
-
-    if (from != end) {
-        throw ParsingError("Can't parse glyph data");
-    }
+    std::tie(data.flags, from)         = parse_flags(count, from);
+    std::tie(data.x_coordinates, from) = parse_coordinates(count, XCoordinatesInterpretator(data.flags), from);
+    std::tie(data.y_coordinates, from) = parse_coordinates(count, YCoordinatesInterpretator(data.flags), from);
 
     return data;
 }
 
-GlyphData::Glyph parse_glyph(const DataIterator& begin, const DataIterator& end)
+GlyphData::Glyph parse_glyph(const DataIterator& begin)
 {
 
     GlyphData::Glyph glyph;
-    glyph.header = parse_header(begin, end);
+    glyph.header = parse_header(begin);
 
     DataIterator from = std::next(begin, 10);
 
     if (glyph.header.number_of_contours >= 0) {
-        glyph.data = parse_simple_glyph(glyph.header, from, end);
+        glyph.data = parse_simple_glyph(glyph.header, from);
     } else {
         // composite glyph
     }
@@ -232,10 +222,9 @@ GlyphData::GlyphData(std::uint16_t num_glyphs,
 
     for (GlyphId i = 0; i < num_glyphs; ++i) {
         DataIterator begin = std::next(data.begin(), offsets[i]);
-        DataIterator end   = std::next(data.begin(), offsets[i + 1]);
+        // DataIterator end   = std::next(data.begin(), offsets[i + 1]);
 
-        int diff = std::distance(begin, end);
-        m_glyphs.emplace(i, parse_glyph(begin, end));
+        m_glyphs.emplace(i, parse_glyph(begin));
     }
 }
 

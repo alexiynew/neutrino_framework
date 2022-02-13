@@ -49,13 +49,13 @@ void SubtableFormat4::parse(std::uint32_t offset, const std::vector<std::uint8_t
 {
     auto from = std::next(data.begin(), offset);
 
-    m_format         = utils::big_endian_value<std::uint16_t>(from, data.end());
-    m_length         = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
-    m_language       = utils::big_endian_value<std::uint16_t>(from + 4, data.end());
-    m_seg_count_x2   = utils::big_endian_value<std::uint16_t>(from + 6, data.end());
-    m_search_range   = utils::big_endian_value<std::uint16_t>(from + 8, data.end());
-    m_entry_selector = utils::big_endian_value<std::uint16_t>(from + 10, data.end());
-    m_range_shift    = utils::big_endian_value<std::uint16_t>(from + 12, data.end());
+    m_format         = utils::big_endian_value<std::uint16_t>(from);
+    m_length         = utils::big_endian_value<std::uint16_t>(from + 2);
+    m_language       = utils::big_endian_value<std::uint16_t>(from + 4);
+    m_seg_count_x2   = utils::big_endian_value<std::uint16_t>(from + 6);
+    m_search_range   = utils::big_endian_value<std::uint16_t>(from + 8);
+    m_entry_selector = utils::big_endian_value<std::uint16_t>(from + 10);
+    m_range_shift    = utils::big_endian_value<std::uint16_t>(from + 12);
 
     std::advance(from, 14);
 
@@ -63,28 +63,28 @@ void SubtableFormat4::parse(std::uint32_t offset, const std::vector<std::uint8_t
 
     m_end_code.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        m_end_code.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        m_end_code.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 
-    m_reserved_pad = utils::big_endian_value<std::uint16_t>(from, data.end());
+    m_reserved_pad = utils::big_endian_value<std::uint16_t>(from);
     std::advance(from, 2);
 
     m_start_code.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        m_start_code.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        m_start_code.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 
     m_id_delta.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        m_id_delta.push_back(utils::big_endian_value<std::int16_t>(from, data.end()));
+        m_id_delta.push_back(utils::big_endian_value<std::int16_t>(from));
         std::advance(from, 2);
     }
 
     m_id_range_offset.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        m_id_range_offset.push_back(utils::big_endian_value<std::uint16_t>(from, data.end()));
+        m_id_range_offset.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 
@@ -93,7 +93,7 @@ void SubtableFormat4::parse(std::uint32_t offset, const std::vector<std::uint8_t
 
     m_glyph_id_array.reserve(size);
     while (from != end) {
-        m_glyph_id_array.push_back(utils::big_endian_value<std::uint16_t>(from, end));
+        m_glyph_id_array.push_back(utils::big_endian_value<std::uint16_t>(from));
         std::advance(from, 2);
     }
 }
@@ -236,9 +236,9 @@ std::vector<EncodingRecord> get_encoding_records(std::uint32_t offset,
     for (size_t i = 0; i < num_tables; ++i) {
 
         EncodingRecord record;
-        record.platform_id = utils::big_endian_value<PlatformId>(from, data.end());
-        record.encoding_id = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
-        record.offset      = utils::big_endian_value<std::uint32_t>(from + 4, data.end());
+        record.platform_id = utils::big_endian_value<PlatformId>(from);
+        record.encoding_id = utils::big_endian_value<std::uint16_t>(from + 2);
+        record.offset      = utils::big_endian_value<std::uint32_t>(from + 4);
 
         encoding_records.push_back(record);
         std::advance(from, record_size);
@@ -285,7 +285,7 @@ const std::vector<std::uint8_t>& data)
 
     for (const auto& record : encoding_records) {
         const auto from      = std::next(data.begin(), record.offset);
-        std::uint16_t format = utils::big_endian_value<std::uint16_t>(from, data.end());
+        std::uint16_t format = utils::big_endian_value<std::uint16_t>(from);
 
         auto subtable = create_subtable(format);
         if (subtable) {
@@ -306,8 +306,8 @@ namespace framework::graphics::details::font
 
 CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(const std::vector<std::uint8_t>& data)
 {
-    const std::uint16_t version    = utils::big_endian_value<std::uint16_t>(data.begin(), data.end());
-    const std::uint16_t num_tables = utils::big_endian_value<std::uint16_t>(data.begin() + 2, data.end());
+    const std::uint16_t version    = utils::big_endian_value<std::uint16_t>(data.begin());
+    const std::uint16_t num_tables = utils::big_endian_value<std::uint16_t>(data.begin() + 2);
 
     const std::vector<EncodingRecord> encoding_records         = get_encoding_records(4, num_tables, data);
     const std::vector<EncodingRecord> unicode_encoding_records = find_unicode_encoding_records(encoding_records);

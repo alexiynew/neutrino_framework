@@ -8,9 +8,9 @@ namespace framework::graphics::details::font
 
 Naming::Naming(const std::vector<std::uint8_t>& data)
 {
-    m_version        = utils::big_endian_value<std::uint16_t>(data.begin(), data.end());
-    m_count          = utils::big_endian_value<std::uint16_t>(data.begin() + 2, data.end());
-    m_storage_offset = utils::big_endian_value<Offset16>(data.begin() + 4, data.end());
+    m_version        = utils::big_endian_value<std::uint16_t>(data.begin());
+    m_count          = utils::big_endian_value<std::uint16_t>(data.begin() + 2);
+    m_storage_offset = utils::big_endian_value<Offset16>(data.begin() + 4);
 
     auto from = std::next(data.begin(), 6);
 
@@ -20,27 +20,27 @@ Naming::Naming(const std::vector<std::uint8_t>& data)
 
         NameRecord record;
 
-        record.platform_id   = utils::big_endian_value<PlatformId>(from, data.end());
-        record.encoding_id   = utils::big_endian_value<std::uint16_t>(from + 2, data.end());
-        record.language_id   = utils::big_endian_value<std::uint16_t>(from + 4, data.end());
-        record.name_id       = utils::big_endian_value<NameId>(from + 6, data.end());
-        record.length        = utils::big_endian_value<std::uint16_t>(from + 8, data.end());
-        record.string_offset = utils::big_endian_value<Offset16>(from + 10, data.end());
+        record.platform_id   = utils::big_endian_value<PlatformId>(from);
+        record.encoding_id   = utils::big_endian_value<std::uint16_t>(from + 2);
+        record.language_id   = utils::big_endian_value<std::uint16_t>(from + 4);
+        record.name_id       = utils::big_endian_value<NameId>(from + 6);
+        record.length        = utils::big_endian_value<std::uint16_t>(from + 8);
+        record.string_offset = utils::big_endian_value<Offset16>(from + 10);
 
         m_name_records.push_back(std::move(record));
         std::advance(from, 12);
     }
 
     if (m_version == 1) {
-        m_lang_tag_count = utils::big_endian_value<std::uint16_t>(from, data.end());
+        m_lang_tag_count = utils::big_endian_value<std::uint16_t>(from);
         std::advance(from, 2);
 
         m_lang_tag_records.reserve(m_lang_tag_count);
         for (size_t i = 0; i < m_lang_tag_count; ++i) {
 
             LangTagRecord record;
-            record.length          = utils::big_endian_value<std::uint16_t>(from, data.end());
-            record.lang_tag_offset = utils::big_endian_value<Offset16>(from + 2, data.end());
+            record.length          = utils::big_endian_value<std::uint16_t>(from);
+            record.lang_tag_offset = utils::big_endian_value<Offset16>(from + 2);
 
             m_lang_tag_records.push_back(std::move(record));
             std::advance(from, 4);

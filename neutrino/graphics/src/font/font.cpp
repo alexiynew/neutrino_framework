@@ -47,10 +47,10 @@ TableRecord TableRecord::read(std::istream& in)
     in.read(buffer.data(), size);
 
     TableRecord table;
-    table.tag      = utils::big_endian_value<Tag>(buffer.begin(), buffer.end());
-    table.checksum = utils::big_endian_value<std::uint32_t>(buffer.begin() + 4, buffer.end());
-    table.offset   = utils::big_endian_value<std::uint32_t>(buffer.begin() + 8, buffer.end());
-    table.length   = utils::big_endian_value<std::uint32_t>(buffer.begin() + 12, buffer.end());
+    table.tag      = utils::big_endian_value<Tag>(buffer.begin());
+    table.checksum = utils::big_endian_value<std::uint32_t>(buffer.begin() + 4);
+    table.offset   = utils::big_endian_value<std::uint32_t>(buffer.begin() + 8);
+    table.length   = utils::big_endian_value<std::uint32_t>(buffer.begin() + 12);
 
     return table;
 }
@@ -109,11 +109,11 @@ TableDirectory TableDirectory::read(std::istream& in)
     in.read(buffer.data(), size);
 
     TableDirectory table_directory;
-    table_directory.sfnt_version   = utils::big_endian_value<std::uint32_t>(buffer.begin(), buffer.end());
-    table_directory.num_tables     = utils::big_endian_value<std::uint16_t>(buffer.begin() + 4, buffer.end());
-    table_directory.search_range   = utils::big_endian_value<std::uint16_t>(buffer.begin() + 6, buffer.end());
-    table_directory.entry_selector = utils::big_endian_value<std::uint16_t>(buffer.begin() + 8, buffer.end());
-    table_directory.range_shift    = utils::big_endian_value<std::uint16_t>(buffer.begin() + 10, buffer.end());
+    table_directory.sfnt_version   = utils::big_endian_value<std::uint32_t>(buffer.begin());
+    table_directory.num_tables     = utils::big_endian_value<std::uint16_t>(buffer.begin() + 4);
+    table_directory.search_range   = utils::big_endian_value<std::uint16_t>(buffer.begin() + 6);
+    table_directory.entry_selector = utils::big_endian_value<std::uint16_t>(buffer.begin() + 8);
+    table_directory.range_shift    = utils::big_endian_value<std::uint16_t>(buffer.begin() + 10);
 
     table_directory.table_records.reserve(table_directory.num_tables);
 
@@ -203,7 +203,7 @@ bool Table::valid() const
         std::uint32_t data_checksum = table_checksum(data);
 
         if (record.tag == Tag::Head) {
-            data_checksum -= utils::big_endian_value<std::uint32_t>(container.data() + 8, container.data() + 12);
+            data_checksum -= utils::big_endian_value<std::uint32_t>(container.data() + 8);
         }
 
         return data_checksum;

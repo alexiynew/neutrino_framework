@@ -17,13 +17,13 @@ IndexToLocation::IndexToLocation(std::int16_t index_to_loc_format,
     for (size_t i = 0; i < size; ++i) {
         switch (index_to_loc_format) {
             case 0: {
-                const Offset16 offset = utils::big_endian_value<Offset16>(from, data.end());
+                const Offset16 offset = utils::big_endian_value<Offset16>(from);
                 m_offsets.push_back(offset * 2);
                 std::advance(from, sizeof(Offset16));
             } break;
 
             case 1: {
-                m_offsets.push_back(utils::big_endian_value<Offset32>(from, data.end()));
+                m_offsets.push_back(utils::big_endian_value<Offset32>(from));
                 std::advance(from, sizeof(Offset32));
             } break;
         }
