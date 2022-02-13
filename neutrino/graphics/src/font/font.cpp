@@ -278,6 +278,8 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
         return LoadResult::Unsupported;
     } catch (UnimplementedError&) {
         return LoadResult::Unsupported;
+    } catch (ParsingError&) {
+        return LoadResult::TableParsingError;
     } catch (std::exception&) {
         return LoadResult::UnknownError;
     }
@@ -376,11 +378,15 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
             return LoadResult::TableParsingError;
         }
 
+        if ((maxp.num_glyphs() + 1) != loca.offsets().size()) {
+            return LoadResult::TableParsingError;
+        }
+
         const GlyphData glyf(maxp.num_glyphs(), loca.offsets(), tables.at(Tag::Glyf).data);
         if (!glyf.valid()) {
             return LoadResult::TableParsingError;
         }
-        
+
         return LoadResult::Unsupported;
     }
 
