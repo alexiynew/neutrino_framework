@@ -60,10 +60,10 @@ private:
         char buffer3[] = {0x1, 0x0, 0x0, 0x0};
         char buffer4[] = {0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
 
-        char value1         = big_endian_value<char>(std::begin(buffer1), std::end(buffer1));
-        short value2        = big_endian_value<short>(std::begin(buffer2), std::end(buffer2));
-        int value3          = big_endian_value<int>(std::begin(buffer3), std::end(buffer3));
-        std::int64_t value4 = big_endian_value<std::int64_t>(std::begin(buffer4), std::end(buffer4));
+        char value1         = big_endian_value<char>(std::begin(buffer1));
+        short value2        = big_endian_value<short>(std::begin(buffer2));
+        int value3          = big_endian_value<int>(std::begin(buffer3));
+        std::int64_t value4 = big_endian_value<std::int64_t>(std::begin(buffer4));
 
         TEST_ASSERT(value1 == 0x01, "Wrong value");
         TEST_ASSERT(value2 == 0x0100, "Wrong value");
@@ -80,10 +80,10 @@ private:
         char buffer3[] = {0x1, 0x0, 0x0, 0x0};
         char buffer4[] = {0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
 
-        char value1         = little_endian_value<char>(std::begin(buffer1), std::end(buffer1));
-        short value2        = little_endian_value<short>(std::begin(buffer2), std::end(buffer2));
-        int value3          = little_endian_value<int>(std::begin(buffer3), std::end(buffer3));
-        std::int64_t value4 = little_endian_value<std::int64_t>(std::begin(buffer4), std::end(buffer4));
+        char value1         = little_endian_value<char>(std::begin(buffer1));
+        short value2        = little_endian_value<short>(std::begin(buffer2));
+        int value3          = little_endian_value<int>(std::begin(buffer3));
+        std::int64_t value4 = little_endian_value<std::int64_t>(std::begin(buffer4));
 
         TEST_ASSERT(value1 == 0x01, "Wrong value");
         TEST_ASSERT(value2 == 0x0001, "Wrong value");

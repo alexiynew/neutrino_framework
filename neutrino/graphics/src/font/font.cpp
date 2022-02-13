@@ -50,11 +50,11 @@ OffsetTable OffsetTable::read(std::istream& in)
     in.read(buffer.data(), size);
 
     OffsetTable table;
-    table.sfnt_version   = utils::big_endian_value<std::uint32_t>(buffer.begin(), buffer.end());
-    table.num_tables     = utils::big_endian_value<std::uint16_t>(buffer.begin() + 4, buffer.end());
-    table.search_range   = utils::big_endian_value<std::uint16_t>(buffer.begin() + 6, buffer.end());
-    table.entry_selector = utils::big_endian_value<std::uint16_t>(buffer.begin() + 8, buffer.end());
-    table.range_shift    = utils::big_endian_value<std::uint16_t>(buffer.begin() + 10, buffer.end());
+    table.sfnt_version   = utils::big_endian_value<std::uint32_t>(buffer.begin());
+    table.num_tables     = utils::big_endian_value<std::uint16_t>(buffer.begin() + 4);
+    table.search_range   = utils::big_endian_value<std::uint16_t>(buffer.begin() + 6);
+    table.entry_selector = utils::big_endian_value<std::uint16_t>(buffer.begin() + 8);
+    table.range_shift    = utils::big_endian_value<std::uint16_t>(buffer.begin() + 10);
 
     return table;
 }
@@ -111,10 +111,10 @@ TableRecord TableRecord::read(std::istream& in)
     in.read(buffer.data(), size);
 
     TableRecord table;
-    table.tag       = utils::big_endian_value<Tag>(buffer.begin(), buffer.end());
-    table.check_sum = utils::big_endian_value<std::uint32_t>(buffer.begin() + 4, buffer.end());
-    table.offset    = utils::big_endian_value<std::uint32_t>(buffer.begin() + 8, buffer.end());
-    table.length    = utils::big_endian_value<std::uint32_t>(buffer.begin() + 12, buffer.end());
+    table.tag       = utils::big_endian_value<Tag>(buffer.begin());
+    table.check_sum = utils::big_endian_value<std::uint32_t>(buffer.begin() + 4);
+    table.offset    = utils::big_endian_value<std::uint32_t>(buffer.begin() + 8);
+    table.length    = utils::big_endian_value<std::uint32_t>(buffer.begin() + 12);
 
     return table;
 }
@@ -189,7 +189,7 @@ bool Table::valid() const
         std::uint32_t data_check_sum = table_checksum(data);
 
         if (record.tag == Tag::Head) {
-            data_check_sum -= utils::big_endian_value<std::uint32_t>(container.data() + 8, container.data() + 12);
+            data_check_sum -= utils::big_endian_value<std::uint32_t>(container.data() + 8);
         }
 
         return data_check_sum;

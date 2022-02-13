@@ -114,16 +114,15 @@ constexpr inline std::size_t size(const T (&)[N]) noexcept
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets range [begin, end) as value of type T in
+/// @brief Interprets bytes from iterator as value of type T in
 ///        big endian byte order. No bounds checking is performed.
 ///
-/// @param begin Range to read value from.
-/// @param end Range to read value from.
+/// @param begin Position to read value from.
 ///
 /// @return Value of type T.
 ///////////////////////////////////////////////////////////////////////////////
 template <typename T, typename Iterator>
-inline T big_endian_value(Iterator begin, const Iterator end)
+inline T big_endian_value(Iterator begin)
 {
     using ValueType        = typename std::iterator_traits<Iterator>::value_type;
     using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
@@ -151,16 +150,15 @@ inline T big_endian_value(Iterator begin, const Iterator end)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets range [begin, end) as value of type T in
+/// @brief Interprets bytes from iterator as value of type T in
 ///        little endian byte order. No bounds checking is performed.
 ///
-/// @param begin Range to read value from.
-/// @param end Range to read value from.
+/// @param begin Position to read value from.
 ///
 /// @return Value of type T.
 ///////////////////////////////////////////////////////////////////////////////
 template <typename T, typename Iterator>
-inline T little_endian_value(Iterator begin, const Iterator end)
+inline T little_endian_value(Iterator begin)
 {
     using ValueType        = typename std::iterator_traits<Iterator>::value_type;
     using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
@@ -212,7 +210,7 @@ public:
         if (m_distance < size) {
             throw std::out_of_range("Not enough bytes to read value of size " + std::to_string(size));
         }
-        T value = big_endian_value<T>(m_current, m_end);
+        T value = big_endian_value<T>(m_current);
 
         skip<T>();
 
@@ -301,7 +299,7 @@ public:
         if (m_distance < size) {
             throw std::out_of_range("Not enough bytes to read value of size " + std::to_string(size));
         }
-        T value = little_endian_value<T>(m_current, m_end);
+        T value = little_endian_value<T>(m_current);
 
         skip<T>();
 
