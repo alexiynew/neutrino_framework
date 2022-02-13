@@ -297,7 +297,6 @@ InfoHeader InfoHeader::read(std::ifstream& in)
     std::unique_ptr<char[]> buffer(new char[data_size]);
     in.read(buffer.get(), static_cast<std::streamsize>(data_size));
 
-    char* buffer_end = buffer.get() + data_size;
     if (h.type() == Type::bitmapcoreheader) {
         h.width          = utils::little_endian_value<std::uint16_t>(buffer.get());
         h.height         = utils::little_endian_value<std::uint16_t>(buffer.get() + 2);

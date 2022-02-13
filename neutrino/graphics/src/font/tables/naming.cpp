@@ -111,9 +111,7 @@ std::string Naming::read_string(Naming table, Naming::NameId name_id, const std:
 
     const size_t length = it->length / sizeof(char16_t);
 
-    auto from      = data.begin() + static_cast<std::ptrdiff_t>(offset);
-    const auto end = std::next(data.begin(), static_cast<std::ptrdiff_t>(offset + it->length));
-
+    auto from = data.begin() + static_cast<std::ptrdiff_t>(offset);
     std::u16string str(length, '\0');
     for (size_t i = 0; i < length; i++) {
         str[i] = utils::big_endian_value<char16_t>(from);
