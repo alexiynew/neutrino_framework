@@ -7,23 +7,25 @@ namespace framework::graphics::details::font
 
 MaximumProfile::MaximumProfile(const std::vector<std::uint8_t>& data)
 {
-    m_version    = utils::big_endian_value<Fixed>(data.begin());
-    m_num_glyphs = utils::big_endian_value<std::uint16_t>(data.begin() + 4);
+    auto in = utils::make_big_endian_buffer_reader(data);
+
+    in >> m_version;
+    in >> m_num_glyphs;
 
     if (m_version == 0x00010000) {
-        m_max_points               = utils::big_endian_value<std::uint16_t>(data.begin() + 6);
-        m_max_contours             = utils::big_endian_value<std::uint16_t>(data.begin() + 8);
-        m_max_composite_points     = utils::big_endian_value<std::uint16_t>(data.begin() + 10);
-        m_max_composite_contours   = utils::big_endian_value<std::uint16_t>(data.begin() + 12);
-        m_max_zones                = utils::big_endian_value<std::uint16_t>(data.begin() + 14);
-        m_max_twilight_points      = utils::big_endian_value<std::uint16_t>(data.begin() + 16);
-        m_max_storage              = utils::big_endian_value<std::uint16_t>(data.begin() + 18);
-        m_max_function_defs        = utils::big_endian_value<std::uint16_t>(data.begin() + 20);
-        m_max_instruction_defs     = utils::big_endian_value<std::uint16_t>(data.begin() + 22);
-        m_max_stack_elements       = utils::big_endian_value<std::uint16_t>(data.begin() + 24);
-        m_max_size_of_instructions = utils::big_endian_value<std::uint16_t>(data.begin() + 26);
-        m_max_component_elements   = utils::big_endian_value<std::uint16_t>(data.begin() + 28);
-        m_max_component_depth      = utils::big_endian_value<std::uint16_t>(data.begin() + 30);
+        in >> m_max_points;
+        in >> m_max_contours;
+        in >> m_max_composite_points;
+        in >> m_max_composite_contours;
+        in >> m_max_zones;
+        in >> m_max_twilight_points;
+        in >> m_max_storage;
+        in >> m_max_function_defs;
+        in >> m_max_instruction_defs;
+        in >> m_max_stack_elements;
+        in >> m_max_size_of_instructions;
+        in >> m_max_component_elements;
+        in >> m_max_component_depth;
     }
 }
 

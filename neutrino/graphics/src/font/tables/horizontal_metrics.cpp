@@ -9,23 +9,21 @@ HorizontalMetrics::HorizontalMetrics(std::uint16_t number_of_h_metrics,
                                      std::uint16_t num_glyphs,
                                      const std::vector<std::uint8_t>& data)
 {
-    auto from = data.begin();
+    auto in = utils::make_big_endian_buffer_reader(data);
 
     m_metrics.reserve(number_of_h_metrics);
     for (size_t i = 0; i < number_of_h_metrics; ++i) {
         HorizontalMetrics::LongHorMetricRecord metric;
-        metric.advance_width = utils::big_endian_value<std::uint16_t>(from);
-        metric.lsb           = utils::big_endian_value<std::int16_t>(from + 2);
+        in >> metric.advance_width;
+        in >> metric.lsb;
 
         m_metrics.push_back(metric);
-        std::advance(from, 4);
     }
 
     if (num_glyphs > number_of_h_metrics) {
         const size_t bearings_count = num_glyphs - number_of_h_metrics;
         for (size_t i = 0; i < bearings_count; ++i) {
-            m_left_side_bearings.push_back(utils::big_endian_value<std::int16_t>(from));
-            std::advance(from, 2);
+            m_left_side_bearings.push_back(in.get<std::int16_t>());
         }
     }
 }

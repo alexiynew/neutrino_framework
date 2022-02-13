@@ -8,42 +8,36 @@ namespace framework::graphics::details::font
 
 Naming::Naming(const std::vector<std::uint8_t>& data)
 {
-    m_version        = utils::big_endian_value<std::uint16_t>(data.begin());
-    m_count          = utils::big_endian_value<std::uint16_t>(data.begin() + 2);
-    m_storage_offset = utils::big_endian_value<Offset16>(data.begin() + 4);
+    auto in = utils::make_big_endian_buffer_reader(data);
 
-    auto from = std::next(data.begin(), 6);
+    in >> m_version;
+    in >> m_count;
+    in >> m_storage_offset;
 
     m_name_records.reserve(m_count);
-
     for (size_t i = 0; i < m_count; ++i) {
-
         NameRecord record;
 
-        record.platform_id   = utils::big_endian_value<PlatformId>(from);
-        record.encoding_id   = utils::big_endian_value<std::uint16_t>(from + 2);
-        record.language_id   = utils::big_endian_value<std::uint16_t>(from + 4);
-        record.name_id       = utils::big_endian_value<NameId>(from + 6);
-        record.length        = utils::big_endian_value<std::uint16_t>(from + 8);
-        record.string_offset = utils::big_endian_value<Offset16>(from + 10);
+        in >> record.platform_id;
+        in >> record.encoding_id;
+        in >> record.language_id;
+        in >> record.name_id;
+        in >> record.length;
+        in >> record.string_offset;
 
         m_name_records.push_back(std::move(record));
-        std::advance(from, 12);
     }
 
     if (m_version == 1) {
-        m_lang_tag_count = utils::big_endian_value<std::uint16_t>(from);
-        std::advance(from, 2);
+        in >> m_lang_tag_count;
 
         m_lang_tag_records.reserve(m_lang_tag_count);
         for (size_t i = 0; i < m_lang_tag_count; ++i) {
-
             LangTagRecord record;
-            record.length          = utils::big_endian_value<std::uint16_t>(from);
-            record.lang_tag_offset = utils::big_endian_value<Offset16>(from + 2);
+            in >> record.length;
+            in >> record.lang_tag_offset;
 
             m_lang_tag_records.push_back(std::move(record));
-            std::advance(from, 4);
         }
     }
 

@@ -8,6 +8,7 @@
 
 #include <common/utils.hpp>
 #include <graphics/font.hpp>
+#include <log/log.hpp>
 
 #include <graphics/src/font/tables/character_to_glyph_index_mapping.hpp>
 #include <graphics/src/font/tables/font_header.hpp>
@@ -274,13 +275,17 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
 
     try {
         return parse(file);
-    } catch (UnsupportedError&) {
+    } catch (UnsupportedError& e) {
+        log::error("Exception:") << e.what();
         return LoadResult::Unsupported;
-    } catch (UnimplementedError&) {
+    } catch (UnimplementedError& e) {
+        log::error("Exception:") << e.what();
         return LoadResult::Unsupported;
-    } catch (ParsingError&) {
+    } catch (ParsingError& e) {
+        log::error("Exception:") << e.what();
         return LoadResult::TableParsingError;
-    } catch (std::exception&) {
+    } catch (std::exception& e) {
+        log::error("Exception:") << e.what();
         return LoadResult::UnknownError;
     }
 }
@@ -379,6 +384,10 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         }
 
         if ((maxp.num_glyphs() + 1) != loca.offsets().size()) {
+            return LoadResult::TableParsingError;
+        }
+
+        if (loca.offsets().back() != tables.at(Tag::Glyf).data.size()) {
             return LoadResult::TableParsingError;
         }
 
