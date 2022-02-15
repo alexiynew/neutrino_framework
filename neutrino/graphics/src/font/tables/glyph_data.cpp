@@ -6,6 +6,7 @@ namespace
 {
 namespace utils = framework::utils;
 
+using framework::graphics::details::font::F2Dot14;
 using framework::graphics::details::font::GlyphData;
 using framework::graphics::details::font::Offset32;
 using framework::graphics::details::font::ParsingError;
@@ -14,7 +15,9 @@ using framework::graphics::details::font::UnimplementedError;
 using DataIterator = std::vector<std::uint8_t>::const_iterator;
 using BufferReader = utils::BigEndianBufferReader<DataIterator>;
 
-enum Flags
+namespace SimpleGlyphFlags
+{
+enum Flags : std::uint8_t
 {
     on_curve_point                       = 0x01,
     x_short_vector                       = 0x02,
@@ -25,6 +28,27 @@ enum Flags
     overlap_simple                       = 0x40,
     reserved                             = 0x80,
 };
+}
+
+namespace CompositeGlyphFlags
+{
+enum Flags : std::uint16_t
+{
+    arg_1_and_2_are_words     = 0x0001,
+    args_are_xy_values        = 0x0002,
+    round_xy_to_grid          = 0x0004,
+    we_have_a_scale           = 0x0008,
+    more_components           = 0x0020,
+    we_have_an_x_and_y_scale  = 0x0040,
+    we_have_a_two_by_two      = 0x0080,
+    we_have_instructions      = 0x0100,
+    use_my_metrics            = 0x0200,
+    overlap_compound          = 0x0400,
+    scaled_component_offset   = 0x0800,
+    unscaled_component_offset = 0x1000,
+    reserved                  = 0xE010, // Bits 4, 13, 14 and 15 are reserved: set to 0.
+};
+}
 
 class XCoordinatesInterpretator
 {
@@ -35,17 +59,17 @@ public:
 
     inline bool is_short(size_t index) const
     {
-        return m_flags[index] & Flags::x_short_vector;
+        return m_flags[index] & SimpleGlyphFlags::x_short_vector;
     }
 
     inline bool is_positive(size_t index) const
     {
-        return m_flags[index] & Flags::x_is_same_or_positive_x_short_vector;
+        return m_flags[index] & SimpleGlyphFlags::x_is_same_or_positive_x_short_vector;
     }
 
     inline bool is_same(size_t index) const
     {
-        return m_flags[index] & Flags::x_is_same_or_positive_x_short_vector;
+        return m_flags[index] & SimpleGlyphFlags::x_is_same_or_positive_x_short_vector;
     }
 
 private:
@@ -61,17 +85,17 @@ public:
 
     inline bool is_short(size_t index) const
     {
-        return m_flags[index] & Flags::y_short_vector;
+        return m_flags[index] & SimpleGlyphFlags::y_short_vector;
     }
 
     inline bool is_positive(size_t index) const
     {
-        return m_flags[index] & Flags::y_is_same_or_positive_y_short_vector;
+        return m_flags[index] & SimpleGlyphFlags::y_is_same_or_positive_y_short_vector;
     }
 
     inline bool is_same(size_t index) const
     {
-        return m_flags[index] & Flags::y_is_same_or_positive_y_short_vector;
+        return m_flags[index] & SimpleGlyphFlags::y_is_same_or_positive_y_short_vector;
     }
 
 private:
@@ -100,7 +124,7 @@ std::vector<std::uint8_t> parse_flags(const std::uint16_t points_count, BufferRe
         const std::uint8_t flag = in.get<std::uint8_t>();
         flags.push_back(flag);
 
-        if (flag & Flags::repeat_flag) {
+        if (flag & SimpleGlyphFlags::repeat_flag) {
             const std::uint8_t repeat_count = in.get<std::uint8_t>();
             flags.insert(flags.end(), repeat_count, flag);
             i += repeat_count;
@@ -108,11 +132,11 @@ std::vector<std::uint8_t> parse_flags(const std::uint16_t points_count, BufferRe
     }
 
     const bool valid = std::all_of(flags.begin(), flags.end(), [](std::uint8_t flag) {
-        return (flag & Flags::reserved) == 0;
+        return (flag & SimpleGlyphFlags::reserved) == 0;
     });
 
     if (!valid) {
-        throw ParsingError("Glyph flags reserved bit is not zero");
+        throw ParsingError("Simple glyph flags reserved bit is not zero");
     }
 
     return flags;
@@ -177,6 +201,86 @@ GlyphData::SimpleGlyph parse_simple_glyph(const GlyphData::GlyphHeader& header, 
     return data;
 }
 
+std::vector<GlyphData::CompositeGlyphComponent> parse_composite_glyph_components(BufferReader& in)
+{
+    std::vector<GlyphData::CompositeGlyphComponent> components;
+
+    do {
+        GlyphData::CompositeGlyphComponent component;
+
+        in >> component.flags;
+        in >> component.glyph_index;
+
+        if (component.flags & CompositeGlyphFlags::arg_1_and_2_are_words) {
+            // arguments are 16-bit
+            if (component.flags & CompositeGlyphFlags::args_are_xy_values) {
+                component.argument1 = in.get<std::int16_t>();
+                component.argument2 = in.get<std::int16_t>();
+            } else {
+                component.argument1 = in.get<std::uint16_t>();
+                component.argument2 = in.get<std::uint16_t>();
+            }
+        } else {
+            // arguments they are bytes
+            if (component.flags & CompositeGlyphFlags::args_are_xy_values) {
+                component.argument1 = in.get<std::int8_t>();
+                component.argument2 = in.get<std::int8_t>();
+            } else {
+                component.argument1 = in.get<std::uint8_t>();
+                component.argument2 = in.get<std::uint8_t>();
+            }
+        }
+
+        if (component.flags & CompositeGlyphFlags::we_have_a_scale) {
+            F2Dot14 scale = in.get<F2Dot14>();
+        } else if (component.flags & CompositeGlyphFlags::we_have_an_x_and_y_scale) {
+            F2Dot14 xscale = in.get<F2Dot14>();
+            F2Dot14 yscale = in.get<F2Dot14>();
+        } else if (component.flags & CompositeGlyphFlags::we_have_a_two_by_two) {
+            F2Dot14 xscale  = in.get<F2Dot14>();
+            F2Dot14 scale01 = in.get<F2Dot14>();
+            F2Dot14 scale10 = in.get<F2Dot14>();
+            F2Dot14 yscale  = in.get<F2Dot14>();
+        }
+
+        components.push_back(component);
+    } while (components.back().flags & CompositeGlyphFlags::more_components);
+
+    return components;
+}
+
+GlyphData::CompositeGlyph parse_composite_glyph(BufferReader& in)
+{
+    GlyphData::CompositeGlyph data;
+
+    data.components = parse_composite_glyph_components(in);
+
+    if (data.components.back().flags & CompositeGlyphFlags::we_have_instructions) {
+        in >> data.instruction_length;
+
+        if (data.instruction_length > 0) {
+            for (size_t i = 0; i < data.instruction_length; ++i) {
+                data.instructions.push_back(in.get<std::uint8_t>());
+            }
+        } else {
+            throw ParsingError(
+            "The CompositeGlyphFlags::we_have_instructions flag is set but instructions length is zero.");
+        }
+    }
+
+    const bool valid = std::all_of(data.components.begin(),
+                                   data.components.end(),
+                                   [](const GlyphData::CompositeGlyphComponent& component) {
+                                       return (component.flags & CompositeGlyphFlags::reserved) == 0;
+                                   });
+
+    if (!valid) {
+        throw ParsingError("Composite glyph component flags reserved bits is not zero");
+    }
+
+    return data;
+}
+
 GlyphData::Glyph parse_glyph(BufferReader& in)
 {
     GlyphData::Glyph glyph;
@@ -189,10 +293,9 @@ GlyphData::Glyph parse_glyph(BufferReader& in)
     glyph.header = parse_header(in);
 
     if (glyph.header.number_of_contours >= 0) {
-        glyph.data = parse_simple_glyph(glyph.header, in);
+        glyph.simple_glyph = parse_simple_glyph(glyph.header, in);
     } else {
-        // composite glyph
-        throw UnimplementedError("TODO: Compound glyphs");
+        glyph.composite_glyph = parse_composite_glyph(in);
     }
 
     return glyph;

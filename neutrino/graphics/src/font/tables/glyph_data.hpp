@@ -35,10 +35,33 @@ public:
         std::vector<std::int16_t> y_coordinates; // [end_pts_of_contours.back() + 1]
     };
 
+    struct CompositeGlyphComponent
+    {
+        std::uint16_t flags       = 0;
+        std::uint16_t glyph_index = 0;
+        std::int32_t argument1    = 0;
+        std::int32_t argument2    = 0;
+
+        F2Dot14 scale   = 0;
+        F2Dot14 xscale  = 0;
+        F2Dot14 scale01 = 0;
+        F2Dot14 scale10 = 0;
+        F2Dot14 yscale  = 0;
+    };
+
+    struct CompositeGlyph
+    {
+        std::vector<CompositeGlyphComponent> components;
+
+        std::uint16_t instruction_length = 0;
+        std::vector<std::uint8_t> instructions; // [instruction_length]
+    };
+
     struct Glyph
     {
         GlyphHeader header;
-        SimpleGlyph data;
+        SimpleGlyph simple_glyph;
+        CompositeGlyph composite_glyph;
     };
 
     GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const std::vector<std::uint8_t>& data);
