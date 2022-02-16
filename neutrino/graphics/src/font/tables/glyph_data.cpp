@@ -155,7 +155,7 @@ std::vector<std::int16_t> parse_coordinates(const size_t points_count,
         const bool is_positive = flags_interpretator.is_positive(i);
         const bool is_same     = flags_interpretator.is_same(i);
 
-        std::uint16_t offset = 0;
+        std::int16_t offset = 0;
         if (is_short) {
             // offset is 1 byte long
             offset = in.get<std::uint8_t>();
@@ -236,15 +236,15 @@ std::vector<GlyphData::CompositeGlyphComponent> parse_composite_glyph_components
         }
 
         if (component.flags & CompositeGlyphFlags::we_have_a_scale) {
-            F2Dot14 scale = in.get<F2Dot14>();
+            component.scale = in.get<F2Dot14>();
         } else if (component.flags & CompositeGlyphFlags::we_have_an_x_and_y_scale) {
-            F2Dot14 xscale = in.get<F2Dot14>();
-            F2Dot14 yscale = in.get<F2Dot14>();
+            component.xscale = in.get<F2Dot14>();
+            component.yscale = in.get<F2Dot14>();
         } else if (component.flags & CompositeGlyphFlags::we_have_a_two_by_two) {
-            F2Dot14 xscale  = in.get<F2Dot14>();
-            F2Dot14 scale01 = in.get<F2Dot14>();
-            F2Dot14 scale10 = in.get<F2Dot14>();
-            F2Dot14 yscale  = in.get<F2Dot14>();
+            component.xscale  = in.get<F2Dot14>();
+            component.scale01 = in.get<F2Dot14>();
+            component.scale10 = in.get<F2Dot14>();
+            component.yscale  = in.get<F2Dot14>();
         }
 
         components.push_back(component);
