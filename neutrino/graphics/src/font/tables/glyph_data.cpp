@@ -181,7 +181,7 @@ GlyphData::SimpleGlyph parse_simple_glyph(const GlyphData::GlyphHeader& header, 
         return data;
     }
 
-    data.end_pts_of_contours.reserve(header.number_of_contours);
+    data.end_pts_of_contours.reserve(static_cast<size_t>(header.number_of_contours));
     for (int i = 0; i < header.number_of_contours; ++i) {
         data.end_pts_of_contours.push_back(in.get<std::uint16_t>());
     }

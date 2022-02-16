@@ -383,7 +383,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
             return LoadResult::TableParsingError;
         }
 
-        if ((maxp.num_glyphs() + 1) != loca.offsets().size()) {
+        if (static_cast<size_t>(maxp.num_glyphs() + 1) != loca.offsets().size()) {
             return LoadResult::TableParsingError;
         }
 
