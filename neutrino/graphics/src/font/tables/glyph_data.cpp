@@ -177,6 +177,10 @@ GlyphData::SimpleGlyph parse_simple_glyph(const GlyphData::GlyphHeader& header, 
 {
     GlyphData::SimpleGlyph data;
 
+    if (header.number_of_contours == 0) {
+        return data;
+    }
+
     data.end_pts_of_contours.reserve(header.number_of_contours);
     for (int i = 0; i < header.number_of_contours; ++i) {
         data.end_pts_of_contours.push_back(in.get<std::uint16_t>());
@@ -268,16 +272,6 @@ GlyphData::CompositeGlyph parse_composite_glyph(BufferReader& in)
         }
     }
 
-    const bool valid = std::all_of(data.components.begin(),
-                                   data.components.end(),
-                                   [](const GlyphData::CompositeGlyphComponent& component) {
-                                       return (component.flags & CompositeGlyphFlags::reserved) == 0;
-                                   });
-
-    if (!valid) {
-        throw ParsingError("Composite glyph component flags reserved bits is not zero");
-    }
-
     return data;
 }
 
@@ -324,7 +318,7 @@ GlyphData::GlyphData(std::uint16_t num_glyphs,
 
 bool GlyphData::valid() const
 {
-    return false;
+    return !m_glyphs.empty();
 }
 
 } // namespace framework::graphics::details::font

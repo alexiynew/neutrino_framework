@@ -395,8 +395,6 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         if (!glyf.valid()) {
             return LoadResult::TableParsingError;
         }
-
-        return LoadResult::Unsupported;
     }
 
     return LoadResult::Success;
