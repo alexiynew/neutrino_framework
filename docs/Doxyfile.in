@@ -561,8 +561,7 @@ WARN_LOGFILE           = "DoxygenWarningLog.txt"
 #---------------------------------------------------------------------------
 
 # Source files
-#INPUT                  = @FRAMEWORK_SOURCE_DIR@
-INPUT                  = ../../README.md
+INPUT                  = @FRAMEWORK_SOURCE_DIR@/common ../../README.md
 
 # Encoding of the source files
 INPUT_ENCODING         = UTF-8
@@ -583,6 +582,7 @@ EXCLUDE_SYMLINKS       = NO
 # Patterns to exclude from sources
 EXCLUDE_PATTERNS       = */details/* \
                          */src/* 
+                         */inc/* 
 
 # Symbol names to exclude from documentation
 EXCLUDE_SYMBOLS        = framework::*::*_details

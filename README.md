@@ -1,6 +1,6 @@
 # Neutrino framework
 
-The lightweight game framework, with no third-party dependencies, made for fun.
+A lightweight game framework, with no third-party dependencies, made for fun.
 
 ## It's crossplatform
 Kinda. By now Linux, Windows, and macOS are supported. 
@@ -8,7 +8,8 @@ In a level 'it works on my machine'.
 
 ## It's lightweight
 No need to install and build a bunch of third-party libraries. 
-All that is needed is implemented inside the framework, this gives a single code base and the consistency of the modules.
+All that is needed is implemented inside the framework, this gives a single code
+base and the consistency of the modules.
 
 ## It's made for fun
 This is a hobby project. I'm developing it in my free time.   
