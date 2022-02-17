@@ -35,6 +35,7 @@ It is poorly tested. It may not support something that you need.
 ## How to build
 
 **Reqired**: cmake v3.18, cpp compiller with cpp 17 support.
+
 ### Linux
 
 Additional packages are required to be installed in the system 
@@ -58,7 +59,7 @@ To run tests:
 > cmake --build . -t check
 ```
 
-#### Windows
+### Windows
 To generate Visual Studio project run in terminal:
 
 ``` bash
@@ -69,7 +70,7 @@ To generate Visual Studio project run in terminal:
 
 To run tests:  
 Build the 'check' target in VS.
-#### MacOS
+### MacOS
 
 To generate XCode project run in terminal:
 
