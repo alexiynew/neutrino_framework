@@ -11,11 +11,12 @@ No need to install and build a bunch of third-party libraries.
 All that is needed is implemented inside the framework, this gives a single code base and the consistency of the modules.
 
 ## It's made for fun
-This is a hobby project. I make it in my free time. 
-The main idea is to do everything with my own hands, couse it is interesting.
+This is a hobby project. I'm developing it in my free time.   
+The main idea is to do everything with my own hands, couse it is interesting.  
 On the other hand. This means that the project is developing slowly. 
-It is poorly tested. It may not support something that you need. 
-It may contain a **LOT OF BUGS**.
+It is poorly tested. It may not support something that you need.  
+**It may contain a LOT OF BUGS**.
+
 
 ## Modules
 
