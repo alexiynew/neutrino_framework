@@ -561,17 +561,29 @@ WARN_LOGFILE           = "DoxygenWarningLog.txt"
 #---------------------------------------------------------------------------
 
 # Source files
-INPUT                  = @FRAMEWORK_SOURCE_DIR@/common ../../README.md
+INPUT                  = @FRAMEWORK_SOURCE_DIR@/common/common.dox \
+                         @FRAMEWORK_SOURCE_DIR@/graphics/graphics.dox \
+                         @FRAMEWORK_SOURCE_DIR@/log/log.dox \
+                         @FRAMEWORK_SOURCE_DIR@/math/math.dox \
+                         @FRAMEWORK_SOURCE_DIR@/system/system.dox \
+                         @FRAMEWORK_SOURCE_DIR@/unit_test/unit_test.dox \
+                         @FRAMEWORK_SOURCE_DIR@/common \
+                         @FRAMEWORK_SOURCE_DIR@/graphics \
+                         @FRAMEWORK_SOURCE_DIR@/log \
+                         @FRAMEWORK_SOURCE_DIR@/math \
+                         @FRAMEWORK_SOURCE_DIR@/math/inc \
+                         @FRAMEWORK_SOURCE_DIR@/system \
+                         @FRAMEWORK_SOURCE_DIR@/unit_test
 
 # Encoding of the source files
 INPUT_ENCODING         = UTF-8
 
 # file extention patterns
 FILE_PATTERNS          = *.hpp \
-                         *.md 
+                         *.dox
 
 # Search in subdirectories
-RECURSIVE              = YES
+RECURSIVE              = NO
 
 # Do not parse this
 EXCLUDE                = CMakeLists.txt
@@ -582,7 +594,6 @@ EXCLUDE_SYMLINKS       = NO
 # Patterns to exclude from sources
 EXCLUDE_PATTERNS       = */details/* \
                          */src/* 
-                         */inc/* 
 
 # Symbol names to exclude from documentation
 EXCLUDE_SYMBOLS        = framework::*::*_details
@@ -788,7 +799,7 @@ GENERATE_RTF           = NO
 GENERATE_MAN           = NO
 
 # Generate XML
-GENERATE_XML           = NO
+GENERATE_XML           = YES 
 XML_OUTPUT             = doxyxml
 XML_PROGRAMLISTING     = NO
 

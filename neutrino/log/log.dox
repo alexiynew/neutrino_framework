@@ -1,0 +1,43 @@
+/// @brief Contains classes related to logging.
+///
+/// @details
+/// The @ref log_module module provides a simple logging utility that
+/// you can use to output messages.@n
+/// The messages have associated `framework::log::SeverityLevel` that indicate
+/// their importance and @b tags that indicate their domain.
+///
+/// To log message use one of the @ref log_interface_functions. This functions
+/// returns a temporary object that behaves just as the std::ostream.@n
+/// @code
+/// log::debug("log_tag") << "message_1" << std::endl;
+/// log::info("log_tag") << "message_2" << std::endl;
+/// log::warning("log_tag") << "message_3" << std::endl;
+/// @endcode
+///
+/// By default there is no logger implementation, so no messages would be
+/// logged. You need to set logger by calling `framework::log::set_logger`
+/// function. Provided logger should be derived from the
+/// `framework::log::Logger` class.@n
+/// @code
+/// class my_logger : public Logger
+/// {
+///     void add_message(framework::log::SeverityLevel level,
+///                      const std::string& tag,
+///                      const std::string& message) override
+///     {
+///         // implementation
+///     }
+/// };
+///
+/// set_logger(std::make_unique<my_logger>());
+/// @endcode
+///
+/// The @ref log_module module provides an implementation of logger:
+/// `framework::log::StreamLogger` that can output messages to any output
+/// stream.
+/// @code
+/// std::stringstream log_stream;
+/// set_logger(std::make_unique<StreamLogger>(log_stream));
+/// @endcode
+///
+/// @defgroup log_module Logging

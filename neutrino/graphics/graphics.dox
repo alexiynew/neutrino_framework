@@ -1,0 +1,12 @@
+/// @brief 3D Graphics
+///
+/// @details
+/// TODO: More detailed description
+/// TODO: Code examples
+///
+/// @defgroup graphics_module 3D Graphics
+/// @{
+/// @defgroup graphics_font_module Font
+/// @defgroup graphics_image_module Image processing
+/// @defgroup graphics_renderer_module Graphics
+/// @}

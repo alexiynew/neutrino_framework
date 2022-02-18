@@ -14,21 +14,6 @@
 
 #include <random>
 
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Different helper functions and classes.
-///
-/// @details
-/// The @ref common_utils_module module consist of functions and classes not
-/// related to any particular module. Or used all over the framework.
-///
-/// @defgroup common_utils_module Utility
-/// @{
-/// @defgroup common_version_implementation Version
-/// @defgroup common_crc_implementation Crc
-/// @defgroup common_zlib_implementation ZLIB compression algorithm
-/// @}
-///////////////////////////////////////////////////////////////////////////////
-
 namespace framework::utils
 {
 ///////////////////////////////////////////////////////////////////////////////

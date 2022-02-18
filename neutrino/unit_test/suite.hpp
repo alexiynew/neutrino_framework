@@ -7,59 +7,6 @@
 
 #include <common/types.hpp>
 
-////////////////////////////////////////////////////////////////////////////////
-/// @brief Contains classes related to unit tests.
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-/// @details
-///
-/// You should use the `unit_test::Suite` as base class for your tests.
-/// @code
-/// class example_test : public framework::unit_test::Suite
-/// {
-/// public:
-///     example_test() : Suite("example_test_name")
-///     {
-///         add_test([this]() { test_function(); }, "test_function_name");
-///     }
-/// private:
-///     void test_function()
-///     {
-///         TEST_ASSERT(false, "Test fail message.");
-///     }
-/// };
-/// @endcode
-///
-/// Use the `unit_test::Suite::add_test` function to add tests to curretn Suite.
-/// @code
-/// add_test([this]() { test_function(); }, "test_function_name");
-/// @endcode
-///
-/// Use the `unit_test::Suite::test_failed` function to mark test as failed.
-/// You can use @ref TEST_FAIL and @ref TEST_ASSERT macros
-/// to get @b file path and @b line number.
-/// @code
-/// TEST_FAIL("Test fail message.");
-/// TEST_ASSERT(false, "Test fail message.");
-/// @endcode
-///
-/// And then you can run this test.
-/// @code
-/// framework::unit_test::Suite* test_suite = new example_test();
-/// test_suite->run();
-/// @endcode
-///
-/// Or you can launch group of tests.
-/// @code
-/// run_tests(example_test(), other_example_test());
-/// @endcode
-////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
-/// @defgroup unit_test_module Unit test
-////////////////////////////////////////////////////////////////////////////////
-
 namespace framework::unit_test
 {
 ////////////////////////////////////////////////////////////////////////////////
