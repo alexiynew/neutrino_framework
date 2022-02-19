@@ -16,16 +16,14 @@
 
 namespace framework::utils
 {
-///////////////////////////////////////////////////////////////////////////////
-/// @addtogroup common_utils_module
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @addtogroup utils_utils_module
 /// @{
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Determines if it is the debug build.
 ///
 /// @return `true` in debug mode, `false` otherwise.
-///////////////////////////////////////////////////////////////////////////////
 inline constexpr bool is_debug() noexcept
 {
 #ifndef NDEBUG
@@ -35,7 +33,6 @@ inline constexpr bool is_debug() noexcept
 #endif
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Generates bunch of random numbers.
 ///
 /// @param min Minimum of the generated numbers.
@@ -43,7 +40,6 @@ inline constexpr bool is_debug() noexcept
 /// @param count How much numbers to generate.
 ///
 /// @return Vector of the `count` size of random numbers in range [min, max].
-///////////////////////////////////////////////////////////////////////////////
 template <typename T>
 std::vector<T> random_numbers(T min, T max, size_t count)
 {
@@ -74,38 +70,37 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     return result;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Returns elements count in container.
 ///
 /// @param container To get size
 ///
 /// @return Elements count in container.
-///////////////////////////////////////////////////////////////////////////////
 template <typename C>
 constexpr inline std::size_t size(const C& container) noexcept
 {
     return container.size();
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Returns elements count in array.
 ///
 /// @return Elements count in array.
-///////////////////////////////////////////////////////////////////////////////
 template <typename T, std::size_t N>
 constexpr inline std::size_t size(const T (&)[N]) noexcept
 {
     return N;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @name Big endian value reader
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /// @brief Interprets bytes from iterator as value of type T in
 ///        big endian byte order. No bounds checking is performed.
 ///
 /// @param begin Position to read value from.
 ///
 /// @return Value of type T.
-///////////////////////////////////////////////////////////////////////////////
 template <typename T, typename Iterator>
 inline T big_endian_value(Iterator begin)
 {
@@ -134,45 +129,7 @@ inline T big_endian_value(Iterator begin)
     return *reinterpret_cast<T*>(buffer);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets bytes from iterator as value of type T in
-///        little endian byte order. No bounds checking is performed.
-///
-/// @param begin Position to read value from.
-///
-/// @return Value of type T.
-///////////////////////////////////////////////////////////////////////////////
-template <typename T, typename Iterator>
-inline T little_endian_value(Iterator begin)
-{
-    using ValueType        = typename std::iterator_traits<Iterator>::value_type;
-    using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
-
-    constexpr bool supported_buffer_type = sizeof(ValueType) == 1;
-    static_assert(supported_buffer_type, "Usupported buffer type");
-
-    constexpr bool supported_return_type = sizeof(T) <= 8;
-    static_assert(supported_return_type, "Usupported return type");
-
-    constexpr bool is_forward_iterator = std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>;
-    static_assert(is_forward_iterator, "Iterator is not forward iterator");
-
-    constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
-    static_assert(can_read_from_buffer, "Can't read value of type T from buffer");
-
-    constexpr int size = sizeof(T);
-    ValueType buffer[size];
-
-    for (int i = 0; i < size; ++i) {
-        buffer[i] = *(begin++);
-    }
-
-    return *reinterpret_cast<T*>(buffer);
-}
-
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Wrapper for @ref big_endian_value which takes care of iterators.
-///////////////////////////////////////////////////////////////////////////////
 template <typename Iterator>
 class BigEndianBufferReader final
 {
@@ -259,9 +216,50 @@ inline auto make_big_endian_buffer_reader(const T (&buffer)[N]) noexcept
     return make_big_endian_buffer_reader(std::begin(buffer), std::end(buffer));
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @name Little endian value reader
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Interprets bytes from iterator as value of type T in
+///        little endian byte order. No bounds checking is performed.
+///
+/// @param begin Position to read value from.
+///
+/// @return Value of type T.
+template <typename T, typename Iterator>
+inline T little_endian_value(Iterator begin)
+{
+    using ValueType        = typename std::iterator_traits<Iterator>::value_type;
+    using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
+
+    constexpr bool supported_buffer_type = sizeof(ValueType) == 1;
+    static_assert(supported_buffer_type, "Usupported buffer type");
+
+    constexpr bool supported_return_type = sizeof(T) <= 8;
+    static_assert(supported_return_type, "Usupported return type");
+
+    constexpr bool is_forward_iterator = std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>;
+    static_assert(is_forward_iterator, "Iterator is not forward iterator");
+
+    constexpr bool can_read_from_buffer = std::disjunction_v<std::is_fundamental<T>, std::is_enum<T>>;
+    static_assert(can_read_from_buffer, "Can't read value of type T from buffer");
+
+    constexpr int size = sizeof(T);
+    ValueType buffer[size];
+
+    for (int i = 0; i < size; ++i) {
+        buffer[i] = *(begin++);
+    }
+
+    return *reinterpret_cast<T*>(buffer);
+}
+
 /// @brief Wrapper for @ref little_endian_value which takes care of iterators.
-///////////////////////////////////////////////////////////////////////////////
 template <typename Iterator>
 class LittleEndianBufferReader final
 {
@@ -349,6 +347,10 @@ inline auto make_little_endian_buffer_reader(const T (&buffer)[N]) noexcept
     return make_little_endian_buffer_reader(std::begin(buffer), std::end(buffer));
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*
 template <typename... Args>
 std::string format(const std::string& str, Args&&... args)
@@ -360,9 +362,9 @@ std::string format(const std::string& str, Args&&... args)
 }
 */
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 } // namespace framework::utils
 

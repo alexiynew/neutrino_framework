@@ -1,10 +1,10 @@
-/// @defgroup common_module Utility
+/// @defgroup utils_module Utility
 /// @{
-/// @defgroup common_types_module Types
-/// @defgroup common_utils_module Utils
-/// @defgroup common_version_implementation Version
-/// @defgroup common_crc_implementation Crc
-/// @defgroup common_zlib_implementation ZLIB compression algorithm
+/// @defgroup utils_types_module Types
+/// @defgroup utils_utils_module Utils
+/// @defgroup utils_utf_implementation Utf support
+/// @defgroup utils_crc_implementation Crc
+/// @defgroup utils_zlib_implementation ZLIB compression algorithm
 /// @}
 
 /// @defgroup graphics_module 3D Graphics

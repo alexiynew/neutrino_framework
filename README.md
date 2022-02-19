@@ -23,8 +23,7 @@ It is poorly tested. It may not support something that you need.
 
 | module                            |
 | ----------------------------------|
-| @ref common_types_module          |
-| @ref common_utils_module          |
+| [Common utils](neutrino/common/)  |
 | [3D graphics](neutrino/graphics/) |
 | [Logging](neutrino/log/)          |
 | [Math](neutrino/math/)            |
