@@ -1,6 +1,6 @@
 # Logging
 
-[<sub> Main Page </sub>](../../README.md)
+[<sub> Main Page </sub>](../../)
 
 -------
 
