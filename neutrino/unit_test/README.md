@@ -1,9 +1,5 @@
 # Unit tests
 
-[<sub> Main Page </sub>](https://github.com/alexiynew/neutrino_framework#neutrino-framework)
-
--------
-
 The module provides simple functionality to test different features 
 of the neutrino framework.
 
