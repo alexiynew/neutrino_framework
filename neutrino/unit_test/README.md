@@ -1,6 +1,6 @@
 # Unit tests
 
-[<sub> Main Page </sub>](../../)
+[<sub> Main Page </sub>](https://github.com/alexiynew/neutrino_framework#neutrino-framework)
 
 -------
 
