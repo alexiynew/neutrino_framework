@@ -25,7 +25,7 @@ It is poorly tested. It may not support something that you need.
 | ----------------------------------|
 | @ref common_types_module          |
 | @ref common_utils_module          |
-| @ref graphics_module              |
+| [3D graphics](neutrino/graphics/) |
 | [Logging](neutrino/log/)          |
 | [Math](neutrino/math/)            |
 | [System](neutrino/system/)        |

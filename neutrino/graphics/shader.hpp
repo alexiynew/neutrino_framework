@@ -18,6 +18,7 @@ namespace framework::graphics
 ///
 /// Each Shader consists of two parts: vertex program and fragment program.
 ///
+/// TODO: Check if this documentation is correct
 /// For OpenGL: @n
 /// ===========
 /// Shader has predefined vertex attribute locations listed below:
