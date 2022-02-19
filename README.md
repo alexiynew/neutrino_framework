@@ -26,11 +26,11 @@ It is poorly tested. It may not support something that you need.
 | @ref common_types_module |
 | @ref common_utils_module |
 | @ref math_module         |
-| [Logging](neutrino/log/README.md) |
+| [Logging](neutrino/log/) |
 | @ref graphics_module     |
 | @ref game_core_module    |
 | @ref system_module       |
-| [Unit tests](neutrino/unit_test/README.md) |
+| [Unit tests](neutrino/unit_test/) |
 
 
 ## How to build
