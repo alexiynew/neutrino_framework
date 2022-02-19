@@ -38,7 +38,7 @@ public:
 framework::log::set_logger(std::make_unique<MyLogger>());
 ```
  
-The [Logging](README.md) module provides an implementation of logger:
+The [Logging](./) module provides an implementation of logger:
 `framework::log::StreamLogger` that can print messages to any output
 stream.
 
