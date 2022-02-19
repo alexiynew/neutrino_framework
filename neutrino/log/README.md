@@ -1,6 +1,6 @@
 # Logging
 
-[<sub> Main Page </sub>|https://github.com/alexiynew/neutrino_framework#neutrino-framework]
+[<sub> Main Page </sub>][https://github.com/alexiynew/neutrino_framework#neutrino-framework]
 
 -------
 
