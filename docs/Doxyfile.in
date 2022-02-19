@@ -561,12 +561,8 @@ WARN_LOGFILE           = "DoxygenWarningLog.txt"
 #---------------------------------------------------------------------------
 
 # Source files
-INPUT                  = @FRAMEWORK_SOURCE_DIR@/common/common.dox \
-                         @FRAMEWORK_SOURCE_DIR@/graphics/graphics.dox \
-                         @FRAMEWORK_SOURCE_DIR@/log/log.dox \
-                         @FRAMEWORK_SOURCE_DIR@/math/math.dox \
-                         @FRAMEWORK_SOURCE_DIR@/system/system.dox \
-                         @FRAMEWORK_SOURCE_DIR@/unit_test/unit_test.dox \
+INPUT                  = ../../README.md \
+                         @FRAMEWORK_SOURCE_DIR@/neutrino.dox \
                          @FRAMEWORK_SOURCE_DIR@/common \
                          @FRAMEWORK_SOURCE_DIR@/graphics \
                          @FRAMEWORK_SOURCE_DIR@/log \
@@ -580,6 +576,7 @@ INPUT_ENCODING         = UTF-8
 
 # file extention patterns
 FILE_PATTERNS          = *.hpp \
+                         *.md \
                          *.dox
 
 # Search in subdirectories
@@ -613,7 +610,7 @@ FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
 
 # Use markdown file for main page
-USE_MDFILE_AS_MAINPAGE = README.md
+USE_MDFILE_AS_MAINPAGE = ../../README.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -764,7 +761,7 @@ ECLIPSE_DOC_ID         = org.doxygen.Project
 
 # Index
 DISABLE_INDEX          = YES 
-GENERATE_TREEVIEW      = NO 
+GENERATE_TREEVIEW      = YES 
 
 ENUM_VALUES_PER_LINE   = 4
 
