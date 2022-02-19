@@ -1,6 +1,6 @@
 # Logging
 
-[<sub> Main Page </sub>](../../)
+[<sub> Main Page </sub>](./../../)
 
 -------
 
