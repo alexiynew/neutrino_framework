@@ -14,7 +14,7 @@
 /// @defgroup graphics_renderer_module Graphics
 /// @}
 
-/// @defgroup logging_module Logging
+/// @defgroup log_module Logging
 
 /// @defgroup math_module Math
 /// @{
