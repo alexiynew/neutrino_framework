@@ -1,9 +1,5 @@
 # Logging
 
-[<sub> Main Page </sub>](https://github.com/alexiynew/neutrino_framework#neutrino-framework)
-
--------
-
 This module provides a simple logging utility that
 can be used to output messages.  
 The messages has associated `framework::log::SeverityLevel` that indicate

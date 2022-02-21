@@ -1,9 +1,5 @@
 # Math
 
-[<sub> Main Page </sub>](https://github.com/alexiynew/neutrino_framework#neutrino-framework)
-
--------
-
 This is a header-only library for graphics software. For now, It is capable of vector operations and matrix transformations.
 To use this module only the `math.hpp` file should be included. 
 
