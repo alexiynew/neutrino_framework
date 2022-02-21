@@ -26,16 +26,16 @@ class Texture;
 /// Provides an interface to display 3d objects on the screen.
 /// Renderer attaches to the window. Several renderers can be attached to
 /// one window, in that case, they all share the same context.
+/// TODO: Write test on it.
 ///
 /// Meshes, Shaders, and Textures need to be loaded in renderer before usage.
-/// Projection and view matrices saved for every render call, so the different
-/// objects can be rendered with different transformations.
 class Renderer
 {
 public:
     using UniformsList = std::vector<Uniform>;
     using UniformsMap  = std::unordered_map<std::string, Uniform>;
 
+    /// @brief Internal representation of render call.
     class Command
     {
     public:
@@ -104,13 +104,40 @@ public:
     /// @return `true` if loading successful
     bool load(const Texture& texture);
 
+    /// @brief Assigns a global uniform value for shaders.
+    ///
+    /// Useful when there is a need to pass the same uniform for all shaders.
+    ///
+    /// @param name Uniform name.
+    /// @param value Uniform value.
     template <typename T>
     void set_uniform(const std::string& name, const T& value);
 
+    /// @brief Assigns a global uniform value for shaders.
+    ///
+    /// Useful when there is a need to pass the same uniform for all shaders.
+    ///
+    /// @param name Uniform name.
+    /// @param value Uniform value.
     template <typename T>
     void set_uniform(const std::string& name, T&& value);
 
+    /// @brief Renders a mesh with a shader.
+    ///
+    /// Only global uniforms would pass to the shader.
+    ///
+    /// @param mesh Mesh to render.
+    /// @param shader Shader ot use.
     void render(const Mesh& mesh, const Shader& shader);
+
+    /// @brief Renders a mesh with a shader and unforms.
+    ///
+    /// Global uniforms would pass to the shader as well.
+    /// TODO: Local uniforms must override global ones. Write test on it.
+    ///
+    /// @param mesh Mesh to render.
+    /// @param shader Shader ot use.
+    /// @param uniforms Uniform values to current shader.
     void render(const Mesh& mesh, const Shader& shader, const UniformsList& uniforms);
 
     /// @brief Display on a screen all that been rendered so far.
