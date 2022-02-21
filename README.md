@@ -21,16 +21,14 @@ It is poorly tested. It may not support something that you need.
 
 ## Modules
 
-| module                   | description                    |
-| ------------------------ | ------------------------------ |
-| @ref common_types_module | @copybrief common_types_module |
-| @ref common_utils_module | @copybrief common_utils_module |
-| @ref math_module         | @copybrief math_module         |
-| @ref log_module          | @copybrief log_module          |
-| @ref graphics_module     | @copybrief graphics_module     |
-| @ref game_core_module    | @copybrief game_core_module    |
-| @ref system_module       | @copybrief system_module       |
-| @ref unit_test_module    | @copybrief unit_test_module    |
+| module                            |                                  |
+| ----------------------------------|----------------------------------|
+| [Common utils](neutrino/common/)  | Useful classes and functions     |
+| [3D graphics](neutrino/graphics/) | Graphics rendering support       |
+| [Logging](neutrino/log/)          | Logging support                  |
+| [Math](neutrino/math/)            | Linear algebra library           |
+| [System](neutrino/system/)        | Interaction with user and OS     |
+| [Unit tests](neutrino/unit_test/) | Unit tests support for framework |
 
 
 ## How to build

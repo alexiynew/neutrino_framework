@@ -247,15 +247,6 @@ bool has_required_tables(const std::vector<TableRecord>& records)
 namespace framework::graphics
 {
 
-Font::Font()
-{}
-
-Font::Font(const Font&) = default;
-Font& Font::operator=(const Font&) = default;
-
-Font::Font(Font&&) noexcept = default;
-Font& Font::operator=(Font&&) noexcept = default;
-
 bool Font::load(const std::string& filename)
 {
     try {

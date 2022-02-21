@@ -6,10 +6,6 @@ if (Doxygen_FOUND)
     set(DOCS_INPUT_DOX ${CMAKE_SOURCE_DIR}/README.md)
 
     configure_file(${DOCS_SOURCE_DIR}/Doxyfile.in ${DOCS_BINARY_DIR}/Doxyfile @ONLY)
-    configure_file(${DOCS_SOURCE_DIR}/DoxygenLayout.xml ${DOCS_BINARY_DIR}/DoxygenLayout.xml COPYONLY)
-    configure_file(${DOCS_SOURCE_DIR}/header.html ${DOCS_BINARY_DIR}/header.html COPYONLY)
-    configure_file(${DOCS_SOURCE_DIR}/footer.html ${DOCS_BINARY_DIR}/footer.html COPYONLY)
-    configure_file(${DOCS_SOURCE_DIR}/neutrino.css ${DOCS_BINARY_DIR}/neutrino.css COPYONLY)
 
     add_custom_target(docs ALL
         COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCS_OUTPUT_DIR}

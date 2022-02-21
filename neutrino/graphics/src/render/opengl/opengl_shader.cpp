@@ -413,6 +413,7 @@ void OpenglShader::use() const
 
 void OpenglShader::set_uniforms(const Renderer::Command& command) const
 {
+    // TODO: local uniforns should override global ones.
     for (const auto& uniform : command.global_uniforms()) {
         if (m_uniforms.count(uniform.first)) {
             std::visit(UniformSetter(m_uniforms.at(uniform.first)), uniform.second.value());
