@@ -21,14 +21,14 @@ It is poorly tested. It may not support something that you need.
 
 ## Modules
 
-| module                            |      |
-| ----------------------------------|------|
-| [Common utils](neutrino/common/)  |TODO  |
-| [3D graphics](neutrino/graphics/) |TODO  |
-| [Logging](neutrino/log/)          |TODO  |
-| [Math](neutrino/math/)            |TODO  |
-| [System](neutrino/system/)        |TODO  |
-| [Unit tests](neutrino/unit_test/) |TODO  |
+| module                            |                                  |
+| ----------------------------------|----------------------------------|
+| [Common utils](neutrino/common/)  | Useful classes and functions     |
+| [3D graphics](neutrino/graphics/) | Graphics rendering support       |
+| [Logging](neutrino/log/)          | Logging support                  |
+| [Math](neutrino/math/)            | Linear algebra library           |
+| [System](neutrino/system/)        | Interaction with user and OS     |
+| [Unit tests](neutrino/unit_test/) | Unit tests support for framework |
 
 
 ## How to build
