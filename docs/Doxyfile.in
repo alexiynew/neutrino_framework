@@ -561,17 +561,26 @@ WARN_LOGFILE           = "DoxygenWarningLog.txt"
 #---------------------------------------------------------------------------
 
 # Source files
-INPUT                  = @FRAMEWORK_SOURCE_DIR@
+INPUT                  = ../../README.md \
+                         @FRAMEWORK_SOURCE_DIR@/neutrino.dox \
+                         @FRAMEWORK_SOURCE_DIR@/common \
+                         @FRAMEWORK_SOURCE_DIR@/graphics \
+                         @FRAMEWORK_SOURCE_DIR@/log \
+                         @FRAMEWORK_SOURCE_DIR@/math \
+                         @FRAMEWORK_SOURCE_DIR@/math/inc \
+                         @FRAMEWORK_SOURCE_DIR@/system \
+                         @FRAMEWORK_SOURCE_DIR@/unit_test
 
 # Encoding of the source files
 INPUT_ENCODING         = UTF-8
 
 # file extention patterns
 FILE_PATTERNS          = *.hpp \
-                         *.dox 
+                         *.md \
+                         *.dox
 
 # Search in subdirectories
-RECURSIVE              = YES
+RECURSIVE              = NO
 
 # Do not parse this
 EXCLUDE                = CMakeLists.txt
@@ -601,7 +610,7 @@ FILTER_SOURCE_FILES    = NO
 FILTER_SOURCE_PATTERNS =
 
 # Use markdown file for main page
-USE_MDFILE_AS_MAINPAGE =
+USE_MDFILE_AS_MAINPAGE = ../../README.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -702,11 +711,11 @@ GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 
-HTML_HEADER            = header.html
-HTML_FOOTER            = footer.html
+HTML_HEADER            = 
+HTML_FOOTER            = 
 HTML_STYLESHEET        =
 
-HTML_EXTRA_STYLESHEET  = @PROJECT_NAME@.css
+HTML_EXTRA_STYLESHEET  = 
 HTML_EXTRA_FILES       =
 
 HTML_COLORSTYLE_HUE    = 220
@@ -752,7 +761,7 @@ ECLIPSE_DOC_ID         = org.doxygen.Project
 
 # Index
 DISABLE_INDEX          = YES 
-GENERATE_TREEVIEW      = NO 
+GENERATE_TREEVIEW      = YES 
 
 ENUM_VALUES_PER_LINE   = 4
 
@@ -787,7 +796,7 @@ GENERATE_RTF           = NO
 GENERATE_MAN           = NO
 
 # Generate XML
-GENERATE_XML           = NO
+GENERATE_XML           = YES 
 XML_OUTPUT             = doxyxml
 XML_PROGRAMLISTING     = NO
 

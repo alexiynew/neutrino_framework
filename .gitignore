@@ -29,3 +29,7 @@ tags
 .kdev4
 *.kdev4
 *.kate-swp
+
+*.sublime-project
+*.sublime-workspace
+

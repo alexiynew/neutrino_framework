@@ -1,68 +1,40 @@
-/// @mainpage Neutrino framework
-///
-/// - @ref modules_section
-/// - @ref how_to_build_section
-/// - @ref dependencies_section
-/// - @ref code_example_section
-///
-/// @section description Description
-/// 
-/// The lightweight game framework, with no third-party dependencies, made for fun.
-///
-///  ### It's written in C++17
-///    Using the latest standards makes code simpler and more efficient.
-///
-///  ### It's crossplatform
-///    One code to rule them all. By now Linux and Windows are supported. Mac OS is not supported, because who plays games on mac anyway?
-///
-///  ### It's lightweight
-///    No need to install and build a bunch of third-party libraries. 
-///    All that is needed is implemented inside the framework, this gives a single code base and the consistency of the modules.
-///
-///  ### It's made for fun
-///    This is a hobby project. I make it in my free time. 
-///    The main idea is to do everything with my own hands, couse it is interesting.@n
-///    On the other hand. This means that the project is developing slowly. 
-///    It is poorly tested. It may not support something that you need. It may contain a **LOT OF BUGS**.@n
-///    But it works on my computer.
-///
-/// @section modules_section Modules
-///
-/// | module                   | description                    |
-/// | ------------------------ | ------------------------------ |
-/// | @ref common_types_module | @copybrief common_types_module |
-/// | @ref common_utils_module | @copybrief common_utils_module |
-/// | @ref math_module         | @copybrief math_module         |
-/// | @ref log_module          | @copybrief log_module          |
-/// | @ref graphics_module     | @copybrief graphics_module     |
-/// | @ref game_core_module    | @copybrief game_core_module    |
-/// | @ref system_module       | @copybrief system_module       |
-/// | @ref unit_test_module    | @copybrief unit_test_module    |
-///
-///
-/// @section how_to_build_section How to build
-/// 
-/// ### Linux
-/// cmake v3.10, cpp compiller with cpp 17 support.
-///
-/// ``` bash
-/// mkdir build
-/// cd build
-/// cmake ../
-/// make 
-/// make install
-/// ```
-///
-/// ### windows
-/// cmake v3.10, visual studio 17 or compiller with cpp 17 support.
-///
-/// On Windows you may generate the VisualStudio project.
-///
-///
-/// @section dependencies_section Dependencies
-/// On Linux it's may be required to install libgl-dev and X11-dev packages.
-///
-/// @section code_example_section Code example
-///    TODO
-///
+/// @defgroup utils_module Utility
+/// @{
+/// @defgroup utils_types_module Types
+/// @defgroup utils_utils_module Utils
+/// @defgroup utils_utf_implementation Utf support
+/// @defgroup utils_crc_implementation Crc
+/// @defgroup utils_zlib_implementation ZLIB compression algorithm
+/// @}
 
+/// @defgroup graphics_module 3D Graphics
+/// @{
+/// @defgroup graphics_font_module Font
+/// @defgroup graphics_image_module Image processing
+/// @defgroup graphics_renderer_module Graphics
+/// @}
+
+/// @defgroup log_module Logging
+
+/// @defgroup math_module Math
+/// @{
+/// @defgroup math_predefined_constants Predefined constants
+/// @defgroup math_vector_implementation Vector type
+/// @defgroup math_matrix_implementation Matrix type
+/// @defgroup math_common_functions Common functions
+/// @defgroup math_exponential_functions Exponential functions
+/// @defgroup math_geometric_functions Geometric functions
+/// @defgroup math_matrix_functions Matrix functions
+/// @defgroup math_relational_functions Relational functions
+/// @defgroup math_transform_functions Transform functions
+/// @defgroup math_trigonometric_functions Trigonometric functions
+/// @}
+
+/// @defgroup system_module System
+/// @{
+/// @defgroup system_window_class Window
+/// @defgroup system_graphic_context Context
+/// @defgroup system_input_module Input
+/// @}
+
+/// @defgroup unit_test_module Unit test

@@ -16,37 +16,35 @@ class RendererImpl;
 class Shader;
 class Texture;
 
-////////////////////////////////////////////////////////////////////////////////
-/// @addtogroup graphics_module
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @addtogroup graphics_renderer_module
 /// @{
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////
 /// @brief Renderer
 ///
 /// Provides an interface to display 3d objects on the screen.
 /// Renderer attaches to the window. Several renderers can be attached to
 /// one window, in that case, they all share the same context.
+/// TODO: Write test on it.
 ///
 /// Meshes, Shaders, and Textures need to be loaded in renderer before usage.
-/// Projection and view matrices saved for every render call, so the different
-/// objects can be rendered with different transformations.
-////////////////////////////////////////////////////////////////////////////////
 class Renderer
 {
 public:
     using UniformsList = std::vector<Uniform>;
     using UniformsMap  = std::unordered_map<std::string, Uniform>;
 
+    /// @brief Internal representation of render call.
     class Command
     {
     public:
         Command(InstanceId mesh, InstanceId shader, const UniformsMap& global_uniforms, const UniformsList& m_uniforms);
-
         Command(const Command& other) = delete;
+        Command(Command&& other);
+
         Command& operator=(const Command& other) = delete;
 
-        Command(Command&& other);
         Command& operator=(Command&& other);
 
         InstanceId mesh() const;
@@ -61,102 +59,98 @@ public:
         UniformsList m_uniforms;
     };
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Creates Renderer and initialize graphic context for the window.
     ///
     /// @param window Window for rendering.
-    ////////////////////////////////////////////////////////////////////////////
     explicit Renderer(system::Window& window);
 
     Renderer(const Renderer&) = delete;
-    Renderer& operator=(const Renderer&) = delete;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Move Renderer.
-    ///
-    /// @param other Renderer to move from.
-    ////////////////////////////////////////////////////////////////////////////
     Renderer(Renderer&& other) noexcept;
 
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Move Renderer.
-    ///
-    /// @param other Renderer to move from.
-    ////////////////////////////////////////////////////////////////////////////
-    Renderer& operator=(Renderer&& other) noexcept;
-
-    ////////////////////////////////////////////////////////////////////////////
-    /// @brief Destructor.
-    ////////////////////////////////////////////////////////////////////////////
     ~Renderer();
 
-    ////////////////////////////////////////////////////////////////////////////
+    Renderer& operator=(const Renderer&) = delete;
+
+    Renderer& operator=(Renderer&& other) noexcept;
+
     /// @brief Set color to paint window before every frame.
     ///
     /// @param color Clear Color.
-    ////////////////////////////////////////////////////////////////////////////
     void set_clear_color(const Color& color);
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Turn on or off the vertical sync.
     ///
     /// @param enable On or off vertical sync.
-    ////////////////////////////////////////////////////////////////////////////
     void enable_vertical_sync(bool enable);
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Loads Mesh to renderer.
     ///
     /// @param mesh Mesh to load.
     ///
     /// @return `true` if loading successful
-    ////////////////////////////////////////////////////////////////////////////
     bool load(const Mesh& mesh);
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Loads Shader to renderer.
     ///
     /// @param shader Shader to load.
     ///
     /// @return `true` if loading successful
-    ////////////////////////////////////////////////////////////////////////////
     bool load(const Shader& shader);
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Loads Texture to renderer.
     ///
     /// @param texture Texture to load.
     ///
     /// @return `true` if loading successful
-    ////////////////////////////////////////////////////////////////////////////
     bool load(const Texture& texture);
 
+    /// @brief Assigns a global uniform value for shaders.
+    ///
+    /// Useful when there is a need to pass the same uniform for all shaders.
+    ///
+    /// @param name Uniform name.
+    /// @param value Uniform value.
     template <typename T>
     void set_uniform(const std::string& name, const T& value);
 
+    /// @brief Assigns a global uniform value for shaders.
+    ///
+    /// Useful when there is a need to pass the same uniform for all shaders.
+    ///
+    /// @param name Uniform name.
+    /// @param value Uniform value.
     template <typename T>
     void set_uniform(const std::string& name, T&& value);
 
+    /// @brief Renders a mesh with a shader.
+    ///
+    /// Only global uniforms would pass to the shader.
+    ///
+    /// @param mesh Mesh to render.
+    /// @param shader Shader ot use.
     void render(const Mesh& mesh, const Shader& shader);
+
+    /// @brief Renders a mesh with a shader and unforms.
+    ///
+    /// Global uniforms would pass to the shader as well.
+    /// TODO: Local uniforms must override global ones. Write test on it.
+    ///
+    /// @param mesh Mesh to render.
+    /// @param shader Shader ot use.
+    /// @param uniforms Uniform values to current shader.
     void render(const Mesh& mesh, const Shader& shader, const UniformsList& uniforms);
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Display on a screen all that been rendered so far.
-    ////////////////////////////////////////////////////////////////////////////
     void display();
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Get video card venor name.
     ///
     /// @return Vendor name.
-    ////////////////////////////////////////////////////////////////////////////
     std::string vendor_name() const;
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Get video card device name.
     ///
     /// @return Device name.
-    ////////////////////////////////////////////////////////////////////////////
     std::string device_name() const;
 
 private:
@@ -171,9 +165,9 @@ private:
     UniformsMap m_global_uniforms;
 };
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
 inline void Renderer::set_uniform(const std::string& name, const T& value)

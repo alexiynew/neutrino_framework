@@ -14,33 +14,16 @@
 
 #include <random>
 
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Different helper functions and classes.
-///
-/// @details
-/// The @ref common_utils_module module consist of functions and classes not
-/// related to any particular module. Or used all over the framework.
-///
-/// @defgroup common_utils_module Utility
-/// @{
-/// @defgroup common_version_implementation Version
-/// @defgroup common_crc_implementation Crc
-/// @defgroup common_zlib_implementation ZLIB compression algorithm
-/// @}
-///////////////////////////////////////////////////////////////////////////////
-
 namespace framework::utils
 {
-///////////////////////////////////////////////////////////////////////////////
-/// @addtogroup common_utils_module
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @addtogroup utils_utils_module
 /// @{
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Determines if it is the debug build.
 ///
 /// @return `true` in debug mode, `false` otherwise.
-///////////////////////////////////////////////////////////////////////////////
 inline constexpr bool is_debug() noexcept
 {
 #ifndef NDEBUG
@@ -50,15 +33,16 @@ inline constexpr bool is_debug() noexcept
 #endif
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Generates bunch of random numbers.
+///
+/// For integers range is closed, [min. max].
+/// For floating-point numbers the range is [min, max).
 ///
 /// @param min Minimum of the generated numbers.
 /// @param max Maximum of the generated numbers.
 /// @param count How much numbers to generate.
 ///
 /// @return Vector of the `count` size of random numbers in range [min, max].
-///////////////////////////////////////////////////////////////////////////////
 template <typename T>
 std::vector<T> random_numbers(T min, T max, size_t count)
 {
@@ -89,38 +73,36 @@ std::vector<T> random_numbers(T min, T max, size_t count)
     return result;
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Returns elements count in container.
 ///
 /// @param container To get size
 ///
 /// @return Elements count in container.
-///////////////////////////////////////////////////////////////////////////////
 template <typename C>
 constexpr inline std::size_t size(const C& container) noexcept
 {
     return container.size();
 }
 
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Returns elements count in array.
 ///
 /// @return Elements count in array.
-///////////////////////////////////////////////////////////////////////////////
 template <typename T, std::size_t N>
 constexpr inline std::size_t size(const T (&)[N]) noexcept
 {
     return N;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets bytes from iterator as value of type T in
-///        big endian byte order. No bounds checking is performed.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @name Big endian value reader
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Interprets bytes from iterator as value of type T in big endian byte order. No bounds checking is performed.
 ///
 /// @param begin Position to read value from.
 ///
 /// @return Value of type T.
-///////////////////////////////////////////////////////////////////////////////
 template <typename T, typename Iterator>
 inline T big_endian_value(Iterator begin)
 {
@@ -149,14 +131,149 @@ inline T big_endian_value(Iterator begin)
     return *reinterpret_cast<T*>(buffer);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Interprets bytes from iterator as value of type T in
-///        little endian byte order. No bounds checking is performed.
+/// @brief Wrapper for @ref big_endian_value which takes care of iterators.
+///
+/// Interprets bytes from range [begin, end) as value of type T in big endian byte order with bounds checking.
+template <typename Iterator>
+class BigEndianBufferReader final
+{
+public:
+    using DifferenceType   = typename std::iterator_traits<Iterator>::difference_type;
+    using ValueType        = typename std::iterator_traits<Iterator>::value_type;
+    using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
+
+    /// @brief Creates BigEndianBufferReader for provided range.
+    ///
+    /// @param begin Begining of buffer range.
+    /// @param end end of buffer range.
+    template <typename = std::enable_if_t<std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>, void>>
+    BigEndianBufferReader(const Iterator begin, const Iterator end) noexcept
+        : m_current(begin)
+        , m_end(end)
+        , m_distance(std::distance(begin, end))
+    {}
+
+    /// @brief Read value of type T form beffer reader.
+    ///
+    /// If there are not enough bytes in range buffer reader holds, an exception of type std::out_of_range is thrown.
+    ///
+    /// @return value of type T.
+    template <typename T>
+    T get()
+    {
+        constexpr DifferenceType size = sizeof(T);
+        if (m_distance < size) {
+            throw std::out_of_range("Not enough bytes to read value of size " + std::to_string(size));
+        }
+        T value = big_endian_value<T>(m_current);
+
+        skip<T>();
+
+        return value;
+    }
+
+    /// @brief Read value of type T form beffer reader.
+    ///
+    /// If there are not enough bytes in range buffer reader holds, an exception of type std::out_of_range is thrown.
+    ///
+    /// @param value Value to store.
+    ///
+    /// @return Reference to current BigEndianBufferReader instance.
+    template <typename T>
+    BigEndianBufferReader& operator>>(T& value)
+    {
+        value = get<T>();
+        return *this;
+    }
+
+    /// @brief Skips count of values of type T in a buffer.
+    ///
+    /// @param count How many values of type T to skip.
+    template <typename T>
+    void skip(DifferenceType count = 1) noexcept
+    {
+        DifferenceType step = count * static_cast<DifferenceType>(sizeof(T));
+
+        step = std::clamp(step, DifferenceType(0), m_distance);
+        std::advance(m_current, step);
+        m_distance -= step;
+    }
+
+    /// @brief Checks if the buffer has some bytes in it.
+    ///
+    /// @return `true` if buffer is not empty.
+    operator bool() const noexcept
+    {
+        return m_distance > 0;
+    }
+
+    /// @brief Checks if the buffer has some bytes in it.
+    ///
+    /// @return `true` if buffer is not empty.
+    bool good() const noexcept
+
+    {
+        return m_distance > 0;
+    }
+
+private:
+    Iterator m_current;
+    const Iterator m_end;
+    DifferenceType m_distance = 0;
+};
+
+/// @brief BigEndianBufferReader deduction guide
+template <class Iterator>
+BigEndianBufferReader(Iterator, Iterator) -> BigEndianBufferReader<Iterator>;
+
+/// @brief Creates an instance of BigEndianBufferReader with the provided range [begin, end).
+///
+/// @param begin Begining of buffer range.
+/// @param end end of buffer range.
+///
+/// @return BigEndianBufferReader instance.
+template <typename Iterator>
+inline BigEndianBufferReader<Iterator> make_big_endian_buffer_reader(const Iterator begin, const Iterator end) noexcept
+{
+    return BigEndianBufferReader(begin, end);
+}
+
+/// @brief Creates an instance of BigEndianBufferReader with the provided container as a buffer to read values from.
+///
+/// @param container Countainer to read values from.
+///
+/// @return BigEndianBufferReader instance.
+template <typename Container>
+inline auto make_big_endian_buffer_reader(const Container& container) noexcept
+{
+    return make_big_endian_buffer_reader(std::begin(container), std::end(container));
+}
+
+/// @brief Creates an instance of BigEndianBufferReader with an array as a buffer to read values from.
+///
+/// @param buffer Array to read values from.
+///
+/// @return BigEndianBufferReader instance.
+template <typename T, std::size_t N>
+inline auto make_big_endian_buffer_reader(const T (&buffer)[N]) noexcept
+{
+    return make_big_endian_buffer_reader(std::begin(buffer), std::end(buffer));
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @name Little endian value reader
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Interprets bytes from iterator as value of type T in little endian byte order. No bounds checking is performed.
 ///
 /// @param begin Position to read value from.
 ///
 /// @return Value of type T.
-///////////////////////////////////////////////////////////////////////////////
 template <typename T, typename Iterator>
 inline T little_endian_value(Iterator begin)
 {
@@ -185,98 +302,9 @@ inline T little_endian_value(Iterator begin)
     return *reinterpret_cast<T*>(buffer);
 }
 
-///////////////////////////////////////////////////////////////////////////////
-/// @brief Wrapper for @ref big_endian_value which takes care of iterators.
-///////////////////////////////////////////////////////////////////////////////
-template <typename Iterator>
-class BigEndianBufferReader final
-{
-public:
-    using DifferenceType   = typename std::iterator_traits<Iterator>::difference_type;
-    using ValueType        = typename std::iterator_traits<Iterator>::value_type;
-    using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
-
-    template <typename = std::enable_if_t<std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>, void>>
-    BigEndianBufferReader(const Iterator begin, const Iterator end) noexcept
-        : m_current(begin)
-        , m_end(end)
-        , m_distance(std::distance(begin, end))
-    {}
-
-    template <typename T>
-    T get()
-    {
-        constexpr DifferenceType size = sizeof(T);
-        if (m_distance < size) {
-            throw std::out_of_range("Not enough bytes to read value of size " + std::to_string(size));
-        }
-        T value = big_endian_value<T>(m_current);
-
-        skip<T>();
-
-        return value;
-    }
-
-    template <typename T>
-    BigEndianBufferReader& operator>>(T& value)
-    {
-        value = get<T>();
-        return *this;
-    }
-
-    template <typename T>
-    void skip(DifferenceType count = 1) noexcept
-    {
-        DifferenceType step = count * static_cast<DifferenceType>(sizeof(T));
-
-        step = std::clamp(step, DifferenceType(0), m_distance);
-        std::advance(m_current, step);
-        m_distance -= step;
-    }
-
-    operator bool() const noexcept
-    {
-        return m_distance > 0;
-    }
-
-    bool good() const noexcept
-
-    {
-        return m_distance > 0;
-    }
-
-private:
-    Iterator m_current;
-    const Iterator m_end;
-    DifferenceType m_distance = 0;
-};
-
-// additional deduction guide
-template <class Iterator>
-BigEndianBufferReader(Iterator, Iterator) -> BigEndianBufferReader<Iterator>;
-
-// maker function
-template <typename Iterator>
-inline BigEndianBufferReader<Iterator> make_big_endian_buffer_reader(const Iterator begin, const Iterator end) noexcept
-{
-    return BigEndianBufferReader(begin, end);
-}
-
-template <typename Container>
-inline auto make_big_endian_buffer_reader(const Container& container) noexcept
-{
-    return make_big_endian_buffer_reader(std::begin(container), std::end(container));
-}
-
-template <typename T, std::size_t N>
-inline auto make_big_endian_buffer_reader(const T (&buffer)[N]) noexcept
-{
-    return make_big_endian_buffer_reader(std::begin(buffer), std::end(buffer));
-}
-
-///////////////////////////////////////////////////////////////////////////////
 /// @brief Wrapper for @ref little_endian_value which takes care of iterators.
-///////////////////////////////////////////////////////////////////////////////
+///
+/// Interprets bytes from range [begin, end) as value of type T in little endian byte order with bounds checking.
 template <typename Iterator>
 class LittleEndianBufferReader final
 {
@@ -285,6 +313,10 @@ public:
     using ValueType        = typename std::iterator_traits<Iterator>::value_type;
     using IteratorCategory = typename std::iterator_traits<Iterator>::iterator_category;
 
+    /// @brief Creates LittleEndianBufferReader for provided range.
+    ///
+    /// @param begin Begining of buffer range.
+    /// @param end end of buffer range.
     template <typename = std::enable_if_t<std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>, void>>
     LittleEndianBufferReader(const Iterator begin, const Iterator end) noexcept
         : m_current(begin)
@@ -292,6 +324,11 @@ public:
         , m_distance(std::distance(begin, end))
     {}
 
+    /// @brief Read value of type T form beffer reader.
+    ///
+    /// If there are not enough bytes in range buffer reader holds, an exception of type std::out_of_range is thrown.
+    ///
+    /// @return value of type T.
     template <typename T>
     T get()
     {
@@ -306,6 +343,13 @@ public:
         return value;
     }
 
+    /// @brief Read value of type T form beffer reader.
+    ///
+    /// If there are not enough bytes in range buffer reader holds, an exception of type std::out_of_range is thrown.
+    ///
+    /// @param value Value to store.
+    ///
+    /// @return Reference to current LittleEndianBufferReader instance.
     template <typename T>
     LittleEndianBufferReader& operator>>(T& value)
     {
@@ -313,6 +357,9 @@ public:
         return *this;
     }
 
+    /// @brief Skips count of values of type T in a buffer.
+    ///
+    /// @param count How many values of type T to skip.
     template <typename T>
     void skip(DifferenceType count = 1) noexcept
     {
@@ -323,11 +370,17 @@ public:
         m_distance -= step;
     }
 
+    /// @brief Checks if the buffer has some bytes in it.
+    ///
+    /// @return `true` if buffer is not empty.
     operator bool() const noexcept
     {
         return m_distance > 0;
     }
 
+    /// @brief Checks if the buffer has some bytes in it.
+    ///
+    /// @return `true` if buffer is not empty.
     bool good() const noexcept
 
     {
@@ -340,11 +393,16 @@ private:
     DifferenceType m_distance = 0;
 };
 
-// additional deduction guide
+/// @brief LittleEndianBufferReader deduction guide
 template <class Iterator>
 LittleEndianBufferReader(Iterator, Iterator) -> LittleEndianBufferReader<Iterator>;
 
-// maker function
+/// @brief Creates an instance of LittleEndianBufferReader with the provided range [begin, end).
+///
+/// @param begin Begining of buffer range.
+/// @param end end of buffer range.
+///
+/// @return LittleEndianBufferReader instance.
 template <typename Iterator>
 inline LittleEndianBufferReader<Iterator> make_little_endian_buffer_reader(const Iterator begin,
                                                                            const Iterator end) noexcept
@@ -352,17 +410,31 @@ inline LittleEndianBufferReader<Iterator> make_little_endian_buffer_reader(const
     return LittleEndianBufferReader(begin, end);
 }
 
+/// @brief Creates an instance of LittleEndianBufferReader with the provided container as a buffer to read values from.
+///
+/// @param container Countainer to read values from.
+///
+/// @return LittleEndianBufferReader instance.
 template <typename Container>
 inline auto make_little_endian_buffer_reader(const Container& container) noexcept
 {
     return make_little_endian_buffer_reader(std::begin(container), std::end(container));
 }
 
+/// @brief Creates an instance of LittleEndianBufferReader with an array as a buffer to read values from.
+///
+/// @param buffer Array to read values from.
+///
+/// @return LittleEndianBufferReader instance.
 template <typename T, std::size_t N>
 inline auto make_little_endian_buffer_reader(const T (&buffer)[N]) noexcept
 {
     return make_little_endian_buffer_reader(std::begin(buffer), std::end(buffer));
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
 template <typename... Args>
@@ -375,9 +447,9 @@ std::string format(const std::string& str, Args&&... args)
 }
 */
 
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
-///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 } // namespace framework::utils
 
