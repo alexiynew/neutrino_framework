@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 
 #include <common/utf.hpp>
@@ -93,6 +93,8 @@ private:
         TEST_ASSERT(utf::to_utf16(utf8_3) == utf16_3, "Convertation failed.");
         TEST_ASSERT(utf::to_utf16(utf8_4) == utf16_4, "Convertation failed.");
         TEST_ASSERT(utf::to_utf16(utf8_5) == utf16_5, "Convertation failed.");
+
+        auto s = utf::to_utf16(utf8_6);
         TEST_ASSERT(utf::to_utf16(utf8_6) == utf16_6, "Convertation failed.");
 
         // TODO: Add tests with broken codepoints

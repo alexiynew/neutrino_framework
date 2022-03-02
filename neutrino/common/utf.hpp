@@ -1,4 +1,4 @@
-﻿#ifndef FRAMEWORK_COMMON_UTF_HPP
+#ifndef FRAMEWORK_COMMON_UTF_HPP
 #define FRAMEWORK_COMMON_UTF_HPP
 
 #include <cstdint>

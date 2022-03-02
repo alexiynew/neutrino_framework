@@ -49,9 +49,18 @@ def convert_line_endings(filename):
         open_file.write(content)
 
 
+def fix_encoding(filename):
+    with open(filename, mode='r') as open_file:
+        content = open_file.read()
+
+    with open(filename, 'w', encoding='utf-8') as open_file:
+        open_file.write(content)
+
+
 files = list(filter(has_extension_filter(code_extensions), get_files(pathes)))
 
 for f in files:
     print(f)
+    fix_encoding(f)
     subprocess.call(["clang-format", "-style=file", "-i", f])
     convert_line_endings(f)

@@ -631,7 +631,7 @@ inline Vector<N, T> step(const Vector<N, T>& value, const Vector<N, T>& edge)
 ///     t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
 ///     return t * t * (3.0 - 2.0 * t);
 /// @endcode
-/// Results are undefined if edge0 ≥ edge1.
+/// Results are undefined if edge0 Р В Р’В Р В РІР‚В Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В°Р В РЎС›Р РЋРІР‚в„ў edge1.
 ///
 /// @param value Specifies the source value for interpolation.
 /// @param edge0 Specifies the value of the lower edge of the Hermite function.
