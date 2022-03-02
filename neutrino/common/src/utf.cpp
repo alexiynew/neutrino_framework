@@ -139,6 +139,12 @@ std::vector<U16type_t>::iterator set_as_utf16(std::vector<U16type_t>::iterator t
     return to;
 }
 
+std::vector<U32type_t>::iterator set_as_utf32(std::vector<U32type_t>::iterator to, CodePoint cp)
+{
+    *to = cp;
+    return to + 1;
+}
+
 template <typename T>
 std::string to_utf8_impl(const T& str, std::size_t buffer_size)
 {
@@ -181,6 +187,50 @@ std::u16string to_utf16_impl(const T& str, std::size_t buffer_size)
     return std::u16string(buffer.data());
 }
 
+template <typename T>
+std::u32string to_utf32_impl(const T& str, std::size_t buffer_size)
+{
+    std::vector<U32type_t> buffer(buffer_size, '\0');
+
+    size_t pos = 0;
+    size_t end = str.length();
+    auto to    = buffer.begin();
+
+    while (pos != end) {
+        auto [cp, offset] = get_code_point(str, pos);
+        to                = set_as_utf32(to, cp);
+        pos += offset;
+        if (offset == 0) {
+            break;
+        }
+    }
+
+    return std::u32string(buffer.data());
+}
+
+template <typename T>
+std::vector<CodePoint> to_codepoints_impl(const T& str)
+{
+    const size_t buffer_size = str.length();
+    std::vector<CodePoint> buffer;
+    buffer.reserve(buffer_size);
+
+    size_t pos = 0;
+    size_t end = str.length();
+
+    while (pos != end) {
+        auto [cp, offset] = get_code_point(str, pos);
+
+        buffer.push_back(cp);
+        pos += offset;
+        if (offset == 0) {
+            break;
+        }
+    }
+
+    return buffer;
+}
+
 } // namespace
 
 namespace framework::utf
@@ -208,6 +258,33 @@ std::u16string to_utf16(const std::u32string& str)
 {
     const size_t buffer_size = str.length() * 2 + 1;
     return to_utf16_impl(str, buffer_size);
+}
+
+std::u32string to_utf32(const std::string& str)
+{
+    const size_t buffer_size = str.length() + 1;
+    return to_utf32_impl(str, buffer_size);
+}
+
+std::u32string to_utf32(const std::u16string& str)
+{
+    const size_t buffer_size = str.length() + 1;
+    return to_utf32_impl(str, buffer_size);
+}
+
+std::vector<CodePoint> to_codepoints(const std::string& str)
+{
+    return to_codepoints_impl(str);
+}
+
+std::vector<CodePoint> to_codepoints(const std::u16string& str)
+{
+    return to_codepoints_impl(str);
+}
+
+std::vector<CodePoint> to_codepoints(const std::u32string& str)
+{
+    return to_codepoints_impl(str);
 }
 
 } // namespace framework::utf
