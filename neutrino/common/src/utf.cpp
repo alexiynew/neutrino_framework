@@ -21,13 +21,14 @@ std::pair<CodePoint, size_t> get_code_point(const std::string& str, size_t pos)
         return std::make_pair(0, 0);
     }
 
-    if (str[pos] >= 0x80 && str[pos] <= 0xBF) {
+    CodePoint cp = static_cast<CodePoint>(str[pos] & 0xFF);
+
+    if (cp >= 0x80 && cp <= 0xBF) {
         // error, missing code point first byte
         return std::make_pair(0, 0);
     }
 
-    int offset   = 1;
-    CodePoint cp = static_cast<CodePoint>(str[pos] & 0xFF);
+    std::size_t offset = 1;
     if (cp <= 0x7F) {
         return std::make_pair(cp, 1);
     } else if (cp >= 0xC0 && cp <= 0xDF) {
@@ -55,7 +56,7 @@ std::pair<CodePoint, size_t> get_code_point(const std::string& str, size_t pos)
     }
 
     return std::make_pair(cp, offset);
-};
+}
 
 std::pair<CodePoint, size_t> get_code_point(const std::u16string& str, size_t pos)
 {
@@ -74,7 +75,7 @@ std::pair<CodePoint, size_t> get_code_point(const std::u16string& str, size_t po
     }
 
     const CodePoint second = str[pos + 1];
-    const CodePoint cp     = ((first ^ 0xD800) << 10) | (second ^ 0xDC00) | 0x10000;
+    const CodePoint cp     = static_cast<CodePoint>((first ^ 0xD800) << 10) | (second ^ 0xDC00) | 0x10000;
 
     return std::make_pair(cp, 2);
 }
