@@ -128,19 +128,20 @@ std::vector<U16type_t>::iterator set_as_utf16(std::vector<U16type_t>::iterator t
         to[0] = static_cast<U16type_t>(cp & 0xFFFF);
         return to + 1;
     } else if (cp >= 0x10000 && cp <= 0x10FFFF) {
+        cp -= 0x10000;
         to[0] = static_cast<U16type_t>(((cp >> 10) & 0x3FF) | 0xD800);
         to[1] = static_cast<U16type_t>(((cp >> 0) & 0x3FF) | 0xDC00);
         return to + 2;
+    } else {
+        // invalide codepoint
     }
 
     return to;
 }
 
 template <typename T>
-std::string to_utf8_impl(const T& str)
+std::string to_utf8_impl(const T& str, std::size_t buffer_size)
 {
-    const size_t buffer_size = str.length() * 4 + 1;
-
     std::vector<U8type_t> buffer(buffer_size, '\0');
 
     size_t pos = 0;
@@ -159,25 +160,9 @@ std::string to_utf8_impl(const T& str)
     return std::string(buffer.data());
 }
 
-} // namespace
-
-namespace framework::utf
+template <typename T>
+std::u16string to_utf16_impl(const T& str, std::size_t buffer_size)
 {
-
-std::string to_utf8(const std::u16string& str)
-{
-    return to_utf8_impl(str);
-}
-
-std::string to_utf8(const std::u32string& str)
-{
-    return to_utf8_impl(str);
-}
-
-std::u16string to_utf16(const std::string& str)
-{
-    const size_t buffer_size = str.length() + 1;
-
     std::vector<U16type_t> buffer(buffer_size, '\0');
 
     size_t pos = 0;
@@ -196,22 +181,33 @@ std::u16string to_utf16(const std::string& str)
     return std::u16string(buffer.data());
 }
 
+} // namespace
+
+namespace framework::utf
+{
+
+std::string to_utf8(const std::u16string& str)
+{
+    const size_t buffer_size = str.length() * 4 + 1;
+    return to_utf8_impl(str, buffer_size);
+}
+
+std::string to_utf8(const std::u32string& str)
+{
+    const size_t buffer_size = str.length() * 4 + 1;
+    return to_utf8_impl(str, buffer_size);
+}
+
+std::u16string to_utf16(const std::string& str)
+{
+    const size_t buffer_size = str.length() + 1;
+    return to_utf16_impl(str, buffer_size);
+}
+
 std::u16string to_utf16(const std::u32string& str)
 {
     const size_t buffer_size = str.length() * 2 + 1;
-
-    std::vector<U16type_t> buffer(buffer_size, '\0');
-
-    size_t begin = 0;
-    size_t end   = str.length();
-    auto to      = buffer.begin();
-    while (begin != end && *to != 0) {
-        auto [cp, size] = get_code_point(str, begin);
-        to              = set_as_utf16(to, cp);
-        begin += size;
-    }
-
-    return std::u16string(buffer.data());
+    return to_utf16_impl(str, buffer_size);
 }
 
 } // namespace framework::utf

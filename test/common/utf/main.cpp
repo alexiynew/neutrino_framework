@@ -93,8 +93,6 @@ private:
         TEST_ASSERT(utf::to_utf16(utf8_3) == utf16_3, "Convertation failed.");
         TEST_ASSERT(utf::to_utf16(utf8_4) == utf16_4, "Convertation failed.");
         TEST_ASSERT(utf::to_utf16(utf8_5) == utf16_5, "Convertation failed.");
-
-        auto s = utf::to_utf16(utf8_6);
         TEST_ASSERT(utf::to_utf16(utf8_6) == utf16_6, "Convertation failed.");
 
         // TODO: Add tests with broken codepoints
@@ -115,6 +113,13 @@ private:
         const std::u16string utf16_4(u"\ud7f8\ud7f9\ud7fa\ud7fb");
         const std::u16string utf16_5(u"\uf900\uf901\uf902\uf903");
         const std::u16string utf16_6(u"\U00010000\U00010001\U00010002\U00010003");
+
+        auto s1 = utf::to_utf16(utf32_1);
+        auto s2 = utf::to_utf16(utf32_2);
+        auto s3 = utf::to_utf16(utf32_3);
+        auto s4 = utf::to_utf16(utf32_4);
+        auto s5 = utf::to_utf16(utf32_5);
+        auto s6 = utf::to_utf16(utf32_6);
 
         TEST_ASSERT(utf::to_utf16(utf32_1) == utf16_1, "Convertation failed.");
         TEST_ASSERT(utf::to_utf16(utf32_2) == utf16_2, "Convertation failed.");
