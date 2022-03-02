@@ -50,7 +50,7 @@ std::pair<CodePoint, size_t> get_code_point(const std::string& str, size_t pos)
         return std::make_pair(0, 0);
     }
 
-    for (int i = 1; i < offset; i++) {
+    for (size_t i = 1; i < offset; i++) {
         cp <<= 6;
         cp |= str[pos + i] & 0b00111111;
     }
