@@ -64,7 +64,7 @@ public:
         CompositeGlyph composite_glyph;
     };
 
-    GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const std::vector<std::uint8_t>& data);
+    GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data);
 
     bool valid() const;
 

@@ -11,7 +11,7 @@ namespace framework::graphics::details::font
 class IndexToLocation final
 {
 public:
-    IndexToLocation(std::int16_t index_to_loc_format, std::uint16_t num_glyphs, const std::vector<std::uint8_t>& data);
+    IndexToLocation(std::int16_t index_to_loc_format, std::uint16_t num_glyphs, const BytesData& data);
 
     bool valid() const;
 

@@ -5,9 +5,7 @@
 namespace framework::graphics::details::font
 {
 
-HorizontalMetrics::HorizontalMetrics(std::uint16_t number_of_h_metrics,
-                                     std::uint16_t num_glyphs,
-                                     const std::vector<std::uint8_t>& data)
+HorizontalMetrics::HorizontalMetrics(std::uint16_t number_of_h_metrics, std::uint16_t num_glyphs, const BytesData& data)
 {
     auto in = utils::make_big_endian_buffer_reader(data);
 

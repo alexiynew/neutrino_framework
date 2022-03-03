@@ -300,9 +300,7 @@ GlyphData::Glyph parse_glyph(BufferReader& in)
 namespace framework::graphics::details::font
 {
 
-GlyphData::GlyphData(std::uint16_t num_glyphs,
-                     const std::vector<Offset32>& offsets,
-                     const std::vector<std::uint8_t>& data)
+GlyphData::GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data)
 {
     m_glyphs.reserve(num_glyphs);
 

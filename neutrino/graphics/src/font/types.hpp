@@ -3,6 +3,9 @@
 
 #include <cstdint>
 #include <stdexcept>
+#include <vector>
+
+#include <common/utf.hpp>
 
 namespace framework::graphics::details::font
 {
@@ -21,6 +24,12 @@ using Offset16 = std::uint16_t;
 using Offset32 = std::uint32_t;
 
 using GlyphId = std::uint16_t;
+
+static inline constexpr GlyphId missig_glyph_id = 0;
+
+using utf::CodePoint;
+
+using BytesData = std::vector<std::uint8_t>;
 
 enum class PlatformId : std::uint16_t
 {

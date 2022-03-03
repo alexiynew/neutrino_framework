@@ -11,9 +11,7 @@ namespace framework::graphics::details::font
 class HorizontalMetrics final
 {
 public:
-    HorizontalMetrics(std::uint16_t number_of_h_metrics,
-                      std::uint16_t num_glyphs,
-                      const std::vector<std::uint8_t>& data);
+    HorizontalMetrics(std::uint16_t number_of_h_metrics, std::uint16_t num_glyphs, const BytesData& data);
 
     bool valid() const;
 

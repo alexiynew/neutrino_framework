@@ -5,7 +5,7 @@
 namespace framework::graphics::details::font
 {
 
-Os2::Os2(const std::vector<std::uint8_t>& data)
+Os2::Os2(const BytesData& data)
 {
     auto in = utils::make_big_endian_buffer_reader(data);
 

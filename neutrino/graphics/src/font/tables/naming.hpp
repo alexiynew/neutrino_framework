@@ -46,7 +46,7 @@ public:
         Undefined = 0xFFFF,
     };
 
-    explicit Naming(const std::vector<std::uint8_t>& data);
+    explicit Naming(const BytesData& data);
 
     bool valid() const;
     std::string get_string(NameId name_id) const;
@@ -70,7 +70,7 @@ private:
 
     using NamesMap = std::unordered_map<NameId, std::string>;
 
-    std::string read_string(NameId name_id, const std::vector<std::uint8_t>& data);
+    std::string read_string(NameId name_id, const BytesData& data);
 
     std::uint16_t m_version   = 0;
     std::uint16_t m_count     = 0;

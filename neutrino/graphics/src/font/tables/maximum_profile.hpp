@@ -14,7 +14,7 @@ public:
     inline static constexpr std::uint32_t true_type_version = 0x00010000;
     inline static constexpr std::uint32_t open_type_vetsion = 0x00005000;
 
-    explicit MaximumProfile(const std::vector<std::uint8_t>& data);
+    explicit MaximumProfile(const BytesData& data);
 
     bool valid() const;
 

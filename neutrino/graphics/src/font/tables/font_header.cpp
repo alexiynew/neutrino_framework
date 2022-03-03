@@ -5,7 +5,7 @@
 namespace framework::graphics::details::font
 {
 
-FontHeader::FontHeader(const std::vector<std::uint8_t>& data)
+FontHeader::FontHeader(const BytesData& data)
 {
     auto in = utils::make_big_endian_buffer_reader(data);
 

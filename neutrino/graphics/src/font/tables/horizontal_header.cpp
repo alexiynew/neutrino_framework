@@ -5,7 +5,7 @@
 namespace framework::graphics::details::font
 {
 
-HorizontalHeader::HorizontalHeader(const std::vector<std::uint8_t>& data)
+HorizontalHeader::HorizontalHeader(const BytesData& data)
 {
     auto in = utils::make_big_endian_buffer_reader(data);
 

@@ -5,7 +5,7 @@
 namespace framework::graphics::details::font
 {
 
-MaximumProfile::MaximumProfile(const std::vector<std::uint8_t>& data)
+MaximumProfile::MaximumProfile(const BytesData& data)
 {
     auto in = utils::make_big_endian_buffer_reader(data);
 

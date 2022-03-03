@@ -11,7 +11,7 @@ namespace framework::graphics::details::font
 class Os2 final
 {
 public:
-    explicit Os2(const std::vector<std::uint8_t>& data);
+    explicit Os2(const BytesData& data);
 
     bool valid() const;
 

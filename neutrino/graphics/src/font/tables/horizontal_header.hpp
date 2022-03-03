@@ -11,7 +11,7 @@ namespace framework::graphics::details::font
 class HorizontalHeader final
 {
 public:
-    explicit HorizontalHeader(const std::vector<std::uint8_t>& data);
+    explicit HorizontalHeader(const BytesData& data);
 
     bool valid() const;
 

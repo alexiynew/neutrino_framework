@@ -5,9 +5,7 @@
 namespace framework::graphics::details::font
 {
 
-IndexToLocation::IndexToLocation(std::int16_t index_to_loc_format,
-                                 std::uint16_t num_glyphs,
-                                 const std::vector<std::uint8_t>& data)
+IndexToLocation::IndexToLocation(std::int16_t index_to_loc_format, std::uint16_t num_glyphs, const BytesData& data)
 {
     const size_t size = num_glyphs + 1;
 

@@ -6,7 +6,7 @@
 namespace framework::graphics::details::font
 {
 
-Naming::Naming(const std::vector<std::uint8_t>& data)
+Naming::Naming(const BytesData& data)
 {
     auto in = utils::make_big_endian_buffer_reader(data);
 
@@ -87,7 +87,7 @@ std::string Naming::get_string(NameId name_id) const
     return std::string();
 }
 
-std::string Naming::read_string(Naming::NameId name_id, const std::vector<std::uint8_t>& data)
+std::string Naming::read_string(Naming::NameId name_id, const BytesData& data)
 {
     auto is_unicode = [name_id](const NameRecord& record) {
         constexpr static std::array<std::uint16_t, 2> unicode_encoding_ids = {3, 4};
