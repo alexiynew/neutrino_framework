@@ -148,9 +148,10 @@ public:
     /// @param end end of buffer range.
     template <typename = std::enable_if_t<std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>, void>>
     BigEndianBufferReader(const Iterator begin, const Iterator end) noexcept
-        : m_current(begin)
+        : m_begin(begin)
         , m_end(end)
-        , m_distance(std::distance(begin, end))
+        , m_current(begin)
+        , m_bytes_left(std::distance(begin, end))
     {}
 
     /// @brief Read value of type T form buffer reader.
@@ -162,7 +163,7 @@ public:
     T get()
     {
         constexpr DifferenceType size = sizeof(T);
-        if (m_distance < size) {
+        if (m_bytes_left < size) {
             throw std::out_of_range("Not enough bytes to read value of size " + std::to_string(size));
         }
         T value = big_endian_value<T>(m_current);
@@ -194,9 +195,9 @@ public:
     {
         DifferenceType step = count * static_cast<DifferenceType>(sizeof(T));
 
-        step = std::clamp(step, DifferenceType(0), m_distance);
+        step = std::clamp(step, DifferenceType(0), m_bytes_left);
         std::advance(m_current, step);
-        m_distance -= step;
+        m_bytes_left -= step;
     }
 
     /// @brief Checks if the buffer has some bytes in it.
@@ -204,7 +205,7 @@ public:
     /// @return `true` if buffer is not empty.
     operator bool() const noexcept
     {
-        return m_distance > 0;
+        return m_bytes_left > 0;
     }
 
     /// @brief Checks if the buffer has some bytes in it.
@@ -213,13 +214,38 @@ public:
     bool good() const noexcept
 
     {
-        return m_distance > 0;
+        return m_bytes_left > 0;
+    }
+
+    /// @brief Start of bytes range.
+    ///
+    /// @return Iterator to the start of bytes range.
+    Iterator begin() const noexcept
+    {
+        return m_begin;
+    }
+
+    /// @brief End of bytes range.
+    ///
+    /// @return Iterator to the end of bytes range.
+    Iterator end() const noexcept
+    {
+        return m_end;
+    }
+
+    /// @brief Current position in bytes range.
+    ///
+    /// @return Iterator to the current position in bytes range.
+    Iterator current() const noexcept
+    {
+        return m_current;
     }
 
 private:
-    Iterator m_current;
+    const Iterator m_begin;
     const Iterator m_end;
-    DifferenceType m_distance = 0;
+    Iterator m_current;
+    DifferenceType m_bytes_left = 0;
 };
 
 /// @brief BigEndianBufferReader deduction guide
@@ -319,9 +345,10 @@ public:
     /// @param end end of buffer range.
     template <typename = std::enable_if_t<std::is_convertible_v<IteratorCategory, std::forward_iterator_tag>, void>>
     LittleEndianBufferReader(const Iterator begin, const Iterator end) noexcept
-        : m_current(begin)
+        : m_begin(begin)
         , m_end(end)
-        , m_distance(std::distance(begin, end))
+        , m_current(begin)
+        , m_bytes_left(std::distance(begin, end))
     {}
 
     /// @brief Read value of type T form buffer reader.
@@ -333,7 +360,7 @@ public:
     T get()
     {
         constexpr DifferenceType size = sizeof(T);
-        if (m_distance < size) {
+        if (m_bytes_left < size) {
             throw std::out_of_range("Not enough bytes to read value of size " + std::to_string(size));
         }
         T value = little_endian_value<T>(m_current);
@@ -365,9 +392,9 @@ public:
     {
         DifferenceType step = count * static_cast<DifferenceType>(sizeof(T));
 
-        step = std::clamp(step, DifferenceType(0), m_distance);
+        step = std::clamp(step, DifferenceType(0), m_bytes_left);
         std::advance(m_current, step);
-        m_distance -= step;
+        m_bytes_left -= step;
     }
 
     /// @brief Checks if the buffer has some bytes in it.
@@ -375,7 +402,7 @@ public:
     /// @return `true` if buffer is not empty.
     operator bool() const noexcept
     {
-        return m_distance > 0;
+        return m_bytes_left > 0;
     }
 
     /// @brief Checks if the buffer has some bytes in it.
@@ -384,13 +411,38 @@ public:
     bool good() const noexcept
 
     {
-        return m_distance > 0;
+        return m_bytes_left > 0;
+    }
+
+    /// @brief Start of bytes range.
+    ///
+    /// @return Iterator to the start of bytes range.
+    Iterator begin() const noexcept
+    {
+        return m_begin;
+    }
+
+    /// @brief End of bytes range.
+    ///
+    /// @return Iterator to the end of bytes range.
+    Iterator end() const noexcept
+    {
+        return m_end;
+    }
+
+    /// @brief Current position in bytes range.
+    ///
+    /// @return Iterator to the current position in bytes range.
+    Iterator current() const noexcept
+    {
+        return m_current;
     }
 
 private:
-    Iterator m_current;
+    const Iterator m_begin;
     const Iterator m_end;
-    DifferenceType m_distance = 0;
+    Iterator m_current;
+    DifferenceType m_bytes_left = 0;
 };
 
 /// @brief LittleEndianBufferReader deduction guide

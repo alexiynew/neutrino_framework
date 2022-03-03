@@ -10,6 +10,7 @@ namespace
 namespace utils   = framework::utils;
 namespace details = framework::graphics::details::font;
 
+using details::BufferReader;
 using details::BytesData;
 using details::CharacterToGlyphIndexMapping;
 using details::CodePoint;
@@ -54,62 +55,100 @@ private:
 
 void SubtableFormat4::parse(std::uint32_t offset, const BytesData& data)
 {
-    auto from = std::next(data.begin(), offset);
+    const auto from = std::next(data.begin(), offset);
+    BufferReader in = utils::make_big_endian_buffer_reader(from, data.end());
 
-    m_format         = utils::big_endian_value<std::uint16_t>(from);
-    m_length         = utils::big_endian_value<std::uint16_t>(from + 2);
-    m_language       = utils::big_endian_value<std::uint16_t>(from + 4);
-    m_seg_count_x2   = utils::big_endian_value<std::uint16_t>(from + 6);
-    m_search_range   = utils::big_endian_value<std::uint16_t>(from + 8);
-    m_entry_selector = utils::big_endian_value<std::uint16_t>(from + 10);
-    m_range_shift    = utils::big_endian_value<std::uint16_t>(from + 12);
-
-    std::advance(from, 14);
+    in >> m_format;
+    in >> m_length;
+    in >> m_language;
+    in >> m_seg_count_x2;
+    in >> m_search_range;
+    in >> m_entry_selector;
+    in >> m_range_shift;
 
     const size_t seg_count = m_seg_count_x2 / 2;
 
     m_end_code.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        m_end_code.push_back(utils::big_endian_value<std::uint16_t>(from));
-        std::advance(from, 2);
+        m_end_code.push_back(in.get<std::uint16_t>());
     }
 
-    m_reserved_pad = utils::big_endian_value<std::uint16_t>(from);
-    std::advance(from, 2);
+    in >> m_reserved_pad;
 
     m_start_code.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        m_start_code.push_back(utils::big_endian_value<std::uint16_t>(from));
-        std::advance(from, 2);
+        m_start_code.push_back(in.get<std::uint16_t>());
     }
 
     m_id_delta.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        m_id_delta.push_back(utils::big_endian_value<std::int16_t>(from));
-        std::advance(from, 2);
+        m_id_delta.push_back(in.get<std::int16_t>());
     }
 
     m_id_range_offset.reserve(seg_count);
     for (size_t i = 0; i < seg_count; ++i) {
-        m_id_range_offset.push_back(utils::big_endian_value<std::uint16_t>(from));
-        std::advance(from, 2);
+        m_id_range_offset.push_back(in.get<std::uint16_t>());
     }
 
-    const auto end    = std::next(data.begin(), m_length);
-    const size_t size = static_cast<size_t>(std::distance(from, end) / 2);
+    const auto begin  = in.current();
+    const auto end    = std::next(in.begin(), m_length);
+    const size_t size = static_cast<size_t>(std::distance(begin, end) / 2);
 
     m_glyph_id_array.reserve(size);
-    while (from != end) {
-        m_glyph_id_array.push_back(utils::big_endian_value<std::uint16_t>(from));
-        std::advance(from, 2);
+
+    BufferReader glyph_ids_reader = utils::make_big_endian_buffer_reader(begin, end);
+
+    while (glyph_ids_reader) {
+        m_glyph_id_array.push_back(glyph_ids_reader.get<std::uint16_t>());
     }
 }
 
-GlyphId SubtableFormat4::get_glyph_index(CodePoint)
+GlyphId SubtableFormat4::get_glyph_index(CodePoint codepoint)
 {
-    throw NotImplementedError("SubtableFormat4 get_glyph_index is not implemented yet");
+    auto it = std::lower_bound(m_end_code.begin(), m_end_code.end(), codepoint);
+    if (it == m_end_code.end()) {
+        return details::missig_glyph_id;
+    }
 
-    // return details::missig_glyph_id;
+    const std::uint16_t seg_count     = m_seg_count_x2 / 2;
+    const std::uint16_t segment_index = static_cast<std::uint16_t>(std::distance(m_end_code.begin(), it));
+    const std::uint16_t start_code    = m_start_code[segment_index];
+    const std::uint16_t range_offset  = m_id_range_offset[segment_index];
+    const std::int16_t id_delta       = m_id_delta[segment_index];
+
+    if (start_code > codepoint) {
+        return details::missig_glyph_id;
+    }
+
+    if (range_offset == 0) {
+        return static_cast<GlyphId>((static_cast<std::int32_t>(codepoint) + id_delta) & 0xffff);
+    }
+
+    //  glyphId = *(idRangeOffset[i]/2
+    //      + (c - startCode[i])
+    //      + &idRangeOffset[i])
+
+    const std::uint16_t offset_to_the_end_of_range_offsets = seg_count - segment_index;
+
+    // idRangeOffset[i]/2 + + &idRangeOffset[i]
+    const std::uint16_t offset_in_glyph_id_array = range_offset / 2 - offset_to_the_end_of_range_offsets;
+
+    // (c - startCode[i])
+    const auto start_code_offset = static_cast<std::uint16_t>(codepoint - start_code);
+
+    //  glyphId = *(idRangeOffset[i]/2 + (c - startCode[i])  + &idRangeOffset[i])
+    const std::uint16_t glyph_id_index = offset_in_glyph_id_array + start_code_offset;
+    if (glyph_id_index > m_glyph_id_array.size()) {
+        return details::missig_glyph_id;
+    }
+
+    const std::uint16_t glyph_id = m_glyph_id_array[glyph_id_index];
+
+    if (glyph_id == 0) {
+        return details::missig_glyph_id;
+    }
+
+    return static_cast<GlyphId>((static_cast<std::int32_t>(glyph_id) + id_delta) & 0xffff);
 }
 
 bool SubtableFormat4::valid() const

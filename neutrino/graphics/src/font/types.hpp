@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <common/utf.hpp>
+#include <common/utils.hpp>
 
 namespace framework::graphics::details::font
 {
@@ -29,7 +30,9 @@ static inline constexpr GlyphId missig_glyph_id = 0;
 
 using utf::CodePoint;
 
-using BytesData = std::vector<std::uint8_t>;
+using BytesData    = std::vector<std::uint8_t>;
+using DataIterator = BytesData::const_iterator;
+using BufferReader = utils::BigEndianBufferReader<DataIterator>;
 
 enum class PlatformId : std::uint16_t
 {
