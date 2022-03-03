@@ -1,4 +1,4 @@
-﻿#include <common/utils.hpp>
+#include <common/utils.hpp>
 #include <log/log.hpp>
 
 namespace
