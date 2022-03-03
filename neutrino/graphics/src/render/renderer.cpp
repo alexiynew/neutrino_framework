@@ -112,7 +112,7 @@ void Renderer::set_clear_color(const Color& color)
     m_impl->set_clear_color(color);
 }
 
-bool Renderer::load(const Font& font)
+bool Renderer::load(const Font&)
 {
     throw std::runtime_error("Not implemented");
 }
