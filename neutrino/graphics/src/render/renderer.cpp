@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include <graphics/color.hpp>
+#include <graphics/font.hpp>
 #include <graphics/mesh.hpp>
 #include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
@@ -109,6 +110,11 @@ void Renderer::set_clear_color(const Color& color)
 {
     m_window.get().context().make_current();
     m_impl->set_clear_color(color);
+}
+
+bool Renderer::load(const Font& font)
+{
+    throw std::runtime_error("Not implemented");
 }
 
 bool Renderer::load(const Mesh& mesh)

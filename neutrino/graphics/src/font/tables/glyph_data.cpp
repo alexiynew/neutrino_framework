@@ -8,9 +8,9 @@ namespace utils = framework::utils;
 
 using framework::graphics::details::font::F2Dot14;
 using framework::graphics::details::font::GlyphData;
+using framework::graphics::details::font::NotImplementedError;
 using framework::graphics::details::font::Offset32;
 using framework::graphics::details::font::ParsingError;
-using framework::graphics::details::font::UnimplementedError;
 
 using DataIterator = std::vector<std::uint8_t>::const_iterator;
 using BufferReader = utils::BigEndianBufferReader<DataIterator>;

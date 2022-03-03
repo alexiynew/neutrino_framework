@@ -10,8 +10,8 @@ namespace
 namespace utils = framework::utils;
 
 using framework::graphics::details::font::CharacterToGlyphIndexMapping;
+using framework::graphics::details::font::NotImplementedError;
 using framework::graphics::details::font::PlatformId;
-using framework::graphics::details::font::UnimplementedError;
 using framework::graphics::details::font::UnsupportedError;
 
 struct EncodingRecord
@@ -127,7 +127,7 @@ private:
 
 void SubtableFormat6::parse(std::uint32_t, const std::vector<std::uint8_t>&)
 {
-    throw UnimplementedError("SubtableFormat6 parsing is not implemented yet");
+    throw NotImplementedError("SubtableFormat6 parsing is not implemented yet");
 }
 
 bool SubtableFormat6::valid() const
@@ -148,7 +148,7 @@ public:
 
 void SubtableFormat10::parse(std::uint32_t, const std::vector<std::uint8_t>&)
 {
-    throw UnimplementedError("SubtableFormat10 parsing is not implemented yet");
+    throw NotImplementedError("SubtableFormat10 parsing is not implemented yet");
 }
 
 bool SubtableFormat10::valid() const
@@ -169,7 +169,7 @@ public:
 
 void SubtableFormat12::parse(std::uint32_t, const std::vector<std::uint8_t>&)
 {
-    throw UnimplementedError("SubtableFormat12 parsing is not implemented yet");
+    throw NotImplementedError("SubtableFormat12 parsing is not implemented yet");
 }
 
 bool SubtableFormat12::valid() const
@@ -190,7 +190,7 @@ public:
 
 void SubtableFormat13::parse(std::uint32_t, const std::vector<std::uint8_t>&)
 {
-    throw UnimplementedError("SubtableFormat13 parsing is not implemented yet");
+    throw NotImplementedError("SubtableFormat13 parsing is not implemented yet");
 }
 
 bool SubtableFormat13::valid() const
@@ -211,7 +211,7 @@ public:
 
 void SubtableFormat14::parse(std::uint32_t, const std::vector<std::uint8_t>&)
 {
-    throw UnimplementedError("SubtableFormat14 parsing is not implemented yet");
+    throw NotImplementedError("SubtableFormat14 parsing is not implemented yet");
 }
 
 bool SubtableFormat14::valid() const
@@ -323,6 +323,11 @@ CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(const std::vector<std
 bool CharacterToGlyphIndexMapping::valid() const
 {
     return m_version == 0 && m_subtable != nullptr && m_subtable->valid();
+}
+
+GlyphId CharacterToGlyphIndexMapping::get_glyph_index(utf::CodePoint code_point)
+{
+    throw NotImplementedError(__FUNCTION__);
 }
 
 } // namespace framework::graphics::details::font

@@ -2,6 +2,7 @@
 #define FRAMEWORK_GRAPHICS_RENDERER_HPP
 
 #include <memory>
+#include <string>
 #include <unordered_map>
 
 #include <graphics/color.hpp>
@@ -11,6 +12,7 @@
 
 namespace framework::graphics
 {
+class Font;
 class Mesh;
 class RendererImpl;
 class Shader;
@@ -82,6 +84,13 @@ public:
     ///
     /// @param enable On or off vertical sync.
     void enable_vertical_sync(bool enable);
+
+    /// @brief Loads Font to renderer.
+    ///
+    /// @param font Font to load.
+    ///
+    /// @return `true` if loading successful
+    bool load(const Font& font);
 
     /// @brief Loads Mesh to renderer.
     ///

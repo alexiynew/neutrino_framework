@@ -3,9 +3,14 @@
 
 #include <filesystem>
 #include <string>
+#include <unordered_map>
+#include <vector>
+
+#include <common/utf.hpp>
 
 namespace framework::graphics
 {
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup graphics_font_module
 /// @{
@@ -15,10 +20,20 @@ namespace framework::graphics
 class Font
 {
 public:
+    Font();
+
+    Font(const Font& other);
+    Font(Font&& other);
+
+    ~Font();
+
+    Font operator=(const Font& other);
+    Font operator=(Font&& other);
+
     /// @brief Result of loading operation.
     enum class LoadResult
     {
-        Success,            ///< Succes loading
+        Success,            ///< Success loading
         FileNotExists,      ///< Can't find file
         OpenFileError,      ///< Can't open file for reading
         InvalidOffsetTable, ///< Can't read information about tables
@@ -29,18 +44,23 @@ public:
         UnknownError,       ///< Unknown error
     };
 
-    ////////////////////////////////////////////////////////////////////////////
     /// @brief Load font from file.
     ///
     /// @param filepath File to load.
     ///
     /// @return LoadResult::Success if loading is successful
     ///         or error code otherwise.
-    ////////////////////////////////////////////////////////////////////////////
     LoadResult load(const std::filesystem::path& filepath);
 
+    /// @brief Chache texture and mesh for selected characters in renderer.
+    bool precache(const std::string& chars);
+
 private:
+    struct FontData;
+
     LoadResult parse(const std::filesystem::path& filepath);
+
+    std::unique_ptr<FontData> m_data = nullptr;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

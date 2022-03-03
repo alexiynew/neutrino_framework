@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <exception>
 #include <fstream>
+#include <set>
 #include <unordered_map>
 #include <vector>
 
@@ -107,6 +108,7 @@ TableDirectory TableDirectory::read(std::istream& in)
     constexpr size_t size = 12;
 
     std::array<char, size> buffer = {0};
+
     in.read(buffer.data(), size);
 
     TableDirectory table_directory;
@@ -262,10 +264,42 @@ std::unordered_map<Tag, Table> read_all_tables(std::ifstream& in, const std::vec
 
 #pragma endregion
 
+#pragma region Font data
+
+struct GlyphMeshData
+{
+    std::vector<std::uint16_t> indicies;
+};
+
+GlyphMeshData create_glyph_mesh(const CharacterToGlyphIndexMapping& cmap, utf::CodePoint code_point)
+{
+    const GlyphId id = chmap.get_glyph_index(code_point);
+
+    throw NotImplementedError(__FUNCTION__);
+}
+
+#pragma endregion
+
 } // namespace
 
 namespace framework::graphics
 {
+struct FontData
+{
+    std::unordered_map<utf::CodePoint, GlyphMeshData> glyphs;
+
+    CharacterToGlyphIndexMapping cmap;
+};
+
+Font::Font() = default;
+
+Font::Font(const Font& other) = default;
+Font::Font(Font&& other)      = default;
+
+Font::~Font() = default;
+
+Font Font::operator=(const Font& other) = default;
+Font Font::operator=(Font&& other) = default;
 
 Font::LoadResult Font::load(const std::filesystem::path& file)
 {
@@ -278,7 +312,7 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
     } catch (UnsupportedError& e) {
         log::error("Exception:") << e.what();
         return LoadResult::Unsupported;
-    } catch (UnimplementedError& e) {
+    } catch (NotImplementedError& e) {
         log::error("Exception:") << e.what();
         return LoadResult::Unsupported;
     } catch (ParsingError& e) {
@@ -288,6 +322,26 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
         log::error("Exception:") << e.what();
         return LoadResult::UnknownError;
     }
+}
+
+bool Font::precache(const std::string& chars)
+{
+    std::set<char> unique_chars;
+
+    // TODO: Properly convert chars to CodePoints
+    std::copy(chars.begin(), chars.end(), std::inserter(unique_chars, unique_chars.end()));
+
+    for (const auto& ch : unique_chars) {
+        utf::CodePoint cp = static_cast<utf::CodePoint>(ch);
+        if (auto it = glyphs.find(cp); it == glyphs.end()) {
+
+            log::info("Font") << "parse: " << cp;
+
+            glyphs.emplace(cp, create_glyph_mesh(cp));
+        }
+    }
+
+    throw NotImplementedError(__FUNCTION__);
 }
 
 Font::LoadResult Font::parse(const std::filesystem::path& filepath)
@@ -396,6 +450,8 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
             return LoadResult::TableParsingError;
         }
     }
+
+    m_data = std::makr_unique<Font::FontData>(std::move(cmap));
 
     return LoadResult::Success;
 }

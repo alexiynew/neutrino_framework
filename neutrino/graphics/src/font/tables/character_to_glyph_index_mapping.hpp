@@ -27,6 +27,8 @@ public:
 
     bool valid() const;
 
+    GlyphId get_glyph_index(utf::CodePoint code_point);
+
 private:
     std::uint16_t m_version = 0;
     std::unique_ptr<Subtable> m_subtable;
