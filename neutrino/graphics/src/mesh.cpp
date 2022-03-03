@@ -11,12 +11,17 @@ namespace framework::graphics
 {
 Mesh::Mesh() = default;
 
-Mesh::~Mesh() = default;
-
 Mesh::Mesh(const Mesh& other)
     : m_vertices(other.m_vertices)
     , m_indexes(other.m_indexes)
 {}
+
+Mesh::Mesh(Mesh&& other) noexcept
+{
+    swap(*this, other);
+}
+
+Mesh::~Mesh() = default;
 
 Mesh& Mesh::operator=(const Mesh& other)
 {
@@ -25,11 +30,6 @@ Mesh& Mesh::operator=(const Mesh& other)
     Mesh tmp(other);
     swap(*this, tmp);
     return *this;
-}
-
-Mesh::Mesh(Mesh&& other) noexcept
-{
-    swap(*this, other);
 }
 
 Mesh& Mesh::operator=(Mesh&& other) noexcept
