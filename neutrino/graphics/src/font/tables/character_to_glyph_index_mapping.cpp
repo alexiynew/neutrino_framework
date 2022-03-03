@@ -7,12 +7,16 @@
 namespace
 {
 
-namespace utils = framework::utils;
+namespace utils   = framework::utils;
+namespace details = framework::graphics::details::font;
 
-using framework::graphics::details::font::CharacterToGlyphIndexMapping;
-using framework::graphics::details::font::NotImplementedError;
-using framework::graphics::details::font::PlatformId;
-using framework::graphics::details::font::UnsupportedError;
+using details::BytesData;
+using details::CharacterToGlyphIndexMapping;
+using details::CodePoint;
+using details::GlyphId;
+using details::NotImplementedError;
+using details::PlatformId;
+using details::UnsupportedError;
 
 struct EncodingRecord
 {
@@ -26,8 +30,11 @@ struct EncodingRecord
 class SubtableFormat4 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
-    void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) override;
+    void parse(std::uint32_t offset, const BytesData& data) override;
+    GlyphId get_glyph_index(CodePoint codepoint) override;
+
     bool valid() const override;
+    std::unique_ptr<Subtable> copy() const override;
 
 private:
     std::uint16_t m_format         = 0;
@@ -45,7 +52,7 @@ private:
     std::vector<std::uint16_t> m_glyph_id_array;
 };
 
-void SubtableFormat4::parse(std::uint32_t offset, const std::vector<std::uint8_t>& data)
+void SubtableFormat4::parse(std::uint32_t offset, const BytesData& data)
 {
     auto from = std::next(data.begin(), offset);
 
@@ -98,12 +105,24 @@ void SubtableFormat4::parse(std::uint32_t offset, const std::vector<std::uint8_t
     }
 }
 
+GlyphId SubtableFormat4::get_glyph_index(CodePoint)
+{
+    throw NotImplementedError("SubtableFormat4 get_glyph_index is not implemented yet");
+
+    // return details::missig_glyph_id;
+}
+
 bool SubtableFormat4::valid() const
 {
     const size_t seg_count = m_seg_count_x2 / 2;
 
     return m_format == 4 && m_end_code.size() == seg_count && m_start_code.size() == seg_count &&
            m_id_delta.size() == seg_count && m_id_range_offset.size() == seg_count && !m_glyph_id_array.empty();
+}
+
+std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat4::copy() const
+{
+    return std::make_unique<SubtableFormat4>(*this);
 }
 
 #pragma endregion
@@ -113,8 +132,11 @@ bool SubtableFormat4::valid() const
 class SubtableFormat6 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
-    void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) override;
+    void parse(std::uint32_t offset, const BytesData& data) override;
+    GlyphId get_glyph_index(CodePoint codepoint) override;
+
     bool valid() const override;
+    std::unique_ptr<Subtable> copy() const override;
 
 private:
     // std::uint16_t m_format      = 0;
@@ -125,14 +147,24 @@ private:
     // std::vector<std::uint16_t> m_glyph_id_array; //[entrycount]
 };
 
-void SubtableFormat6::parse(std::uint32_t, const std::vector<std::uint8_t>&)
+void SubtableFormat6::parse(std::uint32_t, const BytesData&)
 {
     throw NotImplementedError("SubtableFormat6 parsing is not implemented yet");
+}
+
+GlyphId SubtableFormat6::get_glyph_index(CodePoint)
+{
+    throw NotImplementedError("SubtableFormat6 get_glyph_index is not implemented yet");
 }
 
 bool SubtableFormat6::valid() const
 {
     return false;
+}
+
+std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat6::copy() const
+{
+    return std::make_unique<SubtableFormat6>(*this);
 }
 
 #pragma endregion
@@ -142,18 +174,31 @@ bool SubtableFormat6::valid() const
 class SubtableFormat10 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
-    void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) override;
+    void parse(std::uint32_t offset, const BytesData& data) override;
+    GlyphId get_glyph_index(CodePoint codepoint) override;
+
     bool valid() const override;
+    std::unique_ptr<Subtable> copy() const override;
 };
 
-void SubtableFormat10::parse(std::uint32_t, const std::vector<std::uint8_t>&)
+void SubtableFormat10::parse(std::uint32_t, const BytesData&)
 {
     throw NotImplementedError("SubtableFormat10 parsing is not implemented yet");
+}
+
+GlyphId SubtableFormat10::get_glyph_index(CodePoint)
+{
+    throw NotImplementedError("SubtableFormat10 get_glyph_index is not implemented yet");
 }
 
 bool SubtableFormat10::valid() const
 {
     return false;
+}
+
+std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat10::copy() const
+{
+    return std::make_unique<SubtableFormat10>(*this);
 }
 
 #pragma endregion
@@ -163,18 +208,31 @@ bool SubtableFormat10::valid() const
 class SubtableFormat12 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
-    void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) override;
+    void parse(std::uint32_t offset, const BytesData& data) override;
+    GlyphId get_glyph_index(CodePoint codepoint) override;
+
     bool valid() const override;
+    std::unique_ptr<Subtable> copy() const override;
 };
 
-void SubtableFormat12::parse(std::uint32_t, const std::vector<std::uint8_t>&)
+void SubtableFormat12::parse(std::uint32_t, const BytesData&)
 {
     throw NotImplementedError("SubtableFormat12 parsing is not implemented yet");
+}
+
+GlyphId SubtableFormat12::get_glyph_index(CodePoint)
+{
+    throw NotImplementedError("SubtableFormat12 get_glyph_index is not implemented yet");
 }
 
 bool SubtableFormat12::valid() const
 {
     return false;
+}
+
+std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat12::copy() const
+{
+    return std::make_unique<SubtableFormat12>(*this);
 }
 
 #pragma endregion
@@ -184,18 +242,31 @@ bool SubtableFormat12::valid() const
 class SubtableFormat13 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
-    void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) override;
+    void parse(std::uint32_t offset, const BytesData& data) override;
+    GlyphId get_glyph_index(CodePoint codepoint) override;
+
     bool valid() const override;
+    std::unique_ptr<Subtable> copy() const override;
 };
 
-void SubtableFormat13::parse(std::uint32_t, const std::vector<std::uint8_t>&)
+void SubtableFormat13::parse(std::uint32_t, const BytesData&)
 {
     throw NotImplementedError("SubtableFormat13 parsing is not implemented yet");
+}
+
+GlyphId SubtableFormat13::get_glyph_index(CodePoint)
+{
+    throw NotImplementedError("SubtableFormat13 get_glyph_index is not implemented yet");
 }
 
 bool SubtableFormat13::valid() const
 {
     return false;
+}
+
+std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat13::copy() const
+{
+    return std::make_unique<SubtableFormat13>(*this);
 }
 
 #pragma endregion
@@ -205,13 +276,21 @@ bool SubtableFormat13::valid() const
 class SubtableFormat14 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
-    void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) override;
+    void parse(std::uint32_t offset, const BytesData& data) override;
+    GlyphId get_glyph_index(CodePoint codepoint) override;
+
     bool valid() const override;
+    std::unique_ptr<Subtable> copy() const override;
 };
 
-void SubtableFormat14::parse(std::uint32_t, const std::vector<std::uint8_t>&)
+void SubtableFormat14::parse(std::uint32_t, const BytesData&)
 {
     throw NotImplementedError("SubtableFormat14 parsing is not implemented yet");
+}
+
+GlyphId SubtableFormat14::get_glyph_index(CodePoint)
+{
+    throw NotImplementedError("SubtableFormat14 get_glyph_index is not implemented yet");
 }
 
 bool SubtableFormat14::valid() const
@@ -219,13 +298,16 @@ bool SubtableFormat14::valid() const
     return false;
 }
 
+std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat14::copy() const
+{
+    return std::make_unique<SubtableFormat14>(*this);
+}
+
 #pragma endregion
 
 #pragma region Helper functions
 
-std::vector<EncodingRecord> get_encoding_records(std::uint32_t offset,
-                                                 size_t num_tables,
-                                                 const std::vector<std::uint8_t>& data)
+std::vector<EncodingRecord> get_encoding_records(std::uint32_t offset, size_t num_tables, const BytesData& data)
 {
     static constexpr size_t record_size = 8;
 
@@ -268,7 +350,7 @@ std::vector<EncodingRecord> find_unicode_encoding_records(const std::vector<Enco
 
 std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> parse_subtable(
 const std::vector<EncodingRecord>& encoding_records,
-const std::vector<std::uint8_t>& data)
+const BytesData& data)
 {
     auto create_subtable = [](std::uint16_t format) -> std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> {
         switch (format) {
@@ -304,7 +386,7 @@ const std::vector<std::uint8_t>& data)
 namespace framework::graphics::details::font
 {
 
-CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(const std::vector<std::uint8_t>& data)
+CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(const BytesData& data)
 {
     const std::uint16_t version    = utils::big_endian_value<std::uint16_t>(data.begin());
     const std::uint16_t num_tables = utils::big_endian_value<std::uint16_t>(data.begin() + 2);
@@ -320,14 +402,35 @@ CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(const std::vector<std
     m_subtable = parse_subtable(unicode_encoding_records, data);
 }
 
+CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(const CharacterToGlyphIndexMapping& other)
+    : m_version(other.m_version)
+    , m_subtable(other.m_subtable->copy())
+{}
+
+CharacterToGlyphIndexMapping& CharacterToGlyphIndexMapping::operator=(const CharacterToGlyphIndexMapping& other)
+{
+    using std::swap;
+
+    CharacterToGlyphIndexMapping tmp(other);
+
+    swap(tmp.m_version, m_version);
+    swap(tmp.m_subtable, m_subtable);
+
+    return *this;
+}
+
 bool CharacterToGlyphIndexMapping::valid() const
 {
     return m_version == 0 && m_subtable != nullptr && m_subtable->valid();
 }
 
-GlyphId CharacterToGlyphIndexMapping::get_glyph_index(utf::CodePoint code_point)
+GlyphId CharacterToGlyphIndexMapping::get_glyph_index(CodePoint codepoint) const
 {
-    throw NotImplementedError(__FUNCTION__);
+    if (m_subtable) {
+        return m_subtable->get_glyph_index(codepoint);
+    }
+
+    return missig_glyph_id;
 }
 
 } // namespace framework::graphics::details::font

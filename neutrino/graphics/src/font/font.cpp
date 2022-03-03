@@ -169,7 +169,7 @@ struct Table
     bool valid() const;
 
     TableRecord record;
-    std::vector<std::uint8_t> data;
+    BytesData data;
 };
 
 bool Table::read_data(std::ifstream& in)
@@ -182,7 +182,7 @@ bool Table::read_data(std::ifstream& in)
     return in.good();
 }
 
-std::uint32_t table_checksum(const std::vector<std::uint8_t>& data)
+std::uint32_t table_checksum(const BytesData& data)
 {
     std::uint32_t sum = 0;
 
@@ -271,9 +271,11 @@ struct GlyphMeshData
     std::vector<std::uint16_t> indicies;
 };
 
-GlyphMeshData create_glyph_mesh(const CharacterToGlyphIndexMapping& cmap, utf::CodePoint code_point)
+GlyphMeshData create_glyph_mesh(GlyphId id)
 {
-    const GlyphId id = chmap.get_glyph_index(code_point);
+    if (id == missig_glyph_id) {
+        throw std::runtime_error("Can't crate mesh for 0 glyph id.");
+    }
 
     throw NotImplementedError(__FUNCTION__);
 }
@@ -284,22 +286,93 @@ GlyphMeshData create_glyph_mesh(const CharacterToGlyphIndexMapping& cmap, utf::C
 
 namespace framework::graphics
 {
-struct FontData
-{
-    std::unordered_map<utf::CodePoint, GlyphMeshData> glyphs;
 
-    CharacterToGlyphIndexMapping cmap;
+#pragma region class FontData
+class Font::FontData
+{
+public:
+    explicit FontData(CharacterToGlyphIndexMapping cmap);
+
+    FontData(const FontData& other);
+    FontData(FontData&& other) noexcept = default;
+
+    FontData& operator=(const FontData& other);
+    FontData& operator=(FontData&& other) noexcept = default;
+
+    ~FontData() = default;
+
+    void add_glyph(CodePoint codepoint);
+
+    const std::unordered_map<CodePoint, GlyphMeshData>& glyphs() const;
+
+private:
+    std::unordered_map<CodePoint, GlyphMeshData> m_glyphs;
+    CharacterToGlyphIndexMapping m_cmap;
 };
+
+Font::FontData::FontData(CharacterToGlyphIndexMapping cmap)
+    : m_cmap(std::move(cmap))
+{}
+
+Font::FontData::FontData(const Font::FontData& other)
+    : m_cmap(other.m_cmap)
+{}
+
+Font::FontData& Font::FontData::operator=(const Font::FontData& other)
+{
+    using std::swap;
+
+    FontData tmp(other);
+    swap(tmp.m_glyphs, m_glyphs);
+    swap(tmp.m_cmap, m_cmap);
+
+    return *this;
+}
+
+void Font::FontData::add_glyph(CodePoint codepoint)
+{
+    if (m_glyphs.count(codepoint) == 0) {
+        const GlyphId glyph_id = m_cmap.get_glyph_index(codepoint);
+        if (glyph_id != missig_glyph_id) {
+            m_glyphs.emplace(codepoint, create_glyph_mesh(glyph_id));
+        }
+    }
+}
+
+const std::unordered_map<CodePoint, GlyphMeshData>& Font::FontData::glyphs() const
+{
+    return m_glyphs;
+}
+
+#pragma endregion
 
 Font::Font() = default;
 
-Font::Font(const Font& other) = default;
-Font::Font(Font&& other)      = default;
+Font::Font(const Font& other)
+    : m_data(std::make_unique<FontData>(*other.m_data))
+{}
+
+Font::Font(Font&& other) noexcept
+{
+    swap(*this, other);
+}
 
 Font::~Font() = default;
 
-Font Font::operator=(const Font& other) = default;
-Font Font::operator=(Font&& other) = default;
+Font& Font::operator=(const Font& other)
+{
+    using std::swap;
+
+    Font tmp(other);
+    swap(*this, tmp);
+    return *this;
+}
+
+Font& Font::operator=(Font&& other) noexcept
+{
+    swap(*this, other);
+    return *this;
+}
 
 Font::LoadResult Font::load(const std::filesystem::path& file)
 {
@@ -324,24 +397,15 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
     }
 }
 
-bool Font::precache(const std::string& chars)
+void Font::precache(const std::string& chars)
 {
-    std::set<char> unique_chars;
-
-    // TODO: Properly convert chars to CodePoints
-    std::copy(chars.begin(), chars.end(), std::inserter(unique_chars, unique_chars.end()));
-
-    for (const auto& ch : unique_chars) {
-        utf::CodePoint cp = static_cast<utf::CodePoint>(ch);
-        if (auto it = glyphs.find(cp); it == glyphs.end()) {
-
-            log::info("Font") << "parse: " << cp;
-
-            glyphs.emplace(cp, create_glyph_mesh(cp));
-        }
+    if (m_data == nullptr) {
+        return;
     }
 
-    throw NotImplementedError(__FUNCTION__);
+    for (const auto& cp : utf::to_codepoints(chars)) {
+        m_data->add_glyph(cp);
+    }
 }
 
 Font::LoadResult Font::parse(const std::filesystem::path& filepath)
@@ -451,9 +515,17 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         }
     }
 
-    m_data = std::makr_unique<Font::FontData>(std::move(cmap));
+    m_data = std::make_unique<Font::FontData>(std::move(cmap));
+
+    // TODO: Precache glyph for missing codepoints
 
     return LoadResult::Success;
+}
+
+void swap(Font& lhs, Font& rhs) noexcept
+{
+    using std::swap;
+    swap(lhs.m_data, rhs.m_data);
 }
 
 } // namespace framework::graphics

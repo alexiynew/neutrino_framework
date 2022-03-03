@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <common/instance_id.hpp>
 #include <common/utf.hpp>
 
 namespace framework::graphics
@@ -20,16 +21,6 @@ namespace framework::graphics
 class Font
 {
 public:
-    Font();
-
-    Font(const Font& other);
-    Font(Font&& other);
-
-    ~Font();
-
-    Font operator=(const Font& other);
-    Font operator=(Font&& other);
-
     /// @brief Result of loading operation.
     enum class LoadResult
     {
@@ -44,6 +35,15 @@ public:
         UnknownError,       ///< Unknown error
     };
 
+    Font();
+    Font(const Font& other);
+    Font(Font&& other) noexcept;
+
+    ~Font();
+
+    Font& operator=(const Font& other);
+    Font& operator=(Font&& other) noexcept;
+
     /// @brief Load font from file.
     ///
     /// @param filepath File to load.
@@ -53,15 +53,35 @@ public:
     LoadResult load(const std::filesystem::path& filepath);
 
     /// @brief Chache texture and mesh for selected characters in renderer.
-    bool precache(const std::string& chars);
+    ///
+    /// Font data must be loaded before characters can be cached.
+    ///
+    /// @param chars String to cache characters from.
+    ///
+    /// @see load
+    void precache(const std::string& chars);
+
+    /// @brief Get Font instance id. Guaranted to be unique.
+    ///
+    /// @return Font instance id.
+    InstanceId instance_id() const;
 
 private:
-    struct FontData;
+    class FontData;
+
+    friend void swap(Font& lhs, Font& rhs) noexcept;
 
     LoadResult parse(const std::filesystem::path& filepath);
 
-    std::unique_ptr<FontData> m_data = nullptr;
+    InstanceId m_instance_id;
+    std::unique_ptr<FontData> m_data;
 };
+
+/// @brief Swaps two Fonts.
+///
+/// @param lhs Font to swap.
+/// @param rhs Font to swap.
+void swap(Font& lhs, Font& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

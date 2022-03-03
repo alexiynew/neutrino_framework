@@ -4,8 +4,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <common/utf.hpp>
-
 #include <graphics/src/font/types.hpp>
 
 namespace framework::graphics::details::font
@@ -19,15 +17,26 @@ public:
     public:
         virtual ~Subtable() = default;
 
-        virtual void parse(std::uint32_t offset, const std::vector<std::uint8_t>& data) = 0;
-        virtual bool valid() const                                                      = 0;
+        virtual void parse(std::uint32_t offset, const BytesData& data) = 0;
+        virtual GlyphId get_glyph_index(CodePoint codepoint)            = 0;
+
+        virtual bool valid() const                     = 0;
+        virtual std::unique_ptr<Subtable> copy() const = 0;
     };
 
-    explicit CharacterToGlyphIndexMapping(const std::vector<std::uint8_t>& data);
+    explicit CharacterToGlyphIndexMapping(const BytesData& data);
+
+    CharacterToGlyphIndexMapping(const CharacterToGlyphIndexMapping& other);
+    CharacterToGlyphIndexMapping(CharacterToGlyphIndexMapping&& other) = default;
+
+    CharacterToGlyphIndexMapping& operator=(const CharacterToGlyphIndexMapping& other);
+    CharacterToGlyphIndexMapping& operator=(CharacterToGlyphIndexMapping&& other) = default;
+
+    ~CharacterToGlyphIndexMapping() = default;
 
     bool valid() const;
 
-    GlyphId get_glyph_index(utf::CodePoint code_point);
+    GlyphId get_glyph_index(CodePoint codepoint) const;
 
 private:
     std::uint16_t m_version = 0;
