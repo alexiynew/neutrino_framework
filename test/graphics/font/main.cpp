@@ -29,7 +29,7 @@ private:
         renderer.set_clear_color(Color(0x202020FFu));
 
         Font font;
-        auto result = font.load("fonts/Arial.otf");
+        auto result = font.load("fonts/UbuntuMono-Regular.ttf");
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
 
