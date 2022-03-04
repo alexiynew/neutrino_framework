@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <exception>
@@ -271,12 +271,13 @@ struct GlyphMeshData
     std::vector<std::uint16_t> indicies;
 };
 
-GlyphMeshData create_glyph_mesh(GlyphId id)
+GlyphMeshData create_glyph_mesh(const GlyphData::SimpleGlyph&)
 {
-    if (id == missig_glyph_id) {
-        throw std::runtime_error("Can't crate mesh for 0 glyph id.");
-    }
+    throw NotImplementedError(__FUNCTION__);
+}
 
+GlyphMeshData create_glyph_mesh(const GlyphData::CompositeGlyph&)
+{
     throw NotImplementedError(__FUNCTION__);
 }
 
@@ -291,7 +292,7 @@ namespace framework::graphics
 class Font::FontData
 {
 public:
-    explicit FontData(CharacterToGlyphIndexMapping cmap);
+    FontData(CharacterToGlyphIndexMapping cmap, GlyphData glyf);
 
     FontData(const FontData& other);
     FontData(FontData&& other) noexcept = default;
@@ -308,14 +309,17 @@ public:
 private:
     std::unordered_map<CodePoint, GlyphMeshData> m_glyphs;
     CharacterToGlyphIndexMapping m_cmap;
+    GlyphData m_glyf;
 };
 
-Font::FontData::FontData(CharacterToGlyphIndexMapping cmap)
+Font::FontData::FontData(CharacterToGlyphIndexMapping cmap, GlyphData glyf)
     : m_cmap(std::move(cmap))
+    , m_glyf(std::move(glyf))
 {}
 
 Font::FontData::FontData(const Font::FontData& other)
     : m_cmap(other.m_cmap)
+    , m_glyf(other.m_glyf)
 {}
 
 Font::FontData& Font::FontData::operator=(const Font::FontData& other)
@@ -325,6 +329,7 @@ Font::FontData& Font::FontData::operator=(const Font::FontData& other)
     FontData tmp(other);
     swap(tmp.m_glyphs, m_glyphs);
     swap(tmp.m_cmap, m_cmap);
+    swap(tmp.m_glyf, m_glyf);
 
     return *this;
 }
@@ -333,8 +338,17 @@ void Font::FontData::add_glyph(CodePoint codepoint)
 {
     if (m_glyphs.count(codepoint) == 0) {
         const GlyphId glyph_id = m_cmap.get_glyph_index(codepoint);
-        if (glyph_id != missig_glyph_id) {
-            m_glyphs.emplace(codepoint, create_glyph_mesh(glyph_id));
+
+        if (glyph_id == missig_glyph_id) {
+            throw std::runtime_error("Can't crate mesh for 0 glyph id.");
+        }
+
+        const GlyphData::Glyph& glyph = m_glyf.at(glyph_id);
+
+        if (glyph.header().is_simple_glyph()) {
+            m_glyphs.emplace(codepoint, create_glyph_mesh(glyph.simple_glyph()));
+        } else {
+            m_glyphs.emplace(codepoint, create_glyph_mesh(glyph.composite_glyph()));
         }
     }
 }
@@ -495,27 +509,29 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
 
     // No need to read Tag::Post table
 
-    if (table_directory.sfnt_version == TableDirectory::true_type_tag) {
-        const IndexToLocation loca(head.index_to_loc_format(), maxp.num_glyphs(), tables.at(Tag::Loca).data);
-        if (!loca.valid()) {
-            return LoadResult::TableParsingError;
-        }
-
-        if (static_cast<size_t>(maxp.num_glyphs() + 1) != loca.offsets().size()) {
-            return LoadResult::TableParsingError;
-        }
-
-        if (loca.offsets().back() != tables.at(Tag::Glyf).data.size()) {
-            return LoadResult::TableParsingError;
-        }
-
-        const GlyphData glyf(maxp.num_glyphs(), loca.offsets(), tables.at(Tag::Glyf).data);
-        if (!glyf.valid()) {
-            return LoadResult::TableParsingError;
-        }
+    if (table_directory.sfnt_version != TableDirectory::true_type_tag) {
+        return LoadResult::Unsupported;
     }
 
-    m_data = std::make_unique<Font::FontData>(std::move(cmap));
+    const IndexToLocation loca(head.index_to_loc_format(), maxp.num_glyphs(), tables.at(Tag::Loca).data);
+    if (!loca.valid()) {
+        return LoadResult::TableParsingError;
+    }
+
+    if ((maxp.num_glyphs() + 1u) != loca.offsets().size()) {
+        return LoadResult::TableParsingError;
+    }
+
+    if (loca.offsets().back() != tables.at(Tag::Glyf).data.size()) {
+        return LoadResult::TableParsingError;
+    }
+
+    const GlyphData glyf(maxp.num_glyphs(), loca.offsets(), tables.at(Tag::Glyf).data);
+    if (!glyf.valid()) {
+        return LoadResult::TableParsingError;
+    }
+
+    m_data = std::make_unique<Font::FontData>(std::move(cmap), std::move(glyf));
 
     // TODO: Precache glyph for missing codepoints
 

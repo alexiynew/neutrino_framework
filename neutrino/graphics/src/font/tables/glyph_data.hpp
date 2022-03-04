@@ -13,13 +13,25 @@ namespace framework::graphics::details::font
 class GlyphData final
 {
 public:
-    struct GlyphHeader
+    class GlyphHeader
     {
-        std::int16_t number_of_contours = 0;
-        std::int16_t x_min              = 0;
-        std::int16_t y_min              = 0;
-        std::int16_t x_max              = 0;
-        std::int16_t y_max              = 0;
+    public:
+        explicit GlyphHeader(BufferReader& in);
+
+        bool is_simple_glyph() const;
+
+        std::int16_t number_of_contours() const;
+        std::int16_t x_min() const;
+        std::int16_t y_min() const;
+        std::int16_t x_max() const;
+        std::int16_t y_max() const;
+
+    private:
+        std::int16_t m_number_of_contours = 0;
+        std::int16_t m_x_min              = 0;
+        std::int16_t m_y_min              = 0;
+        std::int16_t m_x_max              = 0;
+        std::int16_t m_y_max              = 0;
     };
 
     struct SimpleGlyph
@@ -57,16 +69,26 @@ public:
         std::vector<std::uint8_t> instructions; // [instruction_length]
     };
 
-    struct Glyph
+    class Glyph
     {
-        GlyphHeader header;
-        SimpleGlyph simple_glyph;
-        CompositeGlyph composite_glyph;
+    public:
+        explicit Glyph(BufferReader& in);
+
+        const GlyphHeader& header() const;
+        const SimpleGlyph& simple_glyph() const;
+        const CompositeGlyph& composite_glyph() const;
+
+    private:
+        GlyphHeader m_header;
+        SimpleGlyph m_simple_glyph;
+        CompositeGlyph m_composite_glyph;
     };
 
     GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data);
 
     bool valid() const;
+
+    const Glyph& at(GlyphId index) const;
 
 private:
     std::unordered_map<GlyphId, Glyph> m_glyphs;

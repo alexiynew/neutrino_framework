@@ -1,19 +1,19 @@
-#include <common/utils.hpp>
+﻿#include <common/utils.hpp>
 
 #include <graphics/src/font/tables/glyph_data.hpp>
 
 namespace
 {
-namespace utils = framework::utils;
+namespace utils   = framework::utils;
+namespace details = framework::graphics::details::font;
 
-using framework::graphics::details::font::F2Dot14;
-using framework::graphics::details::font::GlyphData;
-using framework::graphics::details::font::NotImplementedError;
-using framework::graphics::details::font::Offset32;
-using framework::graphics::details::font::ParsingError;
-
-using DataIterator = std::vector<std::uint8_t>::const_iterator;
-using BufferReader = utils::BigEndianBufferReader<DataIterator>;
+using details::BufferReader;
+using details::DataIterator;
+using details::F2Dot14;
+using details::GlyphData;
+using details::NotImplementedError;
+using details::Offset32;
+using details::ParsingError;
 
 namespace SimpleGlyphFlags
 {
@@ -102,19 +102,6 @@ private:
     const std::vector<std::uint8_t>& m_flags;
 };
 
-GlyphData::GlyphHeader parse_header(BufferReader& in)
-{
-    GlyphData::GlyphHeader header;
-
-    in >> header.number_of_contours;
-    in >> header.x_min;
-    in >> header.y_min;
-    in >> header.x_max;
-    in >> header.y_max;
-
-    return header;
-}
-
 std::vector<std::uint8_t> parse_flags(const std::uint16_t points_count, BufferReader& in)
 {
     std::vector<std::uint8_t> flags;
@@ -173,16 +160,12 @@ std::vector<std::int16_t> parse_coordinates(const size_t points_count,
     return coordinates;
 }
 
-GlyphData::SimpleGlyph parse_simple_glyph(const GlyphData::GlyphHeader& header, BufferReader& in)
+GlyphData::SimpleGlyph parse_simple_glyph(size_t number_of_contours, BufferReader& in)
 {
     GlyphData::SimpleGlyph data;
 
-    if (header.number_of_contours == 0) {
-        return data;
-    }
-
-    data.end_pts_of_contours.reserve(static_cast<size_t>(header.number_of_contours));
-    for (int i = 0; i < header.number_of_contours; ++i) {
+    data.end_pts_of_contours.reserve(number_of_contours);
+    for (size_t i = 0; i < number_of_contours; ++i) {
         data.end_pts_of_contours.push_back(in.get<std::uint16_t>());
     }
 
@@ -266,33 +249,10 @@ GlyphData::CompositeGlyph parse_composite_glyph(BufferReader& in)
             for (size_t i = 0; i < data.instruction_length; ++i) {
                 data.instructions.push_back(in.get<std::uint8_t>());
             }
-        } else {
-            throw ParsingError(
-            "The CompositeGlyphFlags::we_have_instructions flag is set but instructions length is zero.");
         }
     }
 
     return data;
-}
-
-GlyphData::Glyph parse_glyph(BufferReader& in)
-{
-    GlyphData::Glyph glyph;
-
-    if (!in.good()) {
-        // Glyph has no outline
-        return glyph;
-    }
-
-    glyph.header = parse_header(in);
-
-    if (glyph.header.number_of_contours >= 0) {
-        glyph.simple_glyph = parse_simple_glyph(glyph.header, in);
-    } else {
-        glyph.composite_glyph = parse_composite_glyph(in);
-    }
-
-    return glyph;
 }
 
 } // namespace
@@ -300,23 +260,102 @@ GlyphData::Glyph parse_glyph(BufferReader& in)
 namespace framework::graphics::details::font
 {
 
+#pragma region class GlyphHeader
+
+GlyphData::GlyphHeader::GlyphHeader(BufferReader& in)
+{
+    in >> m_number_of_contours;
+    in >> m_x_min;
+    in >> m_y_min;
+    in >> m_x_max;
+    in >> m_y_max;
+}
+
+bool GlyphData::GlyphHeader::is_simple_glyph() const
+{
+    return m_number_of_contours >= 0;
+}
+
+std::int16_t GlyphData::GlyphHeader::number_of_contours() const
+{
+    return m_number_of_contours;
+}
+
+std::int16_t GlyphData::GlyphHeader::x_min() const
+{
+    return m_x_min;
+}
+
+std::int16_t GlyphData::GlyphHeader::y_min() const
+{
+    return m_y_min;
+}
+
+std::int16_t GlyphData::GlyphHeader::x_max() const
+{
+    return m_x_max;
+}
+
+std::int16_t GlyphData::GlyphHeader::y_max() const
+{
+    return m_y_max;
+}
+
+#pragma endregion
+
+GlyphData::Glyph::Glyph(BufferReader& in)
+    : m_header(in)
+{
+    if (!in.good() || m_header.number_of_contours() == 0) {
+        // Glyph has no outline
+        return;
+    }
+
+    if (m_header.is_simple_glyph()) {
+        m_simple_glyph = parse_simple_glyph(static_cast<size_t>(m_header.number_of_contours()), in);
+    } else {
+        m_composite_glyph = parse_composite_glyph(in);
+    }
+}
+
+const GlyphData::GlyphHeader& GlyphData::Glyph::header() const
+{
+    return m_header;
+}
+
+const GlyphData::SimpleGlyph& GlyphData::Glyph::simple_glyph() const
+{
+    return m_simple_glyph;
+}
+
+const GlyphData::CompositeGlyph& GlyphData::Glyph::composite_glyph() const
+{
+    return m_composite_glyph;
+}
+
 GlyphData::GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data)
 {
     m_glyphs.reserve(num_glyphs);
 
     for (GlyphId i = 0; i < num_glyphs; ++i) {
         DataIterator begin = std::next(data.begin(), offsets[i]);
-        DataIterator end   = std::next(data.begin(), offsets[i + 1]);
+        DataIterator end   = std::next(data.begin(), offsets[i + 1u]);
 
         BufferReader in = utils::make_big_endian_buffer_reader(begin, end);
-
-        m_glyphs.emplace(i, parse_glyph(in));
+        if (in) {
+            m_glyphs.emplace(i, Glyph(in));
+        }
     }
 }
 
 bool GlyphData::valid() const
 {
     return !m_glyphs.empty();
+}
+
+const GlyphData::Glyph& GlyphData::at(GlyphId index) const
+{
+    return m_glyphs.at(index);
 }
 
 } // namespace framework::graphics::details::font
