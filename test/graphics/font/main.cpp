@@ -54,6 +54,7 @@ private:
         Renderer renderer(window);
 
         renderer.set_clear_color(Color(0x202020FFu));
+        renderer.set_polygon_mode(Renderer::PolygonMode::line);
 
         Font font;
         auto result = font.load("fonts/UbuntuMono-Regular.ttf");

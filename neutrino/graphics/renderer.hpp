@@ -37,6 +37,14 @@ public:
     using UniformsList = std::vector<Uniform>;
     using UniformsMap  = std::unordered_map<std::string, Uniform>;
 
+    /// @brief Polygon rasterization mode.
+    enum class PolygonMode
+    {
+        point,
+        line,
+        fill,
+    };
+
     /// @brief Internal representation of render call.
     class Command
     {
@@ -84,6 +92,11 @@ public:
     ///
     /// @param enable On or off vertical sync.
     void enable_vertical_sync(bool enable);
+
+    /// @brief Set current polygon mode.
+    ///
+    /// @param mode New mode.
+    void set_polygon_mode(PolygonMode mode);
 
     /// @brief Loads Font to renderer.
     ///

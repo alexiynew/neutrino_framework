@@ -112,6 +112,16 @@ void Renderer::set_clear_color(const Color& color)
     m_impl->set_clear_color(color);
 }
 
+void Renderer::enable_vertical_sync(bool)
+{
+    throw std::runtime_error("Renderer::enable_vertical_sync not implemented");
+}
+
+void Renderer::set_polygon_mode(PolygonMode mode)
+{
+    m_impl->set_polygon_mode(mode);
+}
+
 bool Renderer::load(const Font& font)
 {
     return load(font.mesh());
