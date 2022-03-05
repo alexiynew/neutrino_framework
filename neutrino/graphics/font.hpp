@@ -67,7 +67,7 @@ public:
     /// @return Font instance id.
     InstanceId instance_id() const;
 
-    const Mesh& mesh() const;
+    Mesh create_text_mesh(const std::string& text) const;
 
 private:
     class FontData;

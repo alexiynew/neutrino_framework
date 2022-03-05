@@ -122,11 +122,6 @@ void Renderer::set_polygon_mode(PolygonMode mode)
     m_impl->set_polygon_mode(mode);
 }
 
-bool Renderer::load(const Font& font)
-{
-    return load(font.mesh());
-}
-
 bool Renderer::load(const Mesh& mesh)
 {
     m_window.get().context().make_current();

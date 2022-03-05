@@ -270,7 +270,9 @@ std::unordered_map<Tag, Table> read_all_tables(std::ifstream& in, const std::vec
 
 #pragma region Font data
 
-Mesh create_glyph_mesh(const GlyphData::GlyphHeader& header, const GlyphData::SimpleGlyph&, std::uint16_t units_per_em)
+Mesh::VertexData create_glyph_vericies(const GlyphData::GlyphHeader& header,
+                                       const GlyphData::SimpleGlyph&,
+                                       std::uint16_t units_per_em)
 {
     // pointSize * resolution / ( 72 points_per_inch * units_per_em )
     // pointSize  - some point size;
@@ -304,23 +306,10 @@ Mesh create_glyph_mesh(const GlyphData::GlyphHeader& header, const GlyphData::Si
     vertices.push_back(Vector3f(x_max, y_min, 0.0f) / point_size);
     vertices.push_back(Vector3f(x_max, y_max, 0.0f) / point_size);
 
-    // 2 triangles in ccw point order
-    Mesh::IndicesData indices;
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(2);
-    indices.push_back(2);
-    indices.push_back(3);
-    indices.push_back(0);
-
-    Mesh mesh;
-    mesh.set_vertices(vertices);
-    mesh.set_indices(indices);
-
-    return mesh;
+    return vertices;
 }
 
-Mesh create_glyph_mesh(const GlyphData::CompositeGlyph&)
+Mesh::VertexData create_glyph_vericies(const GlyphData::CompositeGlyph&)
 {
     throw NotImplementedError(__FUNCTION__);
 }
@@ -336,6 +325,8 @@ namespace framework::graphics
 class Font::FontData
 {
 public:
+    using CodePointToGlyphMap = std::unordered_map<CodePoint, Mesh::VertexData>;
+
     FontData(FontHeader head, CharacterToGlyphIndexMapping cmap, GlyphData glyf);
 
     FontData(const FontData& other);
@@ -348,10 +339,10 @@ public:
 
     void add_glyph(CodePoint codepoint);
 
-    const std::unordered_map<CodePoint, Mesh>& glyphs() const;
+    const CodePointToGlyphMap& glyphs() const;
 
 private:
-    std::unordered_map<CodePoint, Mesh> m_glyphs;
+    CodePointToGlyphMap m_glyphs;
     FontHeader m_head;
     CharacterToGlyphIndexMapping m_cmap;
     GlyphData m_glyf;
@@ -394,14 +385,15 @@ void Font::FontData::add_glyph(CodePoint codepoint)
         const GlyphData::Glyph& glyph = m_glyf.at(glyph_id);
 
         if (glyph.header().is_simple_glyph()) {
-            m_glyphs.emplace(codepoint, create_glyph_mesh(glyph.header(), glyph.simple_glyph(), m_head.units_per_em()));
+            m_glyphs.emplace(codepoint,
+                             create_glyph_vericies(glyph.header(), glyph.simple_glyph(), m_head.units_per_em()));
         } else {
-            m_glyphs.emplace(codepoint, create_glyph_mesh(glyph.composite_glyph()));
+            m_glyphs.emplace(codepoint, create_glyph_vericies(glyph.composite_glyph()));
         }
     }
 }
 
-const std::unordered_map<CodePoint, Mesh>& Font::FontData::glyphs() const
+const Font::FontData::CodePointToGlyphMap& Font::FontData::glyphs() const
 {
     return m_glyphs;
 }
@@ -591,13 +583,49 @@ InstanceId Font::instance_id() const
     return m_instance_id;
 }
 
-const Mesh& Font::mesh() const
+Mesh Font::create_text_mesh(const std::string& text) const
 {
     if (m_data == nullptr) {
         throw std::runtime_error("Font data is not loaded. See Font::load and Font::precache.");
     }
 
-    return m_data->glyphs().begin()->second;
+    Mesh::VertexData vertices;
+    Mesh::IndicesData indices;
+
+    math::Vector3f vetricies_offset;
+    constexpr math::Vector3f vetricies_offset_step{0.5, 0, 0};
+    std::uint16_t indices_offset = 0;
+
+    for (const auto& cp : utf::to_codepoints(text)) {
+        auto it = m_data->glyphs().find(cp);
+
+        if (it == m_data->glyphs().end()) {
+            // TODO: use empty glyph
+            throw std::runtime_error("Usage of empty glyph is not implemented");
+        }
+
+        for (const auto& v : it->second) {
+            vertices.push_back(v + vetricies_offset);
+        }
+
+        vetricies_offset += vetricies_offset_step;
+
+        // 2 triangles in ccw point order
+        indices.push_back(indices_offset + 0);
+        indices.push_back(indices_offset + 1);
+        indices.push_back(indices_offset + 2);
+        indices.push_back(indices_offset + 2);
+        indices.push_back(indices_offset + 3);
+        indices.push_back(indices_offset + 0);
+
+        indices_offset = static_cast<std::uint16_t>(vertices.size());
+    }
+
+    Mesh mesh;
+    mesh.set_vertices(vertices);
+    mesh.set_indices(indices);
+
+    return mesh;
 }
 
 void swap(Font& lhs, Font& rhs) noexcept

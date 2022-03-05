@@ -98,13 +98,6 @@ public:
     /// @param mode New mode.
     void set_polygon_mode(PolygonMode mode);
 
-    /// @brief Loads Font to renderer.
-    ///
-    /// @param font Font to load.
-    ///
-    /// @return `true` if loading successful
-    bool load(const Font& font);
-
     /// @brief Loads Mesh to renderer.
     ///
     /// @param mesh Mesh to load.
