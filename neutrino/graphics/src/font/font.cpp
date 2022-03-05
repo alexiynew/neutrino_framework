@@ -9,7 +9,9 @@
 
 #include <common/utils.hpp>
 #include <graphics/font.hpp>
+#include <graphics/mesh.hpp>
 #include <log/log.hpp>
+#include <math/math.hpp>
 
 #include <graphics/src/font/tables/character_to_glyph_index_mapping.hpp>
 #include <graphics/src/font/tables/font_header.hpp>
@@ -23,6 +25,8 @@
 
 using namespace framework;
 using namespace framework::graphics::details::font;
+
+using framework::graphics::Mesh;
 
 namespace
 {
@@ -266,17 +270,57 @@ std::unordered_map<Tag, Table> read_all_tables(std::ifstream& in, const std::vec
 
 #pragma region Font data
 
-struct GlyphMeshData
+Mesh create_glyph_mesh(const GlyphData::GlyphHeader& header, const GlyphData::SimpleGlyph&, std::uint16_t units_per_em)
 {
-    std::vector<std::uint16_t> indicies;
-};
+    // pointSize * resolution / ( 72 points_per_inch * units_per_em )
+    // pointSize  - some point size;
+    // resolution - screen resolution in dpi (72 or 96 dpi default)
+    //
+    // pixels per em
+    // ppem = pointSize * dpi / 72
+    //
+    // pixel_coordinate = em_coordinate * ppem / units_per_em
 
-GlyphMeshData create_glyph_mesh(const GlyphData::SimpleGlyph&)
-{
-    throw NotImplementedError(__FUNCTION__);
+    using math::Vector3f;
+
+    // TODO: provide point size with font configuration
+    const int point_size = 18;
+
+    // TODO: Consider using actual screen dpi. To simplify implementation for now the 72 dpi would be used.
+    //       This means that points and pixels per em are equal.
+    const int dpi = 72;
+
+    const float ppem = point_size * dpi / 72;
+
+    const float x_min = header.x_min() * ppem / units_per_em;
+    const float y_min = header.y_min() * ppem / units_per_em;
+    const float x_max = header.x_max() * ppem / units_per_em;
+    const float y_max = header.y_max() * ppem / units_per_em;
+
+    // ccw vertices order
+    Mesh::VertexData vertices;
+    vertices.push_back(Vector3f(x_min, y_max, 0.0f) / point_size);
+    vertices.push_back(Vector3f(x_min, y_min, 0.0f) / point_size);
+    vertices.push_back(Vector3f(x_max, y_min, 0.0f) / point_size);
+    vertices.push_back(Vector3f(x_max, y_max, 0.0f) / point_size);
+
+    // 2 triangles in ccw point order
+    Mesh::IndicesData indices;
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(2);
+    indices.push_back(2);
+    indices.push_back(3);
+    indices.push_back(0);
+
+    Mesh mesh;
+    mesh.set_vertices(vertices);
+    mesh.set_indices(indices);
+
+    return mesh;
 }
 
-GlyphMeshData create_glyph_mesh(const GlyphData::CompositeGlyph&)
+Mesh create_glyph_mesh(const GlyphData::CompositeGlyph&)
 {
     throw NotImplementedError(__FUNCTION__);
 }
@@ -292,7 +336,7 @@ namespace framework::graphics
 class Font::FontData
 {
 public:
-    FontData(CharacterToGlyphIndexMapping cmap, GlyphData glyf);
+    FontData(FontHeader head, CharacterToGlyphIndexMapping cmap, GlyphData glyf);
 
     FontData(const FontData& other);
     FontData(FontData&& other) noexcept = default;
@@ -304,21 +348,24 @@ public:
 
     void add_glyph(CodePoint codepoint);
 
-    const std::unordered_map<CodePoint, GlyphMeshData>& glyphs() const;
+    const std::unordered_map<CodePoint, Mesh>& glyphs() const;
 
 private:
-    std::unordered_map<CodePoint, GlyphMeshData> m_glyphs;
+    std::unordered_map<CodePoint, Mesh> m_glyphs;
+    FontHeader m_head;
     CharacterToGlyphIndexMapping m_cmap;
     GlyphData m_glyf;
 };
 
-Font::FontData::FontData(CharacterToGlyphIndexMapping cmap, GlyphData glyf)
-    : m_cmap(std::move(cmap))
+Font::FontData::FontData(FontHeader head, CharacterToGlyphIndexMapping cmap, GlyphData glyf)
+    : m_head(std::move(head))
+    , m_cmap(std::move(cmap))
     , m_glyf(std::move(glyf))
 {}
 
 Font::FontData::FontData(const Font::FontData& other)
-    : m_cmap(other.m_cmap)
+    : m_head(other.m_head)
+    , m_cmap(other.m_cmap)
     , m_glyf(other.m_glyf)
 {}
 
@@ -328,6 +375,7 @@ Font::FontData& Font::FontData::operator=(const Font::FontData& other)
 
     FontData tmp(other);
     swap(tmp.m_glyphs, m_glyphs);
+    swap(tmp.m_head, m_head);
     swap(tmp.m_cmap, m_cmap);
     swap(tmp.m_glyf, m_glyf);
 
@@ -346,14 +394,14 @@ void Font::FontData::add_glyph(CodePoint codepoint)
         const GlyphData::Glyph& glyph = m_glyf.at(glyph_id);
 
         if (glyph.header().is_simple_glyph()) {
-            m_glyphs.emplace(codepoint, create_glyph_mesh(glyph.simple_glyph()));
+            m_glyphs.emplace(codepoint, create_glyph_mesh(glyph.header(), glyph.simple_glyph(), m_head.units_per_em()));
         } else {
             m_glyphs.emplace(codepoint, create_glyph_mesh(glyph.composite_glyph()));
         }
     }
 }
 
-const std::unordered_map<CodePoint, GlyphMeshData>& Font::FontData::glyphs() const
+const std::unordered_map<CodePoint, Mesh>& Font::FontData::glyphs() const
 {
     return m_glyphs;
 }
@@ -531,11 +579,25 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    m_data = std::make_unique<Font::FontData>(std::move(cmap), std::move(glyf));
+    m_data = std::make_unique<Font::FontData>(std::move(head), std::move(cmap), std::move(glyf));
 
     // TODO: Precache glyph for missing codepoints
 
     return LoadResult::Success;
+}
+
+InstanceId Font::instance_id() const
+{
+    return m_instance_id;
+}
+
+const Mesh& Font::mesh() const
+{
+    if (m_data == nullptr) {
+        throw std::runtime_error("Font data is not loaded. See Font::load and Font::precache.");
+    }
+
+    return m_data->glyphs().begin()->second;
 }
 
 void swap(Font& lhs, Font& rhs) noexcept

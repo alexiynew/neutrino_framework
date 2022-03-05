@@ -112,9 +112,9 @@ void Renderer::set_clear_color(const Color& color)
     m_impl->set_clear_color(color);
 }
 
-bool Renderer::load(const Font&)
+bool Renderer::load(const Font& font)
 {
-    throw std::runtime_error("Not implemented");
+    return load(font.mesh());
 }
 
 bool Renderer::load(const Mesh& mesh)

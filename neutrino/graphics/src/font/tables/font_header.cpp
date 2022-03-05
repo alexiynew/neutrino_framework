@@ -50,4 +50,9 @@ std::int16_t FontHeader::index_to_loc_format() const
     return m_index_to_loc_format;
 }
 
+std::int16_t FontHeader::units_per_em() const
+{
+    return m_units_per_em;
+}
+
 } // namespace framework::graphics::details::font

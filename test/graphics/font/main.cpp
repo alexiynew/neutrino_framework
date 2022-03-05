@@ -3,11 +3,38 @@
 
 #include <graphics/font.hpp>
 #include <graphics/renderer.hpp>
+#include <graphics/shader.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
 using namespace framework::system;
 using namespace framework::graphics;
+
+namespace
+{
+
+const std::string vertex_shader =
+"#version 330 core\n\
+layout(location = 0) in vec3 position;\n\
+\n\
+out vec4 fragColor;\n\
+\n\
+void main()\n\
+{\n\
+    gl_Position = vec4(position, 1.0);\n\
+    fragColor = vec4(1.0, 0.5, 0.3, 1.0);\n\
+}\n\
+";
+
+const std::string fragment_shader =
+"#version 330 core\n\
+in vec4 fragColor;\n\
+out vec4 color;\n\
+void main(){\n\
+    color = fragColor;\n\
+}";
+
+} // namespace
 
 class FontTest : public framework::unit_test::Suite
 {
@@ -34,7 +61,13 @@ private:
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
 
         font.precache("abcdef");
-        renderer.load(font);
+        TEST_ASSERT(renderer.load(font), "Can't load font data to renderer.");
+
+        Shader shader;
+        shader.set_vertex_source(vertex_shader);
+        shader.set_fragment_source(fragment_shader);
+        renderer.load(shader);
+        shader.clear();
 
         window.show();
 
@@ -45,8 +78,7 @@ private:
         while (!window.should_close() && total_time < max_total_time) {
             window.process_events();
 
-            //            renderer.render();
-
+            renderer.render(font.mesh(), shader);
             renderer.display();
 
             std::this_thread::sleep_for(delta_time);

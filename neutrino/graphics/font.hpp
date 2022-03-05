@@ -8,6 +8,7 @@
 
 #include <common/instance_id.hpp>
 #include <common/utf.hpp>
+#include <graphics/mesh.hpp>
 
 namespace framework::graphics
 {
@@ -65,6 +66,8 @@ public:
     ///
     /// @return Font instance id.
     InstanceId instance_id() const;
+
+    const Mesh& mesh() const;
 
 private:
     class FontData;

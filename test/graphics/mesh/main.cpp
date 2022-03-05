@@ -159,6 +159,7 @@ private:
     {
         std::chrono::microseconds max_total_time = std::chrono::seconds(1);
         std::chrono::microseconds total_time(0);
+        std::chrono::milliseconds delta_time(16);
 
         while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
@@ -166,8 +167,8 @@ private:
             renderer.render(mesh, shader);
             renderer.display();
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-            total_time += std::chrono::milliseconds(20);
+            std::this_thread::sleep_for(delta_time);
+            total_time += delta_time;
         }
     }
 };

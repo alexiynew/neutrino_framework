@@ -16,6 +16,7 @@ public:
     bool valid() const;
 
     std::int16_t index_to_loc_format() const;
+    std::int16_t units_per_em() const;
 
 private:
     std::uint16_t m_major_version        = 0;
