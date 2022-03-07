@@ -32,7 +32,7 @@ class SubtableFormat4 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
-    GlyphId get_glyph_index(CodePoint codepoint) override;
+    GlyphId glyph_index(CodePoint codepoint) const override;
 
     bool valid() const override;
     std::unique_ptr<Subtable> copy() const override;
@@ -103,7 +103,7 @@ void SubtableFormat4::parse(std::uint32_t offset, const BytesData& data)
     }
 }
 
-GlyphId SubtableFormat4::get_glyph_index(CodePoint codepoint)
+GlyphId SubtableFormat4::glyph_index(CodePoint codepoint) const
 {
     auto it = std::lower_bound(m_end_code.begin(), m_end_code.end(), codepoint);
     if (it == m_end_code.end()) {
@@ -172,7 +172,7 @@ class SubtableFormat6 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
-    GlyphId get_glyph_index(CodePoint codepoint) override;
+    GlyphId glyph_index(CodePoint codepoint) const override;
 
     bool valid() const override;
     std::unique_ptr<Subtable> copy() const override;
@@ -191,9 +191,9 @@ void SubtableFormat6::parse(std::uint32_t, const BytesData&)
     throw NotImplementedError("SubtableFormat6 parsing is not implemented yet");
 }
 
-GlyphId SubtableFormat6::get_glyph_index(CodePoint)
+GlyphId SubtableFormat6::glyph_index(CodePoint) const
 {
-    throw NotImplementedError("SubtableFormat6 get_glyph_index is not implemented yet");
+    throw NotImplementedError("SubtableFormat6 glyph_index is not implemented yet");
 }
 
 bool SubtableFormat6::valid() const
@@ -214,7 +214,7 @@ class SubtableFormat10 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
-    GlyphId get_glyph_index(CodePoint codepoint) override;
+    GlyphId glyph_index(CodePoint codepoint) const override;
 
     bool valid() const override;
     std::unique_ptr<Subtable> copy() const override;
@@ -225,9 +225,9 @@ void SubtableFormat10::parse(std::uint32_t, const BytesData&)
     throw NotImplementedError("SubtableFormat10 parsing is not implemented yet");
 }
 
-GlyphId SubtableFormat10::get_glyph_index(CodePoint)
+GlyphId SubtableFormat10::glyph_index(CodePoint) const
 {
-    throw NotImplementedError("SubtableFormat10 get_glyph_index is not implemented yet");
+    throw NotImplementedError("SubtableFormat10 glyph_index is not implemented yet");
 }
 
 bool SubtableFormat10::valid() const
@@ -248,7 +248,7 @@ class SubtableFormat12 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
-    GlyphId get_glyph_index(CodePoint codepoint) override;
+    GlyphId glyph_index(CodePoint codepoint) const override;
 
     bool valid() const override;
     std::unique_ptr<Subtable> copy() const override;
@@ -259,9 +259,9 @@ void SubtableFormat12::parse(std::uint32_t, const BytesData&)
     throw NotImplementedError("SubtableFormat12 parsing is not implemented yet");
 }
 
-GlyphId SubtableFormat12::get_glyph_index(CodePoint)
+GlyphId SubtableFormat12::glyph_index(CodePoint) const
 {
-    throw NotImplementedError("SubtableFormat12 get_glyph_index is not implemented yet");
+    throw NotImplementedError("SubtableFormat12 glyph_index is not implemented yet");
 }
 
 bool SubtableFormat12::valid() const
@@ -282,7 +282,7 @@ class SubtableFormat13 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
-    GlyphId get_glyph_index(CodePoint codepoint) override;
+    GlyphId glyph_index(CodePoint codepoint) const override;
 
     bool valid() const override;
     std::unique_ptr<Subtable> copy() const override;
@@ -293,9 +293,9 @@ void SubtableFormat13::parse(std::uint32_t, const BytesData&)
     throw NotImplementedError("SubtableFormat13 parsing is not implemented yet");
 }
 
-GlyphId SubtableFormat13::get_glyph_index(CodePoint)
+GlyphId SubtableFormat13::glyph_index(CodePoint) const
 {
-    throw NotImplementedError("SubtableFormat13 get_glyph_index is not implemented yet");
+    throw NotImplementedError("SubtableFormat13 glyph_index is not implemented yet");
 }
 
 bool SubtableFormat13::valid() const
@@ -316,7 +316,7 @@ class SubtableFormat14 final : public CharacterToGlyphIndexMapping::Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
-    GlyphId get_glyph_index(CodePoint codepoint) override;
+    GlyphId glyph_index(CodePoint codepoint) const override;
 
     bool valid() const override;
     std::unique_ptr<Subtable> copy() const override;
@@ -327,9 +327,9 @@ void SubtableFormat14::parse(std::uint32_t, const BytesData&)
     throw NotImplementedError("SubtableFormat14 parsing is not implemented yet");
 }
 
-GlyphId SubtableFormat14::get_glyph_index(CodePoint)
+GlyphId SubtableFormat14::glyph_index(CodePoint) const
 {
-    throw NotImplementedError("SubtableFormat14 get_glyph_index is not implemented yet");
+    throw NotImplementedError("SubtableFormat14 glyph_index is not implemented yet");
 }
 
 bool SubtableFormat14::valid() const
@@ -463,10 +463,10 @@ bool CharacterToGlyphIndexMapping::valid() const
     return m_version == 0 && m_subtable != nullptr && m_subtable->valid();
 }
 
-GlyphId CharacterToGlyphIndexMapping::get_glyph_index(CodePoint codepoint) const
+GlyphId CharacterToGlyphIndexMapping::glyph_index(CodePoint codepoint) const
 {
     if (m_subtable) {
-        return m_subtable->get_glyph_index(codepoint);
+        return m_subtable->glyph_index(codepoint);
     }
 
     return missig_glyph_id;

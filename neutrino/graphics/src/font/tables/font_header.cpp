@@ -55,4 +55,14 @@ std::int16_t FontHeader::units_per_em() const
     return m_units_per_em;
 }
 
+bool FontHeader::baseline_at_y_zero() const
+{
+    return (m_flags & 0x0001u) != 0;
+}
+
+bool FontHeader::left_sidebearing_at_x_zero() const
+{
+    return (m_flags & 0x0002u) != 0;
+}
+
 } // namespace framework::graphics::details::font

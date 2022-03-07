@@ -31,4 +31,21 @@ bool HorizontalMetrics::valid() const
     return m_metrics.size() != 0 || m_left_side_bearings.size() != 0;
 }
 
+std::uint16_t HorizontalMetrics::advance_width(GlyphId id) const
+{
+    if (m_metrics.size() > id) {
+        return m_metrics[id].advance_width;
+    }
+    return m_metrics.back().advance_width;
+}
+
+std::int16_t HorizontalMetrics::left_sidebearing(GlyphId id) const
+{
+    if (m_metrics.size() > id) {
+        return m_metrics[id].lsb;
+    }
+
+    return m_left_side_bearings.at(static_cast<GlyphId>(id - m_metrics.size()));
+}
+
 } // namespace framework::graphics::details::font

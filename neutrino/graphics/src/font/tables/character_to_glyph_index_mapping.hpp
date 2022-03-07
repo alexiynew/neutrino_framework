@@ -18,7 +18,7 @@ public:
         virtual ~Subtable() = default;
 
         virtual void parse(std::uint32_t offset, const BytesData& data) = 0;
-        virtual GlyphId get_glyph_index(CodePoint codepoint)            = 0;
+        virtual GlyphId glyph_index(CodePoint codepoint) const          = 0;
 
         virtual bool valid() const                     = 0;
         virtual std::unique_ptr<Subtable> copy() const = 0;
@@ -36,7 +36,7 @@ public:
 
     bool valid() const;
 
-    GlyphId get_glyph_index(CodePoint codepoint) const;
+    GlyphId glyph_index(CodePoint codepoint) const;
 
 private:
     std::uint16_t m_version = 0;

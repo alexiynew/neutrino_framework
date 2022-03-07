@@ -63,7 +63,7 @@ private:
         renderer.set_polygon_mode(Renderer::PolygonMode::line);
 
         window.on_resize.connect([&renderer](const Window&, Size) {
-            renderer.set_uniform("projectionMatrix", ortho2d<float>(-10, 10, -10, 10));
+            renderer.set_uniform("projectionMatrix", ortho2d<float>(-0.5, 1.5, -0.5, 1.5));
         });
 
         Font font;
@@ -71,8 +71,8 @@ private:
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
 
-        font.precache("abcdef");
-        Mesh text_mesh = font.create_text_mesh("aabbccddeeff");
+        font.precache("o");
+        Mesh text_mesh = font.create_text_mesh("o");
         TEST_ASSERT(text_mesh.vertices().size() > 0, "Text mesh is empty.");
         TEST_ASSERT(text_mesh.indices().size() > 0, "Text mesh is empty.");
 
@@ -86,7 +86,7 @@ private:
 
         window.show();
 
-        std::chrono::microseconds max_total_time = std::chrono::seconds(3);
+        std::chrono::microseconds max_total_time = std::chrono::seconds(300);
         std::chrono::microseconds total_time(0);
         std::chrono::milliseconds delta_time(16);
 
