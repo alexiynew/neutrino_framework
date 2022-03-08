@@ -12,6 +12,7 @@ set(TESTS
     vector_operators
     vector_relational
     vector_trigonometric
+    math_utility
 )
 
 foreach(TEST ${TESTS})

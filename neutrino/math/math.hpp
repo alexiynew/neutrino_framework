@@ -12,9 +12,11 @@
 #include <math/inc/relational_functions.hpp>
 #include <math/inc/transform_functions.hpp>
 #include <math/inc/trigonometric_functions.hpp>
+#include <math/inc/utility_hash.hpp>
 #include <math/inc/vector_type.hpp>
 
 #undef FRAMEWORK_MATH_DETAILS
+
 namespace framework::math
 {
 
