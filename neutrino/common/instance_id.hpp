@@ -107,7 +107,7 @@ namespace std
 template <>
 struct hash<framework::InstanceId>
 {
-    std::size_t operator()(framework::InstanceId const& id) const noexcept
+    std::size_t operator()(const framework::InstanceId& id) const noexcept
     {
         return std::hash<decltype(id.m_id)>{}(id.m_id);
     }
