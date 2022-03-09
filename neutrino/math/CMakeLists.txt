@@ -20,6 +20,10 @@ set_sources(PUBLIC_SOURCES
     inc/matrix_functions_details.hpp
     inc/relational_functions_details.hpp
     inc/trigonometric_functions.hpp
+    inc/bezier_functions.hpp
+
+    inc/utility_hash.hpp
+    inc/utility_hash_details.hpp
 )
 
 target_sources(${PROJECT_NAME}

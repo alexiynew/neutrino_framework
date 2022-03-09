@@ -102,7 +102,7 @@ inline R sin(const T& value)
 ///
 /// @see sin
 template <std::size_t N, typename T, typename R = decltype(framework::math::sin(std::declval<T>()))>
-inline Vector<N, R> sin(Vector<N, T> const& value)
+inline Vector<N, R> sin(const Vector<N, T>& value)
 {
     return transform(value, framework::math::sin<T>);
 }
@@ -134,7 +134,7 @@ inline R cos(const T& value)
 ///
 /// @see cos
 template <std::size_t N, typename T, typename R = decltype(framework::math::cos(std::declval<T>()))>
-inline Vector<N, R> cos(Vector<N, T> const& value)
+inline Vector<N, R> cos(const Vector<N, T>& value)
 {
     return transform(value, framework::math::cos<T>);
 }
@@ -166,7 +166,7 @@ inline R tan(const T& value)
 ///
 /// @see tan
 template <std::size_t N, typename T, typename R = decltype(framework::math::tan(std::declval<T>()))>
-inline Vector<N, R> tan(Vector<N, T> const& value)
+inline Vector<N, R> tan(const Vector<N, T>& value)
 {
     return transform(value, framework::math::tan<T>);
 }
@@ -202,7 +202,7 @@ inline R asin(const T& value)
 ///
 /// @see asin
 template <std::size_t N, typename T, typename R = decltype(framework::math::asin(std::declval<T>()))>
-inline Vector<N, R> asin(Vector<N, T> const& value)
+inline Vector<N, R> asin(const Vector<N, T>& value)
 {
     return transform(value, framework::math::asin<T>);
 }
@@ -234,7 +234,7 @@ inline R acos(const T& value)
 ///
 /// @see acos
 template <std::size_t N, typename T, typename R = decltype(framework::math::acos(std::declval<T>()))>
-inline Vector<N, R> acos(Vector<N, T> const& value)
+inline Vector<N, R> acos(const Vector<N, T>& value)
 {
     return transform(value, framework::math::acos<T>);
 }
@@ -282,7 +282,7 @@ inline R atan(const T& value)
 ///
 /// @see atan
 template <std::size_t N, typename T, typename R = decltype(framework::math::atan(std::declval<T>(), std::declval<T>()))>
-inline Vector<N, R> atan(Vector<N, T> const& a, Vector<N, T> const& b)
+inline Vector<N, R> atan(const Vector<N, T>& a, const Vector<N, T>& b)
 {
     return transform(a, b, [](const T& a_component, const T& b_component) {
         return framework::math::atan(a_component, b_component);
@@ -297,7 +297,7 @@ inline Vector<N, R> atan(Vector<N, T> const& a, Vector<N, T> const& b)
 ///
 /// @see atan
 template <std::size_t N, typename T, typename R = decltype(framework::math::atan(std::declval<T>()))>
-inline Vector<N, R> atan(Vector<N, T> const& value)
+inline Vector<N, R> atan(const Vector<N, T>& value)
 {
     return transform(value, [](const T& value_component) { return framework::math::atan(value_component); });
 }
@@ -329,7 +329,7 @@ inline R sinh(const T& value)
 ///
 /// @see sinh
 template <std::size_t N, typename T, typename R = decltype(framework::math::sinh(std::declval<T>()))>
-inline Vector<N, R> sinh(Vector<N, T> const& value)
+inline Vector<N, R> sinh(const Vector<N, T>& value)
 {
     return transform(value, framework::math::sinh<T>);
 }
@@ -361,7 +361,7 @@ inline R cosh(const T& value)
 ///
 /// @see cosh
 template <std::size_t N, typename T, typename R = decltype(framework::math::cosh(std::declval<T>()))>
-inline Vector<N, R> cosh(Vector<N, T> const& value)
+inline Vector<N, R> cosh(const Vector<N, T>& value)
 {
     return transform(value, framework::math::cosh<T>);
 }
@@ -393,7 +393,7 @@ inline R tanh(const T& value)
 ///
 /// @see tanh
 template <std::size_t N, typename T, typename R = decltype(framework::math::tanh(std::declval<T>()))>
-inline Vector<N, R> tanh(Vector<N, T> const& value)
+inline Vector<N, R> tanh(const Vector<N, T>& value)
 {
     return transform(value, framework::math::tanh<T>);
 }
@@ -425,7 +425,7 @@ inline R asinh(const T& value)
 ///
 /// @see asinh
 template <std::size_t N, typename T, typename R = decltype(framework::math::asinh(std::declval<T>()))>
-inline Vector<N, R> asinh(Vector<N, T> const& value)
+inline Vector<N, R> asinh(const Vector<N, T>& value)
 {
     return transform(value, framework::math::asinh<T>);
 }
@@ -457,7 +457,7 @@ inline R acosh(const T& value)
 ///
 /// @see acosh
 template <std::size_t N, typename T, typename R = decltype(framework::math::acosh(std::declval<T>()))>
-inline Vector<N, R> acosh(Vector<N, T> const& value)
+inline Vector<N, R> acosh(const Vector<N, T>& value)
 {
     return transform(value, framework::math::acosh<T>);
 }
@@ -489,7 +489,7 @@ inline R atanh(const T& value)
 ///
 /// @see atanh
 template <std::size_t N, typename T, typename R = decltype(framework::math::atanh(std::declval<T>()))>
-inline Vector<N, R> atanh(Vector<N, T> const& value)
+inline Vector<N, R> atanh(const Vector<N, T>& value)
 {
     return transform(value, framework::math::atanh<T>);
 }

@@ -28,6 +28,8 @@
 /// @defgroup math_relational_functions Relational functions
 /// @defgroup math_transform_functions Transform functions
 /// @defgroup math_trigonometric_functions Trigonometric functions
+/// @defgroup math_bezier_functions Bezier curve functions
+/// @defgroup math_hash_functions Support for std::hash function
 /// @}
 
 /// @defgroup system_module System

@@ -3,6 +3,7 @@
 
 #define FRAMEWORK_MATH_DETAILS
 
+#include <math/inc/bezier_functions.hpp>
 #include <math/inc/common_functions.hpp>
 #include <math/inc/constants.hpp>
 #include <math/inc/exponential_functions.hpp>
@@ -12,9 +13,11 @@
 #include <math/inc/relational_functions.hpp>
 #include <math/inc/transform_functions.hpp>
 #include <math/inc/trigonometric_functions.hpp>
+#include <math/inc/utility_hash.hpp>
 #include <math/inc/vector_type.hpp>
 
 #undef FRAMEWORK_MATH_DETAILS
+
 namespace framework::math
 {
 
