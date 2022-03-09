@@ -49,8 +49,6 @@ private:
 
         TEST_ASSERT(cubic_bezier(p1, p2, p3, p4, 0.0f) == p1, "Cubic bezier function error.");
         TEST_ASSERT(cubic_bezier(p1, p2, p3, p4, 1.0f) == p4, "Cubic bezier function error.");
-
-        auto d = cubic_bezier(p1, p2, p3, p4, 0.5f);
         TEST_ASSERT(almost_equal(cubic_bezier(p1, p2, p3, p4, 0.5f), t3, 2), "Cubic bezier function error.");
     }
 };
