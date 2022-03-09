@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <math/math.hpp>
+
 #include <graphics/src/font/types.hpp>
 
 namespace framework::graphics::details::font
@@ -34,54 +36,25 @@ public:
         std::int16_t m_y_max              = 0;
     };
 
-    struct SimpleGlyph
-    {
-        std::vector<std::uint16_t> end_pts_of_contours; // [number_of_contours]
-        std::uint16_t instruction_length = 0;
-        std::vector<std::uint8_t> instructions; // [instruction_length]
-        std::vector<std::uint8_t> flags;        // [end_pts_of_contours.back() + 1]
-
-        // It's called coordinates,
-        // BUT it's actually offset from the previous point with (0,0) as the implicit first point.
-        std::vector<std::int16_t> x_coordinates; // [end_pts_of_contours.back() + 1]
-        std::vector<std::int16_t> y_coordinates; // [end_pts_of_contours.back() + 1]
-    };
-
-    struct CompositeGlyphComponent
-    {
-        std::uint16_t flags       = 0;
-        std::uint16_t glyph_index = 0;
-        std::int32_t argument1    = 0;
-        std::int32_t argument2    = 0;
-
-        F2Dot14 scale   = 0;
-        F2Dot14 xscale  = 0;
-        F2Dot14 scale01 = 0;
-        F2Dot14 scale10 = 0;
-        F2Dot14 yscale  = 0;
-    };
-
-    struct CompositeGlyph
-    {
-        std::vector<CompositeGlyphComponent> components;
-
-        std::uint16_t instruction_length = 0;
-        std::vector<std::uint8_t> instructions; // [instruction_length]
-    };
-
     class Glyph
     {
     public:
+        struct ControlPoint
+        {
+            math::Vector2f position;
+            bool is_on_curve;
+        };
+
+        using ContourType = std::vector<ControlPoint>;
+
         explicit Glyph(BufferReader& in);
 
         const GlyphHeader& header() const;
-        const SimpleGlyph& simple_glyph() const;
-        const CompositeGlyph& composite_glyph() const;
+        const std::vector<ContourType>& contours() const;
 
     private:
         GlyphHeader m_header;
-        SimpleGlyph m_simple_glyph;
-        CompositeGlyph m_composite_glyph;
+        std::vector<ContourType> m_contours;
     };
 
     GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data);

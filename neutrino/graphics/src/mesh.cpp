@@ -13,7 +13,12 @@ Mesh::Mesh() = default;
 
 Mesh::Mesh(const Mesh& other)
     : m_vertices(other.m_vertices)
-    , m_indexes(other.m_indexes)
+    , m_normals(other.m_normals)
+    , m_tanegents(other.m_tanegents)
+    , m_colors(other.m_colors)
+    , m_texture_coordinates(other.m_texture_coordinates)
+    , m_sub_meshes(other.m_sub_meshes)
+    , m_last_sub_mesh_index(other.m_last_sub_mesh_index)
 {}
 
 Mesh::Mesh(Mesh&& other) noexcept
@@ -102,24 +107,26 @@ void Mesh::set_texture_coordinates(std::size_t index, TextureCoordinatesData&& c
     swap(m_texture_coordinates[index], coordinates);
 }
 
-void Mesh::set_indices(const IndicesData& indexes)
+std::size_t Mesh::add_sub_mesh(const IndicesData& indices, PrimitiveType type)
 {
-    m_indexes = indexes;
+    std::size_t index = ++m_last_sub_mesh_index;
+    m_sub_meshes.emplace(index, SubMesh{std::move(indices), type});
+
+    return index;
 }
 
-void Mesh::set_indices(IndicesData&& indexes) noexcept
+std::size_t Mesh::add_sub_mesh(IndicesData&& indices, PrimitiveType type) noexcept
 {
-    using std::swap;
-    swap(m_indexes, indexes);
+    std::size_t index = ++m_last_sub_mesh_index;
+    m_sub_meshes.emplace(index, SubMesh{std::move(indices), type});
+
+    return index;
 }
 
-void Mesh::generate_indices()
+void Mesh::remove_sub_mesh(std::size_t index)
 {
-    constexpr std::size_t max_size = std::numeric_limits<IndicesData::value_type>::max();
-
-    m_indexes.resize(m_vertices.size());
-    for (std::size_t i = 0; i < m_vertices.size() && i < max_size; ++i) {
-        m_indexes[i] = static_cast<IndicesData::value_type>(i);
+    if (auto it = m_sub_meshes.find(index); it != m_sub_meshes.end()) {
+        m_sub_meshes.erase(it);
     }
 }
 
@@ -134,7 +141,8 @@ void Mesh::clear()
         coordinates.clear();
     }
 
-    m_indexes.clear();
+    m_sub_meshes.clear();
+    m_last_sub_mesh_index = 0;
 }
 
 InstanceId Mesh::instance_id() const
@@ -171,9 +179,14 @@ const Mesh::TextureCoordinatesData& Mesh::texture_coordinates(std::size_t index)
     return m_texture_coordinates[index];
 }
 
-const Mesh::IndicesData& Mesh::indices() const
+bool Mesh::has_sub_mesh(std::size_t index)
 {
-    return m_indexes;
+    return m_sub_meshes.count(index) > 0;
+}
+
+const Mesh::SubMeshMap& Mesh::sub_meshes() const
+{
+    return m_sub_meshes;
 }
 
 void swap(Mesh& lhs, Mesh& rhs) noexcept
@@ -184,7 +197,8 @@ void swap(Mesh& lhs, Mesh& rhs) noexcept
     swap(lhs.m_tanegents, rhs.m_tanegents);
     swap(lhs.m_colors, rhs.m_colors);
     swap(lhs.m_texture_coordinates, rhs.m_texture_coordinates);
-    swap(lhs.m_indexes, rhs.m_indexes);
+    swap(lhs.m_sub_meshes, rhs.m_sub_meshes);
+    swap(lhs.m_last_sub_mesh_index, rhs.m_last_sub_mesh_index);
 }
 
 } // namespace framework::graphics

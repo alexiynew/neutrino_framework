@@ -273,12 +273,10 @@ std::unordered_map<Tag, Table> read_all_tables(std::ifstream& in, const std::vec
 struct GlyphMeshData
 {
     Mesh::VertexData vertices;
-    Mesh::IndicesData indices;
+    std::vector<Mesh::SubMesh> sub_meshes;
 };
 
-GlyphMeshData create_glyph_vericies(const GlyphData::GlyphHeader& header,
-                                    const GlyphData::SimpleGlyph& glyph,
-                                    std::uint16_t units_per_em)
+GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t units_per_em)
 {
     // pointSize * resolution / ( 72 points_per_inch * units_per_em )
     // pointSize  - some point size;
@@ -300,10 +298,10 @@ GlyphMeshData create_glyph_vericies(const GlyphData::GlyphHeader& header,
 
     const float ppem = point_size * dpi / 72;
 
-    const float x_min = header.x_min() * ppem / units_per_em;
-    const float y_min = header.y_min() * ppem / units_per_em;
-    const float x_max = header.x_max() * ppem / units_per_em;
-    const float y_max = header.y_max() * ppem / units_per_em;
+    const float x_min = glyph.header().x_min() * ppem / units_per_em;
+    const float y_min = glyph.header().y_min() * ppem / units_per_em;
+    const float x_max = glyph.header().x_max() * ppem / units_per_em;
+    const float y_max = glyph.header().y_max() * ppem / units_per_em;
 
     // ccw vertices order
     Mesh::VertexData vertices;
@@ -313,25 +311,15 @@ GlyphMeshData create_glyph_vericies(const GlyphData::GlyphHeader& header,
     vertices.push_back(Vector3f(x_max, y_max, 0.0f) / point_size);
 
     // 2 triangles in ccw point order
-    Mesh::IndicesData indices;
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(2);
-    indices.push_back(2);
-    indices.push_back(3);
-    indices.push_back(0);
+    Mesh::IndicesData bbox;
+    bbox.push_back(0);
+    bbox.push_back(1);
+    bbox.push_back(2);
+    bbox.push_back(3);
 
-    // vec3 bezier2(vec3 a, vec3 b, float t) {
-    //     return mix(a, b, t);
-    // }
-    // vec3 bezier3(vec3 a, vec3 b, vec3 c, float t) {
-    //     return mix(bezier2(a, b, t), bezier2(b, c, t), t);
-    // }
-    // vec3 bezier4(vec3 a, vec3 b, vec3 c, vec3, d, float t) {
-    //     return mix(bezier3(a, b, c, t), bezier3(b, c, d, t), t);
-    // }
-    // Now we can get to writing the meat and potatoes of the shader, which ends up being quite simple.
-    //
+    GlyphMeshData result;
+    result.sub_meshes.push_back({bbox, Mesh::PrimitiveType::line_loop});
+
     // layout(isolines) in;
     // in vec3 tcPos[];
     // uniform mat4 uMVP;
@@ -341,22 +329,22 @@ GlyphMeshData create_glyph_vericies(const GlyphData::GlyphHeader& header,
     //     gl_Position = uMVP * vec4(ePos, 1);
     // }
 
-    vertices.push_back(Vector3f(0, 0, 0));
-    indices.push_back(static_cast<std::uint16_t>(vertices.size()));
-    const std::uint16_t indices_offset = static_cast<std::uint16_t>(vertices.size());
-    for (size_t i = 0; i < glyph.x_coordinates.size(); i++) {
-        const float x = glyph.x_coordinates[i] * ppem / units_per_em;
-        const float y = glyph.y_coordinates[i] * ppem / units_per_em;
-        vertices.push_back(vertices.back() + (Vector3f{x, y, 0} / point_size));
-        indices.push_back(static_cast<std::uint16_t>(indices_offset + i));
+    for (const auto& contour : glyph.contours()) {
+        Vector3f prev_point(0, 0, 0);
+        Mesh::IndicesData contour_sub_mesh;
+        for (const auto& point : contour) {
+            vertices.push_back(prev_point + Vector3f(point.position * ppem / units_per_em / point_size));
+            contour_sub_mesh.push_back(static_cast<std::uint16_t>(vertices.size() - 1));
+
+            prev_point = vertices.back();
+        }
+
+        result.sub_meshes.push_back({contour_sub_mesh, Mesh::PrimitiveType::line_loop});
     }
 
-    return {vertices, indices};
-}
+    result.vertices = std::move(vertices);
 
-GlyphMeshData create_glyph_vericies(const GlyphData::CompositeGlyph&)
-{
-    throw NotImplementedError(__FUNCTION__);
+    return result;
 }
 
 #pragma endregion
@@ -441,11 +429,7 @@ void Font::FontData::add_glyph(CodePoint codepoint)
 
         const GlyphData::Glyph& glyph = m_glyf.at(glyph_id);
 
-        if (glyph.header().is_simple_glyph()) {
-            m_glyphs.emplace(codepoint, create_glyph_vericies(glyph.header(), glyph.simple_glyph(), units_per_em()));
-        } else {
-            m_glyphs.emplace(codepoint, create_glyph_vericies(glyph.composite_glyph()));
-        }
+        m_glyphs.emplace(codepoint, create_glyph_vericies(glyph, units_per_em()));
     }
 }
 
@@ -690,8 +674,9 @@ Mesh Font::create_text_mesh(const std::string& text) const
 
     // see OS2 sTypoAscender, sTypoDescender and sTypoLineGap for linespacing
 
+    Mesh mesh;
+
     Mesh::VertexData vertices;
-    Mesh::IndicesData indices;
 
     math::Vector3f vetricies_offset;
 
@@ -714,8 +699,12 @@ Mesh Font::create_text_mesh(const std::string& text) const
         const float advance_step = (m_data->advance_width(glyph_id) * ppem / m_data->units_per_em());
         vetricies_offset += math::Vector3f{advance_step / point_size, 0, 0};
 
-        for (const auto& i : it->second.indices) {
-            indices.push_back(i + indices_offset);
+        for (const auto& sub_mesh : it->second.sub_meshes) {
+            Mesh::IndicesData indices;
+            for (const auto& i : sub_mesh.indices) {
+                indices.push_back(i + indices_offset);
+            }
+            mesh.add_sub_mesh(indices, Mesh::PrimitiveType::line_loop);
         }
     }
 
@@ -725,18 +714,15 @@ Mesh Font::create_text_mesh(const std::string& text) const
     vertices.push_back(math::Vector3f{0, 0, 0});
     vertices.push_back(math::Vector3f{0, 1, 0});
     vertices.push_back(vetricies_offset);
-    vertices.push_back(math::Vector3f{-0.001f, -0.001f, 0});
 
-    indices.push_back(indices_offset + 0);
-    indices.push_back(indices_offset + 1);
-    indices.push_back(indices_offset + 3);
-    indices.push_back(indices_offset + 3);
-    indices.push_back(indices_offset + 2);
-    indices.push_back(indices_offset + 0);
+    Mesh::IndicesData axises;
+    axises.push_back(indices_offset + 0);
+    axises.push_back(indices_offset + 1);
+    axises.push_back(indices_offset + 0);
+    axises.push_back(indices_offset + 2);
 
-    Mesh mesh;
     mesh.set_vertices(vertices);
-    mesh.set_indices(indices);
+    mesh.add_sub_mesh(axises, Mesh::PrimitiveType::lines);
 
     return mesh;
 }

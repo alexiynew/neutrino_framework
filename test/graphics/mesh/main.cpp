@@ -109,6 +109,7 @@ public:
         : Suite("MeshTest")
     {
         add_test([this]() { main_loop(); }, "main_loop");
+        // TODO: Add tests for primitive type
     }
 
 private:
@@ -126,7 +127,7 @@ private:
         Mesh mesh;
         mesh.set_vertices(cube_mesh::vertices);
         mesh.set_colors(cube_mesh::colors);
-        mesh.set_indices(cube_mesh::indices);
+        mesh.add_sub_mesh(cube_mesh::indices);
 
         Shader shader;
         shader.set_vertex_source(vertex_shader);
@@ -140,7 +141,7 @@ private:
 
         TEST_ASSERT(mesh.vertices().empty(), "Mesh clear failed.");
         TEST_ASSERT(mesh.colors().empty(), "Mesh clear failed.");
-        TEST_ASSERT(mesh.indices().empty(), "Mesh clear failed.");
+        TEST_ASSERT(mesh.sub_meshes().empty(), "Mesh clear failed.");
 
         loop(main_window, renderer, mesh, shader);
 
@@ -149,8 +150,8 @@ private:
 
         mesh.set_vertices(triangle_mesh::vertices);
         mesh.set_colors(triangle_mesh::colors);
-        mesh.generate_indices();
-        TEST_ASSERT(mesh.indices() == triangle_mesh::indices, "Indices generation failed.");
+        std::size_t id = mesh.add_sub_mesh(triangle_mesh::indices);
+        TEST_ASSERT(mesh.sub_meshes().at(id).indices == triangle_mesh::indices, "Indices generation failed.");
         TEST_ASSERT(renderer.load(mesh), "Can't load mesh.");
         loop(main_window, renderer, mesh, shader);
     }

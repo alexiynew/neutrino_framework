@@ -1,4 +1,5 @@
 ﻿#include <common/utils.hpp>
+#include <math/math.hpp>
 
 #include <graphics/src/font/tables/glyph_data.hpp>
 
@@ -102,6 +103,41 @@ private:
     const std::vector<std::uint8_t>& m_flags;
 };
 
+struct SimpleGlyph
+{
+    std::vector<std::uint16_t> end_pts_of_contours; // [number_of_contours]
+    std::uint16_t instruction_length = 0;
+    std::vector<std::uint8_t> instructions; // [instruction_length]
+    std::vector<std::uint8_t> flags;        // [end_pts_of_contours.back() + 1]
+
+    // It's called coordinates,
+    // BUT it's actually offset from the previous point with (0,0) as the implicit first point.
+    std::vector<std::int16_t> x_coordinates; // [end_pts_of_contours.back() + 1]
+    std::vector<std::int16_t> y_coordinates; // [end_pts_of_contours.back() + 1]
+};
+
+struct CompositeGlyphComponent
+{
+    std::uint16_t flags       = 0;
+    std::uint16_t glyph_index = 0;
+    std::int32_t argument1    = 0;
+    std::int32_t argument2    = 0;
+
+    F2Dot14 scale   = 0;
+    F2Dot14 xscale  = 0;
+    F2Dot14 scale01 = 0;
+    F2Dot14 scale10 = 0;
+    F2Dot14 yscale  = 0;
+};
+
+struct CompositeGlyph
+{
+    std::vector<CompositeGlyphComponent> components;
+
+    std::uint16_t instruction_length = 0;
+    std::vector<std::uint8_t> instructions; // [instruction_length]
+};
+
 std::vector<std::uint8_t> parse_flags(const std::uint16_t points_count, BufferReader& in)
 {
     std::vector<std::uint8_t> flags;
@@ -160,9 +196,9 @@ std::vector<std::int16_t> parse_coordinates(const size_t points_count,
     return coordinates;
 }
 
-GlyphData::SimpleGlyph parse_simple_glyph(size_t number_of_contours, BufferReader& in)
+SimpleGlyph parse_simple_glyph(size_t number_of_contours, BufferReader& in)
 {
-    GlyphData::SimpleGlyph data;
+    SimpleGlyph data;
 
     data.end_pts_of_contours.reserve(number_of_contours);
     for (size_t i = 0; i < number_of_contours; ++i) {
@@ -188,12 +224,12 @@ GlyphData::SimpleGlyph parse_simple_glyph(size_t number_of_contours, BufferReade
     return data;
 }
 
-std::vector<GlyphData::CompositeGlyphComponent> parse_composite_glyph_components(BufferReader& in)
+std::vector<CompositeGlyphComponent> parse_composite_glyph_components(BufferReader& in)
 {
-    std::vector<GlyphData::CompositeGlyphComponent> components;
+    std::vector<CompositeGlyphComponent> components;
 
     do {
-        GlyphData::CompositeGlyphComponent component;
+        CompositeGlyphComponent component;
 
         in >> component.flags;
         in >> component.glyph_index;
@@ -236,9 +272,9 @@ std::vector<GlyphData::CompositeGlyphComponent> parse_composite_glyph_components
     return components;
 }
 
-GlyphData::CompositeGlyph parse_composite_glyph(BufferReader& in)
+CompositeGlyph parse_composite_glyph(BufferReader& in)
 {
-    GlyphData::CompositeGlyph data;
+    CompositeGlyph data;
 
     data.components = parse_composite_glyph_components(in);
 
@@ -255,12 +291,54 @@ GlyphData::CompositeGlyph parse_composite_glyph(BufferReader& in)
     return data;
 }
 
+std::vector<GlyphData::Glyph::ContourType> get_glyph_contours(const SimpleGlyph& glyph)
+{
+    using framework::math::Vector2f;
+
+    std::vector<GlyphData::Glyph::ContourType> result;
+
+    std::size_t contour_start_point = 0;
+    for (std::uint16_t contour_last_point : glyph.end_pts_of_contours) {
+        const std::size_t contour_size = contour_last_point + 1;
+
+        GlyphData::Glyph::ControlPoint prev_point;
+
+        GlyphData::Glyph::ContourType contour;
+        contour.reserve(contour_size);
+
+        for (std::size_t i = contour_start_point; i < contour_size; ++i) {
+            auto pos         = Vector2f{glyph.x_coordinates[i], glyph.y_coordinates[i]};
+            bool is_on_curve = (glyph.flags[i] & SimpleGlyphFlags::on_curve_point);
+
+            // Two control point is not on contour. Need to insert real point between them.
+            if (!prev_point.is_on_curve && !is_on_curve) {
+                contour.push_back({mix(prev_point.position, pos, 0.5f), true});
+            }
+
+            contour.push_back({pos, is_on_curve});
+            prev_point = contour.back();
+        }
+
+        result.push_back(contour);
+
+        contour_start_point = contour_size;
+    }
+
+    return result;
+}
+
+std::vector<GlyphData::Glyph::ContourType> get_glyph_contours(const CompositeGlyph&)
+{
+    // throw NotImplementedError(std::string(__FUNCTION__) + " not implemented");
+    return {};
+}
+
 } // namespace
 
 namespace framework::graphics::details::font
 {
 
-#pragma region class GlyphHeader
+#pragma region class GlyphData::GlyphHeader
 
 GlyphData::GlyphHeader::GlyphHeader(BufferReader& in)
 {
@@ -303,6 +381,8 @@ std::int16_t GlyphData::GlyphHeader::y_max() const
 
 #pragma endregion
 
+#pragma region class GlyphData::Glyph
+
 GlyphData::Glyph::Glyph(BufferReader& in)
     : m_header(in)
 {
@@ -312,9 +392,9 @@ GlyphData::Glyph::Glyph(BufferReader& in)
     }
 
     if (m_header.is_simple_glyph()) {
-        m_simple_glyph = parse_simple_glyph(static_cast<size_t>(m_header.number_of_contours()), in);
+        m_contours = get_glyph_contours(parse_simple_glyph(static_cast<size_t>(m_header.number_of_contours()), in));
     } else {
-        m_composite_glyph = parse_composite_glyph(in);
+        m_contours = get_glyph_contours(parse_composite_glyph(in));
     }
 }
 
@@ -323,15 +403,12 @@ const GlyphData::GlyphHeader& GlyphData::Glyph::header() const
     return m_header;
 }
 
-const GlyphData::SimpleGlyph& GlyphData::Glyph::simple_glyph() const
+const std::vector<GlyphData::Glyph::ContourType>& GlyphData::Glyph::contours() const
 {
-    return m_simple_glyph;
+    return m_contours;
 }
 
-const GlyphData::CompositeGlyph& GlyphData::Glyph::composite_glyph() const
-{
-    return m_composite_glyph;
-}
+#pragma endregion
 
 GlyphData::GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data)
 {
