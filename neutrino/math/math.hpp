@@ -3,6 +3,7 @@
 
 #define FRAMEWORK_MATH_DETAILS
 
+#include <math/inc/bezier_functions.hpp>
 #include <math/inc/common_functions.hpp>
 #include <math/inc/constants.hpp>
 #include <math/inc/exponential_functions.hpp>

@@ -12,6 +12,7 @@ set(TESTS
     vector_operators
     vector_relational
     vector_trigonometric
+    bezier_functions
     math_utility
 )
 
