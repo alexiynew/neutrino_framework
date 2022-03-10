@@ -21,12 +21,17 @@ public:
         int components_count = 0;
     };
 
+    struct SubMeshInfo
+    {
+        int indices_count           = 0;
+        unsigned int primitive_type = 0;
+    };
+
     struct IndexBufferInfo
     {
         std::uint32_t buffer = 0;
         int type             = 0;
-        int indices_count    = 0;
-        int primitive_type   = 0;
+        std::vector<SubMeshInfo> sub_meshes;
     };
 
     OpenglMesh() = default;
@@ -49,7 +54,7 @@ private:
     void enable_attribute(Attribute attribute) const;
 
     std::uint32_t m_vertex_array = 0;
-    std::vector<IndexBufferInfo> m_index_buffers;
+    IndexBufferInfo m_index_buffer;
 
     std::array<VertexBufferInfo, attributes_count> m_vertex_buffers = {};
 

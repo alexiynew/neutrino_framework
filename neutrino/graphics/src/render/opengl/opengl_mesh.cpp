@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include <graphics/mesh.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
@@ -41,7 +43,7 @@ GLenum get_opengl_primitive_type(Mesh::PrimitiveType type)
 }
 
 template <typename T>
-OpenglMesh::VertexBufferInfo create_vertex_buffer(int buffer_type, const std::vector<T>& data)
+OpenglMesh::VertexBufferInfo create_vertex_buffer(GLenum buffer_type, const std::vector<T>& data)
 {
     if (data.empty() || data.size() >= max_size) {
         return OpenglMesh::VertexBufferInfo();
@@ -53,9 +55,9 @@ OpenglMesh::VertexBufferInfo create_vertex_buffer(int buffer_type, const std::ve
 
     glGenBuffers(1, &info.buffer);
 
-    glBindBuffer(static_cast<GLenum>(buffer_type), info.buffer);
-    glBufferData(static_cast<GLenum>(buffer_type), data_size, data.data(), GL_STATIC_DRAW);
-    glBindBuffer(static_cast<GLenum>(buffer_type), 0);
+    glBindBuffer(buffer_type, info.buffer);
+    glBufferData(buffer_type, data_size, data.data(), GL_STATIC_DRAW);
+    glBindBuffer(buffer_type, 0);
 
     if constexpr (std::is_same_v<T, Mesh::VertexData::value_type>) {
         info.type             = GL_FLOAT;
@@ -74,28 +76,41 @@ OpenglMesh::VertexBufferInfo create_vertex_buffer(int buffer_type, const std::ve
     return info;
 }
 
-OpenglMesh::IndexBufferInfo create_index_buffer(int buffer_type, const Mesh::SubMesh& sub_mesh)
+OpenglMesh::IndexBufferInfo create_index_buffer(GLenum buffer_type, const Mesh::SubMeshMap& sub_meshes)
 {
-    if (sub_mesh.indices.empty() || sub_mesh.indices.size() >= max_size) {
+    if (sub_meshes.empty()) {
         return OpenglMesh::IndexBufferInfo();
     }
 
-    const GLsizeiptr data_size = static_cast<GLsizeiptr>(sub_mesh.indices.size() *
-                                                         sizeof(Mesh::IndicesData::value_type));
+    const std::size_t data_size = std::accumulate(sub_meshes.begin(),
+                                                  sub_meshes.end(),
+                                                  std::size_t(0),
+                                                  [](std::size_t acc, const auto& sub_mesh) {
+                                                      return acc + sub_mesh.second.indices.size() *
+                                                                   sizeof(Mesh::IndicesData::value_type);
+                                                  });
 
     OpenglMesh::IndexBufferInfo info;
 
     glGenBuffers(1, &info.buffer);
 
-    glBindBuffer(static_cast<GLenum>(buffer_type), info.buffer);
-    glBufferData(static_cast<GLenum>(buffer_type), data_size, sub_mesh.indices.data(), GL_STATIC_DRAW);
-    glBindBuffer(static_cast<GLenum>(buffer_type), 0);
+    glBindBuffer(buffer_type, info.buffer);
+    glBufferData(buffer_type, static_cast<GLsizeiptr>(data_size), nullptr, GL_STATIC_DRAW);
+
+    GLintptr offset = 0;
+    for (const auto& [_, sub_mesh] : sub_meshes) {
+        GLsizeiptr size = static_cast<GLsizeiptr>(sub_mesh.indices.size() * sizeof(Mesh::IndicesData::value_type));
+        glBufferSubData(buffer_type, offset, size, sub_mesh.indices.data());
+        offset += size;
+        info.sub_meshes.push_back(
+        {static_cast<GLsizei>(sub_mesh.indices.size()), get_opengl_primitive_type(sub_mesh.primitive_type)});
+    }
+
+    glBindBuffer(buffer_type, 0);
 
     static_assert(std::is_same_v<std::uint32_t, Mesh::IndicesData::value_type>,
                   "Type of indices is changed, update the type field below.");
-    info.type           = GL_UNSIGNED_INT;
-    info.indices_count  = static_cast<int>(sub_mesh.indices.size());
-    info.primitive_type = get_opengl_primitive_type(sub_mesh.primitive_type);
+    info.type = GL_UNSIGNED_INT;
 
     return info;
 }
@@ -116,14 +131,12 @@ void OpenglMesh::clear()
         info.buffer = 0;
     }
 
-    for (const auto& buffer_info : m_index_buffers) {
-        glDeleteBuffers(1, &buffer_info.buffer);
-    }
+    glDeleteBuffers(1, &m_index_buffer.buffer);
+    m_index_buffer.buffer = 0;
+    m_index_buffer.sub_meshes.clear();
 
     glDeleteVertexArrays(1, &m_vertex_array);
-
     m_vertex_array = 0;
-    m_index_buffers.clear();
 }
 
 bool OpenglMesh::load(const Mesh& mesh)
@@ -150,9 +163,7 @@ bool OpenglMesh::load(const Mesh& mesh)
     m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord7)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(7));
     // clang-format on
 
-    for (const auto& [_, sub_mesh] : mesh.sub_meshes()) {
-        m_index_buffers.push_back(create_index_buffer(GL_ELEMENT_ARRAY_BUFFER, sub_mesh));
-    }
+    m_index_buffer = create_index_buffer(GL_ELEMENT_ARRAY_BUFFER, mesh.sub_meshes());
 
     glBindVertexArray(0);
 
@@ -167,15 +178,18 @@ void OpenglMesh::draw() const
         enable_attribute(attr);
     }
 
-    for (const IndexBufferInfo& info : m_index_buffers) {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, info.buffer);
-        glDrawElements(info.primitive_type, info.indices_count, static_cast<GLenum>(info.type), nullptr);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer.buffer);
+
+    std::uint8_t* offset = 0;
+    for (const SubMeshInfo& info : m_index_buffer.sub_meshes) {
+        glDrawElements(info.primitive_type, info.indices_count, m_index_buffer.type, offset);
+        offset += info.indices_count * sizeof(Mesh::IndicesData::value_type);
     }
 }
 
 bool OpenglMesh::valid() const
 {
-    return m_vertex_array != 0 && !m_index_buffers.empty();
+    return m_vertex_array != 0 && m_index_buffer.buffer != 0 && !m_index_buffer.sub_meshes.empty();
 }
 
 void OpenglMesh::enable_attribute(Attribute attribute) const

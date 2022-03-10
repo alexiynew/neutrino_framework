@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <common/utils.hpp>
+#include <graphics/color.hpp>
 #include <graphics/font.hpp>
 #include <graphics/mesh.hpp>
 #include <log/log.hpp>
@@ -273,6 +274,7 @@ std::unordered_map<Tag, Table> read_all_tables(std::ifstream& in, const std::vec
 struct GlyphMeshData
 {
     Mesh::VertexData vertices;
+    Mesh::ColorData colors;
     std::vector<Mesh::SubMesh> sub_meshes;
 };
 
@@ -287,6 +289,8 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t
     //
     // pixel_coordinate = em_coordinate * ppem / units_per_em
 
+    using graphics::Color;
+    using math::Vector2f;
     using math::Vector3f;
 
     // TODO: provide point size with font configuration
@@ -303,22 +307,27 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t
     const float x_max = glyph.header().x_max() * ppem / units_per_em;
     const float y_max = glyph.header().y_max() * ppem / units_per_em;
 
-    // ccw vertices order
-    Mesh::VertexData vertices;
-    vertices.push_back(Vector3f(x_min, y_max, 0.0f) / point_size);
-    vertices.push_back(Vector3f(x_min, y_min, 0.0f) / point_size);
-    vertices.push_back(Vector3f(x_max, y_min, 0.0f) / point_size);
-    vertices.push_back(Vector3f(x_max, y_max, 0.0f) / point_size);
-
-    // 2 triangles in ccw point order
-    Mesh::IndicesData bbox;
-    bbox.push_back(0);
-    bbox.push_back(1);
-    bbox.push_back(2);
-    bbox.push_back(3);
-
     GlyphMeshData result;
-    result.sub_meshes.push_back({bbox, Mesh::PrimitiveType::line_loop});
+
+    // ccw vertices order
+    //  result.vertices.push_back(Vector3f(x_min, y_max, 0.0f) / point_size);
+    //  result.vertices.push_back(Vector3f(x_min, y_min, 0.0f) / point_size);
+    //  result.vertices.push_back(Vector3f(x_max, y_min, 0.0f) / point_size);
+    //  result.vertices.push_back(Vector3f(x_max, y_max, 0.0f) / point_size);
+
+    //  result.colors.push_back(Color(0xFF5522FFu));
+    //  result.colors.push_back(Color(0xFF5522FFu));
+    //  result.colors.push_back(Color(0xFF5522FFu));
+    //  result.colors.push_back(Color(0xFF5522FFu));
+
+    //  // 2 triangles in ccw point order
+    //  Mesh::IndicesData bbox;
+    //  bbox.push_back(0);
+    //  bbox.push_back(1);
+    //  bbox.push_back(2);
+    //  bbox.push_back(3);
+
+    //  result.sub_meshes.push_back({bbox, Mesh::PrimitiveType::line_loop});
 
     // layout(isolines) in;
     // in vec3 tcPos[];
@@ -330,19 +339,32 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t
     // }
 
     for (const auto& contour : glyph.contours()) {
-        Vector3f prev_point(0, 0, 0);
         Mesh::IndicesData contour_sub_mesh;
-        for (const auto& point : contour) {
-            vertices.push_back(prev_point + Vector3f(point.position * ppem / units_per_em / point_size));
-            contour_sub_mesh.push_back(static_cast<std::uint16_t>(vertices.size() - 1));
 
-            prev_point = vertices.back();
+        for (const auto& point : contour) {
+            if (point.is_on_curve) {
+                result.vertices.push_back(Vector3f(point.position * ppem / units_per_em) / point_size);
+                result.colors.push_back(Color(0x22FFEEFFu));
+                contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
+            }
         }
 
         result.sub_meshes.push_back({contour_sub_mesh, Mesh::PrimitiveType::line_loop});
     }
 
-    result.vertices = std::move(vertices);
+    for (const auto& contour : glyph.contours()) {
+        Mesh::IndicesData off_contour_sub_mesh;
+
+        for (const auto& point : contour) {
+            if (!point.is_on_curve) {
+                result.vertices.push_back(Vector3f(point.position * ppem / units_per_em) / point_size);
+                result.colors.push_back(Color(0xee55FFFFu));
+                off_contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
+            }
+        }
+
+        result.sub_meshes.push_back({off_contour_sub_mesh, Mesh::PrimitiveType::points});
+    }
 
     return result;
 }
@@ -677,6 +699,7 @@ Mesh Font::create_text_mesh(const std::string& text) const
     Mesh mesh;
 
     Mesh::VertexData vertices;
+    Mesh::ColorData colors;
 
     math::Vector3f vetricies_offset;
 
@@ -695,6 +718,10 @@ Mesh Font::create_text_mesh(const std::string& text) const
             vertices.push_back(v + vetricies_offset);
         }
 
+        for (const auto& c : it->second.colors) {
+            colors.push_back(c);
+        }
+
         // devision by point_size is for clamp points in range from 0 to 1.
         const float advance_step = (m_data->advance_width(glyph_id) * ppem / m_data->units_per_em());
         vetricies_offset += math::Vector3f{advance_step / point_size, 0, 0};
@@ -704,7 +731,7 @@ Mesh Font::create_text_mesh(const std::string& text) const
             for (const auto& i : sub_mesh.indices) {
                 indices.push_back(i + indices_offset);
             }
-            mesh.add_sub_mesh(indices, Mesh::PrimitiveType::line_loop);
+            mesh.add_sub_mesh(indices, sub_mesh.primitive_type);
         }
     }
 
@@ -713,15 +740,22 @@ Mesh Font::create_text_mesh(const std::string& text) const
 
     vertices.push_back(math::Vector3f{0, 0, 0});
     vertices.push_back(math::Vector3f{0, 1, 0});
+    vertices.push_back(math::Vector3f{0, 0, 0});
     vertices.push_back(vetricies_offset);
+
+    colors.push_back(Color(0x00FF00FFu));
+    colors.push_back(Color(0x00FF00FFu));
+    colors.push_back(Color(0xFF0000FFu));
+    colors.push_back(Color(0xFF0000FFu));
 
     Mesh::IndicesData axises;
     axises.push_back(indices_offset + 0);
     axises.push_back(indices_offset + 1);
-    axises.push_back(indices_offset + 0);
     axises.push_back(indices_offset + 2);
+    axises.push_back(indices_offset + 3);
 
     mesh.set_vertices(vertices);
+    mesh.set_colors(colors);
     mesh.add_sub_mesh(axises, Mesh::PrimitiveType::lines);
 
     return mesh;

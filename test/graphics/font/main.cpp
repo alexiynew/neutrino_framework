@@ -20,6 +20,7 @@ namespace
 const std::string vertex_shader =
 "#version 330 core\n\
 layout(location = 0) in vec3 position;\n\
+layout(location = 3) in vec4 color;\n\
 \n\
 uniform mat4 projectionMatrix;\n\
 \n\
@@ -28,7 +29,7 @@ out vec4 fragColor;\n\
 void main()\n\
 {\n\
     gl_Position = projectionMatrix * vec4(position, 1.0);\n\
-    fragColor = vec4(1.0, 0.5, 0.3, 1.0);\n\
+    fragColor = color / 256.0;\n\
 }\n\
 ";
 
@@ -63,7 +64,7 @@ private:
         renderer.set_polygon_mode(Renderer::PolygonMode::line);
 
         window.on_resize.connect([&renderer](const Window&, Size) {
-            renderer.set_uniform("projectionMatrix", ortho2d<float>(-0.5, 5.5, -0.5, 5.5));
+            renderer.set_uniform("projectionMatrix", ortho2d<float>(-0.5, 5.5, -2.5, 3.5));
         });
 
         Font font;
@@ -71,8 +72,8 @@ private:
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
 
-        font.precache("o1234567890");
-        Mesh text_mesh = font.create_text_mesh("o1234567890");
+        font.precache("абвгдеЁ");
+        Mesh text_mesh = font.create_text_mesh("абвгдеЁ");
         TEST_ASSERT(text_mesh.vertices().size() > 0, "Text mesh is empty.");
         TEST_ASSERT(text_mesh.sub_meshes().size() > 0, "Text mesh is empty.");
 

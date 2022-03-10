@@ -173,6 +173,7 @@ std::vector<std::int16_t> parse_coordinates(const size_t points_count,
     std::vector<std::int16_t> coordinates;
     coordinates.reserve(points_count);
 
+    std::int16_t prev_value = 0;
     for (size_t i = 0; i < points_count; ++i) {
         const bool is_short    = flags_interpretator.is_short(i);
         const bool is_positive = flags_interpretator.is_positive(i);
@@ -190,7 +191,8 @@ std::vector<std::int16_t> parse_coordinates(const size_t points_count,
             offset = in.get<std::int16_t>();
         }
 
-        coordinates.push_back(offset);
+        coordinates.push_back(prev_value + offset);
+        prev_value = coordinates.back();
     }
 
     return coordinates;
