@@ -64,7 +64,7 @@ private:
         renderer.set_polygon_mode(Renderer::PolygonMode::line);
 
         window.on_resize.connect([&renderer](const Window&, Size) {
-            renderer.set_uniform("projectionMatrix", ortho2d<float>(-0.5, 5.5, -2.5, 3.5));
+            renderer.set_uniform("projectionMatrix", ortho2d<float>(-0.5, 1.5, -0.5, 1.5));
         });
 
         Font font;
@@ -72,8 +72,12 @@ private:
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
 
-        font.precache("абвгдеЁ");
-        Mesh text_mesh = font.create_text_mesh("абвгдеЁ");
+        const std::string str = "0123456789";
+        // const std::string str = "abcdefghijklmnopqrstuvwzxy[]{};':\",./<>?`~!@#$%^&*()_+";
+        // const std::string str = "ABCDEFGHIJKLMNOPQRSTUVWZXY[]{};':\",./<>?`~!@#$%^&*()_+";
+
+        font.precache(str);
+        Mesh text_mesh = font.create_text_mesh(str);
         TEST_ASSERT(text_mesh.vertices().size() > 0, "Text mesh is empty.");
         TEST_ASSERT(text_mesh.sub_meshes().size() > 0, "Text mesh is empty.");
 

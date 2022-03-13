@@ -107,11 +107,8 @@ struct SimpleGlyph
 {
     std::vector<std::uint16_t> end_pts_of_contours; // [number_of_contours]
     std::uint16_t instruction_length = 0;
-    std::vector<std::uint8_t> instructions; // [instruction_length]
-    std::vector<std::uint8_t> flags;        // [end_pts_of_contours.back() + 1]
-
-    // It's called coordinates,
-    // BUT it's actually offset from the previous point with (0,0) as the implicit first point.
+    std::vector<std::uint8_t> instructions;  // [instruction_length]
+    std::vector<std::uint8_t> flags;         // [end_pts_of_contours.back() + 1]
     std::vector<std::int16_t> x_coordinates; // [end_pts_of_contours.back() + 1]
     std::vector<std::int16_t> y_coordinates; // [end_pts_of_contours.back() + 1]
 };

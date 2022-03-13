@@ -280,32 +280,22 @@ struct GlyphMeshData
 
 GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t units_per_em)
 {
-    // pointSize * resolution / ( 72 points_per_inch * units_per_em )
-    // pointSize  - some point size;
-    // resolution - screen resolution in dpi (72 or 96 dpi default)
-    //
-    // pixels per em
-    // ppem = pointSize * dpi / 72
-    //
-    // pixel_coordinate = em_coordinate * ppem / units_per_em
+    // INFO: Beakouse of we scale all points positions in virtual space of range 0 to 1.
+    //       There is no need in calculatoint relative to text size, screen resolution and pixels per em.
+    //       It means pixels per em is equal to units per em.
 
     using graphics::Color;
+    using math::quadratic_bezier;
     using math::Vector2f;
     using math::Vector3f;
 
-    // TODO: provide point size with font configuration
-    const int point_size = 18;
+    // TODO: provide quality with font configuration
+    const int quality = 3; // 1, 2, 3...
 
-    // TODO: Consider using actual screen dpi. To simplify implementation for now the 72 dpi would be used.
-    //       This means that points and pixels per em are equal.
-    const int dpi = 72;
-
-    const float ppem = point_size * dpi / 72;
-
-    const float x_min = glyph.header().x_min() * ppem / units_per_em;
-    const float y_min = glyph.header().y_min() * ppem / units_per_em;
-    const float x_max = glyph.header().x_max() * ppem / units_per_em;
-    const float y_max = glyph.header().y_max() * ppem / units_per_em;
+    const float x_min = glyph.header().x_min() / static_cast<float>(units_per_em);
+    const float y_min = glyph.header().y_min() / static_cast<float>(units_per_em);
+    const float x_max = glyph.header().x_max() / static_cast<float>(units_per_em);
+    const float y_max = glyph.header().y_max() / static_cast<float>(units_per_em);
 
     GlyphMeshData result;
 
@@ -329,42 +319,58 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t
 
     //  result.sub_meshes.push_back({bbox, Mesh::PrimitiveType::line_loop});
 
-    // layout(isolines) in;
-    // in vec3 tcPos[];
-    // uniform mat4 uMVP;
-    // void main() {
-    //     float t = gl_TessCoord.x;
-    //     vec3 ePos = bezier4(tcPos[0], tcPos[1], tcPos[2], tcPos[3], t);
-    //     gl_Position = uMVP * vec4(ePos, 1);
-    // }
-
     for (const auto& contour : glyph.contours()) {
         Mesh::IndicesData contour_sub_mesh;
 
-        for (const auto& point : contour) {
+        for (size_t i = 0; i < contour.size(); ++i) {
+            const auto& point = contour[i];
             if (point.is_on_curve) {
-                result.vertices.push_back(Vector3f(point.position * ppem / units_per_em) / point_size);
+                result.vertices.push_back(Vector3f(point.position / units_per_em));
                 result.colors.push_back(Color(0x22FFEEFFu));
                 contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
+            } else {
+                Vector2f p1;
+                Vector2f p2;
+                if (i == 0) {
+                    p1 = contour.back().position;
+                    p2 = contour[i + 1].position;
+                } else if (i == contour.size() - 1) {
+                    p1 = contour[i - 1].position;
+                    p2 = contour.front().position;
+                } else {
+                    p1 = contour[i - 1].position;
+                    p2 = contour[i + 1].position;
+                }
+
+                // genqrate points
+                const float q_step = 1.0f / (quality + 1.0f);
+                for (int q = 0; q < quality; ++q) {
+                    const Vector2f pos = quadratic_bezier(p1, point.position, p2, (q + 1) * q_step);
+
+                    result.vertices.push_back(Vector3f(pos / units_per_em));
+                    result.colors.push_back(Color(0x22FFEEFFu));
+                    contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
+                }
             }
         }
 
         result.sub_meshes.push_back({contour_sub_mesh, Mesh::PrimitiveType::line_loop});
     }
 
-    for (const auto& contour : glyph.contours()) {
-        Mesh::IndicesData off_contour_sub_mesh;
+    // Add controll points
+    //  for (const auto& contour : glyph.contours()) {
+    //      Mesh::IndicesData off_contour_sub_mesh;
 
-        for (const auto& point : contour) {
-            if (!point.is_on_curve) {
-                result.vertices.push_back(Vector3f(point.position * ppem / units_per_em) / point_size);
-                result.colors.push_back(Color(0xee55FFFFu));
-                off_contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
-            }
-        }
+    //      for (const auto& point : contour) {
+    //          if (!point.is_on_curve) {
+    //              result.vertices.push_back(Vector3f(point.position * ppem / units_per_em) / point_size);
+    //              result.colors.push_back(Color(0xee55FFFFu));
+    //              off_contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
+    //          }
+    //      }
 
-        result.sub_meshes.push_back({off_contour_sub_mesh, Mesh::PrimitiveType::points});
-    }
+    //      result.sub_meshes.push_back({off_contour_sub_mesh, Mesh::PrimitiveType::points});
+    //  }
 
     return result;
 }
@@ -686,14 +692,6 @@ Mesh Font::create_text_mesh(const std::string& text) const
         throw std::runtime_error("Font data is not loaded. See Font::load and Font::precache.");
     }
 
-    // TODO: provide point size with font configuration
-    const int point_size = 18;
-
-    // TODO: Consider using actual screen dpi. To simplify implementation for now the 72 dpi would be used.
-    //       This means that points and pixels per em are equal.
-    const int dpi    = 72;
-    const float ppem = point_size * dpi / 72;
-
     // see OS2 sTypoAscender, sTypoDescender and sTypoLineGap for linespacing
 
     Mesh mesh;
@@ -723,8 +721,8 @@ Mesh Font::create_text_mesh(const std::string& text) const
         }
 
         // devision by point_size is for clamp points in range from 0 to 1.
-        const float advance_step = (m_data->advance_width(glyph_id) * ppem / m_data->units_per_em());
-        vetricies_offset += math::Vector3f{advance_step / point_size, 0, 0};
+        const float advance_step = (m_data->advance_width(glyph_id) / static_cast<float>(m_data->units_per_em()));
+        vetricies_offset += math::Vector3f{advance_step, 0, 0};
 
         for (const auto& sub_mesh : it->second.sub_meshes) {
             Mesh::IndicesData indices;
