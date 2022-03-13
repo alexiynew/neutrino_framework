@@ -291,13 +291,13 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t
 
     // TODO: provide quality with font configuration
     const int quality = 3; // 1, 2, 3...
-
-    const float x_min = glyph.header().x_min() / static_cast<float>(units_per_em);
-    const float y_min = glyph.header().y_min() / static_cast<float>(units_per_em);
-    const float x_max = glyph.header().x_max() / static_cast<float>(units_per_em);
-    const float y_max = glyph.header().y_max() / static_cast<float>(units_per_em);
-
     GlyphMeshData result;
+
+    // Add BBox
+    // const float x_min = glyph.header().x_min() / static_cast<float>(units_per_em);
+    // const float y_min = glyph.header().y_min() / static_cast<float>(units_per_em);
+    // const float x_max = glyph.header().x_max() / static_cast<float>(units_per_em);
+    // const float y_max = glyph.header().y_max() / static_cast<float>(units_per_em);
 
     // ccw vertices order
     //  result.vertices.push_back(Vector3f(x_min, y_max, 0.0f) / point_size);
@@ -549,15 +549,79 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
     }
 }
 
-void Font::precache(const std::string& chars)
+Mesh Font::create_text_mesh(const std::string& text)
 {
     if (m_data == nullptr) {
-        return;
+        throw std::runtime_error("Font data is not loaded. See Font::load and Font::precache.");
     }
 
-    for (const auto& cp : utf::to_codepoints(chars)) {
-        m_data->add_glyph(cp);
+    precache(text);
+
+    // see OS2 sTypoAscender, sTypoDescender and sTypoLineGap for linespacing
+
+    Mesh mesh;
+
+    Mesh::VertexData vertices;
+    Mesh::ColorData colors;
+
+    math::Vector3f vetricies_offset;
+
+    for (const auto& cp : utf::to_codepoints(text)) {
+        auto it = m_data->glyphs().find(cp);
+
+        if (it == m_data->glyphs().end()) {
+            // TODO: use empty glyph. See - OS2 table usDefaultChar
+            throw std::runtime_error("Usage of empty glyph is not implemented");
+        }
+
+        const GlyphId glyph_id             = m_data->glyph_index(cp);
+        const std::uint16_t indices_offset = static_cast<std::uint16_t>(vertices.size());
+
+        for (const auto& v : it->second.vertices) {
+            vertices.push_back(v + vetricies_offset);
+        }
+
+        for (const auto& c : it->second.colors) {
+            colors.push_back(c);
+        }
+
+        // devision by point_size is for clamp points in range from 0 to 1.
+        const float advance_step = (m_data->advance_width(glyph_id) / static_cast<float>(m_data->units_per_em()));
+        vetricies_offset += math::Vector3f{advance_step, 0, 0};
+
+        for (const auto& sub_mesh : it->second.sub_meshes) {
+            Mesh::IndicesData indices;
+            for (const auto& i : sub_mesh.indices) {
+                indices.push_back(i + indices_offset);
+            }
+            mesh.add_sub_mesh(indices, sub_mesh.primitive_type);
+        }
     }
+
+    // Add axises
+    const std::uint16_t indices_offset = static_cast<std::uint16_t>(vertices.size());
+
+    vertices.push_back(math::Vector3f{0, 0, 0});
+    vertices.push_back(math::Vector3f{0, 1, 0});
+    vertices.push_back(math::Vector3f{0, 0, 0});
+    vertices.push_back(vetricies_offset);
+
+    colors.push_back(Color(0x00FF00FFu));
+    colors.push_back(Color(0x00FF00FFu));
+    colors.push_back(Color(0xFF0000FFu));
+    colors.push_back(Color(0xFF0000FFu));
+
+    Mesh::IndicesData axises;
+    axises.push_back(indices_offset + 0);
+    axises.push_back(indices_offset + 1);
+    axises.push_back(indices_offset + 2);
+    axises.push_back(indices_offset + 3);
+
+    mesh.set_vertices(vertices);
+    mesh.set_colors(colors);
+    mesh.add_sub_mesh(axises, Mesh::PrimitiveType::lines);
+
+    return mesh;
 }
 
 Font::LoadResult Font::parse(const std::filesystem::path& filepath)
@@ -681,82 +745,11 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     return LoadResult::Success;
 }
 
-InstanceId Font::instance_id() const
+void Font::precache(const std::string& chars)
 {
-    return m_instance_id;
-}
-
-Mesh Font::create_text_mesh(const std::string& text) const
-{
-    if (m_data == nullptr) {
-        throw std::runtime_error("Font data is not loaded. See Font::load and Font::precache.");
+    for (const auto& cp : utf::to_codepoints(chars)) {
+        m_data->add_glyph(cp);
     }
-
-    // see OS2 sTypoAscender, sTypoDescender and sTypoLineGap for linespacing
-
-    Mesh mesh;
-
-    Mesh::VertexData vertices;
-    Mesh::ColorData colors;
-
-    math::Vector3f vetricies_offset;
-
-    for (const auto& cp : utf::to_codepoints(text)) {
-        auto it = m_data->glyphs().find(cp);
-
-        if (it == m_data->glyphs().end()) {
-            // TODO: use empty glyph. See - OS2 table usDefaultChar
-            throw std::runtime_error("Usage of empty glyph is not implemented");
-        }
-
-        const GlyphId glyph_id             = m_data->glyph_index(cp);
-        const std::uint16_t indices_offset = static_cast<std::uint16_t>(vertices.size());
-
-        for (const auto& v : it->second.vertices) {
-            vertices.push_back(v + vetricies_offset);
-        }
-
-        for (const auto& c : it->second.colors) {
-            colors.push_back(c);
-        }
-
-        // devision by point_size is for clamp points in range from 0 to 1.
-        const float advance_step = (m_data->advance_width(glyph_id) / static_cast<float>(m_data->units_per_em()));
-        vetricies_offset += math::Vector3f{advance_step, 0, 0};
-
-        for (const auto& sub_mesh : it->second.sub_meshes) {
-            Mesh::IndicesData indices;
-            for (const auto& i : sub_mesh.indices) {
-                indices.push_back(i + indices_offset);
-            }
-            mesh.add_sub_mesh(indices, sub_mesh.primitive_type);
-        }
-    }
-
-    // Add axises
-    const std::uint16_t indices_offset = static_cast<std::uint16_t>(vertices.size());
-
-    vertices.push_back(math::Vector3f{0, 0, 0});
-    vertices.push_back(math::Vector3f{0, 1, 0});
-    vertices.push_back(math::Vector3f{0, 0, 0});
-    vertices.push_back(vetricies_offset);
-
-    colors.push_back(Color(0x00FF00FFu));
-    colors.push_back(Color(0x00FF00FFu));
-    colors.push_back(Color(0xFF0000FFu));
-    colors.push_back(Color(0xFF0000FFu));
-
-    Mesh::IndicesData axises;
-    axises.push_back(indices_offset + 0);
-    axises.push_back(indices_offset + 1);
-    axises.push_back(indices_offset + 2);
-    axises.push_back(indices_offset + 3);
-
-    mesh.set_vertices(vertices);
-    mesh.set_colors(colors);
-    mesh.add_sub_mesh(axises, Mesh::PrimitiveType::lines);
-
-    return mesh;
 }
 
 void swap(Font& lhs, Font& rhs) noexcept

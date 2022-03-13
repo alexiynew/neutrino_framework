@@ -184,7 +184,6 @@ std::vector<std::int16_t> parse_coordinates(const size_t points_count,
         } else if (!is_same) {
             // If the coordinate is the same there is no offset. so offset == 0.
             // Otherwise offset is two bytes long
-
             offset = in.get<std::int16_t>();
         }
 
@@ -212,6 +211,10 @@ SimpleGlyph parse_simple_glyph(size_t number_of_contours, BufferReader& in)
         }
     }
 
+    if (number_of_contours == 0) {
+        return data;
+    }
+
     // end_pts_of_contours stores the index of the end points.
     // Therefore the number of coordinates is the last index + 1
     const std::uint16_t points_count = data.end_pts_of_contours.back() + 1;
@@ -219,6 +222,18 @@ SimpleGlyph parse_simple_glyph(size_t number_of_contours, BufferReader& in)
     data.flags         = parse_flags(points_count, in);
     data.x_coordinates = parse_coordinates(points_count, XCoordinatesInterpretator(data.flags), in);
     data.y_coordinates = parse_coordinates(points_count, YCoordinatesInterpretator(data.flags), in);
+
+    if (data.flags.size() != data.x_coordinates.size() || data.flags.size() != data.y_coordinates.size()) {
+        throw ParsingError("Flags and coordinates arrays must be the same langth.");
+    }
+
+    const bool end_points_correct = std::all_of(data.end_pts_of_contours.begin(),
+                                                data.end_pts_of_contours.end(),
+                                                [size = data.flags.size()](const auto& p) { return p < size; });
+
+    if (!end_points_correct) {
+        throw ParsingError("End points of contours is greater than count of points in contour.");
+    }
 
     return data;
 }
@@ -267,6 +282,10 @@ std::vector<CompositeGlyphComponent> parse_composite_glyph_components(BufferRead
 
         components.push_back(component);
     } while (components.back().flags & CompositeGlyphFlags::more_components);
+
+    if ((components.front().flags & CompositeGlyphFlags::args_are_xy_values) == 0) {
+        throw ParsingError("The CompositeGlyphFlags::args_are_xy_values for first component must be set.");
+    }
 
     return components;
 }
@@ -385,11 +404,6 @@ std::int16_t GlyphData::GlyphHeader::y_max() const
 GlyphData::Glyph::Glyph(BufferReader& in)
     : m_header(in)
 {
-    if (!in.good() || m_header.number_of_contours() == 0) {
-        // Glyph has no outline
-        return;
-    }
-
     if (m_header.is_simple_glyph()) {
         m_contours = get_glyph_contours(parse_simple_glyph(static_cast<size_t>(m_header.number_of_contours()), in));
     } else {

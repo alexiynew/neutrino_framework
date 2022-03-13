@@ -53,21 +53,7 @@ public:
     ///         or error code otherwise.
     LoadResult load(const std::filesystem::path& filepath);
 
-    /// @brief Chache texture and mesh for selected characters in renderer.
-    ///
-    /// Font data must be loaded before characters can be cached.
-    ///
-    /// @param chars String to cache characters from.
-    ///
-    /// @see load
-    void precache(const std::string& chars);
-
-    /// @brief Get Font instance id. Guaranted to be unique.
-    ///
-    /// @return Font instance id.
-    InstanceId instance_id() const;
-
-    Mesh create_text_mesh(const std::string& text) const;
+    Mesh create_text_mesh(const std::string& text);
 
 private:
     class FontData;
@@ -76,7 +62,8 @@ private:
 
     LoadResult parse(const std::filesystem::path& filepath);
 
-    InstanceId m_instance_id;
+    void precache(const std::string& chars);
+
     std::unique_ptr<FontData> m_data;
 };
 

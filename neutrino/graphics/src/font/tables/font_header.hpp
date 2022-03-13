@@ -16,7 +16,7 @@ public:
     bool valid() const;
 
     std::int16_t index_to_loc_format() const;
-    std::int16_t units_per_em() const;
+    std::uint16_t units_per_em() const;
     bool baseline_at_y_zero() const;
     bool left_sidebearing_at_x_zero() const;
 

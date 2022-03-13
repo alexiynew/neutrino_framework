@@ -42,7 +42,7 @@ public:
         struct ControlPoint
         {
             math::Vector2f position;
-            bool is_on_curve;
+            bool is_on_curve = false;
         };
 
         using ContourType = std::vector<ControlPoint>;
