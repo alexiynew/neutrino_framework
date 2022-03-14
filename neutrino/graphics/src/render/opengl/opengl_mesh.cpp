@@ -180,10 +180,10 @@ void OpenglMesh::draw() const
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer.buffer);
 
-    std::uint8_t* offset = 0;
+    std::uint8_t* offset = nullptr;
     for (const SubMeshInfo& info : m_index_buffer.sub_meshes) {
         glDrawElements(info.primitive_type, info.indices_count, m_index_buffer.type, offset);
-        offset += info.indices_count * sizeof(Mesh::IndicesData::value_type);
+        offset += info.indices_count * static_cast<int>(sizeof(Mesh::IndicesData::value_type));
     }
 }
 

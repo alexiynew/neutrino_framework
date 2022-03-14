@@ -57,8 +57,6 @@ private:
     IndexBufferInfo m_index_buffer;
 
     std::array<VertexBufferInfo, attributes_count> m_vertex_buffers = {};
-
-    Mesh::PrimitiveType m_primitive_type;
 };
 
 } // namespace framework::graphics

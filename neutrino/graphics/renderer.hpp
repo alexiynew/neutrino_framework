@@ -91,7 +91,8 @@ public:
     /// @brief Turn on or off the vertical sync.
     ///
     /// @param enable On or off vertical sync.
-    void enable_vertical_sync(bool enable);
+    /// TODO: remove noreturn
+    [[noreturn]] void enable_vertical_sync(bool enable);
 
     /// @brief Set current polygon mode.
     ///
