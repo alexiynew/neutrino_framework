@@ -23,12 +23,13 @@ layout(location = 0) in vec3 position;\n\
 layout(location = 3) in vec4 color;\n\
 \n\
 uniform mat4 projectionMatrix;\n\
+uniform mat4 modelMatrix;\n\
 \n\
 out vec4 fragColor;\n\
 \n\
 void main()\n\
 {\n\
-    gl_Position = projectionMatrix * vec4(position, 1.0);\n\
+    gl_Position = projectionMatrix * modelMatrix * vec4(position, 1.0);\n\
     fragColor = color / 256.0;\n\
 }\n\
 ";
@@ -40,6 +41,21 @@ out vec4 color;\n\
 void main(){\n\
     color = fragColor;\n\
 }";
+
+struct TextObject
+{
+    TextObject(Mesh m, Vector3f p)
+        : mesh(std::move(m))
+        , position(p)
+    {}
+
+    Mesh mesh;
+    math::Vector3f position;
+};
+
+constexpr float width       = 25.0f;
+constexpr float height      = 25.0f;
+constexpr float line_offset = 1.2f;
 
 } // namespace
 
@@ -64,7 +80,7 @@ private:
         renderer.set_polygon_mode(Renderer::PolygonMode::line);
 
         window.on_resize.connect([&renderer](const Window&, Size) {
-            renderer.set_uniform("projectionMatrix", ortho2d<float>(-0.5, 1.5, -0.5, 1.5));
+            renderer.set_uniform("projectionMatrix", ortho2d(0.0f, width, 0.0f, height));
         });
 
         Font font;
@@ -72,15 +88,27 @@ private:
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
 
-        const std::string str = "0123456789";
-        // const std::string str = "abcdefghijklmnopqrstuvwzxy[]{};':\",./<>?`~!@#$%^&*()_+";
-        // const std::string str = "ABCDEFGHIJKLMNOPQRSTUVWZXY[]{};':\",./<>?`~!@#$%^&*()_+";
+        std::vector<TextObject> objects;
 
-        Mesh text_mesh = font.create_text_mesh(str);
-        TEST_ASSERT(text_mesh.vertices().size() > 0, "Text mesh is empty.");
-        TEST_ASSERT(text_mesh.sub_meshes().size() > 0, "Text mesh is empty.");
+        const std::vector<std::string> strings = {
+        "абвгдеёжзийклмнопрстуфхцчшщъьыэюя",
+        "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ",
+        "abcdefghijklmnopqrstuvwzxy",
+        "ABCDEFGHIJKLMNOPQRSTUVWZXY",
+        };
 
-        renderer.load(text_mesh);
+        float current_line_offset = line_offset;
+        for (const auto& str : strings) {
+            Mesh text_mesh = font.create_text_mesh(str);
+
+            TEST_ASSERT(text_mesh.vertices().size() > 0, "Text mesh is empty.");
+            TEST_ASSERT(text_mesh.sub_meshes().size() > 0, "Text mesh is empty.");
+
+            renderer.load(text_mesh);
+
+            objects.emplace_back(std::move(text_mesh), math::Vector3f(0.5f, height - current_line_offset, 0.0f));
+            current_line_offset += line_offset;
+        }
 
         Shader shader;
         shader.set_vertex_source(vertex_shader);
@@ -97,7 +125,11 @@ private:
         while (!window.should_close() && total_time < max_total_time) {
             window.process_events();
 
-            renderer.render(text_mesh, shader);
+            for (const auto& object : objects) {
+                Matrix4f transform = translate(math::Matrix4f(), object.position);
+                renderer.render(object.mesh, shader, {Uniform{"modelMatrix", transform}});
+            }
+
             renderer.display();
 
             std::this_thread::sleep_for(delta_time);

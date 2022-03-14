@@ -186,10 +186,14 @@ void OpenglRenderer::start_frame()
 void OpenglRenderer::render(const Renderer::Command& command)
 {
     if (m_meshes.count(command.mesh()) == 0) {
+        log::debug(tag) << "OpenglRenderer::render: Trying to render mesh that is not loaded. Mesh id: "
+                        << command.mesh();
         return;
     }
 
     if (m_shaders.count(command.shader()) == 0) {
+        log::debug(tag) << "OpenglRenderer::render: Trying to use shder that is not loaded. Shader id: "
+                        << command.mesh();
         return;
     }
 

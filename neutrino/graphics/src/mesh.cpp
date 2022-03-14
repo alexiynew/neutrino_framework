@@ -22,6 +22,7 @@ Mesh::Mesh(const Mesh& other)
 {}
 
 Mesh::Mesh(Mesh&& other) noexcept
+    : m_instance_id(other.m_instance_id)
 {
     swap(*this, other);
 }

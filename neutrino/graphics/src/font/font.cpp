@@ -278,7 +278,7 @@ struct GlyphMeshData
     std::vector<Mesh::SubMesh> sub_meshes;
 };
 
-GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t units_per_em)
+GlyphMeshData create_glyph_vericies(const GlyphData::Contours& glyph, std::uint16_t units_per_em)
 {
     // INFO: Beakouse of we scale all points positions in virtual space of range 0 to 1.
     //       There is no need in calculatoint relative to text size, screen resolution and pixels per em.
@@ -319,7 +319,7 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Glyph& glyph, std::uint16_t
 
     //  result.sub_meshes.push_back({bbox, Mesh::PrimitiveType::line_loop});
 
-    for (const auto& contour : glyph.contours()) {
+    for (const auto& contour : glyph) {
         Mesh::IndicesData contour_sub_mesh;
 
         for (size_t i = 0; i < contour.size(); ++i) {
@@ -455,9 +455,7 @@ void Font::FontData::add_glyph(CodePoint codepoint)
             throw std::runtime_error("Can't crate mesh for 0 glyph id.");
         }
 
-        const GlyphData::Glyph& glyph = m_glyf.at(glyph_id);
-
-        m_glyphs.emplace(codepoint, create_glyph_vericies(glyph, units_per_em()));
+        m_glyphs.emplace(codepoint, create_glyph_vericies(m_glyf.at(glyph_id), units_per_em()));
     }
 }
 

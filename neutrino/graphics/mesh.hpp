@@ -67,6 +67,7 @@ public:
     ~Mesh();
 
     Mesh& operator=(const Mesh& other);
+
     Mesh& operator=(Mesh&& other) noexcept;
 
     /// @brief Assign new vertex positions to Mesh.
