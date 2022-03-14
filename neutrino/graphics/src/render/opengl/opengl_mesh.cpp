@@ -60,15 +60,15 @@ OpenglMesh::VertexBufferInfo create_vertex_buffer(GLenum buffer_type, const std:
     glBindBuffer(buffer_type, 0);
 
     if constexpr (std::is_same_v<T, Mesh::VertexData::value_type>) {
-        info.type             = GL_FLOAT;
+        info.type             = static_cast<GLenum>(GL_FLOAT);
         info.component_size   = T::components_count;
         info.components_count = static_cast<int>(data.size());
     } else if constexpr (std::is_same_v<T, Mesh::TextureCoordinatesData::value_type>) {
-        info.type             = GL_FLOAT;
+        info.type             = static_cast<GLenum>(GL_FLOAT);
         info.component_size   = T::components_count;
         info.components_count = static_cast<int>(data.size());
     } else if constexpr (std::is_same_v<T, Mesh::ColorData::value_type>) {
-        info.type             = GL_UNSIGNED_BYTE;
+        info.type             = static_cast<GLenum>(GL_UNSIGNED_BYTE);
         info.component_size   = 4;
         info.components_count = static_cast<int>(data.size());
     }
@@ -110,7 +110,8 @@ OpenglMesh::IndexBufferInfo create_index_buffer(GLenum buffer_type, const Mesh::
 
     static_assert(std::is_same_v<std::uint32_t, Mesh::IndicesData::value_type>,
                   "Type of indices is changed, update the type field below.");
-    info.type = GL_UNSIGNED_INT;
+
+    info.type = static_cast<GLenum>(GL_UNSIGNED_INT);
 
     return info;
 }
@@ -203,7 +204,7 @@ void OpenglMesh::enable_attribute(Attribute attribute) const
 
     glEnableVertexAttribArray(attr_index);
     glBindBuffer(GL_ARRAY_BUFFER, info.buffer);
-    glVertexAttribPointer(attr_index, info.component_size, static_cast<GLenum>(info.type), GL_FALSE, 0, nullptr);
+    glVertexAttribPointer(attr_index, info.component_size, info.type, GL_FALSE, 0, nullptr);
 }
 
 } // namespace framework::graphics
