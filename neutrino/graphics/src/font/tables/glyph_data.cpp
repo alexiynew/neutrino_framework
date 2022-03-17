@@ -453,6 +453,9 @@ GlyphData::GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offs
             } else {
                 composite_glyphs.emplace(id, parse_composite_glyph(in));
             }
+        } else {
+            // Glyph has no outline, e.g. some space character
+            m_glyphs.emplace(id, Contours{});
         }
     }
 
@@ -480,6 +483,11 @@ GlyphData::GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offs
 bool GlyphData::valid() const
 {
     return !m_glyphs.empty();
+}
+
+bool GlyphData::has(GlyphId index) const
+{
+    return m_glyphs.count(index) != 0;
 }
 
 const GlyphData::Contours& GlyphData::at(GlyphId index) const

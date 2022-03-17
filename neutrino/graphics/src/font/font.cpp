@@ -386,7 +386,7 @@ namespace framework::graphics
 class Font::FontData
 {
 public:
-    using CodePointToGlyphMap = std::unordered_map<CodePoint, GlyphMeshData>;
+    using GlyphIdToMeshMap = std::unordered_map<GlyphId, GlyphMeshData>;
 
     FontData(FontHeader head, HorizontalMetrics hmtx, CharacterToGlyphIndexMapping cmap, GlyphData glyf);
 
@@ -398,7 +398,7 @@ public:
 
     ~FontData() = default;
 
-    void add_glyph(CodePoint codepoint);
+    void add_glyph(GlyphId id);
 
     GlyphId glyph_index(CodePoint codepoint) const;
     std::uint16_t advance_width(GlyphId id) const;
@@ -408,10 +408,10 @@ public:
     bool baseline_at_y_zero() const;
     bool left_sidebearing_at_x_zero() const;
 
-    const CodePointToGlyphMap& glyphs() const;
+    const GlyphIdToMeshMap& glyphs() const;
 
 private:
-    CodePointToGlyphMap m_glyphs;
+    GlyphIdToMeshMap m_glyphs;
     FontHeader m_head;
     HorizontalMetrics m_hmtx;
     CharacterToGlyphIndexMapping m_cmap;
@@ -446,16 +446,16 @@ Font::FontData& Font::FontData::operator=(const Font::FontData& other)
     return *this;
 }
 
-void Font::FontData::add_glyph(CodePoint codepoint)
+void Font::FontData::add_glyph(GlyphId glyph_id)
 {
-    if (m_glyphs.count(codepoint) == 0) {
-        const GlyphId glyph_id = glyph_index(codepoint);
+    if (m_glyphs.count(glyph_id) == 0) {
 
-        if (glyph_id == missig_glyph_id) {
-            throw std::runtime_error("Can't crate mesh for 0 glyph id.");
+        if (!m_glyf.has(glyph_id)) {
+            throw std::runtime_error(
+            "Trying to load glyph that is not in font. Cmap table must return missing_glyph_id in this case.");
         }
 
-        m_glyphs.emplace(codepoint, create_glyph_vericies(m_glyf.at(glyph_id), units_per_em()));
+        m_glyphs.emplace(glyph_id, create_glyph_vericies(m_glyf.at(glyph_id), units_per_em()));
     }
 }
 
@@ -489,7 +489,7 @@ bool Font::FontData::left_sidebearing_at_x_zero() const
     return m_head.left_sidebearing_at_x_zero();
 }
 
-const Font::FontData::CodePointToGlyphMap& Font::FontData::glyphs() const
+const Font::FontData::GlyphIdToMeshMap& Font::FontData::glyphs() const
 {
     return m_glyphs;
 }
@@ -565,14 +565,14 @@ Mesh Font::create_text_mesh(const std::string& text)
     math::Vector3f vetricies_offset;
 
     for (const auto& cp : utf::to_codepoints(text)) {
-        auto it = m_data->glyphs().find(cp);
+        const GlyphId glyph_id = m_data->glyph_index(cp);
 
+        // TODO: use empty glyph. See - OS2 table usDefaultChar
+        const auto it = m_data->glyphs().find(glyph_id);
         if (it == m_data->glyphs().end()) {
-            // TODO: use empty glyph. See - OS2 table usDefaultChar
-            throw std::runtime_error("Usage of empty glyph is not implemented");
+            throw std::runtime_error("Can't find glyph to create mesh.");
         }
 
-        const GlyphId glyph_id             = m_data->glyph_index(cp);
         const std::uint16_t indices_offset = static_cast<std::uint16_t>(vertices.size());
 
         for (const auto& v : it->second.vertices) {
@@ -734,6 +734,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     m_data = std::make_unique<Font::FontData>(std::move(head), std::move(hmtx), std::move(cmap), std::move(glyf));
 
     // TODO: Precache glyph for missing codepoints
+    m_data->add_glyph(missig_glyph_id);
 
     // TODO: Figureout what to do if left sideberint is not equal minx position of glyph
     if (m_data->left_sidebearing_at_x_zero()) {
@@ -746,7 +747,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
 void Font::precache(const std::string& chars)
 {
     for (const auto& cp : utf::to_codepoints(chars)) {
-        m_data->add_glyph(cp);
+        m_data->add_glyph(m_data->glyph_index(cp));
     }
 }
 

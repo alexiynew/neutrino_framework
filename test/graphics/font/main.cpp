@@ -79,8 +79,38 @@ private:
         renderer.set_clear_color(Color(0x202020FFu));
         renderer.set_polygon_mode(Renderer::PolygonMode::line);
 
-        window.on_resize.connect([&renderer](const Window&, Size) {
-            renderer.set_uniform("projectionMatrix", ortho2d(0.0f, width, 0.0f, height));
+        math::Vector2f offset{0, 0};
+        math::Vector2f mouse_down_offset{0, 0};
+        math::Vector2f mouse_down_pos{0, 0};
+        bool mouse_down = false;
+
+        window.on_resize.connect([&offset, &renderer](const Window&, Size) {
+            renderer.set_uniform("projectionMatrix", ortho2d(offset.x, offset.x + width, offset.y, offset.y + height));
+        });
+
+        window.on_button_down.connect([&mouse_down_pos, &mouse_down, &offset, &mouse_down_offset](const Window&,
+                                                                                                  MouseButton,
+                                                                                                  CursorPosition pos,
+                                                                                                  Modifiers) {
+            mouse_down_pos.x  = static_cast<float>(pos.x);
+            mouse_down_pos.y  = static_cast<float>(pos.y);
+            mouse_down        = true;
+            mouse_down_offset = offset;
+        });
+
+        window.on_button_up.connect(
+        [&mouse_down](const Window&, MouseButton, CursorPosition, Modifiers) { mouse_down = false; });
+
+        window.on_mouse_move.connect(
+        [&offset, &mouse_down_offset, &mouse_down_pos, &renderer, &mouse_down](const Window&, CursorPosition pos) {
+            if (mouse_down) {
+                const math::Vector2f mouse_pos{pos.x, pos.y};
+                offset = mouse_down_offset +
+                         ((mouse_down_pos - mouse_pos) / Vector2f(800.0f / 25.0f, 640.0f / 25.0f * -1.0f));
+
+                renderer.set_uniform("projectionMatrix",
+                                     ortho2d(offset.x, offset.x + width, offset.y, offset.y + height));
+            }
         });
 
         Font font;
@@ -98,36 +128,36 @@ private:
         "ABCDEFGHIJKLMNOPQRSTUVWZXY",
         "!@#$%^&*()_+=-{}|[]\\;':\",./<>?`~",
         "The quick brown fox jumps over the lazy dog.",
-        //"Chruu, a kwik di kwik brong fox a jomp huova di liezi daag de, yu no siit?",
-        // "An ḃfuil do ċroí ag bualaḋ ó ḟaitíos an ġrá a ṁeall lena ṗóg éada ó ṡlí do leasa ṫú?" "D'ḟuascail Íosa Úrṁac na hÓiġe Beannaiṫe pór Éava agus Áḋaiṁ.",
-        // "Pa's wĳze lynx bezag vroom het fikse aquaduct.",
-        // "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.)",
-        // "Im finſteren Jagdſchloß am offenen Felsquellwaſſer patzte der affig-flatterhafte kauzig-höf‌liche Bäcker über ſeinem verſifften kniffligen C-Xylophon.",
-        // "Blåbærsyltetøy",
-        // "Flygande bäckasiner söka strax hwila på mjuka tuvor.",
-        // "Sævör grét áðan því úlpan var ónýt.",
-        // "Törkylempijävongahdus",
-        // "Albert osti fagotin ja töräytti puhkuvan melodian.",
-        // "On sangen hauskaa, että polkupyörä on maanteiden jokapäiväinen ilmiö.",
-        // "Pchnąć w tę łódź jeża lub osiem skrzyń fig.",
-        // "Příliš žluťoučký kůň úpěl ďábelské ódy.",
-        // "Starý kôň na hŕbe kníh žuje tíško povädnuté ruže, na stĺpe sa ďateľ učí kvákať novú ódu o živote.",
-        // "Šerif bo za domačo vajo spet kuhal žgance.",
-        // "ξεσκεπάζω την ψυχοφθόρα βδελυγμία",
-        // "ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία",
-        // "Съешь же ещё этих мягких французских булок да выпей чаю.",
-        // "В чащах юга жил-был цитрус? Да, но фальшивый экземпляр! ёъ.",
-        // "Жълтата дюля беше щастлива, че пухът, който цъфна, замръзна като гьон.",
-        // "Vuol Ruoŧa geđggiid leat máŋga luosa ja čuovžža.",
-        // "Árvíztűrő tükörfúrógép.",
-        // "El pingüino Wenceslao hizo kilómetros bajo exhaustiva lluvia y frío, añoraba a su querido cachorro.",
-        // "Volé cigüeña que jamás cruzó París, exhibe flor de kiwi y atún.",
-        // "O próximo vôo à noite sobre o Atlântico, põe freqüentemente o único médico.",
-        // "Les naïfs ægithales hâtifs pondant à Noël où il gèle sont sûrs d'être déçus en voyant leurs drôles d'œufs abîmés.",
-        // "Eĥoŝanĝo ĉiuĵaŭde",
-        // "Laŭ Ludoviko Zamenhof bongustas freŝa ĉeĥa manĝaĵo kun spicoj.",
-        // "זה כיף סתם לשמוע איך תנצח קרפד עץ טוב בגן.",
-        // "いろはにほへど　ちりぬるを わがよたれぞ　つねならむ うゐのおくやま　けふこえて あさきゆめみじ　ゑひもせず",
+        "Chruu, a kwik di kwik brong fox a jomp huova di liezi daag de, yu no siit?",
+        "An ḃfuil do ċroí ag bualaḋ ó ḟaitíos an ġrá a ṁeall lena ṗóg éada ó ṡlí do leasa ṫú? D'ḟuascail Íosa Úrṁac na hÓiġe Beannaiṫe pór Éava agus Áḋaiṁ.",
+        "Pa's wĳze lynx bezag vroom het fikse aquaduct.",
+        "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.",
+        "Im finſteren Jagdſchloß am offenen Felsquellwaſſer patzte der affig-flatterhafte kauzig-höf‌liche Bäcker über ſeinem verſifften kniffligen C-Xylophon.",
+        "Blåbærsyltetøy",
+        "Flygande bäckasiner söka strax hwila på mjuka tuvor.",
+        "Sævör grét áðan því úlpan var ónýt.",
+        "Törkylempijävongahdus",
+        "Albert osti fagotin ja töräytti puhkuvan melodian.",
+        "On sangen hauskaa, että polkupyörä on maanteiden jokapäiväinen ilmiö.",
+        "Pchnąć w tę łódź jeża lub osiem skrzyń fig.",
+        "Příliš žluťoučký kůň úpěl ďábelské ódy.",
+        "Starý kôň na hŕbe kníh žuje tíško povädnuté ruže, na stĺpe sa ďateľ učí kvákať novú ódu o živote.",
+        "Šerif bo za domačo vajo spet kuhal žgance.",
+        "ξεσκεπάζω την ψυχοφθόρα βδελυγμία",
+        "ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία",
+        "Съешь же ещё этих мягких французских булок да выпей чаю.",
+        "В чащах юга жил-был цитрус? Да, но фальшивый экземпляр! ёъ.",
+        "Жълтата дюля беше щастлива, че пухът, който цъфна, замръзна като гьон.",
+        "Vuol Ruoŧa geđggiid leat máŋga luosa ja čuovžža.",
+        "Árvíztűrő tükörfúrógép.",
+        "El pingüino Wenceslao hizo kilómetros bajo exhaustiva lluvia y frío, añoraba a su querido cachorro.",
+        "Volé cigüeña que jamás cruzó París, exhibe flor de kiwi y atún.",
+        "O próximo vôo à noite sobre o Atlântico, põe freqüentemente o único médico.",
+        "Les naïfs ægithales hâtifs pondant à Noël où il gèle sont sûrs d'être déçus en voyant leurs drôles d'œufs abîmés.",
+        "Eĥoŝanĝo ĉiuĵaŭde",
+        "Laŭ Ludoviko Zamenhof bongustas freŝa ĉeĥa manĝaĵo kun spicoj.",
+        "זה כיף סתם לשמוע איך תנצח קרפד עץ טוב בגן.",
+        "いろはにほへど　ちりぬるを わがよたれぞ　つねならむ うゐのおくやま　けふこえて あさきゆめみじ　ゑひもせず",
         };
         //  clang-format on
 

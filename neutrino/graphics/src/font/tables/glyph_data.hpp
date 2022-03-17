@@ -28,6 +28,7 @@ public:
 
     bool valid() const;
 
+    bool has(GlyphId index) const;
     const Contours& at(GlyphId index) const;
 
 private:
