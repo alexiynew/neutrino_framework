@@ -5,6 +5,7 @@
 #include <graphics/font.hpp>
 #include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
+#include <log/log.hpp>
 #include <math/math.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
@@ -53,9 +54,11 @@ struct TextObject
     math::Vector3f position;
 };
 
-constexpr float width       = 25.0f;
-constexpr float height      = 25.0f;
-constexpr float line_offset = 1.2f;
+constexpr float virtual_width  = 25.0f;
+constexpr float virtual_height = 25.0f;
+constexpr float line_offset    = 1.2f;
+constexpr int width            = 800;
+constexpr int height           = 640;
 
 } // namespace
 
@@ -73,45 +76,39 @@ private:
     {
         Window::set_application_name(name());
 
-        Window window(name(), {800, 640});
+        Window window(name(), {width, height});
         Renderer renderer(window);
 
         renderer.set_clear_color(Color(0x202020FFu));
         renderer.set_polygon_mode(Renderer::PolygonMode::line);
 
-        math::Vector2f offset{0, 0};
-        math::Vector2f mouse_down_offset{0, 0};
-        math::Vector2f mouse_down_pos{0, 0};
-        bool mouse_down = false;
+        window.on_resize.connect([this](const Window&, Size) {});
 
-        window.on_resize.connect([&offset, &renderer](const Window&, Size) {
-            renderer.set_uniform("projectionMatrix", ortho2d(offset.x, offset.x + width, offset.y, offset.y + height));
-        });
-
-        window.on_button_down.connect([&mouse_down_pos, &mouse_down, &offset, &mouse_down_offset](const Window&,
-                                                                                                  MouseButton,
-                                                                                                  CursorPosition pos,
-                                                                                                  Modifiers) {
+        window.on_mouse_button_down.connect([this](const Window&, MouseButton, CursorPosition pos, Modifiers) {
             mouse_down_pos.x  = static_cast<float>(pos.x);
             mouse_down_pos.y  = static_cast<float>(pos.y);
             mouse_down        = true;
             mouse_down_offset = offset;
         });
 
-        window.on_button_up.connect(
-        [&mouse_down](const Window&, MouseButton, CursorPosition, Modifiers) { mouse_down = false; });
+        window.on_mouse_button_up.connect(
+        [this](const Window&, MouseButton, CursorPosition, Modifiers) { mouse_down = false; });
 
-        window.on_mouse_move.connect(
-        [&offset, &mouse_down_offset, &mouse_down_pos, &renderer, &mouse_down](const Window&, CursorPosition pos) {
+        window.on_mouse_move.connect([this](const Window&, CursorPosition pos) {
             if (mouse_down) {
                 const math::Vector2f mouse_pos{pos.x, pos.y};
-                offset = mouse_down_offset +
-                         ((mouse_down_pos - mouse_pos) / Vector2f(800.0f / 25.0f, 640.0f / 25.0f * -1.0f));
-
-                renderer.set_uniform("projectionMatrix",
-                                     ortho2d(offset.x, offset.x + width, offset.y, offset.y + height));
+                offset = mouse_down_offset + ((mouse_down_pos - mouse_pos) /
+                                              Vector2f(width / virtual_width, height / virtual_height * -1.0f));
             }
         });
+
+        window.on_mouse_scroll.connect([this](const Window&, ScrollOffset offset) {
+            scale -= ((offset.y / 120.0f) * 0.1f);
+            scale = std::clamp(scale, 0.1f, 5.0f);
+            log::info("Font") << "offset: " << offset << " scale: " << scale;
+        });
+
+        window.on_mouse_leave.connect([this](const Window&) { mouse_down = false; });
 
         Font font;
         auto result = font.load("fonts/UbuntuMono-Regular.ttf");
@@ -170,7 +167,7 @@ private:
 
             renderer.load(text_mesh);
 
-            objects.emplace_back(std::move(text_mesh), math::Vector3f(0.5f, height - current_line_offset, 0.0f));
+            objects.emplace_back(std::move(text_mesh), math::Vector3f(0.5f, virtual_height - current_line_offset, 0.0f));
             current_line_offset += line_offset;
         }
 
@@ -189,6 +186,9 @@ private:
         while (!window.should_close() && total_time < max_total_time) {
             window.process_events();
 
+            renderer.set_uniform("projectionMatrix",
+                                 ortho2d(offset.x * scale, (offset.x + virtual_width) * scale, offset.y * scale, (offset.y + virtual_height) * scale));
+
             for (const auto& object : objects) {
                 Matrix4f transform = translate(math::Matrix4f(), object.position);
                 renderer.render(object.mesh, shader, {Uniform{"modelMatrix", transform}});
@@ -200,6 +200,12 @@ private:
             total_time += delta_time;
         }
     }
+
+    math::Vector2f offset{0, 0};
+    math::Vector2f mouse_down_offset{0, 0};
+    math::Vector2f mouse_down_pos{0, 0};
+    bool mouse_down = false;
+    float scale = 1.0f;
 };
 
 int main()
