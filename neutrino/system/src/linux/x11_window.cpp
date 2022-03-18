@@ -349,6 +349,8 @@ void X11Window::process_events()
                 // case KeymapNotify: return "KeymapNotify"
                 // case GenericEvent:  return "GenericEvent";
 
+                // TODO:: Pocess mouse scroll event
+
             case VisibilityNotify: process(event.xvisibility); break;
             case DestroyNotify: process(event.xdestroywindow); break;
             case UnmapNotify: process(event.xunmap); break;
@@ -755,8 +757,8 @@ void X11Window::process(XButtonEvent event)
     }
 
     switch (event.type) {
-        case ButtonPress: on_button_down(button, position, state); break;
-        case ButtonRelease: on_button_up(button, position, state); break;
+        case ButtonPress: on_mouse_button_down(button, position, state); break;
+        case ButtonRelease: on_mouse_button_up(button, position, state); break;
     }
 }
 

@@ -96,17 +96,24 @@ void PlatformWindow::on_mouse_move(CursorPosition position) const
     }
 }
 
-void PlatformWindow::on_button_down(MouseButton button, CursorPosition position, Modifiers modifiers) const
+void PlatformWindow::on_mouse_button_down(MouseButton button, CursorPosition position, Modifiers modifiers) const
 {
     if (m_window_interface) {
-        m_window_interface->on_button_down(*m_window_interface, button, position, modifiers);
+        m_window_interface->on_mouse_button_down(*m_window_interface, button, position, modifiers);
     }
 }
 
-void PlatformWindow::on_button_up(MouseButton button, CursorPosition position, Modifiers modifiers) const
+void PlatformWindow::on_mouse_button_up(MouseButton button, CursorPosition position, Modifiers modifiers) const
 {
     if (m_window_interface) {
-        m_window_interface->on_button_up(*m_window_interface, button, position, modifiers);
+        m_window_interface->on_mouse_button_up(*m_window_interface, button, position, modifiers);
+    }
+}
+
+void PlatformWindow::on_mouse_scroll(ScrollOffset offset) const
+{
+    if (m_window_interface) {
+        m_window_interface->on_mouse_scroll(*m_window_interface, offset);
     }
 }
 

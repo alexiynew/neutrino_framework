@@ -399,10 +399,13 @@ public:
     Signal<const Window&, CursorPosition> on_mouse_move;
 
     /// @brief Set on mouse button press callback. Called when the mouse button is pressed.
-    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_down;
+    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_mouse_button_down;
 
     /// @brief Set on mouse button release callback. Called when the mouse button is released.
-    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_button_up;
+    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_mouse_button_up;
+
+    /// @brief Set on mouse scroll callback. Called when the user scrolls.
+    Signal<const Window&, ScrollOffset> on_mouse_scroll;
 
     /// @brief Set on mouse enter callback. Called when the cursor enters in the window frame.
     Signal<const Window&> on_mouse_enter;

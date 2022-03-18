@@ -495,14 +495,14 @@ void Example::setup()
         arrange();
     });
 
-    main_window.on_button_down.connect([this](const Window&, MouseButton button, CursorPosition pos, Modifiers) {
+    main_window.on_mouse_button_down.connect([this](const Window&, MouseButton button, CursorPosition pos, Modifiers) {
         if (button == MouseButton::button_left) {
             drag_start_pos = Vector2f(pos.x, pos.y);
             drag           = true;
         }
     });
 
-    main_window.on_button_up.connect([this](const Window&, MouseButton button, CursorPosition, Modifiers) {
+    main_window.on_mouse_button_up.connect([this](const Window&, MouseButton button, CursorPosition, Modifiers) {
         if (button == MouseButton::button_left) {
             drag = false;
         }

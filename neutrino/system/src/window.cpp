@@ -238,8 +238,9 @@ void swap(Window& lhs, Window& rhs) noexcept
     swap(lhs.on_key_up, rhs.on_key_up);
     swap(lhs.on_character, rhs.on_character);
     swap(lhs.on_mouse_move, rhs.on_mouse_move);
-    swap(lhs.on_button_down, rhs.on_button_down);
-    swap(lhs.on_button_up, rhs.on_button_up);
+    swap(lhs.on_mouse_button_down, rhs.on_mouse_button_down);
+    swap(lhs.on_mouse_button_up, rhs.on_mouse_button_up);
+    swap(lhs.on_mouse_scroll, rhs.on_mouse_scroll);
     swap(lhs.on_mouse_enter, rhs.on_mouse_enter);
     swap(lhs.on_mouse_leave, rhs.on_mouse_leave);
 }

@@ -88,8 +88,9 @@ protected:
     void on_key_up(KeyCode key, Modifiers modifiers) const;
     void on_character(const std::string& str) const;
     void on_mouse_move(CursorPosition position) const;
-    void on_button_down(MouseButton button, CursorPosition position, Modifiers modifiers) const;
-    void on_button_up(MouseButton button, CursorPosition position, Modifiers modifiers) const;
+    void on_mouse_button_down(MouseButton button, CursorPosition position, Modifiers modifiers) const;
+    void on_mouse_button_up(MouseButton button, CursorPosition position, Modifiers modifiers) const;
+    void on_mouse_scroll(ScrollOffset offset) const;
     void on_mouse_enter() const;
     void on_mouse_leave() const;
 
