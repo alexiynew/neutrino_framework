@@ -105,12 +105,14 @@ private:
         window.on_mouse_scroll.connect([this](const Window&, ScrollOffset offset) {
             scale -= ((offset.y / 120.0f) * 0.1f);
             scale = std::clamp(scale, 0.1f, 5.0f);
-            log::info("Font") << "offset: " << offset << " scale: " << scale;
         });
 
         window.on_mouse_leave.connect([this](const Window&) { mouse_down = false; });
 
         Font font;
+        // auto result = font.load("fonts/UbuntuMono-Bold.ttf");
+        // auto result = font.load("fonts/UbuntuMono-BoldItalic.ttf");
+        // auto result = font.load("fonts/UbuntuMono-Italic.ttf");
         auto result = font.load("fonts/UbuntuMono-Regular.ttf");
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
@@ -119,42 +121,42 @@ private:
 
         // clang-format off
         const std::vector<std::string> strings = {
-        "абвгдеёжзийклмнопрстуфхцчшщъьыэюя",
-        "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ",
-        "abcdefghijklmnopqrstuvwzxy",
-        "ABCDEFGHIJKLMNOPQRSTUVWZXY",
-        "!@#$%^&*()_+=-{}|[]\\;':\",./<>?`~",
-        "The quick brown fox jumps over the lazy dog.",
-        "Chruu, a kwik di kwik brong fox a jomp huova di liezi daag de, yu no siit?",
-        "An ḃfuil do ċroí ag bualaḋ ó ḟaitíos an ġrá a ṁeall lena ṗóg éada ó ṡlí do leasa ṫú? D'ḟuascail Íosa Úrṁac na hÓiġe Beannaiṫe pór Éava agus Áḋaiṁ.",
-        "Pa's wĳze lynx bezag vroom het fikse aquaduct.",
-        "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.",
-        "Im finſteren Jagdſchloß am offenen Felsquellwaſſer patzte der affig-flatterhafte kauzig-höf‌liche Bäcker über ſeinem verſifften kniffligen C-Xylophon.",
-        "Blåbærsyltetøy",
-        "Flygande bäckasiner söka strax hwila på mjuka tuvor.",
-        "Sævör grét áðan því úlpan var ónýt.",
-        "Törkylempijävongahdus",
-        "Albert osti fagotin ja töräytti puhkuvan melodian.",
-        "On sangen hauskaa, että polkupyörä on maanteiden jokapäiväinen ilmiö.",
-        "Pchnąć w tę łódź jeża lub osiem skrzyń fig.",
-        "Příliš žluťoučký kůň úpěl ďábelské ódy.",
-        "Starý kôň na hŕbe kníh žuje tíško povädnuté ruže, na stĺpe sa ďateľ učí kvákať novú ódu o živote.",
-        "Šerif bo za domačo vajo spet kuhal žgance.",
-        "ξεσκεπάζω την ψυχοφθόρα βδελυγμία",
-        "ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία",
-        "Съешь же ещё этих мягких французских булок да выпей чаю.",
-        "В чащах юга жил-был цитрус? Да, но фальшивый экземпляр! ёъ.",
-        "Жълтата дюля беше щастлива, че пухът, който цъфна, замръзна като гьон.",
-        "Vuol Ruoŧa geđggiid leat máŋga luosa ja čuovžža.",
-        "Árvíztűrő tükörfúrógép.",
-        "El pingüino Wenceslao hizo kilómetros bajo exhaustiva lluvia y frío, añoraba a su querido cachorro.",
-        "Volé cigüeña que jamás cruzó París, exhibe flor de kiwi y atún.",
-        "O próximo vôo à noite sobre o Atlântico, põe freqüentemente o único médico.",
-        "Les naïfs ægithales hâtifs pondant à Noël où il gèle sont sûrs d'être déçus en voyant leurs drôles d'œufs abîmés.",
-        "Eĥoŝanĝo ĉiuĵaŭde",
-        "Laŭ Ludoviko Zamenhof bongustas freŝa ĉeĥa manĝaĵo kun spicoj.",
-        "זה כיף סתם לשמוע איך תנצח קרפד עץ טוב בגן.",
-        "いろはにほへど　ちりぬるを わがよたれぞ　つねならむ うゐのおくやま　けふこえて あさきゆめみじ　ゑひもせず",
+            "абвгдеёжзийклмнопрстуфхцчшщъьыэюя",
+            "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ",
+            "abcdefghijklmnopqrstuvwzxy",
+            "ABCDEFGHIJKLMNOPQRSTUVWZXY",
+            "!@#$%^&*()_+=-{}|[]\\;':\",./<>?`~",
+            "The quick brown fox jumps over the lazy dog.",
+            "Chruu, a kwik di kwik brong fox a jomp huova di liezi daag de, yu no siit?",
+            "An ḃfuil do ċroí ag bualaḋ ó ḟaitíos an ġrá a ṁeall lena ṗóg éada ó ṡlí do leasa ṫú? D'ḟuascail Íosa Úrṁac na hÓiġe Beannaiṫe pór Éava agus Áḋaiṁ.",
+            //"Pa's wĳze lynx bezag vroom het fikse aquaduct.",
+            //"Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.",
+            //"Im finſteren Jagdſchloß am offenen Felsquellwaſſer patzte der affig-flatterhafte kauzig-höf‌liche Bäcker über ſeinem verſifften kniffligen C-Xylophon.",
+            //"Blåbærsyltetøy",
+            //"Flygande bäckasiner söka strax hwila på mjuka tuvor.",
+            //"Sævör grét áðan því úlpan var ónýt.",
+            //"Törkylempijävongahdus",
+            //"Albert osti fagotin ja töräytti puhkuvan melodian.",
+            //"On sangen hauskaa, että polkupyörä on maanteiden jokapäiväinen ilmiö.",
+            //"Pchnąć w tę łódź jeża lub osiem skrzyń fig.",
+            //"Příliš žluťoučký kůň úpěl ďábelské ódy.",
+            //"Starý kôň na hŕbe kníh žuje tíško povädnuté ruže, na stĺpe sa ďateľ učí kvákať novú ódu o živote.",
+            //"Šerif bo za domačo vajo spet kuhal žgance.",
+            //"ξεσκεπάζω την ψυχοφθόρα βδελυγμία",
+            //"ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία",
+            //"Съешь же ещё этих мягких французских булок да выпей чаю.",
+            //"В чащах юга жил-был цитрус? Да, но фальшивый экземпляр! ёъ.",
+            //"Жълтата дюля беше щастлива, че пухът, който цъфна, замръзна като гьон.",
+            //"Vuol Ruoŧa geđggiid leat máŋga luosa ja čuovžža.",
+            //"Árvíztűrő tükörfúrógép.",
+            //"El pingüino Wenceslao hizo kilómetros bajo exhaustiva lluvia y frío, añoraba a su querido cachorro.",
+            //"Volé cigüeña que jamás cruzó París, exhibe flor de kiwi y atún.",
+            //"O próximo vôo à noite sobre o Atlântico, põe freqüentemente o único médico.",
+            //"Les naïfs ægithales hâtifs pondant à Noël où il gèle sont sûrs d'être déçus en voyant leurs drôles d'œufs abîmés.",
+            //"Eĥoŝanĝo ĉiuĵaŭde",
+            //"Laŭ Ludoviko Zamenhof bongustas freŝa ĉeĥa manĝaĵo kun spicoj.",
+            //"זה כיף סתם לשמוע איך תנצח קרפד עץ טוב בגן.",
+            //"いろはにほへど　ちりぬるを わがよたれぞ　つねならむ うゐのおくやま　けふこえて あさきゆめみじ　ゑひもせず",
         };
         //  clang-format on
 

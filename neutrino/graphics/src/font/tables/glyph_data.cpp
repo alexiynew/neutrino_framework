@@ -390,15 +390,7 @@ void add_component_data(SimpleGlyph& new_glyph,
                         const SimpleGlyph& component_glyph)
 {
     if (component.flags & CompositeGlyphFlags::args_are_xy_values) {
-        new_glyph.flags.insert(new_glyph.flags.end(), component_glyph.flags.begin(), component_glyph.flags.end());
-        new_glyph.x_coordinates.insert(new_glyph.x_coordinates.end(),
-                                       component_glyph.x_coordinates.begin(),
-                                       component_glyph.x_coordinates.end());
-        new_glyph.y_coordinates.insert(new_glyph.y_coordinates.end(),
-                                       component_glyph.y_coordinates.begin(),
-                                       component_glyph.y_coordinates.end());
-
-        const std::uint16_t end_pts_offset = static_cast<std::uint16_t>(new_glyph.end_pts_of_contours.size());
+        const std::uint16_t end_pts_offset = static_cast<std::uint16_t>(new_glyph.flags.size());
         std::transform(component_glyph.end_pts_of_contours.begin(),
                        component_glyph.end_pts_of_contours.end(),
                        std::inserter(new_glyph.end_pts_of_contours, new_glyph.end_pts_of_contours.end()),
@@ -406,7 +398,20 @@ void add_component_data(SimpleGlyph& new_glyph,
                            return static_cast<std::uint16_t>(end_point_of_contour + end_pts_offset);
                        });
 
+        new_glyph.flags.insert(new_glyph.flags.end(), component_glyph.flags.begin(), component_glyph.flags.end());
+
+        std::transform(component_glyph.x_coordinates.begin(),
+                       component_glyph.x_coordinates.end(),
+                       std::inserter(new_glyph.x_coordinates, new_glyph.x_coordinates.end()),
+                       [dx = component.argument1](const auto& x) { return static_cast<std::int16_t>(x + dx); });
+
+        std::transform(component_glyph.y_coordinates.begin(),
+                       component_glyph.y_coordinates.end(),
+                       std::inserter(new_glyph.y_coordinates, new_glyph.y_coordinates.end()),
+                       [dy = component.argument2](const auto& y) { return static_cast<std::int16_t>(y + dy); });
+
     } else {
+        throw NotImplementedError("add_component_data: Offset componrnts by point is not inmplemented.");
         // TODO:
     }
 }
