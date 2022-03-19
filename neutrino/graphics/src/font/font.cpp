@@ -733,8 +733,13 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
 
     m_data = std::make_unique<Font::FontData>(std::move(head), std::move(hmtx), std::move(cmap), std::move(glyf));
 
-    // TODO: Precache glyph for missing codepoints
-    m_data->add_glyph(missig_glyph_id);
+    // Precache glyph for missing codepoints
+    auto codepoints = utf::to_codepoints(std::u16string(1u, static_cast<char16_t>(os2.default_char())));
+    if (!codepoints.empty()) {
+        m_data->add_glyph(m_data->glyph_index(codepoints.front()));
+    } else {
+        m_data->add_glyph(missig_glyph_id);
+    }
 
     // TODO: Figureout what to do if left sideberint is not equal minx position of glyph
     if (m_data->left_sidebearing_at_x_zero()) {

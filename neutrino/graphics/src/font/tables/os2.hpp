@@ -15,6 +15,8 @@ public:
 
     bool valid() const;
 
+    std::uint16_t default_char() const;
+
 private:
     std::uint16_t m_version             = 0;
     std::int16_t m_avg_char_width       = 0;

@@ -73,4 +73,13 @@ bool Os2::valid() const
     return valid;
 }
 
+std::uint16_t Os2::default_char() const
+{
+    if (m_version < 2) {
+        return 0;
+    }
+
+    return m_default_char;
+}
+
 } // namespace framework::graphics::details::font
