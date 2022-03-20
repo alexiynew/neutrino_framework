@@ -57,8 +57,8 @@ struct TextObject
 constexpr float virtual_width  = 25.0f;
 constexpr float virtual_height = 25.0f;
 constexpr float line_offset    = 1.2f;
-constexpr int width            = 800;
-constexpr int height           = 640;
+constexpr int width            = 25 * 40;
+constexpr int height           = 25 * 40;
 
 } // namespace
 
@@ -129,34 +129,34 @@ private:
             "The quick brown fox jumps over the lazy dog.",
             "Chruu, a kwik di kwik brong fox a jomp huova di liezi daag de, yu no siit?",
             "An ḃfuil do ċroí ag bualaḋ ó ḟaitíos an ġrá a ṁeall lena ṗóg éada ó ṡlí do leasa ṫú? D'ḟuascail Íosa Úrṁac na hÓiġe Beannaiṫe pór Éava agus Áḋaiṁ.",
-            //"Pa's wĳze lynx bezag vroom het fikse aquaduct.",
-            //"Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.",
-            //"Im finſteren Jagdſchloß am offenen Felsquellwaſſer patzte der affig-flatterhafte kauzig-höf‌liche Bäcker über ſeinem verſifften kniffligen C-Xylophon.",
-            //"Blåbærsyltetøy",
-            //"Flygande bäckasiner söka strax hwila på mjuka tuvor.",
-            //"Sævör grét áðan því úlpan var ónýt.",
-            //"Törkylempijävongahdus",
-            //"Albert osti fagotin ja töräytti puhkuvan melodian.",
-            //"On sangen hauskaa, että polkupyörä on maanteiden jokapäiväinen ilmiö.",
-            //"Pchnąć w tę łódź jeża lub osiem skrzyń fig.",
-            //"Příliš žluťoučký kůň úpěl ďábelské ódy.",
-            //"Starý kôň na hŕbe kníh žuje tíško povädnuté ruže, na stĺpe sa ďateľ učí kvákať novú ódu o živote.",
-            //"Šerif bo za domačo vajo spet kuhal žgance.",
-            //"ξεσκεπάζω την ψυχοφθόρα βδελυγμία",
-            //"ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία",
-            //"Съешь же ещё этих мягких французских булок да выпей чаю.",
-            //"В чащах юга жил-был цитрус? Да, но фальшивый экземпляр! ёъ.",
-            //"Жълтата дюля беше щастлива, че пухът, който цъфна, замръзна като гьон.",
-            //"Vuol Ruoŧa geđggiid leat máŋga luosa ja čuovžža.",
-            //"Árvíztűrő tükörfúrógép.",
-            //"El pingüino Wenceslao hizo kilómetros bajo exhaustiva lluvia y frío, añoraba a su querido cachorro.",
-            //"Volé cigüeña que jamás cruzó París, exhibe flor de kiwi y atún.",
-            //"O próximo vôo à noite sobre o Atlântico, põe freqüentemente o único médico.",
-            //"Les naïfs ægithales hâtifs pondant à Noël où il gèle sont sûrs d'être déçus en voyant leurs drôles d'œufs abîmés.",
-            //"Eĥoŝanĝo ĉiuĵaŭde",
-            //"Laŭ Ludoviko Zamenhof bongustas freŝa ĉeĥa manĝaĵo kun spicoj.",
-            //"זה כיף סתם לשמוע איך תנצח קרפד עץ טוב בגן.",
-            //"いろはにほへど　ちりぬるを わがよたれぞ　つねならむ うゐのおくやま　けふこえて あさきゆめみじ　ゑひもせず",
+            "Pa's wĳze lynx bezag vroom het fikse aquaduct.",
+            "Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.",
+            "Im finſteren Jagdſchloß am offenen Felsquellwaſſer patzte der affig-flatterhafte kauzig-höf‌liche Bäcker über ſeinem verſifften kniffligen C-Xylophon.",
+            "Blåbærsyltetøy",
+            "Flygande bäckasiner söka strax hwila på mjuka tuvor.",
+            "Sævör grét áðan því úlpan var ónýt.",
+            "Törkylempijävongahdus",
+            "Albert osti fagotin ja töräytti puhkuvan melodian.",
+            "On sangen hauskaa, että polkupyörä on maanteiden jokapäiväinen ilmiö.",
+            "Pchnąć w tę łódź jeża lub osiem skrzyń fig.",
+            "Příliš žluťoučký kůň úpěl ďábelské ódy.",
+            "Starý kôň na hŕbe kníh žuje tíško povädnuté ruže, na stĺpe sa ďateľ učí kvákať novú ódu o živote.",
+            "Šerif bo za domačo vajo spet kuhal žgance.",
+            "ξεσκεπάζω την ψυχοφθόρα βδελυγμία",
+            "ξεσκεπάζω τὴν ψυχοφθόρα βδελυγμία",
+            "Съешь же ещё этих мягких французских булок да выпей чаю.",
+            "В чащах юга жил-был цитрус? Да, но фальшивый экземпляр! ёъ.",
+            "Жълтата дюля беше щастлива, че пухът, който цъфна, замръзна като гьон.",
+            "Vuol Ruoŧa geđggiid leat máŋga luosa ja čuovžža.",
+            "Árvíztűrő tükörfúrógép.",
+            "El pingüino Wenceslao hizo kilómetros bajo exhaustiva lluvia y frío, añoraba a su querido cachorro.",
+            "Volé cigüeña que jamás cruzó París, exhibe flor de kiwi y atún.",
+            "O próximo vôo à noite sobre o Atlântico, põe freqüentemente o único médico.",
+            "Les naïfs ægithales hâtifs pondant à Noël où il gèle sont sûrs d'être déçus en voyant leurs drôles d'œufs abîmés.",
+            "Eĥoŝanĝo ĉiuĵaŭde",
+            "Laŭ Ludoviko Zamenhof bongustas freŝa ĉeĥa manĝaĵo kun spicoj.",
+            "זה כיף סתם לשמוע איך תנצח קרפד עץ טוב בגן.",
+            "いろはにほへど　ちりぬるを わがよたれぞ　つねならむ うゐのおくやま　けふこえて あさきゆめみじ　ゑひもせず",
         };
         //  clang-format on
 
@@ -168,6 +168,7 @@ private:
             TEST_ASSERT(text_mesh.sub_meshes().size() > 0, "Text mesh is empty.");
 
             renderer.load(text_mesh);
+            text_mesh.clear();
 
             objects.emplace_back(std::move(text_mesh), math::Vector3f(0.5f, virtual_height - current_line_offset, 0.0f));
             current_line_offset += line_offset;

@@ -278,7 +278,7 @@ struct GlyphMeshData
     std::vector<Mesh::SubMesh> sub_meshes;
 };
 
-GlyphMeshData create_glyph_vericies(const GlyphData::Contours& glyph, std::uint16_t units_per_em)
+GlyphMeshData create_glyph_vericies(const GlyphData::Contours& glyph, std::uint16_t units_per_em, std::size_t quality)
 {
     // INFO: Beakouse of we scale all points positions in virtual space of range 0 to 1.
     //       There is no need in calculatoint relative to text size, screen resolution and pixels per em.
@@ -289,35 +289,7 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Contours& glyph, std::uint1
     using math::Vector2f;
     using math::Vector3f;
 
-    // TODO: provide quality with font configuration
-    const int quality = 3; // 1, 2, 3...
     GlyphMeshData result;
-
-    // Add BBox
-    // const float x_min = glyph.header().x_min() / static_cast<float>(units_per_em);
-    // const float y_min = glyph.header().y_min() / static_cast<float>(units_per_em);
-    // const float x_max = glyph.header().x_max() / static_cast<float>(units_per_em);
-    // const float y_max = glyph.header().y_max() / static_cast<float>(units_per_em);
-
-    // ccw vertices order
-    //  result.vertices.push_back(Vector3f(x_min, y_max, 0.0f) / point_size);
-    //  result.vertices.push_back(Vector3f(x_min, y_min, 0.0f) / point_size);
-    //  result.vertices.push_back(Vector3f(x_max, y_min, 0.0f) / point_size);
-    //  result.vertices.push_back(Vector3f(x_max, y_max, 0.0f) / point_size);
-
-    //  result.colors.push_back(Color(0xFF5522FFu));
-    //  result.colors.push_back(Color(0xFF5522FFu));
-    //  result.colors.push_back(Color(0xFF5522FFu));
-    //  result.colors.push_back(Color(0xFF5522FFu));
-
-    //  // 2 triangles in ccw point order
-    //  Mesh::IndicesData bbox;
-    //  bbox.push_back(0);
-    //  bbox.push_back(1);
-    //  bbox.push_back(2);
-    //  bbox.push_back(3);
-
-    //  result.sub_meshes.push_back({bbox, Mesh::PrimitiveType::line_loop});
 
     for (const auto& contour : glyph) {
         Mesh::IndicesData contour_sub_mesh;
@@ -357,21 +329,6 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Contours& glyph, std::uint1
         result.sub_meshes.push_back({contour_sub_mesh, Mesh::PrimitiveType::line_loop});
     }
 
-    // Add controll points
-    //  for (const auto& contour : glyph.contours()) {
-    //      Mesh::IndicesData off_contour_sub_mesh;
-
-    //      for (const auto& point : contour) {
-    //          if (!point.is_on_curve) {
-    //              result.vertices.push_back(Vector3f(point.position * ppem / units_per_em) / point_size);
-    //              result.colors.push_back(Color(0xee55FFFFu));
-    //              off_contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
-    //          }
-    //      }
-
-    //      result.sub_meshes.push_back({off_contour_sub_mesh, Mesh::PrimitiveType::points});
-    //  }
-
     return result;
 }
 
@@ -388,7 +345,12 @@ class Font::FontData
 public:
     using GlyphIdToMeshMap = std::unordered_map<GlyphId, GlyphMeshData>;
 
-    FontData(FontHeader head, HorizontalMetrics hmtx, CharacterToGlyphIndexMapping cmap, GlyphData glyf);
+    FontData(FontHeader head,
+             HorizontalMetrics hmtx,
+             CharacterToGlyphIndexMapping cmap,
+             Os2 os2,
+             GlyphData glyf,
+             std::size_t quality);
 
     FontData(const FontData& other);
     FontData(FontData&& other) noexcept = default;
@@ -415,21 +377,32 @@ private:
     FontHeader m_head;
     HorizontalMetrics m_hmtx;
     CharacterToGlyphIndexMapping m_cmap;
+    Os2 m_os2;
     GlyphData m_glyf;
+    std::size_t m_quality = 1;
 };
 
-Font::FontData::FontData(FontHeader head, HorizontalMetrics hmtx, CharacterToGlyphIndexMapping cmap, GlyphData glyf)
+Font::FontData::FontData(FontHeader head,
+                         HorizontalMetrics hmtx,
+                         CharacterToGlyphIndexMapping cmap,
+                         Os2 os2,
+                         GlyphData glyf,
+                         std::size_t quality)
     : m_head(std::move(head))
     , m_hmtx(std::move(hmtx))
     , m_cmap(std::move(cmap))
+    , m_os2(std::move(os2))
     , m_glyf(std::move(glyf))
+    , m_quality(std::move(quality))
 {}
 
 Font::FontData::FontData(const Font::FontData& other)
     : m_head(other.m_head)
     , m_hmtx(other.m_hmtx)
     , m_cmap(other.m_cmap)
+    , m_os2(other.m_os2)
     , m_glyf(other.m_glyf)
+    , m_quality(other.m_quality)
 {}
 
 Font::FontData& Font::FontData::operator=(const Font::FontData& other)
@@ -441,7 +414,9 @@ Font::FontData& Font::FontData::operator=(const Font::FontData& other)
     swap(tmp.m_head, m_head);
     swap(tmp.m_hmtx, m_hmtx);
     swap(tmp.m_cmap, m_cmap);
+    swap(tmp.m_os2, m_os2);
     swap(tmp.m_glyf, m_glyf);
+    swap(tmp.m_quality, m_quality);
 
     return *this;
 }
@@ -455,13 +430,22 @@ void Font::FontData::add_glyph(GlyphId glyph_id)
             "Trying to load glyph that is not in font. Cmap table must return missing_glyph_id in this case.");
         }
 
-        m_glyphs.emplace(glyph_id, create_glyph_vericies(m_glyf.at(glyph_id), units_per_em()));
+        m_glyphs.emplace(glyph_id, create_glyph_vericies(m_glyf.at(glyph_id), units_per_em(), m_quality));
     }
 }
 
 GlyphId Font::FontData::glyph_index(CodePoint codepoint) const
 {
-    return m_cmap.glyph_index(codepoint);
+    GlyphId id = m_cmap.glyph_index(codepoint);
+
+    if (id == missig_glyph_id) {
+        auto codepoints = utf::to_codepoints(std::u16string(1u, static_cast<char16_t>(m_os2.default_char())));
+        if (!codepoints.empty()) {
+            id = m_cmap.glyph_index(codepoint);
+        }
+    }
+
+    return id;
 }
 
 std::uint16_t Font::FontData::advance_width(GlyphId id) const
@@ -496,7 +480,12 @@ const Font::FontData::GlyphIdToMeshMap& Font::FontData::glyphs() const
 
 #pragma endregion
 
-Font::Font() = default;
+Font::Font(std::size_t quality)
+{
+    static constexpr std::size_t max_quality = 32;
+
+    m_quality = std::min(quality, max_quality);
+}
 
 Font::Font(const Font& other)
     : m_data(std::make_unique<FontData>(*other.m_data))
@@ -549,12 +538,15 @@ Font::LoadResult Font::load(const std::filesystem::path& file)
 
 Mesh Font::create_text_mesh(const std::string& text)
 {
+    using IndicesDataType = Mesh::IndicesData::value_type;
+
     if (m_data == nullptr) {
         throw std::runtime_error("Font data is not loaded. See Font::load and Font::precache.");
     }
 
     precache(text);
 
+    // for new line
     // see OS2 sTypoAscender, sTypoDescender and sTypoLineGap for linespacing
 
     Mesh mesh;
@@ -567,13 +559,12 @@ Mesh Font::create_text_mesh(const std::string& text)
     for (const auto& cp : utf::to_codepoints(text)) {
         const GlyphId glyph_id = m_data->glyph_index(cp);
 
-        // TODO: use empty glyph. See - OS2 table usDefaultChar
         const auto it = m_data->glyphs().find(glyph_id);
         if (it == m_data->glyphs().end()) {
             throw std::runtime_error("Can't find glyph to create mesh.");
         }
 
-        const std::uint16_t indices_offset = static_cast<std::uint16_t>(vertices.size());
+        const IndicesDataType indices_offset = static_cast<IndicesDataType>(vertices.size());
 
         for (const auto& v : it->second.vertices) {
             vertices.push_back(v + vetricies_offset);
@@ -596,28 +587,8 @@ Mesh Font::create_text_mesh(const std::string& text)
         }
     }
 
-    // Add axises
-    const std::uint16_t indices_offset = static_cast<std::uint16_t>(vertices.size());
-
-    vertices.push_back(math::Vector3f{0, 0, 0});
-    vertices.push_back(math::Vector3f{0, 1, 0});
-    vertices.push_back(math::Vector3f{0, 0, 0});
-    vertices.push_back(vetricies_offset);
-
-    colors.push_back(Color(0x00FF00FFu));
-    colors.push_back(Color(0x00FF00FFu));
-    colors.push_back(Color(0xFF0000FFu));
-    colors.push_back(Color(0xFF0000FFu));
-
-    Mesh::IndicesData axises;
-    axises.push_back(indices_offset + 0);
-    axises.push_back(indices_offset + 1);
-    axises.push_back(indices_offset + 2);
-    axises.push_back(indices_offset + 3);
-
     mesh.set_vertices(vertices);
     mesh.set_colors(colors);
-    mesh.add_sub_mesh(axises, Mesh::PrimitiveType::lines);
 
     return mesh;
 }
@@ -731,19 +702,15 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::TableParsingError;
     }
 
-    m_data = std::make_unique<Font::FontData>(std::move(head), std::move(hmtx), std::move(cmap), std::move(glyf));
+    m_data = std::make_unique<Font::FontData>(std::move(head),
+                                              std::move(hmtx),
+                                              std::move(cmap),
+                                              std::move(os2),
+                                              std::move(glyf),
+                                              m_quality);
 
-    // Precache glyph for missing codepoints
-    auto codepoints = utf::to_codepoints(std::u16string(1u, static_cast<char16_t>(os2.default_char())));
-    if (!codepoints.empty()) {
-        m_data->add_glyph(m_data->glyph_index(codepoints.front()));
-    } else {
-        m_data->add_glyph(missig_glyph_id);
-    }
-
-    // TODO: Figureout what to do if left sideberint is not equal minx position of glyph
     if (m_data->left_sidebearing_at_x_zero()) {
-        return LoadResult::Unsupported;
+        throw UnsupportedError("Figureout what to do if left sideberint is not equal minx position of glyph");
     }
 
     return LoadResult::Success;

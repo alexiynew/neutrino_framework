@@ -412,7 +412,6 @@ void add_component_data(SimpleGlyph& new_glyph,
 
     } else {
         throw NotImplementedError("add_component_data: Offset componrnts by point is not inmplemented.");
-        // TODO:
     }
 }
 
@@ -426,8 +425,6 @@ std::optional<SimpleGlyph> convert_composite_glyph(const CompositeGlyph& glyph, 
             return std::nullopt;
         }
         add_component_data(new_glyph, component, component_glyph->second);
-
-        // TODO: REMOVE THIS!!!!
     }
 
     check_simple_glyph(new_glyph);

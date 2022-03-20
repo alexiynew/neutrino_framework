@@ -46,11 +46,19 @@ Mesh& Mesh::operator=(Mesh&& other) noexcept
 
 void Mesh::set_vertices(const VertexData& data)
 {
+    if (data.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_vertices: Trying to add to many vertices to mesh.");
+    }
+
     m_vertices = data;
 }
 
-void Mesh::set_vertices(VertexData&& data) noexcept
+void Mesh::set_vertices(VertexData&& data)
 {
+    if (data.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_vertices: Trying to add to many vertices to mesh.");
+    }
+
     using std::swap;
     swap(m_vertices, data);
 }

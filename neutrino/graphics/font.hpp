@@ -36,7 +36,14 @@ public:
         UnknownError,       ///< Unknown error
     };
 
-    Font();
+    /// @brief Creates font
+    ///
+    /// The quality value defines how many additional points on glyphs outline to generate for one bezier curve.
+    /// Lager value results smoothed contours, but more complicated mesh would be generated.
+    /// Value from 1 to 3 is good enough for many cases. Max quality is clumped to 32 points.
+    ///
+    /// @param quality Mesh quality.
+    explicit Font(std::size_t quality = 1);
     Font(const Font& other);
     Font(Font&& other) noexcept;
 
@@ -65,6 +72,7 @@ private:
     void precache(const std::string& chars);
 
     std::unique_ptr<FontData> m_data;
+    std::size_t m_quality = 1;
 };
 
 /// @brief Swaps two Fonts.

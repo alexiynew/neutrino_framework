@@ -78,7 +78,7 @@ public:
     /// @brief Assign new vertex positions to Mesh.
     ///
     /// @param vertices New vertex data.
-    void set_vertices(VertexData&& vertices) noexcept;
+    void set_vertices(VertexData&& vertices);
 
     /// @brief Assign new vertex normals to Mesh.
     ///
