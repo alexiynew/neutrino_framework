@@ -121,7 +121,7 @@ private:
 
         // clang-format off
         const std::vector<std::string> strings = {
-            "sktyuiwfhlzxvnm"
+            "O"
             //"абвгдеёжзийклмнопрстуфхцчшщъьыэюя",
             //"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ",
             //"abcdefghijklmnopqrstuvwzxy",

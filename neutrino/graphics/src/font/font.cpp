@@ -337,9 +337,9 @@ GlyphMeshData create_glyph_outline(const GlyphData::Contours& glyph,
 
 bool is_point_in_triangle(math::Vector2f pt, math::Vector2f v1, math::Vector2f v2, math::Vector2f v3)
 {
-    const bool b1 = math::cross(pt - v2, v1 - v2) < 0.0f;
-    const bool b2 = math::cross(pt - v3, v2 - v3) < 0.0f;
-    const bool b3 = math::cross(pt - v1, v3 - v1) < 0.0f;
+    const bool b1 = cross(pt - v2, v1 - v2) < 0.0f;
+    const bool b2 = cross(pt - v3, v2 - v3) < 0.0f;
+    const bool b3 = cross(pt - v1, v3 - v1) < 0.0f;
     return ((b1 == b2) && (b2 == b3));
 }
 
@@ -381,6 +381,8 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
     Mesh::IndicesData triangles;
 
     while (indices.size() > 3) {
+        Mesh::IndicesData ears;
+
         for (size_t i = 0; i < indices.size(); ++i) {
             const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
             const Mesh::IndicesData::value_type index_curr = indices[i];
@@ -396,7 +398,7 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
                     continue;
                 }
 
-                if (math::cross(prev - curr, next - curr) <= 0.0f) {
+                if (cross(prev - curr, next - curr) <= 0.0f) {
                     is_ear = false;
                     break;
                 }
@@ -409,12 +411,47 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
             }
 
             if (is_ear) {
-                triangles.push_back(index_curr);
-                triangles.push_back(index_prev);
-                triangles.push_back(index_next);
-                indices.erase(indices.begin() + i);
-                break;
+                ears.push_back(index_curr);
             }
+        }
+
+        if (ears.empty()) {
+            throw std::runtime_error("EARS EMPTY");
+        }
+
+        size_t min_angle_index = ears[0];
+        float max_dot          = -9999.0f;
+
+        for (auto ear_index : ears) {
+            auto it  = std::find(indices.begin(), indices.end(), ear_index);
+            size_t i = std::distance(indices.begin(), it);
+
+            const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
+            const Mesh::IndicesData::value_type index_curr = indices[i];
+            const Mesh::IndicesData::value_type index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
+
+            const Vector2f prev = vertices[index_prev];
+            const Vector2f curr = vertices[index_curr];
+            const Vector2f next = vertices[index_next];
+
+            auto d = dot(normalize(prev - curr), normalize(next - curr));
+            if (d > max_dot) {
+                max_dot         = d;
+                min_angle_index = ear_index;
+            }
+        }
+
+        {
+            auto it  = std::find(indices.begin(), indices.end(), min_angle_index);
+            size_t i = std::distance(indices.begin(), it);
+
+            const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
+            const Mesh::IndicesData::value_type index_curr = indices[i];
+            const Mesh::IndicesData::value_type index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
+            triangles.push_back(index_curr);
+            triangles.push_back(index_prev);
+            triangles.push_back(index_next);
+            indices.erase(it);
         }
     }
 
