@@ -24,13 +24,14 @@
 #include <graphics/src/font/tables/naming.hpp>
 #include <graphics/src/font/tables/os2.hpp>
 
-using namespace framework;
-using namespace framework::graphics::details::font;
-
-using framework::graphics::Mesh;
-
 namespace
 {
+using namespace framework;
+using namespace framework::graphics;
+using namespace framework::graphics::details::font;
+
+using graphics::Font;
+using graphics::Mesh;
 
 #pragma region TableRecord
 
@@ -278,7 +279,9 @@ struct GlyphMeshData
     std::vector<Mesh::SubMesh> sub_meshes;
 };
 
-GlyphMeshData create_glyph_vericies(const GlyphData::Contours& glyph, std::uint16_t units_per_em, std::size_t quality)
+GlyphMeshData create_glyph_outline(const GlyphData::Contours& glyph,
+                                   std::uint16_t units_per_em,
+                                   Font::QualityType quality)
 {
     // INFO: Beakouse of we scale all points positions in virtual space of range 0 to 1.
     //       There is no need in calculatoint relative to text size, screen resolution and pixels per em.
@@ -316,7 +319,7 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Contours& glyph, std::uint1
 
                 // genqrate points
                 const float q_step = 1.0f / (quality + 1.0f);
-                for (int q = 0; q < quality; ++q) {
+                for (Font::QualityType q = 0; q < quality; ++q) {
                     const Vector2f pos = quadratic_bezier(p1, point.position, p2, (q + 1) * q_step);
 
                     result.vertices.push_back(Vector3f(pos / units_per_em));
@@ -330,6 +333,108 @@ GlyphMeshData create_glyph_vericies(const GlyphData::Contours& glyph, std::uint1
     }
 
     return result;
+}
+
+bool is_point_in_triangle(math::Vector2f pt, math::Vector2f v1, math::Vector2f v2, math::Vector2f v3)
+{
+    const bool b1 = math::cross(pt - v2, v1 - v2) < 0.0f;
+    const bool b2 = math::cross(pt - v3, v2 - v3) < 0.0f;
+    const bool b3 = math::cross(pt - v1, v3 - v1) < 0.0f;
+    return ((b1 == b2) && (b2 == b3));
+}
+
+GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
+                                std::uint16_t units_per_em,
+                                Font::QualityType quality)
+{
+    using graphics::Color;
+    using math::quadratic_bezier;
+    using math::Vector2f;
+    using math::Vector3f;
+
+    std::vector<Vector2f> vertices;
+    Mesh::IndicesData indices;
+
+    // generate all points in contour
+    for (const auto& contour : contours) {
+        for (size_t i = 0; i < contour.size(); ++i) {
+            const auto& point = contour[i];
+
+            if (point.is_on_curve) {
+                vertices.push_back(point.position);
+                indices.push_back(static_cast<Mesh::IndicesData::value_type>(vertices.size() - 1));
+            } else {
+                // genqrate points
+                const Vector2f p1  = (i == 0 ? contour.back().position : contour[i - 1].position);
+                const Vector2f p2  = (i == contour.size() - 1 ? contour.front().position : contour[i + 1].position);
+                const float q_step = 1.0f / (quality + 1.0f);
+
+                for (Font::QualityType q = 0; q < quality; ++q) {
+                    vertices.push_back(quadratic_bezier(p1, point.position, p2, (q + 1) * q_step));
+                    indices.push_back(static_cast<Mesh::IndicesData::value_type>(vertices.size() - 1));
+                }
+            }
+        }
+    }
+
+    Mesh::IndicesData indices_to_check(indices.begin(), indices.end());
+    Mesh::IndicesData triangles;
+
+    while (indices.size() > 3) {
+        for (size_t i = 0; i < indices.size(); ++i) {
+            const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
+            const Mesh::IndicesData::value_type index_curr = indices[i];
+            const Mesh::IndicesData::value_type index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
+
+            const Vector2f prev = vertices[index_prev];
+            const Vector2f curr = vertices[index_curr];
+            const Vector2f next = vertices[index_next];
+
+            bool is_ear = true;
+            for (const size_t index : indices_to_check) {
+                if (index == index_prev || index == index_curr || index == index_next) {
+                    continue;
+                }
+
+                if (math::cross(prev - curr, next - curr) <= 0.0f) {
+                    is_ear = false;
+                    break;
+                }
+
+                const Vector2f p = vertices[index];
+                if (is_point_in_triangle(p, prev, next, curr)) {
+                    is_ear = false;
+                    break;
+                }
+            }
+
+            if (is_ear) {
+                triangles.push_back(index_curr);
+                triangles.push_back(index_prev);
+                triangles.push_back(index_next);
+                indices.erase(indices.begin() + i);
+                break;
+            }
+        }
+    }
+
+    // Add last triangle
+    triangles.push_back(indices[0]);
+    triangles.push_back(indices[2]);
+    triangles.push_back(indices[1]);
+
+    // Generate result
+    GlyphMeshData res;
+
+    std::transform(vertices.begin(),
+                   vertices.end(),
+                   std::back_inserter(res.vertices),
+                   [upm = units_per_em](const auto& v) { return Vector3f(v / upm); });
+
+    res.colors.insert(res.colors.end(), vertices.size(), Color(0xFF88DDFFu));
+    res.sub_meshes.push_back({std::move(triangles), Mesh::PrimitiveType::triangles});
+
+    return res;
 }
 
 #pragma endregion
@@ -350,7 +455,7 @@ public:
              CharacterToGlyphIndexMapping cmap,
              Os2 os2,
              GlyphData glyf,
-             std::size_t quality);
+             Font::QualityType quality);
 
     FontData(const FontData& other);
     FontData(FontData&& other) noexcept = default;
@@ -379,7 +484,7 @@ private:
     CharacterToGlyphIndexMapping m_cmap;
     Os2 m_os2;
     GlyphData m_glyf;
-    std::size_t m_quality = 1;
+    Font::QualityType m_quality = 1;
 };
 
 Font::FontData::FontData(FontHeader head,
@@ -387,7 +492,7 @@ Font::FontData::FontData(FontHeader head,
                          CharacterToGlyphIndexMapping cmap,
                          Os2 os2,
                          GlyphData glyf,
-                         std::size_t quality)
+                         Font::QualityType quality)
     : m_head(std::move(head))
     , m_hmtx(std::move(hmtx))
     , m_cmap(std::move(cmap))
@@ -430,7 +535,8 @@ void Font::FontData::add_glyph(GlyphId glyph_id)
             "Trying to load glyph that is not in font. Cmap table must return missing_glyph_id in this case.");
         }
 
-        m_glyphs.emplace(glyph_id, create_glyph_vericies(m_glyf.at(glyph_id), units_per_em(), m_quality));
+        // m_glyphs.emplace(glyph_id, create_glyph_outline(m_glyf.at(glyph_id), units_per_em(), m_quality));
+        m_glyphs.emplace(glyph_id, create_glyph_mesh(m_glyf.at(glyph_id), units_per_em(), m_quality));
     }
 }
 
@@ -480,9 +586,9 @@ const Font::FontData::GlyphIdToMeshMap& Font::FontData::glyphs() const
 
 #pragma endregion
 
-Font::Font(std::size_t quality)
+Font::Font(Font::QualityType quality)
 {
-    static constexpr std::size_t max_quality = 32;
+    static constexpr QualityType max_quality = 32;
 
     m_quality = std::min(quality, max_quality);
 }
