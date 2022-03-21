@@ -48,6 +48,7 @@ private:
     void cross_function()
     {
         TEST_ASSERT(cross(Vector3f(3.0f, 2.0f, 1.0f), v3f) == Vector3f(4, -8, 4), "Cross function failed.");
+        TEST_ASSERT(cross(Vector2f(3.0f, 2.0f), Vector2f(1.0f, 4.0f)) == 10.f, "Cross function failed.");
     }
 
     void normalize_function()
