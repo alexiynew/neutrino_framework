@@ -4,6 +4,7 @@
 #include <exception>
 #include <fstream>
 #include <functional>
+#include <numeric>
 #include <set>
 #include <unordered_map>
 #include <vector>
@@ -273,82 +274,52 @@ std::unordered_map<Tag, Table> read_all_tables(std::ifstream& in, const std::vec
 
 #pragma region Glyph Vertices Generation
 
+using Polygon = std::vector<math::Vector2f>;
+
 struct GlyphMeshData
 {
     Mesh::VertexData vertices;
-    Mesh::ColorData colors;
     std::vector<Mesh::SubMesh> sub_meshes;
+    float advance_step = 1.0;
 };
 
-GlyphMeshData create_glyph_outline(const GlyphData::Contours& glyph,
-                                   std::uint16_t units_per_em,
-                                   Font::QualityType quality)
+Polygon generate_polygon(const GlyphData::ContourType& contour, Font::QualityType quality)
 {
-    // INFO: Beakouse of we scale all points positions in virtual space of range 0 to 1.
-    //       There is no need in calculatoint relative to text size, screen resolution and pixels per em.
-    //       It means pixels per em is equal to units per em.
+    Polygon polygon;
 
-    using graphics::Color;
-    using math::quadratic_bezier;
-    using math::Vector2f;
-    using math::Vector3f;
+    for (size_t i = 0; i < contour.size(); ++i) {
+        const auto& point = contour[i];
 
-    GlyphMeshData result;
+        if (point.is_on_curve) {
+            polygon.push_back(point.position);
+        } else {
+            // genqrate points
+            const math::Vector2f p1 = (i == 0 ? contour.back().position : contour[i - 1].position);
+            const math::Vector2f p2 = (i == contour.size() - 1 ? contour.front().position : contour[i + 1].position);
+            const float q_step      = 1.0f / (quality + 1.0f);
 
-    for (const auto& contour : glyph) {
-        Mesh::IndicesData contour_sub_mesh;
-
-        for (size_t i = 0; i < contour.size(); ++i) {
-            const auto& point = contour[i];
-            if (point.is_on_curve) {
-                result.vertices.push_back(Vector3f(point.position / units_per_em));
-                result.colors.push_back(Color(0x22FFEEFFu));
-                contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
-            } else {
-                Vector2f p1;
-                Vector2f p2;
-                if (i == 0) {
-                    p1 = contour.back().position;
-                    p2 = contour[i + 1].position;
-                } else if (i == contour.size() - 1) {
-                    p1 = contour[i - 1].position;
-                    p2 = contour.front().position;
-                } else {
-                    p1 = contour[i - 1].position;
-                    p2 = contour[i + 1].position;
-                }
-
-                // genqrate points
-                const float q_step = 1.0f / (quality + 1.0f);
-                for (Font::QualityType q = 0; q < quality; ++q) {
-                    const Vector2f pos = quadratic_bezier(p1, point.position, p2, (q + 1) * q_step);
-
-                    result.vertices.push_back(Vector3f(pos / units_per_em));
-                    result.colors.push_back(Color(0x22FFEEFFu));
-                    contour_sub_mesh.push_back(static_cast<std::uint16_t>(result.vertices.size() - 1));
-                }
+            for (Font::QualityType q = 0; q < quality; ++q) {
+                polygon.push_back(quadratic_bezier(p1, point.position, p2, (q + 1) * q_step));
             }
         }
-
-        result.sub_meshes.push_back({contour_sub_mesh, Mesh::PrimitiveType::line_loop});
     }
 
-    return result;
+    return polygon;
 }
 
-float polygon_area(const GlyphData::ContourType& contour)
+float polygon_area(const Polygon& polygon)
 {
-    auto curr = contour.begin();
-    auto next = std::next(contour.begin());
+    auto curr = polygon.begin();
+    auto next = std::next(polygon.begin());
 
     float sum = 0;
-    while (next != contour.end()) {
-        sum += (next->position.x - curr->position.x) * (next->position.y + curr->position.y);
+    while (next != polygon.end()) {
+        sum += (next->x - curr->x) * (next->y + curr->y);
         next++;
         curr++;
     }
-    next = contour.begin();
-    sum += (next->position.x - curr->position.x) * (next->position.y + curr->position.y);
+    next = polygon.begin();
+    sum += (next->x - curr->x) * (next->y + curr->y);
 
     return sum;
 }
@@ -361,37 +332,13 @@ bool is_point_in_triangle(math::Vector2f pt, math::Vector2f v1, math::Vector2f v
     return ((b1 == b2) && (b2 == b3));
 }
 
-std::pair<std::vector<math::Vector2f>, Mesh::IndicesData> create_contour_mesh(const GlyphData::ContourType& contour,
-                                                                              Font::QualityType quality)
+Mesh::IndicesData generate_triangulation(const Polygon& polygon)
 {
-    using math::quadratic_bezier;
-    using math::Vector2f;
-    using math::Vector3f;
+    Mesh::IndicesData indices(polygon.size());
+    std::iota(indices.begin(), indices.end(), 0);
 
-    std::vector<Vector2f> vertices;
-    Mesh::IndicesData indices;
-
-    for (size_t i = 0; i < contour.size(); ++i) {
-        const auto& point = contour[i];
-
-        if (point.is_on_curve) {
-            vertices.push_back(point.position);
-            indices.push_back(static_cast<Mesh::IndicesData::value_type>(vertices.size() - 1));
-        } else {
-            // genqrate points
-            const Vector2f p1  = (i == 0 ? contour.back().position : contour[i - 1].position);
-            const Vector2f p2  = (i == contour.size() - 1 ? contour.front().position : contour[i + 1].position);
-            const float q_step = 1.0f / (quality + 1.0f);
-
-            for (Font::QualityType q = 0; q < quality; ++q) {
-                vertices.push_back(quadratic_bezier(p1, point.position, p2, (q + 1) * q_step));
-                indices.push_back(static_cast<Mesh::IndicesData::value_type>(vertices.size() - 1));
-            }
-        }
-    }
-
-    Mesh::IndicesData indices_to_check(indices.begin(), indices.end());
     Mesh::IndicesData triangles;
+    triangles.reserve((polygon.size() - 2) * 3);
 
     while (indices.size() > 3) {
         Mesh::IndicesData ears;
@@ -401,22 +348,21 @@ std::pair<std::vector<math::Vector2f>, Mesh::IndicesData> create_contour_mesh(co
             const Mesh::IndicesData::value_type index_curr = indices[i];
             const Mesh::IndicesData::value_type index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
 
-            const Vector2f prev = vertices[index_prev];
-            const Vector2f curr = vertices[index_curr];
-            const Vector2f next = vertices[index_next];
+            const math::Vector2f prev = polygon[index_prev];
+            const math::Vector2f curr = polygon[index_curr];
+            const math::Vector2f next = polygon[index_next];
+
+            // angel is grater 180 degrees
+            if (cross(prev - curr, next - curr) <= 0.0f) {
+                continue;
+            }
 
             bool is_ear = true;
-            for (const size_t index : indices_to_check) {
-                if (index == index_prev || index == index_curr || index == index_next) {
+            for (const auto& p : polygon) {
+                if (p == prev || p == curr || p == next) {
                     continue;
                 }
 
-                if (cross(prev - curr, next - curr) <= 0.0f) {
-                    is_ear = false;
-                    break;
-                }
-
-                const Vector2f p = vertices[index];
                 if (is_point_in_triangle(p, prev, next, curr)) {
                     is_ear = false;
                     break;
@@ -443,9 +389,9 @@ std::pair<std::vector<math::Vector2f>, Mesh::IndicesData> create_contour_mesh(co
             const Mesh::IndicesData::value_type index_curr = indices[i];
             const Mesh::IndicesData::value_type index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
 
-            const Vector2f prev = vertices[index_prev];
-            const Vector2f curr = vertices[index_curr];
-            const Vector2f next = vertices[index_next];
+            const math::Vector2f prev = polygon[index_prev];
+            const math::Vector2f curr = polygon[index_curr];
+            const math::Vector2f next = polygon[index_next];
 
             auto d = dot(normalize(prev - curr), normalize(next - curr));
             if (d > max_dot) {
@@ -473,7 +419,7 @@ std::pair<std::vector<math::Vector2f>, Mesh::IndicesData> create_contour_mesh(co
     triangles.push_back(indices[2]);
     triangles.push_back(indices[1]);
 
-    return std::make_pair(std::move(vertices), std::move(triangles));
+    return triangles;
 }
 
 GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
@@ -482,14 +428,15 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
 {
     using graphics::Color;
 
-    std::vector<std::reference_wrapper<const GlyphData::ContourType>> filled;
-    std::vector<std::reference_wrapper<const GlyphData::ContourType>> holes;
+    std::vector<Polygon> filled;
+    std::vector<Polygon> holes;
 
     for (const auto& contour : contours) {
-        if (polygon_area(contour) > 0.0f) {
-            filled.push_back(contour);
+        Polygon polygon = generate_polygon(contour, quality);
+        if (polygon_area(polygon) > 0.0f) {
+            filled.emplace_back(std::move(polygon));
         } else {
-            holes.push_back(contour);
+            holes.emplace_back(std::move(polygon));
         }
     }
 
@@ -497,13 +444,12 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
     GlyphMeshData res;
     res.sub_meshes.push_back({{}, Mesh::PrimitiveType::triangles});
 
-    // generate all points in contour
-    for (const auto& contour : filled) {
-        const auto& [vertices, indices] = create_contour_mesh(contour, quality);
+    for (const auto& polygon : filled) {
+        const auto& indices = generate_triangulation(polygon);
 
         const auto indices_offset = static_cast<Mesh::IndicesData::value_type>(res.vertices.size());
-        std::transform(vertices.begin(),
-                       vertices.end(),
+        std::transform(polygon.begin(),
+                       polygon.end(),
                        std::back_inserter(res.vertices),
                        [upm = units_per_em](const auto& v) { return math::Vector3f(v / upm); });
 
@@ -512,9 +458,6 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
                        std::back_inserter(res.sub_meshes[0].indices),
                        [offset = indices_offset](const auto& i) { return i + offset; });
     }
-
-    // Add colors
-    res.colors.insert(res.colors.end(), res.vertices.size(), Color(0xFF88DDFFu));
 
     return res;
 }
@@ -617,8 +560,9 @@ void Font::FontData::add_glyph(GlyphId glyph_id)
             "Trying to load glyph that is not in font. Cmap table must return missing_glyph_id in this case.");
         }
 
-        // m_glyphs.emplace(glyph_id, create_glyph_outline(m_glyf.at(glyph_id), units_per_em(), m_quality));
         m_glyphs.emplace(glyph_id, create_glyph_mesh(m_glyf.at(glyph_id), units_per_em(), m_quality));
+
+        m_glyphs[glyph_id].advance_step = (advance_width(glyph_id) / static_cast<float>(units_per_em()));
     }
 }
 
@@ -729,21 +673,15 @@ Mesh Font::create_text_mesh(const std::string& text)
     using IndicesDataType = Mesh::IndicesData::value_type;
 
     if (m_data == nullptr) {
-        throw std::runtime_error("Font data is not loaded. See Font::load and Font::precache.");
+        throw std::runtime_error("Font data is not loaded. See Font::load.");
     }
 
     precache(text);
 
-    // for new line
-    // see OS2 sTypoAscender, sTypoDescender and sTypoLineGap for linespacing
+    std::vector<std::reference_wrapper<const GlyphMeshData>> glyphs;
+    glyphs.reserve(text.size());
 
-    Mesh mesh;
-
-    Mesh::VertexData vertices;
-    Mesh::ColorData colors;
-
-    math::Vector3f vetricies_offset;
-
+    // Collect glyphs
     for (const auto& cp : utf::to_codepoints(text)) {
         const GlyphId glyph_id = m_data->glyph_index(cp);
 
@@ -752,31 +690,48 @@ Mesh Font::create_text_mesh(const std::string& text)
             throw std::runtime_error("Can't find glyph to create mesh.");
         }
 
+        glyphs.push_back(it->second);
+    }
+
+    const size_t vertices_count = std::accumulate(glyphs.begin(),
+                                                  glyphs.end(),
+                                                  size_t(0),
+                                                  [](size_t sum, const auto& glyph) {
+                                                      return sum + glyph.get().vertices.size();
+                                                  });
+
+    // for new line
+    // see OS2 sTypoAscender, sTypoDescender and sTypoLineGap for linespacing
+
+    Mesh mesh;
+
+    Mesh::VertexData vertices;
+    vertices.reserve(vertices_count);
+
+    math::Vector3f vetricies_offset;
+
+    for (const auto& glyph_ref : glyphs) {
+        const GlyphMeshData& glyph = glyph_ref.get();
+
         const IndicesDataType indices_offset = static_cast<IndicesDataType>(vertices.size());
 
-        for (const auto& v : it->second.vertices) {
+        for (const auto& v : glyph.vertices) {
             vertices.push_back(v + vetricies_offset);
         }
 
-        for (const auto& c : it->second.colors) {
-            colors.push_back(c);
-        }
+        vetricies_offset += math::Vector3f{glyph.advance_step, 0, 0};
 
-        // devision by point_size is for clamp points in range from 0 to 1.
-        const float advance_step = (m_data->advance_width(glyph_id) / static_cast<float>(m_data->units_per_em()));
-        vetricies_offset += math::Vector3f{advance_step, 0, 0};
-
-        for (const auto& sub_mesh : it->second.sub_meshes) {
+        for (const auto& sub_mesh : glyph.sub_meshes) {
             Mesh::IndicesData indices;
+            indices.reserve(sub_mesh.indices.size());
             for (const auto& i : sub_mesh.indices) {
                 indices.push_back(i + indices_offset);
             }
-            mesh.add_sub_mesh(indices, sub_mesh.primitive_type);
+            mesh.add_sub_mesh(std::move(indices), sub_mesh.primitive_type);
         }
     }
 
-    mesh.set_vertices(vertices);
-    mesh.set_colors(colors);
+    mesh.set_vertices(std::move(vertices));
 
     return mesh;
 }
