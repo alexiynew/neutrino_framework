@@ -54,8 +54,8 @@ struct TextObject
     math::Vector3f position;
 };
 
-constexpr float virtual_width  = 25.0f / 10;
-constexpr float virtual_height = 25.0f / 10;
+constexpr float virtual_width  = 25.0f;
+constexpr float virtual_height = 25.0f;
 constexpr float line_offset    = 1.2f;
 constexpr int width            = 25 * 40;
 constexpr int height           = 25 * 40;
@@ -80,7 +80,7 @@ private:
         Renderer renderer(window);
 
         renderer.set_clear_color(Color(0x202020FFu));
-        renderer.set_polygon_mode(Renderer::PolygonMode::line);
+        renderer.set_polygon_mode(Renderer::PolygonMode::fill);
 
         window.on_resize.connect([this](const Window&, Size) {});
 
@@ -121,12 +121,11 @@ private:
 
         // clang-format off
         const std::vector<std::string> strings = {
-            "O"
-            //"абвгдеёжзийклмнопрстуфхцчшщъьыэюя",
-            //"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ",
-            //"abcdefghijklmnopqrstuvwzxy",
-            //"ABCDEFGHIJKLMNOPQRSTUVWZXY",
-            //"!@#$%^&*()_+=-{}|[]\\;':\",./<>?`~",
+            "абвгдеёжзийклмнопрстуфхцчшщъьыэюя",
+            "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЬЫЭЮЯ",
+            "abcdefghijklmnopqrstuvwzxy",
+            "ABCDEFGHIJKLMNOPQRSTUVWZXY",
+            "!@#$%^&*()_+=-{}|[]\\;':\",./<>?`~0123456789",
             //"The quick brown fox jumps over the lazy dog.",
             //"Chruu, a kwik di kwik brong fox a jomp huova di liezi daag de, yu no siit?",
             //"An ḃfuil do ċroí ag bualaḋ ó ḟaitíos an ġrá a ṁeall lena ṗóg éada ó ṡlí do leasa ṫú? D'ḟuascail Íosa Úrṁac na hÓiġe Beannaiṫe pór Éava agus Áḋaiṁ.",

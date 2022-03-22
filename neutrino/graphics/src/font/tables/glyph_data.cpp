@@ -206,12 +206,28 @@ void check_simple_glyph(const SimpleGlyph& glyph)
         throw ParsingError("Flags and coordinates arrays must be the same langth.");
     }
 
-    const bool end_points_correct = std::all_of(glyph.end_pts_of_contours.begin(),
-                                                glyph.end_pts_of_contours.end(),
-                                                [size = glyph.flags.size()](const auto& p) { return p < size; });
-
+    // Check that the all contour endpoints do not exceeds total points amount
+    bool end_points_correct = std::all_of(glyph.end_pts_of_contours.begin(),
+                                          glyph.end_pts_of_contours.end(),
+                                          [size = glyph.flags.size()](const auto& p) { return p < size; });
     if (!end_points_correct) {
         throw ParsingError("End points of contours is greater than count of points in contour.");
+    }
+
+    // First contour has at leas 3 points.
+    end_points_correct &= glyph.end_pts_of_contours[0] > 2;
+
+    // All other contours has at least 3 points.
+    for (size_t i = 1; i < glyph.end_pts_of_contours.size(); ++i) {
+        int diff = glyph.end_pts_of_contours[i] - glyph.end_pts_of_contours[i - 1];
+        if (diff < 3) {
+            end_points_correct = false;
+            break;
+        }
+    }
+
+    if (!end_points_correct) {
+        throw ParsingError("All contours must have at least three points.");
     }
 }
 
