@@ -12,7 +12,9 @@ public:
     GeometricFunctionsTest()
         : Suite("GeometricFunctionsTest")
     {
+        add_test([this]() { squared_length_function(); }, "squared_length_function");
         add_test([this]() { length_function(); }, "length_function");
+        add_test([this]() { squared_distance_function(); }, "squared_distance_function");
         add_test([this]() { distance_function(); }, "distance_function");
         add_test([this]() { dot_function(); }, "dot_function");
         add_test([this]() { cross_function(); }, "cross_function");
@@ -25,9 +27,23 @@ public:
     }
 
 private:
+    void squared_length_function()
+    {
+        TEST_ASSERT(squared_length(Vector3f(2, 2, 2)) == 12, "Squared length function failed.");
+    }
+
     void length_function()
     {
         TEST_ASSERT(almost_equal(length(v3f), 3.7416574954986572f), "Length function failed.");
+    }
+
+    void squared_distance_function()
+    {
+        const Vector3f v3f1 = {3.0f, 3.0f, 5.0f};
+        const Vector3f v3f2 = {2.0f, 1.0f, 2.0f};
+
+        TEST_ASSERT(squared_distance(v3f1, v3f2) == squared_length(v3f), "Squared distance function failed.");
+        TEST_ASSERT(squared_distance(v3f1, v3f2) == squared_length(v3f), "Squared distance function failed.");
     }
 
     void distance_function()
