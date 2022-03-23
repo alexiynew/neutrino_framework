@@ -53,11 +53,11 @@ struct TextObject
     math::Vector3f position;
 };
 
-constexpr float virtual_width  = 25.0f;
-constexpr float virtual_height = 25.0f;
+constexpr float virtual_width  = 160.0f / 2;
+constexpr float virtual_height = 90.0f / 2;
 constexpr float line_offset    = 1.2f;
-constexpr int width            = 25 * 40;
-constexpr int height           = 25 * 40;
+constexpr int width            = static_cast<int>(virtual_width * 20);
+constexpr int height           = static_cast<int>(virtual_height * 20);
 
 } // namespace
 

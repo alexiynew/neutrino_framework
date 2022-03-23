@@ -332,6 +332,62 @@ bool is_point_in_triangle(math::Vector2f pt, math::Vector2f v1, math::Vector2f v
     return ((b1 == b2) && (b2 == b3));
 }
 
+bool is_line_intersert_segment(math::Vector2f line_start,
+                               math::Vector2f line_end,
+                               math::Vector2f segment_start,
+                               math::Vector2f segment_end)
+{
+    const math::Vector2f line_direction = line_end - line_start;
+
+    // Line equation
+    const float a1 = -line_direction.y;
+    const float b1 = line_direction.x;
+    const float d1 = -(a1 * line_start.x + b1 * line_start.y);
+
+    // Substitute the ends of the segments, to find out in which half-planes they are
+    const float e1 = a1 * segment_start.x + b1 * segment_start.y + d1;
+    const float e2 = a1 * segment_end.x + b1 * segment_end.y + d1;
+
+    // If the ends of segment have the same sign, then it is in the same half-plane and there is no intersection.
+    return e1 * e2 < 0.0f;
+}
+
+bool is_point_in_polygon(math::Vector2f point, const Polygon& polygon)
+{
+    if (polygon.size() <= 1) {
+        return false;
+    }
+
+    int intersections_num = 0;
+    size_t prev_index     = polygon.size() - 1;
+    bool prev_under       = polygon[prev_index].y < point.y;
+
+    for (int i = 0; i < polygon.size(); ++i) {
+        const bool curr_under = polygon[i].y < point.y;
+
+        const math::Vector2f a = polygon[prev_index] - point;
+        const math::Vector2f b = polygon[i] - point;
+
+        // Determinant from x-coordinate of the intersection of the segment and the ray
+        const float t = (a.x * (b.y - a.y) - a.y * (b.x - a.x));
+        if (curr_under && !prev_under) {
+            if (t > 0) {
+                intersections_num += 1;
+            }
+        }
+        if (!curr_under && prev_under) {
+            if (t < 0) {
+                intersections_num += 1;
+            }
+        }
+
+        prev_index = i;
+        prev_under = curr_under;
+    }
+
+    return intersections_num % 2 == 1;
+}
+
 Mesh::IndicesData generate_triangulation(const Polygon& polygon)
 {
     Mesh::IndicesData indices(polygon.size());
@@ -422,12 +478,49 @@ Mesh::IndicesData generate_triangulation(const Polygon& polygon)
     return triangles;
 }
 
-GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
-                                std::uint16_t units_per_em,
-                                Font::QualityType quality)
+std::vector<Polygon> convert_polygons_with_holes_to_holeless_polygons(const std::vector<Polygon>& filled,
+                                                                      const std::vector<Polygon>& holes)
 {
-    using graphics::Color;
+    std::vector<Polygon> holeless;
+    holeless.reserve(filled.size());
 
+    for (const auto& polygon : filled) {
+        std::vector<size_t> holes_in_polygon;
+        size_t holes_points_count = 0;
+        for (size_t i = 0; i < holes.size(); ++i) {
+            if (is_point_in_polygon(holes[i].front(), polygon)) {
+                holes_in_polygon.push_back(i);
+                holes_points_count += holes[i].size();
+            }
+        }
+
+        Polygon combine = polygon;
+        combine.reserve(polygon.size() + holes_points_count + holes_in_polygon.size() * 2);
+
+        for (const auto& hole_index : holes_in_polygon) {
+            const auto& hole = holes[hole_index];
+
+            auto it = std::min_element(combine.begin(),
+                                       combine.end(),
+                                       [top = hole.front()](const auto& a, const auto& b) {
+                                           const float dist_a = squared_distance(top, a);
+                                           const float dist_b = squared_distance(top, b);
+                                           return dist_a < dist_b;
+                                       });
+
+            it = combine.insert(next(it), *it);
+            it = combine.insert(it, hole.front());
+            combine.insert(it, hole.begin(), hole.end());
+        }
+
+        holeless.emplace_back(std::move(combine));
+    }
+
+    return holeless;
+}
+
+std::vector<Polygon> generate_glyph_polygons(const GlyphData::Contours& contours, Font::QualityType quality)
+{
     std::vector<Polygon> filled;
     std::vector<Polygon> holes;
 
@@ -440,11 +533,31 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
         }
     }
 
+    // Rearange points in hole so the top poiint go first
+    for (auto& hole : holes) {
+        auto it = std::max_element(hole.begin(), hole.end(), [](const auto& a, const auto& b) { return a.y < b.y; });
+        std::rotate(hole.begin(), it, hole.end());
+    }
+
+    // Sort holes by top points
+    std::sort(holes.begin(), holes.end(), [](const auto& a, const auto& b) { return a[0].y > b[0].y; });
+
+    return convert_polygons_with_holes_to_holeless_polygons(filled, holes);
+}
+
+GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
+                                std::uint16_t units_per_em,
+                                Font::QualityType quality)
+{
+    using graphics::Color;
+
+    const std::vector<Polygon> polygons = generate_glyph_polygons(contours, quality);
+
     // Generate result
     GlyphMeshData res;
     res.sub_meshes.push_back({{}, Mesh::PrimitiveType::triangles});
 
-    for (const auto& polygon : filled) {
+    for (const auto& polygon : polygons) {
         const auto& indices = generate_triangulation(polygon);
 
         const auto indices_offset = static_cast<Mesh::IndicesData::value_type>(res.vertices.size());
