@@ -29,7 +29,7 @@ public:
 private:
     void squared_length_function()
     {
-        TEST_ASSERT(squared_length(Vector3f(2, 2, 2)) == 12, "Squared length function failed.");
+        TEST_ASSERT(squared_length(Vector3f(2, 2, 2)) == 12.0f, "Squared length function failed.");
     }
 
     void length_function()

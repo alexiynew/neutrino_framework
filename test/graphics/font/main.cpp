@@ -81,8 +81,6 @@ private:
         renderer.set_clear_color(Color(0x202020FFu));
         renderer.set_polygon_mode(Renderer::PolygonMode::fill);
 
-        window.on_resize.connect([this](const Window&, Size) {});
-
         window.on_mouse_button_down.connect([this](const Window&, MouseButton, CursorPosition pos, Modifiers) {
             mouse_down_pos.x  = static_cast<float>(pos.x);
             mouse_down_pos.y  = static_cast<float>(pos.y);

@@ -31,7 +31,6 @@ macro(set_compiller_flags)
                            -Wextra
                            -Wpedantic
                            -Werror
-                           -Wfloat-equal
                            -Wshadow
                            -Wno-unknown-pragmas
                            -pthread
