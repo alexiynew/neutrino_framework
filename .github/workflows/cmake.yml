@@ -2,7 +2,7 @@ name: CMake
 
 on:
   push:
-    branches: [ dev, 30_text_rendering ]
+    branches: [ dev ]
   pull_request:
     branches: [ master, dev ]
 
