@@ -18,6 +18,7 @@ macro(set_compiller_flags)
                            -Wno-documentation-unknown-command
                            -Wno-switch-enum
                            -Wno-double-promotion
+                           -Wno-float-equal
                            -pthread
                            -fPIC)
 
