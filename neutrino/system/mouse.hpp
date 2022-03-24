@@ -31,6 +31,17 @@ enum class MouseButton
 /// @brief Represents cursor position in window. Zero is in top left corner.
 using CursorPosition = Position;
 
+/// @brief Represents scroll offset value.
+///
+/// The offset should be treated as fraction of some wheel delta which is 120 for Microsoft.
+/// E.g. `offset / 120 == 1` scroll step on wheel with no notches.
+/// Framework adjust system values on other platforms to that relation.
+/// A positive Y value indicates that the wheel was rotated forward, away from the user.
+/// A negative Y value indicates that the wheel was rotated backward, toward the user.
+/// A positive X value indicates that the wheel was rotated to the right
+/// A negative X value indicates that the wheel was rotated to the left.
+using ScrollOffset = Position;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

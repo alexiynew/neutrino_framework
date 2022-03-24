@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include <graphics/mesh.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>
@@ -25,40 +27,91 @@ Attribute::texcoord7,
 
 constexpr std::size_t max_size = std::numeric_limits<Mesh::IndicesData::value_type>::max();
 
+GLenum get_opengl_primitive_type(Mesh::PrimitiveType type)
+{
+    switch (type) {
+        case Mesh::PrimitiveType::points: return GL_POINTS;
+        case Mesh::PrimitiveType::lines: return GL_LINES;
+        case Mesh::PrimitiveType::line_strip: return GL_LINE_STRIP;
+        case Mesh::PrimitiveType::line_loop: return GL_LINE_LOOP;
+        case Mesh::PrimitiveType::triangles: return GL_TRIANGLES;
+        case Mesh::PrimitiveType::triangle_strip: return GL_TRIANGLE_STRIP;
+        case Mesh::PrimitiveType::triangle_fan: return GL_TRIANGLE_FAN;
+    }
+
+    throw std::runtime_error("Unreachable");
+}
+
 template <typename T>
-OpenglMesh::BufferInfo create_buffer(int buffer_type, const std::vector<T>& data)
+OpenglMesh::VertexBufferInfo create_vertex_buffer(GLenum buffer_type, const std::vector<T>& data)
 {
     if (data.empty() || data.size() >= max_size) {
-        return OpenglMesh::BufferInfo();
+        return OpenglMesh::VertexBufferInfo();
     }
 
     const GLsizeiptr data_size = static_cast<GLsizeiptr>(data.size() * sizeof(T));
 
-    OpenglMesh::BufferInfo info;
+    OpenglMesh::VertexBufferInfo info;
 
     glGenBuffers(1, &info.buffer);
 
-    glBindBuffer(static_cast<GLenum>(buffer_type), info.buffer);
-    glBufferData(static_cast<GLenum>(buffer_type), data_size, data.data(), GL_STATIC_DRAW);
-    glBindBuffer(static_cast<GLenum>(buffer_type), 0);
+    glBindBuffer(buffer_type, info.buffer);
+    glBufferData(buffer_type, data_size, data.data(), GL_STATIC_DRAW);
+    glBindBuffer(buffer_type, 0);
 
     if constexpr (std::is_same_v<T, Mesh::VertexData::value_type>) {
-        info.type             = GL_FLOAT;
+        info.type             = static_cast<GLenum>(GL_FLOAT);
         info.component_size   = T::components_count;
         info.components_count = static_cast<int>(data.size());
     } else if constexpr (std::is_same_v<T, Mesh::TextureCoordinatesData::value_type>) {
-        info.type             = GL_FLOAT;
+        info.type             = static_cast<GLenum>(GL_FLOAT);
         info.component_size   = T::components_count;
         info.components_count = static_cast<int>(data.size());
     } else if constexpr (std::is_same_v<T, Mesh::ColorData::value_type>) {
-        info.type             = GL_UNSIGNED_BYTE;
+        info.type             = static_cast<GLenum>(GL_UNSIGNED_BYTE);
         info.component_size   = 4;
         info.components_count = static_cast<int>(data.size());
-    } else if constexpr (std::is_same_v<T, Mesh::IndicesData::value_type>) {
-        info.type             = GL_UNSIGNED_SHORT;
-        info.component_size   = 1; // not used in indices buffer
-        info.components_count = static_cast<int>(data.size());
     }
+
+    return info;
+}
+
+OpenglMesh::IndexBufferInfo create_index_buffer(GLenum buffer_type, const Mesh::SubMeshMap& sub_meshes)
+{
+    if (sub_meshes.empty()) {
+        return OpenglMesh::IndexBufferInfo();
+    }
+
+    const std::size_t data_size = std::accumulate(sub_meshes.begin(),
+                                                  sub_meshes.end(),
+                                                  std::size_t(0),
+                                                  [](std::size_t acc, const auto& sub_mesh) {
+                                                      return acc + sub_mesh.second.indices.size() *
+                                                                   sizeof(Mesh::IndicesData::value_type);
+                                                  });
+
+    OpenglMesh::IndexBufferInfo info;
+
+    glGenBuffers(1, &info.buffer);
+
+    glBindBuffer(buffer_type, info.buffer);
+    glBufferData(buffer_type, static_cast<GLsizeiptr>(data_size), nullptr, GL_STATIC_DRAW);
+
+    GLintptr offset = 0;
+    for (const auto& [_, sub_mesh] : sub_meshes) {
+        GLsizeiptr size = static_cast<GLsizeiptr>(sub_mesh.indices.size() * sizeof(Mesh::IndicesData::value_type));
+        glBufferSubData(buffer_type, offset, size, sub_mesh.indices.data());
+        offset += size;
+        info.sub_meshes.push_back(
+        {static_cast<GLsizei>(sub_mesh.indices.size()), get_opengl_primitive_type(sub_mesh.primitive_type)});
+    }
+
+    glBindBuffer(buffer_type, 0);
+
+    static_assert(std::is_same_v<std::uint32_t, Mesh::IndicesData::value_type>,
+                  "Type of indices is changed, update the type field below.");
+
+    info.type = static_cast<GLenum>(GL_UNSIGNED_INT);
 
     return info;
 }
@@ -74,42 +127,44 @@ OpenglMesh::~OpenglMesh()
 
 void OpenglMesh::clear()
 {
-    for (const BufferInfo& info : vertex_buffers) {
+    for (VertexBufferInfo& info : m_vertex_buffers) {
         glDeleteBuffers(1, &info.buffer);
-    }
-
-    glDeleteBuffers(1, &index_buffer.buffer);
-    glDeleteVertexArrays(1, &vertex_array);
-
-    vertex_array        = 0;
-    index_buffer.buffer = 0;
-
-    for (BufferInfo& info : vertex_buffers) {
         info.buffer = 0;
     }
+
+    glDeleteBuffers(1, &m_index_buffer.buffer);
+    m_index_buffer.buffer = 0;
+    m_index_buffer.sub_meshes.clear();
+
+    glDeleteVertexArrays(1, &m_vertex_array);
+    m_vertex_array = 0;
 }
 
 bool OpenglMesh::load(const Mesh& mesh)
 {
-    glGenVertexArrays(1, &vertex_array);
-    glBindVertexArray(vertex_array);
+    if (mesh.sub_meshes().empty()) {
+        throw std::runtime_error("Can't load mesh without indices.");
+    }
+
+    glGenVertexArrays(1, &m_vertex_array);
+    glBindVertexArray(m_vertex_array);
 
     // clang-format off
-    vertex_buffers[static_cast<std::size_t>(Attribute::position)]  = create_buffer(GL_ARRAY_BUFFER, mesh.vertices());
-    vertex_buffers[static_cast<std::size_t>(Attribute::normal)]    = create_buffer(GL_ARRAY_BUFFER, mesh.normals());
-    vertex_buffers[static_cast<std::size_t>(Attribute::tangent)]   = create_buffer(GL_ARRAY_BUFFER, mesh.tangents());
-    vertex_buffers[static_cast<std::size_t>(Attribute::color)]     = create_buffer(GL_ARRAY_BUFFER, mesh.colors());
-    vertex_buffers[static_cast<std::size_t>(Attribute::texcoord0)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(0));
-    vertex_buffers[static_cast<std::size_t>(Attribute::texcoord1)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(1));
-    vertex_buffers[static_cast<std::size_t>(Attribute::texcoord2)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(2));
-    vertex_buffers[static_cast<std::size_t>(Attribute::texcoord3)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(3));
-    vertex_buffers[static_cast<std::size_t>(Attribute::texcoord4)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(4));
-    vertex_buffers[static_cast<std::size_t>(Attribute::texcoord5)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(5));
-    vertex_buffers[static_cast<std::size_t>(Attribute::texcoord6)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(6));
-    vertex_buffers[static_cast<std::size_t>(Attribute::texcoord7)] = create_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(7));
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::position)]  = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.vertices());
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::normal)]    = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.normals());
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::tangent)]   = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.tangents());
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::color)]     = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.colors());
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord0)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(0));
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord1)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(1));
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord2)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(2));
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord3)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(3));
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord4)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(4));
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord5)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(5));
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord6)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(6));
+    m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord7)] = create_vertex_buffer(GL_ARRAY_BUFFER, mesh.texture_coordinates(7));
     // clang-format on
 
-    index_buffer = create_buffer(GL_ELEMENT_ARRAY_BUFFER, mesh.indices());
+    m_index_buffer = create_index_buffer(GL_ELEMENT_ARRAY_BUFFER, mesh.sub_meshes());
 
     glBindVertexArray(0);
 
@@ -118,24 +173,30 @@ bool OpenglMesh::load(const Mesh& mesh)
 
 void OpenglMesh::draw() const
 {
-    glBindVertexArray(vertex_array);
+    glBindVertexArray(m_vertex_array);
 
     for (const Attribute attr : attributes_list) {
         enable_attribute(attr);
     }
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer.buffer);
-    glDrawElements(GL_TRIANGLES, index_buffer.components_count, static_cast<GLenum>(index_buffer.type), nullptr);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer.buffer);
+
+    std::uint8_t* offset = nullptr;
+    for (const SubMeshInfo& info : m_index_buffer.sub_meshes) {
+        glDrawElements(info.primitive_type, info.indices_count, m_index_buffer.type, offset);
+        offset += info.indices_count * static_cast<int>(sizeof(Mesh::IndicesData::value_type));
+    }
 }
+
 bool OpenglMesh::valid() const
 {
-    return vertex_array != 0 && index_buffer.buffer != 0;
+    return m_vertex_array != 0 && m_index_buffer.buffer != 0 && !m_index_buffer.sub_meshes.empty();
 }
 
 void OpenglMesh::enable_attribute(Attribute attribute) const
 {
-    const GLuint attr_index = static_cast<GLuint>(attribute);
-    const BufferInfo& info  = vertex_buffers[attr_index];
+    const GLuint attr_index      = static_cast<GLuint>(attribute);
+    const VertexBufferInfo& info = m_vertex_buffers[attr_index];
 
     if (info.buffer == 0) {
         return;
@@ -143,7 +204,7 @@ void OpenglMesh::enable_attribute(Attribute attribute) const
 
     glEnableVertexAttribArray(attr_index);
     glBindBuffer(GL_ARRAY_BUFFER, info.buffer);
-    glVertexAttribPointer(attr_index, info.component_size, static_cast<GLenum>(info.type), GL_FALSE, 0, nullptr);
+    glVertexAttribPointer(attr_index, info.component_size, info.type, GL_FALSE, 0, nullptr);
 }
 
 } // namespace framework::graphics

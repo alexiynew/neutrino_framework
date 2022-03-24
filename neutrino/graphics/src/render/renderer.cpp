@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include <graphics/color.hpp>
+#include <graphics/font.hpp>
 #include <graphics/mesh.hpp>
 #include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
@@ -111,8 +112,23 @@ void Renderer::set_clear_color(const Color& color)
     m_impl->set_clear_color(color);
 }
 
+void Renderer::enable_vertical_sync(bool)
+{
+    throw std::runtime_error("Renderer::enable_vertical_sync not implemented");
+}
+
+void Renderer::set_polygon_mode(PolygonMode mode)
+{
+    m_impl->set_polygon_mode(mode);
+}
+
 bool Renderer::load(const Mesh& mesh)
 {
+    if (mesh.sub_meshes().empty()) {
+        // Can't load mesh without sub meshes.
+        return false;
+    }
+
     m_window.get().context().make_current();
     return m_impl->load(mesh);
 }

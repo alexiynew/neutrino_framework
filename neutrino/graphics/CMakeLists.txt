@@ -16,16 +16,18 @@ set_sources(PRIVATE_SOURCES
     src/uniform.cpp
 
     src/font/font.cpp
+    src/font/tables/character_to_glyph_index_mapping.cpp
+    src/font/tables/character_to_glyph_index_mapping.hpp
     src/font/tables/font_header.cpp
     src/font/tables/font_header.hpp
-    src/font/tables/glyph_map.cpp
-    src/font/tables/glyph_map.hpp
+    src/font/tables/glyph_data.cpp
+    src/font/tables/glyph_data.hpp
     src/font/tables/horizontal_header.cpp
     src/font/tables/horizontal_header.hpp
     src/font/tables/horizontal_metrics.cpp
     src/font/tables/horizontal_metrics.hpp
-    src/font/tables/location.cpp
-    src/font/tables/location.hpp
+    src/font/tables/index_to_location.cpp
+    src/font/tables/index_to_location.hpp
     src/font/tables/maximum_profile.cpp
     src/font/tables/maximum_profile.hpp
     src/font/tables/naming.cpp

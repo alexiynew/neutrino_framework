@@ -1260,6 +1260,21 @@ inline S& operator<<(S& ostream, const Vector<N, T>& vector)
     ostream << "]";
     return ostream;
 }
+
+/// @brief Helper function to swap vectiors.
+///
+/// @param a Vector to swap.
+/// @param b Vector to swap.
+template <std::size_t N, typename T>
+inline void swap(Vector<N, T>& a, Vector<N, T>& b) noexcept
+{
+    using std::swap;
+
+    for (std::size_t i = 0; i < N; ++i) {
+        swap(a[i], b[i]);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

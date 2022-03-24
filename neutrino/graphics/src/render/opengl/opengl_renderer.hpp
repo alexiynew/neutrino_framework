@@ -27,6 +27,7 @@ public:
     ~OpenglRenderer() override;
 
     void set_clear_color(const Color& color) override;
+    void set_polygon_mode(Renderer::PolygonMode mode) override;
     void set_viewport(Size size) override;
 
     bool load(const Mesh& mesh) override;
@@ -57,6 +58,8 @@ private:
     std::string m_shading_lang_version;
 
     std::uint32_t m_max_texture_units = 48;
+
+    Renderer::PolygonMode m_polygon_mode = Renderer::PolygonMode::fill;
 };
 
 } // namespace framework::graphics

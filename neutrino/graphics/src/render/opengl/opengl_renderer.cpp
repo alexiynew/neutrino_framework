@@ -106,6 +106,17 @@ void OpenglRenderer::set_clear_color(const Color& color)
     LOG_OPENGL_ERRORS();
 }
 
+void OpenglRenderer::set_polygon_mode(Renderer::PolygonMode mode)
+{
+    m_polygon_mode = mode;
+    switch (m_polygon_mode) {
+        case Renderer::PolygonMode::fill: glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break;
+        case Renderer::PolygonMode::line: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
+        case Renderer::PolygonMode::point: glPolygonMode(GL_FRONT_AND_BACK, GL_POINT); break;
+    }
+    LOG_OPENGL_ERRORS();
+}
+
 void OpenglRenderer::set_viewport(Size size)
 {
     glViewport(0, 0, size.width, size.height);
@@ -175,10 +186,14 @@ void OpenglRenderer::start_frame()
 void OpenglRenderer::render(const Renderer::Command& command)
 {
     if (m_meshes.count(command.mesh()) == 0) {
+        log::debug(tag) << "OpenglRenderer::render: Trying to render mesh that is not loaded. Mesh id: "
+                        << command.mesh();
         return;
     }
 
     if (m_shaders.count(command.shader()) == 0) {
+        log::debug(tag) << "OpenglRenderer::render: Trying to use shder that is not loaded. Shader id: "
+                        << command.mesh();
         return;
     }
 

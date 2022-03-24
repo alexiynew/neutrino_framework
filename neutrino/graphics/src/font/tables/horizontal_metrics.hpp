@@ -8,22 +8,24 @@
 namespace framework::graphics::details::font
 {
 
-struct HorizontalMetrics
+class HorizontalMetrics final
 {
-    struct Metric
+public:
+    HorizontalMetrics(std::uint16_t number_of_h_metrics, std::uint16_t num_glyphs, const BytesData& data);
+
+    bool valid() const;
+    std::uint16_t advance_width(GlyphId id) const;
+    std::int16_t left_sidebearing(GlyphId id) const;
+
+private:
+    struct LongHorMetricRecord
     {
         std::uint16_t advance_width = 0;
         std::int16_t lsb            = 0;
     };
 
-    static HorizontalMetrics parse(std::uint16_t number_of_h_metrics,
-                                   std::uint16_t num_glyphs,
-                                   const std::vector<std::uint8_t>& data);
-
-    bool valid() const;
-
-    std::vector<Metric> metrics;
-    std::vector<std::int16_t> left_side_bearings;
+    std::vector<LongHorMetricRecord> m_metrics;
+    std::vector<std::int16_t> m_left_side_bearings;
 };
 
 } // namespace framework::graphics::details::font

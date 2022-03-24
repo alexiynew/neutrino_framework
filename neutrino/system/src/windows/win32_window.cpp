@@ -665,9 +665,9 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
 
             if (button != MouseButton::unknown) {
                 if (down) {
-                    on_button_down(button, position, mod_state);
+                    on_mouse_button_down(button, position, mod_state);
                 } else {
-                    on_button_up(button, position, mod_state);
+                    on_mouse_button_up(button, position, mod_state);
                 }
             }
 
@@ -683,12 +683,32 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
             const bool down           = message == WM_XBUTTONDOWN;
 
             if (down) {
-                on_button_down(button, position, mod_state);
+                on_mouse_button_down(button, position, mod_state);
             } else {
-                on_button_up(button, position, mod_state);
+                on_mouse_button_up(button, position, mod_state);
             }
 
             return TRUE;
+        }
+
+        case WM_MOUSEWHEEL: {
+            // A positive value indicates that the wheel was rotated forward, away from the user; a negative value
+            // indicates that the wheel was rotated backward, toward the user.
+            const short delta = GET_WHEEL_DELTA_WPARAM(w_param);
+            const ScrollOffset offset(0, delta);
+
+            on_mouse_scroll(offset);
+            return 0;
+        }
+
+        case WM_MOUSEHWHEEL: {
+            // A positive value indicates that the wheel was rotated to the right; a negative value indicates that the
+            // wheel was rotated to the left.
+            const short delta = GET_WHEEL_DELTA_WPARAM(w_param);
+            const ScrollOffset offset(delta, 0);
+
+            on_mouse_scroll(offset);
+            return 0;
         }
 
         case WM_UNICHAR: {

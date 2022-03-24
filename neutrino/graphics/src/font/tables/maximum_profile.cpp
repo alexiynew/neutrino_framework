@@ -5,40 +5,48 @@
 namespace framework::graphics::details::font
 {
 
-MaximumProfile MaximumProfile::parse(const std::vector<std::uint8_t>& data)
+MaximumProfile::MaximumProfile(const BytesData& data)
 {
-    MaximumProfile table;
+    auto in = utils::make_big_endian_buffer_reader(data);
 
-    table.version    = utils::big_endian_value<Fixed>(data.begin());
-    table.num_glyphs = utils::big_endian_value<std::uint16_t>(data.begin() + 4);
+    in >> m_version;
+    in >> m_num_glyphs;
 
-    if (table.version == 0x00010000) {
-        table.max_points               = utils::big_endian_value<std::uint16_t>(data.begin() + 6);
-        table.max_contours             = utils::big_endian_value<std::uint16_t>(data.begin() + 8);
-        table.max_composite_points     = utils::big_endian_value<std::uint16_t>(data.begin() + 10);
-        table.max_composite_contours   = utils::big_endian_value<std::uint16_t>(data.begin() + 12);
-        table.max_zones                = utils::big_endian_value<std::uint16_t>(data.begin() + 14);
-        table.max_twilight_points      = utils::big_endian_value<std::uint16_t>(data.begin() + 16);
-        table.max_storage              = utils::big_endian_value<std::uint16_t>(data.begin() + 18);
-        table.max_function_defs        = utils::big_endian_value<std::uint16_t>(data.begin() + 20);
-        table.max_instruction_defs     = utils::big_endian_value<std::uint16_t>(data.begin() + 22);
-        table.max_stack_elements       = utils::big_endian_value<std::uint16_t>(data.begin() + 24);
-        table.max_size_of_instructions = utils::big_endian_value<std::uint16_t>(data.begin() + 26);
-        table.max_component_elements   = utils::big_endian_value<std::uint16_t>(data.begin() + 28);
-        table.max_component_depth      = utils::big_endian_value<std::uint16_t>(data.begin() + 30);
+    if (m_version == 0x00010000) {
+        in >> m_max_points;
+        in >> m_max_contours;
+        in >> m_max_composite_points;
+        in >> m_max_composite_contours;
+        in >> m_max_zones;
+        in >> m_max_twilight_points;
+        in >> m_max_storage;
+        in >> m_max_function_defs;
+        in >> m_max_instruction_defs;
+        in >> m_max_stack_elements;
+        in >> m_max_size_of_instructions;
+        in >> m_max_component_elements;
+        in >> m_max_component_depth;
     }
-
-    return table;
 }
 
 bool MaximumProfile::valid() const
 {
     bool valid = true;
 
-    valid &= version == 0x00010000 || version == 0x00005000;
-    valid &= num_glyphs != 0;
+    valid &= m_version == true_type_version || m_version == open_type_vetsion;
+    valid &= m_num_glyphs != 0;
 
     return valid;
+}
+
+Fixed MaximumProfile::version() const
+{
+    return m_version;
+}
+
+std::uint16_t MaximumProfile::num_glyphs() const
+{
+    return m_num_glyphs;
 }
 
 } // namespace framework::graphics::details::font

@@ -2,6 +2,7 @@
 #define FRAMEWORK_GRAPHICS_MESH_HPP
 
 #include <array>
+#include <unordered_map>
 #include <vector>
 
 #include <common/instance_id.hpp>
@@ -33,10 +34,29 @@ namespace framework::graphics
 class Mesh
 {
 public:
+    enum class PrimitiveType
+    {
+        points,
+        lines,
+        line_strip,
+        line_loop,
+        triangles,
+        triangle_strip,
+        triangle_fan,
+    };
+
     using VertexData             = std::vector<math::Vector3f>;
     using TextureCoordinatesData = std::vector<math::Vector2f>;
     using ColorData              = std::vector<Color>;
-    using IndicesData            = std::vector<std::uint16_t>;
+    using IndicesData            = std::vector<std::uint32_t>;
+
+    struct SubMesh
+    {
+        IndicesData indices;
+        PrimitiveType primitive_type;
+    };
+
+    using SubMeshMap = std::unordered_map<std::size_t, SubMesh>;
 
     static constexpr int max_texture_coordinates = 8;
 
@@ -47,6 +67,7 @@ public:
     ~Mesh();
 
     Mesh& operator=(const Mesh& other);
+
     Mesh& operator=(Mesh&& other) noexcept;
 
     /// @brief Assign new vertex positions to Mesh.
@@ -57,7 +78,7 @@ public:
     /// @brief Assign new vertex positions to Mesh.
     ///
     /// @param vertices New vertex data.
-    void set_vertices(VertexData&& vertices) noexcept;
+    void set_vertices(VertexData&& vertices);
 
     /// @brief Assign new vertex normals to Mesh.
     ///
@@ -105,20 +126,26 @@ public:
     /// @param coordinates New texture coordinates data.
     void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates) noexcept;
 
-    /// @brief Assign new indices data to Mesh.
+    /// @brief Set indices data for Mesh.
     ///
     /// @param indices New indices.
-    void set_indices(const IndicesData& indices);
+    /// @param type Kind of primitives for sub mesh.
+    ///
+    /// @return Index of new sub mesh.
+    std::size_t add_sub_mesh(const IndicesData& indices, PrimitiveType type = PrimitiveType::triangles);
 
-    /// @brief Sets new indices data to Mesh.
+    /// @brief Set indices data for Mesh.
     ///
     /// @param indices New indices.
-    void set_indices(IndicesData&& indices) noexcept;
-
-    /// @brief Automatically generates indices.
+    /// @param type Kind of primitives for sub mesh.
     ///
-    /// Basically iterate over vertices and assign every vertex new index.
-    void generate_indices();
+    /// @return Index of new sub mesh.
+    std::size_t add_sub_mesh(IndicesData&& indices, PrimitiveType type = PrimitiveType::triangles) noexcept;
+
+    /// @brief Remove previously created sub mesh.
+    ///
+    /// @param index Sub mesh to delete.
+    void remove_sub_mesh(std::size_t index);
 
     /// @brief Remove all data from Mesh.
     ///
@@ -159,10 +186,17 @@ public:
     /// @return Texture coordinates.
     const TextureCoordinatesData& texture_coordinates(std::size_t index) const;
 
-    /// @brief Get indices data.
+    /// @brief Checks if sub mesh with index exists in Mesh.
     ///
-    /// @return Indices.
-    const IndicesData& indices() const;
+    /// @param index Sub mesh index to check.
+    ///
+    /// @return `true` if mesh with index exists in the Mesh.
+    bool has_sub_mesh(std::size_t index);
+
+    /// @brief Get all sub meshes of the Mesh.
+    ///
+    /// @return Sub meshes.
+    const SubMeshMap& sub_meshes() const;
 
 private:
     friend void swap(Mesh& lhs, Mesh& rhs) noexcept;
@@ -173,7 +207,8 @@ private:
     VertexData m_tanegents;
     ColorData m_colors;
     std::array<TextureCoordinatesData, max_texture_coordinates> m_texture_coordinates;
-    IndicesData m_indexes;
+    SubMeshMap m_sub_meshes;
+    std::size_t m_last_sub_mesh_index = 0;
 };
 
 /// @brief Swaps two Meshes.

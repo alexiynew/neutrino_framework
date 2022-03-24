@@ -138,7 +138,7 @@ MeshPtr create_mesh(int width, int height, const Mesh::TextureCoordinatesData te
     MeshPtr m = std::make_unique<Mesh>();
     m->set_vertices(scaled_vertices);
     m->set_texture_coordinates(0, tex_coord);
-    m->set_indices(square_mesh::indices);
+    m->add_sub_mesh(square_mesh::indices);
 
     return m;
 }

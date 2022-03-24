@@ -5,73 +5,81 @@
 namespace framework::graphics::details::font
 {
 
-Os2 Os2::parse(const std::vector<std::uint8_t>& data)
+Os2::Os2(const BytesData& data)
 {
-    Os2 table;
+    auto in = utils::make_big_endian_buffer_reader(data);
 
-    table.version              = utils::big_endian_value<std::uint16_t>(data.begin() + 0);
-    table.avg_char_width       = utils::big_endian_value<std::int16_t>(data.begin() + 2);
-    table.weight_class         = utils::big_endian_value<std::uint16_t>(data.begin() + 4);
-    table.width_class          = utils::big_endian_value<std::uint16_t>(data.begin() + 6);
-    table.type                 = utils::big_endian_value<std::uint16_t>(data.begin() + 8);
-    table.subscript_x_size     = utils::big_endian_value<std::int16_t>(data.begin() + 10);
-    table.subscript_y_size     = utils::big_endian_value<std::int16_t>(data.begin() + 12);
-    table.subscript_x_offset   = utils::big_endian_value<std::int16_t>(data.begin() + 14);
-    table.subscript_y_offset   = utils::big_endian_value<std::int16_t>(data.begin() + 16);
-    table.superscript_x_size   = utils::big_endian_value<std::int16_t>(data.begin() + 18);
-    table.superscript_y_size   = utils::big_endian_value<std::int16_t>(data.begin() + 20);
-    table.superscript_x_offset = utils::big_endian_value<std::int16_t>(data.begin() + 22);
-    table.superscript_y_offset = utils::big_endian_value<std::int16_t>(data.begin() + 24);
-    table.strikeout_size       = utils::big_endian_value<std::int16_t>(data.begin() + 26);
-    table.strikeout_position   = utils::big_endian_value<std::int16_t>(data.begin() + 28);
-    table.family_class         = utils::big_endian_value<std::int16_t>(data.begin() + 30);
+    in >> m_version;
+    in >> m_avg_char_width;
+    in >> m_weight_class;
+    in >> m_width_class;
+    in >> m_type;
+    in >> m_subscript_x_size;
+    in >> m_subscript_y_size;
+    in >> m_subscript_x_offset;
+    in >> m_subscript_y_offset;
+    in >> m_superscript_x_size;
+    in >> m_superscript_y_size;
+    in >> m_superscript_x_offset;
+    in >> m_superscript_y_offset;
+    in >> m_strikeout_size;
+    in >> m_strikeout_position;
+    in >> m_family_class;
 
-    std::reverse_copy(data.begin() + 32, data.begin() + 42, table.panose.begin());
+    std::reverse_copy(data.begin() + 32, data.begin() + 42, m_panose.begin());
+    in.skip<std::uint8_t>(10);
 
-    table.unicode_range1   = utils::big_endian_value<std::uint32_t>(data.begin() + 42);
-    table.unicode_range2   = utils::big_endian_value<std::uint32_t>(data.begin() + 46);
-    table.unicode_range3   = utils::big_endian_value<std::uint32_t>(data.begin() + 50);
-    table.unicode_range4   = utils::big_endian_value<std::uint32_t>(data.begin() + 54);
-    table.ach_vend_id      = utils::big_endian_value<Tag>(data.begin() + 58);
-    table.selection        = utils::big_endian_value<std::uint16_t>(data.begin() + 62);
-    table.first_char_index = utils::big_endian_value<std::uint16_t>(data.begin() + 64);
-    table.last_char_index  = utils::big_endian_value<std::uint16_t>(data.begin() + 66);
-    table.typo_ascender    = utils::big_endian_value<std::int16_t>(data.begin() + 68);
-    table.typo_descender   = utils::big_endian_value<std::int16_t>(data.begin() + 70);
-    table.typo_linegap     = utils::big_endian_value<std::int16_t>(data.begin() + 72);
-    table.win_ascent       = utils::big_endian_value<std::uint16_t>(data.begin() + 74);
-    table.win_descent      = utils::big_endian_value<std::uint16_t>(data.begin() + 76);
+    in >> m_unicode_range1;
+    in >> m_unicode_range2;
+    in >> m_unicode_range3;
+    in >> m_unicode_range4;
+    in >> m_ach_vend_id;
+    in >> m_selection;
+    in >> m_first_char_index;
+    in >> m_last_char_index;
+    in >> m_typo_ascender;
+    in >> m_typo_descender;
+    in >> m_typo_linegap;
+    in >> m_win_ascent;
+    in >> m_win_descent;
 
-    if (table.version >= 1) {
-        table.code_page_range1 = utils::big_endian_value<std::uint32_t>(data.begin() + 78);
-        table.code_page_range2 = utils::big_endian_value<std::uint32_t>(data.begin() + 82);
+    if (m_version >= 1) {
+        in >> m_code_page_range1;
+        in >> m_code_page_range2;
     }
 
-    if (table.version >= 2) {
-        table.height       = utils::big_endian_value<std::int16_t>(data.begin() + 86);
-        table.capheight    = utils::big_endian_value<std::int16_t>(data.begin() + 88);
-        table.default_char = utils::big_endian_value<std::uint16_t>(data.begin() + 90);
-        table.break_char   = utils::big_endian_value<std::uint16_t>(data.begin() + 92);
-        table.max_context  = utils::big_endian_value<std::uint16_t>(data.begin() + 94);
+    if (m_version >= 2) {
+        in >> m_height;
+        in >> m_capheight;
+        in >> m_default_char;
+        in >> m_break_char;
+        in >> m_max_context;
     }
 
-    if (table.version == 5) {
-        table.lower_optical_point_size = utils::big_endian_value<std::uint16_t>(data.begin() + 96);
-        table.upper_optical_point_size = utils::big_endian_value<std::uint16_t>(data.begin() + 98);
+    if (m_version == 5) {
+        in >> m_lower_optical_point_size;
+        in >> m_upper_optical_point_size;
     }
-
-    return table;
 }
 
 bool Os2::valid() const
 {
     bool valid = true;
 
-    valid &= version <= 5;
-    valid &= weight_class >= 1 && weight_class <= 1000;
-    valid &= width_class >= 1 && width_class <= 9;
+    valid &= m_version <= 5; // all versions supported
+    valid &= m_weight_class >= 1 && m_weight_class <= 1000;
+    valid &= m_width_class >= 1 && m_width_class <= 9;
 
     return valid;
+}
+
+std::uint16_t Os2::default_char() const
+{
+    if (m_version < 2) {
+        return 0;
+    }
+
+    return m_default_char;
 }
 
 } // namespace framework::graphics::details::font

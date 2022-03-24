@@ -2,6 +2,7 @@
 #define FRAMEWORK_GRAPHICS_RENDERER_HPP
 
 #include <memory>
+#include <string>
 #include <unordered_map>
 
 #include <graphics/color.hpp>
@@ -11,6 +12,7 @@
 
 namespace framework::graphics
 {
+class Font;
 class Mesh;
 class RendererImpl;
 class Shader;
@@ -34,6 +36,14 @@ class Renderer
 public:
     using UniformsList = std::vector<Uniform>;
     using UniformsMap  = std::unordered_map<std::string, Uniform>;
+
+    /// @brief Polygon rasterization mode.
+    enum class PolygonMode
+    {
+        point,
+        line,
+        fill,
+    };
 
     /// @brief Internal representation of render call.
     class Command
@@ -81,7 +91,13 @@ public:
     /// @brief Turn on or off the vertical sync.
     ///
     /// @param enable On or off vertical sync.
-    void enable_vertical_sync(bool enable);
+    /// TODO: remove noreturn
+    [[noreturn]] void enable_vertical_sync(bool enable);
+
+    /// @brief Set current polygon mode.
+    ///
+    /// @param mode New mode.
+    void set_polygon_mode(PolygonMode mode);
 
     /// @brief Loads Mesh to renderer.
     ///

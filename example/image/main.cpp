@@ -374,7 +374,7 @@ MeshPtr create_mesh(int width, int height)
     MeshPtr m = std::make_unique<Mesh>();
     m->set_vertices(scaled_vertices);
     m->set_texture_coordinates(0, square_mesh::tex_coord);
-    m->set_indices(square_mesh::indices);
+    m->add_sub_mesh(square_mesh::indices);
 
     return m;
 }
@@ -495,14 +495,14 @@ void Example::setup()
         arrange();
     });
 
-    main_window.on_button_down.connect([this](const Window&, MouseButton button, CursorPosition pos, Modifiers) {
+    main_window.on_mouse_button_down.connect([this](const Window&, MouseButton button, CursorPosition pos, Modifiers) {
         if (button == MouseButton::button_left) {
             drag_start_pos = Vector2f(pos.x, pos.y);
             drag           = true;
         }
     });
 
-    main_window.on_button_up.connect([this](const Window&, MouseButton button, CursorPosition, Modifiers) {
+    main_window.on_mouse_button_up.connect([this](const Window&, MouseButton button, CursorPosition, Modifiers) {
         if (button == MouseButton::button_left) {
             drag = false;
         }

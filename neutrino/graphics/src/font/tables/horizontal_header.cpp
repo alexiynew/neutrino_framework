@@ -5,44 +5,44 @@
 namespace framework::graphics::details::font
 {
 
-HorizontalHeader HorizontalHeader::parse(const std::vector<std::uint8_t>& data)
+HorizontalHeader::HorizontalHeader(const BytesData& data)
 {
-    HorizontalHeader table;
-    table.major_version          = utils::big_endian_value<std::uint16_t>(data.begin() + 0);
-    table.minor_version          = utils::big_endian_value<std::uint16_t>(data.begin() + 2);
-    table.ascender               = utils::big_endian_value<FWord>(data.begin() + 4);
-    table.descender              = utils::big_endian_value<FWord>(data.begin() + 6);
-    table.line_gap               = utils::big_endian_value<FWord>(data.begin() + 8);
-    table.advance_width_max      = utils::big_endian_value<UFWord>(data.begin() + 10);
-    table.min_left_side_bearing  = utils::big_endian_value<FWord>(data.begin() + 12);
-    table.min_right_side_bearing = utils::big_endian_value<FWord>(data.begin() + 14);
-    table.x_max_extent           = utils::big_endian_value<FWord>(data.begin() + 16);
-    table.caret_slope_rise       = utils::big_endian_value<std::int16_t>(data.begin() + 18);
-    table.caret_slope_run        = utils::big_endian_value<std::int16_t>(data.begin() + 20);
-    table.caret_offset           = utils::big_endian_value<std::int16_t>(data.begin() + 22);
-    table.reserved1              = utils::big_endian_value<std::int16_t>(data.begin() + 24);
-    table.reserved2              = utils::big_endian_value<std::int16_t>(data.begin() + 26);
-    table.reserved3              = utils::big_endian_value<std::int16_t>(data.begin() + 28);
-    table.reserved4              = utils::big_endian_value<std::int16_t>(data.begin() + 30);
-    table.metric_data_format     = utils::big_endian_value<std::int16_t>(data.begin() + 32);
-    table.number_of_h_metrics    = utils::big_endian_value<std::uint16_t>(data.begin() + 34);
+    auto in = utils::make_big_endian_buffer_reader(data);
 
-    return table;
+    in >> m_major_version;
+    in >> m_minor_version;
+    in >> m_ascender;
+    in >> m_descender;
+    in >> m_line_gap;
+    in >> m_advance_width_max;
+    in >> m_min_left_side_bearing;
+    in >> m_min_right_side_bearing;
+    in >> m_x_max_extent;
+    in >> m_caret_slope_rise;
+    in >> m_caret_slope_run;
+    in >> m_caret_offset;
+
+    // skip reserved fields
+    in.skip<int16>(4);
+
+    in >> m_metric_data_format;
+    in >> m_number_of_h_metrics;
 }
 
 bool HorizontalHeader::valid() const
 {
     bool valid = true;
 
-    valid &= major_version == 1;
-    valid &= minor_version == 0;
-    valid &= reserved1 == 0;
-    valid &= reserved2 == 0;
-    valid &= reserved3 == 0;
-    valid &= reserved4 == 0;
-    valid &= metric_data_format == 0;
+    valid &= m_major_version == 1;
+    valid &= m_minor_version == 0;
+    valid &= m_metric_data_format == 0;
 
     return valid;
+}
+
+std::uint16_t HorizontalHeader::number_of_h_metrics() const
+{
+    return m_number_of_h_metrics;
 }
 
 } // namespace framework::graphics::details::font

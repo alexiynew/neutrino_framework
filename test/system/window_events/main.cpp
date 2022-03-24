@@ -252,20 +252,23 @@ private:
 
         w.on_mouse_leave.connect([](const Window&) { log::info("test") << "on_mouse_leave" << std::endl; });
 
-        w.on_mouse_move.connect([](const Window&, system::CursorPosition p) {
-            log::info("test") << "on_mouse_move {" << p.x << ", " << p.y << "}" << std::endl;
+        w.on_mouse_move.connect(
+        [](const Window&, system::CursorPosition p) { log::info("test") << "on_mouse_move " << p << std::endl; });
+
+        w.on_mouse_button_down.connect(
+        [](const Window&, system::MouseButton button, system::CursorPosition position, system::Modifiers state) {
+            log::info("test") << "on_mouse_press: " << button_name(button) << " " << position << " "
+                              << print_state(state) << std::endl;
         });
 
-        w.on_button_down.connect(
+        w.on_mouse_button_up.connect(
         [](const Window&, system::MouseButton button, system::CursorPosition position, system::Modifiers state) {
-            log::info("test") << "on_mouse_press: " << button_name(button) << " {" << position.x << ", " << position.y
-                              << "} " << print_state(state) << std::endl;
+            log::info("test") << "on_mouse_release: " << button_name(button) << " " << position << " "
+                              << print_state(state) << std::endl;
         });
 
-        w.on_button_up.connect(
-        [](const Window&, system::MouseButton button, system::CursorPosition position, system::Modifiers state) {
-            log::info("test") << "on_mouse_release: " << button_name(button) << " {" << position.x << ", " << position.y
-                              << "} " << print_state(state) << std::endl;
+        w.on_mouse_scroll.connect([](const Window&, system::ScrollOffset offset) {
+            log::info("test") << "on_mouse_scroll: " << offset << std::endl;
         });
 
         w.on_character.connect(

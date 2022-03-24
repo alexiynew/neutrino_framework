@@ -7,6 +7,9 @@ script_path = os.getcwd()
 
 path = "{}/neutrino".format(script_path)
 
+# TODO: Add lint for order of words in declaration of static constexpr, should be in this order 
+# TODO: Add lint for enum class names, should be in CamelCase
+# TODO: Add lint for classes and structs names, should be in CamelCase
 
 def get_files(path):
     files = []

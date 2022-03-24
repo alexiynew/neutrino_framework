@@ -201,20 +201,20 @@ inline Matrix<3, 3, T> shear(const Matrix<3, 3, T>& m, const Vector<2, T>& v)
 template <typename T>
 inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const T top, const T near_val, const T far_val)
 {
-    const T width  = right - left;
-    const T height = top - bottom;
-    const T depth  = far_val - near_val;
+    const T ortho_width  = right - left;
+    const T ortho_height = top - bottom;
+    const T ortho_depth  = far_val - near_val;
 
-    assert(framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(framework::math::abs(ortho_width - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(framework::math::abs(ortho_height - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(framework::math::abs(ortho_depth - std::numeric_limits<T>::epsilon()) > T(0));
 
     // clang-format off
     return Matrix<4, 4, T> (
-            T(2) / width,            0,                        0,                             0,
-            0,                       T(2) / height,            0,                             0,
-            0,                       0,                        -T(2) / depth,                 0,
-            -(right + left) / width, -(top + bottom) / height, -(far_val + near_val) / depth, 1
+            T(2) / ortho_width,            0,                              0,                                   0,
+            0,                             T(2) / ortho_height,            0,                                   0,
+            0,                             0,                              -T(2) / ortho_depth,                 0,
+            -(right + left) / ortho_width, -(top + bottom) / ortho_height, -(far_val + near_val) / ortho_depth, 1
     );
     // clang-format on
 }

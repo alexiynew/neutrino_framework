@@ -13,12 +13,25 @@ class Mesh;
 class OpenglMesh
 {
 public:
-    struct BufferInfo
+    struct VertexBufferInfo
     {
         std::uint32_t buffer = 0;
-        int type             = 0;
+        unsigned int type    = 0;
         int component_size   = 0;
         int components_count = 0;
+    };
+
+    struct SubMeshInfo
+    {
+        int indices_count           = 0;
+        unsigned int primitive_type = 0;
+    };
+
+    struct IndexBufferInfo
+    {
+        std::uint32_t buffer = 0;
+        unsigned int type    = 0;
+        std::vector<SubMeshInfo> sub_meshes;
     };
 
     OpenglMesh() = default;
@@ -40,10 +53,10 @@ public:
 private:
     void enable_attribute(Attribute attribute) const;
 
-    std::uint32_t vertex_array = 0;
-    BufferInfo index_buffer;
+    std::uint32_t m_vertex_array = 0;
+    IndexBufferInfo m_index_buffer;
 
-    std::array<BufferInfo, attributes_count> vertex_buffers = {};
+    std::array<VertexBufferInfo, attributes_count> m_vertex_buffers = {};
 };
 
 } // namespace framework::graphics

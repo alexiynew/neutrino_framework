@@ -5,45 +5,64 @@
 namespace framework::graphics::details::font
 {
 
-FontHeader FontHeader::parse(const std::vector<std::uint8_t>& data)
+FontHeader::FontHeader(const BytesData& data)
 {
-    FontHeader table;
-    table.major_version        = utils::big_endian_value<std::uint16_t>(data.begin() + 0);
-    table.minor_version        = utils::big_endian_value<std::uint16_t>(data.begin() + 2);
-    table.font_revision        = utils::big_endian_value<Fixed>(data.begin() + 4);
-    table.check_sum_adjustment = utils::big_endian_value<std::uint32_t>(data.begin() + 8);
-    table.magic_number         = utils::big_endian_value<std::uint32_t>(data.begin() + 12);
-    table.flags                = utils::big_endian_value<std::uint16_t>(data.begin() + 16);
-    table.units_per_em         = utils::big_endian_value<std::uint16_t>(data.begin() + 18);
-    table.created              = utils::big_endian_value<DateTime>(data.begin() + 20);
-    table.modified             = utils::big_endian_value<DateTime>(data.begin() + 28);
-    table.x_min                = utils::big_endian_value<std::int16_t>(data.begin() + 36);
-    table.y_min                = utils::big_endian_value<std::int16_t>(data.begin() + 38);
-    table.x_max                = utils::big_endian_value<std::int16_t>(data.begin() + 40);
-    table.y_max                = utils::big_endian_value<std::int16_t>(data.begin() + 42);
-    table.mac_style            = utils::big_endian_value<std::uint16_t>(data.begin() + 44);
-    table.lowest_rec_ppem      = utils::big_endian_value<std::uint16_t>(data.begin() + 46);
-    table.font_direction_hint  = utils::big_endian_value<std::int16_t>(data.begin() + 48);
-    table.index_to_loc_format  = utils::big_endian_value<std::int16_t>(data.begin() + 50);
-    table.glyph_data_format    = utils::big_endian_value<std::int16_t>(data.begin() + 52);
+    auto in = utils::make_big_endian_buffer_reader(data);
 
-    return table;
+    in >> m_major_version;
+    in >> m_minor_version;
+    in >> m_font_revision;
+    in >> m_check_sum_adjustment;
+    in >> m_magic_number;
+    in >> m_flags;
+    in >> m_units_per_em;
+    in >> m_created;
+    in >> m_modified;
+    in >> m_x_min;
+    in >> m_y_min;
+    in >> m_x_max;
+    in >> m_y_max;
+    in >> m_mac_style;
+    in >> m_lowest_rec_ppem;
+    in >> m_font_direction_hint;
+    in >> m_index_to_loc_format;
+    in >> m_glyph_data_format;
 }
 
 bool FontHeader::valid() const
 {
     bool valid = true;
 
-    valid &= major_version == 1;
-    valid &= minor_version == 0;
-    valid &= magic_number == 0X5F0F3CF5;
-    valid &= (units_per_em >= 16 && units_per_em <= 16364);
-    valid &= x_min < x_max;
-    valid &= y_min < y_max;
-    valid &= index_to_loc_format == 0 || index_to_loc_format == 1;
-    valid &= glyph_data_format == 0;
+    valid &= m_major_version == 1;
+    valid &= m_minor_version == 0;
+    valid &= m_magic_number == 0X5F0F3CF5;
+    valid &= (m_units_per_em >= 16 && m_units_per_em <= 16364);
+    valid &= m_x_min < m_x_max;
+    valid &= m_y_min < m_y_max;
+    valid &= m_index_to_loc_format == 0 || m_index_to_loc_format == 1;
+    valid &= m_glyph_data_format == 0;
 
     return valid;
+}
+
+std::int16_t FontHeader::index_to_loc_format() const
+{
+    return m_index_to_loc_format;
+}
+
+std::uint16_t FontHeader::units_per_em() const
+{
+    return m_units_per_em;
+}
+
+bool FontHeader::baseline_at_y_zero() const
+{
+    return (m_flags & 0x0001u) != 0;
+}
+
+bool FontHeader::left_sidebearing_at_x_zero() const
+{
+    return (m_flags & 0x0002u) != 0;
 }
 
 } // namespace framework::graphics::details::font
