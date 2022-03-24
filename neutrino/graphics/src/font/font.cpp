@@ -332,10 +332,10 @@ bool is_point_in_triangle(math::Vector2f pt, math::Vector2f v1, math::Vector2f v
     return ((b1 == b2) && (b2 == b3));
 }
 
-bool is_line_intersert_segment(math::Vector2f line_start,
-                               math::Vector2f line_end,
-                               math::Vector2f segment_start,
-                               math::Vector2f segment_end)
+[[maybe_unused]] bool is_line_intersert_segment(math::Vector2f line_start,
+                                                math::Vector2f line_end,
+                                                math::Vector2f segment_start,
+                                                math::Vector2f segment_end)
 {
     const math::Vector2f line_direction = line_end - line_start;
 
@@ -358,11 +358,11 @@ bool is_point_in_polygon(math::Vector2f point, const Polygon& polygon)
         return false;
     }
 
-    int intersections_num = 0;
-    size_t prev_index     = polygon.size() - 1;
-    bool prev_under       = polygon[prev_index].y < point.y;
+    int intersections_num  = 0;
+    std::size_t prev_index = polygon.size() - 1;
+    bool prev_under        = polygon[prev_index].y < point.y;
 
-    for (int i = 0; i < polygon.size(); ++i) {
+    for (std::size_t i = 0; i < polygon.size(); ++i) {
         const bool curr_under = polygon[i].y < point.y;
 
         const math::Vector2f a = polygon[prev_index] - point;
