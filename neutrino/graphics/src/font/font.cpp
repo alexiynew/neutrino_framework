@@ -439,7 +439,7 @@ Mesh::IndicesData generate_triangulation(const Polygon& polygon)
 
         for (auto ear_index : ears) {
             auto it  = std::find(indices.begin(), indices.end(), ear_index);
-            size_t i = std::distance(indices.begin(), it);
+            size_t i = static_cast<size_t>(std::distance(indices.begin(), it));
 
             const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
             const Mesh::IndicesData::value_type index_curr = indices[i];
@@ -458,7 +458,7 @@ Mesh::IndicesData generate_triangulation(const Polygon& polygon)
 
         {
             auto it  = std::find(indices.begin(), indices.end(), min_angle_index);
-            size_t i = std::distance(indices.begin(), it);
+            size_t i = static_cast<size_t>(std::distance(indices.begin(), it));
 
             const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
             const Mesh::IndicesData::value_type index_curr = indices[i];

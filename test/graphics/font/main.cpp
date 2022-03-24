@@ -101,8 +101,8 @@ private:
             }
         });
 
-        window.on_mouse_scroll.connect([this](const Window&, ScrollOffset offset) {
-            scale -= ((offset.y / 120.0f) * 0.1f);
+        window.on_mouse_scroll.connect([this](const Window&, ScrollOffset scroll_offset) {
+            scale -= ((scroll_offset.y / 120.0f) * 0.1f);
             scale = std::clamp(scale, 0.1f, 5.0f);
         });
 
