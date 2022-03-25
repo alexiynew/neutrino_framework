@@ -29,18 +29,21 @@ namespace framework
 class InstanceId final
 {
 public:
+    using ValueType = std::uint32_t;
+
     /// @brief Creates InstanceId with unique index.
     InstanceId();
 
 private:
     friend bool operator==(const InstanceId& lhs, const InstanceId& rhs);
+    friend bool operator==(const InstanceId& lhs, const ValueType& rhs);
     friend bool operator<(const InstanceId& lhs, const InstanceId& rhs);
     friend void swap(InstanceId& lhs, InstanceId& rhs) noexcept;
     friend std::ostream& operator<<(std::ostream& os, const InstanceId& instance_id);
 
     friend struct std::hash<InstanceId>;
 
-    std::uint32_t m_id;
+    ValueType m_id;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +59,14 @@ private:
 /// @return `true` if lhs equals rhs, otherwise `false`.
 bool operator==(const InstanceId& lhs, const InstanceId& rhs);
 
+/// @brief Equality operator for InstanceId and internal type representation.
+///
+/// @param lhs Id to compare.
+/// @param rhs Value to compare.
+///
+/// @return `true` if lhs equals rhs, otherwise `false`.
+bool operator==(const InstanceId& lhs, const InstanceId::ValueType& rhs);
+
 /// @brief Inequality operator for InstanceId's.
 ///
 /// @param lhs Id to compare.
@@ -63,6 +74,14 @@ bool operator==(const InstanceId& lhs, const InstanceId& rhs);
 ///
 /// @return `true` if lhs isn't equals rhs, otherwise `false`.
 bool operator!=(const InstanceId& lhs, const InstanceId& rhs);
+
+/// @brief Inequality operator for InstanceId and internal type representation.
+///
+/// @param lhs Id to compare.
+/// @param rhs Value to compare.
+///
+/// @return `true` if lhs isn't equals rhs, otherwise `false`.
+bool operator!=(const InstanceId& lhs, const InstanceId::ValueType& rhs);
 
 /// @brief Less operator for InstanceId's.
 ///

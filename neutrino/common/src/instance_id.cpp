@@ -23,7 +23,17 @@ bool operator==(const InstanceId& lhs, const InstanceId& rhs)
     return lhs.m_id == rhs.m_id;
 }
 
+bool operator==(const InstanceId& lhs, const InstanceId::ValueType& rhs)
+{
+    return lhs.m_id == rhs;
+}
+
 bool operator!=(const InstanceId& lhs, const InstanceId& rhs)
+{
+    return !(lhs == rhs);
+}
+
+bool operator!=(const InstanceId& lhs, const InstanceId::ValueType& rhs)
 {
     return !(lhs == rhs);
 }
