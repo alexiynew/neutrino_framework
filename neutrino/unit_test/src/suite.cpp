@@ -1,6 +1,7 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
@@ -21,10 +22,11 @@ void Suite::run()
     m_success      = true;
     m_current_test = m_tests.end();
 
-    log::set_logger(std::make_unique<log::StreamLogger>(std::cout));
-
     for (auto iterator = m_tests.begin(); iterator != m_tests.end(); iterator++) {
         m_current_test = iterator;
+
+        std::stringstream log_output;
+        log::set_logger(std::make_unique<log::StreamLogger>(log_output));
 
         try {
             m_current_test->function();
@@ -37,6 +39,7 @@ void Suite::run()
         }
 
         output(*m_current_test);
+        std::cout << log_output.str();
     }
 }
 

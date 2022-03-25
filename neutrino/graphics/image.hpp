@@ -2,7 +2,6 @@
 #define FRAMEWORK_GRAPHICS_IMAGE_HPP
 
 #include <filesystem>
-#include <tuple>
 #include <vector>
 
 #include <graphics/color.hpp>
@@ -36,11 +35,17 @@ public:
         png,
     };
 
-    /// @brief Type of data container
-    using DataType = std::vector<Color>;
-
     /// @brief Result of loading operation.
-    using LoadResult = std::tuple<bool, std::string>;
+    enum class LoadResult
+    {
+        Success,          ///< Success loading
+        FileNotExists,    ///< Can't find file
+        OpenFileError,    ///< Can't open file for reading
+        InvalidFileType,  ///< File type is unknown or not supported
+        DataParsingError, ///< Can't parse image data
+        Unsupported,      ///< Unsupported version of table or data
+        UnknownError,     ///< Unknown error
+    };
 
     Image();
 
@@ -49,7 +54,7 @@ public:
     /// @param data Image color data.
     /// @param width Image width.
     /// @param height Inage height.
-    Image(const DataType& data, int width, int height);
+    Image(const std::vector<Color>& data, std::size_t width, std::size_t height);
 
     Image(const Image&)     = default;
     Image(Image&&) noexcept = default;
@@ -63,28 +68,18 @@ public:
     ///
     /// @param file File to load.
     ///
-    /// @return `LoadResult<true, "">` if load successful or
-    ///         `LoadResult<false, "error description">` otherwise.
+    /// @return LoadResult::Success if loading is successful or error code otherwise.
     LoadResult load(const std::filesystem::path& file);
-
-    /// @brief Load image from file.
-    ///
-    /// @param file File to load.
-    /// @param type Image Ffle type.
-    ///
-    /// @return `LoadResult<true, "">` if load successful or
-    ///         `LoadResult<false, "error description">` otherwise.
-    LoadResult load(const std::filesystem::path& file, FileType type);
 
     /// @brief Get image width.
     ///
     /// @return Image width.
-    int width() const;
+    std::size_t width() const;
 
     /// @brief Get image height.
     ///
     /// @return Image height.
-    int height() const;
+    std::size_t height() const;
 
     /// @brief Get image gamma.
     ///
@@ -101,10 +96,10 @@ private:
 
     friend void swap(Image& lhs, Image& rhs) noexcept;
 
-    DataType m_data;
+    std::vector<Color> m_data;
 
-    int m_width  = 0;
-    int m_height = 0;
+    std::size_t m_width  = 0;
+    std::size_t m_height = 0;
 
     float m_gamma = default_gamma;
 };

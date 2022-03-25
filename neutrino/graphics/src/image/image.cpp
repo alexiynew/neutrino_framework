@@ -1,93 +1,72 @@
+#include <common/exceptions.hpp>
 #include <graphics/image.hpp>
+#include <log/log.hpp>
 
 #include <graphics/src/image/bmp.hpp>
 #include <graphics/src/image/image_info.hpp>
 #include <graphics/src/image/png.hpp>
 
-namespace
-{
-
-inline framework::graphics::Image::LoadResult load_result_error(const std::string& error)
-{
-    return std::make_tuple(false, error);
-}
-
-inline framework::graphics::Image::LoadResult load_result_success()
-{
-    return std::make_tuple(true, "");
-}
-
-} // namespace
-
 namespace framework::graphics
 {
 Image::Image() = default;
 
-Image::Image(const DataType& data, int width, int height)
+Image::Image(const std::vector<Color>& data, std::size_t width, std::size_t height)
     : m_data(data)
     , m_width(width)
     , m_height(height)
 {}
 
-Image::LoadResult Image::load(const std::filesystem::path& file, FileType type)
-{
-    using namespace details::image;
-
-    auto load_function = [type](const std::filesystem::path& f) {
-        switch (type) {
-            case FileType::bmp: return bmp::load(f);
-            case FileType::png: return png::load(f);
-        }
-        return details::image::LoadResult(error::invalid_file_type);
-    };
-
-    try {
-        const auto& result = load_function(file);
-
-        if (std::holds_alternative<ImageInfo>(result)) {
-            const ImageInfo info = std::get<ImageInfo>(result);
-
-            m_width  = info.width;
-            m_height = info.height;
-            m_gamma  = info.gamma;
-            m_data   = std::move(info.data);
-
-            return load_result_success();
-        } else {
-            return load_result_error(std::get<ErrorDescription>(result));
-        }
-    } catch (const std::bad_variant_access& acces_exception) {
-        return load_result_error(acces_exception.what());
-    } catch (const std::exception& exception) {
-        return load_result_error(exception.what());
-    } catch (...) {
-        return load_result_error(error::unknown_error);
-    }
-}
-
 Image::LoadResult Image::load(const std::filesystem::path& file)
 {
     using namespace details::image;
 
+    auto load_function = [](const std::filesystem::path& f) {
+        if (bmp::is_bmp(f)) {
+            return bmp::load(f);
+        } else if (png::is_png(f)) {
+            return png::load(f);
+        }
+
+        throw FileTypeError(error::invalid_file_type);
+    };
+
     if (!std::filesystem::exists(file)) {
-        return load_result_error(error::open_file_error);
+        return LoadResult::FileNotExists;
     }
 
-    if (bmp::is_bmp(file)) {
-        return load(file, FileType::bmp);
-    } else if (png::is_png(file)) {
-        return load(file, FileType::png);
-    }
+    try {
+        ImageInfo info = load_function(file);
 
-    return load_result_error(error::invalid_file_type);
+        m_width  = info.width;
+        m_height = info.height;
+        m_gamma  = info.gamma;
+        m_data   = std::move(info.data);
+
+        return LoadResult::Success;
+    } catch (UnsupportedError& e) {
+        log::error("Exception:") << e.what();
+        return LoadResult::Unsupported;
+    } catch (NotImplementedError& e) {
+        log::error("Exception:") << e.what();
+        return LoadResult::Unsupported;
+    } catch (ParsingError& e) {
+        log::error("Exception:") << e.what();
+        return LoadResult::DataParsingError;
+    } catch (FileTypeError& e) {
+        log::error("Exception:") << e.what();
+        return LoadResult::InvalidFileType;
+    } catch (std::exception& e) {
+        log::error("Exception:") << e.what();
+        return LoadResult::UnknownError;
+    }
 }
 
-int Image::width() const
+std::size_t Image::width() const
 {
     return m_width;
 }
 
-int Image::height() const
+std::size_t Image::height() const
 {
     return m_height;
 }

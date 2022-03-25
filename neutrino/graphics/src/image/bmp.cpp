@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 
+#include <common/exceptions.hpp>
 #include <common/utils.hpp>
 #include <graphics/color.hpp>
 
@@ -434,7 +435,10 @@ InfoHeader::ColorTable InfoHeader::read_color_table(std::ifstream& in, const Inf
 
 inline ImageInfo make_image_info(const InfoHeader& h, std::vector<Color>&& data) noexcept
 {
-    return ImageInfo{h.width, std::abs(h.height), graphics::details::image::default_gamma, std::move(data)};
+    return ImageInfo{static_cast<size_t>(h.width),
+                     static_cast<size_t>(std::abs(h.height)),
+                     graphics::details::image::default_gamma,
+                     std::move(data)};
 }
 
 inline std::uint32_t get_offset(std::uint32_t value)
@@ -463,7 +467,7 @@ std::vector<Color>::iterator process_row_1bpp(std::vector<std::uint8_t>::iterato
         for (std::int32_t bit = 7; bit >= 0 && x < info.width; --bit, ++x) {
             const std::uint32_t color_index = (*in & (1 << bit)) ? 1 : 0;
 
-            *out++ = info.color_table[color_index];
+            *out++ = info.color_table.at(color_index);
         }
     }
 
@@ -478,7 +482,7 @@ std::vector<Color>::iterator process_row_2bpp(std::vector<std::uint8_t>::iterato
 
     std::int32_t offset = 6;
     while (out != end) {
-        *out++ = info.color_table[(*in >> offset) & 0x03];
+        *out++ = info.color_table.at((*in >> offset) & 0x03);
 
         if (offset == 0) {
             offset = 6;
@@ -496,7 +500,7 @@ std::vector<Color>::iterator process_row_4bpp(std::vector<std::uint8_t>::iterato
                                               const InfoHeader& info)
 {
     for (std::int32_t x = 0, offset = 4; x < info.width; ++x, offset = ((offset + 4) % 8)) {
-        *out++ = info.color_table[(*in >> offset) & 0x0F];
+        *out++ = info.color_table.at((*in >> offset) & 0x0F);
         if (offset == 0) {
             in++;
         }
@@ -509,7 +513,7 @@ std::vector<Color>::iterator process_row_8bpp(std::vector<std::uint8_t>::iterato
                                               const InfoHeader& info)
 {
     for (std::int32_t x = 0; x < info.width; ++x) {
-        *out++ = info.color_table[*in++];
+        *out++ = info.color_table.at(*in++);
     }
     return out;
 }
@@ -696,7 +700,14 @@ std::vector<Color> read_data_rle(std::ifstream& input, const InfoHeader& info)
                     const std::int32_t w = *in++;
                     const std::int32_t h = *in++;
 
-                    advance(out, h * info.width + w);
+                    const std::int32_t step = h * info.width + w;
+                    const std::int32_t dist = static_cast<std::int32_t>(std::distance(out, image_data.end()));
+
+                    if (step > dist) {
+                        throw ParsingError("Bad rle encoding.");
+                    }
+
+                    advance(out, step);
                 } break;
                 default: {
                     const std::int32_t count = *in++;
@@ -753,18 +764,15 @@ std::vector<Color> read_data(std::ifstream& in, const InfoHeader& info)
 
 std::vector<Color> flip_vertically(const InfoHeader& info, const std::vector<Color>& data)
 {
-    std::vector<Color> tmp(data.size());
+    std::vector<Color> tmp;
+    tmp.reserve(data.size());
 
-    auto from = data.begin();
-    auto to   = std::prev(tmp.end(), info.width);
+    auto row_end = data.end();
 
-    for (std::int32_t y = 0; y < std::abs(info.height); ++y) {
-        auto next_from = std::next(from, info.width);
-
-        std::copy(from, next_from, to);
-
-        from = next_from;
-        to   = std::prev(to, info.width);
+    for (std::size_t y = 0; y < std::abs(info.height); ++y) {
+        auto row_begin = std::prev(row_end, info.width);
+        std::copy(row_begin, row_end, std::back_inserter(tmp));
+        row_end = row_begin;
     }
 
     return tmp;
@@ -774,44 +782,44 @@ std::vector<Color> flip_vertically(const InfoHeader& info, const std::vector<Col
 
 namespace framework::graphics::details::image::bmp
 {
-LoadResult load(const std::filesystem::path& filepath)
+ImageInfo load(const std::filesystem::path& filepath)
 {
     std::ifstream file(filepath, std::ios::in | std::ios::binary);
     if (!file) {
-        return LoadResult(error::open_file_error);
+        throw ParsingError(error::open_file_error);
     }
 
     FileHeader file_header = FileHeader::read(file);
     if (!file_header.valid()) {
-        return LoadResult(error::read_header_error);
+        throw ParsingError(error::read_header_error);
     }
     if (!file) {
-        return LoadResult(error::file_offset_error);
+        throw ParsingError(error::file_offset_error);
     }
 
     InfoHeader info = InfoHeader::read(file);
     if (!info.valid()) {
-        return LoadResult(error::read_header_error);
+        throw ParsingError(error::read_header_error);
     }
     if (!file) {
-        return LoadResult(error::file_offset_error);
+        throw ParsingError(error::file_offset_error);
     }
 
     file.seekg(file_header.pixel_array_offset, std::ios::beg);
     if (!file) {
-        return LoadResult(error::file_offset_error);
+        throw ParsingError(error::file_offset_error);
     }
 
     std::vector<Color> data = read_data(file, info);
     if (data.empty()) {
-        return LoadResult(error::read_data_error);
+        throw ParsingError(error::read_data_error);
     }
 
     if (!info.bottom_up()) {
         data = flip_vertically(info, data);
     }
 
-    return LoadResult(make_image_info(info, std::move(data)));
+    return make_image_info(info, std::move(data));
 }
 
 bool is_bmp(const std::filesystem::path& filepath)

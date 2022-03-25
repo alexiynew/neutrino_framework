@@ -1,12 +1,8 @@
 #ifndef FRAMEWORK_GRAPHICS_SRC_IMAGE_IMAGE_INFO_HPP
 #define FRAMEWORK_GRAPHICS_SRC_IMAGE_IMAGE_INFO_HPP
 
-#include <optional>
-#include <tuple>
-#include <variant>
 #include <vector>
 
-#include <common/types.hpp>
 #include <graphics/color.hpp>
 
 namespace framework::graphics::details::image
@@ -26,16 +22,13 @@ inline constexpr char unknown_error[]          = "Unknown error.";
 
 struct ImageInfo
 {
-    int32 width  = 0;
-    int32 height = 0;
+    std::size_t width  = 0;
+    std::size_t height = 0;
 
     float gamma = default_gamma;
 
     std::vector<Color> data;
 };
-
-using ErrorDescription = std::string;
-using LoadResult       = std::variant<ImageInfo, ErrorDescription>;
 
 } // namespace framework::graphics::details::image
 

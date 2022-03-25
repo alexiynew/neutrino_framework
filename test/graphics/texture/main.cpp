@@ -62,8 +62,8 @@ const std::string lena_png_1024 = "texture_img/lena_1024.png";
 Image load_image(const std::string& file)
 {
     Image img;
-    if (const auto& [loaded, error] = img.load(file); !loaded) {
-        throw std::runtime_error(std::string("Can't load image: ") + file + " error: " + error);
+    if (img.load(file) != Image::LoadResult::Success) {
+        throw std::runtime_error(std::string("Can't load image: ") + file);
     }
 
     return img;

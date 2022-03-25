@@ -1,5 +1,6 @@
 set_sources(PUBLIC_SOURCES
     crc.hpp
+    exceptions.hpp
     instance_id.hpp
     position.hpp
     signal.hpp

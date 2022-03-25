@@ -1,5 +1,6 @@
 ﻿#include <optional>
 
+#include <common/exceptions.hpp>
 #include <common/utils.hpp>
 #include <math/math.hpp>
 
@@ -15,9 +16,9 @@ using details::DataIterator;
 using details::F2Dot14;
 using details::GlyphData;
 using details::GlyphId;
-using details::NotImplementedError;
 using details::Offset32;
-using details::ParsingError;
+using framework::NotImplementedError;
+using framework::ParsingError;
 
 namespace SimpleGlyphFlags
 {

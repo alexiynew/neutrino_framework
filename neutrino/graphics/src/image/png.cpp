@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <common/crc.hpp>
+#include <common/exceptions.hpp>
 #include <common/utils.hpp>
 #include <common/zlib.hpp>
 
@@ -231,7 +232,7 @@ std::int32_t FileHeader::bytes_per_pixel() const
 
 ImageInfo FileHeader::image_info() const
 {
-    return ImageInfo{width, height, true, {}};
+    return ImageInfo{static_cast<std::size_t>(width), static_cast<std::size_t>(height), true, {}};
 }
 
 bool check_signature(const std::vector<std::uint8_t>& data)
@@ -383,7 +384,7 @@ inline void reconstruct_peath(In first, In last, In a, In b, In c, Out x)
     }
 }
 
-enum class filter_type_t : std::uint8_t
+enum class FilterType : std::uint8_t
 {
     none    = 0,
     sub     = 1,
@@ -409,33 +410,39 @@ std::int32_t bytes_per_pixel)
     auto res_c = res.begin();
     auto res_x = next(res.begin(), second_row_offset);
 
-    for (std::int32_t h = 0; h < pass.height; ++h) {
-        const filter_type_t ft = static_cast<filter_type_t>(*in++);
+    for (std::int32_t h = 0; h < pass.height;) {
+        const FilterType ft = static_cast<FilterType>(*in++);
 
         auto last = next(in, pass.bytes_per_scanline);
 
         switch (ft) {
-            case filter_type_t::none: std::copy(in, last, res_x); break;
-            case filter_type_t::sub: reconstruct_sub(in, last, res_a, res_x); break;
-            case filter_type_t::up: reconstruct_up(in, last, res_b, res_x); break;
-            case filter_type_t::average: reconstruct_average(in, last, res_a, res_b, res_x); break;
-            case filter_type_t::peath: reconstruct_peath(in, last, res_a, res_b, res_c, res_x); break;
+            case FilterType::none: std::copy(in, last, res_x); break;
+            case FilterType::sub: reconstruct_sub(in, last, res_a, res_x); break;
+            case FilterType::up: reconstruct_up(in, last, res_b, res_x); break;
+            case FilterType::average: reconstruct_average(in, last, res_a, res_b, res_x); break;
+            case FilterType::peath: reconstruct_peath(in, last, res_a, res_b, res_c, res_x); break;
         }
 
-        advance(res_a, bytes_in_row);
-        advance(res_b, bytes_in_row);
-        advance(res_c, bytes_in_row);
-        advance(res_x, bytes_in_row);
-        in = last;
+        ++h;
+        if (h < pass.height) {
+            advance(res_a, bytes_in_row);
+            advance(res_b, bytes_in_row);
+            advance(res_c, bytes_in_row);
+            advance(res_x, bytes_in_row);
+            in = last;
+        }
     }
 
     auto it = next(res.begin(), second_row_offset);
-    for (std::int32_t h = 0; h < pass.height; ++h) {
-        auto last = next(it, static_cast<ptrdiff_t>(pass.bytes_per_scanline));
+    for (std::int32_t h = 0; h < pass.height;) {
+        auto last = next(it, pass.bytes_per_scanline);
 
         out = std::copy(it, last, out);
 
-        advance(it, bytes_in_row);
+        ++h;
+        if (h < pass.height) {
+            advance(it, bytes_in_row);
+        }
     }
 
     return std::make_tuple(in, out);
@@ -784,21 +791,21 @@ float decode_gamma(const Chunk& chunk)
 
 namespace framework::graphics::details::image::png
 {
-LoadResult load(const std::filesystem::path& filepath)
+ImageInfo load(const std::filesystem::path& filepath)
 {
     std::ifstream file(filepath, std::ios::in | std::ios::binary);
     if (!file) {
-        return LoadResult(error::open_file_error);
+        throw ParsingError(error::open_file_error);
     }
 
     auto signature = read_bytes(file, signature_length);
     if (!check_signature(signature)) {
-        return LoadResult(error::invalid_file_signature);
+        throw ParsingError(error::invalid_file_signature);
     }
 
     FileHeader header = FileHeader::read(file);
     if (!header.valid()) {
-        return LoadResult(error::read_header_error);
+        throw ParsingError(error::read_header_error);
     }
 
     Chunk plte_chunk;
@@ -807,7 +814,7 @@ LoadResult load(const std::filesystem::path& filepath)
     std::vector<std::uint8_t> data;
     for (Chunk chunk = Chunk::read(file); file && chunk.type != Chunk::Type::IEND; chunk = Chunk::read(file)) {
         if (!chunk.valid() && chunk.is_critical()) {
-            return LoadResult(error::read_data_error);
+            throw ParsingError(error::read_data_error);
         }
 
         switch (chunk.type) {
@@ -838,20 +845,20 @@ LoadResult load(const std::filesystem::path& filepath)
     }
 
     if (data.empty()) {
-        return LoadResult(error::read_data_error);
+        throw ParsingError(error::read_data_error);
     }
 
     if (header.color_type == ColorType::indexed && plte_chunk.data.empty()) {
-        return LoadResult(error::read_data_error);
+        throw ParsingError(error::read_data_error);
     }
 
     std::vector<std::uint8_t> recontructed = reconstruct(header, zlib::inflate(data));
     std::vector<Color> image_data          = unserialize(header, plte_chunk, std::move(recontructed));
 
-    auto info  = header.image_info();
-    info.gamma = gamma;
-    info.data  = std::move(image_data);
-    return LoadResult(info);
+    ImageInfo info = header.image_info();
+    info.gamma     = gamma;
+    info.data      = std::move(image_data);
+    return info;
 }
 
 bool is_png(const std::filesystem::path& filepath)
