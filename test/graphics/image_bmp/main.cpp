@@ -17,6 +17,8 @@ public:
 private:
     void bmp_load_good()
     {
+        using framework::graphics::Image;
+
         const std::vector<std::string> files =
         {"bmp/good/pal1.bmp",          "bmp/good/pal1bg.bmp",       "bmp/good/pal1wb.bmp",
          "bmp/good/pal4.bmp",          "bmp/good/pal4gs.bmp",       "bmp/good/pal4rle.bmp",
@@ -29,18 +31,20 @@ private:
          "bmp/good/rgb32.bmp",         "bmp/good/rgb32bf.bmp",      "bmp/good/rgb32bfdef.bmp"};
 
         for (const auto& file : files) {
-            framework::graphics::Image img;
-            const auto& [loaded, error] = img.load(file);
+            Image img;
+            const auto result = img.load(file);
 
-            std::stringstream out;
-            out << "Loading of " << file << " failed, error: " << error;
+            std::stringstream error_msg;
+            error_msg << "Loading of " << file << " failed";
 
-            TEST_ASSERT(loaded && error.empty(), out.str());
+            TEST_ASSERT(result == Image::LoadResult::Success, error_msg.str());
         }
     }
 
     void bmp_load_questionable()
     {
+        using framework::graphics::Image;
+
         const std::vector<std::string> good_files =
         {"bmp/questionable/pal1p1.bmp",         "bmp/questionable/pal2.bmp",
          "bmp/questionable/pal2color.bmp",      "bmp/questionable/pal4rlecut.bmp",
@@ -61,13 +65,13 @@ private:
          "bmp/questionable/rgba32abf.bmp",      "bmp/questionable/rgba32h56.bmp"};
 
         for (const auto& file : good_files) {
-            framework::graphics::Image img;
-            const auto& [loaded, error] = img.load(file);
+            Image img;
+            const auto result = img.load(file);
 
-            std::stringstream out;
-            out << "Loading of " << file << " failed, error: " << error;
+            std::stringstream error_msg;
+            error_msg << "Loading of " << file << " failed";
 
-            TEST_ASSERT(loaded && error.empty(), out.str());
+            TEST_ASSERT(result == Image::LoadResult::Success, error_msg.str());
         }
 
         const std::vector<std::string> bad_files = {"bmp/questionable/pal1huff.bmp",
@@ -78,42 +82,44 @@ private:
                                                     "bmp/questionable/rgb24prof2.bmp"};
 
         for (const auto& file : bad_files) {
-            framework::graphics::Image img;
-            const auto& [loaded, error] = img.load(file);
+            Image img;
+            const auto result = img.load(file);
 
-            std::stringstream out;
-            out << "Loading of " << file << " failed, error: " << error;
+            std::stringstream error_msg;
+            error_msg << "Loading of " << file << " failed. Should return the DataParsingError.";
 
-            TEST_ASSERT(!loaded && !error.empty(), out.str());
+            TEST_ASSERT(result == Image::LoadResult::DataParsingError, error_msg.str());
         }
     }
 
     void bmp_load_bad()
     {
+        using framework::graphics::Image;
+
         const std::vector<std::string> good_files = {"bmp/bad/badrle.bmp",
-                                                     "bmp/bad/badrle4.bmp",
-                                                     "bmp/bad/badrle4bis.bmp",
-                                                     "bmp/bad/badrle4ter.bmp",
-                                                     "bmp/bad/badrlebis.bmp",
-                                                     "bmp/bad/badrleter.bmp",
-                                                     "bmp/bad/pal8badindex.bmp",
                                                      "bmp/bad/rgb16-880.bmp",
                                                      "bmp/bad/shortfile.bmp"};
 
         for (const auto& file : good_files) {
-            framework::graphics::Image img;
-            const auto& [loaded, error] = img.load(file);
+            Image img;
+            const auto result = img.load(file);
 
-            std::stringstream out;
-            out << "Loading of " << file << " failed, error: " << error;
+            std::stringstream error_msg;
+            error_msg << "Loading of " << file << " failed";
 
-            TEST_ASSERT(loaded && error.empty(), out.str());
+            TEST_ASSERT(result == Image::LoadResult::Success, error_msg.str());
         }
 
         const std::vector<std::string> bad_files = {"bmp/bad/badbitcount.bmp",
                                                     "bmp/bad/badbitssize.bmp",
                                                     "bmp/bad/baddens1.bmp",
                                                     "bmp/bad/baddens2.bmp",
+                                                    "bmp/bad/badrle4.bmp",
+                                                    "bmp/bad/pal8badindex.bmp",
+                                                    "bmp/bad/badrle4bis.bmp",
+                                                    "bmp/bad/badrle4ter.bmp",
+                                                    "bmp/bad/badrlebis.bmp",
+                                                    "bmp/bad/badrleter.bmp",
                                                     "bmp/bad/badfilesize.bmp",
                                                     "bmp/bad/badheadersize.bmp",
                                                     "bmp/bad/badpalettesize.bmp",
@@ -123,13 +129,13 @@ private:
                                                     "bmp/bad/rletopdown.bmp"};
 
         for (const auto& file : bad_files) {
-            framework::graphics::Image img;
-            const auto& [loaded, error] = img.load(file);
+            Image img;
+            const auto result = img.load(file);
 
-            std::stringstream out;
-            out << "Loading of " << file << " failed, error: " << error;
+            std::stringstream error_msg;
+            error_msg << "Loading of " << file << " should fail.";
 
-            TEST_ASSERT(!loaded && !error.empty(), out.str());
+            TEST_ASSERT(result != Image::LoadResult::Success, error_msg.str());
         }
     }
 };

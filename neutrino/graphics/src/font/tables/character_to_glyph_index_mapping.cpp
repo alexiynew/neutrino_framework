@@ -1,5 +1,6 @@
 #include <set>
 
+#include <common/exceptions.hpp>
 #include <common/utils.hpp>
 
 #include <graphics/src/font/tables/character_to_glyph_index_mapping.hpp>
@@ -15,9 +16,8 @@ using details::BytesData;
 using details::CharacterToGlyphIndexMapping;
 using details::CodePoint;
 using details::GlyphId;
-using details::NotImplementedError;
 using details::PlatformId;
-using details::UnsupportedError;
+using framework::NotImplementedError;
 
 struct EncodingRecord
 {

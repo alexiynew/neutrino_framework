@@ -1,6 +1,7 @@
 /// @defgroup utils_module Utility
 /// @{
 /// @defgroup utils_types_module Types
+/// @defgroup utils_exceptions_module Exceptions
 /// @defgroup utils_utils_module Utils
 /// @defgroup utils_utf_implementation Utf support
 /// @defgroup utils_crc_implementation Crc

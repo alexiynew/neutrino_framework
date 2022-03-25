@@ -348,8 +348,8 @@ ImagesList load_images(Mode image_mode)
 
         std::transform(group.begin(), group.end(), std::back_inserter(group_images), [](const std::string& name) {
             framework::graphics::Image img;
-            if (const auto& [loaded, error] = img.load(name); !loaded) {
-                throw std::runtime_error("Can't load file " + name + " error: " + error);
+            if (img.load(name) != Image::LoadResult::Success) {
+                throw std::runtime_error("Can't load file: " + name);
             }
 
             return img;
@@ -408,8 +408,8 @@ ObjectsList generate_objects(const ImagesList& images)
         std::vector<Object> obj_group;
 
         std::transform(group.begin(), group.end(), std::back_inserter(obj_group), [](const Image& img) {
-            int w = img.width();
-            int h = img.height();
+            int w = static_cast<int>(img.width());
+            int h = static_cast<int>(img.height());
             return Object{w, h, 0, 0, img.gamma(), create_texture(img), create_mesh(w, h)};
         });
 

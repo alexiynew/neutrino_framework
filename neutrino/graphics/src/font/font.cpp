@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <common/exceptions.hpp>
 #include <common/utils.hpp>
 #include <graphics/color.hpp>
 #include <graphics/font.hpp>

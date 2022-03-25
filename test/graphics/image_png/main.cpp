@@ -9,12 +9,15 @@ public:
     PngImageTest()
         : Suite("PngImageTest")
     {
-        add_test([this]() { png_load(); }, "png_load");
+        add_test([this]() { png_load_good(); }, "png_load_good");
+        add_test([this]() { png_load_bad(); }, "png_load_bad");
     }
 
 private:
-    void png_load()
+    void png_load_good()
     {
+        using framework::graphics::Image;
+
         const std::vector<std::string> good_files =
         {"png/basi0g01.png", "png/basi0g02.png", "png/basi0g04.png", "png/basi0g08.png", "png/basi0g16.png",
          "png/basi2c08.png", "png/basi2c16.png", "png/basi3p01.png", "png/basi3p02.png", "png/basi3p04.png",
@@ -51,14 +54,19 @@ private:
          "png/z09n2c08.png"};
 
         for (const auto& file : good_files) {
-            framework::graphics::Image img;
-            const auto& [loaded, error] = img.load(file);
+            Image img;
+            const auto result = img.load(file);
 
-            std::stringstream out;
-            out << "Loading of " << file << " failed, error: " << error;
+            std::stringstream error_msg;
+            error_msg << "Loading of " << file << " failed.";
 
-            TEST_ASSERT(loaded && error.empty(), out.str());
+            TEST_ASSERT(result == Image::LoadResult::Success, error_msg.str());
         }
+    }
+
+    void png_load_bad()
+    {
+        using framework::graphics::Image;
 
         const std::vector<std::string> bad_files = {"png/xc1n0g08.png",
                                                     "png/xc9n2c08.png",
@@ -76,13 +84,13 @@ private:
                                                     "png/xs7n0g01.png"};
 
         for (const auto& file : bad_files) {
-            framework::graphics::Image img;
-            const auto& [loaded, error] = img.load(file);
+            Image img;
+            const auto result = img.load(file);
 
-            std::stringstream out;
-            out << "Loading of " << file << " failed, error: " << error;
+            std::stringstream error_msg;
+            error_msg << "Loading of " << file << " should fail.";
 
-            TEST_ASSERT(!loaded && !error.empty(), out.str());
+            TEST_ASSERT(result != Image::LoadResult::Success, error_msg.str());
         }
     }
 };

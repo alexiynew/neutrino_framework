@@ -7,7 +7,7 @@
 
 namespace framework::graphics::details::image::png
 {
-LoadResult load(const std::filesystem::path& filepath);
+ImageInfo load(const std::filesystem::path& filepath);
 
 bool is_png(const std::filesystem::path& filepath);
 

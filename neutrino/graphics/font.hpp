@@ -36,6 +36,7 @@ public:
         UnknownError,       ///< Unknown error
     };
 
+    /// @brief Represents font mesh qualyty. I.e. amount of points on a curves to make it look more smooth.
     using QualityType = std::size_t;
 
     /// @brief Creates font
@@ -46,6 +47,7 @@ public:
     ///
     /// @param quality Mesh quality.
     explicit Font(QualityType quality = 1);
+
     Font(const Font& other);
     Font(Font&& other) noexcept;
 
@@ -58,8 +60,7 @@ public:
     ///
     /// @param filepath File to load.
     ///
-    /// @return LoadResult::Success if loading is successful
-    ///         or error code otherwise.
+    /// @return LoadResult::Success if loading is successful or error code otherwise.
     LoadResult load(const std::filesystem::path& filepath);
 
     Mesh create_text_mesh(const std::string& text);

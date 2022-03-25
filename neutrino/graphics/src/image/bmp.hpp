@@ -7,7 +7,7 @@
 
 namespace framework::graphics::details::image::bmp
 {
-LoadResult load(const std::filesystem::path& filepath);
+ImageInfo load(const std::filesystem::path& filepath);
 
 bool is_bmp(const std::filesystem::path& filepath);
 
