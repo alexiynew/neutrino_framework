@@ -769,7 +769,7 @@ std::vector<Color> flip_vertically(const InfoHeader& info, const std::vector<Col
 
     auto row_end = data.end();
 
-    for (std::size_t y = 0; y < std::abs(info.height); ++y) {
+    for (std::size_t y = 0; y < static_cast<std::size_t>(std::abs(info.height)); ++y) {
         auto row_begin = std::prev(row_end, info.width);
         std::copy(row_begin, row_end, std::back_inserter(tmp));
         row_end = row_begin;
