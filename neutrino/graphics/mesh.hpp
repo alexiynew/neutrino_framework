@@ -56,9 +56,10 @@ public:
         PrimitiveType primitive_type;
     };
 
-    using SubMeshMap = std::unordered_map<std::size_t, SubMesh>;
+    using SubMeshIndexType = std::size_t;
+    using SubMeshMap       = std::unordered_map<SubMeshIndexType, SubMesh>;
 
-    static constexpr int max_texture_coordinates = 8;
+    static constexpr size_t max_texture_coordinates = 8;
 
     Mesh();
     Mesh(const Mesh& other);
@@ -88,7 +89,7 @@ public:
     /// @brief Assign new vertex normals to Mesh.
     ///
     /// @param normals New normals data.
-    void set_normals(VertexData&& normals) noexcept;
+    void set_normals(VertexData&& normals);
 
     /// @brief Assign new vertex tangents to Mesh.
     ///
@@ -98,7 +99,7 @@ public:
     /// @brief Assign new vertex tangents to Mesh.
     ///
     /// @param tangents New tangents data.
-    void set_tangents(VertexData&& tangents) noexcept;
+    void set_tangents(VertexData&& tangents);
 
     /// @brief Assign new vertex colors to Mesh.
     ///
@@ -108,7 +109,7 @@ public:
     /// @brief Assign new vertex colors to Mesh.
     ///
     /// @param colors New colors data.
-    void set_colors(ColorData&& colors) noexcept;
+    void set_colors(ColorData&& colors);
 
     /// @brief Assign new texture coordinates to Mesh.
     ///
@@ -124,7 +125,7 @@ public:
     ///
     /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
-    void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates) noexcept;
+    void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates);
 
     /// @brief Set indices data for Mesh.
     ///
@@ -132,7 +133,7 @@ public:
     /// @param type Kind of primitives for sub mesh.
     ///
     /// @return Index of new sub mesh.
-    std::size_t add_sub_mesh(const IndicesData& indices, PrimitiveType type = PrimitiveType::triangles);
+    SubMeshIndexType add_submesh(const IndicesData& indices, PrimitiveType type = PrimitiveType::triangles);
 
     /// @brief Set indices data for Mesh.
     ///
@@ -140,12 +141,12 @@ public:
     /// @param type Kind of primitives for sub mesh.
     ///
     /// @return Index of new sub mesh.
-    std::size_t add_sub_mesh(IndicesData&& indices, PrimitiveType type = PrimitiveType::triangles) noexcept;
+    SubMeshIndexType add_submesh(IndicesData&& indices, PrimitiveType type = PrimitiveType::triangles);
 
     /// @brief Remove previously created sub mesh.
     ///
     /// @param index Sub mesh to delete.
-    void remove_sub_mesh(std::size_t index);
+    void remove_submesh(SubMeshIndexType index);
 
     /// @brief Remove all data from Mesh.
     ///
@@ -191,12 +192,12 @@ public:
     /// @param index Sub mesh index to check.
     ///
     /// @return `true` if mesh with index exists in the Mesh.
-    bool has_sub_mesh(std::size_t index);
+    bool has_submesh(SubMeshIndexType index) const;
 
     /// @brief Get all sub meshes of the Mesh.
     ///
     /// @return Sub meshes.
-    const SubMeshMap& sub_meshes() const;
+    const SubMeshMap& submeshes() const;
 
 private:
     friend void swap(Mesh& lhs, Mesh& rhs) noexcept;
@@ -207,8 +208,8 @@ private:
     VertexData m_tanegents;
     ColorData m_colors;
     std::array<TextureCoordinatesData, max_texture_coordinates> m_texture_coordinates;
-    SubMeshMap m_sub_meshes;
-    std::size_t m_last_sub_mesh_index = 0;
+    SubMeshMap m_submeshes;
+    std::size_t m_last_submesh_index = 0;
 };
 
 /// @brief Swaps two Meshes.

@@ -31,7 +31,7 @@ public:
     {
         std::uint32_t buffer = 0;
         unsigned int type    = 0;
-        std::vector<SubMeshInfo> sub_meshes;
+        std::vector<SubMeshInfo> submeshes;
     };
 
     OpenglMesh() = default;

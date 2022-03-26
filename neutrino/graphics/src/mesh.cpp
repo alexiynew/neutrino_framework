@@ -17,8 +17,8 @@ Mesh::Mesh(const Mesh& other)
     , m_tanegents(other.m_tanegents)
     , m_colors(other.m_colors)
     , m_texture_coordinates(other.m_texture_coordinates)
-    , m_sub_meshes(other.m_sub_meshes)
-    , m_last_sub_mesh_index(other.m_last_sub_mesh_index)
+    , m_submeshes(other.m_submeshes)
+    , m_last_submesh_index(other.m_last_submesh_index)
 {}
 
 Mesh::Mesh(Mesh&& other) noexcept
@@ -65,33 +65,57 @@ void Mesh::set_vertices(VertexData&& data)
 
 void Mesh::set_normals(const VertexData& normals)
 {
+    if (normals.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_normals: Trying to add to many normals to mesh.");
+    }
+
     m_normals = normals;
 }
 
-void Mesh::set_normals(VertexData&& normals) noexcept
+void Mesh::set_normals(VertexData&& normals)
 {
+    if (normals.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_normals: Trying to add to many normals to mesh.");
+    }
+
     using std::swap;
     swap(m_normals, normals);
 }
 
 void Mesh::set_tangents(const VertexData& tangents)
 {
+    if (tangents.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_tangents: Trying to add to many tangents to mesh.");
+    }
+
     m_tanegents = tangents;
 }
 
-void Mesh::set_tangents(VertexData&& tangents) noexcept
+void Mesh::set_tangents(VertexData&& tangents)
 {
+    if (tangents.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_tangents: Trying to add to many tangents to mesh.");
+    }
+
     using std::swap;
     swap(m_tanegents, tangents);
 }
 
 void Mesh::set_colors(const ColorData& colors)
 {
+    if (colors.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_colors: Trying to add to many colors to mesh.");
+    }
+
     m_colors = colors;
 }
 
-void Mesh::set_colors(ColorData&& colors) noexcept
+void Mesh::set_colors(ColorData&& colors)
 {
+    if (colors.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_colors: Trying to add to many colors to mesh.");
+    }
+
     using std::swap;
     swap(m_colors, colors);
 }
@@ -102,40 +126,47 @@ void Mesh::set_texture_coordinates(std::size_t index, const TextureCoordinatesDa
         return;
     }
 
+    if (coordinates.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_texture_coordinates: Trying to add to many texutre coordinates to mesh.");
+    }
+
     m_texture_coordinates[index] = coordinates;
 }
 
-void Mesh::set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates) noexcept
+void Mesh::set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates)
 {
-    using std::swap;
-
     if (index >= max_texture_coordinates) {
         return;
     }
 
+    if (coordinates.size() > std::numeric_limits<IndicesData::value_type>::max()) {
+        throw std::runtime_error("Mesh::set_texture_coordinates: Trying to add to many texutre coordinates to mesh.");
+    }
+
+    using std::swap;
     swap(m_texture_coordinates[index], coordinates);
 }
 
-std::size_t Mesh::add_sub_mesh(const IndicesData& indices, PrimitiveType type)
+Mesh::SubMeshIndexType Mesh::add_submesh(const IndicesData& indices, PrimitiveType type)
 {
-    std::size_t index = ++m_last_sub_mesh_index;
-    m_sub_meshes.emplace(index, SubMesh{std::move(indices), type});
+    std::size_t index = ++m_last_submesh_index;
+    m_submeshes.emplace(index, SubMesh{std::move(indices), type});
 
     return index;
 }
 
-std::size_t Mesh::add_sub_mesh(IndicesData&& indices, PrimitiveType type) noexcept
+Mesh::SubMeshIndexType Mesh::add_submesh(IndicesData&& indices, PrimitiveType type)
 {
-    std::size_t index = ++m_last_sub_mesh_index;
-    m_sub_meshes.emplace(index, SubMesh{std::move(indices), type});
+    std::size_t index = ++m_last_submesh_index;
+    m_submeshes.emplace(index, SubMesh{std::move(indices), type});
 
     return index;
 }
 
-void Mesh::remove_sub_mesh(std::size_t index)
+void Mesh::remove_submesh(Mesh::SubMeshIndexType index)
 {
-    if (auto it = m_sub_meshes.find(index); it != m_sub_meshes.end()) {
-        m_sub_meshes.erase(it);
+    if (auto it = m_submeshes.find(index); it != m_submeshes.end()) {
+        m_submeshes.erase(it);
     }
 }
 
@@ -150,8 +181,8 @@ void Mesh::clear()
         coordinates.clear();
     }
 
-    m_sub_meshes.clear();
-    m_last_sub_mesh_index = 0;
+    m_submeshes.clear();
+    m_last_submesh_index = 0;
 }
 
 InstanceId Mesh::instance_id() const
@@ -188,26 +219,27 @@ const Mesh::TextureCoordinatesData& Mesh::texture_coordinates(std::size_t index)
     return m_texture_coordinates[index];
 }
 
-bool Mesh::has_sub_mesh(std::size_t index)
+bool Mesh::has_submesh(Mesh::SubMeshIndexType index) const
 {
-    return m_sub_meshes.count(index) > 0;
+    return m_submeshes.count(index) > 0;
 }
 
-const Mesh::SubMeshMap& Mesh::sub_meshes() const
+const Mesh::SubMeshMap& Mesh::submeshes() const
 {
-    return m_sub_meshes;
+    return m_submeshes;
 }
 
 void swap(Mesh& lhs, Mesh& rhs) noexcept
 {
     using std::swap;
+    swap(lhs.m_instance_id, rhs.m_instance_id);
     swap(lhs.m_vertices, rhs.m_vertices);
     swap(lhs.m_normals, rhs.m_normals);
     swap(lhs.m_tanegents, rhs.m_tanegents);
     swap(lhs.m_colors, rhs.m_colors);
     swap(lhs.m_texture_coordinates, rhs.m_texture_coordinates);
-    swap(lhs.m_sub_meshes, rhs.m_sub_meshes);
-    swap(lhs.m_last_sub_mesh_index, rhs.m_last_sub_mesh_index);
+    swap(lhs.m_submeshes, rhs.m_submeshes);
+    swap(lhs.m_last_submesh_index, rhs.m_last_submesh_index);
 }
 
 } // namespace framework::graphics

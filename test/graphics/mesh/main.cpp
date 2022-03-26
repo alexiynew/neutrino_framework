@@ -1,105 +1,32 @@
-#include <chrono>
-#include <thread>
-
-#include <common/utils.hpp>
-#include <common/version.hpp>
 #include <graphics/mesh.hpp>
-#include <graphics/renderer.hpp>
-#include <graphics/shader.hpp>
-#include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
 using namespace framework;
 using namespace framework::graphics;
-using namespace framework::system;
 
 namespace
 {
 
-const std::string vertex_shader =
-"#version 330 core\n\
-layout(location = 0) in vec3 position;\n\
-layout(location = 3) in vec4 color;\n\
-\n\
-out vec4 fragColor;\n\
-\n\
-void main()\n\
-{\n\
-    gl_Position = vec4(position, 1.0);\n\
-    fragColor = color / 256.0;\n\
-}\n\
-";
-
-const std::string fragment_shader =
-"#version 330 core\n\
-in vec4 fragColor;\n\
-out vec4 color;\n\
-void main(){\n\
-    color = fragColor;\n\
-}";
-
-namespace cube_mesh
+bool operator==(const Mesh::VertexData& a, const Mesh::VertexData& b)
 {
-const Mesh::VertexData vertices = {
-// clang-format off
-        // front
-        {-0.5, -0.5, 0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}, {-0.5, 0.5, 0.5},
-        // back
-        {-0.5, -0.5, -0.5}, {0.5, -0.5, -0.5}, {0.5, 0.5, -0.5}, {-0.5, 0.5, -0.5},
-        // left
-        {-0.5, -0.5, -0.5}, {-0.5, -0.5, 0.5}, {-0.5, 0.5, 0.5}, {-0.5, 0.5, -0.5},
-        // right
-        {0.5, -0.5, -0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, -0.5},
-        // top
-        {0.5, 0.5, 0.5}, {0.5, 0.5, -0.5}, {-0.5, 0.5, -0.5}, {-0.5, 0.5, 0.5},
-        // bottom
-        {0.5, -0.5, 0.5}, {0.5, -0.5, -0.5}, {-0.5, -0.5, -0.5}, {-0.5, -0.5, 0.5},
-// clang-format on
-};
+    return std::equal(a.begin(), a.end(), b.begin());
+}
 
-const Mesh::ColorData colors = {
-// clang-format off
-        // front
-        {0.7f, 0.1f, 0.1f}, {0.8f, 0.2f, 0.1f}, {0.9f, 0.3f, 0.1f}, {1.0f, 0.4f, 0.1f},
-        // back
-        {0.1f, 0.7f, 0.1f}, {0.1f, 0.8f, 0.2f}, {0.1f, 0.9f, 0.3f}, {0.1f, 1.0f, 0.4f},
-        // left
-        {0.1f, 0.1f, 0.7f}, {0.1f, 0.2f, 0.8f}, {0.1f, 0.3f, 0.9f}, {0.1f, 0.4f, 1.0f},
-        // right
-        {0.7f, 1.0f, 0.1f}, {0.8f, 0.9f, 0.1f}, {0.9f, 0.8f, 0.1f}, {1.0f, 0.7f, 0.1f},
-        // top
-        {0.1f, 0.7f, 1.0f}, {0.1f, 0.8f, 0.9f}, {0.1f, 0.9f, 0.8f}, {0.1f, 1.0f, 0.7f},
-        // bottom
-        {1.0f, 0.1f, 0.7f}, {0.9f, 0.2f, 0.8f}, {0.8f, 0.3f, 0.9f}, {0.7f, 0.4f, 1.0f},
-// clang-format on
-};
-
-Mesh::IndicesData indices = {
-// clang-format off
-        // front
-        0, 1, 2, 0, 2, 3,
-        // back
-        4, 7, 6, 4, 6, 5,
-        // felt
-        8, 9, 10, 8, 10 ,11,
-        // right
-        12, 15, 14, 12, 14, 13,
-        // top
-        16, 17, 18, 16, 18, 19,
-        // bottom
-        20, 23, 22, 20, 22, 21,
-// clang-format on
-};
-} // namespace cube_mesh
-
-namespace triangle_mesh
+bool operator==(const Mesh::ColorData& a, const Mesh::ColorData& b)
 {
-const Mesh::VertexData vertices = {{-0.5, -0.5, 0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}};
+    return std::equal(a.begin(), a.end(), b.begin());
+}
 
-const Mesh::ColorData colors = {{0.1f, 0.1f, 0.7f}, {0.1f, 0.2f, 0.8f}, {0.1f, 0.3f, 0.9f}, {0.1f, 0.4f, 1.0f}};
+bool operator==(const Mesh::IndicesData& a, const Mesh::IndicesData& b)
+{
+    return std::equal(a.begin(), a.end(), b.begin());
+}
 
-const Mesh::IndicesData indices = {0, 1, 2};
-} // namespace triangle_mesh
+bool operator==(const Mesh::TextureCoordinatesData& a, const Mesh::TextureCoordinatesData& b)
+{
+    return std::equal(a.begin(), a.end(), b.begin());
+}
+
 } // namespace
 
 class MeshTest : public unit_test::Suite
@@ -108,69 +35,310 @@ public:
     MeshTest()
         : Suite("MeshTest")
     {
-        add_test([this]() { main_loop(); }, "main_loop");
-        // TODO: Add tests for primitive type
+        add_test([this]() { mesh_data(); }, "mesh_data");
+        add_test([this]() { mesh_copy(); }, "mesh_copy");
+        add_test([this]() { mesh_move(); }, "mesh_move");
     }
 
 private:
-    void main_loop()
+    void mesh_data()
     {
-        Window::set_application_name("GL mesh Test");
-
-        Window main_window(name(), {640, 480});
-        Renderer renderer(main_window);
-
-        main_window.show();
-
-        renderer.set_clear_color(Color(0xFF00FFFF));
+        const Mesh::VertexData vertices{{0.0f, 1.0f, 2.0f}};
+        const Mesh::VertexData normals{{3.0f, 4.0f, 5.0f}};
+        const Mesh::VertexData tangents{{6.0f, 7.0f, 8.0f}};
+        const Mesh::ColorData colors{Color{0xFF00FF00u}};
+        const Mesh::TextureCoordinatesData coordinates{{9.0f, 0.0f}};
+        const Mesh::IndicesData indices{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
 
         Mesh mesh;
-        mesh.set_vertices(cube_mesh::vertices);
-        mesh.set_colors(cube_mesh::colors);
-        mesh.add_sub_mesh(cube_mesh::indices);
 
-        Shader shader;
-        shader.set_vertex_source(vertex_shader);
-        shader.set_fragment_source(fragment_shader);
+        mesh.set_vertices(vertices);
+        mesh.set_normals(normals);
+        mesh.set_tangents(tangents);
+        mesh.set_colors(colors);
 
-        TEST_ASSERT(renderer.load(mesh), "Can't load mesh.");
-        TEST_ASSERT(renderer.load(shader), "Can't load shader.");
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            mesh.set_texture_coordinates(i, coordinates);
+        }
+
+        const Mesh::SubMeshIndexType submesh1 = mesh.add_submesh(indices, Mesh::PrimitiveType::line_loop);
+        const Mesh::SubMeshIndexType submesh2 = mesh.add_submesh(indices, Mesh::PrimitiveType::line_strip);
+        const Mesh::SubMeshIndexType submesh3 = mesh.add_submesh(indices, Mesh::PrimitiveType::lines);
+        const Mesh::SubMeshIndexType submesh4 = mesh.add_submesh(indices, Mesh::PrimitiveType::points);
+        const Mesh::SubMeshIndexType submesh5 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangle_fan);
+        const Mesh::SubMeshIndexType submesh6 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangle_strip);
+        const Mesh::SubMeshIndexType submesh7 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangles);
+
+        const InstanceId mesh_id = mesh.instance_id();
+
+        TEST_ASSERT(mesh.instance_id() != 0, "Wrong instance id.");
+
+        const InstanceId mesh_id_copy = mesh.instance_id();
+
+        TEST_ASSERT(mesh_id == mesh_id_copy, "Wrong instance id.");
+
+        TEST_ASSERT(mesh.vertices() == vertices, "Wrong vertices data.");
+        TEST_ASSERT(mesh.normals() == normals, "Wrong normals data.");
+        TEST_ASSERT(mesh.tangents() == tangents, "Wrong tangents data.");
+        TEST_ASSERT(mesh.colors() == colors, "Wrong colors data.");
+
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            TEST_ASSERT(mesh.texture_coordinates(i) == coordinates, "Wrong texture_coordinates data.");
+        }
+
+        TEST_ASSERT(mesh.has_submesh(submesh1), "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh1).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh1).primitive_type == Mesh::PrimitiveType::line_loop,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh.has_submesh(submesh2), "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh2).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh2).primitive_type == Mesh::PrimitiveType::line_strip,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh.has_submesh(submesh3), "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh3).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh3).primitive_type == Mesh::PrimitiveType::lines,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh.has_submesh(submesh4), "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh4).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh4).primitive_type == Mesh::PrimitiveType::points,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh.has_submesh(submesh5), "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh5).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh5).primitive_type == Mesh::PrimitiveType::triangle_fan,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh.has_submesh(submesh6), "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh6).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh6).primitive_type == Mesh::PrimitiveType::triangle_strip,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh.has_submesh(submesh7), "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh7).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh.submeshes().at(submesh7).primitive_type == Mesh::PrimitiveType::triangles,
+                    "Submesh index failure.");
+
+        mesh.remove_submesh(submesh1);
+        TEST_ASSERT(!mesh.has_submesh(submesh1), "Submesh remove failure.");
 
         mesh.clear();
-        shader.clear();
 
-        TEST_ASSERT(mesh.vertices().empty(), "Mesh clear failed.");
-        TEST_ASSERT(mesh.colors().empty(), "Mesh clear failed.");
-        TEST_ASSERT(mesh.sub_meshes().empty(), "Mesh clear failed.");
+        TEST_ASSERT(mesh.instance_id() == mesh_id, "Wrong instance id.");
+        TEST_ASSERT(mesh.vertices().empty(), "Wrong vertices data.");
+        TEST_ASSERT(mesh.normals().empty(), "Wrong normals data.");
+        TEST_ASSERT(mesh.tangents().empty(), "Wrong tangents data.");
+        TEST_ASSERT(mesh.colors().empty(), "Wrong colors data.");
 
-        loop(main_window, renderer, mesh, shader);
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            TEST_ASSERT(mesh.texture_coordinates(i).empty(), "Wrong texture_coordinates data.");
+        }
 
-        TEST_ASSERT(!renderer.load(mesh), "Can't load empty mesh.");
-        loop(main_window, renderer, mesh, shader);
-
-        mesh.set_vertices(triangle_mesh::vertices);
-        mesh.set_colors(triangle_mesh::colors);
-        std::size_t id = mesh.add_sub_mesh(triangle_mesh::indices);
-        TEST_ASSERT(mesh.sub_meshes().at(id).indices == triangle_mesh::indices, "Indices generation failed.");
-        TEST_ASSERT(renderer.load(mesh), "Can't load mesh.");
-        loop(main_window, renderer, mesh, shader);
+        TEST_ASSERT(mesh.submeshes().empty(), "Wrong submesh data.");
     }
 
-    void loop(Window& main_window, Renderer& renderer, Mesh& mesh, Shader& shader)
+    void mesh_copy()
     {
-        std::chrono::microseconds max_total_time = std::chrono::seconds(1);
-        std::chrono::microseconds total_time(0);
-        std::chrono::milliseconds delta_time(16);
+        const Mesh::VertexData vertices{{0.0f, 1.0f, 2.0f}};
+        const Mesh::VertexData normals{{3.0f, 4.0f, 5.0f}};
+        const Mesh::VertexData tangents{{6.0f, 7.0f, 8.0f}};
+        const Mesh::ColorData colors{Color{0xFF00FF00u}};
+        const Mesh::TextureCoordinatesData coordinates{{9.0f, 0.0f}};
+        const Mesh::IndicesData indices{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
 
-        while (!main_window.should_close() && total_time < max_total_time) {
-            main_window.process_events();
+        Mesh mesh;
 
-            renderer.render(mesh, shader);
-            renderer.display();
+        mesh.set_vertices(vertices);
+        mesh.set_normals(normals);
+        mesh.set_tangents(tangents);
+        mesh.set_colors(colors);
 
-            std::this_thread::sleep_for(delta_time);
-            total_time += delta_time;
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            mesh.set_texture_coordinates(i, coordinates);
         }
+
+        const Mesh::SubMeshIndexType submesh1 = mesh.add_submesh(indices, Mesh::PrimitiveType::line_loop);
+        const Mesh::SubMeshIndexType submesh2 = mesh.add_submesh(indices, Mesh::PrimitiveType::line_strip);
+        const Mesh::SubMeshIndexType submesh3 = mesh.add_submesh(indices, Mesh::PrimitiveType::lines);
+        const Mesh::SubMeshIndexType submesh4 = mesh.add_submesh(indices, Mesh::PrimitiveType::points);
+        const Mesh::SubMeshIndexType submesh5 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangle_fan);
+        const Mesh::SubMeshIndexType submesh6 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangle_strip);
+        const Mesh::SubMeshIndexType submesh7 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangles);
+
+        // Copy
+        Mesh mesh1;
+        mesh1 = mesh;
+
+        TEST_ASSERT(mesh1.instance_id() != 0, "Wrong instance id.");
+        TEST_ASSERT(mesh1.instance_id() != mesh.instance_id(), "Wrong instance id.");
+
+        TEST_ASSERT(mesh1.vertices() == vertices, "Wrong vertices data.");
+        TEST_ASSERT(mesh1.normals() == normals, "Wrong normals data.");
+        TEST_ASSERT(mesh1.tangents() == tangents, "Wrong tangents data.");
+        TEST_ASSERT(mesh1.colors() == colors, "Wrong colors data.");
+
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            TEST_ASSERT(mesh1.texture_coordinates(i) == coordinates, "Wrong texture_coordinates data.");
+        }
+
+        TEST_ASSERT(mesh1.has_submesh(submesh1), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh1).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh1).primitive_type == Mesh::PrimitiveType::line_loop,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh2), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh2).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh2).primitive_type == Mesh::PrimitiveType::line_strip,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh3), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh3).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh3).primitive_type == Mesh::PrimitiveType::lines,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh4), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh4).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh4).primitive_type == Mesh::PrimitiveType::points,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh5), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh5).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh5).primitive_type == Mesh::PrimitiveType::triangle_fan,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh6), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh6).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh6).primitive_type == Mesh::PrimitiveType::triangle_strip,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh7), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh7).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh7).primitive_type == Mesh::PrimitiveType::triangles,
+                    "Submesh index failure.");
+
+        mesh.remove_submesh(submesh1);
+        TEST_ASSERT(mesh1.has_submesh(submesh1), "Submesh remove failure.");
+
+        mesh.clear();
+
+        TEST_ASSERT(!mesh1.vertices().empty(), "Wrong vertices data.");
+        TEST_ASSERT(!mesh1.normals().empty(), "Wrong normals data.");
+        TEST_ASSERT(!mesh1.tangents().empty(), "Wrong tangents data.");
+        TEST_ASSERT(!mesh1.colors().empty(), "Wrong colors data.");
+
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            TEST_ASSERT(!mesh1.texture_coordinates(i).empty(), "Wrong texture_coordinates data.");
+        }
+
+        TEST_ASSERT(!mesh1.submeshes().empty(), "Wrong submesh data.");
+
+        mesh1.clear();
+
+        TEST_ASSERT(mesh1.vertices().empty(), "Wrong vertices data.");
+        TEST_ASSERT(mesh1.normals().empty(), "Wrong normals data.");
+        TEST_ASSERT(mesh1.tangents().empty(), "Wrong tangents data.");
+        TEST_ASSERT(mesh1.colors().empty(), "Wrong colors data.");
+
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            TEST_ASSERT(mesh1.texture_coordinates(i).empty(), "Wrong texture_coordinates data.");
+        }
+
+        TEST_ASSERT(mesh1.submeshes().empty(), "Wrong submesh data.");
+    }
+
+    void mesh_move()
+    {
+        const Mesh::VertexData vertices{{0.0f, 1.0f, 2.0f}};
+        const Mesh::VertexData normals{{3.0f, 4.0f, 5.0f}};
+        const Mesh::VertexData tangents{{6.0f, 7.0f, 8.0f}};
+        const Mesh::ColorData colors{Color{0xFF00FF00u}};
+        const Mesh::TextureCoordinatesData coordinates{{9.0f, 0.0f}};
+        const Mesh::IndicesData indices{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+
+        Mesh mesh;
+
+        mesh.set_vertices(vertices);
+        mesh.set_normals(normals);
+        mesh.set_tangents(tangents);
+        mesh.set_colors(colors);
+
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            mesh.set_texture_coordinates(i, coordinates);
+        }
+
+        const Mesh::SubMeshIndexType submesh1 = mesh.add_submesh(indices, Mesh::PrimitiveType::line_loop);
+        const Mesh::SubMeshIndexType submesh2 = mesh.add_submesh(indices, Mesh::PrimitiveType::line_strip);
+        const Mesh::SubMeshIndexType submesh3 = mesh.add_submesh(indices, Mesh::PrimitiveType::lines);
+        const Mesh::SubMeshIndexType submesh4 = mesh.add_submesh(indices, Mesh::PrimitiveType::points);
+        const Mesh::SubMeshIndexType submesh5 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangle_fan);
+        const Mesh::SubMeshIndexType submesh6 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangle_strip);
+        const Mesh::SubMeshIndexType submesh7 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangles);
+
+        const InstanceId mesh_id = mesh.instance_id();
+
+        // Move
+        Mesh mesh1;
+        mesh1 = std::move(mesh);
+
+        TEST_ASSERT(mesh1.instance_id() == mesh_id, "Wrong instance id.");
+        TEST_ASSERT(mesh1.instance_id() != mesh.instance_id(), "Wrong instance id.");
+
+        TEST_ASSERT(mesh1.vertices() == vertices, "Wrong vertices data.");
+        TEST_ASSERT(mesh1.normals() == normals, "Wrong normals data.");
+        TEST_ASSERT(mesh1.tangents() == tangents, "Wrong tangents data.");
+        TEST_ASSERT(mesh1.colors() == colors, "Wrong colors data.");
+
+        TEST_ASSERT(mesh.vertices().empty(), "Wrong vertices data.");
+        TEST_ASSERT(mesh.normals().empty(), "Wrong normals data.");
+        TEST_ASSERT(mesh.tangents().empty(), "Wrong tangents data.");
+        TEST_ASSERT(mesh.colors().empty(), "Wrong colors data.");
+
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            TEST_ASSERT(mesh1.texture_coordinates(i) == coordinates, "Wrong texture_coordinates data.");
+        }
+
+        for (size_t i = 0; i < Mesh::max_texture_coordinates; ++i) {
+            TEST_ASSERT(mesh.texture_coordinates(i).empty(), "Wrong texture_coordinates data.");
+        }
+
+        TEST_ASSERT(mesh1.has_submesh(submesh1), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh1).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh1).primitive_type == Mesh::PrimitiveType::line_loop,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh2), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh2).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh2).primitive_type == Mesh::PrimitiveType::line_strip,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh3), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh3).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh3).primitive_type == Mesh::PrimitiveType::lines,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh4), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh4).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh4).primitive_type == Mesh::PrimitiveType::points,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh5), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh5).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh5).primitive_type == Mesh::PrimitiveType::triangle_fan,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh6), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh6).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh6).primitive_type == Mesh::PrimitiveType::triangle_strip,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh1.has_submesh(submesh7), "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh7).indices == indices, "Submesh index failure.");
+        TEST_ASSERT(mesh1.submeshes().at(submesh7).primitive_type == Mesh::PrimitiveType::triangles,
+                    "Submesh index failure.");
+
+        TEST_ASSERT(mesh.submeshes().empty(), "Submesh index failure.");
     }
 };
 

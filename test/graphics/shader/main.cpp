@@ -132,7 +132,7 @@ private:
         Mesh mesh;
         mesh.set_vertices(cube_mesh::vertices);
         mesh.set_colors(cube_mesh::colors);
-        mesh.add_sub_mesh(cube_mesh::indices);
+        mesh.add_submesh(cube_mesh::indices);
 
         Shader shader;
         shader.set_vertex_source(vertex_shader);

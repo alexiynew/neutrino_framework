@@ -162,7 +162,7 @@ private:
             Mesh text_mesh = font.create_text_mesh(str);
 
             TEST_ASSERT(text_mesh.vertices().size() > 0, "Text mesh is empty.");
-            TEST_ASSERT(text_mesh.sub_meshes().size() > 0, "Text mesh is empty.");
+            TEST_ASSERT(text_mesh.submeshes().size() > 0, "Text mesh is empty.");
 
             renderer.load(text_mesh);
             text_mesh.clear();

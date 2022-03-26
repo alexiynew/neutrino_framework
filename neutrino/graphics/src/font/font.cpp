@@ -280,7 +280,7 @@ using Polygon = std::vector<math::Vector2f>;
 struct GlyphMeshData
 {
     Mesh::VertexData vertices;
-    std::vector<Mesh::SubMesh> sub_meshes;
+    std::vector<Mesh::SubMesh> submeshes;
     float advance_step = 1.0;
 };
 
@@ -556,7 +556,7 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
 
     // Generate result
     GlyphMeshData res;
-    res.sub_meshes.push_back({{}, Mesh::PrimitiveType::triangles});
+    res.submeshes.push_back({{}, Mesh::PrimitiveType::triangles});
 
     for (const auto& polygon : polygons) {
         const auto& indices = generate_triangulation(polygon);
@@ -569,7 +569,7 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
 
         std::transform(indices.begin(),
                        indices.end(),
-                       std::back_inserter(res.sub_meshes[0].indices),
+                       std::back_inserter(res.submeshes[0].indices),
                        [offset = indices_offset](const auto& i) { return i + offset; });
     }
 
@@ -835,13 +835,13 @@ Mesh Font::create_text_mesh(const std::string& text)
 
         vetricies_offset += math::Vector3f{glyph.advance_step, 0, 0};
 
-        for (const auto& sub_mesh : glyph.sub_meshes) {
+        for (const auto& submesh : glyph.submeshes) {
             Mesh::IndicesData indices;
-            indices.reserve(sub_mesh.indices.size());
-            for (const auto& i : sub_mesh.indices) {
+            indices.reserve(submesh.indices.size());
+            for (const auto& i : submesh.indices) {
                 indices.push_back(i + indices_offset);
             }
-            mesh.add_sub_mesh(std::move(indices), sub_mesh.primitive_type);
+            mesh.add_submesh(std::move(indices), submesh.primitive_type);
         }
     }
 
