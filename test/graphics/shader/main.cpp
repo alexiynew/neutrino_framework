@@ -74,8 +74,6 @@ private:
         shader.set_vertex_source(vertex_shader);
         shader.set_fragment_source(fragment_shader);
 
-        const InstanceId shader_id = shader.instance_id();
-
         TEST_ASSERT(shader.instance_id() != 0, "Wrong instance id.");
         TEST_ASSERT(shader.vertex_source() == vertex_shader, "Wrong vertex source.");
         TEST_ASSERT(shader.fragment_source() == fragment_shader, "Wrong fragment source.");

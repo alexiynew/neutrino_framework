@@ -331,7 +331,6 @@ private:
             entity.mesh->clear();
             entity.shader->clear();
             entity.texture->clear();
-            TEST_ASSERT(entity.texture->image().data() == nullptr, "Texture shuld be empty.");
         }
 
         std::chrono::microseconds max_total_time = std::chrono::seconds(3);

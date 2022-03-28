@@ -5,7 +5,7 @@ set(TESTS
     mesh
     shader
     texture
-    #renderer
+    renderer
 )
 
 foreach(TEST ${TESTS})
