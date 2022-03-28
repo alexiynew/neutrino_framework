@@ -31,9 +31,9 @@ Shader& Shader::operator=(Shader&& other) noexcept
     return *this;
 }
 
-bool Shader::load_vertex_source(const std::string& filename)
+bool Shader::load_vertex_source(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in);
+    std::ifstream file(filepath, std::ios::in);
     if (!file) {
         return false;
     }
@@ -46,9 +46,9 @@ bool Shader::load_vertex_source(const std::string& filename)
     return true;
 }
 
-bool Shader::load_fragment_source(const std::string& filename)
+bool Shader::load_fragment_source(const std::filesystem::path& filepath)
 {
-    std::ifstream file(filename, std::ios::in);
+    std::ifstream file(filepath, std::ios::in);
     if (!file) {
         return false;
     }
@@ -95,6 +95,7 @@ const std::string& Shader::fragment_source() const
 void swap(Shader& lhs, Shader& rhs) noexcept
 {
     using std::swap;
+    swap(lhs.m_instance_id, rhs.m_instance_id);
     swap(lhs.m_vertex_source, rhs.m_vertex_source);
     swap(lhs.m_fragment_source, rhs.m_fragment_source);
 }
