@@ -13,37 +13,37 @@ using namespace framework::graphics::details::opengl;
 
 namespace
 {
-int convert_min_filter(MinFilter filter) noexcept
+int convert_min_filter(Texture::MinFilter filter) noexcept
 {
     switch (filter) {
-        case MinFilter::nearest: return GL_NEAREST;
-        case MinFilter::linear: return GL_LINEAR;
-        case MinFilter::nearest_mipmap_nearest: return GL_NEAREST_MIPMAP_NEAREST;
-        case MinFilter::linear_mipmap_nearest: return GL_LINEAR_MIPMAP_NEAREST;
-        case MinFilter::nearest_mipmap_linear: return GL_NEAREST_MIPMAP_LINEAR;
-        case MinFilter::linear_mipmap_linear: return GL_LINEAR_MIPMAP_LINEAR;
+        case Texture::MinFilter::nearest: return GL_NEAREST;
+        case Texture::MinFilter::linear: return GL_LINEAR;
+        case Texture::MinFilter::nearest_mipmap_nearest: return GL_NEAREST_MIPMAP_NEAREST;
+        case Texture::MinFilter::linear_mipmap_nearest: return GL_LINEAR_MIPMAP_NEAREST;
+        case Texture::MinFilter::nearest_mipmap_linear: return GL_NEAREST_MIPMAP_LINEAR;
+        case Texture::MinFilter::linear_mipmap_linear: return GL_LINEAR_MIPMAP_LINEAR;
     }
 
     return 0;
 }
 
-int convert_mag_filter(MagFilter filter) noexcept
+int convert_mag_filter(Texture::MagFilter filter) noexcept
 {
     switch (filter) {
-        case MagFilter::nearest: return GL_NEAREST;
-        case MagFilter::linear: return GL_LINEAR;
+        case Texture::MagFilter::nearest: return GL_NEAREST;
+        case Texture::MagFilter::linear: return GL_LINEAR;
     }
 
     return 0;
 }
 
-int convert_wrap_parameter(Wrap wrap) noexcept
+int convert_wrap_parameter(Texture::Wrap wrap) noexcept
 {
     switch (wrap) {
-        case Wrap::repeat: return GL_REPEAT;
-        case Wrap::mirrored_repeat: return GL_MIRRORED_REPEAT;
-        case Wrap::clamp_to_edge: return GL_CLAMP_TO_EDGE;
-        case Wrap::clamp_to_border: return GL_CLAMP_TO_BORDER;
+        case Texture::Wrap::repeat: return GL_REPEAT;
+        case Texture::Wrap::mirrored_repeat: return GL_MIRRORED_REPEAT;
+        case Texture::Wrap::clamp_to_edge: return GL_CLAMP_TO_EDGE;
+        case Texture::Wrap::clamp_to_border: return GL_CLAMP_TO_BORDER;
     }
 
     return 0;
@@ -85,7 +85,7 @@ bool OpenglTexture::load(const Texture& texture)
                  0,
                  GL_RGBA,
                  GL_UNSIGNED_BYTE,
-                 texture.image().data());
+                 texture.image().data().data());
 
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);

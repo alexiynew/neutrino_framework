@@ -10,7 +10,7 @@ namespace framework::graphics
 {
 Image::Image() = default;
 
-Image::Image(const std::vector<Color>& data, std::size_t width, std::size_t height)
+Image::Image(const ColorDataType& data, std::size_t width, std::size_t height)
     : m_data(data)
     , m_width(width)
     , m_height(height)
@@ -76,9 +76,27 @@ float Image::gamma() const
     return m_gamma;
 }
 
-const Color* Image::data() const
+const Image::ColorDataType& Image::data() const
 {
-    return m_data.data();
+    return m_data;
+}
+
+Image::ColorDataType& Image::data()
+{
+    return m_data;
+}
+
+#pragma region Helper function
+
+bool operator==(const Image& lhs, const Image& rhs) noexcept
+{
+    return lhs.width() == rhs.width() && lhs.height() == rhs.height() && lhs.gamma() == rhs.gamma() &&
+           std::equal(lhs.data().begin(), lhs.data().end(), rhs.data().begin());
+}
+
+bool operator!=(const Image& lhs, const Image& rhs) noexcept
+{
+    return !(lhs == rhs);
 }
 
 void swap(Image& lhs, Image& rhs) noexcept
@@ -90,5 +108,7 @@ void swap(Image& lhs, Image& rhs) noexcept
     swap(lhs.m_height, rhs.m_height);
     swap(lhs.m_gamma, rhs.m_gamma);
 }
+
+#pragma endregion
 
 } // namespace framework::graphics

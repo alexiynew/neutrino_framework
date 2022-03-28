@@ -384,8 +384,8 @@ TexturePtr create_texture(const Image& image)
 
     TexturePtr t = std::make_unique<Texture>();
     t->set_image(image);
-    t->set_min_filter(MinFilter::nearest);
-    t->set_mag_filter(MagFilter::nearest);
+    t->set_min_filter(Texture::MinFilter::nearest);
+    t->set_mag_filter(Texture::MagFilter::nearest);
 
     return t;
 }

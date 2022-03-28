@@ -9,7 +9,8 @@ add_custom_target(${EXAMPLES_TARGET} ALL
 message(STATUS "Add examples...")
 
 set(EXAMPLES
-    "image"
+    image
+ #   light
 )
 
 foreach(EXAMPLE ${EXAMPLES})

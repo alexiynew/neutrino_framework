@@ -47,6 +47,8 @@ public:
         UnknownError,     ///< Unknown error
     };
 
+    using ColorDataType = std::vector<Color>;
+
     Image();
 
     /// @brief Creates image with Color data.
@@ -54,7 +56,7 @@ public:
     /// @param data Image color data.
     /// @param width Image width.
     /// @param height Inage height.
-    Image(const std::vector<Color>& data, std::size_t width, std::size_t height);
+    Image(const ColorDataType& data, std::size_t width, std::size_t height);
 
     Image(const Image&)     = default;
     Image(Image&&) noexcept = default;
@@ -63,8 +65,6 @@ public:
     Image& operator=(Image&&) noexcept = default;
 
     /// @brief Load image from file.
-    ///
-    /// FileType detected automatically.
     ///
     /// @param file File to load.
     ///
@@ -88,21 +88,42 @@ public:
 
     /// @brief Get image color data.
     ///
-    /// @return Pointer to the first pixel.
-    const Color* data() const;
+    /// @return Const reference to data storage.
+    const ColorDataType& data() const;
+
+    /// @brief Get image color data.
+    ///
+    /// @return reference to data storage.
+    ColorDataType& data();
 
 private:
     static constexpr float default_gamma = 2.2f;
 
     friend void swap(Image& lhs, Image& rhs) noexcept;
 
-    std::vector<Color> m_data;
+    ColorDataType m_data;
 
     std::size_t m_width  = 0;
     std::size_t m_height = 0;
 
     float m_gamma = default_gamma;
 };
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Equality operator for Images.
+///
+/// @param lhs Image to compate.
+/// @param rhs Image to compare.
+////////////////////////////////////////////////////////////////////////////////
+bool operator==(const Image& lhs, const Image& rhs) noexcept;
+
+////////////////////////////////////////////////////////////////////////////////
+/// @brief Inequality operator for Images.
+///
+/// @param lhs Image to compate.
+/// @param rhs Image to compare.
+////////////////////////////////////////////////////////////////////////////////
+bool operator!=(const Image& lhs, const Image& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Swaps two Images.

@@ -8,7 +8,7 @@ on:
 
 env:
   BUILD_TYPE: Release
-  TESTS_TO_SKIP: system/*|graphics/light|graphics/shader|graphics/texture|graphics/font
+  TESTS_TO_SKIP: system/*|graphics/shader|graphics/font
 
 jobs:
   build_mac:
