@@ -215,20 +215,12 @@ void check_simple_glyph(const SimpleGlyph& glyph)
         throw ParsingError("End points of contours is greater than count of points in contour.");
     }
 
-    // First contour has at leas 3 points.
-    end_points_correct &= glyph.end_pts_of_contours[0] > 2;
+    const bool has_overlap = std::any_of(glyph.flags.begin(), glyph.flags.end(), [](std::uint8_t f) {
+        return (f & SimpleGlyphFlags::overlap_simple) > 0;
+    });
 
-    // All other contours has at least 3 points.
-    for (size_t i = 1; i < glyph.end_pts_of_contours.size(); ++i) {
-        int diff = glyph.end_pts_of_contours[i] - glyph.end_pts_of_contours[i - 1];
-        if (diff < 3) {
-            end_points_correct = false;
-            break;
-        }
-    }
-
-    if (!end_points_correct) {
-        throw ParsingError("All contours must have at least three points.");
+    if (has_overlap) {
+        throw NotImplementedError("Simple glyph has overlaps, it's not implemented yeat.");
     }
 }
 
@@ -319,6 +311,17 @@ std::vector<CompositeGlyphComponent> parse_composite_glyph_components(BufferRead
         throw ParsingError("The CompositeGlyphFlags::args_are_xy_values for first component must be set.");
     }
 
+    const bool has_scale = std::any_of(components.begin(), components.end(), [](const auto& c) {
+        static constexpr auto mask = CompositeGlyphFlags::we_have_a_scale |
+                                     CompositeGlyphFlags::we_have_an_x_and_y_scale |
+                                     CompositeGlyphFlags::we_have_a_two_by_two;
+        return (c.flags & mask) > 0;
+    });
+
+    if (has_scale) {
+        throw NotImplementedError("Composite glyph components has scale. It's not implemented yeat.");
+    }
+
     return components;
 }
 
@@ -347,16 +350,25 @@ GlyphData::Contours get_glyph_contours(const SimpleGlyph& glyph)
 
     GlyphData::Contours result;
 
-    std::size_t contour_start_point = 0;
+    std::size_t contour_begin = 0;
     for (std::uint16_t contour_last_point : glyph.end_pts_of_contours) {
-        const std::size_t contour_size = contour_last_point + 1;
+        const std::size_t contour_end  = contour_last_point + 1;
+        const std::size_t contour_size = contour_end - contour_begin;
 
-        GlyphData::ControlPoint prev_point;
+        if (contour_size < 3) {
+            // Skip contours that has only two or one point.
+            continue;
+        }
+
+        const Vector2f last_point_pos(glyph.x_coordinates[contour_last_point], glyph.y_coordinates[contour_last_point]);
+        const bool last_point_is_on_curve = (glyph.flags[contour_last_point] & SimpleGlyphFlags::on_curve_point);
+
+        GlyphData::ControlPoint prev_point{last_point_pos, last_point_is_on_curve};
 
         GlyphData::ContourType contour;
         contour.reserve(contour_size);
 
-        for (std::size_t i = contour_start_point; i < contour_size; ++i) {
+        for (std::size_t i = contour_begin; i != contour_end; ++i) {
             auto pos         = Vector2f{glyph.x_coordinates[i], glyph.y_coordinates[i]};
             bool is_on_curve = (glyph.flags[i] & SimpleGlyphFlags::on_curve_point);
 
@@ -371,7 +383,7 @@ GlyphData::Contours get_glyph_contours(const SimpleGlyph& glyph)
 
         result.push_back(contour);
 
-        contour_start_point = contour_size;
+        contour_begin = contour_end;
     }
 
     return result;

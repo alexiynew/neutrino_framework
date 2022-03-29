@@ -108,9 +108,9 @@ private:
 
         Font font;
         // auto result = font.load("fonts/Amethysta-Regular.ttf");
-        // auto result = font.load("fonts/Cookie-Regular.ttf"); <<
-        // auto result = font.load("fonts/FrederickatheGreat-Regular.ttf"); <<
-        // auto result = font.load("fonts/PressStart2P-Regular.ttf"); << holes points intersetcs filled contours
+        // auto result = font.load("fonts/Cookie-Regular.ttf");
+        // auto result = font.load("fonts/FrederickatheGreat-Regular.ttf"); // << To hard to handle
+        // auto result = font.load("fonts/PressStart2P-Regular.ttf"); // << holes points intersetcs filled contours
         auto result = font.load("fonts/UbuntuMono-Regular.ttf");
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));

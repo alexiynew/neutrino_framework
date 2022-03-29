@@ -310,6 +310,10 @@ Polygon generate_polygon(const GlyphData::ContourType& contour, Font::QualityTyp
 
 float polygon_area(const Polygon& polygon)
 {
+    if (polygon.size() < 3) {
+        return 0.0f;
+    }
+
     auto curr = polygon.begin();
     auto next = std::next(polygon.begin());
 
