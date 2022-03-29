@@ -107,9 +107,10 @@ private:
         window.on_mouse_leave.connect([this](const Window&) { mouse_down = false; });
 
         Font font;
-        // auto result = font.load("fonts/UbuntuMono-Bold.ttf");
-        // auto result = font.load("fonts/UbuntuMono-BoldItalic.ttf");
-        // auto result = font.load("fonts/UbuntuMono-Italic.ttf");
+        // auto result = font.load("fonts/Amethysta-Regular.ttf");
+        // auto result = font.load("fonts/Cookie-Regular.ttf"); <<
+        // auto result = font.load("fonts/FrederickatheGreat-Regular.ttf"); <<
+        // auto result = font.load("fonts/PressStart2P-Regular.ttf"); << holes points intersetcs filled contours
         auto result = font.load("fonts/UbuntuMono-Regular.ttf");
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
@@ -179,7 +180,7 @@ private:
 
         window.show();
 
-        std::chrono::microseconds max_total_time = std::chrono::seconds(3);
+        std::chrono::microseconds max_total_time = std::chrono::seconds(300);
         std::chrono::microseconds total_time(0);
         std::chrono::milliseconds delta_time(16);
 

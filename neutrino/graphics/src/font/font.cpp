@@ -499,18 +499,25 @@ std::vector<Polygon> convert_polygons_with_holes_to_holeless_polygons(const std:
         combine.reserve(polygon.size() + holes_points_count + holes_in_polygon.size() * 2);
 
         for (const auto& hole_index : holes_in_polygon) {
-            const auto& hole = holes[hole_index];
+            const auto& hole              = holes[hole_index];
+            const math::Vector2f hole_top = hole.front();
 
-            auto it = std::min_element(combine.begin(),
-                                       combine.end(),
-                                       [top = hole.front()](const auto& a, const auto& b) {
-                                           const float dist_a = squared_distance(top, a);
-                                           const float dist_b = squared_distance(top, b);
-                                           return dist_a < dist_b;
-                                       });
+            // Find closest point in filled contour that higher than hole
+            auto closest_point_it = combine.begin();
+            for (auto it = std::next(combine.begin()); it != combine.end(); ++it) {
+                if (it->y < hole_top.y) {
+                    continue;
+                }
 
-            it = combine.insert(next(it), *it);
-            it = combine.insert(it, hole.front());
+                const float dist_prev = squared_distance(hole_top, *closest_point_it);
+                const float dist_curr = squared_distance(hole_top, *it);
+                if (dist_prev > dist_curr) {
+                    closest_point_it = it;
+                }
+            }
+
+            auto it = combine.insert(next(closest_point_it), *closest_point_it);
+            it      = combine.insert(it, hole.front());
             combine.insert(it, hole.begin(), hole.end());
         }
 
@@ -612,7 +619,6 @@ public:
     std::uint16_t units_per_em() const;
 
     bool baseline_at_y_zero() const;
-    bool left_sidebearing_at_x_zero() const;
 
     const GlyphIdToMeshMap& glyphs() const;
 
@@ -712,11 +718,6 @@ std::uint16_t Font::FontData::units_per_em() const
 bool Font::FontData::baseline_at_y_zero() const
 {
     return m_head.baseline_at_y_zero();
-}
-
-bool Font::FontData::left_sidebearing_at_x_zero() const
-{
-    return m_head.left_sidebearing_at_x_zero();
 }
 
 const Font::FontData::GlyphIdToMeshMap& Font::FontData::glyphs() const
@@ -965,10 +966,6 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
                                               std::move(os2),
                                               std::move(glyf),
                                               m_quality);
-
-    if (m_data->left_sidebearing_at_x_zero()) {
-        throw UnsupportedError("Figureout what to do if left sideberint is not equal minx position of glyph");
-    }
 
     return LoadResult::Success;
 }

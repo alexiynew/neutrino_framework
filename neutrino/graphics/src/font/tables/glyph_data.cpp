@@ -444,7 +444,10 @@ std::optional<SimpleGlyph> convert_composite_glyph(const CompositeGlyph& glyph, 
         add_component_data(new_glyph, component, component_glyph->second);
     }
 
-    check_simple_glyph(new_glyph);
+    if (!new_glyph.end_pts_of_contours.empty()) {
+        check_simple_glyph(new_glyph);
+    }
+
     return {new_glyph};
 }
 
@@ -474,7 +477,7 @@ GlyphData::GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offs
             }
         } else {
             // Glyph has no outline, e.g. some space character
-            m_glyphs.emplace(id, Contours{});
+            simple_glyphs.emplace(id, SimpleGlyph{});
         }
     }
 

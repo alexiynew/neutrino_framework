@@ -90,16 +90,16 @@ void SubtableFormat4::parse(std::uint32_t offset, const BytesData& data)
         m_id_range_offset.push_back(in.get<std::uint16_t>());
     }
 
-    const auto begin  = in.current();
-    const auto end    = std::next(in.begin(), m_length);
-    const size_t size = static_cast<size_t>(std::distance(begin, end) / 2);
+    const auto begin                 = in.current();
+    const auto end                   = std::next(in.begin(), m_length);
+    const size_t glyph_id_array_size = static_cast<size_t>(std::distance(begin, end) / 2);
 
-    m_glyph_id_array.reserve(size);
+    if (glyph_id_array_size > 0) {
+        m_glyph_id_array.reserve(glyph_id_array_size);
 
-    BufferReader glyph_ids_reader = utils::make_big_endian_buffer_reader(begin, end);
-
-    while (glyph_ids_reader) {
-        m_glyph_id_array.push_back(glyph_ids_reader.get<std::uint16_t>());
+        for (BufferReader glyph_ids_reader = utils::make_big_endian_buffer_reader(begin, end); glyph_ids_reader;) {
+            m_glyph_id_array.push_back(glyph_ids_reader.get<std::uint16_t>());
+        }
     }
 }
 
@@ -155,8 +155,15 @@ bool SubtableFormat4::valid() const
 {
     const size_t seg_count = m_seg_count_x2 / 2;
 
-    return m_format == 4 && m_end_code.size() == seg_count && m_start_code.size() == seg_count &&
-           m_id_delta.size() == seg_count && m_id_range_offset.size() == seg_count && !m_glyph_id_array.empty();
+    const bool table_sizes_valid = m_format == 4 && m_end_code.size() == seg_count &&
+                                   m_start_code.size() == seg_count && m_id_delta.size() == seg_count &&
+                                   m_id_range_offset.size() == seg_count;
+
+    const bool offsets_valid = !m_glyph_id_array.empty() || std::all_of(m_id_range_offset.begin(),
+                                                                        m_id_range_offset.end(),
+                                                                        [](std::uint16_t o) { return o == 0; });
+
+    return table_sizes_valid && offsets_valid;
 }
 
 std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat4::copy() const
