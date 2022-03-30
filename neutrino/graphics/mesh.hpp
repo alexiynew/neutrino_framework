@@ -19,30 +19,33 @@ namespace framework::graphics
 /// @brief Mesh.
 ///
 /// Meshes contain vertex data (positions, normals, texture coordinates etc.)
-/// and triangles vertex indices.
+/// and vertex indices, which forms some kind of primitive to render.
 /// All vertex data must be in arrays of the same size.
-/// For example, if you have a mesh of 100 vertices then positions, normals and
-/// other arrays must be 100 in size.
 /// Data for i-th vertex is at index "i" in each array.
 ///
-/// For every vertex there can be a position, normal, tangent, color
-/// and up to 8 texture coordinates.
+/// For every vertex there can be a position, normal, tangent, color and up to 8 texture coordinates.
 ///
-/// The triangles are vertex indices of vertices the triangle made from.
-/// First three indices form a triangle, next three the other one and so on.
-/// So the indices array size must be divided by three.
-class Mesh
+/// Each mesh consist of group of vertex indices, called Submesh.
+/// At least one submesh must be defined to render something.
+class Mesh final
 {
 public:
+    /// @brief Represents what kind of primitive a submesh is describe.
     enum class PrimitiveType
     {
-        points,
-        lines,
-        line_strip,
-        line_loop,
-        triangles,
-        triangle_strip,
-        triangle_fan,
+        points,         ///< Each index is individual point.
+        lines,          ///< Vertices 0 and 1 are considered a line. Vertices 2 and 3 are considered a line. And so on.
+        line_strip,     ///< The adjacent vertices are considered lines. If you pass n vertices, you will get n-1 lines.
+        line_loop,      ///< As line strips, except that the first and last vertices are also used as a line.
+        triangles,      ///< Vertices 0, 1, and 2 form a triangle. Vertices 3, 4, and 5 form a triangle. And so on.
+        triangle_strip, ///<  Every group of 3 adjacent vertices forms a triangle. The face direction of the strip is
+                        ///<  determined by the winding of the first triangle. Each successive triangle will have its
+                        ///<  effective face order reversed, so the system compensates for that by testing it in the
+                        ///<  opposite way. A vertex stream of n length will generate n-2 triangles.
+
+        triangle_fan, ///< The first vertex is always held fixed. From there on, every group of 2 adjacent vertices form
+                      ///< a triangle with the first. So with a vertex stream, you get a list of triangles like so:
+                      ///< (0, 1, 2) (0, 2, 3), (0, 3, 4), etc. A vertex stream of n length will generate n-2 triangles.
     };
 
     using VertexData             = std::vector<math::Vector3f>;
@@ -56,9 +59,10 @@ public:
         PrimitiveType primitive_type;
     };
 
-    using SubMeshMap = std::unordered_map<std::size_t, SubMesh>;
+    using SubMeshIndexType = std::size_t;
+    using SubMeshMap       = std::unordered_map<SubMeshIndexType, SubMesh>;
 
-    static constexpr int max_texture_coordinates = 8;
+    static constexpr size_t max_texture_coordinates = 8;
 
     Mesh();
     Mesh(const Mesh& other);
@@ -67,7 +71,6 @@ public:
     ~Mesh();
 
     Mesh& operator=(const Mesh& other);
-
     Mesh& operator=(Mesh&& other) noexcept;
 
     /// @brief Assign new vertex positions to Mesh.
@@ -88,7 +91,7 @@ public:
     /// @brief Assign new vertex normals to Mesh.
     ///
     /// @param normals New normals data.
-    void set_normals(VertexData&& normals) noexcept;
+    void set_normals(VertexData&& normals);
 
     /// @brief Assign new vertex tangents to Mesh.
     ///
@@ -98,7 +101,7 @@ public:
     /// @brief Assign new vertex tangents to Mesh.
     ///
     /// @param tangents New tangents data.
-    void set_tangents(VertexData&& tangents) noexcept;
+    void set_tangents(VertexData&& tangents);
 
     /// @brief Assign new vertex colors to Mesh.
     ///
@@ -108,7 +111,7 @@ public:
     /// @brief Assign new vertex colors to Mesh.
     ///
     /// @param colors New colors data.
-    void set_colors(ColorData&& colors) noexcept;
+    void set_colors(ColorData&& colors);
 
     /// @brief Assign new texture coordinates to Mesh.
     ///
@@ -124,7 +127,7 @@ public:
     ///
     /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
-    void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates) noexcept;
+    void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates);
 
     /// @brief Set indices data for Mesh.
     ///
@@ -132,7 +135,7 @@ public:
     /// @param type Kind of primitives for sub mesh.
     ///
     /// @return Index of new sub mesh.
-    std::size_t add_sub_mesh(const IndicesData& indices, PrimitiveType type = PrimitiveType::triangles);
+    SubMeshIndexType add_submesh(const IndicesData& indices, PrimitiveType type = PrimitiveType::triangles);
 
     /// @brief Set indices data for Mesh.
     ///
@@ -140,12 +143,12 @@ public:
     /// @param type Kind of primitives for sub mesh.
     ///
     /// @return Index of new sub mesh.
-    std::size_t add_sub_mesh(IndicesData&& indices, PrimitiveType type = PrimitiveType::triangles) noexcept;
+    SubMeshIndexType add_submesh(IndicesData&& indices, PrimitiveType type = PrimitiveType::triangles);
 
     /// @brief Remove previously created sub mesh.
     ///
     /// @param index Sub mesh to delete.
-    void remove_sub_mesh(std::size_t index);
+    void remove_submesh(SubMeshIndexType index);
 
     /// @brief Remove all data from Mesh.
     ///
@@ -191,12 +194,12 @@ public:
     /// @param index Sub mesh index to check.
     ///
     /// @return `true` if mesh with index exists in the Mesh.
-    bool has_sub_mesh(std::size_t index);
+    bool has_submesh(SubMeshIndexType index) const;
 
     /// @brief Get all sub meshes of the Mesh.
     ///
     /// @return Sub meshes.
-    const SubMeshMap& sub_meshes() const;
+    const SubMeshMap& submeshes() const;
 
 private:
     friend void swap(Mesh& lhs, Mesh& rhs) noexcept;
@@ -207,8 +210,8 @@ private:
     VertexData m_tanegents;
     ColorData m_colors;
     std::array<TextureCoordinatesData, max_texture_coordinates> m_texture_coordinates;
-    SubMeshMap m_sub_meshes;
-    std::size_t m_last_sub_mesh_index = 0;
+    SubMeshMap m_submeshes;
+    std::size_t m_last_submesh_index = 0;
 };
 
 /// @brief Swaps two Meshes.

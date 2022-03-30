@@ -1,5 +1,6 @@
 set(TESTS 
     crc
+    instance_id
     signal
     utf
     utils

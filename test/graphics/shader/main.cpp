@@ -1,13 +1,8 @@
-#include <chrono>
-#include <thread>
-
-#include <common/utils.hpp>
-#include <common/version.hpp>
-#include <graphics/mesh.hpp>
-#include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
-#include <system/window.hpp>
 #include <unit_test/suite.hpp>
+
+using namespace framework;
+using namespace framework::graphics;
 
 namespace
 {
@@ -38,64 +33,6 @@ void main(){\n\
     color = fragColor;\n\
 }";
 
-namespace cube_mesh
-{
-
-using namespace framework::graphics;
-
-const Mesh::VertexData vertices = {
-// clang-format off
-        // front
-        {-0.5, -0.5, 0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}, {-0.5, 0.5, 0.5},
-        // back
-        {-0.5, -0.5, -0.5}, {0.5, -0.5, -0.5}, {0.5, 0.5, -0.5}, {-0.5, 0.5, -0.5},
-        // left
-        {-0.5, -0.5, -0.5}, {-0.5, -0.5, 0.5}, {-0.5, 0.5, 0.5}, {-0.5, 0.5, -0.5},
-        // right
-        {0.5, -0.5, -0.5}, {0.5, -0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, -0.5},
-        // top
-        {0.5, 0.5, 0.5}, {0.5, 0.5, -0.5}, {-0.5, 0.5, -0.5}, {-0.5, 0.5, 0.5},
-        // bottom
-        {0.5, -0.5, 0.5}, {0.5, -0.5, -0.5}, {-0.5, -0.5, -0.5}, {-0.5, -0.5, 0.5},
-// clang-format on
-};
-
-const Mesh::ColorData colors = {
-// clang-format off
-        // front
-        {0.7f, 0.1f, 0.1f}, {0.8f, 0.2f, 0.1f}, {0.9f, 0.3f, 0.1f}, {1.0f, 0.4f, 0.1f},
-        // back
-        {0.1f, 0.7f, 0.1f}, {0.1f, 0.8f, 0.2f}, {0.1f, 0.9f, 0.3f}, {0.1f, 1.0f, 0.4f},
-        // left
-        {0.1f, 0.1f, 0.7f}, {0.1f, 0.2f, 0.8f}, {0.1f, 0.3f, 0.9f}, {0.1f, 0.4f, 1.0f},
-        // right
-        {0.7f, 1.0f, 0.1f}, {0.8f, 0.9f, 0.1f}, {0.9f, 0.8f, 0.1f}, {1.0f, 0.7f, 0.1f},
-        // top
-        {0.1f, 0.7f, 1.0f}, {0.1f, 0.8f, 0.9f}, {0.1f, 0.9f, 0.8f}, {0.1f, 1.0f, 0.7f},
-        // bottom
-        {1.0f, 0.1f, 0.7f}, {0.9f, 0.2f, 0.8f}, {0.8f, 0.3f, 0.9f}, {0.7f, 0.4f, 1.0f},
-// clang-format on
-};
-
-Mesh::IndicesData indices = {
-// clang-format off
-        // front
-        0, 1, 2, 0, 2, 3,
-        // back
-        4, 7, 6, 4, 6, 5,
-        // felt
-        8, 9, 10, 8, 10 ,11,
-        // right
-        12, 15, 14, 12, 14, 13,
-        // top
-        16, 17, 18, 16, 18, 19,
-        // bottom
-        20, 23, 22, 20, 22, 21,
-// clang-format on
-};
-
-} // namespace cube_mesh
-
 } // namespace
 
 class ShaderTest : public framework::unit_test::Suite
@@ -104,63 +41,79 @@ public:
     ShaderTest()
         : Suite("ShaderTest")
     {
-        add_test([this]() { main_loop(); }, "main_loop");
+        add_test([this]() { shader_data(); }, "shader_data");
+        add_test([this]() { shader_copy(); }, "shader_copy");
+        add_test([this]() { shader_move(); }, "shader_move");
     }
 
 private:
-    void main_loop()
+    void shader_data()
     {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
-
-        Window::set_application_name("GL shader Test");
-
-        Window main_window(name(), {640, 480});
-        Renderer renderer(main_window);
-
-        main_window.show();
-
-        renderer.set_clear_color(Color(0xFF00FFFF));
-        renderer.set_uniform("viewMatrix",
-                             math::look_at(math::Vector3f{0.0f, 0.0f, 2.0f},
-                                           math::Vector3f{0.0f, 0.0f, 0.0f},
-                                           math::Vector3f{0.0f, 1.0f, 0.0f}));
-        renderer.set_uniform("projectionMatrix",
-                             math::perspective(math::half_pi<float>, 640.0f / 480.0f, 0.001f, 10.0f));
-
-        Mesh mesh;
-        mesh.set_vertices(cube_mesh::vertices);
-        mesh.set_colors(cube_mesh::colors);
-        mesh.add_sub_mesh(cube_mesh::indices);
-
         Shader shader;
+
         shader.set_vertex_source(vertex_shader);
         shader.set_fragment_source(fragment_shader);
 
-        TEST_ASSERT(renderer.load(mesh), "Can't load mesh.");
-        TEST_ASSERT(renderer.load(shader), "Can't load shader.");
+        const InstanceId shader_id = shader.instance_id();
 
-        mesh.clear();
+        TEST_ASSERT(shader.instance_id() != 0, "Wrong instance id.");
+        TEST_ASSERT(shader.vertex_source() == vertex_shader, "Wrong vertex source.");
+        TEST_ASSERT(shader.fragment_source() == fragment_shader, "Wrong fragment source.");
+
         shader.clear();
 
-        std::chrono::microseconds max_total_time = std::chrono::seconds(3);
-        std::chrono::microseconds total_time(0);
+        TEST_ASSERT(shader.instance_id() == shader_id, "Wrong instance id.");
+        TEST_ASSERT(shader.vertex_source().empty(), "Wrong vertex source.");
+        TEST_ASSERT(shader.fragment_source().empty(), "Wrong fragment source.");
+    }
 
-        const float angle         = 0.1f;
-        const math::Vector3f axis = math::normalize(math::Vector3f{1.0, 1.0, 1.0});
+    void shader_copy()
+    {
+        Shader shader;
 
-        math::Matrix4f model_transform;
-        while (!main_window.should_close() && total_time < max_total_time) {
-            main_window.process_events();
+        shader.set_vertex_source(vertex_shader);
+        shader.set_fragment_source(fragment_shader);
 
-            model_transform = math::rotate(model_transform, axis, angle);
-            renderer.render(mesh, shader, {Uniform("modelMatrix", model_transform)});
-            renderer.display();
+        TEST_ASSERT(shader.instance_id() != 0, "Wrong instance id.");
+        TEST_ASSERT(shader.vertex_source() == vertex_shader, "Wrong vertex source.");
+        TEST_ASSERT(shader.fragment_source() == fragment_shader, "Wrong fragment source.");
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
-            total_time += std::chrono::milliseconds(20);
-        }
+        Shader shader1;
+        shader1 = shader;
+
+        shader.clear();
+
+        TEST_ASSERT(shader1.instance_id() != 0, "Wrong instance id.");
+        TEST_ASSERT(shader1.instance_id() != shader.instance_id(), "Wrong instance id.");
+
+        TEST_ASSERT(shader1.vertex_source() == vertex_shader, "Wrong vertex source.");
+        TEST_ASSERT(shader1.fragment_source() == fragment_shader, "Wrong fragment source.");
+    }
+
+    void shader_move()
+    {
+        Shader shader;
+
+        shader.set_vertex_source(vertex_shader);
+        shader.set_fragment_source(fragment_shader);
+
+        const InstanceId shader_id = shader.instance_id();
+
+        TEST_ASSERT(shader.instance_id() != 0, "Wrong instance id.");
+        TEST_ASSERT(shader.vertex_source() == vertex_shader, "Wrong vertex source.");
+        TEST_ASSERT(shader.fragment_source() == fragment_shader, "Wrong fragment source.");
+
+        Shader shader1;
+        shader1 = std::move(shader);
+
+        TEST_ASSERT(shader1.instance_id() == shader_id, "Wrong instance id.");
+        TEST_ASSERT(shader1.instance_id() != shader.instance_id(), "Wrong instance id.");
+
+        TEST_ASSERT(shader1.vertex_source() == vertex_shader, "Wrong vertex source.");
+        TEST_ASSERT(shader1.fragment_source() == fragment_shader, "Wrong fragment source.");
+
+        TEST_ASSERT(shader.vertex_source().empty(), "Wrong vertex source.");
+        TEST_ASSERT(shader.fragment_source().empty(), "Wrong fragment source.");
     }
 };
 

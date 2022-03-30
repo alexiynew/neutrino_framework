@@ -77,6 +77,14 @@ void Texture::clear()
 
     Image tmp;
     swap(m_image, tmp);
+
+    m_wrap_s = Wrap::repeat;
+    m_wrap_t = Wrap::repeat;
+
+    m_border_color = Color(0x000000FFu);
+
+    m_min_filter = MinFilter::nearest_mipmap_linear;
+    m_mag_filter = MagFilter::linear;
 }
 
 InstanceId Texture::instance_id() const
@@ -89,12 +97,12 @@ const Image& Texture::image() const
     return m_image;
 }
 
-Wrap Texture::wrap_s_parameter() const
+Texture::Wrap Texture::wrap_s_parameter() const
 {
     return m_wrap_s;
 }
 
-Wrap Texture::wrap_t_parameter() const
+Texture::Wrap Texture::wrap_t_parameter() const
 {
     return m_wrap_t;
 }
@@ -104,12 +112,12 @@ const Color& Texture::border_color() const
     return m_border_color;
 }
 
-MinFilter Texture::min_filter() const
+Texture::MinFilter Texture::min_filter() const
 {
     return m_min_filter;
 }
 
-MagFilter Texture::mag_filter() const
+Texture::MagFilter Texture::mag_filter() const
 {
     return m_mag_filter;
 }
@@ -117,6 +125,7 @@ MagFilter Texture::mag_filter() const
 void swap(Texture& lhs, Texture& rhs) noexcept
 {
     using std::swap;
+    swap(lhs.m_instance_id, rhs.m_instance_id);
     swap(lhs.m_image, rhs.m_image);
 
     swap(lhs.m_wrap_s, rhs.m_wrap_s);

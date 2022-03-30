@@ -12,61 +12,6 @@ namespace framework::graphics
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// @brief The Texture minifying function
-enum class MinFilter
-{
-    nearest, ///< Returns the value of the texture element that is nearest to
-             ///< the center of the pixel being textured.
-
-    linear, ///< Returns the weighted average of the four closest texture
-            ///< elements.
-
-    nearest_mipmap_nearest, ///< Chooses the mipmap that most closely matches
-                            ///< the size of the pixel being textured and uses
-                            ///< the nearest criterion to produce a texture
-                            ///< value.
-
-    linear_mipmap_nearest, ///< Chooses the mipmap that most closely matches
-                           ///< the size of the pixel being textured and uses
-                           ///< the linear criterion to produce a texture value.
-
-    nearest_mipmap_linear, ///< Chooses the two mipmaps that most closely match
-                           ///< the size of the pixel being textured and uses
-                           ///< the nearest criterion to produce a texture value
-                           ///< from each mipmap.The final texture value is a
-                           ///< weighted average of those two values.
-
-    linear_mipmap_linear, ///< Chooses the two mipmaps that most closely match
-                          ///< the size of the pixel being textured and uses the
-                          ///< linear criterion to produce a texture value from
-                          ///< each mipmap.The final texture value is a weighted
-                          ///< average of those two values.
-};
-
-/// @brief The Texture magnification function
-enum class MagFilter
-{
-    nearest, ///< Returns the value of the texture element that is nearest to
-             ///< the center of the pixel being textured.
-
-    linear, ///< Returns the weighted average of the four closest texture
-            ///< elements.
-};
-
-/// @brief The wrap parameter for texture coordinates.
-enum class Wrap
-{
-    repeat, ///< Creates a repeating pattern.
-
-    mirrored_repeat, ///< As `repeat` but mirrors the image.
-
-    clamp_to_edge, ///< The out-of-bounds coordinates will be bound to
-                   ///< the borders of the texture.
-
-    clamp_to_border, ///< Coordinates outside the range will give the
-                     ///< user-defined border color.
-};
-
 /// @brief Texture.
 ///
 /// Texture is a 2D Image. @n
@@ -75,9 +20,46 @@ enum class Wrap
 /// and end at (1, 1) in the upper right corner
 ///
 /// @see Shader, Mesh, Renderer
-class Texture
+class Texture final
 {
 public:
+    /// @brief The Texture minifying function
+    enum class MinFilter
+    {
+        nearest, ///< Returns the value of the texture element that is nearest to the center of the pixel being textured.
+        linear,  ///< Returns the weighted average of the four closest texture elements.
+
+        nearest_mipmap_nearest, ///< Chooses the mipmap that most closely matches the size of the pixel being textured
+                                ///< and uses the nearest criterion to produce a texture value.
+
+        linear_mipmap_nearest, ///< Chooses the mipmap that most closely matches the size of the pixel being textured
+                               ///< and uses the linear criterion to produce a texture value.
+
+        nearest_mipmap_linear, ///< Chooses the two mipmaps that most closely match the size of the pixel being textured
+                               ///< and uses the nearest criterion to produce a texture value from each mipmap.The final
+                               ///< texture value is a weighted average of those two values.
+
+        linear_mipmap_linear, ///< Chooses the two mipmaps that most closely match the size of the pixel being textured
+                              ///< and uses the linear criterion to produce a texture value from each mipmap.The final
+                              ///< texture value is a weighted average of those two values.
+    };
+
+    /// @brief The Texture magnification function
+    enum class MagFilter
+    {
+        nearest, ///< Returns the value of the texture element that is nearest to the center of the pixel being textured.
+        linear,  ///< Returns the weighted average of the four closest texture elements.
+    };
+
+    /// @brief The wrap parameter for texture coordinates.
+    enum class Wrap
+    {
+        repeat,          ///< Creates a repeating pattern.
+        mirrored_repeat, ///< As `repeat` but mirrors the image.
+        clamp_to_edge,   ///< The out-of-bounds coordinates will be bound to the borders of the texture.
+        clamp_to_border, ///< Coordinates outside the range will give the user-defined border color.
+    };
+
     Texture() = default;
     Texture(const Texture& other);
     Texture(Texture&& other) noexcept;

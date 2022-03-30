@@ -162,7 +162,7 @@ Object create_cube()
     mesh->set_vertices(cube::vertices);
     mesh->set_normals(cube::normals);
     // mesh->set_colors(cube::colors);
-    mesh->add_sub_mesh(cube::indices);
+    mesh->add_submesh(cube::indices);
 
     ShaderPtr shader = std::make_unique<Shader>();
     shader->load_vertex_source(cube::vertex_shader);
@@ -181,7 +181,7 @@ Object create_light_cube()
 {
     MeshPtr mesh = std::make_unique<Mesh>();
     mesh->set_vertices(light_cube::vertices);
-    mesh->add_sub_mesh(light_cube::indices);
+    mesh->add_submesh(light_cube::indices);
 
     ShaderPtr shader = std::make_unique<Shader>();
     shader->load_vertex_source(light_cube::vertex_shader);

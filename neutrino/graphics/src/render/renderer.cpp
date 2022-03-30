@@ -124,7 +124,7 @@ void Renderer::set_polygon_mode(PolygonMode mode)
 
 bool Renderer::load(const Mesh& mesh)
 {
-    if (mesh.sub_meshes().empty()) {
+    if (mesh.submeshes().empty()) {
         // Can't load mesh without sub meshes.
         return false;
     }

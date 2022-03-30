@@ -1,6 +1,7 @@
 #ifndef FRAMEWORK_GRAPHICS_SHADER_HPP
 #define FRAMEWORK_GRAPHICS_SHADER_HPP
 
+#include <filesystem>
 #include <string>
 
 #include <common/instance_id.hpp>
@@ -48,17 +49,17 @@ public:
 
     /// @brief Load vertex shader source form file.
     ///
-    /// @param filename Path to vertex shader source file.
+    /// @param filepath Path to vertex shader source file.
     ///
     /// @return `true` if loadint successful.
-    bool load_vertex_source(const std::string& filename);
+    bool load_vertex_source(const std::filesystem::path& filepath);
 
     /// @brief Set fragment shader source form file.
     ///
-    /// @param filename Path to fragment shader source file.
+    /// @param filepath Path to fragment shader source file.
     ///
     /// @return `true` if loadint successful.
-    bool load_fragment_source(const std::string& filename);
+    bool load_fragment_source(const std::filesystem::path& filepath);
 
     /// @brief Set vertex shader source.
     ///

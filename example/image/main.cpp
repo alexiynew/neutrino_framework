@@ -374,7 +374,7 @@ MeshPtr create_mesh(int width, int height)
     MeshPtr m = std::make_unique<Mesh>();
     m->set_vertices(scaled_vertices);
     m->set_texture_coordinates(0, square_mesh::tex_coord);
-    m->add_sub_mesh(square_mesh::indices);
+    m->add_submesh(square_mesh::indices);
 
     return m;
 }
@@ -384,8 +384,8 @@ TexturePtr create_texture(const Image& image)
 
     TexturePtr t = std::make_unique<Texture>();
     t->set_image(image);
-    t->set_min_filter(MinFilter::nearest);
-    t->set_mag_filter(MagFilter::nearest);
+    t->set_min_filter(Texture::MinFilter::nearest);
+    t->set_mag_filter(Texture::MagFilter::nearest);
 
     return t;
 }

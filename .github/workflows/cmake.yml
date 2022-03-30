@@ -8,6 +8,7 @@ on:
 
 env:
   BUILD_TYPE: Release
+  TESTS_TO_SKIP: system/*|graphics/font|graphics/renderer
 
 jobs:
   build_mac:
@@ -24,7 +25,7 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}/build/test
-      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "system/*|graphics/light|graphics/mesh|graphics/shader|graphics/texture|graphics/font"
+      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
  
   build_windows:
     runs-on: [ windows-latest ]
@@ -40,7 +41,7 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}/build/test
-      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "system/*|graphics/light|graphics/mesh|graphics/shader|graphics/texture|graphics/font"
+      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
          
   build_linux:
     runs-on: [ ubuntu-latest ]
@@ -65,4 +66,4 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}/build/test
-      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "system/*|graphics/light|graphics/mesh|graphics/shader|graphics/texture|graphics/font"
+      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
