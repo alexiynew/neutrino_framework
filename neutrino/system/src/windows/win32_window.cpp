@@ -211,6 +211,13 @@ void Win32Window::show()
     }
     UpdateWindow(m_window);
 
+    if (m_cursor_grabbed) {
+        m_grabbed_cursor_diff = {0, 0};
+        m_cursor_position     = get_cursor_position(m_window);
+        update_cursor();
+        enable_raw_input();
+    }
+
     m_mouse_hover = is_cursor_in_client_area(m_window);
 
     // Explicitly call on_show callback
@@ -226,6 +233,13 @@ void Win32Window::hide()
     if (has_input_focus()) {
         // Call the on_lost_focus callback explicitly
         on_lost_focus();
+    }
+
+    if (m_cursor_grabbed) {
+        set_cursor_cliping(m_window, false);
+        set_cursor_position(m_window, m_cursor_position);
+
+        disable_raw_input();
     }
 
     ShowWindow(m_window, SW_HIDE);
@@ -339,11 +353,10 @@ void Win32Window::grab_cursor()
         return;
     }
 
-    m_grabbed_cursor_diff = {0, 0};
-
     m_cursor_grabbed = true;
 
-    m_cursor_position = get_cursor_position(m_window);
+    m_grabbed_cursor_diff = {0, 0};
+    m_cursor_position     = get_cursor_position(m_window);
     update_cursor();
     enable_raw_input();
 }

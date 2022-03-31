@@ -27,8 +27,7 @@ class PlatformWindow;
 
 /// @brief Window class.
 ///
-/// Window, abstracts all window management, input processing,
-/// and event handling.
+/// Window, abstracts all window management, input processing, and event handling.
 class Window final
 {
 public:
@@ -63,8 +62,7 @@ public:
     /// @brief Makes the window visible on the screen.
     ///
     /// If the window is already visible, this function does nothing.@n
-    /// If the window is iconified, this function restores it to its previous
-    /// state.@n
+    /// If the window is iconified, this function restores it to its previous state.@n
     /// If the window has been shown this function calls the
     ///     - @ref on_show
     ///     - @ref on_move
@@ -78,9 +76,8 @@ public:
 
     /// @brief Removes the window from the screen.
     ///
-    /// If the window has input focus then before hiding it,
-    /// function tries to switch focus to another window. In this case, the
-    /// @ref on_lost_focus callback would be called.@n
+    /// If the window has input focus then before hiding it, function tries to switch focus to another window. In this
+    /// case, the @ref on_lost_focus callback would be called.@n
     /// At the end of execution, it calls the @ref on_hide callback.
     ///
     /// @thread_safety This function can be called only from main thread.
@@ -89,18 +86,15 @@ public:
     /// @brief Bring the window to the front and switch input focus to it.
     ///
     /// If the window is not visible function has no effect.@n
-    /// If the window gets input focus the @ref on_focus callback
-    /// would be called.
+    /// If the window gets input focus the @ref on_focus callback would be called.
     ///
     /// @thread_safety This function can be called only from main thread.
     void focus();
 
     /// @brief Iconify the window (i.e. minimize).
     ///
-    /// In iconified state window is not visible to the user and the icon
-    /// is displayed in the taskbar.@n
-    /// When the window is iconified it loses input focus i.e.
-    /// the @ref on_lost_focus callback would be called.@n
+    /// In iconified state window is not visible to the user and the icon is displayed in the taskbar.@n
+    /// When the window is iconified it loses input focus i.e. the @ref on_lost_focus callback would be called.
     ///
     /// The window can be restored with @ref restore or @ref show function.
     ///
@@ -138,12 +132,16 @@ public:
 
     /// @brief Grabs the cursor, providing unlimited cursor movement.
     ///
-    /// This is useful for implementing for example 3D camera controls.
+    /// Blocks the cursor inside the window and the mouse movement tracks, as if it had no borders.
+    /// If window is hidden or lost input focus the cursor restore its previous position.
+    /// If window became visible or got input focus, and cursor was previously grabbed, the cursor would grabbed again.
     ///
     /// @thread_safety This function can be called only from main thread.
     void grab_cursor();
 
-    /// @brief Releases the cursor, if it is gabbed.
+    /// @brief Releases the cursor, if it was gabbed.
+    ///
+    /// Moves cursor to its previous position. And restores mouse tracking to normal mode.
     ///
     /// @thread_safety This function can be called only from main thread.
     void release_cursor();
@@ -166,8 +164,7 @@ public:
 
     /// @brief Sets the maximum size of the window content.
     ///
-    /// The maximum size constraint is enforced for resizing by the user as
-    /// well as for the @ref resize function.
+    /// The maximum size constraint is enforced for resizing by the user as well as for the @ref resize function.
     /// The default maximum size is @ref Size(0, 0), which means there are no
     /// maximum size constrictions set. Setting size to @ref Size(0, 0) resets
     /// the maximum size of a window to its default system-dependent values.
@@ -348,6 +345,8 @@ public:
     bool is_cursor_visible() const;
 
     /// @brief Checks if cursor grabbed.
+    ///
+    /// Regardless window visible state or if it has or not input focus.
     ///
     /// @return `true` if cursor is grabbed.
     ///
