@@ -19,18 +19,21 @@ public:
     }
 
 private:
-    Window create_window_internal()
+    Window create_window_internal(bool* show_called_flag, bool* hide_called_flag)
     {
         Window window(name(), {640, 480});
-        window.on_show.connect([](const Window& /*unused*/) {});
-        window.on_hide.connect([](const Window& /*unused*/) {});
+        window.on_show.connect([flag = show_called_flag](const Window& /*unused*/) { *flag = true; });
+        window.on_hide.connect([flag = hide_called_flag](const Window& /*unused*/) { *flag = true; });
 
         return window;
     }
 
     void create_window()
     {
-        Window window = create_window_internal();
+        bool show_called = false;
+        bool hide_called = false;
+
+        Window window = create_window_internal(&show_called, &hide_called);
 
         window.show();
 
@@ -43,6 +46,9 @@ private:
         TEST_ASSERT(window.is_visible(), "Window should keep its state.");
 
         window.hide();
+
+        TEST_ASSERT(show_called, "The on_show callback must be called.");
+        TEST_ASSERT(hide_called, "The on_hide callback must be called.");
     }
 
     void open_window()
