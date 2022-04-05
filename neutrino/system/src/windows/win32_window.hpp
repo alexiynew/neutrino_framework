@@ -1,4 +1,4 @@
-#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
+﻿#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 
 #include <memory>
@@ -70,9 +70,9 @@ public:
     bool is_cursor_grabbed() const override;
 #pragma endregion
 
-private:
-    friend class Win32Application;
+    LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 
+private:
     struct WindowInfo
     {
         LONG style;
@@ -89,6 +89,37 @@ private:
         bool left_alt;
         bool right_alt;
     };
+
+    struct MessageHandler;
+
+    LRESULT on_set_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_kill_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_close_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_move_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_size_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_get_min_max_info_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    LRESULT on_mouse_leave_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_mouse_hover_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_mouse_move_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_mouse_button_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_mouse_wheel_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    LRESULT on_key_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    LRESULT on_unichar_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT on_char_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    LRESULT on_input_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    void process_shift_key(LPARAM l_param);
+    void process_control_key(LPARAM l_param);
+    void process_alt_key(LPARAM l_param);
+
+    void track_mouse();
+    void update_cursor();
+    void enable_raw_input();
+    void disable_raw_input();
 
     HWND m_window = nullptr;
     HDC m_hdc     = nullptr;
@@ -108,22 +139,10 @@ private:
 
     WindowInfo m_saved_info = {0, 0, {0, 0, 0, 0}};
 
-    std::unique_ptr<Context> m_context = nullptr;
+    std::unique_ptr<Context> m_context                = nullptr;
+    std::unique_ptr<MessageHandler> m_message_handler = nullptr;
 
     ModifiersFlags m_modifiers_flags = {false, false, false, false, false, false};
-
-    LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
-
-    LRESULT process_key_event(WPARAM w_param, LPARAM l_param);
-    void process_shift_key(LPARAM l_param);
-    void process_control_key(LPARAM l_param);
-    void process_alt_key(LPARAM l_param);
-    void process_raw_input(LPARAM l_param);
-
-    void track_mouse();
-    void update_cursor();
-    void enable_raw_input();
-    void disable_raw_input();
 };
 
 } // namespace framework::system::details

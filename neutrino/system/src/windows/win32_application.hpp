@@ -1,4 +1,4 @@
-#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
+﻿#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
 
 #include <map>
@@ -23,9 +23,9 @@ public:
     static LRESULT CALLBACK main_window_procedure(HWND window_handle, UINT message, WPARAM w_param, LPARAM l_param);
 
 private:
-    using container = std::map<HANDLE, Win32Window*>;
+    using HandleToWindowMap = std::map<HANDLE, Win32Window*>;
 
-    static container m_windows;
+    static HandleToWindowMap m_windows;
     static HMODULE m_handle;
 
     static LPCWSTR m_window_class;

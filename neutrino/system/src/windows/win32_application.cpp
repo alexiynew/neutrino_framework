@@ -1,4 +1,4 @@
-#include <stdexcept>
+﻿#include <stdexcept>
 
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_window.hpp>
@@ -48,7 +48,7 @@ LPCWSTR register_window_class()
 
 namespace framework::system::details
 {
-Win32Application::container Win32Application::m_windows;
+Win32Application::HandleToWindowMap Win32Application::m_windows;
 HMODULE Win32Application::m_handle       = nullptr;
 LPCWSTR Win32Application::m_window_class = nullptr;
 
