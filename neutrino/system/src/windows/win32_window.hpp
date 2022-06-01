@@ -75,8 +75,6 @@ public:
 private:
     struct WindowInfo
     {
-        LONG style;
-        LONG ex_style;
         RECT rect;
     };
 
@@ -137,7 +135,7 @@ private:
     CursorPosition m_grabbed_cursor_diff = {0, 0};
     CursorPosition m_cursor_position     = {0, 0};
 
-    WindowInfo m_saved_info = {0, 0, {0, 0, 0, 0}};
+    WindowInfo m_saved_info = {{0, 0, 0, 0}};
 
     std::unique_ptr<Context> m_context                = nullptr;
     std::unique_ptr<MessageHandler> m_message_handler = nullptr;

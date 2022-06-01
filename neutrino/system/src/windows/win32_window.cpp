@@ -437,18 +437,25 @@ void Win32Window::fullscreen()
         SendMessage(m_window, WM_SYSCOMMAND, SC_RESTORE, 0);
     }
 
-    m_saved_info.style    = GetWindowLong(m_window, GWL_STYLE);
-    m_saved_info.ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
+    using namespace std::placeholders;
+
+    // Turn off the on_resize callback
+    m_message_handler->on_size = nullptr;
+
+    // Turn off the on_move callback
+    m_message_handler->on_move = nullptr;
+
+    LONG style    = GetWindowLong(m_window, GWL_STYLE);
+    LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
     GetWindowRect(m_window, &m_saved_info.rect);
 
-    SetWindowLong(m_window, GWL_STYLE, m_saved_info.style & ~(WS_CAPTION | WS_THICKFRAME));
+    SetWindowLong(m_window, GWL_STYLE, style & ~(WS_CAPTION | WS_THICKFRAME));
     SetWindowLong(m_window,
                   GWL_EXSTYLE,
-                  m_saved_info.ex_style &
-                  ~(WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
+                  ex_style & ~(WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
 
-    MONITORINFO monitor_info;
-    monitor_info.cbSize = sizeof(monitor_info);
+    MONITORINFO monitor_info = {};
+    monitor_info.cbSize      = sizeof(monitor_info);
     GetMonitorInfo(MonitorFromWindow(m_window, MONITOR_DEFAULTTONEAREST), &monitor_info);
 
     SetWindowPos(m_window,
@@ -460,13 +467,42 @@ void Win32Window::fullscreen()
                  SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
     SetForegroundWindow(m_window);
+
+    // Turn on the on_resize callback
+    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
+
+    // Turn on the on_move callback
+    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
+
+    if (is_visible()) {
+        // Explicitly call on_move callback
+        on_move(position());
+
+        // Explicitly call on_resize callback
+        on_resize(size());
+    }
 }
 
 void Win32Window::restore()
 {
+    using namespace std::placeholders;
+
+    // Turn off the on_resize callback
+    m_message_handler->on_size = nullptr;
+
+    // Turn off the on_move callback
+    m_message_handler->on_move = nullptr;
+
+    bool restored = false;
+
     if (is_fullscreen()) {
-        SetWindowLong(m_window, GWL_STYLE, m_saved_info.style);
-        SetWindowLong(m_window, GWL_EXSTYLE, m_saved_info.ex_style);
+        LONG style    = GetWindowLong(m_window, GWL_STYLE);
+        LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
+
+        SetWindowLong(m_window, GWL_STYLE, style | WS_CAPTION | WS_THICKFRAME);
+        SetWindowLong(m_window,
+                      GWL_EXSTYLE,
+                      ex_style | WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
 
         SetWindowPos(m_window,
                      HWND_TOP,
@@ -475,10 +511,27 @@ void Win32Window::restore()
                      m_saved_info.rect.right - m_saved_info.rect.left,
                      m_saved_info.rect.bottom - m_saved_info.rect.top,
                      SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+        restored = true;
     } else if (is_iconified()) {
         ShowWindow(m_window, SW_RESTORE);
+        restored = true;
     } else if (is_maximized()) {
         ShowWindow(m_window, SW_RESTORE);
+        restored = true;
+    }
+
+    // Turn on the on_resize callback
+    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
+
+    // Turn on the on_move callback
+    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
+
+    if (restored && is_visible()) {
+        // Explicitly call on_move callback
+        on_move(position());
+
+        // Explicitly call on_resize callback
+        on_resize(size());
     }
 }
 
