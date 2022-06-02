@@ -15,8 +15,8 @@ public:
         : Suite("WindowStateTest")
     {
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
-        // add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
-        // add_test([this]() { iconify_window(); }, "iconify_window");
+        add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
+        add_test([this]() { iconify_window(); }, "iconify_window");
         // add_test([this]() { maximize_window(); }, "maximize_window");
         // add_test([this]() { maximized_before_show(); }, "maximized_before_show");
         // add_test([this]() { iconify_fullscreen(); }, "iconify_fullscreen");
@@ -383,6 +383,7 @@ private:
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
             w.hide();
+            std::this_thread::sleep_for(std::chrono::seconds(1));
             w.show();
 
             TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");

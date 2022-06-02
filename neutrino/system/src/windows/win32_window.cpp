@@ -397,7 +397,7 @@ void Win32Window::show()
 
 void Win32Window::hide()
 {
-    if (!is_visible()) {
+    if (!is_visible() && !is_iconified()) {
         return;
     }
 
@@ -767,7 +767,8 @@ bool Win32Window::is_resizable() const
 
 bool Win32Window::is_visible() const
 {
-    return IsWindowVisible(m_window);
+    return IsWindowVisible(m_window) && !is_iconified();
+    ;
 }
 
 bool Win32Window::has_input_focus() const
