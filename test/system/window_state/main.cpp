@@ -1,7 +1,6 @@
 ﻿#include <chrono>
 #include <thread>
 
-#include <log/log.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -19,11 +18,14 @@ public:
         add_test([this]() { iconify_window(); }, "iconify_window");
         add_test([this]() { maximize_window(); }, "maximize_window");
         add_test([this]() { maximized_before_show(); }, "maximized_before_show");
-        // add_test([this]() { iconify_fullscreen(); }, "iconify_fullscreen");
+        add_test([this]() { iconify_fullscreen(); }, "iconify_fullscreen");
 
         // TODO: implement this
-        // iconify mazimized window. Should not drop maximized status
-        // iconify before show. Should not show window icon in system tray
+        // Iconify mazimized window. Should not drop maximized status
+        // Iconify before show. Should not show window icon in system tray
+        // Call iconify several times
+        // Call maximize several times
+        // Call fulscreen several times
         // Restore before show. Should drop all other statuses
         // add_test([this]() { window_resizability(); }, "window_resizability");
         // add_test([this]() { window_resizability_and_size(); }, "window_resizability_and_size");
@@ -687,6 +689,9 @@ private:
         TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
         TEST_ASSERT(m_stats.on_focus_called == 3, "Invalid callback call.");
         TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
+
+        TEST_ASSERT(w.size() == size640, "Invalid window size.");
+        TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
     }
 
     void window_resizability()
@@ -776,37 +781,28 @@ private:
     {
         window.on_show.connect([this](const Window& w) {
             TEST_ASSERT(w.is_visible(), "The on_show callback was received for non visible window.");
-            log::info("MAIN") << "on_show callback";
             m_stats.on_show_called++;
         });
         window.on_hide.connect([this](const Window& w) {
             TEST_ASSERT(!w.is_visible(), "The on_hide callback was received for visible window.");
-
-            log::info("MAIN") << "on_hide callback";
             m_stats.on_hide_called++;
         });
         window.on_resize.connect([this](const Window& w, Size size) {
             TEST_ASSERT(w.is_visible(), "The on_resize callback was received for non visible window.");
-            log::info("MAIN") << "on_resize callback size: " << size;
             m_stats.on_resize_called++;
             m_stats.last_size = size;
         });
         window.on_move.connect([this](const Window& w, Position position) {
             TEST_ASSERT(w.is_visible(), "The on_move callback was received for non visible window.");
-            log::info("MAIN") << "on_move callback position: " << position;
             m_stats.on_move_called++;
             m_stats.last_position = position;
         });
         window.on_focus.connect([this](const Window& w) {
             TEST_ASSERT(w.is_visible(), "The on_focus callback was received for non visible window.");
-
-            log::info("MAIN") << "on_focus callback";
             m_stats.on_focus_called++;
         });
         window.on_lost_focus.connect([this](const Window& w) {
             TEST_ASSERT(w.is_visible(), "The on_lost_focus callback was received for non visible window.");
-
-            log::info("MAIN") << "on_lost_focus callback";
             m_stats.on_lost_focus_called++;
         });
     }

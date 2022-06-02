@@ -356,6 +356,7 @@ void Win32Window::show()
 
     if (is_iconified()) {
         ShowWindow(m_window, SW_RESTORE);
+        m_was_fullscreen = false;
     } else if (m_shoud_maximize) {
         ShowWindow(m_window, SW_MAXIMIZE);
         m_shoud_maximize = false;
@@ -434,6 +435,7 @@ void Win32Window::focus()
 
 void Win32Window::iconify()
 {
+    m_was_fullscreen = is_fullscreen();
     ShowWindow(m_window, SW_MINIMIZE);
 }
 
@@ -515,6 +517,11 @@ void Win32Window::restore()
 
     bool restored = false;
 
+    if (is_iconified()) {
+        ShowWindow(m_window, SW_RESTORE);
+        restored = true;
+    }
+
     if (is_fullscreen()) {
         LONG style    = GetWindowLong(m_window, GWL_STYLE);
         LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
@@ -532,14 +539,15 @@ void Win32Window::restore()
                      m_saved_info.rect.bottom - m_saved_info.rect.top,
                      SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
         restored = true;
-    } else if (is_iconified()) {
+    }
+
+    if (is_maximized()) {
         ShowWindow(m_window, SW_RESTORE);
         restored = true;
-    } else if (is_maximized()) {
-        ShowWindow(m_window, SW_RESTORE);
-        m_shoud_maximize = false;
-        restored         = true;
     }
+
+    m_shoud_maximize = false;
+    m_was_fullscreen = false;
 
     // Turn on the on_resize callback
     m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
@@ -750,6 +758,10 @@ bool Win32Window::should_close() const
 
 bool Win32Window::is_fullscreen() const
 {
+    if (is_iconified()) {
+        return m_was_fullscreen;
+    }
+
     RECT window_rect;
     RECT desktop_rect;
     GetWindowRect(m_window, &window_rect);
@@ -846,7 +858,7 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
                 case SC_SCREENSAVE:
                 case SC_MONITORPOWER: {
                     // We are running in full screen mode, so disallow screen saver and screen blanking
-                    if (is_fullscreen()) {
+                    if (is_fullscreen() && !is_iconified()) {
                         return 0;
                     } else
                         break;
