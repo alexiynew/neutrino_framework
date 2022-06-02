@@ -240,12 +240,12 @@ private:
             TEST_ASSERT(m_stats.last_position == Position(0, 0), "Invalid position in callback.");
         }
 
-        //    TEST_ASSERT(m_stats.on_show_called == 3, "Invalid callback call.");
-        //    TEST_ASSERT(m_stats.on_hide_called == 2, "Invalid callback call.");
-        //    TEST_ASSERT(m_stats.on_resize_called == 8, "Invalid callback call.");
-        //    TEST_ASSERT(m_stats.on_move_called == 8, "Invalid callback call.");
-        //    TEST_ASSERT(m_stats.on_focus_called == 3, "Invalid callback call.");
-        //    TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_show_called == 3, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 8, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 8, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 3, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
     }
 
     void fullscreen_before_show()

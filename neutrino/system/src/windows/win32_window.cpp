@@ -351,6 +351,9 @@ void Win32Window::show()
     // Turn off the on_move callback
     m_message_handler->on_move = nullptr;
 
+    // Turn off the on_set_focus callback
+    m_message_handler->on_set_focus = nullptr;
+
     if (is_iconified()) {
         ShowWindow(m_window, SW_RESTORE);
     } else {
@@ -373,6 +376,9 @@ void Win32Window::show()
     // Turn on the on_move callback
     m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
 
+    // Turn on the on_set_focus callback
+    m_message_handler->on_set_focus = std::bind(&Win32Window::on_set_focus_message, this, _1, _2, _3);
+
     // Explicitly call on_show callback
     on_show();
 
@@ -381,6 +387,12 @@ void Win32Window::show()
 
     // Explicitly call on_resize callback
     on_resize(size());
+
+    if (has_input_focus()) {
+        on_focus();
+    } else {
+        focus();
+    }
 }
 
 void Win32Window::hide()
