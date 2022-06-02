@@ -356,6 +356,9 @@ void Win32Window::show()
 
     if (is_iconified()) {
         ShowWindow(m_window, SW_RESTORE);
+    } else if (m_shoud_maximize) {
+        ShowWindow(m_window, SW_MAXIMIZE);
+        m_shoud_maximize = false;
     } else {
         ShowWindow(m_window, SW_SHOW);
     }
@@ -436,6 +439,11 @@ void Win32Window::iconify()
 
 void Win32Window::maximize()
 {
+    if (!is_visible()) {
+        m_shoud_maximize = true;
+        return;
+    }
+
     ShowWindow(m_window, SW_MAXIMIZE);
 }
 
@@ -529,7 +537,8 @@ void Win32Window::restore()
         restored = true;
     } else if (is_maximized()) {
         ShowWindow(m_window, SW_RESTORE);
-        restored = true;
+        m_shoud_maximize = false;
+        restored         = true;
     }
 
     // Turn on the on_resize callback
@@ -757,7 +766,7 @@ bool Win32Window::is_iconified() const
 
 bool Win32Window::is_maximized() const
 {
-    return IsZoomed(m_window) != 0;
+    return IsZoomed(m_window) != 0 || m_shoud_maximize;
 }
 
 bool Win32Window::is_resizable() const

@@ -17,11 +17,14 @@ public:
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
         add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
         add_test([this]() { iconify_window(); }, "iconify_window");
-        // add_test([this]() { maximize_window(); }, "maximize_window");
-        // add_test([this]() { maximized_before_show(); }, "maximized_before_show");
+        add_test([this]() { maximize_window(); }, "maximize_window");
+        add_test([this]() { maximized_before_show(); }, "maximized_before_show");
         // add_test([this]() { iconify_fullscreen(); }, "iconify_fullscreen");
 
         // TODO: implement this
+        // iconify mazimized window. Should not drop maximized status
+        // iconify before show. Should not show window icon in system tray
+        // Restore before show. Should drop all other statuses
         // add_test([this]() { window_resizability(); }, "window_resizability");
         // add_test([this]() { window_resizability_and_size(); }, "window_resizability_and_size");
         // add_test([this]() { window_resizability_before_show(); }, "window_resizability_before_show");
@@ -502,6 +505,7 @@ private:
 
             TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
+            std::this_thread::sleep_for(std::chrono::seconds(1));
             m_stats.on_resize_called = 0;
             w.show();
 
@@ -541,6 +545,7 @@ private:
             TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
             TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
 

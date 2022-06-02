@@ -131,6 +131,7 @@ private:
     bool m_should_close   = false;
     bool m_cursor_visible = true;
     bool m_cursor_grabbed = false;
+    bool m_shoud_maximize = false;
 
     CursorPosition m_grabbed_cursor_diff = {0, 0};
     CursorPosition m_cursor_position     = {0, 0};
