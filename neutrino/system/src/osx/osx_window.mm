@@ -357,9 +357,6 @@ void OsxWindow::show()
     // This would call on_focus callback
     if (!has_input_focus()) {
         [m_window->get() makeKeyWindow];
-        do {
-            process_events();
-        } while (!has_input_focus());
     } else {
         // Or call the on_focus callback explicitly
         on_focus();
@@ -904,7 +901,7 @@ bool OsxWindow::switch_to_other_window()
     AutoreleasePool pool;
 
     for (NSWindow* window in [NSApp orderedWindows]) {
-        if (window != m_window->get()) {
+        if (window != m_window->get() && [window isVisible]) {
             [window orderFront:nil];
             [window makeKeyWindow];
             return true;

@@ -108,11 +108,11 @@ private:
     void open_several_windows()
     {
         Window windows[5] = {
-        Window(name(), {640, 480}),
-        Window(name(), {640, 480}),
-        Window(name(), {640, 480}),
-        Window(name(), {640, 480}),
-        Window(name(), {640, 480}),
+        Window(name() + " 0", {640, 480}),
+        Window(name() + " 1", {640, 480}),
+        Window(name() + " 2", {640, 480}),
+        Window(name() + " 3", {640, 480}),
+        Window(name() + " 4", {640, 480}),
         };
 
         TEST_ASSERT(!windows[0].is_visible(), "Window is visible before been shown.");
@@ -124,34 +124,35 @@ private:
         for (auto& w : windows) {
             w.show();
         }
-
-        TEST_ASSERT(windows[0].is_visible(), "Window is not visidle.");
-        TEST_ASSERT(windows[1].is_visible(), "Window is not visidle.");
-        TEST_ASSERT(windows[2].is_visible(), "Window is not visidle.");
-        TEST_ASSERT(windows[3].is_visible(), "Window is not visidle.");
-        TEST_ASSERT(windows[4].is_visible(), "Window is not visidle.");
-
         std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        TEST_ASSERT(windows[0].is_visible(), "Window is not visible.");
+        TEST_ASSERT(windows[1].is_visible(), "Window is not visible.");
+        TEST_ASSERT(windows[2].is_visible(), "Window is not visible.");
+        TEST_ASSERT(windows[3].is_visible(), "Window is not visible.");
+        TEST_ASSERT(windows[4].is_visible(), "Window is not visible.");
+
         for (auto& w : windows) {
             w.hide();
         }
-
-        TEST_ASSERT(!windows[0].is_visible(), "Window is still visidle.");
-        TEST_ASSERT(!windows[1].is_visible(), "Window is still visidle.");
-        TEST_ASSERT(!windows[2].is_visible(), "Window is still visidle.");
-        TEST_ASSERT(!windows[3].is_visible(), "Window is still visidle.");
-        TEST_ASSERT(!windows[4].is_visible(), "Window is still visidle.");
-
         std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        TEST_ASSERT(!windows[0].is_visible(), "Window is still visible.");
+        TEST_ASSERT(!windows[1].is_visible(), "Window is still visible.");
+        TEST_ASSERT(!windows[2].is_visible(), "Window is still visible.");
+        TEST_ASSERT(!windows[3].is_visible(), "Window is still visible.");
+        TEST_ASSERT(!windows[4].is_visible(), "Window is still visible.");
+
         for (auto& w : windows) {
             w.show();
         }
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        TEST_ASSERT(windows[0].is_visible(), "Window is not visidle.");
-        TEST_ASSERT(windows[1].is_visible(), "Window is not visidle.");
-        TEST_ASSERT(windows[2].is_visible(), "Window is not visidle.");
-        TEST_ASSERT(windows[3].is_visible(), "Window is not visidle.");
-        TEST_ASSERT(windows[4].is_visible(), "Window is not visidle.");
+        TEST_ASSERT(windows[0].is_visible(), "Window is not visible.");
+        TEST_ASSERT(windows[1].is_visible(), "Window is not visible.");
+        TEST_ASSERT(windows[2].is_visible(), "Window is not visible.");
+        TEST_ASSERT(windows[3].is_visible(), "Window is not visible.");
+        TEST_ASSERT(windows[4].is_visible(), "Window is not visible.");
     }
 };
 
