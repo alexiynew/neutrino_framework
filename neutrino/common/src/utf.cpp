@@ -109,7 +109,7 @@ std::pair<CodePoint, size_t> get_code_point(const std::wstring& str, size_t pos)
             return std::make_pair(0, 0);
         }
 
-        const CodePoint second = str[pos + 1];
+        const CodePoint second = static_cast<CodePoint>(str[pos + 1]);
         const CodePoint cp     = static_cast<CodePoint>((first ^ 0xD800) << 10) | (second ^ 0xDC00) | 0x10000;
 
         return std::make_pair(cp, 2);
