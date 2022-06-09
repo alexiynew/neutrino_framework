@@ -5,6 +5,7 @@
 #include <common/version.hpp>
 #include <graphics/color.hpp>
 #include <graphics/renderer.hpp>
+#include <system/application.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -24,7 +25,7 @@ private:
         using namespace framework::graphics;
         using namespace framework::system;
 
-        Window::set_application_name("GL Test");
+        Application::set_name("GL Test");
 
         Window main_window(name(), {640, 480});
         Renderer render(main_window);

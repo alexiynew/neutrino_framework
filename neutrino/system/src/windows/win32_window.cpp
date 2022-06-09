@@ -109,6 +109,70 @@ bool is_cursor_in_client_area(HWND window)
     return pos.x >= 0 && pos.y >= 0 && pos.x <= rect.right && pos.y <= rect.bottom;
 }
 
+void set_window_state(HWND window, framework::system::Window::State state)
+{
+    using State = framework::system::Window::State;
+
+    switch (state) {
+        case State::iconified: ShowWindow(window, SW_MINIMIZE); break;
+        case State::maximized: ShowWindow(window, SW_MAXIMIZE); break;
+        case State::fullscreen: {
+
+            LONG style    = GetWindowLong(window, GWL_STYLE);
+            LONG ex_style = GetWindowLong(window, GWL_EXSTYLE);
+
+            SetWindowLong(window, GWL_STYLE, style & ~(WS_CAPTION | WS_THICKFRAME));
+            SetWindowLong(window,
+                          GWL_EXSTYLE,
+                          ex_style & ~(WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
+
+            MONITORINFO monitor_info = {};
+            monitor_info.cbSize      = sizeof(monitor_info);
+            GetMonitorInfo(MonitorFromWindow(window, MONITOR_DEFAULTTONEAREST), &monitor_info);
+
+            SetWindowPos(window,
+                         HWND_TOP,
+                         monitor_info.rcMonitor.left,
+                         monitor_info.rcMonitor.top,
+                         monitor_info.rcMonitor.right,
+                         monitor_info.rcMonitor.bottom,
+                         SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+            SetForegroundWindow(window);
+        } break;
+        case State::normal: ShowWindow(window, SW_SHOW); break;
+    }
+}
+
+framework::system::Window::State get_window_state(HWND window)
+{
+    using State = framework::system::Window::State;
+
+    if (IsIconic(window) != 0) {
+        return State::iconified;
+    } else if (IsZoomed(window) != 0) {
+        return State::maximized;
+    } else {
+        RECT window_rect;
+        RECT desktop_rect;
+        GetWindowRect(window, &window_rect);
+        GetWindowRect(GetDesktopWindow(), &desktop_rect);
+
+        const bool is_fullscreen_size = (window_rect.left == desktop_rect.left && window_rect.top == desktop_rect.top &&
+                                         window_rect.right == desktop_rect.right &&
+                                         window_rect.bottom == desktop_rect.bottom);
+
+        /// TODO: Check window decorations
+        // const bool has_window_decorations = true;
+
+        if (is_fullscreen_size) {
+            return State::fullscreen;
+        }
+    }
+
+    return State::normal;
+}
+
 } // namespace
 
 namespace framework::system::details
@@ -354,15 +418,7 @@ void Win32Window::show()
     // Turn off the on_set_focus callback
     m_message_handler->on_set_focus = nullptr;
 
-    if (is_iconified()) {
-        ShowWindow(m_window, SW_RESTORE);
-        m_was_fullscreen = false;
-    } else if (m_shoud_maximize) {
-        ShowWindow(m_window, SW_MAXIMIZE);
-        m_shoud_maximize = false;
-    } else {
-        ShowWindow(m_window, SW_SHOW);
-    }
+    set_window_state(m_window, m_state);
     UpdateWindow(m_window);
 
     if (m_cursor_grabbed) {
@@ -401,7 +457,7 @@ void Win32Window::show()
 
 void Win32Window::hide()
 {
-    if (!is_visible() && !is_iconified()) {
+    if (!is_visible()) {
         return;
     }
 
@@ -431,168 +487,6 @@ void Win32Window::focus()
 
     BringWindowToTop(m_window);
     SetForegroundWindow(m_window);
-}
-
-void Win32Window::iconify()
-{
-    m_was_fullscreen = is_fullscreen();
-    ShowWindow(m_window, SW_MINIMIZE);
-}
-
-void Win32Window::maximize()
-{
-    if (!is_visible()) {
-        m_shoud_maximize = true;
-        return;
-    }
-
-    ShowWindow(m_window, SW_MAXIMIZE);
-}
-
-void Win32Window::fullscreen()
-{
-    if (is_fullscreen()) {
-        return;
-    }
-
-    if (is_maximized()) {
-        SendMessage(m_window, WM_SYSCOMMAND, SC_RESTORE, 0);
-    }
-
-    using namespace std::placeholders;
-
-    // Turn off the on_resize callback
-    m_message_handler->on_size = nullptr;
-
-    // Turn off the on_move callback
-    m_message_handler->on_move = nullptr;
-
-    LONG style    = GetWindowLong(m_window, GWL_STYLE);
-    LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
-    GetWindowRect(m_window, &m_saved_info.rect);
-
-    SetWindowLong(m_window, GWL_STYLE, style & ~(WS_CAPTION | WS_THICKFRAME));
-    SetWindowLong(m_window,
-                  GWL_EXSTYLE,
-                  ex_style & ~(WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
-
-    MONITORINFO monitor_info = {};
-    monitor_info.cbSize      = sizeof(monitor_info);
-    GetMonitorInfo(MonitorFromWindow(m_window, MONITOR_DEFAULTTONEAREST), &monitor_info);
-
-    SetWindowPos(m_window,
-                 HWND_TOP,
-                 monitor_info.rcMonitor.left,
-                 monitor_info.rcMonitor.top,
-                 monitor_info.rcMonitor.right,
-                 monitor_info.rcMonitor.bottom,
-                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-
-    SetForegroundWindow(m_window);
-
-    // Turn on the on_resize callback
-    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
-
-    // Turn on the on_move callback
-    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
-
-    if (is_visible()) {
-        // Explicitly call on_move callback
-        on_move(position());
-
-        // Explicitly call on_resize callback
-        on_resize(size());
-    }
-}
-
-void Win32Window::restore()
-{
-    using namespace std::placeholders;
-
-    // Turn off the on_resize callback
-    m_message_handler->on_size = nullptr;
-
-    // Turn off the on_move callback
-    m_message_handler->on_move = nullptr;
-
-    bool restored = false;
-
-    if (is_iconified()) {
-        ShowWindow(m_window, SW_RESTORE);
-        restored = true;
-    }
-
-    if (is_fullscreen()) {
-        LONG style    = GetWindowLong(m_window, GWL_STYLE);
-        LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
-
-        SetWindowLong(m_window, GWL_STYLE, style | WS_CAPTION | WS_THICKFRAME);
-        SetWindowLong(m_window,
-                      GWL_EXSTYLE,
-                      ex_style | WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
-
-        SetWindowPos(m_window,
-                     HWND_TOP,
-                     m_saved_info.rect.left,
-                     m_saved_info.rect.top,
-                     m_saved_info.rect.right - m_saved_info.rect.left,
-                     m_saved_info.rect.bottom - m_saved_info.rect.top,
-                     SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-        restored = true;
-    }
-
-    if (is_maximized()) {
-        ShowWindow(m_window, SW_RESTORE);
-        restored = true;
-    }
-
-    m_shoud_maximize = false;
-    m_was_fullscreen = false;
-
-    // Turn on the on_resize callback
-    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
-
-    // Turn on the on_move callback
-    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
-
-    if (restored && is_visible()) {
-        // Explicitly call on_move callback
-        on_move(position());
-
-        // Explicitly call on_resize callback
-        on_resize(size());
-    }
-}
-
-void Win32Window::resize(Size size)
-{
-    auto style = GetWindowLong(m_window, GWL_STYLE);
-    size       = adjust_size(size, style);
-    SetWindowPos(m_window,
-                 HWND_TOP,
-                 0,
-                 0,
-                 size.width,
-                 size.height,
-                 SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
-}
-
-void Win32Window::move(Position position)
-{
-    RECT rect = {position.x, position.y, position.x, position.y};
-
-    auto style    = GetWindowLong(m_window, GWL_STYLE);
-    auto ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
-
-    AdjustWindowRectEx(&rect, style, false, ex_style);
-
-    SetWindowPos(m_window,
-                 HWND_TOP,
-                 rect.left,
-                 rect.top,
-                 0,
-                 0,
-                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
 void Win32Window::grab_cursor()
@@ -641,6 +535,62 @@ void Win32Window::process_events()
 
 #pragma region setters
 
+void Win32Window::set_state(Window::State state)
+{
+    const Window::State old_state = get_window_state(m_window);
+
+    if (state == old_state) {
+        return;
+    }
+
+    set_window_state(m_window, state);
+
+    // Old restore code
+    // if (is_iconified()) {
+    //    ShowWindow(m_window, SW_RESTORE);
+    //    restored = true;
+    //}
+
+    // if (is_fullscreen()) {
+    //     LONG style    = GetWindowLong(m_window, GWL_STYLE);
+    //     LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
+
+    //    SetWindowLong(m_window, GWL_STYLE, style | WS_CAPTION | WS_THICKFRAME);
+    //    SetWindowLong(m_window,
+    //                  GWL_EXSTYLE,
+    //                  ex_style | WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
+
+    //    SetWindowPos(m_window,
+    //                 HWND_TOP,
+    //                 m_saved_info.rect.left,
+    //                 m_saved_info.rect.top,
+    //                 m_saved_info.rect.right - m_saved_info.rect.left,
+    //                 m_saved_info.rect.bottom - m_saved_info.rect.top,
+    //                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+    //    restored = true;
+    //}
+
+    // if (is_maximized()) {
+    //     ShowWindow(m_window, SW_RESTORE);
+    //     restored = true;
+    // }
+
+    m_state = get_window_state(m_window);
+}
+
+void Win32Window::set_size(Size size)
+{
+    auto style = GetWindowLong(m_window, GWL_STYLE);
+    size       = adjust_size(size, style);
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 0,
+                 0,
+                 size.width,
+                 size.height,
+                 SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
+}
+
 void Win32Window::set_max_size(Size max_size)
 {
     m_max_size = max_size;
@@ -669,6 +619,24 @@ void Win32Window::set_resizable(bool value)
     SetWindowPos(m_window, HWND_TOP, 0, 0, sz.width, sz.height, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
 }
 
+void Win32Window::set_position(Position position)
+{
+    RECT rect = {position.x, position.y, position.x, position.y};
+
+    auto style    = GetWindowLong(m_window, GWL_STYLE);
+    auto ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
+
+    AdjustWindowRectEx(&rect, style, false, ex_style);
+
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 rect.left,
+                 rect.top,
+                 0,
+                 0,
+                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
+}
+
 void Win32Window::set_title(const std::string& title)
 {
     const auto whide_char_title = utf::to_wstring(title);
@@ -689,12 +657,42 @@ void Win32Window::set_cursor_visibility(bool visible)
 
 #pragma region getters
 
+bool Win32Window::is_visible() const
+{
+    return IsWindowVisible(m_window);
+}
+
+bool Win32Window::should_close() const
+{
+    return m_should_close;
+}
+
+bool Win32Window::has_input_focus() const
+{
+    return GetActiveWindow() == m_window && GetFocus() == m_window;
+}
+
+bool Win32Window::is_cursor_grabbed() const
+{
+    return m_cursor_grabbed;
+}
+
+bool Win32Window::is_cursor_visible() const
+{
+    return GetCursor() != nullptr;
+}
+
 Position Win32Window::position() const
 {
     POINT pos = {0, 0};
     ClientToScreen(m_window, &pos);
 
     return Position{pos.x, pos.y};
+}
+
+Window::State Win32Window::state() const
+{
+    return m_state;
 }
 
 Size Win32Window::size() const
@@ -713,6 +711,11 @@ Size Win32Window::max_size() const
 Size Win32Window::min_size() const
 {
     return m_min_size;
+}
+
+bool Win32Window::is_resizable() const
+{
+    return m_resizable;
 }
 
 std::string Win32Window::title() const
@@ -745,66 +748,6 @@ Context& Win32Window::context()
     }
 
     return *m_context;
-}
-
-#pragma endregion
-
-#pragma region state
-
-bool Win32Window::should_close() const
-{
-    return m_should_close;
-}
-
-bool Win32Window::is_fullscreen() const
-{
-    if (is_iconified()) {
-        return m_was_fullscreen;
-    }
-
-    RECT window_rect;
-    RECT desktop_rect;
-    GetWindowRect(m_window, &window_rect);
-    GetWindowRect(GetDesktopWindow(), &desktop_rect);
-
-    return (window_rect.left == desktop_rect.left && window_rect.top == desktop_rect.top &&
-            window_rect.right == desktop_rect.right && window_rect.bottom == desktop_rect.bottom);
-}
-
-bool Win32Window::is_iconified() const
-{
-    return IsIconic(m_window) != 0;
-}
-
-bool Win32Window::is_maximized() const
-{
-    return IsZoomed(m_window) != 0 || m_shoud_maximize;
-}
-
-bool Win32Window::is_resizable() const
-{
-    return m_resizable;
-}
-
-bool Win32Window::is_visible() const
-{
-    return IsWindowVisible(m_window) && !is_iconified();
-    ;
-}
-
-bool Win32Window::has_input_focus() const
-{
-    return GetActiveWindow() == m_window && GetFocus() == m_window;
-}
-
-bool Win32Window::is_cursor_visible() const
-{
-    return GetCursor() != nullptr;
-}
-
-bool Win32Window::is_cursor_grabbed() const
-{
-    return m_cursor_grabbed;
 }
 
 #pragma endregion
@@ -858,7 +801,7 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
                 case SC_SCREENSAVE:
                 case SC_MONITORPOWER: {
                     // We are running in full screen mode, so disallow screen saver and screen blanking
-                    if (is_fullscreen() && !is_iconified()) {
+                    if (m_state == Window::State::fullscreen) {
                         return 0;
                     } else
                         break;

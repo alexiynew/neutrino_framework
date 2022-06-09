@@ -10,6 +10,7 @@
 #include <graphics/shader.hpp>
 #include <graphics/texture.hpp>
 #include <math/math.hpp>
+#include <system/application.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -297,7 +298,7 @@ private:
         using namespace framework::graphics;
         using namespace framework::system;
 
-        Window::set_application_name("GL shader Test");
+        Application::set_name("GL shader Test");
 
         Window main_window(name(), {256 * 4, 256 * 3});
         Renderer renderer(main_window);

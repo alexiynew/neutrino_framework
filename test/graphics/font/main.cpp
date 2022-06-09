@@ -7,6 +7,7 @@
 #include <graphics/shader.hpp>
 #include <log/log.hpp>
 #include <math/math.hpp>
+#include <system/application.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -73,7 +74,7 @@ public:
 private:
     void render_font()
     {
-        Window::set_application_name(name());
+        Application::set_name(name());
 
         Window window(name(), {width, height});
         Renderer renderer(window);

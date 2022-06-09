@@ -14,6 +14,7 @@
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
 #include <math/math.hpp>
+#include <system/application.hpp>
 #include <system/window.hpp>
 
 namespace
@@ -588,7 +589,7 @@ int main()
 {
     log::set_logger(std::make_unique<log::StreamLogger>(std::cout));
 
-    Window::set_application_name("Image example");
+    Application::set_name("Image example");
 
     Example ex;
     ex.setup();

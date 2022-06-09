@@ -35,6 +35,7 @@
 
 /// @defgroup system_module System
 /// @{
+/// @defgroup system_application_class Application
 /// @defgroup system_window_class Window
 /// @defgroup system_graphic_context Context
 /// @defgroup system_input_module Input

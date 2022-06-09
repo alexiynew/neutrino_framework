@@ -2,17 +2,10 @@
 
 namespace framework::system::details
 {
-std::string PlatformWindow::application_name = "Application";
-
 PlatformWindow::PlatformWindow()
 {}
 
 PlatformWindow::~PlatformWindow() = default;
-
-void PlatformWindow::set_application_name(const std::string& name)
-{
-    application_name = name;
-}
 
 void PlatformWindow::set_window_instance(const Window* window)
 {

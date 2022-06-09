@@ -60,7 +60,7 @@ private:
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Resize window - must be 640
-        window.resize({640, 480});
+        window.set_size({640, 480});
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         TEST_ASSERT(stats.show_called == 1, "On_show callback must be called once.");
@@ -86,21 +86,21 @@ private:
         window.hide();
         TEST_ASSERT(!window.is_visible(), "Window must not be visible.");
 
-        window.resize(size480);
+        window.set_size(size480);
 
         TEST_ASSERT(stats.show_called == 2, "On_show callback must not be called while size changed.");
         TEST_ASSERT(stats.size_called == 3, "On_resize callback must not be called while window is not visible.");
         TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
         TEST_ASSERT(window.size() == size480, "Window has wrong size.");
 
-        window.resize(size640);
+        window.set_size(size640);
 
         TEST_ASSERT(stats.show_called == 2, "On_show callback must not be called while size changed.");
         TEST_ASSERT(stats.size_called == 3, "On_resize callback must not be called while window is not visible.");
         TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");
 
-        window.resize(size480);
+        window.set_size(size480);
 
         TEST_ASSERT(stats.show_called == 2, "On_show callback must not be called while size changed.");
         TEST_ASSERT(stats.size_called == 3, "On_resize callback must not be called while window is not visible.");
@@ -150,12 +150,12 @@ private:
         TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
 
         // Check size limits
-        window.resize(big_size);
+        window.set_size(big_size);
         TEST_ASSERT(window.size() == size960, "Window has wrong size.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        window.resize(small_size);
+        window.set_size(small_size);
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -164,17 +164,17 @@ private:
         window.set_min_size(no_size);
         window.set_max_size(no_size);
 
-        window.resize(small_size);
+        window.set_size(small_size);
         TEST_ASSERT(window.size() == small_size, "Window has wrong size.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        window.resize(big_size);
+        window.set_size(big_size);
         TEST_ASSERT(window.size() == big_size, "Window has wrong size.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // TODO: Size limits should resize the window if it does not fit
+        // TODO: Size limits should set_size the window if it does not fit
         // within the constraints.
         // Set size limits while the window is oversized.
         // window.set_max_size(size960);
@@ -182,7 +182,7 @@ private:
         // std::this_thread::sleep_for(std::chrono::seconds(1));
 
         //// Set size limits while the window is undersized
-        // window.resize(small_size);
+        // window.set_size(small_size);
         // window.set_min_size(size640);
         // TEST_ASSERT(window.size() == size640, "Window has wrong size.");
         // std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -214,7 +214,7 @@ private:
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        window.move({0, 0});
+        window.set_position({0, 0});
 
         // MacOS does not allow to set vertical window position less than window title bar height.
         // So we check the window is located at some reasonable point.
@@ -226,7 +226,7 @@ private:
         TEST_ASSERT(window.size() == size640, "Window should save its size.");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        window.move({100, 100});
+        window.set_position({100, 100});
 
         TEST_ASSERT(window.position() == position_100, "Window must be in (100, 100) position.");
         TEST_ASSERT(stats.last_position == position_100, "Wrong position in callback.");
@@ -234,7 +234,7 @@ private:
         TEST_ASSERT(window.size() == size640, "Window should save its size.");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        window.move({-100, 100});
+        window.set_position({-100, 100});
 
         TEST_ASSERT(window.position() == Position(-100, 100), "Window must be in (-100, 100) position.");
         TEST_ASSERT(stats.last_position == Position(-100, 100), "Wrong position in callback.");

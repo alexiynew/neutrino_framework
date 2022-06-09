@@ -31,10 +31,14 @@ class PlatformWindow;
 class Window final
 {
 public:
-    /// @brief Sets the formal name of the application.
-    ///
-    /// @param name Application name.
-    static void set_application_name(const std::string& name);
+    /// @brief State of a window.
+    enum class State
+    {
+        normal,     ///< Normal window state.
+        iconified,  ///< Window displayed as icon in the taskbar. When the window is iconified it loses input focus.
+        maximized,  ///< Window has maximum available size with borders and title bar.
+        fullscreen, ///< Fullscreen mode.
+    };
 
     /// @brief Creates a window.
     ///
@@ -48,9 +52,9 @@ public:
     ~Window();
 
     Window(const Window&) = delete;
-    Window& operator=(const Window&) = delete;
-
     Window(Window&& other) noexcept;
+
+    Window& operator=(const Window&) = delete;
     Window& operator=(Window&& other) noexcept;
 
 #pragma region actions
@@ -61,8 +65,8 @@ public:
 
     /// @brief Makes the window visible on the screen.
     ///
+    /// Window appears on the screen in it's state @see set_state.
     /// If the window is already visible, this function does nothing.@n
-    /// If the window is iconified, this function restores it to its previous state.@n
     /// If the window has been shown this function calls the
     ///     - @ref on_show
     ///     - @ref on_move
@@ -90,45 +94,6 @@ public:
     ///
     /// @thread_safety This function can be called only from main thread.
     void focus();
-
-    /// @brief Iconify the window (i.e. minimize).
-    ///
-    /// In iconified state window is not visible to the user and the icon is displayed in the taskbar.@n
-    /// When the window is iconified it loses input focus i.e. the @ref on_lost_focus callback would be called.
-    ///
-    /// The window can be restored with @ref restore or @ref show function.
-    ///
-    /// @thread_safety This function can be called only from main thread.
-    void iconify();
-
-    /// @brief Maximize window.
-    ///
-    /// @thread_safety This function can be called only from main thread.
-    void maximize();
-
-    /// @brief Switch to fullscreen mode.
-    ///
-    /// @thread_safety This function can be called only from main thread.
-    void fullscreen();
-
-    /// @brief Restore normal window mode.
-    ///
-    /// @thread_safety This function can be called only from main thread.
-    void restore();
-
-    /// @brief Set the size of the window content.
-    ///
-    /// @param size New window size.
-    ///
-    /// @thread_safety This function can be called only from main thread.
-    void resize(Size size);
-
-    /// @brief Move window.
-    ///
-    /// @param position New winodw position.
-    ///
-    /// @thread_safety This function can be called only from main thread.
-    void move(Position position);
 
     /// @brief Grabs the cursor, providing unlimited cursor movement.
     ///
@@ -161,6 +126,20 @@ public:
     /// @name setters
     /// @{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /// @brief Set new window state.
+    ///
+    /// Window state can be set before @ref show call.
+    ///
+    /// @thread_safety This function can be called only from main thread.
+    void set_state(State state);
+
+    /// @brief Set the size of the window content.
+    ///
+    /// @param size New window size.
+    ///
+    /// @thread_safety This function can be called only from main thread.
+    void set_size(Size size);
 
     /// @brief Sets the maximum size of the window content.
     ///
@@ -199,6 +178,13 @@ public:
     /// @thread_safety This function can be called only from main thread.
     void set_resizable(bool value);
 
+    /// @brief Move window.
+    ///
+    /// @param position New winodw position.
+    ///
+    /// @thread_safety This function can be called only from main thread.
+    void set_position(Position position);
+
     /// @brief Sets window title.
     ///
     /// @param title New window title.
@@ -225,12 +211,52 @@ public:
     /// @{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// @brief Window position.
+    /// @brief Checks if window is visible to the user.
     ///
-    /// @return Current window position.
+    /// The window is visible to the user if the show function was called and
+    /// the window was not iconified.
+    ///
+    /// @return `true` if window is visible.
     ///
     /// @thread_safety This function can be called from any thread.
-    Position position() const;
+    bool is_visible() const;
+
+    /// @brief Checks if window is should be destoyed.
+    ///
+    /// @return `true` if on_close signal was emited.
+    ///
+    /// @thread_safety This function can be called from any thread.
+    bool should_close() const;
+
+    /// @brief Checks if window has input focus.
+    ///
+    /// @return `true` if window is focused.
+    ///
+    /// @thread_safety This function can be called from any thread.
+    bool has_input_focus() const;
+
+    /// @brief Checks if cursor grabbed.
+    ///
+    /// Regardless window visible state or if it has or not input focus.
+    ///
+    /// @return `true` if cursor is grabbed.
+    ///
+    /// @thread_safety This function can be called from any thread.
+    bool is_cursor_grabbed() const;
+
+    /// @brief Checks if cursor visible in the window.
+    ///
+    /// @return `true` if cursor is visible.
+    ///
+    /// @thread_safety This function can be called from any thread.
+    bool is_cursor_visible() const;
+
+    /// @brief Window state.
+    ///
+    /// @return Current window state.
+    ///
+    /// @thread_safety This function can be called from any thread.
+    State state() const;
 
     /// @brief Window size.
     ///
@@ -253,6 +279,20 @@ public:
     /// @thread_safety This function can be called from any thread.
     Size min_size() const;
 
+    /// @brief Checks if window resizing is allowed.
+    ///
+    /// @return `true` if window resizing is allowed.
+    ///
+    /// @thread_safety This function can be called from any thread.
+    bool is_resizable() const;
+
+    /// @brief Window position.
+    ///
+    /// @return Current window position.
+    ///
+    /// @thread_safety This function can be called from any thread.
+    Position position() const;
+
     /// @brief Window title.
     ///
     /// @return Current window title.
@@ -273,85 +313,6 @@ public:
     ///
     /// @thread_safety This function can be called from any thread.
     Context& context();
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @}
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma endregion
-
-#pragma region state
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// @name state
-    /// @{
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /// @brief Checks if window is should be destoyed.
-    ///
-    /// @return `true` if on_close signal was emited.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool should_close() const;
-
-    /// @brief Checks if window is in fullscreen mode.
-    ///
-    /// @return `true` if window is in fullscreen mode.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool is_fullscreen() const;
-
-    /// @brief Checks if window is in iconic state.
-    ///
-    /// @return `true` if window is in iconic state.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool is_iconified() const;
-
-    /// @brief Checks if window is maximized.
-    ///
-    /// @return `true` if window is maximized.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool is_maximized() const;
-
-    /// @brief Checks if window resizing is allowed.
-    ///
-    /// @return `true` if window resizing is allowed.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool is_resizable() const;
-
-    /// @brief Checks if window is visible to the user.
-    ///
-    /// The window is visible to the user if the show function was called and
-    /// the window was not iconified.
-    ///
-    /// @return `true` if window is visible.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool is_visible() const;
-
-    /// @brief Checks if window has input focus.
-    ///
-    /// @return `true` if window is focused.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool has_input_focus() const;
-
-    /// @brief Checks if cursor visible in the window.
-    ///
-    /// @return `true` if cursor is visible.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool is_cursor_visible() const;
-
-    /// @brief Checks if cursor grabbed.
-    ///
-    /// Regardless window visible state or if it has or not input focus.
-    ///
-    /// @return `true` if cursor is grabbed.
-    ///
-    /// @thread_safety This function can be called from any thread.
-    bool is_cursor_grabbed() const;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
