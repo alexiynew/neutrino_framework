@@ -330,7 +330,6 @@ void OsxWindow::show()
     // Turn off on_resize callback to call it in order we want
     m_window->get().window_did_becomekey = nullptr;
 
-    [m_window->get() center];
     [m_window->get() makeKeyAndOrderFront:m_window->get()];
 
     do {

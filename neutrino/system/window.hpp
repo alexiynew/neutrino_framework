@@ -178,7 +178,9 @@ public:
     /// @thread_safety This function can be called only from main thread.
     void set_resizable(bool value);
 
-    /// @brief Move window.
+    /// @brief Move window to new point.
+    ///
+    /// Moves the window so that the upper-left corner of the window content is located at a new point.
     ///
     /// @param position New winodw position.
     ///
