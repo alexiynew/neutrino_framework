@@ -75,6 +75,8 @@
 @property(assign, nonatomic) std::function<void()> window_did_enter_full_screen;
 @property(assign, nonatomic) std::function<void()> window_did_exit_full_screen;
 
+@property(assign, nonatomic) BOOL isFullscreen;
+
 @end
 
 @implementation OsxWindowInternal
@@ -88,6 +90,8 @@
 @synthesize window_did_resignkey;
 @synthesize window_did_enter_full_screen;
 @synthesize window_did_exit_full_screen;
+
+@synthesize isFullscreen;
 
 - (BOOL)acceptsFirstResponder
 {
@@ -162,6 +166,8 @@
     if (self.window_did_enter_full_screen) {
         self.window_did_enter_full_screen();
     }
+    
+    [self setIsFullscreen:true];
 }
 
 - (void)windowDidExitFullScreen:(NSNotification*)notification
@@ -169,10 +175,45 @@
     if (self.window_did_exit_full_screen) {
         self.window_did_exit_full_screen();
     }
+
+    [self setIsFullscreen:false];
 }
 
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
 {}
+
+- (BOOL)hasFullscreenStyle
+{
+    return (([self styleMask] & NSWindowStyleMaskFullScreen) != 0);
+}
+
+- (void)enterFullscreen
+{
+    if ([self isFullscreen]) {
+        return;
+    }
+    
+    const auto callback = [self window_did_resize];
+    [self setWindow_did_resize:nil];
+    
+    [self toggleFullScreen:nil];
+    
+    [self setWindow_did_resize:callback];
+}
+
+-(void) exitFullscreen
+{
+    if (![self isFullscreen]) {
+        return;
+    }
+    
+    const auto callback = [self window_did_resize];
+    [self setWindow_did_resize:nil];
+    
+    [self toggleFullScreen:nil];
+    
+    [self setWindow_did_resize:callback];
+}
 
 @end // OsxWindowInternal
 
@@ -309,9 +350,7 @@ OsxWindow::~OsxWindow()
 {
     AutoreleasePool pool;
 
-    if (m_actually_fullscreen) {
-        exit_fullscreen();
-    }
+    //exit_fullscreen();
 
     [m_window->get() setDelegate:nil];
     [m_window->get() close];
@@ -336,9 +375,12 @@ void OsxWindow::show()
         process_events();
     } while (!is_visible());
 
-    if (m_actually_fullscreen) {
-        m_actually_fullscreen = false; // Unset flag here
-        enter_fullscreen();            // The enter_fullscreen method gonna set it again
+    if (m_state == Window::State::fullscreen) {
+        [m_window->get() enterFullscreen];
+        do {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            process_events();
+        } while(![m_window->get() isFullscreen]);
     }
 
     // Turn on on_resize callback
@@ -370,11 +412,8 @@ void OsxWindow::hide()
         return;
     }
 
-    if (m_actually_fullscreen) {
-        exit_fullscreen();
-
-        // Set flag again for a window to be in fullscreen if it would show again.
-        m_actually_fullscreen = true;
+    if (m_state == Window::State::fullscreen) {
+        [m_window->get() exitFullscreen];
     }
 
     if (has_input_focus()) {
@@ -437,6 +476,11 @@ void OsxWindow::process_events()
 void OsxWindow::set_state(Window::State state)
 {
     if (!is_visible()) {
+        m_state = state;
+        return;
+    }
+    
+    if (m_state == state){
         return;
     }
 
@@ -444,13 +488,6 @@ void OsxWindow::set_state(Window::State state)
 
     switch (state) {
         case Window::State::iconified: 
-            if (m_actually_fullscreen) {
-                exit_fullscreen();
-
-                // Set flag again for a window to be in fullscreen if it would show again.
-                m_actually_fullscreen = true;
-            }
-
             // Explicitly call the on_lost_focus callback
             on_lost_focus();
 
@@ -468,16 +505,12 @@ void OsxWindow::set_state(Window::State state)
         break;
         case Window::State::fullscreen: 
         
-            if (m_actually_fullscreen) {
-                return;
-            }
-
-            if (!is_visible()) {
-                m_actually_fullscreen = true;
-                return;
-            }
-
-            enter_fullscreen();
+            [m_window->get() enterFullscreen];
+            
+            do {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                process_events();
+            } while(![m_window->get() isFullscreen]);
 
             // Explicitly call on_move callback
             on_move(position());
@@ -486,16 +519,34 @@ void OsxWindow::set_state(Window::State state)
             on_resize(size());
         
         break;
-        case Window::State::normal: break;
+        case Window::State::normal:
+
+            [m_window->get() exitFullscreen];
+            
+            do {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                process_events();
+            } while([m_window->get() isFullscreen]);
+            
+            // Explicitly call on_move callback
+            on_move(position());
+
+            // Explicitly call on_resize callback
+            on_resize(size());
+            break;
     }
 
-    // old restore code
-//    if (!is_visible() && !is_iconified()) {
-//        m_actually_fullscreen = false;
-//        return;
-//    }
-//
-//    bool restored = false;
+    if ([m_window->get() isFullscreen]) {
+        m_state = Window::State::fullscreen;
+    } else if ([m_window->get() isMiniaturized]) {
+        m_state = Window::State::iconified;
+    } else if ([m_window->get() isZoomed]) {
+        m_state = Window::State::maximized;
+    } else {
+        m_state = Window::State::normal;
+    }
+
+
 //
 //    if (is_iconified()) {
 //        [m_window->get() deminiaturize:m_window->get()];
@@ -676,17 +727,7 @@ bool OsxWindow::is_cursor_visible() const
 
 Window::State OsxWindow::state() const
 {
-    AutoreleasePool pool;
-
-    if (m_actually_fullscreen) {
-        return Window::State::fullscreen;
-    } else if ([m_window->get() isMiniaturized]) {
-        return Window::State::iconified;
-    } else if ([m_window->get() isZoomed]) {
-        return Window::State::maximized;
-    } else {
-        return Window::State::normal;
-    }
+    return m_state;
 }
 
 Size OsxWindow::size() const
@@ -827,61 +868,15 @@ void OsxWindow::window_did_resignkey()
 
 void OsxWindow::window_did_enter_full_screen()
 {
-    m_actually_fullscreen = true;
     update_context();
 }
 
 void OsxWindow::window_did_exit_full_screen()
 {
-    m_actually_fullscreen = false;
     update_context();
 }
 
 #pragma endregion
-
-void OsxWindow::enter_fullscreen()
-{
-    AutoreleasePool pool;
-
-    if (m_actually_fullscreen) {
-        return;
-    }
-
-    // Turn off the on_resize callback
-    m_window->get().window_did_resize = nullptr;
-
-    [m_window->get() toggleFullScreen:m_window->get()];
-
-    do {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        process_events();
-    } while (!m_actually_fullscreen);
-
-    // Turn on the on_resize callback
-    m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
-}
-
-void OsxWindow::exit_fullscreen()
-{
-    AutoreleasePool pool;
-
-    if (!m_actually_fullscreen) {
-        return;
-    }
-
-    // Turn off the on_resize callback
-    m_window->get().window_did_resize = nullptr;
-
-    [m_window->get() toggleFullScreen:m_window->get()];
-
-    do {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        process_events();
-    } while (m_actually_fullscreen);
-
-    // Turn on the on_resize callback
-    m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
-}
 
 bool OsxWindow::switch_to_other_window()
 {

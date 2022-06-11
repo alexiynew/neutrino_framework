@@ -76,9 +76,6 @@ private:
     void window_did_exit_full_screen();
 #pragma endregion
 
-    void enter_fullscreen();
-    void exit_fullscreen();
-
     bool switch_to_other_window();
 
     void update_context();
@@ -87,8 +84,8 @@ private:
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
 
-    bool m_should_close        = false;
-    bool m_actually_fullscreen = false;
+    bool m_should_close   = false;
+    Window::State m_state = Window::State::normal;
 
     Size m_min_size;
     Size m_max_size;

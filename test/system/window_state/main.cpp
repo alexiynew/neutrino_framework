@@ -1,4 +1,4 @@
-﻿#include <chrono>
+#include <chrono>
 #include <thread>
 
 #include <system/window.hpp>
@@ -16,23 +16,23 @@ public:
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
         add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
 
-        add_test([this]() { maximize_window(); }, "maximize_window");
-        add_test([this]() { maximized_before_show(); }, "maximized_before_show");
+        // add_test([this]() { maximize_window(); }, "maximize_window");
+        // add_test([this]() { maximized_before_show(); }, "maximized_before_show");
 
-        add_test([this]() { iconify_window(); }, "iconify_window");
-        add_test([this]() { iconify_before_show(); }, "iconify_window");
+        // add_test([this]() { iconify_window(); }, "iconify_window");
+        // add_test([this]() { iconify_before_show(); }, "iconify_window");
 
-        add_test([this]() { iconify_fullscreen(); }, "iconify_fullscreen");
-        add_test([this]() { iconify_maximized(); }, "iconify_maximized");
+        // add_test([this]() { iconify_fullscreen(); }, "iconify_fullscreen");
+        // add_test([this]() { iconify_maximized(); }, "iconify_maximized");
 
-        add_test([this]() { fullscreen_iconified(); }, "fullscreen_iconified");
-        add_test([this]() { fullscreen_maximized(); }, "fullscreen_maximized");
+        // add_test([this]() { fullscreen_iconified(); }, "fullscreen_iconified");
+        // add_test([this]() { fullscreen_maximized(); }, "fullscreen_maximized");
 
-        add_test([this]() { maximize_iconified(); }, "maximize_iconified");
-        add_test([this]() { maximize_fullscreen(); }, "maximize_fullscreen");
+        // add_test([this]() { maximize_iconified(); }, "maximize_iconified");
+        // add_test([this]() { maximize_fullscreen(); }, "maximize_fullscreen");
 
-        add_test([this]() { switch_state(); }, "switch_state");
-        add_test([this]() { switch_state_on_hidden(); }, "switch_state_on_hidden");
+        // add_test([this]() { switch_state(); }, "switch_state");
+        // add_test([this]() { switch_state_on_hidden(); }, "switch_state_on_hidden");
 
         // TODO: implement this
         // Call iconify several times
