@@ -189,7 +189,7 @@
 
 - (void)enterFullscreen
 {
-    if ([self isFullscreen]) {
+    if ([self hasFullscreenStyle]) {
         return;
     }
     
@@ -203,7 +203,7 @@
 
 -(void) exitFullscreen
 {
-    if (![self isFullscreen]) {
+    if (![self hasFullscreenStyle]) {
         return;
     }
     
@@ -375,13 +375,7 @@ void OsxWindow::show()
         process_events();
     } while (!is_visible());
 
-    if (m_state == Window::State::fullscreen) {
-        [m_window->get() enterFullscreen];
-        do {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            process_events();
-        } while(![m_window->get() isFullscreen]);
-    }
+    switch_state(m_state);
 
     // Turn on on_resize callback
     m_window->get().window_did_becomekey = std::bind(&OsxWindow::window_did_becomekey, this);
@@ -480,97 +474,34 @@ void OsxWindow::set_state(Window::State state)
         return;
     }
     
-    if (m_state == state){
-        return;
-    }
-
-    AutoreleasePool pool;
-
+    const Window::State old_state = m_state;
+        
+    switch_state(state);
+    
+    // Explicitly call callback
     switch (state) {
         case Window::State::iconified: 
-            // Explicitly call the on_lost_focus callback
             on_lost_focus();
-
-            [m_window->get() miniaturize:m_window->get()];
         break;
         case Window::State::maximized: 
-        
-            [m_window->get() zoom:m_window->get()];
-
-            if (is_visible()) {
-                // Explicitly call the on_move callback
-                on_move(position());
-            }
-        
+            on_move(position());
         break;
         case Window::State::fullscreen: 
-        
-            [m_window->get() enterFullscreen];
-            
-            do {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                process_events();
-            } while(![m_window->get() isFullscreen]);
-
-            // Explicitly call on_move callback
             on_move(position());
-
-            // Explicitly call on_resize callback
             on_resize(size());
-        
         break;
         case Window::State::normal:
-
-            [m_window->get() exitFullscreen];
+            switch (old_state) {
+                case Window::State::fullscreen: break;
+                case Window::State::maximized: break;
+                case Window::State::iconified: break;
+                case Window::State::normal: break;
+            }
             
-            do {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                process_events();
-            } while([m_window->get() isFullscreen]);
-            
-            // Explicitly call on_move callback
             on_move(position());
-
-            // Explicitly call on_resize callback
             on_resize(size());
             break;
     }
-
-    if ([m_window->get() isFullscreen]) {
-        m_state = Window::State::fullscreen;
-    } else if ([m_window->get() isMiniaturized]) {
-        m_state = Window::State::iconified;
-    } else if ([m_window->get() isZoomed]) {
-        m_state = Window::State::maximized;
-    } else {
-        m_state = Window::State::normal;
-    }
-
-
-//
-//    if (is_iconified()) {
-//        [m_window->get() deminiaturize:m_window->get()];
-//        m_actually_fullscreen = false;
-//        restored              = true;
-//    }
-//
-//    if (is_maximized()) {
-//        [m_window->get() zoom:m_window->get()];
-//        restored = true;
-//    }
-//
-//    if (is_fullscreen()) {
-//        exit_fullscreen();
-//        restored = true;
-//    }
-//
-//    if (restored) {
-//        // Explicitly call on_move callback
-//        on_move(position());
-//
-//        // Explicitly call on_resize callback
-//        on_resize(size());
-//    }
 }
 
 void OsxWindow::set_size(Size new_size)
@@ -896,6 +827,69 @@ bool OsxWindow::switch_to_other_window()
 void OsxWindow::update_context()
 {
     m_context->update();
+}
+
+void OsxWindow::switch_state(Window::State state)
+{
+    const Window::State old_state = get_actual_state();
+    
+    if (state == old_state) {
+        return;
+    }
+    
+    AutoreleasePool pool;
+    
+    switch (state) {
+        case Window::State::iconified:
+            [m_window->get() miniaturize:m_window->get()];
+        break;
+        case Window::State::maximized:
+            [m_window->get() zoom:m_window->get()];
+        break;
+        case Window::State::fullscreen:
+        
+            [m_window->get() enterFullscreen];
+            
+            do {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                process_events();
+            } while(![m_window->get() isFullscreen]);
+        break;
+        case Window::State::normal:
+            switch (old_state) {
+                case Window::State::fullscreen:
+                        [m_window->get() exitFullscreen];
+                        
+                        do {
+                            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                            process_events();
+                        } while([m_window->get() isFullscreen]);
+                    break;
+                case Window::State::maximized:
+                        [m_window->get() zoom:m_window->get()];
+                    break;
+                case Window::State::iconified:
+                        [m_window->get() deminiaturize:m_window->get()];
+                    break;
+                case Window::State::normal: break;
+            }
+            break;
+    }
+    
+    m_state = get_actual_state();
+}
+
+Window::State OsxWindow::get_actual_state() const
+{
+    if ([m_window->get() isFullscreen]) {
+        return Window::State::fullscreen;
+    } else if ([m_window->get() isMiniaturized]) {
+        return Window::State::iconified;
+    } else if ([m_window->get() isZoomed]) {
+        return Window::State::maximized;
+    } else {
+        return Window::State::normal;
+    }
 }
 
 } // namespace framework::system::details

@@ -77,8 +77,11 @@ private:
 #pragma endregion
 
     bool switch_to_other_window();
-
+    
     void update_context();
+    
+    void switch_state(Window::State state);
+    Window::State get_actual_state() const;
 
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
