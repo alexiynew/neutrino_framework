@@ -360,11 +360,11 @@ OsxWindow::~OsxWindow()
 
 void OsxWindow::show()
 {
-    AutoreleasePool pool;
-
     if (is_visible()) {
         return;
     }
+    
+    AutoreleasePool pool;
 
     // Turn off on_resize callback to call it in order we want
     m_window->get().window_did_becomekey = nullptr;
@@ -375,7 +375,11 @@ void OsxWindow::show()
         process_events();
     } while (!is_visible());
 
-    switch_state(m_state);
+    if (m_state == Window::State::iconified) {
+        m_state = Window::State::normal;
+    } else {
+        switch_state(m_state);
+    }
 
     // Turn on on_resize callback
     m_window->get().window_did_becomekey = std::bind(&OsxWindow::window_did_becomekey, this);
@@ -400,11 +404,11 @@ void OsxWindow::show()
 
 void OsxWindow::hide()
 {
-    AutoreleasePool pool;
-
-    if (!is_visible()) {
+    if (!is_visible() && ![m_window->get() isMiniaturized]) {
         return;
     }
+    
+    AutoreleasePool pool;
 
     if (m_state == Window::State::fullscreen) {
         [m_window->get() exitFullscreen];
@@ -419,11 +423,7 @@ void OsxWindow::hide()
     }
 
     [m_window->get() orderOut:m_window->get()];
-
-    do {
-        process_events();
-    } while (is_visible());
-
+    process_events();
     [m_window->get() close];
 
     // Explicitly call on_hide callback
@@ -481,7 +481,6 @@ void OsxWindow::set_state(Window::State state)
     // Explicitly call callback
     switch (state) {
         case Window::State::iconified: 
-            on_lost_focus();
         break;
         case Window::State::maximized: 
             on_move(position());
@@ -631,7 +630,8 @@ bool OsxWindow::is_visible() const
 {
     AutoreleasePool pool;
 
-    return [m_window->get() isVisible];
+    // Miniaturized window is still visible
+    return [m_window->get() isVisible] || [m_window->get() isMiniaturized];
 }
 
 bool OsxWindow::should_close() const

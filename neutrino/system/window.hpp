@@ -67,6 +67,7 @@ public:
     ///
     /// Window appears on the screen in it's state @see set_state.
     /// If the window is already visible, this function does nothing.@n
+    /// If the window has iconified state before show, it resets to normal state.@n
     /// If the window has been shown this function calls the
     ///     - @ref on_show
     ///     - @ref on_move
@@ -215,8 +216,7 @@ public:
 
     /// @brief Checks if window is visible to the user.
     ///
-    /// The window is visible to the user if the show function was called and
-    /// the window was not iconified.
+    /// The window is visible to the user if the show function was called. Window in iconified state is still visible.
     ///
     /// @return `true` if window is visible.
     ///
