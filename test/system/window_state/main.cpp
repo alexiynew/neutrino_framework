@@ -21,23 +21,12 @@ public:
 
         add_test([this]() { iconify_window(); }, "iconify_window");
 
-        // add_test([this]() { iconify_fullscreen(); }, "iconify_fullscreen");
-        // add_test([this]() { iconify_maximized(); }, "iconify_maximized");
-
-        // add_test([this]() { fullscreen_iconified(); }, "fullscreen_iconified");
-        // add_test([this]() { fullscreen_maximized(); }, "fullscreen_maximized");
-
-        // add_test([this]() { maximize_iconified(); }, "maximize_iconified");
-        // add_test([this]() { maximize_fullscreen(); }, "maximize_fullscreen");
-
-        // add_test([this]() { switch_state(); }, "switch_state");
-        // add_test([this]() { switch_state_on_hidden(); }, "switch_state_on_hidden");
+        add_test([this]() { fullscreen_iconify_fullscreen_normal(); }, "fullscreen_iconify_fullscreen_normal");
+        add_test([this]() { maximized_iconify_maximized_normal(); }, "maximized_iconify_maximized_normal");
+        add_test([this]() { maximized_fullscreen_maximized(); }, "maximized_fullscreen_maximized");
+        add_test([this]() { normal_fullscreen_maximized_iconify(); }, "normal_fullscreen_maximized_iconify");
 
         // TODO: implement this
-        // Call iconify several times
-        // Call maximize several times
-        // Call fulscreen several times
-        // Restore before show. Should drop all other statuses
         // add_test([this]() { window_resizability(); }, "window_resizability");
         // add_test([this]() { window_resizability_and_size(); }, "window_resizability_and_size");
         // add_test([this]() { window_resizability_before_show(); }, "window_resizability_before_show");
@@ -75,7 +64,7 @@ private:
         m_stats.reset();
 
         {
-            Window w(name(), size640);
+            Window w("fullscreen_window", size640);
             subscribe_for_events(w);
 
             TEST_ASSERT(m_stats.on_show_called == 0, "Invalid callback call.");
@@ -107,6 +96,9 @@ private:
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
             // Switch to fullscreen
+            w.set_state(Window::State::fullscreen);
+            w.set_state(Window::State::fullscreen);
+            w.set_state(Window::State::fullscreen);
             w.set_state(Window::State::fullscreen);
 
             TEST_ASSERT(w.state() == Window::State::fullscreen, "Invalid window state.");
@@ -195,7 +187,7 @@ private:
         m_stats.reset();
 
         {
-            Window w(name(), size640);
+            Window w("fullscreen_before_show", size640);
             subscribe_for_events(w);
 
             w.set_state(Window::State::fullscreen);
@@ -244,7 +236,7 @@ private:
         m_stats.reset();
 
         {
-            Window w(name(), size640);
+            Window w("maximize_window", size640);
             subscribe_for_events(w);
 
             w.set_position(position100);
@@ -269,6 +261,9 @@ private:
 
             // On macOS maximization of the window cause several on_resize callbacks.
             m_stats.on_resize_called = 0;
+            w.set_state(Window::State::maximized);
+            w.set_state(Window::State::maximized);
+            w.set_state(Window::State::maximized);
             w.set_state(Window::State::maximized);
 
             TEST_ASSERT(w.state() == Window::State::maximized, "Invalid window state.");
@@ -362,7 +357,7 @@ private:
 
         m_stats.reset();
 
-        Window w(name(), size640);
+        Window w("maximized_before_show", size640);
         subscribe_for_events(w);
 
         w.set_state(Window::State::maximized);
@@ -388,7 +383,7 @@ private:
 
         TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
         TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        
+
         // On macOS maximization of the window cause several on_resize callbacks.
         TEST_ASSERT(m_stats.on_resize_called > 0, "Invalid callback call.");
         TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
@@ -407,7 +402,7 @@ private:
         m_stats.reset();
 
         {
-            Window w(name(), size640);
+            Window w("iconify_window", size640);
             subscribe_for_events(w);
 
             w.set_position(position100);
@@ -431,6 +426,9 @@ private:
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
             w.set_state(Window::State::iconified);
+            w.set_state(Window::State::iconified);
+            w.set_state(Window::State::iconified);
+            w.set_state(Window::State::iconified);
 
             TEST_ASSERT(w.state() == Window::State::iconified, "Invalid window state.");
             TEST_ASSERT(w.is_visible(), "Invalid window state.");
@@ -442,7 +440,7 @@ private:
             TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
-            
+
             TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
             TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
 
@@ -450,7 +448,7 @@ private:
 
             // Show does nothing
             w.show();
-            
+
             TEST_ASSERT(w.state() == Window::State::iconified, "Invalid window state.");
             TEST_ASSERT(w.is_visible(), "Invalid window state.");
             TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
@@ -461,10 +459,10 @@ private:
             TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
-            
+
             TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
             TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
-            
+
             w.set_state(Window::State::normal);
 
             TEST_ASSERT(w.state() == Window::State::normal, "Invalid window state.");
@@ -477,7 +475,7 @@ private:
             TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
-            
+
             TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
             TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
 
@@ -485,7 +483,7 @@ private:
 
             w.set_state(Window::State::iconified);
             w.hide();
-            
+
             TEST_ASSERT(w.state() == Window::State::iconified, "Invalid window state.");
             TEST_ASSERT(!w.is_visible(), "Invalid window state.");
             TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
@@ -496,14 +494,14 @@ private:
             TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
-            
+
             TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
             TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
-            
+
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            
+
             w.show();
-            
+
             TEST_ASSERT(w.state() == Window::State::normal, "Invalid window state.");
             TEST_ASSERT(w.is_visible(), "Invalid window state.");
             TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
@@ -514,248 +512,343 @@ private:
             TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_focus_called == 3, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
-            
+
             TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
             TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
-            
+
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
 
-    void iconify_fullscreen()
+    void fullscreen_iconify_fullscreen_normal()
     {
         const Size size640{640, 480};
+        const Position position100{100, 100};
 
         m_stats.reset();
 
-        Window w(name(), size640);
+        Window w("fullscreen_iconify_fullscreen_normal", size640);
         subscribe_for_events(w);
 
-        // w.fullscreen();
+        w.set_position(position100);
+        w.set_state(Window::State::fullscreen);
         w.show();
 
         const Size fullscreen_size = w.size();
 
-        TEST_FAIL("Not implemented");
+        TEST_ASSERT(w.state() == Window::State::fullscreen, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
 
-        // TEST_ASSERT(w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
 
-        // TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.last_size == fullscreen_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == Position(0, 0), "Invalid position in callback.");
 
-        // TEST_ASSERT(m_stats.last_size != size640, "Invalid last size in callback.");
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // w.iconify();
+        w.set_state(Window::State::iconified);
 
-        // TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
+        TEST_ASSERT(w.state() == Window::State::iconified, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
 
-        // TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
+        TEST_ASSERT(m_stats.last_size == fullscreen_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == Position(0, 0), "Invalid position in callback.");
 
-        // w.show();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // TEST_ASSERT(w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+        w.set_state(Window::State::fullscreen);
 
-        // TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(w.state() == Window::State::fullscreen, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
 
-        // TEST_ASSERT(w.size() == fullscreen_size, "Wrong window size after iconify.");
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
+        TEST_ASSERT(m_stats.last_size == fullscreen_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == Position(0, 0), "Invalid position in callback.");
 
-        // w.iconify();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
+        w.set_state(Window::State::normal);
 
-        // TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
+        TEST_ASSERT(w.state() == Window::State::normal, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
 
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 3, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
-        // w.restore();
+        TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
 
-        // TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
-
-        // TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 3, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 3, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
-
-        // TEST_ASSERT(w.size() == size640, "Invalid window size.");
-        // TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    void iconify_maximized()
+    void maximized_iconify_maximized_normal()
     {
         const Size size640{640, 480};
+        const Position position100{100, 100};
 
         m_stats.reset();
 
-        Window w(name(), size640);
+        Window w("maximized_iconify_maximized_normal", size640);
         subscribe_for_events(w);
 
-        // w.maximize();
+        w.set_position(position100);
+        w.set_state(Window::State::maximized);
         w.show();
 
-        TEST_FAIL("Not implemented");
+        const Size maximized_size         = w.size();
+        const Position maximized_position = w.position();
 
-        // const Size maximized_size = w.size();
+        TEST_ASSERT(w.state() == Window::State::maximized, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
 
-        // TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called > 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
 
-        // TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.last_size == maximized_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == maximized_position, "Invalid position in callback.");
 
-        // TEST_ASSERT(m_stats.last_size != size640, "Invalid last size in callback.");
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // w.iconify();
+        m_stats.on_resize_called = 0;
+        w.set_state(Window::State::iconified);
 
-        // TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
+        TEST_ASSERT(w.state() == Window::State::iconified, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
 
-        // TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
+        TEST_ASSERT(m_stats.last_size == maximized_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == maximized_position, "Invalid position in callback.");
 
-        // w.show();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+        w.set_state(Window::State::maximized);
 
-        // TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(w.state() == Window::State::maximized, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
 
-        // TEST_ASSERT(w.size() == maximized_size, "Wrong window size after iconify.");
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
+        TEST_ASSERT(m_stats.last_size == maximized_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == maximized_position, "Invalid position in callback.");
 
-        // w.iconify();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        // TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
+        w.set_state(Window::State::normal);
 
-        // TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
+        TEST_ASSERT(w.state() == Window::State::normal, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
 
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called > 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
-        // w.restore();
+        TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
 
-        // TEST_ASSERT(!w.is_fullscreen(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_iconified(), "Invalid window state.");
-        // TEST_ASSERT(!w.is_maximized(), "Invalid window state.");
-        // TEST_ASSERT(w.is_visible(), "Invalid window state.");
-        // TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
-
-        // TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_resize_called == 3, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_focus_called == 3, "Invalid callback call.");
-        // TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
-
-        // TEST_ASSERT(w.size() == size640, "Invalid window size.");
-        // TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    void fullscreen_iconified()
+    void maximized_fullscreen_maximized()
     {
-        TEST_FAIL("Not implemented");
+        const Size size640{640, 480};
+        const Position position100{100, 100};
+
+        m_stats.reset();
+
+        Window w("maximized_fullscreen_maximized", size640);
+        subscribe_for_events(w);
+
+        w.set_position(position100);
+        w.set_state(Window::State::maximized);
+        w.show();
+
+        const Size maximized_size         = w.size();
+        const Position maximized_position = w.position();
+
+        TEST_ASSERT(w.state() == Window::State::maximized, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called > 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+
+        TEST_ASSERT(m_stats.last_size == maximized_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == maximized_position, "Invalid position in callback.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        m_stats.on_resize_called = 0;
+        w.set_state(Window::State::fullscreen);
+
+        TEST_ASSERT(w.state() == Window::State::fullscreen, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+
+        TEST_ASSERT(m_stats.last_size != maximized_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == Position(0, 0), "Invalid position in callback.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        m_stats.on_resize_called = 0;
+        w.set_state(Window::State::maximized);
+
+        TEST_ASSERT(w.state() == Window::State::maximized, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+
+        TEST_ASSERT(m_stats.last_size == maximized_size, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == maximized_position, "Invalid position in callback.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    void fullscreen_maximized()
+    void normal_fullscreen_maximized_iconify()
     {
-        TEST_FAIL("Not implemented");
-    }
+        const Size size640{640, 480};
+        const Position position100{100, 100};
 
-    void maximize_iconified()
-    {
-        TEST_FAIL("Not implemented");
-    }
+        m_stats.reset();
 
-    void maximize_fullscreen()
-    {
-        TEST_FAIL("Not implemented");
-    }
+        Window w("normal_fullscreen_maximized_iconify", size640);
+        subscribe_for_events(w);
 
-    void switch_state()
-    {
-        TEST_FAIL("Not implemented");
-    }
+        w.set_position(position100);
+        w.set_state(Window::State::normal);
+        w.show();
 
-    void switch_state_on_hidden()
-    {
-        TEST_FAIL("Not implemented");
+        TEST_ASSERT(w.state() == Window::State::normal, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+
+        TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        w.set_state(Window::State::fullscreen);
+
+        TEST_ASSERT(w.state() == Window::State::fullscreen, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+
+        TEST_ASSERT(m_stats.last_size != size640, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position == Position(0, 0), "Invalid position in callback.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        w.set_state(Window::State::maximized);
+
+        TEST_ASSERT(w.state() == Window::State::maximized, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
+
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called > 2, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+
+        TEST_ASSERT(m_stats.last_size != size640, "Invalid last size in callback.");
+        TEST_ASSERT(m_stats.last_position != position100, "Invalid position in callback.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        m_stats.on_resize_called = 0;
+        w.set_state(Window::State::iconified);
+
+        TEST_ASSERT(w.state() == Window::State::iconified, "Invalid window state.");
+        TEST_ASSERT(w.is_visible(), "Invalid window state.");
+        TEST_ASSERT(!w.has_input_focus(), "Invalid window state.");
+
+        TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_resize_called == 0, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     void window_resizability()
