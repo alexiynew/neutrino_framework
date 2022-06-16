@@ -1,4 +1,4 @@
-#include <functional>
+﻿#include <functional>
 #include <stdexcept>
 
 #include <common/utf.hpp>
@@ -604,12 +604,13 @@ void Win32Window::set_resizable(bool value)
 
     SetWindowLong(m_window, GWL_STYLE, style);
 
+    const Size window_size = adjust_size(m_client_size);
     SetWindowPos(m_window,
                  HWND_TOP,
                  0,
                  0,
-                 m_client_size.width,
-                 m_client_size.height,
+                 window_size.width,
+                 window_size.height,
                  SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
 }
 

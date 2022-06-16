@@ -1,11 +1,12 @@
 set(TESTS
     context
-    window_cursor
-    window_events
-    window_focus
     window_open
+    window_focus
     window_properties
     window_state
+    window_resize
+    window_cursor
+    window_events
 )
 
 foreach(TEST ${TESTS})

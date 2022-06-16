@@ -25,11 +25,6 @@ public:
         add_test([this]() { maximized_iconify_maximized_normal(); }, "maximized_iconify_maximized_normal");
         add_test([this]() { maximized_fullscreen_maximized_normal(); }, "maximized_fullscreen_maximized_normal");
         add_test([this]() { normal_fullscreen_maximized_iconify(); }, "normal_fullscreen_maximized_iconify");
-
-        // TODO: implement this
-        // add_test([this]() { window_resizability(); }, "window_resizability");
-        // add_test([this]() { window_resizability_and_size(); }, "window_resizability_and_size");
-        // add_test([this]() { window_resizability_before_show(); }, "window_resizability_before_show");
     }
 
 private:
@@ -888,89 +883,6 @@ private:
         TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-
-    void window_resizability()
-    {
-        const Size size640{640, 480};
-        const Size no_size{0, 0};
-
-        Window window(name(), size640);
-
-        window.show();
-
-        TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
-
-        window.set_resizable(false);
-
-        // No other values were changed
-        TEST_ASSERT(!window.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
-        TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
-        TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
-    }
-
-    void window_resizability_and_size()
-    {
-        const Size size480{480, 320};
-        const Size size640{640, 480};
-        const Size size960{960, 640};
-
-        Window window(name(), size640);
-
-        window.show();
-
-        window.set_resizable(false);
-
-        window.set_size(size480);
-        window.set_min_size(size480);
-        window.set_max_size(size960);
-
-        // Can change size limits, and window size
-        TEST_ASSERT(!window.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
-        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
-        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
-
-        window.set_resizable(true);
-
-        // Size limits and window size still are the same
-        TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(window.size() == size480, "Window has wrong size.");
-        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
-        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
-
-        window.set_size({1000, 1000});
-
-        TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(window.size() == size960, "Window has wrong size.");
-        TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
-        TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
-    }
-
-    void window_resizability_before_show()
-    {
-        const Size no_size{0, 0};
-        const Size size640{640, 480};
-
-        Window window(name(), size640);
-
-        window.set_resizable(false);
-
-        window.show();
-
-        TEST_ASSERT(!window.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
-        TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
-        TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
-
-        window.set_resizable(true);
-
-        // No other values were changed
-        TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
-        TEST_ASSERT(window.size() == size640, "Window has wrong size.");
-        TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
-        TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
     }
 
     void subscribe_for_events(Window& window)
