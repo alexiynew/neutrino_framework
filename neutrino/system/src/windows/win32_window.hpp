@@ -1,4 +1,4 @@
-﻿#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_WINDOW_HPP
 
 #include <memory>
@@ -22,7 +22,7 @@ public:
     Win32Window(const std::string& title, Size size, const ContextSettings& settings);
     ~Win32Window() override;
 
-    Win32Window(const Win32Window&) = delete;
+    Win32Window(const Win32Window&)            = delete;
     Win32Window& operator=(const Win32Window&) = delete;
 
 #pragma region actions
@@ -65,11 +65,6 @@ public:
     LRESULT process_message(UINT message, WPARAM w_param, LPARAM l_param);
 
 private:
-    struct WindowInfo
-    {
-        RECT rect;
-    };
-
     struct ModifiersFlags
     {
         bool left_shift;
@@ -114,26 +109,30 @@ private:
     void enter_fullscreen();
     void exit_fullscreen();
 
+    Size adjust_size(Size size) const;
+    Position adjust_position(Position position) const;
+
     HWND m_window = nullptr;
     HDC m_hdc     = nullptr;
     HGLRC m_hglrc = nullptr;
 
-    Size m_min_size = {0, 0};
-    Size m_max_size = {0, 0};
+    Size m_client_size = {0, 0};
+    Size m_min_size    = {0, 0};
+    Size m_max_size    = {0, 0};
+
+    Position m_client_position = {0, 0};
 
     Window::State m_state = Window::State::normal;
 
-    bool m_resizable      = true;
+    bool m_resizable    = true;
+    bool m_should_close = false;
+
     bool m_mouse_hover    = false;
-    bool m_should_close   = false;
     bool m_cursor_visible = true;
     bool m_cursor_grabbed = false;
-    bool m_was_fullscreen = false;
 
     CursorPosition m_grabbed_cursor_diff = {0, 0};
     CursorPosition m_cursor_position     = {0, 0};
-
-    WindowInfo m_saved_info = {{0, 0, 0, 0}};
 
     std::unique_ptr<Context> m_context                = nullptr;
     std::unique_ptr<MessageHandler> m_message_handler = nullptr;

@@ -1,4 +1,4 @@
-﻿#include <functional>
+#include <functional>
 #include <stdexcept>
 
 #include <common/utf.hpp>
@@ -39,18 +39,6 @@ framework::system::MouseButton get_mouse_button(UINT message, WPARAM w_param)
     }
 
     return MouseButton::unknown;
-}
-
-framework::Size adjust_size(framework::Size size, long style)
-{
-    RECT rect{0, 0, size.width, size.height};
-    AdjustWindowRectEx(&rect, window_style, false, window_ex_style);
-
-    if ((style & WS_SIZEBOX) == 0) {
-        // TODO (alex): fix size without size box.
-    }
-
-    return {rect.right - rect.left, rect.bottom - rect.top};
 }
 
 void set_cursor_in_center(HWND window)
@@ -325,7 +313,9 @@ Win32Window::Win32Window(const std::string& title, Size size, const ContextSetti
 {
     using namespace std::placeholders;
 
-    size = adjust_size(size, window_style);
+    m_client_size = size;
+
+    const Size window_size = adjust_size(m_client_size);
 
     m_window = CreateWindowEx(window_ex_style,
                               Win32Application::get_window_class(),
@@ -333,8 +323,8 @@ Win32Window::Win32Window(const std::string& title, Size size, const ContextSetti
                               window_style,
                               CW_USEDEFAULT,
                               CW_USEDEFAULT,
-                              size.width,
-                              size.height,
+                              window_size.width,
+                              window_size.height,
                               nullptr,
                               nullptr,
                               Win32Application::handle(),
@@ -397,11 +387,8 @@ void Win32Window::show()
 
     switch (m_state) {
         case Window::State::fullscreen: {
-            // Hack: save window rect to return window size after fullscreem mode.
-            RECT rect = m_saved_info.rect;
             ShowWindow(m_window, SW_SHOW);
             enter_fullscreen();
-            m_saved_info.rect = rect;
         } break;
         case Window::State::iconified:
             // Drop iconified state
@@ -410,7 +397,10 @@ void Win32Window::show()
             m_state = Window::State::normal;
             break;
         case Window::State::maximized: ShowWindow(m_window, SW_MAXIMIZE); break;
-        case Window::State::normal: ShowWindow(m_window, SW_SHOW); break;
+        case Window::State::normal:
+            ShowWindow(m_window, SW_SHOW);
+            m_client_position = position();
+            break;
     }
     UpdateWindow(m_window);
 
@@ -542,48 +532,51 @@ void Win32Window::set_state(Window::State state)
         return;
     }
 
+    // Turn off the on_resize callback
+    m_message_handler->on_size = nullptr;
+
+    // Turn off the on_move callback
+    m_message_handler->on_move = nullptr;
+
     switch (old_state) {
         case Window::State::fullscreen: exit_fullscreen(); break;
-        case Window::State::iconified:
+        case Window::State::iconified: ShowWindow(m_window, SW_RESTORE); break;
         case Window::State::maximized: ShowWindow(m_window, SW_RESTORE); break;
         case Window::State::normal: break;
     }
 
     switch (state) {
         case Window::State::fullscreen: enter_fullscreen(); break;
-        case Window::State::iconified:
-
-            // Turn off the on_resize callback
-            m_message_handler->on_size = nullptr;
-
-            // Turn off the on_move callback
-            m_message_handler->on_move = nullptr;
-
-            ShowWindow(m_window, SW_MINIMIZE);
-
-            // Turn on the on_resize callback
-            m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
-
-            // Turn on the on_move callback
-            m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
-            break;
+        case Window::State::iconified: ShowWindow(m_window, SW_MINIMIZE); break;
         case Window::State::maximized: ShowWindow(m_window, SW_MAXIMIZE); break;
         case Window::State::normal: break;
     }
 
+    // Turn on the on_resize callback
+    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
+
+    // Turn on the on_move callback
+    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
+
     m_state = get_window_state(m_window);
+
+    if (state != Window::State::iconified) {
+        on_move(position());
+        on_resize(size());
+    }
 }
 
 void Win32Window::set_size(Size size)
 {
-    auto style = GetWindowLong(m_window, GWL_STYLE);
-    size       = adjust_size(size, style);
+    m_client_size = size;
+
+    const Size window_size = adjust_size(m_client_size);
     SetWindowPos(m_window,
                  HWND_TOP,
                  0,
                  0,
-                 size.width,
-                 size.height,
+                 window_size.width,
+                 window_size.height,
                  SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
@@ -611,23 +604,24 @@ void Win32Window::set_resizable(bool value)
 
     SetWindowLong(m_window, GWL_STYLE, style);
 
-    Size sz = adjust_size(size(), style);
-    SetWindowPos(m_window, HWND_TOP, 0, 0, sz.width, sz.height, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 0,
+                 0,
+                 m_client_size.width,
+                 m_client_size.height,
+                 SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
 }
 
 void Win32Window::set_position(Position position)
 {
-    RECT rect = {position.x, position.y, position.x, position.y};
+    m_client_position = position;
 
-    auto style    = GetWindowLong(m_window, GWL_STYLE);
-    auto ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
-
-    AdjustWindowRectEx(&rect, style, false, ex_style);
-
+    const Position window_position = adjust_position(m_client_position);
     SetWindowPos(m_window,
                  HWND_TOP,
-                 rect.left,
-                 rect.top,
+                 window_position.x,
+                 window_position.y,
                  0,
                  0,
                  SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
@@ -843,7 +837,8 @@ LRESULT Win32Window::on_move_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
         update_cursor();
-        on_move(position());
+        m_client_position = position();
+        on_move(m_client_position);
     }
 
     return 0;
@@ -853,7 +848,8 @@ LRESULT Win32Window::on_size_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
         update_cursor();
-        on_resize(size());
+        m_client_size = size();
+        on_resize(m_client_size);
     }
 
     return 0;
@@ -861,21 +857,18 @@ LRESULT Win32Window::on_size_message(UINT, WPARAM, LPARAM)
 
 LRESULT Win32Window::on_get_min_max_info_message(UINT, WPARAM, LPARAM l_param)
 {
-    auto minmaxinfo  = reinterpret_cast<MINMAXINFO*>(l_param);
-    const auto style = GetWindowLong(m_window, GWL_STYLE);
+    auto minmaxinfo = reinterpret_cast<MINMAXINFO*>(l_param);
 
     if (m_min_size.width != 0 && m_min_size.height != 0) {
-        const Size size = adjust_size(m_min_size, style);
-
-        minmaxinfo->ptMinTrackSize.x = size.width;
-        minmaxinfo->ptMinTrackSize.y = size.height;
+        const Size window_size       = adjust_size(m_min_size);
+        minmaxinfo->ptMinTrackSize.x = window_size.width;
+        minmaxinfo->ptMinTrackSize.y = window_size.height;
     }
 
     if (m_max_size.width != 0 && m_max_size.height != 0) {
-        const Size size = adjust_size(m_max_size, style);
-
-        minmaxinfo->ptMaxTrackSize.x = size.width;
-        minmaxinfo->ptMaxTrackSize.y = size.height;
+        const Size window_size       = adjust_size(m_max_size);
+        minmaxinfo->ptMaxTrackSize.x = window_size.width;
+        minmaxinfo->ptMaxTrackSize.y = window_size.height;
     }
 
     return 0;
@@ -1190,8 +1183,6 @@ void Win32Window::enter_fullscreen()
                   GWL_EXSTYLE,
                   ex_style & ~(WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
 
-    GetWindowRect(m_window, &m_saved_info.rect);
-
     MONITORINFO monitor_info = {};
     monitor_info.cbSize      = sizeof(monitor_info);
     GetMonitorInfo(MonitorFromWindow(m_window, MONITOR_DEFAULTTONEAREST), &monitor_info);
@@ -1217,13 +1208,37 @@ void Win32Window::exit_fullscreen()
                   GWL_EXSTYLE,
                   ex_style | WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
 
+    const Size window_size         = adjust_size(m_client_size);
+    const Position window_position = adjust_position(m_client_position);
     SetWindowPos(m_window,
                  HWND_TOP,
-                 m_saved_info.rect.left,
-                 m_saved_info.rect.top,
-                 m_saved_info.rect.right - m_saved_info.rect.left,
-                 m_saved_info.rect.bottom - m_saved_info.rect.top,
+                 window_position.x,
+                 window_position.y,
+                 window_size.width,
+                 window_size.height,
                  SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+}
+
+Size Win32Window::adjust_size(Size size) const
+{
+    const auto style    = m_window ? GetWindowLong(m_window, GWL_STYLE) : window_style;
+    const auto ex_style = m_window ? GetWindowLong(m_window, GWL_EXSTYLE) : window_ex_style;
+
+    RECT rect = {0, 0, size.width, size.height};
+    AdjustWindowRectEx(&rect, style, false, ex_style);
+
+    return {rect.right - rect.left, rect.bottom - rect.top};
+}
+
+Position Win32Window::adjust_position(Position position) const
+{
+    const auto style    = m_window ? GetWindowLong(m_window, GWL_STYLE) : window_style;
+    const auto ex_style = m_window ? GetWindowLong(m_window, GWL_EXSTYLE) : window_ex_style;
+
+    RECT rect = {position.x, position.y, 0, 0};
+    AdjustWindowRectEx(&rect, style, false, ex_style);
+
+    return {rect.left, rect.top};
 }
 
 } // namespace framework::system::details
