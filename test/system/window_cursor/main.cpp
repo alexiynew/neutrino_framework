@@ -1,4 +1,4 @@
-#include <chrono>
+﻿#include <chrono>
 #include <iostream>
 #include <thread>
 
@@ -58,11 +58,11 @@ private:
         TEST_ASSERT(!tmp.is_cursor_grabbed(), "Tmp window should not grab cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
-        window.process_events();
-
         TEST_ASSERT(!window.has_input_focus(), "Window should not be focused.");
         TEST_ASSERT(window.is_cursor_grabbed(), "Window should not grab cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
+
+        TEST_FAIL("Window should release cursor for system when focus lost.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -96,6 +96,9 @@ private:
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         window.hide();
+
+        TEST_FAIL("Window should release cursor for system when focus lost.");
+
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
@@ -140,6 +143,8 @@ private:
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         window.set_cursor_visibility(false);
+
+        TEST_FAIL("Cursor is still visible.");
 
         TEST_ASSERT(!window.is_cursor_visible(), "Cursor should not be visible.");
 
