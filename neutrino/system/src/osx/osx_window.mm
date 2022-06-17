@@ -366,7 +366,7 @@ void OsxWindow::show()
     
     AutoreleasePool pool;
 
-    // Turn off on_resize callback to call it in order we want
+    // Turn off on_focus callback to call it in order we want
     m_window->get().window_did_becomekey = nullptr;
 
     [m_window->get() makeKeyAndOrderFront:m_window->get()];
@@ -381,7 +381,7 @@ void OsxWindow::show()
         switch_state(m_state);
     }
 
-    // Turn on on_resize callback
+    // Turn on on_focus callback
     m_window->get().window_did_becomekey = std::bind(&OsxWindow::window_did_becomekey, this);
 
     // Explicitly call on_show callback
@@ -482,33 +482,20 @@ void OsxWindow::set_state(Window::State state)
     if (state == old_state) {
         return;
     }
+    
+    // Turn off on_move and on resize callbacks
+    m_window->get().window_did_resize = nullptr;
+    m_window->get().window_did_move   = nullptr;
    
     switch_state(state);
     
-    // Explicitly call callback
-    switch (state) {
-        case Window::State::iconified: 
-        break;
-        case Window::State::maximized: 
-            switch (old_state) {
-                case Window::State::fullscreen:
-                    on_resize(size());
-                    break;
-                case Window::State::maximized: break;
-                case Window::State::iconified: break;
-                case Window::State::normal: break;
-            }
-            
-            on_move(position());
-        break;
-        case Window::State::fullscreen: 
-            on_move(position());
-            on_resize(size());
-        break;
-        case Window::State::normal:
-            on_move(position());
-            on_resize(size());
-            break;
+    // Turn on on_move and on resize callbacks
+    m_window->get().window_did_resize            = std::bind(&OsxWindow::window_did_resize, this);
+    m_window->get().window_did_move              = std::bind(&OsxWindow::window_did_move, this);
+    
+    if (state != Window::State::iconified) {
+        on_move(position());
+        on_resize(size());
     }
 }
 
