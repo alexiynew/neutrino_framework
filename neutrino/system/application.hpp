@@ -1,0 +1,43 @@
+#ifndef FRAMEWORK_SYSTEM_APPLICATION_HPP
+#define FRAMEWORK_SYSTEM_APPLICATION_HPP
+
+#include <string>
+
+namespace framework::system
+{
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @addtogroup system_application_class
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Application class.
+///
+/// Application
+/// TODO: more detailed description
+class Application
+{
+public:
+    /// @brief Sets the formal name of the application.
+    ///
+    /// @param name Application name.
+    static void set_name(const std::string& name);
+
+    /// @brief The formal name of the application.
+    ///
+    /// @return Application name.
+    static const std::string& name();
+
+private:
+    static Application& instance();
+
+    std::string m_name = "Neutrino application";
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+} // namespace framework::system
+
+#endif

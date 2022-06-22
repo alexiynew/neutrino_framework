@@ -1,4 +1,4 @@
-#include <stdexcept>
+﻿#include <stdexcept>
 
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_window.hpp>
@@ -29,7 +29,7 @@ LPCWSTR register_window_class()
     window_class.cbWndExtra    = 0;
     window_class.hInstance     = Win32Application::handle();
     window_class.hIcon         = LoadIcon(nullptr, IDI_APPLICATION);
-    window_class.hCursor       = LoadCursor(nullptr, IDC_ARROW);
+    window_class.hCursor       = nullptr;
     window_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
     window_class.lpszMenuName  = nullptr;
     window_class.lpszClassName = main_class_name.c_str();
@@ -48,7 +48,7 @@ LPCWSTR register_window_class()
 
 namespace framework::system::details
 {
-Win32Application::container Win32Application::m_windows;
+Win32Application::HandleToWindowMap Win32Application::m_windows;
 HMODULE Win32Application::m_handle       = nullptr;
 LPCWSTR Win32Application::m_window_class = nullptr;
 

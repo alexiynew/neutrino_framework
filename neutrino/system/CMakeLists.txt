@@ -4,6 +4,7 @@ set_sources(PUBLIC_SOURCES
     keyboard.hpp
     mouse.hpp
     window.hpp
+    application.hpp
 )
 
 set_sources(PRIVATE_SOURCES
@@ -13,6 +14,7 @@ set_sources(PRIVATE_SOURCES
     src/platform_window.cpp
     src/platform_window.hpp
     src/window.cpp
+    src/application.cpp
 )
 
 target_sources(${PROJECT_NAME}

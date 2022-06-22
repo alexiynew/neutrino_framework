@@ -75,6 +75,8 @@
 @property(assign, nonatomic) std::function<void()> window_did_enter_full_screen;
 @property(assign, nonatomic) std::function<void()> window_did_exit_full_screen;
 
+@property(assign, nonatomic) BOOL isFullscreen;
+
 @end
 
 @implementation OsxWindowInternal
@@ -88,6 +90,8 @@
 @synthesize window_did_resignkey;
 @synthesize window_did_enter_full_screen;
 @synthesize window_did_exit_full_screen;
+
+@synthesize isFullscreen;
 
 - (BOOL)acceptsFirstResponder
 {
@@ -162,6 +166,8 @@
     if (self.window_did_enter_full_screen) {
         self.window_did_enter_full_screen();
     }
+    
+    [self setIsFullscreen:true];
 }
 
 - (void)windowDidExitFullScreen:(NSNotification*)notification
@@ -169,10 +175,45 @@
     if (self.window_did_exit_full_screen) {
         self.window_did_exit_full_screen();
     }
+
+    [self setIsFullscreen:false];
 }
 
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
 {}
+
+- (BOOL)hasFullscreenStyle
+{
+    return (([self styleMask] & NSWindowStyleMaskFullScreen) != 0);
+}
+
+- (void)enterFullscreen
+{
+    if ([self hasFullscreenStyle]) {
+        return;
+    }
+    
+    const auto callback = [self window_did_resize];
+    [self setWindow_did_resize:nil];
+    
+    [self toggleFullScreen:nil];
+    
+    [self setWindow_did_resize:callback];
+}
+
+-(void) exitFullscreen
+{
+    if (![self hasFullscreenStyle]) {
+        return;
+    }
+    
+    const auto callback = [self window_did_resize];
+    [self setWindow_did_resize:nil];
+    
+    [self toggleFullScreen:nil];
+    
+    [self setWindow_did_resize:callback];
+}
 
 @end // OsxWindowInternal
 
@@ -245,11 +286,11 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     [OsxApplication setup];
 
     NSWindowStyleMask ns_style = NSWindowStyleMaskBorderless;
-    // if (style & sf::Style::Titlebar)
+    // Title bar
     ns_style |= NSWindowStyleMaskTitled | NSWindowStyleMaskMiniaturizable;
-    // if (style & sf::Style::Resize)
+    // Resize
     ns_style |= NSWindowStyleMaskResizable;
-    // if (style & sf::Style::Close)
+    // Close button
     ns_style |= NSWindowStyleMaskClosable;
 
     // Create window
@@ -309,9 +350,7 @@ OsxWindow::~OsxWindow()
 {
     AutoreleasePool pool;
 
-    if (m_actually_fullscreen) {
-        exit_fullscreen();
-    }
+    //exit_fullscreen();
 
     [m_window->get() setDelegate:nil];
     [m_window->get() close];
@@ -321,28 +360,28 @@ OsxWindow::~OsxWindow()
 
 void OsxWindow::show()
 {
-    AutoreleasePool pool;
-
     if (is_visible()) {
         return;
     }
+    
+    AutoreleasePool pool;
 
-    // Turn off on_resize callback to call it in order we want
+    // Turn off on_focus callback to call it in order we want
     m_window->get().window_did_becomekey = nullptr;
 
-    [m_window->get() center];
     [m_window->get() makeKeyAndOrderFront:m_window->get()];
 
     do {
         process_events();
     } while (!is_visible());
 
-    if (m_actually_fullscreen) {
-        m_actually_fullscreen = false; // Unset flag here
-        enter_fullscreen();            // The enter_fullscreen method gonna set it again
+    if (m_state == Window::State::iconified) {
+        m_state = Window::State::normal;
+    } else {
+        switch_state(m_state);
     }
 
-    // Turn on on_resize callback
+    // Turn on on_focus callback
     m_window->get().window_did_becomekey = std::bind(&OsxWindow::window_did_becomekey, this);
 
     // Explicitly call on_show callback
@@ -357,9 +396,6 @@ void OsxWindow::show()
     // This would call on_focus callback
     if (!has_input_focus()) {
         [m_window->get() makeKeyWindow];
-        do {
-            process_events();
-        } while (!has_input_focus());
     } else {
         // Or call the on_focus callback explicitly
         on_focus();
@@ -368,17 +404,14 @@ void OsxWindow::show()
 
 void OsxWindow::hide()
 {
-    AutoreleasePool pool;
-
-    if (!is_visible() && !is_iconified()) {
+    if (!is_visible() && ![m_window->get() isMiniaturized]) {
         return;
     }
+    
+    AutoreleasePool pool;
 
-    if (m_actually_fullscreen) {
-        exit_fullscreen();
-
-        // Set flag again for a window to be in fullscreen if it would show again.
-        m_actually_fullscreen = true;
+    if (m_state == Window::State::fullscreen) {
+        [m_window->get() exitFullscreen];
     }
 
     if (has_input_focus()) {
@@ -390,11 +423,10 @@ void OsxWindow::hide()
     }
 
     [m_window->get() orderOut:m_window->get()];
-
     do {
         process_events();
-    } while (is_visible());
-
+    } while (is_visible() && ![m_window->get() isMiniaturized]);
+    
     [m_window->get() close];
 
     // Explicitly call on_hide callback
@@ -417,100 +449,57 @@ void OsxWindow::focus()
     } while (!has_input_focus());
 }
 
-void OsxWindow::iconify()
+void OsxWindow::grab_cursor()
+{
+    AutoreleasePool pool;
+}
+
+void OsxWindow::release_cursor()
+{
+    AutoreleasePool pool;
+}
+
+void OsxWindow::process_events()
 {
     AutoreleasePool pool;
 
-    if (!is_visible() || is_iconified()) {
-        return;
-    }
-
-    if (m_actually_fullscreen) {
-        exit_fullscreen();
-
-        // Set flag again for a window to be in fullscreen if it would show again.
-        m_actually_fullscreen = true;
-    }
-
-    // Explicitly call the on_lost_focus callback
-    on_lost_focus();
-
-    [m_window->get() miniaturize:m_window->get()];
+    [OsxApplication process_events];
 }
 
-void OsxWindow::maximize()
+#pragma endregion
+
+#pragma region setters
+
+void OsxWindow::set_state(Window::State state)
 {
-    AutoreleasePool pool;
-
-    if (is_maximized()) {
-        return;
-    }
-
-    [m_window->get() zoom:m_window->get()];
-
-    if (is_visible()) {
-        // Explicitly call the on_move callback
-        on_move(position());
-    }
-}
-
-void OsxWindow::fullscreen()
-{
-    if (m_actually_fullscreen) {
-        return;
-    }
-
     if (!is_visible()) {
-        m_actually_fullscreen = true;
+        m_state = state;
         return;
     }
-
-    enter_fullscreen();
-
-    // Explicitly call on_move callback
-    on_move(position());
-
-    // Explicitly call on_resize callback
-    on_resize(size());
-}
-
-void OsxWindow::restore()
-{
-    AutoreleasePool pool;
-
-    if (!is_visible() && !is_iconified()) {
-        m_actually_fullscreen = false;
+    
+    const Window::State old_state = get_actual_state();
+    
+    if (state == old_state) {
         return;
     }
-
-    bool restored = false;
-
-    if (is_iconified()) {
-        [m_window->get() deminiaturize:m_window->get()];
-        m_actually_fullscreen = false;
-        restored              = true;
-    }
-
-    if (is_maximized()) {
-        [m_window->get() zoom:m_window->get()];
-        restored = true;
-    }
-
-    if (is_fullscreen()) {
-        exit_fullscreen();
-        restored = true;
-    }
-
-    if (restored) {
-        // Explicitly call on_move callback
+    
+    // Turn off on_move and on resize callbacks
+    m_window->get().window_did_resize = nullptr;
+    m_window->get().window_did_move   = nullptr;
+   
+    switch_state(state);
+    
+    // Turn on on_move and on resize callbacks
+    m_window->get().window_did_resize            = std::bind(&OsxWindow::window_did_resize, this);
+    m_window->get().window_did_move              = std::bind(&OsxWindow::window_did_move, this);
+    
+    if (state != Window::State::iconified) {
         on_move(position());
-
-        // Explicitly call on_resize callback
         on_resize(size());
     }
 }
 
-void OsxWindow::resize(Size new_size)
+void OsxWindow::set_size(Size new_size)
 {
     AutoreleasePool pool;
 
@@ -541,40 +530,6 @@ void OsxWindow::resize(Size new_size)
 
     process_events();
 }
-
-void OsxWindow::move(Position position)
-{
-    AutoreleasePool pool;
-
-    const NSRect rect  = [m_view->get() frame];
-    const NSRect dummy = NSMakeRect(position.x, transform_y(position.y + rect.size.height - 1.0), 0.0, 0.0);
-    const NSRect frame = [m_window->get() frameRectForContentRect:dummy];
-
-    [m_window->get() setFrameOrigin:frame.origin];
-
-    process_events();
-}
-
-void OsxWindow::grab_cursor()
-{
-    AutoreleasePool pool;
-}
-
-void OsxWindow::release_cursor()
-{
-    AutoreleasePool pool;
-}
-
-void OsxWindow::process_events()
-{
-    AutoreleasePool pool;
-
-    [OsxApplication process_events];
-}
-
-#pragma endregion
-
-#pragma region setters
 
 void OsxWindow::set_max_size(Size max_size)
 {
@@ -633,6 +588,19 @@ void OsxWindow::set_resizable(bool /*value*/)
     AutoreleasePool pool;
 }
 
+void OsxWindow::set_position(Position position)
+{
+    AutoreleasePool pool;
+
+    const NSRect rect  = [m_view->get() frame];
+    const NSRect dummy = NSMakeRect(position.x, transform_y(position.y + rect.size.height - 1.0), 0.0, 0.0);
+    const NSRect frame = [m_window->get() frameRectForContentRect:dummy];
+
+    [m_window->get() setFrameOrigin:frame.origin];
+
+    process_events();
+}
+
 void OsxWindow::set_title(const std::string& new_title)
 {
     AutoreleasePool pool;
@@ -654,18 +622,39 @@ void OsxWindow::set_cursor_visibility(bool /*visible*/)
 
 #pragma region getters
 
-Position OsxWindow::position() const
+bool OsxWindow::is_visible() const
 {
     AutoreleasePool pool;
 
-    Position position;
+    // Miniaturized window is still visible
+    return [m_window->get() isVisible] || [m_window->get() isMiniaturized];
+}
 
-    const NSRect contentRect = [m_window->get() contentRectForFrameRect:[m_window->get() frame]];
+bool OsxWindow::should_close() const
+{
+    return m_should_close;
+}
 
-    position.x = static_cast<int>(contentRect.origin.x);
-    position.y = static_cast<int>(transform_y(contentRect.origin.y + contentRect.size.height - 1));
+bool OsxWindow::has_input_focus() const
+{
+    AutoreleasePool pool;
 
-    return position;
+    return is_visible() && [m_window->get() isKeyWindow];
+}
+
+bool OsxWindow::is_cursor_grabbed() const
+{
+    return false;
+}
+
+bool OsxWindow::is_cursor_visible() const
+{
+    return false;
+}
+
+Window::State OsxWindow::state() const
+{
+    return m_state;
 }
 
 Size OsxWindow::size() const
@@ -712,6 +701,25 @@ Size OsxWindow::min_size() const
     return size;
 }
 
+bool OsxWindow::is_resizable() const
+{
+    return false;
+}
+
+Position OsxWindow::position() const
+{
+    AutoreleasePool pool;
+
+    Position position;
+
+    const NSRect contentRect = [m_window->get() contentRectForFrameRect:[m_window->get() frame]];
+
+    position.x = static_cast<int>(contentRect.origin.x);
+    position.y = static_cast<int>(transform_y(contentRect.origin.y + contentRect.size.height - 1));
+
+    return position;
+}
+
 std::string OsxWindow::title() const
 {
     AutoreleasePool pool;
@@ -727,62 +735,6 @@ const Context& OsxWindow::context() const
 Context& OsxWindow::context()
 {
     return *m_context;
-}
-
-#pragma endregion
-
-#pragma region state
-bool OsxWindow::should_close() const
-{
-    return m_should_close;
-}
-
-bool OsxWindow::is_fullscreen() const
-{
-    return m_actually_fullscreen;
-}
-
-bool OsxWindow::is_iconified() const
-{
-    AutoreleasePool pool;
-
-    return [m_window->get() isMiniaturized];
-}
-
-bool OsxWindow::is_maximized() const
-{
-    AutoreleasePool pool;
-
-    return !m_actually_fullscreen && [m_window->get() isZoomed];
-}
-
-bool OsxWindow::is_resizable() const
-{
-    return false;
-}
-
-bool OsxWindow::is_visible() const
-{
-    AutoreleasePool pool;
-
-    return [m_window->get() isVisible];
-}
-
-bool OsxWindow::has_input_focus() const
-{
-    AutoreleasePool pool;
-
-    return is_visible() && [m_window->get() isKeyWindow];
-}
-
-bool OsxWindow::is_cursor_visible() const
-{
-    return false;
-}
-
-bool OsxWindow::is_cursor_grabbed() const
-{
-    return false;
 }
 
 #pragma endregion
@@ -843,68 +795,22 @@ void OsxWindow::window_did_resignkey()
 
 void OsxWindow::window_did_enter_full_screen()
 {
-    m_actually_fullscreen = true;
     update_context();
 }
 
 void OsxWindow::window_did_exit_full_screen()
 {
-    m_actually_fullscreen = false;
     update_context();
 }
 
 #pragma endregion
-
-void OsxWindow::enter_fullscreen()
-{
-    AutoreleasePool pool;
-
-    if (m_actually_fullscreen) {
-        return;
-    }
-
-    // Turn off the on_resize callback
-    m_window->get().window_did_resize = nullptr;
-
-    [m_window->get() toggleFullScreen:m_window->get()];
-
-    do {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        process_events();
-    } while (!m_actually_fullscreen);
-
-    // Turn on the on_resize callback
-    m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
-}
-
-void OsxWindow::exit_fullscreen()
-{
-    AutoreleasePool pool;
-
-    if (!m_actually_fullscreen) {
-        return;
-    }
-
-    // Turn off the on_resize callback
-    m_window->get().window_did_resize = nullptr;
-
-    [m_window->get() toggleFullScreen:m_window->get()];
-
-    do {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        process_events();
-    } while (m_actually_fullscreen);
-
-    // Turn on the on_resize callback
-    m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
-}
 
 bool OsxWindow::switch_to_other_window()
 {
     AutoreleasePool pool;
 
     for (NSWindow* window in [NSApp orderedWindows]) {
-        if (window != m_window->get()) {
+        if (window != m_window->get() && [window isVisible]) {
             [window orderFront:nil];
             [window makeKeyWindow];
             return true;
@@ -917,6 +823,77 @@ bool OsxWindow::switch_to_other_window()
 void OsxWindow::update_context()
 {
     m_context->update();
+}
+
+void OsxWindow::switch_state(Window::State state)
+{
+    const Window::State old_state = get_actual_state();
+    
+    if (state == old_state) {
+        return;
+    }
+    
+    AutoreleasePool pool;
+
+    // Drop fullscreen state
+    if (old_state == Window::State::fullscreen) {
+        [m_window->get() exitFullscreen];
+            
+        do {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            process_events();
+        } while([m_window->get() isFullscreen]);
+
+        const Window::State after_fullscreen_state = get_actual_state();
+        if (state == after_fullscreen_state) {
+            m_state = after_fullscreen_state;
+            return;
+        }
+    }
+    
+    // Switch to new state
+    switch (state) {
+        case Window::State::iconified:
+            [m_window->get() miniaturize:m_window->get()];
+        break;
+        case Window::State::maximized:
+            if (old_state == Window::State::iconified) {
+                [m_window->get() deminiaturize:m_window->get()];
+            } else {
+                [m_window->get() zoom:m_window->get()];
+            }
+        break;
+        case Window::State::fullscreen:
+            [m_window->get() enterFullscreen];
+            
+            do {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                process_events();
+            } while(![m_window->get() isFullscreen]);
+        break;
+        case Window::State::normal:
+            if (old_state == Window::State::iconified) {
+                [m_window->get() deminiaturize:m_window->get()];
+            } else if (old_state == Window::State::maximized){
+                [m_window->get() zoom:m_window->get()];
+            }
+            break;
+    }
+    
+    m_state = get_actual_state();
+}
+
+Window::State OsxWindow::get_actual_state() const
+{
+    if ([m_window->get() isFullscreen]) {
+        return Window::State::fullscreen;
+    } else if ([m_window->get() isMiniaturized]) {
+        return Window::State::iconified;
+    } else if ([m_window->get() isZoomed]) {
+        return Window::State::maximized;
+    } else {
+        return Window::State::normal;
+    }
 }
 
 } // namespace framework::system::details

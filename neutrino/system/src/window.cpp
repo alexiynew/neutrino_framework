@@ -6,11 +6,6 @@
 
 namespace framework::system
 {
-void Window::set_application_name(const std::string& name)
-{
-    details::PlatformWindow::set_application_name(name);
-}
-
 Window::Window(const std::string& title, Size size, ContextSettings settings)
     : m_platform_window(details::create_platform_window(title, size, std::move(settings)))
 {
@@ -53,36 +48,6 @@ void Window::focus()
     m_platform_window->focus();
 }
 
-void Window::iconify()
-{
-    m_platform_window->iconify();
-}
-
-void Window::maximize()
-{
-    m_platform_window->maximize();
-}
-
-void Window::fullscreen()
-{
-    m_platform_window->fullscreen();
-}
-
-void Window::restore()
-{
-    m_platform_window->restore();
-}
-
-void Window::resize(Size size)
-{
-    m_platform_window->resize(size);
-}
-
-void Window::move(Position position)
-{
-    m_platform_window->move(position);
-}
-
 void Window::grab_cursor()
 {
     m_platform_window->grab_cursor();
@@ -102,6 +67,16 @@ void Window::process_events()
 
 #pragma region setters
 
+void Window::set_state(State state)
+{
+    m_platform_window->set_state(state);
+}
+
+void Window::set_size(Size size)
+{
+    m_platform_window->set_size(size);
+}
+
 void Window::set_max_size(Size max_size)
 {
     m_platform_window->set_max_size(max_size);
@@ -115,6 +90,11 @@ void Window::set_min_size(Size min_size)
 void Window::set_resizable(bool value)
 {
     m_platform_window->set_resizable(value);
+}
+
+void Window::set_position(Position position)
+{
+    m_platform_window->set_position(position);
 }
 
 void Window::set_title(const std::string& title)
@@ -131,9 +111,34 @@ void Window::set_cursor_visibility(bool visible)
 
 #pragma region getters
 
-Position Window::position() const
+bool Window::is_visible() const
 {
-    return m_platform_window->position();
+    return m_platform_window->is_visible();
+}
+
+bool Window::should_close() const
+{
+    return m_platform_window->should_close();
+}
+
+bool Window::has_input_focus() const
+{
+    return m_platform_window->has_input_focus();
+}
+
+bool Window::is_cursor_grabbed() const
+{
+    return m_platform_window->is_cursor_grabbed();
+}
+
+bool Window::is_cursor_visible() const
+{
+    return m_platform_window->is_cursor_visible();
+}
+
+Window::State Window::state() const
+{
+    return m_platform_window->state();
 }
 
 Size Window::size() const
@@ -151,6 +156,16 @@ Size Window::min_size() const
     return m_platform_window->min_size();
 }
 
+bool Window::is_resizable() const
+{
+    return m_platform_window->is_resizable();
+}
+
+Position Window::position() const
+{
+    return m_platform_window->position();
+}
+
 std::string Window::title() const
 {
     return m_platform_window->title();
@@ -164,54 +179,6 @@ const Context& Window::context() const
 Context& Window::context()
 {
     return m_platform_window->context();
-}
-
-#pragma endregion
-
-#pragma region state
-bool Window::should_close() const
-{
-    return m_platform_window->should_close();
-}
-
-bool Window::is_fullscreen() const
-{
-    return m_platform_window->is_fullscreen();
-}
-
-bool Window::is_iconified() const
-{
-    return m_platform_window->is_iconified();
-}
-
-bool Window::is_maximized() const
-{
-    return m_platform_window->is_maximized();
-}
-
-bool Window::is_resizable() const
-{
-    return m_platform_window->is_resizable();
-}
-
-bool Window::is_visible() const
-{
-    return m_platform_window->is_visible();
-}
-
-bool Window::has_input_focus() const
-{
-    return m_platform_window->has_input_focus();
-}
-
-bool Window::is_cursor_visible() const
-{
-    return m_platform_window->is_cursor_visible();
-}
-
-bool Window::is_cursor_grabbed() const
-{
-    return m_platform_window->is_cursor_grabbed();
 }
 
 #pragma endregion

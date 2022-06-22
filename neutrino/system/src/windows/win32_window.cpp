@@ -1,4 +1,7 @@
+﻿#include <functional>
 #include <stdexcept>
+
+#include <common/utf.hpp>
 
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_keyboard.hpp>
@@ -10,67 +13,14 @@
 
 namespace
 {
-const char* const log_tag = "Win32Window";
+
+namespace utf = framework::utf;
 
 const DWORD window_style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_CLIPCHILDREN |
                            WS_CLIPSIBLINGS;
 const DWORD window_ex_style = WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW;
 
-std::wstring utf8_to_utf16(const std::string& string)
-{
-    if (string.empty()) {
-        return std::wstring();
-    }
-
-    const auto size = MultiByteToWideChar(CP_UTF8, 0, &string[0], -1, nullptr, 0);
-
-    if (size == 0) {
-        return std::wstring();
-    }
-
-    std::unique_ptr<wchar_t[]> buffer(new wchar_t[static_cast<std::size_t>(size)]);
-    MultiByteToWideChar(CP_UTF8, 0, &string[0], -1, buffer.get(), size);
-
-    return std::wstring(buffer.get());
-}
-
-std::string utf16_to_utf8(const std::wstring& string)
-{
-    if (string.empty()) {
-        return std::string();
-    }
-
-    const auto size = WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, nullptr, 0, nullptr, nullptr);
-
-    if (size == 0) {
-        return std::string();
-    }
-
-    std::unique_ptr<char[]> buffer(new char[static_cast<std::size_t>(size)]);
-    WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
-
-    return std::string(buffer.get());
-}
-
-std::string utf32_to_utf8(const std::wstring& string)
-{
-    if (string.empty()) {
-        return std::string();
-    }
-
-    const auto size = WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, nullptr, 0, nullptr, nullptr);
-
-    if (size == 0) {
-        return std::string();
-    }
-
-    std::unique_ptr<char[]> buffer(new char[static_cast<std::size_t>(size)]);
-    WideCharToMultiByte(CP_UTF8, 0, &string[0], -1, buffer.get(), size, nullptr, nullptr);
-
-    return std::string(buffer.get());
-}
-
-framework::system::MouseButton get_mouse_button(UINT message)
+framework::system::MouseButton get_mouse_button(UINT message, WPARAM w_param)
 {
     using framework::system::MouseButton;
 
@@ -83,21 +33,12 @@ framework::system::MouseButton get_mouse_button(UINT message)
 
         case WM_RBUTTONDOWN:
         case WM_RBUTTONUP: return MouseButton::button_right;
+
+        case WM_XBUTTONDOWN:
+        case WM_XBUTTONUP: (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? MouseButton::button_4 : MouseButton::button_5);
     }
 
     return MouseButton::unknown;
-}
-
-framework::Size adjust_size(framework::Size size, long style)
-{
-    RECT rect{0, 0, size.width, size.height};
-    AdjustWindowRectEx(&rect, window_style, false, window_ex_style);
-
-    if ((style & WS_SIZEBOX) == 0) {
-        // TODO (alex): fix size without size box.
-    }
-
-    return {rect.right - rect.left, rect.bottom - rect.top};
 }
 
 void set_cursor_in_center(HWND window)
@@ -156,23 +97,234 @@ bool is_cursor_in_client_area(HWND window)
     return pos.x >= 0 && pos.y >= 0 && pos.x <= rect.right && pos.y <= rect.bottom;
 }
 
+void set_window_state(HWND window, framework::system::Window::State state)
+{
+    using State = framework::system::Window::State;
+
+    switch (state) {
+        case State::iconified: ShowWindow(window, SW_MINIMIZE); break;
+        case State::maximized: ShowWindow(window, SW_MAXIMIZE); break;
+        case State::fullscreen: break;
+        case State::normal: ShowWindow(window, SW_SHOW); break;
+    }
+}
+
+framework::system::Window::State get_window_state(HWND window)
+{
+    using State = framework::system::Window::State;
+
+    if (IsIconic(window) != 0) {
+        return State::iconified;
+    } else if (IsZoomed(window) != 0) {
+        return State::maximized;
+    } else {
+        RECT window_rect;
+        RECT desktop_rect;
+        GetWindowRect(window, &window_rect);
+        GetWindowRect(GetDesktopWindow(), &desktop_rect);
+
+        const bool is_fullscreen_size = (window_rect.left == desktop_rect.left && window_rect.top == desktop_rect.top &&
+                                         window_rect.right == desktop_rect.right &&
+                                         window_rect.bottom == desktop_rect.bottom);
+
+        /// TODO: Check window decorations
+        // const bool has_window_decorations = true;
+
+        if (is_fullscreen_size) {
+            return State::fullscreen;
+        }
+    }
+
+    return State::normal;
+}
+
 } // namespace
 
 namespace framework::system::details
 {
+
+#pragma region class Win32Window::MessageHandler
+
+struct Win32Window::MessageHandler
+{
+    using CallbackType = std::function<LRESULT(UINT, WPARAM, LPARAM)>;
+
+    LRESULT process_set_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_kill_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_close_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_move_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_size_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_get_min_max_info_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    LRESULT process_mouse_leave_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_mouse_hover_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_mouse_move_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_mouse_button_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_mouse_wheel_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    LRESULT process_key_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    LRESULT process_unichar_message(UINT message, WPARAM w_param, LPARAM l_param);
+    LRESULT process_char_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    LRESULT process_input_message(UINT message, WPARAM w_param, LPARAM l_param);
+
+    CallbackType on_set_focus;
+    CallbackType on_kill_focus;
+    CallbackType on_close;
+    CallbackType on_move;
+    CallbackType on_size;
+    CallbackType on_get_min_max_info;
+    CallbackType on_mouse_leave;
+    CallbackType on_mouse_hover;
+    CallbackType on_mouse_move;
+    CallbackType on_mouse_button;
+    CallbackType on_mouse_wheel;
+    CallbackType on_key;
+    CallbackType on_unichar;
+    CallbackType on_char;
+    CallbackType on_input;
+};
+
+LRESULT Win32Window::MessageHandler::process_set_focus_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_set_focus) {
+        return on_set_focus(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_kill_focus_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_kill_focus) {
+        return on_kill_focus(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_close_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_close) {
+        return on_close(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_move_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_move) {
+        return on_move(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_size_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_size) {
+        return on_size(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_get_min_max_info_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_get_min_max_info) {
+        return on_get_min_max_info(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_mouse_leave_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_mouse_leave) {
+        return on_mouse_leave(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_mouse_hover_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_mouse_hover) {
+        return on_mouse_hover(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_mouse_move_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_mouse_move) {
+        return on_mouse_move(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_mouse_button_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_mouse_button) {
+        return on_mouse_button(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_mouse_wheel_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_mouse_wheel) {
+        return on_mouse_wheel(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_key_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_key) {
+        return on_key(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_unichar_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_unichar) {
+        return on_unichar(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_char_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_char) {
+        return on_char(message, w_param, l_param);
+    }
+    return 0;
+}
+
+LRESULT Win32Window::MessageHandler::process_input_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    if (on_input) {
+        return on_input(message, w_param, l_param);
+    }
+    return 0;
+}
+
+#pragma endregion
+
 Win32Window::Win32Window(const std::string& title, Size size, const ContextSettings& settings)
     : PlatformWindow()
 {
-    size = adjust_size(size, window_style);
+    using namespace std::placeholders;
+
+    m_client_size = size;
+
+    const Size window_size = adjust_size(m_client_size);
 
     m_window = CreateWindowEx(window_ex_style,
                               Win32Application::get_window_class(),
-                              utf8_to_utf16(title).c_str(),
+                              utf::to_wstring(title).c_str(),
                               window_style,
                               CW_USEDEFAULT,
                               CW_USEDEFAULT,
-                              size.width,
-                              size.height,
+                              window_size.width,
+                              window_size.height,
                               nullptr,
                               nullptr,
                               Win32Application::handle(),
@@ -183,6 +335,24 @@ Win32Window::Win32Window(const std::string& title, Size size, const ContextSetti
     }
 
     m_context = std::make_unique<Win32WglContext>(m_window, settings);
+
+    m_message_handler = std::make_unique<MessageHandler>();
+
+    m_message_handler->on_set_focus        = std::bind(&Win32Window::on_set_focus_message, this, _1, _2, _3);
+    m_message_handler->on_kill_focus       = std::bind(&Win32Window::on_kill_focus_message, this, _1, _2, _3);
+    m_message_handler->on_close            = std::bind(&Win32Window::on_close_message, this, _1, _2, _3);
+    m_message_handler->on_move             = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
+    m_message_handler->on_size             = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
+    m_message_handler->on_get_min_max_info = std::bind(&Win32Window::on_get_min_max_info_message, this, _1, _2, _3);
+    m_message_handler->on_mouse_leave      = std::bind(&Win32Window::on_mouse_leave_message, this, _1, _2, _3);
+    m_message_handler->on_mouse_hover      = std::bind(&Win32Window::on_mouse_hover_message, this, _1, _2, _3);
+    m_message_handler->on_mouse_move       = std::bind(&Win32Window::on_mouse_move_message, this, _1, _2, _3);
+    m_message_handler->on_mouse_button     = std::bind(&Win32Window::on_mouse_button_message, this, _1, _2, _3);
+    m_message_handler->on_mouse_wheel      = std::bind(&Win32Window::on_mouse_wheel_message, this, _1, _2, _3);
+    m_message_handler->on_key              = std::bind(&Win32Window::on_key_message, this, _1, _2, _3);
+    m_message_handler->on_unichar          = std::bind(&Win32Window::on_unichar_message, this, _1, _2, _3);
+    m_message_handler->on_char             = std::bind(&Win32Window::on_char_message, this, _1, _2, _3);
+    m_message_handler->on_input            = std::bind(&Win32Window::on_input_message, this, _1, _2, _3);
 
     Win32Application::add_window(m_window, this);
 
@@ -200,21 +370,69 @@ Win32Window::~Win32Window()
 
 void Win32Window::show()
 {
+    using namespace std::placeholders;
+
     if (is_visible()) {
         return;
     }
 
-    if (is_iconified()) {
-        ShowWindow(m_window, SW_RESTORE);
-    } else {
-        ShowWindow(m_window, SW_SHOW);
+    // Turn off the on_resize callback
+    m_message_handler->on_size = nullptr;
+
+    // Turn off the on_move callback
+    m_message_handler->on_move = nullptr;
+
+    // Turn off the on_set_focus callback
+    m_message_handler->on_set_focus = nullptr;
+
+    switch (m_state) {
+        case Window::State::fullscreen: {
+            ShowWindow(m_window, SW_SHOW);
+            enter_fullscreen();
+        } break;
+        case Window::State::iconified:
+            // Drop iconified state
+            ShowWindow(m_window, SW_SHOW);
+            ShowWindow(m_window, SW_RESTORE);
+            m_state = Window::State::normal;
+            break;
+        case Window::State::maximized: ShowWindow(m_window, SW_MAXIMIZE); break;
+        case Window::State::normal:
+            ShowWindow(m_window, SW_SHOW);
+            m_client_position = position();
+            break;
     }
     UpdateWindow(m_window);
 
     m_mouse_hover = is_cursor_in_client_area(m_window);
 
+    // Turn on the on_resize callback
+    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
+
+    // Turn on the on_move callback
+    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
+
+    // Turn on the on_set_focus callback
+    m_message_handler->on_set_focus = std::bind(&Win32Window::on_set_focus_message, this, _1, _2, _3);
+
     // Explicitly call on_show callback
     on_show();
+
+    // Explicitly call on_move callback
+    on_move(position());
+
+    // Explicitly call on_resize callback
+    on_resize(size());
+
+    if (m_cursor_grabbed) {
+        enable_raw_input();
+    }
+
+    if (has_input_focus()) {
+        on_focus();
+    } else {
+        focus();
+    }
 }
 
 void Win32Window::hide()
@@ -226,6 +444,10 @@ void Win32Window::hide()
     if (has_input_focus()) {
         // Call the on_lost_focus callback explicitly
         on_lost_focus();
+    }
+
+    if (m_cursor_grabbed) {
+        disable_raw_input();
     }
 
     ShowWindow(m_window, SW_HIDE);
@@ -242,95 +464,10 @@ void Win32Window::focus()
 
     BringWindowToTop(m_window);
     SetForegroundWindow(m_window);
-}
 
-void Win32Window::iconify()
-{
-    ShowWindow(m_window, SW_MINIMIZE);
-}
-
-void Win32Window::maximize()
-{
-    ShowWindow(m_window, SW_MAXIMIZE);
-}
-
-void Win32Window::fullscreen()
-{
-    if (is_fullscreen()) {
-        return;
+    if (m_cursor_grabbed) {
+        enable_raw_input();
     }
-
-    if (is_maximized()) {
-        SendMessage(m_window, WM_SYSCOMMAND, SC_RESTORE, 0);
-    }
-
-    m_saved_info.style    = GetWindowLong(m_window, GWL_STYLE);
-    m_saved_info.ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
-    GetWindowRect(m_window, &m_saved_info.rect);
-
-    SetWindowLong(m_window, GWL_STYLE, m_saved_info.style & ~(WS_CAPTION | WS_THICKFRAME));
-    SetWindowLong(m_window,
-                  GWL_EXSTYLE,
-                  m_saved_info.ex_style &
-                  ~(WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
-
-    MONITORINFO monitor_info;
-    monitor_info.cbSize = sizeof(monitor_info);
-    GetMonitorInfo(MonitorFromWindow(m_window, MONITOR_DEFAULTTONEAREST), &monitor_info);
-
-    SetWindowPos(m_window,
-                 HWND_TOP,
-                 monitor_info.rcMonitor.left,
-                 monitor_info.rcMonitor.top,
-                 monitor_info.rcMonitor.right,
-                 monitor_info.rcMonitor.bottom,
-                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-
-    SetForegroundWindow(m_window);
-}
-
-void Win32Window::restore()
-{
-    if (is_fullscreen()) {
-        SetWindowLong(m_window, GWL_STYLE, m_saved_info.style);
-        SetWindowLong(m_window, GWL_EXSTYLE, m_saved_info.ex_style);
-
-        SetWindowPos(m_window,
-                     HWND_TOP,
-                     m_saved_info.rect.left,
-                     m_saved_info.rect.top,
-                     m_saved_info.rect.right - m_saved_info.rect.left,
-                     m_saved_info.rect.bottom - m_saved_info.rect.top,
-                     SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-    } else if (is_iconified()) {
-        ShowWindow(m_window, SW_RESTORE);
-    } else if (is_maximized()) {
-        ShowWindow(m_window, SW_RESTORE);
-    }
-}
-
-void Win32Window::resize(Size size)
-{
-    auto style = GetWindowLong(m_window, GWL_STYLE);
-    size       = adjust_size(size, style);
-    SetWindowPos(m_window,
-                 HWND_TOP,
-                 0,
-                 0,
-                 size.width,
-                 size.height,
-                 SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
-}
-
-void Win32Window::move(Position position)
-{
-    SetWindowPos(m_window,
-                 HWND_TOP,
-                 position.x,
-                 position.y,
-                 0,
-                 0,
-                 SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
 void Win32Window::grab_cursor()
@@ -339,12 +476,8 @@ void Win32Window::grab_cursor()
         return;
     }
 
-    m_grabbed_cursor_diff = {0, 0};
-
     m_cursor_grabbed = true;
 
-    m_cursor_position = get_cursor_position(m_window);
-    update_cursor();
     enable_raw_input();
 }
 
@@ -355,8 +488,6 @@ void Win32Window::release_cursor()
     }
 
     m_cursor_grabbed = false;
-    set_cursor_cliping(m_window, false);
-    set_cursor_position(m_window, m_cursor_position);
 
     disable_raw_input();
 }
@@ -379,6 +510,68 @@ void Win32Window::process_events()
 #pragma endregion
 
 #pragma region setters
+
+void Win32Window::set_state(Window::State state)
+{
+    using namespace std::placeholders;
+
+    if (!is_visible()) {
+        m_state = state;
+        return;
+    }
+
+    const Window::State old_state = get_window_state(m_window);
+    if (state == old_state) {
+        return;
+    }
+
+    // Turn off the on_resize callback
+    m_message_handler->on_size = nullptr;
+
+    // Turn off the on_move callback
+    m_message_handler->on_move = nullptr;
+
+    switch (old_state) {
+        case Window::State::fullscreen: exit_fullscreen(); break;
+        case Window::State::iconified: ShowWindow(m_window, SW_RESTORE); break;
+        case Window::State::maximized: ShowWindow(m_window, SW_RESTORE); break;
+        case Window::State::normal: break;
+    }
+
+    switch (state) {
+        case Window::State::fullscreen: enter_fullscreen(); break;
+        case Window::State::iconified: ShowWindow(m_window, SW_MINIMIZE); break;
+        case Window::State::maximized: ShowWindow(m_window, SW_MAXIMIZE); break;
+        case Window::State::normal: break;
+    }
+
+    // Turn on the on_resize callback
+    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
+
+    // Turn on the on_move callback
+    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
+
+    m_state = get_window_state(m_window);
+
+    if (state != Window::State::iconified) {
+        on_move(position());
+        on_resize(size());
+    }
+}
+
+void Win32Window::set_size(Size size)
+{
+    m_client_size = size;
+
+    const Size window_size = adjust_size(m_client_size);
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 0,
+                 0,
+                 window_size.width,
+                 window_size.height,
+                 SWP_NOMOVE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
+}
 
 void Win32Window::set_max_size(Size max_size)
 {
@@ -404,13 +597,33 @@ void Win32Window::set_resizable(bool value)
 
     SetWindowLong(m_window, GWL_STYLE, style);
 
-    Size sz = adjust_size(size(), style);
-    SetWindowPos(m_window, HWND_TOP, 0, 0, sz.width, sz.height, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    const Size window_size = adjust_size(m_client_size);
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 0,
+                 0,
+                 window_size.width,
+                 window_size.height,
+                 SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED);
+}
+
+void Win32Window::set_position(Position position)
+{
+    m_client_position = position;
+
+    const Position window_position = adjust_position(m_client_position);
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 window_position.x,
+                 window_position.y,
+                 0,
+                 0,
+                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOACTIVATE);
 }
 
 void Win32Window::set_title(const std::string& title)
 {
-    const auto whide_char_title = utf8_to_utf16(title);
+    const auto whide_char_title = utf::to_wstring(title);
     SetWindowText(m_window, &whide_char_title[0]);
 }
 
@@ -418,9 +631,9 @@ void Win32Window::set_cursor_visibility(bool visible)
 {
     m_cursor_visible = visible;
     if (m_cursor_visible) {
-        SetCursor(LoadCursor(nullptr, IDC_ARROW));
+        show_cursor();
     } else {
-        SetCursor(nullptr);
+        hide_cursor();
     }
 }
 
@@ -428,12 +641,42 @@ void Win32Window::set_cursor_visibility(bool visible)
 
 #pragma region getters
 
+bool Win32Window::is_visible() const
+{
+    return IsWindowVisible(m_window);
+}
+
+bool Win32Window::should_close() const
+{
+    return m_should_close;
+}
+
+bool Win32Window::has_input_focus() const
+{
+    return GetActiveWindow() == m_window && GetFocus() == m_window;
+}
+
+bool Win32Window::is_cursor_grabbed() const
+{
+    return m_cursor_grabbed;
+}
+
+bool Win32Window::is_cursor_visible() const
+{
+    return GetCursor() != nullptr;
+}
+
 Position Win32Window::position() const
 {
-    RECT rect;
-    GetWindowRect(m_window, &rect);
+    POINT pos = {0, 0};
+    ClientToScreen(m_window, &pos);
 
-    return Position{rect.left, rect.top};
+    return Position{pos.x, pos.y};
+}
+
+Window::State Win32Window::state() const
+{
+    return m_state;
 }
 
 Size Win32Window::size() const
@@ -454,9 +697,14 @@ Size Win32Window::min_size() const
     return m_min_size;
 }
 
+bool Win32Window::is_resizable() const
+{
+    return m_resizable;
+}
+
 std::string Win32Window::title() const
 {
-    const int32 title_length = GetWindowTextLength(m_window) + 1;
+    const int title_length = GetWindowTextLength(m_window) + 1;
 
     if (title_length == 1) {
         return std::string();
@@ -465,7 +713,7 @@ std::string Win32Window::title() const
     std::unique_ptr<wchar_t[]> buffer(new wchar_t[static_cast<std::size_t>(title_length)]);
     GetWindowText(m_window, buffer.get(), title_length);
 
-    return utf16_to_utf8(buffer.get());
+    return utf::to_utf8(buffer.get());
 }
 
 const Context& Win32Window::context() const
@@ -488,272 +736,64 @@ Context& Win32Window::context()
 
 #pragma endregion
 
-#pragma region state
-
-bool Win32Window::should_close() const
-{
-    return m_should_close;
-}
-
-bool Win32Window::is_fullscreen() const
-{
-    RECT window_rect;
-    RECT desktop_rect;
-    GetWindowRect(m_window, &window_rect);
-    GetWindowRect(GetDesktopWindow(), &desktop_rect);
-
-    return (window_rect.left == desktop_rect.left && window_rect.top == desktop_rect.top &&
-            window_rect.right == desktop_rect.right && window_rect.bottom == desktop_rect.bottom);
-}
-
-bool Win32Window::is_iconified() const
-{
-    return IsIconic(m_window) != 0;
-}
-
-bool Win32Window::is_maximized() const
-{
-    return IsZoomed(m_window) != 0;
-}
-
-bool Win32Window::is_resizable() const
-{
-    return m_resizable;
-}
-
-bool Win32Window::is_visible() const
-{
-    return IsWindowVisible(m_window);
-}
-
-bool Win32Window::has_input_focus() const
-{
-    return GetActiveWindow() == m_window && GetFocus() == m_window;
-}
-
-bool Win32Window::is_cursor_visible() const
-{
-    return GetCursor() != nullptr;
-}
-
-bool Win32Window::is_cursor_grabbed() const
-{
-    return m_cursor_grabbed;
-}
-
-#pragma endregion
-
 #pragma region message processing
 
 LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_param)
 {
     switch (message) {
-        case WM_SETFOCUS: {
-            if (is_visible()) {
-                on_focus();
-            }
-            return 0;
-        }
+        case WM_SETFOCUS: return m_message_handler->process_set_focus_message(message, w_param, l_param);
+        case WM_KILLFOCUS: return m_message_handler->process_kill_focus_message(message, w_param, l_param);
+        case WM_CLOSE: return m_message_handler->process_close_message(message, w_param, l_param);
+        case WM_MOVE: return m_message_handler->process_move_message(message, w_param, l_param);
+        case WM_SIZE: return m_message_handler->process_size_message(message, w_param, l_param);
+        case WM_GETMINMAXINFO: return m_message_handler->process_get_min_max_info_message(message, w_param, l_param);
 
-        case WM_KILLFOCUS: {
-            if (is_visible()) {
-                on_lost_focus();
-            }
-            return 0;
-        }
-
-        case WM_CLOSE: {
-            m_should_close = true;
-            on_close();
-            return 0;
-        }
-
-        case WM_SHOWWINDOW: {
-            return 0;
-        }
-
-        case WM_SIZE: {
-            update_cursor();
-            on_resize(size());
-            return 0;
-        }
-
-        case WM_MOVE: {
-            update_cursor();
-            on_move(position());
-            return 0;
-        }
-
-        case WM_GETMINMAXINFO: {
-            auto minmaxinfo = reinterpret_cast<MINMAXINFO*>(l_param);
-            auto style      = GetWindowLong(m_window, GWL_STYLE);
-
-            if (m_min_size.width != 0 && m_min_size.height != 0) {
-                Size size = adjust_size(m_min_size, style);
-
-                minmaxinfo->ptMinTrackSize.x = size.width;
-                minmaxinfo->ptMinTrackSize.y = size.height;
-            }
-
-            if (m_max_size.width != 0 && m_max_size.height != 0) {
-                Size size = adjust_size(m_max_size, style);
-
-                minmaxinfo->ptMaxTrackSize.x = size.width;
-                minmaxinfo->ptMaxTrackSize.y = size.height;
-            }
-
-            return 0;
-        }
-
-        case WM_MOUSELEAVE: {
-            on_mouse_leave();
-            m_mouse_hover = false;
-
-            return 0;
-        }
-
-        case WM_MOUSEHOVER: {
-            on_mouse_enter();
-            m_mouse_hover = true;
-
-            return 0;
-        }
-
-        case WM_MOUSEMOVE: {
-            track_mouse();
-
-            CursorPosition pos{LOWORD(l_param), HIWORD(l_param)};
-
-            if (!m_cursor_grabbed) {
-                m_cursor_position = pos;
-                on_mouse_move(pos);
-            }
-
-            return 0;
-        }
-
-        case WM_SETCURSOR: {
-            if (LOWORD(l_param) == HTCLIENT) {
-                set_cursor_visibility(m_cursor_visible);
-                return TRUE;
-            }
-
-            break;
-        }
-
-        case WM_SYSKEYDOWN:
-        case WM_SYSKEYUP: {
-            process_key_event(w_param, l_param);
-            return DefWindowProc(m_window, message, w_param, l_param);
-        }
-
-        case WM_KEYDOWN:
-        case WM_KEYUP: {
-            return process_key_event(w_param, l_param);
-        }
+        case WM_MOUSELEAVE: return m_message_handler->process_mouse_leave_message(message, w_param, l_param);
+        case WM_MOUSEHOVER: return m_message_handler->process_mouse_hover_message(message, w_param, l_param);
+        case WM_MOUSEMOVE: return m_message_handler->process_mouse_move_message(message, w_param, l_param);
 
         case WM_LBUTTONDOWN:
         case WM_MBUTTONDOWN:
         case WM_RBUTTONDOWN:
         case WM_LBUTTONUP:
         case WM_MBUTTONUP:
-        case WM_RBUTTONUP: {
-            const MouseButton button = get_mouse_button(message);
-            const CursorPosition position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
-            const Modifiers mod_state = get_modifiers_state();
-            const bool down = (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_RBUTTONDOWN);
-
-            if (button != MouseButton::unknown) {
-                if (down) {
-                    on_mouse_button_down(button, position, mod_state);
-                } else {
-                    on_mouse_button_up(button, position, mod_state);
-                }
-            }
-
-            return 0;
-        }
-
+        case WM_RBUTTONUP:
         case WM_XBUTTONDOWN:
-        case WM_XBUTTONUP: {
-            const MouseButton button = (GET_XBUTTON_WPARAM(w_param) == XBUTTON1 ? MouseButton::button_4 :
-                                                                                  MouseButton::button_5);
-            const CursorPosition position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
-            const Modifiers mod_state = get_modifiers_state();
-            const bool down           = message == WM_XBUTTONDOWN;
+        case WM_XBUTTONUP: return m_message_handler->process_mouse_button_message(message, w_param, l_param);
 
-            if (down) {
-                on_mouse_button_down(button, position, mod_state);
-            } else {
-                on_mouse_button_up(button, position, mod_state);
-            }
+        case WM_MOUSEHWHEEL:
+        case WM_MOUSEWHEEL: return m_message_handler->process_mouse_wheel_message(message, w_param, l_param);
 
-            return TRUE;
-        }
+        case WM_KEYDOWN:
+        case WM_KEYUP:
+        case WM_SYSKEYDOWN:
+        case WM_SYSKEYUP:
+            m_message_handler->process_key_message(message, w_param, l_param);
+            break; // Just break, to pass event to DefWindowProc
 
-        case WM_MOUSEWHEEL: {
-            // A positive value indicates that the wheel was rotated forward, away from the user; a negative value
-            // indicates that the wheel was rotated backward, toward the user.
-            const short delta = GET_WHEEL_DELTA_WPARAM(w_param);
-            const ScrollOffset offset(0, delta);
-
-            on_mouse_scroll(offset);
-            return 0;
-        }
-
-        case WM_MOUSEHWHEEL: {
-            // A positive value indicates that the wheel was rotated to the right; a negative value indicates that the
-            // wheel was rotated to the left.
-            const short delta = GET_WHEEL_DELTA_WPARAM(w_param);
-            const ScrollOffset offset(delta, 0);
-
-            on_mouse_scroll(offset);
-            return 0;
-        }
-
-        case WM_UNICHAR: {
-            if (w_param == UNICODE_NOCHAR) {
-                // The WM_UNICHAR message can be used by an application to post input to other windows
-                // Returning TRUE here announces support for this message
-                return TRUE;
-            }
-            // TODO (alex): Do the correct unicode casting
-            wchar_t wchar = static_cast<wchar_t>(w_param);
-            std::wstring s;
-            s += wchar;
-            on_character(utf32_to_utf8(s));
-
-            return 0;
-        }
+        case WM_UNICHAR: return m_message_handler->process_unichar_message(message, w_param, l_param);
 
         case WM_CHAR:
-        case WM_SYSCHAR: {
-            // TODO (alex): Do the correct unicode casting
-            wchar_t wchar = static_cast<wchar_t>(w_param);
-            std::wstring s;
-            s += wchar;
-            on_character(utf16_to_utf8(s));
+        case WM_SYSCHAR: return m_message_handler->process_char_message(message, w_param, l_param);
 
-            return 0;
-        }
+        case WM_INPUT:
+            m_message_handler->process_input_message(message, w_param, l_param);
+            break; // Just break, to pass event to DefWindowProc
 
         case WM_SYSCOMMAND: {
             switch (w_param & 0xfff0) {
                 case SC_SCREENSAVE:
                 case SC_MONITORPOWER: {
-                    if (is_fullscreen()) {
+                    // We are running in full screen mode, so disallow screen saver and screen blanking
+                    if (m_state == Window::State::fullscreen) {
                         return 0;
                     } else
                         break;
                 }
 
+                // Don't forward the menu system command, so that pressing ALT or F10 doesn't steal the focus
                 case SC_KEYMENU: return 0;
             }
-            break;
-        }
-
-        case WM_INPUT: {
-            process_raw_input(l_param);
             break;
         }
     }
@@ -761,11 +801,164 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
     return DefWindowProc(m_window, message, w_param, l_param);
 }
 
-#pragma endregion
+LRESULT Win32Window::on_set_focus_message(UINT, WPARAM, LPARAM)
+{
+    if (is_visible()) {
+        if (m_cursor_grabbed) {
+            enable_raw_input();
+        }
 
-#pragma region keyboard processing
+        on_focus();
+    }
 
-LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
+    return 0;
+}
+
+LRESULT Win32Window::on_kill_focus_message(UINT, WPARAM, LPARAM)
+{
+    if (is_visible()) {
+        on_lost_focus();
+    }
+
+    if (m_cursor_grabbed) {
+        disable_raw_input();
+    }
+
+    return 0;
+}
+
+LRESULT Win32Window::on_close_message(UINT, WPARAM, LPARAM)
+{
+    m_should_close = true;
+    on_close();
+
+    return 0;
+}
+
+LRESULT Win32Window::on_move_message(UINT, WPARAM, LPARAM)
+{
+    if (is_visible()) {
+        update_cursor();
+        m_client_position = position();
+        on_move(m_client_position);
+    }
+
+    return 0;
+}
+
+LRESULT Win32Window::on_size_message(UINT, WPARAM, LPARAM)
+{
+    if (is_visible()) {
+        update_cursor();
+        m_client_size = size();
+        on_resize(m_client_size);
+    }
+
+    return 0;
+}
+
+LRESULT Win32Window::on_get_min_max_info_message(UINT, WPARAM, LPARAM l_param)
+{
+    auto minmaxinfo = reinterpret_cast<MINMAXINFO*>(l_param);
+
+    if (m_min_size.width != 0 && m_min_size.height != 0) {
+        const Size window_size       = adjust_size(m_min_size);
+        minmaxinfo->ptMinTrackSize.x = window_size.width;
+        minmaxinfo->ptMinTrackSize.y = window_size.height;
+    }
+
+    if (m_max_size.width != 0 && m_max_size.height != 0) {
+        const Size window_size       = adjust_size(m_max_size);
+        minmaxinfo->ptMaxTrackSize.x = window_size.width;
+        minmaxinfo->ptMaxTrackSize.y = window_size.height;
+    }
+
+    return 0;
+}
+
+LRESULT Win32Window::on_mouse_leave_message(UINT, WPARAM, LPARAM)
+{
+    on_mouse_leave();
+    m_mouse_hover = false;
+
+    return 0;
+}
+
+LRESULT Win32Window::on_mouse_hover_message(UINT, WPARAM, LPARAM)
+{
+    on_mouse_enter();
+    m_mouse_hover = true;
+
+    return 0;
+}
+
+LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
+{
+    track_mouse();
+
+    CursorPosition pos{LOWORD(l_param), HIWORD(l_param)};
+
+    if (!m_cursor_grabbed) {
+        m_cursor_position = pos;
+        on_mouse_move(pos);
+    }
+
+    if (m_mouse_hover) {
+        if (m_cursor_visible) {
+            show_cursor();
+        } else {
+            hide_cursor();
+        }
+    }
+
+    return 0;
+}
+
+LRESULT Win32Window::on_mouse_button_message(UINT message, WPARAM w_param, LPARAM l_param)
+{
+    const MouseButton button = get_mouse_button(message, w_param);
+    const CursorPosition position{GET_X_LPARAM(l_param), GET_Y_LPARAM(l_param)};
+    const Modifiers mod_state = get_modifiers_state();
+
+    const bool down = (message == WM_LBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_RBUTTONDOWN ||
+                       message == WM_XBUTTONDOWN);
+
+    if (button != MouseButton::unknown) {
+        if (down) {
+            on_mouse_button_down(button, position, mod_state);
+        } else {
+            on_mouse_button_up(button, position, mod_state);
+        }
+    }
+
+    if (message == WM_XBUTTONDOWN || message == WM_XBUTTONUP) {
+        return TRUE;
+    }
+
+    return 0;
+}
+
+LRESULT Win32Window::on_mouse_wheel_message(UINT message, WPARAM w_param, LPARAM)
+{
+    const short delta = GET_WHEEL_DELTA_WPARAM(w_param);
+
+    switch (message) {
+        case WM_MOUSEWHEEL:
+            // A positive value indicates that the wheel was rotated forward, away from the user; a negative value
+            // indicates that the wheel was rotated backward, toward the user.
+            on_mouse_scroll(ScrollOffset{0, delta});
+            break;
+        case WM_MOUSEHWHEEL:
+            // A positive value indicates that the wheel was rotated to the right; a negative value indicates that
+            // the wheel was rotated to the left.
+            on_mouse_scroll(ScrollOffset{delta, 0});
+            break;
+    }
+
+    return 0;
+}
+
+LRESULT Win32Window::on_key_message(UINT, WPARAM w_param, LPARAM l_param)
 {
     switch (w_param) {
         case VK_SHIFT: process_shift_key(l_param); return 0;
@@ -797,6 +990,80 @@ LRESULT Win32Window::process_key_event(WPARAM w_param, LPARAM l_param)
 
     return 0;
 }
+
+LRESULT Win32Window::on_unichar_message(UINT, WPARAM w_param, LPARAM)
+{
+    if (w_param == UNICODE_NOCHAR) {
+        // The WM_UNICHAR message can be used by an application to post input to other windows
+        // Returning TRUE here announces support for this message
+        return TRUE;
+    }
+    wchar_t wchar = static_cast<wchar_t>(w_param);
+    std::wstring s;
+    s += wchar;
+    on_character(utf::to_utf8(s));
+
+    return 0;
+}
+
+LRESULT Win32Window::on_char_message(UINT, WPARAM w_param, LPARAM)
+{
+    wchar_t wchar = static_cast<wchar_t>(w_param);
+    std::wstring s;
+    s += wchar;
+    on_character(utf::to_utf8(s));
+
+    return 0;
+}
+
+LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
+{
+    if (!m_cursor_grabbed) {
+        return 0;
+    }
+
+    HRAWINPUT handle = reinterpret_cast<HRAWINPUT>(l_param);
+
+    UINT size = 0;
+    GetRawInputData(handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
+
+    RAWINPUT raw_input = RAWINPUT();
+    if (GetRawInputData(handle, RID_INPUT, &raw_input, &size, sizeof(RAWINPUTHEADER)) == static_cast<UINT>(-1)) {
+        return 0;
+    }
+
+    CursorPosition pos = m_cursor_position;
+    pos.x += m_grabbed_cursor_diff.x;
+    pos.y += m_grabbed_cursor_diff.y;
+
+    int dx = 0;
+    int dy = 0;
+
+    if (raw_input.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE) {
+        dx = raw_input.data.mouse.lLastX - pos.x;
+        dy = raw_input.data.mouse.lLastY - pos.y;
+    } else {
+        dx = raw_input.data.mouse.lLastX;
+        dy = raw_input.data.mouse.lLastY;
+    }
+
+    m_grabbed_cursor_diff.x += dx;
+    m_grabbed_cursor_diff.y += dy;
+    pos.x += dx;
+    pos.y += dy;
+
+    if (dx != 0 || dy != 0) {
+        set_cursor_in_center(m_window);
+    }
+
+    on_mouse_move(pos);
+
+    return 0;
+}
+
+#pragma endregion
+
+#pragma region keyboard processing
 
 void Win32Window::process_shift_key(LPARAM l_param)
 {
@@ -881,7 +1148,7 @@ void Win32Window::process_alt_key(LPARAM l_param)
 
 #pragma endregion
 
-#pragma region mouse processing
+#pragma region mouse handling
 
 void Win32Window::track_mouse()
 {
@@ -904,59 +1171,111 @@ void Win32Window::update_cursor()
 
 void Win32Window::enable_raw_input()
 {
+    m_grabbed_cursor_diff = {0, 0};
+    m_cursor_position     = get_cursor_position(m_window);
+    update_cursor();
+
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
 void Win32Window::disable_raw_input()
 {
+    set_cursor_cliping(m_window, false);
+    set_cursor_position(m_window, m_cursor_position);
+
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
-void Win32Window::process_raw_input(LPARAM l_param)
+void Win32Window::hide_cursor()
 {
-    if (!m_cursor_grabbed) {
-        return;
+    HCURSOR cursor = GetCursor();
+    if (cursor) {
+        m_prev_cursor = cursor;
     }
 
-    HRAWINPUT handle = reinterpret_cast<HRAWINPUT>(l_param);
+    SetCursor(nullptr);
+}
 
-    UINT size = 0;
-    GetRawInputData(handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
-
-    RAWINPUT raw_input = RAWINPUT();
-    if (GetRawInputData(handle, RID_INPUT, &raw_input, &size, sizeof(RAWINPUTHEADER)) == static_cast<UINT>(-1)) {
-        return;
-    }
-
-    CursorPosition pos = m_cursor_position;
-    pos.x += m_grabbed_cursor_diff.x;
-    pos.y += m_grabbed_cursor_diff.y;
-
-    int dx = 0;
-    int dy = 0;
-
-    if (raw_input.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE) {
-        dx = raw_input.data.mouse.lLastX - pos.x;
-        dy = raw_input.data.mouse.lLastY - pos.y;
+void Win32Window::show_cursor()
+{
+    if (m_prev_cursor) {
+        SetCursor(m_prev_cursor);
+        m_prev_cursor = nullptr;
     } else {
-        dx = raw_input.data.mouse.lLastX;
-        dy = raw_input.data.mouse.lLastY;
+        SetCursor(LoadCursor(nullptr, IDC_ARROW));
     }
-
-    m_grabbed_cursor_diff.x += dx;
-    m_grabbed_cursor_diff.y += dy;
-    pos.x += dx;
-    pos.y += dy;
-
-    if (dx != 0 || dy != 0) {
-        set_cursor_in_center(m_window);
-    }
-
-    on_mouse_move(pos);
 }
 
 #pragma endregion
+
+void Win32Window::enter_fullscreen()
+{
+    const LONG style    = GetWindowLong(m_window, GWL_STYLE);
+    const LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
+
+    SetWindowLong(m_window, GWL_STYLE, style & ~(WS_CAPTION | WS_THICKFRAME));
+    SetWindowLong(m_window,
+                  GWL_EXSTYLE,
+                  ex_style & ~(WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE));
+
+    MONITORINFO monitor_info = {};
+    monitor_info.cbSize      = sizeof(monitor_info);
+    GetMonitorInfo(MonitorFromWindow(m_window, MONITOR_DEFAULTTONEAREST), &monitor_info);
+
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 monitor_info.rcMonitor.left,
+                 monitor_info.rcMonitor.top,
+                 monitor_info.rcMonitor.right,
+                 monitor_info.rcMonitor.bottom,
+                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+    SetForegroundWindow(m_window);
+}
+
+void Win32Window::exit_fullscreen()
+{
+    const LONG style    = GetWindowLong(m_window, GWL_STYLE);
+    const LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
+
+    SetWindowLong(m_window, GWL_STYLE, style | WS_CAPTION | WS_THICKFRAME);
+    SetWindowLong(m_window,
+                  GWL_EXSTYLE,
+                  ex_style | WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
+
+    const Size window_size         = adjust_size(m_client_size);
+    const Position window_position = adjust_position(m_client_position);
+    SetWindowPos(m_window,
+                 HWND_TOP,
+                 window_position.x,
+                 window_position.y,
+                 window_size.width,
+                 window_size.height,
+                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+}
+
+Size Win32Window::adjust_size(Size size) const
+{
+    const auto style    = m_window ? GetWindowLong(m_window, GWL_STYLE) : window_style;
+    const auto ex_style = m_window ? GetWindowLong(m_window, GWL_EXSTYLE) : window_ex_style;
+
+    RECT rect = {0, 0, size.width, size.height};
+    AdjustWindowRectEx(&rect, style, false, ex_style);
+
+    return {rect.right - rect.left, rect.bottom - rect.top};
+}
+
+Position Win32Window::adjust_position(Position position) const
+{
+    const auto style    = m_window ? GetWindowLong(m_window, GWL_STYLE) : window_style;
+    const auto ex_style = m_window ? GetWindowLong(m_window, GWL_EXSTYLE) : window_ex_style;
+
+    RECT rect = {position.x, position.y, 0, 0};
+    AdjustWindowRectEx(&rect, style, false, ex_style);
+
+    return {rect.left, rect.top};
+}
 
 } // namespace framework::system::details
