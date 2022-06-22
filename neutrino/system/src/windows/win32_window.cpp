@@ -404,13 +404,6 @@ void Win32Window::show()
     }
     UpdateWindow(m_window);
 
-    if (m_cursor_grabbed) {
-        m_grabbed_cursor_diff = {0, 0};
-        m_cursor_position     = get_cursor_position(m_window);
-        update_cursor();
-        enable_raw_input();
-    }
-
     m_mouse_hover = is_cursor_in_client_area(m_window);
 
     // Turn on the on_resize callback
@@ -431,6 +424,10 @@ void Win32Window::show()
     // Explicitly call on_resize callback
     on_resize(size());
 
+    if (m_cursor_grabbed) {
+        enable_raw_input();
+    }
+
     if (has_input_focus()) {
         on_focus();
     } else {
@@ -450,9 +447,6 @@ void Win32Window::hide()
     }
 
     if (m_cursor_grabbed) {
-        set_cursor_cliping(m_window, false);
-        set_cursor_position(m_window, m_cursor_position);
-
         disable_raw_input();
     }
 
@@ -470,6 +464,10 @@ void Win32Window::focus()
 
     BringWindowToTop(m_window);
     SetForegroundWindow(m_window);
+
+    if (m_cursor_grabbed) {
+        enable_raw_input();
+    }
 }
 
 void Win32Window::grab_cursor()
@@ -480,9 +478,6 @@ void Win32Window::grab_cursor()
 
     m_cursor_grabbed = true;
 
-    m_grabbed_cursor_diff = {0, 0};
-    m_cursor_position     = get_cursor_position(m_window);
-    update_cursor();
     enable_raw_input();
 }
 
@@ -493,8 +488,6 @@ void Win32Window::release_cursor()
     }
 
     m_cursor_grabbed = false;
-    set_cursor_cliping(m_window, false);
-    set_cursor_position(m_window, m_cursor_position);
 
     disable_raw_input();
 }
@@ -638,9 +631,9 @@ void Win32Window::set_cursor_visibility(bool visible)
 {
     m_cursor_visible = visible;
     if (m_cursor_visible) {
-        SetCursor(LoadCursor(nullptr, IDC_ARROW));
+        show_cursor();
     } else {
-        SetCursor(nullptr);
+        hide_cursor();
     }
 }
 
@@ -711,7 +704,7 @@ bool Win32Window::is_resizable() const
 
 std::string Win32Window::title() const
 {
-    const int32 title_length = GetWindowTextLength(m_window) + 1;
+    const int title_length = GetWindowTextLength(m_window) + 1;
 
     if (title_length == 1) {
         return std::string();
@@ -811,6 +804,10 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
 LRESULT Win32Window::on_set_focus_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
+        if (m_cursor_grabbed) {
+            enable_raw_input();
+        }
+
         on_focus();
     }
 
@@ -821,6 +818,10 @@ LRESULT Win32Window::on_kill_focus_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
         on_lost_focus();
+    }
+
+    if (m_cursor_grabbed) {
+        disable_raw_input();
     }
 
     return 0;
@@ -900,6 +901,14 @@ LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
     if (!m_cursor_grabbed) {
         m_cursor_position = pos;
         on_mouse_move(pos);
+    }
+
+    if (m_mouse_hover) {
+        if (m_cursor_visible) {
+            show_cursor();
+        } else {
+            hide_cursor();
+        }
     }
 
     return 0;
@@ -1162,14 +1171,41 @@ void Win32Window::update_cursor()
 
 void Win32Window::enable_raw_input()
 {
+    m_grabbed_cursor_diff = {0, 0};
+    m_cursor_position     = get_cursor_position(m_window);
+    update_cursor();
+
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
 void Win32Window::disable_raw_input()
 {
+    set_cursor_cliping(m_window, false);
+    set_cursor_position(m_window, m_cursor_position);
+
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
+}
+
+void Win32Window::hide_cursor()
+{
+    HCURSOR cursor = GetCursor();
+    if (cursor) {
+        m_prev_cursor = cursor;
+    }
+
+    SetCursor(nullptr);
+}
+
+void Win32Window::show_cursor()
+{
+    if (m_prev_cursor) {
+        SetCursor(m_prev_cursor);
+        m_prev_cursor = nullptr;
+    } else {
+        SetCursor(LoadCursor(nullptr, IDC_ARROW));
+    }
 }
 
 #pragma endregion
