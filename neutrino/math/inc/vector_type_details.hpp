@@ -74,7 +74,7 @@ struct common_type_details<T>
 };
 
 template <typename... Args>
-using common_type = typename std::enable_if<are_all_arithmetic<Args...>::value, common_type_details<Args...>>::type;
+using common_type_t = typename std::enable_if_t<are_all_arithmetic<Args...>::value, common_type_details<Args...>>::type;
 
 template <std::size_t N>
 struct transform_details;

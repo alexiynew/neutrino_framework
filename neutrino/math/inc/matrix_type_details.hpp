@@ -55,7 +55,7 @@ inline constexpr V get_column(M&& Matrix, V&& vector) noexcept
 }
 
 template <typename... Args>
-using common_type = vector_type_details::common_type<Args...>;
+using common_type_t = vector_type_details::common_type_t<Args...>;
 
 } // namespace framework::math::matrix_type_details
 
