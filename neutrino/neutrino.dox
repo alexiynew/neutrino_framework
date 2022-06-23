@@ -31,6 +31,7 @@
 /// @defgroup math_trigonometric_functions Trigonometric functions
 /// @defgroup math_bezier_functions Bezier curve functions
 /// @defgroup math_hash_functions Support for std::hash function
+/// @defgroup math_polygon_functions Support for polygons geometry
 /// @}
 
 /// @defgroup system_module System
