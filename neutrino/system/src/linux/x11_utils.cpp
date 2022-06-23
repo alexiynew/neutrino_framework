@@ -295,8 +295,8 @@ void set_window_name(const X11Server* server, ::Window window, const std::string
                         utf8_string,
                         8,
                         PropModeReplace,
-                        reinterpret_cast<const uint8*>(title.c_str()),
-                        static_cast<int32>(title.size()));
+                        reinterpret_cast<const std::uint8_t*>(title.c_str()),
+                        static_cast<std::int32_t>(title.size()));
 
         XChangeProperty(server->display(),
                         window,
@@ -304,8 +304,8 @@ void set_window_name(const X11Server* server, ::Window window, const std::string
                         utf8_string,
                         8,
                         PropModeReplace,
-                        reinterpret_cast<const uint8*>(title.c_str()),
-                        static_cast<int32>(title.size()));
+                        reinterpret_cast<const std::uint8_t*>(title.c_str()),
+                        static_cast<std::int32_t>(title.size()));
     }
 
     XTextProperty text_property = create_text_property(server->display(), title);
@@ -324,10 +324,13 @@ std::string get_window_name(const X11Server* server, ::Window window)
     Atom utf8_string      = server->get_atom(utf8_string_atom_name);
 
     if (ewmh_supported() && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
-        std::vector<uint8> data = get_window_property<uint8>(server->display(), window, net_wm_name, utf8_string);
+        std::vector<std::uint8_t> data = get_window_property<std::uint8_t>(server->display(),
+                                                                           window,
+                                                                           net_wm_name,
+                                                                           utf8_string);
 
         if (data.empty()) {
-            data = get_window_property<uint8>(server->display(), window, net_wm_icon_name, utf8_string);
+            data = get_window_property<std::uint8_t>(server->display(), window, net_wm_icon_name, utf8_string);
         }
 
         if (!data.empty()) {

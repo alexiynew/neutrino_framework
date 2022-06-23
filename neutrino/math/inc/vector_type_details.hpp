@@ -8,8 +8,6 @@
     #include <functional>
     #include <type_traits>
 
-    #include <common/types.hpp>
-
 namespace framework::math::vector_type_details
 {
 

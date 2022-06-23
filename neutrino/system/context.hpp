@@ -3,7 +3,6 @@
 
 #include <memory>
 
-#include <common/types.hpp>
 #include <system/context_settings.hpp>
 
 namespace framework::system

@@ -1,4 +1,3 @@
-#include <common/types.hpp>
 #include <graphics/texture.hpp>
 
 #include <graphics/src/opengl/opengl.hpp>

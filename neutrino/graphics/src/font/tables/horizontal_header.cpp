@@ -23,7 +23,7 @@ HorizontalHeader::HorizontalHeader(const BytesData& data)
     in >> m_caret_offset;
 
     // skip reserved fields
-    in.skip<int16>(4);
+    in.skip<std::int16_t>(4);
 
     in >> m_metric_data_format;
     in >> m_number_of_h_metrics;

@@ -118,12 +118,12 @@ private:
                 no_action_called = true;
             }
 
-            int32 get_value() const
+            std::int32_t get_value() const
             {
                 return value;
             }
 
-            int32 value                   = 0;
+            std::int32_t value            = 0;
             mutable bool no_action_called = false;
         };
 
@@ -167,12 +167,12 @@ private:
                 no_action_called = true;
             }
 
-            int32 get_value() const
+            std::int32_t get_value() const
             {
                 return value;
             }
 
-            int32 value                   = 0;
+            std::int32_t value            = 0;
             mutable bool no_action_called = false;
         };
 
@@ -216,12 +216,12 @@ private:
                 no_action_called = true;
             }
 
-            int32 get_value() const
+            std::int32_t get_value() const
             {
                 return value;
             }
 
-            int32 value                   = 0;
+            std::int32_t value            = 0;
             mutable bool no_action_called = false;
         };
 

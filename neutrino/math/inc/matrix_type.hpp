@@ -3382,7 +3382,7 @@ template <std::size_t C,
           std::size_t R,
           typename T,
           typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
 inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const U& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
@@ -3401,7 +3401,7 @@ template <std::size_t C,
           std::size_t R,
           typename T,
           typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
 inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const U& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
@@ -3420,7 +3420,7 @@ template <std::size_t C,
           std::size_t R,
           typename T,
           typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
 inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const U& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
@@ -3439,7 +3439,7 @@ template <std::size_t C,
           std::size_t R,
           typename T,
           typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
 inline Matrix<C, R, T>& operator/=(Matrix<C, R, T>& lhs, const U& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {

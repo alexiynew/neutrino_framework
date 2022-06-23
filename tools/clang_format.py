@@ -50,7 +50,7 @@ def convert_line_endings(filename):
 
 
 def fix_encoding(filename):
-    with open(filename, mode='r') as open_file:
+    with open(filename, 'r', encoding='utf-8') as open_file:
         content = open_file.read()
 
     with open(filename, 'w', encoding='utf-8') as open_file:

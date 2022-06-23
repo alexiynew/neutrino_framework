@@ -4,7 +4,6 @@
 #include <string>
 #include <thread>
 
-#include <common/types.hpp>
 #include <common/utils.hpp>
 
 #include <system/src/linux/x11_glx_context.hpp>

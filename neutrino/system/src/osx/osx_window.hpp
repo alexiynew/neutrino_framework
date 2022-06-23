@@ -23,7 +23,7 @@ public:
 
     ~OsxWindow() override;
 
-    OsxWindow& operator=(const OsxWindow&)     = delete;
+    OsxWindow& operator=(const OsxWindow&) = delete;
     OsxWindow& operator=(OsxWindow&&) noexcept = default;
 
 #pragma region actions
@@ -77,9 +77,9 @@ private:
 #pragma endregion
 
     bool switch_to_other_window();
-    
+
     void update_context();
-    
+
     void switch_state(Window::State state);
     Window::State get_actual_state() const;
 

@@ -875,7 +875,10 @@ inline Vector<N, T>& operator/=(Vector<N, T>& lhs, const Vector<N, U>& rhs) noex
 /// @param rhs Second addend.
 ///
 /// @return Reference to sum of vector and scalar value.
-template <std::size_t N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+template <std::size_t N,
+          typename T,
+          typename U,
+          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
 inline Vector<N, T>& operator+=(Vector<N, T>& lhs, const U& rhs) noexcept
 {
     for (std::size_t i = 0; i < N; ++i) {
@@ -891,7 +894,10 @@ inline Vector<N, T>& operator+=(Vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Reference to difference of vector and scalar value.
-template <std::size_t N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+template <std::size_t N,
+          typename T,
+          typename U,
+          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
 inline Vector<N, T>& operator-=(Vector<N, T>& lhs, const U& rhs) noexcept
 {
     for (std::size_t i = 0; i < N; ++i) {
@@ -907,7 +913,10 @@ inline Vector<N, T>& operator-=(Vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to product of vector and scalar value.
-template <std::size_t N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+template <std::size_t N,
+          typename T,
+          typename U,
+          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
 inline Vector<N, T>& operator*=(Vector<N, T>& lhs, const U& rhs) noexcept
 {
     for (std::size_t i = 0; i < N; ++i) {
@@ -923,7 +932,10 @@ inline Vector<N, T>& operator*=(Vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Divider scalar value.
 ///
 /// @return Reference to quotient of vector and scalar value.
-template <std::size_t N, typename T, typename U, typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
+template <std::size_t N,
+          typename T,
+          typename U,
+          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
 inline Vector<N, T>& operator/=(Vector<N, T>& lhs, const U& rhs) noexcept
 {
     for (std::size_t i = 0; i < N; ++i) {

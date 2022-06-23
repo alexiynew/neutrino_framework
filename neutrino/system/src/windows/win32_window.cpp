@@ -1,4 +1,4 @@
-﻿#include <functional>
+#include <functional>
 #include <stdexcept>
 
 #include <common/utf.hpp>

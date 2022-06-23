@@ -632,7 +632,7 @@ inline Vector<N, T> step(const Vector<N, T>& value, const Vector<N, T>& edge)
 ///     return t * t * (3.0 - 2.0 * t);
 /// @endcode
 /// Results are undefined if edge0
-/// Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р В РІР‚В Р В Р’В Р Р†Р вЂљРЎв„ўР В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р РЋРЎвЂєР В Р Р‹Р Р†Р вЂљРІвЂћСћ
+/// Р В Р’В Р вЂ™Р’В Р В РІР‚в„ўР вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р вЂ™Р’В Р В Р’В Р вЂ™Р’В Р В Р’В Р Р†Р вЂљР’В Р В Р’В Р вЂ™Р’В Р В Р вЂ Р В РІР‚С™Р РЋРІвЂћСћР В Р’В Р Р†Р вЂљРІвЂћСћР В РІР‚в„ўР вЂ™Р’В°Р В Р’В Р вЂ™Р’В Р В Р Р‹Р РЋРІР‚С”Р В Р’В Р В Р вЂ№Р В Р вЂ Р В РІР‚С™Р Р†РІР‚С›РЎС›
 /// edge1.
 ///
 /// @param value Specifies the source value for interpolation.
@@ -796,8 +796,8 @@ inline Vector<N, T> fma(const Vector<N, T>& a, const Vector<N, T>& b, const Vect
 /// @return If value is zero, returns zero and stores zero in exp.
 ///         Otherwise, returns the value x in the range (-1;-0.5], [0.5; 1)
 ///         and stores an integer value in exp such that `x * 2 ^ exp = value`.
-template <typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int32*>()))>
-inline R frexp(const T& value, int32* exp)
+template <typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<std::int32_t*>()))>
+inline R frexp(const T& value, std::int32_t* exp)
 {
     return ::std::frexp(value, exp);
 }
@@ -812,8 +812,10 @@ inline R frexp(const T& value, int32* exp)
 ///         and stores zero in exp.
 ///         Otherwise, returns the value x in the range (-1;-0.5], [0.5; 1)
 ///         and stores an integer value in exp such that `x * 2 ^ exp = value`.
-template <std::size_t N, typename T, typename R = decltype(::std::frexp(std::declval<T>(), std::declval<int32*>()))>
-inline Vector<N, R> frexp(const Vector<N, T>& value, Vector<N, int32>* exp)
+template <std::size_t N,
+          typename T,
+          typename R = decltype(::std::frexp(std::declval<T>(), std::declval<std::int32_t*>()))>
+inline Vector<N, R> frexp(const Vector<N, T>& value, Vector<N, std::int32_t>* exp)
 {
     return common_functions_details::frexp<T, R>(value, exp);
 }
@@ -833,8 +835,8 @@ inline Vector<N, R> frexp(const Vector<N, T>& value, Vector<N, int32>* exp)
 ///
 /// @return Value which is equivalent to value multiplied by 2 to the power
 ///         of exp: `value * 2 ^ exp`.
-template <typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int32>()))>
-inline R ldexp(const T& value, const int32 exp)
+template <typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<std::int32_t>()))>
+inline R ldexp(const T& value, const std::int32_t exp)
 {
     return ::std::ldexp(value, exp);
 }
@@ -847,8 +849,8 @@ inline R ldexp(const T& value, const int32 exp)
 ///
 /// @return Vector which components are equivalent to value multiplied
 ///         by 2 to the power of exp: `value * 2 ^ exp`.
-template <std::size_t N, typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<int32>()))>
-inline Vector<N, R> ldexp(const Vector<N, T>& value, const Vector<N, int32>& exp)
+template <std::size_t N, typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<std::int32_t>()))>
+inline Vector<N, R> ldexp(const Vector<N, T>& value, const Vector<N, std::int32_t>& exp)
 {
     return transform(value, exp, framework::math::ldexp<T>);
 }

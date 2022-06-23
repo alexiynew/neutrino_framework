@@ -1,23 +1,20 @@
 #include <string>
 #include <vector>
 
-#include <common/types.hpp>
 #include <common/zlib.hpp>
 #include <unit_test/suite.hpp>
 
 namespace
 {
 
-using framework::uint8;
-
-std::vector<uint8> to_vector(const std::string& str)
+std::vector<std::uint8_t> to_vector(const std::string& str)
 {
-    std::vector<uint8> data(str.c_str(), str.c_str() + str.size());
+    std::vector<std::uint8_t> data(str.c_str(), str.c_str() + str.size());
     data.push_back(0x00);
     return data;
 }
 
-std::string to_string(const std::vector<uint8>& data)
+std::string to_string(const std::vector<std::uint8_t>& data)
 {
     std::string str(data.begin(), data.end());
     return str;
@@ -145,7 +142,7 @@ const std::string huge_text =
 "tristique. Morbi mattis ullamcorper velit. Phasellus gravida semper nisi. Nullam vel sem. Pellentesque libero tortor, "
 "tincidunt et, tincidunt eget, semper nec, quam. Sed hendrerit. Morbi ac felis.";
 
-const std::vector<uint8> huge_text_deflated =
+const std::vector<std::uint8_t> huge_text_deflated =
 {0x78, 0x9c, 0xed, 0x5a, 0xdb, 0x8e, 0xe4, 0xb8, 0x0d, 0xfd, 0x15, 0x7d, 0x80, 0xd1, 0x3f, 0x90, 0xa7, 0xc5, 0x6c, 0x02,
  0x2c, 0xb0, 0x09, 0x36, 0x08, 0x66, 0xdf, 0xd5, 0x2e, 0x75, 0xb7, 0x02, 0x5f, 0x6a, 0x6c, 0xa9, 0x80, 0xfd, 0xfb, 0x90,
  0x3c, 0x24, 0x45, 0xf7, 0x0c, 0x90, 0x97, 0xec, 0x4b, 0x50, 0xc0, 0x5c, 0xba, 0xab, 0x6c, 0x89, 0x22, 0x0f, 0x0f, 0x0f,
@@ -325,9 +322,9 @@ private:
     {
         using namespace framework::zlib;
 
-        const std::vector<uint8> fixed   = inflate(fixed_huffman);
-        const std::vector<uint8> dynamic = inflate(dynamic_huffman);
-        const std::vector<uint8> no      = inflate(no_compression);
+        const std::vector<std::uint8_t> fixed   = inflate(fixed_huffman);
+        const std::vector<std::uint8_t> dynamic = inflate(dynamic_huffman);
+        const std::vector<std::uint8_t> no      = inflate(no_compression);
 
         TEST_ASSERT(fixed == data, "Inflate error.");
         TEST_ASSERT(dynamic == data, "Inflate error.");
@@ -347,25 +344,25 @@ private:
     {
         using namespace framework::zlib;
 
-        const std::vector<uint8> compressed   = deflate(data);
-        const std::vector<uint8> decompressed = inflate(compressed);
+        const std::vector<std::uint8_t> compressed   = deflate(data);
+        const std::vector<std::uint8_t> decompressed = inflate(compressed);
 
         TEST_ASSERT(decompressed == data, "Deflate error.");
     }
 
-    std::vector<uint8> data;
+    std::vector<std::uint8_t> data;
 
-    std::vector<uint8> fixed_huffman = {
+    std::vector<std::uint8_t> fixed_huffman = {
     0x78, 0xDA, 0xF3, 0x48, 0xCD, 0xC9, 0xC9, 0x57, 0xF0, 0xC0, 0x47, 0x2A, 0x32, 0x00, 0x00, 0xF5, 0x49, 0x0C, 0x7A,
     };
 
-    std::vector<uint8> dynamic_huffman = {
+    std::vector<std::uint8_t> dynamic_huffman = {
     0x78, 0xDA, 0x05, 0xC1, 0x31, 0x0D, 0x00, 0x30, 0x10, 0x03, 0xB1, 0x42, 0x49,
     0xD9, 0x84, 0x48, 0xB6, 0x93, 0x8E, 0xFF, 0xF6, 0x76, 0x07, 0xA6, 0x03, 0xD3,
     0x81, 0xE9, 0xC0, 0x74, 0x60, 0x3A, 0xF0, 0xBF, 0x03, 0xF5, 0x49, 0x0C, 0x7A,
     };
 
-    std::vector<uint8> no_compression = {
+    std::vector<std::uint8_t> no_compression = {
     0x78, 0x01, 0x01, 0x25, 0x00, 0xDA, 0xFF, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x48, 0x65, 0x6C,
     0x6C, 0x6F, 0x20, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x48,
     0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x21, 0x00, 0xF5, 0x49, 0x0C, 0x7A,

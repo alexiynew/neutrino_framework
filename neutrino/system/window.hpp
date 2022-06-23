@@ -55,7 +55,7 @@ public:
     Window(Window&& other) noexcept;
 
     Window& operator=(const Window&) = delete;
-    Window& operator=(Window&& other) noexcept;
+    Window& operator                 =(Window&& other) noexcept;
 
 #pragma region actions
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,9 +1,5 @@
-#include <common/types.hpp>
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
-
-using framework::int32;
-using framework::uint32;
 
 using framework::math::Vector2f;
 using framework::math::Vector3f;
@@ -151,10 +147,10 @@ private:
 
     void const_pointer_constructor()
     {
-        const double data_d[4] = {1.0, 2.0, 3.0, 4.0};
-        const float data_f[3]  = {1.0f, 2.0f, 3.0f};
-        const int32 data_i[2]  = {1, 2};
-        const uint32 data_u[2] = {1, 2};
+        const double data_d[4]        = {1.0, 2.0, 3.0, 4.0};
+        const float data_f[3]         = {1.0f, 2.0f, 3.0f};
+        const std::int32_t data_i[2]  = {1, 2};
+        const std::uint32_t data_u[2] = {1, 2};
 
         const Vector4d v4d(data_d);
         const Vector3f v3f(data_f);
@@ -169,10 +165,10 @@ private:
 
     void pointer_constructor()
     {
-        double data_d[4] = {1.0, 2.0, 3.0, 4.0};
-        float data_f[3]  = {1.0f, 2.0f, 3.0f};
-        int32 data_i[2]  = {1, 2};
-        uint32 data_u[2] = {1, 2};
+        double data_d[4]        = {1.0, 2.0, 3.0, 4.0};
+        float data_f[3]         = {1.0f, 2.0f, 3.0f};
+        std::int32_t data_i[2]  = {1, 2};
+        std::uint32_t data_u[2] = {1, 2};
 
         const Vector4d v4d(data_d);
         const Vector3f v3f(data_f);

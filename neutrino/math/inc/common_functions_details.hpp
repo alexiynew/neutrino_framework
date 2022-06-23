@@ -88,9 +88,9 @@ inline constexpr Vector<2, T> mix(const Vector<2, T>& a, const Vector<2, T>& b, 
 }
 
 template <typename T, typename R>
-inline Vector<4, R> frexp(const Vector<4, T>& value, Vector<4, int32>* exp)
+inline Vector<4, R> frexp(const Vector<4, T>& value, Vector<4, std::int32_t>* exp)
 {
-    Vector<4, int32> temp;
+    Vector<4, std::int32_t> temp;
 
     if (exp == nullptr) {
         exp = &temp;
@@ -103,9 +103,9 @@ inline Vector<4, R> frexp(const Vector<4, T>& value, Vector<4, int32>* exp)
 }
 
 template <typename T, typename R>
-inline Vector<3, R> frexp(const Vector<3, T>& value, Vector<3, int32>* exp)
+inline Vector<3, R> frexp(const Vector<3, T>& value, Vector<3, std::int32_t>* exp)
 {
-    Vector<3, int32> temp;
+    Vector<3, std::int32_t> temp;
 
     if (exp == nullptr) {
         exp = &temp;
@@ -117,9 +117,9 @@ inline Vector<3, R> frexp(const Vector<3, T>& value, Vector<3, int32>* exp)
 }
 
 template <typename T, typename R>
-inline Vector<2, R> frexp(const Vector<2, T>& value, Vector<2, int32>* exp)
+inline Vector<2, R> frexp(const Vector<2, T>& value, Vector<2, std::int32_t>* exp)
 {
-    Vector<2, int32> temp;
+    Vector<2, std::int32_t> temp;
 
     if (exp == nullptr) {
         exp = &temp;

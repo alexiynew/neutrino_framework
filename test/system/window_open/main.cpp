@@ -1,7 +1,6 @@
 #include <chrono>
 #include <thread>
 
-#include <common/types.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 

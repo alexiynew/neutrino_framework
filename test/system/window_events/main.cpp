@@ -239,12 +239,12 @@ private:
         [](const Window&, Position position) { log::info("test") << "on_position: " << position << std::endl; });
 
         w.on_key_down.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
-            log::info("test") << "on_key_press key: " << static_cast<int32>(key) << " " << key_name(key) << " "
+            log::info("test") << "on_key_press key: " << static_cast<std::int32_t>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
         w.on_key_up.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
-            log::info("test") << "on_key_release key: " << static_cast<int32>(key) << " " << key_name(key) << " "
+            log::info("test") << "on_key_release key: " << static_cast<std::int32_t>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
