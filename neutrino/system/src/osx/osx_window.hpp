@@ -74,12 +74,18 @@ private:
     void window_did_resignkey();
     void window_did_enter_full_screen();
     void window_did_exit_full_screen();
+
+    void mouse_entered();
+    void mouse_exited();
+    void mouse_moved();
+    void cursor_update();
+
 #pragma endregion
 
     bool switch_to_other_window();
-    
+
     void update_context();
-    
+
     void switch_state(Window::State state);
     Window::State get_actual_state() const;
 

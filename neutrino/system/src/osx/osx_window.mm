@@ -20,12 +20,31 @@
 @interface OsxContentView : NSView
 
 @property(assign, nonatomic) std::function<void()> update_context;
+@property(retain, nonatomic) NSTrackingArea* tracking_area;
 
 @end
 
 @implementation OsxContentView
 
 @synthesize update_context;
+@synthesize tracking_area;
+
+- (instancetype)initWithOwner:(NSResponder*)owner
+{
+    if (self.tracking_area != nil) {
+        [self removeTrackingArea:self.tracking_area];
+        [self.tracking_area release];
+    }
+
+    const NSTrackingAreaOptions options = NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow |
+                                          NSTrackingEnabledDuringMouseDrag | NSTrackingCursorUpdate |
+                                          NSTrackingInVisibleRect | NSTrackingAssumeInside;
+
+    tracking_area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:owner userInfo:nil];
+
+    [self addTrackingArea:tracking_area];
+    [super updateTrackingAreas];
+}
 
 - (BOOL)isOpaque
 {
@@ -75,6 +94,11 @@
 @property(assign, nonatomic) std::function<void()> window_did_enter_full_screen;
 @property(assign, nonatomic) std::function<void()> window_did_exit_full_screen;
 
+@property(assign, nonatomic) std::function<void()> mouse_entered;
+@property(assign, nonatomic) std::function<void()> mouse_exited;
+@property(assign, nonatomic) std::function<void()> mouse_moved;
+@property(assign, nonatomic) std::function<void()> cursor_update;
+
 @property(assign, nonatomic) BOOL isFullscreen;
 
 @end
@@ -90,6 +114,11 @@
 @synthesize window_did_resignkey;
 @synthesize window_did_enter_full_screen;
 @synthesize window_did_exit_full_screen;
+
+@synthesize mouse_entered;
+@synthesize mouse_exited;
+@synthesize mouse_moved;
+@synthesize cursor_update;
 
 @synthesize isFullscreen;
 
@@ -166,7 +195,7 @@
     if (self.window_did_enter_full_screen) {
         self.window_did_enter_full_screen();
     }
-    
+
     [self setIsFullscreen:true];
 }
 
@@ -182,6 +211,34 @@
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
 {}
 
+- (void)mouseEntered:(NSEvent*)event
+{
+    if (self.mouse_entered) {
+        self.mouse_entered();
+    }
+}
+
+- (void)mouseExited:(NSEvent*)event
+{
+    if (self.mouse_exited) {
+        self.mouse_exited();
+    }
+}
+
+- (void)mouseMoved:(NSEvent*)event
+{
+    if (self.mouse_moved) {
+        self.mouse_moved();
+    }
+}
+
+- (void)cursorUpdate:(NSEvent*)event
+{
+    if (self.cursor_update) {
+        self.cursor_update();
+    }
+}
+
 - (BOOL)hasFullscreenStyle
 {
     return (([self styleMask] & NSWindowStyleMaskFullScreen) != 0);
@@ -192,26 +249,26 @@
     if ([self hasFullscreenStyle]) {
         return;
     }
-    
+
     const auto callback = [self window_did_resize];
     [self setWindow_did_resize:nil];
-    
+
     [self toggleFullScreen:nil];
-    
+
     [self setWindow_did_resize:callback];
 }
 
--(void) exitFullscreen
+- (void)exitFullscreen
 {
     if (![self hasFullscreenStyle]) {
         return;
     }
-    
+
     const auto callback = [self window_did_resize];
     [self setWindow_did_resize:nil];
-    
+
     [self toggleFullScreen:nil];
-    
+
     [self setWindow_did_resize:callback];
 }
 
@@ -314,6 +371,11 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     m_window->get().window_did_enter_full_screen = std::bind(&OsxWindow::window_did_enter_full_screen, this);
     m_window->get().window_did_exit_full_screen  = std::bind(&OsxWindow::window_did_exit_full_screen, this);
 
+    m_window->get().mouse_entered = std::bind(&OsxWindow::mouse_entered, this);
+    m_window->get().mouse_exited  = std::bind(&OsxWindow::mouse_exited, this);
+    m_window->get().mouse_moved   = std::bind(&OsxWindow::mouse_moved, this);
+    m_window->get().cursor_update = std::bind(&OsxWindow::cursor_update, this);
+
     // Setup window
     [m_window->get() setDelegate:m_window->get()];
 
@@ -330,7 +392,7 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     set_title(title);
 
     // Create view
-    m_view = std::make_unique<NSViewWrapper>([OsxContentView alloc]);
+    m_view = std::make_unique<NSViewWrapper>([[OsxContentView alloc] initWithOwner:m_window->get()]);
     if (!m_view) {
         throw std::runtime_error("Can't create NSView");
     }
@@ -350,8 +412,6 @@ OsxWindow::~OsxWindow()
 {
     AutoreleasePool pool;
 
-    //exit_fullscreen();
-
     [m_window->get() setDelegate:nil];
     [m_window->get() close];
 }
@@ -363,7 +423,7 @@ void OsxWindow::show()
     if (is_visible()) {
         return;
     }
-    
+
     AutoreleasePool pool;
 
     // Turn off on_focus callback to call it in order we want
@@ -407,7 +467,7 @@ void OsxWindow::hide()
     if (!is_visible() && ![m_window->get() isMiniaturized]) {
         return;
     }
-    
+
     AutoreleasePool pool;
 
     if (m_state == Window::State::fullscreen) {
@@ -426,7 +486,7 @@ void OsxWindow::hide()
     do {
         process_events();
     } while (is_visible() && ![m_window->get() isMiniaturized]);
-    
+
     [m_window->get() close];
 
     // Explicitly call on_hide callback
@@ -476,23 +536,23 @@ void OsxWindow::set_state(Window::State state)
         m_state = state;
         return;
     }
-    
+
     const Window::State old_state = get_actual_state();
-    
+
     if (state == old_state) {
         return;
     }
-    
+
     // Turn off on_move and on resize callbacks
     m_window->get().window_did_resize = nullptr;
     m_window->get().window_did_move   = nullptr;
-   
+
     switch_state(state);
-    
+
     // Turn on on_move and on resize callbacks
-    m_window->get().window_did_resize            = std::bind(&OsxWindow::window_did_resize, this);
-    m_window->get().window_did_move              = std::bind(&OsxWindow::window_did_move, this);
-    
+    m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
+    m_window->get().window_did_move   = std::bind(&OsxWindow::window_did_move, this);
+
     if (state != Window::State::iconified) {
         on_move(position());
         on_resize(size());
@@ -751,10 +811,6 @@ void OsxWindow::window_did_resize()
 {
     if (is_visible()) {
         update_context();
-
-        // if (_glfw.ns.disabledCursorWindow == window)
-        //    _glfwCenterCursorInContentArea(window);
-
         on_resize(size());
     }
 }
@@ -763,10 +819,6 @@ void OsxWindow::window_did_move()
 {
     if (is_visible()) {
         update_context();
-
-        // if (_glfw.ns.disabledCursorWindow == window)
-        //    _glfwCenterCursorInContentArea(window);
-
         on_move(position());
     }
 }
@@ -803,6 +855,26 @@ void OsxWindow::window_did_exit_full_screen()
     update_context();
 }
 
+void OsxWindow::mouse_entered()
+{
+    log::info("OsxWindow") << "mouse_entered";
+}
+
+void OsxWindow::mouse_exited()
+{
+    log::info("OsxWindow") << "mouse_exited";
+}
+
+void OsxWindow::mouse_moved()
+{
+    log::info("OsxWindow") << "mouse_moved";
+}
+
+void OsxWindow::cursor_update()
+{
+    log::info("OsxWindow") << "cursor_update";
+}
+
 #pragma endregion
 
 bool OsxWindow::switch_to_other_window()
@@ -828,21 +900,21 @@ void OsxWindow::update_context()
 void OsxWindow::switch_state(Window::State state)
 {
     const Window::State old_state = get_actual_state();
-    
+
     if (state == old_state) {
         return;
     }
-    
+
     AutoreleasePool pool;
 
     // Drop fullscreen state
     if (old_state == Window::State::fullscreen) {
         [m_window->get() exitFullscreen];
-            
+
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             process_events();
-        } while([m_window->get() isFullscreen]);
+        } while ([m_window->get() isFullscreen]);
 
         const Window::State after_fullscreen_state = get_actual_state();
         if (state == after_fullscreen_state) {
@@ -850,36 +922,34 @@ void OsxWindow::switch_state(Window::State state)
             return;
         }
     }
-    
+
     // Switch to new state
     switch (state) {
-        case Window::State::iconified:
-            [m_window->get() miniaturize:m_window->get()];
-        break;
+        case Window::State::iconified: [m_window->get() miniaturize:m_window->get()]; break;
         case Window::State::maximized:
             if (old_state == Window::State::iconified) {
                 [m_window->get() deminiaturize:m_window->get()];
             } else {
                 [m_window->get() zoom:m_window->get()];
             }
-        break;
+            break;
         case Window::State::fullscreen:
             [m_window->get() enterFullscreen];
-            
+
             do {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 process_events();
-            } while(![m_window->get() isFullscreen]);
-        break;
+            } while (![m_window->get() isFullscreen]);
+            break;
         case Window::State::normal:
             if (old_state == Window::State::iconified) {
                 [m_window->get() deminiaturize:m_window->get()];
-            } else if (old_state == Window::State::maximized){
+            } else if (old_state == Window::State::maximized) {
                 [m_window->get() zoom:m_window->get()];
             }
             break;
     }
-    
+
     m_state = get_actual_state();
 }
 

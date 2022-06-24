@@ -9,30 +9,20 @@
 namespace framework::graphics::details::font
 {
 
+class Subtable;
+
 class CharacterToGlyphIndexMapping final
 {
 public:
-    class Subtable
-    {
-    public:
-        virtual ~Subtable() = default;
-
-        virtual void parse(std::uint32_t offset, const BytesData& data) = 0;
-        virtual GlyphId glyph_index(CodePoint codepoint) const          = 0;
-
-        virtual bool valid() const                     = 0;
-        virtual std::unique_ptr<Subtable> copy() const = 0;
-    };
-
     explicit CharacterToGlyphIndexMapping(const BytesData& data);
 
     CharacterToGlyphIndexMapping(const CharacterToGlyphIndexMapping& other);
-    CharacterToGlyphIndexMapping(CharacterToGlyphIndexMapping&& other) = default;
+    CharacterToGlyphIndexMapping(CharacterToGlyphIndexMapping&& other);
+
+    ~CharacterToGlyphIndexMapping();
 
     CharacterToGlyphIndexMapping& operator=(const CharacterToGlyphIndexMapping& other);
-    CharacterToGlyphIndexMapping& operator=(CharacterToGlyphIndexMapping&& other) = default;
-
-    ~CharacterToGlyphIndexMapping() = default;
+    CharacterToGlyphIndexMapping& operator=(CharacterToGlyphIndexMapping&& other);
 
     bool valid() const;
 
