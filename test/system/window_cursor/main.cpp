@@ -1,4 +1,4 @@
-﻿#include <chrono>
+#include <chrono>
 #include <iostream>
 #include <thread>
 
@@ -13,17 +13,26 @@ public:
     WindowCursorTest()
         : Suite("WindowCursorTest")
     {
-        add_test([this]() { grab_cursor(); }, "grub_cursor");
-        add_test([this]() { grab_cursor_before_show(); }, "grab_cursor_before_show");
-        add_test([this]() { release_cursor_after_hide(); }, "release_cursor_after_hide");
-        add_test([this]() { cursor_visibility(); }, "cursor_visibility");
+         add_test([this]() { grab_cursor(); }, "grub_cursor");
+         add_test([this]() { grab_cursor_before_show(); }, "grab_cursor_before_show");
+         add_test([this]() { release_cursor_after_hide(); }, "release_cursor_after_hide");
+         add_test([this]() { cursor_visibility(); }, "cursor_visibility");
+        
+        // TODO: Check that upper left corner of the window is (1,1) and lower right corner is (width, height).
     }
 
 private:
     void grab_cursor()
     {
         Window window(name(), {640, 480});
+        CursorPosition last_mouse_pos{-1,-1};
 
+        window.on_mouse_move.connect([&last_mouse_pos, &window](const Window&, CursorPosition pos) {
+            last_mouse_pos = pos;
+            window.set_title(std::to_string(pos.x) + ": " + std::to_string(pos.y));
+            
+        });
+        
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
@@ -37,7 +46,7 @@ private:
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
-
+        
         window.hide();
 
         TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
@@ -171,11 +180,28 @@ private:
         // while (!window.should_close()) {
         //     window.process_events();
         // }
+        
+        // TODO: Automate this check
+        // window.hide();
+        // TEST_FAIL("Cursor is hidden in window, BUT must be visible for system.");
+        // while (!window.should_close()) {
+        //     window.process_events();
+        // }
+        // window.show();
+        // TEST_FAIL("Cursor is hidden in window, AND must be visible for system.");
+        // while (!window.should_close()) {
+        //     window.process_events();
+        // }
 
         TEST_ASSERT(!window.is_cursor_visible(), "Cursor should not be visible.");
 
         window.set_cursor_visibility(true);
 
+        // TEST_FAIL("Cursor is visible in window, AND must be visible for system.");
+        // while (!window.should_close()) {
+        //     window.process_events();
+        // }
+        
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
     }
 };

@@ -77,8 +77,7 @@ private:
 
     void mouse_entered();
     void mouse_exited();
-    void mouse_moved();
-    void cursor_update();
+    void mouse_moved(CursorPosition position);
 
 #pragma endregion
 
@@ -89,12 +88,21 @@ private:
     void switch_state(Window::State state);
     Window::State get_actual_state() const;
 
+    void update_cursor_visibility();
+    void show_cursor();
+    void hide_cursor();
+    
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
 
     bool m_should_close   = false;
     Window::State m_state = Window::State::normal;
+    
+    bool m_cursor_grabbed = false;
+    bool m_cursor_visible = true;
+    bool m_cursor_actualy_visible = true;
+    bool m_mouse_hover = false;
 
     Size m_min_size;
     Size m_max_size;

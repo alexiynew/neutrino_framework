@@ -20,6 +20,7 @@
 @interface OsxContentView : NSView
 
 @property(assign, nonatomic) std::function<void()> update_context;
+@property(retain, nonatomic) NSResponder* owner;
 @property(retain, nonatomic) NSTrackingArea* tracking_area;
 
 @end
@@ -27,23 +28,27 @@
 @implementation OsxContentView
 
 @synthesize update_context;
+@synthesize owner;
 @synthesize tracking_area;
 
 - (instancetype)initWithOwner:(NSResponder*)owner
 {
-    if (self.tracking_area != nil) {
-        [self removeTrackingArea:self.tracking_area];
-        [self.tracking_area release];
+    self = [super init];
+    if (self != nil)
+    {
+        self.owner = owner;
+        self.update_context = nil;
+        self.tracking_area = nil;
+        [self updateTrackingAreas];
     }
 
-    const NSTrackingAreaOptions options = NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow |
-                                          NSTrackingEnabledDuringMouseDrag | NSTrackingCursorUpdate |
-                                          NSTrackingInVisibleRect | NSTrackingAssumeInside;
+    return self;
+}
 
-    tracking_area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:owner userInfo:nil];
-
-    [self addTrackingArea:tracking_area];
-    [super updateTrackingAreas];
+- (void)dealloc
+{
+   [tracking_area release];
+   [super dealloc];
 }
 
 - (BOOL)isOpaque
@@ -76,6 +81,23 @@
     return YES;
 }
 
+- (void)updateTrackingAreas
+{
+    if (self.tracking_area != nil) {
+        [self removeTrackingArea:self.tracking_area];
+        [self.tracking_area release];
+    }
+
+    const NSTrackingAreaOptions options = NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow |
+                                          NSTrackingEnabledDuringMouseDrag | NSTrackingCursorUpdate |
+                                          NSTrackingInVisibleRect | NSTrackingAssumeInside;
+
+    self.tracking_area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self.owner userInfo:nil];
+
+    [self addTrackingArea:self.tracking_area];
+    [super updateTrackingAreas];
+}
+
 @end // OsxContentView
 
 #pragma endregion
@@ -96,7 +118,7 @@
 
 @property(assign, nonatomic) std::function<void()> mouse_entered;
 @property(assign, nonatomic) std::function<void()> mouse_exited;
-@property(assign, nonatomic) std::function<void()> mouse_moved;
+@property(assign, nonatomic) std::function<void(framework::system::CursorPosition)> mouse_moved;
 @property(assign, nonatomic) std::function<void()> cursor_update;
 
 @property(assign, nonatomic) BOOL isFullscreen;
@@ -228,15 +250,14 @@
 - (void)mouseMoved:(NSEvent*)event
 {
     if (self.mouse_moved) {
-        self.mouse_moved();
+        NSPoint pos = [event locationInWindow];
+        self.mouse_moved({static_cast<int>(pos.x), static_cast<int>(pos.y)});
     }
 }
 
 - (void)cursorUpdate:(NSEvent*)event
 {
-    if (self.cursor_update) {
-        self.cursor_update();
-    }
+    // Override this method to set the cursor image.
 }
 
 - (BOOL)hasFullscreenStyle
@@ -334,6 +355,8 @@ class NSViewWrapper : public Wrapper<OsxContentView>
 OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings& context_settings)
     : PlatformWindow()
 {
+    using namespace std::placeholders;
+    
     AutoreleasePool pool;
 
     if ([NSThread currentThread] != [NSThread mainThread]) {
@@ -373,8 +396,7 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
 
     m_window->get().mouse_entered = std::bind(&OsxWindow::mouse_entered, this);
     m_window->get().mouse_exited  = std::bind(&OsxWindow::mouse_exited, this);
-    m_window->get().mouse_moved   = std::bind(&OsxWindow::mouse_moved, this);
-    m_window->get().cursor_update = std::bind(&OsxWindow::cursor_update, this);
+    m_window->get().mouse_moved   = std::bind(&OsxWindow::mouse_moved, this, _1);
 
     // Setup window
     [m_window->get() setDelegate:m_window->get()];
@@ -488,7 +510,7 @@ void OsxWindow::hide()
     } while (is_visible() && ![m_window->get() isMiniaturized]);
 
     [m_window->get() close];
-
+    
     // Explicitly call on_hide callback
     on_hide();
 }
@@ -512,11 +534,15 @@ void OsxWindow::focus()
 void OsxWindow::grab_cursor()
 {
     AutoreleasePool pool;
+
+    m_cursor_grabbed = true;
 }
 
 void OsxWindow::release_cursor()
 {
     AutoreleasePool pool;
+    
+    m_cursor_grabbed = false;
 }
 
 void OsxWindow::process_events()
@@ -673,9 +699,14 @@ void OsxWindow::set_title(const std::string& new_title)
     process_events();
 }
 
-void OsxWindow::set_cursor_visibility(bool /*visible*/)
+void OsxWindow::set_cursor_visibility(bool visible)
 {
-    AutoreleasePool pool;
+    if (m_cursor_visible == visible) {
+        return;
+    }
+    
+    m_cursor_visible = visible;
+    update_cursor_visibility();
 }
 
 #pragma endregion
@@ -704,12 +735,12 @@ bool OsxWindow::has_input_focus() const
 
 bool OsxWindow::is_cursor_grabbed() const
 {
-    return false;
+    return m_cursor_grabbed;
 }
 
 bool OsxWindow::is_cursor_visible() const
 {
-    return false;
+    return m_cursor_visible;
 }
 
 Window::State OsxWindow::state() const
@@ -857,22 +888,29 @@ void OsxWindow::window_did_exit_full_screen()
 
 void OsxWindow::mouse_entered()
 {
-    log::info("OsxWindow") << "mouse_entered";
+    m_mouse_hover = true;
+    on_mouse_enter();
 }
 
 void OsxWindow::mouse_exited()
 {
-    log::info("OsxWindow") << "mouse_exited";
+    on_mouse_leave();
+    m_mouse_hover = false;
 }
 
-void OsxWindow::mouse_moved()
+void OsxWindow::mouse_moved(CursorPosition position)
 {
-    log::info("OsxWindow") << "mouse_moved";
-}
-
-void OsxWindow::cursor_update()
-{
-    log::info("OsxWindow") << "cursor_update";
+    AutoreleasePool pool;
+    
+    if (m_cursor_grabbed) {
+    }
+    
+    if (m_mouse_hover) {
+        const NSRect contentRect = [m_view->get() frame];
+        on_mouse_move({position.x, static_cast<int>(contentRect.size.height - position.y)});
+    }
+    
+    update_cursor_visibility();
 }
 
 #pragma endregion
@@ -964,6 +1002,41 @@ Window::State OsxWindow::get_actual_state() const
     } else {
         return Window::State::normal;
     }
+}
+
+void OsxWindow::update_cursor_visibility()
+{
+    if (m_mouse_hover) {
+        if (m_cursor_visible) {
+            show_cursor();
+        } else {
+            hide_cursor();
+        }
+    } else {
+        show_cursor();
+    }
+}
+
+void OsxWindow::show_cursor()
+{
+    if (m_cursor_actualy_visible) {
+        return;
+    }
+    
+    AutoreleasePool pool;
+    m_cursor_actualy_visible = true;
+    [NSCursor unhide];
+}
+
+void OsxWindow::hide_cursor()
+{
+    if (!m_cursor_actualy_visible) {
+        return;
+    }
+    
+    AutoreleasePool pool;
+    m_cursor_actualy_visible = false;
+    [NSCursor hide];
 }
 
 } // namespace framework::system::details
