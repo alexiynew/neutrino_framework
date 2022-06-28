@@ -264,6 +264,46 @@ inline Vector<N, T> refract(const Vector<N, T>& incident, const Vector<N, T>& no
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @name line
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Check if iine intersects a segment.
+///
+/// The ends of the segment are not taken into account in the intersection.
+///
+/// @param line_start Firtst line point.
+/// @param line_end Second line point.
+/// @param segment_start Segment start point.
+/// @param segment_end Segment end point.
+///
+/// @return `true`if line intersects a segment.
+template <typename T>
+bool is_line_intersects_segment(const Vector<2, T>& line_start,
+                                const Vector<2, T>& line_end,
+                                const Vector<2, T>& segment_start,
+                                const Vector<2, T>& segment_end)
+{
+    const Vector<2, T> line_direction = line_end - line_start;
+
+    // Line equation
+    const T a1 = -line_direction.y;
+    const T b1 = line_direction.x;
+    const T d1 = -(a1 * line_start.x + b1 * line_start.y);
+
+    // Substitute the ends of the segments, to find out in which half-planes they are
+    const T e1 = a1 * segment_start.x + b1 * segment_start.y + d1;
+    const T e2 = a1 * segment_end.x + b1 * segment_end.y + d1;
+
+    // If the ends of segment have the same sign, then it is in the same half-plane and there is no intersection.
+    return e1 * e2 < 0.0f;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @name triangle
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,7 +317,7 @@ inline Vector<N, T> refract(const Vector<N, T>& incident, const Vector<N, T>& no
 /// @param v2 Vertex of a triangle.
 /// @param v3 Vertex of a triangle.
 ///
-/// @return `true`a point lies within triangle.
+/// @return `true`if a point is inside a triangle.
 template <typename T>
 inline bool is_point_in_triangle(const Vector<2, T>& point,
                                  const Vector<2, T>& v1,
@@ -288,13 +328,15 @@ inline bool is_point_in_triangle(const Vector<2, T>& point,
     const auto c2 = cross(point - v3, v2 - v3);
     const auto c3 = cross(point - v1, v3 - v1);
 
+    // If all vector magnitudes has the same sign, the point is inside a triangle.
     const bool in1 = c1 < 0.0f;
     const bool in2 = c2 < 0.0f;
     const bool in3 = c3 < 0.0f;
 
-    const bool on_line = (c1 == 0.0f || c2 == 0.0f || c3 == 0.0f);
+    // If at least one value is zero, the point is on the edge.
+    const bool on_edge = (c1 == 0.0f || c2 == 0.0f || c3 == 0.0f);
 
-    return (!on_line) && ((in1 == in2) && (in2 == in3));
+    return (!on_edge) && ((in1 == in2) && (in2 == in3));
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

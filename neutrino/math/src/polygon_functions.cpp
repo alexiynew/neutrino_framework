@@ -9,26 +9,6 @@
 namespace framework::math
 {
 
-bool is_line_intersert_segment(Vector<2, float> line_start,
-                               Vector<2, float> line_end,
-                               Vector<2, float> segment_start,
-                               Vector<2, float> segment_end)
-{
-    const Vector<2, float> line_direction = line_end - line_start;
-
-    // Line equation
-    const float a1 = -line_direction.y;
-    const float b1 = line_direction.x;
-    const float d1 = -(a1 * line_start.x + b1 * line_start.y);
-
-    // Substitute the ends of the segments, to find out in which half-planes they are
-    const float e1 = a1 * segment_start.x + b1 * segment_start.y + d1;
-    const float e2 = a1 * segment_end.x + b1 * segment_end.y + d1;
-
-    // If the ends of segment have the same sign, then it is in the same half-plane and there is no intersection.
-    return e1 * e2 < 0.0f;
-}
-
 float polygon_area(const Polygon& polygon)
 {
     if (polygon.size() < 3) {

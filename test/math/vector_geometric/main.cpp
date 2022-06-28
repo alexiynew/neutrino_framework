@@ -22,6 +22,7 @@ public:
         add_test([this]() { faceforward_function(); }, "faceforward_function");
         add_test([this]() { reflection_function(); }, "reflection_function");
         add_test([this]() { refraction_function(); }, "refraction_function");
+        add_test([this]() { line_function(); }, "line_function");
         add_test([this]() { triangle_function(); }, "triangle_function");
 
         v3f = {1.0f, 2.0f, 3.0f};
@@ -91,6 +92,68 @@ private:
         TEST_ASSERT(almost_equal(result, reflect(v3f, normalize(v3f))), "Refraction function failed.");
         TEST_ASSERT(almost_equal(refract(Vector2f{0.0f, 1.0f}, Vector2f{1.0f, 0.0f}, 2.0f), Vector2f{0.0f}),
                     "Refraction function failed.");
+    }
+
+    void line_function()
+    {
+        const Vector2f s1_start{-1, -1};
+        const Vector2f s1_end{1, 1};
+
+        // intersets
+        const Vector2f l1_start{0, 0};
+        const Vector2f l1_end{1, 0};
+
+        const bool l1_intersets_1 = is_line_intersects_segment(l1_start, l1_end, s1_start, s1_end);
+        const bool l1_intersets_2 = is_line_intersects_segment(l1_start, l1_end, s1_end, s1_start);
+        const bool l1_intersets_3 = is_line_intersects_segment(l1_end, l1_start, s1_start, s1_end);
+        const bool l1_intersets_4 = is_line_intersects_segment(l1_end, l1_start, s1_end, s1_start);
+
+        const bool l1_the_same = l1_intersets_1 == l1_intersets_2 && l1_intersets_2 == l1_intersets_3 &&
+                                 l1_intersets_3 == l1_intersets_4;
+
+        TEST_ASSERT(l1_the_same && l1_intersets_1 == true, "Wrong line - segment intersection calculation.");
+
+        // segment edge, no intersection
+        const Vector2f l2_start{1, 0};
+        const Vector2f l2_end{-3, -2};
+
+        const bool l2_intersets_1 = is_line_intersects_segment(l2_start, l2_end, s1_start, s1_end);
+        const bool l2_intersets_2 = is_line_intersects_segment(l2_start, l2_end, s1_end, s1_start);
+        const bool l2_intersets_3 = is_line_intersects_segment(l2_end, l2_start, s1_start, s1_end);
+        const bool l2_intersets_4 = is_line_intersects_segment(l2_end, l2_start, s1_end, s1_start);
+
+        const bool l2_the_same = l2_intersets_1 == l2_intersets_2 && l2_intersets_2 == l2_intersets_3 &&
+                                 l2_intersets_3 == l2_intersets_4;
+
+        TEST_ASSERT(l2_the_same && l2_intersets_1 == false, "Wrong line - segment intersection calculation.");
+
+        // segment edge, no intersection
+        const Vector2f l3_start{1, 0};
+        const Vector2f l3_end{1, 2};
+
+        const bool l3_intersets_1 = is_line_intersects_segment(l3_start, l3_end, s1_start, s1_end);
+        const bool l3_intersets_2 = is_line_intersects_segment(l3_start, l3_end, s1_end, s1_start);
+        const bool l3_intersets_3 = is_line_intersects_segment(l3_end, l3_start, s1_start, s1_end);
+        const bool l3_intersets_4 = is_line_intersects_segment(l3_end, l3_start, s1_end, s1_start);
+
+        const bool l3_the_same = l3_intersets_1 == l3_intersets_2 && l3_intersets_2 == l3_intersets_3 &&
+                                 l3_intersets_3 == l3_intersets_4;
+
+        TEST_ASSERT(l3_the_same && l3_intersets_1 == false, "Wrong line - segment intersection calculation.");
+
+        // no intersection
+        const Vector2f l4_start{1, 0.5};
+        const Vector2f l4_end{-0.5, -1};
+
+        const bool l4_intersets_1 = is_line_intersects_segment(l4_start, l4_end, s1_start, s1_end);
+        const bool l4_intersets_2 = is_line_intersects_segment(l4_start, l4_end, s1_end, s1_start);
+        const bool l4_intersets_3 = is_line_intersects_segment(l4_end, l4_start, s1_start, s1_end);
+        const bool l4_intersets_4 = is_line_intersects_segment(l4_end, l4_start, s1_end, s1_start);
+
+        const bool l4_the_same = l4_intersets_1 == l4_intersets_2 && l4_intersets_2 == l4_intersets_3 &&
+                                 l4_intersets_3 == l4_intersets_4;
+
+        TEST_ASSERT(l4_the_same && l4_intersets_1 == false, "Wrong line - segment intersection calculation.");
     }
 
     void triangle_function()
