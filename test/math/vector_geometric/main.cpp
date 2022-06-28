@@ -22,6 +22,7 @@ public:
         add_test([this]() { faceforward_function(); }, "faceforward_function");
         add_test([this]() { reflection_function(); }, "reflection_function");
         add_test([this]() { refraction_function(); }, "refraction_function");
+        add_test([this]() { triangle_function(); }, "triangle_function");
 
         v3f = {1.0f, 2.0f, 3.0f};
     }
@@ -90,6 +91,45 @@ private:
         TEST_ASSERT(almost_equal(result, reflect(v3f, normalize(v3f))), "Refraction function failed.");
         TEST_ASSERT(almost_equal(refract(Vector2f{0.0f, 1.0f}, Vector2f{1.0f, 0.0f}, 2.0f), Vector2f{0.0f}),
                     "Refraction function failed.");
+    }
+
+    void triangle_function()
+    {
+        const Vector2f p1{0, 0};          // 1
+        const Vector2f p2{-0.5f, 0.5f};   // 0
+        const Vector2f p3{0, 2};          // 0
+        const Vector2f p4{0, -1};         // 0
+        const Vector2f p5{0.5, 0};        // 0
+        const Vector2f p6{-0.5, -0.99};   // 1
+        const Vector2f p7{-0.5, -1.0001}; // 0
+
+        const Vector2f v1{-1, -1};
+        const Vector2f v2{1, -1};
+        const Vector2f v3{0, 1};
+
+        const bool r1 = is_point_in_triangle(p1, v1, v2, v3);
+        const bool r2 = is_point_in_triangle(p2, v1, v2, v3);
+        const bool r3 = is_point_in_triangle(p3, v1, v2, v3);
+        const bool r4 = is_point_in_triangle(p4, v1, v2, v3);
+        const bool r5 = is_point_in_triangle(p5, v1, v2, v3);
+        const bool r6 = is_point_in_triangle(p6, v1, v2, v3);
+        const bool r7 = is_point_in_triangle(p7, v1, v2, v3);
+
+        const bool r11 = is_point_in_triangle(p1, v1, v3, v2);
+        const bool r12 = is_point_in_triangle(p2, v1, v3, v2);
+        const bool r13 = is_point_in_triangle(p3, v1, v3, v2);
+        const bool r14 = is_point_in_triangle(p4, v1, v3, v2);
+        const bool r15 = is_point_in_triangle(p5, v1, v3, v2);
+        const bool r16 = is_point_in_triangle(p6, v1, v3, v2);
+        const bool r17 = is_point_in_triangle(p7, v1, v3, v2);
+
+        TEST_ASSERT(r1 == r11 && r1 == true, "Invalid point calculation.");
+        TEST_ASSERT(r2 == r12 && r2 == false, "Invalid point calculation.");
+        TEST_ASSERT(r3 == r13 && r3 == false, "Invalid point calculation.");
+        TEST_ASSERT(r4 == r14 && r4 == false, "Invalid point calculation.");
+        TEST_ASSERT(r5 == r15 && r5 == false, "Invalid point calculation.");
+        TEST_ASSERT(r6 == r16 && r6 == true, "Invalid point calculation.");
+        TEST_ASSERT(r7 == r17 && r7 == false, "Invalid point calculation.");
     }
 
     Vector3f v3f;

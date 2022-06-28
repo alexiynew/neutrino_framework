@@ -9,17 +9,6 @@
 namespace framework::math
 {
 
-bool is_point_in_triangle(const Vector<2, float>& point,
-                          const Vector<2, float>& v1,
-                          const Vector<2, float>& v2,
-                          const Vector<2, float>& v3)
-{
-    const bool b1 = cross(point - v2, v1 - v2) < 0.0f;
-    const bool b2 = cross(point - v3, v2 - v3) < 0.0f;
-    const bool b3 = cross(point - v1, v3 - v1) < 0.0f;
-    return ((b1 == b2) && (b2 == b3));
-}
-
 bool is_line_intersert_segment(Vector<2, float> line_start,
                                Vector<2, float> line_end,
                                Vector<2, float> segment_start,
