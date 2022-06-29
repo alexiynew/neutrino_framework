@@ -22,7 +22,9 @@ public:
         add_test([this]() { faceforward_function(); }, "faceforward_function");
         add_test([this]() { reflection_function(); }, "reflection_function");
         add_test([this]() { refraction_function(); }, "refraction_function");
-        add_test([this]() { line_function(); }, "line_function");
+        add_test([this]() { on_line_function(); }, "on_line_function");
+        add_test([this]() { on_segment_function(); }, "on_segment_function");
+        add_test([this]() { is_line_intersects_segment_function(); }, "is_line_intersects_segment_function");
         add_test([this]() { triangle_function(); }, "triangle_function");
 
         v3f = {1.0f, 2.0f, 3.0f};
@@ -94,7 +96,43 @@ private:
                     "Refraction function failed.");
     }
 
-    void line_function()
+    void on_line_function()
+    {
+        const Vector2f l_start{-1, -1};
+        const Vector2f l_end{1, 1};
+
+        const Vector2f p1{1, 1};       // 1
+        const Vector2f p2{-1, -1};     // 1
+        const Vector2f p3{0, 0};       // 1
+        const Vector2f p4{1, 0};       // 0
+        const Vector2f p5{0.5f, 0.5f}; // 1
+
+        TEST_ASSERT(on_line(p1, l_start, l_end) == true, "Wrong point on line calculation.");
+        TEST_ASSERT(on_line(p2, l_start, l_end) == true, "Wrong point on line calculation.");
+        TEST_ASSERT(on_line(p3, l_start, l_end) == true, "Wrong point on line calculation.");
+        TEST_ASSERT(on_line(p4, l_start, l_end) == false, "Wrong point on line calculation.");
+        TEST_ASSERT(on_line(p5, l_start, l_end) == true, "Wrong point on line calculation.");
+    }
+
+    void on_segment_function()
+    {
+        const Vector2f s_start{-1, -1};
+        const Vector2f s_end{1, 1};
+
+        const Vector2f p1{1, 1};       // 0
+        const Vector2f p2{-1, -1};     // 0
+        const Vector2f p3{0, 0};       // 1
+        const Vector2f p4{1, 0};       // 0
+        const Vector2f p5{0.5f, 0.5f}; // 1
+
+        TEST_ASSERT(on_segment(p1, s_start, s_end) == false, "Wrong point on segment calculation.");
+        TEST_ASSERT(on_segment(p2, s_start, s_end) == false, "Wrong point on segment calculation.");
+        TEST_ASSERT(on_segment(p3, s_start, s_end) == true, "Wrong point on segment calculation.");
+        TEST_ASSERT(on_segment(p4, s_start, s_end) == false, "Wrong point on segment calculation.");
+        TEST_ASSERT(on_segment(p5, s_start, s_end) == true, "Wrong point on segment calculation.");
+    }
+
+    void is_line_intersects_segment_function()
     {
         const Vector2f s1_start{-1, -1};
         const Vector2f s1_end{1, 1};

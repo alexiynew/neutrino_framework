@@ -264,25 +264,55 @@ inline Vector<N, T> refract(const Vector<N, T>& incident, const Vector<N, T>& no
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @name line
+/// @name line and segment
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Check if point is on a line.
+///
+/// @param point Point to test.
+/// @param line_start First line point.
+/// @param line_end Second line point.
+///
+/// @return `true` if point is on a line.
+template <typename T>
+inline bool on_line(const Vector<2, T>& point, const Vector<2, T>& line_start, const Vector<2, T>& line_end)
+{
+    return cross(line_start - point, line_end - point) == 0.0f;
+}
+
+/// @brief Check if point is on a segment.
+///
+/// The ends of the segment are not taken into account.
+///
+/// @param point Point to test.
+/// @param segment_start Segment start point.
+/// @param segment_end Segment end point.
+///
+/// @return `true` if point is on a segment.
+template <typename T>
+inline bool on_segment(const Vector<2, T>& point, const Vector<2, T>& segment_start, const Vector<2, T>& segment_end)
+{
+    const auto v1 = segment_start - point;
+    const auto v2 = segment_end - point;
+    return cross(v1, v2) == 0.0f && dot(v1, v2) < 0.0f;
+}
 
 /// @brief Check if iine intersects a segment.
 ///
 /// The ends of the segment are not taken into account in the intersection.
 ///
-/// @param line_start Firtst line point.
+/// @param line_start First line point.
 /// @param line_end Second line point.
 /// @param segment_start Segment start point.
 /// @param segment_end Segment end point.
 ///
-/// @return `true`if line intersects a segment.
+/// @return `true` if line intersects a segment.
 template <typename T>
-bool is_line_intersects_segment(const Vector<2, T>& line_start,
-                                const Vector<2, T>& line_end,
-                                const Vector<2, T>& segment_start,
-                                const Vector<2, T>& segment_end)
+inline bool is_line_intersects_segment(const Vector<2, T>& line_start,
+                                       const Vector<2, T>& line_end,
+                                       const Vector<2, T>& segment_start,
+                                       const Vector<2, T>& segment_end)
 {
     const Vector<2, T> line_direction = line_end - line_start;
 
