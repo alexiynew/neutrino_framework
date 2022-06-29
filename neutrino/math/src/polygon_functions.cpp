@@ -21,13 +21,13 @@ float polygon_area(const Polygon& polygon)
     float sum = 0;
     while (next != polygon.end()) {
         sum += (next->x - curr->x) * (next->y + curr->y);
-        next++;
-        curr++;
+        std::advance(next, 1);
+        std::advance(curr, 1);
     }
     next = polygon.begin();
     sum += (next->x - curr->x) * (next->y + curr->y);
 
-    return sum;
+    return sum / 2;
 }
 
 bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon)

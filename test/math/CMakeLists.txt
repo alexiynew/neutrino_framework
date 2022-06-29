@@ -14,6 +14,7 @@ set(TESTS
     vector_trigonometric
     bezier_functions
     math_utility
+    polygon_functions
 )
 
 foreach(TEST ${TESTS})
