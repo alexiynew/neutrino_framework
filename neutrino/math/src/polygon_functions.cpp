@@ -32,35 +32,40 @@ float polygon_area(const Polygon& polygon)
 
 bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon)
 {
-    if (polygon.size() <= 1) {
+    if (polygon.size() < 3) {
         return false;
     }
 
-    int intersections_num  = 0;
-    std::size_t prev_index = polygon.size() - 1;
-    bool prev_under        = polygon[prev_index].y < point.y;
+    int intersections_num = 0;
 
-    for (std::size_t i = 0; i < polygon.size(); ++i) {
-        const bool curr_under = polygon[i].y < point.y;
+    auto curr       = std::prev(polygon.end());
+    auto next       = polygon.begin();
+    bool curr_under = curr->y < point.y;
 
-        const Vector<2, float> a = polygon[prev_index] - point;
-        const Vector<2, float> b = polygon[i] - point;
+    while (next != polygon.end()) {
+        const Vector<2, float> a = *curr - point;
+        const Vector<2, float> b = *next - point;
 
-        // Determinant from x-coordinate of the intersection of the segment and the ray
-        const float t = (a.x * (b.y - a.y) - a.y * (b.x - a.x));
-        if (curr_under && !prev_under) {
-            if (t > 0) {
-                intersections_num += 1;
-            }
-        }
-        if (!curr_under && prev_under) {
-            if (t < 0) {
-                intersections_num += 1;
-            }
+        const float c = cross(a, b);
+        const float d = dot(a, b);
+
+        // Point is on an edge or a vertex
+        if (c == 0.0f && d <= 0.0f) {
+            return false;
         }
 
-        prev_index = i;
-        prev_under = curr_under;
+        const bool next_under = next->y < point.y;
+
+        if (!curr_under && next_under && c > 0) {
+            intersections_num += 1;
+        }
+        if (curr_under && !next_under && c < 0) {
+            intersections_num += 1;
+        }
+
+        curr_under = next_under;
+        curr       = next;
+        std::advance(next, 1);
     }
 
     return intersections_num % 2 == 1;

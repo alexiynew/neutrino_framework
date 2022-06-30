@@ -35,11 +35,14 @@ using Polygon = std::vector<Vector<2, float>>;
 /// @return Area of the polygon.
 float polygon_area(const Polygon& polygon);
 
-/// @brief Computes the area of a polygon.
+/// @brief Check if point is inside a polygon.
 ///
-/// @param polygon Polygon to get the area.
+/// Points lying on edges or at one of the vertices are not included in the polygon.
 ///
-/// @return Area of the polygon.
+/// @param point Point to check.
+/// @param polygon Polygon to check.
+///
+/// @return `true`if a point is inside a polygon.
 bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon);
 
 std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon);

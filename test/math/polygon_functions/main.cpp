@@ -14,6 +14,7 @@ public:
         : Suite("PolygonFunctionsTest")
     {
         add_test([this]() { polygon_area_function(); }, "polygon_area_function");
+        add_test([this]() { is_point_in_polygon_function(); }, "is_point_in_polygon_function");
     }
 
 private:
@@ -40,6 +41,48 @@ private:
         TEST_ASSERT(a3 == -a4, "Sign of the polygon areas must be different for different winding order.");
         TEST_ASSERT(a3 == -8.5, "Wrong area of a polygon.");
         TEST_ASSERT(a4 == 8.5, "Wrong area of a polygon.");
+    }
+
+    void is_point_in_polygon_function()
+    {
+        const Polygon poly1{{-1, -3}, {-1, 1}, {1, 1}, {1, -3}, {0, 0}};
+        const Polygon poly2{{0, 0}, {1, -3}, {1, 1}, {-1, 1}, {-1, -3}};
+
+        const Vector2f p1{0, 0};           // 0
+        const Vector2f p2{0, 1};           // 0
+        const Vector2f p3{1, 0};           // 0
+        const Vector2f p4{0.5f, -1};       // 1
+        const Vector2f p5{-0.5f, 0.9999f}; // 1
+        const Vector2f p6{0, -2};          // 0
+        const Vector2f p7{-3, 1};          // 0
+        const Vector2f p8{-0.8f, -2};      // 1
+
+        const bool r11 = is_point_in_polygon(p1, poly1);
+        const bool r12 = is_point_in_polygon(p2, poly1);
+        const bool r13 = is_point_in_polygon(p3, poly1);
+        const bool r14 = is_point_in_polygon(p4, poly1);
+        const bool r15 = is_point_in_polygon(p5, poly1);
+        const bool r16 = is_point_in_polygon(p6, poly1);
+        const bool r17 = is_point_in_polygon(p7, poly1);
+        const bool r18 = is_point_in_polygon(p8, poly1);
+
+        const bool r21 = is_point_in_polygon(p1, poly2);
+        const bool r22 = is_point_in_polygon(p2, poly2);
+        const bool r23 = is_point_in_polygon(p3, poly2);
+        const bool r24 = is_point_in_polygon(p4, poly2);
+        const bool r25 = is_point_in_polygon(p5, poly2);
+        const bool r26 = is_point_in_polygon(p6, poly2);
+        const bool r27 = is_point_in_polygon(p7, poly2);
+        const bool r28 = is_point_in_polygon(p8, poly2);
+
+        TEST_ASSERT(r11 == r21 && r11 == false, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r12 == r22 && r12 == false, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r13 == r23 && r13 == false, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r14 == r24 && r14 == true, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r15 == r25 && r15 == true, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r16 == r26 && r16 == false, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r17 == r27 && r17 == false, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r18 == r28 && r18 == true, "Wrong point in polygon calculation.");
     }
 };
 

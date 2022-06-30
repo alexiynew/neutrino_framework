@@ -140,6 +140,7 @@ inline Vector<3, T> cross(const Vector<3, T>& a, const Vector<3, T>& b)
 /// input vectors, taking their Z values implicitly as 0 (i.e. treating the 2D space as a plane in the 3D space). The 3D
 /// cross product will be perpendicular to that plane, and thus have 0 X & Y components (thus the scalar returned is the
 /// Z value of the 3D cross product vector).
+/// If result is 0, vectors are collinear.
 ///
 /// @param a Vector of floating-point or integral type.
 /// @param b Vector of floating-point or integral type.
