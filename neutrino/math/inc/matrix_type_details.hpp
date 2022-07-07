@@ -1,11 +1,9 @@
+#ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_DETAILS_HPP
+#define FRAMEWORK_MATH_INC_MATRIX_TYPE_DETAILS_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of matrix_type_details.hpp
 #endif
-
-#ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_DETAILS_HPP
-    #define FRAMEWORK_MATH_INC_MATRIX_TYPE_DETAILS_HPP
-
-    #include <math/inc/vector_type.hpp>
 
 namespace framework::math::matrix_type_details
 {
@@ -53,9 +51,6 @@ inline constexpr V get_column(M&& Matrix, V&& vector) noexcept
                                         std::forward<V>(vector),
                                         std::integral_constant<bool, (N < C)>{});
 }
-
-template <typename... Args>
-using common_type_t = vector_type_details::common_type_t<Args...>;
 
 } // namespace framework::math::matrix_type_details
 

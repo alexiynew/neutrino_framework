@@ -1,13 +1,13 @@
+#ifndef FRAMEWORK_MATH_INC_EXPONENTIAL_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_INC_EXPONENTIAL_FUNCTIONS_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of exponential_functions.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_INC_EXPONENTIAL_FUNCTIONS_HPP
-    #define FRAMEWORK_MATH_INC_EXPONENTIAL_FUNCTIONS_HPP
+#include <cmath>
 
-    #include <cmath>
-
-    #include <math/inc/vector_type.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {

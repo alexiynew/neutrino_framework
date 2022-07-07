@@ -1,12 +1,12 @@
+#ifndef FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
+#define FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of vector_type_details.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
-    #define FRAMEWORK_MATH_INC_VECTOR_TYPE_DETAILS_HPP
-
-    #include <functional>
-    #include <type_traits>
+#include <functional>
+#include <type_traits>
 
 namespace framework::math::vector_type_details
 {
@@ -32,8 +32,8 @@ inline constexpr bool equals(const T& a, const T& b)
 template <typename T>
 struct cast_to
 {
-    /// @brief Casts value to a specified type. ////////////////////////////////////////////////////////////////////////////
-    template <typename U, typename R = typename std::enable_if<std::is_arithmetic<U>::value, T>::type>
+    /// @brief Casts value to a specified type.
+    template <typename U, typename R = std::enable_if_t<std::is_arithmetic_v<U>, T>>
     inline static constexpr R from(const U& value) noexcept
     {
         return static_cast<R>(value);
@@ -43,38 +43,12 @@ struct cast_to
 template <>
 struct cast_to<bool>
 {
-    template <typename U, typename R = typename std::enable_if<std::is_arithmetic<U>::value, bool>::type>
+    template <typename U, typename R = std::enable_if_t<std::is_arithmetic_v<U>, bool>>
     inline static constexpr R from(const U& value) noexcept
     {
         return !equals(value, U{0});
     }
 };
-
-template <typename T, typename... Args>
-struct are_all_arithmetic
-{
-    static constexpr bool value = std::is_arithmetic_v<T> && are_all_arithmetic<Args...>::value;
-};
-
-template <typename T>
-struct are_all_arithmetic<T>
-{
-    static constexpr bool value = std::is_arithmetic_v<T>;
-};
-template <typename T, typename... Args>
-struct common_type_details
-{
-    using type = typename std::common_type<T, typename common_type_details<Args...>::type>::type;
-};
-
-template <typename T>
-struct common_type_details<T>
-{
-    using type = T;
-};
-
-template <typename... Args>
-using common_type_t = typename std::enable_if_t<are_all_arithmetic<Args...>::value, common_type_details<Args...>>::type;
 
 template <std::size_t N>
 struct transform_details;

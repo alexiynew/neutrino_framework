@@ -180,12 +180,12 @@ bool send_client_message(const X11Server* server, ::Window window, Atom message_
     event.xclient.message_type = message_type;
     event.xclient.format       = 32;
 
-    using data_type = std::remove_reference<decltype(event.xclient.data.l[0])>::type;
+    using DataType = std::remove_referencet_t<decltype(event.xclient.data.l[0])>;
 
     const int count = ::framework::utils::size(event.xclient.data.l);
 
     for (size_t i = 0; i < data.size() && i < count; ++i) {
-        event.xclient.data.l[i] = static_cast<data_type>(data[i]);
+        event.xclient.data.l[i] = static_cast<DataType>(data[i]);
     }
 
     Status result = XSendEvent(server->display(),

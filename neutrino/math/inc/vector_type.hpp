@@ -1,13 +1,13 @@
+#ifndef FRAMEWORK_MATH_INC_VECTOR_TYPE_HPP
+#define FRAMEWORK_MATH_INC_VECTOR_TYPE_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of vector_type.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_INC_VECTOR_TYPE_HPP
-    #define FRAMEWORK_MATH_INC_VECTOR_TYPE_HPP
+#include <cassert>
 
-    #include <cassert>
-
-    #include <math/inc/vector_type_details.hpp>
+#include <math/inc/vector_type_details.hpp>
 
 namespace framework::math
 {
@@ -887,7 +887,7 @@ inline Vector<N, T>& operator/=(Vector<N, T>& lhs, const U& rhs) noexcept
 /// @param rhs Second addend.
 ///
 /// @return Sum of two vectors.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator+(const Vector<N, T>& lhs, const Vector<N, U>& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -900,7 +900,7 @@ inline const Vector<N, R> operator+(const Vector<N, T>& lhs, const Vector<N, U>&
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Difference of two vectors.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator-(const Vector<N, T>& lhs, const Vector<N, U>& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -913,7 +913,7 @@ inline const Vector<N, R> operator-(const Vector<N, T>& lhs, const Vector<N, U>&
 /// @param rhs Second multiplier.
 ///
 /// @return Product of two vectors.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator*(const Vector<N, T>& lhs, const Vector<N, U>& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -926,7 +926,7 @@ inline const Vector<N, R> operator*(const Vector<N, T>& lhs, const Vector<N, U>&
 /// @param rhs Divider vector.
 ///
 /// @return Quotient of two vectors.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator/(const Vector<N, T>& lhs, const Vector<N, U>& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -947,7 +947,7 @@ inline const Vector<N, R> operator/(const Vector<N, T>& lhs, const Vector<N, U>&
 /// @param rhs Second addend.
 ///
 /// @return Sum of vector and scalar value.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator+(const Vector<N, T>& lhs, const U& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -960,7 +960,7 @@ inline const Vector<N, R> operator+(const Vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Difference of vector and scalar value.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator-(const Vector<N, T>& lhs, const U& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -973,7 +973,7 @@ inline const Vector<N, R> operator-(const Vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Second multiplier.
 ///
 /// @return Product of vector and scalar value.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator*(const Vector<N, T>& lhs, const U& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -986,7 +986,7 @@ inline const Vector<N, R> operator*(const Vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Divider scalar value.
 ///
 /// @return Quotient of vector and scalar value.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator/(const Vector<N, T>& lhs, const U& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -1007,7 +1007,7 @@ inline const Vector<N, R> operator/(const Vector<N, T>& lhs, const U& rhs) noexc
 /// @param rhs Second addend.
 ///
 /// @return Sum of scalar value and vector.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator+(const T& lhs, const Vector<N, U>& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -1020,7 +1020,7 @@ inline const Vector<N, R> operator+(const T& lhs, const Vector<N, U>& rhs) noexc
 /// @param rhs Vector to subtract.
 ///
 /// @return Difference of scalar value and vector.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator-(const T& lhs, const Vector<N, U>& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -1033,7 +1033,7 @@ inline const Vector<N, R> operator-(const T& lhs, const Vector<N, U>& rhs) noexc
 /// @param rhs Second multiplier.
 ///
 /// @return Product of scalar value and vector.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator*(const T& lhs, const Vector<N, U>& rhs) noexcept
 {
     Vector<N, R> temp{lhs};
@@ -1046,7 +1046,7 @@ inline const Vector<N, R> operator*(const T& lhs, const Vector<N, U>& rhs) noexc
 /// @param rhs Divider vector.
 ///
 /// @return Quotient of scalar value and vector.
-template <std::size_t N, typename T, typename U, typename R = typename vector_type_details::common_type_t<T, U>>
+template <std::size_t N, typename T, typename U, typename R = std::common_type_t<T, U>>
 inline const Vector<N, R> operator/(const T& lhs, const Vector<N, U>& rhs) noexcept
 {
     Vector<N, R> temp{lhs};

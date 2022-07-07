@@ -1,14 +1,14 @@
+#ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
+#define FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of matrix_type.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
-    #define FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
+#include <cassert>
 
-    #include <cassert>
-
-    #include <math/inc/matrix_type_details.hpp>
-    #include <math/inc/vector_type.hpp>
+#include <math/inc/matrix_type_details.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {
@@ -3202,7 +3202,7 @@ template <std::size_t C,
           std::size_t R,
           typename T,
           typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
+          typename std::enable_if_t<std::is_arithmetic_v<U>, std::int32_t> = 0>
 inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const U& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
@@ -3221,7 +3221,7 @@ template <std::size_t C,
           std::size_t R,
           typename T,
           typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
+          typename std::enable_if_t<std::is_arithmetic_v<U>, std::int32_t> = 0>
 inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const U& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
@@ -3240,7 +3240,7 @@ template <std::size_t C,
           std::size_t R,
           typename T,
           typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
+          typename std::enable_if_t<std::is_arithmetic_v<U>, std::int32_t> = 0>
 inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const U& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
@@ -3259,7 +3259,7 @@ template <std::size_t C,
           std::size_t R,
           typename T,
           typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, std::int32_t>::type = 0>
+          typename std::enable_if_t<std::is_arithmetic_v<U>, std::int32_t> = 0>
 inline Matrix<C, R, T>& operator/=(Matrix<C, R, T>& lhs, const U& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
@@ -3282,11 +3282,7 @@ inline Matrix<C, R, T>& operator/=(Matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Second addend.
 ///
 /// @return Component-wise sum of two matrices.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator+(const Matrix<C, R, T>& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3299,11 +3295,7 @@ inline const Matrix<C, R, RT> operator+(const Matrix<C, R, T>& lhs, const Matrix
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Component-wise difference of two matrices.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator-(const Matrix<C, R, T>& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3316,12 +3308,7 @@ inline const Matrix<C, R, RT> operator-(const Matrix<C, R, T>& lhs, const Matrix
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Product of two matrices.
-template <std::size_t C,
-          std::size_t R,
-          std::size_t N,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, std::size_t N, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<N, R, RT> operator*(const Matrix<C, R, T>& lhs, const Matrix<N, C, U>& rhs) noexcept
 {
     Matrix<N, R, RT> temp(RT{0});
@@ -3343,11 +3330,7 @@ inline const Matrix<N, R, RT> operator*(const Matrix<C, R, T>& lhs, const Matrix
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Product of vector and Matrix.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Vector<C, RT> operator*(const Vector<R, T>& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Vector<C, RT> temp(RT{0});
@@ -3367,11 +3350,7 @@ inline const Vector<C, RT> operator*(const Vector<R, T>& lhs, const Matrix<C, R,
 /// @param rhs Vector of floating-point or integral type.
 ///
 /// @return Product of vector and Matrix.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Vector<R, RT> operator*(const Matrix<C, R, T>& lhs, const Vector<C, U>& rhs) noexcept
 {
     Vector<R, RT> temp(RT{0});
@@ -3399,11 +3378,7 @@ inline const Vector<R, RT> operator*(const Matrix<C, R, T>& lhs, const Vector<C,
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise sum of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator+(const Matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3416,11 +3391,7 @@ inline const Matrix<C, R, RT> operator+(const Matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise difference of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator-(const Matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3433,11 +3404,7 @@ inline const Matrix<C, R, RT> operator-(const Matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise product of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator*(const Matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3450,11 +3417,7 @@ inline const Matrix<C, R, RT> operator*(const Matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise quotient of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator/(const Matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3475,11 +3438,7 @@ inline const Matrix<C, R, RT> operator/(const Matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise sum of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator+(const T& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Matrix<C, R, RT> temp(RT{0});
@@ -3497,11 +3456,7 @@ inline const Matrix<C, R, RT> operator+(const T& lhs, const Matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise difference of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator-(const T& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Matrix<C, R, RT> temp(RT{0});
@@ -3519,11 +3474,7 @@ inline const Matrix<C, R, RT> operator-(const T& lhs, const Matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise product of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator*(const T& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Matrix<C, R, RT> temp(RT{0});
@@ -3541,11 +3492,7 @@ inline const Matrix<C, R, RT> operator*(const T& lhs, const Matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise quotient of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type_t<T, U>>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator/(const T& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Matrix<C, R, RT> temp(RT{0});

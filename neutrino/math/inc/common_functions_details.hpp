@@ -1,13 +1,13 @@
+#ifndef FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_DETAILS_HPP
+#define FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_DETAILS_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of common_functions_details.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_DETAILS_HPP
-    #define FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_DETAILS_HPP
+#include <cmath>
 
-    #include <cmath>
-
-    #include <math/inc/vector_type.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework::math::common_functions_details
 {
@@ -34,7 +34,7 @@ inline constexpr T sign(const T& v, std::false_type /*unused*/)
     return static_cast<T>(T{0} < v);
 }
 
-template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+template <typename T, typename R = std::enable_if_t<std::is_floating_point_v<T>, T>>
 inline Vector<4, R> modf(const Vector<4, T>& value, Vector<4, T>& integral)
 {
     return Vector<4, R>(::std::modf(value.x, &integral.x),
@@ -43,7 +43,7 @@ inline Vector<4, R> modf(const Vector<4, T>& value, Vector<4, T>& integral)
                         ::std::modf(value.w, &integral.w));
 }
 
-template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+template <typename T, typename R = std::enable_if_t<std::is_floating_point_v<T>, T>>
 inline Vector<3, R> modf(const Vector<3, T>& value, Vector<3, T>& integral)
 {
     return Vector<3, R>(::std::modf(value.x, &integral.x),
@@ -51,7 +51,7 @@ inline Vector<3, R> modf(const Vector<3, T>& value, Vector<3, T>& integral)
                         ::std::modf(value.z, &integral.z));
 }
 
-template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+template <typename T, typename R = std::enable_if_t<std::is_floating_point_v<T>, T>>
 inline Vector<2, R> modf(const Vector<2, T>& value, Vector<2, T>& integral)
 {
     return Vector<2, R>(::std::modf(value.x, &integral.x), ::std::modf(value.y, &integral.y));

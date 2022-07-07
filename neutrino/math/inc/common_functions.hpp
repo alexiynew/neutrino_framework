@@ -1,15 +1,15 @@
+#ifndef FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of common_functions.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_HPP
-    #define FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_HPP
+#include <cmath>
+#include <limits>
 
-    #include <cmath>
-    #include <limits>
-
-    #include <math/inc/common_functions_details.hpp>
-    #include <math/inc/vector_type.hpp>
+#include <math/inc/common_functions_details.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {
@@ -319,7 +319,7 @@ inline Vector<N, R> mod(const Vector<N, T>& a, const Vector<N, T>& b)
 /// @param[out] integral Integral part of the value.
 ///
 /// @return The fractional part of the argument.
-template <typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+template <typename T, typename R = std::enable_if_t<std::is_floating_point_v<T>, T>>
 inline R modf(const T& value, T& integral)
 {
     return std::modf(value, &integral);
@@ -334,7 +334,7 @@ inline R modf(const T& value, T& integral)
 /// @return A vector of the fractional parts.
 ///
 /// @see modf
-template <std::size_t N, typename T, typename R = typename std::enable_if<std::is_floating_point<T>::value, T>::type>
+template <std::size_t N, typename T, typename R = std::enable_if_t<std::is_floating_point_v<T>, T>>
 inline Vector<N, R> modf(const Vector<N, T>& value, Vector<N, T>& integral)
 {
     return common_functions_details::modf(value, integral);
