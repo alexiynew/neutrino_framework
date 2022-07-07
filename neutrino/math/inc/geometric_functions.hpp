@@ -284,7 +284,7 @@ inline bool on_line(const Vector<2, T>& point, const Vector<2, T>& line_start, c
 
 /// @brief Check if point is on a segment.
 ///
-/// The ends of the segment are not taken into account.
+/// The ends of the segment are taken into account.
 ///
 /// @param point Point to test.
 /// @param segment_start Segment start point.
@@ -296,12 +296,12 @@ inline bool on_segment(const Vector<2, T>& point, const Vector<2, T>& segment_st
 {
     const auto v1 = segment_start - point;
     const auto v2 = segment_end - point;
-    return cross(v1, v2) == 0.0f && dot(v1, v2) < 0.0f;
+    return cross(v1, v2) == 0.0f && dot(v1, v2) <= 0.0f;
 }
 
 /// @brief Check if iine intersects a segment.
 ///
-/// The ends of the segment are not taken into account in the intersection.
+/// The ends of the segment are taken into account in the intersection.
 ///
 /// @param line_start First line point.
 /// @param line_end Second line point.
@@ -327,7 +327,7 @@ inline bool is_line_intersects_segment(const Vector<2, T>& line_start,
     const T e2 = a1 * segment_end.x + b1 * segment_end.y + d1;
 
     // If the ends of segment have the same sign, then it is in the same half-plane and there is no intersection.
-    return e1 * e2 < 0.0f;
+    return e1 * e2 <= 0.0f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -341,7 +341,7 @@ inline bool is_line_intersects_segment(const Vector<2, T>& line_start,
 
 /// @brief Check if a point is inside a triangle on a 2D plane.
 ///
-/// Points lying on edges or at one of the vertices are not included in the triangle.
+/// Points lying on edges or at one of the vertices are included in the triangle.
 ///
 /// @param point 2d point.
 /// @param v1 Vertex of a triangle.
@@ -360,14 +360,16 @@ inline bool is_point_in_triangle(const Vector<2, T>& point,
     const auto c3 = cross(point - v1, v3 - v1);
 
     // If all vector magnitudes has the same sign, the point is inside a triangle.
-    const bool in1 = c1 < 0.0f;
-    const bool in2 = c2 < 0.0f;
-    const bool in3 = c3 < 0.0f;
+    const bool neg1 = c1 < 0.0f;
+    const bool neg2 = c2 < 0.0f;
+    const bool neg3 = c3 < 0.0f;
 
-    // If at least one value is zero, the point is on the edge.
-    const bool on_edge = (c1 == 0.0f || c2 == 0.0f || c3 == 0.0f);
+    const bool inside    = (neg1 == neg2) && (neg2 == neg3);
+    const bool on_edge   = (c1 == 0.0f && neg2 == neg3) || (c2 == 0.0f && neg1 == neg3) || (c3 == 0.0f && neg1 == neg2);
+    const bool on_vertex = (c1 == 0 && c2 == 0 && c3 != 0) || (c1 == 0 && c2 != 0 && c3 == 0) ||
+                           (c1 != 0 && c2 == 0 && c3 == 0);
 
-    return (!on_edge) && ((in1 == in2) && (in2 == in3));
+    return inside || on_edge || on_vertex;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

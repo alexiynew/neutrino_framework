@@ -119,14 +119,14 @@ private:
         const Vector2f s_start{-1, -1};
         const Vector2f s_end{1, 1};
 
-        const Vector2f p1{1, 1};       // 0
-        const Vector2f p2{-1, -1};     // 0
+        const Vector2f p1{1, 1};       // 1
+        const Vector2f p2{-1, -1};     // 1
         const Vector2f p3{0, 0};       // 1
         const Vector2f p4{1, 0};       // 0
         const Vector2f p5{0.5f, 0.5f}; // 1
 
-        TEST_ASSERT(on_segment(p1, s_start, s_end) == false, "Wrong point on segment calculation.");
-        TEST_ASSERT(on_segment(p2, s_start, s_end) == false, "Wrong point on segment calculation.");
+        TEST_ASSERT(on_segment(p1, s_start, s_end) == true, "Wrong point on segment calculation.");
+        TEST_ASSERT(on_segment(p2, s_start, s_end) == true, "Wrong point on segment calculation.");
         TEST_ASSERT(on_segment(p3, s_start, s_end) == true, "Wrong point on segment calculation.");
         TEST_ASSERT(on_segment(p4, s_start, s_end) == false, "Wrong point on segment calculation.");
         TEST_ASSERT(on_segment(p5, s_start, s_end) == true, "Wrong point on segment calculation.");
@@ -151,7 +151,7 @@ private:
 
         TEST_ASSERT(l1_the_same && l1_intersets_1 == true, "Wrong line - segment intersection calculation.");
 
-        // segment edge, no intersection
+        // segment edge, intersection
         const Vector2f l2_start{1, 0};
         const Vector2f l2_end{-3, -2};
 
@@ -163,9 +163,9 @@ private:
         const bool l2_the_same = l2_intersets_1 == l2_intersets_2 && l2_intersets_2 == l2_intersets_3 &&
                                  l2_intersets_3 == l2_intersets_4;
 
-        TEST_ASSERT(l2_the_same && l2_intersets_1 == false, "Wrong line - segment intersection calculation.");
+        TEST_ASSERT(l2_the_same && l2_intersets_1 == true, "Wrong line - segment intersection calculation.");
 
-        // segment edge, no intersection
+        // segment edge, intersection
         const Vector2f l3_start{1, 0};
         const Vector2f l3_end{1, 2};
 
@@ -177,7 +177,7 @@ private:
         const bool l3_the_same = l3_intersets_1 == l3_intersets_2 && l3_intersets_2 == l3_intersets_3 &&
                                  l3_intersets_3 == l3_intersets_4;
 
-        TEST_ASSERT(l3_the_same && l3_intersets_1 == false, "Wrong line - segment intersection calculation.");
+        TEST_ASSERT(l3_the_same && l3_intersets_1 == true, "Wrong line - segment intersection calculation.");
 
         // no intersection
         const Vector2f l4_start{1, 0.5};
@@ -199,10 +199,12 @@ private:
         const Vector2f p1{0, 0};          // 1
         const Vector2f p2{-0.5f, 0.5f};   // 0
         const Vector2f p3{0, 2};          // 0
-        const Vector2f p4{0, -1};         // 0
-        const Vector2f p5{0.5, 0};        // 0
+        const Vector2f p4{0, -1};         // 1
+        const Vector2f p5{0.5, 0};        // 1
         const Vector2f p6{-0.5, -0.99};   // 1
         const Vector2f p7{-0.5, -1.0001}; // 0
+        const Vector2f p8{0.5, -1};       // 1
+        const Vector2f p9{1.0001, -1};    // 0
 
         const Vector2f v1{-1, -1};
         const Vector2f v2{1, -1};
@@ -215,6 +217,8 @@ private:
         const bool r5 = is_point_in_triangle(p5, v1, v2, v3);
         const bool r6 = is_point_in_triangle(p6, v1, v2, v3);
         const bool r7 = is_point_in_triangle(p7, v1, v2, v3);
+        const bool r8 = is_point_in_triangle(p8, v1, v2, v3);
+        const bool r9 = is_point_in_triangle(p9, v1, v2, v3);
 
         const bool r11 = is_point_in_triangle(p1, v1, v3, v2);
         const bool r12 = is_point_in_triangle(p2, v1, v3, v2);
@@ -223,14 +227,27 @@ private:
         const bool r15 = is_point_in_triangle(p5, v1, v3, v2);
         const bool r16 = is_point_in_triangle(p6, v1, v3, v2);
         const bool r17 = is_point_in_triangle(p7, v1, v3, v2);
+        const bool r18 = is_point_in_triangle(p8, v1, v3, v2);
+        const bool r19 = is_point_in_triangle(p9, v1, v3, v2);
+
+        const bool rv1 = is_point_in_triangle(v1, v1, v2, v3);
+        const bool rv2 = is_point_in_triangle(v2, v1, v2, v3);
+        const bool rv3 = is_point_in_triangle(v3, v1, v2, v3);
+        const bool rv4 = is_point_in_triangle(v1, v1, v3, v2);
+        const bool rv5 = is_point_in_triangle(v2, v1, v3, v2);
+        const bool rv6 = is_point_in_triangle(v3, v1, v3, v2);
 
         TEST_ASSERT(r1 == r11 && r1 == true, "Invalid point calculation.");
         TEST_ASSERT(r2 == r12 && r2 == false, "Invalid point calculation.");
         TEST_ASSERT(r3 == r13 && r3 == false, "Invalid point calculation.");
-        TEST_ASSERT(r4 == r14 && r4 == false, "Invalid point calculation.");
-        TEST_ASSERT(r5 == r15 && r5 == false, "Invalid point calculation.");
+        TEST_ASSERT(r4 == r14 && r4 == true, "Invalid point calculation.");
+        TEST_ASSERT(r5 == r15 && r5 == true, "Invalid point calculation.");
         TEST_ASSERT(r6 == r16 && r6 == true, "Invalid point calculation.");
         TEST_ASSERT(r7 == r17 && r7 == false, "Invalid point calculation.");
+        TEST_ASSERT(r8 == r18 && r8 == true, "Invalid point calculation.");
+        TEST_ASSERT(r9 == r19 && r9 == false, "Invalid point calculation.");
+
+        TEST_ASSERT(rv1 + rv2 + rv3 + rv4 + rv5 + rv6 == 6, "All vertices must be inside triangle.");
     }
 
     Vector3f v3f;

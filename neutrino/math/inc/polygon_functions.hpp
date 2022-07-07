@@ -37,14 +37,24 @@ float polygon_area(const Polygon& polygon);
 
 /// @brief Check if point is inside a polygon.
 ///
-/// Points lying on edges or at one of the vertices are not included in the polygon.
+/// Points lying on edges or at one of the vertices are included in the polygon.
 ///
 /// @param point Point to check.
 /// @param polygon Polygon to check.
 ///
-/// @return `true`if a point is inside a polygon.
+/// @return `true` if a point is inside a polygon.
 bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon);
 
+/// @brief Generates triangulation of a polygon.
+///
+/// Uses the ear cut algorithm.
+/// Assuming the polygon has no holes or edge intersections.
+/// Creates polygon point indexes that represent the triangles in the resulting triangulation. Every 3 indices is 1
+/// triangle. The points in the triangle are arranged counterclockwise.
+///
+/// @param polygon Polygon to build triangulation.
+///
+/// @return Indices of polygon points that form triangles in the triangulation.
 std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon);
 
 // DelaunayTriangulation

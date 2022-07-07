@@ -15,6 +15,7 @@ public:
     {
         add_test([this]() { polygon_area_function(); }, "polygon_area_function");
         add_test([this]() { is_point_in_polygon_function(); }, "is_point_in_polygon_function");
+        add_test([this]() { generate_ear_cut_triangulation_function(); }, "generate_ear_cut_triangulation_function");
     }
 
 private:
@@ -48,9 +49,9 @@ private:
         const Polygon poly1{{-1, -3}, {-1, 1}, {1, 1}, {1, -3}, {0, 0}};
         const Polygon poly2{{0, 0}, {1, -3}, {1, 1}, {-1, 1}, {-1, -3}};
 
-        const Vector2f p1{0, 0};           // 0
-        const Vector2f p2{0, 1};           // 0
-        const Vector2f p3{1, 0};           // 0
+        const Vector2f p1{0, 0};           // 1
+        const Vector2f p2{0, 1};           // 1
+        const Vector2f p3{1, 0};           // 1
         const Vector2f p4{0.5f, -1};       // 1
         const Vector2f p5{-0.5f, 0.9999f}; // 1
         const Vector2f p6{0, -2};          // 0
@@ -75,14 +76,29 @@ private:
         const bool r27 = is_point_in_polygon(p7, poly2);
         const bool r28 = is_point_in_polygon(p8, poly2);
 
-        TEST_ASSERT(r11 == r21 && r11 == false, "Wrong point in polygon calculation.");
-        TEST_ASSERT(r12 == r22 && r12 == false, "Wrong point in polygon calculation.");
-        TEST_ASSERT(r13 == r23 && r13 == false, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r11 == r21 && r11 == true, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r12 == r22 && r12 == true, "Wrong point in polygon calculation.");
+        TEST_ASSERT(r13 == r23 && r13 == true, "Wrong point in polygon calculation.");
         TEST_ASSERT(r14 == r24 && r14 == true, "Wrong point in polygon calculation.");
         TEST_ASSERT(r15 == r25 && r15 == true, "Wrong point in polygon calculation.");
         TEST_ASSERT(r16 == r26 && r16 == false, "Wrong point in polygon calculation.");
         TEST_ASSERT(r17 == r27 && r17 == false, "Wrong point in polygon calculation.");
         TEST_ASSERT(r18 == r28 && r18 == true, "Wrong point in polygon calculation.");
+    }
+
+    void generate_ear_cut_triangulation_function()
+    {
+        const Polygon p1{{-2, 5}, {-2, 1}, {4, 1}, {4, 5}};
+        const Polygon p2{{4, 5}, {4, 1}, {-2, 1}, {-2, 5}};
+
+        const std::vector<std::uint32_t> t1_test = {0, 1, 3, 1, 2, 3};
+        const std::vector<std::uint32_t> t2_test = {0, 3, 1, 1, 3, 2};
+
+        const auto t1 = generate_ear_cut_triangulation(p1);
+        const auto t2 = generate_ear_cut_triangulation(p2);
+
+        TEST_ASSERT(t1 == t1_test, "Wrong triangulation result");
+        TEST_ASSERT(t2 == t2_test, "Wrong triangulation result");
     }
 };
 

@@ -49,13 +49,7 @@ bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon)
         const float c = cross(a, b);
         const float d = dot(a, b);
 
-        // Point is on an edge or a vertex
-        if (c == 0.0f && d <= 0.0f) {
-            return false;
-        }
-
         const bool next_under = next->y < point.y;
-
         if (!curr_under && next_under && c > 0) {
             intersections_num += 1;
         }
@@ -73,6 +67,8 @@ bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon)
 
 std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon)
 {
+    const bool is_ccw = polygon_area(polygon) < 0;
+
     std::vector<std::uint32_t> indices(polygon.size());
     std::iota(indices.begin(), indices.end(), 0);
 
@@ -92,12 +88,14 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
             const Vector<2, float> next = polygon[index_next];
 
             // angel is grater 180 degrees
-            if (cross(prev - curr, next - curr) <= 0.0f) {
+            const auto c = cross(prev - curr, next - curr);
+            if ((!is_ccw && c <= 0.0f) || (is_ccw && c >= 0.0f)) {
                 continue;
             }
 
             bool is_ear = true;
-            for (const auto& p : polygon) {
+            for (const auto& index : indices) {
+                const auto& p = polygon[index];
                 if (p == prev || p == curr || p == next) {
                     continue;
                 }
@@ -146,17 +144,29 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
             const std::uint32_t index_prev = i == 0 ? indices.back() : indices[i - 1];
             const std::uint32_t index_curr = indices[i];
             const std::uint32_t index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
+
+            // Add triangle
             triangles.push_back(index_curr);
-            triangles.push_back(index_prev);
-            triangles.push_back(index_next);
+            if (is_ccw) {
+                triangles.push_back(index_next);
+                triangles.push_back(index_prev);
+            } else {
+                triangles.push_back(index_prev);
+                triangles.push_back(index_next);
+            }
             indices.erase(it);
         }
     }
 
     // Add last triangle
     triangles.push_back(indices[0]);
-    triangles.push_back(indices[2]);
-    triangles.push_back(indices[1]);
+    if (is_ccw) {
+        triangles.push_back(indices[1]);
+        triangles.push_back(indices[2]);
+    } else {
+        triangles.push_back(indices[2]);
+        triangles.push_back(indices[1]);
+    }
 
     return triangles;
 }
