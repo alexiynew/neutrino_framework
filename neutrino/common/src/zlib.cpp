@@ -11,17 +11,17 @@ namespace
 {
 using namespace framework;
 
-constexpr std::uint32_t max_code_size   = 16;
-constexpr std::uint32_t max_window_size = 32768;
-constexpr std::uint32_t max_block_size  = 65535;
+constexpr static std::uint32_t max_code_size   = 16;
+constexpr static std::uint32_t max_window_size = 32768;
+constexpr static std::uint32_t max_block_size  = 65535;
 
-constexpr std::uint32_t deflate_compression_method = 8;
+constexpr static std::uint32_t deflate_compression_method = 8;
 
-constexpr std::uint32_t litlen_alphabet_size   = 288;
-constexpr std::uint32_t distance_alphabet_size = 32;
+constexpr static std::uint32_t litlen_alphabet_size   = 288;
+constexpr static std::uint32_t distance_alphabet_size = 32;
 
-constexpr std::uint32_t end_of_block_code = 256;
-constexpr std::uint32_t invalid_code      = 300;
+constexpr static std::uint32_t end_of_block_code = 256;
+constexpr static std::uint32_t invalid_code      = 300;
 
 enum class CompressionAlgorithm
 {
@@ -58,7 +58,7 @@ public:
 private:
     std::uint32_t get_implementation(std::uint32_t count)
     {
-        constexpr std::uint32_t mask[33] = {
+        constexpr static std::uint32_t mask[33] = {
         0x00000000,                                                                                     //
         0x00000001, 0x00000003, 0x00000007, 0x0000000F, 0x0000001F, 0x0000003F, 0x0000007F, 0x000000FF, // 1 - 8
         0x000001FF, 0x000003FF, 0x000007FF, 0x00000FFF, 0x00001FFF, 0x00003FFF, 0x00007FFF, 0x0000FFFF, // 9 - 16
@@ -263,19 +263,27 @@ LitLenDistanceCodes fixed_huffman_codes()
      280 - 287     8     8       11000000  through 11000111
     */
 
-    std::vector<std::uint8_t> litlen_alphabet(litlen_alphabet_size);
+    auto init_litlen_alphabet = []() {
+        std::vector<std::uint8_t> data(litlen_alphabet_size);
+        for (std::size_t i = 0; i < data.size(); ++i) {
+            data[i] = ((i <= 143 || i >= 280) ? 8 : (i >= 144 && i <= 255 ? 9 : 7));
+        }
+        return data;
+    };
 
-    for (std::size_t i = 0; i < litlen_alphabet.size(); ++i) {
-        litlen_alphabet[i] = ((i <= 143 || i >= 280) ? 8 : (i >= 144 && i <= 255 ? 9 : 7));
-    }
+    static const std::vector<std::uint8_t> litlen_alphabet = init_litlen_alphabet();
+    static const std::vector<std::uint8_t> distance_alphabet(distance_alphabet_size, 5);
+    static const auto codes = std::make_tuple(HuffmanCodeTable(litlen_alphabet), HuffmanCodeTable(distance_alphabet));
 
-    std::vector<std::uint8_t> distance_alphabet(distance_alphabet_size, 5);
-
-    return std::make_tuple(HuffmanCodeTable(litlen_alphabet), HuffmanCodeTable(distance_alphabet));
+    return codes;
 }
 
 LitLenDistanceCodes dynamic_huffman_codes(BitStream& in)
 {
+    constexpr static std::array<std::uint8_t, 19> length_order = {
+    16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15,
+    };
+
     const std::uint16_t hlit  = in.get<std::uint16_t>(5);
     const std::uint16_t hdist = in.get<std::uint16_t>(5);
     const std::uint16_t hclen = in.get<std::uint16_t>(4);
@@ -284,17 +292,13 @@ LitLenDistanceCodes dynamic_huffman_codes(BitStream& in)
     const std::size_t distance_codes_count = hdist + 1;
     const std::size_t code_len_codes_count = hclen + 4;
 
-    constexpr std::array<std::uint8_t, 19> length_order = {
-    16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15,
-    };
-
     std::vector<std::uint8_t> code_lengths(19);
 
     for (std::size_t i = 0; i < code_len_codes_count; ++i) {
         code_lengths[length_order[i]] = static_cast<std::uint8_t>(in.get<std::uint16_t>(3));
     }
 
-    HuffmanCodeTable len_huffman(code_lengths);
+    const HuffmanCodeTable len_huffman(code_lengths);
 
     std::vector<std::uint8_t> lengths;
     lengths.reserve(lit_len_codes_count + distance_codes_count);
@@ -340,15 +344,18 @@ std::uint16_t read_length(std::uint16_t value, BitStream& in)
     // 265   1  11,12      275   3   51-58     285   0    258
     // 266   1  13,14      276   3   59-66
 
-    constexpr std::uint16_t start_len = 257;
-    constexpr std::array<std::pair<std::uint32_t, std::uint32_t>, 29> len_description =
-    {std::pair(0, 3),   std::pair(0, 4),   std::pair(0, 5),   std::pair(0, 6),   std::pair(0, 7),  std::pair(0, 8),
-     std::pair(0, 9),   std::pair(0, 10),  std::pair(1, 11),  std::pair(1, 13),  std::pair(1, 15), std::pair(1, 17),
-     std::pair(2, 19),  std::pair(2, 23),  std::pair(2, 27),  std::pair(2, 31),  std::pair(3, 35), std::pair(3, 43),
-     std::pair(3, 51),  std::pair(3, 59),  std::pair(4, 67),  std::pair(4, 83),  std::pair(4, 99), std::pair(4, 115),
-     std::pair(5, 131), std::pair(5, 163), std::pair(5, 195), std::pair(5, 227), std::pair(0, 258)};
+    constexpr static std::uint16_t start_len = 257;
 
-    auto [extra_bits, start_value] = len_description[value - start_len];
+    constexpr static std::array<std::uint32_t, 29> extra_bits_description = {
+    0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0,
+    };
+
+    constexpr static std::array<std::uint32_t, 29> start_value_description = {
+    3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258,
+    };
+
+    const std::uint32_t extra_bits  = extra_bits_description[value - start_len];
+    const std::uint32_t start_value = start_value_description[value - start_len];
 
     std::uint32_t result = start_value;
     if (extra_bits > 0) {
@@ -374,15 +381,17 @@ std::uint16_t read_distance(std::uint16_t value, BitStream& in)
     // 8    3  17-24   18   8    513-768    28   13   16385-24576
     // 9    3  25-32   19   8   769-1024    29   13   24577-32768
 
-    constexpr std::array<std::pair<std::uint32_t, std::uint32_t>, 30> dist_description =
-    {std::pair(0, 1),     std::pair(0, 2),     std::pair(0, 3),      std::pair(0, 4),      std::pair(1, 5),
-     std::pair(1, 7),     std::pair(2, 9),     std::pair(2, 13),     std::pair(3, 17),     std::pair(3, 25),
-     std::pair(4, 33),    std::pair(4, 49),    std::pair(5, 65),     std::pair(5, 97),     std::pair(6, 129),
-     std::pair(6, 193),   std::pair(7, 257),   std::pair(7, 385),    std::pair(8, 513),    std::pair(8, 769),
-     std::pair(9, 1025),  std::pair(9, 1537),  std::pair(10, 2049),  std::pair(10, 3073),  std::pair(11, 4097),
-     std::pair(11, 6145), std::pair(12, 8193), std::pair(12, 12289), std::pair(13, 16385), std::pair(13, 24577)};
+    constexpr static std::array<std::uint32_t, 30> extra_bits_description = {
+    0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13,
+    };
 
-    auto [extra_bits, start_value] = dist_description[value];
+    constexpr static std::array<std::uint32_t, 30> start_value_description = {
+    1,   2,   3,   4,   5,   7,    9,    13,   17,   25,   33,   49,   65,    97,    129,
+    193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577,
+    };
+
+    const std::uint32_t extra_bits  = extra_bits_description[value];
+    const std::uint32_t start_value = start_value_description[value];
 
     std::uint32_t result = start_value;
     if (extra_bits > 0) {
