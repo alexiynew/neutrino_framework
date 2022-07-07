@@ -1,5 +1,9 @@
+#include <chrono>
+#include <fstream>
+#include <iostream>
 #include <numeric>
 #include <stdexcept>
+#include <string>
 
 #define FRAMEWORK_MATH_DETAILS
 #include <math/inc/geometric_functions.hpp>
@@ -65,8 +69,27 @@ bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon)
     return intersections_num % 2 == 1;
 }
 
+#define TS std::to_string((std::chrono::high_resolution_clock::now() - start).count())
+
+#define BEGIN(name) \
+    events.push_back("{\"name\": " #name ", \"ph\": \"B\", \"pid\": 123, \"tid\": 456, \"ts\":" + TS + "},\n");
+
+#define END(name) \
+    events.push_back("{\"name\": " #name ", \"ph\": \"E\", \"pid\": 123, \"tid\": 456, \"ts\":" + TS + "},\n");
+
+#define LAST(name) \
+    events.push_back("{\"name\": " #name ", \"ph\": \"E\", \"pid\": 123, \"tid\": 456, \"ts\":" + TS + "}\n");
+
 std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon)
 {
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    std::vector<std::string> events;
+    events.reserve(10000);
+
+    events.push_back("{\n\"traceEvents\": [\n");
+    BEGIN("generation")
+
     const bool is_ccw = polygon_area(polygon) < 0;
 
     std::vector<std::uint32_t> indices(polygon.size());
@@ -76,8 +99,11 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
     triangles.reserve((polygon.size() - 2) * 3);
 
     while (indices.size() > 3) {
+
+        BEGIN("loop")
         std::vector<std::uint32_t> ears;
 
+        BEGIN("ears")
         for (size_t i = 0; i < indices.size(); ++i) {
             const std::uint32_t index_prev = i == 0 ? indices.back() : indices[i - 1];
             const std::uint32_t index_curr = indices[i];
@@ -110,6 +136,7 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
                 ears.push_back(index_curr);
             }
         }
+        END("ears")
 
         if (ears.empty()) {
             throw std::runtime_error("Ears are empty. It's bug in triangulation algorithm.");
@@ -118,6 +145,7 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
         size_t min_angle_index = ears[0];
         float max_dot          = -9999.0f;
 
+        BEGIN("best")
         for (auto ear_index : ears) {
             auto it  = std::find(indices.begin(), indices.end(), ear_index);
             size_t i = static_cast<size_t>(std::distance(indices.begin(), it));
@@ -136,8 +164,10 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
                 min_angle_index = ear_index;
             }
         }
+        END("best")
 
         {
+            BEGIN("add")
             auto it  = std::find(indices.begin(), indices.end(), min_angle_index);
             size_t i = static_cast<size_t>(std::distance(indices.begin(), it));
 
@@ -155,9 +185,13 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
                 triangles.push_back(index_next);
             }
             indices.erase(it);
+            END("add")
         }
+
+        END("loop")
     }
 
+    BEGIN("last")
     // Add last triangle
     triangles.push_back(indices[0]);
     if (is_ccw) {
@@ -166,6 +200,16 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
     } else {
         triangles.push_back(indices[2]);
         triangles.push_back(indices[1]);
+    }
+    END("last")
+
+    LAST("generation")
+
+    events.push_back("],\n\"displayTimeUnit\": \"ns\"\n }\n\n");
+
+    std::ofstream out("test.json", std::ios_base::out);
+    for (const auto& s : events) {
+        out << s;
     }
 
     return triangles;
