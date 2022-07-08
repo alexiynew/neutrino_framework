@@ -14,9 +14,9 @@ public:
         : Suite("WindowCursorTest")
     {
          add_test([this]() { grab_cursor(); }, "grub_cursor");
-         add_test([this]() { grab_cursor_before_show(); }, "grab_cursor_before_show");
-         add_test([this]() { release_cursor_after_hide(); }, "release_cursor_after_hide");
-         add_test([this]() { cursor_visibility(); }, "cursor_visibility");
+         //add_test([this]() { grab_cursor_before_show(); }, "grab_cursor_before_show");
+         //add_test([this]() { release_cursor_after_hide(); }, "release_cursor_after_hide");
+         //add_test([this]() { cursor_visibility(); }, "cursor_visibility");
         
         // TODO: Check that upper left corner of the window is (1,1) and lower right corner is (width, height).
     }
@@ -26,11 +26,19 @@ private:
     {
         Window window(name(), {640, 480});
         CursorPosition last_mouse_pos{-1,-1};
-
-        window.on_mouse_move.connect([&last_mouse_pos, &window](const Window&, CursorPosition pos) {
+        bool mouse_inside = false;
+        
+        window.on_mouse_move.connect([&last_mouse_pos, &mouse_inside, &window](const Window&, CursorPosition pos) {
             last_mouse_pos = pos;
-            window.set_title(std::to_string(pos.x) + ": " + std::to_string(pos.y));
+            window.set_title(std::to_string(pos.x) + ": " + std::to_string(pos.y) + (mouse_inside ? "[x]" : "[ ]"));
             
+        });
+        
+        window.on_mouse_enter.connect([&mouse_inside](const Window&){
+            mouse_inside = true;
+        });
+        window.on_mouse_leave.connect([&mouse_inside](const Window&){
+            mouse_inside = false;
         });
         
         window.show();
@@ -40,6 +48,10 @@ private:
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         window.grab_cursor();
+        
+        while (!window.should_close()) {
+           window.process_events();
+        }
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
         TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");

@@ -88,21 +88,27 @@ private:
     void switch_state(Window::State state);
     Window::State get_actual_state() const;
 
+    void center_cursor_inside_window();
     void update_cursor_visibility();
     void show_cursor();
     void hide_cursor();
-    
+    void enable_raw_input();
+    void disable_raw_input();
+
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
 
     bool m_should_close   = false;
     Window::State m_state = Window::State::normal;
-    
-    bool m_cursor_grabbed = false;
-    bool m_cursor_visible = true;
+
+    bool m_cursor_grabbed         = false;
+    bool m_cursor_visible         = true;
     bool m_cursor_actualy_visible = true;
-    bool m_mouse_hover = false;
+    bool m_mouse_hover            = false;
+
+    CursorPosition m_grabbed_cursor_diff = {0, 0};
+    CursorPosition m_cursor_position     = {0, 0};
 
     Size m_min_size;
     Size m_max_size;

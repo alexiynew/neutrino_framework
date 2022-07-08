@@ -533,16 +533,14 @@ void OsxWindow::focus()
 
 void OsxWindow::grab_cursor()
 {
-    AutoreleasePool pool;
-
     m_cursor_grabbed = true;
+    enable_raw_input();
 }
 
 void OsxWindow::release_cursor()
 {
-    AutoreleasePool pool;
-    
     m_cursor_grabbed = false;
+    disable_raw_input();
 }
 
 void OsxWindow::process_events()
@@ -866,6 +864,10 @@ void OsxWindow::window_did_becomekey()
 {
     if (is_visible()) {
         on_focus();
+
+        if (m_cursor_grabbed) {
+            enable_raw_input();
+        }
     }
 }
 
@@ -873,6 +875,10 @@ void OsxWindow::window_did_resignkey()
 {
     if (is_visible()) {
         on_lost_focus();
+
+        if (!m_cursor_grabbed) {
+            disable_raw_input();
+        }
     }
 }
 
@@ -898,16 +904,19 @@ void OsxWindow::mouse_exited()
     m_mouse_hover = false;
 }
 
-void OsxWindow::mouse_moved(CursorPosition position)
+void OsxWindow::mouse_moved(CursorPosition cursor_position)
 {
     AutoreleasePool pool;
     
     if (m_cursor_grabbed) {
-    }
-    
-    if (m_mouse_hover) {
+        int dx = 0;
+        int dy = 0;
+        CGGetLastMouseDelta(&dx, &dy);
+        on_mouse_move({dx,dy});
+        center_cursor_inside_window();
+    } else if (m_mouse_hover) {
         const NSRect contentRect = [m_view->get() frame];
-        on_mouse_move({position.x, static_cast<int>(contentRect.size.height - position.y)});
+        on_mouse_move({cursor_position.x + 1, static_cast<int>(contentRect.size.height - cursor_position.y)});
     }
     
     update_cursor_visibility();
@@ -1004,6 +1013,18 @@ Window::State OsxWindow::get_actual_state() const
     }
 }
 
+void OsxWindow::center_cursor_inside_window()
+{
+    AutoreleasePool pool;
+    
+    if (m_cursor_grabbed) {
+        const auto p = position();
+        const auto s = size();
+        CGPoint point{p.x + s.width / 2.0f, p.y + s.height / 2.0f};
+        CGWarpMouseCursorPosition(point);
+    }
+}
+
 void OsxWindow::update_cursor_visibility()
 {
     if (m_mouse_hover) {
@@ -1024,6 +1045,7 @@ void OsxWindow::show_cursor()
     }
     
     AutoreleasePool pool;
+
     m_cursor_actualy_visible = true;
     [NSCursor unhide];
 }
@@ -1035,8 +1057,38 @@ void OsxWindow::hide_cursor()
     }
     
     AutoreleasePool pool;
+
     m_cursor_actualy_visible = false;
     [NSCursor hide];
+}
+
+void OsxWindow::enable_raw_input()
+{
+    AutoreleasePool pool;
+
+    m_grabbed_cursor_diff = {0, 0};
+
+    NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
+    m_cursor_position.x = pos.x;
+    m_cursor_position.y = pos.y;
+
+    center_cursor_inside_window();
+    mouse_moved(m_grabbed_cursor_diff);
+
+    CGAssociateMouseAndMouseCursorPosition(YES);
+}
+
+void OsxWindow::disable_raw_input()
+{
+    AutoreleasePool pool;
+
+    // restore cursor previous position
+    CGPoint point;
+    point.x = m_cursor_position.x;
+    point.y = m_cursor_position.y;
+    CGWarpMouseCursorPosition(point);
+
+    CGAssociateMouseAndMouseCursorPosition(NO);
 }
 
 } // namespace framework::system::details
