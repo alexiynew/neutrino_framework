@@ -1,4 +1,4 @@
-﻿#include <chrono>
+#include <chrono>
 #include <thread>
 
 #include <system/window.hpp>
@@ -59,7 +59,7 @@ private:
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.set_resizable(false);
-
+        
         // No other values were changed
         TEST_ASSERT(!window.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");
@@ -79,14 +79,14 @@ private:
 
         window.set_resizable(false);
         window.show();
-
+        
         TEST_ASSERT(!window.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");
         TEST_ASSERT(window.min_size() == no_size, "Window has wrong min size.");
         TEST_ASSERT(window.max_size() == no_size, "Window has wrong max size.");
 
         window.set_resizable(true);
-
+        
         // No other values were changed
         TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");

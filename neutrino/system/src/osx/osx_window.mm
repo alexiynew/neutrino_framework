@@ -293,6 +293,20 @@
     [self setWindow_did_resize:callback];
 }
 
+- (BOOL)hasResizableStyle
+{
+    return (([self styleMask] & NSWindowStyleMaskResizable) != 0);
+}
+
+- (void)setResizable:(BOOL)value
+{
+    if (value) {
+       self.styleMask |= NSWindowStyleMaskResizable;
+    } else {
+       self.styleMask &= ~NSWindowStyleMaskResizable;
+    }
+}
+
 @end // OsxWindowInternal
 
 #pragma endregion
@@ -670,9 +684,11 @@ void OsxWindow::set_min_size(Size min_size)
     [m_window->get() setContentMinSize:ns_size];
 }
 
-void OsxWindow::set_resizable(bool /*value*/)
+void OsxWindow::set_resizable(bool value)
 {
     AutoreleasePool pool;
+    
+    [m_window->get() setResizable:value];
 }
 
 void OsxWindow::set_position(Position position)
@@ -795,7 +811,7 @@ Size OsxWindow::min_size() const
 
 bool OsxWindow::is_resizable() const
 {
-    return false;
+    return [m_window->get() hasResizableStyle];
 }
 
 Position OsxWindow::position() const
