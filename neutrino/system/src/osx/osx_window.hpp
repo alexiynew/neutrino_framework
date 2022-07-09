@@ -23,7 +23,7 @@ public:
 
     ~OsxWindow() override;
 
-    OsxWindow& operator=(const OsxWindow&)     = delete;
+    OsxWindow& operator=(const OsxWindow&) = delete;
     OsxWindow& operator=(OsxWindow&&) noexcept = default;
 
 #pragma region actions

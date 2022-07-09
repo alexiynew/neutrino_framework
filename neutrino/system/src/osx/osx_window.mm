@@ -34,11 +34,10 @@
 - (instancetype)initWithOwner:(NSResponder*)owner
 {
     self = [super init];
-    if (self != nil)
-    {
-        self.owner = owner;
+    if (self != nil) {
+        self.owner          = owner;
         self.update_context = nil;
-        self.tracking_area = nil;
+        self.tracking_area  = nil;
         [self updateTrackingAreas];
     }
 
@@ -47,8 +46,8 @@
 
 - (void)dealloc
 {
-   [tracking_area release];
-   [super dealloc];
+    [tracking_area release];
+    [super dealloc];
 }
 
 - (BOOL)isOpaque
@@ -92,7 +91,8 @@
                                           NSTrackingEnabledDuringMouseDrag | NSTrackingCursorUpdate |
                                           NSTrackingInVisibleRect | NSTrackingAssumeInside;
 
-    self.tracking_area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self.owner userInfo:nil];
+    self.tracking_area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self.owner
+                                                     userInfo:nil];
 
     [self addTrackingArea:self.tracking_area];
     [super updateTrackingAreas];
@@ -300,7 +300,6 @@
 namespace
 {
 
-// TODO: figure out why we need this function
 // Transforms a y-coordinate between the CG display and NS screen spaces
 CGFloat transform_y(CGFloat y)
 {
@@ -328,11 +327,6 @@ public:
         [m_value autorelease];
     }
 
-    operator T*()
-    {
-        return m_value;
-    }
-
     T* get()
     {
         return m_value;
@@ -356,7 +350,7 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     : PlatformWindow()
 {
     using namespace std::placeholders;
-    
+
     AutoreleasePool pool;
 
     if ([NSThread currentThread] != [NSThread mainThread]) {
@@ -435,6 +429,7 @@ OsxWindow::~OsxWindow()
     AutoreleasePool pool;
 
     [m_window->get() setDelegate:nil];
+    [m_window->get() setContentView:nil];
     [m_window->get() close];
 }
 
@@ -461,6 +456,10 @@ void OsxWindow::show()
         m_state = Window::State::normal;
     } else {
         switch_state(m_state);
+    }
+
+    if (m_cursor_grabbed) {
+        enable_raw_input();
     }
 
     // Turn on on_focus callback
@@ -502,6 +501,10 @@ void OsxWindow::hide()
             // Or call the on_lost_focus callback explicitly
             on_lost_focus();
         }
+
+        if (m_cursor_grabbed) {
+            disable_raw_input();
+        }
     }
 
     [m_window->get() orderOut:m_window->get()];
@@ -510,7 +513,7 @@ void OsxWindow::hide()
     } while (is_visible() && ![m_window->get() isMiniaturized]);
 
     [m_window->get() close];
-    
+
     // Explicitly call on_hide callback
     on_hide();
 }
@@ -702,7 +705,7 @@ void OsxWindow::set_cursor_visibility(bool visible)
     if (m_cursor_visible == visible) {
         return;
     }
-    
+
     m_cursor_visible = visible;
     update_cursor_visibility();
 }
@@ -876,7 +879,7 @@ void OsxWindow::window_did_resignkey()
     if (is_visible()) {
         on_lost_focus();
 
-        if (!m_cursor_grabbed) {
+        if (m_cursor_grabbed) {
             disable_raw_input();
         }
     }
@@ -907,18 +910,18 @@ void OsxWindow::mouse_exited()
 void OsxWindow::mouse_moved(CursorPosition cursor_position)
 {
     AutoreleasePool pool;
-    
+
     if (m_cursor_grabbed) {
         int dx = 0;
         int dy = 0;
         CGGetLastMouseDelta(&dx, &dy);
-        on_mouse_move({dx,dy});
+        on_mouse_move({dx, dy});
         center_cursor_inside_window();
     } else if (m_mouse_hover) {
         const NSRect contentRect = [m_view->get() frame];
         on_mouse_move({cursor_position.x + 1, static_cast<int>(contentRect.size.height - cursor_position.y)});
     }
-    
+
     update_cursor_visibility();
 }
 
@@ -1016,7 +1019,7 @@ Window::State OsxWindow::get_actual_state() const
 void OsxWindow::center_cursor_inside_window()
 {
     AutoreleasePool pool;
-    
+
     if (m_cursor_grabbed) {
         const auto p = position();
         const auto s = size();
@@ -1043,7 +1046,7 @@ void OsxWindow::show_cursor()
     if (m_cursor_actualy_visible) {
         return;
     }
-    
+
     AutoreleasePool pool;
 
     m_cursor_actualy_visible = true;
@@ -1055,7 +1058,7 @@ void OsxWindow::hide_cursor()
     if (!m_cursor_actualy_visible) {
         return;
     }
-    
+
     AutoreleasePool pool;
 
     m_cursor_actualy_visible = false;
@@ -1068,14 +1071,22 @@ void OsxWindow::enable_raw_input()
 
     m_grabbed_cursor_diff = {0, 0};
 
-    NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
-    m_cursor_position.x = pos.x;
-    m_cursor_position.y = pos.y;
+    const NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
+    const auto p      = position();
+    const auto s      = size();
+    m_cursor_position = CursorPosition(pos.x + p.x, (p.y + s.height) - pos.y);
 
     center_cursor_inside_window();
     mouse_moved(m_grabbed_cursor_diff);
 
-    CGAssociateMouseAndMouseCursorPosition(YES);
+    if (!m_mouse_hover) {
+        m_mouse_hover = true;
+        on_mouse_enter();
+    }
+
+    CGAssociateMouseAndMouseCursorPosition(NO);
+
+    process_events();
 }
 
 void OsxWindow::disable_raw_input()
@@ -1088,7 +1099,9 @@ void OsxWindow::disable_raw_input()
     point.y = m_cursor_position.y;
     CGWarpMouseCursorPosition(point);
 
-    CGAssociateMouseAndMouseCursorPosition(NO);
+    CGAssociateMouseAndMouseCursorPosition(YES);
+
+    process_events();
 }
 
 } // namespace framework::system::details

@@ -13,34 +13,29 @@ public:
     WindowCursorTest()
         : Suite("WindowCursorTest")
     {
-         add_test([this]() { grab_cursor(); }, "grub_cursor");
-         //add_test([this]() { grab_cursor_before_show(); }, "grab_cursor_before_show");
-         //add_test([this]() { release_cursor_after_hide(); }, "release_cursor_after_hide");
-         //add_test([this]() { cursor_visibility(); }, "cursor_visibility");
-        
-        // TODO: Check that upper left corner of the window is (1,1) and lower right corner is (width, height).
+        add_test([this]() { grab_cursor(); }, "grub_cursor");
+        add_test([this]() { grab_cursor_before_show(); }, "grab_cursor_before_show");
+        add_test([this]() { release_cursor_after_hide(); }, "release_cursor_after_hide");
+        add_test([this]() { cursor_visibility(); }, "cursor_visibility");
+
+        // TODO: Check that upper left corner of the window is (0,0) and lower right corner is (width - 1, height - 1).
+        // TODO: When grubbed: 0,0 - is window center x is from left to right, y is from top to bottom.
+        // TODO: Window should release cursor for system when focus lost or the window is hidden.
+        // TODO: Window should return grubbed cursor in same position when cursor released
     }
 
 private:
     void grab_cursor()
     {
         Window window(name(), {640, 480});
-        CursorPosition last_mouse_pos{-1,-1};
+        CursorPosition last_mouse_pos{-1, -1};
         bool mouse_inside = false;
-        
-        window.on_mouse_move.connect([&last_mouse_pos, &mouse_inside, &window](const Window&, CursorPosition pos) {
-            last_mouse_pos = pos;
-            window.set_title(std::to_string(pos.x) + ": " + std::to_string(pos.y) + (mouse_inside ? "[x]" : "[ ]"));
-            
-        });
-        
-        window.on_mouse_enter.connect([&mouse_inside](const Window&){
-            mouse_inside = true;
-        });
-        window.on_mouse_leave.connect([&mouse_inside](const Window&){
-            mouse_inside = false;
-        });
-        
+
+        window.on_mouse_move.connect([&last_mouse_pos](const Window&, CursorPosition pos) { last_mouse_pos = pos; });
+
+        window.on_mouse_enter.connect([&mouse_inside](const Window&) { mouse_inside = true; });
+        window.on_mouse_leave.connect([&mouse_inside](const Window&) { mouse_inside = false; });
+
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
@@ -48,17 +43,15 @@ private:
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         window.grab_cursor();
-        
-        while (!window.should_close()) {
-           window.process_events();
-        }
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
         TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
+        TEST_ASSERT(mouse_inside == true, "Grubbed cursor must be inside the window");
+        TEST_ASSERT(last_mouse_pos == CursorPosition(0, 0), "On grubbed, cursor must be in 0,0 position");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        
+
         window.hide();
 
         TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
@@ -86,13 +79,6 @@ private:
         TEST_ASSERT(tmp.has_input_focus(), "Window should not be focused.");
         TEST_ASSERT(!tmp.is_cursor_grabbed(), "Window should not grab cursor.");
         TEST_ASSERT(tmp.is_cursor_visible(), "Cursor should be visible.");
-
-        // TODO: Automate this check
-        // TEST_FAIL("Window should release cursor for system when focus lost.");
-        // while (!window.should_close()) {
-        //    tmp.process_events();
-        //    window.process_events();
-        //}
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -127,17 +113,7 @@ private:
 
         window.hide();
 
-        // TODO: Automate this check
-        // TEST_FAIL("Window should release cursor for system when focus lost.");
-        // while (!window.should_close()) {
-        //     window.process_events();
-        // }
-
         window.show();
-
-        // while (!window.should_close()) {
-        //    window.process_events();
-        // }
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
         TEST_ASSERT(window.is_cursor_grabbed(), "Window should not grab cursor.");
@@ -160,11 +136,6 @@ private:
         window.release_cursor();
 
         window.show();
-
-        // TODO: Automate this check
-        // while (!window.should_close()) {
-        //     window.process_events();
-        // }
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
         TEST_ASSERT(!window.is_cursor_grabbed(), "Window should not grab cursor.");
@@ -192,14 +163,18 @@ private:
         // while (!window.should_close()) {
         //     window.process_events();
         // }
-        
+
+        window.hide();
+
         // TODO: Automate this check
-        // window.hide();
         // TEST_FAIL("Cursor is hidden in window, BUT must be visible for system.");
         // while (!window.should_close()) {
         //     window.process_events();
         // }
-        // window.show();
+
+        window.show();
+
+        // TODO: Automate this check
         // TEST_FAIL("Cursor is hidden in window, AND must be visible for system.");
         // while (!window.should_close()) {
         //     window.process_events();
@@ -213,7 +188,7 @@ private:
         // while (!window.should_close()) {
         //     window.process_events();
         // }
-        
+
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
     }
 };

@@ -45,7 +45,7 @@ protected:
     /// @param function Test function.
     /// @param name Name of the current test function.
     void add_test(FunctionType&& function, const std::string& name);
-    
+
     /// @brief Should test print logs directly in stdout.
     ///
     /// By default logs stored in buffer and fleshes to stdout whet test is over.
@@ -99,7 +99,7 @@ private:
     std::vector<TestData>::iterator m_current_test;
 
     bool m_direct_logging = false;
-    bool m_success = true;
+    bool m_success        = true;
 };
 
 /// @brief Runs test in all test suites.

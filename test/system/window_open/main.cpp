@@ -47,6 +47,9 @@ private:
 
         window.hide();
 
+        // TODO: On MacOS a hidden window can appear on screen by Command+Tab,
+        // but it's counts as invisible and we can't properly hadle it in OsxWindow::window_did_becomekey
+
         TEST_ASSERT(show_called, "The on_show callback must be called.");
         TEST_ASSERT(hide_called, "The on_hide callback must be called.");
     }
