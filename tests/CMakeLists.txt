@@ -2,7 +2,7 @@ include(CTest)
 enable_testing()
 
 set(TESTS_TARGET ${PROJECT_NAME}_tests)
-set(TEST_DIR_NAME test)
+set(TEST_DIR_NAME tests)
 
 add_custom_target(${TESTS_TARGET} ALL 
     DEPENDS ${PROJECT_NAME}

@@ -6,7 +6,6 @@ set(TESTS
     window_state
     window_resize
     window_cursor
-    window_events
 )
 
 foreach(TEST ${TESTS})
