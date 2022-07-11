@@ -2,6 +2,7 @@
 #include <functional>
 #include <limits>
 #include <thread>
+#include <map>
 
 #include <system/src/osx/osx_application.hpp>
 #include <system/src/osx/osx_autorelease_pool.hpp>
@@ -14,27 +15,27 @@
 
 #pragma region OsxContentView
 
-@interface OsxContentView : NSView
+@interface OsxContentView : NSView <NSTextInputClient> {
+    std::function<void()> onUpdateContext;
+    NSResponder* responder;
+    NSTrackingArea* trackingArea;
+}
 
-@property(assign, nonatomic) std::function<void()> update_context;
-@property(retain, nonatomic) NSResponder* owner;
-@property(retain, nonatomic) NSTrackingArea* tracking_area;
+@property(assign, nonatomic) std::function<void()> on_update_context;
 
 @end
 
 @implementation OsxContentView
 
-@synthesize update_context;
-@synthesize owner;
-@synthesize tracking_area;
+@synthesize on_update_context = onUpdateContext;
 
 - (instancetype)initWithOwner:(NSResponder*)owner
 {
     self = [super init];
     if (self != nil) {
-        self.owner          = owner;
-        self.update_context = nil;
-        self.tracking_area  = nil;
+        responder       = owner;
+        onUpdateContext = nullptr;
+        trackingArea    = nullptr;
         [self updateTrackingAreas];
     }
 
@@ -43,7 +44,7 @@
 
 - (void)dealloc
 {
-    [tracking_area release];
+    [trackingArea release];
     [super dealloc];
 }
 
@@ -69,7 +70,10 @@
 
 - (void)updateLayer
 {
-    self.update_context();
+    if (onUpdateContext)
+    {
+        onUpdateContext();
+    }
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent*)event
@@ -79,20 +83,69 @@
 
 - (void)updateTrackingAreas
 {
-    if (self.tracking_area != nil) {
-        [self removeTrackingArea:self.tracking_area];
-        [self.tracking_area release];
+    if (trackingArea != nil) {
+        [self removeTrackingArea:trackingArea];
+        [trackingArea release];
     }
 
     const NSTrackingAreaOptions options = NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow |
                                           NSTrackingEnabledDuringMouseDrag | NSTrackingCursorUpdate |
                                           NSTrackingInVisibleRect | NSTrackingAssumeInside;
 
-    self.tracking_area = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:self.owner
-                                                     userInfo:nil];
+    trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds] options:options owner:responder userInfo:nil];
 
-    [self addTrackingArea:self.tracking_area];
+    [self addTrackingArea:trackingArea];
     [super updateTrackingAreas];
+}
+
+// Input text handling required by <NSTextInputClient>
+- (void)insertText:(id)string replacementRange:(NSRange)replacementRange
+{
+    // TODO
+}
+
+- (void)doCommandBySelector:(SEL)selector
+{}
+ 
+- (void)setMarkedText:(id)string selectedRange:(NSRange)selectedRange replacementRange:(NSRange)replacementRange
+{}
+
+- (void)unmarkText
+{}
+
+- (NSRange)selectedRange
+{
+    return {NSNotFound, 0};
+}
+
+- (NSRange)markedRange
+{
+    return {NSNotFound, 0};
+}
+
+- (BOOL)hasMarkedText
+{
+    return false;
+}
+
+- (nullable NSAttributedString *)attributedSubstringForProposedRange:(NSRange)range actualRange:(nullable NSRangePointer)actualRange
+{
+    return nil;
+}
+
+- (NSArray<NSAttributedStringKey> *)validAttributesForMarkedText
+{
+    return [NSArray array];
+}
+
+- (NSRect)firstRectForCharacterRange:(NSRange)range actualRange:(nullable NSRangePointer)actualRange
+{
+    return NSMakeRect(0,0,0,0);
+}
+
+- (NSUInteger)characterIndexForPoint:(NSPoint)point
+{
+    return 0;
 }
 
 @end // OsxContentView
@@ -101,49 +154,66 @@
 
 #pragma region OsxWindowInternal
 
-@interface OsxWindowInternal : NSWindow<NSWindowDelegate>
+@interface OsxWindowInternal : NSWindow<NSWindowDelegate>{
+    std::function<void()> onWindowShouldClose;
+    std::function<void()> onWindowDidResize;
+    std::function<void()> onWindowDidMove;
+    std::function<void()> onWindowDidMiniaturize;
+    std::function<void()> onWindowDidDeminiaturize;
+    std::function<void()> onWindowDidBecomekey;
+    std::function<void()> onWindowDidResignkey;
+    std::function<void()> onWindowDidEnterFullScreen;
+    std::function<void()> onWindowDidExitFullScreen;
 
-@property(assign, nonatomic) std::function<void()> window_should_close;
-@property(assign, nonatomic) std::function<void()> window_did_resize;
-@property(assign, nonatomic) std::function<void()> window_did_move;
-@property(assign, nonatomic) std::function<void()> window_did_miniaturize;
-@property(assign, nonatomic) std::function<void()> window_did_deminiaturize;
-@property(assign, nonatomic) std::function<void()> window_did_becomekey;
-@property(assign, nonatomic) std::function<void()> window_did_resignkey;
-@property(assign, nonatomic) std::function<void()> window_did_enter_full_screen;
-@property(assign, nonatomic) std::function<void()> window_did_exit_full_screen;
+    std::function<void(framework::system::KeyCode, framework::system::Modifiers)> onKeyDown;
+    std::function<void(framework::system::KeyCode, framework::system::Modifiers)> onKeyUp;
 
-@property(assign, nonatomic) std::function<void(framework::system::KeyCode, framework::system::Modifiers)> key_down;
-@property(assign, nonatomic) std::function<void(framework::system::KeyCode, framework::system::Modifiers)> key_up;
+    std::function<void()> onMouseEntered;
+    std::function<void()> onMouseExited;
+    std::function<void(framework::system::CursorPosition)> onMouseMoved;
+    
+    std::map<framework::system::KeyCode, bool> pressedModifierKeys;
+}
 
-@property(assign, nonatomic) std::function<void()> mouse_entered;
-@property(assign, nonatomic) std::function<void()> mouse_exited;
-@property(assign, nonatomic) std::function<void(framework::system::CursorPosition)> mouse_moved;
-@property(assign, nonatomic) std::function<void()> cursor_update;
+@property(assign, nonatomic) std::function<void()> on_window_should_close;
+@property(assign, nonatomic) std::function<void()> on_window_did_resize;
+@property(assign, nonatomic) std::function<void()> on_window_did_move;
+@property(assign, nonatomic) std::function<void()> on_window_did_miniaturize;
+@property(assign, nonatomic) std::function<void()> on_window_did_deminiaturize;
+@property(assign, nonatomic) std::function<void()> on_window_did_become_key;
+@property(assign, nonatomic) std::function<void()> on_window_did_resign_key;
+@property(assign, nonatomic) std::function<void()> on_window_did_enter_full_screen;
+@property(assign, nonatomic) std::function<void()> on_window_did_exit_full_screen;
 
-@property(assign, nonatomic) BOOL isFullscreen;
+@property(assign, nonatomic) std::function<void(framework::system::KeyCode, framework::system::Modifiers)> on_key_down;
+@property(assign, nonatomic) std::function<void(framework::system::KeyCode, framework::system::Modifiers)> on_key_up;
+
+@property(assign, nonatomic) std::function<void()> on_mouse_entered;
+@property(assign, nonatomic) std::function<void()> on_mouse_exited;
+@property(assign, nonatomic) std::function<void(framework::system::CursorPosition)> on_mouse_moved;
+
+@property(readonly, assign, nonatomic) BOOL isFullscreen;
 
 @end
 
 @implementation OsxWindowInternal
 
-@synthesize window_should_close;
-@synthesize window_did_resize;
-@synthesize window_did_move;
-@synthesize window_did_miniaturize;
-@synthesize window_did_deminiaturize;
-@synthesize window_did_becomekey;
-@synthesize window_did_resignkey;
-@synthesize window_did_enter_full_screen;
-@synthesize window_did_exit_full_screen;
+@synthesize on_window_should_close = onWindowShouldClose;
+@synthesize on_window_did_resize = onWindowDidResize;
+@synthesize on_window_did_move = onWindowDidMove;
+@synthesize on_window_did_miniaturize = onWindowDidMiniaturize;
+@synthesize on_window_did_deminiaturize = onWindowDidDeminiaturize;
+@synthesize on_window_did_become_key = onWindowDidBecomeKey;
+@synthesize on_window_did_resign_key = onWindowDidResignKey;
+@synthesize on_window_did_enter_full_screen = onWindowDidEnterFullScreen;
+@synthesize on_window_did_exit_full_screen = onWindowDidExitFullScreen;
 
-@synthesize key_down;
-@synthesize key_up;
+@synthesize on_key_down = onKeyDown;
+@synthesize on_key_up = onKeyUp;
 
-@synthesize mouse_entered;
-@synthesize mouse_exited;
-@synthesize mouse_moved;
-@synthesize cursor_update;
+@synthesize on_mouse_entered = onMouseEntered;
+@synthesize on_mouse_exited = onMouseExited;
+@synthesize on_mouse_moved = onMouseMoved;
 
 @synthesize isFullscreen;
 
@@ -167,70 +237,70 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
-    if (self.window_should_close) {
-        self.window_should_close();
+    if (onWindowShouldClose) {
+        onWindowShouldClose();
     }
     return NO;
 }
 
 - (void)windowDidResize:(NSNotification*)notification
 {
-    if (self.window_did_resize) {
-        self.window_did_resize();
+    if (onWindowDidResize) {
+        onWindowDidResize();
     }
 }
 
 - (void)windowDidMove:(NSNotification*)notification
 {
-    if (self.window_did_move) {
-        self.window_did_move();
+    if (onWindowDidMove) {
+        onWindowDidMove();
     }
 }
 
 - (void)windowDidMiniaturize:(NSNotification*)notification
 {
-    if (self.window_did_miniaturize) {
-        self.window_did_miniaturize();
+    if (onWindowDidMiniaturize) {
+        onWindowDidMiniaturize();
     }
 }
 
 - (void)windowDidDeminiaturize:(NSNotification*)notification
 {
-    if (self.window_did_deminiaturize) {
-        self.window_did_deminiaturize();
+    if (onWindowDidDeminiaturize) {
+        onWindowDidDeminiaturize();
     }
 }
 
 - (void)windowDidBecomeKey:(NSNotification*)notification
 {
-    if (self.window_did_becomekey) {
-        self.window_did_becomekey();
+    if (onWindowDidBecomeKey) {
+        onWindowDidBecomeKey();
     }
 }
 
 - (void)windowDidResignKey:(NSNotification*)notification
 {
-    if (self.window_did_resignkey) {
-        self.window_did_resignkey();
+    if (onWindowDidResignKey) {
+        onWindowDidResignKey();
     }
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification*)notification
 {
-    if (self.window_did_enter_full_screen) {
-        self.window_did_enter_full_screen();
+    if (onWindowDidEnterFullScreen) {
+        onWindowDidEnterFullScreen();
     }
 
-    [self setIsFullscreen:true];
+    isFullscreen = true;
 }
 
 - (void)windowDidExitFullScreen:(NSNotification*)notification
 {
-    if (self.window_did_exit_full_screen) {
-        self.window_did_exit_full_screen();
+    if (onWindowDidExitFullScreen) {
+        onWindowDidExitFullScreen();
     }
 
-    [self setIsFullscreen:false];
+    isFullscreen = false;
 }
 
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
@@ -240,10 +310,10 @@
 {
     using namespace framework::system::details;
     
-    if (self.key_down) {
+    if (onKeyDown) {
         const auto key = map_system_key([event keyCode]);
         const auto state = get_modifiers_state([event modifierFlags]);
-        self.key_down(key, state);
+        onKeyDown(key, state);
     }
     [self interpretKeyEvents:@[event]];
 }
@@ -251,32 +321,54 @@
 - (void)keyUp:(NSEvent*) event
 {
     using namespace framework::system::details;
-    if (self.key_up) {
+    if (onKeyUp) {
         const auto key = map_system_key([event keyCode]);
         const auto state = get_modifiers_state([event modifierFlags]);
-        self.key_up(key, state);
+        onKeyUp(key, state);
+    }
+}
+
+- (void)flagsChanged:(NSEvent*) event
+{
+    using namespace framework::system::details;
+    
+    const auto key = map_system_key([event keyCode]);
+    const auto state = get_modifiers_state([event modifierFlags]);
+    
+    const bool was_pressed = pressedModifierKeys[key];
+
+    if (was_pressed) {
+        if (onKeyUp) {
+            onKeyUp(key, state);
+            pressedModifierKeys[key] = false;
+        }
+    } else {
+        if (onKeyDown) {
+            onKeyDown(key, state);
+            pressedModifierKeys[key] = true;
+        }
     }
 }
 
 - (void)mouseEntered:(NSEvent*)event
 {
-    if (self.mouse_entered) {
-        self.mouse_entered();
+    if (onMouseEntered) {
+        onMouseEntered();
     }
 }
 
 - (void)mouseExited:(NSEvent*)event
 {
-    if (self.mouse_exited) {
-        self.mouse_exited();
+    if (onMouseExited) {
+        onMouseExited();
     }
 }
 
 - (void)mouseMoved:(NSEvent*)event
 {
-    if (self.mouse_moved) {
+    if (onMouseMoved) {
         NSPoint pos = [event locationInWindow];
-        self.mouse_moved({static_cast<int>(pos.x), static_cast<int>(pos.y)});
+        onMouseMoved({static_cast<int>(pos.x), static_cast<int>(pos.y)});
     }
 }
 
@@ -296,12 +388,12 @@
         return;
     }
 
-    const auto callback = [self window_did_resize];
-    [self setWindow_did_resize:nil];
+    const auto callback = onWindowDidResize;
+    onWindowDidResize = nullptr;
 
     [self toggleFullScreen:nil];
-
-    [self setWindow_did_resize:callback];
+    
+    onWindowDidResize = callback;
 }
 
 - (void)exitFullscreen
@@ -310,12 +402,12 @@
         return;
     }
 
-    const auto callback = [self window_did_resize];
-    [self setWindow_did_resize:nil];
+    const auto callback = onWindowDidResize;
+    onWindowDidResize = nullptr;
 
     [self toggleFullScreen:nil];
 
-    [self setWindow_did_resize:callback];
+    onWindowDidResize = callback;
 }
 
 - (BOOL)hasResizableStyle
@@ -417,22 +509,22 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     }
 
     // Setup callbacks
-    m_window->get().window_should_close          = std::bind(&OsxWindow::window_should_close, this);
-    m_window->get().window_did_resize            = std::bind(&OsxWindow::window_did_resize, this);
-    m_window->get().window_did_move              = std::bind(&OsxWindow::window_did_move, this);
-    m_window->get().window_did_miniaturize       = std::bind(&OsxWindow::window_did_miniaturize, this);
-    m_window->get().window_did_deminiaturize     = std::bind(&OsxWindow::window_did_deminiaturize, this);
-    m_window->get().window_did_becomekey         = std::bind(&OsxWindow::window_did_becomekey, this);
-    m_window->get().window_did_resignkey         = std::bind(&OsxWindow::window_did_resignkey, this);
-    m_window->get().window_did_enter_full_screen = std::bind(&OsxWindow::window_did_enter_full_screen, this);
-    m_window->get().window_did_exit_full_screen  = std::bind(&OsxWindow::window_did_exit_full_screen, this);
+    m_window->get().on_window_should_close          = std::bind(&OsxWindow::window_should_close, this);
+    m_window->get().on_window_did_resize            = std::bind(&OsxWindow::window_did_resize, this);
+    m_window->get().on_window_did_move              = std::bind(&OsxWindow::window_did_move, this);
+    m_window->get().on_window_did_miniaturize       = std::bind(&OsxWindow::window_did_miniaturize, this);
+    m_window->get().on_window_did_deminiaturize     = std::bind(&OsxWindow::window_did_deminiaturize, this);
+    m_window->get().on_window_did_become_key        = std::bind(&OsxWindow::window_did_become_key, this);
+    m_window->get().on_window_did_resign_key        = std::bind(&OsxWindow::window_did_resign_key, this);
+    m_window->get().on_window_did_enter_full_screen = std::bind(&OsxWindow::window_did_enter_full_screen, this);
+    m_window->get().on_window_did_exit_full_screen  = std::bind(&OsxWindow::window_did_exit_full_screen, this);
 
-    m_window->get().key_down = std::bind(&OsxWindow::key_down, this, _1, _2);
-    m_window->get().key_up = std::bind(&OsxWindow::key_up, this, _1, _2);
+    m_window->get().on_key_down = std::bind(&OsxWindow::key_down, this, _1, _2);
+    m_window->get().on_key_up = std::bind(&OsxWindow::key_up, this, _1, _2);
     
-    m_window->get().mouse_entered = std::bind(&OsxWindow::mouse_entered, this);
-    m_window->get().mouse_exited  = std::bind(&OsxWindow::mouse_exited, this);
-    m_window->get().mouse_moved   = std::bind(&OsxWindow::mouse_moved, this, _1);
+    m_window->get().on_mouse_entered = std::bind(&OsxWindow::mouse_entered, this);
+    m_window->get().on_mouse_exited  = std::bind(&OsxWindow::mouse_exited, this);
+    m_window->get().on_mouse_moved   = std::bind(&OsxWindow::mouse_moved, this, _1);
 
     // Setup window
     [m_window->get() setDelegate:m_window->get()];
@@ -457,7 +549,7 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
 
     [m_view->get() setWantsLayer:YES];
     [[m_view->get() layer] setContentsScale:[m_window->get() backingScaleFactor]];
-    m_view->get().update_context = std::bind(&OsxWindow::update_context, this);
+    m_view->get().on_update_context = std::bind(&OsxWindow::update_context, this);
 
     [m_window->get() setContentView:m_view->get()];
     [m_window->get() makeFirstResponder:m_view->get()];
@@ -486,7 +578,7 @@ void OsxWindow::show()
     AutoreleasePool pool;
 
     // Turn off on_focus callback to call it in order we want
-    m_window->get().window_did_becomekey = nullptr;
+    m_window->get().on_window_did_become_key = nullptr;
 
     [m_window->get() makeKeyAndOrderFront:m_window->get()];
 
@@ -505,7 +597,7 @@ void OsxWindow::show()
     }
 
     // Turn on on_focus callback
-    m_window->get().window_did_becomekey = std::bind(&OsxWindow::window_did_becomekey, this);
+    m_window->get().on_window_did_become_key = std::bind(&OsxWindow::window_did_become_key, this);
 
     // Explicitly call on_show callback
     on_show();
@@ -613,14 +705,14 @@ void OsxWindow::set_state(Window::State state)
     }
 
     // Turn off on_move and on resize callbacks
-    m_window->get().window_did_resize = nullptr;
-    m_window->get().window_did_move   = nullptr;
+    m_window->get().on_window_did_resize = nullptr;
+    m_window->get().on_window_did_move   = nullptr;
 
     switch_state(state);
 
     // Turn on on_move and on resize callbacks
-    m_window->get().window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
-    m_window->get().window_did_move   = std::bind(&OsxWindow::window_did_move, this);
+    m_window->get().on_window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
+    m_window->get().on_window_did_move   = std::bind(&OsxWindow::window_did_move, this);
 
     if (state != Window::State::iconified) {
         on_move(position());
@@ -907,7 +999,7 @@ void OsxWindow::window_did_deminiaturize()
     update_context();
 }
 
-void OsxWindow::window_did_becomekey()
+void OsxWindow::window_did_become_key()
 {
     if (is_visible()) {
         on_focus();
@@ -918,7 +1010,7 @@ void OsxWindow::window_did_becomekey()
     }
 }
 
-void OsxWindow::window_did_resignkey()
+void OsxWindow::window_did_resign_key()
 {
     if (is_visible()) {
         on_lost_focus();

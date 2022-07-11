@@ -26,6 +26,10 @@ macro(set_compiller_flags)
 
         set(RELEASE_FLAGS -O3 -DNDEBUG)
 
+        if("${PLATFORM_NAME}" STREQUAL "osx")
+            list(APPEND COMPILER_FLAGS -Wno-direct-ivar-access)
+        endif()
+
     elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
         set(COMPILER_FLAGS -std=c++17
                            -Wall

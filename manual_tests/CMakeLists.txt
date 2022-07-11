@@ -1,5 +1,5 @@
 set(TESTS_TARGET ${PROJECT_NAME}_manual_tests)
-set(TEST_DIR_NAME manual_tests)
+set(TESTS_DIR_NAME manual_tests)
 
 add_custom_target(${TESTS_TARGET} ALL 
     DEPENDS ${PROJECT_NAME}
@@ -20,4 +20,4 @@ foreach(TEST ${TESTS})
     include(${TEST_DIR}/CMakeLists.txt)
 endforeach(TEST)
 
-set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TEST_DIR_NAME})
+set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TESTS_DIR_NAME})

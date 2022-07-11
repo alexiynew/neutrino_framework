@@ -144,6 +144,8 @@ std::string key_name(KeyCode key)
         case KeyCode::key_right_control: return "key_right_control";
         case KeyCode::key_right_alt: return "key_right_alt";
         case KeyCode::key_right_super: return "key_right_super";
+            
+        case KeyCode::key_function: return "key_function";
     }
 
     return "undefined";
@@ -175,6 +177,10 @@ std::string print_state(const Modifiers state)
 
     if (state & Modifiers::num_lock) {
         s += "N";
+    }
+    
+    if (state & Modifiers::function) {
+        s += "F";
     }
 
     return s;

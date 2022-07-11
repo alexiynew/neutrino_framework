@@ -70,8 +70,8 @@ private:
     void window_did_move();
     void window_did_miniaturize();
     void window_did_deminiaturize();
-    void window_did_becomekey();
-    void window_did_resignkey();
+    void window_did_become_key();
+    void window_did_resign_key();
     void window_did_enter_full_screen();
     void window_did_exit_full_screen();
     
@@ -112,7 +112,7 @@ private:
 
     CursorPosition m_grabbed_cursor_diff = {0, 0};
     CursorPosition m_cursor_position     = {0, 0};
-
+    
     Size m_min_size;
     Size m_max_size;
 };

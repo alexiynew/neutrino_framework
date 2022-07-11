@@ -2,7 +2,7 @@ include(CTest)
 enable_testing()
 
 set(TESTS_TARGET ${PROJECT_NAME}_tests)
-set(TEST_DIR_NAME tests)
+set(TESTS_DIR_NAME tests)
 
 add_custom_target(${TESTS_TARGET} ALL 
     DEPENDS ${PROJECT_NAME}
@@ -41,7 +41,7 @@ add_custom_target(check_verbose
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TEST_DIR_NAME})
-set_target_properties(check PROPERTIES FOLDER ${TEST_DIR_NAME})
-set_target_properties(check_verbose PROPERTIES FOLDER ${TEST_DIR_NAME})
+set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TESTS_DIR_NAME})
+set_target_properties(check PROPERTIES FOLDER ${TESTS_DIR_NAME})
+set_target_properties(check_verbose PROPERTIES FOLDER ${TESTS_DIR_NAME})
 
