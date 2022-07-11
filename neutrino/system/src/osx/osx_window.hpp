@@ -74,6 +74,9 @@ private:
     void window_did_resignkey();
     void window_did_enter_full_screen();
     void window_did_exit_full_screen();
+    
+    void key_down(KeyCode key, Modifiers state);
+    void key_up(KeyCode key, Modifiers state);
 
     void mouse_entered();
     void mouse_exited();

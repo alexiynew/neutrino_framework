@@ -63,6 +63,7 @@ enum class KeyCode
     key_backslash     = 92, /* \  */
     key_right_bracket = 93, // ]
     key_grave_accent  = 96, // `
+    key_section       = 167, // §
 
     // navigation
     key_escape       = 256,

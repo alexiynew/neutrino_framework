@@ -3,14 +3,11 @@
 #include <limits>
 #include <thread>
 
-#include <common/types.hpp>
-#include <common/utils.hpp>
-#include <log/log.hpp>
-
 #include <system/src/osx/osx_application.hpp>
 #include <system/src/osx/osx_autorelease_pool.hpp>
 #include <system/src/osx/osx_context.hpp>
 #include <system/src/osx/osx_window.hpp>
+#include <system/src/osx/osx_keyboard.hpp>
 
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
@@ -116,6 +113,9 @@
 @property(assign, nonatomic) std::function<void()> window_did_enter_full_screen;
 @property(assign, nonatomic) std::function<void()> window_did_exit_full_screen;
 
+@property(assign, nonatomic) std::function<void(framework::system::KeyCode, framework::system::Modifiers)> key_down;
+@property(assign, nonatomic) std::function<void(framework::system::KeyCode, framework::system::Modifiers)> key_up;
+
 @property(assign, nonatomic) std::function<void()> mouse_entered;
 @property(assign, nonatomic) std::function<void()> mouse_exited;
 @property(assign, nonatomic) std::function<void(framework::system::CursorPosition)> mouse_moved;
@@ -136,6 +136,9 @@
 @synthesize window_did_resignkey;
 @synthesize window_did_enter_full_screen;
 @synthesize window_did_exit_full_screen;
+
+@synthesize key_down;
+@synthesize key_up;
 
 @synthesize mouse_entered;
 @synthesize mouse_exited;
@@ -232,6 +235,28 @@
 
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
 {}
+
+- (void)keyDown:(NSEvent*) event
+{
+    using namespace framework::system::details;
+    
+    if (self.key_down) {
+        const auto key = map_system_key([event keyCode]);
+        const auto state = get_modifiers_state([event modifierFlags]);
+        self.key_down(key, state);
+    }
+    [self interpretKeyEvents:@[event]];
+}
+
+- (void)keyUp:(NSEvent*) event
+{
+    using namespace framework::system::details;
+    if (self.key_up) {
+        const auto key = map_system_key([event keyCode]);
+        const auto state = get_modifiers_state([event modifierFlags]);
+        self.key_up(key, state);
+    }
+}
 
 - (void)mouseEntered:(NSEvent*)event
 {
@@ -402,6 +427,9 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     m_window->get().window_did_enter_full_screen = std::bind(&OsxWindow::window_did_enter_full_screen, this);
     m_window->get().window_did_exit_full_screen  = std::bind(&OsxWindow::window_did_exit_full_screen, this);
 
+    m_window->get().key_down = std::bind(&OsxWindow::key_down, this, _1, _2);
+    m_window->get().key_up = std::bind(&OsxWindow::key_up, this, _1, _2);
+    
     m_window->get().mouse_entered = std::bind(&OsxWindow::mouse_entered, this);
     m_window->get().mouse_exited  = std::bind(&OsxWindow::mouse_exited, this);
     m_window->get().mouse_moved   = std::bind(&OsxWindow::mouse_moved, this, _1);
@@ -909,6 +937,16 @@ void OsxWindow::window_did_enter_full_screen()
 void OsxWindow::window_did_exit_full_screen()
 {
     update_context();
+}
+
+void OsxWindow::key_down(KeyCode key, Modifiers state)
+{
+    on_key_down(key, state);
+}
+
+void OsxWindow::key_up(KeyCode key, Modifiers state)
+{
+    on_key_up(key, state);
 }
 
 void OsxWindow::mouse_entered()

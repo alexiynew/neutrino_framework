@@ -1,3 +1,5 @@
+#include <array>
+
 #include <system/src/windows/win32_keyboard.hpp>
 
 #include <Windows.h>
@@ -6,7 +8,7 @@ namespace
 {
 using framework::system::KeyCode;
 
-constexpr KeyCode key_map[256] = {
+constexpr static std::array<KeyCode, 256> key_map = {
 //
 KeyCode::unknown,
 KeyCode::unknown,
@@ -303,7 +305,11 @@ namespace framework::system::details
 {
 KeyCode map_system_key(std::uint32_t key)
 {
-    return key_map[key];
+    if (key < key_map.size()) {
+        return key_map[key];
+    }
+
+    return KeyCode::unknown;
 }
 
 Modifiers get_modifiers_state()

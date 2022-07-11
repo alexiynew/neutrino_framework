@@ -67,6 +67,7 @@ std::string key_name(KeyCode key)
         case KeyCode::key_backslash: return "key_backslash";
         case KeyCode::key_right_bracket: return "key_right_bracket";
         case KeyCode::key_grave_accent: return "key_grave_accent";
+        case KeyCode::key_section: return "key_section";
 
         // navigation
         case KeyCode::key_escape: return "key_escape";
