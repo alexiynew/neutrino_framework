@@ -3156,8 +3156,8 @@ inline Matrix<C, R, T> operator-(Matrix<C, R, T> Matrix)
 /// @param rhs Second addend.
 ///
 /// @return Reference to component-wise sum of two matrices.
-template <std::size_t C, std::size_t R, typename T, typename U>
-inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const Matrix<C, R, U>& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const Matrix<C, R, T>& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] += rhs[i];
@@ -3171,8 +3171,8 @@ inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const Matrix<C, R, U>& 
 /// @param rhs Vector to subtract.
 ///
 /// @return Reference to component-wise difference of two matrices.
-template <std::size_t C, std::size_t R, typename T, typename U>
-inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const Matrix<C, R, U>& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const Matrix<C, R, T>& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] -= rhs[i];
@@ -3186,8 +3186,8 @@ inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const Matrix<C, R, U>& 
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to product of two matrices.
-template <std::size_t C, std::size_t R, typename T, typename U>
-inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const Matrix<C, C, U>& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const Matrix<C, C, T>& rhs)
 {
     return (lhs = lhs * rhs);
 }
@@ -3198,12 +3198,8 @@ inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const Matrix<C, C, U>& 
 /// @param rhs Second addend.
 ///
 /// @return Reference to component-wise sum of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename std::enable_if_t<std::is_arithmetic_v<U>, std::int32_t> = 0>
-inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const U& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, T rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] += rhs;
@@ -3217,12 +3213,8 @@ inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Reference to component-wise difference of the Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename std::enable_if_t<std::is_arithmetic_v<U>, std::int32_t> = 0>
-inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const U& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, T rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] -= rhs;
@@ -3236,12 +3228,8 @@ inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to component-wise product of the Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename std::enable_if_t<std::is_arithmetic_v<U>, std::int32_t> = 0>
-inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const U& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, T rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] *= rhs;
@@ -3255,12 +3243,8 @@ inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Divider scalar value.
 ///
 /// @return Reference to component-wise quotient of the Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename std::enable_if_t<std::is_arithmetic_v<U>, std::int32_t> = 0>
-inline Matrix<C, R, T>& operator/=(Matrix<C, R, T>& lhs, const U& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator/=(Matrix<C, R, T>& lhs, T rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] /= rhs;
