@@ -20,7 +20,7 @@ public:
     ScopeProfilerItem(ScopeProfilerItem&&)      = delete;
 
     ScopeProfilerItem& operator=(const ScopeProfilerItem&) = delete;
-    ScopeProfilerItem& operator=(ScopeProfilerItem&&)      = delete;
+    ScopeProfilerItem& operator=(ScopeProfilerItem&&) = delete;
 
     ~ScopeProfilerItem();
 

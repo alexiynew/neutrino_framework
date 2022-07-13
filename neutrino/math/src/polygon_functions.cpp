@@ -64,7 +64,7 @@ void update_info(std::vector<PointInfo>& indices,
     } else {
         indices[index_in_indices].is_ear = false;
     }
-};
+}
 
 std::size_t next_ear_index(const std::vector<PointInfo>& indices)
 {
@@ -132,10 +132,9 @@ bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon)
         const Vector<2, float> a = *curr - point;
         const Vector<2, float> b = *next - point;
 
-        const float c = cross(a, b);
-        const float d = dot(a, b);
-
+        const float c         = cross(a, b);
         const bool next_under = next->y < point.y;
+
         if (!curr_under && next_under && c > 0) {
             intersections_num += 1;
         }
