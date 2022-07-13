@@ -88,11 +88,11 @@ private:
 
     void generate_ear_cut_triangulation_function()
     {
-        const Polygon p1{{-2, 5}, {-2, 1}, {4, 1}, {4, 5}};
-        const Polygon p2{{4, 5}, {4, 1}, {-2, 1}, {-2, 5}};
+        const Polygon p1{{-2, 5}, {-2, 1}, {4, 1}, {-1, 2}};
+        const Polygon p2{{-1, 2}, {4, 1}, {-2, 1}, {-2, 5}};
 
-        const std::vector<std::uint32_t> t1_test = {0, 1, 3, 1, 2, 3};
-        const std::vector<std::uint32_t> t2_test = {0, 3, 1, 1, 3, 2};
+        const std::vector<std::uint32_t> t1_test = {2, 3, 1, 0, 1, 3};
+        const std::vector<std::uint32_t> t2_test = {1, 0, 2, 0, 3, 2};
 
         const auto t1 = generate_ear_cut_triangulation(p1);
         const auto t2 = generate_ear_cut_triangulation(p2);

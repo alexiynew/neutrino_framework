@@ -67,19 +67,75 @@ bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon)
     return intersections_num % 2 == 1;
 }
 
+struct PointInfo
+{
+    std::uint32_t prev_index = 0;
+    std::uint32_t curr_index = 0;
+    std::uint32_t next_index = 0;
+    bool is_ear              = false;
+    float dot                = 0;
+};
+
 std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon)
 {
-    const auto start = std::chrono::high_resolution_clock::now();
-
-    std::vector<std::string> events;
-    events.reserve(10000);
-
     [[maybe_unused]] const auto& p1 = profiler::count_scope("generation");
 
     const bool is_ccw = polygon_area(polygon) < 0;
 
-    std::vector<std::uint32_t> indices(polygon.size());
-    std::iota(indices.begin(), indices.end(), 0);
+    std::vector<PointInfo> indices(polygon.size());
+    std::generate(indices.begin(), indices.end(), [n = 0]() mutable {
+        return PointInfo{0, static_cast<std::uint32_t>(n++), 0, true};
+    });
+
+    auto update_info = [&](std::size_t index_in_indices) {
+        const auto prev_index_in_indices = (index_in_indices + indices.size() - 1) % indices.size();
+        const auto next_index_in_indices = (index_in_indices + 1) % indices.size();
+
+        const std::uint32_t prev_point_index = indices[prev_index_in_indices].curr_index;
+        const std::uint32_t curr_point_index = indices[index_in_indices].curr_index;
+        const std::uint32_t next_point_index = indices[next_index_in_indices].curr_index;
+
+        const Vector<2, float>& prev = polygon[prev_point_index];
+        const Vector<2, float>& curr = polygon[curr_point_index];
+        const Vector<2, float>& next = polygon[next_point_index];
+
+        // update point neighbors indices
+        indices[index_in_indices].next_index = next_point_index;
+        indices[index_in_indices].prev_index = prev_point_index;
+
+        // update dot
+        indices[index_in_indices].dot = dot(normalize(prev - curr), normalize(next - curr));
+
+        // update is ear
+        const auto c           = cross(prev - curr, next - curr);
+        const bool valid_angle = !((!is_ccw && c <= 0.0f) || (is_ccw && c >= 0.0f));
+
+        if (valid_angle) {
+            indices[index_in_indices].is_ear = [&]() {
+                for (const auto& pi : indices) {
+                    const auto& p = polygon[pi.curr_index];
+                    if (p == prev || p == curr || p == next) {
+                        continue;
+                    }
+
+                    if (is_point_in_triangle(p, prev, next, curr)) {
+                        return false;
+                    }
+                }
+                return true;
+            }();
+        } else {
+            indices[index_in_indices].is_ear = false;
+        }
+    };
+
+    {
+        [[maybe_unused]] const auto& p2 = profiler::count_scope("precalc");
+
+        for (size_t i = 0; i < indices.size(); ++i) {
+            update_info(i);
+        }
+    }
 
     std::vector<std::uint32_t> triangles;
     triangles.reserve((polygon.size() - 2) * 3);
@@ -87,40 +143,14 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
     while (indices.size() > 3) {
 
         [[maybe_unused]] const auto& p2 = profiler::count_scope("loop");
-        std::vector<std::uint32_t> ears;
+        std::vector<std::size_t> ears;
+        ears.reserve(indices.size());
 
         {
             [[maybe_unused]] const auto& p3 = profiler::count_scope("ears");
-            for (size_t i = 0; i < indices.size(); ++i) {
-                const std::uint32_t index_prev = i == 0 ? indices.back() : indices[i - 1];
-                const std::uint32_t index_curr = indices[i];
-                const std::uint32_t index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
-
-                const Vector<2, float> prev = polygon[index_prev];
-                const Vector<2, float> curr = polygon[index_curr];
-                const Vector<2, float> next = polygon[index_next];
-
-                // angel is grater 180 degrees
-                const auto c = cross(prev - curr, next - curr);
-                if ((!is_ccw && c <= 0.0f) || (is_ccw && c >= 0.0f)) {
-                    continue;
-                }
-
-                bool is_ear = true;
-                for (const auto& index : indices) {
-                    const auto& p = polygon[index];
-                    if (p == prev || p == curr || p == next) {
-                        continue;
-                    }
-
-                    if (is_point_in_triangle(p, prev, next, curr)) {
-                        is_ear = false;
-                        break;
-                    }
-                }
-
-                if (is_ear) {
-                    ears.push_back(index_curr);
+            for (std::size_t i = 0; i < indices.size(); ++i) {
+                if (indices[i].is_ear) {
+                    ears.push_back(i);
                 }
             }
         }
@@ -130,64 +160,47 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
         }
 
         size_t min_angle_index = ears[0];
-        float max_dot          = -9999.0f;
-
         {
             [[maybe_unused]] const auto& p3 = profiler::count_scope("best");
-            for (auto ear_index : ears) {
-                auto it  = std::find(indices.begin(), indices.end(), ear_index);
-                size_t i = static_cast<size_t>(std::distance(indices.begin(), it));
-
-                const std::uint32_t index_prev = i == 0 ? indices.back() : indices[i - 1];
-                const std::uint32_t index_curr = indices[i];
-                const std::uint32_t index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
-
-                const Vector<2, float> prev = polygon[index_prev];
-                const Vector<2, float> curr = polygon[index_curr];
-                const Vector<2, float> next = polygon[index_next];
-
-                auto d = dot(normalize(prev - curr), normalize(next - curr));
-                if (d > max_dot) {
-                    max_dot         = d;
-                    min_angle_index = ear_index;
-                }
-            }
+            min_angle_index = *(std::max_element(ears.begin(), ears.end(), [&indices](std::size_t a, std::size_t b) {
+                return indices[a].dot < indices[b].dot;
+            }));
         }
 
         {
             [[maybe_unused]] const auto& p4 = profiler::count_scope("add");
 
-            auto it  = std::find(indices.begin(), indices.end(), min_angle_index);
-            size_t i = static_cast<size_t>(std::distance(indices.begin(), it));
-
-            const std::uint32_t index_prev = i == 0 ? indices.back() : indices[i - 1];
-            const std::uint32_t index_curr = indices[i];
-            const std::uint32_t index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
+            const auto& point_info = indices[min_angle_index];
 
             // Add triangle
-            triangles.push_back(index_curr);
+            triangles.push_back(point_info.curr_index);
             if (is_ccw) {
-                triangles.push_back(index_next);
-                triangles.push_back(index_prev);
+                triangles.push_back(point_info.next_index);
+                triangles.push_back(point_info.prev_index);
             } else {
-                triangles.push_back(index_prev);
-                triangles.push_back(index_next);
+                triangles.push_back(point_info.prev_index);
+                triangles.push_back(point_info.next_index);
             }
-            indices.erase(it);
+
+            indices.erase(std::next(indices.begin(), min_angle_index));
+
+            const auto prev_index_in_indices = (min_angle_index + indices.size() - 1) % indices.size();
+            const auto next_index_in_indices = min_angle_index % indices.size();
+
+            // update neighbors point infos
+            update_info(prev_index_in_indices);
+            update_info(next_index_in_indices);
         }
     }
 
-    {
-        [[maybe_unused]] const auto& p4 = profiler::count_scope("last");
-        // Add last triangle
-        triangles.push_back(indices[0]);
-        if (is_ccw) {
-            triangles.push_back(indices[1]);
-            triangles.push_back(indices[2]);
-        } else {
-            triangles.push_back(indices[2]);
-            triangles.push_back(indices[1]);
-        }
+    // Add last triangle
+    triangles.push_back(indices[0].curr_index);
+    if (is_ccw) {
+        triangles.push_back(indices[1].curr_index);
+        triangles.push_back(indices[2].curr_index);
+    } else {
+        triangles.push_back(indices[2].curr_index);
+        triangles.push_back(indices[1].curr_index);
     }
 
     return triangles;
