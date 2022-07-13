@@ -17,7 +17,7 @@ private:
     {
         using namespace framework::utils;
 
-        std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        std::vector<std::uint8_t> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
         TEST_ASSERT(0xF4 == Crc8::calculate(data.begin(), data.end()), "CRC-8 Failed.");
         TEST_ASSERT(0xDA == Crc8Cdma2000::calculate(data.begin(), data.end()), "CRC-8/CDMA2000 Failed.");
@@ -35,7 +35,7 @@ private:
     {
         using namespace framework::utils;
 
-        std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        std::vector<std::uint8_t> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
         // clang-format off
         TEST_ASSERT(0x29B1 == Crc16CcittFalse::calculate(data.begin(), data.end()), "CRC-16/CCITT-FALSE Failed.");
@@ -66,7 +66,7 @@ private:
     {
         using namespace framework::utils;
 
-        std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+        std::vector<std::uint8_t> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
         // clang-format off
         TEST_ASSERT(0xCBF43926 == Crc32::calculate(data.begin(), data.end()), "CRC-32 Failed.");

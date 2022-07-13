@@ -1,14 +1,14 @@
+#ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
+#define FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of matrix_type.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
-    #define FRAMEWORK_MATH_INC_MATRIX_TYPE_HPP
+#include <cassert>
 
-    #include <cassert>
-
-    #include <math/inc/matrix_type_details.hpp>
-    #include <math/inc/vector_type.hpp>
+#include <math/inc/matrix_type_details.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {
@@ -78,16 +78,7 @@ struct Matrix<4, 4, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -357,16 +348,7 @@ struct Matrix<4, 3, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -544,16 +526,7 @@ struct Matrix<4, 2, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -708,16 +681,7 @@ struct Matrix<3, 4, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -952,16 +916,7 @@ struct Matrix<3, 3, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1120,16 +1075,7 @@ struct Matrix<3, 2, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1268,16 +1214,7 @@ struct Matrix<2, 4, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1480,16 +1417,7 @@ struct Matrix<2, 3, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1631,16 +1559,7 @@ struct Matrix<2, 2, T> final
     /// @param pointer Const pointer to values that should be taken.
     ///
     /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(const U* pointer);
-
-    /// @brief Initializes all components of Matrix from pointer to values.
-    ///
-    /// @param pointer Pointer to values that should be taken.
-    ///
-    /// @warning May cause memory access error.
-    template <typename U>
-    explicit Matrix(U* pointer);
+    explicit Matrix(const ValueType* pointer);
 
     /// @brief Initializes matrices with provided vectors.
     ///
@@ -1764,20 +1683,9 @@ inline constexpr Matrix<4, 4, T>::Matrix(const T& value) noexcept
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<4, 4, T>::Matrix(const U* pointer)
+inline Matrix<4, 4, T>::Matrix(const Matrix<4, 4, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 4), ColumnType(pointer + 8), ColumnType(pointer + 12)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<4, 4, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 4), ColumnType(pointer + 8), ColumnType(pointer + 12)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2003,20 +1911,9 @@ inline constexpr Matrix<4, 3, T>::Matrix(const T& value) noexcept
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<4, 3, T>::Matrix(const U* pointer)
+inline Matrix<4, 3, T>::Matrix(const Matrix<4, 3, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 3), ColumnType(pointer + 6), ColumnType(pointer + 9)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<4, 3, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 3), ColumnType(pointer + 6), ColumnType(pointer + 9)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2179,20 +2076,9 @@ inline constexpr Matrix<4, 2, T>::Matrix(const T& value) noexcept
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<4, 2, T>::Matrix(const U* pointer)
+inline Matrix<4, 2, T>::Matrix(const Matrix<4, 2, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 2), ColumnType(pointer + 4), ColumnType(pointer + 6)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<4, 2, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 2), ColumnType(pointer + 4), ColumnType(pointer + 6)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2, typename U3>
@@ -2325,20 +2211,9 @@ inline constexpr Matrix<3, 4, T>::Matrix(const T& value) noexcept
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<3, 4, T>::Matrix(const U* pointer)
+inline Matrix<3, 4, T>::Matrix(const Matrix<3, 4, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 4), ColumnType(pointer + 8)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<3, 4, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 4), ColumnType(pointer + 8)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2544,20 +2419,9 @@ inline constexpr Matrix<3, 3, T>::Matrix(const T& value) noexcept
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<3, 3, T>::Matrix(const U* pointer)
+inline Matrix<3, 3, T>::Matrix(const Matrix<3, 3, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 3), ColumnType(pointer + 6)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<3, 3, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 3), ColumnType(pointer + 6)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 // clang-format off
 template <typename T>
@@ -2714,20 +2578,9 @@ inline constexpr Matrix<3, 2, T>::Matrix(const T& value00, const T& value01,
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<3, 2, T>::Matrix(const U* pointer)
+inline Matrix<3, 2, T>::Matrix(const Matrix<3, 2, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 2), ColumnType(pointer + 4)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<3, 2, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 2), ColumnType(pointer + 4)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1, typename U2>
@@ -2853,20 +2706,9 @@ inline constexpr Matrix<2, 4, T>::Matrix(const T& value) noexcept
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<2, 4, T>::Matrix(const U* pointer)
+inline Matrix<2, 4, T>::Matrix(const Matrix<2, 4, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 4)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<2, 4, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 4)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
@@ -3045,20 +2887,9 @@ inline constexpr Matrix<2, 3, T>::Matrix(const T& value) noexcept
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<2, 3, T>::Matrix(const U* pointer)
+inline Matrix<2, 3, T>::Matrix(const Matrix<2, 3, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 3)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<2, 3, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 3)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
@@ -3195,20 +3026,9 @@ inline constexpr Matrix<2, 2, T>::Matrix(const T& value) noexcept
 // clang-format on
 
 template <typename T>
-template <typename U>
-inline Matrix<2, 2, T>::Matrix(const U* pointer)
+inline Matrix<2, 2, T>::Matrix(const Matrix<2, 2, T>::ValueType* pointer)
     : m_data{ColumnType(pointer), ColumnType(pointer + 2)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
-
-template <typename T>
-template <typename U>
-inline Matrix<2, 2, T>::Matrix(U* pointer)
-    : m_data{ColumnType(pointer), ColumnType(pointer + 2)}
-{
-    static_assert(std::is_same<T, U>::value, "Only pointer for the same type is acceptable.");
-}
+{}
 
 template <typename T>
 template <typename U0, typename U1>
@@ -3336,8 +3156,8 @@ inline Matrix<C, R, T> operator-(Matrix<C, R, T> Matrix)
 /// @param rhs Second addend.
 ///
 /// @return Reference to component-wise sum of two matrices.
-template <std::size_t C, std::size_t R, typename T, typename U>
-inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const Matrix<C, R, U>& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const Matrix<C, R, T>& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] += rhs[i];
@@ -3351,8 +3171,8 @@ inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const Matrix<C, R, U>& 
 /// @param rhs Vector to subtract.
 ///
 /// @return Reference to component-wise difference of two matrices.
-template <std::size_t C, std::size_t R, typename T, typename U>
-inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const Matrix<C, R, U>& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const Matrix<C, R, T>& rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] -= rhs[i];
@@ -3366,8 +3186,8 @@ inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const Matrix<C, R, U>& 
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to product of two matrices.
-template <std::size_t C, std::size_t R, typename T, typename U>
-inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const Matrix<C, C, U>& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const Matrix<C, C, T>& rhs)
 {
     return (lhs = lhs * rhs);
 }
@@ -3378,12 +3198,8 @@ inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const Matrix<C, C, U>& 
 /// @param rhs Second addend.
 ///
 /// @return Reference to component-wise sum of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
-inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const U& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, T rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] += rhs;
@@ -3397,12 +3213,8 @@ inline Matrix<C, R, T>& operator+=(Matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Reference to component-wise difference of the Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
-inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const U& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, T rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] -= rhs;
@@ -3416,12 +3228,8 @@ inline Matrix<C, R, T>& operator-=(Matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Second multiplier.
 ///
 /// @return Reference to component-wise product of the Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
-inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const U& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, T rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] *= rhs;
@@ -3435,12 +3243,8 @@ inline Matrix<C, R, T>& operator*=(Matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Divider scalar value.
 ///
 /// @return Reference to component-wise quotient of the Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename std::enable_if<std::is_arithmetic<U>::value, int32>::type = 0>
-inline Matrix<C, R, T>& operator/=(Matrix<C, R, T>& lhs, const U& rhs)
+template <std::size_t C, std::size_t R, typename T>
+inline Matrix<C, R, T>& operator/=(Matrix<C, R, T>& lhs, T rhs)
 {
     for (std::size_t i = 0; i < C; ++i) {
         lhs[i] /= rhs;
@@ -3462,11 +3266,7 @@ inline Matrix<C, R, T>& operator/=(Matrix<C, R, T>& lhs, const U& rhs)
 /// @param rhs Second addend.
 ///
 /// @return Component-wise sum of two matrices.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator+(const Matrix<C, R, T>& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3479,11 +3279,7 @@ inline const Matrix<C, R, RT> operator+(const Matrix<C, R, T>& lhs, const Matrix
 /// @param rhs Scalar value to subtract.
 ///
 /// @return Component-wise difference of two matrices.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator-(const Matrix<C, R, T>& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3496,15 +3292,10 @@ inline const Matrix<C, R, RT> operator-(const Matrix<C, R, T>& lhs, const Matrix
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Product of two matrices.
-template <std::size_t C,
-          std::size_t R,
-          std::size_t N,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, std::size_t N, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<N, R, RT> operator*(const Matrix<C, R, T>& lhs, const Matrix<N, C, U>& rhs) noexcept
 {
-    Matrix<N, R, RT> temp(0);
+    Matrix<N, R, RT> temp(RT{0});
 
     for (std::size_t n = 0; n < N; ++n) {
         for (std::size_t c = 0; c < C; ++c) {
@@ -3523,14 +3314,10 @@ inline const Matrix<N, R, RT> operator*(const Matrix<C, R, T>& lhs, const Matrix
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Product of vector and Matrix.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Vector<C, RT> operator*(const Vector<R, T>& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
-    Vector<C, RT> temp(0);
+    Vector<C, RT> temp(RT{0});
 
     for (std::size_t c = 0; c < C; ++c) {
         for (std::size_t r = 0; r < R; ++r) {
@@ -3547,14 +3334,10 @@ inline const Vector<C, RT> operator*(const Vector<R, T>& lhs, const Matrix<C, R,
 /// @param rhs Vector of floating-point or integral type.
 ///
 /// @return Product of vector and Matrix.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Vector<R, RT> operator*(const Matrix<C, R, T>& lhs, const Vector<C, U>& rhs) noexcept
 {
-    Vector<R, RT> temp(0);
+    Vector<R, RT> temp(RT{0});
 
     for (std::size_t r = 0; r < R; ++r) {
         for (std::size_t c = 0; c < C; ++c) {
@@ -3579,11 +3362,7 @@ inline const Vector<R, RT> operator*(const Matrix<C, R, T>& lhs, const Vector<C,
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise sum of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator+(const Matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3596,11 +3375,7 @@ inline const Matrix<C, R, RT> operator+(const Matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise difference of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator-(const Matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3613,11 +3388,7 @@ inline const Matrix<C, R, RT> operator-(const Matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise product of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator*(const Matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3630,11 +3401,7 @@ inline const Matrix<C, R, RT> operator*(const Matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Value of floating-point or integral type.
 ///
 /// @return Component-wise quotient of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator/(const Matrix<C, R, T>& lhs, const U& rhs) noexcept
 {
     Matrix<C, R, RT> temp{lhs};
@@ -3655,14 +3422,10 @@ inline const Matrix<C, R, RT> operator/(const Matrix<C, R, T>& lhs, const U& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise sum of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator+(const T& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
-    Matrix<C, R, RT> temp{0};
+    Matrix<C, R, RT> temp(RT{0});
 
     for (std::size_t i = 0; i < C; ++i) {
         temp[i] = lhs + rhs[i];
@@ -3677,14 +3440,10 @@ inline const Matrix<C, R, RT> operator+(const T& lhs, const Matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise difference of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator-(const T& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
-    Matrix<C, R, RT> temp{0};
+    Matrix<C, R, RT> temp(RT{0});
 
     for (std::size_t i = 0; i < C; ++i) {
         temp[i] = lhs - rhs[i];
@@ -3699,14 +3458,10 @@ inline const Matrix<C, R, RT> operator-(const T& lhs, const Matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise product of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator*(const T& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
-    Matrix<C, R, RT> temp{0};
+    Matrix<C, R, RT> temp(RT{0});
 
     for (std::size_t i = 0; i < C; ++i) {
         temp[i] = lhs * rhs[i];
@@ -3721,14 +3476,10 @@ inline const Matrix<C, R, RT> operator*(const T& lhs, const Matrix<C, R, U>& rhs
 /// @param rhs Matrix of floating-point or integral type.
 ///
 /// @return Component-wise quotient of Matrix and scalar value.
-template <std::size_t C,
-          std::size_t R,
-          typename T,
-          typename U,
-          typename RT = typename matrix_type_details::common_type<T, U>::type>
+template <std::size_t C, std::size_t R, typename T, typename U, typename RT = std::common_type_t<T, U>>
 inline const Matrix<C, R, RT> operator/(const T& lhs, const Matrix<C, R, U>& rhs) noexcept
 {
-    Matrix<C, R, RT> temp{0};
+    Matrix<C, R, RT> temp(RT{0});
 
     for (std::size_t i = 0; i < C; ++i) {
         temp[i] = lhs / rhs[i];

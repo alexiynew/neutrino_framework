@@ -22,7 +22,7 @@ public:
     PlatformWindow(const PlatformWindow&)     = delete;
     PlatformWindow(PlatformWindow&&) noexcept = default;
 
-    PlatformWindow& operator=(const PlatformWindow&)     = delete;
+    PlatformWindow& operator=(const PlatformWindow&) = delete;
     PlatformWindow& operator=(PlatformWindow&&) noexcept = default;
 
 #pragma region actions

@@ -1,13 +1,13 @@
+#ifndef FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
+
 #ifndef FRAMEWORK_MATH_DETAILS
     #error You should include math/math.hpp instead of geometric_functions.hpp
 #endif
 
-#ifndef FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
-    #define FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_HPP
-
-    #include <math/inc/exponential_functions.hpp>
-    #include <math/inc/geometric_functions_details.hpp>
-    #include <math/inc/vector_type.hpp>
+#include <math/inc/exponential_functions.hpp>
+#include <math/inc/geometric_functions_details.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {
@@ -140,6 +140,7 @@ inline Vector<3, T> cross(const Vector<3, T>& a, const Vector<3, T>& b)
 /// input vectors, taking their Z values implicitly as 0 (i.e. treating the 2D space as a plane in the 3D space). The 3D
 /// cross product will be perpendicular to that plane, and thus have 0 X & Y components (thus the scalar returned is the
 /// Z value of the 3D cross product vector).
+/// If result is 0, vectors are collinear.
 ///
 /// @param a Vector of floating-point or integral type.
 /// @param b Vector of floating-point or integral type.
@@ -258,6 +259,117 @@ inline Vector<N, T> refract(const Vector<N, T>& incident, const Vector<N, T>& no
     const T coefficient = T{1} - eta * eta * (T{1} - dot_value * dot_value);
     return coefficient < T{0} ? Vector<N, T>(0) :
                                 eta * incident - (eta * dot_value + framework::math::sqrt(coefficient)) * normal;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @name line and segment
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Check if point is on a line.
+///
+/// @param point Point to test.
+/// @param line_start First line point.
+/// @param line_end Second line point.
+///
+/// @return `true` if point is on a line.
+template <typename T>
+inline bool on_line(const Vector<2, T>& point, const Vector<2, T>& line_start, const Vector<2, T>& line_end)
+{
+    return cross(line_start - point, line_end - point) == 0.0f;
+}
+
+/// @brief Check if point is on a segment.
+///
+/// The ends of the segment are taken into account.
+///
+/// @param point Point to test.
+/// @param segment_start Segment start point.
+/// @param segment_end Segment end point.
+///
+/// @return `true` if point is on a segment.
+template <typename T>
+inline bool on_segment(const Vector<2, T>& point, const Vector<2, T>& segment_start, const Vector<2, T>& segment_end)
+{
+    const auto v1 = segment_start - point;
+    const auto v2 = segment_end - point;
+    return cross(v1, v2) == 0.0f && dot(v1, v2) <= 0.0f;
+}
+
+/// @brief Check if iine intersects a segment.
+///
+/// The ends of the segment are taken into account in the intersection.
+///
+/// @param line_start First line point.
+/// @param line_end Second line point.
+/// @param segment_start Segment start point.
+/// @param segment_end Segment end point.
+///
+/// @return `true` if line intersects a segment.
+template <typename T>
+inline bool is_line_intersects_segment(const Vector<2, T>& line_start,
+                                       const Vector<2, T>& line_end,
+                                       const Vector<2, T>& segment_start,
+                                       const Vector<2, T>& segment_end)
+{
+    const Vector<2, T> line_direction = line_end - line_start;
+
+    // Line equation
+    const T a1 = -line_direction.y;
+    const T b1 = line_direction.x;
+    const T d1 = -(a1 * line_start.x + b1 * line_start.y);
+
+    // Substitute the ends of the segments, to find out in which half-planes they are
+    const T e1 = a1 * segment_start.x + b1 * segment_start.y + d1;
+    const T e2 = a1 * segment_end.x + b1 * segment_end.y + d1;
+
+    // If the ends of segment have the same sign, then it is in the same half-plane and there is no intersection.
+    return e1 * e2 <= 0.0f;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @name triangle
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Check if a point is inside a triangle on a 2D plane.
+///
+/// Points lying on edges or at one of the vertices are included in the triangle.
+///
+/// @param point 2d point.
+/// @param v1 Vertex of a triangle.
+/// @param v2 Vertex of a triangle.
+/// @param v3 Vertex of a triangle.
+///
+/// @return `true`if a point is inside a triangle.
+template <typename T>
+inline bool is_point_in_triangle(const Vector<2, T>& point,
+                                 const Vector<2, T>& v1,
+                                 const Vector<2, T>& v2,
+                                 const Vector<2, T>& v3)
+{
+    const auto c1 = cross(point - v2, v1 - v2);
+    const auto c2 = cross(point - v3, v2 - v3);
+    const auto c3 = cross(point - v1, v3 - v1);
+
+    // If all vector magnitudes has the same sign, the point is inside a triangle.
+    const bool neg1 = c1 < 0.0f;
+    const bool neg2 = c2 < 0.0f;
+    const bool neg3 = c3 < 0.0f;
+
+    const bool inside    = (neg1 == neg2) && (neg2 == neg3);
+    const bool on_edge   = (c1 == 0.0f && neg2 == neg3) || (c2 == 0.0f && neg1 == neg3) || (c3 == 0.0f && neg1 == neg2);
+    const bool on_vertex = (c1 == 0 && c2 == 0 && c3 != 0) || (c1 == 0 && c2 != 0 && c3 == 0) ||
+                           (c1 != 0 && c2 == 0 && c3 == 0);
+
+    return inside || on_edge || on_vertex;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

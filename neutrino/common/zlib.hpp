@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include <common/types.hpp>
-
 namespace framework::zlib
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +17,7 @@ namespace framework::zlib
 /// @param data LZ77-compressed data
 ///
 /// @return Raw (uncompressed) data
-std::vector<uint8> inflate(const std::vector<uint8>& data);
+std::vector<std::uint8_t> inflate(const std::vector<std::uint8_t>& data);
 
 /// @brief Compress byte sequence
 ///
@@ -28,7 +26,7 @@ std::vector<uint8> inflate(const std::vector<uint8>& data);
 /// @param data Data to compress
 ///
 /// @return LZ77-compressed data
-std::vector<uint8> deflate(const std::vector<uint8>& data);
+std::vector<std::uint8_t> deflate(const std::vector<std::uint8_t>& data);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

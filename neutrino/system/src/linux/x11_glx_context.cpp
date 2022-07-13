@@ -191,7 +191,7 @@ Context::Api X11GlxContext::api_type() const
 
 Context::VoidFunctionPtr X11GlxContext::get_function(const char* function_name) const
 {
-    return glx::glXGetProcAddressARB(reinterpret_cast<const uint8*>(function_name));
+    return glx::glXGetProcAddressARB(reinterpret_cast<const std::uint8_t*>(function_name));
 }
 
 void X11GlxContext::make_current()

@@ -4,8 +4,6 @@
 #include <array>
 #include <utility>
 
-#include <common/types.hpp>
-
 namespace framework::utils::crc_details
 {
 /// @brief Helper class to get correct type for Crc::value_type.
@@ -16,21 +14,21 @@ struct get_crc_value_type;
 template <>
 struct get_crc_value_type<8>
 {
-    using type = uint8;
+    using type = std::uint8_t;
 };
 
 /// @brief Helper class to get correct type for Crc::value_type.
 template <>
 struct get_crc_value_type<16>
 {
-    using type = uint16;
+    using type = std::uint16_t;
 };
 
 /// @brief Helper class to get correct type for Crc::value_type.
 template <>
 struct get_crc_value_type<32>
 {
-    using type = uint32;
+    using type = std::uint32_t;
 };
 
 /// @brief Value type short cut.
@@ -48,7 +46,7 @@ constexpr value_t<BitsCount> generate_value(std::size_t dividend) noexcept
 
     value_t<BitsCount> value = static_cast<value_t<BitsCount>>(dividend << (BitsCount - 8));
 
-    for (uint8 bit = 0; bit < 8; ++bit) {
+    for (std::uint8_t bit = 0; bit < 8; ++bit) {
         value = static_cast<value_t<BitsCount>>((value & topbit) ? ((value << 1) ^ Polynome) : (value << 1));
     }
 

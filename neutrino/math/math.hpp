@@ -10,6 +10,7 @@
 #include <math/inc/geometric_functions.hpp>
 #include <math/inc/matrix_functions.hpp>
 #include <math/inc/matrix_type.hpp>
+#include <math/inc/polygon_functions.hpp>
 #include <math/inc/relational_functions.hpp>
 #include <math/inc/transform_functions.hpp>
 #include <math/inc/trigonometric_functions.hpp>

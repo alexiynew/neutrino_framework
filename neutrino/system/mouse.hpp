@@ -1,7 +1,7 @@
 #ifndef FRAMEWORK_SYSTEM_MOUSE_HPP
 #define FRAMEWORK_SYSTEM_MOUSE_HPP
 
-#include <common/types.hpp>
+#include <common/position.hpp>
 
 namespace framework::system
 {

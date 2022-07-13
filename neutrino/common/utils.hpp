@@ -8,8 +8,6 @@
 #include <tuple>
 #include <vector>
 
-#include <common/types.hpp>
-
 #include <common/inc/utils_details.hpp>
 
 #include <random>

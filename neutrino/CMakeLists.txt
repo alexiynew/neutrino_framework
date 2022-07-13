@@ -16,6 +16,7 @@ set(MODULES
     math
     system
     unit_test
+    profiler
 )
 
 foreach(MODULE ${MODULES})

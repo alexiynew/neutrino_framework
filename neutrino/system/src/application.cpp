@@ -21,4 +21,3 @@ Application& Application::instance()
 }
 
 } // namespace framework::system
-
