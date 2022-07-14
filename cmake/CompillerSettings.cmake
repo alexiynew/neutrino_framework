@@ -1,3 +1,9 @@
+if(NOT CMAKE_CXX_EXTENSIONS)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
+
+
+
 macro(set_compiller_flags)
     message("${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
@@ -67,6 +73,24 @@ macro(set_compiller_flags)
                                    --coverage
                                    -fprofile-arcs
                                    -ftest-coverage)
+    endif()
+
+    if(USE_SANITIZER)
+        if(USE_SANITIZER MATCHES "([Uu]ndefined)")
+            message(STATUS "Build with Undefined Behaviour sanitizer")
+            # list(APPEND COMPILER_FLAGS -fsanitize=undefined)
+            list(APPEND COMPILER_FLAGS /fsanitize=address)
+ #            /INCREMENTAL:NO /EDITANDCONTINUE:NO)
+ #           target_link_options(<target> [BEFORE]
+ # <INTERFACE|PUBLIC|PRIVATE> [items1...]
+ # [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+        endif()
+
+        # set(SANITIZER_ADDR_FLAG "-fsanitize=address")
+        # set(SANITIZER_MEM_FLAG "-fsanitize=memory")  -fno-optimize-sibling-calls -fsanitize-memory-track-origins=2
+        # set(SANITIZER_THREAD_FLAG "-fsanitize=thread")
+        # set(SANITIZER_LEAK_FLAG "-fsanitize=leak")
+        # set(SANITIZER_CFI_FLAG "-fsanitize=cfi")
     endif()
 
     list(JOIN COMPILER_FLAGS " " CMAKE_CXX_FLAGS)

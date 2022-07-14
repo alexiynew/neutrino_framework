@@ -13,6 +13,19 @@ macro(detect_platform_name PLATFORM_NAME)
     endif()
 endmacro(detect_platform_name)
 
+# Detect compiler and set compiler name
+macro(detect_compiler_name COMPILER_NAME)
+    if("${CMAKE_CXX_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
+        set(COMPILER_NAME "clang")
+    elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+        set(COMPILER_NAME "gcc")
+    elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
+        set(COMPILER_NAME "msvc")
+    else()
+        set(COMPILER_NAME "unknown")
+    endif()
+endmacro(detect_compiler_name)
+
 # Make absolute path to source files
 macro(set_sources SOURCE_OUTPUT)
     unset(${SOURCE_OUTPUT})
