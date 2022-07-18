@@ -246,12 +246,12 @@ private:
         [](const Window&, Position position) { log::info("test") << "on_position: " << position << std::endl; });
 
         w.on_key_down.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
-            log::info("test") << "on_key_press key: " << static_cast<int32>(key) << " " << key_name(key) << " "
+            log::info("test") << "on_key_down key: " << static_cast<int32>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
         w.on_key_up.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
-            log::info("test") << "on_key_release key: " << static_cast<int32>(key) << " " << key_name(key) << " "
+            log::info("test") << "on_key_up key: " << static_cast<int32>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
@@ -264,13 +264,13 @@ private:
 
         w.on_mouse_button_down.connect(
         [](const Window&, system::MouseButton button, system::CursorPosition position, system::Modifiers state) {
-            log::info("test") << "on_mouse_press: " << button_name(button) << " " << position << " "
+            log::info("test") << "on_mouse_down: " << button_name(button) << " " << position << " "
                               << print_state(state) << std::endl;
         });
 
         w.on_mouse_button_up.connect(
         [](const Window&, system::MouseButton button, system::CursorPosition position, system::Modifiers state) {
-            log::info("test") << "on_mouse_release: " << button_name(button) << " " << position << " "
+            log::info("test") << "on_mouse_up: " << button_name(button) << " " << position << " "
                               << print_state(state) << std::endl;
         });
 

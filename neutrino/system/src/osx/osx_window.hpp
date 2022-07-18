@@ -74,13 +74,15 @@ private:
     void window_did_resign_key();
     void window_did_enter_full_screen();
     void window_did_exit_full_screen();
-    
+
     void key_down(KeyCode key, Modifiers state);
     void key_up(KeyCode key, Modifiers state);
 
     void mouse_entered();
     void mouse_exited();
     void mouse_moved(CursorPosition position);
+    void mouse_button_down(MouseButton button, CursorPosition position, Modifiers state);
+    void mouse_button_up(MouseButton button, CursorPosition position, Modifiers state);
 
 #pragma endregion
 
@@ -97,6 +99,7 @@ private:
     void hide_cursor();
     void enable_raw_input();
     void disable_raw_input();
+    CursorPosition convert_cursor_position(CursorPosition position);
 
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
@@ -112,7 +115,7 @@ private:
 
     CursorPosition m_grabbed_cursor_diff = {0, 0};
     CursorPosition m_cursor_position     = {0, 0};
-    
+
     Size m_min_size;
     Size m_max_size;
 };

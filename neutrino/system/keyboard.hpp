@@ -59,10 +59,10 @@ enum class KeyCode
     key_x             = 88,
     key_y             = 89,
     key_z             = 90,
-    key_left_bracket  = 91, // [
-    key_backslash     = 92, /* \  */
-    key_right_bracket = 93, // ]
-    key_grave_accent  = 96, // `
+    key_left_bracket  = 91,  // [
+    key_backslash     = 92,  /* \  */
+    key_right_bracket = 93,  // ]
+    key_grave_accent  = 96,  // `
     key_section       = 167, // §
 
     // navigation
@@ -140,8 +140,8 @@ enum class KeyCode
     key_right_control = 345,
     key_right_alt     = 346,
     key_right_super   = 347,
-    
-    key_function      = 1000, ///< May not be processed on some systems.
+
+    key_function = 1000, ///< May not be processed on some systems.
 };
 
 /// @brief Keyboard state modifiers.

@@ -85,8 +85,8 @@ KeyCode::key_right_shift,   // 0x3C
 KeyCode::key_right_alt,     // 0x3D  option
 KeyCode::key_right_control, // 0x3E
 KeyCode::key_function,      // 0x3F
-KeyCode::key_f17,         // 0x40  function key
-KeyCode::key_num_decimal, // 0x41
+KeyCode::key_f17,           // 0x40  function key
+KeyCode::key_num_decimal,   // 0x41
 KeyCode::unknown,
 KeyCode::key_num_multiply, // 0x43
 KeyCode::unknown,
@@ -166,37 +166,37 @@ KeyCode map_system_key(std::uint32_t key)
 Modifiers get_modifiers_state(std::uint32_t flags)
 {
     Modifiers state;
-    
+
     if (flags & NSEventModifierFlagCapsLock) {
         state |= Modifiers::ModifiersState::caps_lock;
     }
-    
+
     if (flags & NSEventModifierFlagShift) {
         state |= Modifiers::ModifiersState::shift;
     }
-    
+
     if (flags & NSEventModifierFlagControl) {
         state |= Modifiers::ModifiersState::control;
     }
-    
+
     if (flags & NSEventModifierFlagOption) {
         state |= Modifiers::ModifiersState::alt;
     }
-    
+
     if (flags & NSEventModifierFlagCommand) {
         state |= Modifiers::ModifiersState::super;
     }
-    
+
     // Set if any key in the numeric keypad is pressed.
     if (flags & NSEventModifierFlagNumericPad) {
         state |= Modifiers::ModifiersState::num_lock;
     }
-    
+
     // Set if the Help key is pressed.
     if (flags & NSEventModifierFlagHelp) {
         // state |= ???
     }
-    
+
     // Set if any function key is pressed.
     if (flags & NSEventModifierFlagFunction) {
         state |= Modifiers::ModifiersState::function;
