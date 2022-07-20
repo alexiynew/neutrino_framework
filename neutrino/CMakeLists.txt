@@ -6,23 +6,39 @@ target_include_directories(${PROJECT_NAME}
         ${FRAMEWORK_DEPENDENCIES_DIR}
 )
 
-set(GCC_OPTIONS "-Wall;-Wextra;-Wpedantic;-Wshadow;-Wunused;-pedantic-errors;-Werror;-Wno-unknown-pragmas;-pthread;-fPIC")
+# Set cpp standart
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
+
+# Set common options
+set(GCC_OPTIONS "-Wall;-Wextra;-Wpedantic;-Wshadow;-Wunused;-pedantic-errors;-Werror;-Wno-unknown-pragmas;-Wno-language-extension-token;-pthread")
 set(MSVC_OPTIONS "-W4;-WX;-DNOMINMAX;-DUNICODE;-MT")
 
 set(GCC_LIKE_CXX "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
 set(MSVC_LIKE_CXX "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_compile_options(${PROJECT_NAME} PUBLIC
   "$<${GCC_LIKE_CXX}:${GCC_OPTIONS}>"
   "$<${MSVC_LIKE_CXX}:${MSVC_OPTIONS}>"
 )
 
+# Patform specific options
+if(${PLATFORM_NAME} MATCHES "window") 
+    # Support unicode and no min\min macros
+    target_compile_options(${PROJECT_NAME} PUBLIC "-DNOMINMAX;-DUNICODE")
+elseif(${PLATFORM_NAME} MATCHES "linux") 
+    target_compile_options(${PROJECT_NAME} PUBLIC "-fPIC")
+elseif(${PLATFORM_NAME} MATCHES "osx") 
+    target_compile_options(${PROJECT_NAME} PUBLIC "-fPIC")
+endif()
+
+# Test covarage
 if(ENABLE_TEST_COVERAGE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
     set(TEST_COVERAGE_OPTIONS "-O0;--coverage;-fprofile-arcs;-ftest-coverage")
     target_compile_options(${PROJECT_NAME} PUBLIC ${TEST_COVERAGE_OPTIONS})
 endif()
 
+# Sanitizers
 if(USE_SANITIZER)
     if(USE_SANITIZER MATCHES "([Uu]ndefined)")
         message(STATUS "Build with Undefined Behaviour sanitizer")
@@ -79,21 +95,3 @@ get_target_property(${PROJECT_NAME}_SOURCES ${PROJECT_NAME} SOURCES)
 source_group(TREE ${FRAMEWORK_SOURCE_DIR} FILES ${${PROJECT_NAME}_SOURCES})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-
-
-message(VERBOSE "-----------------------------------------")
-
-message(VERBOSE "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
-message(VERBOSE "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")        
-message(VERBOSE "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")      
-message(VERBOSE "CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
-
-get_target_property(${PROJECT_NAME}_COMPILE_OPTIONS ${PROJECT_NAME} COMPILE_OPTIONS)
-get_target_property(${PROJECT_NAME}_COMPILE_FEATURES ${PROJECT_NAME} COMPILE_FEATURES)
-get_target_property(${PROJECT_NAME}_CXX_STANDARD ${PROJECT_NAME} CXX_STANDARD)
-
-message(VERBOSE "NEUTRINO COMPILE_OPTIONS: ${${PROJECT_NAME}_COMPILE_OPTIONS}")
-message(VERBOSE "NEUTRINO COMPILE_FEATURES: ${${PROJECT_NAME}_COMPILE_FEATURES}")
-message(VERBOSE "NEUTRINO CXX_STANDARD: ${${PROJECT_NAME}_CXX_STANDARD}")
-
-message(VERBOSE "-----------------------------------------")

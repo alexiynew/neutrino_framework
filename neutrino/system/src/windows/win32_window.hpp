@@ -22,7 +22,7 @@ public:
     Win32Window(const std::string& title, Size size, const ContextSettings& settings);
     ~Win32Window() override;
 
-    Win32Window(const Win32Window&) = delete;
+    Win32Window(const Win32Window&)            = delete;
     Win32Window& operator=(const Win32Window&) = delete;
 
 #pragma region actions
@@ -114,10 +114,7 @@ private:
     Size adjust_size(Size size) const;
     Position adjust_position(Position position) const;
 
-    HWND m_window         = nullptr;
-    HDC m_hdc             = nullptr;
-    HGLRC m_hglrc         = nullptr;
-    HCURSOR m_prev_cursor = nullptr;
+    HWND m_window = nullptr;
 
     Size m_client_size = {0, 0};
     Size m_min_size    = {0, 0};
@@ -130,6 +127,8 @@ private:
     bool m_resizable    = true;
     bool m_should_close = false;
 
+    HCURSOR m_prev_cursor = nullptr;
+
     bool m_mouse_hover    = false;
     bool m_cursor_visible = true;
     bool m_cursor_grabbed = false;
@@ -137,8 +136,8 @@ private:
     CursorPosition m_grabbed_cursor_diff = {0, 0};
     CursorPosition m_cursor_position     = {0, 0};
 
-    std::unique_ptr<Context> m_context                = nullptr;
-    std::unique_ptr<MessageHandler> m_message_handler = nullptr;
+    std::unique_ptr<Context> m_context;
+    std::unique_ptr<MessageHandler> m_message_handler;
 
     ModifiersFlags m_modifiers_flags = {false, false, false, false, false, false};
 };

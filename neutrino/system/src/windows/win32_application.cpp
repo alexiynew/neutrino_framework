@@ -1,5 +1,8 @@
 #include <stdexcept>
 
+#include <common/utf.hpp>
+#include <system/application.hpp>
+
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_window.hpp>
 
@@ -7,16 +10,16 @@ namespace
 {
 const std::wstring main_class_name = L"main_window_class";
 
-void unregister_window_class(LPCWSTR class_atom)
-{
-    using framework::system::details::Win32Application;
+// void unregister_window_class(LPCWSTR class_atom)
+//{
+//     using framework::system::details::Win32Application;
+//
+//     if (!UnregisterClass(class_atom, Win32Application::handle())) {
+//         throw std::runtime_error("Failed to unregister window class, error: " + std::to_string(GetLastError()));
+//     }
+// }
 
-    if (!UnregisterClass(class_atom, Win32Application::handle())) {
-        throw std::runtime_error("Failed to unregister window class, error: " + std::to_string(GetLastError()));
-    }
-}
-
-LPCWSTR register_window_class()
+LPCWSTR register_window_class(const std::wstring& class_name)
 {
     using framework::system::details::Win32Application;
 
@@ -32,7 +35,7 @@ LPCWSTR register_window_class()
     window_class.hCursor       = nullptr;
     window_class.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
     window_class.lpszMenuName  = nullptr;
-    window_class.lpszClassName = main_class_name.c_str();
+    window_class.lpszClassName = class_name.c_str();
     window_class.hIconSm       = LoadIcon(nullptr, IDI_APPLICATION);
 
     const ATOM class_atom = RegisterClassEx(&window_class);
@@ -49,8 +52,9 @@ LPCWSTR register_window_class()
 namespace framework::system::details
 {
 Win32Application::HandleToWindowMap Win32Application::m_windows;
-HMODULE Win32Application::m_handle       = nullptr;
-LPCWSTR Win32Application::m_window_class = nullptr;
+HMODULE Win32Application::m_handle                 = nullptr;
+LPCWSTR Win32Application::m_window_class           = nullptr;
+std::wstring Win32Application::m_window_class_name = L"";
 
 void Win32Application::add_window(HANDLE handle, Win32Window* window)
 {
@@ -87,7 +91,7 @@ HMODULE Win32Application::handle()
 LPCWSTR Win32Application::get_window_class()
 {
     if (!m_window_class) {
-        m_window_class = register_window_class();
+        m_window_class = register_window_class(get_window_class_name());
     }
 
     return m_window_class;
@@ -103,6 +107,15 @@ LRESULT CALLBACK Win32Application::main_window_procedure(HWND window_handle,
     }
 
     return DefWindowProc(window_handle, message, w_param, l_param);
+}
+
+const std::wstring& Win32Application::get_window_class_name()
+{
+    if (m_window_class_name.empty()) {
+        m_window_class_name = utf::to_wstring(Application::name()) + L" window class";
+    }
+
+    return m_window_class_name;
 }
 
 } // namespace framework::system::details

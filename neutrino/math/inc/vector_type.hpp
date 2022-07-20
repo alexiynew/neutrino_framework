@@ -46,13 +46,18 @@ struct Vector<4, T> final
     /// @param y_value Value for y component.
     /// @param z_value Value for z component.
     /// @param w_value Value for w component.
-    template <typename X, typename Y, typename Z, typename W>
+    template <typename X,
+              typename Y,
+              typename Z,
+              typename W,
+              typename C = std::enable_if_t<std::is_arithmetic_v<X> && std::is_arithmetic_v<Y> &&
+                                            std::is_arithmetic_v<Z> && std::is_arithmetic_v<W>>>
     constexpr Vector(const X& x_value, const Y& y_value, const Z& z_value, const W& w_value) noexcept;
 
     /// @brief Initializes all components of vector with same value.
     ///
     /// @param value Value for x, y, z and w components.
-    template <typename U>
+    template <typename U, typename C = std::enable_if_t<std::is_arithmetic_v<U>>>
     explicit constexpr Vector(const U& value) noexcept;
 
     /// @brief Initializes all components of vector from pointer to values.
@@ -191,13 +196,17 @@ struct Vector<3, T> final
     /// @param x_value Value for x component.
     /// @param y_value Value for y component.
     /// @param z_value Value for z component.
-    template <typename X, typename Y, typename Z>
+    template <
+    typename X,
+    typename Y,
+    typename Z,
+    typename C = std::enable_if_t<std::is_arithmetic_v<X> && std::is_arithmetic_v<Y> && std::is_arithmetic_v<Z>>>
     constexpr Vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept;
 
     /// @brief Initializes all components of vector with same value.
     ///
     /// @param value Value for x, y and z components.
-    template <typename U>
+    template <typename U, typename C = std::enable_if_t<std::is_arithmetic_v<U>>>
     explicit constexpr Vector(const U& value) noexcept;
 
     /// @brief Initializes all components of vector from pointer to values.
@@ -300,13 +309,13 @@ struct Vector<2, T> final
     ///
     /// @param x_value Value for x component.
     /// @param y_value Value for y component.
-    template <typename X, typename Y>
+    template <typename X, typename Y, typename C = std::enable_if_t<std::is_arithmetic_v<X> && std::is_arithmetic_v<Y>>>
     constexpr Vector(const X& x_value, const Y& y_value) noexcept;
 
     /// @brief Initializes all components of vector with same value.
     ///
     /// @param value Value for x and y components.
-    template <typename U>
+    template <typename U, typename C = std::enable_if_t<std::is_arithmetic_v<U>>>
     explicit constexpr Vector(const U& value) noexcept;
 
     /// @brief Initializes all components of vector from pointer to values.
@@ -387,7 +396,8 @@ inline constexpr Vector<4, T>::Vector() noexcept
 {}
 
 template <typename T>
-template <typename X, typename Y, typename Z, typename W>
+template <typename X, typename Y, typename Z, typename W, typename C>
+
 inline constexpr Vector<4, T>::Vector(const X& x_value, const Y& y_value, const Z& z_value, const W& w_value) noexcept
     : x{vector_type_details::cast_to<T>::from(x_value)}
     , y{vector_type_details::cast_to<T>::from(y_value)}
@@ -396,7 +406,7 @@ inline constexpr Vector<4, T>::Vector(const X& x_value, const Y& y_value, const 
 {}
 
 template <typename T>
-template <typename U>
+template <typename U, typename C>
 inline constexpr Vector<4, T>::Vector(const U& value) noexcept
     : Vector{value, value, value, value}
 {}
@@ -521,7 +531,7 @@ inline constexpr Vector<3, T>::Vector() noexcept
 {}
 
 template <typename T>
-template <typename X, typename Y, typename Z>
+template <typename X, typename Y, typename Z, typename C>
 inline constexpr Vector<3, T>::Vector(const X& x_value, const Y& y_value, const Z& z_value) noexcept
     : x{vector_type_details::cast_to<T>::from(x_value)}
     , y{vector_type_details::cast_to<T>::from(y_value)}
@@ -529,7 +539,7 @@ inline constexpr Vector<3, T>::Vector(const X& x_value, const Y& y_value, const 
 {}
 
 template <typename T>
-template <typename U>
+template <typename U, typename C>
 inline constexpr Vector<3, T>::Vector(const U& value) noexcept
     : Vector{value, value, value}
 {}
@@ -629,14 +639,14 @@ inline constexpr Vector<2, T>::Vector() noexcept
 {}
 
 template <typename T>
-template <typename X, typename Y>
+template <typename X, typename Y, typename C>
 inline constexpr Vector<2, T>::Vector(const X& x_value, const Y& y_value) noexcept
     : x{vector_type_details::cast_to<T>::from(x_value)}
     , y{vector_type_details::cast_to<T>::from(y_value)}
 {}
 
 template <typename T>
-template <typename U>
+template <typename U, typename C>
 inline constexpr Vector<2, T>::Vector(const U& value) noexcept
     : Vector{value, value}
 {}
