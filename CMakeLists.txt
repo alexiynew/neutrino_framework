@@ -8,6 +8,9 @@ option(BUILD_EXAMPLES "Should examples be inculuded in build." ON)
 option(BUILD_DOCS "Should generate documentation." ON)
 option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
 
+# Sanitizers
+set(USE_SANITIZER "" CACHE STRING "Compile with a sanitizer. Options are: Undefined, Address, Memory, Thread, Leak, Cfi")
+
 # Test modules to run
 if(NOT INCLUDED_TEST_MODULES)
     set(INCLUDED_TEST_MODULES ".*" 
@@ -40,17 +43,14 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Import usefull macros
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(Macros)
-include(CompillerSettings)
 
 # Get platform
 detect_platform_name(PLATFORM_NAME)
-message("platform name: ${PLATFORM_NAME}")
+message(STATUS "Platform: ${PLATFORM_NAME}")
 
-# Set compiller flags
-if(NOT CMAKE_CXX_EXTENSIONS)
-    set(CMAKE_CXX_EXTENSIONS OFF)
-endif()
-set_compiller_flags()
+# Get compiler
+detect_compiler_name(COMPILER_NAME)
+message(STATUS "Compiler: ${COMPILER_NAME} - ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
 # Assemble framework
 include(${FRAMEWORK_SOURCE_DIR}/CMakeLists.txt)

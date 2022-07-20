@@ -17,4 +17,4 @@ target_sources(${PROJECT_NAME}
 
 find_library(FOUNDATION Foundation)
 find_library(APPKIT AppKit)
-target_link_libraries(${PROJECT_NAME} ${FOUNDATION} ${APPKIT})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${FOUNDATION} ${APPKIT})
