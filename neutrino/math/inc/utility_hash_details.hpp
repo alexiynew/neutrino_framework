@@ -1,6 +1,8 @@
 #ifndef FRAMEWORK_MATH_INC_UTILITY_HASH_DETAILS_HPP
 #define FRAMEWORK_MATH_INC_UTILITY_HASH_DETAILS_HPP
 
+#include <cstddef>
+
 namespace framework::math::unility_hash::details
 {
 

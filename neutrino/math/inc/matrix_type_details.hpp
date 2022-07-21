@@ -1,6 +1,8 @@
 #ifndef FRAMEWORK_MATH_INC_MATRIX_TYPE_DETAILS_HPP
 #define FRAMEWORK_MATH_INC_MATRIX_TYPE_DETAILS_HPP
 
+#include <math/inc/vector_type.hpp>
+
 namespace framework::math::matrix_type_details
 {
 
