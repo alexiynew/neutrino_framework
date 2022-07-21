@@ -1,6 +1,7 @@
 #ifndef FRAMEWORK_MATH_INC_POLYGON_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_INC_POLYGON_FUNCTIONS_HPP
 
+#include <cstdint>
 #include <vector>
 
 #include <math/inc/vector_type.hpp>

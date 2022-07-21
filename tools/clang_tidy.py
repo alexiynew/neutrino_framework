@@ -11,6 +11,9 @@ pathes = [
     #os.path.join(script_path, "neutrino/graphics"),
     os.path.join(script_path, "neutrino/log"),
     os.path.join(script_path, "neutrino/math"),
+    os.path.join(script_path, "neutrino/profiler"),
+    #os.path.join(script_path, "neutrino/system"),
+    os.path.join(script_path, "neutrino/unit_test"),
     #os.path.join(script_path, "example"),
     #os.path.join(script_path, "test"),
 ]
