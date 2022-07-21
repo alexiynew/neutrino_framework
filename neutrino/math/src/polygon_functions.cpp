@@ -2,10 +2,8 @@
 #include <numeric>
 #include <stdexcept>
 
-#define FRAMEWORK_MATH_DETAILS
 #include <math/inc/geometric_functions.hpp>
 #include <math/inc/polygon_functions.hpp>
-#undef FRAMEWORK_MATH_DETAILS
 
 namespace
 {

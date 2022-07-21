@@ -6,7 +6,7 @@ project(neutrino LANGUAGES CXX VERSION 0.0.3)
 option(BUILD_TESTS "Should tests be inculuded in build." ON)
 option(BUILD_EXAMPLES "Should examples be inculuded in build." ON)
 option(BUILD_DOCS "Should generate documentation." ON)
-option(ENABLE_TEST_COVERAGE "Include test coverage scan in build" OFF)
+option(TEST_COVERAGE "Include test coverage scan in build." OFF)
 
 # Sanitizers
 set(USE_SANITIZER "" CACHE STRING "Compile with a sanitizer. Options are: Undefined, Address, Memory, Thread, Leak, Cfi")

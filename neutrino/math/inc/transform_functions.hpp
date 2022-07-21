@@ -1,10 +1,6 @@
 #ifndef FRAMEWORK_MATH_INC_TRANSFORM_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_INC_TRANSFORM_FUNCTIONS_HPP
 
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of transform_functions.hpp
-#endif
-
 #include <cassert>
 #include <limits>
 

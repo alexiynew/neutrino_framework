@@ -33,7 +33,7 @@ elseif(${PLATFORM_NAME} MATCHES "osx")
 endif()
 
 # Test covarage
-if(ENABLE_TEST_COVERAGE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+if(TEST_COVERAGE AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
     set(TEST_COVERAGE_OPTIONS "-O0;--coverage;-fprofile-arcs;-ftest-coverage")
     target_compile_options(${PROJECT_NAME} PUBLIC ${TEST_COVERAGE_OPTIONS})
 endif()

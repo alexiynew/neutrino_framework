@@ -1,10 +1,6 @@
 #ifndef FRAMEWORK_MATH_INC_CONSTANTS_HPP
 #define FRAMEWORK_MATH_INC_CONSTANTS_HPP
 
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of constants.hpp
-#endif
-
 namespace framework::math
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,10 +1,6 @@
 #ifndef FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_HPP
 
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of common_functions.hpp
-#endif
-
 #include <cmath>
 #include <limits>
 

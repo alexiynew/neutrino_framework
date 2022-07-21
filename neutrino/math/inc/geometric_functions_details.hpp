@@ -1,10 +1,6 @@
 #ifndef FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_DETAILS_HPP
 #define FRAMEWORK_MATH_INC_GEOMETRIC_FUNCTIONS_DETAILS_HPP
 
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of geometric_functions_details.hpp
-#endif
-
 #include <math/inc/vector_type.hpp>
 
 namespace framework::math::geometric_functions_details

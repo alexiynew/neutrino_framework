@@ -1,10 +1,6 @@
 #ifndef FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_DETAILS_HPP
 #define FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_DETAILS_HPP
 
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of relational_functions_details.hpp
-#endif
-
 #include <functional>
 
 #include <math/inc/common_functions.hpp>

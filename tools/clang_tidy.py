@@ -7,7 +7,10 @@ script_path = os.getcwd()
 
 pathes = [
     os.path.join(script_path, "neutrino/common"),
-    #os.path.join(script_path, "neutrino/game_core"),
+    os.path.join(script_path, "neutrino/game_core"),
+    #os.path.join(script_path, "neutrino/graphics"),
+    os.path.join(script_path, "neutrino/log"),
+    os.path.join(script_path, "neutrino/math"),
     #os.path.join(script_path, "example"),
     #os.path.join(script_path, "test"),
 ]

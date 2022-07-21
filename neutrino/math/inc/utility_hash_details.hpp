@@ -1,10 +1,6 @@
 #ifndef FRAMEWORK_MATH_INC_UTILITY_HASH_DETAILS_HPP
 #define FRAMEWORK_MATH_INC_UTILITY_HASH_DETAILS_HPP
 
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of utility_hash_details.hpp
-#endif
-
 namespace framework::math::unility_hash::details
 {
 

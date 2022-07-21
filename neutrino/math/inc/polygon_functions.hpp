@@ -1,10 +1,6 @@
 #ifndef FRAMEWORK_MATH_INC_POLYGON_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_INC_POLYGON_FUNCTIONS_HPP
 
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of polygon_functions.hpp
-#endif
-
 #include <vector>
 
 #include <math/inc/vector_type.hpp>

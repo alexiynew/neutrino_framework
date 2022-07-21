@@ -1,10 +1,6 @@
 #ifndef FRAMEWORK_MATH_INC_UTILITY_HASH_HPP
 #define FRAMEWORK_MATH_INC_UTILITY_HASH_HPP
 
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of utility_hash.hpp
-#endif
-
 #include <functional>
 
 #include <math/inc/matrix_type.hpp>
