@@ -26,6 +26,9 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build/test
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
+
+    - name: Run clang-tidy
+      run: python ${{github.workspace}}/tools/clang_tidy.py
  
   build_windows:
     runs-on: [ windows-latest ]
@@ -42,6 +45,9 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build/test
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
+
+    - name: Run clang-tidy
+      run: python ${{github.workspace}}/tools/clang_tidy.py
          
   build_linux:
     runs-on: [ ubuntu-latest ]
@@ -68,23 +74,5 @@ jobs:
       working-directory: ${{github.workspace}}/build/test
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
 
-  clang_tidy:
-    runs-on: [ ubuntu-latest ]
-    
-    steps:
-    - uses: actions/checkout@v2
-    
-    - name: Update apt-get
-      run: sudo gem install apt-spy2 &&
-           sudo apt-spy2 check &&
-           sudo apt-spy2 fix --commit &&
-           sudo apt-get update
-        
-    - name: Install X11 and OpenGL
-      run: sudo apt-get install -y libx11-dev libgl1-mesa-dev mesa-common-dev
-  
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Run checks
-      run: python ./tools/clang_tidy.py
+    - name: Run clang-tidy
+      run: python ${{github.workspace}}/tools/clang_tidy.py
