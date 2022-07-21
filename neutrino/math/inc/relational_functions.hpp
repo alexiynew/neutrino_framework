@@ -1,6 +1,7 @@
 #ifndef FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_HPP
 #define FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_HPP
 
+#include <cstdint>
 #include <functional>
 
 #include <math/inc/common_functions.hpp>

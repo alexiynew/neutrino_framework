@@ -2,6 +2,7 @@
 #define FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_HPP
 
 #include <cmath>
+#include <cstdint>
 #include <limits>
 
 #include <math/inc/common_functions_details.hpp>

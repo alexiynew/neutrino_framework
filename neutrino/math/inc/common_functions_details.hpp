@@ -2,6 +2,7 @@
 #define FRAMEWORK_MATH_INC_COMMON_FUNCTIONS_DETAILS_HPP
 
 #include <cmath>
+#include <cstdint>
 
 #include <math/inc/vector_type.hpp>
 
