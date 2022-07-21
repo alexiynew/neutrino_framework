@@ -7,7 +7,7 @@ script_path = os.getcwd()
 
 pathes = [
     os.path.join(script_path, "neutrino/common"),
-    os.path.join(script_path, "neutrino/game_core"),
+    #os.path.join(script_path, "neutrino/game_core"),
     #os.path.join(script_path, "example"),
     #os.path.join(script_path, "test"),
 ]
@@ -39,7 +39,12 @@ def get_files(pathes_list):
 
 files = list(filter(has_extension_filter(code_extensions), get_files(pathes)))
 
+
+has_errors = False
 for f in files:
     print(f)
     # Checks to add: ,cppcoreguidelines-*,misc-*,performance-*,portability-*,readability-*
-    subprocess.call(["clang-tidy", f, "-p", "build", "-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,concurrency-*", "--warnings-as-errors=*"])
+    output = subprocess.call(["clang-tidy", f, "-p", "build", "-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,concurrency-*", "--warnings-as-errors=*"])
+    has_errors == has_errors or (output != 0)
+
+exit(has_errors)
