@@ -2,6 +2,7 @@
 #define FRAMEWORK_COMMON_INC_CRC_DETAILS_HPP
 
 #include <array>
+#include <cstdint>
 #include <utility>
 
 namespace framework::utils::crc_details

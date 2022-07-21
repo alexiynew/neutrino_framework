@@ -42,4 +42,4 @@ files = list(filter(has_extension_filter(code_extensions), get_files(pathes)))
 for f in files:
     print(f)
     # Checks to add: ,cppcoreguidelines-*,misc-*,performance-*,portability-*,readability-*
-    subprocess.call(["clang-tidy", f, "-p", "build", "-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,concurrency-*"])
+    subprocess.call(["clang-tidy", f, "-p", "build", "-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,concurrency-*", "--warnings-as-errors=*"])
