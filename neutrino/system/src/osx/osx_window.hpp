@@ -119,6 +119,8 @@ private:
 
     Size m_min_size;
     Size m_max_size;
+
+    bool m_position_was_set_before_show = false;
 };
 
 } // namespace framework::system::details
