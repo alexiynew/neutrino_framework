@@ -3,6 +3,7 @@
 #include <limits>
 #include <map>
 #include <thread>
+#include <cmath>
 
 #include <system/src/osx/osx_application.hpp>
 #include <system/src/osx/osx_autorelease_pool.hpp>
@@ -19,6 +20,7 @@ using framework::system::CursorPosition;
 using framework::system::KeyCode;
 using framework::system::Modifiers;
 using framework::system::MouseButton;
+using framework::system::ScrollOffset;
 
 @interface OsxContentView : NSView<NSTextInputClient>
 {
@@ -180,6 +182,7 @@ using framework::system::MouseButton;
     std::function<void(CursorPosition)> onMouseMoved;
     std::function<void(MouseButton, CursorPosition, Modifiers)> onMouseButtonDown;
     std::function<void(MouseButton, CursorPosition, Modifiers)> onMouseButtonUp;
+    std::function<void(ScrollOffset)> onMouseScroll;
 
     std::map<framework::system::KeyCode, bool> pressedModifierKeys;
 }
@@ -202,6 +205,7 @@ using framework::system::MouseButton;
 @property(assign, nonatomic) std::function<void(CursorPosition)> on_mouse_moved;
 @property(assign, nonatomic) std::function<void(MouseButton, CursorPosition, Modifiers)> on_mouse_button_down;
 @property(assign, nonatomic) std::function<void(MouseButton, CursorPosition, Modifiers)> on_mouse_button_up;
+@property(assign, nonatomic) std::function<void(ScrollOffset)> on_mouse_scroll;
 
 @property(readonly, assign, nonatomic) BOOL isFullscreen;
 
@@ -227,6 +231,7 @@ using framework::system::MouseButton;
 @synthesize on_mouse_moved       = onMouseMoved;
 @synthesize on_mouse_button_down = onMouseButtonDown;
 @synthesize on_mouse_button_up   = onMouseButtonUp;
+@synthesize on_mouse_scroll   = onMouseScroll;
 
 @synthesize isFullscreen;
 
@@ -386,6 +391,21 @@ using framework::system::MouseButton;
     }
 }
 
+- (void)mouseDragged:(NSEvent *)event
+{
+    [self mouseMoved:event];
+}
+
+- (void)rightMouseDragged:(NSEvent *)event
+{
+    [self mouseMoved:event];
+}
+
+- (void)otherMouseDragged:(NSEvent *)event
+{
+    [self mouseMoved:event];
+}
+
 - (void)mouseDown:(NSEvent*)event
 {
     using namespace framework::system::details;
@@ -457,6 +477,22 @@ using framework::system::MouseButton;
         const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
         const auto state = get_modifiers_state([event modifierFlags]);
         onMouseButtonUp(button, cursor_position, state);
+    }
+}
+
+- (void)scrollWheel:(NSEvent *)event
+{
+    float dx = [event scrollingDeltaX];
+    float dy = [event scrollingDeltaY];
+
+    if ([event hasPreciseScrollingDeltas])
+    {
+        dx *= 0.1;
+        dy *= 0.1;
+    }
+
+    if (fabs(dx) > 0 && fabs(dy) > 0) {
+        onMouseScroll(ScrollOffset(dx * 120, dy * 120));
     }
 }
 
@@ -615,6 +651,7 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     m_window->get().on_mouse_moved       = std::bind(&OsxWindow::mouse_moved, this, _1);
     m_window->get().on_mouse_button_down = std::bind(&OsxWindow::mouse_button_down, this, _1, _2, _3);
     m_window->get().on_mouse_button_up   = std::bind(&OsxWindow::mouse_button_up, this, _1, _2, _3);
+    m_window->get().on_mouse_scroll      = std::bind(&OsxWindow::mouse_scroll, this, _1);
 
     // Setup window
     [m_window->get() setDelegate:m_window->get()];
@@ -1168,6 +1205,11 @@ void OsxWindow::mouse_button_down(MouseButton button, CursorPosition position, M
 void OsxWindow::mouse_button_up(MouseButton button, CursorPosition position, Modifiers state)
 {
     on_mouse_button_up(button, convert_cursor_position(position), state);
+}
+
+void OsxWindow::mouse_scroll(ScrollOffset scroll)
+{
+    on_mouse_scroll(scroll);
 }
 
 #pragma endregion

@@ -83,6 +83,7 @@ private:
     void mouse_moved(CursorPosition position);
     void mouse_button_down(MouseButton button, CursorPosition position, Modifiers state);
     void mouse_button_up(MouseButton button, CursorPosition position, Modifiers state);
+    void mouse_scroll(ScrollOffset scroll);
 
 #pragma endregion
 
