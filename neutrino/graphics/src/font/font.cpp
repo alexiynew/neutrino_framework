@@ -1,4 +1,4 @@
-﻿#include <algorithm>
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <exception>
@@ -35,6 +35,7 @@ using namespace framework::graphics::details::font;
 
 using graphics::Font;
 using graphics::Mesh;
+using math::Polygon;
 
 #pragma region TableRecord
 
@@ -275,8 +276,6 @@ std::unordered_map<Tag, Table> read_all_tables(std::ifstream& in, const std::vec
 
 #pragma region Glyph Vertices Generation
 
-using Polygon = std::vector<math::Vector2f>;
-
 struct GlyphMeshData
 {
     Mesh::VertexData vertices;
@@ -306,181 +305,6 @@ Polygon generate_polygon(const GlyphData::ContourType& contour, Font::QualityTyp
     }
 
     return polygon;
-}
-
-float polygon_area(const Polygon& polygon)
-{
-    if (polygon.size() < 3) {
-        return 0.0f;
-    }
-
-    auto curr = polygon.begin();
-    auto next = std::next(polygon.begin());
-
-    float sum = 0;
-    while (next != polygon.end()) {
-        sum += (next->x - curr->x) * (next->y + curr->y);
-        next++;
-        curr++;
-    }
-    next = polygon.begin();
-    sum += (next->x - curr->x) * (next->y + curr->y);
-
-    return sum;
-}
-
-bool is_point_in_triangle(math::Vector2f pt, math::Vector2f v1, math::Vector2f v2, math::Vector2f v3)
-{
-    const bool b1 = cross(pt - v2, v1 - v2) < 0.0f;
-    const bool b2 = cross(pt - v3, v2 - v3) < 0.0f;
-    const bool b3 = cross(pt - v1, v3 - v1) < 0.0f;
-    return ((b1 == b2) && (b2 == b3));
-}
-
-[[maybe_unused]] bool is_line_intersert_segment(math::Vector2f line_start,
-                                                math::Vector2f line_end,
-                                                math::Vector2f segment_start,
-                                                math::Vector2f segment_end)
-{
-    const math::Vector2f line_direction = line_end - line_start;
-
-    // Line equation
-    const float a1 = -line_direction.y;
-    const float b1 = line_direction.x;
-    const float d1 = -(a1 * line_start.x + b1 * line_start.y);
-
-    // Substitute the ends of the segments, to find out in which half-planes they are
-    const float e1 = a1 * segment_start.x + b1 * segment_start.y + d1;
-    const float e2 = a1 * segment_end.x + b1 * segment_end.y + d1;
-
-    // If the ends of segment have the same sign, then it is in the same half-plane and there is no intersection.
-    return e1 * e2 < 0.0f;
-}
-
-bool is_point_in_polygon(math::Vector2f point, const Polygon& polygon)
-{
-    if (polygon.size() <= 1) {
-        return false;
-    }
-
-    int intersections_num  = 0;
-    std::size_t prev_index = polygon.size() - 1;
-    bool prev_under        = polygon[prev_index].y < point.y;
-
-    for (std::size_t i = 0; i < polygon.size(); ++i) {
-        const bool curr_under = polygon[i].y < point.y;
-
-        const math::Vector2f a = polygon[prev_index] - point;
-        const math::Vector2f b = polygon[i] - point;
-
-        // Determinant from x-coordinate of the intersection of the segment and the ray
-        const float t = (a.x * (b.y - a.y) - a.y * (b.x - a.x));
-        if (curr_under && !prev_under) {
-            if (t > 0) {
-                intersections_num += 1;
-            }
-        }
-        if (!curr_under && prev_under) {
-            if (t < 0) {
-                intersections_num += 1;
-            }
-        }
-
-        prev_index = i;
-        prev_under = curr_under;
-    }
-
-    return intersections_num % 2 == 1;
-}
-
-Mesh::IndicesData generate_triangulation(const Polygon& polygon)
-{
-    Mesh::IndicesData indices(polygon.size());
-    std::iota(indices.begin(), indices.end(), 0);
-
-    Mesh::IndicesData triangles;
-    triangles.reserve((polygon.size() - 2) * 3);
-
-    while (indices.size() > 3) {
-        Mesh::IndicesData ears;
-
-        for (size_t i = 0; i < indices.size(); ++i) {
-            const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
-            const Mesh::IndicesData::value_type index_curr = indices[i];
-            const Mesh::IndicesData::value_type index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
-
-            const math::Vector2f prev = polygon[index_prev];
-            const math::Vector2f curr = polygon[index_curr];
-            const math::Vector2f next = polygon[index_next];
-
-            // angel is grater 180 degrees
-            if (cross(prev - curr, next - curr) <= 0.0f) {
-                continue;
-            }
-
-            bool is_ear = true;
-            for (const auto& p : polygon) {
-                if (p == prev || p == curr || p == next) {
-                    continue;
-                }
-
-                if (is_point_in_triangle(p, prev, next, curr)) {
-                    is_ear = false;
-                    break;
-                }
-            }
-
-            if (is_ear) {
-                ears.push_back(index_curr);
-            }
-        }
-
-        if (ears.empty()) {
-            throw std::runtime_error("Ears are empty. It's bug in triangulation algorithm.");
-        }
-
-        size_t min_angle_index = ears[0];
-        float max_dot          = -9999.0f;
-
-        for (auto ear_index : ears) {
-            auto it  = std::find(indices.begin(), indices.end(), ear_index);
-            size_t i = static_cast<size_t>(std::distance(indices.begin(), it));
-
-            const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
-            const Mesh::IndicesData::value_type index_curr = indices[i];
-            const Mesh::IndicesData::value_type index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
-
-            const math::Vector2f prev = polygon[index_prev];
-            const math::Vector2f curr = polygon[index_curr];
-            const math::Vector2f next = polygon[index_next];
-
-            auto d = dot(normalize(prev - curr), normalize(next - curr));
-            if (d > max_dot) {
-                max_dot         = d;
-                min_angle_index = ear_index;
-            }
-        }
-
-        {
-            auto it  = std::find(indices.begin(), indices.end(), min_angle_index);
-            size_t i = static_cast<size_t>(std::distance(indices.begin(), it));
-
-            const Mesh::IndicesData::value_type index_prev = i == 0 ? indices.back() : indices[i - 1];
-            const Mesh::IndicesData::value_type index_curr = indices[i];
-            const Mesh::IndicesData::value_type index_next = i == indices.size() - 1 ? indices.front() : indices[i + 1];
-            triangles.push_back(index_curr);
-            triangles.push_back(index_prev);
-            triangles.push_back(index_next);
-            indices.erase(it);
-        }
-    }
-
-    // Add last triangle
-    triangles.push_back(indices[0]);
-    triangles.push_back(indices[2]);
-    triangles.push_back(indices[1]);
-
-    return triangles;
 }
 
 std::vector<Polygon> convert_polygons_with_holes_to_holeless_polygons(const std::vector<Polygon>& filled,
@@ -570,7 +394,7 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
     res.submeshes.push_back({{}, Mesh::PrimitiveType::triangles});
 
     for (const auto& polygon : polygons) {
-        const auto& indices = generate_triangulation(polygon);
+        const auto& indices = generate_ear_cut_triangulation(polygon);
 
         const auto indices_offset = static_cast<Mesh::IndicesData::value_type>(res.vertices.size());
         std::transform(polygon.begin(),

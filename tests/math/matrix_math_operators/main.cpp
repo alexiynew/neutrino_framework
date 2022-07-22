@@ -94,15 +94,15 @@ private:
         TEST_ASSERT(temp23 == Matrix2x3f(2), "Matrix2x3 add_assign operator failed.");
         TEST_ASSERT(temp22 == Matrix2x2f(2), "Matrix2x2 add_assign operator failed.");
 
-        temp44 += 1;
-        temp43 += 1;
-        temp42 += 1;
-        temp34 += 1;
-        temp33 += 1;
-        temp32 += 1;
-        temp24 += 1;
-        temp23 += 1;
-        temp22 += 1;
+        temp44 += 1.0f;
+        temp43 += 1.0f;
+        temp42 += 1.0f;
+        temp34 += 1.0f;
+        temp33 += 1.0f;
+        temp32 += 1.0f;
+        temp24 += 1.0f;
+        temp23 += 1.0f;
+        temp22 += 1.0f;
 
         const Matrix4x4f result44 = {3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3};
         const Matrix4x3f result43 = {3, 1, 1, 1, 3, 1, 1, 1, 3, 1, 1, 1};
@@ -157,15 +157,15 @@ private:
         TEST_ASSERT(temp23 == Matrix23, "Matrix2x3 subtract_assign operator failed.");
         TEST_ASSERT(temp22 == Matrix22, "Matrix2x2 subtract_assign operator failed.");
 
-        temp44 -= 1;
-        temp43 -= 1;
-        temp42 -= 1;
-        temp34 -= 1;
-        temp33 -= 1;
-        temp32 -= 1;
-        temp24 -= 1;
-        temp23 -= 1;
-        temp22 -= 1;
+        temp44 -= 1.0f;
+        temp43 -= 1.0f;
+        temp42 -= 1.0f;
+        temp34 -= 1.0f;
+        temp33 -= 1.0f;
+        temp32 -= 1.0f;
+        temp24 -= 1.0f;
+        temp23 -= 1.0f;
+        temp22 -= 1.0f;
 
         const Matrix4x4f result44 = {0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0, -1, -1, -1, -1, 0};
         const Matrix4x3f result43 = {0, -1, -1, -1, 0, -1, -1, -1, 0, -1, -1, -1};
@@ -220,15 +220,15 @@ private:
         TEST_ASSERT(temp23 == Matrix2x3f(4), "Matrix2x3 multiplies_assign operator failed.");
         TEST_ASSERT(temp22 == Matrix2x2f(4), "Matrix2x2 multiplies_assign operator failed.");
 
-        temp44 *= 10;
-        temp43 *= 10;
-        temp42 *= 10;
-        temp34 *= 10;
-        temp33 *= 10;
-        temp32 *= 10;
-        temp24 *= 10;
-        temp23 *= 10;
-        temp22 *= 10;
+        temp44 *= 10.0f;
+        temp43 *= 10.0f;
+        temp42 *= 10.0f;
+        temp34 *= 10.0f;
+        temp33 *= 10.0f;
+        temp32 *= 10.0f;
+        temp24 *= 10.0f;
+        temp23 *= 10.0f;
+        temp22 *= 10.0f;
 
         TEST_ASSERT(temp44 == Matrix4x4f(40), "Matrix4x4 multiplies_assign operator failed.");
         TEST_ASSERT(temp43 == Matrix4x3f(40), "Matrix4x3 multiplies_assign operator failed.");
@@ -253,15 +253,15 @@ private:
         Matrix2x3f temp23(20);
         Matrix2x2f temp22(20);
 
-        temp44 /= 10;
-        temp43 /= 10;
-        temp42 /= 10;
-        temp34 /= 10;
-        temp33 /= 10;
-        temp32 /= 10;
-        temp24 /= 10;
-        temp23 /= 10;
-        temp22 /= 10;
+        temp44 /= 10.0f;
+        temp43 /= 10.0f;
+        temp42 /= 10.0f;
+        temp34 /= 10.0f;
+        temp33 /= 10.0f;
+        temp32 /= 10.0f;
+        temp24 /= 10.0f;
+        temp23 /= 10.0f;
+        temp22 /= 10.0f;
 
         TEST_ASSERT(temp44 == Matrix4x4f(2), "Matrix4x4 divides_assign operator failed.");
         TEST_ASSERT(temp43 == Matrix4x3f(2), "Matrix4x3 divides_assign operator failed.");
@@ -359,25 +359,25 @@ private:
         TEST_ASSERT(temp23 - 1.0f == result23, "Matrix2x3 subtract operator failed.");
         TEST_ASSERT(temp22 - 1.0f == result22, "Matrix2x2 subtract operator failed.");
 
-        TEST_ASSERT(2.0f - temp44 == Matrix4x4f(0), "Matrix4x4 subtract operator failed.");
-        TEST_ASSERT(2.0f - temp43 == Matrix4x3f(0), "Matrix4x3 subtract operator failed.");
-        TEST_ASSERT(2.0f - temp42 == Matrix4x2f(0), "Matrix4x2 subtract operator failed.");
-        TEST_ASSERT(2.0f - temp34 == Matrix3x4f(0), "Matrix3x4 subtract operator failed.");
-        TEST_ASSERT(2.0f - temp33 == Matrix3x3f(0), "Matrix3x3 subtract operator failed.");
-        TEST_ASSERT(2.0f - temp32 == Matrix3x2f(0), "Matrix3x2 subtract operator failed.");
-        TEST_ASSERT(2.0f - temp24 == Matrix2x4f(0), "Matrix2x4 subtract operator failed.");
-        TEST_ASSERT(2.0f - temp23 == Matrix2x3f(0), "Matrix2x3 subtract operator failed.");
-        TEST_ASSERT(2.0f - temp22 == Matrix2x2f(0), "Matrix2x2 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp44 == Matrix4x4f(0.0f), "Matrix4x4 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp43 == Matrix4x3f(0.0f), "Matrix4x3 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp42 == Matrix4x2f(0.0f), "Matrix4x2 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp34 == Matrix3x4f(0.0f), "Matrix3x4 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp33 == Matrix3x3f(0.0f), "Matrix3x3 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp32 == Matrix3x2f(0.0f), "Matrix3x2 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp24 == Matrix2x4f(0.0f), "Matrix2x4 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp23 == Matrix2x3f(0.0f), "Matrix2x3 subtract operator failed.");
+        TEST_ASSERT(2.0f - temp22 == Matrix2x2f(0.0f), "Matrix2x2 subtract operator failed.");
 
-        TEST_ASSERT(temp44 - temp44 == Matrix4x4f(0), "Matrix4x4 subtract operator failed.");
-        TEST_ASSERT(temp43 - temp43 == Matrix4x3f(0), "Matrix4x3 subtract operator failed.");
-        TEST_ASSERT(temp42 - temp42 == Matrix4x2f(0), "Matrix4x2 subtract operator failed.");
-        TEST_ASSERT(temp34 - temp34 == Matrix3x4f(0), "Matrix3x4 subtract operator failed.");
-        TEST_ASSERT(temp33 - temp33 == Matrix3x3f(0), "Matrix3x3 subtract operator failed.");
-        TEST_ASSERT(temp32 - temp32 == Matrix3x2f(0), "Matrix3x2 subtract operator failed.");
-        TEST_ASSERT(temp24 - temp24 == Matrix2x4f(0), "Matrix2x4 subtract operator failed.");
-        TEST_ASSERT(temp23 - temp23 == Matrix2x3f(0), "Matrix2x3 subtract operator failed.");
-        TEST_ASSERT(temp22 - temp22 == Matrix2x2f(0), "Matrix2x2 subtract operator failed.");
+        TEST_ASSERT(temp44 - temp44 == Matrix4x4f(0.0f), "Matrix4x4 subtract operator failed.");
+        TEST_ASSERT(temp43 - temp43 == Matrix4x3f(0.0f), "Matrix4x3 subtract operator failed.");
+        TEST_ASSERT(temp42 - temp42 == Matrix4x2f(0.0f), "Matrix4x2 subtract operator failed.");
+        TEST_ASSERT(temp34 - temp34 == Matrix3x4f(0.0f), "Matrix3x4 subtract operator failed.");
+        TEST_ASSERT(temp33 - temp33 == Matrix3x3f(0.0f), "Matrix3x3 subtract operator failed.");
+        TEST_ASSERT(temp32 - temp32 == Matrix3x2f(0.0f), "Matrix3x2 subtract operator failed.");
+        TEST_ASSERT(temp24 - temp24 == Matrix2x4f(0.0f), "Matrix2x4 subtract operator failed.");
+        TEST_ASSERT(temp23 - temp23 == Matrix2x3f(0.0f), "Matrix2x3 subtract operator failed.");
+        TEST_ASSERT(temp22 - temp22 == Matrix2x2f(0.0f), "Matrix2x2 subtract operator failed.");
     }
 
     void multiply_with_scalar_operator()

@@ -26,6 +26,9 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build/test
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
+
+    - name: Run clang-tidy
+      run: python ${{github.workspace}}/tools/clang_tidy.py
  
   build_windows:
     runs-on: [ windows-latest ]
@@ -42,6 +45,9 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build/test
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
+
+    - name: Run clang-tidy
+      run: python ${{github.workspace}}/tools/clang_tidy.py
          
   build_linux:
     runs-on: [ ubuntu-latest ]
@@ -49,7 +55,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Update atp-get
+    - name: Update apt-get
       run: sudo gem install apt-spy2 &&
            sudo apt-spy2 check &&
            sudo apt-spy2 fix --commit &&
@@ -67,3 +73,6 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build/test
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
+
+    - name: Run clang-tidy
+      run: python ${{github.workspace}}/tools/clang_tidy.py

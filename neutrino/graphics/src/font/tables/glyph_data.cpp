@@ -1,4 +1,4 @@
-﻿#include <optional>
+#include <optional>
 
 #include <common/exceptions.hpp>
 #include <common/utils.hpp>

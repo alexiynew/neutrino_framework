@@ -11,6 +11,8 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
+#include <profiler/profiler.hpp>
+
 using namespace framework;
 using namespace framework::graphics;
 using namespace framework::math;
@@ -159,6 +161,7 @@ private:
         };
         //  clang-format on
 
+        profiler::begin_profiling("Mesh");
         float current_line_offset = line_offset;
         for (const auto& str : strings) {
             Mesh text_mesh = font.create_text_mesh(str);
@@ -172,6 +175,7 @@ private:
             objects.emplace_back(std::move(text_mesh), math::Vector3f(0.5f, virtual_height - current_line_offset, 0.0f));
             current_line_offset += line_offset;
         }
+        profiler::dump_to_file("test.json");
 
         Shader shader;
         shader.set_vertex_source(vertex_shader);

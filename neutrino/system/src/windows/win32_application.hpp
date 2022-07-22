@@ -1,4 +1,4 @@
-﻿#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
+#ifndef FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
 #define FRAMEWORK_WINDOW_DETAILS_WINDOWS_WIN32_APPLICATION_HPP
 
 #include <map>
@@ -25,9 +25,12 @@ public:
 private:
     using HandleToWindowMap = std::map<HANDLE, Win32Window*>;
 
+    static const std::wstring& get_window_class_name();
+
     static HandleToWindowMap m_windows;
     static HMODULE m_handle;
 
+    static std::wstring m_window_class_name;
     static LPCWSTR m_window_class;
 };
 

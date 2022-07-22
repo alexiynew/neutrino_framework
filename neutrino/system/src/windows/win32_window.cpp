@@ -1,4 +1,4 @@
-﻿#include <functional>
+#include <functional>
 #include <stdexcept>
 
 #include <common/utf.hpp>
@@ -95,18 +95,6 @@ bool is_cursor_in_client_area(HWND window)
     framework::system::CursorPosition pos = get_cursor_position(window);
 
     return pos.x >= 0 && pos.y >= 0 && pos.x <= rect.right && pos.y <= rect.bottom;
-}
-
-void set_window_state(HWND window, framework::system::Window::State state)
-{
-    using State = framework::system::Window::State;
-
-    switch (state) {
-        case State::iconified: ShowWindow(window, SW_MINIMIZE); break;
-        case State::maximized: ShowWindow(window, SW_MAXIMIZE); break;
-        case State::fullscreen: break;
-        case State::normal: ShowWindow(window, SW_SHOW); break;
-    }
 }
 
 framework::system::Window::State get_window_state(HWND window)

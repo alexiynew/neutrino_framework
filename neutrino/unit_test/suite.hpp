@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-#include <common/types.hpp>
-
 namespace framework::unit_test
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +59,7 @@ protected:
     ///
     /// @note You can use @ref TEST_FAIL and @ref TEST_ASSERT macros
     ///       to get @b file path and @b line number.
-    void test_failed(const std::string& file, int32 line, const std::string& message);
+    void test_failed(const std::string& file, std::int32_t line, const std::string& message);
 
 private:
     /// @brief Test description.
@@ -72,7 +70,7 @@ private:
         {
             std::string message; ///< Error message.
             std::string file;    ///< Path to test file.
-            int32 line;          ///< Line which cause error.
+            std::int32_t line;   ///< Line which cause error.
         };
 
         /// @brief Test result.
@@ -108,10 +106,10 @@ private:
 ///
 /// @return Number of test suites that failed.
 template <typename... Arguments>
-int32 run_tests(Arguments&&... tests)
+std::int32_t run_tests(Arguments&&... tests)
 {
-    const int32 count = sizeof...(tests);
-    int32 passed      = 0;
+    const std::int32_t count = sizeof...(tests);
+    std::int32_t passed      = 0;
 
     std::vector<framework::unit_test::Suite*> tests_container{&tests...};
 

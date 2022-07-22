@@ -20,5 +20,5 @@ target_sources(${PROJECT_NAME}
 # Link with OpenGL
 find_package(OpenGL REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
 

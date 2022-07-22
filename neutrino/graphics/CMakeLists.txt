@@ -76,4 +76,4 @@ make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
 # Link with OpenGL
 find_package(OpenGL REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})

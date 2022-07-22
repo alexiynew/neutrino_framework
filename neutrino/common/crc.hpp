@@ -1,8 +1,6 @@
 #ifndef FRAMEWORK_COMMON_CRC_HPP
 #define FRAMEWORK_COMMON_CRC_HPP
 
-#include <common/types.hpp>
-
 #include <common/inc/crc_details.hpp>
 
 namespace framework::utils
@@ -23,7 +21,7 @@ namespace framework::utils
 ///
 /// Code example:
 /// @code
-/// std::vector<framework::uint8> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+/// std::vector<std::uint8_t> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 ///
 /// // CRC-8/DARC
 /// std::cout << "0x" << std::hex << static_cast<int>(crc8_darc::calculate(data.begin(), data.end())) << std::endl;
@@ -72,7 +70,7 @@ public:
     /// @brief Updates crc value.
     ///
     /// @param byte Byte to update crc.
-    void update(uint8 byte) noexcept;
+    void update(std::uint8_t byte) noexcept;
 
     /// @brief Updates crc value.
     ///
@@ -197,12 +195,12 @@ template <std::size_t BitsCount,
           bool ReflectIn,
           bool ReflectOut,
           crc_details::value_t<BitsCount> XorOut>
-inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(uint8 byte) noexcept
+inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::update(std::uint8_t byte) noexcept
 {
     byte = reflect_in ? crc_details::reflect<8>(byte) : byte;
 
-    const uint8 index = static_cast<uint8>(byte ^ (m_current_value >> (BitsCount - 8)));
-    m_current_value   = static_cast<value_type>(crc_table[index] ^ (m_current_value << 8));
+    const std::uint8_t index = static_cast<std::uint8_t>(byte ^ (m_current_value >> (BitsCount - 8)));
+    m_current_value          = static_cast<value_type>(crc_table[index] ^ (m_current_value << 8));
 }
 
 template <std::size_t BitsCount,
@@ -217,7 +215,7 @@ inline void Crc<BitsCount, Polynome, Init, ReflectIn, ReflectOut, XorOut>::updat
     constexpr std::size_t input_value_size = sizeof(T);
 
     for (std::size_t i = 0; i < input_value_size; ++i) {
-        const uint8 byte = static_cast<uint8>((value >> (i * 8)) & 0xFF);
+        const std::uint8_t byte = static_cast<std::uint8_t>((value >> (i * 8)) & 0xFF);
         update(byte);
     }
 }

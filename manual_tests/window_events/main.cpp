@@ -144,7 +144,7 @@ std::string key_name(KeyCode key)
         case KeyCode::key_right_control: return "key_right_control";
         case KeyCode::key_right_alt: return "key_right_alt";
         case KeyCode::key_right_super: return "key_right_super";
-            
+
         case KeyCode::key_function: return "key_function";
     }
 
@@ -178,7 +178,7 @@ std::string print_state(const Modifiers state)
     if (state & Modifiers::num_lock) {
         s += "N";
     }
-    
+
     if (state & Modifiers::function) {
         s += "F";
     }
@@ -246,12 +246,12 @@ private:
         [](const Window&, Position position) { log::info("test") << "on_position: " << position << std::endl; });
 
         w.on_key_down.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
-            log::info("test") << "on_key_down key: " << static_cast<int32>(key) << " " << key_name(key) << " "
+            log::info("test") << "on_key_down key: " << static_cast<std::int32_t>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
         w.on_key_up.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
-            log::info("test") << "on_key_up key: " << static_cast<int32>(key) << " " << key_name(key) << " "
+            log::info("test") << "on_key_up key: " << static_cast<std::int32_t>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
@@ -270,8 +270,8 @@ private:
 
         w.on_mouse_button_up.connect(
         [](const Window&, system::MouseButton button, system::CursorPosition position, system::Modifiers state) {
-            log::info("test") << "on_mouse_up: " << button_name(button) << " " << position << " "
-                              << print_state(state) << std::endl;
+            log::info("test") << "on_mouse_up: " << button_name(button) << " " << position << " " << print_state(state)
+                              << std::endl;
         });
 
         w.on_mouse_scroll.connect([](const Window&, system::ScrollOffset offset) {

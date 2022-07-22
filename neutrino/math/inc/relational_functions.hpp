@@ -1,16 +1,13 @@
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of relational_functions.hpp
-#endif
-
 #ifndef FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_HPP
-    #define FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_HPP
+#define FRAMEWORK_MATH_INC_RELATIONAL_FUNCTIONS_HPP
 
-    #include <functional>
+#include <cstdint>
+#include <functional>
 
-    #include <math/inc/common_functions.hpp>
-    #include <math/inc/matrix_type.hpp>
-    #include <math/inc/relational_functions_details.hpp>
-    #include <math/inc/vector_type.hpp>
+#include <math/inc/common_functions.hpp>
+#include <math/inc/matrix_type.hpp>
+#include <math/inc/relational_functions_details.hpp>
+#include <math/inc/vector_type.hpp>
 
 namespace framework::math
 {
@@ -168,8 +165,8 @@ inline Vector<N, bool> not_equal(const Vector<N, T>& lhs, const Vector<N, T>& rh
 /// @param ulp Units in the last place.
 ///
 /// @return `true` if provided values are equal, `false` otherwise.
-template <typename T, typename std::enable_if<std::is_arithmetic_v<T>, int32>::type = 0>
-inline bool almost_equal(const T& a, const T& b, int32 ulp = 0)
+template <typename T, typename std::enable_if_t<std::is_arithmetic_v<T>, std::int32_t> = 0>
+inline bool almost_equal(const T& a, const T& b, std::int32_t ulp = 0)
 {
     return relational_functions_details::almost_equal_implementation(a, b, ulp, std::is_floating_point<T>{});
 }
@@ -186,7 +183,7 @@ inline bool almost_equal(const T& a, const T& b, int32 ulp = 0)
 ///
 /// @return `true` if provided vectors are equal, `false` otherwise.
 template <std::size_t N, typename T>
-inline bool almost_equal(const Vector<N, T>& a, const Vector<N, T>& b, int32 ulp = 0)
+inline bool almost_equal(const Vector<N, T>& a, const Vector<N, T>& b, std::int32_t ulp = 0)
 {
     return relational_functions_details::almost_equal_implementation(a, b, ulp);
 }
@@ -203,7 +200,7 @@ inline bool almost_equal(const Vector<N, T>& a, const Vector<N, T>& b, int32 ulp
 ///
 /// @return `true` if provided matrices are equal, `false` otherwise.
 template <std::size_t C, std::size_t R, typename T>
-inline bool almost_equal(const Matrix<C, R, T>& a, const Matrix<C, R, T>& b, int32 ulp = 0)
+inline bool almost_equal(const Matrix<C, R, T>& a, const Matrix<C, R, T>& b, std::int32_t ulp = 0)
 {
     return relational_functions_details::almost_equal_implementation(a, b, ulp);
 }

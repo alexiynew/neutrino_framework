@@ -1,9 +1,5 @@
-#ifndef FRAMEWORK_MATH_DETAILS
-    #error You should include math/math.hpp instead of constants.hpp
-#endif
-
 #ifndef FRAMEWORK_MATH_INC_CONSTANTS_HPP
-    #define FRAMEWORK_MATH_INC_CONSTANTS_HPP
+#define FRAMEWORK_MATH_INC_CONSTANTS_HPP
 
 namespace framework::math
 {

@@ -67,7 +67,7 @@ void Suite::set_direct_logging(bool direct)
     m_direct_logging = direct;
 }
 
-void Suite::test_failed(const std::string& file, int32 line, const std::string& message)
+void Suite::test_failed(const std::string& file, std::int32_t line, const std::string& message)
 {
     m_success = false;
     if (m_current_test != m_tests.end()) {

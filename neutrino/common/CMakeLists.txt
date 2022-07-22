@@ -5,7 +5,6 @@ set_sources(PUBLIC_SOURCES
     position.hpp
     signal.hpp
     size.hpp
-    types.hpp
     utf.hpp
     utils.hpp
     version.hpp

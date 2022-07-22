@@ -1,8 +1,6 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::int32;
-
 using framework::math::Vector2b;
 using framework::math::Vector2f;
 using framework::math::Vector2i;
@@ -100,9 +98,9 @@ private:
         const Vector3f v3f(5.5f, 6.6f, 7.7f);
         const Vector2i v2i(1, 2);
 
-        const double* double_pointer = v4d.data();
-        const float* float_pointer   = v3f.data();
-        const int32* int_pointer     = v2i.data();
+        const double* double_pointer    = v4d.data();
+        const float* float_pointer      = v3f.data();
+        const std::int32_t* int_pointer = v2i.data();
 
         // clang-format off
         TEST_ASSERT(almost_equal(double_pointer[0], 1.1) &&

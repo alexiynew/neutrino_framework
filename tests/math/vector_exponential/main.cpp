@@ -1,8 +1,6 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::uint32;
-
 using framework::math::Vector2f;
 using framework::math::Vector3f;
 using framework::math::Vector4f;

@@ -15,7 +15,7 @@ namespace framework::utils::details
 template <typename T>
 auto get_distribution(T min_value, T max_value)
 {
-    if constexpr (std::is_integral<T>::value == true) {
+    if constexpr (std::is_integral_v<T> == true) {
         return std::uniform_int_distribution<T>(min_value, max_value);
     } else {
         return std::uniform_real_distribution<T>(min_value, max_value);
