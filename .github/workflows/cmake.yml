@@ -66,6 +66,8 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
+    - uses: actions/checkout@v2
+
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
 
