@@ -27,13 +27,6 @@ jobs:
       working-directory: ${{github.workspace}}/build/test
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
 
-    - name: Reconfigure for clang-tidy
-      run: rm -rf ${{github.workspace}}/build && cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
-
-    - name: Run clang-tidy
-      run: python ${{github.workspace}}/tools/clang_tidy.py
-
- 
   build_windows:
     runs-on: [ windows-latest ]
            
@@ -50,12 +43,6 @@ jobs:
       working-directory: ${{github.workspace}}/build/test
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
 
-    - name: Reconfigure for clang-tidy
-      run: rm -rf ${{github.workspace}}/build && cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
-
-    - name: Run clang-tidy
-      run: python ${{github.workspace}}/tools/clang_tidy.py
-         
   build_linux:
     runs-on: [ ubuntu-latest ]
     
@@ -83,3 +70,14 @@ jobs:
 
     - name: Run clang-tidy
       run: python ${{github.workspace}}/tools/clang_tidy.py
+
+  clang_tidy:
+    runs-on: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    steps:
+    - name: Configure
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
+
+    - name: Run clang-tidy
+      run: python ${{github.workspace}}/tools/clang_tidy.py
+         
