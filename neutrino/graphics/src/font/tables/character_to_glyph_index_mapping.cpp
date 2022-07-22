@@ -11,13 +11,7 @@ namespace
 namespace utils   = framework::utils;
 namespace details = framework::graphics::details::font;
 
-using details::BufferReader;
-using details::BytesData;
-using details::CharacterToGlyphIndexMapping;
-using details::CodePoint;
-using details::GlyphId;
 using details::PlatformId;
-using framework::NotImplementedError;
 
 struct EncodingRecord
 {
@@ -26,9 +20,29 @@ struct EncodingRecord
     std::uint32_t offset      = 0; // Byte offset from beginning of table to the subtable for this encoding.
 };
 
+} // namespace
+
+namespace framework::graphics::details::font
+{
+
+class Subtable
+{
+public:
+    Subtable()                = default;
+    Subtable(const Subtable&) = default;
+
+    virtual ~Subtable() = default;
+
+    virtual void parse(std::uint32_t offset, const BytesData& data) = 0;
+    virtual GlyphId glyph_index(CodePoint codepoint) const          = 0;
+
+    virtual bool valid() const                     = 0;
+    virtual std::unique_ptr<Subtable> copy() const = 0;
+};
+
 #pragma region SubtableFormat4
 
-class SubtableFormat4 final : public CharacterToGlyphIndexMapping::Subtable
+class SubtableFormat4 final : public Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
@@ -107,7 +121,7 @@ GlyphId SubtableFormat4::glyph_index(CodePoint codepoint) const
 {
     auto it = std::lower_bound(m_end_code.begin(), m_end_code.end(), codepoint);
     if (it == m_end_code.end()) {
-        return details::missig_glyph_id;
+        return missig_glyph_id;
     }
 
     const std::uint16_t seg_count     = m_seg_count_x2 / 2;
@@ -117,7 +131,7 @@ GlyphId SubtableFormat4::glyph_index(CodePoint codepoint) const
     const std::int16_t id_delta       = m_id_delta[segment_index];
 
     if (start_code > codepoint) {
-        return details::missig_glyph_id;
+        return missig_glyph_id;
     }
 
     if (range_offset == 0) {
@@ -139,13 +153,13 @@ GlyphId SubtableFormat4::glyph_index(CodePoint codepoint) const
     //  glyphId = *(idRangeOffset[i]/2 + (c - startCode[i])  + &idRangeOffset[i])
     const std::uint16_t glyph_id_index = offset_in_glyph_id_array + start_code_offset;
     if (glyph_id_index > m_glyph_id_array.size()) {
-        return details::missig_glyph_id;
+        return missig_glyph_id;
     }
 
     const std::uint16_t glyph_id = m_glyph_id_array[glyph_id_index];
 
     if (glyph_id == 0) {
-        return details::missig_glyph_id;
+        return missig_glyph_id;
     }
 
     return static_cast<GlyphId>((static_cast<std::int32_t>(glyph_id) + id_delta) & 0xffff);
@@ -166,7 +180,7 @@ bool SubtableFormat4::valid() const
     return table_sizes_valid && offsets_valid;
 }
 
-std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat4::copy() const
+std::unique_ptr<Subtable> SubtableFormat4::copy() const
 {
     return std::make_unique<SubtableFormat4>(*this);
 }
@@ -175,7 +189,7 @@ std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat4::copy() 
 
 #pragma region SubtableFormat6
 
-class SubtableFormat6 final : public CharacterToGlyphIndexMapping::Subtable
+class SubtableFormat6 final : public Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
@@ -208,7 +222,7 @@ bool SubtableFormat6::valid() const
     return false;
 }
 
-std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat6::copy() const
+std::unique_ptr<Subtable> SubtableFormat6::copy() const
 {
     return std::make_unique<SubtableFormat6>(*this);
 }
@@ -217,7 +231,7 @@ std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat6::copy() 
 
 #pragma region SubtableFormat10
 
-class SubtableFormat10 final : public CharacterToGlyphIndexMapping::Subtable
+class SubtableFormat10 final : public Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
@@ -242,7 +256,7 @@ bool SubtableFormat10::valid() const
     return false;
 }
 
-std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat10::copy() const
+std::unique_ptr<Subtable> SubtableFormat10::copy() const
 {
     return std::make_unique<SubtableFormat10>(*this);
 }
@@ -251,7 +265,7 @@ std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat10::copy()
 
 #pragma region SubtableFormat12
 
-class SubtableFormat12 final : public CharacterToGlyphIndexMapping::Subtable
+class SubtableFormat12 final : public Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
@@ -276,7 +290,7 @@ bool SubtableFormat12::valid() const
     return false;
 }
 
-std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat12::copy() const
+std::unique_ptr<Subtable> SubtableFormat12::copy() const
 {
     return std::make_unique<SubtableFormat12>(*this);
 }
@@ -285,7 +299,7 @@ std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat12::copy()
 
 #pragma region SubtableFormat13
 
-class SubtableFormat13 final : public CharacterToGlyphIndexMapping::Subtable
+class SubtableFormat13 final : public Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
@@ -310,7 +324,7 @@ bool SubtableFormat13::valid() const
     return false;
 }
 
-std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat13::copy() const
+std::unique_ptr<Subtable> SubtableFormat13::copy() const
 {
     return std::make_unique<SubtableFormat13>(*this);
 }
@@ -319,7 +333,7 @@ std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat13::copy()
 
 #pragma region SubtableFormat14
 
-class SubtableFormat14 final : public CharacterToGlyphIndexMapping::Subtable
+class SubtableFormat14 final : public Subtable
 {
 public:
     void parse(std::uint32_t offset, const BytesData& data) override;
@@ -344,7 +358,7 @@ bool SubtableFormat14::valid() const
     return false;
 }
 
-std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> SubtableFormat14::copy() const
+std::unique_ptr<Subtable> SubtableFormat14::copy() const
 {
     return std::make_unique<SubtableFormat14>(*this);
 }
@@ -394,11 +408,9 @@ std::vector<EncodingRecord> find_unicode_encoding_records(const std::vector<Enco
     return unicode_records;
 }
 
-std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> parse_subtable(
-const std::vector<EncodingRecord>& encoding_records,
-const BytesData& data)
+std::unique_ptr<Subtable> parse_subtable(const std::vector<EncodingRecord>& encoding_records, const BytesData& data)
 {
-    auto create_subtable = [](std::uint16_t format) -> std::unique_ptr<CharacterToGlyphIndexMapping::Subtable> {
+    auto create_subtable = [](std::uint16_t format) -> std::unique_ptr<Subtable> {
         switch (format) {
             case 4: return std::make_unique<SubtableFormat4>();
             case 6: return std::make_unique<SubtableFormat6>();
@@ -427,11 +439,6 @@ const BytesData& data)
 
 #pragma endregion
 
-} // namespace
-
-namespace framework::graphics::details::font
-{
-
 CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(const BytesData& data)
 {
     const std::uint16_t version    = utils::big_endian_value<std::uint16_t>(data.begin());
@@ -453,6 +460,10 @@ CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(const CharacterToGlyp
     , m_subtable(other.m_subtable->copy())
 {}
 
+CharacterToGlyphIndexMapping::CharacterToGlyphIndexMapping(CharacterToGlyphIndexMapping&& other) = default;
+
+CharacterToGlyphIndexMapping::~CharacterToGlyphIndexMapping() = default;
+
 CharacterToGlyphIndexMapping& CharacterToGlyphIndexMapping::operator=(const CharacterToGlyphIndexMapping& other)
 {
     using std::swap;
@@ -464,6 +475,8 @@ CharacterToGlyphIndexMapping& CharacterToGlyphIndexMapping::operator=(const Char
 
     return *this;
 }
+
+CharacterToGlyphIndexMapping& CharacterToGlyphIndexMapping::operator=(CharacterToGlyphIndexMapping&& other) = default;
 
 bool CharacterToGlyphIndexMapping::valid() const
 {

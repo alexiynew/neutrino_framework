@@ -70,10 +70,21 @@ private:
     void window_did_move();
     void window_did_miniaturize();
     void window_did_deminiaturize();
-    void window_did_becomekey();
-    void window_did_resignkey();
+    void window_did_become_key();
+    void window_did_resign_key();
     void window_did_enter_full_screen();
     void window_did_exit_full_screen();
+
+    void key_down(KeyCode key, Modifiers state);
+    void key_up(KeyCode key, Modifiers state);
+
+    void mouse_entered();
+    void mouse_exited();
+    void mouse_moved(CursorPosition position);
+    void mouse_button_down(MouseButton button, CursorPosition position, Modifiers state);
+    void mouse_button_up(MouseButton button, CursorPosition position, Modifiers state);
+    void mouse_scroll(ScrollOffset scroll);
+
 #pragma endregion
 
     bool switch_to_other_window();
@@ -83,6 +94,14 @@ private:
     void switch_state(Window::State state);
     Window::State get_actual_state() const;
 
+    void center_cursor_inside_window();
+    void update_cursor_visibility();
+    void show_cursor();
+    void hide_cursor();
+    void enable_raw_input();
+    void disable_raw_input();
+    CursorPosition convert_cursor_position(CursorPosition position);
+
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
@@ -90,8 +109,18 @@ private:
     bool m_should_close   = false;
     Window::State m_state = Window::State::normal;
 
+    bool m_cursor_grabbed         = false;
+    bool m_cursor_visible         = true;
+    bool m_cursor_actualy_visible = true;
+    bool m_mouse_hover            = false;
+
+    CursorPosition m_grabbed_cursor_diff = {0, 0};
+    CursorPosition m_cursor_position     = {0, 0};
+
     Size m_min_size;
     Size m_max_size;
+
+    bool m_position_was_set_before_show = false;
 };
 
 } // namespace framework::system::details

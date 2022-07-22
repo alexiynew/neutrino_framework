@@ -26,7 +26,11 @@ void Suite::run()
         m_current_test = iterator;
 
         std::stringstream log_output;
-        log::set_logger(std::make_unique<log::StreamLogger>(log_output));
+        if (m_direct_logging) {
+            log::set_logger(std::make_unique<log::StreamLogger>(std::cout));
+        } else {
+            log::set_logger(std::make_unique<log::StreamLogger>(log_output));
+        }
 
         try {
             m_current_test->function();
@@ -56,6 +60,11 @@ std::string Suite::name() const
 void Suite::add_test(FunctionType&& function, const std::string& name)
 {
     m_tests.emplace_back(name, std::forward<FunctionType>(function));
+}
+
+void Suite::set_direct_logging(bool direct)
+{
+    m_direct_logging = direct;
 }
 
 void Suite::test_failed(const std::string& file, std::int32_t line, const std::string& message)

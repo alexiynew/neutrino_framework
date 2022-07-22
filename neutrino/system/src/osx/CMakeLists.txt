@@ -5,6 +5,8 @@ set_sources(PRIVATE_SOURCES
     osx_autorelease_pool.mm
     osx_context.hpp
     osx_context.mm
+    osx_keyboard.hpp
+    osx_keyboard.mm
     osx_platform_window.cpp
     osx_window.hpp
     osx_window.mm

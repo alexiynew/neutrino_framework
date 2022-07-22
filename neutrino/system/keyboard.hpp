@@ -59,10 +59,11 @@ enum class KeyCode
     key_x             = 88,
     key_y             = 89,
     key_z             = 90,
-    key_left_bracket  = 91, // [
-    key_backslash     = 92, /* \  */
-    key_right_bracket = 93, // ]
-    key_grave_accent  = 96, // `
+    key_left_bracket  = 91,  // [
+    key_backslash     = 92,  /* \  */
+    key_right_bracket = 93,  // ]
+    key_grave_accent  = 96,  // `
+    key_section       = 167, // §
 
     // navigation
     key_escape       = 256,
@@ -139,6 +140,8 @@ enum class KeyCode
     key_right_control = 345,
     key_right_alt     = 346,
     key_right_super   = 347,
+
+    key_function = 1000, ///< May not be processed on some systems.
 };
 
 /// @brief Keyboard state modifiers.
@@ -149,12 +152,13 @@ public:
     enum ModifiersState : int
     {
         none      = 0,
-        shift     = 0x0001,
-        control   = 0x0002,
-        alt       = 0x0004,
-        super     = 0x0008,
-        caps_lock = 0x0010,
-        num_lock  = 0x0020,
+        shift     = 0b0000001,
+        control   = 0b0000010,
+        alt       = 0b0000100,
+        super     = 0b0001000,
+        caps_lock = 0b0010000,
+        num_lock  = 0b0100000,
+        function  = 0b1000000, ///< May not be processed on some systems.
     };
 
     /// @brief True if any state is set.

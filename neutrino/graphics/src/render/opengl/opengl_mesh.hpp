@@ -37,10 +37,10 @@ public:
 
     OpenglMesh() = default;
 
-    OpenglMesh(const OpenglMesh&)            = delete;
+    OpenglMesh(const OpenglMesh&) = delete;
     OpenglMesh& operator=(const OpenglMesh&) = delete;
 
-    OpenglMesh(OpenglMesh&&)            = default;
+    OpenglMesh(OpenglMesh&&) = default;
     OpenglMesh& operator=(OpenglMesh&&) = default;
 
     ~OpenglMesh();

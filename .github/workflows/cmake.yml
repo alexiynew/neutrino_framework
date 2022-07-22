@@ -11,8 +11,12 @@ env:
   TESTS_TO_SKIP: system/*|graphics/font|graphics/renderer
 
 jobs:
-  build_mac:
-    runs-on: [ macos-latest ]
+  unit_tests:
+    strategy:
+      matrix:
+        os: [ windows-latest, macos-latest ]
+
+    runs-on: ${{ matrix.os }}
            
     steps:
     - uses: actions/checkout@v2
@@ -24,32 +28,10 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 10
 
     - name: Test
-      working-directory: ${{github.workspace}}/build/test
+      working-directory: ${{github.workspace}}/build/tests
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
 
-    - name: Run clang-tidy
-      run: python ${{github.workspace}}/tools/clang_tidy.py
- 
-  build_windows:
-    runs-on: [ windows-latest ]
-           
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 10
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build/test
-      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
-
-    - name: Run clang-tidy
-      run: python ${{github.workspace}}/tools/clang_tidy.py
-         
-  build_linux:
+  unit_tests_linux:
     runs-on: [ ubuntu-latest ]
     
     steps:
@@ -71,8 +53,24 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 10
 
     - name: Test
-      working-directory: ${{github.workspace}}/build/test
+      working-directory: ${{github.workspace}}/build/tests
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
 
     - name: Run clang-tidy
       run: python ${{github.workspace}}/tools/clang_tidy.py
+
+  clang_tidy:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
+
+    - name: Run clang-tidy
+      run: python ${{github.workspace}}/tools/clang_tidy.py
+         

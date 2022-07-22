@@ -20,7 +20,8 @@ endif()
 # Directories
 set(FRAMEWORK_DIR ${CMAKE_SOURCE_DIR})
 set(FRAMEWORK_SOURCE_DIR ${CMAKE_SOURCE_DIR}/neutrino)
-set(FRAMEWORK_TEST_DIR ${CMAKE_SOURCE_DIR}/test)
+set(FRAMEWORK_TEST_DIR ${CMAKE_SOURCE_DIR}/tests)
+set(FRAMEWORK_MANUAL_TEST_DIR ${CMAKE_SOURCE_DIR}/manual_tests)
 set(FRAMEWORK_EXAMPLE_DIR ${CMAKE_SOURCE_DIR}/example)
 set(FRAMEWORK_DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/dependencies)
 
@@ -58,6 +59,7 @@ include(${FRAMEWORK_SOURCE_DIR}/CMakeLists.txt)
 # Add tests
 if(BUILD_TESTS)
     add_subdirectory(${FRAMEWORK_TEST_DIR})
+    add_subdirectory(${FRAMEWORK_MANUAL_TEST_DIR})
 endif()
 
 # Add examples

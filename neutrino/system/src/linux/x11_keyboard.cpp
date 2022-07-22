@@ -15,8 +15,6 @@ constexpr int key_codes_count = 256;
 
 KeyCode key_codes[key_codes_count] = {KeyCode::unknown};
 
-Display* d;
-
 struct KeyNamePair
 {
     std::string name;
@@ -157,8 +155,6 @@ namespace framework::system::details
 {
 void init_key_code_map(const X11Server* server)
 {
-    d = server->display();
-
     XkbDescPtr desc = XkbGetMap(server->display(), 0, XkbUseCoreKbd);
     XkbGetNames(server->display(), XkbKeyNamesMask, desc);
 
