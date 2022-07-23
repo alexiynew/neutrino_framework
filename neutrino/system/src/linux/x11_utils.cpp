@@ -44,7 +44,7 @@ std::vector<ValueType> values_from_array(const DataType* data, std::size_t count
 template <typename PropertyType>
 std::vector<PropertyType> get_window_property(Display* display, ::Window window, Atom property, Atom type)
 {
-    const ::framework::int64 max_items_count = 1024;
+    static constexpr std::int64_t max_items_count = 1024;
 
     Atom actual_type          = None;
     int actual_format         = 0;
@@ -52,18 +52,18 @@ std::vector<PropertyType> get_window_property(Display* display, ::Window window,
     unsigned long bytes_after = 0;
     std::uint8_t* data        = nullptr;
 
-    int result = XGetWindowProperty(display,
-                                    window,
-                                    property,
-                                    0,
-                                    max_items_count,
-                                    False,
-                                    type,
-                                    &actual_type,
-                                    &actual_format,
-                                    &items_count,
-                                    &bytes_after,
-                                    &data);
+    const int result = XGetWindowProperty(display,
+                                          window,
+                                          property,
+                                          0,
+                                          max_items_count,
+                                          False,
+                                          type,
+                                          &actual_type,
+                                          &actual_format,
+                                          &items_count,
+                                          &bytes_after,
+                                          &data);
 
     if (result != Success || actual_type != type || items_count == 0 || data == nullptr) {
         if (data) {
@@ -172,7 +172,10 @@ bool ewmh_supported()
     return supported;
 }
 
-bool send_client_message(const X11Server* server, ::Window window, Atom message_type, const std::vector<int64>& data)
+bool send_client_message(const X11Server* server,
+                         ::Window window,
+                         Atom message_type,
+                         const std::vector<std::int64_t>& data)
 {
     XEvent event               = {0};
     event.type                 = ClientMessage;
@@ -180,7 +183,7 @@ bool send_client_message(const X11Server* server, ::Window window, Atom message_
     event.xclient.message_type = message_type;
     event.xclient.format       = 32;
 
-    using DataType = std::remove_referencet_t<decltype(event.xclient.data.l[0])>;
+    using DataType = std::remove_reference_t<decltype(event.xclient.data.l[0])>;
 
     const int count = ::framework::utils::size(event.xclient.data.l);
 

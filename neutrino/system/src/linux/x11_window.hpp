@@ -23,54 +23,44 @@ public:
     X11Window(const std::string& title, Size size, const ContextSettings& settings);
     ~X11Window() override;
 
-    X11Window(const X11Window&) = delete;
+    X11Window(const X11Window&)            = delete;
     X11Window& operator=(const X11Window&) = delete;
 
 #pragma region actions
     void show() override;
     void hide() override;
     void focus() override;
-
-    // On window managers without the ewmh support, proper work is not tested, nor granted.
-    void iconify() override;
-    void maximize() override;
-    void fullscreen() override;
-    void restore() override;
-    void resize(Size size) override;
-    void move(Position position) override;
     void grab_cursor() override;
     void release_cursor() override;
     void process_events() override;
 #pragma endregion
 
 #pragma region setters
+    void set_state(Window::State state) override;
+    void set_size(Size size) override;
     void set_max_size(Size max_size) override;
     void set_min_size(Size min_size) override;
     void set_resizable(bool value) override;
+    void set_position(Position position) override;
     void set_title(const std::string& title) override;
     void set_cursor_visibility(bool visible) override;
 #pragma endregion
 
 #pragma region getters
-    Position position() const override;
+    bool is_visible() const override;
+    bool should_close() const override;
+    bool has_input_focus() const override;
+    bool is_cursor_grabbed() const override;
+    bool is_cursor_visible() const override;
+    Window::State state() const override;
     Size size() const override;
     Size max_size() const override;
     Size min_size() const override;
+    bool is_resizable() const override;
+    Position position() const override;
     std::string title() const override;
     const Context& context() const override;
     Context& context() override;
-#pragma endregion
-
-#pragma region state
-    bool should_close() const override;
-    bool is_fullscreen() const override;
-    bool is_iconified() const override;
-    bool is_maximized() const override;
-    bool is_resizable() const override;
-    bool is_visible() const override;
-    bool has_input_focus() const override;
-    bool is_cursor_visible() const override;
-    bool is_cursor_grabbed() const override;
 #pragma endregion
 
 private:

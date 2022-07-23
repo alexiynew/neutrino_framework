@@ -5,6 +5,7 @@
 #include <thread>
 
 #include <common/utils.hpp>
+#include <system/application.hpp>
 
 #include <system/src/linux/x11_glx_context.hpp>
 #include <system/src/linux/x11_keyboard.hpp>
@@ -157,15 +158,15 @@ void X11Window::show()
         maximize_toggle(false);
         fullscreen_toggle(true);
         XFlush(m_server->display());
-        process_events_while([this]() { return !is_fullscreen(); });
+        // process_events_while([this]() { return !is_fullscreen(); });
     } else if (m_maximized) {
         maximize_toggle(true);
         XFlush(m_server->display());
-        process_events_while([this]() { return !is_maximized(); });
+        // process_events_while([this]() { return !is_maximized(); });
     } else if (!m_resizable) {
         update_size_limits(m_size, m_size);
         XFlush(m_server->display());
-        process_events_while([this]() { return is_resizable(); });
+        // process_events_while([this]() { return is_resizable(); });
     }
 }
 
@@ -205,133 +206,6 @@ void X11Window::focus()
     XFlush(m_server->display());
 
     process_events_while([this]() { return !has_input_focus(); });
-}
-
-void X11Window::iconify()
-{
-    if (XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen())) == 0) {
-        return;
-    }
-
-    XFlush(m_server->display());
-
-    process_events_while([this]() { return !is_iconified(); });
-}
-
-void X11Window::maximize()
-{
-    if (!m_mapped) {
-        m_maximized = true;
-        return;
-    }
-
-    restore();
-
-    m_saved_size = m_size;
-
-    maximize_toggle(true);
-
-    m_maximized = true;
-
-    XFlush(m_server->display());
-
-    process_events_while([this]() { return !is_maximized(); });
-}
-
-void X11Window::fullscreen()
-{
-    if (!m_mapped) {
-        m_fullscreen = true;
-        return;
-    }
-
-    restore();
-
-    focus();
-
-    m_saved_size = m_size;
-
-    fullscreen_toggle(true);
-
-    m_fullscreen = true;
-
-    XFlush(m_server->display());
-
-    process_events_while([this]() { return !is_fullscreen(); });
-}
-
-void X11Window::restore()
-{
-    if (is_fullscreen()) {
-        fullscreen_toggle(false);
-
-        resize(m_saved_size);
-
-        XFlush(m_server->display());
-
-        process_events_while([this]() { return is_fullscreen(); });
-
-        m_fullscreen = false;
-    } else if (utils::ewmh_supported() && is_maximized()) {
-        maximize_toggle(false);
-
-        resize(m_saved_size);
-
-        XFlush(m_server->display());
-
-        process_events_while([this]() { return is_maximized(); });
-
-        m_maximized = false;
-    } else if (is_iconified()) {
-        XMapWindow(m_server->display(), m_window);
-        XFlush(m_server->display());
-
-        process_events_while([this]() { return !m_mapped || is_iconified(); });
-
-        focus();
-    }
-}
-
-void X11Window::resize(Size size)
-{
-    if (size.width <= 0 || size.height <= 0) {
-        return;
-    }
-
-    if (m_min_size.width > 0) {
-        size.width = std::max(size.width, m_min_size.width);
-    }
-
-    if (m_min_size.height > 0) {
-        size.height = std::max(size.height, m_min_size.height);
-    }
-
-    if (m_max_size.width > 0) {
-        size.width = std::min(size.width, m_max_size.width);
-    }
-
-    if (m_max_size.height > 0) {
-        size.height = std::min(size.height, m_max_size.height);
-    }
-
-    if (!m_resizable) {
-        update_size_limits(size, size);
-    }
-
-    XResizeWindow(m_server->display(),
-                  m_window,
-                  static_cast<std::uint32_t>(size.width),
-                  static_cast<std::uint32_t>(size.height));
-    XFlush(m_server->display());
-
-    process_events_while([this, size]() { return m_size != size; });
-}
-
-void X11Window::move(Position position)
-{
-    XMoveWindow(m_server->display(), m_window, position.x, position.y);
-    XFlush(m_server->display());
-    process_events();
 }
 
 void X11Window::grab_cursor()
@@ -376,6 +250,130 @@ void X11Window::process_events()
 
 #pragma region setters
 
+void X11Window::set_state(Window::State /*state*/)
+{
+
+    // void X11Window::iconify()
+    //{
+    //     if (XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen())) == 0) {
+    //         return;
+    //     }
+    //
+    //     XFlush(m_server->display());
+    //
+    //     process_events_while([this]() { return !is_iconified(); });
+    // }
+
+    // void X11Window::maximize()
+    // {
+    //     if (!m_mapped) {
+    //         m_maximized = true;
+    //         return;
+    //     }
+    //
+    //     restore();
+    //
+    //     m_saved_size = m_size;
+    //
+    //     maximize_toggle(true);
+    //
+    //     m_maximized = true;
+    //
+    //     XFlush(m_server->display());
+    //
+    //     process_events_while([this]() { return !is_maximized(); });
+    // }
+    //
+    // void X11Window::fullscreen()
+    // {
+    //     if (!m_mapped) {
+    //         m_fullscreen = true;
+    //         return;
+    //     }
+    //
+    //     restore();
+    //
+    //     focus();
+    //
+    //     m_saved_size = m_size;
+    //
+    //     fullscreen_toggle(true);
+    //
+    //     m_fullscreen = true;
+    //
+    //     XFlush(m_server->display());
+    //
+    //     process_events_while([this]() { return !is_fullscreen(); });
+    // }
+    //
+    // void X11Window::restore()
+    // {
+    //     if (is_fullscreen()) {
+    //         fullscreen_toggle(false);
+    //
+    //         resize(m_saved_size);
+    //
+    //         XFlush(m_server->display());
+    //
+    //         process_events_while([this]() { return is_fullscreen(); });
+    //
+    //         m_fullscreen = false;
+    //     } else if (utils::ewmh_supported() && is_maximized()) {
+    //         maximize_toggle(false);
+    //
+    //         resize(m_saved_size);
+    //
+    //         XFlush(m_server->display());
+    //
+    //         process_events_while([this]() { return is_maximized(); });
+    //
+    //         m_maximized = false;
+    //     } else if (is_iconified()) {
+    //         XMapWindow(m_server->display(), m_window);
+    //         XFlush(m_server->display());
+    //
+    //         process_events_while([this]() { return !m_mapped || is_iconified(); });
+    //
+    //         focus();
+    //     }
+    // }
+}
+
+void X11Window::set_size(Size size)
+{
+    if (size.width <= 0 || size.height <= 0) {
+        return;
+    }
+
+    if (m_min_size.width > 0) {
+        size.width = std::max(size.width, m_min_size.width);
+    }
+
+    if (m_min_size.height > 0) {
+        size.height = std::max(size.height, m_min_size.height);
+    }
+
+    if (m_max_size.width > 0) {
+        size.width = std::min(size.width, m_max_size.width);
+    }
+
+    if (m_max_size.height > 0) {
+        size.height = std::min(size.height, m_max_size.height);
+    }
+
+    if (!m_resizable) {
+        update_size_limits(size, size);
+    }
+
+    XResizeWindow(m_server->display(),
+                  m_window,
+                  static_cast<std::uint32_t>(size.width),
+                  static_cast<std::uint32_t>(size.height));
+    XFlush(m_server->display());
+
+    process_events_while([this, size]() { return m_size != size; });
+}
+
 void X11Window::set_max_size(Size max_size)
 {
     m_max_size = max_size;
@@ -412,6 +410,13 @@ void X11Window::set_resizable(bool value)
     process_events_while([this]() { return is_resizable() != m_resizable; });
 }
 
+void X11Window::set_position(Position position)
+{
+    XMoveWindow(m_server->display(), m_window, position.x, position.y);
+    XFlush(m_server->display());
+    process_events();
+}
+
 void X11Window::set_title(const std::string& title)
 {
     utils::set_window_name(m_server.get(), m_window, title);
@@ -426,22 +431,78 @@ void X11Window::set_cursor_visibility(bool /*visible*/)
 
 #pragma region getters
 
-Position X11Window::position() const
+bool X11Window::is_visible() const
 {
-    int x_return          = 0;
-    int y_return          = 0;
-    ::Window child_return = None;
+    if (!m_mapped) {
+        return false;
+    }
 
-    XTranslateCoordinates(m_server->display(),
-                          m_window,
-                          m_server->default_root_window(),
-                          0,
-                          0,
-                          &x_return,
-                          &y_return,
-                          &child_return);
+    XWindowAttributes attributes;
+    if (XGetWindowAttributes(m_server->display(), m_window, &attributes) != 0) {
+        return attributes.map_state == IsViewable; // || (m_mapped && is_iconified());
+    }
 
-    return {x_return, y_return};
+    return false;
+}
+
+bool X11Window::should_close() const
+{
+    return true;
+}
+
+bool X11Window::has_input_focus() const
+{
+    return m_window == m_server->active_window();
+}
+
+bool X11Window::is_cursor_grabbed() const
+{
+    return false;
+}
+
+bool X11Window::is_cursor_visible() const
+{
+    return false;
+}
+
+Window::State X11Window::state() const
+{
+    return Window::State::normal;
+
+    // bool X11Window::is_fullscreen() const
+    // {
+    //     const bool in_fullscreen_state = utils::ewmh_supported() ?
+    //                                      utils::window_has_state(m_server.get(),
+    //                                                              m_window,
+    //                                                              net_wm_state_fullscreen_atom_name) :
+    //                                      false;
+    //
+    //     return in_fullscreen_state && m_fullscreen;
+    // }
+    //
+    // bool X11Window::is_iconified() const
+    // {
+    //     const auto window_state = utils::get_window_wm_state(m_server.get(), m_window);
+    //     const bool hidden       = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden_atom_name);
+    //
+    //     return window_state == IconicState || hidden;
+    // }
+    //
+    // bool X11Window::is_maximized() const
+    // {
+    //     if (utils::ewmh_supported()) {
+    //         const bool maximized_vert = utils::window_has_state(m_server.get(),
+    //                                                             m_window,
+    //                                                             net_wm_state_maximized_vert_atom_name);
+    //         const bool maximized_horz = utils::window_has_state(m_server.get(),
+    //                                                             m_window,
+    //                                                             net_wm_state_maximized_horz_atom_name);
+    //
+    //         return (maximized_vert || maximized_horz);
+    //     }
+    //
+    //     return false;
+    // }
 }
 
 Size X11Window::size() const
@@ -494,6 +555,38 @@ Size X11Window::min_size() const
     return m_min_size;
 }
 
+bool X11Window::is_resizable() const
+{
+    XSizeHints size_hints = {};
+    std::int64_t supplied;
+
+    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
+
+    const bool not_resizable = ((size_hints.flags & (PMinSize | PMaxSize)) != 0) &&
+                               size_hints.min_width == size_hints.max_width &&
+                               size_hints.min_height == size_hints.max_height;
+
+    return !not_resizable;
+}
+
+Position X11Window::position() const
+{
+    int x_return          = 0;
+    int y_return          = 0;
+    ::Window child_return = None;
+
+    XTranslateCoordinates(m_server->display(),
+                          m_window,
+                          m_server->default_root_window(),
+                          0,
+                          0,
+                          &x_return,
+                          &y_return,
+                          &child_return);
+
+    return {x_return, y_return};
+}
+
 std::string X11Window::title() const
 {
     return utils::get_window_name(m_server.get(), m_window);
@@ -515,93 +608,6 @@ Context& X11Window::context()
     }
 
     return *m_context;
-}
-
-#pragma endregion
-
-#pragma region state
-
-bool X11Window::should_close() const
-{
-    return true;
-}
-
-bool X11Window::is_fullscreen() const
-{
-    const bool in_fullscreen_state = utils::ewmh_supported() ?
-                                     utils::window_has_state(m_server.get(),
-                                                             m_window,
-                                                             net_wm_state_fullscreen_atom_name) :
-                                     false;
-
-    return in_fullscreen_state && m_fullscreen;
-}
-
-bool X11Window::is_iconified() const
-{
-    const auto window_state = utils::get_window_wm_state(m_server.get(), m_window);
-    const bool hidden       = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden_atom_name);
-
-    return window_state == IconicState || hidden;
-}
-
-bool X11Window::is_maximized() const
-{
-    if (utils::ewmh_supported()) {
-        const bool maximized_vert = utils::window_has_state(m_server.get(),
-                                                            m_window,
-                                                            net_wm_state_maximized_vert_atom_name);
-        const bool maximized_horz = utils::window_has_state(m_server.get(),
-                                                            m_window,
-                                                            net_wm_state_maximized_horz_atom_name);
-
-        return (maximized_vert || maximized_horz);
-    }
-
-    return false;
-}
-
-bool X11Window::is_resizable() const
-{
-    XSizeHints size_hints = {};
-    std::int64_t supplied;
-
-    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
-
-    const bool not_resizable = ((size_hints.flags & (PMinSize | PMaxSize)) != 0) &&
-                               size_hints.min_width == size_hints.max_width &&
-                               size_hints.min_height == size_hints.max_height;
-
-    return !not_resizable;
-}
-
-bool X11Window::is_visible() const
-{
-    if (!m_mapped) {
-        return false;
-    }
-
-    XWindowAttributes attributes;
-    if (XGetWindowAttributes(m_server->display(), m_window, &attributes) != 0) {
-        return attributes.map_state == IsViewable || (m_mapped && is_iconified());
-    }
-
-    return false;
-}
-
-bool X11Window::has_input_focus() const
-{
-    return m_window == m_server->active_window();
-}
-
-bool X11Window::is_cursor_visible() const
-{
-    return false;
-}
-
-bool X11Window::is_cursor_grabbed() const
-{
-    return false;
 }
 
 #pragma endregion
@@ -833,10 +839,11 @@ void X11Window::set_wm_hints()
 
 void X11Window::set_class_hints()
 {
-    std::string class_name = application_name + "_class";
+    const auto application_name = Application::name();
+    const auto class_name       = application_name + "winodw class";
 
-    std::vector<char> res_name(application_name.begin(), application_name.end());
-    std::vector<char> res_class(class_name.begin(), class_name.end());
+    const std::vector<char> res_name(application_name.begin(), application_name.end());
+    const std::vector<char> res_class(class_name.begin(), class_name.end());
 
     XClassHint class_hint = {};
     class_hint.res_name   = res_name.data();

@@ -1,6 +1,7 @@
 #ifndef FRAMEWORK_WINDOW_DETAILS_LINUX_X11_UTILS_HPP
 #define FRAMEWORK_WINDOW_DETAILS_LINUX_X11_UTILS_HPP
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -27,13 +28,16 @@ enum class WindowStateAction
 
 bool ewmh_supported();
 
-bool send_client_message(const X11Server* server, ::Window window, Atom message_type, const std::vector<int64>& data);
+bool send_client_message(const X11Server* server,
+                         ::Window window,
+                         Atom message_type,
+                         const std::vector<std::int64_t>& data);
 
 template <typename... Args>
 inline bool send_client_message(const X11Server* server, ::Window window, Atom message_type, Args... data)
 {
-    const std::vector<int64> tmp{{
-    static_cast<int64>(data)...,
+    const std::vector<std::int64_t> tmp{{
+    static_cast<std::int64_t>(data)...,
     }};
     return send_client_message(server, window, message_type, tmp);
 }
