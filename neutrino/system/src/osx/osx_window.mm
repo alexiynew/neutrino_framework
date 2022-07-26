@@ -801,6 +801,12 @@ void OsxWindow::hide()
     on_hide();
 }
 
+void OsxWindow::close()
+{
+    m_should_close = true;
+    on_close();
+}
+
 void OsxWindow::focus()
 {
     AutoreleasePool pool;
@@ -1124,8 +1130,7 @@ Context& OsxWindow::context()
 
 void OsxWindow::window_should_close()
 {
-    m_should_close = true;
-    on_close();
+    close();
 }
 
 void OsxWindow::window_did_resize()

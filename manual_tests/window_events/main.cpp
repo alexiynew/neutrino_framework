@@ -5,13 +5,15 @@
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
 #include <system/window.hpp>
-#include <unit_test/suite.hpp>
 
 namespace
 {
+using framework::system::CursorPosition;
 using framework::system::KeyCode;
 using framework::system::Modifiers;
 using framework::system::MouseButton;
+using framework::system::ScrollOffset;
+using framework::system::Window;
 
 std::string key_name(KeyCode key)
 {
@@ -202,95 +204,117 @@ std::string button_name(MouseButton button)
     return "undefined";
 }
 
-} // namespace
-
-class WindowEventTest : public framework::unit_test::Suite
+class WindowEvents
 {
 public:
-    WindowEventTest()
-        : Suite("WindowEventTest")
+    WindowEvents(Window& w)
+        : m_window(w)
     {
-        add_test([this]() { run(); }, "run");
+        attach_logs();
+        attach_actions();
     }
 
 private:
-    void run()
+    void attach_logs()
     {
         using namespace framework;
-        using namespace framework::system;
 
-        framework::log::set_logger(std::make_unique<framework::log::StreamLogger>(std::cout));
+        m_window.on_show.connect([](const Window&) { log::info("test") << "on_show" << std::endl; });
+        m_window.on_hide.connect([](const Window&) { log::info("test") << "on_hide" << std::endl; });
+        m_window.on_close.connect([](const Window&) { log::info("test") << "on_close" << std::endl; });
+        m_window.on_focus.connect([](const Window&) { log::info("test") << "on_focus" << std::endl; });
+        m_window.on_lost_focus.connect([](const Window&) { log::info("test") << "on_focus_lost" << std::endl; });
+        m_window.on_resize.connect(
+        [](const Window&, Size size) { log::info("test") << "on_size: " << size << std::endl; });
 
-        const Size size640{640, 480};
-
-        Window w(name(), size640);
-
-        bool should_close = false;
-
-        w.on_show.connect([](const Window&) { log::info("test") << "on_show" << std::endl; });
-
-        w.on_hide.connect([](const Window&) { log::info("test") << "on_hide" << std::endl; });
-
-        w.on_close.connect([&should_close](const Window&) {
-            log::info("test") << "on_close" << std::endl;
-            should_close = true;
-        });
-
-        w.on_focus.connect([](const Window&) { log::info("test") << "on_focus" << std::endl; });
-
-        w.on_lost_focus.connect([](const Window&) { log::info("test") << "on_focus_lost" << std::endl; });
-
-        w.on_resize.connect([](const Window&, Size size) { log::info("test") << "on_size: " << size << std::endl; });
-
-        w.on_move.connect(
+        m_window.on_move.connect(
         [](const Window&, Position position) { log::info("test") << "on_position: " << position << std::endl; });
 
-        w.on_key_down.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
+        m_window.on_key_down.connect([](const Window&, KeyCode key, Modifiers state) {
             log::info("test") << "on_key_down key: " << static_cast<std::int32_t>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
-        w.on_key_up.connect([](const Window&, system::KeyCode key, system::Modifiers state) {
+        m_window.on_key_up.connect([](const Window&, KeyCode key, Modifiers state) {
             log::info("test") << "on_key_up key: " << static_cast<std::int32_t>(key) << " " << key_name(key) << " "
                               << print_state(state) << std::endl;
         });
 
-        w.on_mouse_enter.connect([](const Window&) { log::info("test") << "on_mouse_enter" << std::endl; });
+        m_window.on_mouse_enter.connect([](const Window&) { log::info("test") << "on_mouse_enter" << std::endl; });
+        m_window.on_mouse_leave.connect([](const Window&) { log::info("test") << "on_mouse_leave" << std::endl; });
 
-        w.on_mouse_leave.connect([](const Window&) { log::info("test") << "on_mouse_leave" << std::endl; });
+        m_window.on_mouse_move.connect(
+        [](const Window&, CursorPosition p) { log::info("test") << "on_mouse_move " << p << std::endl; });
 
-        w.on_mouse_move.connect(
-        [](const Window&, system::CursorPosition p) { log::info("test") << "on_mouse_move " << p << std::endl; });
-
-        w.on_mouse_button_down.connect(
-        [](const Window&, system::MouseButton button, system::CursorPosition position, system::Modifiers state) {
+        m_window.on_mouse_button_down.connect(
+        [](const Window&, MouseButton button, CursorPosition position, Modifiers state) {
             log::info("test") << "on_mouse_down: " << button_name(button) << " " << position << " "
                               << print_state(state) << std::endl;
         });
 
-        w.on_mouse_button_up.connect(
-        [](const Window&, system::MouseButton button, system::CursorPosition position, system::Modifiers state) {
+        m_window.on_mouse_button_up.connect(
+        [](const Window&, MouseButton button, CursorPosition position, Modifiers state) {
             log::info("test") << "on_mouse_up: " << button_name(button) << " " << position << " " << print_state(state)
                               << std::endl;
         });
 
-        w.on_mouse_scroll.connect([](const Window&, system::ScrollOffset offset) {
-            log::info("test") << "on_mouse_scroll: " << offset << std::endl;
-        });
+        m_window.on_mouse_scroll.connect(
+        [](const Window&, ScrollOffset offset) { log::info("test") << "on_mouse_scroll: " << offset << std::endl; });
 
-        w.on_character.connect(
+        m_window.on_character.connect(
         [](const Window&, std::string s) { log::info("test") << "on_character: " << s << std::endl; });
+    }
 
-        w.show();
+    void attach_actions()
+    {
+        using namespace framework;
 
-        while (w.is_visible() && !should_close) {
-            w.process_events();
-            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        m_window.on_key_up.connect([this](const Window&, KeyCode key, Modifiers) {
+            switch (key) {
+                case KeyCode::key_q: close_window(); break;
+                case KeyCode::key_f: toggle_fullscreen(); break;
+                default: break;
+            }
+        });
+    }
+
+    // actions
+    void close_window()
+    {
+        m_window.close();
+    }
+
+    void toggle_fullscreen()
+    {
+        if (m_window.state() == Window::State::fullscreen) {
+            m_window.set_state(Window::State::normal);
+        } else {
+            m_window.set_state(Window::State::fullscreen);
         }
     }
+
+    Window& m_window;
 };
+
+} // namespace
 
 int main()
 {
-    return run_tests(WindowEventTest());
+    using namespace framework;
+    using namespace framework::system;
+
+    framework::log::set_logger(std::make_unique<framework::log::StreamLogger>(std::cout));
+
+    const Size size640{640, 480};
+
+    Window w("WindowEvents", size640);
+
+    WindowEvents events_listener(w);
+
+    w.show();
+
+    while (!w.should_close()) {
+        w.process_events();
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+    }
 }

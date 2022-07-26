@@ -23,12 +23,13 @@ public:
 
     ~OsxWindow() override;
 
-    OsxWindow& operator=(const OsxWindow&) = delete;
+    OsxWindow& operator=(const OsxWindow&)     = delete;
     OsxWindow& operator=(OsxWindow&&) noexcept = default;
 
 #pragma region actions
     void show() override;
     void hide() override;
+    void close() override;
     void focus() override;
     void grab_cursor() override;
     void release_cursor() override;

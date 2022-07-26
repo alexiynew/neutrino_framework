@@ -23,12 +23,13 @@ public:
     X11Window(const std::string& title, Size size, const ContextSettings& settings);
     ~X11Window() override;
 
-    X11Window(const X11Window&) = delete;
+    X11Window(const X11Window&)            = delete;
     X11Window& operator=(const X11Window&) = delete;
 
 #pragma region actions
     void show() override;
     void hide() override;
+    void close() override;
     void focus() override;
 
     // On window managers without the ewmh support, proper work is not tested, nor granted.
@@ -108,6 +109,7 @@ private:
     bool m_mapped         = false;
     bool m_cursor_grabbed = false;
     bool m_resizable      = true;
+    bool m_shoud_close    = false;
 
     Size m_size         = {640, 480};
     Size m_saved_size   = {0, 0};

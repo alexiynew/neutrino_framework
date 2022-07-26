@@ -444,6 +444,12 @@ void Win32Window::hide()
     on_hide();
 }
 
+void Win32Window::close()
+{
+    m_should_close = true;
+    on_close();
+}
+
 void Win32Window::focus()
 {
     if (!is_visible()) {
@@ -486,8 +492,7 @@ void Win32Window::process_events()
 
     while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
         if (message.message == WM_QUIT) {
-            m_should_close = true;
-            on_close();
+            close();
         } else {
             TranslateMessage(&message);
             DispatchMessage(&message);
