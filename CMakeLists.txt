@@ -21,8 +21,7 @@ endif()
 set(FRAMEWORK_DIR ${CMAKE_SOURCE_DIR})
 set(FRAMEWORK_SOURCE_DIR ${CMAKE_SOURCE_DIR}/neutrino)
 set(FRAMEWORK_TEST_DIR ${CMAKE_SOURCE_DIR}/tests)
-set(FRAMEWORK_MANUAL_TEST_DIR ${CMAKE_SOURCE_DIR}/manual_tests)
-set(FRAMEWORK_EXAMPLE_DIR ${CMAKE_SOURCE_DIR}/example)
+set(FRAMEWORK_EXAMPLES_DIR ${CMAKE_SOURCE_DIR}/examples)
 set(FRAMEWORK_DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/dependencies)
 
 # Output pathes
@@ -30,6 +29,7 @@ set(OUTPUT_PATH_BASE ${CMAKE_SOURCE_DIR}/output)
 set(DOCS_SOURCE_DIR ${CMAKE_SOURCE_DIR}/docs)
 set(DOCS_BINARY_DIR ${CMAKE_BINARY_DIR}/docs)
 set(DOCS_OUTPUT_DIR ${OUTPUT_PATH_BASE}/docs)
+set(EXAMPLES_BINARY_DIR ${CMAKE_BINARY_DIR}/examples)
 
 # Install path
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -59,12 +59,11 @@ include(${FRAMEWORK_SOURCE_DIR}/CMakeLists.txt)
 # Add tests
 if(BUILD_TESTS)
     add_subdirectory(${FRAMEWORK_TEST_DIR})
-    add_subdirectory(${FRAMEWORK_MANUAL_TEST_DIR})
 endif()
 
 # Add examples
 if(BUILD_EXAMPLES)
-    add_subdirectory(${FRAMEWORK_EXAMPLE_DIR})
+    add_subdirectory(${FRAMEWORK_EXAMPLES_DIR})
 endif()
 
 # Generate documentation

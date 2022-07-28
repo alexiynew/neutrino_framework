@@ -2,6 +2,7 @@
 #include <iostream>
 #include <thread>
 
+#include <graphics/renderer.hpp>
 #include <log/log.hpp>
 #include <log/stream_logger.hpp>
 #include <system/window.hpp>
@@ -14,6 +15,8 @@ using framework::system::Modifiers;
 using framework::system::MouseButton;
 using framework::system::ScrollOffset;
 using framework::system::Window;
+
+using namespace framework::graphics;
 
 std::string key_name(KeyCode key)
 {
@@ -311,10 +314,17 @@ int main()
 
     WindowEvents events_listener(w);
 
+    Renderer renderer(w);
+
     w.show();
 
     while (!w.should_close()) {
         w.process_events();
+
+        renderer.set_clear_color(Color(0x2F2F2FFFU));
+
+        renderer.display();
+
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 }
