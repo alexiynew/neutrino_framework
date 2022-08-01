@@ -28,6 +28,7 @@ foreach(EXAMPLE ${EXAMPLES})
     target_link_libraries(${EXAMPLE_NAME} ${PROJECT_NAME})
     target_include_directories(${EXAMPLE_NAME} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 
+    set_target_properties(${EXAMPLE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${EXAMPLE_NAME})
     set_target_properties(${EXAMPLE_NAME} PROPERTIES FOLDER ${EXAMPLES_DIR_NAME}/${EXAMPLE_NAME})
 
     add_dependencies(${EXAMPLES_TARGET} ${EXAMPLE_NAME})

@@ -22,8 +22,8 @@ using namespace framework::game_core;
 namespace cube
 {
 
-const std::string vertex_shader   = "./light/shaders/phong_light.vert";
-const std::string fragment_shader = "./light/shaders/phong_light.frag";
+const std::string vertex_shader   = "./shaders/phong_light.vert";
+const std::string fragment_shader = "./shaders/phong_light.frag";
 
 const Mesh::VertexData vertices = {
 // clang-format off
@@ -98,8 +98,8 @@ Mesh::IndicesData indices = {
 namespace light_cube
 {
 
-const std::string vertex_shader   = "./light/shaders/white_light_lamp.vert";
-const std::string fragment_shader = "./light/shaders/white_light_lamp.frag";
+const std::string vertex_shader   = "./shaders/white_light_lamp.vert";
+const std::string fragment_shader = "./shaders/white_light_lamp.frag";
 
 const Mesh::VertexData vertices = {
 // clang-format off
