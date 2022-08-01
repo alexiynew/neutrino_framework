@@ -43,6 +43,11 @@ void Window::hide()
     m_platform_window->hide();
 }
 
+void Window::close()
+{
+    m_platform_window->close();
+}
+
 void Window::focus()
 {
     m_platform_window->focus();

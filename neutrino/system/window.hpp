@@ -55,7 +55,7 @@ public:
     Window(Window&& other) noexcept;
 
     Window& operator=(const Window&) = delete;
-    Window& operator                 =(Window&& other) noexcept;
+    Window& operator=(Window&& other) noexcept;
 
 #pragma region actions
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +87,13 @@ public:
     ///
     /// @thread_safety This function can be called only from main thread.
     void hide();
+
+    /// @brief Close the window
+    ///
+    /// Effectively sets the @ref should_close flag and call the on_close callback.
+    ///
+    /// @thread_safety This function can be called only from main thread.
+    void close();
 
     /// @brief Bring the window to the front and switch input focus to it.
     ///

@@ -22,12 +22,13 @@ public:
     PlatformWindow(const PlatformWindow&)     = delete;
     PlatformWindow(PlatformWindow&&) noexcept = default;
 
-    PlatformWindow& operator=(const PlatformWindow&) = delete;
+    PlatformWindow& operator=(const PlatformWindow&)     = delete;
     PlatformWindow& operator=(PlatformWindow&&) noexcept = default;
 
 #pragma region actions
     virtual void show()           = 0;
     virtual void hide()           = 0;
+    virtual void close()          = 0;
     virtual void focus()          = 0;
     virtual void grab_cursor()    = 0;
     virtual void release_cursor() = 0;

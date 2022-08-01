@@ -181,6 +181,12 @@ void X11Window::hide()
     process_events_while([this]() { return m_mapped; });
 }
 
+void X11Window::close()
+{
+    m_shoud_close = true;
+    on_close();
+}
+
 void X11Window::focus()
 {
     XWindowAttributes attributes;
@@ -446,7 +452,7 @@ bool X11Window::is_visible() const
 
 bool X11Window::should_close() const
 {
-    return true;
+    return m_shoud_close;
 }
 
 bool X11Window::has_input_focus() const
@@ -703,7 +709,7 @@ void X11Window::process(XClientMessageEvent event)
 {
     Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
     if (static_cast<Atom>(event.data.l[0]) == delete_window) {
-        on_close();
+        close();
     }
 }
 

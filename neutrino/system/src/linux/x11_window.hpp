@@ -29,6 +29,7 @@ public:
 #pragma region actions
     void show() override;
     void hide() override;
+    void close() override;
     void focus() override;
     void grab_cursor() override;
     void release_cursor() override;
@@ -98,6 +99,7 @@ private:
     bool m_mapped         = false;
     bool m_cursor_grabbed = false;
     bool m_resizable      = true;
+    bool m_shoud_close    = false;
 
     Size m_size         = {640, 480};
     Size m_saved_size   = {0, 0};
