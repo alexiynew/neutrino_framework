@@ -2,18 +2,18 @@
 #include <vector>
 
 #include <system/src/linux/x11_glx_context.hpp>
+#include <system/src/linux/x11_glx_get_function.hpp>
 
 namespace glx = framework::system::details::glx;
 namespace
 {
 using framework::system::ContextSettings;
 
-constexpr int glx_min_major_version = 1;
-constexpr int glx_min_minor_version = 4;
+static constexpr int glx_min_major_version = 1;
+static constexpr int glx_min_minor_version = 4;
 
 bool check_glx_version(Display* display)
 {
-
     int glx_major = 0;
     int glx_minor = 0;
 
@@ -136,11 +136,11 @@ X11GlxContext::X11GlxContext(const ContextSettings& settings, Display* display)
     : Context(settings)
     , m_display(display)
 {
+    glx::init_glx([this](const char* function_name) { return get_function(function_name); });
+
     if (!check_glx_version(m_display)) {
         throw std::runtime_error("Invalid GLX version.");
     }
-
-    glx::init_glx([this](const char* function_name) { return get_function(function_name); });
 
     m_framebuffer_config = choose_framebuffer_config(m_display, settings);
 
@@ -191,7 +191,7 @@ Context::Api X11GlxContext::api_type() const
 
 Context::VoidFunctionPtr X11GlxContext::get_function(const char* function_name) const
 {
-    return glx::glXGetProcAddressARB(reinterpret_cast<const std::uint8_t*>(function_name));
+    return glx::get_function(function_name);
 }
 
 void X11GlxContext::make_current()

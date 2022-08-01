@@ -114,7 +114,6 @@ X11Window::X11Window(const std::string& title, Size size, const ContextSettings&
     }
 
     context->attach_window(m_window);
-
     m_context = std::move(context);
 
     XSelectInput(m_server->display(), m_window, event_mask);
@@ -594,7 +593,7 @@ std::string X11Window::title() const
 
 const Context& X11Window::context() const
 {
-    if (m_context) {
+    if (!m_context) {
         throw std::runtime_error("Graphic context was not created.");
     }
 
@@ -603,7 +602,7 @@ const Context& X11Window::context() const
 
 Context& X11Window::context()
 {
-    if (m_context) {
+    if (!m_context) {
         throw std::runtime_error("Graphic context was not created.");
     }
 
@@ -842,8 +841,8 @@ void X11Window::set_class_hints()
     const auto application_name = Application::name();
     const auto class_name       = application_name + "winodw class";
 
-    const std::vector<char> res_name(application_name.begin(), application_name.end());
-    const std::vector<char> res_class(class_name.begin(), class_name.end());
+    std::vector<char> res_name(application_name.begin(), application_name.end());
+    std::vector<char> res_class(class_name.begin(), class_name.end());
 
     XClassHint class_hint = {};
     class_hint.res_name   = res_name.data();
