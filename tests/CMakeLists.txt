@@ -2,7 +2,6 @@ include(CTest)
 enable_testing()
 
 set(TESTS_TARGET ${PROJECT_NAME}_tests)
-set(TESTS_DIR_NAME tests)
 get_filename_component(TESTS_FOLDER ${CMAKE_CURRENT_LIST_DIR} NAME)
 
 add_custom_target(${TESTS_TARGET} ALL 
@@ -24,6 +23,7 @@ set(TEST_GROUPS
 
 foreach(GROUP ${TEST_GROUPS})
     set(GROUP_SOURCE_DIR ${FRAMEWORK_TESTS_DIR}/${GROUP})
+    set(GROUP_BINARY_DIR ${TESTS_BINARY_DIR}/${GROUP})
 
     message(STATUS "\t${GROUP}")
     include(${GROUP_SOURCE_DIR}/CMakeLists.txt)

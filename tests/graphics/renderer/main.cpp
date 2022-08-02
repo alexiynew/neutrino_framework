@@ -1,4 +1,4 @@
-#include <array>
+﻿#include <array>
 #include <chrono>
 #include <thread>
 
@@ -57,8 +57,8 @@ void main()\n\
 }\n\
 ";
 
-const std::string lena_png_32   = "texture_img/lena_32.png";
-const std::string lena_png_1024 = "texture_img/lena_1024.png";
+const std::string lena_png_32   = "data/lena_32.png";
+const std::string lena_png_1024 = "data/lena_1024.png";
 
 Image load_image(const std::string& file)
 {

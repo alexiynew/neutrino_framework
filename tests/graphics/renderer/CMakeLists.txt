@@ -2,5 +2,5 @@ set_sources(PRIVATE_SOURCES
     main.cpp
 )
 
-file(GLOB IMAGES "${TEST_DIR}/texture_img/*.png")
-file(COPY ${IMAGES} DESTINATION ${CMAKE_BINARY_DIR}/${TESTS_DIR_NAME}/texture_img)
+configure_file(${TEST_SOURCE_DIR}/data/lena_1024.png ${TEST_BINARY_DIR}/data/lena_1024.png COPYONLY)
+configure_file(${TEST_SOURCE_DIR}/data/lena_32.png ${TEST_BINARY_DIR}/data/lena_32.png COPYONLY)
