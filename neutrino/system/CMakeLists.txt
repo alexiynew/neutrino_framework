@@ -24,6 +24,6 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+make_install_files_target(include/${MODULE} ${PUBLIC_SOURCES})
 
-include(${MODULE_DIR}/src/${PLATFORM_NAME}/CMakeLists.txt)
+include(${MODULE_SOURCE_DIR}/src/${PLATFORM_NAME}/CMakeLists.txt)

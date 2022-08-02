@@ -82,11 +82,10 @@ set(MODULES
 )
 
 foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
+    set(MODULE_SOURCE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
 
-    message(STATUS "\t${MODULE_NAME}")
-    include(${MODULE_DIR}/CMakeLists.txt)
+    message(STATUS "\t${MODULE}")
+    include(${MODULE_SOURCE_DIR}/CMakeLists.txt)
 endforeach()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
