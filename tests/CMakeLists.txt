@@ -3,6 +3,7 @@ enable_testing()
 
 set(TESTS_TARGET ${PROJECT_NAME}_tests)
 set(TESTS_DIR_NAME tests)
+get_filename_component(TESTS_FOLDER ${CMAKE_CURRENT_LIST_DIR} NAME)
 
 add_custom_target(${TESTS_TARGET} ALL 
     DEPENDS ${PROJECT_NAME}
@@ -22,11 +23,10 @@ set(TEST_GROUPS
 )
 
 foreach(GROUP ${TEST_GROUPS})
-    set(GROUP_NAME ${GROUP})
-    set(GROUP_DIR ${FRAMEWORK_TEST_DIR}/${GROUP})
+    set(GROUP_SOURCE_DIR ${FRAMEWORK_TESTS_DIR}/${GROUP})
 
-    message(STATUS "\t${GROUP_NAME}")
-    include(${GROUP_DIR}/CMakeLists.txt)
+    message(STATUS "\t${GROUP}")
+    include(${GROUP_SOURCE_DIR}/CMakeLists.txt)
 endforeach(GROUP)
 
 add_custom_target(check
@@ -41,7 +41,7 @@ add_custom_target(check_verbose
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TESTS_DIR_NAME})
-set_target_properties(check PROPERTIES FOLDER ${TESTS_DIR_NAME})
-set_target_properties(check_verbose PROPERTIES FOLDER ${TESTS_DIR_NAME})
+set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TESTS_FOLDER})
+set_target_properties(check PROPERTIES FOLDER ${TESTS_FOLDER})
+set_target_properties(check_verbose PROPERTIES FOLDER ${TESTS_FOLDER})
 
