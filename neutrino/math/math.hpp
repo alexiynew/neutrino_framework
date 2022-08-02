@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_MATH_HPP
-#define FRAMEWORK_MATH_MATH_HPP
+#ifndef MATH_MATH_HPP
+#define MATH_MATH_HPP
 
 #include <math/inc/bezier_functions.hpp>
 #include <math/inc/common_functions.hpp>

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_ZLIB_HPP
-#define FRAMEWORK_COMMON_ZLIB_HPP
+#ifndef COMMON_ZLIB_HPP
+#define COMMON_ZLIB_HPP
 
 #include <cstdint>
 #include <vector>

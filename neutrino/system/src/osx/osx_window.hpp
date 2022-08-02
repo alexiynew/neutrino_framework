@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_WINDOW_HPP
-#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_WINDOW_HPP
+#ifndef SYSTEM_SRC_OSX_OSX_WINDOW_HPP
+#define SYSTEM_SRC_OSX_OSX_WINDOW_HPP
 
 #include <functional>
 #include <memory>

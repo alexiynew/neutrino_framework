@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_RENDERER_HPP
-#define FRAMEWORK_GRAPHICS_RENDERER_HPP
+#ifndef GRAPHICS_RENDERER_HPP
+#define GRAPHICS_RENDERER_HPP
 
 #include <memory>
 #include <string>

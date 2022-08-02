@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_UNIT_TEST_SUITE_HPP
-#define FRAMEWORK_UNIT_TEST_SUITE_HPP
+#ifndef UNIT_TEST_SUITE_HPP
+#define UNIT_TEST_SUITE_HPP
 
 #include <functional>
 #include <string>

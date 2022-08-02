@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_SHADER_HPP
-#define FRAMEWORK_GRAPHICS_SHADER_HPP
+#ifndef GRAPHICS_SHADER_HPP
+#define GRAPHICS_SHADER_HPP
 
 #include <filesystem>
 #include <string>

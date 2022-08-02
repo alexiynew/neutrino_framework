@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_WINDOW_HPP
-#define FRAMEWORK_SYSTEM_WINDOW_HPP
+#ifndef SYSTEM_WINDOW_HPP
+#define SYSTEM_WINDOW_HPP
 
 #include <functional>
 #include <memory>

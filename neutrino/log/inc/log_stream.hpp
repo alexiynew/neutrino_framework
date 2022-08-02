@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_LOG_INC_LOG_STREAM_HPP
-#define FRAMEWORK_LOG_INC_LOG_STREAM_HPP
+#ifndef LOG_INC_LOG_STREAM_HPP
+#define LOG_INC_LOG_STREAM_HPP
 
 #include <memory>
 #include <ostream>

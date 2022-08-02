@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_MOUSE_HPP
-#define FRAMEWORK_SYSTEM_MOUSE_HPP
+#ifndef SYSTEM_MOUSE_HPP
+#define SYSTEM_MOUSE_HPP
 
 #include <common/position.hpp>
 

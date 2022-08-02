@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_VERSION_HPP
-#define FRAMEWORK_COMMON_VERSION_HPP
+#ifndef COMMON_VERSION_HPP
+#define COMMON_VERSION_HPP
 
 #include <ostream>
 #include <string>

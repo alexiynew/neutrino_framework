@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_INC_CRC_DETAILS_HPP
-#define FRAMEWORK_COMMON_INC_CRC_DETAILS_HPP
+#ifndef COMMON_INC_CRC_DETAILS_HPP
+#define COMMON_INC_CRC_DETAILS_HPP
 
 #include <array>
 #include <cstdint>

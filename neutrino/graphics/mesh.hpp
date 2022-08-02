@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_MESH_HPP
-#define FRAMEWORK_GRAPHICS_MESH_HPP
+#ifndef GRAPHICS_MESH_HPP
+#define GRAPHICS_MESH_HPP
 
 #include <array>
 #include <unordered_map>

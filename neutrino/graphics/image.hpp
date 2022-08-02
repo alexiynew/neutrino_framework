@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_IMAGE_HPP
-#define FRAMEWORK_GRAPHICS_IMAGE_HPP
+#ifndef GRAPHICS_IMAGE_HPP
+#define GRAPHICS_IMAGE_HPP
 
 #include <filesystem>
 #include <vector>

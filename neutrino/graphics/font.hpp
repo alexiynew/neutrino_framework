@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_FONT_HPP
-#define FRAMEWORK_GRAPHICS_FONT_HPP
+#ifndef GRAPHICS_FONT_HPP
+#define GRAPHICS_FONT_HPP
 
 #include <filesystem>
 #include <string>

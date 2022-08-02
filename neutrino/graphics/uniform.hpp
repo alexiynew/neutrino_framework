@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_UNIFORM_HPP
-#define FRAMEWORK_GRAPHICS_UNIFORM_HPP
+#ifndef GRAPHICS_UNIFORM_HPP
+#define GRAPHICS_UNIFORM_HPP
 
 #include <string>
 #include <variant>

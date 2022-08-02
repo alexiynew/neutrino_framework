@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_SIGNAL_HPP
-#define FRAMEWORK_COMMON_SIGNAL_HPP
+#ifndef COMMON_SIGNAL_HPP
+#define COMMON_SIGNAL_HPP
 
 #include <algorithm>
 #include <functional>

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_TEXTURE_HPP
-#define FRAMEWORK_GRAPHICS_TEXTURE_HPP
+#ifndef GRAPHICS_TEXTURE_HPP
+#define GRAPHICS_TEXTURE_HPP
 
 #include <common/instance_id.hpp>
 #include <graphics/image.hpp>
