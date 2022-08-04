@@ -86,11 +86,13 @@ public:
     /// At the end of execution, it calls the @ref on_hide callback.
     ///
     /// @thread_safety This function can be called only from main thread.
+    ///
+    /// TODO: Should always call the on_lost_focus callback, because window anyway loses input focus when hidden.
     void hide();
 
     /// @brief Close the window
     ///
-    /// Effectively sets the @ref should_close flag and call the on_close callback.
+    /// Essentially sets the @ref should_close flag and call the on_close callback.
     ///
     /// @thread_safety This function can be called only from main thread.
     void close();
@@ -333,6 +335,8 @@ public:
     /// @name events
     /// @{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /// TODO: Remove Window parametr from callbacks. It's useless.
 
     /// @brief Set on show callback. Called when window shows after creation.
     Signal<const Window&> on_show;

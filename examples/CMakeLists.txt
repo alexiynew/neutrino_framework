@@ -30,6 +30,10 @@ foreach(EXAMPLE ${EXAMPLES})
     target_link_libraries(${EXAMPLE} ${PROJECT_NAME})
     target_include_directories(${EXAMPLE} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 
+    # Disadle console window on Windows platform
+    # Set entry point to mainCRTStartup to use main finction
+    # target_link_options(${EXAMPLE} PRIVATE $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:-SUBSYSTEM:WINDOWS -ENTRY:mainCRTStartup>)
+
     set_target_properties(${EXAMPLE} PROPERTIES FOLDER ${EXAMPLE_FOLDER})
     set_target_properties(${EXAMPLE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${EXAMPLE_BINARY_DIR})
     set_target_properties(${EXAMPLE} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${EXAMPLE_BINARY_DIR})
