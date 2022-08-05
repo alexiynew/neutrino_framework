@@ -44,13 +44,6 @@ protected:
     /// @param name Name of the current test function.
     void add_test(FunctionType&& function, const std::string& name);
 
-    /// @brief Should test print logs directly in stdout.
-    ///
-    /// By default logs stored in buffer and fleshes to stdout whet test is over.
-    ///
-    /// @param direct Direct logging output.
-    void set_direct_logging(bool direct);
-
     /// @brief Fails current test.
     ///
     /// @param file Path to the source file.
@@ -65,14 +58,6 @@ private:
     /// @brief Test description.
     struct TestData
     {
-        /// @brief Test status info.
-        struct Status
-        {
-            std::string message; ///< Error message.
-            std::string file;    ///< Path to test file.
-            std::int32_t line;   ///< Line which cause error.
-        };
-
         /// @brief Test result.
         enum class Result
         {
@@ -82,7 +67,6 @@ private:
         };
 
         std::string name;
-        std::vector<Status> status;
         FunctionType function = nullptr;
         Result reslut         = Result::success;
 
@@ -90,6 +74,7 @@ private:
     };
 
     void output(const TestData& test);
+    void test_failed(const std::string& file, std::int32_t line, const std::string& message, TestData::Result result);
 
     std::string m_name;
 

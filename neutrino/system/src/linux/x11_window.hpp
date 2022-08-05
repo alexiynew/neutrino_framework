@@ -65,6 +65,8 @@ public:
 #pragma endregion
 
 private:
+    using XLibWindow = ::Window;
+
     void process(XDestroyWindowEvent event);
     void process(XUnmapEvent event);
     void process(XVisibilityEvent event);
@@ -100,6 +102,7 @@ private:
     bool m_cursor_grabbed = false;
     bool m_resizable      = true;
     bool m_shoud_close    = false;
+    bool m_wait_focus     = false;
 
     Size m_size         = {640, 480};
     Size m_saved_size   = {0, 0};
@@ -108,7 +111,7 @@ private:
     mutable Size m_min_size = {0, 0};
     mutable Size m_max_size = {0, 0};
 
-    ::Window m_window = None;
+    XLibWindow m_window = None;
 
     XIC m_input_context = nullptr;
 

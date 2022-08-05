@@ -160,7 +160,6 @@ private:
             TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
             TEST_ASSERT(m_stats.last_size == size640, "Invalid size in callback.");
-            TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
@@ -173,7 +172,6 @@ private:
         TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
         TEST_ASSERT(m_stats.last_size == size640, "Invalid size in callback.");
-        TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
     }
 
     void fullscreen_before_show()
@@ -529,7 +527,6 @@ private:
             TEST_ASSERT(m_stats.on_lost_focus_called == 2, "Invalid callback call.");
 
             TEST_ASSERT(m_stats.last_size == size640, "Invalid last size in callback.");
-            TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }

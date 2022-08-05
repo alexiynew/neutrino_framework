@@ -178,7 +178,7 @@ void X11Window::hide()
     XUnmapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
-    process_events_while([this]() { return m_mapped; });
+    process_events_while([this]() { return m_mapped || has_input_focus(); });
 }
 
 void X11Window::close()
@@ -189,13 +189,11 @@ void X11Window::close()
 
 void X11Window::focus()
 {
-    XWindowAttributes attributes;
-    XGetWindowAttributes(m_server->display(), m_window, &attributes);
-    if (attributes.map_state == IsUnmapped) {
+    if (!is_visible() || has_input_focus()) {
         return;
     }
 
-    Atom net_active_window = m_server->get_atom(net_active_window_atom_name, false);
+    const Atom net_active_window = m_server->get_atom(net_active_window_atom_name, false);
     if (utils::ewmh_supported() && net_active_window != None) {
         utils::send_client_message(m_server.get(),
                                    m_window,
@@ -210,7 +208,8 @@ void X11Window::focus()
 
     XFlush(m_server->display());
 
-    process_events_while([this]() { return !has_input_focus(); });
+    m_wait_focus = true;
+    process_events_while([this]() { return m_wait_focus; });
 }
 
 void X11Window::grab_cursor()
@@ -576,9 +575,9 @@ bool X11Window::is_resizable() const
 
 Position X11Window::position() const
 {
-    int x_return          = 0;
-    int y_return          = 0;
-    ::Window child_return = None;
+    int x_return            = 0;
+    int y_return            = 0;
+    XlibWindow child_return = None;
 
     XTranslateCoordinates(m_server->display(),
                           m_window,
@@ -682,7 +681,7 @@ void X11Window::process(XFocusChangeEvent event)
             //         log::warning(log_tag) << "Failed to grab mouse cursor" << std::endl;
             //     }
             // }
-
+            m_wait_focus = false;
             on_focus();
             break;
         case FocusOut:
@@ -707,8 +706,9 @@ void X11Window::process(XPropertyEvent event)
 
 void X11Window::process(XClientMessageEvent event)
 {
-    Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
-    if (static_cast<Atom>(event.data.l[0]) == delete_window) {
+    const Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
+    const Atom event_atom    = static_cast<Atom>(event.data.l[0]);
+    if (event_atom == delete_window) {
         close();
     }
 }
@@ -895,11 +895,11 @@ void X11Window::process_events_while(const std::function<bool()>& condition)
     milliseconds limit(1000);
     const milliseconds delay(50);
 
-    while (condition() && limit.count() > 0) {
+    do {
         process_events();
         limit -= delay;
         std::this_thread::sleep_for(delay);
-    }
+    } while (condition() && limit.count() > 0);
 }
 
 void X11Window::update_size_limits(Size min_size, Size max_size)

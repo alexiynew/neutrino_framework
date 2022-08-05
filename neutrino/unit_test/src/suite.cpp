@@ -26,20 +26,14 @@ void Suite::run()
         m_current_test = iterator;
 
         std::stringstream log_output;
-        if (m_direct_logging) {
-            log::set_logger(std::make_unique<log::StreamLogger>(std::cout));
-        } else {
-            log::set_logger(std::make_unique<log::StreamLogger>(log_output));
-        }
+        log::set_logger(std::make_unique<log::StreamLogger>(log_output));
 
         try {
             m_current_test->function();
         } catch (const std::exception& e) {
-            test_failed("Exception", 0, e.what());
-            m_current_test->reslut = TestData::Result::exception;
+            test_failed("Exception", 0, e.what(), TestData::Result::exception);
         } catch (...) {
-            test_failed("Exception", 0, "Unknown exception.");
-            m_current_test->reslut = TestData::Result::exception;
+            test_failed("Exception", 0, "Unknown exception.", TestData::Result::exception);
         }
 
         output(*m_current_test);
@@ -62,18 +56,9 @@ void Suite::add_test(FunctionType&& function, const std::string& name)
     m_tests.emplace_back(name, std::forward<FunctionType>(function));
 }
 
-void Suite::set_direct_logging(bool direct)
-{
-    m_direct_logging = direct;
-}
-
 void Suite::test_failed(const std::string& file, std::int32_t line, const std::string& message)
 {
-    m_success = false;
-    if (m_current_test != m_tests.end()) {
-        m_current_test->reslut = TestData::Result::fail;
-        m_current_test->status.push_back({message, file, line});
-    }
+    test_failed(file, line, message, TestData::Result::fail);
 }
 
 void Suite::output(const TestData& test)
@@ -88,14 +73,17 @@ void Suite::output(const TestData& test)
 
     std::cout << "    " << std::setw(40) << std::left << test.name << " [" << std::setw(10) << std::internal << result
               << "]" << std::endl;
+}
 
-    if (test.reslut == TestData::Result::fail) {
-        for (const auto& item : test.status) {
-            std::cout << "        " << item.file << ":" << item.line << " " << item.message << std::endl;
-        }
-    } else if (test.reslut == TestData::Result::exception) {
-        for (const auto& item : test.status) {
-            std::cout << "        " << item.message << std::endl;
+void Suite::test_failed(const std::string& file, std::int32_t line, const std::string& message, TestData::Result result)
+{
+    m_success = false;
+    if (m_current_test != m_tests.end()) {
+        m_current_test->reslut = result;
+        if (m_current_test->reslut == TestData::Result::fail) {
+            log::error(file) << ":" << line << " " << message;
+        } else if (m_current_test->reslut == TestData::Result::exception) {
+            log::error(file) << message;
         }
     }
 }
