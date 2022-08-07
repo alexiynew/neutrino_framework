@@ -7,7 +7,7 @@ PlatformWindow::PlatformWindow()
 
 PlatformWindow::~PlatformWindow() = default;
 
-void PlatformWindow::set_callbacks_holder(const CallbacksHolder* callbacks)
+void PlatformWindow::set_callbacks_holder(CallbacksHolder* callbacks)
 {
     m_callbacks = callbacks;
 }

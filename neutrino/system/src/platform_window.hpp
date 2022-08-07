@@ -66,10 +66,10 @@ public:
     virtual Context& context()             = 0;
 #pragma endregion
 
-    void set_callbacks_holder(const CallbacksHolder* callbacks);
+    void set_callbacks_holder(CallbacksHolder* callbacks);
 
 protected:
-    const CallbacksHolder* m_callbacks = nullptr;
+    CallbacksHolder* m_callbacks = nullptr;
 };
 
 } // namespace framework::system::details

@@ -64,7 +64,6 @@ public:
     Context& context() override;
 #pragma endregion
 
-private:
 #pragma region NSWindowDelegate callbacks
     void window_should_close();
     void window_did_resize();
@@ -87,12 +86,12 @@ private:
     void mouse_button_up(MouseButton button, CursorPosition position, Modifiers state);
     void mouse_scroll(ScrollOffset scroll);
 
+    void update_context();
+
+private:
 #pragma endregion
 
     bool switch_to_other_window();
-
-    void update_context();
-
     void switch_state(Window::State state);
     Window::State get_actual_state() const;
 

@@ -26,53 +26,16 @@ using framework::system::ScrollOffset;
 
 @interface OsxContentView : NSView<NSTextInputClient>
 {
-    std::function<void()> onUpdateContext;
-
-    std::function<void(KeyCode, Modifiers)> onKeyDown;
-    std::function<void(KeyCode, Modifiers)> onKeyUp;
-    std::function<void(const std::string&)> onCharacter;
-
-    std::function<void()> onMouseEntered;
-    std::function<void()> onMouseExited;
-    std::function<void(CursorPosition)> onMouseMoved;
-    std::function<void(MouseButton, CursorPosition, Modifiers)> onMouseButtonDown;
-    std::function<void(MouseButton, CursorPosition, Modifiers)> onMouseButtonUp;
-    std::function<void(ScrollOffset)> onMouseScroll;
-
+    framework::system::details::OsxWindow* window;
+    
     NSTrackingArea* trackingArea;
 
     std::map<framework::system::KeyCode, bool> pressedModifierKeys;
 }
 
-@property(assign, nonatomic) std::function<void()> on_update_context;
-
-@property(assign, nonatomic) std::function<void(KeyCode, Modifiers)> on_key_down;
-@property(assign, nonatomic) std::function<void(KeyCode, Modifiers)> on_key_up;
-@property(assign, nonatomic) std::function<void(const std::string&)> on_character;
-
-@property(assign, nonatomic) std::function<void()> on_mouse_entered;
-@property(assign, nonatomic) std::function<void()> on_mouse_exited;
-@property(assign, nonatomic) std::function<void(CursorPosition)> on_mouse_moved;
-@property(assign, nonatomic) std::function<void(MouseButton, CursorPosition, Modifiers)> on_mouse_button_down;
-@property(assign, nonatomic) std::function<void(MouseButton, CursorPosition, Modifiers)> on_mouse_button_up;
-@property(assign, nonatomic) std::function<void(ScrollOffset)> on_mouse_scroll;
-
 @end
 
 @implementation OsxContentView
-
-@synthesize on_update_context = onUpdateContext;
-
-@synthesize on_key_down  = onKeyDown;
-@synthesize on_key_up    = onKeyUp;
-@synthesize on_character = onCharacter;
-
-@synthesize on_mouse_entered     = onMouseEntered;
-@synthesize on_mouse_exited      = onMouseExited;
-@synthesize on_mouse_moved       = onMouseMoved;
-@synthesize on_mouse_button_down = onMouseButtonDown;
-@synthesize on_mouse_button_up   = onMouseButtonUp;
-@synthesize on_mouse_scroll      = onMouseScroll;
 
 - (instancetype)init
 {
@@ -89,6 +52,11 @@ using framework::system::ScrollOffset;
 {
     [trackingArea release];
     [super dealloc];
+}
+
+- (void) setWindow:(framework::system::details::OsxWindow*)w
+{
+    window = w;
 }
 
 - (BOOL)isOpaque
@@ -113,9 +81,7 @@ using framework::system::ScrollOffset;
 
 - (void)updateLayer
 {
-    if (onUpdateContext) {
-        onUpdateContext();
-    }
+    window->update_context();
 }
 
 - (BOOL)acceptsFirstMouse:(NSEvent*)event
@@ -145,22 +111,20 @@ using framework::system::ScrollOffset;
 {
     using namespace framework::system::details;
 
-    if (onKeyDown) {
-        const auto key   = map_system_key([event keyCode]);
-        const auto state = get_modifiers_state([event modifierFlags]);
-        onKeyDown(key, state);
-    }
+    const auto key   = map_system_key([event keyCode]);
+    const auto state = get_modifiers_state([event modifierFlags]);
+    window->key_down(key, state);
+    
     [self interpretKeyEvents:[NSArray arrayWithObject:event]];
 }
 
 - (void)keyUp:(NSEvent*)event
 {
     using namespace framework::system::details;
-    if (onKeyUp) {
-        const auto key   = map_system_key([event keyCode]);
-        const auto state = get_modifiers_state([event modifierFlags]);
-        onKeyUp(key, state);
-    }
+    
+    const auto key   = map_system_key([event keyCode]);
+    const auto state = get_modifiers_state([event modifierFlags]);
+    window->key_up(key, state);
 }
 
 - (void)flagsChanged:(NSEvent*)event
@@ -173,15 +137,11 @@ using framework::system::ScrollOffset;
     const bool was_pressed = pressedModifierKeys[key];
 
     if (was_pressed) {
-        if (onKeyUp) {
-            onKeyUp(key, state);
-            pressedModifierKeys[key] = false;
-        }
+        window->key_up(key, state);
+        pressedModifierKeys[key] = false;
     } else {
-        if (onKeyDown) {
-            onKeyDown(key, state);
-            pressedModifierKeys[key] = true;
-        }
+        window->key_down(key, state);
+        pressedModifierKeys[key] = true;
     }
 }
 
@@ -195,7 +155,7 @@ using framework::system::ScrollOffset;
     else
         characters = (NSString*)string;
 
-    onCharacter([characters UTF8String]);
+    window->character([characters UTF8String]);
 }
 
 - (void)doCommandBySelector:(SEL)selector
@@ -247,25 +207,19 @@ using framework::system::ScrollOffset;
 // Mouse events handling
 - (void)mouseEntered:(NSEvent*)event
 {
-    if (onMouseEntered) {
-        onMouseEntered();
-    }
+    window->mouse_entered();
 }
 
 - (void)mouseExited:(NSEvent*)event
 {
-    if (onMouseExited) {
-        onMouseExited();
-    }
+    window->mouse_exited();
 }
 
 - (void)mouseMoved:(NSEvent*)event
 {
-    if (onMouseMoved) {
-        const NSPoint pos = [event locationInWindow];
-        const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
-        onMouseMoved(cursor_position);
-    }
+    const NSPoint pos = [event locationInWindow];
+    const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
+    window->mouse_moved(cursor_position);
 }
 
 - (void)mouseDragged:(NSEvent*)event
@@ -287,74 +241,62 @@ using framework::system::ScrollOffset;
 {
     using namespace framework::system::details;
 
-    if (onMouseButtonDown) {
-        const NSPoint pos = [event locationInWindow];
-        const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
-        const auto state = get_modifiers_state([event modifierFlags]);
-        onMouseButtonDown(MouseButton::button_left, cursor_position, state);
-    }
+    const NSPoint pos = [event locationInWindow];
+    const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
+    const auto state = get_modifiers_state([event modifierFlags]);
+    window->mouse_button_down(MouseButton::button_left, cursor_position, state);
 }
 
 - (void)rightMouseDown:(NSEvent*)event
 {
     using namespace framework::system::details;
 
-    if (onMouseButtonDown) {
-        const NSPoint pos = [event locationInWindow];
-        const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
-        const auto state = get_modifiers_state([event modifierFlags]);
-        onMouseButtonDown(MouseButton::button_right, cursor_position, state);
-    }
+    const NSPoint pos = [event locationInWindow];
+    const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
+    const auto state = get_modifiers_state([event modifierFlags]);
+    window->mouse_button_up(MouseButton::button_right, cursor_position, state);
 }
 
 - (void)otherMouseDown:(NSEvent*)event
 {
     using namespace framework::system::details;
 
-    if (onMouseButtonDown) {
-        const MouseButton button = static_cast<MouseButton>([event buttonNumber]);
-        const NSPoint pos        = [event locationInWindow];
-        const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
-        const auto state = get_modifiers_state([event modifierFlags]);
-        onMouseButtonDown(button, cursor_position, state);
-    }
+    const MouseButton button = static_cast<MouseButton>([event buttonNumber]);
+    const NSPoint pos        = [event locationInWindow];
+    const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
+    const auto state = get_modifiers_state([event modifierFlags]);
+    window->mouse_button_down(button, cursor_position, state);
 }
 
 - (void)mouseUp:(NSEvent*)event
 {
     using namespace framework::system::details;
 
-    if (onMouseButtonUp) {
-        const NSPoint pos = [event locationInWindow];
-        const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
-        const auto state = get_modifiers_state([event modifierFlags]);
-        onMouseButtonUp(MouseButton::button_left, cursor_position, state);
-    }
+    const NSPoint pos = [event locationInWindow];
+    const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
+    const auto state = get_modifiers_state([event modifierFlags]);
+    window->mouse_button_up(MouseButton::button_left, cursor_position, state);
 }
 
 - (void)rightMouseUp:(NSEvent*)event
 {
     using namespace framework::system::details;
 
-    if (onMouseButtonUp) {
-        const NSPoint pos = [event locationInWindow];
-        const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
-        const auto state = get_modifiers_state([event modifierFlags]);
-        onMouseButtonUp(MouseButton::button_right, cursor_position, state);
-    }
+    const NSPoint pos = [event locationInWindow];
+    const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
+    const auto state = get_modifiers_state([event modifierFlags]);
+    window->mouse_button_up(MouseButton::button_right, cursor_position, state);
 }
 
 - (void)otherMouseUp:(NSEvent*)event
 {
     using namespace framework::system::details;
 
-    if (onMouseButtonUp) {
-        const MouseButton button = static_cast<MouseButton>([event buttonNumber]);
-        const NSPoint pos        = [event locationInWindow];
-        const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
-        const auto state = get_modifiers_state([event modifierFlags]);
-        onMouseButtonUp(button, cursor_position, state);
-    }
+    const MouseButton button = static_cast<MouseButton>([event buttonNumber]);
+    const NSPoint pos        = [event locationInWindow];
+    const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
+    const auto state = get_modifiers_state([event modifierFlags]);
+    window->mouse_button_up(button, cursor_position, state);
 }
 
 - (void)scrollWheel:(NSEvent*)event
@@ -368,7 +310,7 @@ using framework::system::ScrollOffset;
     }
 
     if (fabs(dx) > 0 && fabs(dy) > 0) {
-        onMouseScroll(ScrollOffset(dx * 120, dy * 120));
+        window->mouse_scroll(ScrollOffset(dx * 120, dy * 120));
     }
 }
 
@@ -385,26 +327,8 @@ using framework::system::ScrollOffset;
 
 @interface OsxWindowInternal : NSWindow<NSWindowDelegate>
 {
-    std::function<void()> onWindowShouldClose;
-    std::function<void()> onWindowDidResize;
-    std::function<void()> onWindowDidMove;
-    std::function<void()> onWindowDidMiniaturize;
-    std::function<void()> onWindowDidDeminiaturize;
-    std::function<void()> onWindowDidBecomekey;
-    std::function<void()> onWindowDidResignkey;
-    std::function<void()> onWindowDidEnterFullScreen;
-    std::function<void()> onWindowDidExitFullScreen;
+    framework::system::details::OsxWindow* window;
 }
-
-@property(assign, nonatomic) std::function<void()> on_window_should_close;
-@property(assign, nonatomic) std::function<void()> on_window_did_resize;
-@property(assign, nonatomic) std::function<void()> on_window_did_move;
-@property(assign, nonatomic) std::function<void()> on_window_did_miniaturize;
-@property(assign, nonatomic) std::function<void()> on_window_did_deminiaturize;
-@property(assign, nonatomic) std::function<void()> on_window_did_become_key;
-@property(assign, nonatomic) std::function<void()> on_window_did_resign_key;
-@property(assign, nonatomic) std::function<void()> on_window_did_enter_full_screen;
-@property(assign, nonatomic) std::function<void()> on_window_did_exit_full_screen;
 
 @property(readonly, assign, nonatomic) BOOL isFullscreen;
 
@@ -412,17 +336,12 @@ using framework::system::ScrollOffset;
 
 @implementation OsxWindowInternal
 
-@synthesize on_window_should_close          = onWindowShouldClose;
-@synthesize on_window_did_resize            = onWindowDidResize;
-@synthesize on_window_did_move              = onWindowDidMove;
-@synthesize on_window_did_miniaturize       = onWindowDidMiniaturize;
-@synthesize on_window_did_deminiaturize     = onWindowDidDeminiaturize;
-@synthesize on_window_did_become_key        = onWindowDidBecomeKey;
-@synthesize on_window_did_resign_key        = onWindowDidResignKey;
-@synthesize on_window_did_enter_full_screen = onWindowDidEnterFullScreen;
-@synthesize on_window_did_exit_full_screen  = onWindowDidExitFullScreen;
-
 @synthesize isFullscreen;
+
+- (void) setWindow:(framework::system::details::OsxWindow*)w
+{
+    window = w;
+}
 
 - (BOOL)acceptsFirstResponder
 {
@@ -444,70 +363,50 @@ using framework::system::ScrollOffset;
 
 - (BOOL)windowShouldClose:(id)sender
 {
-    if (onWindowShouldClose) {
-        onWindowShouldClose();
-    }
+    window->window_should_close();
     return NO;
 }
 
 - (void)windowDidResize:(NSNotification*)notification
 {
-    if (onWindowDidResize) {
-        onWindowDidResize();
-    }
+    window->window_did_resize();
 }
 
 - (void)windowDidMove:(NSNotification*)notification
 {
-    if (onWindowDidMove) {
-        onWindowDidMove();
-    }
+    window->window_did_move();
 }
 
 - (void)windowDidMiniaturize:(NSNotification*)notification
 {
-    if (onWindowDidMiniaturize) {
-        onWindowDidMiniaturize();
-    }
+    window->window_did_miniaturize();
 }
 
 - (void)windowDidDeminiaturize:(NSNotification*)notification
 {
-    if (onWindowDidDeminiaturize) {
-        onWindowDidDeminiaturize();
-    }
+    window->window_did_deminiaturize();
 }
 
 - (void)windowDidBecomeKey:(NSNotification*)notification
 {
-    if (onWindowDidBecomeKey) {
-        onWindowDidBecomeKey();
-    }
+    window->window_did_become_key();
 }
 
 - (void)windowDidResignKey:(NSNotification*)notification
 {
-    if (onWindowDidResignKey) {
-        onWindowDidResignKey();
-    }
+    window->window_did_resign_key();
 }
 
 - (void)windowDidEnterFullScreen:(NSNotification*)notification
 {
-    if (onWindowDidEnterFullScreen) {
-        onWindowDidEnterFullScreen();
-    }
-
     isFullscreen = true;
+    window->window_did_enter_full_screen();
 }
 
 - (void)windowDidExitFullScreen:(NSNotification*)notification
 {
-    if (onWindowDidExitFullScreen) {
-        onWindowDidExitFullScreen();
-    }
-
     isFullscreen = false;
+    window->window_did_exit_full_screen();
 }
 
 - (void)windowDidChangeOcclusionState:(NSNotification*)notification
@@ -523,13 +422,7 @@ using framework::system::ScrollOffset;
     if ([self hasFullscreenStyle]) {
         return;
     }
-
-    const auto callback = onWindowDidResize;
-    onWindowDidResize   = nullptr;
-
     [self toggleFullScreen:nil];
-
-    onWindowDidResize = callback;
 }
 
 - (void)exitFullscreen
@@ -537,13 +430,7 @@ using framework::system::ScrollOffset;
     if (![self hasFullscreenStyle]) {
         return;
     }
-
-    const auto callback = onWindowDidResize;
-    onWindowDidResize   = nullptr;
-
     [self toggleFullScreen:nil];
-
-    onWindowDidResize = callback;
 }
 
 - (BOOL)hasResizableStyle
@@ -644,18 +531,8 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
         throw std::runtime_error("Can't create NSWindow");
     }
 
-    // Setup callbacks
-    m_window->get().on_window_should_close          = std::bind(&OsxWindow::window_should_close, this);
-    m_window->get().on_window_did_resize            = std::bind(&OsxWindow::window_did_resize, this);
-    m_window->get().on_window_did_move              = std::bind(&OsxWindow::window_did_move, this);
-    m_window->get().on_window_did_miniaturize       = std::bind(&OsxWindow::window_did_miniaturize, this);
-    m_window->get().on_window_did_deminiaturize     = std::bind(&OsxWindow::window_did_deminiaturize, this);
-    m_window->get().on_window_did_become_key        = std::bind(&OsxWindow::window_did_become_key, this);
-    m_window->get().on_window_did_resign_key        = std::bind(&OsxWindow::window_did_resign_key, this);
-    m_window->get().on_window_did_enter_full_screen = std::bind(&OsxWindow::window_did_enter_full_screen, this);
-    m_window->get().on_window_did_exit_full_screen  = std::bind(&OsxWindow::window_did_exit_full_screen, this);
-
     // Setup window
+    [m_window->get() setWindow:this];
     [m_window->get() setDelegate:m_window->get()];
 
     [m_window->get() setAcceptsMouseMovedEvents:YES];
@@ -676,25 +553,11 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
         throw std::runtime_error("Can't create NSView");
     }
 
+    [m_view->get() setWindow:this];
     [m_view->get() setWantsLayer:YES];
     [[m_view->get() layer] setContentsScale:[m_window->get() backingScaleFactor]];
 
-    // Setup view callbacks
-    m_view->get().on_update_context = std::bind(&OsxWindow::update_context, this);
-
-    m_view->get().on_key_down = std::bind(&OsxWindow::key_down, this, _1, _2);
-    m_view->get().on_key_up   = std::bind(&OsxWindow::key_up, this, _1, _2);
-
-    // bind the PlatformWindow::on_character callback directly
-    m_view->get().on_character = std::bind(&OsxWindow::character, this, _1);
-
-    m_view->get().on_mouse_entered     = std::bind(&OsxWindow::mouse_entered, this);
-    m_view->get().on_mouse_exited      = std::bind(&OsxWindow::mouse_exited, this);
-    m_view->get().on_mouse_moved       = std::bind(&OsxWindow::mouse_moved, this, _1);
-    m_view->get().on_mouse_button_down = std::bind(&OsxWindow::mouse_button_down, this, _1, _2, _3);
-    m_view->get().on_mouse_button_up   = std::bind(&OsxWindow::mouse_button_up, this, _1, _2, _3);
-    m_view->get().on_mouse_scroll      = std::bind(&OsxWindow::mouse_scroll, this, _1);
-
+    // Setup view
     [m_window->get() setContentView:m_view->get()];
     [m_window->get() makeFirstResponder:m_view->get()];
 
@@ -708,7 +571,10 @@ OsxWindow::~OsxWindow()
 
     [m_window->get() setDelegate:nil];
     [m_window->get() setContentView:nil];
+    [m_window->get() setWindow:nil];
     [m_window->get() close];
+    
+    [m_view->get() setWindow:nil];
 }
 
 #pragma region actions
@@ -722,7 +588,8 @@ void OsxWindow::show()
     AutoreleasePool pool;
 
     // Turn off on_focus callback to call it in order we want
-    m_window->get().on_window_did_become_key = nullptr;
+    auto on_focus = m_callbacks->on_focus_callback;
+    m_callbacks->on_focus_callback = nullptr;
 
     if (!m_position_was_set_before_show) {
         [m_window->get() cascadeTopLeftFromPoint:NSMakePoint(20, 20)];
@@ -746,7 +613,7 @@ void OsxWindow::show()
     }
 
     // Turn on on_focus callback
-    m_window->get().on_window_did_become_key = std::bind(&OsxWindow::window_did_become_key, this);
+    m_callbacks->on_focus_callback = on_focus;
 
     // Explicitly call on_show callback
     m_callbacks->on_show();
@@ -775,7 +642,10 @@ void OsxWindow::hide()
     AutoreleasePool pool;
 
     if (m_state == Window::State::fullscreen) {
+        auto on_resize = m_callbacks->on_resize_callback;
+        m_callbacks->on_resize_callback = nullptr;
         [m_window->get() exitFullscreen];
+        m_callbacks->on_resize_callback = on_resize;
     }
 
     if (has_input_focus()) {
@@ -860,14 +730,16 @@ void OsxWindow::set_state(Window::State state)
     }
 
     // Turn off on_move and on resize callbacks
-    m_window->get().on_window_did_resize = nullptr;
-    m_window->get().on_window_did_move   = nullptr;
+    auto on_move = m_callbacks->on_move_callback;
+    auto on_resize = m_callbacks->on_resize_callback;
+    m_callbacks->on_move_callback = nullptr;
+    m_callbacks->on_resize_callback = nullptr;
 
     switch_state(state);
 
     // Turn on on_move and on resize callbacks
-    m_window->get().on_window_did_resize = std::bind(&OsxWindow::window_did_resize, this);
-    m_window->get().on_window_did_move   = std::bind(&OsxWindow::window_did_move, this);
+    m_callbacks->on_move_callback = on_move;
+    m_callbacks->on_resize_callback = on_resize;
 
     if (state != Window::State::iconified) {
         m_callbacks->on_move(position());
@@ -1282,7 +1154,12 @@ void OsxWindow::switch_state(Window::State state)
 
     // Drop fullscreen state
     if (old_state == Window::State::fullscreen) {
-        [m_window->get() exitFullscreen];
+        {
+            auto on_resize = m_callbacks->on_resize_callback;
+            m_callbacks->on_resize_callback = nullptr;
+            [m_window->get() exitFullscreen];
+            m_callbacks->on_resize_callback = on_resize;
+        }
 
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -1307,7 +1184,12 @@ void OsxWindow::switch_state(Window::State state)
             }
             break;
         case Window::State::fullscreen:
-            [m_window->get() enterFullscreen];
+            {
+                auto on_resize = m_callbacks->on_resize_callback;
+                m_callbacks->on_resize_callback = nullptr;
+                [m_window->get() enterFullscreen];
+                m_callbacks->on_resize_callback = on_resize;
+            }
 
             do {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
