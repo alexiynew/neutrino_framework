@@ -686,7 +686,7 @@ OsxWindow::OsxWindow(const std::string& title, Size size, const ContextSettings&
     m_view->get().on_key_up   = std::bind(&OsxWindow::key_up, this, _1, _2);
 
     // bind the PlatformWindow::on_character callback directly
-    m_view->get().on_character = std::bind(&OsxWindow::on_character, this, _1);
+    m_view->get().on_character = std::bind(&OsxWindow::character, this, _1);
 
     m_view->get().on_mouse_entered     = std::bind(&OsxWindow::mouse_entered, this);
     m_view->get().on_mouse_exited      = std::bind(&OsxWindow::mouse_exited, this);
@@ -749,20 +749,20 @@ void OsxWindow::show()
     m_window->get().on_window_did_become_key = std::bind(&OsxWindow::window_did_become_key, this);
 
     // Explicitly call on_show callback
-    on_show();
+    m_callbacks->on_show();
 
     // Explicitly call on_move callback
-    on_move(position());
+    m_callbacks->on_move(position());
 
     // Explicitly call on_resize callback
-    on_resize(size());
+    m_callbacks->on_resize(size());
 
     // This would call on_focus callback
     if (!has_input_focus()) {
         [m_window->get() makeKeyWindow];
     } else {
         // Or call the on_focus callback explicitly
-        on_focus();
+        m_callbacks->on_focus();
     }
 }
 
@@ -782,7 +782,7 @@ void OsxWindow::hide()
         // This would focus other window and call on_lost_focus callback for this window
         if (!switch_to_other_window()) {
             // Or call the on_lost_focus callback explicitly
-            on_lost_focus();
+            m_callbacks->on_lost_focus();
         }
 
         if (m_cursor_grabbed) {
@@ -798,13 +798,13 @@ void OsxWindow::hide()
     [m_window->get() close];
 
     // Explicitly call on_hide callback
-    on_hide();
+    m_callbacks->on_hide();
 }
 
 void OsxWindow::close()
 {
     m_should_close = true;
-    on_close();
+    m_callbacks->on_close();
 }
 
 void OsxWindow::focus()
@@ -870,8 +870,8 @@ void OsxWindow::set_state(Window::State state)
     m_window->get().on_window_did_move   = std::bind(&OsxWindow::window_did_move, this);
 
     if (state != Window::State::iconified) {
-        on_move(position());
-        on_resize(size());
+        m_callbacks->on_move(position());
+        m_callbacks->on_resize(size());
     }
 }
 
@@ -1137,7 +1137,7 @@ void OsxWindow::window_did_resize()
 {
     if (is_visible()) {
         update_context();
-        on_resize(size());
+        m_callbacks->on_resize(size());
     }
 }
 
@@ -1145,7 +1145,7 @@ void OsxWindow::window_did_move()
 {
     if (is_visible()) {
         update_context();
-        on_move(position());
+        m_callbacks->on_move(position());
     }
 }
 
@@ -1160,7 +1160,7 @@ void OsxWindow::window_did_deminiaturize()
 void OsxWindow::window_did_become_key()
 {
     if (is_visible()) {
-        on_focus();
+        m_callbacks->on_focus();
 
         if (m_cursor_grabbed) {
             enable_raw_input();
@@ -1171,7 +1171,7 @@ void OsxWindow::window_did_become_key()
 void OsxWindow::window_did_resign_key()
 {
     if (is_visible()) {
-        on_lost_focus();
+        m_callbacks->on_lost_focus();
 
         if (m_cursor_grabbed) {
             disable_raw_input();
@@ -1191,23 +1191,28 @@ void OsxWindow::window_did_exit_full_screen()
 
 void OsxWindow::key_down(KeyCode key, Modifiers state)
 {
-    on_key_down(key, state);
+    m_callbacks->on_key_down(key, state);
 }
 
 void OsxWindow::key_up(KeyCode key, Modifiers state)
 {
-    on_key_up(key, state);
+    m_callbacks->on_key_up(key, state);
+}
+
+void OsxWindow::character(const std::string& c)
+{
+    m_callbacks->on_character(c);
 }
 
 void OsxWindow::mouse_entered()
 {
     m_mouse_hover = true;
-    on_mouse_enter();
+    m_callbacks->on_mouse_enter();
 }
 
 void OsxWindow::mouse_exited()
 {
-    on_mouse_leave();
+    m_callbacks->on_mouse_leave();
     m_mouse_hover = false;
 }
 
@@ -1219,10 +1224,10 @@ void OsxWindow::mouse_moved(CursorPosition cursor_position)
         int dx = 0;
         int dy = 0;
         CGGetLastMouseDelta(&dx, &dy);
-        on_mouse_move({dx, dy});
+        m_callbacks->on_mouse_move({dx, dy});
         center_cursor_inside_window();
     } else if (m_mouse_hover) {
-        on_mouse_move(convert_cursor_position(cursor_position));
+        m_callbacks->on_mouse_move(convert_cursor_position(cursor_position));
     }
 
     update_cursor_visibility();
@@ -1230,17 +1235,17 @@ void OsxWindow::mouse_moved(CursorPosition cursor_position)
 
 void OsxWindow::mouse_button_down(MouseButton button, CursorPosition position, Modifiers state)
 {
-    on_mouse_button_down(button, convert_cursor_position(position), state);
+    m_callbacks->on_mouse_button_down(button, convert_cursor_position(position), state);
 }
 
 void OsxWindow::mouse_button_up(MouseButton button, CursorPosition position, Modifiers state)
 {
-    on_mouse_button_up(button, convert_cursor_position(position), state);
+    m_callbacks->on_mouse_button_up(button, convert_cursor_position(position), state);
 }
 
 void OsxWindow::mouse_scroll(ScrollOffset scroll)
 {
-    on_mouse_scroll(scroll);
+    m_callbacks->on_mouse_scroll(scroll);
 }
 
 #pragma endregion
@@ -1399,7 +1404,7 @@ void OsxWindow::enable_raw_input()
 
     if (!m_mouse_hover) {
         m_mouse_hover = true;
-        on_mouse_enter();
+        m_callbacks->on_mouse_enter();
     }
 
     CGAssociateMouseAndMouseCursorPosition(NO);

@@ -3,19 +3,21 @@
 #include <system/window.hpp>
 
 #include <system/src/platform_window.hpp>
+#include <system/src/platform_window_factory.hpp>
 
 namespace framework::system
 {
 Window::Window(const std::string& title, Size size, ContextSettings settings)
     : m_platform_window(details::create_platform_window(title, size, std::move(settings)))
+    , m_callbacks(std::make_unique<details::CallbacksHolder>())
 {
-    m_platform_window->set_window_instance(this);
+    m_platform_window->set_callbacks_holder(m_callbacks.get());
 }
 
 Window::~Window()
 {
     if (m_platform_window) {
-        m_platform_window->set_window_instance(nullptr);
+        m_platform_window->set_callbacks_holder(nullptr);
     }
 }
 
@@ -188,33 +190,102 @@ Context& Window::context()
 
 #pragma endregion
 
+#pragma region events
+
+void Window::set_on_show_callback(std::function<void()> callback)
+{
+    m_callbacks->on_show_callback = callback;
+}
+
+void Window::set_on_hide_callback(std::function<void()> callback)
+{
+    m_callbacks->on_hide_callback = callback;
+}
+
+void Window::set_on_close_callback(std::function<void()> callback)
+{
+    m_callbacks->on_close_callback = callback;
+}
+
+void Window::set_on_focus_callback(std::function<void()> callback)
+{
+    m_callbacks->on_focus_callback = callback;
+}
+
+void Window::set_on_lost_focus_callback(std::function<void()> callback)
+{
+    m_callbacks->on_lost_focus_callback = callback;
+}
+
+void Window::set_on_resize_callback(std::function<void(Size)> callback)
+{
+    m_callbacks->on_resize_callback = callback;
+}
+
+void Window::set_on_move_callback(std::function<void(Position)> callback)
+{
+    m_callbacks->on_move_callback = callback;
+}
+
+void Window::set_on_key_down_callback(std::function<void(KeyCode, Modifiers)> callback)
+{
+    m_callbacks->on_key_down_callback = callback;
+}
+
+void Window::set_on_key_up_callback(std::function<void(KeyCode, Modifiers)> callback)
+{
+    m_callbacks->on_key_up_callback = callback;
+}
+
+void Window::set_on_character_callback(std::function<void(const std::string&)> callback)
+{
+    m_callbacks->on_character_callback = callback;
+}
+
+void Window::set_on_mouse_move_callback(std::function<void(CursorPosition)> callback)
+{
+    m_callbacks->on_mouse_move_callback = callback;
+}
+
+void Window::set_on_mouse_button_down_callback(std::function<void(MouseButton, CursorPosition, Modifiers)> callback)
+{
+    m_callbacks->on_mouse_button_down_callback = callback;
+}
+
+void Window::set_on_mouse_button_up_callback(std::function<void(MouseButton, CursorPosition, Modifiers)> callback)
+{
+    m_callbacks->on_mouse_button_up_callback = callback;
+}
+
+void Window::set_on_mouse_scroll_callback(std::function<void(ScrollOffset)> callback)
+{
+    m_callbacks->on_mouse_scroll_callback = callback;
+}
+
+void Window::set_on_mouse_enter_callback(std::function<void()> callback)
+{
+    m_callbacks->on_mouse_enter_callback = callback;
+}
+
+void Window::set_on_mouse_leave_callback(std::function<void()> callback)
+{
+    m_callbacks->on_mouse_leave_callback = callback;
+}
+
+#pragma endregion
+
 void swap(Window& lhs, Window& rhs) noexcept
 {
     using std::swap;
+    swap(lhs.m_platform_window, rhs.m_platform_window);
+    swap(lhs.m_callbacks, rhs.m_callbacks);
+
     if (lhs.m_platform_window) {
-        lhs.m_platform_window->set_window_instance(&rhs);
+        lhs.m_platform_window->set_callbacks_holder(lhs.m_callbacks.get());
     }
     if (rhs.m_platform_window) {
-        rhs.m_platform_window->set_window_instance(&lhs);
+        rhs.m_platform_window->set_callbacks_holder(rhs.m_callbacks.get());
     }
-    swap(lhs.m_platform_window, rhs.m_platform_window);
-
-    swap(lhs.on_show, rhs.on_show);
-    swap(lhs.on_hide, rhs.on_hide);
-    swap(lhs.on_close, rhs.on_close);
-    swap(lhs.on_focus, rhs.on_focus);
-    swap(lhs.on_lost_focus, rhs.on_lost_focus);
-    swap(lhs.on_resize, rhs.on_resize);
-    swap(lhs.on_move, rhs.on_move);
-    swap(lhs.on_key_down, rhs.on_key_down);
-    swap(lhs.on_key_up, rhs.on_key_up);
-    swap(lhs.on_character, rhs.on_character);
-    swap(lhs.on_mouse_move, rhs.on_mouse_move);
-    swap(lhs.on_mouse_button_down, rhs.on_mouse_button_down);
-    swap(lhs.on_mouse_button_up, rhs.on_mouse_button_up);
-    swap(lhs.on_mouse_scroll, rhs.on_mouse_scroll);
-    swap(lhs.on_mouse_enter, rhs.on_mouse_enter);
-    swap(lhs.on_mouse_leave, rhs.on_mouse_leave);
 }
 
 } // namespace framework::system

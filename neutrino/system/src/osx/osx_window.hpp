@@ -78,6 +78,7 @@ private:
 
     void key_down(KeyCode key, Modifiers state);
     void key_up(KeyCode key, Modifiers state);
+    void character(const std::string&);
 
     void mouse_entered();
     void mouse_exited();

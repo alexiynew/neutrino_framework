@@ -21,8 +21,8 @@ private:
     Window create_window_internal(bool* show_called_flag, bool* hide_called_flag)
     {
         Window window(name(), {640, 480});
-        window.on_show.connect([flag = show_called_flag](const Window& /*unused*/) { *flag = true; });
-        window.on_hide.connect([flag = hide_called_flag](const Window& /*unused*/) { *flag = true; });
+        window.set_on_show_callback([flag = show_called_flag]() { *flag = true; });
+        window.set_on_hide_callback([flag = hide_called_flag]() { *flag = true; });
 
         return window;
     }
@@ -60,13 +60,13 @@ private:
 
         Window window(name(), {640, 480});
 
-        window.on_show.connect([&show_called, this](const Window& w) {
-            TEST_ASSERT(w.is_visible(), "The on_show callback called for non visible window.");
+        window.set_on_show_callback([&window, &show_called, this]() {
+            TEST_ASSERT(window.is_visible(), "The on_show callback called for non visible window.");
             show_called++;
         });
 
-        window.on_hide.connect([&hide_called, this](const Window& w) {
-            TEST_ASSERT(!w.is_visible(), "The on_hide callback called for visible window.");
+        window.set_on_hide_callback([&window, &hide_called, this]() {
+            TEST_ASSERT(!window.is_visible(), "The on_hide callback called for visible window.");
             hide_called++;
         });
 

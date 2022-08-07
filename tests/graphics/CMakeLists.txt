@@ -24,6 +24,9 @@ foreach(TEST ${TESTS})
     set_target_properties(${TEST} PROPERTIES FOLDER ${TEST_FOLDER})
     set_target_properties(${TEST} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_BINARY_DIR})
     set_target_properties(${TEST} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${TEST_BINARY_DIR})
+    
+    set_target_properties(${TEST} PROPERTIES XCODE_GENERATE_SCHEME TRUE)
+    set_target_properties(${TEST} PROPERTIES XCODE_SCHEME_WORKING_DIRECTORY ${TEST_BINARY_DIR})
 
     add_test(NAME "${GROUP}/${TEST}" COMMAND ${TEST})
     set_tests_properties("${GROUP}/${TEST}" PROPERTIES LABELS ${GROUP})

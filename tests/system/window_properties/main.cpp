@@ -1,6 +1,7 @@
 #include <chrono>
 #include <thread>
 
+#include <log/log.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -14,9 +15,9 @@ public:
         : Suite("WindowPropertiesTest")
     {
         add_test([this]() { window_size(); }, "window_size");
-        add_test([this]() { window_size_limits(); }, "window_size_limits");
-        add_test([this]() { window_position(); }, "window_position");
-        add_test([this]() { window_title(); }, "window_title");
+        // add_test([this]() { window_size_limits(); }, "window_size_limits");
+        // add_test([this]() { window_position(); }, "window_position");
+        // add_test([this]() { window_title(); }, "window_title");
     }
 
 private:
@@ -31,26 +32,30 @@ private:
 
         Window window(name(), {480, 320});
 
-        window.on_show.connect([&stats](const Window& /*unused*/) { stats.show_called++; });
+        window.set_on_show_callback([&stats]() { stats.show_called++; });
 
-        window.on_resize.connect([&stats, this](const Window& w, Size w_size) {
+        window.set_on_resize_callback([&window, &stats, this](Size w_size) {
             stats.size_called++;
             stats.last_size = w_size;
 
-            TEST_ASSERT(w.is_visible(), "Window must be visible to send on_resize callbacks.");
+            TEST_ASSERT(window.is_visible(), "Window must be visible to send on_resize callbacks.");
         });
 
+        log::info(name()) << __LINE__;
         // Check stats
         TEST_ASSERT(stats.size_called == 0, "Wrong stats.size_called count at the beginning.");
         TEST_ASSERT(stats.show_called == 0, "Wrong stats.show_called count at the beginning.");
         TEST_ASSERT(stats.last_size == Size(), "Wrong stats.last_size at the beginning.");
 
+        log::info(name()) << __LINE__;
         // Window stats on creation
         TEST_ASSERT(window.size() == size480, "Window has wrong size.");
 
+        log::info(name()) << __LINE__;
         // Show window - must be 480
         window.show();
 
+        log::info(name()) << __LINE__;
         TEST_ASSERT(stats.show_called == 1, "On_show callback must be called once.");
         TEST_ASSERT(stats.size_called == 1, "On_resize callback must be called once.");
         TEST_ASSERT(stats.last_size == size480, "Wrong window size in callback.");
@@ -198,13 +203,13 @@ private:
 
         Window window(name(), size640);
 
-        window.on_show.connect([&stats](const Window& /*unused*/) { stats.show_called++; });
+        window.set_on_show_callback([&stats]() { stats.show_called++; });
 
-        window.on_move.connect([&stats, this](const Window& w, Position position) {
+        window.set_on_move_callback([&window, &stats, this](Position position) {
             stats.position_called++;
             stats.last_position = position;
 
-            TEST_ASSERT(w.is_visible(), "Window must be visible to send on_move callbacks.");
+            TEST_ASSERT(window.is_visible(), "Window must be visible to send on_move callbacks.");
         });
 
         window.show();

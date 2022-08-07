@@ -89,15 +89,11 @@ const Renderer::UniformsList& Renderer::Command::uniforms() const
 Renderer::Renderer(system::Window& window)
     : m_impl(create_impl(window.context()))
     , m_window(std::ref(window))
-{
-    m_on_resize_slot_id = m_window.get().on_resize.connect(
-    [this](const system::Window&, Size size) { m_impl->set_viewport(size); });
-}
+{}
 
 Renderer::Renderer(Renderer&& other) noexcept
     : m_impl(std::move(other.m_impl))
     , m_window(std::move(other.m_window))
-    , m_on_resize_slot_id(std::move(other.m_on_resize_slot_id))
     , m_render_commands(std::move(other.m_render_commands))
     , m_global_uniforms(std::move(other.m_global_uniforms))
 {}
@@ -110,6 +106,12 @@ void Renderer::set_clear_color(const Color& color)
 {
     m_window.get().context().make_current();
     m_impl->set_clear_color(color);
+}
+
+void Renderer::set_viewport(Size size)
+{
+    m_window.get().context().make_current();
+    m_impl->set_viewport(size);
 }
 
 void Renderer::enable_vertical_sync(bool)

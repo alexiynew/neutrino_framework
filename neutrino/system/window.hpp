@@ -18,6 +18,7 @@ namespace framework::system
 namespace details
 {
 class PlatformWindow;
+class CallbacksHolder;
 } // namespace details
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,55 +337,53 @@ public:
     /// @{
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// TODO: Remove Window parametr from callbacks. It's useless.
-
     /// @brief Set on show callback. Called when window shows after creation.
-    Signal<const Window&> on_show;
+    void set_on_show_callback(std::function<void()> callback);
 
     /// @brief Set on hide callback. Called when window hides from screen.
-    Signal<const Window&> on_hide;
+    void set_on_hide_callback(std::function<void()> callback);
 
     /// @brief Set on close callback. Called when the user clicks on the close window button.
-    Signal<const Window&> on_close;
+    void set_on_close_callback(std::function<void()> callback);
 
     /// @brief Set on focus callback. Called when the window gets input focus.
-    Signal<const Window&> on_focus;
+    void set_on_focus_callback(std::function<void()> callback);
 
     /// @brief Set on focus lost callback. Called when the window loses input focus.
-    Signal<const Window&> on_lost_focus;
+    void set_on_lost_focus_callback(std::function<void()> callback);
 
     /// @brief Set on size callback. Called when window size changes.
-    Signal<const Window&, Size> on_resize;
+    void set_on_resize_callback(std::function<void(Size)> callback);
 
     /// @brief Set on position callback. Called when window position changes.
-    Signal<const Window&, Position> on_move;
+    void set_on_move_callback(std::function<void(Position)> callback);
 
-    /// @brief Set on key press callback. Called when key is pressed. Can be called multiple times.
-    Signal<const Window&, KeyCode, Modifiers> on_key_down;
+    /// @brief Set on key down callback. Called when key is pressed. Can be called multiple times.
+    void set_on_key_down_callback(std::function<void(KeyCode, Modifiers)> callback);
 
-    /// @brief Set on key release callback. Called when key is released.
-    Signal<const Window&, KeyCode, Modifiers> on_key_up;
+    /// @brief Set on key up callback. Called when key is released.
+    void set_on_key_up_callback(std::function<void(KeyCode, Modifiers)> callback);
 
     /// @brief Set on character callback. Called when user press the char symbol key.
-    Signal<const Window&, std::string> on_character;
+    void set_on_character_callback(std::function<void(const std::string&)> callback);
 
     /// @brief Set on mouse move callback. Called when the mouse is moving.
-    Signal<const Window&, CursorPosition> on_mouse_move;
+    void set_on_mouse_move_callback(std::function<void(CursorPosition)> callback);
 
-    /// @brief Set on mouse button press callback. Called when the mouse button is pressed.
-    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_mouse_button_down;
+    /// @brief Set on mouse button down callback. Called when the mouse button is pressed.
+    void set_on_mouse_button_down_callback(std::function<void(MouseButton, CursorPosition, Modifiers)> callback);
 
-    /// @brief Set on mouse button release callback. Called when the mouse button is released.
-    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_mouse_button_up;
+    /// @brief Set on mouse button up callback. Called when the mouse button is released.
+    void set_on_mouse_button_up_callback(std::function<void(MouseButton, CursorPosition, Modifiers)> callback);
 
     /// @brief Set on mouse scroll callback. Called when the user scrolls.
-    Signal<const Window&, ScrollOffset> on_mouse_scroll;
+    void set_on_mouse_scroll_callback(std::function<void(ScrollOffset)> callback);
 
     /// @brief Set on mouse enter callback. Called when the cursor enters in the window frame.
-    Signal<const Window&> on_mouse_enter;
+    void set_on_mouse_enter_callback(std::function<void()> callback);
 
     /// @brief Set on mouse leave callback. Called when the cursor leaves the window frame.
-    Signal<const Window&> on_mouse_leave;
+    void set_on_mouse_leave_callback(std::function<void()> callback);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -395,6 +394,7 @@ private:
     friend void swap(Window& lhs, Window& rhs) noexcept;
 
     std::unique_ptr<details::PlatformWindow> m_platform_window;
+    std::unique_ptr<details::CallbacksHolder> m_callbacks;
 };
 
 /// @brief Swaps two Windows.

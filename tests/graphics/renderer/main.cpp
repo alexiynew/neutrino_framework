@@ -1,4 +1,4 @@
-﻿#include <array>
+#include <array>
 #include <chrono>
 #include <thread>
 
@@ -304,9 +304,10 @@ private:
         Renderer renderer(main_window);
 
         renderer.set_clear_color(Color(0xFF00FFFF));
-        main_window.on_resize.connect([&renderer](const Window&, Size size) {
+        main_window.set_on_resize_callback([&renderer](Size size) {
             renderer.set_uniform("projectionMatrix",
                                  ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
+            renderer.set_viewport(size);
         });
 
         main_window.show();

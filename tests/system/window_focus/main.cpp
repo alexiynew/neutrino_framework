@@ -25,8 +25,8 @@ private:
 
         Window w(name(), {640, 480});
 
-        w.on_focus.connect([&on_focus_called](const Window& /*unused*/) { on_focus_called++; });
-        w.on_lost_focus.connect([&on_lost_focus_called](const Window& /*unused*/) { on_lost_focus_called++; });
+        w.set_on_focus_callback([&on_focus_called]() { on_focus_called++; });
+        w.set_on_lost_focus_callback([&on_lost_focus_called]() { on_lost_focus_called++; });
 
         w.focus();
 
@@ -94,11 +94,11 @@ private:
         Window alpha(name() + ":alpha", {640, 480});
         Window betta(name() + ":betta", {640, 480});
 
-        alpha.on_focus.connect([&alpha_focused](const Window& /*unused*/) { alpha_focused++; });
-        alpha.on_lost_focus.connect([&alpha_lost_focus](const Window& /*unused*/) { alpha_lost_focus++; });
+        alpha.set_on_focus_callback([&alpha_focused]() { alpha_focused++; });
+        alpha.set_on_lost_focus_callback([&alpha_lost_focus]() { alpha_lost_focus++; });
 
-        betta.on_focus.connect([&betta_focused](const Window& /*unused*/) { betta_focused++; });
-        betta.on_lost_focus.connect([&betta_lost_focus](const Window& /*unused*/) { betta_lost_focus++; });
+        betta.set_on_focus_callback([&betta_focused]() { betta_focused++; });
+        betta.set_on_lost_focus_callback([&betta_lost_focus]() { betta_lost_focus++; });
 
         TEST_ASSERT(!alpha.is_visible(), "Window should not be visible.");
         TEST_ASSERT(!betta.is_visible(), "Window should not be visible.");

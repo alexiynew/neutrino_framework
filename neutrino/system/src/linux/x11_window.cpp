@@ -5,6 +5,7 @@
 #include <thread>
 
 #include <common/utils.hpp>
+#include <log/log.hpp>
 #include <system/application.hpp>
 
 #include <system/src/linux/x11_glx_context.hpp>
@@ -577,7 +578,7 @@ Position X11Window::position() const
 {
     int x_return            = 0;
     int y_return            = 0;
-    XlibWindow child_return = None;
+    XLibWindow child_return = None;
 
     XTranslateCoordinates(m_server->display(),
                           m_window,
@@ -624,6 +625,7 @@ void X11Window::process(XDestroyWindowEvent /*unused*/)
 void X11Window::process(XUnmapEvent /*unused*/)
 {
     m_mapped = false;
+    log::info(__FUNCTION__) << "XUnmapEvent:" << __LINE__;
     on_hide();
 }
 
@@ -635,22 +637,29 @@ void X11Window::process(XVisibilityEvent event)
 
     if (!m_mapped) {
         m_mapped = true;
+        log::info(__FUNCTION__) << "XVisibilityEvent:" << __LINE__;
         on_show();
     }
 }
 
 void X11Window::process(XConfigureEvent event)
 {
+    if (!m_mapped) {
+        return;
+    }
+
     Size new_size{event.width, event.height};
     Position new_position{event.x, event.y};
 
     if (m_size != new_size) {
         m_size = new_size;
+        log::info(__FUNCTION__) << "XConfigureEvent:" << __LINE__;
         on_resize(m_size);
     }
 
     if (m_position != new_position) {
         m_position = new_position;
+        log::info(__FUNCTION__) << "XConfigureEvent:" << __LINE__;
         on_move(m_position);
     }
 }

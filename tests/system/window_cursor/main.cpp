@@ -31,10 +31,10 @@ private:
         CursorPosition last_mouse_pos{-1, -1};
         bool mouse_inside = false;
 
-        window.on_mouse_move.connect([&last_mouse_pos](const Window&, CursorPosition pos) { last_mouse_pos = pos; });
+        window.set_on_mouse_move_callback([&last_mouse_pos]( CursorPosition pos) { last_mouse_pos = pos; });
 
-        window.on_mouse_enter.connect([&mouse_inside](const Window&) { mouse_inside = true; });
-        window.on_mouse_leave.connect([&mouse_inside](const Window&) { mouse_inside = false; });
+        window.set_on_mouse_enter_callback([&mouse_inside]() { mouse_inside = true; });
+        window.set_on_mouse_leave_callback([&mouse_inside]() { mouse_inside = false; });
 
         window.show();
 

@@ -10,8 +10,11 @@
 #include <system/context_settings.hpp>
 #include <system/window.hpp>
 
+#include <system/src/callbacks_holder.hpp>
+
 namespace framework::system::details
 {
+
 class PlatformWindow
 {
 public:
@@ -63,33 +66,11 @@ public:
     virtual Context& context()             = 0;
 #pragma endregion
 
-    void set_window_instance(const Window* window);
+    void set_callbacks_holder(const CallbacksHolder* callbacks);
 
 protected:
-    void on_show() const;
-    void on_hide() const;
-    void on_close() const;
-    void on_focus() const;
-    void on_lost_focus() const;
-    void on_resize(Size new_size) const;
-    void on_move(Position new_position) const;
-    void on_key_down(KeyCode key, Modifiers modifiers) const;
-    void on_key_up(KeyCode key, Modifiers modifiers) const;
-    void on_character(const std::string& str) const;
-    void on_mouse_move(CursorPosition position) const;
-    void on_mouse_button_down(MouseButton button, CursorPosition position, Modifiers modifiers) const;
-    void on_mouse_button_up(MouseButton button, CursorPosition position, Modifiers modifiers) const;
-    void on_mouse_scroll(ScrollOffset offset) const;
-    void on_mouse_enter() const;
-    void on_mouse_leave() const;
-
-private:
-    const Window* m_window_interface = nullptr;
+    const CallbacksHolder* m_callbacks = nullptr;
 };
-
-std::unique_ptr<PlatformWindow> create_platform_window(const std::string& title,
-                                                       Size size,
-                                                       const ContextSettings& settings);
 
 } // namespace framework::system::details
 

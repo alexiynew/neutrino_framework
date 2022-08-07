@@ -81,8 +81,7 @@ private:
     std::vector<TestData> m_tests;
     std::vector<TestData>::iterator m_current_test;
 
-    bool m_direct_logging = false;
-    bool m_success        = true;
+    bool m_success = true;
 };
 
 /// @brief Runs test in all test suites.

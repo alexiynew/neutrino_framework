@@ -884,30 +884,30 @@ private:
 
     void subscribe_for_events(Window& window)
     {
-        window.on_show.connect([this](const Window& w) {
-            TEST_ASSERT(w.is_visible(), "The on_show callback was received for non visible window.");
+        window.set_on_show_callback([this, &window]() {
+            TEST_ASSERT(window.is_visible(), "The on_show callback was received for non visible window.");
             m_stats.on_show_called++;
         });
-        window.on_hide.connect([this](const Window& w) {
-            TEST_ASSERT(!w.is_visible(), "The on_hide callback was received for visible window.");
+        window.set_on_hide_callback([this, &window]() {
+            TEST_ASSERT(!window.is_visible(), "The on_hide callback was received for visible window.");
             m_stats.on_hide_called++;
         });
-        window.on_resize.connect([this](const Window& w, Size size) {
-            TEST_ASSERT(w.is_visible(), "The on_resize callback was received for non visible window.");
+        window.set_on_resize_callback([this, &window](Size size) {
+            TEST_ASSERT(window.is_visible(), "The on_resize callback was received for non visible window.");
             m_stats.on_resize_called++;
             m_stats.last_size = size;
         });
-        window.on_move.connect([this](const Window& w, Position position) {
-            TEST_ASSERT(w.is_visible(), "The on_move callback was received for non visible window.");
+        window.set_on_move_callback([this, &window](Position position) {
+            TEST_ASSERT(window.is_visible(), "The on_move callback was received for non visible window.");
             m_stats.on_move_called++;
             m_stats.last_position = position;
         });
-        window.on_focus.connect([this](const Window& w) {
-            TEST_ASSERT(w.is_visible(), "The on_focus callback was received for non visible window.");
+        window.set_on_focus_callback([this, &window]() {
+            TEST_ASSERT(window.is_visible(), "The on_focus callback was received for non visible window.");
             m_stats.on_focus_called++;
         });
-        window.on_lost_focus.connect([this](const Window& w) {
-            TEST_ASSERT(w.is_visible(), "The on_lost_focus callback was received for non visible window.");
+        window.set_on_lost_focus_callback([this, &window]() {
+            TEST_ASSERT(window.is_visible(), "The on_lost_focus callback was received for non visible window.");
             m_stats.on_lost_focus_called++;
         });
     }

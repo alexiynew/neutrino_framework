@@ -88,6 +88,11 @@ public:
     /// @param color Clear Color.
     void set_clear_color(const Color& color);
 
+    /// @brief Specify size of the viewport.
+    ///
+    /// @param size Viewport size.
+    void set_viewport(Size size);
+
     /// @brief Turn on or off the vertical sync.
     ///
     /// @param enable On or off vertical sync.
@@ -175,7 +180,6 @@ private:
 
     std::unique_ptr<RendererImpl> m_impl;
     std::reference_wrapper<system::Window> m_window;
-    Signal<const system::Window&, Size>::SlotId m_on_resize_slot_id;
 
     std::vector<Command> m_render_commands;
     UniformsMap m_global_uniforms;
