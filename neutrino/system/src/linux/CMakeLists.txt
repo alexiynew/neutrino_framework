@@ -1,6 +1,7 @@
 set_sources(PRIVATE_SOURCES
     glxext.cpp
     glxext.hpp
+    x11_types.hpp
     x11_glx_get_function.cpp
     x11_glx_get_function.hpp
     x11_glx_context.cpp

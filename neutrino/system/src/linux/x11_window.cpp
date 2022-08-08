@@ -5,7 +5,6 @@
 #include <thread>
 
 #include <common/utils.hpp>
-#include <log/log.hpp>
 #include <system/application.hpp>
 
 #include <system/src/linux/x11_glx_context.hpp>
@@ -19,11 +18,12 @@
 
 namespace
 {
-const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
-const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
+const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
+const char* const net_frame_extents_atom_name           = u8"_NET_FRAME_EXTENTS";
 const char* const net_wm_state_fullscreen_atom_name     = u8"_NET_WM_STATE_FULLSCREEN";
 const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDEN";
-const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
+const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
+const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
 const char* const wm_delete_window_atom_name            = u8"WM_DELETE_WINDOW";
 
 const std::int64_t event_mask = VisibilityChangeMask  // Any change in visibility wanted
@@ -64,7 +64,7 @@ namespace framework::system::details
 {
 X11Window::X11Window(const std::string& title, Size size, const ContextSettings& settings)
     : m_server(X11Server::connect())
-    , m_size({0, 0})
+    , m_size(size)
 {
     auto context = std::make_unique<X11GlxContext>(settings, m_server->display());
     if (!context->valid()) {
@@ -100,8 +100,8 @@ X11Window::X11Window(const std::string& title, Size size, const ContextSettings&
                              m_server->default_root_window(),
                              m_position.x,
                              m_position.y,
-                             static_cast<std::uint32_t>(size.width),
-                             static_cast<std::uint32_t>(size.height),
+                             static_cast<std::uint32_t>(m_size.width),
+                             static_cast<std::uint32_t>(m_size.height),
                              border_width,
                              context->visual_info()->depth,
                              window_class,
@@ -149,10 +149,29 @@ void X11Window::show()
     if (m_mapped) {
         return;
     }
+    // Remember last position before showing window. In case if we want to set it again.
+    const auto target_pos = m_position;
 
+    // Turn off on_resize and on_move callbacks
+    auto on_resize = m_callbacks->on_resize_callback;
+    auto on_move   = m_callbacks->on_move_callback;
+
+    m_callbacks->on_resize_callback = nullptr;
+    m_callbacks->on_move_callback   = nullptr;
+
+    // Map window on screen
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
     process_events_while([this]() { return !m_mapped; });
+
+    // Get window frame sizes
+    m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
+
+    // Set old window position if needed
+    if (target_pos != Position{0, 0}) {
+        m_position = {0, 0};
+        move_window(target_pos);
+    }
 
     if (m_fullscreen) {
         maximize_toggle(false);
@@ -168,6 +187,16 @@ void X11Window::show()
         XFlush(m_server->display());
         // process_events_while([this]() { return is_resizable(); });
     }
+
+    // Turn on on_resize and on_move callbacks
+    m_callbacks->on_resize_callback = on_resize;
+    m_callbacks->on_move_callback   = on_move;
+
+    // Explicitly call on_move callback
+    m_callbacks->on_move(position());
+
+    // Explicitly call on_resize callback
+    m_callbacks->on_resize(size());
 }
 
 void X11Window::hide()
@@ -185,7 +214,7 @@ void X11Window::hide()
 void X11Window::close()
 {
     m_shoud_close = true;
-    on_close();
+    m_callbacks->on_close();
 }
 
 void X11Window::focus()
@@ -415,11 +444,13 @@ void X11Window::set_resizable(bool value)
     process_events_while([this]() { return is_resizable() != m_resizable; });
 }
 
-void X11Window::set_position(Position position)
+void X11Window::set_position(Position new_position)
 {
-    XMoveWindow(m_server->display(), m_window, position.x, position.y);
-    XFlush(m_server->display());
-    process_events();
+    if (!m_mapped) {
+        m_position = new_position;
+    } else {
+        move_window(new_position);
+    }
 }
 
 void X11Window::set_title(const std::string& title)
@@ -512,10 +543,7 @@ Window::State X11Window::state() const
 
 Size X11Window::size() const
 {
-    XWindowAttributes attributes = {};
-    XGetWindowAttributes(m_server->display(), m_window, &attributes);
-
-    return {attributes.width, attributes.height};
+    return m_size;
 }
 
 Size X11Window::max_size() const
@@ -576,20 +604,7 @@ bool X11Window::is_resizable() const
 
 Position X11Window::position() const
 {
-    int x_return            = 0;
-    int y_return            = 0;
-    XLibWindow child_return = None;
-
-    XTranslateCoordinates(m_server->display(),
-                          m_window,
-                          m_server->default_root_window(),
-                          0,
-                          0,
-                          &x_return,
-                          &y_return,
-                          &child_return);
-
-    return {x_return, y_return};
+    return m_position;
 }
 
 std::string X11Window::title() const
@@ -625,8 +640,7 @@ void X11Window::process(XDestroyWindowEvent /*unused*/)
 void X11Window::process(XUnmapEvent /*unused*/)
 {
     m_mapped = false;
-    log::info(__FUNCTION__) << "XUnmapEvent:" << __LINE__;
-    on_hide();
+    m_callbacks->on_hide();
 }
 
 void X11Window::process(XVisibilityEvent event)
@@ -637,30 +651,27 @@ void X11Window::process(XVisibilityEvent event)
 
     if (!m_mapped) {
         m_mapped = true;
-        log::info(__FUNCTION__) << "XVisibilityEvent:" << __LINE__;
-        on_show();
+        m_callbacks->on_show();
     }
 }
 
 void X11Window::process(XConfigureEvent event)
 {
-    if (!m_mapped) {
-        return;
-    }
-
     Size new_size{event.width, event.height};
     Position new_position{event.x, event.y};
 
     if (m_size != new_size) {
         m_size = new_size;
-        log::info(__FUNCTION__) << "XConfigureEvent:" << __LINE__;
-        on_resize(m_size);
+        if (is_visible()) {
+            m_callbacks->on_resize(m_size);
+        }
     }
 
     if (m_position != new_position) {
         m_position = new_position;
-        log::info(__FUNCTION__) << "XConfigureEvent:" << __LINE__;
-        on_move(m_position);
+        if (is_visible()) {
+            m_callbacks->on_move(m_position);
+        }
     }
 }
 
@@ -691,7 +702,7 @@ void X11Window::process(XFocusChangeEvent event)
             //     }
             // }
             m_wait_focus = false;
-            on_focus();
+            m_callbacks->on_focus();
             break;
         case FocusOut:
             if (m_input_context != nullptr) {
@@ -703,13 +714,18 @@ void X11Window::process(XFocusChangeEvent event)
                 m_cursor_grabbed = false;
             }
 
-            on_lost_focus();
+            m_callbacks->on_lost_focus();
             break;
     }
 }
 
 void X11Window::process(XPropertyEvent event)
 {
+    const Atom frame_extents_atom = m_server->get_atom(net_frame_extents_atom_name);
+    if (event.atom == frame_extents_atom) {
+        m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
+    }
+
     m_lastInputTime = event.time;
 }
 
@@ -733,7 +749,7 @@ void X11Window::process(XKeyEvent event)
 
     switch (event.type) {
         case KeyPress: {
-            on_key_down(key, state);
+            m_callbacks->on_key_down(key, state);
 
             if (X_HAVE_UTF8_STRING) {
                 char buffer[64] = {0};
@@ -741,7 +757,7 @@ void X11Window::process(XKeyEvent event)
                 int count = Xutf8LookupString(m_input_context, &event, buffer, sizeof(buffer), &sym, nullptr);
 
                 if (count > 0) {
-                    on_character(std::string(buffer));
+                    m_callbacks->on_character(std::string(buffer));
                 }
             }
         } break;
@@ -759,7 +775,7 @@ void X11Window::process(XKeyEvent event)
             }(event);
 
             if (!is_retriggered) {
-                on_key_up(key, state);
+                m_callbacks->on_key_up(key, state);
             }
         } break;
     }
@@ -776,22 +792,22 @@ void X11Window::process(XButtonEvent event)
     }
 
     switch (event.type) {
-        case ButtonPress: on_mouse_button_down(button, position, state); break;
-        case ButtonRelease: on_mouse_button_up(button, position, state); break;
+        case ButtonPress: m_callbacks->on_mouse_button_down(button, position, state); break;
+        case ButtonRelease: m_callbacks->on_mouse_button_up(button, position, state); break;
     }
 }
 
 void X11Window::process(XCrossingEvent event)
 {
     switch (event.type) {
-        case EnterNotify: on_mouse_enter(); break;
-        case LeaveNotify: on_mouse_leave(); break;
+        case EnterNotify: m_callbacks->on_mouse_enter(); break;
+        case LeaveNotify: m_callbacks->on_mouse_leave(); break;
     }
 }
 
 void X11Window::process(XMotionEvent event)
 {
-    on_mouse_move({event.x, event.y});
+    m_callbacks->on_mouse_move({event.x, event.y});
 }
 
 void X11Window::process(XMappingEvent event)
@@ -935,6 +951,17 @@ void X11Window::update_size_limits(Size min_size, Size max_size)
     }
 
     XSetWMNormalHints(m_server->display(), m_window, &size_hints);
+}
+
+void X11Window::move_window(Position new_position)
+{
+    new_position.x -= m_frame_extents.left;
+    new_position.y -= m_frame_extents.top;
+    const auto old_position = position();
+    XMoveWindow(m_server->display(), m_window, new_position.x, new_position.y);
+    XFlush(m_server->display());
+
+    process_events_while([this, &old_position]() { return position() == old_position; });
 }
 
 #pragma endregion

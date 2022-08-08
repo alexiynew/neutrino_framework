@@ -8,17 +8,18 @@
 #include <X11/Xutil.h>
 
 using framework::system::details::X11Server;
+using framework::system::details::XLibWindow;
 
 namespace
 {
-const char* const net_supporting_wm_check_atom_name  = u8"_NET_SUPPORTING_WM_CHECK";
 const char* const net_supported_atom_name            = u8"_NET_SUPPORTED";
-const char* const net_wm_state_atom_name             = u8"_NET_WM_STATE";
+const char* const net_supporting_wm_check_atom_name  = u8"_NET_SUPPORTING_WM_CHECK";
 const char* const net_wm_bypass_compositor_atom_name = u8"_NET_WM_BYPASS_COMPOSITOR";
-const char* const wm_state_atom_name                 = u8"WM_STATE";
-const char* const net_wm_name_atom_name              = u8"_NET_WM_NAME";
 const char* const net_wm_icon_name_atom_name         = u8"_NET_WM_ICON_NAME";
+const char* const net_wm_name_atom_name              = u8"_NET_WM_NAME";
+const char* const net_wm_state_atom_name             = u8"_NET_WM_STATE";
 const char* const utf8_string_atom_name              = u8"UTF8_STRING";
+const char* const wm_state_atom_name                 = u8"WM_STATE";
 
 inline bool have_utf8_support()
 {
@@ -42,7 +43,7 @@ std::vector<ValueType> values_from_array(const DataType* data, std::size_t count
 }
 
 template <typename PropertyType>
-std::vector<PropertyType> get_window_property(Display* display, ::Window window, Atom property, Atom type)
+std::vector<PropertyType> get_window_property(Display* display, XLibWindow window, Atom property, Atom type)
 {
     static constexpr std::int64_t max_items_count = 1024;
 
@@ -95,13 +96,16 @@ bool is_ewmh_compliant(const X11Server* server)
 
     const auto root_window = server->default_root_window();
 
-    auto root = get_window_property<::Window>(server->display(), root_window, net_supporting_wm_check, XA_WINDOW);
+    const auto root = get_window_property<XLibWindow>(server->display(),
+                                                      root_window,
+                                                      net_supporting_wm_check,
+                                                      XA_WINDOW);
 
     if (root.empty() || root[0] == None) {
         return false;
     }
 
-    auto child = get_window_property<::Window>(server->display(), root[0], net_supporting_wm_check, XA_WINDOW);
+    const auto child = get_window_property<XLibWindow>(server->display(), root[0], net_supporting_wm_check, XA_WINDOW);
 
     if (child.empty() || child[0] == None) {
         return false;
@@ -110,9 +114,9 @@ bool is_ewmh_compliant(const X11Server* server)
     return root[0] == child[0];
 }
 
-std::vector<Atom> get_window_state(const X11Server* server, ::Window window)
+std::vector<Atom> get_window_state(const X11Server* server, XLibWindow window)
 {
-    Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
+    const Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
     if (net_wm_state == None) {
         return std::vector<Atom>();
     }
@@ -173,7 +177,7 @@ bool ewmh_supported()
 }
 
 bool send_client_message(const X11Server* server,
-                         ::Window window,
+                         XLibWindow window,
                          Atom message_type,
                          const std::vector<std::int64_t>& data)
 {
@@ -191,16 +195,16 @@ bool send_client_message(const X11Server* server,
         event.xclient.data.l[i] = static_cast<DataType>(data[i]);
     }
 
-    Status result = XSendEvent(server->display(),
-                               server->default_root_window(),
-                               False,
-                               SubstructureNotifyMask | SubstructureRedirectMask,
-                               &event);
+    const Status result = XSendEvent(server->display(),
+                                     server->default_root_window(),
+                                     False,
+                                     SubstructureNotifyMask | SubstructureRedirectMask,
+                                     &event);
 
     return result != 0;
 }
 
-bool window_has_state(const X11Server* server, ::Window window, const std::string& atom_name)
+bool window_has_state(const X11Server* server, XLibWindow window, const std::string& atom_name)
 {
     if (!ewmh_supported()) {
         return false;
@@ -224,11 +228,11 @@ bool window_has_state(const X11Server* server, ::Window window, const std::strin
 }
 
 bool window_change_state(const X11Server* server,
-                         ::Window window,
+                         XLibWindow window,
                          WindowStateAction action,
                          const std::vector<std::string>& atom_names)
 {
-    Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
+    const Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
 
     if (net_wm_state == None) {
         return false;
@@ -247,13 +251,13 @@ bool window_change_state(const X11Server* server,
                                message_source_application);
 }
 
-void set_bypass_compositor_state(const X11Server* server, ::Window window, BypassCompositorState state)
+void set_bypass_compositor_state(const X11Server* server, XLibWindow window, BypassCompositorState state)
 {
     if (!ewmh_supported()) {
         return;
     }
 
-    Atom net_wm_bypass_compositor = server->get_atom(net_wm_bypass_compositor_atom_name);
+    const Atom net_wm_bypass_compositor = server->get_atom(net_wm_bypass_compositor_atom_name);
     if (net_wm_bypass_compositor == None) {
         return;
     }
@@ -268,15 +272,15 @@ void set_bypass_compositor_state(const X11Server* server, ::Window window, Bypas
                     1);
 }
 
-CARD32 get_window_wm_state(const X11Server* server, ::Window window)
+CARD32 get_window_wm_state(const X11Server* server, XLibWindow window)
 {
-    Atom net_wm_state = server->get_atom(wm_state_atom_name);
+    const Atom net_wm_state = server->get_atom(wm_state_atom_name);
 
     if (net_wm_state == None) {
         return WithdrawnState;
     }
 
-    auto state = get_window_property<CARD32>(server->display(), window, net_wm_state, net_wm_state);
+    const auto state = get_window_property<CARD32>(server->display(), window, net_wm_state, net_wm_state);
 
     if (state.empty()) {
         return WithdrawnState;
@@ -285,11 +289,11 @@ CARD32 get_window_wm_state(const X11Server* server, ::Window window)
     return state[0];
 }
 
-void set_window_name(const X11Server* server, ::Window window, const std::string& title)
+void set_window_name(const X11Server* server, XLibWindow window, const std::string& title)
 {
-    Atom net_wm_name      = server->get_atom(net_wm_name_atom_name);
-    Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
-    Atom utf8_string      = server->get_atom(utf8_string_atom_name);
+    const Atom net_wm_name      = server->get_atom(net_wm_name_atom_name);
+    const Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
+    const Atom utf8_string      = server->get_atom(utf8_string_atom_name);
 
     if (ewmh_supported() && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
         XChangeProperty(server->display(),
@@ -320,11 +324,11 @@ void set_window_name(const X11Server* server, ::Window window, const std::string
     }
 }
 
-std::string get_window_name(const X11Server* server, ::Window window)
+std::string get_window_name(const X11Server* server, XLibWindow window)
 {
-    Atom net_wm_name      = server->get_atom(net_wm_name_atom_name);
-    Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
-    Atom utf8_string      = server->get_atom(utf8_string_atom_name);
+    const Atom net_wm_name      = server->get_atom(net_wm_name_atom_name);
+    const Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
+    const Atom utf8_string      = server->get_atom(utf8_string_atom_name);
 
     if (ewmh_supported() && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
         std::vector<std::uint8_t> data = get_window_property<std::uint8_t>(server->display(),
@@ -354,6 +358,59 @@ std::string get_window_name(const X11Server* server, ::Window window)
     }
 
     return "";
+}
+
+FrameExtents get_frame_extents(const X11Server* server, XLibWindow window)
+{
+    // Get parent window, it's likely is the frame of our window.
+    Window root;
+    Window parent;
+    Window* children_return;
+    unsigned int nchildren_return;
+    if (XQueryTree(server->display(), window, &root, &parent, &children_return, &nchildren_return) == 0) {
+
+        return {0, 0, 0, 0};
+    }
+
+    // Get parent window size
+    XWindowAttributes parent_attribs;
+    if (XGetWindowAttributes(server->display(), parent, &parent_attribs) == 0) {
+        return {0, 0, 0, 0};
+    }
+    // Get our window size
+    XWindowAttributes window_attribs;
+    if (XGetWindowAttributes(server->display(), window, &window_attribs) == 0) {
+        return {0, 0, 0, 0};
+    }
+
+    // Get position of our window inside parent window
+    const Position pos = translate_position(server, window, parent, {0, 0});
+
+    FrameExtents extents;
+    extents.left   = pos.x;
+    extents.top    = pos.y;
+    extents.right  = parent_attribs.width - (window_attribs.width + pos.x);
+    extents.bottom = parent_attribs.height - (window_attribs.height + pos.y);
+
+    return extents;
+}
+
+Position translate_position(const X11Server* server, XLibWindow src_window, XLibWindow dst_window, Position position)
+{
+    int x_return        = 0;
+    int y_return        = 0;
+    Window child_return = None;
+
+    XTranslateCoordinates(server->display(),
+                          src_window,
+                          dst_window,
+                          position.x,
+                          position.y,
+                          &x_return,
+                          &y_return,
+                          &child_return);
+
+    return {x_return, y_return};
 }
 
 } // namespace framework::system::details::utils

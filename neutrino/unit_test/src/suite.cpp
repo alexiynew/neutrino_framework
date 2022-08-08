@@ -26,7 +26,8 @@ void Suite::run()
         m_current_test = iterator;
 
         std::stringstream log_output;
-        log::set_logger(std::make_unique<log::StreamLogger>(log_output));
+        // log::set_logger(std::make_unique<log::StreamLogger>(log_output));
+        log::set_logger(std::make_unique<log::StreamLogger>(std::cout));
 
         try {
             m_current_test->function();

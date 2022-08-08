@@ -5,7 +5,10 @@
 #include <string>
 #include <vector>
 
+#include <common/position.hpp>
+
 #include <system/src/linux/x11_server.hpp>
+#include <system/src/linux/x11_types.hpp>
 
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
@@ -26,15 +29,23 @@ enum class WindowStateAction
     add    = 1
 };
 
+struct FrameExtents
+{
+    long left   = 0;
+    long right  = 0;
+    long top    = 0;
+    long bottom = 0;
+};
+
 bool ewmh_supported();
 
 bool send_client_message(const X11Server* server,
-                         ::Window window,
+                         XLibWindow window,
                          Atom message_type,
                          const std::vector<std::int64_t>& data);
 
 template <typename... Args>
-inline bool send_client_message(const X11Server* server, ::Window window, Atom message_type, Args... data)
+inline bool send_client_message(const X11Server* server, XLibWindow window, Atom message_type, Args... data)
 {
     const std::vector<std::int64_t> tmp{{
     static_cast<std::int64_t>(data)...,
@@ -42,18 +53,21 @@ inline bool send_client_message(const X11Server* server, ::Window window, Atom m
     return send_client_message(server, window, message_type, tmp);
 }
 
-CARD32 get_window_wm_state(const X11Server* server, ::Window window);
+CARD32 get_window_wm_state(const X11Server* server, XLibWindow window);
 
-bool window_has_state(const X11Server* server, ::Window window, const std::string& atom_name);
+bool window_has_state(const X11Server* server, XLibWindow window, const std::string& atom_name);
 bool window_change_state(const X11Server* server,
-                         ::Window window,
+                         XLibWindow window,
                          WindowStateAction action,
                          const std::vector<std::string>& atom_names);
 
-void set_bypass_compositor_state(const X11Server* server, ::Window window, BypassCompositorState state);
+void set_bypass_compositor_state(const X11Server* server, XLibWindow window, BypassCompositorState state);
 
-void set_window_name(const X11Server* server, ::Window window, const std::string& title);
-std::string get_window_name(const X11Server* server, ::Window window);
+void set_window_name(const X11Server* server, XLibWindow window, const std::string& title);
+std::string get_window_name(const X11Server* server, XLibWindow window);
+
+FrameExtents get_frame_extents(const X11Server* server, XLibWindow window);
+Position translate_position(const X11Server* server, XLibWindow src_window, XLibWindow dst_window, Position position);
 
 } // namespace framework::system::details::utils
 

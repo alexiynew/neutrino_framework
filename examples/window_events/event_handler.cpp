@@ -243,62 +243,60 @@ void EventHandler::attach_logs()
     using ::to_string;
     using std::to_string;
 
-    m_window.on_show.connect([this](const Window&) { m_data_context.add_callback_event("on_show"); });
-    m_window.on_hide.connect([this](const Window&) { m_data_context.add_callback_event("on_hide"); });
-    m_window.on_close.connect([this](const Window&) { m_data_context.add_callback_event("on_close"); });
-    m_window.on_focus.connect([this](const Window&) { m_data_context.add_callback_event("on_focus"); });
-    m_window.on_lost_focus.connect([this](const Window&) { m_data_context.add_callback_event("on_focus_lost"); });
-    m_window.on_resize.connect(
-    [this](const Window&, Size size) { m_data_context.add_callback_event("on_size: " + to_string(size)); });
-    m_window.on_move.connect(
-    [this](const Window&, Position p) { m_data_context.add_callback_event("on_position: " + to_string(p)); });
+    m_window.set_on_show_callback([this]() { m_data_context.add_callback_event("on_show"); });
+    m_window.set_on_hide_callback([this]() { m_data_context.add_callback_event("on_hide"); });
+    m_window.set_on_close_callback([this]() { m_data_context.add_callback_event("on_close"); });
+    m_window.set_on_focus_callback([this]() { m_data_context.add_callback_event("on_focus"); });
+    m_window.set_on_lost_focus_callback([this]() { m_data_context.add_callback_event("on_focus_lost"); });
+    m_window.set_on_resize_callback(
+    [this](Size size) { m_data_context.add_callback_event("on_size: " + to_string(size)); });
+    m_window.set_on_move_callback(
+    [this](Position p) { m_data_context.add_callback_event("on_position: " + to_string(p)); });
 
-    m_window.on_key_down.connect([this](const Window&, KeyCode key, Modifiers state) {
+    m_window.set_on_key_down_callback([this](KeyCode key, Modifiers state) {
         m_data_context.add_callback_event("on_key_down key: " + to_string(key) + " " + key_name(key) + " " +
                                           to_string(state));
     });
 
-    m_window.on_key_up.connect([this](const Window&, KeyCode key, Modifiers state) {
+    m_window.set_on_key_up_callback([this](KeyCode key, Modifiers state) {
         m_data_context.add_callback_event("on_key_up key: " + to_string(key) + " " + key_name(key) + " " +
                                           to_string(state));
     });
 
-    m_window.on_mouse_enter.connect([this](const Window&) { m_data_context.add_callback_event("on_mouse_enter"); });
-    m_window.on_mouse_leave.connect([this](const Window&) { m_data_context.add_callback_event("on_mouse_leave"); });
+    m_window.set_on_mouse_enter_callback([this]() { m_data_context.add_callback_event("on_mouse_enter"); });
+    m_window.set_on_mouse_leave_callback([this]() { m_data_context.add_callback_event("on_mouse_leave"); });
 
-    m_window.on_mouse_move.connect(
-    [this](const Window&, CursorPosition p) { m_data_context.add_callback_event("on_mouse_move " + to_string(p)); });
+    m_window.set_on_mouse_move_callback(
+    [this](CursorPosition p) { m_data_context.add_callback_event("on_mouse_move " + to_string(p)); });
 
-    m_window.on_mouse_button_down.connect(
-    [this](const Window&, MouseButton button, CursorPosition position, Modifiers state) {
+    m_window.set_on_mouse_button_down_callback([this](MouseButton button, CursorPosition position, Modifiers state) {
         m_data_context.add_callback_event("on_mouse_down: " + button_name(button) + " " + to_string(position) + " " +
                                           to_string(state));
     });
 
-    m_window.on_mouse_button_up.connect(
-    [this](const Window&, MouseButton button, CursorPosition position, Modifiers state) {
+    m_window.set_on_mouse_button_up_callback([this](MouseButton button, CursorPosition position, Modifiers state) {
         m_data_context.add_callback_event("on_mouse_up: " + button_name(button) + " " + to_string(position) + " " +
                                           to_string(state));
     });
 
-    m_window.on_mouse_scroll.connect([this](const Window&, ScrollOffset offset) {
-        m_data_context.add_callback_event("on_mouse_scroll: " + to_string(offset));
-    });
+    m_window.set_on_mouse_scroll_callback(
+    [this](ScrollOffset offset) { m_data_context.add_callback_event("on_mouse_scroll: " + to_string(offset)); });
 
-    m_window.on_character.connect(
-    [this](const Window&, std::string s) { m_data_context.add_callback_event("on_character: " + s); });
+    m_window.set_on_character_callback(
+    [this](const std::string& s) { m_data_context.add_callback_event("on_character: " + s); });
 }
 
 void EventHandler::attach_actions()
 {
     using namespace framework;
 
-    m_window.on_key_up.connect([this](const Window&, KeyCode key, Modifiers) {
+    m_window.set_on_key_up_callback([this](KeyCode key, Modifiers) {
         switch (key) {
             case KeyCode::key_q: close_window(); break;
             case KeyCode::key_f: toggle_fullscreen(); break;
             case KeyCode::key_m: toggle_maximize(); break;
             case KeyCode::key_i: iconify(); break;
+            case KeyCode::key_0: move_to_zero(); break;
             default: break;
         }
     });
@@ -335,6 +333,11 @@ void EventHandler::iconify()
     if (m_window.state() != Window::State::iconified) {
         m_window.set_state(Window::State::iconified);
     }
+}
+
+void EventHandler::move_to_zero()
+{
+    m_window.set_position({0, 0});
 }
 
 #pragma endregion

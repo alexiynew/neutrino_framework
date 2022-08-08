@@ -28,7 +28,5 @@ int main()
     while (!w.should_close()) {
         event_handler.update();
         view.render(event_handler.data_context());
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 }

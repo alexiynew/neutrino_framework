@@ -60,10 +60,11 @@ View::View(Window& window)
 
     m_renderer.set_clear_color(Color(0x2F2F2FFFU));
 
-    m_window.on_resize.connect([this](const Window&, Size size) {
+    m_window.set_on_resize_callback([this](Size size) {
         m_renderer
         .set_uniform("projectionMatrix",
                      math::ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
+        m_renderer.set_viewport(size);
     });
 }
 

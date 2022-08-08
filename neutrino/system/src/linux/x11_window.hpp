@@ -6,6 +6,7 @@
 #include <system/context_settings.hpp>
 
 #include <system/src/linux/x11_server.hpp>
+#include <system/src/linux/x11_utils.hpp>
 #include <system/src/platform_window.hpp>
 
 #include <X11/Xlib.h>
@@ -65,8 +66,6 @@ public:
 #pragma endregion
 
 private:
-    using XLibWindow = ::Window;
-
     void process(XDestroyWindowEvent event);
     void process(XUnmapEvent event);
     void process(XVisibilityEvent event);
@@ -92,6 +91,7 @@ private:
     void process_events_while(const std::function<bool()>& condition);
 
     void update_size_limits(Size min_size, Size max_size);
+    void move_window(Position new_position);
 
     std::shared_ptr<X11Server> m_server = nullptr;
     std::unique_ptr<Context> m_context  = nullptr;
@@ -107,6 +107,7 @@ private:
     Size m_size         = {640, 480};
     Size m_saved_size   = {0, 0};
     Position m_position = {0, 0};
+    utils::FrameExtents m_frame_extents;
 
     mutable Size m_min_size = {0, 0};
     mutable Size m_max_size = {0, 0};

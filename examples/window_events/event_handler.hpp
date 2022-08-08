@@ -23,6 +23,8 @@ private:
     void toggle_maximize();
     void iconify();
 
+    void move_to_zero();
+
     framework::system::Window& m_window;
 
     DataContext m_data_context;
