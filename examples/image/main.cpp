@@ -475,14 +475,14 @@ void Example::setup()
     renderer.set_clear_color(Color(0xFF00FFFF));
     renderer.set_uniform("viewMatrix", scale(Matrix4f(), {image_scale, image_scale, image_scale}));
 
-    main_window.on_resize.connect([this](const Window&, Size size) {
+    main_window.set_on_resize_callback([this](Size size) {
         renderer.set_uniform("projectionMatrix",
                              ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
 
         arrange();
     });
 
-    main_window.on_key_down.connect([this](const Window&, KeyCode k, Modifiers) {
+    main_window.set_on_key_down_callback([this](KeyCode k, Modifiers) {
         switch (k) {
             case KeyCode::key_equal: gamma += 0.1f; break;
             case KeyCode::key_minus: gamma -= 0.1f; break;
@@ -500,20 +500,20 @@ void Example::setup()
         arrange();
     });
 
-    main_window.on_mouse_button_down.connect([this](const Window&, MouseButton button, CursorPosition pos, Modifiers) {
+    main_window.set_on_mouse_button_down_callback([this](MouseButton button, CursorPosition pos, Modifiers) {
         if (button == MouseButton::button_left) {
             drag_start_pos = Vector2f(pos.x, pos.y);
             drag           = true;
         }
     });
 
-    main_window.on_mouse_button_up.connect([this](const Window&, MouseButton button, CursorPosition, Modifiers) {
+    main_window.set_on_mouse_button_up_callback([this](MouseButton button, CursorPosition, Modifiers) {
         if (button == MouseButton::button_left) {
             drag = false;
         }
     });
 
-    main_window.on_mouse_move.connect([this](const Window&, Position pos) {
+    main_window.set_on_mouse_move_callback([this](Position pos) {
         if (drag) {
             Vector2f mouse(pos.x, pos.y);
             Vector2f diff  = drag_start_pos - mouse;

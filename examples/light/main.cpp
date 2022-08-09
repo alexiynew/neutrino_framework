@@ -216,15 +216,15 @@ int main()
     renderer.set_uniform("light.diffuse", Vector3f{0.5f, 0.5f, 0.5f});
     renderer.set_uniform("light.specular", Vector3f{1.0f, 1.0f, 1.0f});
 
-    main_window.on_resize.connect([&renderer](const Window&, Size size) {
+    main_window.set_on_resize_callback([&renderer](Size size) {
         const float aspect = static_cast<float>(size.width) / static_cast<float>(size.height);
         renderer.set_uniform("projectionMatrix", perspective(half_pi<float>, aspect, 0.001f, 100.0f));
     });
 
-    main_window.on_focus.connect([&main_window](const Window&) { main_window.grab_cursor(); });
-    main_window.on_lost_focus.connect([&main_window](const Window&) { main_window.release_cursor(); });
+    main_window.set_on_focus_callback([&main_window]() { main_window.grab_cursor(); });
+    main_window.set_on_lost_focus_callback([&main_window]() { main_window.release_cursor(); });
 
-    main_window.on_key_down.connect([&camera](const Window&, KeyCode key, Modifiers) {
+    main_window.set_on_key_down_callback([&camera](KeyCode key, Modifiers) {
         switch (key) {
             case KeyCode::key_w: camera.set_action(Camera::ActionState::moveForward, true); break;
             case KeyCode::key_s: camera.set_action(Camera::ActionState::moveBackward, true); break;
@@ -236,7 +236,7 @@ int main()
         }
     });
 
-    main_window.on_key_up.connect([&camera](const Window&, KeyCode key, Modifiers) {
+    main_window.set_on_key_up_callback([&camera](KeyCode key, Modifiers) {
         switch (key) {
             case KeyCode::key_w: camera.set_action(Camera::ActionState::moveForward, false); break;
             case KeyCode::key_s: camera.set_action(Camera::ActionState::moveBackward, false); break;
@@ -249,7 +249,7 @@ int main()
     });
 
     CursorPosition last_mouse_pos{main_window.size().width / 2, main_window.size().height / 2};
-    main_window.on_mouse_move.connect([&camera, &last_mouse_pos](const Window&, CursorPosition pos) {
+    main_window.set_on_mouse_move_callback([&camera, &last_mouse_pos](CursorPosition pos) {
         int dx = pos.x - last_mouse_pos.x;
         int dy = last_mouse_pos.y - pos.y;
 
