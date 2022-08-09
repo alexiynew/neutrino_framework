@@ -1,23 +1,26 @@
 #include <memory>
 
+#include <log/log.hpp>
 #include <system/window.hpp>
 
 #include <system/src/platform_window.hpp>
 #include <system/src/platform_window_factory.hpp>
+#include <system/src/state_data.hpp>
 
 namespace framework::system
 {
 Window::Window(const std::string& title, Size size, ContextSettings settings)
     : m_platform_window(details::create_platform_window(title, size, std::move(settings)))
     , m_callbacks(std::make_unique<details::CallbacksHolder>())
+    , m_state_data(std::make_unique<details::StateData>())
 {
-    m_platform_window->set_callbacks_holder(m_callbacks.get());
+    m_platform_window->set_window_interface(this);
 }
 
 Window::~Window()
 {
     if (m_platform_window) {
-        m_platform_window->set_callbacks_holder(nullptr);
+        m_platform_window->set_window_interface(nullptr);
     }
 }
 
@@ -37,32 +40,99 @@ Window& Window::operator=(Window&& other) noexcept
 
 void Window::show()
 {
+    if (is_visible()) {
+        return;
+    }
+
+    // Turn off on_resize, on_move and on_focus callbacks
+    const auto on_resize_callback = m_callbacks->on_resize_callback;
+    const auto on_move_callback   = m_callbacks->on_move_callback;
+    const auto on_focus_callback  = m_callbacks->on_focus_callback;
+
+    m_callbacks->on_resize_callback = nullptr;
+    m_callbacks->on_move_callback   = nullptr;
+    m_callbacks->on_focus_callback  = nullptr;
+
+    // Show window
     m_platform_window->show();
+
+    // Turn om on_resize, on_move and on_focus callbacks
+    m_callbacks->on_resize_callback = on_resize_callback;
+    m_callbacks->on_move_callback   = on_move_callback;
+    m_callbacks->on_focus_callback  = on_focus_callback;
+
+    // Explicitly call callbacks
+    m_callbacks->on_show();
+    m_callbacks->on_move(position());
+    m_callbacks->on_resize(size());
+
+    if (m_state_data->cursor_grabbed) {
+        m_platform_window->enable_raw_input();
+    }
+
+    if (has_input_focus()) {
+        m_callbacks->on_focus();
+    } else {
+        focus();
+    }
 }
 
 void Window::hide()
 {
+    if (!is_visible()) {
+        return;
+    }
+
+    if (has_input_focus()) {
+        m_callbacks->on_lost_focus();
+    }
+
+    if (m_state_data->cursor_grabbed) {
+        m_platform_window->disable_raw_input();
+    }
+
+    // Hide window
     m_platform_window->hide();
+
+    // Explicitly call on_hide callback
+    m_callbacks->on_hide();
 }
 
 void Window::close()
 {
-    m_platform_window->close();
+    m_state_data->should_close = true;
+    m_callbacks->on_close();
 }
 
 void Window::focus()
 {
+    if (!is_visible() || has_input_focus()) {
+        return;
+    }
+
     m_platform_window->focus();
 }
 
 void Window::grab_cursor()
 {
-    m_platform_window->grab_cursor();
+    if (m_state_data->cursor_grabbed) {
+        return;
+    }
+
+    m_state_data->cursor_grabbed = true;
+
+    m_platform_window->enable_raw_input();
 }
 
 void Window::release_cursor()
 {
-    m_platform_window->release_cursor();
+    if (!m_state_data->cursor_grabbed) {
+        return;
+    }
+
+    m_state_data->cursor_grabbed = false;
+
+    m_platform_window->disable_raw_input();
 }
 
 void Window::process_events()
@@ -125,7 +195,7 @@ bool Window::is_visible() const
 
 bool Window::should_close() const
 {
-    return m_platform_window->should_close();
+    return m_state_data->should_close;
 }
 
 bool Window::has_input_focus() const
@@ -135,7 +205,7 @@ bool Window::has_input_focus() const
 
 bool Window::is_cursor_grabbed() const
 {
-    return m_platform_window->is_cursor_grabbed();
+    return m_state_data->cursor_grabbed;
 }
 
 bool Window::is_cursor_visible() const
@@ -274,17 +344,53 @@ void Window::set_on_mouse_leave_callback(std::function<void()> callback)
 
 #pragma endregion
 
+#pragma region implemnetation callbacks
+
+void Window::on_close()
+{
+    close();
+}
+
+void Window::on_focus()
+{
+    if (!is_visible()) {
+        return;
+    }
+
+    if (m_state_data->cursor_grabbed) {
+        m_platform_window->enable_raw_input();
+    }
+
+    m_callbacks->on_focus();
+}
+
+void Window::on_lost_focus()
+{
+    if (!is_visible()) {
+        return;
+    }
+
+    if (m_state_data->cursor_grabbed) {
+        m_platform_window->disable_raw_input();
+    }
+
+    m_callbacks->on_lost_focus();
+}
+
+#pragma endregion
+
 void swap(Window& lhs, Window& rhs) noexcept
 {
     using std::swap;
     swap(lhs.m_platform_window, rhs.m_platform_window);
     swap(lhs.m_callbacks, rhs.m_callbacks);
+    swap(lhs.m_state_data, rhs.m_state_data);
 
     if (lhs.m_platform_window) {
-        lhs.m_platform_window->set_callbacks_holder(lhs.m_callbacks.get());
+        lhs.m_platform_window->set_window_interface(&lhs);
     }
     if (rhs.m_platform_window) {
-        rhs.m_platform_window->set_callbacks_holder(rhs.m_callbacks.get());
+        rhs.m_platform_window->set_window_interface(&rhs);
     }
 }
 

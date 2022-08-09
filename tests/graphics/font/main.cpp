@@ -5,7 +5,6 @@
 #include <graphics/font.hpp>
 #include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
-#include <log/log.hpp>
 #include <math/math.hpp>
 #include <system/application.hpp>
 #include <system/window.hpp>

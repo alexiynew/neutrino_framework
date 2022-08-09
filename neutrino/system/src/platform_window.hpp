@@ -11,6 +11,7 @@
 #include <system/window.hpp>
 
 #include <system/src/callbacks_holder.hpp>
+#include <system/src/state_data.hpp>
 
 namespace framework::system::details
 {
@@ -29,13 +30,12 @@ public:
     PlatformWindow& operator=(PlatformWindow&&) noexcept = default;
 
 #pragma region actions
-    virtual void show()           = 0;
-    virtual void hide()           = 0;
-    virtual void close()          = 0;
-    virtual void focus()          = 0;
-    virtual void grab_cursor()    = 0;
-    virtual void release_cursor() = 0;
-    virtual void process_events() = 0;
+    virtual void show()              = 0;
+    virtual void hide()              = 0;
+    virtual void focus()             = 0;
+    virtual void enable_raw_input()  = 0;
+    virtual void disable_raw_input() = 0;
+    virtual void process_events()    = 0;
 #pragma endregion
 
 #pragma region setters
@@ -51,9 +51,7 @@ public:
 
 #pragma region getters
     virtual bool is_visible() const        = 0;
-    virtual bool should_close() const      = 0;
     virtual bool has_input_focus() const   = 0;
-    virtual bool is_cursor_grabbed() const = 0;
     virtual bool is_cursor_visible() const = 0;
     virtual Window::State state() const    = 0;
     virtual Size size() const              = 0;
@@ -66,10 +64,18 @@ public:
     virtual Context& context()             = 0;
 #pragma endregion
 
-    void set_callbacks_holder(CallbacksHolder* callbacks);
+    void set_window_interface(Window* window);
 
 protected:
-    CallbacksHolder* m_callbacks = nullptr;
+    CallbacksHolder& callbacks();
+    const StateData& state_data();
+
+    void on_close();
+    void on_focus();
+    void on_lost_focus();
+
+private:
+    Window* m_window_interface = nullptr;
 };
 
 } // namespace framework::system::details

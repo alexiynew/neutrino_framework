@@ -116,6 +116,8 @@ private:
         TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
         TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
 
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
         window.set_resizable(true);
 
         // Size limits and window size still are the same
@@ -124,12 +126,16 @@ private:
         TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
         TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
 
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
         window.set_size({1000, 1000});
 
         TEST_ASSERT(window.is_resizable(), "Window has wrong state.");
         TEST_ASSERT(window.size() == size960, "Window has wrong size.");
         TEST_ASSERT(window.min_size() == size480, "Window has wrong min size.");
         TEST_ASSERT(window.max_size() == size960, "Window has wrong max size.");
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     void subscribe_for_events(Window& window)

@@ -30,10 +30,9 @@ public:
 #pragma region actions
     void show() override;
     void hide() override;
-    void close() override;
     void focus() override;
-    void grab_cursor() override;
-    void release_cursor() override;
+    void enable_raw_input() override;
+    void disable_raw_input() override;
     void process_events() override;
 #pragma endregion
 
@@ -50,9 +49,7 @@ public:
 
 #pragma region getters
     bool is_visible() const override;
-    bool should_close() const override;
     bool has_input_focus() const override;
-    bool is_cursor_grabbed() const override;
     bool is_cursor_visible() const override;
     Window::State state() const override;
     Size size() const override;
@@ -96,17 +93,14 @@ private:
     std::shared_ptr<X11Server> m_server = nullptr;
     std::unique_ptr<Context> m_context  = nullptr;
 
-    bool m_fullscreen     = false;
-    bool m_maximized      = false;
-    bool m_mapped         = false;
-    bool m_cursor_grabbed = false;
-    bool m_resizable      = true;
-    bool m_shoud_close    = false;
-    bool m_wait_focus     = false;
+    bool m_mapped     = false;
+    bool m_resizable  = true;
+    bool m_wait_focus = false;
 
-    Size m_size         = {640, 480};
-    Size m_saved_size   = {0, 0};
-    Position m_position = {0, 0};
+    Window::State m_state = Window::State::normal;
+    Size m_size           = {640, 480};
+    Size m_saved_size     = {0, 0};
+    Position m_position   = {0, 0};
     utils::FrameExtents m_frame_extents;
 
     mutable Size m_min_size = {0, 0};

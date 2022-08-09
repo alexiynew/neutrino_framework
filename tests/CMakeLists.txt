@@ -8,6 +8,7 @@ add_custom_target(${TESTS_TARGET} ALL
     DEPENDS ${PROJECT_NAME}
     COMMENT "Build tests."
 )
+set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TESTS_FOLDER})
 
 message(STATUS "Add tests...")
 
@@ -41,7 +42,8 @@ add_custom_target(check_verbose
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-set_target_properties(${TESTS_TARGET} PROPERTIES FOLDER ${TESTS_FOLDER})
 set_target_properties(check PROPERTIES FOLDER ${TESTS_FOLDER})
 set_target_properties(check_verbose PROPERTIES FOLDER ${TESTS_FOLDER})
 
+set_target_properties(check PROPERTIES XCODE_GENERATE_SCHEME TRUE)
+set_target_properties(check_verbose PROPERTIES XCODE_GENERATE_SCHEME TRUE)

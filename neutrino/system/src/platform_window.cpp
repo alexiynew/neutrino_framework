@@ -7,9 +7,48 @@ PlatformWindow::PlatformWindow()
 
 PlatformWindow::~PlatformWindow() = default;
 
-void PlatformWindow::set_callbacks_holder(CallbacksHolder* callbacks)
+void PlatformWindow::set_window_interface(Window* window)
 {
-    m_callbacks = callbacks;
+    m_window_interface = window;
+}
+
+CallbacksHolder& PlatformWindow::callbacks()
+{
+    if (m_window_interface && m_window_interface->m_callbacks) {
+        return *(m_window_interface->m_callbacks.get());
+    } else {
+        throw std::runtime_error("Window interface not set or window callbacks not initilized.");
+    }
+}
+
+const StateData& PlatformWindow::state_data()
+{
+    if (m_window_interface && m_window_interface->m_state_data) {
+        return *(m_window_interface->m_state_data.get());
+    } else {
+        throw std::runtime_error("Window interface not set or window state data not initilized.");
+    }
+}
+
+void PlatformWindow::on_close()
+{
+    if (m_window_interface) {
+        m_window_interface->on_close();
+    }
+}
+
+void PlatformWindow::on_focus()
+{
+    if (m_window_interface) {
+        m_window_interface->on_focus();
+    }
+}
+
+void PlatformWindow::on_lost_focus()
+{
+    if (m_window_interface) {
+        m_window_interface->on_lost_focus();
+    }
 }
 
 } // namespace framework::system::details

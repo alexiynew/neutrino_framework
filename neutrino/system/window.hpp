@@ -19,6 +19,7 @@ namespace details
 {
 class PlatformWindow;
 class CallbacksHolder;
+struct StateData;
 } // namespace details
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,13 +83,10 @@ public:
 
     /// @brief Removes the window from the screen.
     ///
-    /// If the window has input focus then before hiding it, function tries to switch focus to another window. In this
-    /// case, the @ref on_lost_focus callback would be called.@n
+    /// If the window has input focus then before hiding it the @ref on_lost_focus callback would be called.@n
     /// At the end of execution, it calls the @ref on_hide callback.
     ///
     /// @thread_safety This function can be called only from main thread.
-    ///
-    /// TODO: Should always call the on_lost_focus callback, because window anyway loses input focus when hidden.
     void hide();
 
     /// @brief Close the window
@@ -391,10 +389,16 @@ public:
 #pragma endregion
 
 private:
+    friend class details::PlatformWindow;
     friend void swap(Window& lhs, Window& rhs) noexcept;
+
+    void on_close();
+    void on_focus();
+    void on_lost_focus();
 
     std::unique_ptr<details::PlatformWindow> m_platform_window;
     std::unique_ptr<details::CallbacksHolder> m_callbacks;
+    std::unique_ptr<details::StateData> m_state_data;
 };
 
 /// @brief Swaps two Windows.

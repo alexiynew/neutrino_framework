@@ -360,19 +360,6 @@ void Win32Window::show()
 {
     using namespace std::placeholders;
 
-    if (is_visible()) {
-        return;
-    }
-
-    // Turn off the on_resize callback
-    m_message_handler->on_size = nullptr;
-
-    // Turn off the on_move callback
-    m_message_handler->on_move = nullptr;
-
-    // Turn off the on_set_focus callback
-    m_message_handler->on_set_focus = nullptr;
-
     switch (m_state) {
         case Window::State::fullscreen: {
             ShowWindow(m_window, SW_SHOW);
@@ -393,61 +380,11 @@ void Win32Window::show()
     UpdateWindow(m_window);
 
     m_mouse_hover = is_cursor_in_client_area(m_window);
-
-    // Turn on the on_resize callback
-    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
-
-    // Turn on the on_move callback
-    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
-
-    // Turn on the on_set_focus callback
-    m_message_handler->on_set_focus = std::bind(&Win32Window::on_set_focus_message, this, _1, _2, _3);
-
-    // Explicitly call on_show callback
-    on_show();
-
-    // Explicitly call on_move callback
-    on_move(position());
-
-    // Explicitly call on_resize callback
-    on_resize(size());
-
-    if (m_cursor_grabbed) {
-        enable_raw_input();
-    }
-
-    if (has_input_focus()) {
-        on_focus();
-    } else {
-        focus();
-    }
 }
 
 void Win32Window::hide()
 {
-    if (!is_visible()) {
-        return;
-    }
-
-    if (has_input_focus()) {
-        // Call the on_lost_focus callback explicitly
-        on_lost_focus();
-    }
-
-    if (m_cursor_grabbed) {
-        disable_raw_input();
-    }
-
     ShowWindow(m_window, SW_HIDE);
-
-    // Explicitly call on_hide callback
-    on_hide();
-}
-
-void Win32Window::close()
-{
-    m_should_close = true;
-    on_close();
 }
 
 void Win32Window::focus()
@@ -458,32 +395,25 @@ void Win32Window::focus()
 
     BringWindowToTop(m_window);
     SetForegroundWindow(m_window);
-
-    if (m_cursor_grabbed) {
-        enable_raw_input();
-    }
 }
 
-void Win32Window::grab_cursor()
+void Win32Window::enable_raw_input()
 {
-    if (m_cursor_grabbed) {
-        return;
-    }
+    m_grabbed_cursor_diff = {0, 0};
+    m_cursor_position     = get_cursor_position(m_window);
+    update_cursor();
 
-    m_cursor_grabbed = true;
-
-    enable_raw_input();
+    const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
+    RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
-void Win32Window::release_cursor()
+void Win32Window::disable_raw_input()
 {
-    if (!m_cursor_grabbed) {
-        return;
-    }
+    set_cursor_cliping(m_window, false);
+    set_cursor_position(m_window, m_cursor_position);
 
-    m_cursor_grabbed = false;
-
-    disable_raw_input();
+    const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
+    RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
 void Win32Window::process_events()
@@ -639,19 +569,9 @@ bool Win32Window::is_visible() const
     return IsWindowVisible(m_window);
 }
 
-bool Win32Window::should_close() const
-{
-    return m_should_close;
-}
-
 bool Win32Window::has_input_focus() const
 {
-    return GetActiveWindow() == m_window && GetFocus() == m_window;
-}
-
-bool Win32Window::is_cursor_grabbed() const
-{
-    return m_cursor_grabbed;
+    return is_visible() && GetActiveWindow() == m_window && GetFocus() == m_window;
 }
 
 bool Win32Window::is_cursor_visible() const
@@ -796,35 +716,19 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
 
 LRESULT Win32Window::on_set_focus_message(UINT, WPARAM, LPARAM)
 {
-    if (is_visible()) {
-        if (m_cursor_grabbed) {
-            enable_raw_input();
-        }
-
-        on_focus();
-    }
-
+    on_focus();
     return 0;
 }
 
 LRESULT Win32Window::on_kill_focus_message(UINT, WPARAM, LPARAM)
 {
-    if (is_visible()) {
-        on_lost_focus();
-    }
-
-    if (m_cursor_grabbed) {
-        disable_raw_input();
-    }
-
+    on_lost_focus();
     return 0;
 }
 
 LRESULT Win32Window::on_close_message(UINT, WPARAM, LPARAM)
 {
-    m_should_close = true;
     on_close();
-
     return 0;
 }
 
@@ -891,7 +795,7 @@ LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
 
     CursorPosition pos{LOWORD(l_param), HIWORD(l_param)};
 
-    if (!m_cursor_grabbed) {
+    if (!state_data().cursor_grabbed) {
         m_cursor_position = pos;
         on_mouse_move(pos);
     }
@@ -1011,7 +915,7 @@ LRESULT Win32Window::on_char_message(UINT, WPARAM w_param, LPARAM)
 
 LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
 {
-    if (!m_cursor_grabbed) {
+    if (!state_data().cursor_grabbed) {
         return 0;
     }
 
@@ -1156,29 +1060,10 @@ void Win32Window::track_mouse()
 
 void Win32Window::update_cursor()
 {
-    if (m_cursor_grabbed) {
+    if (state_data().cursor_grabbed) {
         set_cursor_in_center(m_window);
         set_cursor_cliping(m_window, true);
     }
-}
-
-void Win32Window::enable_raw_input()
-{
-    m_grabbed_cursor_diff = {0, 0};
-    m_cursor_position     = get_cursor_position(m_window);
-    update_cursor();
-
-    const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
-    RegisterRawInputDevices(&rid, 1, sizeof(rid));
-}
-
-void Win32Window::disable_raw_input()
-{
-    set_cursor_cliping(m_window, false);
-    set_cursor_position(m_window, m_cursor_position);
-
-    const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
-    RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
 void Win32Window::hide_cursor()

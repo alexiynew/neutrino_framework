@@ -28,10 +28,9 @@ public:
 #pragma region actions
     void show() override;
     void hide() override;
-    void close() override;
     void focus() override;
-    void grab_cursor() override;
-    void release_cursor() override;
+    void enable_raw_input() override;
+    void disable_raw_input() override;
     void process_events() override;
 #pragma endregion
 
@@ -48,7 +47,6 @@ public:
 
 #pragma region getters
     bool is_visible() const override;
-    bool should_close() const override;
     bool has_input_focus() const override;
     bool is_cursor_grabbed() const override;
     bool is_cursor_visible() const override;
@@ -104,8 +102,6 @@ private:
 
     void track_mouse();
     void update_cursor();
-    void enable_raw_input();
-    void disable_raw_input();
     void hide_cursor();
     void show_cursor();
 
@@ -125,14 +121,12 @@ private:
 
     Window::State m_state = Window::State::normal;
 
-    bool m_resizable    = true;
-    bool m_should_close = false;
+    bool m_resizable = true;
 
     HCURSOR m_prev_cursor = nullptr;
 
     bool m_mouse_hover    = false;
     bool m_cursor_visible = true;
-    bool m_cursor_grabbed = false;
 
     CursorPosition m_grabbed_cursor_diff = {0, 0};
     CursorPosition m_cursor_position     = {0, 0};

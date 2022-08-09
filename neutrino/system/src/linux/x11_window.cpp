@@ -146,18 +146,8 @@ X11Window::~X11Window()
 
 void X11Window::show()
 {
-    if (m_mapped) {
-        return;
-    }
     // Remember last position before showing window. In case if we want to set it again.
     const auto target_pos = m_position;
-
-    // Turn off on_resize and on_move callbacks
-    auto on_resize = m_callbacks->on_resize_callback;
-    auto on_move   = m_callbacks->on_move_callback;
-
-    m_callbacks->on_resize_callback = nullptr;
-    m_callbacks->on_move_callback   = nullptr;
 
     // Map window on screen
     XMapWindow(m_server->display(), m_window);
@@ -173,48 +163,28 @@ void X11Window::show()
         move_window(target_pos);
     }
 
-    if (m_fullscreen) {
-        maximize_toggle(false);
-        fullscreen_toggle(true);
-        XFlush(m_server->display());
-        // process_events_while([this]() { return !is_fullscreen(); });
-    } else if (m_maximized) {
-        maximize_toggle(true);
-        XFlush(m_server->display());
-        // process_events_while([this]() { return !is_maximized(); });
-    } else if (!m_resizable) {
-        update_size_limits(m_size, m_size);
-        XFlush(m_server->display());
-        // process_events_while([this]() { return is_resizable(); });
-    }
-
-    // Turn on on_resize and on_move callbacks
-    m_callbacks->on_resize_callback = on_resize;
-    m_callbacks->on_move_callback   = on_move;
-
-    // Explicitly call on_move callback
-    m_callbacks->on_move(position());
-
-    // Explicitly call on_resize callback
-    m_callbacks->on_resize(size());
+    // if (m_fullscreen) {
+    //     maximize_toggle(false);
+    //     fullscreen_toggle(true);
+    //     XFlush(m_server->display());
+    //     // process_events_while([this]() { return !is_fullscreen(); });
+    // } else if (m_maximized) {
+    //     maximize_toggle(true);
+    //     XFlush(m_server->display());
+    //     // process_events_while([this]() { return !is_maximized(); });
+    // } else if (!m_resizable) {
+    //     update_size_limits(m_size, m_size);
+    //     XFlush(m_server->display());
+    //     // process_events_while([this]() { return is_resizable(); });
+    // }
 }
 
 void X11Window::hide()
 {
-    if (!m_mapped) {
-        return;
-    }
-
     XUnmapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
     process_events_while([this]() { return m_mapped || has_input_focus(); });
-}
-
-void X11Window::close()
-{
-    m_shoud_close = true;
-    m_callbacks->on_close();
 }
 
 void X11Window::focus()
@@ -242,10 +212,10 @@ void X11Window::focus()
     process_events_while([this]() { return m_wait_focus; });
 }
 
-void X11Window::grab_cursor()
+void X11Window::enable_raw_input()
 {}
 
-void X11Window::release_cursor()
+void X11Window::disable_raw_input()
 {}
 
 void X11Window::process_events()
@@ -284,8 +254,12 @@ void X11Window::process_events()
 
 #pragma region setters
 
-void X11Window::set_state(Window::State /*state*/)
+void X11Window::set_state(Window::State state)
 {
+    if (!m_mapped) {
+        m_state = state;
+        return;
+    }
 
     // void X11Window::iconify()
     //{
@@ -481,19 +455,9 @@ bool X11Window::is_visible() const
     return false;
 }
 
-bool X11Window::should_close() const
-{
-    return m_shoud_close;
-}
-
 bool X11Window::has_input_focus() const
 {
-    return m_window == m_server->active_window();
-}
-
-bool X11Window::is_cursor_grabbed() const
-{
-    return false;
+    return is_visible() && m_window == m_server->active_window();
 }
 
 bool X11Window::is_cursor_visible() const
@@ -503,7 +467,7 @@ bool X11Window::is_cursor_visible() const
 
 Window::State X11Window::state() const
 {
-    return Window::State::normal;
+    return m_state;
 
     // bool X11Window::is_fullscreen() const
     // {
@@ -640,7 +604,7 @@ void X11Window::process(XDestroyWindowEvent /*unused*/)
 void X11Window::process(XUnmapEvent /*unused*/)
 {
     m_mapped = false;
-    m_callbacks->on_hide();
+    callbacks().on_hide();
 }
 
 void X11Window::process(XVisibilityEvent event)
@@ -651,7 +615,6 @@ void X11Window::process(XVisibilityEvent event)
 
     if (!m_mapped) {
         m_mapped = true;
-        m_callbacks->on_show();
     }
 }
 
@@ -663,14 +626,14 @@ void X11Window::process(XConfigureEvent event)
     if (m_size != new_size) {
         m_size = new_size;
         if (is_visible()) {
-            m_callbacks->on_resize(m_size);
+            callbacks().on_resize(m_size);
         }
     }
 
     if (m_position != new_position) {
         m_position = new_position;
         if (is_visible()) {
-            m_callbacks->on_move(m_position);
+            callbacks().on_move(m_position);
         }
     }
 }
@@ -702,19 +665,19 @@ void X11Window::process(XFocusChangeEvent event)
             //     }
             // }
             m_wait_focus = false;
-            m_callbacks->on_focus();
+            on_focus();
             break;
         case FocusOut:
             if (m_input_context != nullptr) {
                 XUnsetICFocus(m_input_context);
             }
 
-            if (m_cursor_grabbed) {
-                XUngrabPointer(m_server->display(), CurrentTime);
-                m_cursor_grabbed = false;
-            }
+            // if (m_cursor_grabbed) {
+            //     XUngrabPointer(m_server->display(), CurrentTime);
+            //     m_cursor_grabbed = false;
+            // }
 
-            m_callbacks->on_lost_focus();
+            on_lost_focus();
             break;
     }
 }
@@ -734,7 +697,7 @@ void X11Window::process(XClientMessageEvent event)
     const Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
     const Atom event_atom    = static_cast<Atom>(event.data.l[0]);
     if (event_atom == delete_window) {
-        close();
+        on_close();
     }
 }
 
@@ -749,7 +712,7 @@ void X11Window::process(XKeyEvent event)
 
     switch (event.type) {
         case KeyPress: {
-            m_callbacks->on_key_down(key, state);
+            callbacks().on_key_down(key, state);
 
             if (X_HAVE_UTF8_STRING) {
                 char buffer[64] = {0};
@@ -757,7 +720,7 @@ void X11Window::process(XKeyEvent event)
                 int count = Xutf8LookupString(m_input_context, &event, buffer, sizeof(buffer), &sym, nullptr);
 
                 if (count > 0) {
-                    m_callbacks->on_character(std::string(buffer));
+                    callbacks().on_character(std::string(buffer));
                 }
             }
         } break;
@@ -775,7 +738,7 @@ void X11Window::process(XKeyEvent event)
             }(event);
 
             if (!is_retriggered) {
-                m_callbacks->on_key_up(key, state);
+                callbacks().on_key_up(key, state);
             }
         } break;
     }
@@ -792,22 +755,22 @@ void X11Window::process(XButtonEvent event)
     }
 
     switch (event.type) {
-        case ButtonPress: m_callbacks->on_mouse_button_down(button, position, state); break;
-        case ButtonRelease: m_callbacks->on_mouse_button_up(button, position, state); break;
+        case ButtonPress: callbacks().on_mouse_button_down(button, position, state); break;
+        case ButtonRelease: callbacks().on_mouse_button_up(button, position, state); break;
     }
 }
 
 void X11Window::process(XCrossingEvent event)
 {
     switch (event.type) {
-        case EnterNotify: m_callbacks->on_mouse_enter(); break;
-        case LeaveNotify: m_callbacks->on_mouse_leave(); break;
+        case EnterNotify: callbacks().on_mouse_enter(); break;
+        case LeaveNotify: callbacks().on_mouse_leave(); break;
     }
 }
 
 void X11Window::process(XMotionEvent event)
 {
-    m_callbacks->on_mouse_move({event.x, event.y});
+    callbacks().on_mouse_move({event.x, event.y});
 }
 
 void X11Window::process(XMappingEvent event)

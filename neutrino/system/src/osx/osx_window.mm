@@ -361,6 +361,11 @@ using framework::system::ScrollOffset;
     return YES;
 }
 
+- (NSRect)windowWillUseStandardFrame:(NSWindow *)window defaultFrame:(NSRect)newFrame {
+    // Return a custom zoomed window size here
+    return self.screen.visibleFrame;
+}
+
 - (BOOL)windowShouldClose:(id)sender
 {
     window->window_should_close();
@@ -581,15 +586,7 @@ OsxWindow::~OsxWindow()
 
 void OsxWindow::show()
 {
-    if (is_visible()) {
-        return;
-    }
-
     AutoreleasePool pool;
-
-    // Turn off on_focus callback to call it in order we want
-    auto on_focus = m_callbacks->on_focus_callback;
-    m_callbacks->on_focus_callback = nullptr;
 
     if (!m_position_was_set_before_show) {
         [m_window->get() cascadeTopLeftFromPoint:NSMakePoint(20, 20)];
@@ -607,57 +604,17 @@ void OsxWindow::show()
     } else {
         switch_state(m_state);
     }
-
-    if (m_cursor_grabbed) {
-        enable_raw_input();
-    }
-
-    // Turn on on_focus callback
-    m_callbacks->on_focus_callback = on_focus;
-
-    // Explicitly call on_show callback
-    m_callbacks->on_show();
-
-    // Explicitly call on_move callback
-    m_callbacks->on_move(position());
-
-    // Explicitly call on_resize callback
-    m_callbacks->on_resize(size());
-
-    // This would call on_focus callback
-    if (!has_input_focus()) {
-        [m_window->get() makeKeyWindow];
-    } else {
-        // Or call the on_focus callback explicitly
-        m_callbacks->on_focus();
-    }
 }
 
 void OsxWindow::hide()
 {
-    if (!is_visible() && ![m_window->get() isMiniaturized]) {
-        return;
-    }
-
     AutoreleasePool pool;
 
     if (m_state == Window::State::fullscreen) {
-        auto on_resize = m_callbacks->on_resize_callback;
-        m_callbacks->on_resize_callback = nullptr;
+        auto on_resize = callbacks().on_resize_callback;
+        callbacks().on_resize_callback = nullptr;
         [m_window->get() exitFullscreen];
-        m_callbacks->on_resize_callback = on_resize;
-    }
-
-    if (has_input_focus()) {
-        // This would focus other window and call on_lost_focus callback for this window
-        if (!switch_to_other_window()) {
-            // Or call the on_lost_focus callback explicitly
-            m_callbacks->on_lost_focus();
-        }
-
-        if (m_cursor_grabbed) {
-            disable_raw_input();
-        }
+        callbacks().on_resize_callback = on_resize;
     }
 
     [m_window->get() orderOut:m_window->get()];
@@ -667,23 +624,11 @@ void OsxWindow::hide()
 
     [m_window->get() close];
 
-    // Explicitly call on_hide callback
-    m_callbacks->on_hide();
-}
-
-void OsxWindow::close()
-{
-    m_should_close = true;
-    m_callbacks->on_close();
 }
 
 void OsxWindow::focus()
 {
     AutoreleasePool pool;
-
-    if (!is_visible()) {
-        return;
-    }
 
     [m_window->get() orderFrontRegardless];
     [m_window->get() makeKeyWindow];
@@ -693,17 +638,45 @@ void OsxWindow::focus()
     } while (!has_input_focus());
 }
 
-void OsxWindow::grab_cursor()
+void OsxWindow::enable_raw_input()
 {
-    m_cursor_grabbed = true;
-    enable_raw_input();
+    AutoreleasePool pool;
+
+    m_grabbed_cursor_diff = {0, 0};
+
+    const NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
+    const auto p      = position();
+    const auto s      = size();
+    m_cursor_position = CursorPosition(pos.x + p.x, (p.y + s.height) - pos.y);
+
+    center_cursor_inside_window();
+    mouse_moved(m_grabbed_cursor_diff);
+
+    if (!m_mouse_hover) {
+        m_mouse_hover = true;
+        callbacks().on_mouse_enter();
+    }
+
+    CGAssociateMouseAndMouseCursorPosition(NO);
+
+    process_events();
 }
 
-void OsxWindow::release_cursor()
+void OsxWindow::disable_raw_input()
 {
-    m_cursor_grabbed = false;
-    disable_raw_input();
+    AutoreleasePool pool;
+
+    // restore cursor previous position
+    CGPoint point;
+    point.x = m_cursor_position.x;
+    point.y = m_cursor_position.y;
+    CGWarpMouseCursorPosition(point);
+
+    CGAssociateMouseAndMouseCursorPosition(YES);
+
+    process_events();
 }
+
 
 void OsxWindow::process_events()
 {
@@ -730,20 +703,20 @@ void OsxWindow::set_state(Window::State state)
     }
 
     // Turn off on_move and on resize callbacks
-    auto on_move = m_callbacks->on_move_callback;
-    auto on_resize = m_callbacks->on_resize_callback;
-    m_callbacks->on_move_callback = nullptr;
-    m_callbacks->on_resize_callback = nullptr;
+    auto on_move = callbacks().on_move_callback;
+    auto on_resize = callbacks().on_resize_callback;
+    callbacks().on_move_callback = nullptr;
+    callbacks().on_resize_callback = nullptr;
 
     switch_state(state);
 
     // Turn on on_move and on resize callbacks
-    m_callbacks->on_move_callback = on_move;
-    m_callbacks->on_resize_callback = on_resize;
+    callbacks().on_move_callback = on_move;
+    callbacks().on_resize_callback = on_resize;
 
     if (state != Window::State::iconified) {
-        m_callbacks->on_move(position());
-        m_callbacks->on_resize(size());
+        callbacks().on_move(position());
+        callbacks().on_resize(size());
     }
 }
 
@@ -889,21 +862,11 @@ bool OsxWindow::is_visible() const
     return [m_window->get() isVisible] || [m_window->get() isMiniaturized];
 }
 
-bool OsxWindow::should_close() const
-{
-    return m_should_close;
-}
-
 bool OsxWindow::has_input_focus() const
 {
     AutoreleasePool pool;
 
     return is_visible() && [m_window->get() isKeyWindow];
-}
-
-bool OsxWindow::is_cursor_grabbed() const
-{
-    return m_cursor_grabbed;
 }
 
 bool OsxWindow::is_cursor_visible() const
@@ -1002,14 +965,14 @@ Context& OsxWindow::context()
 
 void OsxWindow::window_should_close()
 {
-    close();
+    on_close();
 }
 
 void OsxWindow::window_did_resize()
 {
     if (is_visible()) {
         update_context();
-        m_callbacks->on_resize(size());
+        callbacks().on_resize(size());
     }
 }
 
@@ -1017,7 +980,7 @@ void OsxWindow::window_did_move()
 {
     if (is_visible()) {
         update_context();
-        m_callbacks->on_move(position());
+        callbacks().on_move(position());
     }
 }
 
@@ -1031,24 +994,12 @@ void OsxWindow::window_did_deminiaturize()
 
 void OsxWindow::window_did_become_key()
 {
-    if (is_visible()) {
-        m_callbacks->on_focus();
-
-        if (m_cursor_grabbed) {
-            enable_raw_input();
-        }
-    }
+    on_focus();
 }
 
 void OsxWindow::window_did_resign_key()
 {
-    if (is_visible()) {
-        m_callbacks->on_lost_focus();
-
-        if (m_cursor_grabbed) {
-            disable_raw_input();
-        }
-    }
+    on_lost_focus();
 }
 
 void OsxWindow::window_did_enter_full_screen()
@@ -1063,28 +1014,28 @@ void OsxWindow::window_did_exit_full_screen()
 
 void OsxWindow::key_down(KeyCode key, Modifiers state)
 {
-    m_callbacks->on_key_down(key, state);
+    callbacks().on_key_down(key, state);
 }
 
 void OsxWindow::key_up(KeyCode key, Modifiers state)
 {
-    m_callbacks->on_key_up(key, state);
+    callbacks().on_key_up(key, state);
 }
 
 void OsxWindow::character(const std::string& c)
 {
-    m_callbacks->on_character(c);
+    callbacks().on_character(c);
 }
 
 void OsxWindow::mouse_entered()
 {
     m_mouse_hover = true;
-    m_callbacks->on_mouse_enter();
+    callbacks().on_mouse_enter();
 }
 
 void OsxWindow::mouse_exited()
 {
-    m_callbacks->on_mouse_leave();
+    callbacks().on_mouse_leave();
     m_mouse_hover = false;
 }
 
@@ -1092,14 +1043,14 @@ void OsxWindow::mouse_moved(CursorPosition cursor_position)
 {
     AutoreleasePool pool;
 
-    if (m_cursor_grabbed) {
+    if (state_data().cursor_grabbed) {
         int dx = 0;
         int dy = 0;
         CGGetLastMouseDelta(&dx, &dy);
-        m_callbacks->on_mouse_move({dx, dy});
+        callbacks().on_mouse_move({dx, dy});
         center_cursor_inside_window();
     } else if (m_mouse_hover) {
-        m_callbacks->on_mouse_move(convert_cursor_position(cursor_position));
+        callbacks().on_mouse_move(convert_cursor_position(cursor_position));
     }
 
     update_cursor_visibility();
@@ -1107,35 +1058,20 @@ void OsxWindow::mouse_moved(CursorPosition cursor_position)
 
 void OsxWindow::mouse_button_down(MouseButton button, CursorPosition position, Modifiers state)
 {
-    m_callbacks->on_mouse_button_down(button, convert_cursor_position(position), state);
+    callbacks().on_mouse_button_down(button, convert_cursor_position(position), state);
 }
 
 void OsxWindow::mouse_button_up(MouseButton button, CursorPosition position, Modifiers state)
 {
-    m_callbacks->on_mouse_button_up(button, convert_cursor_position(position), state);
+    callbacks().on_mouse_button_up(button, convert_cursor_position(position), state);
 }
 
 void OsxWindow::mouse_scroll(ScrollOffset scroll)
 {
-    m_callbacks->on_mouse_scroll(scroll);
+    callbacks().on_mouse_scroll(scroll);
 }
 
 #pragma endregion
-
-bool OsxWindow::switch_to_other_window()
-{
-    AutoreleasePool pool;
-
-    for (NSWindow* window in [NSApp orderedWindows]) {
-        if (window != m_window->get() && [window isVisible]) {
-            [window orderFront:nil];
-            [window makeKeyWindow];
-            return true;
-        }
-    }
-
-    return false;
-}
 
 void OsxWindow::update_context()
 {
@@ -1155,10 +1091,10 @@ void OsxWindow::switch_state(Window::State state)
     // Drop fullscreen state
     if (old_state == Window::State::fullscreen) {
         {
-            auto on_resize = m_callbacks->on_resize_callback;
-            m_callbacks->on_resize_callback = nullptr;
+            auto on_resize = callbacks().on_resize_callback;
+            callbacks().on_resize_callback = nullptr;
             [m_window->get() exitFullscreen];
-            m_callbacks->on_resize_callback = on_resize;
+            callbacks().on_resize_callback = on_resize;
         }
 
         do {
@@ -1185,10 +1121,10 @@ void OsxWindow::switch_state(Window::State state)
             break;
         case Window::State::fullscreen:
             {
-                auto on_resize = m_callbacks->on_resize_callback;
-                m_callbacks->on_resize_callback = nullptr;
+                auto on_resize = callbacks().on_resize_callback;
+                callbacks().on_resize_callback = nullptr;
                 [m_window->get() enterFullscreen];
-                m_callbacks->on_resize_callback = on_resize;
+                callbacks().on_resize_callback = on_resize;
             }
 
             do {
@@ -1225,12 +1161,10 @@ void OsxWindow::center_cursor_inside_window()
 {
     AutoreleasePool pool;
 
-    if (m_cursor_grabbed) {
-        const auto p = position();
-        const auto s = size();
-        CGPoint point{p.x + s.width / 2.0f, p.y + s.height / 2.0f};
-        CGWarpMouseCursorPosition(point);
-    }
+    const auto p = position();
+    const auto s = size();
+    CGPoint point{p.x + s.width / 2.0f, p.y + s.height / 2.0f};
+    CGWarpMouseCursorPosition(point);
 }
 
 void OsxWindow::update_cursor_visibility()
@@ -1268,45 +1202,6 @@ void OsxWindow::hide_cursor()
 
     m_cursor_actualy_visible = false;
     [NSCursor hide];
-}
-
-void OsxWindow::enable_raw_input()
-{
-    AutoreleasePool pool;
-
-    m_grabbed_cursor_diff = {0, 0};
-
-    const NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
-    const auto p      = position();
-    const auto s      = size();
-    m_cursor_position = CursorPosition(pos.x + p.x, (p.y + s.height) - pos.y);
-
-    center_cursor_inside_window();
-    mouse_moved(m_grabbed_cursor_diff);
-
-    if (!m_mouse_hover) {
-        m_mouse_hover = true;
-        m_callbacks->on_mouse_enter();
-    }
-
-    CGAssociateMouseAndMouseCursorPosition(NO);
-
-    process_events();
-}
-
-void OsxWindow::disable_raw_input()
-{
-    AutoreleasePool pool;
-
-    // restore cursor previous position
-    CGPoint point;
-    point.x = m_cursor_position.x;
-    point.y = m_cursor_position.y;
-    CGWarpMouseCursorPosition(point);
-
-    CGAssociateMouseAndMouseCursorPosition(YES);
-
-    process_events();
 }
 
 CursorPosition OsxWindow::convert_cursor_position(CursorPosition position)
