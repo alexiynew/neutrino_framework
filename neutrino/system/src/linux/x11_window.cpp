@@ -146,22 +146,12 @@ X11Window::~X11Window()
 
 void X11Window::show()
 {
-    // Remember last position before showing window. In case if we want to set it again.
-    const auto target_pos = m_position;
-
-    // Map window on screen
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
     process_events_while([this]() { return !m_mapped; });
 
     // Get window frame sizes
     m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
-
-    // Set old window position if needed
-    if (target_pos != Position{0, 0}) {
-        m_position = {0, 0};
-        move_window(target_pos);
-    }
 
     // if (m_fullscreen) {
     //     maximize_toggle(false);
@@ -183,16 +173,11 @@ void X11Window::hide()
 {
     XUnmapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
-
-    process_events_while([this]() { return m_mapped || has_input_focus(); });
+    process_events_while([this]() { return m_mapped; });
 }
 
 void X11Window::focus()
 {
-    if (!is_visible() || has_input_focus()) {
-        return;
-    }
-
     const Atom net_active_window = m_server->get_atom(net_active_window_atom_name, false);
     if (utils::ewmh_supported() && net_active_window != None) {
         utils::send_client_message(m_server.get(),
@@ -254,13 +239,8 @@ void X11Window::process_events()
 
 #pragma region setters
 
-void X11Window::set_state(Window::State state)
+void X11Window::set_state(Window::State)
 {
-    if (!m_mapped) {
-        m_state = state;
-        return;
-    }
-
     // void X11Window::iconify()
     //{
     //     if (XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen())) == 0) {
@@ -420,10 +400,10 @@ void X11Window::set_resizable(bool value)
 
 void X11Window::set_position(Position new_position)
 {
-    if (!m_mapped) {
-        m_position = new_position;
-    } else {
+    if (m_mapped) {
         move_window(new_position);
+    } else {
+        m_position = new_position;
     }
 }
 
@@ -604,7 +584,6 @@ void X11Window::process(XDestroyWindowEvent /*unused*/)
 void X11Window::process(XUnmapEvent /*unused*/)
 {
     m_mapped = false;
-    callbacks().on_hide();
 }
 
 void X11Window::process(XVisibilityEvent event)
@@ -612,10 +591,7 @@ void X11Window::process(XVisibilityEvent event)
     if (event.state == VisibilityFullyObscured) {
         return;
     }
-
-    if (!m_mapped) {
-        m_mapped = true;
-    }
+    m_mapped = true;
 }
 
 void X11Window::process(XConfigureEvent event)

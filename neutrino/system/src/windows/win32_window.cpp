@@ -389,10 +389,6 @@ void Win32Window::hide()
 
 void Win32Window::focus()
 {
-    if (!is_visible()) {
-        return;
-    }
-
     BringWindowToTop(m_window);
     SetForegroundWindow(m_window);
 }

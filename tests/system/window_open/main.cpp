@@ -79,31 +79,43 @@ private:
 
         window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
-        TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 1 && hide_called == 0,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
-        TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 1 && hide_called == 0,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
 
         window.hide();
         TEST_ASSERT(!window.is_visible(), "Window is still visible.");
-        TEST_ASSERT(show_called == 1 && hide_called == 1, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 1 && hide_called == 1,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
-        TEST_ASSERT(show_called == 2 && hide_called == 1, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 2 && hide_called == 1,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.hide();
         TEST_ASSERT(!window.is_visible(), "Window is still visible.");
-        TEST_ASSERT(show_called == 2 && hide_called == 2, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 2 && hide_called == 2,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
-        TEST_ASSERT(show_called == 3 && hide_called == 2, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 3 && hide_called == 2,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
