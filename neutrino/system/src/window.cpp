@@ -56,6 +56,13 @@ void Window::show()
     // Show window
     m_platform_window->show();
 
+    // Set window state
+    if (m_state_data->state == Window::State::iconified) {
+        m_platform_window->switch_state(Window::State::iconified, Window::State::normal);
+    } else {
+        m_platform_window->switch_state(Window::State::normal, m_state_data->state);
+    }
+
     // Turn om on_resize, on_move and on_focus callbacks
     m_callbacks->on_resize_callback = on_resize_callback;
     m_callbacks->on_move_callback   = on_move_callback;
@@ -146,7 +153,37 @@ void Window::process_events()
 
 void Window::set_state(State state)
 {
-    m_platform_window->set_state(state);
+    if (!is_visible()) {
+        m_state_data->state = state;
+        return;
+    }
+
+    const Window::State old_state = m_platform_window->state();
+    if (state == old_state) {
+        return;
+    }
+
+    // Turn off the on_resize and on_move callbacks
+    const auto on_resize_callback   = m_callbacks->on_resize_callback;
+    const auto on_move_callback     = m_callbacks->on_move_callback;
+    m_callbacks->on_resize_callback = nullptr;
+    m_callbacks->on_move_callback   = nullptr;
+
+    // Switch to new state
+    m_platform_window->switch_state(old_state, state);
+
+    // Turn om on_resize, on_move and on_focus callbacks
+    m_callbacks->on_resize_callback = on_resize_callback;
+    m_callbacks->on_move_callback   = on_move_callback;
+
+    // Update state value
+    m_state_data->state = m_platform_window->state();
+
+    // Explicitly call callbacks
+    if (m_state_data->state != Window::State::iconified) {
+        m_callbacks->on_move(position());
+        m_callbacks->on_resize(size());
+    }
 }
 
 void Window::set_size(Size size)

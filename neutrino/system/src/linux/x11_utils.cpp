@@ -12,14 +12,33 @@ using framework::system::details::XLibWindow;
 
 namespace
 {
-const char* const net_supported_atom_name            = u8"_NET_SUPPORTED";
-const char* const net_supporting_wm_check_atom_name  = u8"_NET_SUPPORTING_WM_CHECK";
-const char* const net_wm_bypass_compositor_atom_name = u8"_NET_WM_BYPASS_COMPOSITOR";
-const char* const net_wm_icon_name_atom_name         = u8"_NET_WM_ICON_NAME";
-const char* const net_wm_name_atom_name              = u8"_NET_WM_NAME";
-const char* const net_wm_state_atom_name             = u8"_NET_WM_STATE";
-const char* const utf8_string_atom_name              = u8"UTF8_STRING";
-const char* const wm_state_atom_name                 = u8"WM_STATE";
+const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
+const char* const net_supported_atom_name               = u8"_NET_SUPPORTED";
+const char* const net_supporting_wm_check_atom_name     = u8"_NET_SUPPORTING_WM_CHECK";
+const char* const net_wm_bypass_compositor_atom_name    = u8"_NET_WM_BYPASS_COMPOSITOR";
+const char* const net_wm_icon_name_atom_name            = u8"_NET_WM_ICON_NAME";
+const char* const net_wm_name_atom_name                 = u8"_NET_WM_NAME";
+const char* const net_wm_state_atom_name                = u8"_NET_WM_STATE";
+const char* const net_wm_state_fullscreen_atom_name     = u8"_NET_WM_STATE_FULLSCREEN";
+const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDEN";
+const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
+const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
+const char* const utf8_string_atom_name                 = u8"UTF8_STRING";
+const char* const wm_state_atom_name                    = u8"WM_STATE";
+
+static constexpr int message_source_application = 1;
+
+enum class BypassCompositorState
+{
+    no_preferences = 0,
+    disabled       = 1
+};
+
+enum class WindowStateAction
+{
+    remove = 0,
+    add    = 1
+};
 
 inline bool have_utf8_support()
 {
@@ -114,14 +133,10 @@ bool is_ewmh_compliant(const X11Server* server)
     return root[0] == child[0];
 }
 
-std::vector<Atom> get_window_state(const X11Server* server, XLibWindow window)
+bool ewmh_supported(const X11Server* server)
 {
-    const Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
-    if (net_wm_state == None) {
-        return std::vector<Atom>();
-    }
-
-    return get_window_property<Atom>(server->display(), window, net_wm_state, XA_ATOM);
+    static const bool supported = is_ewmh_compliant(server);
+    return supported;
 }
 
 XTextProperty create_text_property(Display* display, const std::string& string)
@@ -166,16 +181,6 @@ std::string create_string(Display* display, const XTextProperty& text_property)
     return string;
 }
 
-} // namespace
-
-namespace framework::system::details::utils
-{
-bool ewmh_supported()
-{
-    static bool supported = is_ewmh_compliant(X11Server::connect().get());
-    return supported;
-}
-
 bool send_client_message(const X11Server* server,
                          XLibWindow window,
                          Atom message_type,
@@ -204,22 +209,52 @@ bool send_client_message(const X11Server* server,
     return result != 0;
 }
 
+template <typename... Args>
+inline bool send_client_message(const X11Server* server, XLibWindow window, Atom message_type, Args... data)
+{
+    const std::vector<std::int64_t> tmp{{
+    static_cast<std::int64_t>(data)...,
+    }};
+    return send_client_message(server, window, message_type, tmp);
+}
+
+CARD32 get_window_wm_state(const X11Server* server, XLibWindow window)
+{
+    const Atom net_wm_state = server->get_atom(wm_state_atom_name);
+
+    if (net_wm_state == None) {
+        return WithdrawnState;
+    }
+
+    const auto state = get_window_property<CARD32>(server->display(), window, net_wm_state, net_wm_state);
+
+    if (state.empty()) {
+        return WithdrawnState;
+    }
+
+    return state[0];
+}
+
 bool window_has_state(const X11Server* server, XLibWindow window, const std::string& atom_name)
 {
-    if (!ewmh_supported()) {
+    if (!ewmh_supported(server)) {
         return false;
     }
 
-    const Atom net_wm_state_atom = server->get_atom(atom_name);
+    const Atom net_wm_state_atom   = server->get_atom(net_wm_state_atom_name);
+    const Atom state_to_check_atom = server->get_atom(atom_name);
 
-    if (net_wm_state_atom == None) {
+    if (state_to_check_atom == None || net_wm_state_atom == None) {
         return false;
     }
 
-    const auto state = ::get_window_state(server, window);
+    const std::vector<Atom> window_state = get_window_property<Atom>(server->display(),
+                                                                     window,
+                                                                     net_wm_state_atom,
+                                                                     XA_ATOM);
 
-    for (auto atom : state) {
-        if (atom == net_wm_state_atom) {
+    for (const auto& atom : window_state) {
+        if (atom == state_to_check_atom) {
             return true;
         }
     }
@@ -253,7 +288,7 @@ bool window_change_state(const X11Server* server,
 
 void set_bypass_compositor_state(const X11Server* server, XLibWindow window, BypassCompositorState state)
 {
-    if (!ewmh_supported()) {
+    if (!ewmh_supported(server)) {
         return;
     }
 
@@ -272,21 +307,24 @@ void set_bypass_compositor_state(const X11Server* server, XLibWindow window, Byp
                     1);
 }
 
-CARD32 get_window_wm_state(const X11Server* server, XLibWindow window)
+} // namespace
+
+namespace framework::system::details::utils
 {
-    const Atom net_wm_state = server->get_atom(wm_state_atom_name);
-
-    if (net_wm_state == None) {
-        return WithdrawnState;
+void focus_window(const X11Server* server, XLibWindow window, Time last_input_time)
+{
+    const Atom net_active_window = server->get_atom(net_active_window_atom_name, false);
+    if (ewmh_supported(server) && net_active_window != None) {
+        send_client_message(server,
+                            window,
+                            net_active_window,
+                            message_source_application,
+                            last_input_time,
+                            server->active_window());
+    } else {
+        XRaiseWindow(server->display(), window);
+        XSetInputFocus(server->display(), window, RevertToPointerRoot, CurrentTime);
     }
-
-    const auto state = get_window_property<CARD32>(server->display(), window, net_wm_state, net_wm_state);
-
-    if (state.empty()) {
-        return WithdrawnState;
-    }
-
-    return state[0];
 }
 
 void set_window_name(const X11Server* server, XLibWindow window, const std::string& title)
@@ -295,7 +333,7 @@ void set_window_name(const X11Server* server, XLibWindow window, const std::stri
     const Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
     const Atom utf8_string      = server->get_atom(utf8_string_atom_name);
 
-    if (ewmh_supported() && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
+    if (ewmh_supported(server) && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
         XChangeProperty(server->display(),
                         window,
                         net_wm_name,
@@ -330,7 +368,7 @@ std::string get_window_name(const X11Server* server, XLibWindow window)
     const Atom net_wm_icon_name = server->get_atom(net_wm_icon_name_atom_name);
     const Atom utf8_string      = server->get_atom(utf8_string_atom_name);
 
-    if (ewmh_supported() && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
+    if (ewmh_supported(server) && net_wm_name != None && net_wm_icon_name != None && utf8_string != None) {
         std::vector<std::uint8_t> data = get_window_property<std::uint8_t>(server->display(),
                                                                            window,
                                                                            net_wm_name,
@@ -384,33 +422,88 @@ FrameExtents get_frame_extents(const X11Server* server, XLibWindow window)
     }
 
     // Get position of our window inside parent window
-    const Position pos = translate_position(server, window, parent, {0, 0});
+    int window_x = 0;
+    int window_y = 0;
+    XLibWindow child;
+    XTranslateCoordinates(server->display(), window, parent, 0, 0, &window_x, &window_y, &child);
 
     FrameExtents extents;
-    extents.left   = pos.x;
-    extents.top    = pos.y;
-    extents.right  = parent_attribs.width - (window_attribs.width + pos.x);
-    extents.bottom = parent_attribs.height - (window_attribs.height + pos.y);
+    extents.left   = window_x;
+    extents.top    = window_y;
+    extents.right  = parent_attribs.width - (window_attribs.width + window_x);
+    extents.bottom = parent_attribs.height - (window_attribs.height + window_y);
 
     return extents;
 }
 
-Position translate_position(const X11Server* server, XLibWindow src_window, XLibWindow dst_window, Position position)
+void iconify_window(const X11Server* server, XLibWindow window)
 {
-    int x_return        = 0;
-    int y_return        = 0;
-    Window child_return = None;
+    XIconifyWindow(server->display(), window, static_cast<int>(server->default_screen()));
+}
 
-    XTranslateCoordinates(server->display(),
-                          src_window,
-                          dst_window,
-                          position.x,
-                          position.y,
-                          &x_return,
-                          &y_return,
-                          &child_return);
+void switch_maximize_state(const X11Server* server, XLibWindow window, bool enabled)
+{
+    if (!ewmh_supported(server)) {
+        return;
+    }
 
-    return {x_return, y_return};
+    const std::vector<std::string> state = {net_wm_state_maximized_vert_atom_name,
+                                            net_wm_state_maximized_horz_atom_name};
+
+    const auto action = enabled ? WindowStateAction::add : WindowStateAction::remove;
+
+    if (!window_change_state(server, window, action, state)) {
+        // report error
+    }
+}
+
+void switch_fullscreen_state(const X11Server* server, XLibWindow window, bool enabled)
+{
+    if (!ewmh_supported(server)) {
+        return;
+    }
+
+    auto bypass_state = enabled ? BypassCompositorState::disabled : BypassCompositorState::no_preferences;
+    set_bypass_compositor_state(server, window, bypass_state);
+
+    const std::vector<std::string> state = {net_wm_state_fullscreen_atom_name};
+
+    auto action = enabled ? WindowStateAction::add : WindowStateAction::remove;
+
+    if (!window_change_state(server, window, action, state)) {
+        // report error
+    }
+}
+
+bool is_iconifyed(const X11Server* server, XLibWindow window)
+{
+    const auto window_state = get_window_wm_state(server, window);
+    const bool hidden       = window_has_state(server, window, net_wm_state_hidden_atom_name);
+
+    return window_state == IconicState || hidden;
+}
+
+bool is_maximized(const X11Server* server, XLibWindow window)
+{
+    if (!ewmh_supported(server)) {
+        return false;
+    }
+
+    const bool maximized_vert = window_has_state(server, window, net_wm_state_maximized_vert_atom_name);
+    const bool maximized_horz = window_has_state(server, window, net_wm_state_maximized_horz_atom_name);
+
+    return maximized_vert || maximized_horz;
+}
+
+bool is_fullscreen(const X11Server* server, XLibWindow window)
+{
+    if (!ewmh_supported(server)) {
+        return false;
+    }
+
+    const bool in_fullscreen_state = window_has_state(server, window, net_wm_state_fullscreen_atom_name);
+
+    return in_fullscreen_state;
 }
 
 } // namespace framework::system::details::utils

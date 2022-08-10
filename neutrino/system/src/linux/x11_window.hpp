@@ -33,11 +33,11 @@ public:
     void focus() override;
     void enable_raw_input() override;
     void disable_raw_input() override;
+    void switch_state(Window::State old_state, Window::State new_state) override;
     void process_events() override;
 #pragma endregion
 
 #pragma region setters
-    void set_state(Window::State state) override;
     void set_size(Size size) override;
     void set_max_size(Size max_size) override;
     void set_min_size(Size min_size) override;
@@ -76,9 +76,6 @@ private:
     void process(XMotionEvent event);
     void process(XMappingEvent event);
 
-    void maximize_toggle(bool enable);
-    void fullscreen_toggle(bool enable);
-
     void set_wm_hints();
     void set_class_hints();
     void add_protocols(const std::vector<std::string>& protocol_names);
@@ -97,10 +94,9 @@ private:
     bool m_resizable  = true;
     bool m_wait_focus = false;
 
-    Window::State m_state = Window::State::normal;
-    Size m_size           = {640, 480};
-    Size m_saved_size     = {0, 0};
-    Position m_position   = {0, 0};
+    Size m_size         = {640, 480};
+    Size m_saved_size   = {0, 0};
+    Position m_position = {0, 0};
     utils::FrameExtents m_frame_extents;
 
     mutable Size m_min_size = {0, 0};
@@ -110,7 +106,7 @@ private:
 
     XIC m_input_context = nullptr;
 
-    Time m_lastInputTime = 0;
+    Time m_last_input_time = 0;
 };
 
 } // namespace framework::system::details

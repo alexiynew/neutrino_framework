@@ -18,13 +18,8 @@
 
 namespace
 {
-const char* const net_active_window_atom_name           = u8"_NET_ACTIVE_WINDOW";
-const char* const net_frame_extents_atom_name           = u8"_NET_FRAME_EXTENTS";
-const char* const net_wm_state_fullscreen_atom_name     = u8"_NET_WM_STATE_FULLSCREEN";
-const char* const net_wm_state_hidden_atom_name         = u8"_NET_WM_STATE_HIDDEN";
-const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIMIZED_HORZ";
-const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
-const char* const wm_delete_window_atom_name            = u8"WM_DELETE_WINDOW";
+const char* const net_frame_extents_atom_name = u8"_NET_FRAME_EXTENTS";
+const char* const wm_delete_window_atom_name  = u8"WM_DELETE_WINDOW";
 
 const std::int64_t event_mask = VisibilityChangeMask  // Any change in visibility wanted
                                 | FocusChangeMask     // Any change in input focus wanted
@@ -152,21 +147,6 @@ void X11Window::show()
 
     // Get window frame sizes
     m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
-
-    // if (m_fullscreen) {
-    //     maximize_toggle(false);
-    //     fullscreen_toggle(true);
-    //     XFlush(m_server->display());
-    //     // process_events_while([this]() { return !is_fullscreen(); });
-    // } else if (m_maximized) {
-    //     maximize_toggle(true);
-    //     XFlush(m_server->display());
-    //     // process_events_while([this]() { return !is_maximized(); });
-    // } else if (!m_resizable) {
-    //     update_size_limits(m_size, m_size);
-    //     XFlush(m_server->display());
-    //     // process_events_while([this]() { return is_resizable(); });
-    // }
 }
 
 void X11Window::hide()
@@ -178,19 +158,7 @@ void X11Window::hide()
 
 void X11Window::focus()
 {
-    const Atom net_active_window = m_server->get_atom(net_active_window_atom_name, false);
-    if (utils::ewmh_supported() && net_active_window != None) {
-        utils::send_client_message(m_server.get(),
-                                   m_window,
-                                   net_active_window,
-                                   utils::message_source_application,
-                                   m_lastInputTime,
-                                   m_server->active_window());
-    } else {
-        XRaiseWindow(m_server->display(), m_window);
-        XSetInputFocus(m_server->display(), m_window, RevertToPointerRoot, CurrentTime);
-    }
-
+    utils::focus_window(m_server.get(), m_window, m_last_input_time);
     XFlush(m_server->display());
 
     m_wait_focus = true;
@@ -202,6 +170,27 @@ void X11Window::enable_raw_input()
 
 void X11Window::disable_raw_input()
 {}
+
+void X11Window::switch_state(Window::State old_state, Window::State new_state)
+{
+    switch (old_state) {
+        case Window::State::fullscreen: utils::switch_fullscreen_state(m_server.get(), m_window, false); break;
+        case Window::State::iconified: XMapWindow(m_server->display(), m_window); break;
+        case Window::State::maximized: utils::switch_maximize_state(m_server.get(), m_window, true); break;
+        case Window::State::normal: break;
+    }
+
+    switch (new_state) {
+        case Window::State::fullscreen: utils::switch_fullscreen_state(m_server.get(), m_window, true); break;
+        case Window::State::iconified: utils::iconify_window(m_server.get(), m_window); break;
+        case Window::State::maximized: utils::switch_maximize_state(m_server.get(), m_window, true); break;
+        case Window::State::normal: break;
+    }
+
+    XFlush(m_server->display());
+
+    //     process_events_while([this]() { return !is_iconified(); });
+}
 
 void X11Window::process_events()
 {
@@ -238,94 +227,6 @@ void X11Window::process_events()
 #pragma endregion
 
 #pragma region setters
-
-void X11Window::set_state(Window::State)
-{
-    // void X11Window::iconify()
-    //{
-    //     if (XIconifyWindow(m_server->display(), m_window, static_cast<int>(m_server->default_screen())) == 0) {
-    //         return;
-    //     }
-    //
-    //     XFlush(m_server->display());
-    //
-    //     process_events_while([this]() { return !is_iconified(); });
-    // }
-
-    // void X11Window::maximize()
-    // {
-    //     if (!m_mapped) {
-    //         m_maximized = true;
-    //         return;
-    //     }
-    //
-    //     restore();
-    //
-    //     m_saved_size = m_size;
-    //
-    //     maximize_toggle(true);
-    //
-    //     m_maximized = true;
-    //
-    //     XFlush(m_server->display());
-    //
-    //     process_events_while([this]() { return !is_maximized(); });
-    // }
-    //
-    // void X11Window::fullscreen()
-    // {
-    //     if (!m_mapped) {
-    //         m_fullscreen = true;
-    //         return;
-    //     }
-    //
-    //     restore();
-    //
-    //     focus();
-    //
-    //     m_saved_size = m_size;
-    //
-    //     fullscreen_toggle(true);
-    //
-    //     m_fullscreen = true;
-    //
-    //     XFlush(m_server->display());
-    //
-    //     process_events_while([this]() { return !is_fullscreen(); });
-    // }
-    //
-    // void X11Window::restore()
-    // {
-    //     if (is_fullscreen()) {
-    //         fullscreen_toggle(false);
-    //
-    //         resize(m_saved_size);
-    //
-    //         XFlush(m_server->display());
-    //
-    //         process_events_while([this]() { return is_fullscreen(); });
-    //
-    //         m_fullscreen = false;
-    //     } else if (utils::ewmh_supported() && is_maximized()) {
-    //         maximize_toggle(false);
-    //
-    //         resize(m_saved_size);
-    //
-    //         XFlush(m_server->display());
-    //
-    //         process_events_while([this]() { return is_maximized(); });
-    //
-    //         m_maximized = false;
-    //     } else if (is_iconified()) {
-    //         XMapWindow(m_server->display(), m_window);
-    //         XFlush(m_server->display());
-    //
-    //         process_events_while([this]() { return !m_mapped || is_iconified(); });
-    //
-    //         focus();
-    //     }
-    // }
-}
 
 void X11Window::set_size(Size size)
 {
@@ -447,42 +348,19 @@ bool X11Window::is_cursor_visible() const
 
 Window::State X11Window::state() const
 {
-    return m_state;
+    if (utils::is_fullscreen(m_server.get(), m_window)) {
+        return Window::State::fullscreen;
+    }
 
-    // bool X11Window::is_fullscreen() const
-    // {
-    //     const bool in_fullscreen_state = utils::ewmh_supported() ?
-    //                                      utils::window_has_state(m_server.get(),
-    //                                                              m_window,
-    //                                                              net_wm_state_fullscreen_atom_name) :
-    //                                      false;
-    //
-    //     return in_fullscreen_state && m_fullscreen;
-    // }
-    //
-    // bool X11Window::is_iconified() const
-    // {
-    //     const auto window_state = utils::get_window_wm_state(m_server.get(), m_window);
-    //     const bool hidden       = utils::window_has_state(m_server.get(), m_window, net_wm_state_hidden_atom_name);
-    //
-    //     return window_state == IconicState || hidden;
-    // }
-    //
-    // bool X11Window::is_maximized() const
-    // {
-    //     if (utils::ewmh_supported()) {
-    //         const bool maximized_vert = utils::window_has_state(m_server.get(),
-    //                                                             m_window,
-    //                                                             net_wm_state_maximized_vert_atom_name);
-    //         const bool maximized_horz = utils::window_has_state(m_server.get(),
-    //                                                             m_window,
-    //                                                             net_wm_state_maximized_horz_atom_name);
-    //
-    //         return (maximized_vert || maximized_horz);
-    //     }
-    //
-    //     return false;
-    // }
+    if (utils::is_maximized(m_server.get(), m_window)) {
+        return Window::State::maximized;
+    }
+
+    if (utils::is_iconifyed(m_server.get(), m_window)) {
+        return Window::State::iconified;
+    }
+
+    return Window::State::normal;
 }
 
 Size X11Window::size() const
@@ -665,7 +543,7 @@ void X11Window::process(XPropertyEvent event)
         m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
     }
 
-    m_lastInputTime = event.time;
+    m_last_input_time = event.time;
 }
 
 void X11Window::process(XClientMessageEvent event)
@@ -757,44 +635,6 @@ void X11Window::process(XMappingEvent event)
 #pragma endregion
 
 #pragma region helper_functions
-
-void X11Window::maximize_toggle(bool enable)
-{
-    // We can't maximize window without EWMH.
-    if (!utils::ewmh_supported()) {
-        return;
-    }
-
-    const std::vector<std::string> state = {net_wm_state_maximized_vert_atom_name,
-                                            net_wm_state_maximized_horz_atom_name};
-
-    auto action = enable ? utils::WindowStateAction::add : utils::WindowStateAction::remove;
-
-    if (!utils::window_change_state(m_server.get(), m_window, action, state)) {
-        // report error
-        //        warning(log_tag) << "Failed to " << (enable ? "set" : "reset") << " maximized state." << std::endl;
-    }
-}
-
-void X11Window::fullscreen_toggle(bool enable)
-{
-    // We can't create fullscreen window without EWMH.
-    if (!utils::ewmh_supported()) {
-        return;
-    }
-
-    auto bypass_state = enable ? utils::BypassCompositorState::disabled : utils::BypassCompositorState::no_preferences;
-    utils::set_bypass_compositor_state(m_server.get(), m_window, bypass_state);
-
-    const std::vector<std::string> state = {net_wm_state_fullscreen_atom_name};
-
-    auto action = enable ? utils::WindowStateAction::add : utils::WindowStateAction::remove;
-
-    if (!utils::window_change_state(m_server.get(), m_window, action, state)) {
-        // report error
-        // warning(log_tag) << "Failed to " << (enable ? "set" : "reset") << " fullscreen mode." << std::endl;
-    }
-}
 
 void X11Window::set_wm_hints()
 {

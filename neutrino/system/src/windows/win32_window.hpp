@@ -31,11 +31,11 @@ public:
     void focus() override;
     void enable_raw_input() override;
     void disable_raw_input() override;
+    void switch_state(Window::State old_state, Window::State new_state) override;
     void process_events() override;
 #pragma endregion
 
 #pragma region setters
-    void set_state(Window::State state) override;
     void set_size(Size size) override;
     void set_max_size(Size max_size) override;
     void set_min_size(Size min_size) override;
@@ -118,8 +118,6 @@ private:
     Size m_max_size    = {0, 0};
 
     Position m_client_position = {0, 0};
-
-    Window::State m_state = Window::State::normal;
 
     bool m_resizable = true;
 

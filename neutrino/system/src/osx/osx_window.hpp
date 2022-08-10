@@ -32,11 +32,11 @@ public:
     void focus() override;
     void enable_raw_input() override;
     void disable_raw_input() override;
+    void switch_state(Window::State old_state, Window::State new_state) override;
     void process_events() override;
 #pragma endregion
 
 #pragma region setters
-    void set_state(Window::State state) override;
     void set_size(Size size) override;
     void set_max_size(Size size) override;
     void set_min_size(Size size) override;
@@ -101,8 +101,6 @@ private:
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
 
-    Window::State m_state = Window::State::normal;
-
     bool m_cursor_visible         = true;
     bool m_cursor_actualy_visible = true;
     bool m_mouse_hover            = false;
@@ -112,8 +110,6 @@ private:
 
     Size m_min_size;
     Size m_max_size;
-
-    bool m_position_was_set_before_show = false;
 };
 
 } // namespace framework::system::details

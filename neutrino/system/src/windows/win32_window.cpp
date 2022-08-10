@@ -97,35 +97,6 @@ bool is_cursor_in_client_area(HWND window)
     return pos.x >= 0 && pos.y >= 0 && pos.x <= rect.right && pos.y <= rect.bottom;
 }
 
-framework::system::Window::State get_window_state(HWND window)
-{
-    using State = framework::system::Window::State;
-
-    if (IsIconic(window) != 0) {
-        return State::iconified;
-    } else if (IsZoomed(window) != 0) {
-        return State::maximized;
-    } else {
-        RECT window_rect;
-        RECT desktop_rect;
-        GetWindowRect(window, &window_rect);
-        GetWindowRect(GetDesktopWindow(), &desktop_rect);
-
-        const bool is_fullscreen_size = (window_rect.left == desktop_rect.left && window_rect.top == desktop_rect.top &&
-                                         window_rect.right == desktop_rect.right &&
-                                         window_rect.bottom == desktop_rect.bottom);
-
-        /// TODO: Check window decorations
-        // const bool has_window_decorations = true;
-
-        if (is_fullscreen_size) {
-            return State::fullscreen;
-        }
-    }
-
-    return State::normal;
-}
-
 } // namespace
 
 namespace framework::system::details
@@ -358,28 +329,11 @@ Win32Window::~Win32Window()
 
 void Win32Window::show()
 {
-    using namespace std::placeholders;
-
-    switch (m_state) {
-        case Window::State::fullscreen: {
-            ShowWindow(m_window, SW_SHOW);
-            enter_fullscreen();
-        } break;
-        case Window::State::iconified:
-            // Drop iconified state
-            ShowWindow(m_window, SW_SHOW);
-            ShowWindow(m_window, SW_RESTORE);
-            m_state = Window::State::normal;
-            break;
-        case Window::State::maximized: ShowWindow(m_window, SW_MAXIMIZE); break;
-        case Window::State::normal:
-            ShowWindow(m_window, SW_SHOW);
-            m_client_position = position();
-            break;
-    }
+    ShowWindow(m_window, SW_SHOW);
     UpdateWindow(m_window);
 
-    m_mouse_hover = is_cursor_in_client_area(m_window);
+    m_client_position = position();
+    m_mouse_hover     = is_cursor_in_client_area(m_window);
 }
 
 void Win32Window::hide()
@@ -412,6 +366,23 @@ void Win32Window::disable_raw_input()
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
+void Win32Window::switch_state(Window::State old_state, Window::State new_state)
+{
+    switch (old_state) {
+        case Window::State::fullscreen: exit_fullscreen(); break;
+        case Window::State::iconified: ShowWindow(m_window, SW_RESTORE); break;
+        case Window::State::maximized: ShowWindow(m_window, SW_RESTORE); break;
+        case Window::State::normal: break;
+    }
+
+    switch (new_state) {
+        case Window::State::fullscreen: enter_fullscreen(); break;
+        case Window::State::iconified: ShowWindow(m_window, SW_MINIMIZE); break;
+        case Window::State::maximized: ShowWindow(m_window, SW_MAXIMIZE); break;
+        case Window::State::normal: break;
+    }
+}
+
 void Win32Window::process_events()
 {
     MSG message = {};
@@ -429,54 +400,6 @@ void Win32Window::process_events()
 #pragma endregion
 
 #pragma region setters
-
-void Win32Window::set_state(Window::State state)
-{
-    using namespace std::placeholders;
-
-    if (!is_visible()) {
-        m_state = state;
-        return;
-    }
-
-    const Window::State old_state = get_window_state(m_window);
-    if (state == old_state) {
-        return;
-    }
-
-    // Turn off the on_resize callback
-    m_message_handler->on_size = nullptr;
-
-    // Turn off the on_move callback
-    m_message_handler->on_move = nullptr;
-
-    switch (old_state) {
-        case Window::State::fullscreen: exit_fullscreen(); break;
-        case Window::State::iconified: ShowWindow(m_window, SW_RESTORE); break;
-        case Window::State::maximized: ShowWindow(m_window, SW_RESTORE); break;
-        case Window::State::normal: break;
-    }
-
-    switch (state) {
-        case Window::State::fullscreen: enter_fullscreen(); break;
-        case Window::State::iconified: ShowWindow(m_window, SW_MINIMIZE); break;
-        case Window::State::maximized: ShowWindow(m_window, SW_MAXIMIZE); break;
-        case Window::State::normal: break;
-    }
-
-    // Turn on the on_resize callback
-    m_message_handler->on_size = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
-
-    // Turn on the on_move callback
-    m_message_handler->on_move = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
-
-    m_state = get_window_state(m_window);
-
-    if (state != Window::State::iconified) {
-        on_move(position());
-        on_resize(size());
-    }
-}
 
 void Win32Window::set_size(Size size)
 {
@@ -585,7 +508,31 @@ Position Win32Window::position() const
 
 Window::State Win32Window::state() const
 {
-    return m_state;
+    using State = framework::system::Window::State;
+
+    if (IsIconic(window) != 0) {
+        return State::iconified;
+    } else if (IsZoomed(window) != 0) {
+        return State::maximized;
+    } else {
+        RECT window_rect;
+        RECT desktop_rect;
+        GetWindowRect(window, &window_rect);
+        GetWindowRect(GetDesktopWindow(), &desktop_rect);
+
+        const bool is_fullscreen_size = (window_rect.left == desktop_rect.left && window_rect.top == desktop_rect.top &&
+                                         window_rect.right == desktop_rect.right &&
+                                         window_rect.bottom == desktop_rect.bottom);
+
+        /// TODO: Check window decorations
+        // const bool has_window_decorations = true;
+
+        if (is_fullscreen_size) {
+            return State::fullscreen;
+        }
+    }
+
+    return State::normal;
 }
 
 Size Win32Window::size() const
@@ -694,7 +641,7 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
                 case SC_SCREENSAVE:
                 case SC_MONITORPOWER: {
                     // We are running in full screen mode, so disallow screen saver and screen blanking
-                    if (m_state == Window::State::fullscreen) {
+                    if (state_date().state == Window::State::fullscreen) {
                         return 0;
                     } else
                         break;

@@ -30,16 +30,16 @@ public:
     PlatformWindow& operator=(PlatformWindow&&) noexcept = default;
 
 #pragma region actions
-    virtual void show()              = 0;
-    virtual void hide()              = 0;
-    virtual void focus()             = 0;
-    virtual void enable_raw_input()  = 0;
-    virtual void disable_raw_input() = 0;
-    virtual void process_events()    = 0;
+    virtual void show()                                                         = 0;
+    virtual void hide()                                                         = 0;
+    virtual void focus()                                                        = 0;
+    virtual void enable_raw_input()                                             = 0;
+    virtual void disable_raw_input()                                            = 0;
+    virtual void switch_state(Window::State old_state, Window::State new_state) = 0;
+    virtual void process_events()                                               = 0;
 #pragma endregion
 
 #pragma region setters
-    virtual void set_state(Window::State state)      = 0;
     virtual void set_size(Size size)                 = 0;
     virtual void set_max_size(Size size)             = 0;
     virtual void set_min_size(Size size)             = 0;
