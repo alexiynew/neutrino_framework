@@ -164,6 +164,10 @@ void X11Window::hide()
     XUnmapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
     process_events_while([this]() { return m_mapped; });
+
+    if (m_actual_state == Window::State::iconified) {
+        m_actual_state = Window::State::normal;
+    }
 }
 
 void X11Window::focus()
@@ -193,6 +197,7 @@ void X11Window::switch_state(Window::State old_state, Window::State new_state)
         utils::set_bypass_compositor_state(m_server.get(), m_window, utils::BypassCompositorState::disabled);
     }
 
+    // Save size and position to restore it later
     if (old_state == Window::State::normal &&
         (new_state == Window::State::fullscreen || new_state == Window::State::maximized) && m_mapped) {
         m_saved_size     = size();
@@ -200,6 +205,13 @@ void X11Window::switch_state(Window::State old_state, Window::State new_state)
     }
 
     const auto window_state = utils::get_window_state(m_server.get(), m_window);
+
+    // Map hidden window
+    if (window_state.hidden && new_state != Window::State::iconified) {
+        XMapWindow(m_server->display(), m_window);
+    }
+
+    // Switch to new state
     switch (new_state) {
         case Window::State::fullscreen: {
             if (window_state.horz_maximized || window_state.vert_maximized) {
@@ -210,7 +222,13 @@ void X11Window::switch_state(Window::State old_state, Window::State new_state)
 
         } break;
         case Window::State::iconified: utils::iconify_window(m_server.get(), m_window); break;
-        case Window::State::maximized: utils::switch_maximize_state(m_server.get(), m_window, true); break;
+        case Window::State::maximized: {
+            if (window_state.fullscreen) {
+                utils::switch_fullscreen_state(m_server.get(), m_window, false);
+            }
+
+            utils::switch_maximize_state(m_server.get(), m_window, true);
+        } break;
         case Window::State::normal: {
             if (window_state.fullscreen) {
                 utils::switch_fullscreen_state(m_server.get(), m_window, false);
@@ -238,6 +256,10 @@ void X11Window::switch_state(Window::State old_state, Window::State new_state)
     XFlush(m_server->display());
     m_wait_event_type = (old_state != new_state ? ConfigureNotify : None);
     process_events_while([this, new_state]() { return m_actual_state != new_state || m_wait_event_type != None; });
+
+    if (new_state == Window::State::iconified) {
+        on_lost_focus();
+    }
 }
 
 void X11Window::process_events()
@@ -335,10 +357,6 @@ void X11Window::set_resizable(bool value)
 {
     m_resizable = value;
 
-    if (!m_mapped) {
-        return;
-    }
-
     if (m_resizable) {
         update_size_limits(m_min_size, m_max_size);
     } else {
@@ -387,13 +405,9 @@ void X11Window::set_cursor_visibility(bool /*visible*/)
 
 bool X11Window::is_visible() const
 {
-    if (!m_mapped) {
-        return false;
-    }
-
     XWindowAttributes attributes;
     if (XGetWindowAttributes(m_server->display(), m_window, &attributes) != 0) {
-        return attributes.map_state == IsViewable; // || (m_mapped && is_iconified());
+        return attributes.map_state == IsViewable || m_actual_state == Window::State::iconified;
     }
 
     return false;

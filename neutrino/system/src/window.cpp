@@ -43,6 +43,11 @@ void Window::show()
         return;
     }
 
+    // Drop iconified state on show
+    if (m_state_data->state == Window::State::iconified) {
+        m_state_data->state = Window::State::normal;
+    }
+
     // Turn off on_resize, on_move and on_focus callbacks
     const auto on_resize_callback = m_callbacks->on_resize_callback;
     const auto on_move_callback   = m_callbacks->on_move_callback;
