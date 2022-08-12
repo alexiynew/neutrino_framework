@@ -1,6 +1,7 @@
 #include <chrono>
 #include <thread>
 
+#include <log/log.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
@@ -16,15 +17,15 @@ public:
         add_test([this]() { fullscreen_window(); }, "fullscreen_window");
         add_test([this]() { fullscreen_before_show(); }, "fullscreen_before_show");
 
-        add_test([this]() { maximize_window(); }, "maximize_window");
-        add_test([this]() { maximized_before_show(); }, "maximized_before_show");
+        // add_test([this]() { maximize_window(); }, "maximize_window");
+        // add_test([this]() { maximized_before_show(); }, "maximized_before_show");
 
-        add_test([this]() { iconify_window(); }, "iconify_window");
+        // add_test([this]() { iconify_window(); }, "iconify_window");
 
-        add_test([this]() { fullscreen_iconify_fullscreen_normal(); }, "fullscreen_iconify_fullscreen_normal");
-        add_test([this]() { maximized_iconify_maximized_normal(); }, "maximized_iconify_maximized_normal");
-        add_test([this]() { maximized_fullscreen_maximized_normal(); }, "maximized_fullscreen_maximized_normal");
-        add_test([this]() { normal_fullscreen_maximized_iconify(); }, "normal_fullscreen_maximized_iconify");
+        // add_test([this]() { fullscreen_iconify_fullscreen_normal(); }, "fullscreen_iconify_fullscreen_normal");
+        // add_test([this]() { maximized_iconify_maximized_normal(); }, "maximized_iconify_maximized_normal");
+        // add_test([this]() { maximized_fullscreen_maximized_normal(); }, "maximized_fullscreen_maximized_normal");
+        // add_test([this]() { normal_fullscreen_maximized_iconify(); }, "normal_fullscreen_maximized_iconify");
     }
 
 private:
@@ -55,8 +56,8 @@ private:
     void fullscreen_window()
     {
         const Size size640{640, 480};
-        const Position position100{100, 100};
         m_stats.reset();
+        Position normal_position;
 
         {
             Window w("fullscreen_window", size640);
@@ -69,8 +70,10 @@ private:
             TEST_ASSERT(m_stats.on_focus_called == 0, "Invalid callback call.");
             TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
 
-            w.set_position(position100);
+            log::info(name()) << "-------- show";
             w.show();
+
+            normal_position = w.position();
 
             // Check stats
             TEST_ASSERT(w.state() == Window::State::normal, "Invalid window state.");
@@ -86,10 +89,10 @@ private:
             TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
 
             TEST_ASSERT(m_stats.last_size == size640, "Invalid size in callback.");
-            TEST_ASSERT(m_stats.last_position == position100, "Invalid position in callback.");
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
+            log::info(name()) << "-------- fullscreen";
             // Switch to fullscreen
             w.set_state(Window::State::fullscreen);
             w.set_state(Window::State::fullscreen);
@@ -112,6 +115,7 @@ private:
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
+            log::info(name()) << "-------- hide";
             // Hide and show again - must be still fullscreen
             w.hide();
 
@@ -126,6 +130,7 @@ private:
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
+            log::info(name()) << "------- show ";
             w.show();
 
             TEST_ASSERT(w.state() == Window::State::fullscreen, "Invalid window state.");
@@ -144,6 +149,7 @@ private:
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
+            log::info(name()) << "------- normal";
             // Return to normal state
             w.set_state(Window::State::normal);
 
@@ -160,6 +166,7 @@ private:
             TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
             TEST_ASSERT(m_stats.last_size == size640, "Invalid size in callback.");
+            TEST_ASSERT(m_stats.last_position == normal_position, "Invalid position in callback");
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
@@ -172,6 +179,7 @@ private:
         TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
 
         TEST_ASSERT(m_stats.last_size == size640, "Invalid size in callback.");
+        TEST_ASSERT(m_stats.last_position == normal_position, "Invalid position in callback");
     }
 
     void fullscreen_before_show()

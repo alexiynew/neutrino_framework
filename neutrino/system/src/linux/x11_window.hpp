@@ -28,7 +28,7 @@ public:
     X11Window& operator=(const X11Window&) = delete;
 
 #pragma region actions
-    void show() override;
+    void show(Window::State state) override;
     void hide() override;
     void focus() override;
     void enable_raw_input() override;
@@ -77,6 +77,7 @@ private:
     void process(XMappingEvent event);
 
     void set_wm_hints();
+    void set_wm_normal_hints();
     void set_class_hints();
     void add_protocols(const std::vector<std::string>& protocol_names);
 
@@ -85,7 +86,6 @@ private:
     void process_events_while(const std::function<bool()>& condition);
 
     void update_size_limits(Size min_size, Size max_size);
-    void move_window(Position new_position);
 
     std::shared_ptr<X11Server> m_server = nullptr;
     std::unique_ptr<Context> m_context  = nullptr;
@@ -94,19 +94,23 @@ private:
     bool m_resizable  = true;
     bool m_wait_focus = false;
 
-    Size m_size         = {640, 480};
-    Size m_saved_size   = {0, 0};
-    Position m_position = {0, 0};
-    utils::FrameExtents m_frame_extents;
-
+    Size m_size             = {640, 480};
+    Position m_position     = {0, 0};
     mutable Size m_min_size = {0, 0};
     mutable Size m_max_size = {0, 0};
+
+    Size m_saved_size         = {0, 0};
+    Position m_saved_position = {0, 0};
+    utils::FrameExtents m_frame_extents;
+
+    Window::State m_actual_state;
 
     XLibWindow m_window = None;
 
     XIC m_input_context = nullptr;
 
     Time m_last_input_time = 0;
+    int m_wait_event_type  = None;
 };
 
 } // namespace framework::system::details

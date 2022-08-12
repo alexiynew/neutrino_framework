@@ -54,14 +54,7 @@ void Window::show()
     m_callbacks->on_focus_callback  = nullptr;
 
     // Show window
-    m_platform_window->show();
-
-    // Set window state
-    if (m_state_data->state == Window::State::iconified) {
-        m_platform_window->switch_state(Window::State::iconified, Window::State::normal);
-    } else {
-        m_platform_window->switch_state(Window::State::normal, m_state_data->state);
-    }
+    m_platform_window->show(m_state_data->state);
 
     // Turn om on_resize, on_move and on_focus callbacks
     m_callbacks->on_resize_callback = on_resize_callback;
@@ -252,7 +245,7 @@ bool Window::is_cursor_visible() const
 
 Window::State Window::state() const
 {
-    return m_platform_window->state();
+    return m_state_data->state;
 }
 
 Size Window::size() const

@@ -5,6 +5,7 @@
 #include <thread>
 
 #include <common/utils.hpp>
+#include <log/log.hpp>
 #include <system/application.hpp>
 
 #include <system/src/linux/x11_glx_context.hpp>
@@ -15,11 +16,15 @@
 
 #include <X11/XKBlib.h>
 #include <X11/Xutil.h>
+#include <unistd.h>
 
 namespace
 {
+const char* const net_wm_state_atom_name      = u8"_NET_WM_STATE";
 const char* const net_frame_extents_atom_name = u8"_NET_FRAME_EXTENTS";
 const char* const wm_delete_window_atom_name  = u8"WM_DELETE_WINDOW";
+const char* const net_wm_ping_atom_name       = u8"_NET_WM_PING";
+const char* const wm_protocols_atom_name      = u8"WM_PROTOCOLS";
 
 const std::int64_t event_mask = VisibilityChangeMask  // Any change in visibility wanted
                                 | FocusChangeMask     // Any change in input focus wanted
@@ -60,6 +65,7 @@ namespace framework::system::details
 X11Window::X11Window(const std::string& title, Size size, const ContextSettings& settings)
     : m_server(X11Server::connect())
     , m_size(size)
+    , m_saved_size(size)
 {
     auto context = std::make_unique<X11GlxContext>(settings, m_server->display());
     if (!context->valid()) {
@@ -117,7 +123,8 @@ X11Window::X11Window(const std::string& title, Size size, const ContextSettings&
     set_wm_hints();
     set_class_hints();
 
-    add_protocols({wm_delete_window_atom_name});
+    add_protocols({wm_delete_window_atom_name, net_wm_ping_atom_name});
+    utils::set_pid(m_server.get(), m_window, getpid());
 
     create_input_context();
 
@@ -139,14 +146,20 @@ X11Window::~X11Window()
 
 #pragma region actions
 
-void X11Window::show()
+void X11Window::show(Window::State state)
 {
+    log::info(__FUNCTION__) << __LINE__;
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
-    process_events_while([this]() { return !m_mapped; });
+
+    m_wait_event_type = ConfigureNotify;
+    process_events_while([this]() { return !m_mapped || m_wait_event_type != None; });
+
+    switch_state(m_actual_state, state);
 
     // Get window frame sizes
     m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
+    log::info(__FUNCTION__) << __LINE__;
 }
 
 void X11Window::hide()
@@ -173,23 +186,65 @@ void X11Window::disable_raw_input()
 
 void X11Window::switch_state(Window::State old_state, Window::State new_state)
 {
-    switch (old_state) {
-        case Window::State::fullscreen: utils::switch_fullscreen_state(m_server.get(), m_window, false); break;
-        case Window::State::iconified: XMapWindow(m_server->display(), m_window); break;
-        case Window::State::maximized: utils::switch_maximize_state(m_server.get(), m_window, true); break;
-        case Window::State::normal: break;
+    log::info(__FUNCTION__) << " old: " << (int)old_state << " new: " << (int)new_state << " BEGIN ----------------";
+
+    // Update bypass compositor hint
+    const bool baypas_compositor = utils::get_bypass_compositor_state(m_server.get(), m_window) ==
+                                   utils::BypassCompositorState::disabled;
+
+    if (baypas_compositor && new_state != Window::State::fullscreen) {
+        utils::set_bypass_compositor_state(m_server.get(), m_window, utils::BypassCompositorState::no_preferences);
+    } else if (!baypas_compositor && new_state == Window::State::fullscreen) {
+        utils::set_bypass_compositor_state(m_server.get(), m_window, utils::BypassCompositorState::disabled);
     }
 
+    if (old_state == Window::State::normal &&
+        (new_state == Window::State::fullscreen || new_state == Window::State::maximized) && m_mapped) {
+        m_saved_size     = size();
+        m_saved_position = position();
+    }
+
+    const auto window_state = utils::get_window_state(m_server.get(), m_window);
     switch (new_state) {
-        case Window::State::fullscreen: utils::switch_fullscreen_state(m_server.get(), m_window, true); break;
+        case Window::State::fullscreen: {
+            if (window_state.horz_maximized || window_state.vert_maximized) {
+                utils::switch_maximize_state(m_server.get(), m_window, false);
+            }
+
+            utils::switch_fullscreen_state(m_server.get(), m_window, true);
+
+        } break;
         case Window::State::iconified: utils::iconify_window(m_server.get(), m_window); break;
         case Window::State::maximized: utils::switch_maximize_state(m_server.get(), m_window, true); break;
-        case Window::State::normal: break;
+        case Window::State::normal: {
+            if (window_state.fullscreen) {
+                utils::switch_fullscreen_state(m_server.get(), m_window, false);
+            }
+
+            if (window_state.horz_maximized || window_state.vert_maximized) {
+                utils::switch_maximize_state(m_server.get(), m_window, false);
+            }
+
+            XFlush(m_server->display());
+            m_wait_event_type = (old_state != new_state ? ConfigureNotify : None);
+            process_events_while([this]() { return m_wait_event_type != None; });
+
+            if (window_state.fullscreen || window_state.horz_maximized || window_state.vert_maximized) {
+                XMoveResizeWindow(m_server->display(),
+                                  m_window,
+                                  m_saved_position.x - m_frame_extents.left,
+                                  m_saved_position.y - m_frame_extents.top,
+                                  m_saved_size.width,
+                                  m_saved_size.height);
+            }
+        } break;
     }
 
     XFlush(m_server->display());
+    m_wait_event_type = (old_state != new_state ? ConfigureNotify : None);
+    process_events_while([this, new_state]() { return m_actual_state != new_state || m_wait_event_type != None; });
 
-    //     process_events_while([this]() { return !is_iconified(); });
+    log::info(__FUNCTION__) << " old: " << (int)old_state << " new: " << (int)new_state << " END";
 }
 
 void X11Window::process_events()
@@ -221,6 +276,9 @@ void X11Window::process_events()
 
             default: break;
         }
+        if (m_wait_event_type == event.xany.type) {
+            m_wait_event_type = None;
+        }
     }
 }
 
@@ -250,14 +308,13 @@ void X11Window::set_size(Size size)
         size.height = std::min(size.height, m_max_size.height);
     }
 
+    m_saved_size = size;
+
     if (!m_resizable) {
         update_size_limits(size, size);
     }
 
-    XResizeWindow(m_server->display(),
-                  m_window,
-                  static_cast<std::uint32_t>(size.width),
-                  static_cast<std::uint32_t>(size.height));
+    XResizeWindow(m_server->display(), m_window, size.width, size.height);
     XFlush(m_server->display());
 
     process_events_while([this, size]() { return m_size != size; });
@@ -301,11 +358,24 @@ void X11Window::set_resizable(bool value)
 
 void X11Window::set_position(Position new_position)
 {
-    if (m_mapped) {
-        move_window(new_position);
-    } else {
-        m_position = new_position;
-    }
+    m_saved_position = new_position;
+
+    new_position.x -= m_frame_extents.left;
+    new_position.y -= m_frame_extents.top;
+
+    XSizeHints hints = {};
+    std::int64_t supplied;
+    XGetWMNormalHints(m_server->display(), m_window, &hints, &supplied);
+    hints.flags |= PPosition;
+    hints.x = new_position.x;
+    hints.y = new_position.y;
+    XSetWMNormalHints(m_server->display(), m_window, &hints);
+
+    const auto old_position = position();
+    XMoveWindow(m_server->display(), m_window, new_position.x, new_position.y);
+    XFlush(m_server->display());
+
+    process_events_while([this, &old_position]() { return position() == old_position; });
 }
 
 void X11Window::set_title(const std::string& title)
@@ -348,16 +418,24 @@ bool X11Window::is_cursor_visible() const
 
 Window::State X11Window::state() const
 {
-    if (utils::is_fullscreen(m_server.get(), m_window)) {
+    const auto window_state      = utils::get_window_state(m_server.get(), m_window);
+    const bool baypas_compositor = utils::get_bypass_compositor_state(m_server.get(), m_window) ==
+                                   utils::BypassCompositorState::disabled;
+
+    log::info(__FUNCTION__) << " h: " << window_state.hidden << " f: " << window_state.fullscreen
+                            << " hor: " << window_state.horz_maximized << " vrt: " << window_state.vert_maximized
+                            << " b: " << baypas_compositor;
+
+    if (window_state.hidden) {
+        return Window::State::iconified;
+    }
+
+    if (window_state.fullscreen) {
         return Window::State::fullscreen;
     }
 
-    if (utils::is_maximized(m_server.get(), m_window)) {
+    if (window_state.horz_maximized && window_state.vert_maximized) {
         return Window::State::maximized;
-    }
-
-    if (utils::is_iconifyed(m_server.get(), m_window)) {
-        return Window::State::iconified;
     }
 
     return Window::State::normal;
@@ -374,16 +452,16 @@ Size X11Window::max_size() const
         return m_max_size;
     }
 
-    XSizeHints size_hints = {};
+    XSizeHints hints = {};
     std::int64_t supplied;
 
-    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
-    const bool has_max_size_hints = (size_hints.flags &= PMaxSize) != 0;
+    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &hints, &supplied) != 0;
+    const bool has_max_size_hints = (hints.flags &= PMaxSize) != 0;
 
     if (!got_size_hints || !has_max_size_hints) {
         m_max_size = Size{0, 0};
     } else {
-        m_max_size = Size{size_hints.max_width, size_hints.max_height};
+        m_max_size = Size{hints.max_width, hints.max_height};
     }
 
     return m_max_size;
@@ -395,16 +473,16 @@ Size X11Window::min_size() const
         return m_min_size;
     }
 
-    XSizeHints size_hints = {};
+    XSizeHints hints = {};
     std::int64_t supplied;
 
-    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied) != 0;
-    const bool has_min_size_hints = (size_hints.flags &= PMinSize) != 0;
+    const bool got_size_hints     = XGetWMNormalHints(m_server->display(), m_window, &hints, &supplied) != 0;
+    const bool has_min_size_hints = (hints.flags &= PMinSize) != 0;
 
     if (!got_size_hints || !has_min_size_hints) {
         m_min_size = Size{0, 0};
     } else {
-        m_min_size = Size{size_hints.min_width, size_hints.min_height};
+        m_min_size = Size{hints.min_width, hints.min_height};
     }
 
     return m_min_size;
@@ -412,14 +490,13 @@ Size X11Window::min_size() const
 
 bool X11Window::is_resizable() const
 {
-    XSizeHints size_hints = {};
+    XSizeHints hints = {};
     std::int64_t supplied;
 
-    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
+    XGetWMNormalHints(m_server->display(), m_window, &hints, &supplied);
 
-    const bool not_resizable = ((size_hints.flags & (PMinSize | PMaxSize)) != 0) &&
-                               size_hints.min_width == size_hints.max_width &&
-                               size_hints.min_height == size_hints.max_height;
+    const bool not_resizable = ((hints.flags & (PMinSize | PMaxSize)) != 0) && hints.min_width == hints.max_width &&
+                               hints.min_height == hints.max_height;
 
     return !not_resizable;
 }
@@ -477,6 +554,7 @@ void X11Window::process(XConfigureEvent event)
     Size new_size{event.width, event.height};
     Position new_position{event.x, event.y};
 
+    log::info("XConfigureEvent") << " pos: " << new_position << " size: " << new_size;
     if (m_size != new_size) {
         m_size = new_size;
         if (is_visible()) {
@@ -538,9 +616,15 @@ void X11Window::process(XFocusChangeEvent event)
 
 void X11Window::process(XPropertyEvent event)
 {
-    const Atom frame_extents_atom = m_server->get_atom(net_frame_extents_atom_name);
-    if (event.atom == frame_extents_atom) {
+    const Atom net_frame_extents = m_server->get_atom(net_frame_extents_atom_name);
+    const Atom net_wm_state      = m_server->get_atom(net_wm_state_atom_name);
+    if (event.atom == net_frame_extents) {
         m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
+        log::info("XPropertyEvent") << " frame_extents_atom: " << m_frame_extents.left << " " << m_frame_extents.right
+                                    << " " << m_frame_extents.top << " " << m_frame_extents.bottom;
+    } else if (event.atom == net_wm_state) {
+        m_actual_state = state();
+        log::info("XPropertyEvent") << " state_atom: " << (int)m_actual_state;
     }
 
     m_last_input_time = event.time;
@@ -548,10 +632,27 @@ void X11Window::process(XPropertyEvent event)
 
 void X11Window::process(XClientMessageEvent event)
 {
+    const Atom wm_protocols  = m_server->get_atom(wm_protocols_atom_name);
     const Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
+    const Atom net_wm_ping   = m_server->get_atom(net_wm_ping_atom_name);
     const Atom event_atom    = static_cast<Atom>(event.data.l[0]);
+
+    if (event.message_type != wm_protocols || event_atom == None) {
+        return;
+    }
+
     if (event_atom == delete_window) {
         on_close();
+    } else if (event_atom == net_wm_ping) {
+        XEvent reply         = {};
+        reply.xclient        = event;
+        reply.xclient.window = m_server->root_window();
+
+        XSendEvent(m_server->display(),
+                   m_server->root_window(),
+                   False,
+                   SubstructureNotifyMask | SubstructureRedirectMask,
+                   &reply);
     }
 }
 
@@ -646,6 +747,14 @@ void X11Window::set_wm_hints()
     XSetWMHints(m_server->display(), m_window, &wm_hints);
 }
 
+void X11Window::set_wm_normal_hints()
+{
+    XSizeHints hints = {};
+    hints.flags |= PWinGravity;
+    hints.win_gravity = StaticGravity;
+    XSetWMNormalHints(m_server->display(), m_window, &hints);
+}
+
 void X11Window::set_class_hints()
 {
     const auto application_name = Application::name();
@@ -708,39 +817,28 @@ void X11Window::process_events_while(const std::function<bool()>& condition)
 
 void X11Window::update_size_limits(Size min_size, Size max_size)
 {
-    XSizeHints size_hints = {};
+    XSizeHints hints = {};
     std::int64_t supplied;
 
-    XGetWMNormalHints(m_server->display(), m_window, &size_hints, &supplied);
+    XGetWMNormalHints(m_server->display(), m_window, &hints, &supplied);
 
     if (min_size.width > 0 && min_size.height > 0) {
-        size_hints.flags |= PMinSize;
-        size_hints.min_width  = min_size.width;
-        size_hints.min_height = min_size.height;
+        hints.flags |= PMinSize;
+        hints.min_width  = min_size.width;
+        hints.min_height = min_size.height;
     } else {
-        size_hints.flags &= ~PMinSize;
+        hints.flags &= ~PMinSize;
     }
 
     if (max_size.width > 0 && max_size.height > 0) {
-        size_hints.flags |= PMaxSize;
-        size_hints.max_width  = max_size.width;
-        size_hints.max_height = max_size.height;
+        hints.flags |= PMaxSize;
+        hints.max_width  = max_size.width;
+        hints.max_height = max_size.height;
     } else {
-        size_hints.flags &= ~PMaxSize;
+        hints.flags &= ~PMaxSize;
     }
 
-    XSetWMNormalHints(m_server->display(), m_window, &size_hints);
-}
-
-void X11Window::move_window(Position new_position)
-{
-    new_position.x -= m_frame_extents.left;
-    new_position.y -= m_frame_extents.top;
-    const auto old_position = position();
-    XMoveWindow(m_server->display(), m_window, new_position.x, new_position.y);
-    XFlush(m_server->display());
-
-    process_events_while([this, &old_position]() { return position() == old_position; });
+    XSetWMNormalHints(m_server->display(), m_window, &hints);
 }
 
 #pragma endregion

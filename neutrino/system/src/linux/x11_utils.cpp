@@ -1,14 +1,14 @@
 #include <cstring>
 
 #include <common/utils.hpp>
+#include <log/log.hpp>
 
 #include <system/src/linux/x11_utils.hpp>
 
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
-using framework::system::details::X11Server;
-using framework::system::details::XLibWindow;
+using namespace framework::system::details;
 
 namespace
 {
@@ -25,14 +25,9 @@ const char* const net_wm_state_maximized_horz_atom_name = u8"_NET_WM_STATE_MAXIM
 const char* const net_wm_state_maximized_vert_atom_name = u8"_NET_WM_STATE_MAXIMIZED_VERT";
 const char* const utf8_string_atom_name                 = u8"UTF8_STRING";
 const char* const wm_state_atom_name                    = u8"WM_STATE";
+const char* const net_wm_pid_atom_name                  = u8"NET_WM_PID";
 
 static constexpr int message_source_application = 1;
-
-enum class BypassCompositorState
-{
-    no_preferences = 0,
-    disabled       = 1
-};
 
 enum class WindowStateAction
 {
@@ -133,12 +128,6 @@ bool is_ewmh_compliant(const X11Server* server)
     return root[0] == child[0];
 }
 
-bool ewmh_supported(const X11Server* server)
-{
-    static const bool supported = is_ewmh_compliant(server);
-    return supported;
-}
-
 XTextProperty create_text_property(Display* display, const std::string& string)
 {
     XTextProperty text_property = {};
@@ -218,50 +207,6 @@ inline bool send_client_message(const X11Server* server, XLibWindow window, Atom
     return send_client_message(server, window, message_type, tmp);
 }
 
-CARD32 get_window_wm_state(const X11Server* server, XLibWindow window)
-{
-    const Atom net_wm_state = server->get_atom(wm_state_atom_name);
-
-    if (net_wm_state == None) {
-        return WithdrawnState;
-    }
-
-    const auto state = get_window_property<CARD32>(server->display(), window, net_wm_state, net_wm_state);
-
-    if (state.empty()) {
-        return WithdrawnState;
-    }
-
-    return state[0];
-}
-
-bool window_has_state(const X11Server* server, XLibWindow window, const std::string& atom_name)
-{
-    if (!ewmh_supported(server)) {
-        return false;
-    }
-
-    const Atom net_wm_state_atom   = server->get_atom(net_wm_state_atom_name);
-    const Atom state_to_check_atom = server->get_atom(atom_name);
-
-    if (state_to_check_atom == None || net_wm_state_atom == None) {
-        return false;
-    }
-
-    const std::vector<Atom> window_state = get_window_property<Atom>(server->display(),
-                                                                     window,
-                                                                     net_wm_state_atom,
-                                                                     XA_ATOM);
-
-    for (const auto& atom : window_state) {
-        if (atom == state_to_check_atom) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 bool window_change_state(const X11Server* server,
                          XLibWindow window,
                          WindowStateAction action,
@@ -274,7 +219,7 @@ bool window_change_state(const X11Server* server,
     }
 
     std::array<Atom, 2> state_atoms{};
-    state_atoms[0] = (!atom_names.empty() ? server->get_atom(atom_names[0]) : None);
+    state_atoms[0] = (atom_names.size() > 0 ? server->get_atom(atom_names[0]) : None);
     state_atoms[1] = (atom_names.size() > 1 ? server->get_atom(atom_names[1]) : None);
 
     return send_client_message(server,
@@ -286,31 +231,17 @@ bool window_change_state(const X11Server* server,
                                message_source_application);
 }
 
-void set_bypass_compositor_state(const X11Server* server, XLibWindow window, BypassCompositorState state)
-{
-    if (!ewmh_supported(server)) {
-        return;
-    }
-
-    const Atom net_wm_bypass_compositor = server->get_atom(net_wm_bypass_compositor_atom_name);
-    if (net_wm_bypass_compositor == None) {
-        return;
-    }
-
-    XChangeProperty(server->display(),
-                    window,
-                    net_wm_bypass_compositor,
-                    XA_CARDINAL,
-                    32,
-                    PropModeReplace,
-                    reinterpret_cast<const unsigned char*>(&state),
-                    1);
-}
-
 } // namespace
 
 namespace framework::system::details::utils
 {
+
+bool ewmh_supported(const X11Server* server)
+{
+    static const bool supported = is_ewmh_compliant(server);
+    return supported;
+}
+
 void focus_window(const X11Server* server, XLibWindow window, Time last_input_time)
 {
     const Atom net_active_window = server->get_atom(net_active_window_atom_name, false);
@@ -398,6 +329,23 @@ std::string get_window_name(const X11Server* server, XLibWindow window)
     return "";
 }
 
+void set_pid(const X11Server* server, XLibWindow window, std::int32_t pid)
+{
+    const Atom net_wm_pid = server->get_atom(net_wm_pid_atom_name);
+    if (net_wm_pid == None) {
+        return;
+    }
+
+    XChangeProperty(server->display(),
+                    window,
+                    net_wm_pid,
+                    XA_CARDINAL,
+                    32,
+                    PropModeReplace,
+                    reinterpret_cast<unsigned char*>(&pid),
+                    1);
+}
+
 FrameExtents get_frame_extents(const X11Server* server, XLibWindow window)
 {
     // Get parent window, it's likely is the frame of our window.
@@ -453,7 +401,6 @@ void switch_maximize_state(const X11Server* server, XLibWindow window, bool enab
     const auto action = enabled ? WindowStateAction::add : WindowStateAction::remove;
 
     if (!window_change_state(server, window, action, state)) {
-        // report error
     }
 }
 
@@ -462,8 +409,7 @@ void switch_fullscreen_state(const X11Server* server, XLibWindow window, bool en
     if (!ewmh_supported(server)) {
         return;
     }
-
-    auto bypass_state = enabled ? BypassCompositorState::disabled : BypassCompositorState::no_preferences;
+    const auto bypass_state = enabled ? BypassCompositorState::disabled : BypassCompositorState::no_preferences;
     set_bypass_compositor_state(server, window, bypass_state);
 
     const std::vector<std::string> state = {net_wm_state_fullscreen_atom_name};
@@ -471,39 +417,95 @@ void switch_fullscreen_state(const X11Server* server, XLibWindow window, bool en
     auto action = enabled ? WindowStateAction::add : WindowStateAction::remove;
 
     if (!window_change_state(server, window, action, state)) {
-        // report error
     }
 }
 
-bool is_iconifyed(const X11Server* server, XLibWindow window)
+CARD32 get_window_wm_state(const X11Server* server, XLibWindow window)
 {
-    const auto window_state = get_window_wm_state(server, window);
-    const bool hidden       = window_has_state(server, window, net_wm_state_hidden_atom_name);
+    const Atom wm_state = server->get_atom(wm_state_atom_name);
 
-    return window_state == IconicState || hidden;
+    if (wm_state == None) {
+        return WithdrawnState;
+    }
+
+    const auto state = get_window_property<CARD32>(server->display(), window, wm_state, wm_state);
+
+    if (state.empty()) {
+        return WithdrawnState;
+    }
+
+    return state[0];
 }
 
-bool is_maximized(const X11Server* server, XLibWindow window)
+std::vector<Atom> get_window_new_wm_state(const X11Server* server, XLibWindow window)
 {
+    const Atom net_wm_state = server->get_atom(net_wm_state_atom_name);
+    if (!ewmh_supported(server) || net_wm_state == None) {
+        return {};
+    }
+
+    return get_window_property<Atom>(server->display(), window, net_wm_state, XA_ATOM);
+}
+
+WindowStateFlags get_window_state(const X11Server* server, XLibWindow window)
+{
+    const auto wm_state = get_window_wm_state(server, window);
     if (!ewmh_supported(server)) {
-        return false;
+        // return {.hidden = (wm_state == IconicState)};
+        return {(wm_state == IconicState), false, false, false};
     }
 
-    const bool maximized_vert = window_has_state(server, window, net_wm_state_maximized_vert_atom_name);
-    const bool maximized_horz = window_has_state(server, window, net_wm_state_maximized_horz_atom_name);
+    const Atom hidden_atom     = server->get_atom(net_wm_state_hidden_atom_name);
+    const Atom fullscreen_atom = server->get_atom(net_wm_state_fullscreen_atom_name);
+    const Atom horz_atom       = server->get_atom(net_wm_state_maximized_horz_atom_name);
+    const Atom vert_atom       = server->get_atom(net_wm_state_maximized_vert_atom_name);
 
-    return maximized_vert || maximized_horz;
+    const auto window_state = utils::get_window_new_wm_state(server, window);
+    const auto begin        = window_state.begin();
+    const auto end          = window_state.end();
+
+    const bool has_hidden     = std::find(begin, end, hidden_atom) != end || wm_state == IconicState;
+    const bool has_fullscreen = std::find(begin, end, fullscreen_atom) != end;
+    const bool has_horz       = std::find(begin, end, horz_atom) != end;
+    const bool has_vert       = std::find(begin, end, vert_atom) != end;
+
+    // return {.hidden = has_hidden, .fullscreen = has_fullscreen, .horz_maximized = has_horz, .vert_maximized = has_vert};
+    return {has_hidden, has_fullscreen, has_horz, has_vert};
 }
 
-bool is_fullscreen(const X11Server* server, XLibWindow window)
+void set_bypass_compositor_state(const X11Server* server, XLibWindow window, BypassCompositorState state)
 {
-    if (!ewmh_supported(server)) {
-        return false;
+    const Atom net_wm_bypass_compositor = server->get_atom(net_wm_bypass_compositor_atom_name);
+    if (!utils::ewmh_supported(server) || net_wm_bypass_compositor == None) {
+        return;
     }
 
-    const bool in_fullscreen_state = window_has_state(server, window, net_wm_state_fullscreen_atom_name);
+    XChangeProperty(server->display(),
+                    window,
+                    net_wm_bypass_compositor,
+                    XA_CARDINAL,
+                    32,
+                    PropModeReplace,
+                    reinterpret_cast<const unsigned char*>(&state),
+                    1);
+}
 
-    return in_fullscreen_state;
+BypassCompositorState get_bypass_compositor_state(const X11Server* server, XLibWindow window)
+{
+    const Atom net_wm_bypass_compositor = server->get_atom(net_wm_bypass_compositor_atom_name);
+    if (!utils::ewmh_supported(server) || net_wm_bypass_compositor == None) {
+        return BypassCompositorState::no_preferences;
+    }
+
+    const auto state = get_window_property<std::int32_t>(server->display(),
+                                                         window,
+                                                         net_wm_bypass_compositor,
+                                                         XA_CARDINAL);
+    if (state.empty()) {
+        return BypassCompositorState::no_preferences;
+    }
+
+    return static_cast<BypassCompositorState>(state[0]);
 }
 
 } // namespace framework::system::details::utils

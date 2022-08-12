@@ -23,6 +23,7 @@ public:
     Display* display() const;
     XID default_root_window() const;
     XID default_screen() const;
+    XID root_window() const;
 
     XLibWindow active_window() const;
 

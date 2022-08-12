@@ -30,7 +30,7 @@ public:
     PlatformWindow& operator=(PlatformWindow&&) noexcept = default;
 
 #pragma region actions
-    virtual void show()                                                         = 0;
+    virtual void show(Window::State state)                                      = 0;
     virtual void hide()                                                         = 0;
     virtual void focus()                                                        = 0;
     virtual void enable_raw_input()                                             = 0;
