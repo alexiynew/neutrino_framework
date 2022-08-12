@@ -1,7 +1,6 @@
 #include <cstring>
 
 #include <common/utils.hpp>
-#include <log/log.hpp>
 
 #include <system/src/linux/x11_utils.hpp>
 

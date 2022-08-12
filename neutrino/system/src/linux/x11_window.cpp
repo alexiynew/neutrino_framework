@@ -5,7 +5,6 @@
 #include <thread>
 
 #include <common/utils.hpp>
-#include <log/log.hpp>
 #include <system/application.hpp>
 
 #include <system/src/linux/x11_glx_context.hpp>
@@ -148,18 +147,16 @@ X11Window::~X11Window()
 
 void X11Window::show(Window::State state)
 {
-    log::info(__FUNCTION__) << __LINE__;
     XMapWindow(m_server->display(), m_window);
     XFlush(m_server->display());
 
     m_wait_event_type = ConfigureNotify;
     process_events_while([this]() { return !m_mapped || m_wait_event_type != None; });
 
-    switch_state(m_actual_state, state);
-
     // Get window frame sizes
     m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
-    log::info(__FUNCTION__) << __LINE__;
+
+    switch_state(m_actual_state, state);
 }
 
 void X11Window::hide()
@@ -186,8 +183,6 @@ void X11Window::disable_raw_input()
 
 void X11Window::switch_state(Window::State old_state, Window::State new_state)
 {
-    log::info(__FUNCTION__) << " old: " << (int)old_state << " new: " << (int)new_state << " BEGIN ----------------";
-
     // Update bypass compositor hint
     const bool baypas_compositor = utils::get_bypass_compositor_state(m_server.get(), m_window) ==
                                    utils::BypassCompositorState::disabled;
@@ -243,8 +238,6 @@ void X11Window::switch_state(Window::State old_state, Window::State new_state)
     XFlush(m_server->display());
     m_wait_event_type = (old_state != new_state ? ConfigureNotify : None);
     process_events_while([this, new_state]() { return m_actual_state != new_state || m_wait_event_type != None; });
-
-    log::info(__FUNCTION__) << " old: " << (int)old_state << " new: " << (int)new_state << " END";
 }
 
 void X11Window::process_events()
@@ -418,27 +411,7 @@ bool X11Window::is_cursor_visible() const
 
 Window::State X11Window::state() const
 {
-    const auto window_state      = utils::get_window_state(m_server.get(), m_window);
-    const bool baypas_compositor = utils::get_bypass_compositor_state(m_server.get(), m_window) ==
-                                   utils::BypassCompositorState::disabled;
-
-    log::info(__FUNCTION__) << " h: " << window_state.hidden << " f: " << window_state.fullscreen
-                            << " hor: " << window_state.horz_maximized << " vrt: " << window_state.vert_maximized
-                            << " b: " << baypas_compositor;
-
-    if (window_state.hidden) {
-        return Window::State::iconified;
-    }
-
-    if (window_state.fullscreen) {
-        return Window::State::fullscreen;
-    }
-
-    if (window_state.horz_maximized && window_state.vert_maximized) {
-        return Window::State::maximized;
-    }
-
-    return Window::State::normal;
+    return m_actual_state;
 }
 
 Size X11Window::size() const
@@ -554,7 +527,6 @@ void X11Window::process(XConfigureEvent event)
     Size new_size{event.width, event.height};
     Position new_position{event.x, event.y};
 
-    log::info("XConfigureEvent") << " pos: " << new_position << " size: " << new_size;
     if (m_size != new_size) {
         m_size = new_size;
         if (is_visible()) {
@@ -620,11 +592,17 @@ void X11Window::process(XPropertyEvent event)
     const Atom net_wm_state      = m_server->get_atom(net_wm_state_atom_name);
     if (event.atom == net_frame_extents) {
         m_frame_extents = utils::get_frame_extents(m_server.get(), m_window);
-        log::info("XPropertyEvent") << " frame_extents_atom: " << m_frame_extents.left << " " << m_frame_extents.right
-                                    << " " << m_frame_extents.top << " " << m_frame_extents.bottom;
     } else if (event.atom == net_wm_state) {
-        m_actual_state = state();
-        log::info("XPropertyEvent") << " state_atom: " << (int)m_actual_state;
+        const auto window_state = utils::get_window_state(m_server.get(), m_window);
+        if (window_state.hidden) {
+            m_actual_state = Window::State::iconified;
+        } else if (window_state.fullscreen) {
+            m_actual_state = Window::State::fullscreen;
+        } else if (window_state.horz_maximized && window_state.vert_maximized) {
+            m_actual_state = Window::State::maximized;
+        } else {
+            m_actual_state = Window::State::normal;
+        }
     }
 
     m_last_input_time = event.time;
