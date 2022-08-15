@@ -27,7 +27,7 @@ using framework::system::ScrollOffset;
 @interface OsxContentView : NSView<NSTextInputClient>
 {
     framework::system::details::OsxWindow* window;
-    
+
     NSTrackingArea* trackingArea;
 
     std::map<framework::system::KeyCode, bool> pressedModifierKeys;
@@ -54,7 +54,7 @@ using framework::system::ScrollOffset;
     [super dealloc];
 }
 
-- (void) setWindow:(framework::system::details::OsxWindow*)w
+- (void)setWindow:(framework::system::details::OsxWindow*)w
 {
     window = w;
 }
@@ -114,14 +114,14 @@ using framework::system::ScrollOffset;
     const auto key   = map_system_key([event keyCode]);
     const auto state = get_modifiers_state([event modifierFlags]);
     window->key_down(key, state);
-    
+
     [self interpretKeyEvents:[NSArray arrayWithObject:event]];
 }
 
 - (void)keyUp:(NSEvent*)event
 {
     using namespace framework::system::details;
-    
+
     const auto key   = map_system_key([event keyCode]);
     const auto state = get_modifiers_state([event modifierFlags]);
     window->key_up(key, state);
@@ -338,7 +338,7 @@ using framework::system::ScrollOffset;
 
 @synthesize isFullscreen;
 
-- (void) setWindow:(framework::system::details::OsxWindow*)w
+- (void)setWindow:(framework::system::details::OsxWindow*)w
 {
     window = w;
 }
@@ -361,7 +361,8 @@ using framework::system::ScrollOffset;
     return YES;
 }
 
-- (NSRect)windowWillUseStandardFrame:(NSWindow *)window defaultFrame:(NSRect)newFrame {
+- (NSRect)windowWillUseStandardFrame:(NSWindow*)window defaultFrame:(NSRect)newFrame
+{
     // Return a custom zoomed window size here
     return self.screen.visibleFrame;
 }
@@ -578,13 +579,13 @@ OsxWindow::~OsxWindow()
     [m_window->get() setContentView:nil];
     [m_window->get() setWindow:nil];
     [m_window->get() close];
-    
+
     [m_view->get() setWindow:nil];
 }
 
 #pragma region actions
 
-void OsxWindow::show()
+void OsxWindow::show(Window::State state)
 {
     AutoreleasePool pool;
 
@@ -594,17 +595,19 @@ void OsxWindow::show()
     do {
         process_events();
     } while (!is_visible());
+
+    m_actual_state = get_actual_state();
+    if (m_actual_state != state) {
+        switch_state(get_actual_state(), state);
+    }
 }
 
 void OsxWindow::hide()
 {
     AutoreleasePool pool;
 
-    if (m_state == Window::State::fullscreen) {
-        auto on_resize = callbacks().on_resize_callback;
-        callbacks().on_resize_callback = nullptr;
+    if (m_actual_state == Window::State::fullscreen) {
         [m_window->get() exitFullscreen];
-        callbacks().on_resize_callback = on_resize;
     }
 
     [m_window->get() orderOut:m_window->get()];
@@ -613,7 +616,6 @@ void OsxWindow::hide()
     } while (is_visible() && ![m_window->get() isMiniaturized]);
 
     [m_window->get() close];
-
 }
 
 void OsxWindow::focus()
@@ -673,27 +675,22 @@ void OsxWindow::switch_state(Window::State old_state, Window::State new_state)
 
     // Drop fullscreen state
     if (old_state == Window::State::fullscreen) {
-        {
-            auto on_resize = callbacks().on_resize_callback;
-            callbacks().on_resize_callback = nullptr;
-            [m_window->get() exitFullscreen];
-            callbacks().on_resize_callback = on_resize;
-        }
+        [m_window->get() exitFullscreen];
 
         do {
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             process_events();
         } while ([m_window->get() isFullscreen]);
 
-        const Window::State after_fullscreen_state = state();
-        if (state == after_fullscreen_state) {
-            m_state = after_fullscreen_state;
+        const Window::State after_fullscreen_state = get_actual_state();
+        if (after_fullscreen_state == new_state) {
+            m_actual_state = after_fullscreen_state;
             return;
         }
     }
 
     // Switch to new state
-    switch (state) {
+    switch (new_state) {
         case Window::State::iconified: [m_window->get() miniaturize:m_window->get()]; break;
         case Window::State::maximized:
             if (old_state == Window::State::iconified) {
@@ -703,12 +700,7 @@ void OsxWindow::switch_state(Window::State old_state, Window::State new_state)
             }
             break;
         case Window::State::fullscreen:
-            {
-                auto on_resize = callbacks().on_resize_callback;
-                callbacks().on_resize_callback = nullptr;
-                [m_window->get() enterFullscreen];
-                callbacks().on_resize_callback = on_resize;
-            }
+            [m_window->get() enterFullscreen];
 
             do {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -723,6 +715,8 @@ void OsxWindow::switch_state(Window::State old_state, Window::State new_state)
             }
             break;
     }
+
+    m_actual_state = get_actual_state();
 }
 
 void OsxWindow::process_events()
@@ -857,7 +851,6 @@ void OsxWindow::set_cursor_visibility(bool visible)
     if (m_cursor_visible == visible) {
         return;
     }
-
     m_cursor_visible = visible;
     update_cursor_visibility();
 }
@@ -888,15 +881,7 @@ bool OsxWindow::is_cursor_visible() const
 
 Window::State OsxWindow::state() const
 {
-    if ([m_window->get() isFullscreen]) {
-        return Window::State::fullscreen;
-    } else if ([m_window->get() isMiniaturized]) {
-        return Window::State::iconified;
-    } else if ([m_window->get() isZoomed]) {
-        return Window::State::maximized;
-    } else {
-        return Window::State::normal;
-    }
+    return m_actual_state;
 }
 
 Size OsxWindow::size() const
@@ -1091,11 +1076,24 @@ void OsxWindow::mouse_scroll(ScrollOffset scroll)
     callbacks().on_mouse_scroll(scroll);
 }
 
-#pragma endregion
-
 void OsxWindow::update_context()
 {
     m_context->update();
+}
+
+#pragma endregion
+
+Window::State OsxWindow::get_actual_state() const
+{
+    if ([m_window->get() isFullscreen]) {
+        return Window::State::fullscreen;
+    } else if ([m_window->get() isMiniaturized]) {
+        return Window::State::iconified;
+    } else if ([m_window->get() isZoomed]) {
+        return Window::State::maximized;
+    } else {
+        return Window::State::normal;
+    }
 }
 
 void OsxWindow::center_cursor_inside_window()

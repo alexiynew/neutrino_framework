@@ -27,7 +27,7 @@ public:
     OsxWindow& operator=(OsxWindow&&) noexcept = default;
 
 #pragma region actions
-    void show() override;
+    void show(Window::State state) override;
     void hide() override;
     void focus() override;
     void enable_raw_input() override;
@@ -84,11 +84,10 @@ public:
     void mouse_scroll(ScrollOffset scroll);
 
     void update_context();
-
-private:
 #pragma endregion
 
-    void switch_state(Window::State state);
+private:
+
     Window::State get_actual_state() const;
 
     void center_cursor_inside_window();
@@ -110,6 +109,8 @@ private:
 
     Size m_min_size;
     Size m_max_size;
+
+    Window::State m_actual_state;
 };
 
 } // namespace framework::system::details
