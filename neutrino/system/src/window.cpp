@@ -60,7 +60,7 @@ void Window::show()
     // Show window
     m_platform_window->show(m_state_data->state);
 
-    // Turn om on_resize, on_move and on_focus callbacks
+    // Turn on on_resize, on_move and on_focus callbacks
     m_callbacks->on_resize_callback = on_resize_callback;
     m_callbacks->on_move_callback   = on_move_callback;
     m_callbacks->on_focus_callback  = on_focus_callback;
@@ -95,8 +95,22 @@ void Window::hide()
         m_platform_window->disable_raw_input();
     }
 
+    // Turn off on_resize, on_move and on_focus callbacks
+    const auto on_resize_callback = m_callbacks->on_resize_callback;
+    const auto on_move_callback   = m_callbacks->on_move_callback;
+    const auto on_focus_callback  = m_callbacks->on_focus_callback;
+
+    m_callbacks->on_resize_callback = nullptr;
+    m_callbacks->on_move_callback   = nullptr;
+    m_callbacks->on_focus_callback  = nullptr;
+
     // Hide window
     m_platform_window->hide();
+
+    // Turn on on_resize, on_move and on_focus callbacks
+    m_callbacks->on_resize_callback = on_resize_callback;
+    m_callbacks->on_move_callback   = on_move_callback;
+    m_callbacks->on_focus_callback  = on_focus_callback;
 
     // Explicitly call on_hide callback
     m_callbacks->on_hide();
@@ -169,7 +183,7 @@ void Window::set_state(State state)
     // Switch to new state
     m_platform_window->switch_state(old_state, state);
 
-    // Turn om on_resize, on_move and on_focus callbacks
+    // Turn on on_resize, on_move and on_focus callbacks
     m_callbacks->on_resize_callback = on_resize_callback;
     m_callbacks->on_move_callback   = on_move_callback;
 

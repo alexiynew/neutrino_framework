@@ -253,17 +253,6 @@ private:
                     "On position must be called 4 times (" + std::to_string(stats.position_called) + ").");
         TEST_ASSERT(window.size() == size640, "Window should save its size.");
         std::this_thread::sleep_for(std::chrono::seconds(1));
-
-        window.hide();
-        window.set_position({100, 100});
-        window.show();
-
-        TEST_ASSERT(window.position() == Position(100, 100), "Window must be in (100, 100) position.");
-        TEST_ASSERT(stats.last_position == Position(100, 100), "Wrong position in callback.");
-        TEST_ASSERT(stats.position_called == 5,
-                    "On position must be called 5 times (" + std::to_string(stats.position_called) + ").");
-        TEST_ASSERT(window.size() == size640, "Window should save its size.");
-        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     void window_title()

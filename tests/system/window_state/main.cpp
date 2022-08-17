@@ -62,12 +62,18 @@ private:
             Window w("fullscreen_window", size640);
             subscribe_for_events(w);
 
-            TEST_ASSERT(m_stats.on_show_called == 0, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_resize_called == 0, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_move_called == 0, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_focus_called == 0, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+            TEST_ASSERT(m_stats.on_show_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_show_called) + ").");
+            TEST_ASSERT(m_stats.on_hide_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_hide_called) + ").");
+            TEST_ASSERT(m_stats.on_resize_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_resize_called) + ").");
+            TEST_ASSERT(m_stats.on_move_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_move_called) + ").");
+            TEST_ASSERT(m_stats.on_focus_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_focus_called) + ").");
+            TEST_ASSERT(m_stats.on_lost_focus_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_lost_focus_called) + ").");
 
             w.show();
 
@@ -79,12 +85,18 @@ private:
             TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
             TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
-            TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_resize_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_move_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+            TEST_ASSERT(m_stats.on_show_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_show_called) + ").");
+            TEST_ASSERT(m_stats.on_hide_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_hide_called) + ").");
+            TEST_ASSERT(m_stats.on_resize_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_resize_called) + ").");
+            TEST_ASSERT(m_stats.on_move_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_move_called) + ").");
+            TEST_ASSERT(m_stats.on_focus_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_focus_called) + ").");
+            TEST_ASSERT(m_stats.on_lost_focus_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_lost_focus_called) + ").");
 
             TEST_ASSERT(m_stats.last_size == size640, "Invalid size in callback.");
 
@@ -100,12 +112,18 @@ private:
             TEST_ASSERT(w.is_visible(), "Invalid window state.");
             TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
 
-            TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_hide_called == 0, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_resize_called == 2, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_lost_focus_called == 0, "Invalid callback call.");
+            TEST_ASSERT(m_stats.on_show_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_show_called) + ").");
+            TEST_ASSERT(m_stats.on_hide_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_hide_called) + ").");
+            TEST_ASSERT(m_stats.on_resize_called == 2,
+                        "Invalid callback call (" + std::to_string(m_stats.on_resize_called) + ").");
+            TEST_ASSERT(m_stats.on_move_called == 2,
+                        "Invalid callback call (" + std::to_string(m_stats.on_move_called) + ").");
+            TEST_ASSERT(m_stats.on_focus_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_focus_called) + ").");
+            TEST_ASSERT(m_stats.on_lost_focus_called == 0,
+                        "Invalid callback call (" + std::to_string(m_stats.on_lost_focus_called) + ").");
 
             TEST_ASSERT(m_stats.last_size != size640, "Invalid size in callback.");
             TEST_ASSERT(m_stats.last_position == Position(0, 0), "Invalid position in callback.");
@@ -117,12 +135,18 @@ private:
 
             TEST_ASSERT(w.state() == Window::State::fullscreen, "Invalid window state.");
 
-            TEST_ASSERT(m_stats.on_show_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_hide_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_resize_called == 2, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_move_called == 2, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_focus_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+            TEST_ASSERT(m_stats.on_show_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_show_called) + ").");
+            TEST_ASSERT(m_stats.on_hide_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_hide_called) + ").");
+            TEST_ASSERT(m_stats.on_resize_called == 2,
+                        "Invalid callback call (" + std::to_string(m_stats.on_resize_called) + ").");
+            TEST_ASSERT(m_stats.on_move_called == 2,
+                        "Invalid callback call (" + std::to_string(m_stats.on_move_called) + ").");
+            TEST_ASSERT(m_stats.on_focus_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_focus_called) + ").");
+            TEST_ASSERT(m_stats.on_lost_focus_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_lost_focus_called) + ").");
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -132,12 +156,18 @@ private:
             TEST_ASSERT(w.is_visible(), "Invalid window state.");
             TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
 
-            TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_hide_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_resize_called == 3, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_move_called == 3, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+            TEST_ASSERT(m_stats.on_show_called == 2,
+                        "Invalid callback call (" + std::to_string(m_stats.on_show_called) + ").");
+            TEST_ASSERT(m_stats.on_hide_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_hide_called) + ").");
+            TEST_ASSERT(m_stats.on_resize_called == 3,
+                        "Invalid callback call (" + std::to_string(m_stats.on_resize_called) + ").");
+            TEST_ASSERT(m_stats.on_move_called == 3,
+                        "Invalid callback call (" + std::to_string(m_stats.on_move_called) + ").");
+            TEST_ASSERT(m_stats.on_focus_called == 2,
+                        "Invalid callback call (" + std::to_string(m_stats.on_focus_called) + ").");
+            TEST_ASSERT(m_stats.on_lost_focus_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_lost_focus_called) + ").");
 
             TEST_ASSERT(m_stats.last_size != size640, "Invalid size in callback.");
             TEST_ASSERT(m_stats.last_position == Position(0, 0), "Invalid position in callback.");
@@ -152,28 +182,38 @@ private:
             TEST_ASSERT(w.has_input_focus(), "Invalid window state.");
             TEST_ASSERT(w.size() == size640, "Window has wrong size.");
 
-            TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_hide_called == 1, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_resize_called == 4, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_move_called == 4, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
-            TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+            TEST_ASSERT(m_stats.on_show_called == 2,
+                        "Invalid callback call (" + std::to_string(m_stats.on_show_called) + ").");
+            TEST_ASSERT(m_stats.on_hide_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_hide_called) + ").");
+            TEST_ASSERT(m_stats.on_resize_called == 4,
+                        "Invalid callback call (" + std::to_string(m_stats.on_resize_called) + ").");
+            TEST_ASSERT(m_stats.on_move_called == 4,
+                        "Invalid callback call (" + std::to_string(m_stats.on_move_called) + ").");
+            TEST_ASSERT(m_stats.on_focus_called == 2,
+                        "Invalid callback call (" + std::to_string(m_stats.on_focus_called) + ").");
+            TEST_ASSERT(m_stats.on_lost_focus_called == 1,
+                        "Invalid callback call (" + std::to_string(m_stats.on_lost_focus_called) + ").");
 
             TEST_ASSERT(m_stats.last_size == size640, "Invalid size in callback.");
-            TEST_ASSERT(m_stats.last_position == normal_position, "Invalid position in callback");
 
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
 
-        TEST_ASSERT(m_stats.on_show_called == 2, "Invalid callback call.");
-        TEST_ASSERT(m_stats.on_hide_called == 1, "Invalid callback call.");
-        TEST_ASSERT(m_stats.on_resize_called == 4, "Invalid callback call.");
-        TEST_ASSERT(m_stats.on_move_called == 4, "Invalid callback call.");
-        TEST_ASSERT(m_stats.on_focus_called == 2, "Invalid callback call.");
-        TEST_ASSERT(m_stats.on_lost_focus_called == 1, "Invalid callback call.");
+        TEST_ASSERT(m_stats.on_show_called == 2,
+                    "Invalid callback call (" + std::to_string(m_stats.on_show_called) + ").");
+        TEST_ASSERT(m_stats.on_hide_called == 1,
+                    "Invalid callback call (" + std::to_string(m_stats.on_hide_called) + ").");
+        TEST_ASSERT(m_stats.on_resize_called == 4,
+                    "Invalid callback call (" + std::to_string(m_stats.on_resize_called) + ").");
+        TEST_ASSERT(m_stats.on_move_called == 4,
+                    "Invalid callback call (" + std::to_string(m_stats.on_move_called) + ").");
+        TEST_ASSERT(m_stats.on_focus_called == 2,
+                    "Invalid callback call (" + std::to_string(m_stats.on_focus_called) + ").");
+        TEST_ASSERT(m_stats.on_lost_focus_called == 1,
+                    "Invalid callback call (" + std::to_string(m_stats.on_lost_focus_called) + ").");
 
         TEST_ASSERT(m_stats.last_size == size640, "Invalid size in callback.");
-        TEST_ASSERT(m_stats.last_position == normal_position, "Invalid position in callback");
     }
 
     void fullscreen_before_show()

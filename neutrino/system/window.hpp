@@ -189,7 +189,9 @@ public:
 
     /// @brief Move window to new point.
     ///
-    /// Moves the window so that the upper-left corner of the window content is located at a new point.
+    /// Tries to move the window so that the upper-left corner of the window content is located at a specified point.
+    /// Actual window position may differ, because different desktop environments may add offsets to window position
+    /// for menus, panels, etc. The fullscreen window is guaranteed to be at (0, 0) point.
     ///
     /// @param position New winodw position.
     ///
