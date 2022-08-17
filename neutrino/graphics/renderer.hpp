@@ -8,6 +8,7 @@
 #include <graphics/color.hpp>
 #include <graphics/uniform.hpp>
 #include <math/math.hpp>
+#include <system/context.hpp>
 #include <system/window.hpp>
 
 namespace framework::graphics
@@ -179,7 +180,7 @@ private:
     void end_frame();
 
     std::unique_ptr<RendererImpl> m_impl;
-    std::reference_wrapper<system::Window> m_window;
+    std::reference_wrapper<system::Context> m_context;
 
     std::vector<Command> m_render_commands;
     UniformsMap m_global_uniforms;

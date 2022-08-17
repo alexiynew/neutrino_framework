@@ -16,9 +16,9 @@ public:
 
     void render(const DataContext& context);
 
-private:
-    framework::system::Window& m_window;
+    void on_resize(framework::Size size);
 
+private:
     framework::graphics::Renderer m_renderer;
     framework::graphics::Font m_font;
     framework::graphics::Shader m_shader;

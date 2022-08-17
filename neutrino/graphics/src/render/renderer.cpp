@@ -88,15 +88,10 @@ const Renderer::UniformsList& Renderer::Command::uniforms() const
 
 Renderer::Renderer(system::Window& window)
     : m_impl(create_impl(window.context()))
-    , m_window(std::ref(window))
+    , m_context(std::ref(window.context()))
 {}
 
-Renderer::Renderer(Renderer&& other) noexcept
-    : m_impl(std::move(other.m_impl))
-    , m_window(std::move(other.m_window))
-    , m_render_commands(std::move(other.m_render_commands))
-    , m_global_uniforms(std::move(other.m_global_uniforms))
-{}
+Renderer::Renderer(Renderer&& other) noexcept = default;
 
 Renderer& Renderer::operator=(Renderer&& other) noexcept = default;
 
@@ -104,13 +99,13 @@ Renderer::~Renderer() = default;
 
 void Renderer::set_clear_color(const Color& color)
 {
-    m_window.get().context().make_current();
+    m_context.get().make_current();
     m_impl->set_clear_color(color);
 }
 
 void Renderer::set_viewport(Size size)
 {
-    m_window.get().context().make_current();
+    m_context.get().make_current();
     m_impl->set_viewport(size);
 }
 
@@ -131,19 +126,19 @@ bool Renderer::load(const Mesh& mesh)
         return false;
     }
 
-    m_window.get().context().make_current();
+    m_context.get().make_current();
     return m_impl->load(mesh);
 }
 
 bool Renderer::load(const Shader& shader)
 {
-    m_window.get().context().make_current();
+    m_context.get().make_current();
     return m_impl->load(shader);
 }
 
 bool Renderer::load(const Texture& texture)
 {
-    m_window.get().context().make_current();
+    m_context.get().make_current();
     return m_impl->load(texture);
 }
 
@@ -159,7 +154,7 @@ void Renderer::render(const Mesh& mesh, const Shader& shader, const UniformsList
 
 void Renderer::display()
 {
-    m_window.get().context().make_current();
+    m_context.get().make_current();
 
     start_frame();
 
@@ -169,7 +164,7 @@ void Renderer::display()
 
     end_frame();
 
-    m_window.get().context().swap_buffers();
+    m_context.get().swap_buffers();
 }
 
 void Renderer::start_frame()

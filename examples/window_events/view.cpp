@@ -45,8 +45,7 @@ void main()\n\
 } // namespace
 
 View::View(Window& window)
-    : m_window(window)
-    , m_renderer(window)
+    : m_renderer(window)
 {
     if (m_font.load("data/UbuntuMono-Regular.ttf") != Font::LoadResult::Success) {
         throw std::runtime_error("Can't load font.");
@@ -59,21 +58,10 @@ View::View(Window& window)
     }
 
     m_renderer.set_clear_color(Color(0x2F2F2FFFU));
-
-    m_window.set_on_resize_callback([this](Size size) {
-        m_renderer
-        .set_uniform("projectionMatrix",
-                     math::ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
-        m_renderer.set_viewport(size);
-    });
 }
 
 View::~View()
-{
-    // TODO: It's a bug. The View need to disconnect lambda from the on_resize signal.
-    //       But using SlotId is super inconvenient!!!
-    // m_window.on_resize.disconnect(m_resize_callback_id);
-}
+{}
 
 void View::render(const DataContext& data)
 {
@@ -89,4 +77,11 @@ void View::render(const DataContext& data)
     }
 
     m_renderer.display();
+}
+
+void View::on_resize(framework::Size size)
+{
+    m_renderer.set_uniform("projectionMatrix",
+                           math::ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
+    m_renderer.set_viewport(size);
 }

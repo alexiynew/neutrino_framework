@@ -9,6 +9,7 @@ using namespace framework::system;
 
 namespace
 {
+using std::to_string;
 
 std::string key_name(KeyCode key)
 {
@@ -223,83 +224,104 @@ std::string to_string(const KeyCode& k)
 
 EventHandler::EventHandler(Window& w)
     : m_window(w)
-{
-    attach_logs();
-    attach_actions();
-}
-
-void EventHandler::update()
-{
-    m_window.process_events();
-}
+{}
 
 const DataContext& EventHandler::data_context() const
 {
     return m_data_context;
 }
 
-void EventHandler::attach_logs()
+void EventHandler::on_show()
 {
-    using ::to_string;
-    using std::to_string;
-
-    m_window.set_on_show_callback([this]() { m_data_context.add_callback_event("on_show"); });
-    m_window.set_on_hide_callback([this]() { m_data_context.add_callback_event("on_hide"); });
-    m_window.set_on_close_callback([this]() { m_data_context.add_callback_event("on_close"); });
-    m_window.set_on_focus_callback([this]() { m_data_context.add_callback_event("on_focus"); });
-    m_window.set_on_lost_focus_callback([this]() { m_data_context.add_callback_event("on_focus_lost"); });
-    m_window.set_on_resize_callback(
-    [this](Size size) { m_data_context.add_callback_event("on_size: " + to_string(size)); });
-    m_window.set_on_move_callback(
-    [this](Position p) { m_data_context.add_callback_event("on_position: " + to_string(p)); });
-
-    m_window.set_on_key_down_callback([this](KeyCode key, Modifiers state) {
-        m_data_context.add_callback_event("on_key_down key: " + to_string(key) + " " + key_name(key) + " " +
-                                          to_string(state));
-    });
-
-    m_window.set_on_key_up_callback([this](KeyCode key, Modifiers state) {
-        m_data_context.add_callback_event("on_key_up key: " + to_string(key) + " " + key_name(key) + " " +
-                                          to_string(state));
-    });
-
-    m_window.set_on_mouse_enter_callback([this]() { m_data_context.add_callback_event("on_mouse_enter"); });
-    m_window.set_on_mouse_leave_callback([this]() { m_data_context.add_callback_event("on_mouse_leave"); });
-
-    m_window.set_on_mouse_move_callback(
-    [this](CursorPosition p) { m_data_context.add_callback_event("on_mouse_move " + to_string(p)); });
-
-    m_window.set_on_mouse_button_down_callback([this](MouseButton button, CursorPosition position, Modifiers state) {
-        m_data_context.add_callback_event("on_mouse_down: " + button_name(button) + " " + to_string(position) + " " +
-                                          to_string(state));
-    });
-
-    m_window.set_on_mouse_button_up_callback([this](MouseButton button, CursorPosition position, Modifiers state) {
-        m_data_context.add_callback_event("on_mouse_up: " + button_name(button) + " " + to_string(position) + " " +
-                                          to_string(state));
-    });
-
-    m_window.set_on_mouse_scroll_callback(
-    [this](ScrollOffset offset) { m_data_context.add_callback_event("on_mouse_scroll: " + to_string(offset)); });
-
-    m_window.set_on_character_callback(
-    [this](const std::string& s) { m_data_context.add_callback_event("on_character: " + s); });
+    m_data_context.add_callback_event("on_show");
 }
 
-void EventHandler::attach_actions()
+void EventHandler::on_hide()
 {
-    using namespace framework;
+    m_data_context.add_callback_event("on_hide");
+}
 
-    m_window.set_on_key_up_callback([this](KeyCode key, Modifiers) {
-        switch (key) {
-            case KeyCode::key_q: close_window(); break;
-            case KeyCode::key_f: toggle_fullscreen(); break;
-            case KeyCode::key_m: toggle_maximize(); break;
-            case KeyCode::key_i: iconify(); break;
-            case KeyCode::key_0: move_to_zero(); break;
-            default: break;
-        }
-    });
+void EventHandler::on_close()
+{
+    m_data_context.add_callback_event("on_close");
+}
+
+void EventHandler::on_focus()
+{
+    m_data_context.add_callback_event("on_focus");
+}
+
+void EventHandler::on_lost_focus()
+{
+    m_data_context.add_callback_event("on_focus_lost");
+}
+
+void EventHandler::on_resize(Size size)
+{
+    m_data_context.add_callback_event("on_size: " + to_string(size));
+}
+
+void EventHandler::on_move(Position p)
+{
+    m_data_context.add_callback_event("on_position: " + to_string(p));
+}
+
+void EventHandler::on_key_down(KeyCode key, Modifiers state)
+{
+    m_data_context.add_callback_event("on_key_down key: " + to_string(key) + " " + key_name(key) + " " +
+                                      to_string(state));
+}
+
+void EventHandler::on_key_up(KeyCode key, Modifiers state)
+{
+    m_data_context.add_callback_event("on_key_up key: " + to_string(key) + " " + key_name(key) + " " +
+                                      to_string(state));
+
+    switch (key) {
+        case KeyCode::key_q: close_window(); break;
+        case KeyCode::key_f: toggle_fullscreen(); break;
+        case KeyCode::key_m: toggle_maximize(); break;
+        case KeyCode::key_i: iconify(); break;
+        case KeyCode::key_0: move_to_zero(); break;
+        default: break;
+    }
+}
+
+void EventHandler::on_mouse_enter()
+{
+    m_data_context.add_callback_event("on_mouse_enter");
+}
+
+void EventHandler::on_mouse_leave()
+{
+    m_data_context.add_callback_event("on_mouse_leave");
+}
+
+void EventHandler::on_mouse_move(CursorPosition p)
+{
+    m_data_context.add_callback_event("on_mouse_move " + to_string(p));
+}
+
+void EventHandler::on_mouse_button_down(MouseButton button, CursorPosition position, Modifiers state)
+{
+    m_data_context.add_callback_event("on_mouse_down: " + button_name(button) + " " + to_string(position) + " " +
+                                      to_string(state));
+}
+
+void EventHandler::on_mouse_button_up(MouseButton button, CursorPosition position, Modifiers state)
+{
+    m_data_context.add_callback_event("on_mouse_up: " + button_name(button) + " " + to_string(position) + " " +
+                                      to_string(state));
+}
+
+void EventHandler::on_mouse_scroll(ScrollOffset offset)
+{
+    m_data_context.add_callback_event("on_mouse_scroll: " + to_string(offset));
+}
+
+void EventHandler::on_character(const std::string& s)
+{
+    m_data_context.add_callback_event("on_character: " + s);
 }
 
 #pragma region actions handlers
