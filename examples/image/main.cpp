@@ -459,7 +459,7 @@ private:
 
 Example::Example()
     : main_window("Image example", {1024, 720})
-    , renderer(main_window)
+    , renderer(main_window.context())
 {}
 
 void Example::setup()

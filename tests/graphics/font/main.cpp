@@ -76,7 +76,7 @@ private:
         Application::set_name(name());
 
         Window window(name(), {width, height});
-        Renderer renderer(window);
+        Renderer renderer(window.context());
 
         renderer.set_clear_color(Color(0x202020FFu));
         renderer.set_polygon_mode(Renderer::PolygonMode::fill);

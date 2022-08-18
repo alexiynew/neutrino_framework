@@ -45,7 +45,7 @@ void main()\n\
 } // namespace
 
 View::View(Window& window)
-    : m_renderer(window)
+    : m_renderer(window.context())
 {
     if (m_font.load("data/UbuntuMono-Regular.ttf") != Font::LoadResult::Success) {
         throw std::runtime_error("Can't load font.");

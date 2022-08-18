@@ -5,11 +5,11 @@
 #include <string>
 #include <unordered_map>
 
+#include <common/size.hpp>
 #include <graphics/color.hpp>
 #include <graphics/uniform.hpp>
 #include <math/math.hpp>
 #include <system/context.hpp>
-#include <system/window.hpp>
 
 namespace framework::graphics
 {
@@ -70,10 +70,10 @@ public:
         UniformsList m_uniforms;
     };
 
-    /// @brief Creates Renderer and initialize graphic context for the window.
+    /// @brief Creates Renderer and initialize graphic context.
     ///
-    /// @param window Window for rendering.
-    explicit Renderer(system::Window& window);
+    /// @param context Context for rendering.
+    explicit Renderer(system::Context& context);
 
     Renderer(const Renderer&) = delete;
     Renderer(Renderer&& other) noexcept;

@@ -86,9 +86,9 @@ const Renderer::UniformsList& Renderer::Command::uniforms() const
     return m_uniforms;
 }
 
-Renderer::Renderer(system::Window& window)
-    : m_impl(create_impl(window.context()))
-    , m_context(std::ref(window.context()))
+Renderer::Renderer(system::Context& context)
+    : m_impl(create_impl(context))
+    , m_context(std::ref(context))
 {}
 
 Renderer::Renderer(Renderer&& other) noexcept = default;

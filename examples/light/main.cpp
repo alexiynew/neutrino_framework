@@ -201,7 +201,7 @@ int main()
     Application::set_name("GL light");
 
     Window main_window("GL light", {800, 640});
-    Renderer renderer(main_window);
+    Renderer renderer(main_window.context());
 
     renderer.set_clear_color(Color(0x202020FFu));
 

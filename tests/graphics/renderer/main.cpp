@@ -301,7 +301,7 @@ private:
         Application::set_name("GL shader Test");
 
         Window main_window(name(), {256 * 4, 256 * 3});
-        Renderer renderer(main_window);
+        Renderer renderer(main_window.context());
 
         renderer.set_clear_color(Color(0xFF00FFFF));
         main_window.set_on_resize_callback([&renderer](Size size) {

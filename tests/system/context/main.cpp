@@ -28,7 +28,7 @@ private:
         Application::set_name("GL Test");
 
         Window main_window(name(), {640, 480});
-        Renderer render(main_window);
+        Renderer render(main_window.context());
 
         main_window.show();
 
