@@ -1,3 +1,4 @@
+#include <array>
 #include <stdexcept>
 #include <vector>
 
@@ -81,6 +82,97 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
     DestroyWindow(tmp_window);
 }
 
+int get_pixel_format(const framework::system::ContextSettings& settings, HDC hdc)
+{
+    using namespace framework::system::details::wgl;
+
+    std::vector<int> attribs;
+
+    // OpenGL rendering
+    attribs.push_back(WGL_SUPPORT_OPENGL_ARB);
+    attribs.push_back(1);
+
+    // Rendering to a window
+    attribs.push_back(WGL_DRAW_TO_WINDOW_ARB);
+    attribs.push_back(1);
+
+    // Double buffer
+    attribs.push_back(WGL_DOUBLE_BUFFER_ARB);
+    attribs.push_back(1);
+
+    // Swapping method
+    attribs.push_back(WGL_SWAP_METHOD_ARB);
+    attribs.push_back(WGL_SWAP_EXCHANGE_ARB);
+
+    // Hardware acceleration
+    attribs.push_back(WGL_ACCELERATION_ARB);
+    attribs.push_back(WGL_FULL_ACCELERATION_ARB);
+
+    // RGBA pixel type
+    attribs.push_back(WGL_PIXEL_TYPE_ARB);
+    attribs.push_back(WGL_TYPE_RGBA_ARB);
+
+    // Support for 24 bit color
+    attribs.push_back(WGL_COLOR_BITS_ARB);
+    attribs.push_back(24);
+
+    // The number of alpha bitplanes in each RGBA color buffer
+    attribs.push_back(WGL_ALPHA_BITS_ARB);
+    attribs.push_back(8);
+
+    // Depth buffer
+    attribs.push_back(WGL_DEPTH_BITS_ARB);
+    attribs.push_back(static_cast<int>(settings.depth_bits()));
+
+    // Stencil buffer
+    attribs.push_back(WGL_STENCIL_BITS_ARB);
+    attribs.push_back(static_cast<int>(settings.stencil_bits()));
+
+    // Antialiasing
+    if (settings.antialiasing_level() == framework::system::ContextSettings::Antialiasing::best) {
+        attribs.push_back(WGL_SAMPLE_BUFFERS_ARB);
+        attribs.push_back(1);
+    }
+
+    // End of attributes
+    attribs.push_back(0);
+
+    std::array<int, 10> pixel_formats = {};
+    unsigned int formats_count        = 0;
+
+    const bool pixel_format_found = wglChoosePixelFormatARB(hdc,
+                                                            attribs.data(),
+                                                            nullptr,
+                                                            static_cast<UINT>(pixel_formats.size()),
+                                                            pixel_formats.data(),
+                                                            &formats_count);
+    if (!pixel_format_found || formats_count == 0) {
+        return 0;
+    }
+
+    if (settings.antialiasing_level() == framework::system::ContextSettings::Antialiasing::dont_care) {
+        return pixel_formats[0];
+    }
+
+    int best_pixel_format = 0;
+    int max_samples       = 0;
+
+    for (int pf : pixel_formats) {
+        if (pf != 0) {
+            const int samples_attr = WGL_SAMPLES_ARB;
+            int value              = 0;
+            wglGetPixelFormatAttribivARB(hdc, pf, 0, 1, &samples_attr, &value);
+
+            if (value > max_samples) {
+                max_samples       = value;
+                best_pixel_format = pf;
+            }
+        }
+    }
+
+    return (best_pixel_format != 0 ? best_pixel_format : pixel_formats[0]);
+}
+
 } // namespace
 
 namespace framework::system::details
@@ -98,73 +190,11 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
         throw std::runtime_error("WGL_ARB_pixel_format not supported");
     }
 
-    std::vector<int> attribs;
-
-    // OpenGL rendering
-    attribs.push_back(wgl::WGL_SUPPORT_OPENGL_ARB);
-    attribs.push_back(1);
-
-    // Rendering to a window
-    attribs.push_back(wgl::WGL_DRAW_TO_WINDOW_ARB);
-    attribs.push_back(1);
-
-    // Double buffer
-    attribs.push_back(wgl::WGL_DOUBLE_BUFFER_ARB);
-    attribs.push_back(1);
-
-    // Swapping method
-    attribs.push_back(wgl::WGL_SWAP_METHOD_ARB);
-    attribs.push_back(wgl::WGL_SWAP_EXCHANGE_ARB);
-
-    // Hardware acceleration
-    attribs.push_back(wgl::WGL_ACCELERATION_ARB);
-    attribs.push_back(wgl::WGL_FULL_ACCELERATION_ARB);
-
-    // RGBA pixel type
-    attribs.push_back(wgl::WGL_PIXEL_TYPE_ARB);
-    attribs.push_back(wgl::WGL_TYPE_RGBA_ARB);
-
-    // Support for 24 bit color
-    attribs.push_back(wgl::WGL_COLOR_BITS_ARB);
-    attribs.push_back(24);
-
-    // The number of alpha bitplanes in each RGBA color buffer
-    attribs.push_back(wgl::WGL_ALPHA_BITS_ARB);
-    attribs.push_back(8);
-
-    // Depth buffer
-    attribs.push_back(wgl::WGL_DEPTH_BITS_ARB);
-    attribs.push_back(static_cast<int>(settings.depth_bits()));
-
-    // Stencil buffer
-    attribs.push_back(wgl::WGL_STENCIL_BITS_ARB);
-    attribs.push_back(static_cast<int>(settings.stencil_bits()));
-
-    // Antialiasing
-    if (settings.antialiasing_level() == ContextSettings::Antialiasing::best) {
-        attribs.push_back(wgl::WGL_SAMPLE_BUFFERS_ARB);
-        attribs.push_back(1);
-
-        // attribs.push_back(wgl::WGL_SAMPLES_ARB);
-        // attribs.push_back(16);
-    }
-
-    // End of attributes
-    attribs.push_back(0);
-
     m_hdc = GetDC(m_window);
 
-    int pixelFormat          = 0;
-    unsigned int formatCount = 0;
+    const int pixel_format = get_pixel_format(settings, m_hdc);
 
-    // TODO: choose pixel format with maximum number of samples
-    const bool pixel_format_found = wgl::wglChoosePixelFormatARB(m_hdc,
-                                                                 attribs.data(),
-                                                                 nullptr,
-                                                                 1,
-                                                                 &pixelFormat,
-                                                                 &formatCount);
-    if (!pixel_format_found) {
+    if (pixel_format == 0) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't get a suitable pixel format, error: " + std::to_string(GetLastError()));
     }
@@ -172,7 +202,7 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
     PIXELFORMATDESCRIPTOR pfd{};
     pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
 
-    if (!SetPixelFormat(m_hdc, pixelFormat, &pfd)) {
+    if (!SetPixelFormat(m_hdc, pixel_format, &pfd)) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Can't set pixel format, error: " + std::to_string(GetLastError()));
     }
