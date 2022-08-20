@@ -21,7 +21,7 @@ public:
 
     ~LogBuffer() override;
 
-    LogBuffer(const LogBuffer&) = delete;
+    LogBuffer(const LogBuffer&)            = delete;
     LogBuffer& operator=(const LogBuffer&) = delete;
 
     LogBuffer(LogBuffer&& other) noexcept;
@@ -47,7 +47,7 @@ public:
 
     ~LogStream() override;
 
-    LogStream(const LogStream&) = delete;
+    LogStream(const LogStream&)            = delete;
     LogStream& operator=(const LogStream&) = delete;
 
     LogStream(LogStream&& other) noexcept;

@@ -272,9 +272,9 @@ Win32Window::Win32Window(const std::string& title, Size size, const ContextSetti
 {
     using namespace std::placeholders;
 
-    m_client_size = size;
+    m_normal_size = size;
 
-    const Size window_size = adjust_size(m_client_size);
+    const Size window_size = adjust_size(m_normal_size);
 
     m_window = CreateWindowEx(window_ex_style,
                               Win32Application::get_window_class(),
@@ -329,20 +329,11 @@ Win32Window::~Win32Window()
 
 void Win32Window::show(Window::State state)
 {
-
-    switch (state) {
-        case Window::State::fullscreen:
-            ShowWindow(m_window, SW_SHOW);
-            enter_fullscreen();
-            break;
-        case Window::State::iconified: ShowWindow(m_window, SW_SHOW); break;
-        case Window::State::maximized: ShowWindow(m_window, SW_MAXIMIZE); break;
-        case Window::State::normal: ShowWindow(m_window, SW_SHOW); break;
-    }
+    ShowWindow(m_window, SW_SHOW);
     UpdateWindow(m_window);
+    switch_state(this->state(), state);
 
-    m_client_position = position();
-    m_mouse_hover     = is_cursor_in_client_area(m_window);
+    m_mouse_hover = is_cursor_in_client_area(m_window);
 }
 
 void Win32Window::hide()
@@ -412,9 +403,9 @@ void Win32Window::process_events()
 
 void Win32Window::set_size(Size size)
 {
-    m_client_size = size;
+    m_normal_size = size;
 
-    const Size window_size = adjust_size(m_client_size);
+    const Size window_size = adjust_size(m_normal_size);
     SetWindowPos(m_window,
                  HWND_TOP,
                  0,
@@ -448,7 +439,7 @@ void Win32Window::set_resizable(bool value)
 
     SetWindowLong(m_window, GWL_STYLE, style);
 
-    const Size window_size = adjust_size(m_client_size);
+    const Size window_size = adjust_size(m_normal_size);
     SetWindowPos(m_window,
                  HWND_TOP,
                  0,
@@ -460,9 +451,9 @@ void Win32Window::set_resizable(bool value)
 
 void Win32Window::set_position(Position position)
 {
-    m_client_position = position;
+    m_normal_position = position;
 
-    const Position window_position = adjust_position(m_client_position);
+    const Position window_position = adjust_position(m_normal_position);
     SetWindowPos(m_window,
                  HWND_TOP,
                  window_position.x,
@@ -688,8 +679,7 @@ LRESULT Win32Window::on_move_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
         update_cursor();
-        m_client_position = position();
-        callbacks().on_move(m_client_position);
+        callbacks().on_move(position());
     }
 
     return 0;
@@ -699,8 +689,7 @@ LRESULT Win32Window::on_size_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
         update_cursor();
-        m_client_size = size();
-        callbacks().on_resize(m_client_size);
+        callbacks().on_resize(size());
     }
 
     return 0;
@@ -1042,8 +1031,15 @@ void Win32Window::show_cursor()
 
 void Win32Window::enter_fullscreen()
 {
+    if (state() == Window::State::fullscreen) {
+        return;
+    }
+
     const LONG style    = GetWindowLong(m_window, GWL_STYLE);
     const LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
+
+    m_normal_size     = size();
+    m_normal_position = position();
 
     SetWindowLong(m_window, GWL_STYLE, style & ~(WS_CAPTION | WS_THICKFRAME));
     SetWindowLong(m_window,
@@ -1067,6 +1063,10 @@ void Win32Window::enter_fullscreen()
 
 void Win32Window::exit_fullscreen()
 {
+    if (state() != Window::State::fullscreen) {
+        return;
+    }
+
     const LONG style    = GetWindowLong(m_window, GWL_STYLE);
     const LONG ex_style = GetWindowLong(m_window, GWL_EXSTYLE);
 
@@ -1075,8 +1075,8 @@ void Win32Window::exit_fullscreen()
                   GWL_EXSTYLE,
                   ex_style | WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
 
-    const Size window_size         = adjust_size(m_client_size);
-    const Position window_position = adjust_position(m_client_position);
+    const Size window_size         = adjust_size(m_normal_size);
+    const Position window_position = adjust_position(m_normal_position);
     SetWindowPos(m_window,
                  HWND_TOP,
                  window_position.x,

@@ -112,11 +112,11 @@ private:
 
     HWND m_window = nullptr;
 
-    Size m_client_size = {0, 0};
-    Size m_min_size    = {0, 0};
-    Size m_max_size    = {0, 0};
+    Size m_normal_size         = {0, 0};
+    Position m_normal_position = {0, 0};
 
-    Position m_client_position = {0, 0};
+    Size m_min_size = {0, 0};
+    Size m_max_size = {0, 0};
 
     bool m_resizable = true;
 

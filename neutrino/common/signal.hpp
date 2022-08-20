@@ -31,7 +31,7 @@ public:
     Signal(Signal&&)      = default;
 
     Signal& operator=(const Signal&) = delete;
-    Signal& operator=(Signal&&) = default;
+    Signal& operator=(Signal&&)      = default;
 
     /// @brief Connect function to signal
     ///

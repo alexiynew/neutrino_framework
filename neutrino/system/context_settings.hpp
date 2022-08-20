@@ -34,7 +34,7 @@ public:
     ~ContextSettings() = default;
 
     ContextSettings& operator=(const ContextSettings&) noexcept = default;
-    ContextSettings& operator=(ContextSettings&&) noexcept = default;
+    ContextSettings& operator=(ContextSettings&&) noexcept      = default;
 
 #pragma region setters
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

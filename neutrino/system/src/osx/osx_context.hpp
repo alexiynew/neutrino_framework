@@ -17,7 +17,7 @@ public:
     OsxContext(OsxContext&&)      = default;
 
     OsxContext& operator=(const OsxContext&) noexcept = default;
-    OsxContext& operator=(OsxContext&&) noexcept = default;
+    OsxContext& operator=(OsxContext&&) noexcept      = default;
 
     bool valid() const override;
     bool is_current() const override;

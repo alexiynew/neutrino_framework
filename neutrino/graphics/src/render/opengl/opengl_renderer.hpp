@@ -18,10 +18,10 @@ class OpenglRenderer final : public RendererImpl
 public:
     explicit OpenglRenderer(const system::Context& context);
 
-    OpenglRenderer(const OpenglRenderer& other) = default;
+    OpenglRenderer(const OpenglRenderer& other)            = default;
     OpenglRenderer& operator=(const OpenglRenderer& other) = default;
 
-    OpenglRenderer(OpenglRenderer&& other) = default;
+    OpenglRenderer(OpenglRenderer&& other)            = default;
     OpenglRenderer& operator=(OpenglRenderer&& other) = default;
 
     ~OpenglRenderer() override;

@@ -78,7 +78,7 @@ public:
     Uniform(Uniform&&)      = default;
 
     Uniform& operator=(const Uniform&) = default;
-    Uniform& operator=(Uniform&&) = default;
+    Uniform& operator=(Uniform&&)      = default;
 
     /// @brief Uniform name
     ///

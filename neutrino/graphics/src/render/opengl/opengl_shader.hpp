@@ -18,10 +18,10 @@ public:
 
     OpenglShader() = default;
 
-    OpenglShader(const OpenglShader&) = delete;
+    OpenglShader(const OpenglShader&)            = delete;
     OpenglShader& operator=(const OpenglShader&) = delete;
 
-    OpenglShader(OpenglShader&&) = default;
+    OpenglShader(OpenglShader&&)            = default;
     OpenglShader& operator=(OpenglShader&&) = default;
 
     ~OpenglShader();

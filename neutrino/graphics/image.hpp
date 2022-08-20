@@ -61,7 +61,7 @@ public:
     Image(const Image&)     = default;
     Image(Image&&) noexcept = default;
 
-    Image& operator=(const Image&) = default;
+    Image& operator=(const Image&)     = default;
     Image& operator=(Image&&) noexcept = default;
 
     /// @brief Load image from file.

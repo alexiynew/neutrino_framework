@@ -32,7 +32,7 @@ public:
     Context(Context&&)      = default;
 
     Context& operator=(const Context&) noexcept = default;
-    Context& operator=(Context&&) noexcept = default;
+    Context& operator=(Context&&) noexcept      = default;
 
     virtual ~Context();
 

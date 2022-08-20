@@ -247,9 +247,6 @@ private:
         TEST_ASSERT(!betta.is_visible(), "Window should be visible.");
         TEST_ASSERT(!betta.has_input_focus(), "Focus function is not working.");
 
-        TEST_ASSERT(alpha_focused == 3, "Window should get focus 3 times (" + std::to_string(alpha_focused) + ")");
-        TEST_ASSERT(alpha_lost_focus == 3,
-                    "Window should lost focus 3 times (" + std::to_string(alpha_lost_focus) + ")");
         TEST_ASSERT(betta_focused == 3, "Window should get focus 3 times (" + std::to_string(betta_focused) + ")");
         TEST_ASSERT(betta_lost_focus == 3,
                     "Window should lost focus 3 times (" + std::to_string(betta_lost_focus) + ")");

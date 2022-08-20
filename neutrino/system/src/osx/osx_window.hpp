@@ -87,7 +87,6 @@ public:
 #pragma endregion
 
 private:
-
     Window::State get_actual_state() const;
 
     void center_cursor_inside_window();

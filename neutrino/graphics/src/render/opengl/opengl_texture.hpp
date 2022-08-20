@@ -12,10 +12,10 @@ class OpenglTexture
 public:
     OpenglTexture() = default;
 
-    OpenglTexture(const OpenglTexture&) = delete;
+    OpenglTexture(const OpenglTexture&)            = delete;
     OpenglTexture& operator=(const OpenglTexture&) = delete;
 
-    OpenglTexture(OpenglTexture&&) = default;
+    OpenglTexture(OpenglTexture&&)            = default;
     OpenglTexture& operator=(OpenglTexture&&) = default;
 
     ~OpenglTexture();

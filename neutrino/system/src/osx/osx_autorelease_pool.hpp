@@ -16,7 +16,7 @@ public:
     AutoreleasePool(AutoreleasePool&&)      = delete;
 
     AutoreleasePool& operator=(const AutoreleasePool&) = delete;
-    AutoreleasePool& operator=(AutoreleasePool&&) = delete;
+    AutoreleasePool& operator=(AutoreleasePool&&)      = delete;
 
 private:
     NSAutoreleasePool* m_pool = nullptr;

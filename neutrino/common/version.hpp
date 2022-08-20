@@ -34,7 +34,7 @@ public:
     ~Version() = default;
 
     Version& operator=(const Version&) = default;
-    Version& operator=(Version&&) = default;
+    Version& operator=(Version&&)      = default;
 
     /// @brief Version string.
     ///
