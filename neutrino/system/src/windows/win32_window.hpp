@@ -26,7 +26,7 @@ public:
     Win32Window& operator=(const Win32Window&) = delete;
 
 #pragma region actions
-    void show() override;
+    void show(Window::State state) override;
     void hide() override;
     void focus() override;
     void enable_raw_input() override;
@@ -48,7 +48,6 @@ public:
 #pragma region getters
     bool is_visible() const override;
     bool has_input_focus() const override;
-    bool is_cursor_grabbed() const override;
     bool is_cursor_visible() const override;
     Window::State state() const override;
     Size size() const override;

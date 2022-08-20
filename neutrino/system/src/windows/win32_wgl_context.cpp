@@ -145,8 +145,8 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
         attribs.push_back(wgl::WGL_SAMPLE_BUFFERS_ARB);
         attribs.push_back(1);
 
-        attribs.push_back(wgl::WGL_SAMPLES_ARB);
-        attribs.push_back(16);
+        // attribs.push_back(wgl::WGL_SAMPLES_ARB);
+        // attribs.push_back(16);
     }
 
     // End of attributes
