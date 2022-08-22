@@ -29,12 +29,13 @@ public:
     bool load(const Shader& shader);
     void clear();
 
-    int get_attribute_location(const std::string& name) const;
-
     void use() const;
 
-    void set_uniforms(const Renderer::Command& command) const;
+    int get_attribute_location(const std::string& name) const;
 
+    bool is_texture(const std::string& name) const;
+
+    void set_uniforms(const Renderer::Command& command) const;
     void set_texture(const std::string& name, std::size_t index) const;
 
 private:

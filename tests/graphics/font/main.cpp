@@ -18,6 +18,8 @@ using namespace framework::system;
 namespace
 {
 
+constexpr Renderer::ResourceId shader_id = 1;
+
 const std::string vertex_shader =
 "#version 330 core\n\
 layout(location = 0) in vec3 position;\n\
@@ -44,12 +46,12 @@ void main(){\n\
 
 struct TextObject
 {
-    TextObject(Mesh m, Vector3f p)
-        : mesh(std::move(m))
+    TextObject(Renderer::ResourceId id, math::Vector3f p)
+        : mesh_id(id)
         , position(p)
     {}
 
-    Mesh mesh;
+    Renderer::ResourceId mesh_id;
     math::Vector3f position;
 };
 
@@ -160,24 +162,27 @@ private:
         //  clang-format on
 
         float current_line_offset = line_offset;
-        for (const auto& str : strings) {
+        for (std::uint32_t i = 0; i < strings.size(); ++i) {
+            const auto& str = strings[i];
             Mesh text_mesh = font.create_text_mesh(str);
 
             TEST_ASSERT(text_mesh.vertices().size() > 0, "Text mesh is empty.");
             TEST_ASSERT(text_mesh.submeshes().size() > 0, "Text mesh is empty.");
 
-            renderer.load(text_mesh);
+            const auto id = i + 1;
+            renderer.load(id, text_mesh);
             text_mesh.clear();
 
-            objects.emplace_back(std::move(text_mesh), math::Vector3f(0.5f, virtual_height - current_line_offset, 0.0f));
+            objects.emplace_back(id, math::Vector3f(0.5f, virtual_height - current_line_offset, 0.0f));
             current_line_offset += line_offset;
         }
-
-        Shader shader;
-        shader.set_vertex_source(vertex_shader);
-        shader.set_fragment_source(fragment_shader);
-        renderer.load(shader);
-        shader.clear();
+  
+        {
+            Shader shader;
+            shader.set_vertex_source(vertex_shader);
+            shader.set_fragment_source(fragment_shader);
+            renderer.load(shader_id, shader);
+        }
 
         window.show();
 
@@ -193,7 +198,7 @@ private:
 
             for (const auto& object : objects) {
                 Matrix4f transform = translate(math::Matrix4f(), object.position);
-                renderer.render(object.mesh, shader, {Uniform{"modelMatrix", transform}});
+                renderer.render(object.mesh_id, shader_id, {Uniform{"modelMatrix", transform}});
             }
 
             renderer.display();

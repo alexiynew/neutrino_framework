@@ -69,14 +69,6 @@ private:
         const Mesh::SubMeshIndexType submesh6 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangle_strip);
         const Mesh::SubMeshIndexType submesh7 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangles);
 
-        const InstanceId mesh_id = mesh.instance_id();
-
-        TEST_ASSERT(mesh.instance_id() != 0, "Wrong instance id.");
-
-        const InstanceId mesh_id_copy = mesh.instance_id();
-
-        TEST_ASSERT(mesh_id == mesh_id_copy, "Wrong instance id.");
-
         TEST_ASSERT(mesh.vertices() == vertices, "Wrong vertices data.");
         TEST_ASSERT(mesh.normals() == normals, "Wrong normals data.");
         TEST_ASSERT(mesh.tangents() == tangents, "Wrong tangents data.");
@@ -126,7 +118,6 @@ private:
 
         mesh.clear();
 
-        TEST_ASSERT(mesh.instance_id() == mesh_id, "Wrong instance id.");
         TEST_ASSERT(mesh.vertices().empty(), "Wrong vertices data.");
         TEST_ASSERT(mesh.normals().empty(), "Wrong normals data.");
         TEST_ASSERT(mesh.tangents().empty(), "Wrong tangents data.");
@@ -170,9 +161,6 @@ private:
         // Copy
         Mesh mesh1;
         mesh1 = mesh;
-
-        TEST_ASSERT(mesh1.instance_id() != 0, "Wrong instance id.");
-        TEST_ASSERT(mesh1.instance_id() != mesh.instance_id(), "Wrong instance id.");
 
         TEST_ASSERT(mesh1.vertices() == vertices, "Wrong vertices data.");
         TEST_ASSERT(mesh1.normals() == normals, "Wrong normals data.");
@@ -276,14 +264,9 @@ private:
         const Mesh::SubMeshIndexType submesh6 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangle_strip);
         const Mesh::SubMeshIndexType submesh7 = mesh.add_submesh(indices, Mesh::PrimitiveType::triangles);
 
-        const InstanceId mesh_id = mesh.instance_id();
-
         // Move
         Mesh mesh1;
         mesh1 = std::move(mesh);
-
-        TEST_ASSERT(mesh1.instance_id() == mesh_id, "Wrong instance id.");
-        TEST_ASSERT(mesh1.instance_id() != mesh.instance_id(), "Wrong instance id.");
 
         TEST_ASSERT(mesh1.vertices() == vertices, "Wrong vertices data.");
         TEST_ASSERT(mesh1.normals() == normals, "Wrong normals data.");

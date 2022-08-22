@@ -1,7 +1,6 @@
 #ifndef GRAPHICS_TEXTURE_HPP
 #define GRAPHICS_TEXTURE_HPP
 
-#include <common/instance_id.hpp>
 #include <graphics/image.hpp>
 
 namespace framework::graphics
@@ -113,11 +112,6 @@ public:
     /// @see Renderer::load.
     void clear();
 
-    /// @brief Get Texture instance id. Guaranted to be unique.
-    ///
-    /// @return Texture instance id.
-    InstanceId instance_id() const;
-
     /// @brief Get the texture image.
     ///
     /// @return Texture image.
@@ -150,8 +144,6 @@ public:
 
 private:
     friend void swap(Texture& lhs, Texture& rhs) noexcept;
-
-    InstanceId m_instance_id;
 
     Image m_image;
 

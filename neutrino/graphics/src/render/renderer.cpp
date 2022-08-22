@@ -35,8 +35,8 @@ std::unique_ptr<RendererImpl> create_impl(system::Context& context)
 namespace framework::graphics
 {
 
-Renderer::Command::Command(InstanceId mesh,
-                           InstanceId shader,
+Renderer::Command::Command(ResourceId mesh,
+                           ResourceId shader,
                            const UniformsMap& global_uniforms,
                            const UniformsList& uniforms)
     : m_mesh(mesh)
@@ -66,12 +66,12 @@ Renderer::Command& Renderer::Command::operator=(Command&& other)
     return *this;
 }
 
-InstanceId Renderer::Command::mesh() const
+Renderer::ResourceId Renderer::Command::mesh() const
 {
     return m_mesh;
 }
 
-InstanceId Renderer::Command::shader() const
+Renderer::ResourceId Renderer::Command::shader() const
 {
     return m_shader;
 }
@@ -119,7 +119,7 @@ void Renderer::set_polygon_mode(PolygonMode mode)
     m_impl->set_polygon_mode(mode);
 }
 
-bool Renderer::load(const Mesh& mesh)
+bool Renderer::load(ResourceId res_id, const Mesh& mesh)
 {
     if (mesh.submeshes().empty()) {
         // Can't load mesh without sub meshes.
@@ -127,29 +127,29 @@ bool Renderer::load(const Mesh& mesh)
     }
 
     m_context.get().make_current();
-    return m_impl->load(mesh);
+    return m_impl->load(res_id, mesh);
 }
 
-bool Renderer::load(const Shader& shader)
+bool Renderer::load(ResourceId res_id, const Shader& shader)
 {
     m_context.get().make_current();
-    return m_impl->load(shader);
+    return m_impl->load(res_id, shader);
 }
 
-bool Renderer::load(const Texture& texture)
+bool Renderer::load(ResourceId res_id, const Texture& texture)
 {
     m_context.get().make_current();
-    return m_impl->load(texture);
+    return m_impl->load(res_id, texture);
 }
 
-void Renderer::render(const Mesh& mesh, const Shader& shader)
+void Renderer::render(const ResourceId& mesh_id, const ResourceId& shader_id)
 {
-    render(mesh, shader, {});
+    render(mesh_id, shader_id, {});
 }
 
-void Renderer::render(const Mesh& mesh, const Shader& shader, const UniformsList& uniforms)
+void Renderer::render(const ResourceId& mesh_id, const ResourceId& shader_id, const UniformsList& uniforms)
 {
-    m_render_commands.push_back(Command(mesh.instance_id(), shader.instance_id(), m_global_uniforms, uniforms));
+    m_render_commands.push_back(Command(mesh_id, shader_id, m_global_uniforms, uniforms));
 }
 
 void Renderer::display()

@@ -3,7 +3,6 @@
 
 #include <graphics/font.hpp>
 #include <graphics/renderer.hpp>
-#include <graphics/shader.hpp>
 #include <system/window.hpp>
 
 class DataContext;
@@ -21,7 +20,7 @@ public:
 private:
     framework::graphics::Renderer m_renderer;
     framework::graphics::Font m_font;
-    framework::graphics::Shader m_shader;
+    framework::graphics::Renderer::ResourceId m_shader_id = 1;
 };
 
 #endif

@@ -1,6 +1,7 @@
 ﻿#include "view.hpp"
 
 #include <graphics/font.hpp>
+#include <graphics/shader.hpp>
 #include <math/math.hpp>
 
 #include "data_context.hpp"
@@ -51,9 +52,10 @@ View::View(Window& window)
         throw std::runtime_error("Can't load font.");
     }
 
-    m_shader.set_vertex_source(vertex_shader);
-    m_shader.set_fragment_source(fragment_shader);
-    if (!m_renderer.load(m_shader)) {
+    Shader shader;
+    shader.set_vertex_source(vertex_shader);
+    shader.set_fragment_source(fragment_shader);
+    if (!m_renderer.load(m_shader_id, shader)) {
         throw std::runtime_error("Can't load shader.");
     }
 
@@ -65,15 +67,18 @@ View::~View()
 
 void View::render(const DataContext& data)
 {
-    int offset = -500;
+    int offset                   = -500;
+    Renderer::ResourceId mesh_id = 1;
+
     for (const auto& message : data.last_callback_events()) {
         const auto text = m_font.create_text_mesh(message);
-        m_renderer.load(text);
+        m_renderer.load(mesh_id, text);
 
         const math::Matrix4f transform = scale(translate(math::Matrix4f(), {100, offset, 0}), {15, 15, 1});
-        m_renderer.render(text, m_shader, {Uniform{"modelMatrix", transform}});
+        m_renderer.render(mesh_id, m_shader_id, {Uniform{"modelMatrix", transform}});
 
         offset += 15;
+        mesh_id++;
     }
 
     m_renderer.display();

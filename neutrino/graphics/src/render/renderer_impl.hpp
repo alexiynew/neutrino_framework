@@ -25,9 +25,9 @@ public:
     virtual void set_polygon_mode(Renderer::PolygonMode mode) = 0;
     virtual void set_viewport(Size size)                      = 0;
 
-    virtual bool load(const Mesh& mesh)       = 0;
-    virtual bool load(const Shader& shader)   = 0;
-    virtual bool load(const Texture& texture) = 0;
+    virtual bool load(Renderer::ResourceId res_id, const Mesh& mesh)       = 0;
+    virtual bool load(Renderer::ResourceId res_id, const Shader& shader)   = 0;
+    virtual bool load(Renderer::ResourceId res_id, const Texture& texture) = 0;
 
     virtual void start_frame()                            = 0;
     virtual void render(const Renderer::Command& command) = 0;

@@ -16,6 +16,8 @@ namespace framework::graphics
 class OpenglRenderer final : public RendererImpl
 {
 public:
+    using ResourceId = Renderer::ResourceId;
+
     explicit OpenglRenderer(const system::Context& context);
 
     OpenglRenderer(const OpenglRenderer& other)            = default;
@@ -30,18 +32,18 @@ public:
     void set_polygon_mode(Renderer::PolygonMode mode) override;
     void set_viewport(Size size) override;
 
-    bool load(const Mesh& mesh) override;
-    bool load(const Shader& shader) override;
-    bool load(const Texture& texture) override;
+    bool load(ResourceId res_id, const Mesh& mesh) override;
+    bool load(ResourceId res_id, const Shader& shader) override;
+    bool load(ResourceId res_id, const Texture& texture) override;
 
     void start_frame() override;
     void render(const Renderer::Command& command) override;
     void end_frame() override;
 
 private:
-    using MeshMap    = std::unordered_map<InstanceId, OpenglMesh>;
-    using ShaderMap  = std::unordered_map<InstanceId, OpenglShader>;
-    using TextureMap = std::unordered_map<InstanceId, OpenglTexture>;
+    using MeshMap    = std::unordered_map<ResourceId, OpenglMesh>;
+    using ShaderMap  = std::unordered_map<ResourceId, OpenglShader>;
+    using TextureMap = std::unordered_map<ResourceId, OpenglTexture>;
 
     void init();
 

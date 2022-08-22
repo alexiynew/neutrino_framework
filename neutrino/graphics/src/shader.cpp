@@ -77,11 +77,6 @@ void Shader::clear()
     m_fragment_source.clear();
 }
 
-InstanceId Shader::instance_id() const
-{
-    return m_instance_id;
-}
-
 const std::string& Shader::vertex_source() const
 {
     return m_vertex_source;
@@ -95,7 +90,6 @@ const std::string& Shader::fragment_source() const
 void swap(Shader& lhs, Shader& rhs) noexcept
 {
     using std::swap;
-    swap(lhs.m_instance_id, rhs.m_instance_id);
     swap(lhs.m_vertex_source, rhs.m_vertex_source);
     swap(lhs.m_fragment_source, rhs.m_fragment_source);
 }

@@ -54,15 +54,11 @@ private:
         shader.set_vertex_source(vertex_shader);
         shader.set_fragment_source(fragment_shader);
 
-        const InstanceId shader_id = shader.instance_id();
-
-        TEST_ASSERT(shader.instance_id() != 0, "Wrong instance id.");
         TEST_ASSERT(shader.vertex_source() == vertex_shader, "Wrong vertex source.");
         TEST_ASSERT(shader.fragment_source() == fragment_shader, "Wrong fragment source.");
 
         shader.clear();
 
-        TEST_ASSERT(shader.instance_id() == shader_id, "Wrong instance id.");
         TEST_ASSERT(shader.vertex_source().empty(), "Wrong vertex source.");
         TEST_ASSERT(shader.fragment_source().empty(), "Wrong fragment source.");
     }
@@ -74,7 +70,6 @@ private:
         shader.set_vertex_source(vertex_shader);
         shader.set_fragment_source(fragment_shader);
 
-        TEST_ASSERT(shader.instance_id() != 0, "Wrong instance id.");
         TEST_ASSERT(shader.vertex_source() == vertex_shader, "Wrong vertex source.");
         TEST_ASSERT(shader.fragment_source() == fragment_shader, "Wrong fragment source.");
 
@@ -82,9 +77,6 @@ private:
         shader1 = shader;
 
         shader.clear();
-
-        TEST_ASSERT(shader1.instance_id() != 0, "Wrong instance id.");
-        TEST_ASSERT(shader1.instance_id() != shader.instance_id(), "Wrong instance id.");
 
         TEST_ASSERT(shader1.vertex_source() == vertex_shader, "Wrong vertex source.");
         TEST_ASSERT(shader1.fragment_source() == fragment_shader, "Wrong fragment source.");
@@ -97,17 +89,11 @@ private:
         shader.set_vertex_source(vertex_shader);
         shader.set_fragment_source(fragment_shader);
 
-        const InstanceId shader_id = shader.instance_id();
-
-        TEST_ASSERT(shader.instance_id() != 0, "Wrong instance id.");
         TEST_ASSERT(shader.vertex_source() == vertex_shader, "Wrong vertex source.");
         TEST_ASSERT(shader.fragment_source() == fragment_shader, "Wrong fragment source.");
 
         Shader shader1;
         shader1 = std::move(shader);
-
-        TEST_ASSERT(shader1.instance_id() == shader_id, "Wrong instance id.");
-        TEST_ASSERT(shader1.instance_id() != shader.instance_id(), "Wrong instance id.");
 
         TEST_ASSERT(shader1.vertex_source() == vertex_shader, "Wrong vertex source.");
         TEST_ASSERT(shader1.fragment_source() == fragment_shader, "Wrong fragment source.");

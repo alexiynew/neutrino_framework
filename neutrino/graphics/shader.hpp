@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <string>
 
-#include <common/instance_id.hpp>
 #include <math/math.hpp>
 
 namespace framework::graphics
@@ -78,11 +77,6 @@ public:
     /// @see Renderer::load.
     void clear();
 
-    /// @brief Get Shader instance id. Guaranted to be unique.
-    ///
-    /// @return Shader instance id.
-    InstanceId instance_id() const;
-
     /// @brief Get vertex shader source.
     ///
     /// @return Vertex shader source.
@@ -95,8 +89,6 @@ public:
 
 private:
     friend void swap(Shader& lhs, Shader& rhs) noexcept;
-
-    InstanceId m_instance_id;
 
     std::string m_vertex_source;
     std::string m_fragment_source;

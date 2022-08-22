@@ -287,20 +287,20 @@ int main()
         light_transform = translate(light_transform, light_cube.position);
         light_transform = scale(light_transform, Vector3f(0.2f, 0.2f, 0.2f));
 
-        renderer.render(*light_cube.mesh, *light_cube.shader, {Uniform{"modelMatrix", light_transform}});
+        // renderer.render(*light_cube.mesh, *light_cube.shader, {Uniform{"modelMatrix", light_transform}});
 
-        Matrix3f normal_matrix = Matrix3f(transpose(inverse(camera.get_view() * cube_transform)));
-        renderer.render(*cube.mesh,
-                        *cube.shader,
-                        {{"modelMatrix", cube_transform},
-                         {"normalMatrix", normal_matrix},
-                         {"lightPos", light_cube.position},
-                         {"lightMatrix", light_transform},
-                         {"material.ambient", cube.material.ambient},
-                         {"material.diffuse", cube.material.diffuse},
-                         {"material.specular", cube.material.specular},
-                         {"material.shininess", cube.material.shininess}});
-
+        // Matrix3f normal_matrix = Matrix3f(transpose(inverse(camera.get_view() * cube_transform)));
+        //         renderer.render(*cube.mesh,
+        //                         *cube.shader,
+        //                         {{"modelMatrix", cube_transform},
+        //                          {"normalMatrix", normal_matrix},
+        //                          {"lightPos", light_cube.position},
+        //                          {"lightMatrix", light_transform},
+        //                          {"material.ambient", cube.material.ambient},
+        //                          {"material.diffuse", cube.material.diffuse},
+        //                          {"material.specular", cube.material.specular},
+        //                          {"material.shininess", cube.material.shininess}});
+        //
         renderer.display();
 
         std::this_thread::sleep_for(delta_time);

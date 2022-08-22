@@ -329,7 +329,9 @@ struct Object
     int y       = 0;
     float gamma = 2.2f;
     TexturePtr texture;
+    Renderer::ResourceId texture_id;
     MeshPtr mesh;
+    Renderer::ResourceId mesh_id;
 };
 
 using ObjectsList = std::vector<std::vector<Object>>;
@@ -386,7 +388,6 @@ MeshPtr create_mesh(int width, int height)
 
 TexturePtr create_texture(const Image& image)
 {
-
     TexturePtr t = std::make_unique<Texture>();
     t->set_image(image);
     t->set_min_filter(Texture::MinFilter::nearest);
@@ -395,12 +396,11 @@ TexturePtr create_texture(const Image& image)
     return t;
 }
 
-ShaderPtr create_shader()
+Shader create_shader()
 {
-    ShaderPtr s = std::make_unique<Shader>();
-
-    s->set_vertex_source(vertex_shader);
-    s->set_fragment_source(fragment_shader);
+    Shader s;
+    s.set_vertex_source(vertex_shader);
+    s.set_fragment_source(fragment_shader);
 
     return s;
 }
@@ -415,7 +415,7 @@ ObjectsList generate_objects(const ImagesList& images)
         std::transform(group.begin(), group.end(), std::back_inserter(obj_group), [](const Image& img) {
             int w = static_cast<int>(img.width());
             int h = static_cast<int>(img.height());
-            return Object{w, h, 0, 0, img.gamma(), create_texture(img), create_mesh(w, h)};
+            return Object{w, h, 0, 0, img.gamma(), create_texture(img), 0, create_mesh(w, h), 0};
         });
 
         return obj_group;
@@ -454,7 +454,7 @@ private:
     Window main_window;
     Renderer renderer;
 
-    ShaderPtr shader;
+    Renderer::ResourceId shader_id;
 };
 
 Example::Example()
@@ -522,21 +522,26 @@ void Example::setup()
         }
     });
 
-    shader = create_shader();
+    renderer.load(shader_id, create_shader());
 
-    renderer.load(*shader);
-
-    for (const auto& g : png_objects) {
-        for (const auto& o : g) {
-            renderer.load(*o.texture.get());
-            renderer.load(*o.mesh.get());
+    Renderer::ResourceId res_id = 1;
+    for (auto& g : png_objects) {
+        for (auto& o : g) {
+            renderer.load(res_id, *o.texture.get());
+            o.mesh_id = res_id;
+            renderer.load(res_id, *o.mesh.get());
+            o.texture_id = res_id;
+            res_id++;
         }
     }
 
-    for (const auto& g : bmp_objects) {
-        for (const auto& o : g) {
-            renderer.load(*o.texture.get());
-            renderer.load(*o.mesh.get());
+    for (auto& g : bmp_objects) {
+        for (auto& o : g) {
+            renderer.load(res_id, *o.texture.get());
+            o.mesh_id = res_id;
+            renderer.load(res_id, *o.mesh.get());
+            o.texture_id = res_id;
+            res_id++;
         }
     }
 }
@@ -577,7 +582,9 @@ void Example::run()
                                                Vector3f(o.x, o.y, 0.0f) +
                                                Vector3f(0.5f * o.width, -0.5f * o.height, 0.0f) +
                                                Vector3f(position, 0.0f));
-                renderer.render(*o.mesh, *shader, {Uniform{"texture0", *o.texture}, Uniform{"modelMatrix", transform}});
+                renderer.render(o.mesh_id,
+                                shader_id,
+                                {Uniform{"texture0", o.texture_id}, Uniform{"modelMatrix", transform}});
             }
         }
 

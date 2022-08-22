@@ -359,9 +359,6 @@ public:
         glUniformMatrix4x3dv(m_location, 1, false, value.data());
     }
 
-    void operator()(const TextureBinding&) const
-    {}
-
 private:
     int m_location = 0;
 };
@@ -409,6 +406,11 @@ int OpenglShader::get_attribute_location(const std::string& name) const
 void OpenglShader::use() const
 {
     glUseProgram(m_shader_program);
+}
+
+bool OpenglShader::is_texture(const std::string& name) const
+{
+    return m_textures.count(name) > 0;
 }
 
 void OpenglShader::set_uniforms(const Renderer::Command& command) const
