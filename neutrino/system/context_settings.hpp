@@ -118,7 +118,6 @@ public:
 #pragma endregion
 
 private:
-    // TODO: Make dont_cara as default value
     std::uint32_t m_depth_bits        = 24;
     std::uint32_t m_stencil_bits      = 8;
     Antialiasing m_antialiasing_level = Antialiasing::best;

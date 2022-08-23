@@ -17,7 +17,7 @@ namespace framework::graphics
 ///
 /// Each Shader consists of two parts: vertex program and fragment program.
 ///
-/// TODO: Check if this documentation is correct
+/// TODO: Remove predefined attributes. Add set_attribute_location(Attribute attr, int index) in Mesh.
 /// #### For OpenGL:
 ///
 /// Shader has predefined vertex attribute locations listed below:
