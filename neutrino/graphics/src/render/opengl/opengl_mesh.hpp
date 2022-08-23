@@ -18,8 +18,7 @@ public:
     {
         std::uint32_t buffer = 0;
         unsigned int type    = 0;
-        int component_size   = 0;
-        int components_count = 0;
+        int component_size   = 0; /// < Specifies the number of components per  vertex attribute. Must be 1, 2, 3, 4.
     };
 
     struct SubMeshInfo

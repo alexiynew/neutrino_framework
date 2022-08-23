@@ -1,4 +1,5 @@
 #include <limits>
+#include <stdexcept>
 
 #include <graphics/mesh.hpp>
 

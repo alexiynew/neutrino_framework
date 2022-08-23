@@ -71,8 +71,7 @@ void View::render(const DataContext& data)
     Renderer::ResourceId mesh_id = 1;
 
     for (const auto& message : data.last_callback_events()) {
-        const auto text = m_font.create_text_mesh(message);
-        m_renderer.load(mesh_id, text);
+        m_renderer.load(mesh_id, m_font.create_text_mesh(message));
 
         const math::Matrix4f transform = scale(translate(math::Matrix4f(), {100, offset, 0}), {15, 15, 1});
         m_renderer.render(mesh_id, m_shader_id, {Uniform{"modelMatrix", transform}});

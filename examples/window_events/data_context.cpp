@@ -10,7 +10,7 @@ void DataContext::add_callback_event(const std::string& event)
     static constexpr size_t max_events = 20;
 
     m_callbacks_events.insert(m_callbacks_events.begin(), event);
-    if (m_callbacks_events.size() >= max_events) {
+    if (m_callbacks_events.size() > max_events) {
         m_callbacks_events.pop_back();
     }
 }
