@@ -74,38 +74,34 @@ std::string shader_program_info_log(std::uint32_t program_id)
     return std::string(buffer.get());
 }
 
-std::uint32_t create_shader(int shader_type, const std::string& source)
+bool load_shader(std::uint32_t shader_id, int shader_type, const std::string& source)
 {
-    using namespace framework;
-
-    std::uint32_t shader_id = glCreateShader(static_cast<GLenum>(shader_type));
+    if (shader_id == 0) {
+        return false;
+    }
 
     const char* source_pointer = source.c_str();
-    glShaderSource(shader_id, 1, &source_pointer, nullptr);
 
+    glShaderSource(shader_id, 1, &source_pointer, nullptr);
     glCompileShader(shader_id);
 
     int compiled = 0;
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compiled);
     if (compiled == 0) {
-        log::error(tag) << shader_type_string(shader_type) << " compilation error:\n" << shader_info_log(shader_id);
-
-        glDeleteShader(shader_id);
-        return 0;
+        framework::log::error(tag) << shader_type_string(shader_type) << " compilation error:\n"
+                                   << shader_info_log(shader_id);
+        return false;
     }
 
-    return shader_id;
+    return true;
 }
-
-std::uint32_t create_shader_program(std::uint32_t vertex_shader_id, std::uint32_t fragment_shader_id)
+bool compile_shader_program(std::uint32_t program_id, std::uint32_t vertex_shader_id, std::uint32_t fragment_shader_id)
 {
     using namespace framework;
 
-    if (vertex_shader_id == 0 || fragment_shader_id == 0) {
-        return 0;
+    if (program_id == 0 || vertex_shader_id == 0 || fragment_shader_id == 0) {
+        return false;
     }
-
-    std::uint32_t program_id = glCreateProgram();
 
     glAttachShader(program_id, vertex_shader_id);
     glAttachShader(program_id, fragment_shader_id);
@@ -120,12 +116,10 @@ std::uint32_t create_shader_program(std::uint32_t vertex_shader_id, std::uint32_
     glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
     if (linked == 0) {
         log::error(tag) << "Shader program link error:\n" << shader_program_info_log(program_id);
-
-        glDeleteProgram(program_id);
-        return 0;
+        return false;
     }
 
-    return program_id;
+    return true;
 }
 
 template <std::size_t N>
@@ -388,14 +382,47 @@ void OpenglShader::clear()
 
 bool OpenglShader::load(const Shader& shader)
 {
-    m_vertex_shader   = create_shader(GL_VERTEX_SHADER, shader.vertex_source());
-    m_fragment_shader = create_shader(GL_FRAGMENT_SHADER, shader.fragment_source());
-    m_shader_program  = create_shader_program(m_vertex_shader, m_fragment_shader);
+    if (m_vertex_shader == 0) {
+        m_vertex_shader = glCreateShader(static_cast<GLenum>(GL_VERTEX_SHADER));
+    }
+
+    if (m_fragment_shader == 0) {
+        m_fragment_shader = glCreateShader(static_cast<GLenum>(GL_FRAGMENT_SHADER));
+    }
+
+    if (!load_shader(m_vertex_shader, GL_VERTEX_SHADER, shader.vertex_source())) {
+        clear();
+        return false;
+    }
+
+    if (!load_shader(m_fragment_shader, GL_FRAGMENT_SHADER, shader.fragment_source())) {
+        clear();
+        return false;
+    }
+
+    if (HAS_OPENGL_ERRORS()) {
+        clear();
+        return false;
+    }
+
+    if (m_shader_program == 0) {
+        m_shader_program = glCreateProgram();
+    }
+
+    if (!compile_shader_program(m_shader_program, m_vertex_shader, m_fragment_shader)) {
+        clear();
+        return false;
+    }
 
     m_uniforms = get_active_uniforms(m_shader_program, uniform_types);
     m_textures = get_active_uniforms(m_shader_program, texture_types);
 
-    return m_shader_program != 0;
+    if (HAS_OPENGL_ERRORS()) {
+        clear();
+        return false;
+    }
+
+    return true;
 }
 
 int OpenglShader::get_attribute_location(const std::string& name) const

@@ -70,7 +70,7 @@ OpenglRenderer::OpenglRenderer(const system::Context& context)
     check_supported();
 
     init();
-    LOG_OPENGL_ERRORS();
+    HAS_OPENGL_ERRORS();
 }
 
 OpenglRenderer::~OpenglRenderer() = default;
@@ -103,7 +103,7 @@ void OpenglRenderer::set_clear_color(const Color& color)
 {
     Colorf c = static_cast<Colorf>(color);
     glClearColor(c.r, c.g, c.b, c.a);
-    LOG_OPENGL_ERRORS();
+    HAS_OPENGL_ERRORS();
 }
 
 void OpenglRenderer::set_polygon_mode(Renderer::PolygonMode mode)
@@ -114,7 +114,7 @@ void OpenglRenderer::set_polygon_mode(Renderer::PolygonMode mode)
         case Renderer::PolygonMode::line: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
         case Renderer::PolygonMode::point: glPolygonMode(GL_FRONT_AND_BACK, GL_POINT); break;
     }
-    LOG_OPENGL_ERRORS();
+    HAS_OPENGL_ERRORS();
 }
 
 void OpenglRenderer::set_viewport(Size size)
@@ -130,7 +130,10 @@ bool OpenglRenderer::load(ResourceId res_id, const Mesh& mesh)
         log::error(tag) << "Failed ot load Mesh: " << res_id;
     }
 
-    LOG_OPENGL_ERRORS();
+    if (HAS_OPENGL_ERRORS()) {
+        return false;
+    }
+
     return loaded;
 }
 
@@ -142,7 +145,10 @@ bool OpenglRenderer::load(ResourceId res_id, const Shader& shader)
         log::error(tag) << "Failed ot load Shader: " << res_id;
     }
 
-    LOG_OPENGL_ERRORS();
+    if (HAS_OPENGL_ERRORS()) {
+        return false;
+    }
+
     return loaded;
 }
 
@@ -154,7 +160,10 @@ bool OpenglRenderer::load(ResourceId res_id, const Texture& texture)
         log::error(tag) << "Failed ot load Texture: " << res_id;
     }
 
-    LOG_OPENGL_ERRORS();
+    if (HAS_OPENGL_ERRORS()) {
+        return false;
+    }
+
     return loaded;
 }
 
@@ -186,7 +195,7 @@ void OpenglRenderer::render(const Renderer::Command& command)
 
     mesh.draw();
 
-    LOG_OPENGL_ERRORS();
+    HAS_OPENGL_ERRORS();
 }
 
 void OpenglRenderer::end_frame()
