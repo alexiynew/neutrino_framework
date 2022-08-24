@@ -23,9 +23,9 @@ ContextSettings& ContextSettings::stencil_bits(std::uint32_t bits)
     return *this;
 }
 
-ContextSettings& ContextSettings::antialiasing_level(Antialiasing level)
+ContextSettings& ContextSettings::samples_count(std::uint32_t samples)
 {
-    m_antialiasing_level = level;
+    m_samples_count = samples;
     return *this;
 }
 
@@ -48,9 +48,9 @@ std::uint32_t ContextSettings::stencil_bits() const
     return m_stencil_bits;
 }
 
-ContextSettings::Antialiasing ContextSettings::antialiasing_level() const
+std::uint32_t ContextSettings::samples_count() const
 {
-    return m_antialiasing_level;
+    return m_samples_count;
 }
 
 #pragma endregion

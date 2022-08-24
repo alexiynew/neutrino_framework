@@ -12,14 +12,14 @@
 namespace
 {
 
-NSOpenGLPixelFormatAttribute get_attribute(NSOpenGLPixelFormat* pixel_format, NSOpenGLPixelFormatAttribute attrib)
+int get_attribute_value(NSOpenGLPixelFormat* pixel_format, NSOpenGLPixelFormatAttribute attrib)
 {
     const int screen_number = 0;
     std::int32_t value      = 0;
 
     [pixel_format getValues:&value forAttribute:attrib forVirtualScreen:screen_number];
 
-    return static_cast<NSOpenGLPixelFormatAttribute>(value);
+    return value;
 };
 
 framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelFormat* pixel_format)
@@ -28,17 +28,13 @@ framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelForm
     using framework::Version;
 
     if (pixel_format == nullptr) {
-        return ContextSettings()
-        .version(Version(0, 0))
-        .depth_bits(0)
-        .stencil_bits(0)
-        .antialiasing_level(ContextSettings::Antialiasing::dont_care);
+        return ContextSettings().version(Version(0, 0)).depth_bits(0).stencil_bits(0).samples_count(0);
     }
 
-    const auto profile       = get_attribute(pixel_format, NSOpenGLPFAOpenGLProfile);
-    const auto depth_bits    = get_attribute(pixel_format, NSOpenGLPFADepthSize);
-    const auto stencil_bits  = get_attribute(pixel_format, NSOpenGLPFAStencilSize);
-    const auto samples_count = get_attribute(pixel_format, NSOpenGLPFASamples);
+    const auto profile       = get_attribute_value(pixel_format, NSOpenGLPFAOpenGLProfile);
+    const auto depth_bits    = get_attribute_value(pixel_format, NSOpenGLPFADepthSize);
+    const auto stencil_bits  = get_attribute_value(pixel_format, NSOpenGLPFAStencilSize);
+    const auto samples_count = get_attribute_value(pixel_format, NSOpenGLPFASamples);
 
     ContextSettings settings;
     if (profile == NSOpenGLProfileVersion3_2Core) {
@@ -51,12 +47,7 @@ framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelForm
 
     settings.depth_bits(depth_bits);
     settings.stencil_bits(stencil_bits);
-
-    if (samples_count != 0) {
-        settings.antialiasing_level(ContextSettings::Antialiasing::best);
-    } else {
-        settings.antialiasing_level(ContextSettings::Antialiasing::dont_care);
-    }
+    settings.samples_count(samples_count);
 
     return settings;
 }

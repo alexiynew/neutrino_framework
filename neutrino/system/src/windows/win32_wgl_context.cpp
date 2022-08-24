@@ -1,5 +1,6 @@
 #include <array>
 #include <stdexcept>
+#include <tuple>
 #include <vector>
 
 #include <system/src/windows/wglext.hpp>
@@ -8,6 +9,8 @@
 
 namespace
 {
+using PixelFormatValues = std::tuple<int, int, int>; // <depth_bits, stencil_bits, samples>
+
 HWND create_tmp_window()
 {
     using framework::system::details::Win32Application;
@@ -36,8 +39,8 @@ HWND create_tmp_window()
 
 void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
 {
-    HWND tmp_window = create_tmp_window();
-    HDC hdc         = GetDC(tmp_window);
+    const HWND tmp_window = create_tmp_window();
+    const HDC hdc         = GetDC(tmp_window);
 
     if (hdc == nullptr) {
         DestroyWindow(tmp_window);
@@ -51,7 +54,7 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.cColorBits = 24;
 
-    int pixelFormat = ChoosePixelFormat(hdc, &pfd);
+    const int pixelFormat = ChoosePixelFormat(hdc, &pfd);
 
     if (pixelFormat == 0) {
         ReleaseDC(tmp_window, hdc);
@@ -65,7 +68,7 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
         throw std::runtime_error("Can't set pixel format, error: " + std::to_string(GetLastError()));
     }
 
-    HGLRC hglrc = wglCreateContext(hdc);
+    const HGLRC hglrc = wglCreateContext(hdc);
     if (hglrc == nullptr) {
         ReleaseDC(tmp_window, hdc);
         DestroyWindow(tmp_window);
@@ -82,9 +85,26 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
     DestroyWindow(tmp_window);
 }
 
+PixelFormatValues get_pixel_format_values(HDC hdc, int pixel_format)
+{
+    using namespace framework::system::details::wgl;
+
+    constexpr static std::size_t size = std::tuple_size_v<PixelFormatValues>;
+
+    constexpr static std::array<int, size> attribs = {WGL_DEPTH_BITS_ARB, WGL_STENCIL_BITS_ARB, WGL_SAMPLES_ARB};
+
+    std::array<int, size> values = {0, 0, 0};
+    if (!wglGetPixelFormatAttribivARB(hdc, pixel_format, 0, static_cast<UINT>(size), &attribs[0], &values[0])) {
+        return PixelFormatValues(0, 0, 0);
+    }
+
+    return PixelFormatValues(values[0], values[1], values[2]);
+}
+
 int get_pixel_format(const framework::system::ContextSettings& settings, HDC hdc)
 {
     using namespace framework::system::details::wgl;
+    using framework::system::ContextSettings;
 
     std::vector<int> attribs;
 
@@ -121,15 +141,19 @@ int get_pixel_format(const framework::system::ContextSettings& settings, HDC hdc
     attribs.push_back(8);
 
     // Depth buffer
-    attribs.push_back(WGL_DEPTH_BITS_ARB);
-    attribs.push_back(static_cast<int>(settings.depth_bits()));
+    if (settings.depth_bits() != ContextSettings::dont_care) {
+        attribs.push_back(WGL_DEPTH_BITS_ARB);
+        attribs.push_back(static_cast<int>(settings.depth_bits()));
+    }
 
     // Stencil buffer
-    attribs.push_back(WGL_STENCIL_BITS_ARB);
-    attribs.push_back(static_cast<int>(settings.stencil_bits()));
+    if (settings.stencil_bits() != ContextSettings::dont_care) {
+        attribs.push_back(WGL_STENCIL_BITS_ARB);
+        attribs.push_back(static_cast<int>(settings.stencil_bits()));
+    }
 
-    // Antialiasing
-    if (settings.antialiasing_level() == framework::system::ContextSettings::Antialiasing::best) {
+    // Multisampling
+    if (settings.samples_count() != ContextSettings::dont_care) {
         attribs.push_back(WGL_SAMPLE_BUFFERS_ARB);
         attribs.push_back(1);
     }
@@ -137,8 +161,8 @@ int get_pixel_format(const framework::system::ContextSettings& settings, HDC hdc
     // End of attributes
     attribs.push_back(0);
 
-    std::array<int, 10> pixel_formats = {};
-    unsigned int formats_count        = 0;
+    std::array<int, 100> pixel_formats = {};
+    unsigned int formats_count         = 0;
 
     const bool pixel_format_found = wglChoosePixelFormatARB(hdc,
                                                             attribs.data(),
@@ -150,27 +174,61 @@ int get_pixel_format(const framework::system::ContextSettings& settings, HDC hdc
         return 0;
     }
 
-    if (settings.antialiasing_level() == framework::system::ContextSettings::Antialiasing::dont_care) {
+    if (settings.samples_count() == ContextSettings::dont_care) {
         return pixel_formats[0];
     }
 
     int best_pixel_format = 0;
-    int max_samples       = 0;
+    auto best_values      = PixelFormatValues(0, 0, 0);
 
     for (int pf : pixel_formats) {
         if (pf != 0) {
-            const int samples_attr = WGL_SAMPLES_ARB;
-            int value              = 0;
-            wglGetPixelFormatAttribivARB(hdc, pf, 0, 1, &samples_attr, &value);
+            const auto values = get_pixel_format_values(hdc, pf);
 
-            if (value > max_samples) {
-                max_samples       = value;
+            if (values > best_values) {
+                best_values       = values;
                 best_pixel_format = pf;
             }
         }
     }
 
     return (best_pixel_format != 0 ? best_pixel_format : pixel_formats[0]);
+}
+
+HGLRC create_gl_context(const framework::system::ContextSettings& settings, HDC hdc)
+{
+    using namespace framework::system::details::wgl;
+    using framework::system::ContextSettings;
+
+    std::vector<int> contextAttribs;
+
+    contextAttribs.push_back(WGL_CONTEXT_MAJOR_VERSION_ARB);
+    contextAttribs.push_back(settings.version().major());
+
+    contextAttribs.push_back(WGL_CONTEXT_MINOR_VERSION_ARB);
+    contextAttribs.push_back(settings.version().minor());
+
+    contextAttribs.push_back(WGL_CONTEXT_PROFILE_MASK_ARB);
+    contextAttribs.push_back(WGL_CONTEXT_CORE_PROFILE_BIT_ARB);
+
+    // End of attributes
+    contextAttribs.push_back(0);
+
+    return wglCreateContextAttribsARB(hdc, nullptr, contextAttribs.data());
+}
+
+framework::system::ContextSettings get_actual_context_settings(HDC hdc, int pixel_format)
+{
+    using framework::system::ContextSettings;
+
+    const auto& [depth_bits, stencil_bits, samples_count] = get_pixel_format_values(hdc, pixel_format);
+
+    ContextSettings settings;
+    settings.depth_bits(depth_bits);
+    settings.stencil_bits(stencil_bits);
+    settings.samples_count(samples_count);
+
+    return settings;
 }
 
 } // namespace
@@ -207,32 +265,15 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
         throw std::runtime_error("Can't set pixel format, error: " + std::to_string(GetLastError()));
     }
 
-    std::vector<int> contextAttribs;
-
-    contextAttribs.push_back(wgl::WGL_CONTEXT_MAJOR_VERSION_ARB);
-    contextAttribs.push_back(settings.version().major());
-
-    contextAttribs.push_back(wgl::WGL_CONTEXT_MINOR_VERSION_ARB);
-    contextAttribs.push_back(settings.version().minor());
-
-    contextAttribs.push_back(wgl::WGL_CONTEXT_PROFILE_MASK_ARB);
-    contextAttribs.push_back(wgl::WGL_CONTEXT_CORE_PROFILE_BIT_ARB);
-
-    if (settings.version().major() >= 3) {
-        contextAttribs.push_back(wgl::WGL_CONTEXT_FLAGS_ARB);
-        contextAttribs.push_back(wgl::WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB);
-    }
-
-    // End of attributes
-    contextAttribs.push_back(0);
-
-    // TODO: Update actual context settings
-
-    m_hglrc = wgl::wglCreateContextAttribsARB(m_hdc, nullptr, contextAttribs.data());
+    m_hglrc = create_gl_context(settings, m_hdc);
     if (m_hglrc == nullptr) {
         ReleaseDC(m_window, m_hdc);
         throw std::runtime_error("Failed to create OpenGL context, error: " + std::to_string(GetLastError()));
     }
+
+    ContextSettings actual_settings = get_actual_context_settings(m_hdc, pixel_format);
+    actual_settings.version(settings.version()); // Can't get actual OpenGL version, so just copy requested one.
+    update_settings(actual_settings);
 }
 
 Win32WglContext::~Win32WglContext()
@@ -244,8 +285,7 @@ Win32WglContext::~Win32WglContext()
 
 bool Win32WglContext::valid() const
 {
-    // TODO(alex) add more robust checks
-    return m_hdc != nullptr && m_hglrc != nullptr;
+    return m_window != nullptr || m_hdc != nullptr && m_hglrc != nullptr;
 }
 
 bool Win32WglContext::is_current() const
