@@ -43,6 +43,8 @@ void main()\n\
 }\n\
 ";
 
+constexpr int LogOffset = 50;
+
 } // namespace
 
 View::View(Window& window)
@@ -67,18 +69,7 @@ View::~View()
 
 void View::render(const DataContext& data)
 {
-    int offset                   = -500;
-    Renderer::ResourceId mesh_id = 1;
-
-    for (const auto& message : data.last_callback_events()) {
-        m_renderer.load(mesh_id, m_font.create_text_mesh(message));
-
-        const math::Matrix4f transform = scale(translate(math::Matrix4f(), {100, offset, 0}), {15, 15, 1});
-        m_renderer.render(mesh_id, m_shader_id, {Uniform{"modelMatrix", transform}});
-
-        offset += 15;
-        mesh_id++;
-    }
+    render_log(data);
 
     m_renderer.display();
 }
@@ -88,4 +79,27 @@ void View::on_resize(framework::Size size)
     m_renderer.set_uniform("projectionMatrix",
                            math::ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
     m_renderer.set_viewport(size);
+
+    m_top_log_offset  = -(size.height - LogOffset);
+    m_left_log_offset = LogOffset;
+}
+
+void View::render_log(const DataContext& data)
+{
+    int offset                   = m_top_log_offset;
+    Renderer::ResourceId mesh_id = 1;
+
+    for (const auto& message : data.last_callback_events()) {
+        m_renderer.load(mesh_id, m_font.create_text_mesh(message));
+
+        const math::Matrix4f transform = scale(translate(math::Matrix4f(), {LogOffset, offset, 0}), {15, 15, 1});
+        m_renderer.render(mesh_id, m_shader_id, {Uniform{"modelMatrix", transform}});
+
+        offset += 15;
+        mesh_id++;
+
+        if (offset > -LogOffset) {
+            break;
+        }
+    }
 }

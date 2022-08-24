@@ -7,7 +7,7 @@ void DataContext::set_window_state(WindowState state)
 
 void DataContext::add_callback_event(const std::string& event)
 {
-    static constexpr size_t max_events = 20;
+    static constexpr size_t max_events = 100;
 
     m_callbacks_events.insert(m_callbacks_events.begin(), event);
     if (m_callbacks_events.size() > max_events) {

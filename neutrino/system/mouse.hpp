@@ -40,6 +40,13 @@ using CursorPosition = Position;
 /// A negative Y value indicates that the wheel was rotated backward, toward the user.
 /// A positive X value indicates that the wheel was rotated to the right
 /// A negative X value indicates that the wheel was rotated to the left.
+///
+///       ^ Y-
+///  X+   |   X-
+///  <---   --->
+///       |
+///       v Y+
+///
 using ScrollOffset = Position;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
