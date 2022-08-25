@@ -1,5 +1,7 @@
 ﻿#include "view.hpp"
 
+#include <common/position.hpp>
+#include <common/size.hpp>
 #include <graphics/font.hpp>
 #include <graphics/shader.hpp>
 #include <math/math.hpp>
@@ -9,6 +11,8 @@
 using namespace framework;
 using namespace framework::graphics;
 
+using framework::Position;
+using framework::Size;
 using framework::system::Window;
 
 namespace
@@ -43,7 +47,8 @@ void main()\n\
 }\n\
 ";
 
-constexpr int LogOffset = 50;
+constexpr int LogOffset                    = 50;
+constexpr math::Vector3f normal_text_scale = {15, 15, 1};
 
 } // namespace
 
@@ -69,6 +74,7 @@ View::~View()
 
 void View::render(const DataContext& data)
 {
+    render_size_position(data);
     render_log(data);
 
     m_renderer.display();
@@ -84,16 +90,32 @@ void View::on_resize(framework::Size size)
     m_left_log_offset = LogOffset;
 }
 
+void View::render_size_position(const DataContext& data)
+{
+    const auto size = data.window_size();
+    const auto pos  = data.window_position();
+
+    const std::string size_text = "Size " + std::to_string(size.width) + ", " + std::to_string(size.height);
+    const std::string pos_text  = "Position " + std::to_string(pos.x) + ", " + std::to_string(pos.y);
+
+    const math::Vector3f size_text_pos{size.width - 300, -25, 0};
+    const math::Vector3f position_text_pos{size.width - 150, -25, 0};
+
+    m_renderer.load(TextName::SizeText, m_font.create_text_mesh(size_text));
+    m_renderer.load(TextName::PositionText, m_font.create_text_mesh(pos_text));
+
+    render_normal_text(TextName::SizeText, size_text_pos);
+    render_normal_text(TextName::PositionText, position_text_pos);
+}
+
 void View::render_log(const DataContext& data)
 {
     int offset                   = m_top_log_offset;
-    Renderer::ResourceId mesh_id = 1;
+    Renderer::ResourceId mesh_id = TextName::LogTextBegin;
 
     for (const auto& message : data.last_callback_events()) {
         m_renderer.load(mesh_id, m_font.create_text_mesh(message));
-
-        const math::Matrix4f transform = scale(translate(math::Matrix4f(), {LogOffset, offset, 0}), {15, 15, 1});
-        m_renderer.render(mesh_id, m_shader_id, {Uniform{"modelMatrix", transform}});
+        render_normal_text(static_cast<TextName>(mesh_id), {LogOffset, offset, 0});
 
         offset += 15;
         mesh_id++;
@@ -102,4 +124,10 @@ void View::render_log(const DataContext& data)
             break;
         }
     }
+}
+
+void View::render_normal_text(TextName id, math::Vector3f position)
+{
+    const math::Matrix4f transform = scale(translate(math::Matrix4f(), position), normal_text_scale);
+    m_renderer.render(id, m_shader_id, {Uniform{"modelMatrix", transform}});
 }

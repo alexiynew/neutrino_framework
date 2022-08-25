@@ -259,11 +259,13 @@ void EventHandler::on_lost_focus()
 void EventHandler::on_resize(Size size)
 {
     m_data_context.add_callback_event("on_size: " + to_string(size));
+    m_data_context.set_window_size(size);
 }
 
 void EventHandler::on_move(Position p)
 {
     m_data_context.add_callback_event("on_position: " + to_string(p));
+    m_data_context.set_windos_position(p);
 }
 
 void EventHandler::on_key_down(KeyCode key, Modifiers state)

@@ -3,6 +3,7 @@
 
 #include <graphics/font.hpp>
 #include <graphics/renderer.hpp>
+#include <math/math.hpp>
 #include <system/window.hpp>
 
 class DataContext;
@@ -18,7 +19,18 @@ public:
     void on_resize(framework::Size size);
 
 private:
+    enum TextName : framework::graphics::Renderer::ResourceId
+    {
+        SizeText = 0,
+        PositionText,
+
+        LogTextBegin,
+    };
+
+    void render_size_position(const DataContext& data);
     void render_log(const DataContext& data);
+
+    void render_normal_text(TextName id, framework::math::Vector3f position);
 
     framework::graphics::Renderer m_renderer;
     framework::graphics::Font m_font;
