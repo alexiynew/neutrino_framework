@@ -87,24 +87,31 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     attribs.push_back(8);
 
     // Depth buffer size
-    attribs.push_back(NSOpenGLPFADepthSize);
-    attribs.push_back(settings.depth_bits());
+    if (settings.depth_bits() != ContextSettings::dont_care) {
+        attribs.push_back(NSOpenGLPFADepthSize);
+        attribs.push_back(settings.depth_bits());
+    }
 
     // Stencil buffer size
-    attribs.push_back(NSOpenGLPFAStencilSize);
-    attribs.push_back(settings.stencil_bits());
+    if (settings.stencil_bits() != ContextSettings::dont_care) {
+        attribs.push_back(NSOpenGLPFAStencilSize);
+        //attribs.push_back(settings.stencil_bits());
+        // Implementation can't get pixel format with maximum available stencil buffer size. Need to specify size exactly.
+        // Looks like any positive number returns format with maximum stencil size.
+        attribs.push_back(2);
+    }
 
-    // Antialiasing
-    if (settings.antialiasing_level() == ContextSettings::Antialiasing::best) {
+    // Multisampling
+    if (settings.samples_count() != ContextSettings::dont_care) {
         attribs.push_back(NSOpenGLPFAMultisample);
 
         // Only one buffer is currently available
         attribs.push_back(NSOpenGLPFASampleBuffers);
         attribs.push_back(1);
 
-        // Antialiasing level
+        // Samples count
         attribs.push_back(NSOpenGLPFASamples);
-        attribs.push_back(32);
+        attribs.push_back(settings.samples_count());
     }
 
     // End of attributes
