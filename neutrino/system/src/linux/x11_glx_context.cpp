@@ -166,6 +166,7 @@ X11GlxContext::X11GlxContext(const ContextSettings& settings, Display* display)
         throw std::runtime_error("Can't create opengl context.");
     }
 
+    make_current();
     framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
 
     // TODO: Update actual context settings

@@ -134,6 +134,7 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     [m_view setWantsBestResolutionOpenGLSurface:NO];
     [m_context setView:m_view];
 
+    make_current();
     framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
 
     update_settings(get_actual_context_settings(pixel_format));

@@ -272,6 +272,7 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
         throw std::runtime_error("Failed to create OpenGL context, error: " + std::to_string(GetLastError()));
     }
 
+    make_current();
     framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
 
     ContextSettings actual_settings = get_actual_context_settings(m_hdc, pixel_format);
