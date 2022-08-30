@@ -1,6 +1,7 @@
 #ifndef SYSTEM_APPLICATION_HPP
 #define SYSTEM_APPLICATION_HPP
 
+#include <mutex>
 #include <string>
 
 namespace framework::system
@@ -13,8 +14,7 @@ namespace framework::system
 
 /// @brief Application class.
 ///
-/// Application
-/// TODO: more detailed description
+/// Singleton class with global application specific parameters.
 class Application
 {
 public:
@@ -25,13 +25,23 @@ public:
 
     /// @brief The formal name of the application.
     ///
+    /// Used in window creation to name window class on some OS.
+    ///
     /// @return Application name.
     static const std::string& name();
+
+    Application(const Application&)            = delete;
+    Application& operator=(const Application&) = delete;
 
 private:
     static Application& instance();
 
-    std::string m_name = "Neutrino application";
+    Application()  = default;
+    ~Application() = default;
+
+    static std::mutex m_data_mutex;
+
+    std::string m_name = "Neutrino application"; ///< Default application name.
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
