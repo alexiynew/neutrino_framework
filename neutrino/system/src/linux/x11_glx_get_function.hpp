@@ -5,7 +5,11 @@
 
 namespace framework::system::details::glx
 {
-Context::VoidFunctionPtr get_function(const char* name);
+
+using VoidFunctionPtr = void (*)();
+
+VoidFunctionPtr get_function(const char* name);
+
 } // namespace framework::system::details::glx
 
 #endif

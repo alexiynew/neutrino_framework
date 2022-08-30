@@ -6,6 +6,7 @@
 #include <system/src/linux/x11_glx_get_function.hpp>
 
 namespace glx = framework::system::details::glx;
+
 namespace
 {
 using framework::system::ContextSettings;
@@ -23,14 +24,11 @@ bool check_glx_version(Display* display)
     return glx_major >= glx_min_major_version && glx_minor >= glx_min_minor_version;
 }
 
-glx::GLXFBConfig find_best_config(Display* display,
-                                  ContextSettings::Antialiasing antialasing_level,
-                                  glx::GLXFBConfig* configs,
-                                  int count)
+glx::GLXFBConfig find_best_config(Display* display, std::uint32_t samples_count, glx::GLXFBConfig* configs, int count)
 {
-    using namespace framework::system::details::glx;
+    using namespace glx;
 
-    if (antialasing_level == ContextSettings::Antialiasing::dont_care && count > 0) {
+    if (samples_count == ContextSettings::dont_care && count > 0) {
         return configs[0];
     }
 
@@ -40,8 +38,8 @@ glx::GLXFBConfig find_best_config(Display* display,
     for (int i = 0; i < count; ++i) {
         int sample_buffer;
         int samples;
-        glx::glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLE_BUFFERS, &sample_buffer);
-        glx::glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLES, &samples);
+        glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLE_BUFFERS, &sample_buffer);
+        glXGetFBConfigAttrib(display, configs[i], GLX_SAMPLES, &samples);
 
         if (best < 0 || (sample_buffer != 0 && samples > best_samples)) {
             best         = i;
@@ -54,51 +52,53 @@ glx::GLXFBConfig find_best_config(Display* display,
 
 glx::GLXFBConfig choose_framebuffer_config(Display* display, const ContextSettings& settings)
 {
+    using namespace glx;
+
     std::vector<int> attribs;
 
-    attribs.push_back(glx::GLX_X_RENDERABLE);
+    attribs.push_back(GLX_X_RENDERABLE);
     attribs.push_back(True);
 
-    attribs.push_back(glx::GLX_DRAWABLE_TYPE);
-    attribs.push_back(glx::GLX_WINDOW_BIT);
+    attribs.push_back(GLX_DRAWABLE_TYPE);
+    attribs.push_back(GLX_WINDOW_BIT);
 
-    attribs.push_back(glx::GLX_RENDER_TYPE);
-    attribs.push_back(glx::GLX_RGBA_BIT);
+    attribs.push_back(GLX_RENDER_TYPE);
+    attribs.push_back(GLX_RGBA_BIT);
 
-    attribs.push_back(glx::GLX_X_VISUAL_TYPE);
-    attribs.push_back(glx::GLX_TRUE_COLOR);
+    attribs.push_back(GLX_X_VISUAL_TYPE);
+    attribs.push_back(GLX_TRUE_COLOR);
 
-    attribs.push_back(glx::GLX_RED_SIZE);
+    attribs.push_back(GLX_RED_SIZE);
     attribs.push_back(8);
 
-    attribs.push_back(glx::GLX_GREEN_SIZE);
+    attribs.push_back(GLX_GREEN_SIZE);
     attribs.push_back(8);
 
-    attribs.push_back(glx::GLX_BLUE_SIZE);
+    attribs.push_back(GLX_BLUE_SIZE);
     attribs.push_back(8);
 
-    attribs.push_back(glx::GLX_ALPHA_SIZE);
+    attribs.push_back(GLX_ALPHA_SIZE);
     attribs.push_back(8);
 
-    attribs.push_back(glx::GLX_DEPTH_SIZE);
+    attribs.push_back(GLX_DEPTH_SIZE);
     attribs.push_back(settings.depth_bits());
 
-    attribs.push_back(glx::GLX_STENCIL_SIZE);
+    attribs.push_back(GLX_STENCIL_SIZE);
     attribs.push_back(settings.stencil_bits());
 
-    attribs.push_back(glx::GLX_DOUBLEBUFFER);
+    attribs.push_back(GLX_DOUBLEBUFFER);
     attribs.push_back(True);
 
     attribs.push_back(None);
 
     int count = 0;
 
-    glx::GLXFBConfig* configs = glx::glXChooseFBConfig(display, DefaultScreen(display), attribs.data(), &count);
+    GLXFBConfig* configs = glXChooseFBConfig(display, DefaultScreen(display), attribs.data(), &count);
     if (configs == nullptr) {
         return nullptr;
     }
 
-    glx::GLXFBConfig best_config = find_best_config(display, settings.antialiasing_level(), configs, count);
+    GLXFBConfig best_config = find_best_config(display, settings.samples_count(), configs, count);
 
     XFree(configs);
 
@@ -235,7 +235,7 @@ void X11GlxContext::clear()
     }
 }
 
-X11GlxContext::VoidFunctionPtr X11GlxContext::get_function(const char* function_name) const
+glx::VoidFunctionPtr X11GlxContext::get_function(const char* function_name) const
 {
     return glx::get_function(function_name);
 }

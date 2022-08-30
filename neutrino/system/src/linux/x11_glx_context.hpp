@@ -4,6 +4,7 @@
 #include <system/context.hpp>
 
 #include <system/src/linux/glxext.hpp>
+#include <system/src/linux/x11_glx_get_function.hpp>
 
 #include <X11/Xlib.h>
 
@@ -34,11 +35,9 @@ public:
     void attach_window(Window window);
 
 private:
-    using VoidFunctionPtr = void (*)();
-
     void clear();
 
-    VoidFunctionPtr get_function(const char* function_name) const;
+    glx::VoidFunctionPtr get_function(const char* function_name) const;
 
     Display* m_display         = nullptr;
     Colormap m_colormap        = None;

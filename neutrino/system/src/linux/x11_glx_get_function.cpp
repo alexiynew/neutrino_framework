@@ -5,7 +5,7 @@
 namespace framework::system::details::glx
 {
 
-Context::VoidFunctionPtr get_function(const char* name)
+VoidFunctionPtr get_function(const char* name)
 {
     return glXGetProcAddressARB(reinterpret_cast<const unsigned char*>(name));
 }
