@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <vector>
 
+#include <graphics/src/opengl/opengl.hpp>
 #include <system/src/linux/x11_glx_context.hpp>
 #include <system/src/linux/x11_glx_get_function.hpp>
 
@@ -165,6 +166,8 @@ X11GlxContext::X11GlxContext(const ContextSettings& settings, Display* display)
         throw std::runtime_error("Can't create opengl context.");
     }
 
+    framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
+
     // TODO: Update actual context settings
 }
 
@@ -187,11 +190,6 @@ bool X11GlxContext::is_current() const
 Context::Api X11GlxContext::api_type() const
 {
     return Context::Api::opengl;
-}
-
-Context::VoidFunctionPtr X11GlxContext::get_function(const char* function_name) const
-{
-    return glx::get_function(function_name);
 }
 
 void X11GlxContext::make_current()
@@ -234,6 +232,11 @@ void X11GlxContext::clear()
     if (m_visual_info) {
         XFree(m_visual_info);
     }
+}
+
+X11GlxContext::VoidFunctionPtr X11GlxContext::get_function(const char* function_name) const
+{
+    return glx::get_function(function_name);
 }
 
 } // namespace framework::system::details

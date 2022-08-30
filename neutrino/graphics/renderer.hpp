@@ -95,12 +95,6 @@ public:
     /// @param size Viewport size.
     void set_viewport(Size size);
 
-    /// @brief Turn on or off the vertical sync.
-    ///
-    /// @param enable On or off vertical sync.
-    /// TODO: remove noreturn
-    [[noreturn]] void enable_vertical_sync(bool enable);
-
     /// @brief Set current polygon mode.
     ///
     /// @param mode New mode.

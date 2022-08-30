@@ -18,7 +18,7 @@ class OpenglRenderer final : public RendererImpl
 public:
     using ResourceId = Renderer::ResourceId;
 
-    explicit OpenglRenderer(const system::Context& context);
+    explicit OpenglRenderer();
 
     OpenglRenderer(const OpenglRenderer& other)            = default;
     OpenglRenderer& operator=(const OpenglRenderer& other) = default;

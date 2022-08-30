@@ -63,9 +63,8 @@ void check_supported()
 
 namespace framework::graphics
 {
-OpenglRenderer::OpenglRenderer(const system::Context& context)
+OpenglRenderer::OpenglRenderer()
 {
-    init_opengl([&context](const char* function_name) { return context.get_function(function_name); });
     get_info();
     check_supported();
 

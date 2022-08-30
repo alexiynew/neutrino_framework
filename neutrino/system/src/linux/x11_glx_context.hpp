@@ -25,8 +25,6 @@ public:
     bool is_current() const override;
     Api api_type() const override;
 
-    VoidFunctionPtr get_function(const char* function_name) const override;
-
     void make_current() override;
     void swap_buffers() override;
 
@@ -36,6 +34,12 @@ public:
     void attach_window(Window window);
 
 private:
+    using VoidFunctionPtr = void (*)();
+
+    void clear();
+
+    VoidFunctionPtr get_function(const char* function_name) const;
+
     Display* m_display         = nullptr;
     Colormap m_colormap        = None;
     XVisualInfo* m_visual_info = nullptr;
@@ -43,8 +47,6 @@ private:
 
     glx::GLXFBConfig m_framebuffer_config = nullptr;
     glx::GLXContext m_glx_context         = nullptr;
-
-    void clear();
 };
 
 } // namespace framework::system::details

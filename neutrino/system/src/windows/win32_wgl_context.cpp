@@ -3,6 +3,7 @@
 #include <tuple>
 #include <vector>
 
+#include <graphics/src/opengl/opengl.hpp>
 #include <system/src/windows/wglext.hpp>
 #include <system/src/windows/win32_application.hpp>
 #include <system/src/windows/win32_wgl_context.hpp>
@@ -271,6 +272,8 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
         throw std::runtime_error("Failed to create OpenGL context, error: " + std::to_string(GetLastError()));
     }
 
+    framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
+
     ContextSettings actual_settings = get_actual_context_settings(m_hdc, pixel_format);
     actual_settings.version(settings.version()); // Can't get actual OpenGL version, so just copy requested one.
     update_settings(actual_settings);
@@ -298,7 +301,19 @@ Context::Api Win32WglContext::api_type() const
     return Context::Api::opengl;
 }
 
-Context::VoidFunctionPtr Win32WglContext::get_function(const char* function_name) const
+void Win32WglContext::make_current()
+{
+    if (!is_current()) {
+        wglMakeCurrent(m_hdc, m_hglrc);
+    }
+}
+
+void Win32WglContext::swap_buffers()
+{
+    SwapBuffers(m_hdc);
+}
+
+Win32WglContext::VoidFunctionPtr Win32WglContext::get_function(const char* function_name) const
 {
     auto function = reinterpret_cast<VoidFunctionPtr>(wglGetProcAddress(function_name));
     if (function == nullptr || (function == reinterpret_cast<VoidFunctionPtr>(0x1)) ||
@@ -313,18 +328,6 @@ Context::VoidFunctionPtr Win32WglContext::get_function(const char* function_name
     }
 
     return function;
-}
-
-void Win32WglContext::make_current()
-{
-    if (!is_current()) {
-        wglMakeCurrent(m_hdc, m_hglrc);
-    }
-}
-
-void Win32WglContext::swap_buffers()
-{
-    SwapBuffers(m_hdc);
 }
 
 } // namespace framework::system::details

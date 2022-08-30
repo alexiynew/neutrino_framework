@@ -23,12 +23,14 @@ public:
     bool is_current() const override;
     Api api_type() const override;
 
-    VoidFunctionPtr get_function(const char* function_name) const override;
-
     void make_current() override;
     void swap_buffers() override;
 
 private:
+    using VoidFunctionPtr = void (*)();
+
+    VoidFunctionPtr get_function(const char* function_name) const;
+
     HWND m_window = nullptr;
     HDC m_hdc     = nullptr;
     HGLRC m_hglrc = nullptr;

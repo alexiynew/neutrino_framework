@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <vector>
 
+#include <graphics/src/opengl/opengl.hpp>
 #include <system/src/osx/osx_autorelease_pool.hpp>
 #include <system/src/osx/osx_context.hpp>
 
@@ -122,8 +123,6 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
         throw std::runtime_error("Can't get a suitable pixel format");
     }
 
-    update_settings(get_actual_context_settings(pixel_format));
-
     NSOpenGLContext* share = nullptr;
 
     m_context = [[NSOpenGLContext alloc] initWithFormat:pixel_format shareContext:share];
@@ -134,6 +133,10 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     // 1 pixel per point framebuffer regardless of the backing scale factor for the display the view occupies.
     [m_view setWantsBestResolutionOpenGLSurface:NO];
     [m_context setView:m_view];
+
+    framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
+
+    update_settings(get_actual_context_settings(pixel_format));
 }
 
 OsxContext::~OsxContext()
@@ -168,17 +171,6 @@ Context::Api OsxContext::api_type() const
     return Context::Api::opengl;
 }
 
-Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
-{
-    std::string name = std::string("_") + std::string(function_name);
-    NSSymbol symbol  = nullptr;
-    if (NSIsSymbolNameDefined(name.c_str())) {
-        symbol = NSLookupAndBindSymbol(name.c_str());
-    }
-
-    return reinterpret_cast<VoidFunctionPtr>(symbol ? NSAddressOfSymbol(symbol) : nullptr);
-}
-
 void OsxContext::make_current()
 {
     if (m_context) {
@@ -199,6 +191,18 @@ void OsxContext::update()
         [m_context update];
     }
 }
+
+OsxContext::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
+{
+    std::string name = std::string("_") + std::string(function_name);
+    NSSymbol symbol  = nullptr;
+    if (NSIsSymbolNameDefined(name.c_str())) {
+        symbol = NSLookupAndBindSymbol(name.c_str());
+    }
+
+    return reinterpret_cast<VoidFunctionPtr>(symbol ? NSAddressOfSymbol(symbol) : nullptr);
+}
+
 
 } // namespace framework::system::details
 

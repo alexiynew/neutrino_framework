@@ -24,7 +24,7 @@ std::unique_ptr<RendererImpl> create_impl(system::Context& context)
     context.make_current();
 
     switch (context.api_type()) {
-        case system::Context::Api::opengl: return std::make_unique<OpenglRenderer>(context);
+        case system::Context::Api::opengl: return std::make_unique<OpenglRenderer>();
     }
 
     throw std::runtime_error("Unsupported graphic api.");
@@ -107,11 +107,6 @@ void Renderer::set_viewport(Size size)
 {
     m_context.get().make_current();
     m_impl->set_viewport(size);
-}
-
-void Renderer::enable_vertical_sync(bool)
-{
-    throw std::runtime_error("Renderer::enable_vertical_sync not implemented");
 }
 
 void Renderer::set_polygon_mode(PolygonMode mode)
