@@ -80,11 +80,21 @@ glx::GLXFBConfig choose_framebuffer_config(Display* display, const ContextSettin
     attribs.push_back(GLX_ALPHA_SIZE);
     attribs.push_back(8);
 
-    attribs.push_back(GLX_DEPTH_SIZE);
-    attribs.push_back(settings.depth_bits());
+    if (settings.depth_bits() == ContextSettings::dont_care) {
+        attribs.push_back(GLX_DEPTH_SIZE);
+        attribs.push_back(GLX_DONT_CARE);
+    } else {
+        attribs.push_back(GLX_DEPTH_SIZE);
+        attribs.push_back(2);
+    }
 
-    attribs.push_back(GLX_STENCIL_SIZE);
-    attribs.push_back(settings.stencil_bits());
+    if (settings.depth_bits() == ContextSettings::dont_care) {
+        attribs.push_back(GLX_STENCIL_SIZE);
+        attribs.push_back(GLX_DONT_CARE);
+    } else {
+        attribs.push_back(GLX_STENCIL_SIZE);
+        attribs.push_back(2);
+    }
 
     attribs.push_back(GLX_DOUBLEBUFFER);
     attribs.push_back(True);
