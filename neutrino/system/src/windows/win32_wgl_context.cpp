@@ -40,8 +40,8 @@ HWND create_tmp_window()
 
 void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
 {
-    const HWND tmp_window = create_tmp_window();
-    const HDC hdc         = GetDC(tmp_window);
+    HWND tmp_window = create_tmp_window();
+    HDC hdc         = GetDC(tmp_window);
 
     if (hdc == nullptr) {
         DestroyWindow(tmp_window);
@@ -69,7 +69,7 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
         throw std::runtime_error("Can't set pixel format, error: " + std::to_string(GetLastError()));
     }
 
-    const HGLRC hglrc = wglCreateContext(hdc);
+    HGLRC hglrc = wglCreateContext(hdc);
     if (hglrc == nullptr) {
         ReleaseDC(tmp_window, hdc);
         DestroyWindow(tmp_window);
@@ -289,7 +289,7 @@ Win32WglContext::~Win32WglContext()
 
 bool Win32WglContext::valid() const
 {
-    return m_window != nullptr || m_hdc != nullptr && m_hglrc != nullptr;
+    return m_window != nullptr || m_hdc != nullptr || m_hglrc != nullptr;
 }
 
 bool Win32WglContext::is_current() const

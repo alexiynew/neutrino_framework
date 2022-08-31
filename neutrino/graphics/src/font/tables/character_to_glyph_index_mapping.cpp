@@ -8,7 +8,6 @@
 namespace
 {
 
-namespace utils   = framework::utils;
 namespace details = framework::graphics::details::font;
 
 using details::PlatformId;

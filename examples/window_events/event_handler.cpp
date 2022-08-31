@@ -9,7 +9,6 @@ using namespace framework::system;
 
 namespace
 {
-using std::to_string;
 
 std::string key_name(KeyCode key)
 {
