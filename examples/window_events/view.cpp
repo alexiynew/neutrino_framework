@@ -50,6 +50,22 @@ void main()\n\
 constexpr int LogOffset                    = 50;
 constexpr math::Vector3f normal_text_scale = {15, 15, 1};
 
+constexpr math::Vector3f SizeTextOffset     = {-300, -25, 0};
+constexpr math::Vector3f PositionTextOffset = {-150, -25, 0};
+constexpr math::Vector3f CursorTextOffset   = {-300, -50, 0};
+constexpr math::Vector3f StateTextOffset    = {-300, -75, 0};
+
+std::string get_state_name(Window::State state)
+{
+    switch (state) {
+        case Window::State::fullscreen: return "Fullscreen";
+        case Window::State::maximized: return "Maximized";
+        case Window::State::iconified: return "Iconified";
+        case Window::State::normal: return "Normal";
+    }
+    return "";
+}
+
 } // namespace
 
 View::View(Window& window)
@@ -75,6 +91,8 @@ View::~View()
 void View::render(const DataContext& data)
 {
     render_size_position(data);
+    render_cursor_position(data);
+    render_state(data);
     render_log(data);
 
     m_renderer.display();
@@ -95,17 +113,41 @@ void View::render_size_position(const DataContext& data)
     const auto size = data.window_size();
     const auto pos  = data.window_position();
 
-    const std::string size_text = "Size " + std::to_string(size.width) + ", " + std::to_string(size.height);
-    const std::string pos_text  = "Position " + std::to_string(pos.x) + ", " + std::to_string(pos.y);
+    const std::string size_text = "Size: " + std::to_string(size.width) + ", " + std::to_string(size.height);
+    const std::string pos_text  = "Position: " + std::to_string(pos.x) + ", " + std::to_string(pos.y);
 
-    const math::Vector3f size_text_pos{size.width - 300, -25, 0};
-    const math::Vector3f position_text_pos{size.width - 150, -25, 0};
+    const math::Vector3f size_text_pos     = math::Vector3f{size.width, 0, 0} - SizeTextOffset;
+    const math::Vector3f position_text_pos = math::Vector3f{size.width, 0, 0} - PositionTextOffset;
 
     m_renderer.load(TextName::SizeText, m_font.create_text_mesh(size_text));
     m_renderer.load(TextName::PositionText, m_font.create_text_mesh(pos_text));
 
     render_normal_text(TextName::SizeText, size_text_pos);
     render_normal_text(TextName::PositionText, position_text_pos);
+}
+
+void View::render_cursor_position(const DataContext& data)
+{
+    const auto size = data.window_size();
+    const auto pos  = data.window_cursor_position();
+
+    const std::string text = "Cursor: " + std::to_string(pos.x) + ", " + std::to_string(pos.y);
+
+    const math::Vector3f text_pos = math::Vector3f{size.width, 0, 0} - CursorTextOffset;
+
+    m_renderer.load(TextName::CursorPositionText, m_font.create_text_mesh(text));
+    render_normal_text(TextName::CursorPositionText, text_pos);
+}
+
+void View::render_state(const DataContext& data)
+{
+    const auto size = data.window_size();
+
+    const std::string text        = "State: " + get_state_name(data.window_state());
+    const math::Vector3f text_pos = math::Vector3f{size.width, 0, 0} - StateTextOffset;
+
+    m_renderer.load(TextName::WindowStateText, m_font.create_text_mesh(text));
+    render_normal_text(TextName::WindowStateText, text_pos);
 }
 
 void View::render_log(const DataContext& data)

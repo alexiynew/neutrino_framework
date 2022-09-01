@@ -1,6 +1,9 @@
 ﻿#include "data_context.hpp"
 
-void DataContext::set_window_state(WindowState state)
+using namespace framework;
+using namespace system;
+
+void DataContext::set_window_state(Window::State state)
 {
     m_window_state = state;
 }
@@ -30,7 +33,7 @@ void DataContext::add_callback_event(const std::string& event)
     }
 }
 
-DataContext::WindowState DataContext::window_state() const
+Window::State DataContext::window_state() const
 {
     return m_window_state;
 }

@@ -30,6 +30,7 @@ public:
         m_window.show();
         while (!m_window.should_close()) {
             m_window.process_events();
+            m_event_handler.on_update();
             m_view.render(m_event_handler.data_context());
         }
     }

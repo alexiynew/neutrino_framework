@@ -224,7 +224,9 @@ std::string to_string(const KeyCode& k)
 
 EventHandler::EventHandler(Window& w)
     : m_window(w)
-{}
+{
+    m_data_context.set_window_state(m_window.state());
+}
 
 const DataContext& EventHandler::data_context() const
 {
@@ -302,6 +304,7 @@ void EventHandler::on_mouse_leave()
 void EventHandler::on_mouse_move(CursorPosition p)
 {
     m_data_context.add_callback_event("on_mouse_move " + to_string(p));
+    m_data_context.set_window_cursor_position(p);
 }
 
 void EventHandler::on_mouse_button_down(MouseButton button, CursorPosition position, Modifiers state)
@@ -324,6 +327,11 @@ void EventHandler::on_mouse_scroll(ScrollOffset offset)
 void EventHandler::on_character(const std::string& s)
 {
     m_data_context.add_callback_event("on_character: " + s);
+}
+
+void EventHandler::on_update()
+{
+    m_data_context.set_window_state(m_window.state());
 }
 
 #pragma region actions handlers

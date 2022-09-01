@@ -33,6 +33,8 @@ public:
     void on_mouse_scroll(framework::system::ScrollOffset offset);
     void on_character(const std::string& s);
 
+    void on_update();
+
 private:
     // actions handlers
     void close_window();
