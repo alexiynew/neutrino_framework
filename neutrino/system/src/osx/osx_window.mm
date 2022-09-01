@@ -307,9 +307,12 @@ using framework::system::ScrollOffset;
     if ([event hasPreciseScrollingDeltas]) {
         dx *= 0.1;
         dy *= 0.1;
+    } else {
+        dx = trunc(dx * 10);
+        dy = trunc(dy * 10);
     }
 
-    if (fabs(dx) > 0 && fabs(dy) > 0) {
+    if (fabs(dx) > 0 || fabs(dy) > 0) {
         window->mouse_scroll(ScrollOffset(dx * 120, dy * 120));
     }
 }
