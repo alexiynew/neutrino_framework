@@ -23,8 +23,6 @@ public:
         opengl,
     };
 
-    using VoidFunctionPtr = void (*)();
-
     /// @brief Creates context with provided ContextSettings.
     explicit Context(ContextSettings settings) noexcept;
 
@@ -50,13 +48,6 @@ public:
     ///
     /// @return Supported API.
     virtual Api api_type() const = 0;
-
-    /// @brief Returns OS specific functon pointer by name.
-    ///
-    /// @param function_name Function to get.
-    ///
-    /// @return Addres of OS function.
-    virtual VoidFunctionPtr get_function(const char* function_name) const = 0;
 
     /// @brief Set a context as current for rendering.
     virtual void make_current() = 0;

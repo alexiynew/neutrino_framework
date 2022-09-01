@@ -11,8 +11,6 @@
 using namespace framework;
 using namespace framework::graphics;
 
-using framework::Position;
-using framework::Size;
 using framework::system::Window;
 
 namespace

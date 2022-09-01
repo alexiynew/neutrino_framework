@@ -23,14 +23,16 @@ public:
     bool is_current() const override;
     Api api_type() const override;
 
-    VoidFunctionPtr get_function(const char* function_name) const override;
-
     void make_current() override;
     void swap_buffers() override;
 
     void update();
 
 private:
+    using VoidFunctionPtr = void (*)();
+
+    VoidFunctionPtr get_function(const char* function_name) const;
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSView* m_view             = nullptr;

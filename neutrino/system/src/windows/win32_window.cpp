@@ -14,8 +14,6 @@
 namespace
 {
 
-namespace utf = framework::utf;
-
 const DWORD window_style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_CLIPCHILDREN |
                            WS_CLIPSIBLINGS;
 const DWORD window_ex_style = WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW;

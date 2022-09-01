@@ -67,8 +67,8 @@ public:
     void set_window_interface(Window* window);
 
 protected:
-    CallbacksHolder& callbacks();
-    const StateData& state_data();
+    const CallbacksHolder& callbacks() const;
+    const StateData& state_data() const;
 
     void on_close();
     void on_focus();

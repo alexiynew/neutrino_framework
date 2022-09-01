@@ -4,6 +4,7 @@
 #include <system/context.hpp>
 
 #include <system/src/linux/glxext.hpp>
+#include <system/src/linux/x11_glx_get_function.hpp>
 
 #include <X11/Xlib.h>
 
@@ -25,8 +26,6 @@ public:
     bool is_current() const override;
     Api api_type() const override;
 
-    VoidFunctionPtr get_function(const char* function_name) const override;
-
     void make_current() override;
     void swap_buffers() override;
 
@@ -36,6 +35,10 @@ public:
     void attach_window(Window window);
 
 private:
+    void clear();
+
+    glx::VoidFunctionPtr get_function(const char* function_name) const;
+
     Display* m_display         = nullptr;
     Colormap m_colormap        = None;
     XVisualInfo* m_visual_info = nullptr;
@@ -43,8 +46,6 @@ private:
 
     glx::GLXFBConfig m_framebuffer_config = nullptr;
     glx::GLXContext m_glx_context         = nullptr;
-
-    void clear();
 };
 
 } // namespace framework::system::details
