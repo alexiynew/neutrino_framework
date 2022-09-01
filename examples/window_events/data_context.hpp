@@ -18,6 +18,7 @@ public:
     void set_window_size(Size size);
     void set_windos_position(Position position);
     void set_window_cursor_position(Position position);
+    void set_window_resizable(bool value);
 
     void add_callback_event(const std::string& event);
 
@@ -25,6 +26,7 @@ public:
     Size window_size() const;
     Position window_position() const;
     Position window_cursor_position() const;
+    bool window_resizable() const;
 
     const std::vector<std::string>& last_callback_events() const;
 
@@ -34,6 +36,7 @@ private:
     Size m_window_size;
     Position m_window_position;
     Position m_window_cursor_position;
+    bool m_window_resizable;
 };
 
 #endif

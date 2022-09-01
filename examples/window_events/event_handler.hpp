@@ -44,6 +44,8 @@ private:
 
     void move_to_zero();
 
+    void toggle_resizable();
+
     framework::system::Window& m_window;
 
     DataContext m_data_context;

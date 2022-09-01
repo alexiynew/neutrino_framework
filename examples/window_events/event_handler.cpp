@@ -286,6 +286,7 @@ void EventHandler::on_key_up(KeyCode key, Modifiers state)
         case KeyCode::key_m: toggle_maximize(); break;
         case KeyCode::key_i: iconify(); break;
         case KeyCode::key_0: move_to_zero(); break;
+        case KeyCode::key_r: toggle_resizable(); break;
         default: break;
     }
 }
@@ -331,6 +332,7 @@ void EventHandler::on_character(const std::string& s)
 void EventHandler::on_update()
 {
     m_data_context.set_window_state(m_window.state());
+    m_data_context.set_window_resizable(m_window.is_resizable());
 }
 
 #pragma region actions handlers
@@ -369,6 +371,11 @@ void EventHandler::iconify()
 void EventHandler::move_to_zero()
 {
     m_window.set_position({0, 0});
+}
+
+void EventHandler::toggle_resizable()
+{
+    m_window.set_resizable(!m_window.is_resizable());
 }
 
 #pragma endregion

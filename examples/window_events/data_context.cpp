@@ -23,6 +23,11 @@ void DataContext::set_window_cursor_position(Position position)
     m_window_cursor_position = position;
 }
 
+void DataContext::set_window_resizable(bool value)
+{
+    m_window_resizable = value;
+}
+
 void DataContext::add_callback_event(const std::string& event)
 {
     static constexpr size_t max_events = 100;
@@ -51,6 +56,11 @@ Position DataContext::window_position() const
 Position DataContext::window_cursor_position() const
 {
     return m_window_cursor_position;
+}
+
+bool DataContext::window_resizable() const
+{
+    return m_window_resizable;
 }
 
 const std::vector<std::string>& DataContext::last_callback_events() const

@@ -48,10 +48,11 @@ void main()\n\
 constexpr int LogOffset                    = 50;
 constexpr math::Vector3f normal_text_scale = {15, 15, 1};
 
-constexpr math::Vector3f SizeTextTopLeftOffset     = {-300, -25, 0};
-constexpr math::Vector3f PositionTextTopLeftOffset = {-150, -25, 0};
-constexpr math::Vector3f CursorTextTopLeftOffset   = {-300, -50, 0};
-constexpr math::Vector3f StateTextTopLeftOffset    = {-300, -75, 0};
+constexpr math::Vector3f SizeTextTopLeftOffset      = {-300, -25, 0};
+constexpr math::Vector3f PositionTextTopLeftOffset  = {-150, -25, 0};
+constexpr math::Vector3f CursorTextTopLeftOffset    = {-300, -50, 0};
+constexpr math::Vector3f StateTextTopLeftOffset     = {-300, -75, 0};
+constexpr math::Vector3f ResizableTextTopLeftOffset = {-300, -100, 0};
 
 std::string get_state_name(Window::State state)
 {
@@ -91,6 +92,7 @@ void View::render(const DataContext& data)
     render_size_position(data);
     render_cursor_position(data);
     render_state(data);
+    render_resizable(data);
     render_log(data);
 
     m_renderer.display();
@@ -143,6 +145,17 @@ void View::render_state(const DataContext& data)
 
     m_renderer.load(TextName::WindowStateText, m_font.create_text_mesh(text));
     render_normal_text(TextName::WindowStateText, text_pos);
+}
+
+void View::render_resizable(const DataContext& data)
+{
+    const auto size = data.window_size();
+
+    const std::string text        = "Resizable: " + std::string(data.window_resizable() ? "[x]" : "[ ]");
+    const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + ResizableTextTopLeftOffset;
+
+    m_renderer.load(TextName::WindowResizableText, m_font.create_text_mesh(text));
+    render_normal_text(TextName::WindowResizableText, text_pos);
 }
 
 void View::render_log(const DataContext& data)
