@@ -3,6 +3,7 @@
 #include <functional>
 #include <limits>
 #include <map>
+#include <algorithm>
 #include <thread>
 
 #include <common/utf.hpp>
@@ -1149,7 +1150,10 @@ void OsxWindow::hide_cursor()
 CursorPosition OsxWindow::convert_cursor_position(CursorPosition position)
 {
     const NSRect contentRect = [m_view->get() frame];
-    return {position.x + 1, static_cast<int>(contentRect.size.height - position.y)};
+    const int top_left_y = static_cast<int>(contentRect.size.height - position.y) - 1;
+    const int y = std::clamp(top_left_y, 0, static_cast<int>(contentRect.size.height - 1));
+    const int x = std::clamp(position.x, 0, static_cast<int>(contentRect.size.width - 1));
+    return {x, y};
 }
 
 } // namespace framework::system::details
