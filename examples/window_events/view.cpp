@@ -116,11 +116,8 @@ void View::render_size_position(const DataContext& data)
     const math::Vector3f size_text_pos     = math::Vector3f{size.width, size.height, 0} + SizeTextTopLeftOffset;
     const math::Vector3f position_text_pos = math::Vector3f{size.width, size.height, 0} + PositionTextTopLeftOffset;
 
-    m_renderer.load(TextName::SizeText, m_font.create_text_mesh(size_text));
-    m_renderer.load(TextName::PositionText, m_font.create_text_mesh(pos_text));
-
-    render_normal_text(TextName::SizeText, size_text_pos);
-    render_normal_text(TextName::PositionText, position_text_pos);
+    render_normal_text(TextName::SizeText, size_text, size_text_pos);
+    render_normal_text(TextName::PositionText, pos_text, position_text_pos);
 }
 
 void View::render_cursor_position(const DataContext& data)
@@ -132,8 +129,7 @@ void View::render_cursor_position(const DataContext& data)
 
     const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + CursorTextTopLeftOffset;
 
-    m_renderer.load(TextName::CursorPositionText, m_font.create_text_mesh(text));
-    render_normal_text(TextName::CursorPositionText, text_pos);
+    render_normal_text(TextName::CursorPositionText, text, text_pos);
 }
 
 void View::render_state(const DataContext& data)
@@ -143,8 +139,7 @@ void View::render_state(const DataContext& data)
     const std::string text        = "State: " + get_state_name(data.window_state());
     const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + StateTextTopLeftOffset;
 
-    m_renderer.load(TextName::WindowStateText, m_font.create_text_mesh(text));
-    render_normal_text(TextName::WindowStateText, text_pos);
+    render_normal_text(TextName::WindowStateText, text, text_pos);
 }
 
 void View::render_resizable(const DataContext& data)
@@ -154,8 +149,7 @@ void View::render_resizable(const DataContext& data)
     const std::string text        = "Resizable: " + std::string(data.window_resizable() ? "[x]" : "[ ]");
     const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + ResizableTextTopLeftOffset;
 
-    m_renderer.load(TextName::WindowResizableText, m_font.create_text_mesh(text));
-    render_normal_text(TextName::WindowResizableText, text_pos);
+    render_normal_text(TextName::WindowResizableText, text, text_pos);
 }
 
 void View::render_log(const DataContext& data)
@@ -164,8 +158,7 @@ void View::render_log(const DataContext& data)
     Renderer::ResourceId mesh_id = TextName::LogTextBegin;
 
     for (const auto& message : data.last_callback_events()) {
-        m_renderer.load(mesh_id, m_font.create_text_mesh(message));
-        render_normal_text(static_cast<TextName>(mesh_id), {LogOffset, offset, 0});
+        render_normal_text(static_cast<TextName>(mesh_id), message, {LogOffset, offset, 0});
 
         offset += 15;
         mesh_id++;
@@ -176,8 +169,9 @@ void View::render_log(const DataContext& data)
     }
 }
 
-void View::render_normal_text(TextName id, math::Vector3f position)
+void View::render_normal_text(TextName id, const std::string& text, math::Vector3f position)
 {
+    m_renderer.load(id, m_font.create_text_mesh(text));
     const math::Matrix4f transform = scale(translate(math::Matrix4f(), position), normal_text_scale);
     m_renderer.render(id, m_shader_id, {Uniform{"modelMatrix", transform}});
 }

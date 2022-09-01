@@ -36,7 +36,7 @@ private:
     void render_resizable(const DataContext& data);
     void render_log(const DataContext& data);
 
-    void render_normal_text(TextName id, framework::math::Vector3f position);
+    void render_normal_text(TextName id, const std::string& text, framework::math::Vector3f position);
 
     framework::graphics::Renderer m_renderer;
     framework::graphics::Font m_font;
