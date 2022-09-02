@@ -28,6 +28,16 @@ void DataContext::set_window_resizable(bool value)
     m_window_resizable = value;
 }
 
+void DataContext::set_cursor_grabbed(bool value)
+{
+    m_cursor_grabbed = value;
+}
+
+void DataContext::set_cursor_visible(bool value)
+{
+    m_cursor_visible = value;
+}
+
 void DataContext::add_callback_event(const std::string& event)
 {
     static constexpr size_t max_events = 100;
@@ -61,6 +71,16 @@ Position DataContext::window_cursor_position() const
 bool DataContext::window_resizable() const
 {
     return m_window_resizable;
+}
+
+bool DataContext::cursor_grabbed() const
+{
+    return m_cursor_grabbed;
+}
+
+bool DataContext::cursor_visible() const
+{
+    return m_cursor_visible;
 }
 
 const std::vector<std::string>& DataContext::last_callback_events() const

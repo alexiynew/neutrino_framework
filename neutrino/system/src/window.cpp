@@ -227,9 +227,9 @@ void Window::set_title(const std::string& title)
     m_platform_window->set_title(title);
 }
 
-void Window::set_cursor_visibility(bool visible)
+void Window::set_cursor_visible(bool visible)
 {
-    m_platform_window->set_cursor_visibility(visible);
+    m_platform_window->set_cursor_visible(visible);
 }
 
 #pragma endregion

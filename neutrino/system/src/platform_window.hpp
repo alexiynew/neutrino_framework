@@ -46,7 +46,7 @@ public:
     virtual void set_resizable(bool value)           = 0;
     virtual void set_position(Position position)     = 0;
     virtual void set_title(const std::string& title) = 0;
-    virtual void set_cursor_visibility(bool visible) = 0;
+    virtual void set_cursor_visible(bool visible)    = 0;
 #pragma endregion
 
 #pragma region getters

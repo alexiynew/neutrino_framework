@@ -44,7 +44,7 @@ public:
     void set_resizable(bool value) override;
     void set_position(Position position) override;
     void set_title(const std::string& title) override;
-    void set_cursor_visibility(bool visible) override;
+    void set_cursor_visible(bool visible) override;
 #pragma endregion
 
 #pragma region getters

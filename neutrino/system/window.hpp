@@ -211,7 +211,7 @@ public:
     /// @param visible New cursor visibility.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_cursor_visibility(bool visible);
+    void set_cursor_visible(bool visible);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}

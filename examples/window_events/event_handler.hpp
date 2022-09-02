@@ -46,6 +46,9 @@ private:
 
     void toggle_resizable();
 
+    void toggle_cursor_grab();
+    void toggle_cursor_visible();
+
     framework::system::Window& m_window;
 
     DataContext m_data_context;

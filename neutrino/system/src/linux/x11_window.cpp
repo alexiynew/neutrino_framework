@@ -396,7 +396,7 @@ void X11Window::set_title(const std::string& title)
     process_events();
 }
 
-void X11Window::set_cursor_visibility(bool /*visible*/)
+void X11Window::set_cursor_visible(bool /*visible*/)
 {}
 
 #pragma endregion

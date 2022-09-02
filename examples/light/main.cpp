@@ -210,7 +210,7 @@ int main()
 
     renderer.set_uniform("viewMatrix", camera.get_view());
 
-    main_window.set_cursor_visibility(false);
+    main_window.set_cursor_visible(false);
 
     renderer.set_uniform("light.ambient", Vector3f{0.2f, 0.2f, 0.2f});
     renderer.set_uniform("light.diffuse", Vector3f{0.5f, 0.5f, 0.5f});

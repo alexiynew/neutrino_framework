@@ -467,7 +467,7 @@ void Win32Window::set_title(const std::string& title)
     SetWindowText(m_window, &whide_char_title[0]);
 }
 
-void Win32Window::set_cursor_visibility(bool visible)
+void Win32Window::set_cursor_visible(bool visible)
 {
     m_cursor_visible = visible;
     if (m_cursor_visible) {

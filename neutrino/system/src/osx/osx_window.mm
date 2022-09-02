@@ -850,7 +850,7 @@ void OsxWindow::set_title(const std::string& new_title)
     process_events();
 }
 
-void OsxWindow::set_cursor_visibility(bool visible)
+void OsxWindow::set_cursor_visible(bool visible)
 {
     if (m_cursor_visible == visible) {
         return;

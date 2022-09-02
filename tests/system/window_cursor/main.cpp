@@ -156,7 +156,7 @@ private:
 
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
-        window.set_cursor_visibility(false);
+        window.set_cursor_visible(false);
 
         // TODO: Automate this check
         // TEST_FAIL("Cursor is still visible.");
@@ -182,7 +182,7 @@ private:
 
         TEST_ASSERT(!window.is_cursor_visible(), "Cursor should not be visible.");
 
-        window.set_cursor_visibility(true);
+        window.set_cursor_visible(true);
 
         // TEST_FAIL("Cursor is visible in window, AND must be visible for system.");
         // while (!window.should_close()) {

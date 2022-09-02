@@ -1,5 +1,8 @@
 ﻿#include "view.hpp"
 
+#include <iomanip>
+#include <sstream>
+
 #include <common/position.hpp>
 #include <common/size.hpp>
 #include <graphics/font.hpp>
@@ -22,13 +25,14 @@ layout(location = 0) in vec3 position;\n\
 \n\
 uniform mat4 modelMatrix;\n\
 uniform mat4 projectionMatrix;\n\
+uniform vec4 color;\n\
 \n\
 out vec4 fragColor;\n\
 \n\
 void main()\n\
 {\n\
     gl_Position = projectionMatrix * modelMatrix * vec4(position, 1.0);\n\
-    fragColor = vec4(0.9, 0.5, 0.6, 1.0);\n\
+    fragColor = color;\n\
 }\n\
 ";
 
@@ -51,8 +55,8 @@ constexpr math::Vector3f normal_text_scale = {15, 15, 1};
 constexpr math::Vector3f SizeTextTopLeftOffset      = {-300, -25, 0};
 constexpr math::Vector3f PositionTextTopLeftOffset  = {-150, -25, 0};
 constexpr math::Vector3f CursorTextTopLeftOffset    = {-300, -50, 0};
-constexpr math::Vector3f StateTextTopLeftOffset     = {-300, -75, 0};
-constexpr math::Vector3f ResizableTextTopLeftOffset = {-300, -100, 0};
+constexpr math::Vector3f StateTextTopLeftOffset     = {-300, -115, 0};
+constexpr math::Vector3f ResizableTextTopLeftOffset = {-300, -140, 0};
 
 std::string get_state_name(Window::State state)
 {
@@ -90,10 +94,12 @@ View::~View()
 void View::render(const DataContext& data)
 {
     render_size_position(data);
-    render_cursor_position(data);
+    render_cursor_state(data);
     render_state(data);
     render_resizable(data);
     render_log(data);
+
+    render_cursor_marker(data);
 
     m_renderer.display();
 }
@@ -120,16 +126,32 @@ void View::render_size_position(const DataContext& data)
     render_normal_text(TextName::PositionText, pos_text, position_text_pos);
 }
 
-void View::render_cursor_position(const DataContext& data)
+void View::render_cursor_state(const DataContext& data)
 {
     const auto size = data.window_size();
     const auto pos  = data.window_cursor_position();
 
-    const std::string text = "Cursor: " + std::to_string(pos.x) + ", " + std::to_string(pos.y);
+    math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + CursorTextTopLeftOffset;
 
-    const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + CursorTextTopLeftOffset;
+    render_normal_text(TextName::CursorTitleText, "Cursor + ", text_pos);
+    text_pos.y -= 15;
 
-    render_normal_text(TextName::CursorPositionText, text, text_pos);
+    std::stringstream ss;
+
+    ss << "       +-> Position: " << pos;
+    render_normal_text(TextName::CursorPositionText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
+
+    ss << "       +-> Gabbed:   " << (data.cursor_grabbed() ? "[x]" : "[ ]");
+    render_normal_text(TextName::CursorGrabbedText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
+
+    ss << "       +-> Visible:  " << (data.cursor_visible() ? "[x]" : "[ ]");
+    render_normal_text(TextName::CursorVisibleText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
 }
 
 void View::render_state(const DataContext& data)
@@ -169,9 +191,39 @@ void View::render_log(const DataContext& data)
     }
 }
 
+void View::render_cursor_marker(const DataContext& data)
+{
+    const auto size = data.window_size();
+
+    const Mesh::VertexData vertices = {{-0.5, -0.5, 0.0}, {0.5, -0.5, 0.0}, {0.5, 0.5, 0.0}, {-0.5, 0.5, 0.0}};
+    Mesh::IndicesData indices       = {0, 1, 2, 0, 2, 3};
+
+    Mesh mesh;
+    mesh.set_vertices(vertices);
+    mesh.add_submesh(indices);
+
+    m_renderer.load(TextName::CursorMarker, mesh);
+
+    const auto p = data.window_cursor_position();
+
+    math::Vector3f pos(p.x, p.y, 0.1);
+    if (data.cursor_grabbed()) {
+        pos += math::Vector3f(size.width / 2, size.height / 2, 0);
+    }
+
+    pos = math::Vector3f(pos.x, size.height - pos.y, 0.1);
+
+    const math::Matrix4f transform = scale(translate(math::Matrix4f(), pos), {2, 2, 1});
+    m_renderer.render(TextName::CursorMarker,
+                      m_shader_id,
+                      {Uniform{"modelMatrix", transform}, Uniform{"color", math::Vector4f(0.5f, 0.9f, 0.6f, 1.0f)}});
+}
+
 void View::render_normal_text(TextName id, const std::string& text, math::Vector3f position)
 {
     m_renderer.load(id, m_font.create_text_mesh(text));
     const math::Matrix4f transform = scale(translate(math::Matrix4f(), position), normal_text_scale);
-    m_renderer.render(id, m_shader_id, {Uniform{"modelMatrix", transform}});
+    m_renderer.render(id,
+                      m_shader_id,
+                      {Uniform{"modelMatrix", transform}, Uniform{"color", math::Vector4f(0.9f, 0.5f, 0.6f, 1.0f)}});
 }

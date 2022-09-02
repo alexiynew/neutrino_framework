@@ -23,7 +23,13 @@ private:
     {
         SizeText = 0,
         PositionText,
+
+        CursorTitleText,
         CursorPositionText,
+        CursorGrabbedText,
+        CursorVisibleText,
+        CursorMarker,
+
         WindowStateText,
         WindowResizableText,
 
@@ -31,10 +37,11 @@ private:
     };
 
     void render_size_position(const DataContext& data);
-    void render_cursor_position(const DataContext& data);
+    void render_cursor_state(const DataContext& data);
     void render_state(const DataContext& data);
     void render_resizable(const DataContext& data);
     void render_log(const DataContext& data);
+    void render_cursor_marker(const DataContext& data);
 
     void render_normal_text(TextName id, const std::string& text, framework::math::Vector3f position);
 
