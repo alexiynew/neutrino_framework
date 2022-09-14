@@ -73,8 +73,6 @@ private:
         bool right_alt;
     };
 
-    struct MessageHandler;
-
     LRESULT on_set_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
     LRESULT on_kill_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
     LRESULT on_close_message(UINT message, WPARAM w_param, LPARAM l_param);
@@ -129,7 +127,6 @@ private:
     CursorPosition m_cursor_position     = {0, 0};
 
     std::unique_ptr<Context> m_context;
-    std::unique_ptr<MessageHandler> m_message_handler;
 
     ModifiersFlags m_modifiers_flags = {false, false, false, false, false, false};
 };

@@ -100,171 +100,6 @@ bool is_cursor_in_client_area(HWND window)
 namespace framework::system::details
 {
 
-#pragma region class Win32Window::MessageHandler
-
-struct Win32Window::MessageHandler
-{
-    using CallbackType = std::function<LRESULT(UINT, WPARAM, LPARAM)>;
-
-    LRESULT process_set_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_kill_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_close_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_move_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_size_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_get_min_max_info_message(UINT message, WPARAM w_param, LPARAM l_param);
-
-    LRESULT process_mouse_leave_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_mouse_hover_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_mouse_move_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_mouse_button_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_mouse_wheel_message(UINT message, WPARAM w_param, LPARAM l_param);
-
-    LRESULT process_key_message(UINT message, WPARAM w_param, LPARAM l_param);
-
-    LRESULT process_unichar_message(UINT message, WPARAM w_param, LPARAM l_param);
-    LRESULT process_char_message(UINT message, WPARAM w_param, LPARAM l_param);
-
-    LRESULT process_input_message(UINT message, WPARAM w_param, LPARAM l_param);
-
-    CallbackType on_set_focus;
-    CallbackType on_kill_focus;
-    CallbackType on_close;
-    CallbackType on_move;
-    CallbackType on_size;
-    CallbackType on_get_min_max_info;
-    CallbackType on_mouse_leave;
-    CallbackType on_mouse_hover;
-    CallbackType on_mouse_move;
-    CallbackType on_mouse_button;
-    CallbackType on_mouse_wheel;
-    CallbackType on_key;
-    CallbackType on_unichar;
-    CallbackType on_char;
-    CallbackType on_input;
-};
-
-LRESULT Win32Window::MessageHandler::process_set_focus_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_set_focus) {
-        return on_set_focus(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_kill_focus_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_kill_focus) {
-        return on_kill_focus(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_close_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_close) {
-        return on_close(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_move_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_move) {
-        return on_move(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_size_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_size) {
-        return on_size(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_get_min_max_info_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_get_min_max_info) {
-        return on_get_min_max_info(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_mouse_leave_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_mouse_leave) {
-        return on_mouse_leave(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_mouse_hover_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_mouse_hover) {
-        return on_mouse_hover(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_mouse_move_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_mouse_move) {
-        return on_mouse_move(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_mouse_button_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_mouse_button) {
-        return on_mouse_button(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_mouse_wheel_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_mouse_wheel) {
-        return on_mouse_wheel(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_key_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_key) {
-        return on_key(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_unichar_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_unichar) {
-        return on_unichar(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_char_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_char) {
-        return on_char(message, w_param, l_param);
-    }
-    return 0;
-}
-
-LRESULT Win32Window::MessageHandler::process_input_message(UINT message, WPARAM w_param, LPARAM l_param)
-{
-    if (on_input) {
-        return on_input(message, w_param, l_param);
-    }
-    return 0;
-}
-
-#pragma endregion
-
 Win32Window::Win32Window(const std::string& title, Size size, const ContextSettings& settings)
     : PlatformWindow()
 {
@@ -292,24 +127,6 @@ Win32Window::Win32Window(const std::string& title, Size size, const ContextSetti
     }
 
     m_context = std::make_unique<Win32WglContext>(m_window, settings);
-
-    m_message_handler = std::make_unique<MessageHandler>();
-
-    m_message_handler->on_set_focus        = std::bind(&Win32Window::on_set_focus_message, this, _1, _2, _3);
-    m_message_handler->on_kill_focus       = std::bind(&Win32Window::on_kill_focus_message, this, _1, _2, _3);
-    m_message_handler->on_close            = std::bind(&Win32Window::on_close_message, this, _1, _2, _3);
-    m_message_handler->on_move             = std::bind(&Win32Window::on_move_message, this, _1, _2, _3);
-    m_message_handler->on_size             = std::bind(&Win32Window::on_size_message, this, _1, _2, _3);
-    m_message_handler->on_get_min_max_info = std::bind(&Win32Window::on_get_min_max_info_message, this, _1, _2, _3);
-    m_message_handler->on_mouse_leave      = std::bind(&Win32Window::on_mouse_leave_message, this, _1, _2, _3);
-    m_message_handler->on_mouse_hover      = std::bind(&Win32Window::on_mouse_hover_message, this, _1, _2, _3);
-    m_message_handler->on_mouse_move       = std::bind(&Win32Window::on_mouse_move_message, this, _1, _2, _3);
-    m_message_handler->on_mouse_button     = std::bind(&Win32Window::on_mouse_button_message, this, _1, _2, _3);
-    m_message_handler->on_mouse_wheel      = std::bind(&Win32Window::on_mouse_wheel_message, this, _1, _2, _3);
-    m_message_handler->on_key              = std::bind(&Win32Window::on_key_message, this, _1, _2, _3);
-    m_message_handler->on_unichar          = std::bind(&Win32Window::on_unichar_message, this, _1, _2, _3);
-    m_message_handler->on_char             = std::bind(&Win32Window::on_char_message, this, _1, _2, _3);
-    m_message_handler->on_input            = std::bind(&Win32Window::on_input_message, this, _1, _2, _3);
 
     Win32Application::add_window(m_window, this);
 
@@ -595,16 +412,16 @@ Context& Win32Window::context()
 LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_param)
 {
     switch (message) {
-        case WM_SETFOCUS: return m_message_handler->process_set_focus_message(message, w_param, l_param);
-        case WM_KILLFOCUS: return m_message_handler->process_kill_focus_message(message, w_param, l_param);
-        case WM_CLOSE: return m_message_handler->process_close_message(message, w_param, l_param);
-        case WM_MOVE: return m_message_handler->process_move_message(message, w_param, l_param);
-        case WM_SIZE: return m_message_handler->process_size_message(message, w_param, l_param);
-        case WM_GETMINMAXINFO: return m_message_handler->process_get_min_max_info_message(message, w_param, l_param);
+        case WM_SETFOCUS: return on_set_focus_message(message, w_param, l_param);
+        case WM_KILLFOCUS: return on_kill_focus_message(message, w_param, l_param);
+        case WM_CLOSE: return on_close_message(message, w_param, l_param);
+        case WM_MOVE: return on_move_message(message, w_param, l_param);
+        case WM_SIZE: return on_size_message(message, w_param, l_param);
+        case WM_GETMINMAXINFO: return on_get_min_max_info_message(message, w_param, l_param);
 
-        case WM_MOUSELEAVE: return m_message_handler->process_mouse_leave_message(message, w_param, l_param);
-        case WM_MOUSEHOVER: return m_message_handler->process_mouse_hover_message(message, w_param, l_param);
-        case WM_MOUSEMOVE: return m_message_handler->process_mouse_move_message(message, w_param, l_param);
+        case WM_MOUSELEAVE: return on_mouse_leave_message(message, w_param, l_param);
+        case WM_MOUSEHOVER: return on_mouse_hover_message(message, w_param, l_param);
+        case WM_MOUSEMOVE: return on_mouse_move_message(message, w_param, l_param);
 
         case WM_LBUTTONDOWN:
         case WM_MBUTTONDOWN:
@@ -613,26 +430,24 @@ LRESULT Win32Window::process_message(UINT message, WPARAM w_param, LPARAM l_para
         case WM_MBUTTONUP:
         case WM_RBUTTONUP:
         case WM_XBUTTONDOWN:
-        case WM_XBUTTONUP: return m_message_handler->process_mouse_button_message(message, w_param, l_param);
+        case WM_XBUTTONUP: return on_mouse_button_message(message, w_param, l_param);
 
         case WM_MOUSEHWHEEL:
-        case WM_MOUSEWHEEL: return m_message_handler->process_mouse_wheel_message(message, w_param, l_param);
+        case WM_MOUSEWHEEL: return on_mouse_wheel_message(message, w_param, l_param);
 
         case WM_KEYDOWN:
         case WM_KEYUP:
         case WM_SYSKEYDOWN:
         case WM_SYSKEYUP:
-            m_message_handler->process_key_message(message, w_param, l_param);
+            on_key_message(message, w_param, l_param);
             break; // Just break, to pass event to DefWindowProc
 
-        case WM_UNICHAR: return m_message_handler->process_unichar_message(message, w_param, l_param);
+        case WM_UNICHAR: return on_unichar_message(message, w_param, l_param);
 
         case WM_CHAR:
-        case WM_SYSCHAR: return m_message_handler->process_char_message(message, w_param, l_param);
+        case WM_SYSCHAR: return on_char_message(message, w_param, l_param);
 
-        case WM_INPUT:
-            m_message_handler->process_input_message(message, w_param, l_param);
-            break; // Just break, to pass event to DefWindowProc
+        case WM_INPUT: on_input_message(message, w_param, l_param); break; // Just break, to pass event to DefWindowProc
 
         case WM_SYSCOMMAND: {
             switch (w_param & 0xfff0) {
