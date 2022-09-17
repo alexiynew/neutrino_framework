@@ -33,6 +33,9 @@ private:
         WindowStateText,
         WindowResizableText,
 
+        CatText,
+        CatText1,
+
         LogTextBegin,
     };
 
@@ -41,6 +44,7 @@ private:
     void render_state(const DataContext& data);
     void render_resizable(const DataContext& data);
     void render_log(const DataContext& data);
+    void render_cat(const DataContext& data);
     void render_cursor_marker(const DataContext& data);
 
     void render_normal_text(TextName id, const std::string& text, framework::math::Vector3f position);

@@ -85,15 +85,15 @@ glx::GLXFBConfig choose_framebuffer_config(Display* display, const ContextSettin
         attribs.push_back(GLX_DONT_CARE);
     } else {
         attribs.push_back(GLX_DEPTH_SIZE);
-        attribs.push_back(24);
+        attribs.push_back(std::min(24U, settings.depth_bits()));
     }
 
-    if (settings.depth_bits() == ContextSettings::dont_care) {
+    if (settings.stencil_bits() == ContextSettings::dont_care) {
         attribs.push_back(GLX_STENCIL_SIZE);
         attribs.push_back(GLX_DONT_CARE);
     } else {
         attribs.push_back(GLX_STENCIL_SIZE);
-        attribs.push_back(8);
+        attribs.push_back(std::min(8U, settings.stencil_bits()));
     }
 
     attribs.push_back(GLX_DOUBLEBUFFER);
@@ -115,28 +115,28 @@ glx::GLXFBConfig choose_framebuffer_config(Display* display, const ContextSettin
     return best_config;
 }
 
-glx::GLXContext create_glx_context(Display* display,
-                                   glx::GLXFBConfig framebuffer_config,
-                                   const ContextSettings& settings)
+glx::GLXContext create_glx_context(Display* display, glx::GLXFBConfig fb_config, const ContextSettings& settings)
 {
-    if (!is_supported(glx::Extension::GLX_ARB_create_context)) {
+    using namespace glx;
+
+    if (!is_supported(Extension::GLX_ARB_create_context)) {
         return nullptr;
     }
 
     std::vector<int> attribs;
 
-    attribs.push_back(glx::GLX_CONTEXT_MAJOR_VERSION_ARB);
+    attribs.push_back(GLX_CONTEXT_MAJOR_VERSION_ARB);
     attribs.push_back(settings.version().major());
 
-    attribs.push_back(glx::GLX_CONTEXT_MINOR_VERSION_ARB);
+    attribs.push_back(GLX_CONTEXT_MINOR_VERSION_ARB);
     attribs.push_back(settings.version().minor());
 
-    attribs.push_back(glx::GLX_CONTEXT_FLAGS_ARB);
-    attribs.push_back(glx::GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB);
+    attribs.push_back(GLX_CONTEXT_FLAGS_ARB);
+    attribs.push_back(GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB);
 
     attribs.push_back(None);
 
-    return glx::glXCreateContextAttribsARB(display, framebuffer_config, nullptr, True, attribs.data());
+    return glXCreateContextAttribsARB(display, fb_config, nullptr, True, attribs.data());
 }
 
 } // namespace
@@ -147,30 +147,34 @@ X11GlxContext::X11GlxContext(const ContextSettings& settings, Display* display)
     : Context(settings)
     , m_display(display)
 {
-    glx::init_glx([this](const char* function_name) { return get_function(function_name); });
+    using namespace glx;
+    using namespace framework::graphics::details::opengl;
+
+    init_glx([this](const char* name) { return get_function(name); });
 
     if (!check_glx_version(m_display)) {
         throw std::runtime_error("Invalid GLX version.");
     }
 
-    m_framebuffer_config = choose_framebuffer_config(m_display, settings);
+    const GLXFBConfig fb_config = choose_framebuffer_config(m_display, settings);
 
-    if (m_framebuffer_config == nullptr) {
+    if (fb_config == nullptr) {
         throw std::runtime_error("Can't get framebuffer config.");
     }
 
-    m_visual_info = glx::glXGetVisualFromFBConfig(m_display, m_framebuffer_config);
+    m_visual_info = glXGetVisualFromFBConfig(m_display, fb_config);
     if (m_visual_info == nullptr) {
+        clear();
         throw std::runtime_error("Can't get visual info.");
     }
 
-    m_glx_context = create_glx_context(m_display, m_framebuffer_config, settings);
+    m_glx_context = create_glx_context(m_display, fb_config, settings);
     if (m_glx_context == nullptr) {
         clear();
         throw std::runtime_error("Can't create opengl context.");
     }
 
-    framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
+    init_opengl([this](const char* name) { return get_function(name); });
 
     // TODO: Update actual context settings
 }
@@ -182,8 +186,7 @@ X11GlxContext::~X11GlxContext()
 
 bool X11GlxContext::is_valid() const
 {
-    return m_display != nullptr && m_framebuffer_config != nullptr && m_glx_context != nullptr &&
-           m_visual_info != nullptr && m_window != None;
+    return m_display != nullptr && m_glx_context != nullptr && m_visual_info != nullptr && m_window != None;
 }
 
 bool X11GlxContext::is_current() const
@@ -233,6 +236,8 @@ void X11GlxContext::clear()
     if (m_visual_info) {
         XFree(m_visual_info);
     }
+
+    m_window = None;
 }
 
 glx::VoidFunctionPtr X11GlxContext::get_function(const char* function_name) const

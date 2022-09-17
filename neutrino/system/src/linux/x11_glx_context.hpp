@@ -42,8 +42,7 @@ private:
     XVisualInfo* m_visual_info = nullptr;
     Window m_window            = None;
 
-    glx::GLXFBConfig m_framebuffer_config = nullptr;
-    glx::GLXContext m_glx_context         = nullptr;
+    glx::GLXContext m_glx_context = nullptr;
 };
 
 } // namespace framework::system::details
