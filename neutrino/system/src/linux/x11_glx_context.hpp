@@ -29,7 +29,6 @@ public:
     void make_current() override;
     void swap_buffers() override;
 
-    Colormap colormap() const;
     XVisualInfo* visual_info() const;
 
     void attach_window(Window window);
@@ -40,7 +39,6 @@ private:
     glx::VoidFunctionPtr get_function(const char* function_name) const;
 
     Display* m_display         = nullptr;
-    Colormap m_colormap        = None;
     XVisualInfo* m_visual_info = nullptr;
     Window m_window            = None;
 

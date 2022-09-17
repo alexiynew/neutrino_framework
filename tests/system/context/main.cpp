@@ -5,6 +5,7 @@
 #include <common/version.hpp>
 #include <graphics/color.hpp>
 #include <graphics/renderer.hpp>
+#include <log/log.hpp>
 #include <system/application.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
@@ -34,10 +35,10 @@ private:
 
         render.set_clear_color(Color(0xFF00FFFFU));
 
-        const float max_total_time = 1000;
+        const float max_total_time = 5000;
         float total_time           = 0;
 
-        while (main_window.is_visible() && total_time < max_total_time) {
+        while (!main_window.should_close() && total_time < max_total_time) {
             main_window.process_events();
 
             render.display();

@@ -85,7 +85,7 @@ glx::GLXFBConfig choose_framebuffer_config(Display* display, const ContextSettin
         attribs.push_back(GLX_DONT_CARE);
     } else {
         attribs.push_back(GLX_DEPTH_SIZE);
-        attribs.push_back(2);
+        attribs.push_back(24);
     }
 
     if (settings.depth_bits() == ContextSettings::dont_care) {
@@ -93,7 +93,7 @@ glx::GLXFBConfig choose_framebuffer_config(Display* display, const ContextSettin
         attribs.push_back(GLX_DONT_CARE);
     } else {
         attribs.push_back(GLX_STENCIL_SIZE);
-        attribs.push_back(2);
+        attribs.push_back(8);
     }
 
     attribs.push_back(GLX_DOUBLEBUFFER);
@@ -164,12 +164,6 @@ X11GlxContext::X11GlxContext(const ContextSettings& settings, Display* display)
         throw std::runtime_error("Can't get visual info.");
     }
 
-    m_colormap = XCreateColormap(m_display, DefaultRootWindow(m_display), m_visual_info->visual, AllocNone);
-    if (m_colormap == None) {
-        clear();
-        throw std::runtime_error("Can't create colormap.");
-    }
-
     m_glx_context = create_glx_context(m_display, m_framebuffer_config, settings);
     if (m_glx_context == nullptr) {
         clear();
@@ -189,7 +183,7 @@ X11GlxContext::~X11GlxContext()
 
 bool X11GlxContext::valid() const
 {
-    return m_display != nullptr && m_framebuffer_config != nullptr && m_glx_context != nullptr && m_colormap != None &&
+    return m_display != nullptr && m_framebuffer_config != nullptr && m_glx_context != nullptr &&
            m_visual_info != nullptr;
 }
 
@@ -215,11 +209,6 @@ void X11GlxContext::swap_buffers()
     glx::glXSwapBuffers(m_display, m_window);
 }
 
-Colormap X11GlxContext::colormap() const
-{
-    return m_colormap;
-}
-
 XVisualInfo* X11GlxContext::visual_info() const
 {
     return m_visual_info;
@@ -234,10 +223,6 @@ void X11GlxContext::clear()
 {
     if (m_display && m_glx_context != nullptr) {
         glx::glXDestroyContext(m_display, m_glx_context);
-    }
-
-    if (m_display && m_colormap != 0u) {
-        XFreeColormap(m_display, m_colormap);
     }
 
     if (m_visual_info) {

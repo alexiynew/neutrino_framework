@@ -106,6 +106,7 @@ private:
     Window::State m_actual_state;
 
     XLibWindow m_window = None;
+    Colormap m_colormap = None;
 
     XIC m_input_context = nullptr;
 

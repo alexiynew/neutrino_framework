@@ -1,6 +1,7 @@
 #include <chrono>
 #include <exception>
 #include <set>
+#include <sstream>
 #include <string>
 #include <thread>
 
@@ -71,33 +72,39 @@ X11Window::X11Window(const std::string& title, Size size, const ContextSettings&
         throw std::runtime_error("Can't create graphic context.");
     }
 
+    if (m_server->default_screen() != static_cast<XID>(context->visual_info()->screen)) {
+        std::stringstream msg;
+        msg << "default_screen(" << m_server->default_screen() << ") does not match visual_info()->screen("
+            << context->visual_info()->screen << ").";
+        throw std::runtime_error(msg.str());
+    }
+
+    m_colormap = XCreateColormap(m_server->display(),
+                                 m_server->root_window(),
+                                 context->visual_info()->visual,
+                                 AllocNone);
+
+    if (m_colormap == None) {
+        throw std::runtime_error("Can't create colormap.");
+    }
+
     XSetWindowAttributes attributes = {};
 
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast)
-    attributes.background_pixel = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
-    attributes.event_mask       = event_mask;
-    attributes.colormap         = context->colormap();
+    attributes.background_pixel  = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
+    attributes.border_pixel      = static_cast<XID>(BlackPixel(m_server->display(), m_server->default_screen()));
+    attributes.event_mask        = event_mask;
+    attributes.override_redirect = False; // Allow WM to intercept any requests to map, move, resize, or change the
+                                          // border width of windows. This allows the window manager to modify these
+                                          // requests, if necessary, to ensure that they meet its window layout policy.
 
-    //  attributes.background_pixmap;     // background, None, or ParentRelative      >> CWBackPixmap
-    //  attributes.border_pixmap;         // border of the window or CopyFromParent   >> CWBorderPixmap
-    //  attributes.border_pixel;          // border pixel value                       >> CWBorderPixel
-    //  attributes.bit_gravity;           // one of bit gravity values                >> CWBitGravity
-    //  attributes.win_gravity;           // one of the window gravity values         >> CWWinGravity
-    //  attributes.backing_store;         // NotUseful, WhenMapped, Always            >> CWBackingStore
-    //  attributes.backing_planes;        // planes to be preserved if possible       >> CWBackingPlanes
-    //  attributes.backing_pixel;         // value to use in restoring planes         >> CWBackingPixel
-    //  attributes.save_under;            // should bits under be saved? (popups)     >> CWSaveUnder
-    //  attributes.do_not_propagate_mask; // set of events that should not propagate  >> CWDontPropagate
-    //  attributes.override_redirect;     // boolean value for override_redirect      >> CWOverrideRedirect
-    //  attributes.colormap;              // color map to be associated with window   >> CWColormap
-    //  attributes.cursor;                // cursor to be displayed (or None)         >> CWCursor
+    attributes.colormap = m_colormap;
 
     const std::uint32_t border_width = 0;
     const std::uint32_t window_class = InputOutput;
-    const std::uint64_t valuemask    = CWBackPixel | CWEventMask | CWColormap;
+    const std::uint64_t valuemask    = CWBorderPixel | CWBackPixel | CWEventMask | CWColormap | CWOverrideRedirect;
 
     m_window = XCreateWindow(m_server->display(),
-                             m_server->default_root_window(),
+                             m_server->root_window(),
                              m_position.x,
                              m_position.y,
                              static_cast<std::uint32_t>(m_size.width),
@@ -141,13 +148,18 @@ X11Window::~X11Window()
         XDestroyIC(m_input_context);
         m_input_context = nullptr;
     }
+
+    if (m_colormap != None) {
+        XFreeColormap(m_server->display(), m_colormap);
+    }
 }
 
 #pragma region actions
 
 void X11Window::show(Window::State state)
 {
-    XMapWindow(m_server->display(), m_window);
+    XClearWindow(m_server->display(), m_window);
+    XMapRaised(m_server->display(), m_window);
     XFlush(m_server->display());
 
     m_wait_event_type = ConfigureNotify;
@@ -781,7 +793,6 @@ void X11Window::add_protocols(const std::vector<std::string>& protocol_names)
 void X11Window::create_input_context()
 {
     if (m_server->input_method() != nullptr) {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg,hicpp-vararg)
         m_input_context = XCreateIC(m_server->input_method(),
                                     XNInputStyle,
                                     XIMPreeditNothing | XIMStatusNothing,
