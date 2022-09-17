@@ -68,9 +68,6 @@ X11Window::X11Window(const std::string& title, Size size, const ContextSettings&
     , m_saved_size(size)
 {
     auto context = std::make_unique<X11GlxContext>(settings, m_server->display());
-    if (!context->valid()) {
-        throw std::runtime_error("Can't create graphic context.");
-    }
 
     if (m_server->default_screen() != static_cast<XID>(context->visual_info()->screen)) {
         std::stringstream msg;
@@ -122,6 +119,10 @@ X11Window::X11Window(const std::string& title, Size size, const ContextSettings&
     }
 
     context->attach_window(m_window);
+    if (!context->is_valid()) {
+        throw std::runtime_error("Can't fully initialize graphic context.");
+    }
+
     m_context = std::move(context);
 
     XSelectInput(m_server->display(), m_window, event_mask);

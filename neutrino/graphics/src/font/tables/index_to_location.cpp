@@ -20,7 +20,7 @@ IndexToLocation::IndexToLocation(std::int16_t index_to_loc_format, std::uint16_t
     }
 }
 
-bool IndexToLocation::valid() const
+bool IndexToLocation::is_valid() const
 {
     return m_offsets.size() != 0 && m_offsets[0] == 0;
 }

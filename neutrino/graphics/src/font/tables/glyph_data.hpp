@@ -25,7 +25,7 @@ public:
 
     GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
 
     bool has(GlyphId index) const;
     const Contours& at(GlyphId index) const;

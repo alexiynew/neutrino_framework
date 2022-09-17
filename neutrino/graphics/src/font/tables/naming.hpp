@@ -48,7 +48,7 @@ public:
 
     explicit Naming(const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
     std::string get_string(NameId name_id) const;
 
 private:

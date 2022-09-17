@@ -37,7 +37,7 @@ public:
     /// @brief Checks if a context is created properly.
     ///
     /// @return `True` if context can be used.
-    virtual bool valid() const = 0;
+    virtual bool is_valid() const = 0;
 
     /// @brief Checks if a context is current for rendering.
     ///

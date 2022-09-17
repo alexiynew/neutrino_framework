@@ -19,7 +19,7 @@ public:
     OsxContext& operator=(const OsxContext&) noexcept = default;
     OsxContext& operator=(OsxContext&&) noexcept      = default;
 
-    bool valid() const override;
+    bool is_valid() const override;
     bool is_current() const override;
     Api api_type() const override;
 

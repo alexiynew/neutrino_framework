@@ -13,7 +13,7 @@ class HorizontalMetrics final
 public:
     HorizontalMetrics(std::uint16_t number_of_h_metrics, std::uint16_t num_glyphs, const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
     std::uint16_t advance_width(GlyphId id) const;
     std::int16_t left_sidebearing(GlyphId id) const;
 

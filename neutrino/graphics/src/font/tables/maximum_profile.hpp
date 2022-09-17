@@ -16,7 +16,7 @@ public:
 
     explicit MaximumProfile(const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
 
     Fixed version() const;
     std::uint16_t num_glyphs() const;

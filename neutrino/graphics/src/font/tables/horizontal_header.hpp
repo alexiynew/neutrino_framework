@@ -13,7 +13,7 @@ class HorizontalHeader final
 public:
     explicit HorizontalHeader(const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
 
     std::uint16_t number_of_h_metrics() const;
 

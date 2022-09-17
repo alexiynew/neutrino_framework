@@ -264,7 +264,7 @@ bool OpenglMesh::load(const Mesh& mesh)
 
     glBindVertexArray(0);
 
-    return valid();
+    return is_valid();
 }
 
 void OpenglMesh::draw() const
@@ -284,7 +284,7 @@ void OpenglMesh::draw() const
     }
 }
 
-bool OpenglMesh::valid() const
+bool OpenglMesh::is_valid() const
 {
     return m_vertex_array != 0 && m_index_buffer.buffer != 0 && !m_index_buffer.submeshes.empty();
 }

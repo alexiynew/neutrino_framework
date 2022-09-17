@@ -19,7 +19,7 @@ public:
     Win32WglContext& operator=(const Win32WglContext&) = default;
     Win32WglContext& operator=(Win32WglContext&&)      = default;
 
-    bool valid() const override;
+    bool is_valid() const override;
     bool is_current() const override;
     Api api_type() const override;
 

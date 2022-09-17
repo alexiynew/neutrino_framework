@@ -155,7 +155,7 @@ OsxContext::~OsxContext()
     m_context = nullptr;
 }
 
-bool OsxContext::valid() const
+bool OsxContext::is_valid() const
 {
     return m_context != nullptr && m_view != nullptr;
 }
@@ -174,16 +174,20 @@ Context::Api OsxContext::api_type() const
 
 void OsxContext::make_current()
 {
-    if (m_context) {
-        [m_context makeCurrentContext];
+    if (!is_valid()) {
+        return;
     }
+
+    [m_context makeCurrentContext];
 }
 
 void OsxContext::swap_buffers()
 {
-    if (m_context) {
-        [m_context flushBuffer];
+    if (!is_valid()) {
+        return;
     }
+
+    [m_context flushBuffer];
 }
 
 void OsxContext::update()

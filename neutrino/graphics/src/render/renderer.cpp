@@ -18,7 +18,7 @@ namespace
 {
 std::unique_ptr<RendererImpl> create_impl(system::Context& context)
 {
-    if (!context.valid()) {
+    if (!context.is_valid()) {
         throw std::runtime_error("Context is not valid.");
     }
     context.make_current();

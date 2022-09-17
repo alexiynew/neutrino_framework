@@ -70,7 +70,7 @@ struct Chunk
     static Chunk read(std::ifstream& in);
 
     bool is_critical() const;
-    bool valid() const;
+    bool is_valid() const;
 };
 
 Chunk Chunk::read(std::ifstream& in)
@@ -103,7 +103,7 @@ bool Chunk::is_critical() const
     return (((static_cast<std::uint32_t>(type) >> 24) & 0xFF) & 0x20) == 0;
 }
 
-bool Chunk::valid() const
+bool Chunk::is_valid() const
 {
     const char* begin         = reinterpret_cast<const char*>(&type);
     const std::uint32_t first = utils::big_endian_value<std::uint32_t>(begin);
@@ -156,7 +156,7 @@ struct FileHeader
 
     static FileHeader read(std::ifstream& in);
 
-    bool valid() const;
+    bool is_valid() const;
     std::int32_t samples_per_pixel() const;
     std::int32_t bits_per_pixel() const;
     std::int32_t bytes_per_pixel() const;
@@ -167,7 +167,7 @@ struct FileHeader
 FileHeader FileHeader::read(std::ifstream& in)
 {
     auto c = Chunk::read(in);
-    if (c.type != Chunk::Type::IHDR || !c.valid()) {
+    if (c.type != Chunk::Type::IHDR || !c.is_valid()) {
         return FileHeader();
     }
 
@@ -183,7 +183,7 @@ FileHeader FileHeader::read(std::ifstream& in)
     return h;
 }
 
-bool FileHeader::valid() const
+bool FileHeader::is_valid() const
 {
     auto valid_bit_depth = [=]() {
         switch (color_type) {
@@ -804,7 +804,7 @@ ImageInfo load(const std::filesystem::path& filepath)
     }
 
     FileHeader header = FileHeader::read(file);
-    if (!header.valid()) {
+    if (!header.is_valid()) {
         throw ParsingError(error::read_header_error);
     }
 
@@ -813,7 +813,7 @@ ImageInfo load(const std::filesystem::path& filepath)
 
     std::vector<std::uint8_t> data;
     for (Chunk chunk = Chunk::read(file); file && chunk.type != Chunk::Type::IEND; chunk = Chunk::read(file)) {
-        if (!chunk.valid() && chunk.is_critical()) {
+        if (!chunk.is_valid() && chunk.is_critical()) {
             throw ParsingError(error::read_data_error);
         }
 

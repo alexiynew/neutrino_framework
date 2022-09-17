@@ -13,7 +13,7 @@ class Os2 final
 public:
     explicit Os2(const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
 
     std::uint16_t default_char() const;
 

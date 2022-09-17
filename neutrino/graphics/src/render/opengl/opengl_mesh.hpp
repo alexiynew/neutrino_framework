@@ -48,7 +48,7 @@ public:
     void clear();
 
     void draw() const;
-    bool valid() const;
+    bool is_valid() const;
 
 private:
     void enable_attribute(Attribute attribute) const;

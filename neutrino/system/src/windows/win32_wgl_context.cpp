@@ -287,14 +287,14 @@ Win32WglContext::~Win32WglContext()
     ReleaseDC(m_window, m_hdc);
 }
 
-bool Win32WglContext::valid() const
+bool Win32WglContext::is_valid() const
 {
     return m_window != nullptr || m_hdc != nullptr || m_hglrc != nullptr;
 }
 
 bool Win32WglContext::is_current() const
 {
-    return valid() && wglGetCurrentContext() == m_hglrc;
+    return wglGetCurrentContext() == m_hglrc;
 }
 
 Context::Api Win32WglContext::api_type() const
@@ -304,13 +304,19 @@ Context::Api Win32WglContext::api_type() const
 
 void Win32WglContext::make_current()
 {
-    if (!is_current()) {
-        wglMakeCurrent(m_hdc, m_hglrc);
+    if (!is_valid()) {
+        return;
     }
+
+    wglMakeCurrent(m_hdc, m_hglrc);
 }
 
 void Win32WglContext::swap_buffers()
 {
+    if (!is_valid()) {
+        return;
+    }
+
     SwapBuffers(m_hdc);
 }
 

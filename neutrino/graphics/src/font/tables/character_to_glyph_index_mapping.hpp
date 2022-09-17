@@ -24,7 +24,7 @@ public:
     CharacterToGlyphIndexMapping& operator=(const CharacterToGlyphIndexMapping& other);
     CharacterToGlyphIndexMapping& operator=(CharacterToGlyphIndexMapping&& other);
 
-    bool valid() const;
+    bool is_valid() const;
 
     GlyphId glyph_index(CodePoint codepoint) const;
 

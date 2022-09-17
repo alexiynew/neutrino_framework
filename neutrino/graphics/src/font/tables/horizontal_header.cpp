@@ -29,7 +29,7 @@ HorizontalHeader::HorizontalHeader(const BytesData& data)
     in >> m_number_of_h_metrics;
 }
 
-bool HorizontalHeader::valid() const
+bool HorizontalHeader::is_valid() const
 {
     bool valid = true;
 

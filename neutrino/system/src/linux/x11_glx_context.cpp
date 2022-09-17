@@ -170,7 +170,6 @@ X11GlxContext::X11GlxContext(const ContextSettings& settings, Display* display)
         throw std::runtime_error("Can't create opengl context.");
     }
 
-    make_current();
     framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
 
     // TODO: Update actual context settings
@@ -181,15 +180,15 @@ X11GlxContext::~X11GlxContext()
     clear();
 }
 
-bool X11GlxContext::valid() const
+bool X11GlxContext::is_valid() const
 {
     return m_display != nullptr && m_framebuffer_config != nullptr && m_glx_context != nullptr &&
-           m_visual_info != nullptr;
+           m_visual_info != nullptr && m_window != None;
 }
 
 bool X11GlxContext::is_current() const
 {
-    return valid() && glx::glXGetCurrentContext() == m_glx_context;
+    return glx::glXGetCurrentContext() == m_glx_context;
 }
 
 Context::Api X11GlxContext::api_type() const
@@ -199,13 +198,19 @@ Context::Api X11GlxContext::api_type() const
 
 void X11GlxContext::make_current()
 {
-    if (!is_current()) {
-        glx::glXMakeCurrent(m_display, m_window, m_glx_context);
+    if (!is_valid()) {
+        return;
     }
+
+    glx::glXMakeCurrent(m_display, m_window, m_glx_context);
 }
 
 void X11GlxContext::swap_buffers()
 {
+    if (!is_valid()) {
+        return;
+    }
+
     glx::glXSwapBuffers(m_display, m_window);
 }
 

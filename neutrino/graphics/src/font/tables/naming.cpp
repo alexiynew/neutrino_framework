@@ -69,7 +69,7 @@ Naming::Naming(const BytesData& data)
     }
 }
 
-bool Naming::valid() const
+bool Naming::is_valid() const
 {
     bool valid = true;
 

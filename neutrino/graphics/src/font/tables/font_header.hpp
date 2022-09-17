@@ -13,7 +13,7 @@ class FontHeader final
 public:
     explicit FontHeader(const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
 
     std::int16_t index_to_loc_format() const;
     std::uint16_t units_per_em() const;

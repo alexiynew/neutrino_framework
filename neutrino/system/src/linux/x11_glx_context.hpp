@@ -22,7 +22,7 @@ public:
     X11GlxContext& operator=(const X11GlxContext&) = default;
     X11GlxContext& operator=(X11GlxContext&&)      = default;
 
-    bool valid() const override;
+    bool is_valid() const override;
     bool is_current() const override;
     Api api_type() const override;
 

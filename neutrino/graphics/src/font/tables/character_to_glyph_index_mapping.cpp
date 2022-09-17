@@ -35,7 +35,7 @@ public:
     virtual void parse(std::uint32_t offset, const BytesData& data) = 0;
     virtual GlyphId glyph_index(CodePoint codepoint) const          = 0;
 
-    virtual bool valid() const                     = 0;
+    virtual bool is_valid() const                  = 0;
     virtual std::unique_ptr<Subtable> copy() const = 0;
 };
 
@@ -47,7 +47,7 @@ public:
     void parse(std::uint32_t offset, const BytesData& data) override;
     GlyphId glyph_index(CodePoint codepoint) const override;
 
-    bool valid() const override;
+    bool is_valid() const override;
     std::unique_ptr<Subtable> copy() const override;
 
 private:
@@ -164,7 +164,7 @@ GlyphId SubtableFormat4::glyph_index(CodePoint codepoint) const
     return static_cast<GlyphId>((static_cast<std::int32_t>(glyph_id) + id_delta) & 0xffff);
 }
 
-bool SubtableFormat4::valid() const
+bool SubtableFormat4::is_valid() const
 {
     const size_t seg_count = m_seg_count_x2 / 2;
 
@@ -194,7 +194,7 @@ public:
     void parse(std::uint32_t offset, const BytesData& data) override;
     GlyphId glyph_index(CodePoint codepoint) const override;
 
-    bool valid() const override;
+    bool is_valid() const override;
     std::unique_ptr<Subtable> copy() const override;
 
 private:
@@ -216,7 +216,7 @@ GlyphId SubtableFormat6::glyph_index(CodePoint) const
     throw NotImplementedError("SubtableFormat6 glyph_index is not implemented yet");
 }
 
-bool SubtableFormat6::valid() const
+bool SubtableFormat6::is_valid() const
 {
     return false;
 }
@@ -236,7 +236,7 @@ public:
     void parse(std::uint32_t offset, const BytesData& data) override;
     GlyphId glyph_index(CodePoint codepoint) const override;
 
-    bool valid() const override;
+    bool is_valid() const override;
     std::unique_ptr<Subtable> copy() const override;
 };
 
@@ -250,7 +250,7 @@ GlyphId SubtableFormat10::glyph_index(CodePoint) const
     throw NotImplementedError("SubtableFormat10 glyph_index is not implemented yet");
 }
 
-bool SubtableFormat10::valid() const
+bool SubtableFormat10::is_valid() const
 {
     return false;
 }
@@ -270,7 +270,7 @@ public:
     void parse(std::uint32_t offset, const BytesData& data) override;
     GlyphId glyph_index(CodePoint codepoint) const override;
 
-    bool valid() const override;
+    bool is_valid() const override;
     std::unique_ptr<Subtable> copy() const override;
 };
 
@@ -284,7 +284,7 @@ GlyphId SubtableFormat12::glyph_index(CodePoint) const
     throw NotImplementedError("SubtableFormat12 glyph_index is not implemented yet");
 }
 
-bool SubtableFormat12::valid() const
+bool SubtableFormat12::is_valid() const
 {
     return false;
 }
@@ -304,7 +304,7 @@ public:
     void parse(std::uint32_t offset, const BytesData& data) override;
     GlyphId glyph_index(CodePoint codepoint) const override;
 
-    bool valid() const override;
+    bool is_valid() const override;
     std::unique_ptr<Subtable> copy() const override;
 };
 
@@ -318,7 +318,7 @@ GlyphId SubtableFormat13::glyph_index(CodePoint) const
     throw NotImplementedError("SubtableFormat13 glyph_index is not implemented yet");
 }
 
-bool SubtableFormat13::valid() const
+bool SubtableFormat13::is_valid() const
 {
     return false;
 }
@@ -338,7 +338,7 @@ public:
     void parse(std::uint32_t offset, const BytesData& data) override;
     GlyphId glyph_index(CodePoint codepoint) const override;
 
-    bool valid() const override;
+    bool is_valid() const override;
     std::unique_ptr<Subtable> copy() const override;
 };
 
@@ -352,7 +352,7 @@ GlyphId SubtableFormat14::glyph_index(CodePoint) const
     throw NotImplementedError("SubtableFormat14 glyph_index is not implemented yet");
 }
 
-bool SubtableFormat14::valid() const
+bool SubtableFormat14::is_valid() const
 {
     return false;
 }
@@ -477,9 +477,9 @@ CharacterToGlyphIndexMapping& CharacterToGlyphIndexMapping::operator=(const Char
 
 CharacterToGlyphIndexMapping& CharacterToGlyphIndexMapping::operator=(CharacterToGlyphIndexMapping&& other) = default;
 
-bool CharacterToGlyphIndexMapping::valid() const
+bool CharacterToGlyphIndexMapping::is_valid() const
 {
-    return m_version == 0 && m_subtable != nullptr && m_subtable->valid();
+    return m_version == 0 && m_subtable != nullptr && m_subtable->is_valid();
 }
 
 GlyphId CharacterToGlyphIndexMapping::glyph_index(CodePoint codepoint) const
