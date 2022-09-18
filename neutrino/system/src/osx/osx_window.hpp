@@ -101,15 +101,13 @@ private:
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
 
-    CursorPosition m_grabbed_cursor_diff = {0, 0};
-    CursorPosition m_cursor_position     = {0, 0};
+    bool m_cursor_actualy_visible    = true;
+    CursorPosition m_cursor_position = {0, 0};
 
     Size m_min_size;
     Size m_max_size;
 
     Window::State m_actual_state;
-
-    bool m_cursor_actualy_visible = true;
 };
 
 } // namespace framework::system::details

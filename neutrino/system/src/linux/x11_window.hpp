@@ -92,6 +92,8 @@ private:
 
     void update_size_limits(Size min_size, Size max_size);
 
+    void center_cursor_inside_window();
+
     std::shared_ptr<X11Server> m_server = nullptr;
     std::unique_ptr<Context> m_context  = nullptr;
 
@@ -118,6 +120,10 @@ private:
     int m_wait_event_type  = None;
 
     Cursor m_invisible_cursor = None;
+
+    bool m_cursor_actualy_visible        = true;
+    CursorPosition m_grabbed_cursor_diff = {0, 0};
+    CursorPosition m_cursor_position     = {0, 0};
 };
 
 } // namespace framework::system::details

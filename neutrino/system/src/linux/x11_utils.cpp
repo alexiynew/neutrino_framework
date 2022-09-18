@@ -524,4 +524,28 @@ Cursor create_invisible_cursor(const X11Server* server)
     return cursor;
 }
 
+Position get_cursor_position(const X11Server* server, XLibWindow window)
+{
+    XLibWindow root  = None;
+    XLibWindow child = None;
+    int rootX        = 0;
+    int rootY        = 0;
+    int childX       = 0;
+    int childY       = 0;
+    unsigned int mask;
+
+    bool ret = XQueryPointer(server->display(), window, &root, &child, &rootX, &rootY, &childX, &childY, &mask);
+
+    if (!ret) {
+        // cursor on the other screen
+    }
+
+    return {childX, childY};
+}
+
+void set_cursor_position(const X11Server* server, XLibWindow window, Position position)
+{
+    XWarpPointer(server->display(), None, window, 0, 0, 0, 0, position.x, position.y);
+}
+
 } // namespace framework::system::details::utils

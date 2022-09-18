@@ -638,15 +638,13 @@ void OsxWindow::enable_raw_input()
 {
     AutoreleasePool pool;
 
-    m_grabbed_cursor_diff = {0, 0};
-
     const NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
     const auto p      = position();
     const auto s      = size();
     m_cursor_position = CursorPosition(pos.x + p.x, (p.y + s.height) - pos.y);
 
     center_cursor_inside_window();
-    mouse_moved(m_grabbed_cursor_diff);
+    on_mouse_move({0, 0});
 
     CGAssociateMouseAndMouseCursorPosition(NO);
 

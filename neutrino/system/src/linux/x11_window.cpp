@@ -201,13 +201,39 @@ void X11Window::focus()
 }
 
 void X11Window::enable_raw_input()
-{}
+{
+    m_cursor_position = utils::get_cursor_position(m_server.get(), m_window);
+    utils::set_cursor_position(m_server.get(), m_window, {m_size.width / 2, m_size.height / 2});
+
+    XGrabPointer(m_server->display(),
+                 m_window,
+                 True,
+                 ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+                 GrabModeAsync,
+                 GrabModeAsync, // Keyboard is unaffected
+                 m_window,
+                 None, // Normal cursor
+                 CurrentTime);
+
+    process_events();
+}
 
 void X11Window::disable_raw_input()
-{}
+{
+    XUngrabPointer(m_server->display(), CurrentTime);
+
+    utils::set_cursor_position(m_server.get(), m_window, m_cursor_position);
+
+    process_events();
+}
 
 void X11Window::show_cursor()
 {
+    if (m_cursor_actualy_visible) {
+        return;
+    }
+    m_cursor_actualy_visible = true;
+
     XUndefineCursor(m_server->display(), m_window);
     XFlush(m_server->display());
     process_events();
@@ -215,6 +241,11 @@ void X11Window::show_cursor()
 
 void X11Window::hide_cursor()
 {
+    if (!m_cursor_actualy_visible) {
+        return;
+    }
+    m_cursor_actualy_visible = false;
+
     XDefineCursor(m_server->display(), m_window, m_invisible_cursor);
     XFlush(m_server->display());
     process_events();
@@ -302,11 +333,6 @@ void X11Window::process_events()
     XEvent event = {0};
     while (XCheckIfEvent(m_server->display(), &event, event_predicate, reinterpret_cast<XPointer>(&m_window)) != 0) {
         switch (event.xany.type) {
-                // case KeymapNotify: return "KeymapNotify"
-                // case GenericEvent:  return "GenericEvent";
-
-                // TODO:: Pocess mouse scroll event
-
             case VisibilityNotify: process(event.xvisibility); break;
             case DestroyNotify: process(event.xdestroywindow); break;
             case UnmapNotify: process(event.xunmap); break;
@@ -323,6 +349,8 @@ void X11Window::process_events()
             case LeaveNotify: process(event.xcrossing); break;
             case MotionNotify: process(event.xmotion); break;
             case MappingNotify: process(event.xmapping); break;
+            case KeymapNotify: break;
+            case GenericEvent: break;
 
             default: break;
         }
@@ -725,7 +753,17 @@ void X11Window::process(XCrossingEvent event)
 
 void X11Window::process(XMotionEvent event)
 {
-    on_mouse_move({event.x, event.y});
+    if (state_data().cursor_grabbed) {
+        const int dx = event.x - m_size.width / 2;
+        const int dy = event.y - m_size.height / 2;
+
+        if (dx != 0 || dy != 0) {
+            on_mouse_move({dx, dy});
+            utils::set_cursor_position(m_server.get(), m_window, {m_size.width / 2, m_size.height / 2});
+        }
+    } else if (state_data().mouse_hover) {
+        on_mouse_move({event.x, event.y});
+    }
 }
 
 void X11Window::process(XMappingEvent event)
