@@ -8,7 +8,10 @@ namespace framework::system::details
 
 struct StateData
 {
-    bool should_close   = false;
+    bool should_close = false;
+
+    bool mouse_hover    = false;
+    bool cursor_visible = true;
     bool cursor_grabbed = false;
 
     Window::State state = Window::State::normal;

@@ -135,16 +135,13 @@ X11Window::X11Window(const std::string& title, Size size, const ContextSettings&
 
     create_input_context();
 
+    m_invisible_cursor = utils::create_invisible_cursor(m_server.get());
+
     set_title(title);
 }
 
 X11Window::~X11Window()
 {
-    if (m_server->display() != nullptr && m_window != None) {
-        XDestroyWindow(m_server->display(), m_window);
-        XSync(m_server->display(), False);
-    }
-
     if (m_input_context != nullptr) {
         XDestroyIC(m_input_context);
         m_input_context = nullptr;
@@ -152,6 +149,17 @@ X11Window::~X11Window()
 
     if (m_colormap != None) {
         XFreeColormap(m_server->display(), m_colormap);
+        m_colormap = None;
+    }
+
+    if (m_invisible_cursor != None) {
+        XFreeCursor(m_server->display(), m_invisible_cursor);
+        m_invisible_cursor = None;
+    }
+
+    if (m_server->display() != nullptr && m_window != None) {
+        XDestroyWindow(m_server->display(), m_window);
+        XSync(m_server->display(), False);
     }
 }
 
@@ -188,8 +196,8 @@ void X11Window::focus()
     utils::focus_window(m_server.get(), m_window, m_last_input_time);
     XFlush(m_server->display());
 
-    m_wait_focus = true;
-    process_events_while([this]() { return m_wait_focus; });
+    m_wait_event_type = FocusIn;
+    process_events_while([this]() { return m_wait_event_type != None; });
 }
 
 void X11Window::enable_raw_input()
@@ -197,6 +205,20 @@ void X11Window::enable_raw_input()
 
 void X11Window::disable_raw_input()
 {}
+
+void X11Window::show_cursor()
+{
+    XUndefineCursor(m_server->display(), m_window);
+    XFlush(m_server->display());
+    process_events();
+}
+
+void X11Window::hide_cursor()
+{
+    XDefineCursor(m_server->display(), m_window, m_invisible_cursor);
+    XFlush(m_server->display());
+    process_events();
+}
 
 void X11Window::switch_state(Window::State old_state, Window::State new_state)
 {
@@ -409,8 +431,12 @@ void X11Window::set_title(const std::string& title)
     process_events();
 }
 
-void X11Window::set_cursor_visible(bool /*visible*/)
-{}
+struct GLFWimage
+{
+    int width;
+    int height;
+    unsigned char* pixels;
+};
 
 #pragma endregion
 
@@ -429,11 +455,6 @@ bool X11Window::is_visible() const
 bool X11Window::has_input_focus() const
 {
     return is_visible() && m_window == m_server->active_window();
-}
-
-bool X11Window::is_cursor_visible() const
-{
-    return false;
 }
 
 Window::State X11Window::state() const
@@ -576,38 +597,12 @@ void X11Window::process(XFocusChangeEvent event)
             if (m_input_context != nullptr) {
                 XSetICFocus(m_input_context);
             }
-
-            // TODO(alex): Find out how to deal with cursor
-            // if (!m_cursor_grabbed) {
-            //     int result = XGrabPointer(m_server->display(),
-            //                               m_window,
-            //                               True,
-            //                               ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-            //                               GrabModeAsync,
-            //                               GrabModeAsync,
-            //                               None,
-            //                               None,
-            //                               CurrentTime);
-
-            //     m_cursor_grabbed = (result == GrabSuccess);
-
-            //     if (!m_cursor_grabbed) {
-            //         log::warning(log_tag) << "Failed to grab mouse cursor" << std::endl;
-            //     }
-            // }
-            m_wait_focus = false;
             on_focus();
             break;
         case FocusOut:
             if (m_input_context != nullptr) {
                 XUnsetICFocus(m_input_context);
             }
-
-            // if (m_cursor_grabbed) {
-            //     XUngrabPointer(m_server->display(), CurrentTime);
-            //     m_cursor_grabbed = false;
-            // }
-
             on_lost_focus();
             break;
     }
@@ -723,14 +718,14 @@ void X11Window::process(XButtonEvent event)
 void X11Window::process(XCrossingEvent event)
 {
     switch (event.type) {
-        case EnterNotify: callbacks().on_mouse_enter(); break;
-        case LeaveNotify: callbacks().on_mouse_leave(); break;
+        case EnterNotify: on_mouse_enter(); break;
+        case LeaveNotify: on_mouse_leave(); break;
     }
 }
 
 void X11Window::process(XMotionEvent event)
 {
-    callbacks().on_mouse_move({event.x, event.y});
+    on_mouse_move({event.x, event.y});
 }
 
 void X11Window::process(XMappingEvent event)

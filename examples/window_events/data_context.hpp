@@ -21,6 +21,7 @@ public:
     void set_window_resizable(bool value);
     void set_cursor_grabbed(bool value);
     void set_cursor_visible(bool value);
+    void set_mouse_hover(bool value);
 
     void add_callback_event(const std::string& event);
 
@@ -31,6 +32,7 @@ public:
     bool window_resizable() const;
     bool cursor_grabbed() const;
     bool cursor_visible() const;
+    bool mouse_hover() const;
 
     const std::vector<std::string>& last_callback_events() const;
 
@@ -43,6 +45,7 @@ private:
     bool m_window_resizable;
     bool m_cursor_grabbed;
     bool m_cursor_visible;
+    bool m_mouse_hover;
 };
 
 #endif

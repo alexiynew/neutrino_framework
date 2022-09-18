@@ -51,4 +51,25 @@ void PlatformWindow::on_lost_focus()
     }
 }
 
+void PlatformWindow::on_mouse_enter()
+{
+    if (m_window_interface) {
+        m_window_interface->on_mouse_enter();
+    }
+}
+
+void PlatformWindow::on_mouse_leave()
+{
+    if (m_window_interface) {
+        m_window_interface->on_mouse_leave();
+    }
+}
+
+void PlatformWindow::on_mouse_move(CursorPosition position)
+{
+    if (m_window_interface) {
+        m_window_interface->on_mouse_move(position);
+    }
+}
+
 } // namespace framework::system::details

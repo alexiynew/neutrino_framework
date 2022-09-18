@@ -263,6 +263,13 @@ public:
     /// @thread_safety This function can be called from any thread.
     bool is_cursor_visible() const;
 
+    /// @brief Checks if cursor is inside the window worcking area.
+    ///
+    /// @return `true` if cursor is inside the window..
+    ///
+    /// @thread_safety This function can be called from any thread.
+    bool is_mouse_hover() const;
+
     /// @brief Window state.
     ///
     /// @return Current window state.
@@ -395,8 +402,15 @@ private:
     friend void swap(Window& lhs, Window& rhs) noexcept;
 
     void on_close();
+
     void on_focus();
     void on_lost_focus();
+
+    void on_mouse_enter();
+    void on_mouse_leave();
+    void on_mouse_move(CursorPosition position);
+
+    void update_cursor_visibility();
 
     std::unique_ptr<details::PlatformWindow> m_platform_window;
     std::unique_ptr<details::CallbacksHolder> m_callbacks;

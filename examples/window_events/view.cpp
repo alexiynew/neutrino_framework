@@ -55,8 +55,8 @@ constexpr math::Vector3f normal_text_scale = {15, 15, 1};
 constexpr math::Vector3f SizeTextTopLeftOffset      = {-300, -25, 0};
 constexpr math::Vector3f PositionTextTopLeftOffset  = {-150, -25, 0};
 constexpr math::Vector3f CursorTextTopLeftOffset    = {-300, -50, 0};
-constexpr math::Vector3f StateTextTopLeftOffset     = {-300, -115, 0};
-constexpr math::Vector3f ResizableTextTopLeftOffset = {-300, -140, 0};
+constexpr math::Vector3f StateTextTopLeftOffset     = {-300, -130, 0};
+constexpr math::Vector3f ResizableTextTopLeftOffset = {-300, -155, 0};
 constexpr math::Vector3f CatTextBottomRightOffset   = {80, -50, 0};
 
 std::string get_state_name(Window::State state)
@@ -135,7 +135,7 @@ void View::render_cursor_state(const DataContext& data)
 
     math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + CursorTextTopLeftOffset;
 
-    render_normal_text(TextName::CursorTitleText, "Cursor + ", text_pos);
+    render_normal_text(TextName::CursorTitleText, "Mouse  + ", text_pos);
     text_pos.y -= 15;
 
     std::stringstream ss;
@@ -152,6 +152,11 @@ void View::render_cursor_state(const DataContext& data)
 
     ss << "       +-> Visible:  " << (data.cursor_visible() ? "[x]" : "[ ]");
     render_normal_text(TextName::CursorVisibleText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
+
+    ss << "       +-> Hover:    " << (data.mouse_hover() ? "[x]" : "[ ]");
+    render_normal_text(TextName::MouseHoverText, ss.str(), text_pos);
     text_pos.y -= 15;
     ss.str("");
 }

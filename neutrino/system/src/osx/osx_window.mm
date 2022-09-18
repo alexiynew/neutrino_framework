@@ -648,11 +648,6 @@ void OsxWindow::enable_raw_input()
     center_cursor_inside_window();
     mouse_moved(m_grabbed_cursor_diff);
 
-    if (!m_mouse_hover) {
-        m_mouse_hover = true;
-        callbacks().on_mouse_enter();
-    }
-
     CGAssociateMouseAndMouseCursorPosition(NO);
 
     process_events();
@@ -671,6 +666,28 @@ void OsxWindow::disable_raw_input()
     CGAssociateMouseAndMouseCursorPosition(YES);
 
     process_events();
+}
+
+void OsxWindow::show_cursor()
+{
+    if (m_cursor_actualy_visible) {
+        return;
+    }
+    m_cursor_actualy_visible = true;
+
+    AutoreleasePool pool;
+    [NSCursor unhide];
+}
+
+void OsxWindow::hide_cursor()
+{
+    if (!m_cursor_actualy_visible) {
+        return;
+    }
+    m_cursor_actualy_visible = false;
+
+    AutoreleasePool pool;
+    [NSCursor hide];
 }
 
 void OsxWindow::switch_state(Window::State old_state, Window::State new_state)
@@ -850,15 +867,6 @@ void OsxWindow::set_title(const std::string& new_title)
     process_events();
 }
 
-void OsxWindow::set_cursor_visible(bool visible)
-{
-    if (m_cursor_visible == visible) {
-        return;
-    }
-    m_cursor_visible = visible;
-    update_cursor_visibility();
-}
-
 #pragma endregion
 
 #pragma region getters
@@ -876,11 +884,6 @@ bool OsxWindow::has_input_focus() const
     AutoreleasePool pool;
 
     return is_visible() && [m_window->get() isKeyWindow];
-}
-
-bool OsxWindow::is_cursor_visible() const
-{
-    return m_cursor_visible;
 }
 
 Window::State OsxWindow::state() const
@@ -1038,14 +1041,12 @@ void OsxWindow::character(const std::string& c)
 
 void OsxWindow::mouse_entered()
 {
-    m_mouse_hover = true;
-    callbacks().on_mouse_enter();
+    on_mouse_enter();
 }
 
 void OsxWindow::mouse_exited()
 {
-    callbacks().on_mouse_leave();
-    m_mouse_hover = false;
+    on_mouse_leave();
 }
 
 void OsxWindow::mouse_moved(CursorPosition cursor_position)
@@ -1056,13 +1057,11 @@ void OsxWindow::mouse_moved(CursorPosition cursor_position)
         int dx = 0;
         int dy = 0;
         CGGetLastMouseDelta(&dx, &dy);
-        callbacks().on_mouse_move({dx, dy});
+        on_mouse_move({dx, dy});
         center_cursor_inside_window();
-    } else if (m_mouse_hover) {
-        callbacks().on_mouse_move(convert_cursor_position(cursor_position));
+    } else if (state_data().mouse_hover) {
+        on_mouse_move(convert_cursor_position(cursor_position));
     }
-
-    update_cursor_visibility();
 }
 
 void OsxWindow::mouse_button_down(MouseButton button, CursorPosition position, Modifiers state)
@@ -1108,43 +1107,6 @@ void OsxWindow::center_cursor_inside_window()
     const auto s = size();
     CGPoint point{p.x + s.width / 2.0f, p.y + s.height / 2.0f};
     CGWarpMouseCursorPosition(point);
-}
-
-void OsxWindow::update_cursor_visibility()
-{
-    if (m_mouse_hover) {
-        if (m_cursor_visible) {
-            show_cursor();
-        } else {
-            hide_cursor();
-        }
-    } else {
-        show_cursor();
-    }
-}
-
-void OsxWindow::show_cursor()
-{
-    if (m_cursor_actualy_visible) {
-        return;
-    }
-
-    AutoreleasePool pool;
-
-    m_cursor_actualy_visible = true;
-    [NSCursor unhide];
-}
-
-void OsxWindow::hide_cursor()
-{
-    if (!m_cursor_actualy_visible) {
-        return;
-    }
-
-    AutoreleasePool pool;
-
-    m_cursor_actualy_visible = false;
-    [NSCursor hide];
 }
 
 CursorPosition OsxWindow::convert_cursor_position(CursorPosition position)

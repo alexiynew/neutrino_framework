@@ -29,10 +29,17 @@ public:
 #pragma region actions
     void show(Window::State state) override;
     void hide() override;
+
     void focus() override;
+
     void enable_raw_input() override;
     void disable_raw_input() override;
+
+    void show_cursor() override;
+    void hide_cursor() override;
+
     void switch_state(Window::State old_state, Window::State new_state) override;
+
     void process_events() override;
 #pragma endregion
 
@@ -43,13 +50,11 @@ public:
     void set_resizable(bool value) override;
     void set_position(Position position) override;
     void set_title(const std::string& title) override;
-    void set_cursor_visible(bool visible) override;
 #pragma endregion
 
 #pragma region getters
     bool is_visible() const override;
     bool has_input_focus() const override;
-    bool is_cursor_visible() const override;
     Window::State state() const override;
     Size size() const override;
     Size max_size() const override;
@@ -90,18 +95,11 @@ private:
     Window::State get_actual_state() const;
 
     void center_cursor_inside_window();
-    void update_cursor_visibility();
-    void show_cursor();
-    void hide_cursor();
     CursorPosition convert_cursor_position(CursorPosition position);
 
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
-
-    bool m_cursor_visible         = true;
-    bool m_cursor_actualy_visible = true;
-    bool m_mouse_hover            = false;
 
     CursorPosition m_grabbed_cursor_diff = {0, 0};
     CursorPosition m_cursor_position     = {0, 0};
@@ -110,6 +108,8 @@ private:
     Size m_max_size;
 
     Window::State m_actual_state;
+
+    bool m_cursor_actualy_visible = true;
 };
 
 } // namespace framework::system::details

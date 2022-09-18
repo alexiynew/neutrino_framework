@@ -507,4 +507,21 @@ BypassCompositorState get_bypass_compositor_state(const X11Server* server, XLibW
     return static_cast<BypassCompositorState>(state[0]);
 }
 
+Cursor create_invisible_cursor(const X11Server* server)
+{
+    XColor black;
+    black.red   = 0;
+    black.green = 0;
+    black.blue  = 0;
+
+    static const char data[] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+    Pixmap pixmap = XCreateBitmapFromData(server->display(), server->default_root_window(), data, 8, 8);
+    Cursor cursor = XCreatePixmapCursor(server->display(), pixmap, pixmap, &black, &black, 0, 0);
+
+    XFreePixmap(server->display(), pixmap);
+
+    return cursor;
+}
+
 } // namespace framework::system::details::utils

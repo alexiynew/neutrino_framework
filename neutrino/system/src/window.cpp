@@ -229,7 +229,14 @@ void Window::set_title(const std::string& title)
 
 void Window::set_cursor_visible(bool visible)
 {
-    m_platform_window->set_cursor_visible(visible);
+    if (visible) {
+        m_platform_window->show_cursor();
+    } else {
+        m_platform_window->hide_cursor();
+    }
+    m_state_data->cursor_visible = visible;
+
+    update_cursor_visibility();
 }
 
 #pragma endregion
@@ -258,7 +265,12 @@ bool Window::is_cursor_grabbed() const
 
 bool Window::is_cursor_visible() const
 {
-    return m_platform_window->is_cursor_visible();
+    return m_state_data->cursor_visible;
+}
+
+bool Window::is_mouse_hover() const
+{
+    return m_state_data->mouse_hover;
 }
 
 Window::State Window::state() const
@@ -409,6 +421,8 @@ void Window::on_focus()
         m_platform_window->enable_raw_input();
     }
 
+    update_cursor_visibility();
+
     m_callbacks->on_focus();
 }
 
@@ -422,7 +436,38 @@ void Window::on_lost_focus()
         m_platform_window->disable_raw_input();
     }
 
+    update_cursor_visibility();
+
     m_callbacks->on_lost_focus();
+}
+
+void Window::on_mouse_enter()
+{
+    m_state_data->mouse_hover = true;
+
+    update_cursor_visibility();
+}
+
+void Window::on_mouse_leave()
+{
+    m_state_data->mouse_hover = false;
+
+    m_platform_window->show_cursor();
+}
+
+void Window::on_mouse_move(CursorPosition position)
+{
+    update_cursor_visibility();
+    m_callbacks->on_mouse_move(position);
+}
+
+void Window::update_cursor_visibility()
+{
+    if (m_state_data->mouse_hover && !m_state_data->cursor_visible) {
+        m_platform_window->hide_cursor();
+    } else {
+        m_platform_window->show_cursor();
+    }
 }
 
 #pragma endregion

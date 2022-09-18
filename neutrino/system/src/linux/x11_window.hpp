@@ -30,10 +30,17 @@ public:
 #pragma region actions
     void show(Window::State state) override;
     void hide() override;
+
     void focus() override;
+
     void enable_raw_input() override;
     void disable_raw_input() override;
+
+    void show_cursor() override;
+    void hide_cursor() override;
+
     void switch_state(Window::State old_state, Window::State new_state) override;
+
     void process_events() override;
 #pragma endregion
 
@@ -44,13 +51,11 @@ public:
     void set_resizable(bool value) override;
     void set_position(Position position) override;
     void set_title(const std::string& title) override;
-    void set_cursor_visible(bool visible) override;
 #pragma endregion
 
 #pragma region getters
     bool is_visible() const override;
     bool has_input_focus() const override;
-    bool is_cursor_visible() const override;
     Window::State state() const override;
     Size size() const override;
     Size max_size() const override;
@@ -90,9 +95,8 @@ private:
     std::shared_ptr<X11Server> m_server = nullptr;
     std::unique_ptr<Context> m_context  = nullptr;
 
-    bool m_mapped     = false;
-    bool m_resizable  = true;
-    bool m_wait_focus = false;
+    bool m_mapped    = false;
+    bool m_resizable = true;
 
     Size m_size             = {640, 480};
     Position m_position     = {0, 0};
@@ -112,6 +116,8 @@ private:
 
     Time m_last_input_time = 0;
     int m_wait_event_type  = None;
+
+    Cursor m_invisible_cursor = None;
 };
 
 } // namespace framework::system::details

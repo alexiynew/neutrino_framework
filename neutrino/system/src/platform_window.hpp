@@ -30,13 +30,20 @@ public:
     PlatformWindow& operator=(PlatformWindow&&) noexcept = default;
 
 #pragma region actions
-    virtual void show(Window::State state)                                      = 0;
-    virtual void hide()                                                         = 0;
-    virtual void focus()                                                        = 0;
-    virtual void enable_raw_input()                                             = 0;
-    virtual void disable_raw_input()                                            = 0;
+    virtual void show(Window::State state) = 0;
+    virtual void hide()                    = 0;
+
+    virtual void focus() = 0;
+
+    virtual void enable_raw_input()  = 0;
+    virtual void disable_raw_input() = 0;
+
+    virtual void show_cursor() = 0;
+    virtual void hide_cursor() = 0;
+
     virtual void switch_state(Window::State old_state, Window::State new_state) = 0;
-    virtual void process_events()                                               = 0;
+
+    virtual void process_events() = 0;
 #pragma endregion
 
 #pragma region setters
@@ -46,13 +53,11 @@ public:
     virtual void set_resizable(bool value)           = 0;
     virtual void set_position(Position position)     = 0;
     virtual void set_title(const std::string& title) = 0;
-    virtual void set_cursor_visible(bool visible)    = 0;
 #pragma endregion
 
 #pragma region getters
     virtual bool is_visible() const        = 0;
     virtual bool has_input_focus() const   = 0;
-    virtual bool is_cursor_visible() const = 0;
     virtual Window::State state() const    = 0;
     virtual Size size() const              = 0;
     virtual Size max_size() const          = 0;
@@ -71,8 +76,13 @@ protected:
     const StateData& state_data() const;
 
     void on_close();
+
     void on_focus();
     void on_lost_focus();
+
+    void on_mouse_enter();
+    void on_mouse_leave();
+    void on_mouse_move(CursorPosition position);
 
 private:
     Window* m_window_interface = nullptr;

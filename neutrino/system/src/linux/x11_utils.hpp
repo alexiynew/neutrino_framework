@@ -61,6 +61,8 @@ WindowStateFlags get_window_state(const X11Server* server, XLibWindow window);
 void set_bypass_compositor_state(const X11Server* server, XLibWindow window, BypassCompositorState state);
 BypassCompositorState get_bypass_compositor_state(const X11Server* server, XLibWindow window);
 
+Cursor create_invisible_cursor(const X11Server* server);
+
 } // namespace framework::system::details::utils
 
 #endif

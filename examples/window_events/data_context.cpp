@@ -38,6 +38,11 @@ void DataContext::set_cursor_visible(bool value)
     m_cursor_visible = value;
 }
 
+void DataContext::set_mouse_hover(bool value)
+{
+    m_mouse_hover = value;
+}
+
 void DataContext::add_callback_event(const std::string& event)
 {
     static constexpr size_t max_events = 100;
@@ -81,6 +86,11 @@ bool DataContext::cursor_grabbed() const
 bool DataContext::cursor_visible() const
 {
     return m_cursor_visible;
+}
+
+bool DataContext::mouse_hover() const
+{
+    return m_mouse_hover;
 }
 
 const std::vector<std::string>& DataContext::last_callback_events() const
