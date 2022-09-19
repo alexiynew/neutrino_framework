@@ -28,9 +28,9 @@ void DataContext::set_window_resizable(bool value)
     m_window_resizable = value;
 }
 
-void DataContext::set_cursor_grabbed(bool value)
+void DataContext::set_cursor_captured(bool value)
 {
-    m_cursor_grabbed = value;
+    m_cursor_captured = value;
 }
 
 void DataContext::set_cursor_visible(bool value)
@@ -78,9 +78,9 @@ bool DataContext::window_resizable() const
     return m_window_resizable;
 }
 
-bool DataContext::cursor_grabbed() const
+bool DataContext::cursor_captured() const
 {
-    return m_cursor_grabbed;
+    return m_cursor_captured;
 }
 
 bool DataContext::cursor_visible() const

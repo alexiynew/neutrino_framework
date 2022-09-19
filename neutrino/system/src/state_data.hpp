@@ -10,9 +10,9 @@ struct StateData
 {
     bool should_close = false;
 
-    bool mouse_hover    = false;
-    bool cursor_visible = true;
-    bool cursor_grabbed = false;
+    bool mouse_hover     = false;
+    bool cursor_visible  = true;
+    bool cursor_captured = false;
 
     Window::State state = Window::State::normal;
 };

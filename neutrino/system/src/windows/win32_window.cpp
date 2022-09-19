@@ -156,23 +156,23 @@ void Win32Window::hide()
     ShowWindow(m_window, SW_HIDE);
 }
 
-void Win32Window::focus()
+void Win32Window::request_input_focus()
 {
     BringWindowToTop(m_window);
     SetForegroundWindow(m_window);
 }
 
-void Win32Window::enable_raw_input()
+void Win32Window::capture_cursor()
 {
-    m_grabbed_cursor_diff = {0, 0};
-    m_cursor_position     = get_cursor_position(m_window);
+    m_captured_cursor_diff = {0, 0};
+    m_cursor_position      = get_cursor_position(m_window);
     update_cursor();
 
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
-void Win32Window::disable_raw_input()
+void Win32Window::release_cursor()
 {
     set_cursor_cliping(m_window, false);
     set_cursor_position(m_window, m_cursor_position);
@@ -549,7 +549,7 @@ LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
 
     CursorPosition pos{LOWORD(l_param), HIWORD(l_param)};
 
-    if (!state_data().cursor_grabbed) {
+    if (!state_data().cursor_captured) {
         m_cursor_position = pos;
         callbacks().on_mouse_move(pos);
     }
@@ -669,7 +669,7 @@ LRESULT Win32Window::on_char_message(UINT, WPARAM w_param, LPARAM)
 
 LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
 {
-    if (!state_data().cursor_grabbed) {
+    if (!state_data().cursor_captured) {
         return 0;
     }
 
@@ -684,8 +684,8 @@ LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
     }
 
     CursorPosition pos = m_cursor_position;
-    pos.x += m_grabbed_cursor_diff.x;
-    pos.y += m_grabbed_cursor_diff.y;
+    pos.x += m_captured_cursor_diff.x;
+    pos.y += m_captured_cursor_diff.y;
 
     int dx = 0;
     int dy = 0;
@@ -698,8 +698,8 @@ LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
         dy = raw_input.data.mouse.lLastY;
     }
 
-    m_grabbed_cursor_diff.x += dx;
-    m_grabbed_cursor_diff.y += dy;
+    m_captured_cursor_diff.x += dx;
+    m_captured_cursor_diff.y += dy;
     pos.x += dx;
     pos.y += dy;
 
@@ -814,7 +814,7 @@ void Win32Window::track_mouse()
 
 void Win32Window::update_cursor()
 {
-    if (state_data().cursor_grabbed) {
+    if (state_data().cursor_captured) {
         set_cursor_in_center(m_window);
         set_cursor_cliping(m_window, true);
     }

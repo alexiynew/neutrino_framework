@@ -102,16 +102,16 @@ public:
     /// If the window gets input focus the @ref on_focus callback would be called.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void focus();
+    void request_input_focus();
 
-    /// @brief Grabs the cursor, providing unlimited cursor movement.
+    /// @brief Captures the cursor, providing unlimited cursor movement.
     ///
     /// Blocks the cursor inside the window and the mouse movement tracks, as if it had no borders.
     /// If window is hidden or lost input focus the cursor restore its previous position.
-    /// If window became visible or got input focus, and cursor was previously grabbed, the cursor would grabbed again.
+    /// If window became visible or got input focus, and cursor was previously captured, the cursor would captured again.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void grab_cursor();
+    void capture_cursor();
 
     /// @brief Releases the cursor, if it was gabbed.
     ///
@@ -205,8 +205,7 @@ public:
     /// @thread_safety This function can be called only from main thread.
     void set_title(const std::string& title);
 
-    /// @brief Makes the cursor invisible when set to `false` if it is over
-    ///        the window.
+    /// @brief Makes the cursor invisible when set to `false` if it is over the window.
     ///
     /// @param visible New cursor visibility.
     ///
@@ -247,14 +246,14 @@ public:
     /// @thread_safety This function can be called from any thread.
     bool has_input_focus() const;
 
-    /// @brief Checks if cursor grabbed.
+    /// @brief Checks if cursor captured.
     ///
     /// Regardless window visible state or if it has or not input focus.
     ///
-    /// @return `true` if cursor is grabbed.
+    /// @return `true` if cursor is captured.
     ///
     /// @thread_safety This function can be called from any thread.
-    bool is_cursor_grabbed() const;
+    bool is_cursor_captured() const;
 
     /// @brief Checks if cursor visible in the window.
     ///

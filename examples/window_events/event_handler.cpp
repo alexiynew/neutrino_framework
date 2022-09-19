@@ -287,7 +287,7 @@ void EventHandler::on_key_up(KeyCode key, Modifiers state)
         case KeyCode::key_i: iconify(); break;
         case KeyCode::key_0: move_to_zero(); break;
         case KeyCode::key_r: toggle_resizable(); break;
-        case KeyCode::key_g: toggle_cursor_grab(); break;
+        case KeyCode::key_g: toggle_cursor_capture(); break;
         case KeyCode::key_v: toggle_cursor_visible(); break;
         default: break;
     }
@@ -335,7 +335,7 @@ void EventHandler::on_update()
 {
     m_data_context.set_window_state(m_window.state());
     m_data_context.set_window_resizable(m_window.is_resizable());
-    m_data_context.set_cursor_grabbed(m_window.is_cursor_grabbed());
+    m_data_context.set_cursor_captured(m_window.is_cursor_captured());
     m_data_context.set_cursor_visible(m_window.is_cursor_visible());
     m_data_context.set_mouse_hover(m_window.is_mouse_hover());
 }
@@ -383,12 +383,12 @@ void EventHandler::toggle_resizable()
     m_window.set_resizable(!m_window.is_resizable());
 }
 
-void EventHandler::toggle_cursor_grab()
+void EventHandler::toggle_cursor_capture()
 {
-    if (m_window.is_cursor_grabbed()) {
+    if (m_window.is_cursor_captured()) {
         m_window.release_cursor();
     } else {
-        m_window.grab_cursor();
+        m_window.capture_cursor();
     }
 }
 

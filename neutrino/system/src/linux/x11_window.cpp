@@ -191,7 +191,7 @@ void X11Window::hide()
     }
 }
 
-void X11Window::focus()
+void X11Window::request_input_focus()
 {
     utils::focus_window(m_server.get(), m_window, m_last_input_time);
     XFlush(m_server->display());
@@ -200,7 +200,7 @@ void X11Window::focus()
     process_events_while([this]() { return m_wait_event_type != None; });
 }
 
-void X11Window::enable_raw_input()
+void X11Window::capture_cursor()
 {
     m_cursor_position = utils::get_cursor_position(m_server.get(), m_window);
     utils::set_cursor_position(m_server.get(), m_window, {m_size.width / 2, m_size.height / 2});
@@ -218,7 +218,7 @@ void X11Window::enable_raw_input()
     process_events();
 }
 
-void X11Window::disable_raw_input()
+void X11Window::release_cursor()
 {
     XUngrabPointer(m_server->display(), CurrentTime);
 
@@ -753,7 +753,7 @@ void X11Window::process(XCrossingEvent event)
 
 void X11Window::process(XMotionEvent event)
 {
-    if (state_data().cursor_grabbed) {
+    if (state_data().cursor_captured) {
         const int dx = event.x - m_size.width / 2;
         const int dy = event.y - m_size.height / 2;
 

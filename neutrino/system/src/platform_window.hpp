@@ -33,10 +33,10 @@ public:
     virtual void show(Window::State state) = 0;
     virtual void hide()                    = 0;
 
-    virtual void focus() = 0;
+    virtual void request_input_focus() = 0;
 
-    virtual void enable_raw_input()  = 0;
-    virtual void disable_raw_input() = 0;
+    virtual void capture_cursor() = 0;
+    virtual void release_cursor() = 0;
 
     virtual void show_cursor() = 0;
     virtual void hide_cursor() = 0;

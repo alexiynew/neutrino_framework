@@ -70,14 +70,14 @@ void Window::show()
     m_callbacks->on_move(position());
     m_callbacks->on_resize(size());
 
-    if (m_state_data->cursor_grabbed) {
-        m_platform_window->enable_raw_input();
+    if (m_state_data->cursor_captured) {
+        m_platform_window->capture_cursor();
     }
 
     if (has_input_focus()) {
         m_callbacks->on_focus();
     } else {
-        focus();
+        request_input_focus();
     }
 }
 
@@ -91,8 +91,8 @@ void Window::hide()
         m_callbacks->on_lost_focus();
     }
 
-    if (m_state_data->cursor_grabbed) {
-        m_platform_window->disable_raw_input();
+    if (m_state_data->cursor_captured) {
+        m_platform_window->release_cursor();
     }
 
     // Turn off on_resize, on_move and on_focus callbacks
@@ -122,35 +122,35 @@ void Window::close()
     m_callbacks->on_close();
 }
 
-void Window::focus()
+void Window::request_input_focus()
 {
     if (!is_visible() || has_input_focus()) {
         return;
     }
 
-    m_platform_window->focus();
+    m_platform_window->request_input_focus();
 }
 
-void Window::grab_cursor()
+void Window::capture_cursor()
 {
-    if (m_state_data->cursor_grabbed) {
+    if (m_state_data->cursor_captured) {
         return;
     }
 
-    m_state_data->cursor_grabbed = true;
+    m_state_data->cursor_captured = true;
 
-    m_platform_window->enable_raw_input();
+    m_platform_window->capture_cursor();
 }
 
 void Window::release_cursor()
 {
-    if (!m_state_data->cursor_grabbed) {
+    if (!m_state_data->cursor_captured) {
         return;
     }
 
-    m_state_data->cursor_grabbed = false;
+    m_state_data->cursor_captured = false;
 
-    m_platform_window->disable_raw_input();
+    m_platform_window->release_cursor();
 }
 
 void Window::process_events()
@@ -229,13 +229,11 @@ void Window::set_title(const std::string& title)
 
 void Window::set_cursor_visible(bool visible)
 {
-    if (visible) {
-        m_platform_window->show_cursor();
-    } else {
-        m_platform_window->hide_cursor();
+    if (m_state_data->cursor_visible == visible) {
+        return;
     }
-    m_state_data->cursor_visible = visible;
 
+    m_state_data->cursor_visible = visible;
     update_cursor_visibility();
 }
 
@@ -258,9 +256,9 @@ bool Window::has_input_focus() const
     return m_platform_window->has_input_focus();
 }
 
-bool Window::is_cursor_grabbed() const
+bool Window::is_cursor_captured() const
 {
-    return m_state_data->cursor_grabbed;
+    return m_state_data->cursor_captured;
 }
 
 bool Window::is_cursor_visible() const
@@ -417,8 +415,8 @@ void Window::on_focus()
         return;
     }
 
-    if (m_state_data->cursor_grabbed) {
-        m_platform_window->enable_raw_input();
+    if (m_state_data->cursor_captured) {
+        m_platform_window->capture_cursor();
     }
 
     update_cursor_visibility();
@@ -432,8 +430,8 @@ void Window::on_lost_focus()
         return;
     }
 
-    if (m_state_data->cursor_grabbed) {
-        m_platform_window->disable_raw_input();
+    if (m_state_data->cursor_captured) {
+        m_platform_window->release_cursor();
     }
 
     update_cursor_visibility();
@@ -446,18 +444,21 @@ void Window::on_mouse_enter()
     m_state_data->mouse_hover = true;
 
     update_cursor_visibility();
+    
+    m_callbacks->on_mouse_enter();
 }
 
 void Window::on_mouse_leave()
 {
     m_state_data->mouse_hover = false;
 
-    m_platform_window->show_cursor();
+    update_cursor_visibility();
+    
+    m_callbacks->on_mouse_leave();
 }
 
 void Window::on_mouse_move(CursorPosition position)
 {
-    update_cursor_visibility();
     m_callbacks->on_mouse_move(position);
 }
 

@@ -28,7 +28,7 @@ private:
         w.set_on_focus_callback([&on_focus_called]() { on_focus_called++; });
         w.set_on_lost_focus_callback([&on_lost_focus_called]() { on_lost_focus_called++; });
 
-        w.focus();
+        w.request_input_focus();
 
         TEST_ASSERT(on_focus_called == 0, "Invalid on_focus_called " + std::to_string(on_focus_called) + " = 0");
         TEST_ASSERT(on_lost_focus_called == 0,
@@ -43,7 +43,7 @@ private:
         TEST_ASSERT(on_lost_focus_called == 0,
                     "Invalid on_lost_focus_called " + std::to_string(on_lost_focus_called) + " = 0");
 
-        w.focus();
+        w.request_input_focus();
 
         TEST_ASSERT(on_focus_called == 1, "Invalid on_focus_called " + std::to_string(on_focus_called) + " = 1");
         TEST_ASSERT(on_lost_focus_called == 0,
@@ -58,7 +58,7 @@ private:
         TEST_ASSERT(on_lost_focus_called == 1,
                     "Invalid on_lost_focus_called " + std::to_string(on_lost_focus_called) + " = 1");
 
-        w.focus();
+        w.request_input_focus();
 
         TEST_ASSERT(on_focus_called == 1, "Invalid on_focus_called " + std::to_string(on_focus_called) + " = 1");
         TEST_ASSERT(on_lost_focus_called == 1,
@@ -107,8 +107,8 @@ private:
         TEST_ASSERT(!betta.has_input_focus(), "Window should not has focus.");
 
         // Try to focus hidden windows, should not get focus
-        alpha.focus();
-        betta.focus();
+        alpha.request_input_focus();
+        betta.request_input_focus();
 
         TEST_ASSERT(!alpha.has_input_focus(), "Window should not has focus.");
         TEST_ASSERT(!betta.has_input_focus(), "Window should not has focus.");
@@ -155,7 +155,7 @@ private:
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Return focus to alpha, betta should lost focus
-        alpha.focus();
+        alpha.request_input_focus();
         betta.process_events();
 
         TEST_ASSERT(alpha.is_visible(), "Window should be visible.");
@@ -173,7 +173,7 @@ private:
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Return focus to betta, alpha should lost focus
-        betta.focus();
+        betta.request_input_focus();
         alpha.process_events();
 
         TEST_ASSERT(alpha.is_visible(), "Window should be visible.");
@@ -224,7 +224,7 @@ private:
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         // Return focus to betta again, alpha should lost focus
-        betta.focus();
+        betta.request_input_focus();
         alpha.process_events();
 
         TEST_ASSERT(alpha.is_visible(), "Window should be visible.");

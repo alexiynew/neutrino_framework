@@ -349,13 +349,13 @@ using framework::system::ScrollOffset;
 
 - (BOOL)acceptsFirstResponder
 {
-    // Supprt cursor grabbing
+    // Supprt cursor capturing
     return YES;
 }
 
 - (BOOL)canBecomeKeyWindow
 {
-    // Supprt cursor grabbing
+    // Supprt cursor capturing
     return YES;
 }
 
@@ -622,7 +622,7 @@ void OsxWindow::hide()
     [m_window->get() close];
 }
 
-void OsxWindow::focus()
+void OsxWindow::request_input_focus()
 {
     AutoreleasePool pool;
 
@@ -634,7 +634,7 @@ void OsxWindow::focus()
     } while (!has_input_focus());
 }
 
-void OsxWindow::enable_raw_input()
+void OsxWindow::capture_cursor()
 {
     AutoreleasePool pool;
 
@@ -643,15 +643,19 @@ void OsxWindow::enable_raw_input()
     const auto s      = size();
     m_cursor_position = CursorPosition(pos.x + p.x, (p.y + s.height) - pos.y);
 
+    CGAssociateMouseAndMouseCursorPosition(NO);
+    
     center_cursor_inside_window();
     on_mouse_move({0, 0});
-
-    CGAssociateMouseAndMouseCursorPosition(NO);
+    if (!state_data().mouse_hover)
+    {
+        on_mouse_enter();
+    }
 
     process_events();
 }
 
-void OsxWindow::disable_raw_input()
+void OsxWindow::release_cursor()
 {
     AutoreleasePool pool;
 
@@ -1051,7 +1055,7 @@ void OsxWindow::mouse_moved(CursorPosition cursor_position)
 {
     AutoreleasePool pool;
 
-    if (state_data().cursor_grabbed) {
+    if (state_data().cursor_captured) {
         int dx = 0;
         int dy = 0;
         CGGetLastMouseDelta(&dx, &dy);

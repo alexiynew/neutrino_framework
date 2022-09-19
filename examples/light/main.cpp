@@ -221,9 +221,6 @@ int main()
         renderer.set_uniform("projectionMatrix", perspective(half_pi<float>, aspect, 0.001f, 100.0f));
     });
 
-    main_window.set_on_focus_callback([&main_window]() { main_window.grab_cursor(); });
-    main_window.set_on_lost_focus_callback([&main_window]() { main_window.release_cursor(); });
-
     main_window.set_on_key_down_callback([&camera](KeyCode key, Modifiers) {
         switch (key) {
             case KeyCode::key_w: camera.set_action(Camera::ActionState::moveForward, true); break;

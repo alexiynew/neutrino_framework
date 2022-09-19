@@ -28,9 +28,9 @@ public:
 #pragma region actions
     void show(Window::State state) override;
     void hide() override;
-    void focus() override;
-    void enable_raw_input() override;
-    void disable_raw_input() override;
+    void request_input_focus() override;
+    void capture_cursor() override;
+    void release_cursor() override;
     void switch_state(Window::State old_state, Window::State new_state) override;
     void process_events() override;
 #pragma endregion
@@ -123,8 +123,8 @@ private:
     bool m_mouse_hover    = false;
     bool m_cursor_visible = true;
 
-    CursorPosition m_grabbed_cursor_diff = {0, 0};
-    CursorPosition m_cursor_position     = {0, 0};
+    CursorPosition m_captured_cursor_diff = {0, 0};
+    CursorPosition m_cursor_position      = {0, 0};
 
     std::unique_ptr<Context> m_context;
 

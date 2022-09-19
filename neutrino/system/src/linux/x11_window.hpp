@@ -31,10 +31,10 @@ public:
     void show(Window::State state) override;
     void hide() override;
 
-    void focus() override;
+    void request_input_focus() override;
 
-    void enable_raw_input() override;
-    void disable_raw_input() override;
+    void capture_cursor() override;
+    void release_cursor() override;
 
     void show_cursor() override;
     void hide_cursor() override;
@@ -121,9 +121,9 @@ private:
 
     Cursor m_invisible_cursor = None;
 
-    bool m_cursor_actualy_visible        = true;
-    CursorPosition m_grabbed_cursor_diff = {0, 0};
-    CursorPosition m_cursor_position     = {0, 0};
+    bool m_cursor_actualy_visible         = true;
+    CursorPosition m_captured_cursor_diff = {0, 0};
+    CursorPosition m_cursor_position      = {0, 0};
 };
 
 } // namespace framework::system::details

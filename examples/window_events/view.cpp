@@ -145,8 +145,8 @@ void View::render_cursor_state(const DataContext& data)
     text_pos.y -= 15;
     ss.str("");
 
-    ss << "       +-> Gabbed:   " << (data.cursor_grabbed() ? "[x]" : "[ ]");
-    render_normal_text(TextName::CursorGrabbedText, ss.str(), text_pos);
+    ss << "       +-> Captured: " << (data.cursor_captured() ? "[x]" : "[ ]");
+    render_normal_text(TextName::CursorCapturedText, ss.str(), text_pos);
     text_pos.y -= 15;
     ss.str("");
 
@@ -239,7 +239,7 @@ void View::render_cursor_marker(const DataContext& data)
     const auto p = data.window_cursor_position();
 
     math::Vector3f pos(p.x, p.y, 0.1);
-    if (data.cursor_grabbed()) {
+    if (data.cursor_captured()) {
         pos += math::Vector3f(size.width / 2, size.height / 2, 0);
     }
 

@@ -26,7 +26,7 @@ private:
 
         CursorTitleText,
         CursorPositionText,
-        CursorGrabbedText,
+        CursorCapturedText,
         CursorVisibleText,
         MouseHoverText,
         CursorMarker,
