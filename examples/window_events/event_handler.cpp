@@ -337,7 +337,7 @@ void EventHandler::on_update()
     m_data_context.set_window_resizable(m_window.is_resizable());
     m_data_context.set_cursor_captured(m_window.is_cursor_captured());
     m_data_context.set_cursor_visible(m_window.is_cursor_visible());
-    m_data_context.set_mouse_hover(m_window.is_mouse_hover());
+    m_data_context.set_cursor_hover(m_window.is_cursor_hover());
 }
 
 #pragma region actions handlers

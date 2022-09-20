@@ -49,6 +49,7 @@ public:
     void set_resizable(bool value) override;
     void set_position(Position position) override;
     void set_title(const std::string& title) override;
+    void set_cursor_position(CursorPosition position) override;
 #pragma endregion
 
 #pragma region getters
@@ -61,6 +62,7 @@ public:
     bool is_resizable() const override;
     Position position() const override;
     std::string title() const override;
+    CursorPosition cursor_position() const override;
     const Context& context() const override;
     Context& context() override;
 #pragma endregion
@@ -103,7 +105,7 @@ private:
     void process_alt_key(LPARAM l_param);
 
     void track_mouse();
-    void update_cursor();
+    void update_cursor_clipping();
 
     void enter_fullscreen();
     void exit_fullscreen();
@@ -127,7 +129,6 @@ private:
     bool m_cursor_visible = true;
 
     CursorPosition m_captured_cursor_diff = {0, 0};
-    CursorPosition m_cursor_position      = {0, 0};
 
     std::unique_ptr<Context> m_context;
 

@@ -761,7 +761,7 @@ void X11Window::process(XMotionEvent event)
             on_mouse_move({dx, dy});
             utils::set_cursor_position(m_server.get(), m_window, {m_size.width / 2, m_size.height / 2});
         }
-    } else if (state_data().mouse_hover) {
+    } else if (state_data().cursor_hover) {
         on_mouse_move({event.x, event.y});
     }
 }

@@ -70,6 +70,8 @@ void Window::show()
     m_callbacks->on_move(position());
     m_callbacks->on_resize(size());
 
+    m_state_data->cursor_hover = is_cursor_inside_client_area();
+
     if (m_state_data->cursor_captured) {
         m_platform_window->capture_cursor();
     }
@@ -266,9 +268,9 @@ bool Window::is_cursor_visible() const
     return m_state_data->cursor_visible;
 }
 
-bool Window::is_mouse_hover() const
+bool Window::is_cursor_hover() const
 {
-    return m_state_data->mouse_hover;
+    return m_state_data->cursor_hover;
 }
 
 Window::State Window::state() const
@@ -415,8 +417,11 @@ void Window::on_focus()
         return;
     }
 
+    m_state_data->cursor_hover = is_cursor_inside_client_area();
+
     if (m_state_data->cursor_captured) {
         m_platform_window->capture_cursor();
+        update_cursor_position();
     }
 
     update_cursor_visibility();
@@ -441,34 +446,66 @@ void Window::on_lost_focus()
 
 void Window::on_mouse_enter()
 {
-    m_state_data->mouse_hover = true;
+    m_state_data->cursor_hover = true;
 
     update_cursor_visibility();
-    
+
     m_callbacks->on_mouse_enter();
 }
 
 void Window::on_mouse_leave()
 {
-    m_state_data->mouse_hover = false;
+    m_state_data->cursor_hover = false;
 
     update_cursor_visibility();
-    
+
     m_callbacks->on_mouse_leave();
 }
 
 void Window::on_mouse_move(CursorPosition position)
 {
     m_callbacks->on_mouse_move(position);
+    m_state_data->cursor_hover = is_cursor_inside_client_area();
+
+    update_cursor_position();
+    update_cursor_visibility();
 }
 
 void Window::update_cursor_visibility()
 {
-    if (m_state_data->mouse_hover && !m_state_data->cursor_visible) {
+    if (m_state_data->cursor_hover && !m_state_data->cursor_visible) {
         m_platform_window->hide_cursor();
     } else {
         m_platform_window->show_cursor();
     }
+}
+
+void Window::update_cursor_position()
+{
+    if (m_state_data->cursor_captured && m_state_data->cursor_hover) {
+
+        // Block on_mouse_move_callback to silently update cursor position
+        const auto on_mouse_move_callback   = m_callbacks->on_mouse_move_callback;
+        m_callbacks->on_mouse_move_callback = nullptr;
+
+        set_cursor_in_center();
+
+        m_callbacks->on_mouse_move_callback = on_mouse_move_callback;
+    }
+}
+
+void Window::set_cursor_in_center()
+{
+    const Size s = size();
+    m_platform_window->set_cursor_position({s.width / 2, s.height / 2});
+}
+
+bool Window::is_cursor_inside_client_area() const
+{
+    const Size s             = size();
+    const CursorPosition pos = m_platform_window->cursor_position();
+
+    return pos.x >= 0 && pos.y >= 0 && pos.x < s.width && pos.y < s.height;
 }
 
 #pragma endregion

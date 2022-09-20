@@ -267,7 +267,7 @@ public:
     /// @return `true` if cursor is inside the window..
     ///
     /// @thread_safety This function can be called from any thread.
-    bool is_mouse_hover() const;
+    bool is_cursor_hover() const;
 
     /// @brief Window state.
     ///
@@ -410,6 +410,11 @@ private:
     void on_mouse_move(CursorPosition position);
 
     void update_cursor_visibility();
+    void update_cursor_position();
+
+    void set_cursor_in_center();
+
+    bool is_cursor_inside_client_area() const;
 
     std::unique_ptr<details::PlatformWindow> m_platform_window;
     std::unique_ptr<details::CallbacksHolder> m_callbacks;

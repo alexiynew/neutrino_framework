@@ -47,26 +47,28 @@ public:
 #pragma endregion
 
 #pragma region setters
-    virtual void set_size(Size size)                 = 0;
-    virtual void set_max_size(Size size)             = 0;
-    virtual void set_min_size(Size size)             = 0;
-    virtual void set_resizable(bool value)           = 0;
-    virtual void set_position(Position position)     = 0;
-    virtual void set_title(const std::string& title) = 0;
+    virtual void set_size(Size size)                          = 0;
+    virtual void set_max_size(Size size)                      = 0;
+    virtual void set_min_size(Size size)                      = 0;
+    virtual void set_resizable(bool value)                    = 0;
+    virtual void set_position(Position position)              = 0;
+    virtual void set_title(const std::string& title)          = 0;
+    virtual void set_cursor_position(CursorPosition position) = 0;
 #pragma endregion
 
 #pragma region getters
-    virtual bool is_visible() const        = 0;
-    virtual bool has_input_focus() const   = 0;
-    virtual Window::State state() const    = 0;
-    virtual Size size() const              = 0;
-    virtual Size max_size() const          = 0;
-    virtual Size min_size() const          = 0;
-    virtual bool is_resizable() const      = 0;
-    virtual Position position() const      = 0;
-    virtual std::string title() const      = 0;
-    virtual const Context& context() const = 0;
-    virtual Context& context()             = 0;
+    virtual bool is_visible() const                = 0;
+    virtual bool has_input_focus() const           = 0;
+    virtual Window::State state() const            = 0;
+    virtual Size size() const                      = 0;
+    virtual Size max_size() const                  = 0;
+    virtual Size min_size() const                  = 0;
+    virtual bool is_resizable() const              = 0;
+    virtual Position position() const              = 0;
+    virtual std::string title() const              = 0;
+    virtual CursorPosition cursor_position() const = 0;
+    virtual const Context& context() const         = 0;
+    virtual Context& context()                     = 0;
 #pragma endregion
 
     void set_window_interface(Window* window);

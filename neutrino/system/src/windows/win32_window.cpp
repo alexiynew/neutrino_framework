@@ -39,16 +39,6 @@ framework::system::MouseButton get_mouse_button(UINT message, WPARAM w_param)
     return MouseButton::unknown;
 }
 
-void set_cursor_in_center(HWND window)
-{
-    RECT rect;
-    GetClientRect(window, &rect);
-
-    POINT p = {rect.right / 2, rect.bottom / 2};
-    ClientToScreen(window, &p);
-    SetCursorPos(p.x, p.y);
-}
-
 void set_cursor_cliping(HWND window, bool enable)
 {
     if (enable) {
@@ -67,32 +57,6 @@ void set_cursor_cliping(HWND window, bool enable)
     } else {
         ClipCursor(nullptr);
     }
-}
-
-framework::system::CursorPosition get_cursor_position(HWND window)
-{
-    POINT p;
-    GetCursorPos(&p);
-    ScreenToClient(window, &p);
-
-    return {p.x, p.y};
-}
-
-void set_cursor_position(HWND window, framework::system::CursorPosition pos)
-{
-    POINT p = {pos.x, pos.y};
-    ClientToScreen(window, &p);
-    SetCursorPos(p.x, p.y);
-}
-
-bool is_cursor_in_client_area(HWND window)
-{
-    RECT rect;
-    GetClientRect(window, &rect);
-
-    framework::system::CursorPosition pos = get_cursor_position(window);
-
-    return pos.x >= 0 && pos.y >= 0 && pos.x <= rect.right && pos.y <= rect.bottom;
 }
 
 } // namespace
@@ -147,8 +111,6 @@ void Win32Window::show(Window::State state)
     ShowWindow(m_window, SW_SHOW);
     UpdateWindow(m_window);
     switch_state(this->state(), state);
-
-    m_mouse_hover = is_cursor_in_client_area(m_window);
 }
 
 void Win32Window::hide()
@@ -164,9 +126,7 @@ void Win32Window::request_input_focus()
 
 void Win32Window::capture_cursor()
 {
-    m_captured_cursor_diff = {0, 0};
-    m_cursor_position      = get_cursor_position(m_window);
-    update_cursor();
+    update_cursor_clipping();
 
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
@@ -174,8 +134,7 @@ void Win32Window::capture_cursor()
 
 void Win32Window::release_cursor()
 {
-    set_cursor_cliping(m_window, false);
-    set_cursor_position(m_window, m_cursor_position);
+    update_cursor_clipping();
 
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
@@ -304,6 +263,13 @@ void Win32Window::set_title(const std::string& title)
     SetWindowText(m_window, &whide_char_title[0]);
 }
 
+void Win32Window::set_cursor_position(CursorPosition position)
+{
+    POINT p = {position.x, position.y};
+    ClientToScreen(m_window, &p);
+    SetCursorPos(p.x, p.y);
+}
+
 #pragma endregion
 
 #pragma region getters
@@ -390,6 +356,15 @@ std::string Win32Window::title() const
     GetWindowText(m_window, buffer.get(), title_length);
 
     return utf::to_utf8(buffer.get());
+}
+
+CursorPosition Win32Window::cursor_position() const
+{
+    POINT p;
+    GetCursorPos(&p);
+    ScreenToClient(m_window, &p);
+
+    return {p.x, p.y};
 }
 
 const Context& Win32Window::context() const
@@ -496,7 +471,7 @@ LRESULT Win32Window::on_close_message(UINT, WPARAM, LPARAM)
 LRESULT Win32Window::on_move_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
-        update_cursor();
+        update_cursor_clipping();
         callbacks().on_move(position());
     }
 
@@ -506,7 +481,7 @@ LRESULT Win32Window::on_move_message(UINT, WPARAM, LPARAM)
 LRESULT Win32Window::on_size_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
-        update_cursor();
+        update_cursor_clipping();
         callbacks().on_resize(size());
     }
 
@@ -551,7 +526,6 @@ LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
     CursorPosition pos{LOWORD(l_param), HIWORD(l_param)};
 
     if (!state_data().cursor_captured) {
-        m_cursor_position = pos;
         on_mouse_move(pos);
     }
     return 0;
@@ -675,7 +649,7 @@ LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
         return 0;
     }
 
-    CursorPosition pos = m_cursor_position;
+    CursorPosition pos;
     pos.x += m_captured_cursor_diff.x;
     pos.y += m_captured_cursor_diff.y;
 
@@ -694,10 +668,6 @@ LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
     m_captured_cursor_diff.y += dy;
     pos.x += dx;
     pos.y += dy;
-
-    if (dx != 0 || dy != 0) {
-        set_cursor_in_center(m_window);
-    }
 
     on_mouse_move(pos);
 
@@ -797,18 +767,19 @@ void Win32Window::track_mouse()
 {
     TRACKMOUSEEVENT track_info;
     track_info.cbSize      = sizeof(track_info);
-    track_info.dwFlags     = m_mouse_hover ? TME_LEAVE : TME_HOVER;
+    track_info.dwFlags     = state_data().cursor_hover ? TME_LEAVE : TME_HOVER;
     track_info.hwndTrack   = m_window;
     track_info.dwHoverTime = 1;
 
     TrackMouseEvent(&track_info);
 }
 
-void Win32Window::update_cursor()
+void Win32Window::update_cursor_clipping()
 {
     if (state_data().cursor_captured) {
-        set_cursor_in_center(m_window);
         set_cursor_cliping(m_window, true);
+    } else {
+        set_cursor_cliping(m_window, false);
     }
 }
 

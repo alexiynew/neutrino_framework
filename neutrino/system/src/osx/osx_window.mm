@@ -647,7 +647,7 @@ void OsxWindow::capture_cursor()
     
     center_cursor_inside_window();
     on_mouse_move({0, 0});
-    if (!state_data().mouse_hover)
+    if (!state_data().cursor_hover)
     {
         on_mouse_enter();
     }
@@ -1061,7 +1061,7 @@ void OsxWindow::mouse_moved(CursorPosition cursor_position)
         CGGetLastMouseDelta(&dx, &dy);
         on_mouse_move({dx, dy});
         center_cursor_inside_window();
-    } else if (state_data().mouse_hover) {
+    } else if (state_data().cursor_hover) {
         on_mouse_move(convert_cursor_position(cursor_position));
     }
 }

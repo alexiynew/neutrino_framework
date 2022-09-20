@@ -10,7 +10,7 @@ struct StateData
 {
     bool should_close = false;
 
-    bool mouse_hover     = false;
+    bool cursor_hover    = false;
     bool cursor_visible  = true;
     bool cursor_captured = false;
 

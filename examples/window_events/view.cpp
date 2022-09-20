@@ -155,7 +155,7 @@ void View::render_cursor_state(const DataContext& data)
     text_pos.y -= 15;
     ss.str("");
 
-    ss << "       +-> Hover:    " << (data.mouse_hover() ? "[x]" : "[ ]");
+    ss << "       +-> Hover:    " << (data.cursor_hover() ? "[x]" : "[ ]");
     render_normal_text(TextName::MouseHoverText, ss.str(), text_pos);
     text_pos.y -= 15;
     ss.str("");
