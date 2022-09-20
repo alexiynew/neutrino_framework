@@ -181,6 +181,26 @@ void Win32Window::release_cursor()
     RegisterRawInputDevices(&rid, 1, sizeof(rid));
 }
 
+void Win32Window::show_cursor()
+{
+    if (m_prev_cursor) {
+        SetCursor(m_prev_cursor);
+        m_prev_cursor = nullptr;
+    } else {
+        SetCursor(LoadCursor(nullptr, IDC_ARROW));
+    }
+}
+
+void Win32Window::hide_cursor()
+{
+    HCURSOR cursor = GetCursor();
+    if (cursor) {
+        m_prev_cursor = cursor;
+    }
+
+    SetCursor(nullptr);
+}
+
 void Win32Window::switch_state(Window::State old_state, Window::State new_state)
 {
     switch (old_state) {
@@ -284,16 +304,6 @@ void Win32Window::set_title(const std::string& title)
     SetWindowText(m_window, &whide_char_title[0]);
 }
 
-void Win32Window::set_cursor_visible(bool visible)
-{
-    m_cursor_visible = visible;
-    if (m_cursor_visible) {
-        show_cursor();
-    } else {
-        hide_cursor();
-    }
-}
-
 #pragma endregion
 
 #pragma region getters
@@ -306,11 +316,6 @@ bool Win32Window::is_visible() const
 bool Win32Window::has_input_focus() const
 {
     return is_visible() && GetActiveWindow() == m_window && GetFocus() == m_window;
-}
-
-bool Win32Window::is_cursor_visible() const
-{
-    return GetCursor() != nullptr;
 }
 
 Position Win32Window::position() const
@@ -529,17 +534,13 @@ LRESULT Win32Window::on_get_min_max_info_message(UINT, WPARAM, LPARAM l_param)
 
 LRESULT Win32Window::on_mouse_leave_message(UINT, WPARAM, LPARAM)
 {
-    callbacks().on_mouse_leave();
-    m_mouse_hover = false;
-
+    on_mouse_leave();
     return 0;
 }
 
 LRESULT Win32Window::on_mouse_hover_message(UINT, WPARAM, LPARAM)
 {
-    callbacks().on_mouse_enter();
-    m_mouse_hover = true;
-
+    on_mouse_enter();
     return 0;
 }
 
@@ -551,17 +552,8 @@ LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
 
     if (!state_data().cursor_captured) {
         m_cursor_position = pos;
-        callbacks().on_mouse_move(pos);
+        on_mouse_move(pos);
     }
-
-    if (m_mouse_hover) {
-        if (m_cursor_visible) {
-            show_cursor();
-        } else {
-            hide_cursor();
-        }
-    }
-
     return 0;
 }
 
@@ -707,7 +699,7 @@ LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
         set_cursor_in_center(m_window);
     }
 
-    callbacks().on_mouse_move(pos);
+    on_mouse_move(pos);
 
     return 0;
 }
@@ -817,26 +809,6 @@ void Win32Window::update_cursor()
     if (state_data().cursor_captured) {
         set_cursor_in_center(m_window);
         set_cursor_cliping(m_window, true);
-    }
-}
-
-void Win32Window::hide_cursor()
-{
-    HCURSOR cursor = GetCursor();
-    if (cursor) {
-        m_prev_cursor = cursor;
-    }
-
-    SetCursor(nullptr);
-}
-
-void Win32Window::show_cursor()
-{
-    if (m_prev_cursor) {
-        SetCursor(m_prev_cursor);
-        m_prev_cursor = nullptr;
-    } else {
-        SetCursor(LoadCursor(nullptr, IDC_ARROW));
     }
 }
 

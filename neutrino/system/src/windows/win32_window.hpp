@@ -28,10 +28,17 @@ public:
 #pragma region actions
     void show(Window::State state) override;
     void hide() override;
+
     void request_input_focus() override;
+
     void capture_cursor() override;
     void release_cursor() override;
+
+    void show_cursor() override;
+    void hide_cursor() override;
+
     void switch_state(Window::State old_state, Window::State new_state) override;
+
     void process_events() override;
 #pragma endregion
 
@@ -42,13 +49,11 @@ public:
     void set_resizable(bool value) override;
     void set_position(Position position) override;
     void set_title(const std::string& title) override;
-    void set_cursor_visible(bool visible) override;
 #pragma endregion
 
 #pragma region getters
     bool is_visible() const override;
     bool has_input_focus() const override;
-    bool is_cursor_visible() const override;
     Window::State state() const override;
     Size size() const override;
     Size max_size() const override;
@@ -99,8 +104,6 @@ private:
 
     void track_mouse();
     void update_cursor();
-    void hide_cursor();
-    void show_cursor();
 
     void enter_fullscreen();
     void exit_fullscreen();
