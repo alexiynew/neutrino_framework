@@ -142,20 +142,20 @@ void Win32Window::release_cursor()
 
 void Win32Window::show_cursor()
 {
-    if (m_prev_cursor) {
-        SetCursor(m_prev_cursor);
-        m_prev_cursor = nullptr;
-    } else {
-        SetCursor(LoadCursor(nullptr, IDC_ARROW));
+    if (m_cursor_actually_visible) {
+        return;
     }
+    m_cursor_actually_visible = true;
+
+    SetCursor(LoadCursor(nullptr, IDC_ARROW));
 }
 
 void Win32Window::hide_cursor()
 {
-    HCURSOR cursor = GetCursor();
-    if (cursor) {
-        m_prev_cursor = cursor;
+    if (!m_cursor_actually_visible) {
+        return;
     }
+    m_cursor_actually_visible = false;
 
     SetCursor(nullptr);
 }
@@ -523,11 +523,10 @@ LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
 {
     track_mouse();
 
-    CursorPosition pos{LOWORD(l_param), HIWORD(l_param)};
-
     if (!state_data().cursor_captured) {
-        on_mouse_move(pos);
+        on_mouse_move({LOWORD(l_param), HIWORD(l_param)});
     }
+
     return 0;
 }
 
@@ -650,9 +649,6 @@ LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
     }
 
     CursorPosition pos;
-    pos.x += m_captured_cursor_diff.x;
-    pos.y += m_captured_cursor_diff.y;
-
     int dx = 0;
     int dy = 0;
 
@@ -664,8 +660,6 @@ LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
         dy = raw_input.data.mouse.lLastY;
     }
 
-    m_captured_cursor_diff.x += dx;
-    m_captured_cursor_diff.y += dy;
     pos.x += dx;
     pos.y += dy;
 

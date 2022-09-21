@@ -123,12 +123,7 @@ private:
 
     bool m_resizable = true;
 
-    HCURSOR m_prev_cursor = nullptr;
-
-    bool m_mouse_hover    = false;
-    bool m_cursor_visible = true;
-
-    CursorPosition m_captured_cursor_diff = {0, 0};
+    bool m_cursor_actually_visible = true;
 
     std::unique_ptr<Context> m_context;
 

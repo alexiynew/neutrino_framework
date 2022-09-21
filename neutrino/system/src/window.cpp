@@ -6,6 +6,18 @@
 #include <system/src/platform_window_factory.hpp>
 #include <system/src/state_data.hpp>
 
+namespace
+{
+using framework::Size;
+using framework::system::CursorPosition;
+
+bool is_cursor_inside_area(CursorPosition pos, Size size)
+{
+    return pos.x >= 0 && pos.y >= 0 && pos.x < size.width && pos.y < size.height;
+}
+
+} // namespace
+
 namespace framework::system
 {
 Window::Window(const std::string& title, Size size, ContextSettings settings)
@@ -70,7 +82,7 @@ void Window::show()
     m_callbacks->on_move(position());
     m_callbacks->on_resize(size());
 
-    m_state_data->cursor_hover = is_cursor_inside_client_area();
+    m_state_data->cursor_hover = is_cursor_inside_area(m_platform_window->cursor_position(), size());
 
     if (m_state_data->cursor_captured) {
         m_platform_window->capture_cursor();
@@ -417,7 +429,7 @@ void Window::on_focus()
         return;
     }
 
-    m_state_data->cursor_hover = is_cursor_inside_client_area();
+    m_state_data->cursor_hover = is_cursor_inside_area(m_platform_window->cursor_position(), size());
 
     if (m_state_data->cursor_captured) {
         m_platform_window->capture_cursor();
@@ -446,8 +458,11 @@ void Window::on_lost_focus()
 
 void Window::on_mouse_enter()
 {
-    m_state_data->cursor_hover = true;
+    if (m_state_data->cursor_hover) {
+        return;
+    }
 
+    m_state_data->cursor_hover = true;
     update_cursor_visibility();
 
     m_callbacks->on_mouse_enter();
@@ -455,8 +470,11 @@ void Window::on_mouse_enter()
 
 void Window::on_mouse_leave()
 {
-    m_state_data->cursor_hover = false;
+    if (!m_state_data->cursor_hover) {
+        return;
+    }
 
+    m_state_data->cursor_hover = false;
     update_cursor_visibility();
 
     m_callbacks->on_mouse_leave();
@@ -464,11 +482,17 @@ void Window::on_mouse_leave()
 
 void Window::on_mouse_move(CursorPosition position)
 {
-    m_callbacks->on_mouse_move(position);
-    m_state_data->cursor_hover = is_cursor_inside_client_area();
+    // On Windows on_mouse_enter comes when mouse stops moving inside the window
+    const bool hover = is_cursor_inside_area(position, size());
+    if (hover && !m_state_data->cursor_hover) {
+        on_mouse_enter();
+    } else if (!hover && m_state_data->cursor_hover) {
+        on_mouse_leave();
+    }
 
     update_cursor_position();
-    update_cursor_visibility();
+
+    m_callbacks->on_mouse_move(position);
 }
 
 void Window::update_cursor_visibility()
@@ -485,12 +509,12 @@ void Window::update_cursor_position()
     if (m_state_data->cursor_captured && m_state_data->cursor_hover) {
 
         // Block on_mouse_move_callback to silently update cursor position
-        const auto on_mouse_move_callback   = m_callbacks->on_mouse_move_callback;
-        m_callbacks->on_mouse_move_callback = nullptr;
+        // const auto on_mouse_move_callback   = m_callbacks->on_mouse_move_callback;
+        // m_callbacks->on_mouse_move_callback = nullptr;
 
-        set_cursor_in_center();
+        // set_cursor_in_center();
 
-        m_callbacks->on_mouse_move_callback = on_mouse_move_callback;
+        // m_callbacks->on_mouse_move_callback = on_mouse_move_callback;
     }
 }
 
@@ -498,14 +522,6 @@ void Window::set_cursor_in_center()
 {
     const Size s = size();
     m_platform_window->set_cursor_position({s.width / 2, s.height / 2});
-}
-
-bool Window::is_cursor_inside_client_area() const
-{
-    const Size s             = size();
-    const CursorPosition pos = m_platform_window->cursor_position();
-
-    return pos.x >= 0 && pos.y >= 0 && pos.x < s.width && pos.y < s.height;
 }
 
 #pragma endregion

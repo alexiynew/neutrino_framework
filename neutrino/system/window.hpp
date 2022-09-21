@@ -414,8 +414,6 @@ private:
 
     void set_cursor_in_center();
 
-    bool is_cursor_inside_client_area() const;
-
     std::unique_ptr<details::PlatformWindow> m_platform_window;
     std::unique_ptr<details::CallbacksHolder> m_callbacks;
     std::unique_ptr<details::StateData> m_state_data;
