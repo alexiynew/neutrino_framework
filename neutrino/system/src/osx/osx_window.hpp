@@ -50,6 +50,7 @@ public:
     void set_resizable(bool value) override;
     void set_position(Position position) override;
     void set_title(const std::string& title) override;
+    void set_cursor_position(CursorPosition position) override;
 #pragma endregion
 
 #pragma region getters
@@ -62,6 +63,7 @@ public:
     bool is_resizable() const override;
     Position position() const override;
     std::string title() const override;
+    CursorPosition cursor_position() const override;
     const Context& context() const override;
     Context& context() override;
 #pragma endregion
@@ -93,16 +95,13 @@ public:
 
 private:
     Window::State get_actual_state() const;
-
-    void center_cursor_inside_window();
     CursorPosition convert_cursor_position(CursorPosition position);
 
     std::unique_ptr<NSWindowWrapper> m_window;
     std::unique_ptr<NSViewWrapper> m_view;
     std::unique_ptr<OsxContext> m_context;
 
-    bool m_cursor_actualy_visible    = true;
-    CursorPosition m_cursor_position = {0, 0};
+    bool m_cursor_actually_visible = true;
 
     Size m_min_size;
     Size m_max_size;

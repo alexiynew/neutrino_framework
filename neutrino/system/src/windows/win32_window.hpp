@@ -123,7 +123,9 @@ private:
 
     bool m_resizable = true;
 
-    bool m_cursor_actually_visible = true;
+    bool m_cursor_actually_visible        = true;
+    bool m_cursor_actually_captured       = false;
+    CursorPosition m_last_cursor_position = {0, 0};
 
     std::unique_ptr<Context> m_context;
 

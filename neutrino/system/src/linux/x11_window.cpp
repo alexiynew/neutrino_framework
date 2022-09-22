@@ -202,9 +202,6 @@ void X11Window::request_input_focus()
 
 void X11Window::capture_cursor()
 {
-    m_cursor_position = utils::get_cursor_position(m_server.get(), m_window);
-    utils::set_cursor_position(m_server.get(), m_window, {m_size.width / 2, m_size.height / 2});
-
     XGrabPointer(m_server->display(),
                  m_window,
                  True,
@@ -215,6 +212,7 @@ void X11Window::capture_cursor()
                  None, // Normal cursor
                  CurrentTime);
 
+    XFlush(m_server->display());
     process_events();
 }
 
@@ -222,31 +220,32 @@ void X11Window::release_cursor()
 {
     XUngrabPointer(m_server->display(), CurrentTime);
 
-    utils::set_cursor_position(m_server.get(), m_window, m_cursor_position);
-
+    XFlush(m_server->display());
     process_events();
 }
 
 void X11Window::show_cursor()
 {
-    if (m_cursor_actualy_visible) {
+    if (m_cursor_actually_visible) {
         return;
     }
-    m_cursor_actualy_visible = true;
+    m_cursor_actually_visible = true;
 
     XUndefineCursor(m_server->display(), m_window);
+
     XFlush(m_server->display());
     process_events();
 }
 
 void X11Window::hide_cursor()
 {
-    if (!m_cursor_actualy_visible) {
+    if (!m_cursor_actually_visible) {
         return;
     }
-    m_cursor_actualy_visible = false;
+    m_cursor_actually_visible = false;
 
     XDefineCursor(m_server->display(), m_window, m_invisible_cursor);
+
     XFlush(m_server->display());
     process_events();
 }
@@ -753,17 +752,7 @@ void X11Window::process(XCrossingEvent event)
 
 void X11Window::process(XMotionEvent event)
 {
-    if (state_data().cursor_captured) {
-        const int dx = event.x - m_size.width / 2;
-        const int dy = event.y - m_size.height / 2;
-
-        if (dx != 0 || dy != 0) {
-            on_mouse_move({dx, dy});
-            utils::set_cursor_position(m_server.get(), m_window, {m_size.width / 2, m_size.height / 2});
-        }
-    } else if (state_data().cursor_hover) {
-        on_mouse_move({event.x, event.y});
-    }
+    on_mouse_move({event.x, event.y});
 }
 
 void X11Window::process(XMappingEvent event)

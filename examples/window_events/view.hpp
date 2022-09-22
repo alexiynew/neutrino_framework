@@ -33,6 +33,7 @@ private:
 
         WindowStateText,
         WindowResizableText,
+        windowHasInputFocusText,
 
         CatText,
         CatText1,
@@ -44,6 +45,7 @@ private:
     void render_cursor_state(const DataContext& data);
     void render_state(const DataContext& data);
     void render_resizable(const DataContext& data);
+    void render_input_focus(const DataContext& data);
     void render_log(const DataContext& data);
     void render_cat(const DataContext& data);
     void render_cursor_marker(const DataContext& data);

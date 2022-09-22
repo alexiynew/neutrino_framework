@@ -126,6 +126,11 @@ void Win32Window::request_input_focus()
 
 void Win32Window::capture_cursor()
 {
+    if (m_cursor_actually_captured) {
+        return;
+    }
+    m_cursor_actually_captured = true;
+
     update_cursor_clipping();
 
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, 0, m_window};
@@ -134,6 +139,11 @@ void Win32Window::capture_cursor()
 
 void Win32Window::release_cursor()
 {
+    if (!m_cursor_actually_captured) {
+        return;
+    }
+    m_cursor_actually_captured = false;
+
     update_cursor_clipping();
 
     const RAWINPUTDEVICE rid = {HID_USAGE_PAGE_GENERIC, HID_USAGE_GENERIC_MOUSE, RIDEV_REMOVE, nullptr};
@@ -521,11 +531,14 @@ LRESULT Win32Window::on_mouse_hover_message(UINT, WPARAM, LPARAM)
 
 LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
 {
-    track_mouse();
-
-    if (!state_data().cursor_captured) {
-        on_mouse_move({LOWORD(l_param), HIWORD(l_param)});
+    if (m_cursor_actually_captured) {
+        return 0;
     }
+
+    track_mouse();
+    m_last_cursor_position.x = LOWORD(l_param);
+    m_last_cursor_position.y = HIWORD(l_param);
+    on_mouse_move(m_last_cursor_position);
 
     return 0;
 }
@@ -634,7 +647,7 @@ LRESULT Win32Window::on_char_message(UINT, WPARAM w_param, LPARAM)
 
 LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
 {
-    if (!state_data().cursor_captured) {
+    if (!m_cursor_actually_captured) {
         return 0;
     }
 
@@ -648,22 +661,28 @@ LRESULT Win32Window::on_input_message(UINT, WPARAM, LPARAM l_param)
         return 0;
     }
 
-    CursorPosition pos;
     int dx = 0;
     int dy = 0;
+    if ((raw_input.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE) == MOUSE_MOVE_ABSOLUTE) {
+        const bool is_virtual_desktop = (raw_input.data.mouse.usFlags & MOUSE_VIRTUAL_DESKTOP) == MOUSE_VIRTUAL_DESKTOP;
 
-    if (raw_input.data.mouse.usFlags & MOUSE_MOVE_ABSOLUTE) {
-        dx = raw_input.data.mouse.lLastX - pos.x;
-        dy = raw_input.data.mouse.lLastY - pos.y;
+        const int width  = GetSystemMetrics(is_virtual_desktop ? SM_CXVIRTUALSCREEN : SM_CXSCREEN);
+        const int height = GetSystemMetrics(is_virtual_desktop ? SM_CYVIRTUALSCREEN : SM_CYSCREEN);
+
+        const int absolute_x = int((raw_input.data.mouse.lLastX / 65535.0f) * width);
+        const int absolute_y = int((raw_input.data.mouse.lLastY / 65535.0f) * height);
+
+        dx = absolute_x - m_last_cursor_position.x;
+        dy = absolute_y - m_last_cursor_position.y;
+
+        m_last_cursor_position.x = absolute_x;
+        m_last_cursor_position.y = absolute_y;
     } else {
         dx = raw_input.data.mouse.lLastX;
         dy = raw_input.data.mouse.lLastY;
     }
 
-    pos.x += dx;
-    pos.y += dy;
-
-    on_mouse_move(pos);
+    on_mouse_move({dx, dy});
 
     return 0;
 }
@@ -770,7 +789,7 @@ void Win32Window::track_mouse()
 
 void Win32Window::update_cursor_clipping()
 {
-    if (state_data().cursor_captured) {
+    if (m_cursor_actually_captured) {
         set_cursor_cliping(m_window, true);
     } else {
         set_cursor_cliping(m_window, false);

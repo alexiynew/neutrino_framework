@@ -19,6 +19,8 @@ public:
     void set_windos_position(Position position);
     void set_window_cursor_position(Position position);
     void set_window_resizable(bool value);
+    void set_window_has_input_focus(bool value);
+
     void set_cursor_captured(bool value);
     void set_cursor_visible(bool value);
     void set_cursor_hover(bool value);
@@ -30,6 +32,8 @@ public:
     Position window_position() const;
     Position window_cursor_position() const;
     bool window_resizable() const;
+    bool window_has_input_focus() const;
+
     bool cursor_captured() const;
     bool cursor_visible() const;
     bool cursor_hover() const;
@@ -43,6 +47,8 @@ private:
     Position m_window_position;
     Position m_window_cursor_position;
     bool m_window_resizable;
+    bool m_window_has_input_focus;
+
     bool m_cursor_captured;
     bool m_cursor_visible;
     bool m_cursor_hover;

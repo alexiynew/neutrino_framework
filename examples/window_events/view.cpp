@@ -52,12 +52,13 @@ void main()\n\
 constexpr int LogOffset                    = 50;
 constexpr math::Vector3f normal_text_scale = {15, 15, 1};
 
-constexpr math::Vector3f SizeTextTopLeftOffset      = {-300, -25, 0};
-constexpr math::Vector3f PositionTextTopLeftOffset  = {-150, -25, 0};
-constexpr math::Vector3f CursorTextTopLeftOffset    = {-300, -50, 0};
-constexpr math::Vector3f StateTextTopLeftOffset     = {-300, -130, 0};
-constexpr math::Vector3f ResizableTextTopLeftOffset = {-300, -155, 0};
-constexpr math::Vector3f CatTextBottomRightOffset   = {80, -50, 0};
+constexpr math::Vector3f SizeTextTopLeftOffset          = {-300, -25, 0};
+constexpr math::Vector3f PositionTextTopLeftOffset      = {-150, -25, 0};
+constexpr math::Vector3f CursorTextTopLeftOffset        = {-300, -50, 0};
+constexpr math::Vector3f StateTextTopLeftOffset         = {-300, -130, 0};
+constexpr math::Vector3f ResizableTextTopLeftOffset     = {-300, -155, 0};
+constexpr math::Vector3f HasInputFocusTextTopLeftOffset = {-300, -180, 0};
+constexpr math::Vector3f CatTextBottomRightOffset       = {80, -50, 0};
 
 std::string get_state_name(Window::State state)
 {
@@ -98,6 +99,7 @@ void View::render(const DataContext& data)
     render_cursor_state(data);
     render_state(data);
     render_resizable(data);
+    render_input_focus(data);
     render_log(data);
     render_cat(data);
 
@@ -135,7 +137,7 @@ void View::render_cursor_state(const DataContext& data)
 
     math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + CursorTextTopLeftOffset;
 
-    render_normal_text(TextName::CursorTitleText, "Mouse  + ", text_pos);
+    render_normal_text(TextName::CursorTitleText, "Mouse  v ", text_pos);
     text_pos.y -= 15;
 
     std::stringstream ss;
@@ -179,6 +181,16 @@ void View::render_resizable(const DataContext& data)
     const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + ResizableTextTopLeftOffset;
 
     render_normal_text(TextName::WindowResizableText, text, text_pos);
+}
+
+void View::render_input_focus(const DataContext& data)
+{
+    const auto size = data.window_size();
+
+    const std::string text        = "Input:     " + std::string(data.window_has_input_focus() ? "[x]" : "[ ]");
+    const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + HasInputFocusTextTopLeftOffset;
+
+    render_normal_text(TextName::windowHasInputFocusText, text, text_pos);
 }
 
 void View::render_log(const DataContext& data)

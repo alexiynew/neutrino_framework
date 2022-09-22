@@ -82,14 +82,8 @@ void Window::show()
     m_callbacks->on_move(position());
     m_callbacks->on_resize(size());
 
-    m_state_data->cursor_hover = is_cursor_inside_area(m_platform_window->cursor_position(), size());
-
-    if (m_state_data->cursor_captured) {
-        m_platform_window->capture_cursor();
-    }
-
     if (has_input_focus()) {
-        m_callbacks->on_focus();
+        on_focus();
     } else {
         request_input_focus();
     }
@@ -102,11 +96,7 @@ void Window::hide()
     }
 
     if (has_input_focus()) {
-        m_callbacks->on_lost_focus();
-    }
-
-    if (m_state_data->cursor_captured) {
-        m_platform_window->release_cursor();
+        on_lost_focus();
     }
 
     // Turn off on_resize, on_move and on_focus callbacks
@@ -154,6 +144,7 @@ void Window::capture_cursor()
     m_state_data->cursor_captured = true;
 
     m_platform_window->capture_cursor();
+    update_cursor_position();
 }
 
 void Window::release_cursor()
@@ -165,6 +156,7 @@ void Window::release_cursor()
     m_state_data->cursor_captured = false;
 
     m_platform_window->release_cursor();
+    update_cursor_position();
 }
 
 void Window::process_events()
@@ -451,6 +443,7 @@ void Window::on_lost_focus()
         m_platform_window->release_cursor();
     }
 
+    update_cursor_position();
     update_cursor_visibility();
 
     m_callbacks->on_lost_focus();
@@ -483,16 +476,17 @@ void Window::on_mouse_leave()
 void Window::on_mouse_move(CursorPosition position)
 {
     // On Windows on_mouse_enter comes when mouse stops moving inside the window
-    const bool hover = is_cursor_inside_area(position, size());
+    const bool hover = is_cursor_inside_area(position, size()) || (m_state_data->cursor_captured && has_input_focus());
     if (hover && !m_state_data->cursor_hover) {
         on_mouse_enter();
     } else if (!hover && m_state_data->cursor_hover) {
         on_mouse_leave();
     }
 
-    update_cursor_position();
-
-    m_callbacks->on_mouse_move(position);
+    if (hover) {
+        update_cursor_position();
+        m_callbacks->on_mouse_move(position);
+    }
 }
 
 void Window::update_cursor_visibility()
@@ -506,15 +500,8 @@ void Window::update_cursor_visibility()
 
 void Window::update_cursor_position()
 {
-    if (m_state_data->cursor_captured && m_state_data->cursor_hover) {
-
-        // Block on_mouse_move_callback to silently update cursor position
-        // const auto on_mouse_move_callback   = m_callbacks->on_mouse_move_callback;
-        // m_callbacks->on_mouse_move_callback = nullptr;
-
-        // set_cursor_in_center();
-
-        // m_callbacks->on_mouse_move_callback = on_mouse_move_callback;
+    if (m_state_data->cursor_captured && has_input_focus()) {
+        set_cursor_in_center();
     }
 }
 

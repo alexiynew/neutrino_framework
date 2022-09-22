@@ -636,46 +636,22 @@ void OsxWindow::request_input_focus()
 
 void OsxWindow::capture_cursor()
 {
-    AutoreleasePool pool;
-
-    const NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
-    const auto p      = position();
-    const auto s      = size();
-    m_cursor_position = CursorPosition(pos.x + p.x, (p.y + s.height) - pos.y);
-
     CGAssociateMouseAndMouseCursorPosition(NO);
-    
-    center_cursor_inside_window();
-    on_mouse_move({0, 0});
-    if (!state_data().cursor_hover)
-    {
-        on_mouse_enter();
-    }
-
     process_events();
 }
 
 void OsxWindow::release_cursor()
 {
-    AutoreleasePool pool;
-
-    // restore cursor previous position
-    CGPoint point;
-    point.x = m_cursor_position.x;
-    point.y = m_cursor_position.y;
-    CGWarpMouseCursorPosition(point);
-
     CGAssociateMouseAndMouseCursorPosition(YES);
-
     process_events();
 }
 
 void OsxWindow::show_cursor()
 {
-    if (m_cursor_actualy_visible) {
+    if (m_cursor_actually_visible) {
         return;
     }
-    m_cursor_actualy_visible = true;
+    m_cursor_actually_visible = true;
 
     AutoreleasePool pool;
     [NSCursor unhide];
@@ -683,10 +659,10 @@ void OsxWindow::show_cursor()
 
 void OsxWindow::hide_cursor()
 {
-    if (!m_cursor_actualy_visible) {
+    if (!m_cursor_actually_visible) {
         return;
     }
-    m_cursor_actualy_visible = false;
+    m_cursor_actually_visible = false;
 
     AutoreleasePool pool;
     [NSCursor hide];
@@ -869,6 +845,14 @@ void OsxWindow::set_title(const std::string& new_title)
     process_events();
 }
 
+void OsxWindow::set_cursor_position(CursorPosition position)
+{
+    CGPoint point;
+    point.x = position.x;
+    point.y = position.y;
+    CGWarpMouseCursorPosition(point);
+}
+
 #pragma endregion
 
 #pragma region getters
@@ -963,6 +947,14 @@ std::string OsxWindow::title() const
     return std::string([[m_window->get() title] UTF8String]);
 }
 
+CursorPosition OsxWindow::cursor_position() const
+{
+    const NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
+    const auto p      = position();
+    const auto s      = size();
+    return {pos.x + p.x, (p.y + s.height) - pos.y};
+}
+
 const Context& OsxWindow::context() const
 {
     return *m_context;
@@ -1053,17 +1045,7 @@ void OsxWindow::mouse_exited()
 
 void OsxWindow::mouse_moved(CursorPosition cursor_position)
 {
-    AutoreleasePool pool;
-
-    if (state_data().cursor_captured) {
-        int dx = 0;
-        int dy = 0;
-        CGGetLastMouseDelta(&dx, &dy);
-        on_mouse_move({dx, dy});
-        center_cursor_inside_window();
-    } else if (state_data().cursor_hover) {
-        on_mouse_move(convert_cursor_position(cursor_position));
-    }
+    on_mouse_move(convert_cursor_position(cursor_position));
 }
 
 void OsxWindow::mouse_button_down(MouseButton button, CursorPosition position, Modifiers state)
@@ -1099,16 +1081,6 @@ Window::State OsxWindow::get_actual_state() const
     } else {
         return Window::State::normal;
     }
-}
-
-void OsxWindow::center_cursor_inside_window()
-{
-    AutoreleasePool pool;
-
-    const auto p = position();
-    const auto s = size();
-    CGPoint point{p.x + s.width / 2.0f, p.y + s.height / 2.0f};
-    CGWarpMouseCursorPosition(point);
 }
 
 CursorPosition OsxWindow::convert_cursor_position(CursorPosition position)

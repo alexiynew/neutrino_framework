@@ -28,6 +28,11 @@ void DataContext::set_window_resizable(bool value)
     m_window_resizable = value;
 }
 
+void DataContext::set_window_has_input_focus(bool value)
+{
+    m_window_has_input_focus = value;
+}
+
 void DataContext::set_cursor_captured(bool value)
 {
     m_cursor_captured = value;
@@ -76,6 +81,11 @@ Position DataContext::window_cursor_position() const
 bool DataContext::window_resizable() const
 {
     return m_window_resizable;
+}
+
+bool DataContext::window_has_input_focus() const
+{
+    return m_window_has_input_focus;
 }
 
 bool DataContext::cursor_captured() const
