@@ -51,6 +51,7 @@ public:
     void set_resizable(bool value) override;
     void set_position(Position position) override;
     void set_title(const std::string& title) override;
+    void set_cursor_position(CursorPosition position) override;
 #pragma endregion
 
 #pragma region getters
@@ -63,6 +64,7 @@ public:
     bool is_resizable() const override;
     Position position() const override;
     std::string title() const override;
+    CursorPosition cursor_position() const override;
     const Context& context() const override;
     Context& context() override;
 #pragma endregion
@@ -92,8 +94,6 @@ private:
 
     void update_size_limits(Size min_size, Size max_size);
 
-    void center_cursor_inside_window();
-
     std::shared_ptr<X11Server> m_server = nullptr;
     std::unique_ptr<Context> m_context  = nullptr;
 
@@ -121,7 +121,9 @@ private:
 
     Cursor m_invisible_cursor = None;
 
-    bool m_cursor_actually_visible = true;
+    bool m_cursor_actually_visible        = true;
+    bool m_cursor_actually_captured       = false;
+    CursorPosition m_last_cursor_position = {0, 0};
 };
 
 } // namespace framework::system::details

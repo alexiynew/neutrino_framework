@@ -62,8 +62,6 @@ void set_bypass_compositor_state(const X11Server* server, XLibWindow window, Byp
 BypassCompositorState get_bypass_compositor_state(const X11Server* server, XLibWindow window);
 
 Cursor create_invisible_cursor(const X11Server* server);
-Position get_cursor_position(const X11Server* server, XLibWindow window);
-void set_cursor_position(const X11Server* server, XLibWindow window, Position position);
 
 } // namespace framework::system::details::utils
 

@@ -87,7 +87,7 @@ X11Window::X11Window(const std::string& title, Size size, const ContextSettings&
 
     XSetWindowAttributes attributes = {};
 
-    attributes.background_pixel  = static_cast<XID>(WhitePixel(m_server->display(), m_server->default_screen()));
+    attributes.background_pixel  = static_cast<XID>(BlackPixel(m_server->display(), m_server->default_screen()));
     attributes.border_pixel      = static_cast<XID>(BlackPixel(m_server->display(), m_server->default_screen()));
     attributes.event_mask        = event_mask;
     attributes.override_redirect = False; // Allow WM to intercept any requests to map, move, resize, or change the
@@ -202,22 +202,34 @@ void X11Window::request_input_focus()
 
 void X11Window::capture_cursor()
 {
-    XGrabPointer(m_server->display(),
-                 m_window,
-                 True,
-                 ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-                 GrabModeAsync,
-                 GrabModeAsync, // Keyboard is unaffected
-                 m_window,
-                 None, // Normal cursor
-                 CurrentTime);
+    if (m_cursor_actually_captured) {
+        return;
+    }
+    m_cursor_actually_captured = true;
 
+    while (XGrabPointer(m_server->display(),
+                        m_window,
+                        True,
+                        ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+                        GrabModeAsync,
+                        GrabModeAsync, // Keyboard is unaffected
+                        m_window,
+                        None, // Normal cursor
+                        CurrentTime) != GrabSuccess) {
+        XFlush(m_server->display());
+        process_events();
+    }
     XFlush(m_server->display());
     process_events();
 }
 
 void X11Window::release_cursor()
 {
+    if (!m_cursor_actually_captured) {
+        return;
+    }
+    m_cursor_actually_captured = false;
+
     XUngrabPointer(m_server->display(), CurrentTime);
 
     XFlush(m_server->display());
@@ -451,6 +463,16 @@ void X11Window::set_position(Position new_position)
     process_events_while([this, &old_position]() { return position() == old_position; });
 }
 
+void X11Window::set_cursor_position(CursorPosition position)
+{
+    return;
+
+    XWarpPointer(m_server->display(), None, m_window, 0, 0, 0, 0, position.x, position.y);
+
+    XFlush(m_server->display());
+    process_events();
+}
+
 void X11Window::set_title(const std::string& title)
 {
     utils::set_window_name(m_server.get(), m_window, title);
@@ -552,6 +574,25 @@ bool X11Window::is_resizable() const
 Position X11Window::position() const
 {
     return m_position;
+}
+
+CursorPosition X11Window::cursor_position() const
+{
+    XLibWindow root  = None;
+    XLibWindow child = None;
+    int rootX        = 0;
+    int rootY        = 0;
+    int childX       = 0;
+    int childY       = 0;
+    unsigned int mask;
+
+    bool ret = XQueryPointer(m_server->display(), m_window, &root, &child, &rootX, &rootY, &childX, &childY, &mask);
+
+    if (!ret) {
+        // cursor on the other screen
+    }
+
+    return {childX, childY};
 }
 
 std::string X11Window::title() const
@@ -752,7 +793,20 @@ void X11Window::process(XCrossingEvent event)
 
 void X11Window::process(XMotionEvent event)
 {
-    on_mouse_move({event.x, event.y});
+    const CursorPosition pos = {event.x, event.y};
+
+    if (!state_data().cursor_captured) {
+        m_last_cursor_position = pos;
+        on_mouse_move(pos);
+    } else {
+        const int dx           = pos.x - m_last_cursor_position.x;
+        const int dy           = pos.y - m_last_cursor_position.y;
+        m_last_cursor_position = pos;
+
+        if (dx != 0 || dy != 0) {
+            on_mouse_move({dx, dy});
+        }
+    }
 }
 
 void X11Window::process(XMappingEvent event)
