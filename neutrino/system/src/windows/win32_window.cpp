@@ -278,6 +278,8 @@ void Win32Window::set_cursor_position(CursorPosition position)
     POINT p = {position.x, position.y};
     ClientToScreen(m_window, &p);
     SetCursorPos(p.x, p.y);
+
+    update_cursor_hover(position);
 }
 
 #pragma endregion
@@ -536,8 +538,12 @@ LRESULT Win32Window::on_mouse_move_message(UINT, WPARAM, LPARAM l_param)
     }
 
     track_mouse();
-    m_last_cursor_position.x = LOWORD(l_param);
-    m_last_cursor_position.y = HIWORD(l_param);
+
+    m_last_cursor_position.x = GET_X_LPARAM(l_param);
+    m_last_cursor_position.y = GET_Y_LPARAM(l_param);
+
+    update_cursor_hover(m_last_cursor_position);
+
     on_mouse_move(m_last_cursor_position);
 
     return 0;
@@ -793,6 +799,18 @@ void Win32Window::update_cursor_clipping()
         set_cursor_cliping(m_window, true);
     } else {
         set_cursor_cliping(m_window, false);
+    }
+}
+
+void Win32Window::update_cursor_hover(CursorPosition pos)
+{
+    const Size s     = size();
+    const bool hover = pos.x >= 0 && pos.x <= s.width && pos.y >= 0 && pos.y <= s.height;
+
+    if (hover && !state_data().cursor_hover) {
+        on_mouse_enter();
+    } else if (!hover && state_data().cursor_hover) {
+        on_mouse_leave();
     }
 }
 

@@ -106,6 +106,7 @@ private:
 
     void track_mouse();
     void update_cursor_clipping();
+    void update_cursor_hover(CursorPosition pos);
 
     void enter_fullscreen();
     void exit_fullscreen();

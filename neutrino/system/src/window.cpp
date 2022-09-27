@@ -479,15 +479,6 @@ void Window::on_mouse_leave()
 
 void Window::on_mouse_move(CursorPosition position)
 {
-    // On Windows on_mouse_enter comes when mouse stops moving inside the window
-    // const bool hover = is_cursor_inside_area(m_platform_window->cursor_position(), size()) ||
-    // (m_state_data->cursor_captured && has_input_focus());
-    // if (hover && !m_state_data->cursor_hover) {
-    //     on_mouse_enter();
-    // } else if (!hover && m_state_data->cursor_hover) {
-    //     on_mouse_leave();
-    // }
-
     if (m_state_data->cursor_hover) {
         update_cursor_position();
         m_callbacks->on_mouse_move(position);
