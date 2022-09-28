@@ -144,13 +144,13 @@ int get_pixel_format(const framework::system::ContextSettings& settings, HDC hdc
     // Depth buffer
     if (settings.depth_bits() != ContextSettings::dont_care) {
         attribs.push_back(WGL_DEPTH_BITS_ARB);
-        attribs.push_back(static_cast<int>(settings.depth_bits()));
+        attribs.push_back(std::min(ContextSettings::default_max_depth_bits, settings.depth_bits()));
     }
 
     // Stencil buffer
     if (settings.stencil_bits() != ContextSettings::dont_care) {
         attribs.push_back(WGL_STENCIL_BITS_ARB);
-        attribs.push_back(static_cast<int>(settings.stencil_bits()));
+        attribs.push_back(std::min(ContextSettings::default_max_stencil_bits, settings.stencil_bits()));
     }
 
     // Multisampling

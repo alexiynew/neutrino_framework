@@ -23,6 +23,9 @@ namespace framework::system
 class ContextSettings
 {
 public:
+    static constexpr std::uint32_t default_max_depth_bits   = 24;
+    static constexpr std::uint32_t default_max_stencil_bits = 8;
+
     static constexpr std::uint32_t best      = 999;
     static constexpr std::uint32_t dont_care = 0;
 

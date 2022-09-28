@@ -311,7 +311,7 @@ private:
         using namespace framework::graphics;
         using namespace framework::system;
 
-        Application::set_name("GL shader Test");
+        Application::set_name("GL renderer Test");
 
         Window main_window(name(), {256 * 4, 256 * 3});
         Renderer renderer(main_window.context());

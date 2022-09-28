@@ -56,48 +56,53 @@ glx::GLXFBConfig choose_framebuffer_config(Display* display, const ContextSettin
 
     std::vector<int> attribs;
 
+    // Render to Windows and/or GLX pixmaps
     attribs.push_back(GLX_X_RENDERABLE);
     attribs.push_back(True);
 
+    // Render to window
     attribs.push_back(GLX_DRAWABLE_TYPE);
     attribs.push_back(GLX_WINDOW_BIT);
 
+    // RGBA context
     attribs.push_back(GLX_RENDER_TYPE);
     attribs.push_back(GLX_RGBA_BIT);
 
+    // Double-buffered frame buffer
+    attribs.push_back(GLX_DOUBLEBUFFER);
+    attribs.push_back(True);
+
+    // Truecolor support
     attribs.push_back(GLX_X_VISUAL_TYPE);
     attribs.push_back(GLX_TRUE_COLOR);
 
+    // Red bits size
     attribs.push_back(GLX_RED_SIZE);
     attribs.push_back(8);
 
+    // Green bits size
     attribs.push_back(GLX_GREEN_SIZE);
     attribs.push_back(8);
 
+    // Blue bits size
     attribs.push_back(GLX_BLUE_SIZE);
     attribs.push_back(8);
 
+    // Alpha bits size
     attribs.push_back(GLX_ALPHA_SIZE);
     attribs.push_back(8);
 
-    if (settings.depth_bits() == ContextSettings::dont_care) {
+    // Depth buffer
+    if (settings.depth_bits() != ContextSettings::dont_care) {
         attribs.push_back(GLX_DEPTH_SIZE);
-        attribs.push_back(GLX_DONT_CARE);
-    } else {
-        attribs.push_back(GLX_DEPTH_SIZE);
-        attribs.push_back(std::min(24U, settings.depth_bits()));
+        attribs.push_back(std::min(ContextSettings::default_max_depth_bits, settings.depth_bits()));
     }
 
-    if (settings.stencil_bits() == ContextSettings::dont_care) {
+    // Stencil buffer
+    if (settings.stencil_bits() != ContextSettings::dont_care) {
         attribs.push_back(GLX_STENCIL_SIZE);
-        attribs.push_back(GLX_DONT_CARE);
-    } else {
-        attribs.push_back(GLX_STENCIL_SIZE);
-        attribs.push_back(std::min(8U, settings.stencil_bits()));
+        attribs.push_back(std::min(ContextSettings::default_max_stencil_bits, settings.stencil_bits()));
     }
-
-    attribs.push_back(GLX_DOUBLEBUFFER);
-    attribs.push_back(True);
 
     attribs.push_back(None);
 

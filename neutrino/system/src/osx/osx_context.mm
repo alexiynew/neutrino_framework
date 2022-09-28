@@ -90,16 +90,13 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     // Depth buffer size
     if (settings.depth_bits() != ContextSettings::dont_care) {
         attribs.push_back(NSOpenGLPFADepthSize);
-        attribs.push_back(settings.depth_bits());
+        attribs.push_back(std::min(ContextSettings::default_max_depth_bits, settings.depth_bits()));
     }
 
     // Stencil buffer size
     if (settings.stencil_bits() != ContextSettings::dont_care) {
         attribs.push_back(NSOpenGLPFAStencilSize);
-        //attribs.push_back(settings.stencil_bits());
-        // Implementation can't get pixel format with maximum available stencil buffer size. Need to specify size exactly.
-        // Looks like any positive number returns format with maximum stencil size.
-        attribs.push_back(2);
+        attribs.push_back(std::min(ContextSettings::default_max_stencil_bits, settings.stencil_bits()));
     }
 
     // Multisampling
