@@ -20,7 +20,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC
 )
 
 # Set link options
-target_link_libraries(${PROJECT_NAME} PUBLIC "$<${GCC_LIKE_COMPILER}:pthread>")
+target_link_libraries(${PROJECT_NAME} PUBLIC pthread)
 
 # Patform specific options
 if(${PLATFORM_NAME} MATCHES "window") 
