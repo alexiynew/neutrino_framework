@@ -23,7 +23,7 @@ target_compile_options(${PROJECT_NAME} PUBLIC
 )
 
 # Set link options
-set(GCC_LINK_OPTIONS "-lpthread")
+set(GCC_LINK_OPTIONS "-pthread")
 set(MSVC_LINK_OPTIONS "")
 
 target_link_options(${PROJECT_NAME} PRIVATE

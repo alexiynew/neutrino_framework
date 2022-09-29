@@ -161,7 +161,7 @@ X11GlxContext::X11GlxContext(const ContextSettings& settings, Display* display)
         throw std::runtime_error("Invalid GLX version.");
     }
 
-    const GLXFBConfig fb_config = choose_framebuffer_config(m_display, settings);
+    GLXFBConfig fb_config = choose_framebuffer_config(m_display, settings);
 
     if (fb_config == nullptr) {
         throw std::runtime_error("Can't get framebuffer config.");
