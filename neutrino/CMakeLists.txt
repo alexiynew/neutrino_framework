@@ -18,8 +18,17 @@ set(GCC_LIKE_CXX "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
 set(MSVC_LIKE_CXX "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 
 target_compile_options(${PROJECT_NAME} PUBLIC
-  "$<${GCC_LIKE_CXX}:${GCC_OPTIONS}>"
-  "$<${MSVC_LIKE_CXX}:${MSVC_OPTIONS}>"
+    "$<${GCC_LIKE_CXX}:${GCC_OPTIONS}>"
+    "$<${MSVC_LIKE_CXX}:${MSVC_OPTIONS}>"
+)
+
+# Set link options
+set(GCC_LINK_OPTIONS "-lpthread")
+set(MSVC_LINK_OPTIONS "")
+
+target_link_options(${PROJECT_NAME} PRIVATE
+    "$<${GCC_LIKE_CXX}:${GCC_LINK_OPTIONS}>"
+    "$<${MSVC_LIKE_CXX}:${MSVC_LINK_OPTIONS}>"
 )
 
 # Patform specific options

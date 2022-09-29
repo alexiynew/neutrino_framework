@@ -952,7 +952,7 @@ CursorPosition OsxWindow::cursor_position() const
     const NSPoint pos = [m_window->get() mouseLocationOutsideOfEventStream];
     const auto p      = position();
     const auto s      = size();
-    return {pos.x + p.x, (p.y + s.height) - pos.y};
+    return {static_cast<int>(pos.x + p.x), static_cast<int>((p.y + s.height) - pos.y)};
 }
 
 const Context& OsxWindow::context() const
