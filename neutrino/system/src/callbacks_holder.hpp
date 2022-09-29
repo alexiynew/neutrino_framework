@@ -17,8 +17,6 @@ class CallbacksHolder
 public:
     void on_show() const;
     void on_hide() const;
-    void on_resize(Size new_size) const;
-    void on_move(Position new_position) const;
     void on_key_down(KeyCode key, Modifiers modifiers) const;
     void on_key_up(KeyCode key, Modifiers modifiers) const;
     void on_character(const std::string& str) const;
@@ -30,6 +28,10 @@ private:
     friend class framework::system::Window;
 
     void on_close() const;
+
+    void on_resize(Size new_size) const;
+    void on_move(Position new_position) const;
+
     void on_focus() const;
     void on_lost_focus() const;
 

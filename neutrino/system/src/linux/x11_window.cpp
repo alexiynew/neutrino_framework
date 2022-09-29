@@ -646,14 +646,14 @@ void X11Window::process(XConfigureEvent event)
     if (m_size != new_size) {
         m_size = new_size;
         if (is_visible()) {
-            callbacks().on_resize(m_size);
+            on_resize(m_size);
         }
     }
 
     if (m_position != new_position) {
         m_position = new_position;
         if (is_visible()) {
-            callbacks().on_move(m_position);
+            on_move(m_position);
         }
     }
 }

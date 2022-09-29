@@ -402,6 +402,9 @@ private:
 
     void on_close();
 
+    void on_resize(Size size);
+    void on_move(Position position);
+
     void on_focus();
     void on_lost_focus();
 

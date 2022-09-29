@@ -52,13 +52,10 @@ void main()\n\
 constexpr int LogOffset                    = 50;
 constexpr math::Vector3f normal_text_scale = {15, 15, 1};
 
-constexpr math::Vector3f SizeTextTopLeftOffset          = {-300, -25, 0};
-constexpr math::Vector3f PositionTextTopLeftOffset      = {-150, -25, 0};
-constexpr math::Vector3f CursorTextTopLeftOffset        = {-300, -50, 0};
-constexpr math::Vector3f StateTextTopLeftOffset         = {-300, -130, 0};
-constexpr math::Vector3f ResizableTextTopLeftOffset     = {-300, -155, 0};
-constexpr math::Vector3f HasInputFocusTextTopLeftOffset = {-300, -180, 0};
-constexpr math::Vector3f CatTextBottomRightOffset       = {80, -50, 0};
+constexpr math::Vector3f WindowTextTopLeftOffset = {-300, -50, 0};
+constexpr math::Vector3f CursorTextTopLeftOffset = {-300, -150, 0};
+
+constexpr math::Vector3f CatTextBottomRightOffset = {80, -50, 0};
 
 std::string get_state_name(Window::State state)
 {
@@ -95,11 +92,8 @@ View::~View()
 
 void View::render(const DataContext& data)
 {
-    render_size_position(data);
+    render_window_state(data);
     render_cursor_state(data);
-    render_state(data);
-    render_resizable(data);
-    render_input_focus(data);
     render_log(data);
     render_cat(data);
 
@@ -115,19 +109,40 @@ void View::on_resize(framework::Size size)
     m_renderer.set_viewport(size);
 }
 
-void View::render_size_position(const DataContext& data)
+void View::render_window_state(const DataContext& data)
 {
-    const auto size = data.window_size();
-    const auto pos  = data.window_position();
+    const auto size         = data.window_size();
+    math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + WindowTextTopLeftOffset;
 
-    const std::string size_text = "Size: " + std::to_string(size.width) + ", " + std::to_string(size.height);
-    const std::string pos_text  = "Position: " + std::to_string(pos.x) + ", " + std::to_string(pos.y);
+    render_normal_text(TextName::WindowTitleText, "Window  v ", text_pos);
+    text_pos.y -= 15;
 
-    const math::Vector3f size_text_pos     = math::Vector3f{size.width, size.height, 0} + SizeTextTopLeftOffset;
-    const math::Vector3f position_text_pos = math::Vector3f{size.width, size.height, 0} + PositionTextTopLeftOffset;
+    std::stringstream ss;
 
-    render_normal_text(TextName::SizeText, size_text, size_text_pos);
-    render_normal_text(TextName::PositionText, pos_text, position_text_pos);
+    ss << "        +-> Size:      " << data.window_size();
+    render_normal_text(TextName::WindowSizeText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
+
+    ss << "        +-> Position:  " << data.window_position();
+    render_normal_text(TextName::WindowPositionText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
+
+    ss << "        +-> State:     " << get_state_name(data.window_state());
+    render_normal_text(TextName::WindowStateText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
+
+    ss << "        +-> Resizable: " << (data.window_resizable() ? "[x]" : "[ ]");
+    render_normal_text(TextName::WindowResizableText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
+
+    ss << "        +-> Input:     " << (data.window_has_input_focus() ? "[x]" : "[ ]");
+    render_normal_text(TextName::WindowHasInputFocusText, ss.str(), text_pos);
+    text_pos.y -= 15;
+    ss.str("");
 }
 
 void View::render_cursor_state(const DataContext& data)
@@ -137,60 +152,30 @@ void View::render_cursor_state(const DataContext& data)
 
     math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + CursorTextTopLeftOffset;
 
-    render_normal_text(TextName::CursorTitleText, "Mouse  v ", text_pos);
+    render_normal_text(TextName::CursorTitleText, "Mouse   v ", text_pos);
     text_pos.y -= 15;
 
     std::stringstream ss;
 
-    ss << "       +-> Position: " << pos;
+    ss << "        +-> Position: " << pos;
     render_normal_text(TextName::CursorPositionText, ss.str(), text_pos);
     text_pos.y -= 15;
     ss.str("");
 
-    ss << "       +-> Captured: " << (data.cursor_captured() ? "[x]" : "[ ]");
+    ss << "        +-> Captured: " << (data.cursor_captured() ? "[x]" : "[ ]");
     render_normal_text(TextName::CursorCapturedText, ss.str(), text_pos);
     text_pos.y -= 15;
     ss.str("");
 
-    ss << "       +-> Visible:  " << (data.cursor_visible() ? "[x]" : "[ ]");
+    ss << "        +-> Visible:  " << (data.cursor_visible() ? "[x]" : "[ ]");
     render_normal_text(TextName::CursorVisibleText, ss.str(), text_pos);
     text_pos.y -= 15;
     ss.str("");
 
-    ss << "       +-> Hover:    " << (data.cursor_hover() ? "[x]" : "[ ]");
+    ss << "        +-> Hover:    " << (data.cursor_hover() ? "[x]" : "[ ]");
     render_normal_text(TextName::MouseHoverText, ss.str(), text_pos);
     text_pos.y -= 15;
     ss.str("");
-}
-
-void View::render_state(const DataContext& data)
-{
-    const auto size = data.window_size();
-
-    const std::string text        = "State: " + get_state_name(data.window_state());
-    const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + StateTextTopLeftOffset;
-
-    render_normal_text(TextName::WindowStateText, text, text_pos);
-}
-
-void View::render_resizable(const DataContext& data)
-{
-    const auto size = data.window_size();
-
-    const std::string text        = "Resizable: " + std::string(data.window_resizable() ? "[x]" : "[ ]");
-    const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + ResizableTextTopLeftOffset;
-
-    render_normal_text(TextName::WindowResizableText, text, text_pos);
-}
-
-void View::render_input_focus(const DataContext& data)
-{
-    const auto size = data.window_size();
-
-    const std::string text        = "Input:     " + std::string(data.window_has_input_focus() ? "[x]" : "[ ]");
-    const math::Vector3f text_pos = math::Vector3f{size.width, size.height, 0} + HasInputFocusTextTopLeftOffset;
-
-    render_normal_text(TextName::windowHasInputFocusText, text, text_pos);
 }
 
 void View::render_log(const DataContext& data)

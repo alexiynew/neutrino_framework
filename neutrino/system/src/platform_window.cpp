@@ -37,6 +37,20 @@ void PlatformWindow::on_close()
     }
 }
 
+void PlatformWindow::on_resize(Size size)
+{
+    if (m_window_interface) {
+        m_window_interface->on_resize(size);
+    }
+}
+
+void PlatformWindow::on_move(Position position)
+{
+    if (m_window_interface) {
+        m_window_interface->on_move(position);
+    }
+}
+
 void PlatformWindow::on_focus()
 {
     if (m_window_interface) {

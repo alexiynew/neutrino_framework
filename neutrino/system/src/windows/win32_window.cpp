@@ -484,7 +484,7 @@ LRESULT Win32Window::on_move_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
         update_cursor_clipping();
-        callbacks().on_move(position());
+        on_move(position());
     }
 
     return 0;
@@ -494,7 +494,7 @@ LRESULT Win32Window::on_size_message(UINT, WPARAM, LPARAM)
 {
     if (is_visible()) {
         update_cursor_clipping();
-        callbacks().on_resize(size());
+        on_resize(size());
     }
 
     return 0;

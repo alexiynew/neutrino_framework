@@ -21,8 +21,12 @@ public:
 private:
     enum TextName : framework::graphics::Renderer::ResourceId
     {
-        SizeText = 0,
-        PositionText,
+        WindowTitleText = 0,
+        WindowSizeText,
+        WindowPositionText,
+        WindowStateText,
+        WindowResizableText,
+        WindowHasInputFocusText,
 
         CursorTitleText,
         CursorPositionText,
@@ -31,21 +35,14 @@ private:
         MouseHoverText,
         CursorMarker,
 
-        WindowStateText,
-        WindowResizableText,
-        windowHasInputFocusText,
-
         CatText,
         CatText1,
 
         LogTextBegin,
     };
 
-    void render_size_position(const DataContext& data);
+    void render_window_state(const DataContext& data);
     void render_cursor_state(const DataContext& data);
-    void render_state(const DataContext& data);
-    void render_resizable(const DataContext& data);
-    void render_input_focus(const DataContext& data);
     void render_log(const DataContext& data);
     void render_cat(const DataContext& data);
     void render_cursor_marker(const DataContext& data);

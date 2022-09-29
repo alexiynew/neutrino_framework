@@ -978,7 +978,7 @@ void OsxWindow::window_did_resize()
 {
     if (is_visible()) {
         update_context();
-        callbacks().on_resize(size());
+        on_resize(size());
     }
 }
 
@@ -986,7 +986,7 @@ void OsxWindow::window_did_move()
 {
     if (is_visible()) {
         update_context();
-        callbacks().on_move(position());
+        on_move(position());
     }
 }
 

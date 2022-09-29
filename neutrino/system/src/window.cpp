@@ -415,6 +415,18 @@ void Window::on_close()
     close();
 }
 
+void Window::on_resize(Size size)
+{
+    m_callbacks->on_resize(size);
+    update_cursor_position();
+}
+
+void Window::on_move(Position position)
+{
+    m_callbacks->on_move(position);
+    update_cursor_position();
+}
+
 void Window::on_focus()
 {
     if (!is_visible()) {

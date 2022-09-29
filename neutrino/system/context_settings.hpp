@@ -19,7 +19,7 @@ namespace framework::system
 /// Context is always double-buffered and always RGB-capable.
 /// After the context is created, the values in the ContextSettings are updated to the actual ones.
 /// If the any value is set to `dont_care`, this parameter is not taken into account when creating the context.
-/// Otherwise, the closest, but not more than the specified value is selected.
+/// Otherwise, the closest to the specified value is selected.
 class ContextSettings
 {
 public:
