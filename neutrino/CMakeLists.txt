@@ -19,17 +19,16 @@ target_compile_options(${PROJECT_NAME} PUBLIC
     "$<${MSVC_LIKE_COMPILER}:${MSVC_OPTIONS}>"
 )
 
-# Set link options
-target_link_libraries(${PROJECT_NAME} PUBLIC pthread)
-
 # Patform specific options
 if(${PLATFORM_NAME} MATCHES "window") 
     # Support unicode and no min\min macros
     target_compile_options(${PROJECT_NAME} PUBLIC "-DNOMINMAX;-DUNICODE")
 elseif(${PLATFORM_NAME} MATCHES "linux") 
     target_compile_options(${PROJECT_NAME} PUBLIC "-fPIC")
+    target_link_libraries(${PROJECT_NAME} PUBLIC pthread)
 elseif(${PLATFORM_NAME} MATCHES "osx") 
     target_compile_options(${PROJECT_NAME} PUBLIC "-fPIC")
+    target_link_libraries(${PROJECT_NAME} PUBLIC pthread)
 endif()
 
 # Test covarage

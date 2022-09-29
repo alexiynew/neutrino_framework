@@ -57,9 +57,6 @@ jobs:
       working-directory: ${{github.workspace}}/build/tests
       run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j 10 -E "${{env.TESTS_TO_SKIP}}"
 
-    - name: Run clang-tidy
-      run: python ${{github.workspace}}/tools/clang_tidy.py
-
   clang_tidy:
     strategy:
       matrix:
