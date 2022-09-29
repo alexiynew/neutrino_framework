@@ -54,6 +54,10 @@ message(STATUS "Platform: ${PLATFORM_NAME}")
 detect_compiler_name(COMPILER_NAME)
 message(STATUS "Compiler: ${COMPILER_NAME} - ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
+# Set compiler helpers
+set(GCC_LIKE_COMPILER "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
+set(MSVC_LIKE_COMPILER "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
+
 # Assemble framework
 include(${FRAMEWORK_SOURCE_DIR}/CMakeLists.txt)
 

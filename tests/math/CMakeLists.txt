@@ -27,6 +27,8 @@ foreach(TEST ${TESTS})
     add_executable(${TEST} EXCLUDE_FROM_ALL "")
     target_sources(${TEST} PRIVATE ${PRIVATE_SOURCES})
 
+    target_compile_options(${TEST} PRIVATE "$<${GCC_LIKE_COMPILER}:-pthread>")
+
     target_link_libraries(${TEST} ${PROJECT_NAME})
     target_include_directories(${TEST} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 

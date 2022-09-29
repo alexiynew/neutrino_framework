@@ -24,8 +24,9 @@ foreach(EXAMPLE ${EXAMPLES})
     include(${EXAMPLE_SOURCE_DIR}/CMakeLists.txt)
 
     add_executable(${EXAMPLE} EXCLUDE_FROM_ALL "")
-
     target_sources(${EXAMPLE} PRIVATE ${PRIVATE_SOURCES})
+
+    target_compile_options(${EXAMPLE} PRIVATE "$<${GCC_LIKE_COMPILER}:-pthread>")
 
     target_link_libraries(${EXAMPLE} ${PROJECT_NAME})
     target_include_directories(${EXAMPLE} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
