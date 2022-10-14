@@ -418,6 +418,14 @@ void Window::on_close()
 void Window::on_resize(Size size)
 {
     m_callbacks->on_resize(size);
+
+    const bool hover = is_cursor_inside_area(m_platform_window->cursor_position(), size);
+    if (!hover) {
+        on_mouse_leave();
+    } else {
+        on_mouse_enter();
+    }
+
     update_cursor_position();
 }
 

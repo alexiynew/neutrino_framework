@@ -638,12 +638,22 @@ void OsxWindow::capture_cursor()
 {
     CGAssociateMouseAndMouseCursorPosition(NO);
     process_events();
+    
+    //if (!state_data().cursor_hover) {
+        //on_mouse_enter();
+    //}
+    
+    on_mouse_move({0, 0});
 }
 
 void OsxWindow::release_cursor()
 {
     CGAssociateMouseAndMouseCursorPosition(YES);
     process_events();
+    
+    //if (state_data().cursor_hover) {
+        //on_mouse_leave();
+    //}
 }
 
 void OsxWindow::show_cursor()
@@ -847,10 +857,13 @@ void OsxWindow::set_title(const std::string& new_title)
 
 void OsxWindow::set_cursor_position(CursorPosition position)
 {
-    CGPoint point;
-    point.x = position.x;
-    point.y = position.y;
-    CGWarpMouseCursorPosition(point);
+    AutoreleasePool pool;
+
+    const NSRect content_rect = [m_view->get() frame];
+    const NSRect local_rect = NSMakeRect(position.x - 1, content_rect.size.height - position.y - 1, 0, 0);
+    const NSRect global_rect = [m_window->get() convertRectToScreen:local_rect];
+    const NSPoint global_point = global_rect.origin;
+    CGWarpMouseCursorPosition(NSMakePoint(global_point.x, transform_y(global_point.y)));
 }
 
 #pragma endregion
@@ -1045,7 +1058,17 @@ void OsxWindow::mouse_exited()
 
 void OsxWindow::mouse_moved(CursorPosition cursor_position)
 {
-    on_mouse_move(convert_cursor_position(cursor_position));
+    if (state_data().cursor_captured) {
+        int dx;
+        int dy;
+        CGGetLastMouseDelta(&dx, &dy);
+        
+        if (dx != 0 || dy != 0) {
+            on_mouse_move({dx, dy});
+        }
+    } else {
+        on_mouse_move(convert_cursor_position(cursor_position));
+    }
 }
 
 void OsxWindow::mouse_button_down(MouseButton button, CursorPosition position, Modifiers state)
