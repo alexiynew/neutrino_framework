@@ -16,6 +16,7 @@
 
 #include <X11/XKBlib.h>
 #include <X11/Xutil.h>
+#include <X11/extensions/XInput2.h>
 #include <unistd.h>
 
 namespace
@@ -207,18 +208,27 @@ void X11Window::capture_cursor()
     }
     m_cursor_actually_captured = true;
 
-    while (XGrabPointer(m_server->display(),
-                        m_window,
-                        True,
-                        ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
-                        GrabModeAsync,
-                        GrabModeAsync, // Keyboard is unaffected
-                        m_window,
-                        None, // Normal cursor
-                        CurrentTime) != GrabSuccess) {
-        XFlush(m_server->display());
-        process_events();
-    }
+    XGrabPointer(m_server->display(),
+                 m_window,
+                 True,
+                 ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
+                 GrabModeAsync,
+                 GrabModeAsync, // Keyboard is unaffected
+                 m_window,
+                 None, // Normal cursor
+                 CurrentTime);
+
+    // Enable raw input
+    XIEventMask event_mask;
+    unsigned char mask[XIMaskLen(XI_RawMotion)] = {0};
+
+    event_mask.deviceid = XIAllMasterDevices;
+    event_mask.mask_len = sizeof(mask);
+    event_mask.mask     = mask;
+    XISetMask(mask, XI_RawMotion);
+
+    XISelectEvents(m_server->display(), m_server->root_window(), &event_mask, 1);
+
     XFlush(m_server->display());
     process_events();
 }
@@ -231,6 +241,16 @@ void X11Window::release_cursor()
     m_cursor_actually_captured = false;
 
     XUngrabPointer(m_server->display(), CurrentTime);
+
+    // Disable raw input
+    XIEventMask event_mask;
+    unsigned char mask[] = {0};
+
+    event_mask.deviceid = XIAllMasterDevices;
+    event_mask.mask_len = sizeof(mask);
+    event_mask.mask     = mask;
+
+    XISelectEvents(m_server->display(), m_server->root_window(), &event_mask, 1);
 
     XFlush(m_server->display());
     process_events();
@@ -360,8 +380,8 @@ void X11Window::process_events()
             case LeaveNotify: process(event.xcrossing); break;
             case MotionNotify: process(event.xmotion); break;
             case MappingNotify: process(event.xmapping); break;
+            case GenericEvent: process(event.xgeneric, event.xcookie); break;
             case KeymapNotify: break;
-            case GenericEvent: break;
 
             default: break;
         }
@@ -465,12 +485,8 @@ void X11Window::set_position(Position new_position)
 
 void X11Window::set_cursor_position(CursorPosition position)
 {
-    return;
-
     XWarpPointer(m_server->display(), None, m_window, 0, 0, 0, 0, position.x, position.y);
-
     XFlush(m_server->display());
-    process_events();
 }
 
 void X11Window::set_title(const std::string& title)
@@ -622,15 +638,15 @@ Context& X11Window::context()
 
 #pragma region event_processing
 
-void X11Window::process(XDestroyWindowEvent /*unused*/)
+void X11Window::process(const XDestroyWindowEvent& /*unused*/)
 {}
 
-void X11Window::process(XUnmapEvent /*unused*/)
+void X11Window::process(const XUnmapEvent& /*unused*/)
 {
     m_mapped = false;
 }
 
-void X11Window::process(XVisibilityEvent event)
+void X11Window::process(const XVisibilityEvent& event)
 {
     if (event.state == VisibilityFullyObscured) {
         return;
@@ -638,7 +654,7 @@ void X11Window::process(XVisibilityEvent event)
     m_mapped = true;
 }
 
-void X11Window::process(XConfigureEvent event)
+void X11Window::process(const XConfigureEvent& event)
 {
     Size new_size{event.width, event.height};
     Position new_position{event.x, event.y};
@@ -658,7 +674,7 @@ void X11Window::process(XConfigureEvent event)
     }
 }
 
-void X11Window::process(XFocusChangeEvent event)
+void X11Window::process(const XFocusChangeEvent& event)
 {
     switch (event.type) {
         case FocusIn:
@@ -676,7 +692,7 @@ void X11Window::process(XFocusChangeEvent event)
     }
 }
 
-void X11Window::process(XPropertyEvent event)
+void X11Window::process(const XPropertyEvent& event)
 {
     const Atom net_frame_extents = m_server->get_atom(net_frame_extents_atom_name);
     const Atom net_wm_state      = m_server->get_atom(net_wm_state_atom_name);
@@ -698,7 +714,7 @@ void X11Window::process(XPropertyEvent event)
     m_last_input_time = event.time;
 }
 
-void X11Window::process(XClientMessageEvent event)
+void X11Window::process(const XClientMessageEvent& event)
 {
     const Atom wm_protocols  = m_server->get_atom(wm_protocols_atom_name);
     const Atom delete_window = m_server->get_atom(wm_delete_window_atom_name);
@@ -724,7 +740,7 @@ void X11Window::process(XClientMessageEvent event)
     }
 }
 
-void X11Window::process(XKeyEvent event)
+void X11Window::process(XKeyEvent& event)
 {
     const KeyCode key     = details::map_system_key(event.keycode);
     const Modifiers state = details::get_modifiers_state(event.state);
@@ -767,7 +783,7 @@ void X11Window::process(XKeyEvent event)
     }
 }
 
-void X11Window::process(XButtonEvent event)
+void X11Window::process(const XButtonEvent& event)
 {
     const MouseButton button      = details::map_mouse_button(event.button);
     const Modifiers state         = details::get_modifiers_state(event.state);
@@ -783,7 +799,7 @@ void X11Window::process(XButtonEvent event)
     }
 }
 
-void X11Window::process(XCrossingEvent event)
+void X11Window::process(const XCrossingEvent& event)
 {
     switch (event.type) {
         case EnterNotify: on_mouse_enter(); break;
@@ -791,27 +807,60 @@ void X11Window::process(XCrossingEvent event)
     }
 }
 
-void X11Window::process(XMotionEvent event)
+void X11Window::process(const XMotionEvent& event)
 {
     const CursorPosition pos = {event.x, event.y};
 
-    if (!state_data().cursor_captured) {
+    // if (state_data().cursor_captured) {
+    //     const int dx           = pos.x - m_last_cursor_position.x;
+    //     const int dy           = pos.y - m_last_cursor_position.y;
+    //     m_last_cursor_position = pos;
+
+    //     if (dx != 0 || dy != 0) {
+    //         on_mouse_move({dx, dy});
+    //     }
+    // }
+    if (!state_data().cursor_captured && pos != m_last_cursor_position) {
         m_last_cursor_position = pos;
         on_mouse_move(pos);
-    } else {
-        const int dx           = pos.x - m_last_cursor_position.x;
-        const int dy           = pos.y - m_last_cursor_position.y;
-        m_last_cursor_position = pos;
-
-        if (dx != 0 || dy != 0) {
-            on_mouse_move({dx, dy});
-        }
     }
 }
 
-void X11Window::process(XMappingEvent event)
+void X11Window::process(XMappingEvent& event)
 {
     XRefreshKeyboardMapping(&event);
+}
+
+void X11Window::process(const XGenericEvent&, XGenericEventCookie& cookie)
+{
+    if (!state_data().cursor_captured) {
+        return;
+    }
+    const bool got_event_data = XGetEventData(m_server->display(), &cookie);
+
+    if (cookie.evtype == XI_RawMotion && got_event_data) {
+        const XIRawEvent* re = reinterpret_cast<XIRawEvent*>(cookie.data);
+        if (re->valuators.mask_len) {
+            int dx = 0;
+            int dy = 0;
+
+            const double* values = re->raw_values;
+            if (XIMaskIsSet(re->valuators.mask, 0)) {
+                dx = static_cast<int>(*values);
+                values++;
+            }
+
+            if (XIMaskIsSet(re->valuators.mask, 1)) {
+                dy = static_cast<int>(*values);
+            }
+
+            if (dx != 0 || dy != 0) {
+                on_mouse_move({dx, dy});
+            }
+        }
+    }
+
+    XFreeEventData(m_server->display(), &cookie);
 }
 
 #pragma endregion

@@ -227,7 +227,7 @@ XVisualInfo* X11GlxContext::visual_info() const
     return m_visual_info;
 }
 
-void X11GlxContext::attach_window(Window window)
+void X11GlxContext::attach_window(XLibWindow window)
 {
     m_window = window;
 }

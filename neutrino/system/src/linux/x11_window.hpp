@@ -70,18 +70,19 @@ public:
 #pragma endregion
 
 private:
-    void process(XDestroyWindowEvent event);
-    void process(XUnmapEvent event);
-    void process(XVisibilityEvent event);
-    void process(XConfigureEvent event);
-    void process(XFocusChangeEvent event);
-    void process(XPropertyEvent event);
-    void process(XClientMessageEvent event);
-    void process(XKeyEvent event);
-    void process(XButtonEvent event);
-    void process(XCrossingEvent event);
-    void process(XMotionEvent event);
-    void process(XMappingEvent event);
+    void process(const XDestroyWindowEvent& event);
+    void process(const XUnmapEvent& event);
+    void process(const XVisibilityEvent& event);
+    void process(const XConfigureEvent& event);
+    void process(const XFocusChangeEvent& event);
+    void process(const XPropertyEvent& event);
+    void process(const XClientMessageEvent& event);
+    void process(XKeyEvent& event);
+    void process(const XButtonEvent& event);
+    void process(const XCrossingEvent& event);
+    void process(const XMotionEvent& event);
+    void process(XMappingEvent& event);
+    void process(const XGenericEvent& event, XGenericEventCookie& cookie);
 
     void set_wm_hints();
     void set_wm_normal_hints();

@@ -24,8 +24,18 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-# Link to x11
+# Find x11
 find_package(X11 REQUIRED)
 
+# Check for XInput extension
+if (NOT X11_Xi_INCLUDE_PATH)
+    message(FATAL_ERROR "The XInput headers were not found")
+endif()
+
+ # Check for Xkb (X keyboard extension)
+if (NOT X11_Xkb_INCLUDE_PATH)
+    message(FATAL_ERROR "The X keyboard extension headers were not found")
+endif()
+
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${X11_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_LIBRARIES} ${X11_Xi_LIB})

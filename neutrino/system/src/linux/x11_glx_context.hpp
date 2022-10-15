@@ -5,6 +5,7 @@
 
 #include <system/src/linux/glxext.hpp>
 #include <system/src/linux/x11_glx_get_function.hpp>
+#include <system/src/linux/x11_types.hpp>
 
 #include <X11/Xlib.h>
 
@@ -31,7 +32,7 @@ public:
 
     XVisualInfo* visual_info() const;
 
-    void attach_window(Window window);
+    void attach_window(XLibWindow window);
 
 private:
     void clear();
@@ -40,7 +41,7 @@ private:
 
     Display* m_display         = nullptr;
     XVisualInfo* m_visual_info = nullptr;
-    Window m_window            = None;
+    XLibWindow m_window        = None;
 
     glx::GLXContext m_glx_context = nullptr;
 };
