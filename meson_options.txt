@@ -1,2 +1,0 @@
-option('build_tests', type : 'boolean', value : true, description: 'Should tests be inculuded in build.')
-option('build_docs', type : 'boolean', value : true, description: 'Should generate documentation.')

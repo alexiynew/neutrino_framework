@@ -1,0 +1,15 @@
+set_sources(PRIVATE_SOURCES
+    main.cpp
+)
+
+file(GLOB BMP_GOOD "${EXAMPLE_SOURCE_DIR}/bmp/good/*.bmp")
+file(COPY ${BMP_GOOD} DESTINATION ${EXAMPLE_BINARY_DIR}/bmp/good)
+
+file(GLOB BMP_BAD "${EXAMPLE_SOURCE_DIR}/bmp/bad/*.bmp")
+file(COPY ${BMP_BAD} DESTINATION ${EXAMPLE_BINARY_DIR}/bmp/bad)
+
+file(GLOB BMP_QUESTIONABLE "${EXAMPLE_SOURCE_DIR}/bmp/questionable/*.bmp")
+file(COPY ${BMP_QUESTIONABLE} DESTINATION ${EXAMPLE_BINARY_DIR}/bmp/questionable)
+
+file(GLOB PNG_GOOD "${EXAMPLE_SOURCE_DIR}/png/*.png")
+file(COPY ${PNG_GOOD} DESTINATION ${EXAMPLE_BINARY_DIR}/png)

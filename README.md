@@ -1,18 +1,88 @@
-# My Own Game Framework
+# Neutrino framework
 
-## Build Status
-[![Build Status](https://travis-ci.org/alexiynew/game_framework.svg?branch=master)](https://travis-ci.org/alexiynew/game_framework)
-[![Build Windows](https://ci.appveyor.com/api/projects/status/github/alexiynew/game_framework?branch=master&svg=true)](https://ci.appveyor.com/project/alexiynew/game-framework)
+A lightweight game framework, with no third-party dependencies, made for fun.
 
-[![BCH compliance](https://bettercodehub.com/edge/badge/alexiynew/game_framework?branch=master)](https://bettercodehub.com/)
-[![codecov](https://codecov.io/gh/alexiynew/game_framework/branch/master/graph/badge.svg)](https://codecov.io/gh/alexiynew/game_framework)
+## It's crossplatform
+Kinda. By now Linux, Windows, and macOS are supported. 
+In a level 'it works on my machine'.
 
-### Detailed Build Status
-| Compiler      | Linux |
-|---------------|-------|
-| Clang 6       | [![Build Linux](https://travis-matrix-badges.herokuapp.com/repos/alexiynew/game_framework/branches/master/1)](https://travis-ci.org/alexiynew/game_framework) |
-| GCC 7         | [![Build Linux](https://travis-matrix-badges.herokuapp.com/repos/alexiynew/game_framework/branches/master/2)](https://travis-ci.org/alexiynew/game_framework) |
+## It's lightweight
+No need to install and build a bunch of third-party libraries. 
+All that is needed is implemented inside the framework, this gives a single code
+base and the consistency of the modules.
 
-| Compiller       | Windows |
-|-----------------|---------|
-| VC2017 | [![Build Windows](https://ci.appveyor.com/api/projects/status/github/alexiynew/game_framework?branch=master&svg=true)](https://ci.appveyor.com/project/alexiynew/game-framework) |
+## It's made for fun
+This is a hobby project. I'm developing it in my free time.   
+The main idea is to do everything with my own hands, couse it is interesting.  
+On the other hand. This means that the project is developing slowly. 
+It is poorly tested. It may not support something that you need.  
+**It may contain a LOT OF BUGS**.
+
+
+## Modules
+
+| module                            |                                  |
+| ----------------------------------|----------------------------------|
+| [Common utils](neutrino/common/)  | Useful classes and functions     |
+| [3D graphics](neutrino/graphics/) | Graphics rendering support       |
+| [Logging](neutrino/log/)          | Logging support                  |
+| [Math](neutrino/math/)            | Linear algebra library           |
+| [System](neutrino/system/)        | Interaction with user and OS     |
+| [Unit tests](neutrino/unit_test/) | Unit tests support for framework |
+
+
+## How to build
+
+**Reqired**: cmake v3.18, cpp compiller with cpp 17 support.
+
+### Linux
+
+Additional packages are required to be installed in the system 
+to support OpenGL and X11
+```
+libx11-dev libxi-dev libgl1-mesa-dev mesa-common-dev
+```
+
+To build project run in terminal:
+
+``` bash
+> mkdir build
+> cd build
+> cmake ../
+> cmake --build .
+```
+
+To run tests:
+
+``` bash
+> cmake --build . -t check
+```
+
+### Windows
+To generate Visual Studio project run in terminal:
+
+``` bash
+> mkdir build
+> cd build
+> cmake ../ -G "Visual Studio 16 2019"
+```
+
+To run tests:  
+Build the 'check' target in VS.
+### MacOS
+
+To generate XCode project run in terminal:
+
+``` bash
+> mkdir build
+> cd build
+> cmake ../ -G XCode
+```
+
+To run tests:  
+Build the 'check' scheme in XCode.
+
+## Code example
+TODO
+
+

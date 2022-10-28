@@ -1,0 +1,38 @@
+#ifndef COMMON_ZLIB_HPP
+#define COMMON_ZLIB_HPP
+
+#include <cstdint>
+#include <vector>
+
+namespace framework::zlib
+{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @addtogroup utils_zlib_implementation
+/// @{
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// @brief Decompress byte sequence
+///
+/// For details on the compression algorithm see the deflate specification [RFC-1951]
+///
+/// @param data LZ77-compressed data
+///
+/// @return Raw (uncompressed) data
+std::vector<std::uint8_t> inflate(const std::vector<std::uint8_t>& data);
+
+/// @brief Compress byte sequence
+///
+/// For details on the compression algorithm see the deflate specification [RFC-1951]
+///
+/// @param data Data to compress
+///
+/// @return LZ77-compressed data
+std::vector<std::uint8_t> deflate(const std::vector<std::uint8_t>& data);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+} // namespace framework::zlib
+
+#endif

@@ -1,0 +1,47 @@
+/// @defgroup utils_module Utility
+/// @{
+/// @defgroup utils_types_module Types
+/// @defgroup utils_exceptions_module Exceptions
+/// @defgroup utils_utils_module Utils
+/// @defgroup utils_utf_implementation Utf support
+/// @defgroup utils_crc_implementation Crc
+/// @defgroup utils_zlib_implementation ZLIB compression algorithm
+/// @}
+
+/// @defgroup graphics_module 3D Graphics
+/// @{
+/// @defgroup graphics_font_module Font
+/// @defgroup graphics_image_module Image processing
+/// @defgroup graphics_renderer_module Graphics
+/// @}
+
+/// @defgroup log_module Logging
+
+/// @defgroup math_module Math
+/// @{
+/// @defgroup math_predefined_constants Predefined constants
+/// @defgroup math_vector_implementation Vector type
+/// @defgroup math_matrix_implementation Matrix type
+/// @defgroup math_common_functions Common functions
+/// @defgroup math_exponential_functions Exponential functions
+/// @defgroup math_geometric_functions Geometric functions
+/// @defgroup math_matrix_functions Matrix functions
+/// @defgroup math_relational_functions Relational functions
+/// @defgroup math_transform_functions Transform functions
+/// @defgroup math_trigonometric_functions Trigonometric functions
+/// @defgroup math_bezier_functions Bezier curve functions
+/// @defgroup math_hash_functions Support for std::hash function
+/// @defgroup math_polygon_functions Support for polygons geometry
+/// @}
+
+/// @defgroup system_module System
+/// @{
+/// @defgroup system_application_class Application
+/// @defgroup system_window_class Window
+/// @defgroup system_graphic_context Context
+/// @defgroup system_input_module Input
+/// @}
+
+/// @defgroup unit_test_module Unit test
+
+/// @defgroup profiler_module Profiler

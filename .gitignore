@@ -3,11 +3,21 @@ output/
 
 __pycache__/
 
+.vim
 .vscode/
 .atom-build.yml
 .lvimrc
+_lvimrc
+.vimrc
+_vimrc
 .DS_Store
 .idea
+.cproject
+.project
+.cache
+.settings/
+.vs
+CMakeSettings.json
 
 .clang_complete
 *.log
@@ -15,3 +25,12 @@ __pycache__/
 xorg.conf
 .dir-locals.*
 tags
+*.txt.user
+
+.kdev4
+*.kdev4
+*.kate-swp
+
+*.sublime-project
+*.sublime-workspace
+
