@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_CONTEXT_HPP
-#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_CONTEXT_HPP
+#ifndef SYSTEM_SRC_OSX_OSX_CONTEXT_HPP
+#define SYSTEM_SRC_OSX_OSX_CONTEXT_HPP
 
 #include <system/context.hpp>
 
@@ -17,13 +17,11 @@ public:
     OsxContext(OsxContext&&)      = default;
 
     OsxContext& operator=(const OsxContext&) noexcept = default;
-    OsxContext& operator=(OsxContext&&) noexcept = default;
+    OsxContext& operator=(OsxContext&&) noexcept      = default;
 
-    bool valid() const override;
+    bool is_valid() const override;
     bool is_current() const override;
     Api api_type() const override;
-
-    VoidFunctionPtr get_function(const char* function_name) const override;
 
     void make_current() override;
     void swap_buffers() override;
@@ -31,6 +29,10 @@ public:
     void update();
 
 private:
+    using VoidFunctionPtr = void (*)();
+
+    VoidFunctionPtr get_function(const char* function_name) const;
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSView* m_view             = nullptr;

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_INC_CONSTANTS_HPP
-#define FRAMEWORK_MATH_INC_CONSTANTS_HPP
+#ifndef MATH_INC_CONSTANTS_HPP
+#define MATH_INC_CONSTANTS_HPP
 
 namespace framework::math
 {

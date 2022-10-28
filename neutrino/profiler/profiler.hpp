@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_PROFILER_PROFILER_HPP
-#define FRAMEWORK_PROFILER_PROFILER_HPP
+#ifndef PROFILER_PROFILER_HPP
+#define PROFILER_PROFILER_HPP
 
 #include <filesystem>
 #include <string_view>
@@ -20,7 +20,7 @@ public:
     ScopeProfilerItem(ScopeProfilerItem&&)      = delete;
 
     ScopeProfilerItem& operator=(const ScopeProfilerItem&) = delete;
-    ScopeProfilerItem& operator=(ScopeProfilerItem&&) = delete;
+    ScopeProfilerItem& operator=(ScopeProfilerItem&&)      = delete;
 
     ~ScopeProfilerItem();
 

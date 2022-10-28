@@ -13,4 +13,4 @@ target_sources(${PROJECT_NAME}
         ${PRIVATE_SOURCES}
 )
 
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+make_install_files_target(include/${MODULE} ${PUBLIC_SOURCES})

@@ -1,11 +1,10 @@
-#ifndef FRAMEWORK_GRAPHICS_MESH_HPP
-#define FRAMEWORK_GRAPHICS_MESH_HPP
+#ifndef GRAPHICS_MESH_HPP
+#define GRAPHICS_MESH_HPP
 
 #include <array>
 #include <unordered_map>
 #include <vector>
 
-#include <common/instance_id.hpp>
 #include <graphics/color.hpp>
 #include <math/math.hpp>
 
@@ -157,11 +156,6 @@ public:
     /// @see Renderer::load.
     void clear();
 
-    /// @brief Get Mesh instance id. Guaranted to be unique.
-    ///
-    /// @return Mesh instance id.
-    InstanceId instance_id() const;
-
     /// @brief Get vertex positions.
     ///
     /// @return Vertex positions.
@@ -204,7 +198,6 @@ public:
 private:
     friend void swap(Mesh& lhs, Mesh& rhs) noexcept;
 
-    InstanceId m_instance_id;
     VertexData m_vertices;
     VertexData m_normals;
     VertexData m_tanegents;

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_SHADER_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_SHADER_HPP
+#ifndef GRAPHICS_SRC_RENDER_OPENGL_OPENGL_SHADER_HPP
+#define GRAPHICS_SRC_RENDER_OPENGL_OPENGL_SHADER_HPP
 
 #include <cstdint>
 #include <unordered_map>
@@ -18,10 +18,10 @@ public:
 
     OpenglShader() = default;
 
-    OpenglShader(const OpenglShader&) = delete;
+    OpenglShader(const OpenglShader&)            = delete;
     OpenglShader& operator=(const OpenglShader&) = delete;
 
-    OpenglShader(OpenglShader&&) = default;
+    OpenglShader(OpenglShader&&)            = default;
     OpenglShader& operator=(OpenglShader&&) = default;
 
     ~OpenglShader();
@@ -29,12 +29,13 @@ public:
     bool load(const Shader& shader);
     void clear();
 
-    int get_attribute_location(const std::string& name) const;
-
     void use() const;
 
-    void set_uniforms(const Renderer::Command& command) const;
+    int get_attribute_location(const std::string& name) const;
 
+    bool is_texture(const std::string& name) const;
+
+    void set_uniforms(const Renderer::Command& command) const;
     void set_texture(const std::string& name, std::size_t index) const;
 
 private:

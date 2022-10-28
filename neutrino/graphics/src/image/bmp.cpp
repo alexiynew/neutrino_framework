@@ -23,7 +23,7 @@ struct FileHeader
 {
     static FileHeader read(std::ifstream& in);
 
-    bool valid() const;
+    bool is_valid() const;
 
     std::uint16_t signature          = 0;
     std::uint32_t file_size          = 0;
@@ -102,7 +102,7 @@ struct InfoHeader
     static InfoHeader read(std::ifstream& in);
     static ColorTable read_color_table(std::ifstream& in, const InfoHeader& info);
 
-    bool valid() const;
+    bool is_valid() const;
 
     Type type() const;
     bool bottom_up() const;
@@ -162,7 +162,7 @@ inline bool check_signature(const FileHeader& h) noexcept
     return false;
 }
 
-bool FileHeader::valid() const
+bool FileHeader::is_valid() const
 {
     constexpr std::size_t max_file_size = 1024 * 1024 * 1024;
     return check_signature(*this) && file_size < max_file_size;
@@ -233,7 +233,7 @@ inline bool check_bits_per_pixel(const InfoHeader& h) noexcept
     return false;
 }
 
-bool InfoHeader::valid() const
+bool InfoHeader::is_valid() const
 {
     bool result = type() != InfoHeader::Type::undefined;
     result      = result && planes == 1;
@@ -790,7 +790,7 @@ ImageInfo load(const std::filesystem::path& filepath)
     }
 
     FileHeader file_header = FileHeader::read(file);
-    if (!file_header.valid()) {
+    if (!file_header.is_valid()) {
         throw ParsingError(error::read_header_error);
     }
     if (!file) {
@@ -798,7 +798,7 @@ ImageInfo load(const std::filesystem::path& filepath)
     }
 
     InfoHeader info = InfoHeader::read(file);
-    if (!info.valid()) {
+    if (!info.is_valid()) {
         throw ParsingError(error::read_header_error);
     }
     if (!file) {
@@ -830,7 +830,7 @@ bool is_bmp(const std::filesystem::path& filepath)
     }
 
     FileHeader header = FileHeader::read(file);
-    return header.valid();
+    return header.is_valid();
 }
 
 } // namespace framework::graphics::details::image::bmp

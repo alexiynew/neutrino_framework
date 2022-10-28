@@ -7,8 +7,8 @@ script_path = os.getcwd()
 
 pathes = [
     os.path.join(script_path, "neutrino"),
-    os.path.join(script_path, "example"),
-    os.path.join(script_path, "test"),
+    os.path.join(script_path, "examples"),
+    os.path.join(script_path, "tests"),
 ]
 
 code_extensions = [

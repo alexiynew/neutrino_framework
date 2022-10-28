@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_CONTEXT_HPP
-#define FRAMEWORK_SYSTEM_CONTEXT_HPP
+#ifndef SYSTEM_CONTEXT_HPP
+#define SYSTEM_CONTEXT_HPP
 
 #include <memory>
 
@@ -23,8 +23,6 @@ public:
         opengl,
     };
 
-    using VoidFunctionPtr = void (*)();
-
     /// @brief Creates context with provided ContextSettings.
     explicit Context(ContextSettings settings) noexcept;
 
@@ -32,14 +30,14 @@ public:
     Context(Context&&)      = default;
 
     Context& operator=(const Context&) noexcept = default;
-    Context& operator=(Context&&) noexcept = default;
+    Context& operator=(Context&&) noexcept      = default;
 
     virtual ~Context();
 
     /// @brief Checks if a context is created properly.
     ///
     /// @return `True` if context can be used.
-    virtual bool valid() const = 0;
+    virtual bool is_valid() const = 0;
 
     /// @brief Checks if a context is current for rendering.
     ///
@@ -50,13 +48,6 @@ public:
     ///
     /// @return Supported API.
     virtual Api api_type() const = 0;
-
-    /// @brief Returns OS specific functon pointer by name.
-    ///
-    /// @param function_name Function to get.
-    ///
-    /// @return Addres of OS function.
-    virtual VoidFunctionPtr get_function(const char* function_name) const = 0;
 
     /// @brief Set a context as current for rendering.
     virtual void make_current() = 0;

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_UTF_HPP
-#define FRAMEWORK_COMMON_UTF_HPP
+#ifndef COMMON_UTF_HPP
+#define COMMON_UTF_HPP
 
 #include <cstdint>
 #include <string>

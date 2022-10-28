@@ -21,8 +21,8 @@ private:
     Window create_window_internal(bool* show_called_flag, bool* hide_called_flag)
     {
         Window window(name(), {640, 480});
-        window.on_show.connect([flag = show_called_flag](const Window& /*unused*/) { *flag = true; });
-        window.on_hide.connect([flag = hide_called_flag](const Window& /*unused*/) { *flag = true; });
+        window.set_on_show_callback([flag = show_called_flag]() { *flag = true; });
+        window.set_on_hide_callback([flag = hide_called_flag]() { *flag = true; });
 
         return window;
     }
@@ -60,13 +60,13 @@ private:
 
         Window window(name(), {640, 480});
 
-        window.on_show.connect([&show_called, this](const Window& w) {
-            TEST_ASSERT(w.is_visible(), "The on_show callback called for non visible window.");
+        window.set_on_show_callback([&window, &show_called, this]() {
+            TEST_ASSERT(window.is_visible(), "The on_show callback called for non visible window.");
             show_called++;
         });
 
-        window.on_hide.connect([&hide_called, this](const Window& w) {
-            TEST_ASSERT(!w.is_visible(), "The on_hide callback called for visible window.");
+        window.set_on_hide_callback([&window, &hide_called, this]() {
+            TEST_ASSERT(!window.is_visible(), "The on_hide callback called for visible window.");
             hide_called++;
         });
 
@@ -79,31 +79,43 @@ private:
 
         window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
-        TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 1 && hide_called == 0,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
-        TEST_ASSERT(show_called == 1 && hide_called == 0, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 1 && hide_called == 0,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
 
         window.hide();
         TEST_ASSERT(!window.is_visible(), "Window is still visible.");
-        TEST_ASSERT(show_called == 1 && hide_called == 1, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 1 && hide_called == 1,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
-        TEST_ASSERT(show_called == 2 && hide_called == 1, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 2 && hide_called == 1,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.hide();
         TEST_ASSERT(!window.is_visible(), "Window is still visible.");
-        TEST_ASSERT(show_called == 2 && hide_called == 2, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 2 && hide_called == 2,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.show();
         TEST_ASSERT(window.is_visible(), "Window is not visible.");
-        TEST_ASSERT(show_called == 3 && hide_called == 2, "Wrong callbacks call.");
+        TEST_ASSERT(show_called == 3 && hide_called == 2,
+                    "Wrong callbacks call s:(" + std::to_string(show_called) + ") h:(" + std::to_string(hide_called) +
+                    ").");
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 

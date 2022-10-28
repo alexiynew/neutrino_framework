@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_NAMING_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_NAMING_HPP
+#ifndef GRAPHICS_SRC_FONT_TABLES_NAMING_HPP
+#define GRAPHICS_SRC_FONT_TABLES_NAMING_HPP
 
 #include <unordered_map>
 #include <vector>
@@ -48,7 +48,7 @@ public:
 
     explicit Naming(const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
     std::string get_string(NameId name_id) const;
 
 private:

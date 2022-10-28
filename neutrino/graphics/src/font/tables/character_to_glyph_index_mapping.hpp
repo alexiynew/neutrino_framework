@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_CHARACTER_TO_GLYPH_INDEX_MAPPING_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_CHARACTER_TO_GLYPH_INDEX_MAPPING_HPP
+#ifndef GRAPHICS_SRC_FONT_TABLES_CHARACTER_TO_GLYPH_INDEX_MAPPING_HPP
+#define GRAPHICS_SRC_FONT_TABLES_CHARACTER_TO_GLYPH_INDEX_MAPPING_HPP
 
 #include <unordered_map>
 #include <vector>
@@ -24,7 +24,7 @@ public:
     CharacterToGlyphIndexMapping& operator=(const CharacterToGlyphIndexMapping& other);
     CharacterToGlyphIndexMapping& operator=(CharacterToGlyphIndexMapping&& other);
 
-    bool valid() const;
+    bool is_valid() const;
 
     GlyphId glyph_index(CodePoint codepoint) const;
 

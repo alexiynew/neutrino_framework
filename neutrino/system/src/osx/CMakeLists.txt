@@ -7,9 +7,9 @@ set_sources(PRIVATE_SOURCES
     osx_context.mm
     osx_keyboard.hpp
     osx_keyboard.mm
-    osx_platform_window.cpp
     osx_window.hpp
     osx_window.mm
+    platform_window_factory.cpp
 )
 
 target_sources(${PROJECT_NAME}

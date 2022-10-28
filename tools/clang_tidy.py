@@ -13,8 +13,11 @@ files = set([entry['file'] for entry in database])
 has_errors = False
 for f in files:
     print(f)
-    # Checks to add: ,cppcoreguidelines-*,misc-*,performance-*,portability-*,readability-*
-    output = subprocess.call(["clang-tidy", f, "-p", "build", "-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,concurrency-*", "--warnings-as-errors=*"])
-    has_errors == has_errors or (output != 0)
+    output = subprocess.call(["clang-tidy", f, "-p", "build"])
+
+    has_errors = (int(output) != 0)
+
+    if has_errors:
+        break
 
 exit(has_errors)

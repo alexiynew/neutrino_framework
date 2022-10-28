@@ -7,120 +7,82 @@ PlatformWindow::PlatformWindow()
 
 PlatformWindow::~PlatformWindow() = default;
 
-void PlatformWindow::set_window_instance(const Window* window)
+void PlatformWindow::set_window_interface(Window* window)
 {
     m_window_interface = window;
 }
 
-void PlatformWindow::on_show() const
+const CallbacksHolder& PlatformWindow::callbacks() const
 {
-    if (m_window_interface) {
-        m_window_interface->on_show(*m_window_interface);
+    if (m_window_interface && m_window_interface->m_callbacks) {
+        return *(m_window_interface->m_callbacks.get());
+    } else {
+        throw std::runtime_error("Window interface not set or window callbacks not initilized.");
     }
 }
 
-void PlatformWindow::on_hide() const
+const StateData& PlatformWindow::state_data() const
 {
-    if (m_window_interface) {
-        m_window_interface->on_hide(*m_window_interface);
+    if (m_window_interface && m_window_interface->m_state_data) {
+        return *(m_window_interface->m_state_data.get());
+    } else {
+        throw std::runtime_error("Window interface not set or window state data not initilized.");
     }
 }
 
-void PlatformWindow::on_close() const
+void PlatformWindow::on_close()
 {
     if (m_window_interface) {
-        m_window_interface->on_close(*m_window_interface);
+        m_window_interface->on_close();
     }
 }
 
-void PlatformWindow::on_focus() const
+void PlatformWindow::on_resize(Size size)
 {
     if (m_window_interface) {
-        m_window_interface->on_focus(*m_window_interface);
+        m_window_interface->on_resize(size);
     }
 }
 
-void PlatformWindow::on_lost_focus() const
+void PlatformWindow::on_move(Position position)
 {
     if (m_window_interface) {
-        m_window_interface->on_lost_focus(*m_window_interface);
+        m_window_interface->on_move(position);
     }
 }
 
-void PlatformWindow::on_resize(Size new_size) const
+void PlatformWindow::on_focus()
 {
     if (m_window_interface) {
-        m_window_interface->on_resize(*m_window_interface, new_size);
+        m_window_interface->on_focus();
     }
 }
 
-void PlatformWindow::on_move(Position new_position) const
+void PlatformWindow::on_lost_focus()
 {
     if (m_window_interface) {
-        m_window_interface->on_move(*m_window_interface, new_position);
+        m_window_interface->on_lost_focus();
     }
 }
 
-void PlatformWindow::on_key_down(KeyCode key, Modifiers modifiers) const
+void PlatformWindow::on_mouse_enter()
 {
     if (m_window_interface) {
-        m_window_interface->on_key_down(*m_window_interface, key, modifiers);
+        m_window_interface->on_mouse_enter();
     }
 }
 
-void PlatformWindow::on_key_up(KeyCode key, Modifiers modifiers) const
+void PlatformWindow::on_mouse_leave()
 {
     if (m_window_interface) {
-        m_window_interface->on_key_up(*m_window_interface, key, modifiers);
+        m_window_interface->on_mouse_leave();
     }
 }
 
-void PlatformWindow::on_character(const std::string& str) const
+void PlatformWindow::on_mouse_move(CursorPosition position)
 {
     if (m_window_interface) {
-        m_window_interface->on_character(*m_window_interface, str);
-    }
-}
-
-void PlatformWindow::on_mouse_move(CursorPosition position) const
-{
-    if (m_window_interface) {
-        m_window_interface->on_mouse_move(*m_window_interface, position);
-    }
-}
-
-void PlatformWindow::on_mouse_button_down(MouseButton button, CursorPosition position, Modifiers modifiers) const
-{
-    if (m_window_interface) {
-        m_window_interface->on_mouse_button_down(*m_window_interface, button, position, modifiers);
-    }
-}
-
-void PlatformWindow::on_mouse_button_up(MouseButton button, CursorPosition position, Modifiers modifiers) const
-{
-    if (m_window_interface) {
-        m_window_interface->on_mouse_button_up(*m_window_interface, button, position, modifiers);
-    }
-}
-
-void PlatformWindow::on_mouse_scroll(ScrollOffset offset) const
-{
-    if (m_window_interface) {
-        m_window_interface->on_mouse_scroll(*m_window_interface, offset);
-    }
-}
-
-void PlatformWindow::on_mouse_enter() const
-{
-    if (m_window_interface) {
-        m_window_interface->on_mouse_enter(*m_window_interface);
-    }
-}
-
-void PlatformWindow::on_mouse_leave() const
-{
-    if (m_window_interface) {
-        m_window_interface->on_mouse_leave(*m_window_interface);
+        m_window_interface->on_mouse_move(position);
     }
 }
 

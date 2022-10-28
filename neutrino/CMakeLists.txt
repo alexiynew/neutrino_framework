@@ -14,12 +14,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 set(GCC_OPTIONS "-Wall;-Wextra;-Wpedantic;-Wshadow;-Wunused;-pedantic-errors;-Werror;-Wno-unknown-pragmas;-Wno-language-extension-token;-pthread")
 set(MSVC_OPTIONS "-W4;-WX;-DNOMINMAX;-DUNICODE;-MT")
 
-set(GCC_LIKE_CXX "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
-set(MSVC_LIKE_CXX "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
-
 target_compile_options(${PROJECT_NAME} PUBLIC
-  "$<${GCC_LIKE_CXX}:${GCC_OPTIONS}>"
-  "$<${MSVC_LIKE_CXX}:${MSVC_OPTIONS}>"
+    "$<${GCC_LIKE_COMPILER}:${GCC_OPTIONS}>"
+    "$<${MSVC_LIKE_COMPILER}:${MSVC_OPTIONS}>"
 )
 
 # Patform specific options
@@ -28,8 +25,10 @@ if(${PLATFORM_NAME} MATCHES "window")
     target_compile_options(${PROJECT_NAME} PUBLIC "-DNOMINMAX;-DUNICODE")
 elseif(${PLATFORM_NAME} MATCHES "linux") 
     target_compile_options(${PROJECT_NAME} PUBLIC "-fPIC")
+    target_link_libraries(${PROJECT_NAME} PUBLIC pthread)
 elseif(${PLATFORM_NAME} MATCHES "osx") 
     target_compile_options(${PROJECT_NAME} PUBLIC "-fPIC")
+    target_link_libraries(${PROJECT_NAME} PUBLIC pthread)
 endif()
 
 # Test covarage
@@ -42,29 +41,29 @@ endif()
 if(USE_SANITIZER)
     if(USE_SANITIZER MATCHES "([Uu]ndefined)")
         message(STATUS "Build with Undefined Behaviour sanitizer")
-        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_OPTIONS}:-fsanitize=undefined>")
+        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_LIKE_COMPILER}:-fsanitize=undefined>")
     endif()
     if(USE_SANITIZER MATCHES "([As]ddress)")
         message(STATUS "Build with Address sanitizer")
         target_compile_options(${PROJECT_NAME} PUBLIC -fsanitize=address)
-        target_link_options(${PROJECT_NAME} PUBLIC "$<${MSVC_LIKE_CXX}:-INCREMENTAL:NO>")
+        target_link_options(${PROJECT_NAME} PUBLIC "$<${MSVC_LIKE_COMPILER}:-INCREMENTAL:NO>")
     endif()
     if(USE_SANITIZER MATCHES "([Mm]emory)")
         message(STATUS "Build with Address sanitizer")
         # -fno-optimize-sibling-calls -fsanitize-memory-track-origins=2
-        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_OPTIONS}:-fsanitize=memory>")
+        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_LIKE_COMPILER}:-fsanitize=memory>")
     endif()
     if(USE_SANITIZER MATCHES "([Tt]thread)")
         message(STATUS "Build with Address sanitizer")
-        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_OPTIONS}:-fsanitize=thread>")
+        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_LIKE_COMPILER}:-fsanitize=thread>")
     endif()
     if(USE_SANITIZER MATCHES "([Ll]eak)")
         message(STATUS "Build with Address sanitizer")
-        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_OPTIONS}:-fsanitize=leak>")
+        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_LIKE_COMPILER}:-fsanitize=leak>")
     endif()
     if(USE_SANITIZER MATCHES "([Cc]fi)")
         message(STATUS "Build with Address sanitizer")
-        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_OPTIONS}:-fsanitize=cfi>")
+        target_compile_options(${PROJECT_NAME} PUBLIC "$<${GCC_LIKE_COMPILER}:-fsanitize=cfi>")
     endif()
 endif()
 
@@ -82,11 +81,10 @@ set(MODULES
 )
 
 foreach(MODULE ${MODULES})
-    set(MODULE_NAME ${MODULE})
-    set(MODULE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
+    set(MODULE_SOURCE_DIR ${FRAMEWORK_SOURCE_DIR}/${MODULE})
 
-    message(STATUS "\t${MODULE_NAME}")
-    include(${MODULE_DIR}/CMakeLists.txt)
+    message(STATUS "\t${MODULE}")
+    include(${MODULE_SOURCE_DIR}/CMakeLists.txt)
 endforeach()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)

@@ -12,7 +12,7 @@ namespace framework::graphics
 {
 const std::string tag = "OpenGL";
 
-void log_opengl_errors(const std::string& file, int line)
+bool has_opengl_errors(const std::string& file, int line)
 {
     struct ErrorDescription
     {
@@ -43,14 +43,19 @@ void log_opengl_errors(const std::string& file, int line)
       "of the error flags, after this error is recorded."}},
     };
 
+    bool has_errors = false;
     for (GLenum error = glGetError(); error != GL_NO_ERROR; error = glGetError()) {
         if (error_descriptions.count(error)) {
             const auto& desc = error_descriptions.at(error);
             log::error(tag) << file << ":" << line << "\n" << desc.name << " " << desc.description;
         } else {
-            log::error(tag) << file << ":" << line << "\n"
-                            << "Unknown error: " << error;
+            log::error(tag) << file << ":" << line << "\nUnknown error: " << error;
         }
+
+        has_errors = true;
     }
+
+    return has_errors;
 }
+
 } // namespace framework::graphics

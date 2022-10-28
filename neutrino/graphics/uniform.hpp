@@ -1,10 +1,9 @@
-#ifndef FRAMEWORK_GRAPHICS_UNIFORM_HPP
-#define FRAMEWORK_GRAPHICS_UNIFORM_HPP
+#ifndef GRAPHICS_UNIFORM_HPP
+#define GRAPHICS_UNIFORM_HPP
 
 #include <string>
 #include <variant>
 
-#include <common/instance_id.hpp>
 #include <math/math.hpp>
 
 namespace framework::graphics
@@ -15,18 +14,6 @@ class Texture;
 /// @addtogroup graphics_renderer_module
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/// @brief Wrapper class to represent texture value in uniforms.
-class TextureBinding
-{
-public:
-    TextureBinding(const Texture& texture);
-
-    InstanceId texture() const;
-
-private:
-    InstanceId m_texture;
-};
 
 /// @brief Alias to all possible value types in uniform.
 
@@ -43,9 +30,7 @@ using UniformValue = std::variant<float, math::Vector2f, math::Vector3f, math::V
 
                                   math::Matrix2d, math::Matrix3d, math::Matrix4d,
                                   math::Matrix2x3d, math::Matrix2x4d, math::Matrix3x2d,
-                                  math::Matrix3x4d, math::Matrix4x2d, math::Matrix4x3d,
-
-                                  TextureBinding>;
+                                  math::Matrix3x4d, math::Matrix4x2d, math::Matrix4x3d>;
 // clang-format on
 
 /// @brief Represents uniform value for shaders.
@@ -78,7 +63,7 @@ public:
     Uniform(Uniform&&)      = default;
 
     Uniform& operator=(const Uniform&) = default;
-    Uniform& operator=(Uniform&&) = default;
+    Uniform& operator=(Uniform&&)      = default;
 
     /// @brief Uniform name
     ///

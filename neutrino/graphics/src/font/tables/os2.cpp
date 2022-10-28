@@ -62,7 +62,7 @@ Os2::Os2(const BytesData& data)
     }
 }
 
-bool Os2::valid() const
+bool Os2::is_valid() const
 {
     bool valid = true;
 

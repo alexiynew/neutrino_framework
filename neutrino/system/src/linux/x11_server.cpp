@@ -103,10 +103,15 @@ XID X11Server::default_screen() const
     return static_cast<XID>(DefaultScreen(display()));
 }
 
+XID X11Server::root_window() const
+{
+    return static_cast<XID>(RootWindow(display(), DefaultScreen(display())));
+}
+
 ::Window X11Server::active_window() const
 {
-    ::Window window = None;
-    int state       = 0;
+    XLibWindow window = None;
+    int state         = 0;
 
     XGetInputFocus(m_display, &window, &state);
 

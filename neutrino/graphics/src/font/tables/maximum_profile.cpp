@@ -29,7 +29,7 @@ MaximumProfile::MaximumProfile(const BytesData& data)
     }
 }
 
-bool MaximumProfile::valid() const
+bool MaximumProfile::is_valid() const
 {
     bool valid = true;
 

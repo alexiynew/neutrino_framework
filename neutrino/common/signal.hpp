@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_SIGNAL_HPP
-#define FRAMEWORK_COMMON_SIGNAL_HPP
+#ifndef COMMON_SIGNAL_HPP
+#define COMMON_SIGNAL_HPP
 
 #include <algorithm>
 #include <functional>
@@ -31,7 +31,7 @@ public:
     Signal(Signal&&)      = default;
 
     Signal& operator=(const Signal&) = delete;
-    Signal& operator=(Signal&&) = default;
+    Signal& operator=(Signal&&)      = default;
 
     /// @brief Connect function to signal
     ///

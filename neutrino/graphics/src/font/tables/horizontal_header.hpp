@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_HORIZONTAL_HEADER_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_HORIZONTAL_HEADER_HPP
+#ifndef GRAPHICS_SRC_FONT_TABLES_HORIZONTAL_HEADER_HPP
+#define GRAPHICS_SRC_FONT_TABLES_HORIZONTAL_HEADER_HPP
 
 #include <vector>
 
@@ -13,7 +13,7 @@ class HorizontalHeader final
 public:
     explicit HorizontalHeader(const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
 
     std::uint16_t number_of_h_metrics() const;
 

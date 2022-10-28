@@ -29,7 +29,7 @@ FontHeader::FontHeader(const BytesData& data)
     in >> m_glyph_data_format;
 }
 
-bool FontHeader::valid() const
+bool FontHeader::is_valid() const
 {
     bool valid = true;
 

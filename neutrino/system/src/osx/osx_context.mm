@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <vector>
 
+#include <graphics/src/opengl/opengl.hpp>
 #include <system/src/osx/osx_autorelease_pool.hpp>
 #include <system/src/osx/osx_context.hpp>
 
@@ -12,14 +13,14 @@
 namespace
 {
 
-NSOpenGLPixelFormatAttribute get_attribute(NSOpenGLPixelFormat* pixel_format, NSOpenGLPixelFormatAttribute attrib)
+int get_attribute_value(NSOpenGLPixelFormat* pixel_format, NSOpenGLPixelFormatAttribute attrib)
 {
     const int screen_number = 0;
     std::int32_t value      = 0;
 
     [pixel_format getValues:&value forAttribute:attrib forVirtualScreen:screen_number];
 
-    return static_cast<NSOpenGLPixelFormatAttribute>(value);
+    return value;
 };
 
 framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelFormat* pixel_format)
@@ -28,17 +29,13 @@ framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelForm
     using framework::Version;
 
     if (pixel_format == nullptr) {
-        return ContextSettings()
-        .version(Version(0, 0))
-        .depth_bits(0)
-        .stencil_bits(0)
-        .antialiasing_level(ContextSettings::Antialiasing::dont_care);
+        return ContextSettings().version(Version(0, 0)).depth_bits(0).stencil_bits(0).samples_count(0);
     }
 
-    const auto profile       = get_attribute(pixel_format, NSOpenGLPFAOpenGLProfile);
-    const auto depth_bits    = get_attribute(pixel_format, NSOpenGLPFADepthSize);
-    const auto stencil_bits  = get_attribute(pixel_format, NSOpenGLPFAStencilSize);
-    const auto samples_count = get_attribute(pixel_format, NSOpenGLPFASamples);
+    const auto profile       = get_attribute_value(pixel_format, NSOpenGLPFAOpenGLProfile);
+    const auto depth_bits    = get_attribute_value(pixel_format, NSOpenGLPFADepthSize);
+    const auto stencil_bits  = get_attribute_value(pixel_format, NSOpenGLPFAStencilSize);
+    const auto samples_count = get_attribute_value(pixel_format, NSOpenGLPFASamples);
 
     ContextSettings settings;
     if (profile == NSOpenGLProfileVersion3_2Core) {
@@ -51,12 +48,7 @@ framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelForm
 
     settings.depth_bits(depth_bits);
     settings.stencil_bits(stencil_bits);
-
-    if (samples_count != 0) {
-        settings.antialiasing_level(ContextSettings::Antialiasing::best);
-    } else {
-        settings.antialiasing_level(ContextSettings::Antialiasing::dont_care);
-    }
+    settings.samples_count(samples_count);
 
     return settings;
 }
@@ -96,24 +88,28 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     attribs.push_back(8);
 
     // Depth buffer size
-    attribs.push_back(NSOpenGLPFADepthSize);
-    attribs.push_back(settings.depth_bits());
+    if (settings.depth_bits() != ContextSettings::dont_care) {
+        attribs.push_back(NSOpenGLPFADepthSize);
+        attribs.push_back(std::min(ContextSettings::default_max_depth_bits, settings.depth_bits()));
+    }
 
     // Stencil buffer size
-    attribs.push_back(NSOpenGLPFAStencilSize);
-    attribs.push_back(settings.stencil_bits());
+    if (settings.stencil_bits() != ContextSettings::dont_care) {
+        attribs.push_back(NSOpenGLPFAStencilSize);
+        attribs.push_back(std::min(ContextSettings::default_max_stencil_bits, settings.stencil_bits()));
+    }
 
-    // Antialiasing
-    if (settings.antialiasing_level() == ContextSettings::Antialiasing::best) {
+    // Multisampling
+    if (settings.samples_count() != ContextSettings::dont_care) {
         attribs.push_back(NSOpenGLPFAMultisample);
 
         // Only one buffer is currently available
         attribs.push_back(NSOpenGLPFASampleBuffers);
         attribs.push_back(1);
 
-        // Antialiasing level
+        // Samples count
         attribs.push_back(NSOpenGLPFASamples);
-        attribs.push_back(32);
+        attribs.push_back(settings.samples_count());
     }
 
     // End of attributes
@@ -123,8 +119,6 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     if (pixel_format == nullptr) {
         throw std::runtime_error("Can't get a suitable pixel format");
     }
-
-    update_settings(get_actual_context_settings(pixel_format));
 
     NSOpenGLContext* share = nullptr;
 
@@ -136,6 +130,11 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     // 1 pixel per point framebuffer regardless of the backing scale factor for the display the view occupies.
     [m_view setWantsBestResolutionOpenGLSurface:NO];
     [m_context setView:m_view];
+
+    make_current();
+    framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
+
+    update_settings(get_actual_context_settings(pixel_format));
 }
 
 OsxContext::~OsxContext()
@@ -153,7 +152,7 @@ OsxContext::~OsxContext()
     m_context = nullptr;
 }
 
-bool OsxContext::valid() const
+bool OsxContext::is_valid() const
 {
     return m_context != nullptr && m_view != nullptr;
 }
@@ -170,7 +169,32 @@ Context::Api OsxContext::api_type() const
     return Context::Api::opengl;
 }
 
-Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
+void OsxContext::make_current()
+{
+    if (!is_valid()) {
+        return;
+    }
+
+    [m_context makeCurrentContext];
+}
+
+void OsxContext::swap_buffers()
+{
+    if (!is_valid()) {
+        return;
+    }
+
+    [m_context flushBuffer];
+}
+
+void OsxContext::update()
+{
+    if (m_context) {
+        [m_context update];
+    }
+}
+
+OsxContext::VoidFunctionPtr OsxContext::get_function(const char* function_name) const
 {
     std::string name = std::string("_") + std::string(function_name);
     NSSymbol symbol  = nullptr;
@@ -181,26 +205,6 @@ Context::VoidFunctionPtr OsxContext::get_function(const char* function_name) con
     return reinterpret_cast<VoidFunctionPtr>(symbol ? NSAddressOfSymbol(symbol) : nullptr);
 }
 
-void OsxContext::make_current()
-{
-    if (m_context) {
-        [m_context makeCurrentContext];
-    }
-}
-
-void OsxContext::swap_buffers()
-{
-    if (m_context) {
-        [m_context flushBuffer];
-    }
-}
-
-void OsxContext::update()
-{
-    if (m_context) {
-        [m_context update];
-    }
-}
 
 } // namespace framework::system::details
 

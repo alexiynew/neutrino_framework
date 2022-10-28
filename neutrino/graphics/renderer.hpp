@@ -1,14 +1,15 @@
-#ifndef FRAMEWORK_GRAPHICS_RENDERER_HPP
-#define FRAMEWORK_GRAPHICS_RENDERER_HPP
+#ifndef GRAPHICS_RENDERER_HPP
+#define GRAPHICS_RENDERER_HPP
 
 #include <memory>
 #include <string>
 #include <unordered_map>
 
+#include <common/size.hpp>
 #include <graphics/color.hpp>
 #include <graphics/uniform.hpp>
 #include <math/math.hpp>
-#include <system/window.hpp>
+#include <system/context.hpp>
 
 namespace framework::graphics
 {
@@ -36,6 +37,7 @@ class Renderer
 public:
     using UniformsList = std::vector<Uniform>;
     using UniformsMap  = std::unordered_map<std::string, Uniform>;
+    using ResourceId   = std::uint32_t;
 
     /// @brief Polygon rasterization mode.
     enum class PolygonMode
@@ -49,7 +51,7 @@ public:
     class Command
     {
     public:
-        Command(InstanceId mesh, InstanceId shader, const UniformsMap& global_uniforms, const UniformsList& m_uniforms);
+        Command(ResourceId mesh, ResourceId shader, const UniformsMap& global_uniforms, const UniformsList& m_uniforms);
         Command(const Command& other) = delete;
         Command(Command&& other);
 
@@ -57,22 +59,22 @@ public:
 
         Command& operator=(Command&& other);
 
-        InstanceId mesh() const;
-        InstanceId shader() const;
+        ResourceId mesh() const;
+        ResourceId shader() const;
         const UniformsMap& global_uniforms() const;
         const UniformsList& uniforms() const;
 
     private:
-        InstanceId m_mesh;
-        InstanceId m_shader;
+        ResourceId m_mesh;
+        ResourceId m_shader;
         std::reference_wrapper<const UniformsMap> m_global_uniforms;
         UniformsList m_uniforms;
     };
 
-    /// @brief Creates Renderer and initialize graphic context for the window.
+    /// @brief Creates Renderer and initialize graphic context.
     ///
-    /// @param window Window for rendering.
-    explicit Renderer(system::Window& window);
+    /// @param context Context for rendering.
+    explicit Renderer(system::Context& context);
 
     Renderer(const Renderer&) = delete;
     Renderer(Renderer&& other) noexcept;
@@ -88,11 +90,10 @@ public:
     /// @param color Clear Color.
     void set_clear_color(const Color& color);
 
-    /// @brief Turn on or off the vertical sync.
+    /// @brief Specify size of the viewport.
     ///
-    /// @param enable On or off vertical sync.
-    /// TODO: remove noreturn
-    [[noreturn]] void enable_vertical_sync(bool enable);
+    /// @param size Viewport size.
+    void set_viewport(Size size);
 
     /// @brief Set current polygon mode.
     ///
@@ -101,24 +102,27 @@ public:
 
     /// @brief Loads Mesh to renderer.
     ///
+    /// @param res_id Id of mesh.
     /// @param mesh Mesh to load.
     ///
     /// @return `true` if loading successful
-    bool load(const Mesh& mesh);
+    bool load(ResourceId res_id, const Mesh& mesh);
 
     /// @brief Loads Shader to renderer.
     ///
+    /// @param res_id Id of shader.
     /// @param shader Shader to load.
     ///
     /// @return `true` if loading successful
-    bool load(const Shader& shader);
+    bool load(ResourceId res_id, const Shader& shader);
 
     /// @brief Loads Texture to renderer.
     ///
+    /// @param res_id Id of texture.
     /// @param texture Texture to load.
     ///
     /// @return `true` if loading successful
-    bool load(const Texture& texture);
+    bool load(ResourceId res_id, const Texture& texture);
 
     /// @brief Assigns a global uniform value for shaders.
     ///
@@ -142,19 +146,19 @@ public:
     ///
     /// Only global uniforms would pass to the shader.
     ///
-    /// @param mesh Mesh to render.
-    /// @param shader Shader ot use.
-    void render(const Mesh& mesh, const Shader& shader);
+    /// @param mesh_id Id of mesh to render.
+    /// @param shader_id Id of shader ot use.
+    void render(const ResourceId& mesh_id, const ResourceId& shader);
 
     /// @brief Renders a mesh with a shader and unforms.
     ///
     /// Global uniforms would pass to the shader as well.
     /// TODO: Local uniforms must override global ones. Write test on it.
     ///
-    /// @param mesh Mesh to render.
-    /// @param shader Shader ot use.
+    /// @param mesh_id id of mesh to render.
+    /// @param shader_id Id of shader ot use.
     /// @param uniforms Uniform values to current shader.
-    void render(const Mesh& mesh, const Shader& shader, const UniformsList& uniforms);
+    void render(const ResourceId& mesh_id, const ResourceId& shader_id, const UniformsList& uniforms);
 
     /// @brief Display on a screen all that been rendered so far.
     void display();
@@ -174,8 +178,7 @@ private:
     void end_frame();
 
     std::unique_ptr<RendererImpl> m_impl;
-    std::reference_wrapper<system::Window> m_window;
-    Signal<const system::Window&, Size>::SlotId m_on_resize_slot_id;
+    std::reference_wrapper<system::Context> m_context;
 
     std::vector<Command> m_render_commands;
     UniformsMap m_global_uniforms;

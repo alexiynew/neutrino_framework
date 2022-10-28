@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_WINDOW_HPP
-#define FRAMEWORK_SYSTEM_WINDOW_HPP
+#ifndef SYSTEM_WINDOW_HPP
+#define SYSTEM_WINDOW_HPP
 
 #include <functional>
 #include <memory>
@@ -18,6 +18,8 @@ namespace framework::system
 namespace details
 {
 class PlatformWindow;
+class CallbacksHolder;
+struct StateData;
 } // namespace details
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +57,7 @@ public:
     Window(Window&& other) noexcept;
 
     Window& operator=(const Window&) = delete;
-    Window& operator                 =(Window&& other) noexcept;
+    Window& operator=(Window&& other) noexcept;
 
 #pragma region actions
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,12 +83,18 @@ public:
 
     /// @brief Removes the window from the screen.
     ///
-    /// If the window has input focus then before hiding it, function tries to switch focus to another window. In this
-    /// case, the @ref on_lost_focus callback would be called.@n
+    /// If the window has input focus then before hiding it the @ref on_lost_focus callback would be called.@n
     /// At the end of execution, it calls the @ref on_hide callback.
     ///
     /// @thread_safety This function can be called only from main thread.
     void hide();
+
+    /// @brief Close the window
+    ///
+    /// Essentially sets the @ref should_close flag and call the on_close callback.
+    ///
+    /// @thread_safety This function can be called only from main thread.
+    void close();
 
     /// @brief Bring the window to the front and switch input focus to it.
     ///
@@ -94,16 +102,16 @@ public:
     /// If the window gets input focus the @ref on_focus callback would be called.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void focus();
+    void request_input_focus();
 
-    /// @brief Grabs the cursor, providing unlimited cursor movement.
+    /// @brief Captures the cursor, providing unlimited cursor movement.
     ///
     /// Blocks the cursor inside the window and the mouse movement tracks, as if it had no borders.
     /// If window is hidden or lost input focus the cursor restore its previous position.
-    /// If window became visible or got input focus, and cursor was previously grabbed, the cursor would grabbed again.
+    /// If window became visible or got input focus, and cursor was previously captured, the cursor would captured again.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void grab_cursor();
+    void capture_cursor();
 
     /// @brief Releases the cursor, if it was gabbed.
     ///
@@ -181,7 +189,9 @@ public:
 
     /// @brief Move window to new point.
     ///
-    /// Moves the window so that the upper-left corner of the window content is located at a new point.
+    /// Tries to move the window so that the upper-left corner of the window content is located at a specified point.
+    /// Actual window position may differ, because different desktop environments may add offsets to window position
+    /// for menus, panels, etc. The fullscreen window is guaranteed to be at (0, 0) point.
     ///
     /// @param position New winodw position.
     ///
@@ -195,13 +205,12 @@ public:
     /// @thread_safety This function can be called only from main thread.
     void set_title(const std::string& title);
 
-    /// @brief Makes the cursor invisible when set to `false` if it is over
-    ///        the window.
+    /// @brief Makes the cursor invisible when set to `false` if it is over the window.
     ///
     /// @param visible New cursor visibility.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_cursor_visibility(bool visible);
+    void set_cursor_visible(bool visible);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -237,14 +246,14 @@ public:
     /// @thread_safety This function can be called from any thread.
     bool has_input_focus() const;
 
-    /// @brief Checks if cursor grabbed.
+    /// @brief Checks if cursor captured.
     ///
     /// Regardless window visible state or if it has or not input focus.
     ///
-    /// @return `true` if cursor is grabbed.
+    /// @return `true` if cursor is captured.
     ///
     /// @thread_safety This function can be called from any thread.
-    bool is_cursor_grabbed() const;
+    bool is_cursor_captured() const;
 
     /// @brief Checks if cursor visible in the window.
     ///
@@ -252,6 +261,13 @@ public:
     ///
     /// @thread_safety This function can be called from any thread.
     bool is_cursor_visible() const;
+
+    /// @brief Checks if cursor is inside the window worcking area.
+    ///
+    /// @return `true` if cursor is inside the window..
+    ///
+    /// @thread_safety This function can be called from any thread.
+    bool is_cursor_hover() const;
 
     /// @brief Window state.
     ///
@@ -328,52 +344,52 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Set on show callback. Called when window shows after creation.
-    Signal<const Window&> on_show;
+    void set_on_show_callback(std::function<void()> callback);
 
     /// @brief Set on hide callback. Called when window hides from screen.
-    Signal<const Window&> on_hide;
+    void set_on_hide_callback(std::function<void()> callback);
 
     /// @brief Set on close callback. Called when the user clicks on the close window button.
-    Signal<const Window&> on_close;
+    void set_on_close_callback(std::function<void()> callback);
 
     /// @brief Set on focus callback. Called when the window gets input focus.
-    Signal<const Window&> on_focus;
+    void set_on_focus_callback(std::function<void()> callback);
 
     /// @brief Set on focus lost callback. Called when the window loses input focus.
-    Signal<const Window&> on_lost_focus;
+    void set_on_lost_focus_callback(std::function<void()> callback);
 
     /// @brief Set on size callback. Called when window size changes.
-    Signal<const Window&, Size> on_resize;
+    void set_on_resize_callback(std::function<void(Size)> callback);
 
     /// @brief Set on position callback. Called when window position changes.
-    Signal<const Window&, Position> on_move;
+    void set_on_move_callback(std::function<void(Position)> callback);
 
-    /// @brief Set on key press callback. Called when key is pressed. Can be called multiple times.
-    Signal<const Window&, KeyCode, Modifiers> on_key_down;
+    /// @brief Set on key down callback. Called when key is pressed. Can be called multiple times.
+    void set_on_key_down_callback(std::function<void(KeyCode, Modifiers)> callback);
 
-    /// @brief Set on key release callback. Called when key is released.
-    Signal<const Window&, KeyCode, Modifiers> on_key_up;
+    /// @brief Set on key up callback. Called when key is released.
+    void set_on_key_up_callback(std::function<void(KeyCode, Modifiers)> callback);
 
     /// @brief Set on character callback. Called when user press the char symbol key.
-    Signal<const Window&, std::string> on_character;
+    void set_on_character_callback(std::function<void(const std::string&)> callback);
 
     /// @brief Set on mouse move callback. Called when the mouse is moving.
-    Signal<const Window&, CursorPosition> on_mouse_move;
+    void set_on_mouse_move_callback(std::function<void(CursorPosition)> callback);
 
-    /// @brief Set on mouse button press callback. Called when the mouse button is pressed.
-    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_mouse_button_down;
+    /// @brief Set on mouse button down callback. Called when the mouse button is pressed.
+    void set_on_mouse_button_down_callback(std::function<void(MouseButton, CursorPosition, Modifiers)> callback);
 
-    /// @brief Set on mouse button release callback. Called when the mouse button is released.
-    Signal<const Window&, MouseButton, CursorPosition, Modifiers> on_mouse_button_up;
+    /// @brief Set on mouse button up callback. Called when the mouse button is released.
+    void set_on_mouse_button_up_callback(std::function<void(MouseButton, CursorPosition, Modifiers)> callback);
 
     /// @brief Set on mouse scroll callback. Called when the user scrolls.
-    Signal<const Window&, ScrollOffset> on_mouse_scroll;
+    void set_on_mouse_scroll_callback(std::function<void(ScrollOffset)> callback);
 
     /// @brief Set on mouse enter callback. Called when the cursor enters in the window frame.
-    Signal<const Window&> on_mouse_enter;
+    void set_on_mouse_enter_callback(std::function<void()> callback);
 
     /// @brief Set on mouse leave callback. Called when the cursor leaves the window frame.
-    Signal<const Window&> on_mouse_leave;
+    void set_on_mouse_leave_callback(std::function<void()> callback);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -381,9 +397,29 @@ public:
 #pragma endregion
 
 private:
+    friend class details::PlatformWindow;
     friend void swap(Window& lhs, Window& rhs) noexcept;
 
+    void on_close();
+
+    void on_resize(Size size);
+    void on_move(Position position);
+
+    void on_focus();
+    void on_lost_focus();
+
+    void on_mouse_enter();
+    void on_mouse_leave();
+    void on_mouse_move(CursorPosition position);
+
+    void update_cursor_visibility();
+    void update_cursor_position();
+
+    void set_cursor_in_center();
+
     std::unique_ptr<details::PlatformWindow> m_platform_window;
+    std::unique_ptr<details::CallbacksHolder> m_callbacks;
+    std::unique_ptr<details::StateData> m_state_data;
 };
 
 /// @brief Swaps two Windows.
