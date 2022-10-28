@@ -8,7 +8,6 @@
 
 namespace
 {
-namespace utils   = framework::utils;
 namespace details = framework::graphics::details::font;
 
 using details::BufferReader;
@@ -514,7 +513,7 @@ GlyphData::GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offs
     }
 }
 
-bool GlyphData::valid() const
+bool GlyphData::is_valid() const
 {
     return !m_glyphs.empty();
 }

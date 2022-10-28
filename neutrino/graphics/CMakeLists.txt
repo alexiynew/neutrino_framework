@@ -71,7 +71,7 @@ target_sources(${PROJECT_NAME}
 
 install(FILES ${FRAMEWORK_DEPENDENCIES_DIR}/KHR/khrplatform.h DESTINATION dependencies/KHR)
 
-make_install_files_target(include/${MODULE_NAME} ${PUBLIC_SOURCES})
+make_install_files_target(include/${MODULE} ${PUBLIC_SOURCES})
 
 # Link with OpenGL
 find_package(OpenGL REQUIRED)

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_TEXTURE_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_TEXTURE_HPP
+#ifndef GRAPHICS_SRC_RENDER_OPENGL_OPENGL_TEXTURE_HPP
+#define GRAPHICS_SRC_RENDER_OPENGL_OPENGL_TEXTURE_HPP
 
 #include <cstdint>
 
@@ -12,10 +12,10 @@ class OpenglTexture
 public:
     OpenglTexture() = default;
 
-    OpenglTexture(const OpenglTexture&) = delete;
+    OpenglTexture(const OpenglTexture&)            = delete;
     OpenglTexture& operator=(const OpenglTexture&) = delete;
 
-    OpenglTexture(OpenglTexture&&) = default;
+    OpenglTexture(OpenglTexture&&)            = default;
     OpenglTexture& operator=(OpenglTexture&&) = default;
 
     ~OpenglTexture();

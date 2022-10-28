@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_LOG_STREAM_LOGGER_HPP
-#define FRAMEWORK_LOG_STREAM_LOGGER_HPP
+#ifndef LOG_STREAM_LOGGER_HPP
+#define LOG_STREAM_LOGGER_HPP
 
 #include <mutex>
 #include <ostream>

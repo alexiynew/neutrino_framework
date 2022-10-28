@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_SRC_OSX_OSX_AUTORELEASE_POOL_HPP
-#define FRAMEWORK_SYSTEM_SRC_OSX_OSX_AUTORELEASE_POOL_HPP
+#ifndef SYSTEM_SRC_OSX_OSX_AUTORELEASE_POOL_HPP
+#define SYSTEM_SRC_OSX_OSX_AUTORELEASE_POOL_HPP
 
 #import <Foundation/Foundation.h>
 
@@ -16,7 +16,7 @@ public:
     AutoreleasePool(AutoreleasePool&&)      = delete;
 
     AutoreleasePool& operator=(const AutoreleasePool&) = delete;
-    AutoreleasePool& operator=(AutoreleasePool&&) = delete;
+    AutoreleasePool& operator=(AutoreleasePool&&)      = delete;
 
 private:
     NSAutoreleasePool* m_pool = nullptr;

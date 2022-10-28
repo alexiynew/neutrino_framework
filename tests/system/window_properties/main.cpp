@@ -31,13 +31,13 @@ private:
 
         Window window(name(), {480, 320});
 
-        window.on_show.connect([&stats](const Window& /*unused*/) { stats.show_called++; });
+        window.set_on_show_callback([&stats]() { stats.show_called++; });
 
-        window.on_resize.connect([&stats, this](const Window& w, Size w_size) {
+        window.set_on_resize_callback([&window, &stats, this](Size w_size) {
             stats.size_called++;
             stats.last_size = w_size;
 
-            TEST_ASSERT(w.is_visible(), "Window must be visible to send on_resize callbacks.");
+            TEST_ASSERT(window.is_visible(), "Window must be visible to send on_resize callbacks.");
         });
 
         // Check stats
@@ -51,8 +51,10 @@ private:
         // Show window - must be 480
         window.show();
 
-        TEST_ASSERT(stats.show_called == 1, "On_show callback must be called once.");
-        TEST_ASSERT(stats.size_called == 1, "On_resize callback must be called once.");
+        TEST_ASSERT(stats.show_called == 1,
+                    "On_show callback must be called once (" + std::to_string(stats.show_called) + ").");
+        TEST_ASSERT(stats.size_called == 1,
+                    "On_resize callback must be called once (" + std::to_string(stats.size_called) + ").");
         TEST_ASSERT(stats.last_size == size480, "Wrong window size in callback.");
         TEST_ASSERT(window.size() == size480, "Window has wrong size.");
         TEST_ASSERT(window.is_visible(), "Window must be visible.");
@@ -63,8 +65,10 @@ private:
         window.set_size({640, 480});
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        TEST_ASSERT(stats.show_called == 1, "On_show callback must be called once.");
-        TEST_ASSERT(stats.size_called == 2, "On_resize callback must be called twice.");
+        TEST_ASSERT(stats.show_called == 1,
+                    "On_show callback must be called once (" + std::to_string(stats.show_called) + ").");
+        TEST_ASSERT(stats.size_called == 2,
+                    "On_resize callback must be called twice (" + std::to_string(stats.size_called) + ").");
         TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");
 
@@ -74,8 +78,10 @@ private:
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.show();
-        TEST_ASSERT(stats.show_called == 2, "On_show callback must be called twice.");
-        TEST_ASSERT(stats.size_called == 3, "On_resize callback must be called 3 times.");
+        TEST_ASSERT(stats.show_called == 2,
+                    "On_show callback must be called twice (" + std::to_string(stats.show_called) + ").");
+        TEST_ASSERT(stats.size_called == 3,
+                    "On_resize callback must be called 3 times (" + std::to_string(stats.size_called) + ").");
         TEST_ASSERT(stats.last_size == size640, "Wrong window size in callback.");
         TEST_ASSERT(window.size() == size640, "Window has wrong size.");
         TEST_ASSERT(window.is_visible(), "Window must be visible.");
@@ -113,8 +119,10 @@ private:
 
         window.show();
 
-        TEST_ASSERT(stats.show_called == 3, "On_show callback must be called 3 times.");
-        TEST_ASSERT(stats.size_called == 4, "On_resize callback must be called 4 times.");
+        TEST_ASSERT(stats.show_called == 3,
+                    "On_show callback must be called 3 times (" + std::to_string(stats.show_called) + ").");
+        TEST_ASSERT(stats.size_called == 4,
+                    "On_resize callback must be called 4 times (" + std::to_string(stats.size_called) + ").");
         TEST_ASSERT(stats.last_size == size480, "Wrong window size in callback.");
         TEST_ASSERT(window.size() == size480, "Window has wrong size.");
         TEST_ASSERT(window.is_visible(), "Window must be visible.");
@@ -198,13 +206,13 @@ private:
 
         Window window(name(), size640);
 
-        window.on_show.connect([&stats](const Window& /*unused*/) { stats.show_called++; });
+        window.set_on_show_callback([&stats]() { stats.show_called++; });
 
-        window.on_move.connect([&stats, this](const Window& w, Position position) {
+        window.set_on_move_callback([&window, &stats, this](Position position) {
             stats.position_called++;
             stats.last_position = position;
 
-            TEST_ASSERT(w.is_visible(), "Window must be visible to send on_move callbacks.");
+            TEST_ASSERT(window.is_visible(), "Window must be visible to send on_move callbacks.");
         });
 
         window.show();
@@ -216,13 +224,15 @@ private:
 
         window.set_position({0, 0});
 
-        // MacOS does not allow to set vertical window position less than window title bar height.
+        // MacOS and some linux WM does not allow to set vertical window position less than window title bar height.
         // So we check the window is located at some reasonable point.
-        TEST_ASSERT(window.position().x == 0 && window.position().y >= 0 && window.position().y < 100,
+        TEST_ASSERT(window.position().x >= 0 && window.position().x < 10 && window.position().y >= 0 &&
+                    window.position().y < 100,
                     "Wrong window position.");
 
         TEST_ASSERT(stats.last_position == window.position(), "Wrong position in callback.");
-        TEST_ASSERT(stats.position_called == 2, "On position must be called 2 times.");
+        TEST_ASSERT(stats.position_called == 2,
+                    "On position must be called 2 times (" + std::to_string(stats.position_called) + ").");
         TEST_ASSERT(window.size() == size640, "Window should save its size.");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -230,7 +240,8 @@ private:
 
         TEST_ASSERT(window.position() == position_100, "Window must be in (100, 100) position.");
         TEST_ASSERT(stats.last_position == position_100, "Wrong position in callback.");
-        TEST_ASSERT(stats.position_called == 3, "On position must be called 3 times.");
+        TEST_ASSERT(stats.position_called == 3,
+                    "On position must be called 3 times (" + std::to_string(stats.position_called) + ").");
         TEST_ASSERT(window.size() == size640, "Window should save its size.");
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
@@ -238,17 +249,8 @@ private:
 
         TEST_ASSERT(window.position() == Position(-100, 100), "Window must be in (-100, 100) position.");
         TEST_ASSERT(stats.last_position == Position(-100, 100), "Wrong position in callback.");
-        TEST_ASSERT(stats.position_called == 4, "On position must be called 4 times.");
-        TEST_ASSERT(window.size() == size640, "Window should save its size.");
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-
-        window.hide();
-        window.set_position({100, 100});
-        window.show();
-
-        TEST_ASSERT(window.position() == Position(100, 100), "Window must be in (-100, 100) position.");
-        TEST_ASSERT(stats.last_position == Position(100, 100), "Wrong position in callback.");
-        TEST_ASSERT(stats.position_called == 5, "On position must be called 4 times.");
+        TEST_ASSERT(stats.position_called == 4,
+                    "On position must be called 4 times (" + std::to_string(stats.position_called) + ").");
         TEST_ASSERT(window.size() == size640, "Window should save its size.");
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

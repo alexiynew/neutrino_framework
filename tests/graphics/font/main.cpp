@@ -5,13 +5,10 @@
 #include <graphics/font.hpp>
 #include <graphics/renderer.hpp>
 #include <graphics/shader.hpp>
-#include <log/log.hpp>
 #include <math/math.hpp>
 #include <system/application.hpp>
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
-
-#include <profiler/profiler.hpp>
 
 using namespace framework;
 using namespace framework::graphics;
@@ -20,6 +17,8 @@ using namespace framework::system;
 
 namespace
 {
+
+constexpr Renderer::ResourceId shader_id = 1;
 
 const std::string vertex_shader =
 "#version 330 core\n\
@@ -47,12 +46,12 @@ void main(){\n\
 
 struct TextObject
 {
-    TextObject(Mesh m, Vector3f p)
-        : mesh(std::move(m))
+    TextObject(Renderer::ResourceId id, math::Vector3f p)
+        : mesh_id(id)
         , position(p)
     {}
 
-    Mesh mesh;
+    Renderer::ResourceId mesh_id;
     math::Vector3f position;
 };
 
@@ -79,22 +78,23 @@ private:
         Application::set_name(name());
 
         Window window(name(), {width, height});
-        Renderer renderer(window);
+        Renderer renderer(window.context());
 
         renderer.set_clear_color(Color(0x202020FFu));
         renderer.set_polygon_mode(Renderer::PolygonMode::fill);
 
-        window.on_mouse_button_down.connect([this](const Window&, MouseButton, CursorPosition pos, Modifiers) {
+        window.set_on_resize_callback([&renderer](Size size) { renderer.set_viewport(size); });
+
+        window.set_on_mouse_button_down_callback([this](MouseButton, CursorPosition pos, Modifiers) {
             mouse_down_pos.x  = static_cast<float>(pos.x);
             mouse_down_pos.y  = static_cast<float>(pos.y);
             mouse_down        = true;
             mouse_down_offset = offset;
         });
 
-        window.on_mouse_button_up.connect(
-        [this](const Window&, MouseButton, CursorPosition, Modifiers) { mouse_down = false; });
+        window.set_on_mouse_button_up_callback([this](MouseButton, CursorPosition, Modifiers) { mouse_down = false; });
 
-        window.on_mouse_move.connect([this](const Window&, CursorPosition pos) {
+        window.set_on_mouse_move_callback([this](CursorPosition pos) {
             if (mouse_down) {
                 const math::Vector2f mouse_pos{pos.x, pos.y};
                 offset = mouse_down_offset + ((mouse_down_pos - mouse_pos) /
@@ -102,19 +102,19 @@ private:
             }
         });
 
-        window.on_mouse_scroll.connect([this](const Window&, ScrollOffset scroll_offset) {
+        window.set_on_mouse_scroll_callback([this](ScrollOffset scroll_offset) {
             scale -= ((scroll_offset.y / 120.0f) * 0.1f);
             scale = std::clamp(scale, 0.1f, 5.0f);
         });
 
-        window.on_mouse_leave.connect([this](const Window&) { mouse_down = false; });
+        window.set_on_mouse_leave_callback([this]() { mouse_down = false; });
 
         Font font;
         // auto result = font.load("fonts/Amethysta-Regular.ttf");
         // auto result = font.load("fonts/Cookie-Regular.ttf");
         // auto result = font.load("fonts/FrederickatheGreat-Regular.ttf"); // << To hard to handle
         // auto result = font.load("fonts/PressStart2P-Regular.ttf"); // << holes points intersetcs filled contours
-        auto result = font.load("fonts/UbuntuMono-Regular.ttf");
+        auto result = font.load("data/UbuntuMono-Regular.ttf");
         TEST_ASSERT(result == Font::LoadResult::Success,
                     "Can't load font, error: " + std::to_string(static_cast<int>(result)));
 
@@ -161,27 +161,28 @@ private:
         };
         //  clang-format on
 
-        profiler::begin_profiling("Mesh");
         float current_line_offset = line_offset;
-        for (const auto& str : strings) {
+        for (std::uint32_t i = 0; i < strings.size(); ++i) {
+            const auto& str = strings[i];
             Mesh text_mesh = font.create_text_mesh(str);
 
             TEST_ASSERT(text_mesh.vertices().size() > 0, "Text mesh is empty.");
             TEST_ASSERT(text_mesh.submeshes().size() > 0, "Text mesh is empty.");
 
-            renderer.load(text_mesh);
+            const auto id = i + 1;
+            renderer.load(id, text_mesh);
             text_mesh.clear();
 
-            objects.emplace_back(std::move(text_mesh), math::Vector3f(0.5f, virtual_height - current_line_offset, 0.0f));
+            objects.emplace_back(id, math::Vector3f(0.5f, virtual_height - current_line_offset, 0.0f));
             current_line_offset += line_offset;
         }
-        profiler::dump_to_file("test.json");
-
-        Shader shader;
-        shader.set_vertex_source(vertex_shader);
-        shader.set_fragment_source(fragment_shader);
-        renderer.load(shader);
-        shader.clear();
+  
+        {
+            Shader shader;
+            shader.set_vertex_source(vertex_shader);
+            shader.set_fragment_source(fragment_shader);
+            renderer.load(shader_id, shader);
+        }
 
         window.show();
 
@@ -197,7 +198,7 @@ private:
 
             for (const auto& object : objects) {
                 Matrix4f transform = translate(math::Matrix4f(), object.position);
-                renderer.render(object.mesh, shader, {Uniform{"modelMatrix", transform}});
+                renderer.render(object.mesh_id, shader_id, {Uniform{"modelMatrix", transform}});
             }
 
             renderer.display();

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_LOG_LOGGER_HPP
-#define FRAMEWORK_LOG_LOGGER_HPP
+#ifndef LOG_LOGGER_HPP
+#define LOG_LOGGER_HPP
 
 #include <memory>
 #include <string>

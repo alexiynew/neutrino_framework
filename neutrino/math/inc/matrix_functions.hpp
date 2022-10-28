@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_MATH_INC_MATRIX_FUNCTIONS_HPP
-#define FRAMEWORK_MATH_INC_MATRIX_FUNCTIONS_HPP
+#ifndef MATH_INC_MATRIX_FUNCTIONS_HPP
+#define MATH_INC_MATRIX_FUNCTIONS_HPP
 
 #include <math/inc/matrix_functions_details.hpp>
 #include <math/inc/matrix_type.hpp>

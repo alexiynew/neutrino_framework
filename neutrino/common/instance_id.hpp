@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_INSTANCE_ID_HPP
-#define FRAMEWORK_COMMON_INSTANCE_ID_HPP
+#ifndef COMMON_INSTANCE_ID_HPP
+#define COMMON_INSTANCE_ID_HPP
 
 #include <cstdint>
 #include <functional>

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_COLOR_HPP
-#define FRAMEWORK_GRAPHICS_COLOR_HPP
+#ifndef GRAPHICS_COLOR_HPP
+#define GRAPHICS_COLOR_HPP
 
 #include <cstdint>
 

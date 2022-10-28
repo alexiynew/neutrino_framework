@@ -6,6 +6,7 @@
 #include <system/context_settings.hpp>
 
 #include <system/src/linux/x11_server.hpp>
+#include <system/src/linux/x11_utils.hpp>
 #include <system/src/platform_window.hpp>
 
 #include <X11/Xlib.h>
@@ -23,74 +24,68 @@ public:
     X11Window(const std::string& title, Size size, const ContextSettings& settings);
     ~X11Window() override;
 
-    X11Window(const X11Window&) = delete;
+    X11Window(const X11Window&)            = delete;
     X11Window& operator=(const X11Window&) = delete;
 
 #pragma region actions
-    void show() override;
+    void show(Window::State state) override;
     void hide() override;
-    void focus() override;
 
-    // On window managers without the ewmh support, proper work is not tested, nor granted.
-    void iconify() override;
-    void maximize() override;
-    void fullscreen() override;
-    void restore() override;
-    void resize(Size size) override;
-    void move(Position position) override;
-    void grab_cursor() override;
+    void request_input_focus() override;
+
+    void capture_cursor() override;
     void release_cursor() override;
+
+    void show_cursor() override;
+    void hide_cursor() override;
+
+    void switch_state(Window::State old_state, Window::State new_state) override;
+
     void process_events() override;
 #pragma endregion
 
 #pragma region setters
+    void set_size(Size size) override;
     void set_max_size(Size max_size) override;
     void set_min_size(Size min_size) override;
     void set_resizable(bool value) override;
+    void set_position(Position position) override;
     void set_title(const std::string& title) override;
-    void set_cursor_visibility(bool visible) override;
+    void set_cursor_position(CursorPosition position) override;
 #pragma endregion
 
 #pragma region getters
-    Position position() const override;
+    bool is_visible() const override;
+    bool has_input_focus() const override;
+    Window::State state() const override;
     Size size() const override;
     Size max_size() const override;
     Size min_size() const override;
+    bool is_resizable() const override;
+    Position position() const override;
     std::string title() const override;
+    CursorPosition cursor_position() const override;
     const Context& context() const override;
     Context& context() override;
 #pragma endregion
 
-#pragma region state
-    bool should_close() const override;
-    bool is_fullscreen() const override;
-    bool is_iconified() const override;
-    bool is_maximized() const override;
-    bool is_resizable() const override;
-    bool is_visible() const override;
-    bool has_input_focus() const override;
-    bool is_cursor_visible() const override;
-    bool is_cursor_grabbed() const override;
-#pragma endregion
-
 private:
-    void process(XDestroyWindowEvent event);
-    void process(XUnmapEvent event);
-    void process(XVisibilityEvent event);
-    void process(XConfigureEvent event);
-    void process(XFocusChangeEvent event);
-    void process(XPropertyEvent event);
-    void process(XClientMessageEvent event);
-    void process(XKeyEvent event);
-    void process(XButtonEvent event);
-    void process(XCrossingEvent event);
-    void process(XMotionEvent event);
-    void process(XMappingEvent event);
-
-    void maximize_toggle(bool enable);
-    void fullscreen_toggle(bool enable);
+    void process(const XDestroyWindowEvent& event);
+    void process(const XUnmapEvent& event);
+    void process(const XVisibilityEvent& event);
+    void process(const XConfigureEvent& event);
+    void process(const XFocusChangeEvent& event);
+    void process(const XPropertyEvent& event);
+    void process(const XClientMessageEvent& event);
+    void process(XKeyEvent& event);
+    void process(const XButtonEvent& event);
+    void process(const XCrossingEvent& event);
+    void process(const XMotionEvent& event);
+    void process(XMappingEvent& event);
+    void process(const XGenericEvent& event, XGenericEventCookie& cookie);
 
     void set_wm_hints();
+    void set_wm_normal_hints();
     void set_class_hints();
     void add_protocols(const std::vector<std::string>& protocol_names);
 
@@ -103,24 +98,33 @@ private:
     std::shared_ptr<X11Server> m_server = nullptr;
     std::unique_ptr<Context> m_context  = nullptr;
 
-    bool m_fullscreen     = false;
-    bool m_maximized      = false;
-    bool m_mapped         = false;
-    bool m_cursor_grabbed = false;
-    bool m_resizable      = true;
+    bool m_mapped    = false;
+    bool m_resizable = true;
 
-    Size m_size         = {640, 480};
-    Size m_saved_size   = {0, 0};
-    Position m_position = {0, 0};
-
+    Size m_size             = {640, 480};
+    Position m_position     = {0, 0};
     mutable Size m_min_size = {0, 0};
     mutable Size m_max_size = {0, 0};
 
-    ::Window m_window = None;
+    Size m_saved_size         = {0, 0};
+    Position m_saved_position = {0, 0};
+    utils::FrameExtents m_frame_extents;
+
+    Window::State m_actual_state;
+
+    XLibWindow m_window = None;
+    Colormap m_colormap = None;
 
     XIC m_input_context = nullptr;
 
-    Time m_lastInputTime = 0;
+    Time m_last_input_time = 0;
+    int m_wait_event_type  = None;
+
+    Cursor m_invisible_cursor = None;
+
+    bool m_cursor_actually_visible        = true;
+    bool m_cursor_actually_captured       = false;
+    CursorPosition m_last_cursor_position = {0, 0};
 };
 
 } // namespace framework::system::details

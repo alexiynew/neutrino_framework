@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_KEYBOARD_HPP
-#define FRAMEWORK_SYSTEM_KEYBOARD_HPP
+#ifndef SYSTEM_KEYBOARD_HPP
+#define SYSTEM_KEYBOARD_HPP
 
 namespace framework::system
 {

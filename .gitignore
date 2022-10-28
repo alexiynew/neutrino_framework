@@ -3,6 +3,7 @@ output/
 
 __pycache__/
 
+.vim
 .vscode/
 .atom-build.yml
 .lvimrc

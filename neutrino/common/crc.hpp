@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_CRC_HPP
-#define FRAMEWORK_COMMON_CRC_HPP
+#ifndef COMMON_CRC_HPP
+#define COMMON_CRC_HPP
 
 #include <common/inc/crc_details.hpp>
 

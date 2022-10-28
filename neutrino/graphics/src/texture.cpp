@@ -86,11 +86,6 @@ void Texture::clear()
     m_mag_filter = MagFilter::linear;
 }
 
-InstanceId Texture::instance_id() const
-{
-    return m_instance_id;
-}
-
 const Image& Texture::image() const
 {
     return m_image;
@@ -124,7 +119,6 @@ Texture::MagFilter Texture::mag_filter() const
 void swap(Texture& lhs, Texture& rhs) noexcept
 {
     using std::swap;
-    swap(lhs.m_instance_id, rhs.m_instance_id);
     swap(lhs.m_image, rhs.m_image);
 
     swap(lhs.m_wrap_s, rhs.m_wrap_s);

@@ -13,48 +13,48 @@ public:
     WindowCursorTest()
         : Suite("WindowCursorTest")
     {
-        add_test([this]() { grab_cursor(); }, "grub_cursor");
-        add_test([this]() { grab_cursor_before_show(); }, "grab_cursor_before_show");
+        add_test([this]() { capture_cursor(); }, "capture_cursor");
+        add_test([this]() { capture_cursor_before_show(); }, "capture_cursor_before_show");
         add_test([this]() { release_cursor_after_hide(); }, "release_cursor_after_hide");
         add_test([this]() { cursor_visibility(); }, "cursor_visibility");
 
         // TODO: Check that upper left corner of the window is (0,0) and lower right corner is (width - 1, height - 1).
-        // TODO: When grubbed: 0,0 - is window center x is from left to right, y is from top to bottom.
+        // TODO: When captured: 0,0 - is window center x is from left to right, y is from top to bottom.
         // TODO: Window should release cursor for system when focus lost or the window is hidden.
-        // TODO: Window should return grubbed cursor in same position when cursor released
+        // TODO: Window should return captured cursor in same position when cursor released
     }
 
 private:
-    void grab_cursor()
+    void capture_cursor()
     {
         Window window(name(), {640, 480});
         CursorPosition last_mouse_pos{-1, -1};
         bool mouse_inside = false;
 
-        window.on_mouse_move.connect([&last_mouse_pos](const Window&, CursorPosition pos) { last_mouse_pos = pos; });
+        window.set_on_mouse_move_callback([&last_mouse_pos](CursorPosition pos) { last_mouse_pos = pos; });
 
-        window.on_mouse_enter.connect([&mouse_inside](const Window&) { mouse_inside = true; });
-        window.on_mouse_leave.connect([&mouse_inside](const Window&) { mouse_inside = false; });
+        window.set_on_mouse_enter_callback([&mouse_inside]() { mouse_inside = true; });
+        window.set_on_mouse_leave_callback([&mouse_inside]() { mouse_inside = false; });
 
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(!window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(!window.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
-        window.grab_cursor();
+        window.capture_cursor();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
-        TEST_ASSERT(mouse_inside == true, "Grubbed cursor must be inside the window");
-        TEST_ASSERT(last_mouse_pos == CursorPosition(0, 0), "On grubbed, cursor must be in 0,0 position");
+        TEST_ASSERT(mouse_inside == true && window.is_cursor_hover(), "Grubbed cursor must be inside the window");
+        TEST_ASSERT(last_mouse_pos == CursorPosition(0, 0), "On captured, cursor must be in 0,0 position");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
         window.hide();
 
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -62,53 +62,53 @@ private:
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         Window tmp("Tmp", {640, 480});
         tmp.show();
 
         TEST_ASSERT(tmp.has_input_focus(), "Tmp window should not be focused.");
-        TEST_ASSERT(!tmp.is_cursor_grabbed(), "Tmp window should not grab cursor.");
+        TEST_ASSERT(!tmp.is_cursor_captured(), "Tmp window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         TEST_ASSERT(!window.has_input_focus(), "Window should not be focused.");
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         TEST_ASSERT(tmp.has_input_focus(), "Window should not be focused.");
-        TEST_ASSERT(!tmp.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(!tmp.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(tmp.is_cursor_visible(), "Cursor should be visible.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 
-        window.focus();
+        window.request_input_focus();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         window.release_cursor();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(!window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(!window.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    void grab_cursor_before_show()
+    void capture_cursor_before_show()
     {
         Window window(name(), {640, 480});
 
-        window.grab_cursor();
+        window.capture_cursor();
 
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should capture cursor.");
 
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         window.hide();
@@ -116,7 +116,7 @@ private:
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
     }
 
@@ -124,11 +124,11 @@ private:
     {
         Window window(name(), {640, 480});
 
-        window.grab_cursor();
+        window.capture_cursor();
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
         window.hide();
@@ -138,13 +138,13 @@ private:
         window.show();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(!window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(!window.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
-        window.grab_cursor();
+        window.capture_cursor();
 
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
-        TEST_ASSERT(window.is_cursor_grabbed(), "Window should not grab cursor.");
+        TEST_ASSERT(window.is_cursor_captured(), "Window should not capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
     }
 
@@ -156,7 +156,7 @@ private:
 
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
 
-        window.set_cursor_visibility(false);
+        window.set_cursor_visible(false);
 
         // TODO: Automate this check
         // TEST_FAIL("Cursor is still visible.");
@@ -182,7 +182,7 @@ private:
 
         TEST_ASSERT(!window.is_cursor_visible(), "Cursor should not be visible.");
 
-        window.set_cursor_visibility(true);
+        window.set_cursor_visible(true);
 
         // TEST_FAIL("Cursor is visible in window, AND must be visible for system.");
         // while (!window.should_close()) {

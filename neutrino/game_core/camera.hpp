@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GAME_CORE_CAMERA_HPP
-#define FRAMEWORK_GAME_CORE_CAMERA_HPP
+#ifndef GAME_CORE_CAMERA_HPP
+#define GAME_CORE_CAMERA_HPP
 
 #include <chrono>
 
@@ -27,10 +27,10 @@ public:
 
     Camera(math::Vector3f position, math::Vector3f front, math::Vector3f up);
 
-    Camera(const Camera& other) = default;
+    Camera(const Camera& other)            = default;
     Camera& operator=(const Camera& other) = default;
 
-    Camera(Camera&& other) = default;
+    Camera(Camera&& other)            = default;
     Camera& operator=(Camera&& other) = default;
 
     void set_action(ActionState state, bool value);

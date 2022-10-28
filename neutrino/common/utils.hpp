@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_UTILS_HPP
-#define FRAMEWORK_COMMON_UTILS_HPP
+#ifndef COMMON_UTILS_HPP
+#define COMMON_UTILS_HPP
 
 #include <algorithm>
 #include <array>

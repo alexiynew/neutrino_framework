@@ -1,4 +1,5 @@
 #include <limits>
+#include <stdexcept>
 
 #include <graphics/mesh.hpp>
 
@@ -22,7 +23,6 @@ Mesh::Mesh(const Mesh& other)
 {}
 
 Mesh::Mesh(Mesh&& other) noexcept
-    : m_instance_id(other.m_instance_id)
 {
     swap(*this, other);
 }
@@ -185,11 +185,6 @@ void Mesh::clear()
     m_last_submesh_index = 0;
 }
 
-InstanceId Mesh::instance_id() const
-{
-    return m_instance_id;
-}
-
 const Mesh::VertexData& Mesh::vertices() const
 {
     return m_vertices;
@@ -232,7 +227,6 @@ const Mesh::SubMeshMap& Mesh::submeshes() const
 void swap(Mesh& lhs, Mesh& rhs) noexcept
 {
     using std::swap;
-    swap(lhs.m_instance_id, rhs.m_instance_id);
     swap(lhs.m_vertices, rhs.m_vertices);
     swap(lhs.m_normals, rhs.m_normals);
     swap(lhs.m_tanegents, rhs.m_tanegents);

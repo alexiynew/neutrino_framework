@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_SYSTEM_MOUSE_HPP
-#define FRAMEWORK_SYSTEM_MOUSE_HPP
+#ifndef SYSTEM_MOUSE_HPP
+#define SYSTEM_MOUSE_HPP
 
 #include <common/position.hpp>
 
@@ -40,6 +40,13 @@ using CursorPosition = Position;
 /// A negative Y value indicates that the wheel was rotated backward, toward the user.
 /// A positive X value indicates that the wheel was rotated to the right
 /// A negative X value indicates that the wheel was rotated to the left.
+///
+///       ^ Y-
+///  X+   |   X-
+///  <---   --->
+///       |
+///       v Y+
+///
 using ScrollOffset = Position;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

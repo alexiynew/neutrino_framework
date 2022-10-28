@@ -32,9 +32,6 @@ private:
         texture.set_min_filter(Texture::MinFilter::nearest_mipmap_nearest);
         texture.set_mag_filter(Texture::MagFilter::nearest);
 
-        const InstanceId texture_id = texture.instance_id();
-
-        TEST_ASSERT(texture.instance_id() != 0, "Wrong instance id.");
         TEST_ASSERT(texture.image() == img, "Wrong image.");
         TEST_ASSERT(texture.wrap_s_parameter() == Texture::Wrap::clamp_to_border, "Wrong wrap s parametr.");
         TEST_ASSERT(texture.wrap_t_parameter() == Texture::Wrap::clamp_to_edge, "Wrong wrap t parametr.");
@@ -44,7 +41,6 @@ private:
 
         texture.clear();
 
-        TEST_ASSERT(texture.instance_id() == texture_id, "Wrong instance id.");
         TEST_ASSERT(texture.image() == Image{}, "Wrong image.");
         TEST_ASSERT(texture.wrap_s_parameter() == Texture::Wrap::repeat, "Wrong wrap s parametr.");
         TEST_ASSERT(texture.wrap_t_parameter() == Texture::Wrap::repeat, "Wrong wrap t parametr.");
@@ -73,10 +69,6 @@ private:
 
         texture.clear();
 
-        TEST_ASSERT(texture1.instance_id() != 0, "Wrong instance id.");
-        TEST_ASSERT(texture1.instance_id() != texture.instance_id(), "Wrong instance id.");
-
-        TEST_ASSERT(texture1.image() == img, "Wrong image.");
         TEST_ASSERT(texture1.wrap_s_parameter() == Texture::Wrap::clamp_to_border, "Wrong wrap s parametr.");
         TEST_ASSERT(texture1.wrap_t_parameter() == Texture::Wrap::clamp_to_edge, "Wrong wrap t parametr.");
         TEST_ASSERT(texture1.border_color() == Color{0xFF0088FFu}, "Wrong border color.");
@@ -99,12 +91,9 @@ private:
         texture.set_min_filter(Texture::MinFilter::nearest_mipmap_nearest);
         texture.set_mag_filter(Texture::MagFilter::nearest);
 
-        const InstanceId texture_id = texture.instance_id();
-
         Texture texture1;
         texture1 = std::move(texture);
 
-        TEST_ASSERT(texture1.instance_id() == texture_id, "Wrong instance id.");
         TEST_ASSERT(texture1.image() == img, "Wrong image.");
         TEST_ASSERT(texture1.wrap_s_parameter() == Texture::Wrap::clamp_to_border, "Wrong wrap s parametr.");
         TEST_ASSERT(texture1.wrap_t_parameter() == Texture::Wrap::clamp_to_edge, "Wrong wrap t parametr.");
@@ -112,7 +101,6 @@ private:
         TEST_ASSERT(texture1.min_filter() == Texture::MinFilter::nearest_mipmap_nearest, "Wrong min filter.");
         TEST_ASSERT(texture1.mag_filter() == Texture::MagFilter::nearest, "Wrong mag filter.");
 
-        TEST_ASSERT(texture.instance_id() != texture_id, "Wrong instance id.");
         TEST_ASSERT(texture.image() == Image{}, "Wrong image.");
         TEST_ASSERT(texture.wrap_s_parameter() == Texture::Wrap::repeat, "Wrong wrap s parametr.");
         TEST_ASSERT(texture.wrap_t_parameter() == Texture::Wrap::repeat, "Wrong wrap t parametr.");

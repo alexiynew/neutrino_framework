@@ -40,7 +40,7 @@ It is poorly tested. It may not support something that you need.
 Additional packages are required to be installed in the system 
 to support OpenGL and X11
 ```
-libx11-dev libgl1-mesa-dev mesa-common-dev
+libx11-dev libxi-dev libgl1-mesa-dev mesa-common-dev
 ```
 
 To build project run in terminal:

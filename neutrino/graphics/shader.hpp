@@ -1,10 +1,9 @@
-#ifndef FRAMEWORK_GRAPHICS_SHADER_HPP
-#define FRAMEWORK_GRAPHICS_SHADER_HPP
+#ifndef GRAPHICS_SHADER_HPP
+#define GRAPHICS_SHADER_HPP
 
 #include <filesystem>
 #include <string>
 
-#include <common/instance_id.hpp>
 #include <math/math.hpp>
 
 namespace framework::graphics
@@ -18,7 +17,7 @@ namespace framework::graphics
 ///
 /// Each Shader consists of two parts: vertex program and fragment program.
 ///
-/// TODO: Check if this documentation is correct
+/// TODO: Remove predefined attributes. Add set_attribute_location(Attribute attr, int index) in Mesh.
 /// #### For OpenGL:
 ///
 /// Shader has predefined vertex attribute locations listed below:
@@ -78,11 +77,6 @@ public:
     /// @see Renderer::load.
     void clear();
 
-    /// @brief Get Shader instance id. Guaranted to be unique.
-    ///
-    /// @return Shader instance id.
-    InstanceId instance_id() const;
-
     /// @brief Get vertex shader source.
     ///
     /// @return Vertex shader source.
@@ -95,8 +89,6 @@ public:
 
 private:
     friend void swap(Shader& lhs, Shader& rhs) noexcept;
-
-    InstanceId m_instance_id;
 
     std::string m_vertex_source;
     std::string m_fragment_source;

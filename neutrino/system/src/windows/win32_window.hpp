@@ -22,35 +22,39 @@ public:
     Win32Window(const std::string& title, Size size, const ContextSettings& settings);
     ~Win32Window() override;
 
-    Win32Window(const Win32Window&) = delete;
+    Win32Window(const Win32Window&)            = delete;
     Win32Window& operator=(const Win32Window&) = delete;
 
 #pragma region actions
-    void show() override;
+    void show(Window::State state) override;
     void hide() override;
-    void focus() override;
-    void grab_cursor() override;
+
+    void request_input_focus() override;
+
+    void capture_cursor() override;
     void release_cursor() override;
+
+    void show_cursor() override;
+    void hide_cursor() override;
+
+    void switch_state(Window::State old_state, Window::State new_state) override;
+
     void process_events() override;
 #pragma endregion
 
 #pragma region setters
-    void set_state(Window::State state) override;
     void set_size(Size size) override;
     void set_max_size(Size max_size) override;
     void set_min_size(Size min_size) override;
     void set_resizable(bool value) override;
     void set_position(Position position) override;
     void set_title(const std::string& title) override;
-    void set_cursor_visibility(bool visible) override;
+    void set_cursor_position(CursorPosition position) override;
 #pragma endregion
 
 #pragma region getters
     bool is_visible() const override;
-    bool should_close() const override;
     bool has_input_focus() const override;
-    bool is_cursor_grabbed() const override;
-    bool is_cursor_visible() const override;
     Window::State state() const override;
     Size size() const override;
     Size max_size() const override;
@@ -58,6 +62,7 @@ public:
     bool is_resizable() const override;
     Position position() const override;
     std::string title() const override;
+    CursorPosition cursor_position() const override;
     const Context& context() const override;
     Context& context() override;
 #pragma endregion
@@ -74,8 +79,6 @@ private:
         bool left_alt;
         bool right_alt;
     };
-
-    struct MessageHandler;
 
     LRESULT on_set_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
     LRESULT on_kill_focus_message(UINT message, WPARAM w_param, LPARAM l_param);
@@ -102,11 +105,8 @@ private:
     void process_alt_key(LPARAM l_param);
 
     void track_mouse();
-    void update_cursor();
-    void enable_raw_input();
-    void disable_raw_input();
-    void hide_cursor();
-    void show_cursor();
+    void update_cursor_clipping();
+    void update_cursor_hover(CursorPosition pos);
 
     void enter_fullscreen();
     void exit_fullscreen();
@@ -116,28 +116,19 @@ private:
 
     HWND m_window = nullptr;
 
-    Size m_client_size = {0, 0};
-    Size m_min_size    = {0, 0};
-    Size m_max_size    = {0, 0};
+    Size m_normal_size         = {0, 0};
+    Position m_normal_position = {0, 0};
 
-    Position m_client_position = {0, 0};
+    Size m_min_size = {0, 0};
+    Size m_max_size = {0, 0};
 
-    Window::State m_state = Window::State::normal;
+    bool m_resizable = true;
 
-    bool m_resizable    = true;
-    bool m_should_close = false;
-
-    HCURSOR m_prev_cursor = nullptr;
-
-    bool m_mouse_hover    = false;
-    bool m_cursor_visible = true;
-    bool m_cursor_grabbed = false;
-
-    CursorPosition m_grabbed_cursor_diff = {0, 0};
-    CursorPosition m_cursor_position     = {0, 0};
+    bool m_cursor_actually_visible        = true;
+    bool m_cursor_actually_captured       = false;
+    CursorPosition m_last_cursor_position = {0, 0};
 
     std::unique_ptr<Context> m_context;
-    std::unique_ptr<MessageHandler> m_message_handler;
 
     ModifiersFlags m_modifiers_flags = {false, false, false, false, false, false};
 };

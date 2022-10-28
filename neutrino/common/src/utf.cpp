@@ -1,3 +1,4 @@
+#include <tuple>
 #include <vector>
 
 #include <common/utf.hpp>
@@ -11,7 +12,19 @@ using U16Type      = std::u16string::value_type;
 using U32Type      = std::u32string::value_type;
 using WideCharType = std::wstring::value_type;
 
-std::pair<CodePoint, size_t> get_code_point(const std::string& str, size_t pos)
+using Offset = size_t;
+
+enum class CodePointError
+{
+    No,
+    Lengh,
+    WrongByte,
+    MissingFirst,
+};
+
+using CodePointResult = std::tuple<CodePointError, CodePoint, Offset>;
+
+CodePointResult get_code_point(const std::string& str, Offset pos)
 {
     // 1-byte UTF-8 = 0xxxxxxx = 7 bits = 0x00 - 0x7F
     // 2-byte UTF-8 = 110xxxxx 10xxxxxx = 5+6(11) bits = 0x80 - 0x7FF
@@ -19,19 +32,19 @@ std::pair<CodePoint, size_t> get_code_point(const std::string& str, size_t pos)
     // 4-byte UTF-8 = 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx = 3+6+6+6(21) bits = 0x10000 - 0x10FFFF
 
     if (pos >= str.length()) {
-        return std::make_pair(0, 0);
+        return CodePointResult(CodePointError::Lengh, 0, 0);
     }
 
     CodePoint cp = static_cast<CodePoint>(str[pos] & 0xFF);
 
     if (cp >= 0x80 && cp <= 0xBF) {
         // error, missing code point first byte
-        return std::make_pair(0, 0);
+        return CodePointResult(CodePointError::MissingFirst, 0, 0);
     }
 
-    std::size_t offset = 1;
+    Offset offset = 1;
     if (cp <= 0x7F) {
-        return std::make_pair(cp, 1);
+        return CodePointResult(CodePointError::No, cp, 1);
     } else if (cp >= 0xC0 && cp <= 0xDF) {
         cp     = cp & 0x1F;
         offset = 2;
@@ -43,57 +56,57 @@ std::pair<CodePoint, size_t> get_code_point(const std::string& str, size_t pos)
         offset = 4;
     } else {
         // error, unknown byte
-        return std::make_pair(0, 0);
+        return CodePointResult(CodePointError::WrongByte, 0, 0);
     }
 
     if (pos + offset > str.length()) {
         // error, not enough chars in string
-        return std::make_pair(0, 0);
+        return CodePointResult(CodePointError::Lengh, 0, 0);
     }
 
-    for (size_t i = 1; i < offset; i++) {
+    for (Offset i = 1; i < offset; i++) {
         cp <<= 6;
         cp |= str[pos + i] & 0b00111111;
     }
 
-    return std::make_pair(cp, offset);
+    return CodePointResult(CodePointError::No, cp, offset);
 }
 
-std::pair<CodePoint, size_t> get_code_point(const std::u16string& str, size_t pos)
+CodePointResult get_code_point(const std::u16string& str, size_t pos)
 {
     if (pos >= str.length()) {
-        return std::make_pair(0, 0);
+        return CodePointResult(CodePointError::Lengh, 0, 0);
     }
 
     const U16Type first = str[pos];
     if (first <= 0xD7FF || first >= 0xE000) {
-        return std::make_pair(first, 1);
+        return CodePointResult(CodePointError::No, first, 1);
     }
 
     if (pos + 1 >= str.length()) {
         // error, need to get second part of codepoint
-        return std::make_pair(0, 0);
+        return CodePointResult(CodePointError::Lengh, 0, 0);
     }
 
     const CodePoint second = str[pos + 1];
     const CodePoint cp     = static_cast<CodePoint>((first ^ 0xD800) << 10) | (second ^ 0xDC00) | 0x10000;
 
-    return std::make_pair(cp, 2);
+    return CodePointResult(CodePointError::No, cp, 2);
 }
 
-std::pair<CodePoint, size_t> get_code_point(const std::u32string& str, size_t pos)
+CodePointResult get_code_point(const std::u32string& str, size_t pos)
 {
     if (pos >= str.length()) {
-        return std::make_pair(0, 0);
+        return CodePointResult(CodePointError::Lengh, 0, 0);
     }
 
-    return std::make_pair(static_cast<CodePoint>(str[pos]), 1);
+    return CodePointResult(CodePointError::No, static_cast<CodePoint>(str[pos]), 1);
 }
 
-std::pair<CodePoint, size_t> get_code_point(const std::wstring& str, size_t pos)
+CodePointResult get_code_point(const std::wstring& str, size_t pos)
 {
     if (pos >= str.length()) {
-        return std::make_pair(0, 0);
+        return CodePointResult(CodePointError::Lengh, 0, 0);
     }
 
     if constexpr (sizeof(WideCharType) == sizeof(U16Type)) {
@@ -101,21 +114,21 @@ std::pair<CodePoint, size_t> get_code_point(const std::wstring& str, size_t pos)
 
         const WideCharType first = str[pos];
         if (first <= 0xD7FF || first >= 0xE000) {
-            return std::make_pair(first, 1);
+            return CodePointResult(CodePointError::No, first, 1);
         }
 
         if (pos + 1 >= str.length()) {
             // error, need to get second part of codepoint
-            return std::make_pair(0, 0);
+            return CodePointResult(CodePointError::Lengh, 0, 0);
         }
 
         const CodePoint second = static_cast<CodePoint>(str[pos + 1]);
         const CodePoint cp     = static_cast<CodePoint>((first ^ 0xD800) << 10) | (second ^ 0xDC00) | 0x10000;
 
-        return std::make_pair(cp, 2);
+        return CodePointResult(CodePointError::No, cp, 2);
     } else {
         // save as utf-32, but different cnar type
-        return std::make_pair(static_cast<CodePoint>(str[pos]), 1);
+        return CodePointResult(CodePointError::No, static_cast<CodePoint>(str[pos]), 1);
     }
 }
 
@@ -216,12 +229,13 @@ std::string to_utf8_impl(const T& str, std::size_t buffer_size)
     auto to    = buffer.begin();
 
     while (pos != end) {
-        auto [cp, offset] = get_code_point(str, pos);
-        to                = set_as_utf8(to, cp);
-        pos += offset;
-        if (offset == 0) {
+        auto [error, cp, offset] = get_code_point(str, pos);
+        if (error != CodePointError::No || offset == 0) {
             break;
         }
+
+        to = set_as_utf8(to, cp);
+        pos += offset;
     }
 
     return std::string(buffer.data());
@@ -237,12 +251,13 @@ std::u16string to_utf16_impl(const T& str, std::size_t buffer_size)
     auto to    = buffer.begin();
 
     while (pos != end) {
-        auto [cp, offset] = get_code_point(str, pos);
-        to                = set_as_utf16(to, cp);
-        pos += offset;
-        if (offset == 0) {
+        auto [error, cp, offset] = get_code_point(str, pos);
+        if (error != CodePointError::No || offset == 0) {
             break;
         }
+
+        to = set_as_utf16(to, cp);
+        pos += offset;
     }
 
     return std::u16string(buffer.data());
@@ -258,12 +273,13 @@ std::u32string to_utf32_impl(const T& str, std::size_t buffer_size)
     auto to    = buffer.begin();
 
     while (pos != end) {
-        auto [cp, offset] = get_code_point(str, pos);
-        to                = set_as_utf32(to, cp);
-        pos += offset;
-        if (offset == 0) {
+        auto [error, cp, offset] = get_code_point(str, pos);
+        if (error != CodePointError::No || offset == 0) {
             break;
         }
+
+        to = set_as_utf32(to, cp);
+        pos += offset;
     }
 
     return std::u32string(buffer.data());
@@ -279,12 +295,13 @@ std::wstring to_wstring_impl(const T& str, std::size_t buffer_size)
     auto to    = buffer.begin();
 
     while (pos != end) {
-        auto [cp, offset] = get_code_point(str, pos);
-        to                = set_as_widechar(to, cp);
-        pos += offset;
-        if (offset == 0) {
+        auto [error, cp, offset] = get_code_point(str, pos);
+        if (error != CodePointError::No || offset == 0) {
             break;
         }
+
+        to = set_as_widechar(to, cp);
+        pos += offset;
     }
 
     return std::wstring(buffer.data());
@@ -301,13 +318,13 @@ std::vector<CodePoint> to_codepoints_impl(const T& str)
     size_t end = str.length();
 
     while (pos != end) {
-        auto [cp, offset] = get_code_point(str, pos);
+        auto [error, cp, offset] = get_code_point(str, pos);
+        if (error != CodePointError::No || offset == 0) {
+            break;
+        }
 
         buffer.push_back(cp);
         pos += offset;
-        if (offset == 0) {
-            break;
-        }
     }
 
     return buffer;

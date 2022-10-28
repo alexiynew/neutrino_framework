@@ -60,19 +60,27 @@ OpenglTexture::~OpenglTexture()
 
 bool OpenglTexture::load(const Texture& texture)
 {
-    glGenTextures(1, &m_texture);
+    if (m_texture <= 0) {
+        glGenTextures(1, &m_texture);
+    }
+
+    if (m_texture <= 0) {
+        clear();
+        return false;
+    }
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_texture);
-
-    if (m_texture <= 0) {
-        return false;
-    }
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, convert_min_filter(texture.min_filter()));
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, convert_mag_filter(texture.mag_filter()));
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, convert_wrap_parameter(texture.wrap_s_parameter()));
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, convert_wrap_parameter(texture.wrap_t_parameter()));
+
+    if (HAS_OPENGL_ERRORS()) {
+        clear();
+        return false;
+    }
 
     Colorf c = static_cast<Colorf>(texture.border_color());
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, c.data());
@@ -90,7 +98,11 @@ bool OpenglTexture::load(const Texture& texture)
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    LOG_OPENGL_ERRORS();
+    if (HAS_OPENGL_ERRORS()) {
+        clear();
+        return false;
+    }
+
     return true;
 }
 

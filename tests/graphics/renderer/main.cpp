@@ -57,8 +57,8 @@ void main()\n\
 }\n\
 ";
 
-const std::string lena_png_32   = "texture_img/lena_32.png";
-const std::string lena_png_1024 = "texture_img/lena_1024.png";
+const std::string lena_png_32   = "data/lena_32.png";
+const std::string lena_png_1024 = "data/lena_1024.png";
 
 Image load_image(const std::string& file)
 {
@@ -101,6 +101,7 @@ using TexturePtr = std::unique_ptr<Texture>;
 
 struct Entity
 {
+    std::uint32_t id;
     MeshPtr mesh;
     ShaderPtr shader;
     TexturePtr texture;
@@ -146,7 +147,8 @@ MeshPtr create_mesh(int width, int height, const Mesh::TextureCoordinatesData te
 
 Entity create_entity_1()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x1),
+    Entity entity{1,
+                  create_mesh(250, 250, square_mesh::tex_coord_x1),
                   create_shader(),
                   create_texture(lena_32()),
                   {128, -128, 0}};
@@ -157,7 +159,8 @@ Entity create_entity_1()
 
 Entity create_entity_2()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x1),
+    Entity entity{2,
+                  create_mesh(250, 250, square_mesh::tex_coord_x1),
                   create_shader(),
                   create_texture(lena_32()),
                   {128 + 256, -128, 0}};
@@ -168,7 +171,8 @@ Entity create_entity_2()
 
 Entity create_entity_3()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x1),
+    Entity entity{3,
+                  create_mesh(250, 250, square_mesh::tex_coord_x1),
                   create_shader(),
                   create_texture(lena_1024()),
                   {128 + 256 * 2, -128, 0}};
@@ -179,7 +183,8 @@ Entity create_entity_3()
 
 Entity create_entity_4()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x1),
+    Entity entity{4,
+                  create_mesh(250, 250, square_mesh::tex_coord_x1),
                   create_shader(),
                   create_texture(lena_1024()),
                   {128 + 256 * 3, -128, 0}};
@@ -190,7 +195,8 @@ Entity create_entity_4()
 
 Entity create_entity_5()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x1),
+    Entity entity{5,
+                  create_mesh(250, 250, square_mesh::tex_coord_x1),
                   create_shader(),
                   create_texture(lena_1024()),
                   {128, -128 - 256, 0}};
@@ -201,7 +207,8 @@ Entity create_entity_5()
 
 Entity create_entity_6()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x1),
+    Entity entity{6,
+                  create_mesh(250, 250, square_mesh::tex_coord_x1),
                   create_shader(),
                   create_texture(lena_1024()),
                   {128 + 256, -128 - 256, 0}};
@@ -212,7 +219,8 @@ Entity create_entity_6()
 
 Entity create_entity_7()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x1),
+    Entity entity{7,
+                  create_mesh(250, 250, square_mesh::tex_coord_x1),
                   create_shader(),
                   create_texture(lena_1024()),
                   {128 + 256 * 2, -128 - 256, 0}};
@@ -223,7 +231,8 @@ Entity create_entity_7()
 
 Entity create_entity_8()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x1),
+    Entity entity{8,
+                  create_mesh(250, 250, square_mesh::tex_coord_x1),
                   create_shader(),
                   create_texture(lena_1024()),
                   {128 + 256 * 3, -128 - 256, 0}};
@@ -234,7 +243,8 @@ Entity create_entity_8()
 
 Entity create_entity_9()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x4),
+    Entity entity{9,
+                  create_mesh(250, 250, square_mesh::tex_coord_x4),
                   create_shader(),
                   create_texture(lena_32()),
                   {128, -128 - 256 - 256, 0}};
@@ -246,7 +256,8 @@ Entity create_entity_9()
 
 Entity create_entity_10()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x4),
+    Entity entity{10,
+                  create_mesh(250, 250, square_mesh::tex_coord_x4),
                   create_shader(),
                   create_texture(lena_32()),
                   {128 + 256, -128 - 256 - 256, 0}};
@@ -258,7 +269,8 @@ Entity create_entity_10()
 
 Entity create_entity_11()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x4),
+    Entity entity{11,
+                  create_mesh(250, 250, square_mesh::tex_coord_x4),
                   create_shader(),
                   create_texture(lena_32()),
                   {128 + 256 * 2, -128 - 256 - 256, 0}};
@@ -270,7 +282,8 @@ Entity create_entity_11()
 
 Entity create_entity_12()
 {
-    Entity entity{create_mesh(250, 250, square_mesh::tex_coord_x4),
+    Entity entity{12,
+                  create_mesh(250, 250, square_mesh::tex_coord_x4),
                   create_shader(),
                   create_texture(lena_32()),
                   {128 + 256 * 3, -128 - 256 - 256, 0}};
@@ -298,15 +311,16 @@ private:
         using namespace framework::graphics;
         using namespace framework::system;
 
-        Application::set_name("GL shader Test");
+        Application::set_name("GL renderer Test");
 
         Window main_window(name(), {256 * 4, 256 * 3});
-        Renderer renderer(main_window);
+        Renderer renderer(main_window.context());
 
         renderer.set_clear_color(Color(0xFF00FFFF));
-        main_window.on_resize.connect([&renderer](const Window&, Size size) {
+        main_window.set_on_resize_callback([&renderer](Size size) {
             renderer.set_uniform("projectionMatrix",
                                  ortho2d<float>(0, static_cast<float>(size.width), -static_cast<float>(size.height), 0));
+            renderer.set_viewport(size);
         });
 
         main_window.show();
@@ -325,9 +339,9 @@ private:
                                            create_entity_12()};
 
         for (Entity& entity : entities) {
-            TEST_ASSERT(renderer.load(*entity.mesh), "Can't load mesh.");
-            TEST_ASSERT(renderer.load(*entity.shader), "Can't load shader.");
-            TEST_ASSERT(renderer.load(*entity.texture), "Can't load texture.");
+            TEST_ASSERT(renderer.load(entity.id, *entity.mesh), "Can't load mesh.");
+            TEST_ASSERT(renderer.load(entity.id, *entity.shader), "Can't load shader.");
+            TEST_ASSERT(renderer.load(entity.id, *entity.texture), "Can't load texture.");
 
             entity.mesh->clear();
             entity.shader->clear();
@@ -342,9 +356,9 @@ private:
 
             for (Entity& entity : entities) {
                 Matrix4f transform = translate(Matrix4f(), entity.position);
-                renderer.render(*entity.mesh,
-                                *entity.shader,
-                                {Uniform{"texture0", *entity.texture}, Uniform{"modelMatrix", transform}});
+                renderer.render(entity.id,
+                                entity.id,
+                                {Uniform{"texture0", entity.id}, Uniform{"modelMatrix", transform}});
             }
 
             renderer.display();

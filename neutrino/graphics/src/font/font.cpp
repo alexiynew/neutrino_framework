@@ -43,7 +43,7 @@ struct TableRecord
 {
     static TableRecord read(std::istream& in);
 
-    bool valid() const;
+    bool is_valid() const;
 
     Tag tag                = Tag::Invalid;
     std::uint32_t checksum = 0;
@@ -81,7 +81,7 @@ bool is_ascii_tag(Tag tag)
     return true;
 }
 
-bool TableRecord::valid() const
+bool TableRecord::is_valid() const
 {
     const bool is_valid_tag    = is_ascii_tag(tag);
     const bool is_valid_offset = (offset & 3) == 0;                      // tables must be 4-byte aligned
@@ -102,7 +102,7 @@ struct TableDirectory
 
     static TableDirectory read(std::istream& in);
 
-    bool valid() const;
+    bool is_valid() const;
 
     std::uint32_t sfnt_version   = 0;
     std::uint16_t num_tables     = 0;
@@ -149,7 +149,7 @@ int max_power_of_2(int n)
     return std::max(max_pow2 - 1, 0);
 }
 
-bool TableDirectory::valid() const
+bool TableDirectory::is_valid() const
 {
     const int max_pow2 = max_power_of_2(num_tables);
 
@@ -161,7 +161,7 @@ bool TableDirectory::valid() const
     const bool is_valid_num_tables = num_tables > 0 && num_tables <= 4096;
 
     const bool records_valid = std::all_of(table_records.begin(), table_records.end(), [](const TableRecord& record) {
-        return record.valid();
+        return record.is_valid();
     });
 
     return is_valid_version && is_valid_num_tables && records_valid && search_range == check_search_range &&
@@ -176,7 +176,7 @@ bool TableDirectory::valid() const
 struct Table
 {
     bool read_data(std::ifstream& in);
-    bool valid() const;
+    bool is_valid() const;
 
     TableRecord record;
     BytesData data;
@@ -210,7 +210,7 @@ std::uint32_t table_checksum(const BytesData& data)
     return sum;
 }
 
-bool Table::valid() const
+bool Table::is_valid() const
 {
     auto get_checksum = [this](const auto& container) {
         std::uint32_t data_checksum = table_checksum(data);
@@ -695,7 +695,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
         return LoadResult::Unsupported;
     }
 
-    if (!file || !table_directory.valid()) {
+    if (!file || !table_directory.is_valid()) {
         return LoadResult::InvalidOffsetTable;
     }
 
@@ -712,7 +712,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     file.close();
 
     const bool tables_valid = std::all_of(tables.begin(), tables.end(), [](const auto& it) {
-        return it.second.valid();
+        return it.second.is_valid();
     });
 
     if (!tables_valid) {
@@ -720,7 +720,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     }
 
     const MaximumProfile maxp(tables.at(Tag::Maxp).data);
-    if (!maxp.valid()) {
+    if (!maxp.is_valid()) {
         return LoadResult::TableParsingError;
     }
 
@@ -735,32 +735,32 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     }
 
     const FontHeader head(tables.at(Tag::Head).data);
-    if (!head.valid()) {
+    if (!head.is_valid()) {
         return LoadResult::TableParsingError;
     }
 
     const CharacterToGlyphIndexMapping cmap(tables.at(Tag::Cmap).data);
-    if (!cmap.valid()) {
+    if (!cmap.is_valid()) {
         return LoadResult::TableParsingError;
     }
 
     const HorizontalHeader hhea(tables.at(Tag::Hhea).data);
-    if (!hhea.valid()) {
+    if (!hhea.is_valid()) {
         return LoadResult::TableParsingError;
     }
 
     const HorizontalMetrics hmtx(hhea.number_of_h_metrics(), maxp.num_glyphs(), tables.at(Tag::Hmtx).data);
-    if (!hmtx.valid()) {
+    if (!hmtx.is_valid()) {
         return LoadResult::TableParsingError;
     }
 
     const Naming naming(tables.at(Tag::Name).data);
-    if (!naming.valid()) {
+    if (!naming.is_valid()) {
         return LoadResult::TableParsingError;
     }
 
     const Os2 os2(tables.at(Tag::Os2).data);
-    if (!os2.valid()) {
+    if (!os2.is_valid()) {
         return LoadResult::TableParsingError;
     }
 
@@ -771,7 +771,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     }
 
     const IndexToLocation loca(head.index_to_loc_format(), maxp.num_glyphs(), tables.at(Tag::Loca).data);
-    if (!loca.valid()) {
+    if (!loca.is_valid()) {
         return LoadResult::TableParsingError;
     }
 
@@ -784,7 +784,7 @@ Font::LoadResult Font::parse(const std::filesystem::path& filepath)
     }
 
     const GlyphData glyf(maxp.num_glyphs(), loca.offsets(), tables.at(Tag::Glyf).data);
-    if (!glyf.valid()) {
+    if (!glyf.is_valid()) {
         return LoadResult::TableParsingError;
     }
 

@@ -63,14 +63,13 @@ void check_supported()
 
 namespace framework::graphics
 {
-OpenglRenderer::OpenglRenderer(const system::Context& context)
+OpenglRenderer::OpenglRenderer()
 {
-    init_opengl([&context](const char* function_name) { return context.get_function(function_name); });
     get_info();
     check_supported();
 
     init();
-    LOG_OPENGL_ERRORS();
+    HAS_OPENGL_ERRORS();
 }
 
 OpenglRenderer::~OpenglRenderer() = default;
@@ -103,7 +102,7 @@ void OpenglRenderer::set_clear_color(const Color& color)
 {
     Colorf c = static_cast<Colorf>(color);
     glClearColor(c.r, c.g, c.b, c.a);
-    LOG_OPENGL_ERRORS();
+    HAS_OPENGL_ERRORS();
 }
 
 void OpenglRenderer::set_polygon_mode(Renderer::PolygonMode mode)
@@ -114,7 +113,7 @@ void OpenglRenderer::set_polygon_mode(Renderer::PolygonMode mode)
         case Renderer::PolygonMode::line: glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break;
         case Renderer::PolygonMode::point: glPolygonMode(GL_FRONT_AND_BACK, GL_POINT); break;
     }
-    LOG_OPENGL_ERRORS();
+    HAS_OPENGL_ERRORS();
 }
 
 void OpenglRenderer::set_viewport(Size size)
@@ -122,59 +121,48 @@ void OpenglRenderer::set_viewport(Size size)
     glViewport(0, 0, size.width, size.height);
 }
 
-bool OpenglRenderer::load(const Mesh& mesh)
+bool OpenglRenderer::load(ResourceId res_id, const Mesh& mesh)
 {
-    if (m_meshes.count(mesh.instance_id())) {
-        m_meshes.at(mesh.instance_id()).clear();
-    } else {
-        m_meshes.try_emplace(mesh.instance_id());
-    }
-
-    const bool loaded = m_meshes.at(mesh.instance_id()).load(mesh);
+    const bool loaded = m_meshes[res_id].load(mesh);
     if (!loaded) {
-        m_meshes.erase(mesh.instance_id());
-        log::error(tag) << "Failed ot load Mesh: " << mesh.instance_id();
+        m_meshes.erase(res_id);
+        log::error(tag) << "Failed ot load Mesh: " << res_id;
     }
 
-    LOG_OPENGL_ERRORS();
+    if (HAS_OPENGL_ERRORS()) {
+        return false;
+    }
+
     return loaded;
 }
 
-bool OpenglRenderer::load(const Shader& shader)
+bool OpenglRenderer::load(ResourceId res_id, const Shader& shader)
 {
-    if (m_shaders.count(shader.instance_id())) {
-        m_shaders.at(shader.instance_id()).clear();
-    } else {
-        m_shaders.try_emplace(shader.instance_id());
-    }
-
-    const bool loaded = m_shaders.at(shader.instance_id()).load(shader);
+    const bool loaded = m_shaders[res_id].load(shader);
     if (!loaded) {
-        m_shaders.erase(shader.instance_id());
-        log::error(tag) << "Failed ot load Shader: " << shader.instance_id();
+        m_shaders.erase(res_id);
+        log::error(tag) << "Failed ot load Shader: " << res_id;
     }
 
-    LOG_OPENGL_ERRORS();
+    if (HAS_OPENGL_ERRORS()) {
+        return false;
+    }
+
     return loaded;
 }
 
-bool OpenglRenderer::load(const Texture& texture)
+bool OpenglRenderer::load(ResourceId res_id, const Texture& texture)
 {
-    if (m_textures.count(texture.instance_id())) {
-        m_textures.at(texture.instance_id()).clear();
-    } else {
-        m_textures.try_emplace(texture.instance_id());
-    }
-
-    OpenglTexture& opengl_texture = m_textures.at(texture.instance_id());
-
-    const bool loaded = opengl_texture.load(texture);
+    const bool loaded = m_textures[res_id].load(texture);
     if (!loaded) {
-        m_textures.erase(texture.instance_id());
-        log::error(tag) << "Failed ot load Texture: " << texture.instance_id();
+        m_textures.erase(res_id);
+        log::error(tag) << "Failed ot load Texture: " << res_id;
     }
 
-    LOG_OPENGL_ERRORS();
+    if (HAS_OPENGL_ERRORS()) {
+        return false;
+    }
+
     return loaded;
 }
 
@@ -206,7 +194,7 @@ void OpenglRenderer::render(const Renderer::Command& command)
 
     mesh.draw();
 
-    LOG_OPENGL_ERRORS();
+    HAS_OPENGL_ERRORS();
 }
 
 void OpenglRenderer::end_frame()
@@ -222,21 +210,25 @@ void OpenglRenderer::bind_textures(const OpenglShader& shader, const Renderer::C
     std::uint32_t texture_unit = 0;
 
     for (const auto& uniform : command.uniforms()) {
-        if (std::holds_alternative<TextureBinding>(uniform.value())) {
-            const TextureBinding& binding = std::get<TextureBinding>(uniform.value());
-            if (m_textures.count(binding.texture()) != 0) {
-
-                if (texture_unit >= m_max_texture_units) {
-                    log::error(tag) << "To many texture bindings, max is: " << m_max_texture_units;
-                    return;
-                }
-
-                const OpenglTexture& texture = m_textures.at(binding.texture());
-
-                texture.bind(texture_unit);
-                shader.set_texture(uniform.name(), texture_unit);
-                texture_unit++;
+        if (std::holds_alternative<ResourceId>(uniform.value())) {
+            if (!shader.is_texture(uniform.name())) {
+                continue;
             }
+
+            const auto res_id      = std::get<ResourceId>(uniform.value());
+            const auto& texture_it = m_textures.find(res_id);
+            if (texture_it == m_textures.end()) {
+                continue;
+            }
+
+            if (texture_unit >= m_max_texture_units) {
+                log::error(tag) << "To many texture bindings, max is: " << m_max_texture_units;
+                return;
+            }
+
+            texture_it->second.bind(texture_unit);
+            shader.set_texture(uniform.name(), texture_unit);
+            texture_unit++;
         }
     }
 }

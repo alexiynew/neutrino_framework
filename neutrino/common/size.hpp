@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_COMMON_SIZE_HPP
-#define FRAMEWORK_COMMON_SIZE_HPP
+#ifndef COMMON_SIZE_HPP
+#define COMMON_SIZE_HPP
 
 namespace framework
 {

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_MAXIMUM_PROFILE_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_MAXIMUM_PROFILE_HPP
+#ifndef GRAPHICS_SRC_FONT_TABLES_MAXIMUM_PROFILE_HPP
+#define GRAPHICS_SRC_FONT_TABLES_MAXIMUM_PROFILE_HPP
 
 #include <vector>
 
@@ -16,7 +16,7 @@ public:
 
     explicit MaximumProfile(const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
 
     Fixed version() const;
     std::uint16_t num_glyphs() const;

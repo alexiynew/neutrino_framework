@@ -1,6 +1,5 @@
-
-#ifndef FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_GLYPH_DATA_HPP
-#define FRAMEWORK_GRAPHICS_SRC_FONT_TABLES_GLYPH_DATA_HPP
+#ifndef GRAPHICS_SRC_FONT_TABLES_GLYPH_DATA_HPP
+#define GRAPHICS_SRC_FONT_TABLES_GLYPH_DATA_HPP
 
 #include <unordered_map>
 #include <vector>
@@ -26,7 +25,7 @@ public:
 
     GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data);
 
-    bool valid() const;
+    bool is_valid() const;
 
     bool has(GlyphId index) const;
     const Contours& at(GlyphId index) const;

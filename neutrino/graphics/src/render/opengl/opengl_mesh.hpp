@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_MESH_HPP
-#define FRAMEWORK_GRAPHICS_SRC_RENDER_OPENGL_OPENGL_MESH_HPP
+#ifndef GRAPHICS_SRC_RENDER_OPENGL_OPENGL_MESH_HPP
+#define GRAPHICS_SRC_RENDER_OPENGL_OPENGL_MESH_HPP
 
 #include <array>
 #include <cstdint>
@@ -18,8 +18,7 @@ public:
     {
         std::uint32_t buffer = 0;
         unsigned int type    = 0;
-        int component_size   = 0;
-        int components_count = 0;
+        int component_size   = 0; /// < Specifies the number of components per  vertex attribute. Must be 1, 2, 3, 4.
     };
 
     struct SubMeshInfo
@@ -37,10 +36,10 @@ public:
 
     OpenglMesh() = default;
 
-    OpenglMesh(const OpenglMesh&) = delete;
+    OpenglMesh(const OpenglMesh&)            = delete;
     OpenglMesh& operator=(const OpenglMesh&) = delete;
 
-    OpenglMesh(OpenglMesh&&) = default;
+    OpenglMesh(OpenglMesh&&)            = default;
     OpenglMesh& operator=(OpenglMesh&&) = default;
 
     ~OpenglMesh();
@@ -49,7 +48,7 @@ public:
     void clear();
 
     void draw() const;
-    bool valid() const;
+    bool is_valid() const;
 
 private:
     void enable_attribute(Attribute attribute) const;

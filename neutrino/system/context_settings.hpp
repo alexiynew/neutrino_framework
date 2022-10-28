@@ -1,5 +1,7 @@
-#ifndef FRAMEWORK_SYSTEM_CONTEXT_SETTINGS_HPP
-#define FRAMEWORK_SYSTEM_CONTEXT_SETTINGS_HPP
+#ifndef SYSTEM_CONTEXT_SETTINGS_HPP
+#define SYSTEM_CONTEXT_SETTINGS_HPP
+
+#include <limits>
 
 #include <common/version.hpp>
 
@@ -13,18 +15,19 @@ namespace framework::system
 
 /// @brief Graphic context settings.
 ///
-/// Structure to store context settings. Used by the
-/// @ref framework::system::window class to setup graphic context.
+/// Structure to store context settings. Used by the @ref framework::system::window class to setup graphic context.
 /// Context is always double-buffered and always RGB-capable.
+/// After the context is created, the values in the ContextSettings are updated to the actual ones.
+/// If the any value is set to `dont_care`, this parameter is not taken into account when creating the context.
+/// Otherwise, the closest to the specified value is selected.
 class ContextSettings
 {
 public:
-    /// @brief Antialiasing level values
-    enum class Antialiasing
-    {
-        dont_care, ///< Get any suitable context.
-        best       ///< Find best value.
-    };
+    static constexpr std::uint32_t default_max_depth_bits   = 24;
+    static constexpr std::uint32_t default_max_stencil_bits = 8;
+
+    static constexpr std::uint32_t best      = 999;
+    static constexpr std::uint32_t dont_care = 0;
 
     ContextSettings() = default;
 
@@ -34,7 +37,7 @@ public:
     ~ContextSettings() = default;
 
     ContextSettings& operator=(const ContextSettings&) noexcept = default;
-    ContextSettings& operator=(ContextSettings&&) noexcept = default;
+    ContextSettings& operator=(ContextSettings&&) noexcept      = default;
 
 #pragma region setters
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,32 +49,29 @@ public:
     ///
     /// @param version required version.
     ///
-    /// @return Reference to this settings.
+    /// @return Reference to context settings.
     ContextSettings& version(Version version);
 
     /// @brief Sets depth buffers bits count.
     ///
     /// @param bits Depth buffer bits count.
     ///
-    /// @return Reference to this settings.
+    /// @return Reference to context settings.
     ContextSettings& depth_bits(std::uint32_t bits);
 
     /// @brief Sets stencil buffer bits count.
     ///
     /// @param bits Stencil buffer bits count.
     ///
-    /// @return Reference to this settings.
+    /// @return Reference to context settings.
     ContextSettings& stencil_bits(std::uint32_t bits);
 
-    /// @brief Sets The Antialiasing level.
+    /// @brief Sets the semples count for multisampling (antialiasing).
     ///
-    /// TODO: Implement antialiasing as value of samples and allow user to ptovide any desaired numder of samples.
-    ///       Realisation should choose context with samples count closest to this value.
+    /// @param samples The number of samples per pixel.
     ///
-    /// @param level The Antialiasing level.
-    ///
-    /// @return Reference to this settings.
-    ContextSettings& antialiasing_level(Antialiasing level);
+    /// @return Reference to context settings.
+    ContextSettings& samples_count(std::uint32_t samples);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -85,32 +85,32 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Required API version.
+    /// @brief API version.
     ///
     /// @return Required API version.
     ////////////////////////////////////////////////////////////////////////////
     Version version() const;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Required detph buffer bits count.
+    /// @brief Detph buffer bits count.
     ///
     /// @return The detph buffer bits count.
     ////////////////////////////////////////////////////////////////////////////
     std::uint32_t depth_bits() const;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Required stencil buffer bits count.
+    /// @brief Stencil buffer bits count.
     ///
     /// @return The stencil buffer bits count.
     ////////////////////////////////////////////////////////////////////////////
     std::uint32_t stencil_bits() const;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// @brief Required Antialiasing level.
+    /// @brief Samples count.
     ///
-    /// @return The Antialiasing level.
+    /// @return The number of samples per pixel.
     ////////////////////////////////////////////////////////////////////////////
-    Antialiasing antialiasing_level() const;
+    std::uint32_t samples_count() const;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -118,11 +118,10 @@ public:
 #pragma endregion
 
 private:
-    // TODO: Make dont_cara as default value
-    std::uint32_t m_depth_bits        = 24;
-    std::uint32_t m_stencil_bits      = 8;
-    Antialiasing m_antialiasing_level = Antialiasing::best;
-    Version m_version                 = {3, 2};
+    std::uint32_t m_depth_bits    = best;
+    std::uint32_t m_stencil_bits  = best;
+    std::uint32_t m_samples_count = best;
+    Version m_version             = {3, 2};
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

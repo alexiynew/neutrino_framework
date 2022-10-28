@@ -26,7 +26,7 @@ HorizontalMetrics::HorizontalMetrics(std::uint16_t number_of_h_metrics, std::uin
     }
 }
 
-bool HorizontalMetrics::valid() const
+bool HorizontalMetrics::is_valid() const
 {
     return m_metrics.size() != 0 || m_left_side_bearings.size() != 0;
 }
