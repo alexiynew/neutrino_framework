@@ -257,9 +257,9 @@ private:
 
     void window_title()
     {
-        const std::string title      = u8"winodw_title";
-        const std::string new_title  = u8"new_window_title";
-        const std::string utf8_title = u8"\u0e1e\u16c1\u1262\u2817\u263a\u0077\u0020\u22a4\u0049\u03c4\u10e1\u0435";
+        const std::string title      = "winodw_title";
+        const std::string new_title  = "new_window_title";
+        const std::string utf8_title = "\u0e1e\u16c1\u1262\u2817\u263a\u0077\u0020\u22a4\u0049\u03c4\u10e1\u0435";
 
         Window window(title, {640, 480});
 
