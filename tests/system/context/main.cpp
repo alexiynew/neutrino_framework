@@ -10,7 +10,7 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-class ContextTest : public framework::unit_test::Suite
+class ContextTest : public neutrino::unit_test::Suite
 {
 public:
     ContextTest()
@@ -22,9 +22,9 @@ public:
 private:
     void main_loop()
     {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
+        using namespace neutrino;
+        using namespace neutrino::graphics;
+        using namespace neutrino::system;
 
         Application::set_name("GL Test");
 

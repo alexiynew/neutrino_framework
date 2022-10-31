@@ -5,7 +5,7 @@
 #include <log/log.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
+using namespace neutrino;
 
 class UtfTest : public unit_test::Suite
 {

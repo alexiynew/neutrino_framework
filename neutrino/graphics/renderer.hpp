@@ -11,7 +11,7 @@
 #include <math/math.hpp>
 #include <system/context.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 class Font;
 class Mesh;
@@ -200,6 +200,6 @@ inline void Renderer::set_uniform(const std::string& name, T&& value)
     m_global_uniforms[name] = Uniform(name, std::forward<T>(value));
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

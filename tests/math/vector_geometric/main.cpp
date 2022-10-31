@@ -1,12 +1,12 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Vector2f;
-using framework::math::Vector3f;
+using neutrino::math::Vector2f;
+using neutrino::math::Vector3f;
 
-using framework::math::almost_equal;
+using neutrino::math::almost_equal;
 
-class GeometricFunctionsTest : public framework::unit_test::Suite
+class GeometricFunctionsTest : public neutrino::unit_test::Suite
 {
 public:
     GeometricFunctionsTest()

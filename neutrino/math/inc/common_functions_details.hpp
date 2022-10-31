@@ -6,7 +6,7 @@
 
 #include <math/inc/vector_type.hpp>
 
-namespace framework::math::common_functions_details
+namespace neutrino::math::common_functions_details
 {
 template <typename T>
 inline constexpr T abs(const T& v, std::true_type /*unused*/)
@@ -125,6 +125,6 @@ inline Vector<2, R> frexp(const Vector<2, T>& value, Vector<2, std::int32_t>* ex
     return Vector<2, R>(::std::frexp(value.x, &(exp->x)), ::std::frexp(value.y, &(exp->y)));
 }
 
-} // namespace framework::math::common_functions_details
+} // namespace neutrino::math::common_functions_details
 
 #endif

@@ -20,7 +20,7 @@ int get_number(std::istringstream& ins)
 
 } // namespace
 
-namespace framework
+namespace neutrino
 {
 Version::Version(int major_v, int minor_v, int patch_v, int build_n) noexcept
     : m_major_version(major_v)
@@ -65,4 +65,4 @@ int Version::build_number() const
     return m_build_number;
 }
 
-} // namespace framework
+} // namespace neutrino

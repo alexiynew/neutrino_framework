@@ -6,8 +6,8 @@
 #include <graphics/src/opengl/opengl.hpp>
 #include <graphics/src/render/opengl/opengl_mesh.hpp>
 
-using namespace framework::graphics;
-using namespace framework::graphics::details::opengl;
+using namespace neutrino::graphics;
+using namespace neutrino::graphics::details::opengl;
 
 namespace
 {
@@ -50,10 +50,10 @@ std::size_t get_data_size(Attribute attrib, const Mesh& mesh)
 
 GLenum get_data_type(Attribute attrib)
 {
-    static_assert(std::is_same_v<Mesh::VertexData::value_type, framework::math::Vector3f>,
+    static_assert(std::is_same_v<Mesh::VertexData::value_type, neutrino::math::Vector3f>,
                   "Type of vertex data is changed, update vertex data processing.");
 
-    static_assert(std::is_same_v<Mesh::TextureCoordinatesData::value_type, framework::math::Vector2f>,
+    static_assert(std::is_same_v<Mesh::TextureCoordinatesData::value_type, neutrino::math::Vector2f>,
                   "Type of vertex data is changed, update vertex data processing.");
 
     static_assert(sizeof(Mesh::ColorData::value_type) == 4,
@@ -79,10 +79,10 @@ GLenum get_data_type(Attribute attrib)
 
 int get_component_size(Attribute attrib)
 {
-    static_assert(std::is_same_v<Mesh::VertexData::value_type, framework::math::Vector3f>,
+    static_assert(std::is_same_v<Mesh::VertexData::value_type, neutrino::math::Vector3f>,
                   "Type of vertex data is changed, update vertex data processing.");
 
-    static_assert(std::is_same_v<Mesh::TextureCoordinatesData::value_type, framework::math::Vector2f>,
+    static_assert(std::is_same_v<Mesh::TextureCoordinatesData::value_type, neutrino::math::Vector2f>,
                   "Type of texure coordinates data is changed, update texure coordinates  data processing.");
 
     static_assert(sizeof(Mesh::ColorData::value_type) == 4,
@@ -164,7 +164,7 @@ void load_index_buffer(GLuint buffer, GLenum buffer_type, const Mesh::SubMeshMap
 
 } // namespace
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 OpenglMesh::~OpenglMesh()
 {
@@ -303,4 +303,4 @@ void OpenglMesh::enable_attribute(Attribute attribute) const
     glVertexAttribPointer(attr_index, info.component_size, info.type, GL_FALSE, 0, nullptr);
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

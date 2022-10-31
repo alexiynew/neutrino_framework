@@ -19,19 +19,19 @@
 
 #pragma region OsxContentView
 
-using framework::system::CursorPosition;
-using framework::system::KeyCode;
-using framework::system::Modifiers;
-using framework::system::MouseButton;
-using framework::system::ScrollOffset;
+using neutrino::system::CursorPosition;
+using neutrino::system::KeyCode;
+using neutrino::system::Modifiers;
+using neutrino::system::MouseButton;
+using neutrino::system::ScrollOffset;
 
 @interface OsxContentView : NSView<NSTextInputClient>
 {
-    framework::system::details::OsxWindow* window;
+    neutrino::system::details::OsxWindow* window;
 
     NSTrackingArea* trackingArea;
 
-    std::map<framework::system::KeyCode, bool> pressedModifierKeys;
+    std::map<neutrino::system::KeyCode, bool> pressedModifierKeys;
 }
 
 @end
@@ -55,7 +55,7 @@ using framework::system::ScrollOffset;
     [super dealloc];
 }
 
-- (void)setWindow:(framework::system::details::OsxWindow*)w
+- (void)setWindow:(neutrino::system::details::OsxWindow*)w
 {
     window = w;
 }
@@ -110,7 +110,7 @@ using framework::system::ScrollOffset;
 // Keyboard events handling
 - (void)keyDown:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const auto key   = map_system_key([event keyCode]);
     const auto state = get_modifiers_state([event modifierFlags]);
@@ -121,7 +121,7 @@ using framework::system::ScrollOffset;
 
 - (void)keyUp:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const auto key   = map_system_key([event keyCode]);
     const auto state = get_modifiers_state([event modifierFlags]);
@@ -130,7 +130,7 @@ using framework::system::ScrollOffset;
 
 - (void)flagsChanged:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const auto key   = map_system_key([event keyCode]);
     const auto state = get_modifiers_state([event modifierFlags]);
@@ -240,7 +240,7 @@ using framework::system::ScrollOffset;
 
 - (void)mouseDown:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const NSPoint pos = [event locationInWindow];
     const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
@@ -250,7 +250,7 @@ using framework::system::ScrollOffset;
 
 - (void)rightMouseDown:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const NSPoint pos = [event locationInWindow];
     const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
@@ -260,7 +260,7 @@ using framework::system::ScrollOffset;
 
 - (void)otherMouseDown:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const MouseButton button = static_cast<MouseButton>([event buttonNumber]);
     const NSPoint pos        = [event locationInWindow];
@@ -271,7 +271,7 @@ using framework::system::ScrollOffset;
 
 - (void)mouseUp:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const NSPoint pos = [event locationInWindow];
     const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
@@ -281,7 +281,7 @@ using framework::system::ScrollOffset;
 
 - (void)rightMouseUp:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const NSPoint pos = [event locationInWindow];
     const CursorPosition cursor_position{static_cast<int>(pos.x), static_cast<int>(pos.y)};
@@ -291,7 +291,7 @@ using framework::system::ScrollOffset;
 
 - (void)otherMouseUp:(NSEvent*)event
 {
-    using namespace framework::system::details;
+    using namespace neutrino::system::details;
 
     const MouseButton button = static_cast<MouseButton>([event buttonNumber]);
     const NSPoint pos        = [event locationInWindow];
@@ -331,7 +331,7 @@ using framework::system::ScrollOffset;
 
 @interface OsxWindowInternal : NSWindow<NSWindowDelegate>
 {
-    framework::system::details::OsxWindow* window;
+    neutrino::system::details::OsxWindow* window;
 }
 
 @property(readonly, assign, nonatomic) BOOL isFullscreen;
@@ -342,7 +342,7 @@ using framework::system::ScrollOffset;
 
 @synthesize isFullscreen;
 
-- (void)setWindow:(framework::system::details::OsxWindow*)w
+- (void)setWindow:(neutrino::system::details::OsxWindow*)w
 {
     window = w;
 }
@@ -473,7 +473,7 @@ CGFloat transform_y(CGFloat y)
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 
 template <typename T>
@@ -1115,4 +1115,4 @@ CursorPosition OsxWindow::convert_cursor_position(CursorPosition position)
     return {x, y};
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

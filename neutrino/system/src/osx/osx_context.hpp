@@ -5,7 +5,7 @@
 
 #import <AppKit/AppKit.h>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 class OsxContext : public Context
 {
@@ -40,6 +40,6 @@ private:
 #pragma clang diagnostic pop
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

@@ -3,13 +3,13 @@
 
 #include <system/context.hpp>
 
-namespace framework::system::details::glx
+namespace neutrino::system::details::glx
 {
 
 using VoidFunctionPtr = void (*)();
 
 VoidFunctionPtr get_function(const char* name);
 
-} // namespace framework::system::details::glx
+} // namespace neutrino::system::details::glx
 
 #endif

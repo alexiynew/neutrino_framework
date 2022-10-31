@@ -12,7 +12,7 @@ const std::wstring main_class_name = L"main_window_class";
 
 // void unregister_window_class(LPCWSTR class_atom)
 //{
-//     using framework::system::details::Win32Application;
+//     using neutrino::system::details::Win32Application;
 //
 //     if (!UnregisterClass(class_atom, Win32Application::handle())) {
 //         throw std::runtime_error("Failed to unregister window class, error: " + std::to_string(GetLastError()));
@@ -21,7 +21,7 @@ const std::wstring main_class_name = L"main_window_class";
 
 LPCWSTR register_window_class(const std::wstring& class_name)
 {
-    using framework::system::details::Win32Application;
+    using neutrino::system::details::Win32Application;
 
     WNDCLASSEX window_class = {};
 
@@ -49,7 +49,7 @@ LPCWSTR register_window_class(const std::wstring& class_name)
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 Win32Application::HandleToWindowMap Win32Application::m_windows;
 HMODULE Win32Application::m_handle                 = nullptr;
@@ -118,4 +118,4 @@ const std::wstring& Win32Application::get_window_class_name()
     return m_window_class_name;
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

@@ -1,6 +1,6 @@
 #include <system/src/callbacks_holder.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 void CallbacksHolder::on_show() const
 {
@@ -114,4 +114,4 @@ void CallbacksHolder::on_mouse_leave() const
     }
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

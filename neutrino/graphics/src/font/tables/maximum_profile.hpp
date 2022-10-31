@@ -5,7 +5,7 @@
 
 #include <graphics/src/font/types.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 class MaximumProfile final
@@ -41,6 +41,6 @@ private:
     std::uint16_t m_max_component_depth      = 0;
 };
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font
 
 #endif

@@ -1,6 +1,6 @@
 #include <system/src/osx/osx_autorelease_pool.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 AutoreleasePool::AutoreleasePool()
 {
@@ -12,4 +12,4 @@ AutoreleasePool::~AutoreleasePool()
     [m_pool release];
 }
 
-} // framework::system::details
+} // neutrino::system::details

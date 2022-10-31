@@ -12,7 +12,7 @@
 
 namespace
 {
-using namespace framework;
+using namespace neutrino;
 using graphics::Color;
 using graphics::details::image::ImageInfo;
 
@@ -780,7 +780,7 @@ std::vector<Color> flip_vertically(const InfoHeader& info, const std::vector<Col
 
 } // namespace
 
-namespace framework::graphics::details::image::bmp
+namespace neutrino::graphics::details::image::bmp
 {
 ImageInfo load(const std::filesystem::path& filepath)
 {
@@ -833,4 +833,4 @@ bool is_bmp(const std::filesystem::path& filepath)
     return header.is_valid();
 }
 
-} // namespace framework::graphics::details::image::bmp
+} // namespace neutrino::graphics::details::image::bmp

@@ -4,8 +4,8 @@
 
 #include "data_context.hpp"
 
-using namespace framework;
-using namespace framework::system;
+using namespace neutrino;
+using namespace neutrino::system;
 
 namespace
 {

@@ -6,7 +6,7 @@
 #include <math/inc/matrix_type_details.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework::math
+namespace neutrino::math
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup math_matrix_implementation
@@ -3571,6 +3571,6 @@ inline constexpr bool operator!=(const Matrix<2, R, T>& lhs, const Matrix<2, R, 
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::math
+} // namespace neutrino::math
 
 #endif

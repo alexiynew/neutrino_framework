@@ -1,17 +1,17 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Vector2f;
-using framework::math::Vector3f;
-using framework::math::Vector4f;
+using neutrino::math::Vector2f;
+using neutrino::math::Vector3f;
+using neutrino::math::Vector4f;
 
-using framework::math::Vector2d;
-using framework::math::Vector3d;
-using framework::math::Vector4d;
+using neutrino::math::Vector2d;
+using neutrino::math::Vector3d;
+using neutrino::math::Vector4d;
 
-using framework::math::almost_equal;
+using neutrino::math::almost_equal;
 
-class ExponentialFunctionsTest : public framework::unit_test::Suite
+class ExponentialFunctionsTest : public neutrino::unit_test::Suite
 {
 public:
     ExponentialFunctionsTest()

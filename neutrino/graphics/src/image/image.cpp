@@ -6,7 +6,7 @@
 #include <graphics/src/image/image_info.hpp>
 #include <graphics/src/image/png.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 Image::Image() = default;
 
@@ -111,4 +111,4 @@ void swap(Image& lhs, Image& rhs) noexcept
 
 #pragma endregion
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

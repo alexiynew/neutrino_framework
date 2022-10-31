@@ -13,7 +13,7 @@ class GeneratorData:
         self.SUPPORTED = "glcore"
         self.PROFILE = "core"
 
-        self.NAMESPACE = "framework::graphics::details::opengl"
+        self.NAMESPACE = "neutrino::graphics::details::opengl"
 
         self.TYPEDEFS = ""
 

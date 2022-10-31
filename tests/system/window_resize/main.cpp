@@ -4,10 +4,10 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::system;
+using namespace neutrino;
+using namespace neutrino::system;
 
-class WindowResizeTest : public framework::unit_test::Suite
+class WindowResizeTest : public neutrino::unit_test::Suite
 {
 public:
     WindowResizeTest()

@@ -6,7 +6,7 @@
 
 #include <graphics/renderer.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 class Shader;
 class OpenglTexture;
@@ -47,6 +47,6 @@ private:
     UniformMap m_textures;
 };
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

@@ -5,7 +5,7 @@
 
 #include <graphics/src/font/types.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 class FontHeader final
@@ -43,6 +43,6 @@ private:
     std::int16_t m_glyph_data_format   = 0;
 };
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font
 
 #endif

@@ -8,7 +8,7 @@
 
 #include <X11/Xlib.h>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 class X11Server final
 {
@@ -40,6 +40,6 @@ private:
     mutable std::map<std::string, Atom> m_atoms;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

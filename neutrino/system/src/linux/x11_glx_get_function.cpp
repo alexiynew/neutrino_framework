@@ -2,7 +2,7 @@
 
 #include <GL/glx.h>
 
-namespace framework::system::details::glx
+namespace neutrino::system::details::glx
 {
 
 VoidFunctionPtr get_function(const char* name)
@@ -10,4 +10,4 @@ VoidFunctionPtr get_function(const char* name)
     return glXGetProcAddressARB(reinterpret_cast<const unsigned char*>(name));
 }
 
-} // namespace framework::system::details::glx
+} // namespace neutrino::system::details::glx

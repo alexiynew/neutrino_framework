@@ -13,11 +13,11 @@
 namespace
 {
 
-using namespace framework;
-using namespace framework::graphics;
-using namespace framework::math;
-using namespace framework::system;
-using namespace framework::game_core;
+using namespace neutrino;
+using namespace neutrino::graphics;
+using namespace neutrino::math;
+using namespace neutrino::system;
+using namespace neutrino::game_core;
 
 namespace cube
 {

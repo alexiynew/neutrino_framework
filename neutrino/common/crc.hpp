@@ -3,7 +3,7 @@
 
 #include <common/inc/crc_details.hpp>
 
-namespace framework::utils
+namespace neutrino::utils
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup utils_crc_implementation
@@ -259,6 +259,6 @@ const noexcept
 
 #pragma endregion
 
-} // namespace framework::utils
+} // namespace neutrino::utils
 
 #endif

@@ -1,6 +1,6 @@
 #include <common/size.hpp>
 
-namespace framework
+namespace neutrino
 {
 Size::Size(int w, int h)
     : width(w)
@@ -17,4 +17,4 @@ bool operator!=(const Size& lhs, const Size& rhs) noexcept
     return !(lhs == rhs);
 }
 
-} // namespace framework
+} // namespace neutrino

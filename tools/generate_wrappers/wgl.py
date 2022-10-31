@@ -13,7 +13,7 @@ class GeneratorData:
         self.SUPPORTED = "wgl"
         self.PROFILE = ""
 
-        self.NAMESPACE = "framework::system::details::wgl"
+        self.NAMESPACE = "neutrino::system::details::wgl"
 
         self.TYPEDEFS = "" \
             "typedef void GLvoid;\n" \

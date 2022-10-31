@@ -3,7 +3,7 @@
 
 #include <system/window.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 
 struct StateData
@@ -17,6 +17,6 @@ struct StateData
     Window::State state = Window::State::normal;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

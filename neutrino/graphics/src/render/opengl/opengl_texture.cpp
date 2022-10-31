@@ -7,9 +7,9 @@
 #include <graphics/src/render/opengl/opengl_logger.hpp>
 #include <graphics/src/render/opengl/opengl_texture.hpp>
 
-using namespace framework;
-using namespace framework::graphics;
-using namespace framework::graphics::details::opengl;
+using namespace neutrino;
+using namespace neutrino::graphics;
+using namespace neutrino::graphics::details::opengl;
 
 namespace
 {
@@ -50,7 +50,7 @@ int convert_wrap_parameter(Texture::Wrap wrap) noexcept
 }
 } // namespace
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 
 OpenglTexture::~OpenglTexture()
@@ -122,4 +122,4 @@ void OpenglTexture::clear()
     glDeleteTextures(1, &m_texture);
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

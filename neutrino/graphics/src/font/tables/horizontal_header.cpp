@@ -2,7 +2,7 @@
 
 #include <graphics/src/font/tables/horizontal_header.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 HorizontalHeader::HorizontalHeader(const BytesData& data)
@@ -45,4 +45,4 @@ std::uint16_t HorizontalHeader::number_of_h_metrics() const
     return m_number_of_h_metrics;
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

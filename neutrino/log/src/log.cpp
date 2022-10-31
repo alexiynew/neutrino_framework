@@ -3,13 +3,13 @@
 
 namespace
 {
-using framework::log::Logger;
-using framework::log::log_details::LogBuffer;
-using framework::log::log_details::LogStream;
+using neutrino::log::Logger;
+using neutrino::log::log_details::LogBuffer;
+using neutrino::log::log_details::LogStream;
 
 class LoggerStub final : public Logger
 {
-    void add_message(framework::log::SeverityLevel /*level*/,
+    void add_message(neutrino::log::SeverityLevel /*level*/,
                      const std::string& /*tag*/,
                      const std::string& /*message*/) override
     {
@@ -30,7 +30,7 @@ std::unique_ptr<Logger>& logger_instance()
 
 } // namespace
 
-namespace framework::log
+namespace neutrino::log
 {
 #pragma region log functions
 
@@ -74,4 +74,4 @@ Logger* logger()
     return ::logger_instance().get();
 }
 
-} // namespace framework::log
+} // namespace neutrino::log

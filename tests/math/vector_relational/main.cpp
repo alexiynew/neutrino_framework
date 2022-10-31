@@ -1,29 +1,29 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Vector2b;
-using framework::math::Vector2f;
-using framework::math::Vector2i;
-using framework::math::Vector2u;
-using framework::math::Vector3b;
-using framework::math::Vector3d;
-using framework::math::Vector3f;
-using framework::math::Vector3i;
-using framework::math::Vector4b;
-using framework::math::Vector4d;
-using framework::math::Vector4i;
+using neutrino::math::Vector2b;
+using neutrino::math::Vector2f;
+using neutrino::math::Vector2i;
+using neutrino::math::Vector2u;
+using neutrino::math::Vector3b;
+using neutrino::math::Vector3d;
+using neutrino::math::Vector3f;
+using neutrino::math::Vector3i;
+using neutrino::math::Vector4b;
+using neutrino::math::Vector4d;
+using neutrino::math::Vector4i;
 
-using framework::math::Matrix2x2f;
-using framework::math::Matrix2x3f;
-using framework::math::Matrix2x4f;
-using framework::math::Matrix3x2f;
-using framework::math::Matrix3x3f;
-using framework::math::Matrix3x4f;
-using framework::math::Matrix4x2f;
-using framework::math::Matrix4x3f;
-using framework::math::Matrix4x4f;
+using neutrino::math::Matrix2x2f;
+using neutrino::math::Matrix2x3f;
+using neutrino::math::Matrix2x4f;
+using neutrino::math::Matrix3x2f;
+using neutrino::math::Matrix3x3f;
+using neutrino::math::Matrix3x4f;
+using neutrino::math::Matrix4x2f;
+using neutrino::math::Matrix4x3f;
+using neutrino::math::Matrix4x4f;
 
-class RelationalFunctionsTest : public framework::unit_test::Suite
+class RelationalFunctionsTest : public neutrino::unit_test::Suite
 {
 public:
     RelationalFunctionsTest()

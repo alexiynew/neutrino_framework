@@ -13,7 +13,7 @@
 #include <system/src/callbacks_holder.hpp>
 #include <system/src/state_data.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 
 class PlatformWindow
@@ -93,6 +93,6 @@ private:
     Window* m_window_interface = nullptr;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

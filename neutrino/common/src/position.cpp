@@ -1,6 +1,6 @@
 #include <common/position.hpp>
 
-namespace framework
+namespace neutrino
 {
 Position::Position(int x_value, int y_value)
     : x(x_value)
@@ -17,4 +17,4 @@ bool operator!=(const Position& lhs, const Position& rhs) noexcept
     return !(lhs == rhs);
 }
 
-} // namespace framework
+} // namespace neutrino

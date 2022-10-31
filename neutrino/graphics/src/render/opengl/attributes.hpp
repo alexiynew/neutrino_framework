@@ -3,7 +3,7 @@
 
 #include <array>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 enum class Attribute
 {
@@ -23,6 +23,6 @@ enum class Attribute
 
 static constexpr int attributes_count = 12;
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

@@ -12,7 +12,7 @@ class GeneratorData:
         self.SUPPORTED = "glx"
         self.PROFILE = ""
 
-        self.NAMESPACE = "framework::system::details::glx"
+        self.NAMESPACE = "neutrino::system::details::glx"
 
         self.TYPEDEFS = ""
 

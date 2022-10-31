@@ -7,7 +7,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
-using namespace framework::system::details;
+using namespace neutrino::system::details;
 
 namespace
 {
@@ -182,7 +182,7 @@ bool send_client_message(const X11Server* server,
 
     using DataType = std::remove_reference_t<decltype(event.xclient.data.l[0])>;
 
-    const int count = ::framework::utils::size(event.xclient.data.l);
+    const int count = ::neutrino::utils::size(event.xclient.data.l);
 
     for (size_t i = 0; i < data.size() && i < count; ++i) {
         event.xclient.data.l[i] = static_cast<DataType>(data[i]);
@@ -232,7 +232,7 @@ bool window_change_state(const X11Server* server,
 
 } // namespace
 
-namespace framework::system::details::utils
+namespace neutrino::system::details::utils
 {
 
 bool ewmh_supported(const X11Server* server)
@@ -524,4 +524,4 @@ Cursor create_invisible_cursor(const X11Server* server)
     return cursor;
 }
 
-} // namespace framework::system::details::utils
+} // namespace neutrino::system::details::utils

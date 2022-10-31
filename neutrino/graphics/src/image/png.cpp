@@ -14,7 +14,7 @@
 
 namespace
 {
-using namespace framework;
+using namespace neutrino;
 using graphics::Color;
 using graphics::details::image::ImageInfo;
 
@@ -789,7 +789,7 @@ float decode_gamma(const Chunk& chunk)
 
 } // namespace
 
-namespace framework::graphics::details::image::png
+namespace neutrino::graphics::details::image::png
 {
 ImageInfo load(const std::filesystem::path& filepath)
 {
@@ -867,4 +867,4 @@ bool is_png(const std::filesystem::path& filepath)
     return check_signature(read_bytes(file, signature_length));
 }
 
-} // namespace framework::graphics::details::image::png
+} // namespace neutrino::graphics::details::image::png

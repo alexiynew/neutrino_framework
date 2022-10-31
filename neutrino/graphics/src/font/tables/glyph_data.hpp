@@ -8,7 +8,7 @@
 
 #include <graphics/src/font/types.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 class GlyphData final
@@ -34,6 +34,6 @@ private:
     std::unordered_map<GlyphId, Contours> m_glyphs;
 };
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font
 
 #endif

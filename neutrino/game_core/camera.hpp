@@ -5,7 +5,7 @@
 
 #include <math/math.hpp>
 
-namespace framework::game_core
+namespace neutrino::game_core
 {
 ////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup game_core_module
@@ -72,6 +72,6 @@ private:
 /// @}
 ////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::game_core
+} // namespace neutrino::game_core
 
 #endif

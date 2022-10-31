@@ -8,8 +8,8 @@ Window creation, handling window system events, and user input.
 
 int main()
 {
-    using namespace framework;
-    using namespace framework::system;
+    using namespace neutrino;
+    using namespace neutrino::system;
 
     // Create window
     Window window("Example window", Size(640, 480));

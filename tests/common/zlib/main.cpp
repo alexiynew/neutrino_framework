@@ -305,7 +305,7 @@ const std::vector<std::uint8_t> huge_text_deflated =
 
 } // namespace
 
-class ZlibTest : public framework::unit_test::Suite
+class ZlibTest : public neutrino::unit_test::Suite
 {
 public:
     ZlibTest()
@@ -320,7 +320,7 @@ public:
 private:
     void inflate_test()
     {
-        using namespace framework::zlib;
+        using namespace neutrino::zlib;
 
         const std::vector<std::uint8_t> fixed   = inflate(fixed_huffman);
         const std::vector<std::uint8_t> dynamic = inflate(dynamic_huffman);
@@ -333,7 +333,7 @@ private:
 
     void inflate_huge_test()
     {
-        using namespace framework::zlib;
+        using namespace neutrino::zlib;
 
         const std::string result = to_string(inflate(huge_text_deflated));
 
@@ -342,7 +342,7 @@ private:
 
     void deflate_test()
     {
-        using namespace framework::zlib;
+        using namespace neutrino::zlib;
 
         const std::vector<std::uint8_t> compressed   = deflate(data);
         const std::vector<std::uint8_t> decompressed = inflate(compressed);

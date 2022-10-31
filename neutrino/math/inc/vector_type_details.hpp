@@ -4,7 +4,7 @@
 #include <functional>
 #include <type_traits>
 
-namespace framework::math::vector_type_details
+namespace neutrino::math::vector_type_details
 {
 
 template <typename T>
@@ -85,6 +85,6 @@ struct transform_details<2>
     }
 };
 
-} // namespace framework::math::vector_type_details
+} // namespace neutrino::math::vector_type_details
 
 #endif

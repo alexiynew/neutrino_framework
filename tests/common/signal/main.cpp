@@ -1,7 +1,7 @@
 #include <common/signal.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
+using namespace neutrino;
 
 class SlotTest : public unit_test::Suite
 {

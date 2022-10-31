@@ -9,12 +9,12 @@
 
 #include <system/src/platform_window.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 std::unique_ptr<PlatformWindow> create_platform_window(const std::string& title,
                                                        Size size,
                                                        const ContextSettings& settings);
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

@@ -8,7 +8,7 @@
 class EventHandler
 {
 public:
-    EventHandler(framework::system::Window& w);
+    EventHandler(neutrino::system::Window& w);
 
     const DataContext& data_context() const;
 
@@ -17,20 +17,20 @@ public:
     void on_close();
     void on_focus();
     void on_lost_focus();
-    void on_resize(framework::Size size);
-    void on_move(framework::Position p);
-    void on_key_down(framework::system::KeyCode key, framework::system::Modifiers state);
-    void on_key_up(framework::system::KeyCode key, framework::system::Modifiers state);
+    void on_resize(neutrino::Size size);
+    void on_move(neutrino::Position p);
+    void on_key_down(neutrino::system::KeyCode key, neutrino::system::Modifiers state);
+    void on_key_up(neutrino::system::KeyCode key, neutrino::system::Modifiers state);
     void on_mouse_enter();
     void on_mouse_leave();
-    void on_mouse_move(framework::system::CursorPosition p);
-    void on_mouse_button_down(framework::system::MouseButton button,
-                              framework::system::CursorPosition position,
-                              framework::system::Modifiers state);
-    void on_mouse_button_up(framework::system::MouseButton button,
-                            framework::system::CursorPosition position,
-                            framework::system::Modifiers state);
-    void on_mouse_scroll(framework::system::ScrollOffset offset);
+    void on_mouse_move(neutrino::system::CursorPosition p);
+    void on_mouse_button_down(neutrino::system::MouseButton button,
+                              neutrino::system::CursorPosition position,
+                              neutrino::system::Modifiers state);
+    void on_mouse_button_up(neutrino::system::MouseButton button,
+                            neutrino::system::CursorPosition position,
+                            neutrino::system::Modifiers state);
+    void on_mouse_scroll(neutrino::system::ScrollOffset offset);
     void on_character(const std::string& s);
 
     void on_update();
@@ -49,7 +49,7 @@ private:
     void toggle_cursor_capture();
     void toggle_cursor_visible();
 
-    framework::system::Window& m_window;
+    neutrino::system::Window& m_window;
 
     DataContext m_data_context;
 };

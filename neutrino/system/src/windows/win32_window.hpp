@@ -9,12 +9,12 @@
 
 #include <Windows.h>
 
-namespace framework::system
+namespace neutrino::system
 {
 class Context;
 }
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 class Win32Window final : public PlatformWindow
 {
@@ -133,6 +133,6 @@ private:
     ModifiersFlags m_modifiers_flags = {false, false, false, false, false, false};
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

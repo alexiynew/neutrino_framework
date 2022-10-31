@@ -4,8 +4,8 @@
 #include <game_core/fps_counter.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::game_core;
+using namespace neutrino;
+using namespace neutrino::game_core;
 
 class FpsCounterTest : public unit_test::Suite
 {

@@ -17,7 +17,7 @@ typedef unsigned char GLboolean;
 typedef unsigned char GLubyte;
 typedef unsigned short GLushort;
 
-namespace framework::system::details::wgl
+namespace neutrino::system::details::wgl
 {
 
 #pragma region WGL_3DFX_multisample
@@ -863,6 +863,6 @@ void init_wgl(const GetFunction& get_function);
 bool is_supported(Feature feature);
 bool is_supported(Extension extension);
 
-} // namespace framework::system::details::wgl
+} // namespace neutrino::system::details::wgl
 
 #endif

@@ -7,7 +7,7 @@
 
 #include <graphics/src/render/opengl/attributes.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 class Mesh;
 
@@ -59,6 +59,6 @@ private:
     std::array<VertexBufferInfo, attributes_count> m_vertex_buffers = {};
 };
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

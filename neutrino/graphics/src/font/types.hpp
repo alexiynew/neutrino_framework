@@ -7,7 +7,7 @@
 #include <common/utf.hpp>
 #include <common/utils.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 std::uint32_t inline constexpr make_tag(char c1, char c2, char c3, char c4)
@@ -118,6 +118,6 @@ enum class Tag : std::uint32_t
     Vmtx = make_tag('v', 'm', 't', 'x'), //	Vertical Metrics
 };
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font
 
 #endif

@@ -3,7 +3,7 @@
 
 #import <Foundation/Foundation.h>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 
 class AutoreleasePool
@@ -22,6 +22,6 @@ private:
     NSAutoreleasePool* m_pool = nullptr;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

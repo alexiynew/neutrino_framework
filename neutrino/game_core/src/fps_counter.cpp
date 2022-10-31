@@ -2,7 +2,7 @@
 
 #include <game_core/fps_counter.hpp>
 
-namespace framework::game_core
+namespace neutrino::game_core
 {
 FpsCounter::FpsCounter()
     : m_fps_thread(&FpsCounter::slice_fps, this)
@@ -38,4 +38,4 @@ void FpsCounter::slice_fps()
     }
 }
 
-} // namespace framework::game_core
+} // namespace neutrino::game_core

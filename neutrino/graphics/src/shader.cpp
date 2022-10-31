@@ -3,7 +3,7 @@
 
 #include <graphics/shader.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 
 Shader::Shader(const Shader& other)
@@ -94,4 +94,4 @@ void swap(Shader& lhs, Shader& rhs) noexcept
     swap(lhs.m_fragment_source, rhs.m_fragment_source);
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

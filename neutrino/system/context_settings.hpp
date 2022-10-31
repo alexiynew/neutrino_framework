@@ -5,7 +5,7 @@
 
 #include <common/version.hpp>
 
-namespace framework::system
+namespace neutrino::system
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@ namespace framework::system
 
 /// @brief Graphic context settings.
 ///
-/// Structure to store context settings. Used by the @ref framework::system::window class to setup graphic context.
+/// Structure to store context settings. Used by the @ref neutrino::system::window class to setup graphic context.
 /// Context is always double-buffered and always RGB-capable.
 /// After the context is created, the values in the ContextSettings are updated to the actual ones.
 /// If the any value is set to `dont_care`, this parameter is not taken into account when creating the context.
@@ -128,6 +128,6 @@ private:
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::system
+} // namespace neutrino::system
 
 #endif

@@ -1,6 +1,6 @@
 #include <system/src/platform_window.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 PlatformWindow::PlatformWindow()
 {}
@@ -86,4 +86,4 @@ void PlatformWindow::on_mouse_move(CursorPosition position)
     }
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

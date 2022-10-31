@@ -6,7 +6,7 @@
 namespace
 {
 
-using namespace framework::system::details::wgl;
+using namespace neutrino::system::details::wgl;
 
 #pragma region WGL_3DFX_multisample
 
@@ -1197,7 +1197,7 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
 
 } // namespace
 
-namespace framework::system::details::wgl
+namespace neutrino::system::details::wgl
 {
 
 #pragma region WGL_3DFX_multisample
@@ -2114,4 +2114,4 @@ bool is_supported(Extension extension)
     return extension_cache[static_cast<int>(extension)];
 }
 
-} // namespace framework::system::details::wgl
+} // namespace neutrino::system::details::wgl

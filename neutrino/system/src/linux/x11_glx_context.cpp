@@ -5,11 +5,11 @@
 #include <system/src/linux/x11_glx_context.hpp>
 #include <system/src/linux/x11_glx_get_function.hpp>
 
-namespace glx = framework::system::details::glx;
+namespace glx = neutrino::system::details::glx;
 
 namespace
 {
-using framework::system::ContextSettings;
+using neutrino::system::ContextSettings;
 
 static constexpr int glx_min_major_version = 1;
 static constexpr int glx_min_minor_version = 4;
@@ -146,14 +146,14 @@ glx::GLXContext create_glx_context(Display* display, glx::GLXFBConfig fb_config,
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 X11GlxContext::X11GlxContext(const ContextSettings& settings, Display* display)
     : Context(settings)
     , m_display(display)
 {
     using namespace glx;
-    using namespace framework::graphics::details::opengl;
+    using namespace neutrino::graphics::details::opengl;
 
     init_glx([this](const char* name) { return get_function(name); });
 
@@ -250,4 +250,4 @@ glx::VoidFunctionPtr X11GlxContext::get_function(const char* function_name) cons
     return glx::get_function(function_name);
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

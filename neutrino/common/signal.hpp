@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-namespace framework
+namespace neutrino
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,6 +189,6 @@ inline void Signal<Args...>::operator()(Args... args) const
     }
 }
 
-} // namespace framework
+} // namespace neutrino
 
 #endif

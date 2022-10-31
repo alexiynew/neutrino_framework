@@ -7,7 +7,7 @@
 #include <log/stream_logger.hpp>
 #include <unit_test/suite.hpp>
 
-namespace framework::unit_test
+namespace neutrino::unit_test
 {
 
 Suite::Suite(std::string name)
@@ -94,4 +94,4 @@ Suite::TestData::TestData(std::string test_name, FunctionType&& function_to_call
     , function{std::forward<FunctionType>(function_to_call)}
 {}
 
-} // namespace framework::unit_test
+} // namespace neutrino::unit_test

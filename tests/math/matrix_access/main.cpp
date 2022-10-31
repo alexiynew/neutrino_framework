@@ -1,21 +1,21 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Matrix2x2f;
-using framework::math::Matrix2x3f;
-using framework::math::Matrix2x4f;
-using framework::math::Matrix3x2f;
-using framework::math::Matrix3x3f;
-using framework::math::Matrix3x4f;
-using framework::math::Matrix4x2f;
-using framework::math::Matrix4x3f;
-using framework::math::Matrix4x4f;
+using neutrino::math::Matrix2x2f;
+using neutrino::math::Matrix2x3f;
+using neutrino::math::Matrix2x4f;
+using neutrino::math::Matrix3x2f;
+using neutrino::math::Matrix3x3f;
+using neutrino::math::Matrix3x4f;
+using neutrino::math::Matrix4x2f;
+using neutrino::math::Matrix4x3f;
+using neutrino::math::Matrix4x4f;
 
-using framework::math::Vector2f;
-using framework::math::Vector3f;
-using framework::math::Vector4f;
+using neutrino::math::Vector2f;
+using neutrino::math::Vector3f;
+using neutrino::math::Vector4f;
 
-class MatrixAccessTest : public framework::unit_test::Suite
+class MatrixAccessTest : public neutrino::unit_test::Suite
 {
 public:
     MatrixAccessTest()
@@ -247,7 +247,7 @@ private:
         float* p32 = Matrix32.data();
         float* p22 = Matrix22.data();
 
-        auto check = [](const float a, const float b) { return framework::math::abs(a - b) <= 0; };
+        auto check = [](const float a, const float b) { return neutrino::math::abs(a - b) <= 0; };
 
         // clang-format off
         TEST_ASSERT(check(p44[0],  0.0f) && check(p44[1], 1.0f)  && check(p44[2], 2.0f)  && check(p44[3], 3.0f)  &&

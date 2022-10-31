@@ -3,7 +3,7 @@
 
 #include <math/inc/matrix_type.hpp>
 
-namespace framework::math::matrix_functions_details
+namespace neutrino::math::matrix_functions_details
 {
 template <std::size_t C, typename T>
 inline Matrix<4, C, T> transpose(const Matrix<C, 4, T>& value)
@@ -250,6 +250,6 @@ inline Matrix<2, 2, T> inverse_transpose(const Matrix<2, 2, T>& m)
     return result / determinant(m);
 }
 
-} // namespace framework::math::matrix_functions_details
+} // namespace neutrino::math::matrix_functions_details
 
 #endif

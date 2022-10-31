@@ -5,7 +5,7 @@
 
 namespace
 {
-using ::framework::system::details::X11Server;
+using ::neutrino::system::details::X11Server;
 
 std::weak_ptr<X11Server>& server_instance()
 {
@@ -46,7 +46,7 @@ void release_error_handlers()
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 std::shared_ptr<X11Server> X11Server::connect()
 {
@@ -133,4 +133,4 @@ XIM X11Server::input_method() const
     return m_input_method;
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

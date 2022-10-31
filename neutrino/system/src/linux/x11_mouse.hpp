@@ -5,10 +5,10 @@
 
 #include <system/mouse.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 MouseButton map_mouse_button(std::uint32_t button);
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

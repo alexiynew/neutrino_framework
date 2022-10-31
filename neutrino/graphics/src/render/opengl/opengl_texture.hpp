@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 class Texture;
 
@@ -32,6 +32,6 @@ private:
     std::uint32_t m_texture = 0;
 };
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

@@ -6,7 +6,7 @@
 
 namespace
 {
-using framework::system::KeyCode;
+using neutrino::system::KeyCode;
 
 constexpr static std::array<KeyCode, 256> key_map = {
 //
@@ -301,7 +301,7 @@ KeyCode::unknown,
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 KeyCode map_system_key(std::uint32_t key)
 {
@@ -343,4 +343,4 @@ Modifiers get_modifiers_state()
     return state;
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

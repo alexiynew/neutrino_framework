@@ -5,7 +5,7 @@
 #include <functional>
 #include <ostream>
 
-namespace framework
+namespace neutrino
 {
 class InstanceId;
 }
@@ -13,10 +13,10 @@ class InstanceId;
 namespace std
 {
 template <>
-struct hash<framework::InstanceId>;
+struct hash<neutrino::InstanceId>;
 } // namespace std
 
-namespace framework
+namespace neutrino
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup utils_types_module
@@ -119,14 +119,14 @@ std::ostream& operator<<(std::ostream& os, const InstanceId& instance_id);
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework
+} // namespace neutrino
 
 namespace std
 {
 template <>
-struct hash<framework::InstanceId>
+struct hash<neutrino::InstanceId>
 {
-    std::size_t operator()(const framework::InstanceId& id) const noexcept
+    std::size_t operator()(const neutrino::InstanceId& id) const noexcept
     {
         return std::hash<decltype(id.m_id)>{}(id.m_id);
     }

@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <utility>
 
-namespace framework::utils::crc_details
+namespace neutrino::utils::crc_details
 {
 /// @brief Helper class to get correct type for Crc::value_type.
 template <std::size_t BitsCount>
@@ -83,6 +83,6 @@ value_t<BitsCount> reflect(value_t<BitsCount> value)
     return ref;
 }
 
-} // namespace framework::utils::crc_details
+} // namespace neutrino::utils::crc_details
 
 #endif

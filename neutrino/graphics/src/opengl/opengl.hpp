@@ -5,7 +5,7 @@
 
 #include <KHR/khrplatform.h>
 
-namespace framework::graphics::details::opengl
+namespace neutrino::graphics::details::opengl
 {
 
 #pragma region GL_VERSION_1_0
@@ -6473,6 +6473,6 @@ void init_opengl(const GetFunction& get_function);
 bool is_supported(Feature feature);
 bool is_supported(Extension extension);
 
-} // namespace framework::graphics::details::opengl
+} // namespace neutrino::graphics::details::opengl
 
 #endif

@@ -1,6 +1,6 @@
 #include <game_core/camera.hpp>
 
-namespace framework::game_core
+namespace neutrino::game_core
 {
 
 Camera::Camera(math::Vector3f position, math::Vector3f front, math::Vector3f up)
@@ -110,4 +110,4 @@ math::Matrix4f Camera::get_view() const
     return look_at(m_position, m_position + m_front, m_up);
 }
 
-} // namespace framework::game_core
+} // namespace neutrino::game_core

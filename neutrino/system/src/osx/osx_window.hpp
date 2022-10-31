@@ -6,7 +6,7 @@
 
 #include <system/src/platform_window.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 
 class NSWindowWrapper;
@@ -109,6 +109,6 @@ private:
     Window::State m_actual_state;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

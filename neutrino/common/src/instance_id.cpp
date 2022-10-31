@@ -12,7 +12,7 @@ std::uint32_t get_id()
 }
 } // namespace
 
-namespace framework
+namespace neutrino
 {
 InstanceId::InstanceId()
     : m_id(get_id())
@@ -60,4 +60,4 @@ std::ostream& operator<<(std::ostream& os, const InstanceId& instance_id)
     return os;
 }
 
-} // namespace framework
+} // namespace neutrino

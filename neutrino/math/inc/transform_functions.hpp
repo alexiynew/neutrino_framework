@@ -9,7 +9,7 @@
 #include <math/inc/matrix_type.hpp>
 #include <math/inc/trigonometric_functions.hpp>
 
-namespace framework::math
+namespace neutrino::math
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup math_transform_functions
@@ -89,8 +89,8 @@ inline Matrix<3, 3, T> rotate(const Matrix<3, 3, T>& m, const U angle)
 template <typename T, typename U>
 inline Matrix<4, 4, T> rotate(const Matrix<4, 4, T>& m, const Vector<3, T>& v, const U angle)
 {
-    const auto cos = static_cast<T>(framework::math::cos(angle));
-    const auto sin = static_cast<T>(framework::math::sin(angle));
+    const auto cos = static_cast<T>(neutrino::math::cos(angle));
+    const auto sin = static_cast<T>(neutrino::math::sin(angle));
 
     const auto x_cos = v[0] * (1 - cos);
     const auto y_cos = v[1] * (1 - cos);
@@ -201,9 +201,9 @@ inline Matrix<4, 4, T> ortho(const T left, const T right, const T bottom, const 
     const T ortho_height = top - bottom;
     const T ortho_depth  = far_val - near_val;
 
-    assert(framework::math::abs(ortho_width - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(ortho_height - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(ortho_depth - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(ortho_width - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(ortho_height - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(ortho_depth - std::numeric_limits<T>::epsilon()) > T(0));
 
     // clang-format off
     return Matrix<4, 4, T> (
@@ -271,9 +271,9 @@ inline Matrix<4, 4, T> frustum(const T left,
     const T height = top - bottom;
     const T depth  = far_val - near_val;
 
-    assert(framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
 
     // clang-format off
     return Matrix<4, 4, T> (
@@ -316,9 +316,9 @@ inline Matrix<4, 4, T> perspective(T fov_y, T aspect, T near_val, T far_val)
     const T depth   = far_val - near_val;
     const T tangent = tan(fov_y / T(2));
 
-    assert(framework::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(depth - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
 
     const T cotangent = T(1) / tangent;
 
@@ -387,11 +387,11 @@ template <typename T>
 inline Matrix<4, 4, T> infinite_perspective(T fov_y, T aspect, T near_val)
 {
     assert(near_val > T(0));
-    assert(framework::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(aspect - std::numeric_limits<T>::epsilon()) > T(0));
 
     const T tangent = math::tan(fov_y / T(2));
 
-    assert(framework::math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(tangent - std::numeric_limits<T>::epsilon()) > T(0));
 
     const T cotangent = T(1) / tangent;
     const T epsilon   = std::numeric_limits<T>::epsilon();
@@ -431,7 +431,7 @@ inline Vector<3, T> project(const Vector<3, T>& v,
     Vector<4, T> temp(v, T(1));
     temp = projection * model * temp;
 
-    assert(framework::math::abs(temp.w - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(temp.w - std::numeric_limits<T>::epsilon()) > T(0));
 
     temp /= temp.w;
 
@@ -476,10 +476,10 @@ inline Vector<3, T> unproject(const Vector<3, T>& v,
     const auto width  = static_cast<T>(viewport[2]);
     const auto height = static_cast<T>(viewport[3]);
 
-    assert(framework::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
-    assert(framework::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(width - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(height - std::numeric_limits<T>::epsilon()) > T(0));
 
-    const Matrix<4, 4, T> inverse = framework::math::inverse(projection * model);
+    const Matrix<4, 4, T> inverse = neutrino::math::inverse(projection * model);
 
     Vector<4, T> temp(v, T(1));
     temp.x = (temp.x - x) / width;
@@ -489,7 +489,7 @@ inline Vector<3, T> unproject(const Vector<3, T>& v,
 
     Vector<4, T> object_matrix = inverse * temp;
 
-    assert(framework::math::abs(temp.w - std::numeric_limits<T>::epsilon()) > T(0));
+    assert(neutrino::math::abs(temp.w - std::numeric_limits<T>::epsilon()) > T(0));
 
     object_matrix /= object_matrix.w;
 
@@ -584,6 +584,6 @@ inline Matrix<4, 4, T> look_at(const Vector<3, T>& eye, const Vector<3, T>& cent
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::math
+} // namespace neutrino::math
 
 #endif

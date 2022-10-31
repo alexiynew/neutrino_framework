@@ -8,7 +8,7 @@
 #include <math/inc/common_functions_details.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework::math
+namespace neutrino::math
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup math_common_functions
@@ -41,7 +41,7 @@ inline constexpr T abs(const T& value)
 template <std::size_t N, typename T>
 inline constexpr Vector<N, T> abs(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::abs<T>);
+    return transform(value, neutrino::math::abs<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -73,7 +73,7 @@ inline constexpr T sign(const T& value)
 template <std::size_t N, typename T>
 inline constexpr Vector<N, T> sign(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::sign<T>);
+    return transform(value, neutrino::math::sign<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -108,10 +108,10 @@ inline R floor(const T& value)
 ///
 /// @see floor
 ////////////////////////////////////////////////////////////////////////////////
-template <std::size_t N, typename T, typename R = decltype(framework::math::floor(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::floor(std::declval<T>()))>
 inline Vector<N, R> floor(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::floor<T>);
+    return transform(value, neutrino::math::floor<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -141,10 +141,10 @@ inline R round(const T& value)
 ///         to the argument.
 ///
 /// @see round
-template <std::size_t N, typename T, typename R = decltype(framework::math::round(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::round(std::declval<T>()))>
 inline Vector<N, R> round(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::round<T>);
+    return transform(value, neutrino::math::round<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -174,10 +174,10 @@ inline R ceil(const T& value)
 /// @return A vector of values that are greater than or equal to the argument.
 ///
 /// @see ceil
-template <std::size_t N, typename T, typename R = decltype(framework::math::ceil(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::ceil(std::declval<T>()))>
 inline Vector<N, R> ceil(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::ceil<T>);
+    return transform(value, neutrino::math::ceil<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -206,10 +206,10 @@ inline R trunc(const T& value)
 /// @return A vector of values that are not greater in magnitude than argument.
 ///
 /// @see trunc
-template <std::size_t N, typename T, typename R = decltype(framework::math::trunc(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::trunc(std::declval<T>()))>
 inline Vector<N, R> trunc(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::trunc<T>);
+    return transform(value, neutrino::math::trunc<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -225,10 +225,10 @@ inline Vector<N, R> trunc(const Vector<N, T>& value)
 /// @param value Value of floating-point type.
 ///
 /// @return The fractional part of the argument.
-template <typename T, typename R = decltype(framework::math::floor(std::declval<T>()))>
+template <typename T, typename R = decltype(neutrino::math::floor(std::declval<T>()))>
 inline R fract(const T& value)
 {
-    return static_cast<R>(value) - framework::math::floor(value);
+    return static_cast<R>(value) - neutrino::math::floor(value);
 }
 
 /// @brief Creates a vector of the fractional parts of the argument.
@@ -238,10 +238,10 @@ inline R fract(const T& value)
 /// @return A vector of the fractional parts.
 ///
 /// @see fract
-template <std::size_t N, typename T, typename R = decltype(framework::math::fract(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::fract(std::declval<T>()))>
 inline Vector<N, R> fract(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::fract<T>);
+    return transform(value, neutrino::math::fract<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -263,10 +263,10 @@ inline Vector<N, R> fract(const Vector<N, T>& value)
 /// @param b Value of floating-point or integral type.
 ///
 /// @return The floating-point remainder of the division operation.
-template <typename T, typename R = decltype(framework::math::floor(std::declval<T>()))>
+template <typename T, typename R = decltype(neutrino::math::floor(std::declval<T>()))>
 inline R mod(const T& a, const T& b)
 {
-    return static_cast<R>(a) - b * framework::math::floor(static_cast<R>(a) / b);
+    return static_cast<R>(a) - b * neutrino::math::floor(static_cast<R>(a) / b);
 }
 
 /// @brief Modulus for vector and scalar. Applies the mod function
@@ -278,10 +278,10 @@ inline R mod(const T& a, const T& b)
 /// @return A vector of the floating-point remainder of the division operation.
 ///
 /// @see mod
-template <std::size_t N, typename T, typename R = decltype(framework::math::mod(std::declval<T>(), std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::mod(std::declval<T>(), std::declval<T>()))>
 inline Vector<N, R> mod(const Vector<N, T>& a, const T& b)
 {
-    return transform(a, Vector<N, T>{b}, framework::math::mod<T>);
+    return transform(a, Vector<N, T>{b}, neutrino::math::mod<T>);
 }
 
 /// @brief Modulus for vectors. Applies the mod function to every component
@@ -293,10 +293,10 @@ inline Vector<N, R> mod(const Vector<N, T>& a, const T& b)
 /// @return A vector of the floating-point remainder of the division operation.
 ///
 /// @see mod
-template <std::size_t N, typename T, typename R = decltype(framework::math::mod(std::declval<T>(), std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::mod(std::declval<T>(), std::declval<T>()))>
 inline Vector<N, R> mod(const Vector<N, T>& a, const Vector<N, T>& b)
 {
-    return transform(a, b, framework::math::mod<T>);
+    return transform(a, b, neutrino::math::mod<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -369,7 +369,7 @@ inline T min(const T& a, const T& b)
 template <std::size_t N, typename T>
 inline constexpr Vector<N, T> min(const Vector<N, T>& a, const T& b)
 {
-    return transform(a, Vector<N, T>{b}, framework::math::min<T>);
+    return transform(a, Vector<N, T>{b}, neutrino::math::min<T>);
 }
 
 /// @brief Compares two vectors by components and return a vector
@@ -384,7 +384,7 @@ inline constexpr Vector<N, T> min(const Vector<N, T>& a, const T& b)
 template <std::size_t N, typename T>
 inline constexpr Vector<N, T> min(const Vector<N, T>& a, const Vector<N, T>& b)
 {
-    return transform(a, b, framework::math::min<T>);
+    return transform(a, b, neutrino::math::min<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -419,7 +419,7 @@ inline T max(const T& a, const T& b)
 template <std::size_t N, typename T>
 inline constexpr Vector<N, T> max(const Vector<N, T>& a, const T& b)
 {
-    return transform(a, Vector<N, T>{b}, framework::math::max<T>);
+    return transform(a, Vector<N, T>{b}, neutrino::math::max<T>);
 }
 
 /// @brief Compares two vectors by components and return a vector
@@ -434,7 +434,7 @@ inline constexpr Vector<N, T> max(const Vector<N, T>& a, const T& b)
 template <std::size_t N, typename T>
 inline constexpr Vector<N, T> max(const Vector<N, T>& a, const Vector<N, T>& b)
 {
-    return transform(a, b, framework::math::max<T>);
+    return transform(a, b, neutrino::math::max<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -460,7 +460,7 @@ inline constexpr Vector<N, T> max(const Vector<N, T>& a, const Vector<N, T>& b)
 template <typename T>
 inline T clamp(const T& value, const T& min_value, const T& max_value)
 {
-    return framework::math::min(framework::math::max(value, min_value), max_value);
+    return neutrino::math::min(neutrino::math::max(value, min_value), max_value);
 }
 
 /// @brief Constrain each component of the value to lie between
@@ -479,7 +479,7 @@ inline T clamp(const T& value, const T& min_value, const T& max_value)
 template <std::size_t N, typename T>
 inline Vector<N, T> clamp(const Vector<N, T>& value, const T& min_value, const T& max_value)
 {
-    return framework::math::min(framework::math::max(value, min_value), max_value);
+    return neutrino::math::min(neutrino::math::max(value, min_value), max_value);
 }
 
 /// @brief Constrain each component of the value to lie between
@@ -498,7 +498,7 @@ inline Vector<N, T> clamp(const Vector<N, T>& value, const T& min_value, const T
 template <std::size_t N, typename T>
 inline Vector<N, T> clamp(const Vector<N, T>& value, const Vector<N, T>& min_value, const Vector<N, T>& max_value)
 {
-    return framework::math::min(framework::math::max(value, min_value), max_value);
+    return neutrino::math::min(neutrino::math::max(value, min_value), max_value);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -594,7 +594,7 @@ inline T step(const T& value, const T& edge)
 template <std::size_t N, typename T>
 inline Vector<N, T> step(const Vector<N, T>& value, const T& edge)
 {
-    return transform(value, Vector<N, T>{edge}, framework::math::step<T>);
+    return transform(value, Vector<N, T>{edge}, neutrino::math::step<T>);
 }
 
 /// @brief Generate a step function by comparing two values.
@@ -606,7 +606,7 @@ inline Vector<N, T> step(const Vector<N, T>& value, const T& edge)
 template <std::size_t N, typename T>
 inline Vector<N, T> step(const Vector<N, T>& value, const Vector<N, T>& edge)
 {
-    return transform(value, edge, framework::math::step<T>);
+    return transform(value, edge, neutrino::math::step<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -705,7 +705,7 @@ inline bool isnan(const T& value)
 template <std::size_t N, typename T>
 inline Vector<N, bool> isnan(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::isnan<T>);
+    return transform(value, neutrino::math::isnan<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -738,7 +738,7 @@ inline bool isinf(const T& value)
 template <std::size_t N, typename T>
 inline constexpr Vector<N, bool> isinf(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::isinf<T>);
+    return transform(value, neutrino::math::isinf<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -849,7 +849,7 @@ inline R ldexp(const T& value, const std::int32_t exp)
 template <std::size_t N, typename T, typename R = decltype(::std::ldexp(std::declval<T>(), std::declval<std::int32_t>()))>
 inline Vector<N, R> ldexp(const Vector<N, T>& value, const Vector<N, std::int32_t>& exp)
 {
-    return transform(value, exp, framework::math::ldexp<T>);
+    return transform(value, exp, neutrino::math::ldexp<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -859,6 +859,6 @@ inline Vector<N, R> ldexp(const Vector<N, T>& value, const Vector<N, std::int32_
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::math
+} // namespace neutrino::math
 
 #endif

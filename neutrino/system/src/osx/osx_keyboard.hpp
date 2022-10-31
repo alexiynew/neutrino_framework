@@ -5,12 +5,12 @@
 
 #include <system/keyboard.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 
 KeyCode map_system_key(std::uint32_t key);
 Modifiers get_modifiers_state(std::uint32_t flags);
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

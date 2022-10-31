@@ -9,7 +9,7 @@
 class CustomException
 {};
 
-class ShouldFailTestAssert : public framework::unit_test::Suite
+class ShouldFailTestAssert : public neutrino::unit_test::Suite
 {
 public:
     ShouldFailTestAssert()
@@ -25,7 +25,7 @@ private:
     }
 };
 
-class ShouldFailTestFail : public framework::unit_test::Suite
+class ShouldFailTestFail : public neutrino::unit_test::Suite
 {
 public:
     ShouldFailTestFail()
@@ -41,7 +41,7 @@ private:
     }
 };
 
-class ShouldFailTestStdException : public framework::unit_test::Suite
+class ShouldFailTestStdException : public neutrino::unit_test::Suite
 {
 public:
     ShouldFailTestStdException()
@@ -57,7 +57,7 @@ private:
     }
 };
 
-class ShouldFailTestAnyException : public framework::unit_test::Suite
+class ShouldFailTestAnyException : public neutrino::unit_test::Suite
 {
 public:
     ShouldFailTestAnyException()
@@ -74,7 +74,7 @@ private:
     }
 };
 
-class ShouldPassTest : public framework::unit_test::Suite
+class ShouldPassTest : public neutrino::unit_test::Suite
 {
 public:
     ShouldPassTest()
@@ -88,7 +88,7 @@ private:
     {}
 };
 
-class ShouldPassTestAssert : public framework::unit_test::Suite
+class ShouldPassTestAssert : public neutrino::unit_test::Suite
 {
 public:
     ShouldPassTestAssert()
@@ -104,7 +104,7 @@ private:
     }
 };
 
-class TestForTest : public framework::unit_test::Suite
+class TestForTest : public neutrino::unit_test::Suite
 {
 public:
     TestForTest()
@@ -117,7 +117,7 @@ public:
 private:
     void should_fail()
     {
-        std::vector<std::unique_ptr<framework::unit_test::Suite>> tests;
+        std::vector<std::unique_ptr<neutrino::unit_test::Suite>> tests;
 
         tests.emplace_back(std::make_unique<ShouldFailTestAssert>());
         tests.emplace_back(std::make_unique<ShouldFailTestFail>());
@@ -135,7 +135,7 @@ private:
 
     void should_pass()
     {
-        std::vector<std::unique_ptr<framework::unit_test::Suite>> tests;
+        std::vector<std::unique_ptr<neutrino::unit_test::Suite>> tests;
         tests.emplace_back(std::make_unique<ShouldPassTest>());
         tests.emplace_back(std::make_unique<ShouldPassTestAssert>());
 
@@ -148,7 +148,7 @@ private:
         }
     }
 
-    void run_suite(framework::unit_test::Suite* test)
+    void run_suite(neutrino::unit_test::Suite* test)
     {
         std::streambuf* buffer = std::cout.rdbuf();
         std::cout.rdbuf(nullptr);

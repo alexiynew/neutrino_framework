@@ -6,7 +6,7 @@
 
 namespace
 {
-using framework::system::KeyCode;
+using neutrino::system::KeyCode;
 
 // Virtual keycodes
 //
@@ -152,7 +152,7 @@ KeyCode::key_up,        // 0x7E
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 KeyCode map_system_key(std::uint32_t key)
 {
@@ -205,4 +205,4 @@ Modifiers get_modifiers_state(std::uint32_t flags)
     return state;
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

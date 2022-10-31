@@ -3,10 +3,10 @@
 The module provides simple functionality to test different features 
 of the neutrino framework.
 
-All tests must de derived form the `framework::unit_test::Suite` class.
+All tests must de derived form the `neutrino::unit_test::Suite` class.
 
 ``` cpp
-class ExampleTest : public framework::unit_test::Suite
+class ExampleTest : public neutrino::unit_test::Suite
 {
 public:
     ExampleTest() : Suite("Example test name")
@@ -40,7 +40,7 @@ TEST_ASSERT(condition, "Test fail message.");
 Tests can be run with the `Suite::run`.
 
 ``` cpp
-framework::unit_test::Suite* test = new ExampleTest();
+neutrino::unit_test::Suite* test = new ExampleTest();
 test->run();
 ```
 

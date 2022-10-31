@@ -18,9 +18,9 @@ const DWORD window_style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX 
                            WS_CLIPSIBLINGS;
 const DWORD window_ex_style = WS_EX_OVERLAPPEDWINDOW | WS_EX_APPWINDOW;
 
-framework::system::MouseButton get_mouse_button(UINT message, WPARAM w_param)
+neutrino::system::MouseButton get_mouse_button(UINT message, WPARAM w_param)
 {
-    using framework::system::MouseButton;
+    using neutrino::system::MouseButton;
 
     switch (message) {
         case WM_LBUTTONDOWN:
@@ -61,7 +61,7 @@ void set_cursor_cliping(HWND window, bool enable)
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 
 Win32Window::Win32Window(const std::string& title, Size size, const ContextSettings& settings)
@@ -306,7 +306,7 @@ Position Win32Window::position() const
 
 Window::State Win32Window::state() const
 {
-    using State = framework::system::Window::State;
+    using State = neutrino::system::Window::State;
 
     if (IsIconic(m_window) != 0) {
         return State::iconified;
@@ -895,4 +895,4 @@ Position Win32Window::adjust_position(Position position) const
     return {rect.left, rect.top};
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

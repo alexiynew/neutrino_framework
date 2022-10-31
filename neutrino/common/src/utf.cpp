@@ -5,7 +5,7 @@
 
 namespace
 {
-using framework::utf::CodePoint;
+using neutrino::utf::CodePoint;
 
 using U8Type       = std::string::value_type;
 using U16Type      = std::u16string::value_type;
@@ -332,7 +332,7 @@ std::vector<CodePoint> to_codepoints_impl(const T& str)
 
 } // namespace
 
-namespace framework::utf
+namespace neutrino::utf
 {
 
 std::string to_utf8(const std::u16string& str)
@@ -439,4 +439,4 @@ std::vector<CodePoint> to_codepoints(const std::wstring& str)
     return to_codepoints_impl(str);
 }
 
-} // namespace framework::utf
+} // namespace neutrino::utf

@@ -1,8 +1,8 @@
 #include <graphics/shader.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::graphics;
+using namespace neutrino;
+using namespace neutrino::graphics;
 
 namespace
 {
@@ -35,7 +35,7 @@ void main(){\n\
 
 } // namespace
 
-class ShaderTest : public framework::unit_test::Suite
+class ShaderTest : public neutrino::unit_test::Suite
 {
 public:
     ShaderTest()

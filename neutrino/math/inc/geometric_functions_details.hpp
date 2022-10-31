@@ -3,7 +3,7 @@
 
 #include <math/inc/vector_type.hpp>
 
-namespace framework::math::geometric_functions_details
+namespace neutrino::math::geometric_functions_details
 {
 template <typename T>
 inline constexpr T dot(const Vector<4, T>& a, const Vector<4, T>& b)
@@ -23,6 +23,6 @@ inline constexpr T dot(const Vector<2, T>& a, const Vector<2, T>& b)
     return (a.x * b.x) + (a.y * b.y);
 }
 
-} // namespace framework::math::geometric_functions_details
+} // namespace neutrino::math::geometric_functions_details
 
 #endif

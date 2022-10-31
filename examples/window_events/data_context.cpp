@@ -1,6 +1,6 @@
 ﻿#include "data_context.hpp"
 
-using namespace framework;
+using namespace neutrino;
 using namespace system;
 
 void DataContext::set_window_state(Window::State state)

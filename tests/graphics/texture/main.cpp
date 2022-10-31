@@ -2,8 +2,8 @@
 #include <graphics/texture.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::graphics;
+using namespace neutrino;
+using namespace neutrino::graphics;
 
 class TextureTest : public unit_test::Suite
 {

@@ -6,12 +6,12 @@
 #include <string>
 #include <vector>
 
-namespace framework::log
+namespace neutrino::log
 {
 enum class SeverityLevel;
 }
 
-namespace framework::log::log_details
+namespace neutrino::log::log_details
 {
 
 class LogBuffer : public std::streambuf
@@ -57,6 +57,6 @@ private:
     std::unique_ptr<std::streambuf> m_buffer;
 };
 
-} // namespace framework::log::log_details
+} // namespace neutrino::log::log_details
 
 #endif

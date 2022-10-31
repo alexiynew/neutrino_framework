@@ -1,6 +1,6 @@
 #include <system/context_settings.hpp>
 
-namespace framework::system
+namespace neutrino::system
 {
 
 #pragma region setters
@@ -55,4 +55,4 @@ std::uint32_t ContextSettings::samples_count() const
 
 #pragma endregion
 
-} // namespace framework::system
+} // namespace neutrino::system

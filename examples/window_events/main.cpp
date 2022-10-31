@@ -10,9 +10,9 @@
 #include "event_handler.hpp"
 #include "view.hpp"
 
-using namespace framework;
-using namespace framework::system;
-using framework::log::StreamLogger;
+using namespace neutrino;
+using namespace neutrino::system;
+using neutrino::log::StreamLogger;
 
 class App
 {
@@ -70,7 +70,7 @@ private:
 
 int main()
 {
-    framework::log::set_logger(std::make_unique<StreamLogger>(std::cout));
+    neutrino::log::set_logger(std::make_unique<StreamLogger>(std::cout));
     log::info("Main") << "RUN";
 
     App app;

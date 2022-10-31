@@ -1,20 +1,20 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Vector2b;
-using framework::math::Vector2f;
-using framework::math::Vector2i;
-using framework::math::Vector2u;
-using framework::math::Vector3b;
-using framework::math::Vector3d;
-using framework::math::Vector3f;
-using framework::math::Vector4b;
-using framework::math::Vector4d;
-using framework::math::Vector4i;
+using neutrino::math::Vector2b;
+using neutrino::math::Vector2f;
+using neutrino::math::Vector2i;
+using neutrino::math::Vector2u;
+using neutrino::math::Vector3b;
+using neutrino::math::Vector3d;
+using neutrino::math::Vector3f;
+using neutrino::math::Vector4b;
+using neutrino::math::Vector4d;
+using neutrino::math::Vector4i;
 
-using framework::math::almost_equal;
+using neutrino::math::almost_equal;
 
-class VectorOperatorsTest : public framework::unit_test::Suite
+class VectorOperatorsTest : public neutrino::unit_test::Suite
 {
 public:
     VectorOperatorsTest()
@@ -343,7 +343,7 @@ private:
     }
 };
 
-class BoolVectorOperatorsTest : public framework::unit_test::Suite
+class BoolVectorOperatorsTest : public neutrino::unit_test::Suite
 {
 public:
     BoolVectorOperatorsTest()

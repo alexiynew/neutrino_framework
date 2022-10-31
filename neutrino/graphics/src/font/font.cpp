@@ -29,9 +29,9 @@
 
 namespace
 {
-using namespace framework;
-using namespace framework::graphics;
-using namespace framework::graphics::details::font;
+using namespace neutrino;
+using namespace neutrino::graphics;
+using namespace neutrino::graphics::details::font;
 
 using graphics::Font;
 using graphics::Mesh;
@@ -415,7 +415,7 @@ GlyphMeshData create_glyph_mesh(const GlyphData::Contours& contours,
 
 } // namespace
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 
 #pragma region class FontData
@@ -811,4 +811,4 @@ void swap(Font& lhs, Font& rhs) noexcept
     swap(lhs.m_data, rhs.m_data);
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

@@ -11,10 +11,10 @@
 
 #include "data_context.hpp"
 
-using namespace framework;
-using namespace framework::graphics;
+using namespace neutrino;
+using namespace neutrino::graphics;
 
-using framework::system::Window;
+using neutrino::system::Window;
 
 namespace
 {
@@ -102,7 +102,7 @@ void View::render(const DataContext& data)
     m_renderer.display();
 }
 
-void View::on_resize(framework::Size size)
+void View::on_resize(neutrino::Size size)
 {
     m_renderer.set_uniform("projectionMatrix",
                            math::ortho2d<float>(0, static_cast<float>(size.width), 0, static_cast<float>(size.height)));

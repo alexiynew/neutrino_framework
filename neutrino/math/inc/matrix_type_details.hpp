@@ -3,7 +3,7 @@
 
 #include <math/inc/vector_type.hpp>
 
-namespace framework::math::matrix_type_details
+namespace neutrino::math::matrix_type_details
 {
 
 template <typename T, typename U>
@@ -50,6 +50,6 @@ inline constexpr V get_column(M&& Matrix, V&& vector) noexcept
                                         std::integral_constant<bool, (N < C)>{});
 }
 
-} // namespace framework::math::matrix_type_details
+} // namespace neutrino::math::matrix_type_details
 
 #endif

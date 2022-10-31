@@ -3,7 +3,7 @@
 #include <graphics/image.hpp>
 #include <unit_test/suite.hpp>
 
-class PngImageTest : public framework::unit_test::Suite
+class PngImageTest : public neutrino::unit_test::Suite
 {
 public:
     PngImageTest()
@@ -16,7 +16,7 @@ public:
 private:
     void png_load_good()
     {
-        using framework::graphics::Image;
+        using neutrino::graphics::Image;
 
         const std::vector<std::string> good_files =
         {"png/basi0g01.png", "png/basi0g02.png", "png/basi0g04.png", "png/basi0g08.png", "png/basi0g16.png",
@@ -66,7 +66,7 @@ private:
 
     void png_load_bad()
     {
-        using framework::graphics::Image;
+        using neutrino::graphics::Image;
 
         const std::vector<std::string> bad_files = {"png/xc1n0g08.png",
                                                     "png/xc9n2c08.png",

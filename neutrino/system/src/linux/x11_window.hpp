@@ -11,12 +11,12 @@
 
 #include <X11/Xlib.h>
 
-namespace framework::system
+namespace neutrino::system
 {
 class Context;
 }
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 class X11Window final : public PlatformWindow
 {
@@ -127,6 +127,6 @@ private:
     CursorPosition m_last_cursor_position = {0, 0};
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

@@ -5,7 +5,7 @@
 
 #include <Windows.h>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 class Win32Window;
 
@@ -34,6 +34,6 @@ private:
     static LPCWSTR m_window_class;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif
