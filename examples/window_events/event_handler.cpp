@@ -333,6 +333,8 @@ void EventHandler::on_character(const std::string& s)
 
 void EventHandler::on_update()
 {
+    m_fps.tick();
+
     m_data_context.set_window_state(m_window.state());
     m_data_context.set_window_resizable(m_window.is_resizable());
     m_data_context.set_window_has_input_focus(m_window.has_input_focus());
@@ -340,6 +342,8 @@ void EventHandler::on_update()
     m_data_context.set_cursor_captured(m_window.is_cursor_captured());
     m_data_context.set_cursor_visible(m_window.is_cursor_visible());
     m_data_context.set_cursor_hover(m_window.is_cursor_hover());
+
+    m_data_context.set_fps(m_fps.fps());
 }
 
 #pragma region actions handlers

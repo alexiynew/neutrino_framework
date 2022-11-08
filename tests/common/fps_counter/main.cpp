@@ -5,7 +5,6 @@
 #include <unit_test/suite.hpp>
 
 using namespace neutrino;
-using namespace neutrino::game_core;
 
 class FpsCounterTest : public unit_test::Suite
 {

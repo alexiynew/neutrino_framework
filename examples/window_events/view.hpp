@@ -38,6 +38,8 @@ private:
         CatText,
         CatText1,
 
+        FpsText,
+
         LogTextBegin,
     };
 
@@ -45,6 +47,7 @@ private:
     void render_cursor_state(const DataContext& data);
     void render_log(const DataContext& data);
     void render_cat(const DataContext& data);
+    void render_fps(const DataContext& data);
     void render_cursor_marker(const DataContext& data);
 
     void render_normal_text(TextName id, const std::string& text, neutrino::math::Vector3f position);

@@ -1,6 +1,7 @@
 #ifndef WINDOW_EVENTS_EVENT_HANDLER_HPP
 #define WINDOW_EVENTS_EVENT_HANDLER_HPP
 
+#include <common/fps_counter.hpp>
 #include <system/window.hpp>
 
 #include "data_context.hpp"
@@ -50,6 +51,7 @@ private:
     void toggle_cursor_visible();
 
     neutrino::system::Window& m_window;
+    neutrino::FpsCounter m_fps;
 
     DataContext m_data_context;
 };

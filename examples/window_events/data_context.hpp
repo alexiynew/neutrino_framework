@@ -25,6 +25,8 @@ public:
     void set_cursor_visible(bool value);
     void set_cursor_hover(bool value);
 
+    void set_fps(std::uint32_t fps);
+
     void add_callback_event(const std::string& event);
 
     neutrino::system::Window::State window_state() const;
@@ -38,6 +40,8 @@ public:
     bool cursor_visible() const;
     bool cursor_hover() const;
 
+    std::uint32_t fps() const;
+
     const std::vector<std::string>& last_callback_events() const;
 
 private:
@@ -46,12 +50,14 @@ private:
     Size m_window_size;
     Position m_window_position;
     Position m_window_cursor_position;
-    bool m_window_resizable;
-    bool m_window_has_input_focus;
+    bool m_window_resizable       = false;
+    bool m_window_has_input_focus = false;
 
-    bool m_cursor_captured;
-    bool m_cursor_visible;
-    bool m_cursor_hover;
+    bool m_cursor_captured = false;
+    bool m_cursor_visible  = false;
+    bool m_cursor_hover    = false;
+
+    std::uint32_t m_fps = 0;
 };
 
 #endif

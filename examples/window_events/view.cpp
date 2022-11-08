@@ -55,7 +55,8 @@ constexpr math::Vector3f normal_text_scale = {15, 15, 1};
 constexpr math::Vector3f WindowTextTopLeftOffset = {-300, -50, 0};
 constexpr math::Vector3f CursorTextTopLeftOffset = {-300, -150, 0};
 
-constexpr math::Vector3f CatTextBottomRightOffset = {80, -50, 0};
+constexpr math::Vector3f CatTextBottomRightOffset = {80, -63, 0};
+constexpr math::Vector3f FpsTextBottomRightOffset = {120, -50, 0};
 
 std::string get_state_name(Window::State state)
 {
@@ -96,6 +97,7 @@ void View::render(const DataContext& data)
     render_cursor_state(data);
     render_log(data);
     render_cat(data);
+    render_fps(data);
 
     render_cursor_marker(data);
 
@@ -218,6 +220,14 @@ void View::render_cat(const DataContext& data)
     math::Vector3f text_pos = math::Vector3f{size.width, 0, 0} - CatTextBottomRightOffset;
     render_normal_text(TextName::CatText, text, text_pos);
     render_normal_text(TextName::CatText1, text1, text_pos + math::Vector3f{0, -10, 0});
+}
+
+void View::render_fps(const DataContext& data)
+{
+    const auto size = data.window_size();
+
+    math::Vector3f text_pos = math::Vector3f{size.width, 0, 0} - FpsTextBottomRightOffset;
+    render_normal_text(TextName::FpsText, std::to_string(data.fps()), text_pos);
 }
 
 void View::render_cursor_marker(const DataContext& data)
