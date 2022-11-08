@@ -71,7 +71,6 @@ message(STATUS "Add modules...")
 
 set(MODULES
     common
-    game_core
     graphics
     log
     math

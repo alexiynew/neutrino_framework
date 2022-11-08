@@ -1,6 +1,6 @@
 #include <chrono>
 
-#include <game_core/fps_counter.hpp>
+#include <common/fps_counter.hpp>
 
 namespace neutrino::game_core
 {

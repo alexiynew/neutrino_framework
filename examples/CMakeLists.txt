@@ -11,7 +11,6 @@ message(STATUS "Add examples...")
 
 set(EXAMPLES
     image
-    light
     window_events
 )
 

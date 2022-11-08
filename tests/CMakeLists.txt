@@ -14,7 +14,6 @@ message(STATUS "Add tests...")
 
 set(TEST_GROUPS
     common
-    game_core
     graphics
     log
     math

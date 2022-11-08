@@ -1,7 +1,7 @@
 #include <chrono>
 #include <thread>
 
-#include <game_core/fps_counter.hpp>
+#include <common/fps_counter.hpp>
 #include <unit_test/suite.hpp>
 
 using namespace neutrino;
