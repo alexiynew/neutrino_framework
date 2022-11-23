@@ -44,12 +44,13 @@ private:
         const std::u16string utf16_5(u"\uf900\uf901\uf902\uf903");
         const std::u16string utf16_6(u"\U00010000\U00010001\U00010002\U00010003");
 
-        const std::string utf8_1("abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
-        const std::string utf8_2("\u00a3\u00a4\u00a5");
-        const std::string utf8_3("\u7cc2\u7cc3\u7cc4");
-        const std::string utf8_4("\ud7f8\ud7f9\ud7fa\ud7fb");
-        const std::string utf8_5("\uf900\uf901\uf902\uf903");
-        const std::string utf8_6("\U00010000\U00010001\U00010002\U00010003");
+        const std::string utf8_1(
+        utf::to_string(u8"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~"));
+        const std::string utf8_2(utf::to_string(u8"\u00a3\u00a4\u00a5"));
+        const std::string utf8_3(utf::to_string(u8"\u7cc2\u7cc3\u7cc4"));
+        const std::string utf8_4(utf::to_string(u8"\ud7f8\ud7f9\ud7fa\ud7fb"));
+        const std::string utf8_5(utf::to_string(u8"\uf900\uf901\uf902\uf903"));
+        const std::string utf8_6(utf::to_string(u8"\U00010000\U00010001\U00010002\U00010003"));
 
         TEST_ASSERT(utf::to_utf8(utf16_1) == utf8_1, "Convertation failed.");
         TEST_ASSERT(utf::to_utf8(utf16_2) == utf8_2, "Convertation failed.");
@@ -70,12 +71,13 @@ private:
         const std::u32string utf32_5(U"\uf900\uf901\uf902\uf903");
         const std::u32string utf32_6(U"\U00010000\U00010001\U00010002\U00010003");
 
-        const std::string utf8_1("abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
-        const std::string utf8_2("\u00a3\u00a4\u00a5");
-        const std::string utf8_3("\u7cc2\u7cc3\u7cc4");
-        const std::string utf8_4("\ud7f8\ud7f9\ud7fa\ud7fb");
-        const std::string utf8_5("\uf900\uf901\uf902\uf903");
-        const std::string utf8_6("\U00010000\U00010001\U00010002\U00010003");
+        const std::string utf8_1(
+        utf::to_string(u8"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~"));
+        const std::string utf8_2(utf::to_string(u8"\u00a3\u00a4\u00a5"));
+        const std::string utf8_3(utf::to_string(u8"\u7cc2\u7cc3\u7cc4"));
+        const std::string utf8_4(utf::to_string(u8"\ud7f8\ud7f9\ud7fa\ud7fb"));
+        const std::string utf8_5(utf::to_string(u8"\uf900\uf901\uf902\uf903"));
+        const std::string utf8_6(utf::to_string(u8"\U00010000\U00010001\U00010002\U00010003"));
 
         TEST_ASSERT(utf::to_utf8(utf32_1) == utf8_1, "Convertation failed.");
         TEST_ASSERT(utf::to_utf8(utf32_2) == utf8_2, "Convertation failed.");
@@ -96,12 +98,13 @@ private:
         const std::wstring wide_5(L"\uf900\uf901\uf902\uf903");
         const std::wstring wide_6(L"\U00010000\U00010001\U00010002\U00010003");
 
-        const std::string utf8_1("abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
-        const std::string utf8_2("\u00a3\u00a4\u00a5");
-        const std::string utf8_3("\u7cc2\u7cc3\u7cc4");
-        const std::string utf8_4("\ud7f8\ud7f9\ud7fa\ud7fb");
-        const std::string utf8_5("\uf900\uf901\uf902\uf903");
-        const std::string utf8_6("\U00010000\U00010001\U00010002\U00010003");
+        const std::string utf8_1(
+        utf::to_string(u8"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~"));
+        const std::string utf8_2(utf::to_string(u8"\u00a3\u00a4\u00a5"));
+        const std::string utf8_3(utf::to_string(u8"\u7cc2\u7cc3\u7cc4"));
+        const std::string utf8_4(utf::to_string(u8"\ud7f8\ud7f9\ud7fa\ud7fb"));
+        const std::string utf8_5(utf::to_string(u8"\uf900\uf901\uf902\uf903"));
+        const std::string utf8_6(utf::to_string(u8"\U00010000\U00010001\U00010002\U00010003"));
 
         TEST_ASSERT(utf::to_utf8(wide_1) == utf8_1, "Convertation failed.");
         TEST_ASSERT(utf::to_utf8(wide_2) == utf8_2, "Convertation failed.");
@@ -115,12 +118,13 @@ private:
 
     void utf8_to_utf16()
     {
-        const std::string utf8_1("abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
-        const std::string utf8_2("\u00a3\u00a4\u00a5");
-        const std::string utf8_3("\u7cc2\u7cc3\u7cc4");
-        const std::string utf8_4("\ud7f8\ud7f9\ud7fa\ud7fb");
-        const std::string utf8_5("\uf900\uf901\uf902\uf903");
-        const std::string utf8_6("\U00010000\U00010001\U00010002\U00010003");
+        const std::string utf8_1(
+        utf::to_string(u8"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~"));
+        const std::string utf8_2(utf::to_string(u8"\u00a3\u00a4\u00a5"));
+        const std::string utf8_3(utf::to_string(u8"\u7cc2\u7cc3\u7cc4"));
+        const std::string utf8_4(utf::to_string(u8"\ud7f8\ud7f9\ud7fa\ud7fb"));
+        const std::string utf8_5(utf::to_string(u8"\uf900\uf901\uf902\uf903"));
+        const std::string utf8_6(utf::to_string(u8"\U00010000\U00010001\U00010002\U00010003"));
 
         const std::u16string utf16_1(u"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
         const std::u16string utf16_2(u"\u00a3\u00a4\u00a5");
@@ -193,12 +197,13 @@ private:
 
     void utf8_to_utf32()
     {
-        const std::string utf8_1("abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
-        const std::string utf8_2("\u00a3\u00a4\u00a5");
-        const std::string utf8_3("\u7cc2\u7cc3\u7cc4");
-        const std::string utf8_4("\ud7f8\ud7f9\ud7fa\ud7fb");
-        const std::string utf8_5("\uf900\uf901\uf902\uf903");
-        const std::string utf8_6("\U00010000\U00010001\U00010002\U00010003");
+        const std::string utf8_1(
+        utf::to_string(u8"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~"));
+        const std::string utf8_2(utf::to_string(u8"\u00a3\u00a4\u00a5"));
+        const std::string utf8_3(utf::to_string(u8"\u7cc2\u7cc3\u7cc4"));
+        const std::string utf8_4(utf::to_string(u8"\ud7f8\ud7f9\ud7fa\ud7fb"));
+        const std::string utf8_5(utf::to_string(u8"\uf900\uf901\uf902\uf903"));
+        const std::string utf8_6(utf::to_string(u8"\U00010000\U00010001\U00010002\U00010003"));
 
         const std::u32string utf32_1(U"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
         const std::u32string utf32_2(U"\u00a3\u00a4\u00a5");
@@ -278,12 +283,13 @@ private:
 
     void utf8_to_widechar()
     {
-        const std::string utf8_1("abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
-        const std::string utf8_2("\u00a3\u00a4\u00a5");
-        const std::string utf8_3("\u7cc2\u7cc3\u7cc4");
-        const std::string utf8_4("\ud7f8\ud7f9\ud7fa\ud7fb");
-        const std::string utf8_5("\uf900\uf901\uf902\uf903");
-        const std::string utf8_6("\U00010000\U00010001\U00010002\U00010003");
+        const std::string utf8_1(
+        utf::to_string(u8"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~"));
+        const std::string utf8_2(utf::to_string(u8"\u00a3\u00a4\u00a5"));
+        const std::string utf8_3(utf::to_string(u8"\u7cc2\u7cc3\u7cc4"));
+        const std::string utf8_4(utf::to_string(u8"\ud7f8\ud7f9\ud7fa\ud7fb"));
+        const std::string utf8_5(utf::to_string(u8"\uf900\uf901\uf902\uf903"));
+        const std::string utf8_6(utf::to_string(u8"\U00010000\U00010001\U00010002\U00010003"));
 
         const std::wstring wide_1(L"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
         const std::wstring wide_2(L"\u00a3\u00a4\u00a5");
@@ -356,12 +362,13 @@ private:
 
     void utf8_to_codepoints()
     {
-        const std::string utf8_1("abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~");
-        const std::string utf8_2("\u00a3\u00a4\u00a5");
-        const std::string utf8_3("\u7cc2\u7cc3\u7cc4");
-        const std::string utf8_4("\ud7f8\ud7f9\ud7fa\ud7fb");
-        const std::string utf8_5("\uf900\uf901\uf902\uf903");
-        const std::string utf8_6("\U00010000\U00010001\U00010002\U00010003");
+        const std::string utf8_1(
+        utf::to_string(u8"abcdefghijklopqrstyvwxyz1234567890-=!@#$%^&*()_+{}|[]\\;':\",./<>?`~"));
+        const std::string utf8_2(utf::to_string(u8"\u00a3\u00a4\u00a5"));
+        const std::string utf8_3(utf::to_string(u8"\u7cc2\u7cc3\u7cc4"));
+        const std::string utf8_4(utf::to_string(u8"\ud7f8\ud7f9\ud7fa\ud7fb"));
+        const std::string utf8_5(utf::to_string(u8"\uf900\uf901\uf902\uf903"));
+        const std::string utf8_6(utf::to_string(u8"\U00010000\U00010001\U00010002\U00010003"));
 
         std::vector<utf::CodePoint> cp_1 = {0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b,
                                             0x6c, 0x6f, 0x70, 0x71, 0x72, 0x73, 0x74, 0x79, 0x76, 0x77, 0x78,
