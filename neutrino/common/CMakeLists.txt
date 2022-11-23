@@ -9,6 +9,7 @@ set_sources(PUBLIC_SOURCES
     utils.hpp
     version.hpp
     zlib.hpp
+    fps_counter.hpp
     
     inc/crc_details.hpp
     inc/utils_details.hpp
@@ -21,6 +22,7 @@ set_sources(PRIVATE_SOURCES
     src/utf.cpp
     src/version.cpp
     src/zlib.cpp
+    src/fps_counter.cpp
 )
 
 target_sources(${PROJECT_NAME}

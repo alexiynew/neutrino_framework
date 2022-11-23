@@ -8,7 +8,7 @@
 namespace
 {
 
-namespace details = framework::graphics::details::font;
+namespace details = neutrino::graphics::details::font;
 
 using details::PlatformId;
 
@@ -21,7 +21,7 @@ struct EncodingRecord
 
 } // namespace
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 class Subtable
@@ -390,7 +390,7 @@ std::vector<EncodingRecord> get_encoding_records(std::uint32_t offset, size_t nu
 
 std::vector<EncodingRecord> find_unicode_encoding_records(const std::vector<EncodingRecord>& encoding_records)
 {
-    using framework::graphics::details::font::PlatformId;
+    using neutrino::graphics::details::font::PlatformId;
 
     auto is_unicode = [](const EncodingRecord& record) {
         constexpr static std::array<std::uint16_t, 4> supported_encoding_ids = {3, 4, 5, 6};
@@ -491,4 +491,4 @@ GlyphId CharacterToGlyphIndexMapping::glyph_index(CodePoint codepoint) const
     return missig_glyph_id;
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

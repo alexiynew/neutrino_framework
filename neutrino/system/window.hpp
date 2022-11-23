@@ -12,7 +12,7 @@
 #include <system/keyboard.hpp>
 #include <system/mouse.hpp>
 
-namespace framework::system
+namespace neutrino::system
 {
 
 namespace details
@@ -432,6 +432,6 @@ void swap(Window& lhs, Window& rhs) noexcept;
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::system
+} // namespace neutrino::system
 
 #endif

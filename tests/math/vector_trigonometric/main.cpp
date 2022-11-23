@@ -1,14 +1,14 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Vector3d;
-using framework::math::Vector4d;
+using neutrino::math::Vector3d;
+using neutrino::math::Vector4d;
 
-using framework::math::pi;
-using framework::math::quarter_pi;
-using framework::math::tau;
+using neutrino::math::pi;
+using neutrino::math::quarter_pi;
+using neutrino::math::tau;
 
-class TirgonometricFunctionsTest : public framework::unit_test::Suite
+class TirgonometricFunctionsTest : public neutrino::unit_test::Suite
 {
 public:
     TirgonometricFunctionsTest()

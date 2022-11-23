@@ -5,7 +5,7 @@
 
 #include <math/inc/vector_type.hpp>
 
-namespace framework::math
+namespace neutrino::math
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup math_exponential_functions
@@ -43,10 +43,10 @@ inline R pow(const T& base, const U& exponent)
 template <std::size_t N,
           typename T,
           typename U,
-          typename R = decltype(framework::math::pow(std::declval<T>(), std::declval<U>()))>
+          typename R = decltype(neutrino::math::pow(std::declval<T>(), std::declval<U>()))>
 inline Vector<N, R> pow(const Vector<N, T>& base, const Vector<N, U>& exponent)
 {
-    return transform(base, exponent, framework::math::pow<T, U>);
+    return transform(base, exponent, neutrino::math::pow<T, U>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -76,10 +76,10 @@ inline R exp(const T& exponent)
 ///         to the given power (e ^ exponent).
 ///
 /// @see exp
-template <std::size_t N, typename T, typename R = decltype(framework::math::exp(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::exp(std::declval<T>()))>
 inline Vector<N, R> exp(const Vector<N, T>& exponent)
 {
-    return transform(exponent, framework::math::exp<T>);
+    return transform(exponent, neutrino::math::exp<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -109,10 +109,10 @@ inline R exp2(const T& exponent)
 ///         to the given power (2 ^ exponent).
 ///
 /// @see exp2
-template <std::size_t N, typename T, typename R = decltype(framework::math::exp2(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::exp2(std::declval<T>()))>
 inline Vector<N, R> exp2(const Vector<N, T>& exponent)
 {
-    return transform(exponent, framework::math::exp2<T>);
+    return transform(exponent, neutrino::math::exp2<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -142,10 +142,10 @@ inline R log(const T& value)
 ///         of the corresponding component.
 ///
 /// @see log
-template <std::size_t N, typename T, typename R = decltype(framework::math::log(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::log(std::declval<T>()))>
 inline Vector<N, R> log(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::log<T>);
+    return transform(value, neutrino::math::log<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -175,10 +175,10 @@ inline R log2(const T& value)
 ///         of the corresponding component.
 ///
 /// @see log2
-template <std::size_t N, typename T, typename R = decltype(framework::math::log2(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::log2(std::declval<T>()))>
 inline Vector<N, R> log2(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::log2<T>);
+    return transform(value, neutrino::math::log2<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -208,10 +208,10 @@ inline R sqrt(const T& value)
 ///         of the corresponding component.
 ///
 /// @see sqrt
-template <std::size_t N, typename T, typename R = decltype(framework::math::sqrt(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::sqrt(std::declval<T>()))>
 inline Vector<N, R> sqrt(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::sqrt<T>);
+    return transform(value, neutrino::math::sqrt<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -241,10 +241,10 @@ inline R invsqrt(const T& value)
 ///         of the corresponding component.
 ///
 /// @see invsqrt
-template <std::size_t N, typename T, typename R = decltype(framework::math::invsqrt(std::declval<T>()))>
+template <std::size_t N, typename T, typename R = decltype(neutrino::math::invsqrt(std::declval<T>()))>
 inline Vector<N, R> invsqrt(const Vector<N, T>& value)
 {
-    return transform(value, framework::math::invsqrt<T>);
+    return transform(value, neutrino::math::invsqrt<T>);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -254,6 +254,6 @@ inline Vector<N, R> invsqrt(const Vector<N, T>& value)
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::math
+} // namespace neutrino::math
 
 #endif

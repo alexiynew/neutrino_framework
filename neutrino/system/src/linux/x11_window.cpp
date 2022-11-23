@@ -61,7 +61,7 @@ Bool event_predicate(Display* /*unused*/, XEvent* event, XPointer arg)
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 X11Window::X11Window(const std::string& title, Size size, const ContextSettings& settings)
     : m_server(X11Server::connect())
@@ -972,4 +972,4 @@ void X11Window::update_size_limits(Size min_size, Size max_size)
 
 #pragma endregion
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

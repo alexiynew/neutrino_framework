@@ -1,7 +1,7 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-class BezierFunctionsTest : public framework::unit_test::Suite
+class BezierFunctionsTest : public neutrino::unit_test::Suite
 {
 public:
     BezierFunctionsTest()
@@ -14,9 +14,9 @@ public:
 private:
     void quadratic_bezier_function()
     {
-        using framework::math::mix;
-        using framework::math::quadratic_bezier;
-        using framework::math::Vector2f;
+        using neutrino::math::mix;
+        using neutrino::math::quadratic_bezier;
+        using neutrino::math::Vector2f;
 
         Vector2f p1{0.0f, 0.0f};
         Vector2f p2{0.0f, 0.8f};
@@ -33,10 +33,10 @@ private:
 
     void cubic_bezier_function()
     {
-        using framework::math::almost_equal;
-        using framework::math::cubic_bezier;
-        using framework::math::quadratic_bezier;
-        using framework::math::Vector2f;
+        using neutrino::math::almost_equal;
+        using neutrino::math::cubic_bezier;
+        using neutrino::math::quadratic_bezier;
+        using neutrino::math::Vector2f;
 
         Vector2f p1{0.0f, 0.0f};
         Vector2f p2{0.0f, 0.8f};

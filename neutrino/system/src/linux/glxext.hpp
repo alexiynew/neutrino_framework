@@ -7,7 +7,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-namespace framework::system::details::glx
+namespace neutrino::system::details::glx
 {
 
 #pragma region GLX_VERSION_1_0
@@ -1047,6 +1047,6 @@ void init_glx(const GetFunction& get_function);
 bool is_supported(Feature feature);
 bool is_supported(Extension extension);
 
-} // namespace framework::system::details::glx
+} // namespace neutrino::system::details::glx
 
 #endif

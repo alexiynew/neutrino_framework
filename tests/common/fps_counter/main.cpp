@@ -1,11 +1,10 @@
 #include <chrono>
 #include <thread>
 
-#include <game_core/fps_counter.hpp>
+#include <common/fps_counter.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::game_core;
+using namespace neutrino;
 
 class FpsCounterTest : public unit_test::Suite
 {

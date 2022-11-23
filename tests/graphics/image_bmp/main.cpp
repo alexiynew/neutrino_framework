@@ -3,7 +3,7 @@
 #include <graphics/image.hpp>
 #include <unit_test/suite.hpp>
 
-class BmpImageTest : public framework::unit_test::Suite
+class BmpImageTest : public neutrino::unit_test::Suite
 {
 public:
     BmpImageTest()
@@ -17,7 +17,7 @@ public:
 private:
     void bmp_load_good()
     {
-        using framework::graphics::Image;
+        using neutrino::graphics::Image;
 
         const std::vector<std::string> files =
         {"bmp/good/pal1.bmp",          "bmp/good/pal1bg.bmp",       "bmp/good/pal1wb.bmp",
@@ -43,7 +43,7 @@ private:
 
     void bmp_load_questionable()
     {
-        using framework::graphics::Image;
+        using neutrino::graphics::Image;
 
         const std::vector<std::string> good_files =
         {"bmp/questionable/pal1p1.bmp",         "bmp/questionable/pal2.bmp",
@@ -94,7 +94,7 @@ private:
 
     void bmp_load_bad()
     {
-        using framework::graphics::Image;
+        using neutrino::graphics::Image;
 
         const std::vector<std::string> good_files = {"bmp/bad/badrle.bmp",
                                                      "bmp/bad/rgb16-880.bmp",

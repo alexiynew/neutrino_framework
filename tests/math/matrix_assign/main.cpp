@@ -1,17 +1,17 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Matrix2x2f;
-using framework::math::Matrix2x3f;
-using framework::math::Matrix2x4f;
-using framework::math::Matrix3x2f;
-using framework::math::Matrix3x3f;
-using framework::math::Matrix3x4f;
-using framework::math::Matrix4x2f;
-using framework::math::Matrix4x3f;
-using framework::math::Matrix4x4f;
+using neutrino::math::Matrix2x2f;
+using neutrino::math::Matrix2x3f;
+using neutrino::math::Matrix2x4f;
+using neutrino::math::Matrix3x2f;
+using neutrino::math::Matrix3x3f;
+using neutrino::math::Matrix3x4f;
+using neutrino::math::Matrix4x2f;
+using neutrino::math::Matrix4x3f;
+using neutrino::math::Matrix4x4f;
 
-class MatrixAssignTest : public framework::unit_test::Suite
+class MatrixAssignTest : public neutrino::unit_test::Suite
 {
 public:
     MatrixAssignTest()

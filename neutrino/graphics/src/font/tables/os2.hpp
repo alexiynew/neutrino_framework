@@ -5,7 +5,7 @@
 
 #include <graphics/src/font/types.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 class Os2 final
@@ -65,6 +65,6 @@ private:
     std::uint16_t m_upper_optical_point_size = 0;
 };
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font
 
 #endif

@@ -83,7 +83,7 @@ ProfilerStorage& profiler_instance()
 
 } // namespace
 
-namespace framework::profiler
+namespace neutrino::profiler
 {
 
 ScopeProfilerItem::ScopeProfilerItem(std::string_view name)
@@ -113,4 +113,4 @@ void dump_to_file(const std::filesystem::path& file)
     profiler_instance().dump(out);
 }
 
-} // namespace framework::profiler
+} // namespace neutrino::profiler

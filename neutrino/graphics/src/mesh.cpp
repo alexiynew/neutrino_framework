@@ -5,10 +5,10 @@
 
 namespace
 {
-const framework::graphics::Mesh::TextureCoordinatesData empty_texture_coordiantes;
+const neutrino::graphics::Mesh::TextureCoordinatesData empty_texture_coordiantes;
 }
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 Mesh::Mesh() = default;
 
@@ -236,4 +236,4 @@ void swap(Mesh& lhs, Mesh& rhs) noexcept
     swap(lhs.m_last_submesh_index, rhs.m_last_submesh_index);
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

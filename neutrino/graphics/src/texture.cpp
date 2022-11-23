@@ -2,7 +2,7 @@
 
 #include <graphics/src/opengl/opengl.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 
 Texture::Texture(const Texture& other)
@@ -130,4 +130,4 @@ void swap(Texture& lhs, Texture& rhs) noexcept
     swap(lhs.m_mag_filter, rhs.m_mag_filter);
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

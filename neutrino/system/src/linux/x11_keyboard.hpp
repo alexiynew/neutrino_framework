@@ -7,13 +7,13 @@
 
 #include <system/src/linux/x11_server.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 void init_key_code_map(const X11Server* server);
 
 KeyCode map_system_key(std::uint32_t key);
 Modifiers get_modifiers_state(std::uint32_t state);
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

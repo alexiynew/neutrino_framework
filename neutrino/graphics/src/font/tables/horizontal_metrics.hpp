@@ -5,7 +5,7 @@
 
 #include <graphics/src/font/types.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 class HorizontalMetrics final
@@ -28,6 +28,6 @@ private:
     std::vector<std::int16_t> m_left_side_bearings;
 };
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font
 
 #endif

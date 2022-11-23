@@ -10,7 +10,7 @@
 #include <system/mouse.hpp>
 #include <system/window.hpp>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 class CallbacksHolder
 {
@@ -25,7 +25,7 @@ public:
     void on_mouse_scroll(ScrollOffset offset) const;
 
 private:
-    friend class framework::system::Window;
+    friend class neutrino::system::Window;
 
     void on_close() const;
 
@@ -57,6 +57,6 @@ private:
     std::function<void()> on_mouse_leave_callback;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

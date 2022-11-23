@@ -8,13 +8,13 @@
 #include <common/size.hpp>
 #include <system/window.hpp>
 
-using framework::Position;
-using framework::Size;
+using neutrino::Position;
+using neutrino::Size;
 
 class DataContext
 {
 public:
-    void set_window_state(framework::system::Window::State state);
+    void set_window_state(neutrino::system::Window::State state);
     void set_window_size(Size size);
     void set_windos_position(Position position);
     void set_window_cursor_position(Position position);
@@ -25,9 +25,11 @@ public:
     void set_cursor_visible(bool value);
     void set_cursor_hover(bool value);
 
+    void set_fps(std::uint32_t fps);
+
     void add_callback_event(const std::string& event);
 
-    framework::system::Window::State window_state() const;
+    neutrino::system::Window::State window_state() const;
     Size window_size() const;
     Position window_position() const;
     Position window_cursor_position() const;
@@ -38,20 +40,24 @@ public:
     bool cursor_visible() const;
     bool cursor_hover() const;
 
+    std::uint32_t fps() const;
+
     const std::vector<std::string>& last_callback_events() const;
 
 private:
-    framework::system::Window::State m_window_state = framework::system::Window::State::normal;
+    neutrino::system::Window::State m_window_state = neutrino::system::Window::State::normal;
     std::vector<std::string> m_callbacks_events;
     Size m_window_size;
     Position m_window_position;
     Position m_window_cursor_position;
-    bool m_window_resizable;
-    bool m_window_has_input_focus;
+    bool m_window_resizable       = false;
+    bool m_window_has_input_focus = false;
 
-    bool m_cursor_captured;
-    bool m_cursor_visible;
-    bool m_cursor_hover;
+    bool m_cursor_captured = false;
+    bool m_cursor_visible  = false;
+    bool m_cursor_hover    = false;
+
+    std::uint32_t m_fps = 0;
 };
 
 #endif

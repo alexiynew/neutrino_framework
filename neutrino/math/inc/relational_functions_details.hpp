@@ -8,14 +8,14 @@
 #include <math/inc/matrix_type.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework::math::relational_functions_details
+namespace neutrino::math::relational_functions_details
 {
 
 template <typename T>
 inline bool almost_equal_implementation(const T& a, const T& b, std::int32_t ulp, std::true_type /*unused*/)
 {
     const auto scaled_epsilon = std::numeric_limits<T>::epsilon() * static_cast<T>(ulp);
-    const auto difference     = framework::math::abs(a - b);
+    const auto difference     = neutrino::math::abs(a - b);
     return difference < scaled_epsilon || difference < std::numeric_limits<T>::min();
 }
 
@@ -75,6 +75,6 @@ inline bool all_implementation(const Vector<2, bool>& v)
     return v.x && v.y;
 }
 
-} // namespace framework::math::relational_functions_details
+} // namespace neutrino::math::relational_functions_details
 
 #endif

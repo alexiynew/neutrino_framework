@@ -13,7 +13,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xmd.h>
 
-namespace framework::system::details::utils
+namespace neutrino::system::details::utils
 {
 enum class BypassCompositorState
 {
@@ -63,6 +63,6 @@ BypassCompositorState get_bypass_compositor_state(const X11Server* server, XLibW
 
 Cursor create_invisible_cursor(const X11Server* server);
 
-} // namespace framework::system::details::utils
+} // namespace neutrino::system::details::utils
 
 #endif

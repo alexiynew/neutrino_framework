@@ -11,8 +11,8 @@
 #include <graphics/src/render/opengl/opengl_renderer.hpp>
 #include <graphics/src/render/renderer_impl.hpp>
 
-using namespace framework;
-using namespace framework::graphics;
+using namespace neutrino;
+using namespace neutrino::graphics;
 
 namespace
 {
@@ -32,7 +32,7 @@ std::unique_ptr<RendererImpl> create_impl(system::Context& context)
 
 } // namespace
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 
 Renderer::Command::Command(ResourceId mesh,
@@ -174,4 +174,4 @@ void Renderer::end_frame()
     m_impl->end_frame();
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

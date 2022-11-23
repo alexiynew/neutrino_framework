@@ -5,7 +5,7 @@
 
 #include <Windows.h>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 class Win32WglContext final : public Context
 {
@@ -36,6 +36,6 @@ private:
     HGLRC m_hglrc = nullptr;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

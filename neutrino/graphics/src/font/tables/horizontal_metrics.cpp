@@ -2,7 +2,7 @@
 
 #include <graphics/src/font/tables/horizontal_metrics.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 HorizontalMetrics::HorizontalMetrics(std::uint16_t number_of_h_metrics, std::uint16_t num_glyphs, const BytesData& data)
@@ -48,4 +48,4 @@ std::int16_t HorizontalMetrics::left_sidebearing(GlyphId id) const
     return m_left_side_bearings.at(static_cast<GlyphId>(id - m_metrics.size()));
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

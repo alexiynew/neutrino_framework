@@ -5,7 +5,7 @@
 #include <math/inc/geometric_functions_details.hpp>
 #include <math/inc/vector_type.hpp>
 
-namespace framework::math
+namespace neutrino::math
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup math_geometric_functions
@@ -44,7 +44,7 @@ inline T squared_length(const Vector<N, T>& value)
 template <std::size_t N, typename T>
 inline T length(const Vector<N, T>& value)
 {
-    return static_cast<T>(framework::math::sqrt(squared_length(value)));
+    return static_cast<T>(neutrino::math::sqrt(squared_length(value)));
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -166,7 +166,7 @@ inline T cross(const Vector<2, T>& a, const Vector<2, T>& b)
 template <std::size_t N, typename T>
 inline Vector<N, T> normalize(const Vector<N, T>& value)
 {
-    return value * framework::math::invsqrt(dot(value, value));
+    return value * neutrino::math::invsqrt(dot(value, value));
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -254,7 +254,7 @@ inline Vector<N, T> refract(const Vector<N, T>& incident, const Vector<N, T>& no
     const T dot_value   = dot(normal, incident);
     const T coefficient = T{1} - eta * eta * (T{1} - dot_value * dot_value);
     return coefficient < T{0} ? Vector<N, T>(0) :
-                                eta * incident - (eta * dot_value + framework::math::sqrt(coefficient)) * normal;
+                                eta * incident - (eta * dot_value + neutrino::math::sqrt(coefficient)) * normal;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
@@ -375,6 +375,6 @@ inline bool is_point_in_triangle(const Vector<2, T>& point,
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::math
+} // namespace neutrino::math
 
 #endif

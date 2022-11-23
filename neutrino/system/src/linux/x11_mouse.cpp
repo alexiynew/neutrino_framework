@@ -2,7 +2,7 @@
 
 #include <X11/Xlib.h>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 MouseButton map_mouse_button(std::uint32_t button)
 {
@@ -17,4 +17,4 @@ MouseButton map_mouse_button(std::uint32_t button)
     return MouseButton::unknown;
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

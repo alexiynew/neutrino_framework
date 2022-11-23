@@ -9,17 +9,17 @@
 #include <log/stream_logger.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::log::debug;
-using framework::log::error;
-using framework::log::fatal;
-using framework::log::info;
-using framework::log::warning;
+using neutrino::log::debug;
+using neutrino::log::error;
+using neutrino::log::fatal;
+using neutrino::log::info;
+using neutrino::log::warning;
 
-using framework::log::set_logger;
-using framework::log::SeverityLevel;
-using framework::log::StreamLogger;
+using neutrino::log::set_logger;
+using neutrino::log::SeverityLevel;
+using neutrino::log::StreamLogger;
 
-class LoggerInterfaceTest : public framework::unit_test::Suite
+class LoggerInterfaceTest : public neutrino::unit_test::Suite
 {
 public:
     LoggerInterfaceTest()
@@ -44,7 +44,7 @@ private:
 
         std::stringstream log_test;
 
-        if (framework::utils::is_debug()) {
+        if (neutrino::utils::is_debug()) {
             log_test << "[" << SeverityLevel::debug << "] " << name() << ": message_1" << std::endl;
         }
 

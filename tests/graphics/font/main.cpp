@@ -10,10 +10,10 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::graphics;
-using namespace framework::math;
-using namespace framework::system;
+using namespace neutrino;
+using namespace neutrino::graphics;
+using namespace neutrino::math;
+using namespace neutrino::system;
 
 namespace
 {
@@ -63,7 +63,7 @@ constexpr int height           = static_cast<int>(virtual_height * 20);
 
 } // namespace
 
-class FontTest : public framework::unit_test::Suite
+class FontTest : public neutrino::unit_test::Suite
 {
 public:
     FontTest()

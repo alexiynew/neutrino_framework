@@ -9,7 +9,7 @@
 
 namespace
 {
-using namespace framework;
+using namespace neutrino;
 
 constexpr static std::uint32_t max_code_size   = 16;
 constexpr static std::uint32_t max_window_size = 32768;
@@ -498,7 +498,7 @@ std::uint32_t adler32(const std::vector<std::uint8_t>& data)
 
 } // namespace
 
-namespace framework::zlib
+namespace neutrino::zlib
 {
 std::vector<std::uint8_t> inflate(const std::vector<std::uint8_t>& data)
 {
@@ -584,4 +584,4 @@ std::vector<std::uint8_t> deflate(const std::vector<std::uint8_t>& data)
     return output;
 }
 
-} // namespace framework::zlib
+} // namespace neutrino::zlib

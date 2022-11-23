@@ -1,6 +1,6 @@
 #include <log/stream_logger.hpp>
 
-namespace framework::log
+namespace neutrino::log
 {
 StreamLogger::StreamLogger(std::ostream& stream)
     : m_output(stream)
@@ -14,4 +14,4 @@ void StreamLogger::add_message(SeverityLevel level, const std::string& tag, cons
     m_output.flush();
 }
 
-} // namespace framework::log
+} // namespace neutrino::log

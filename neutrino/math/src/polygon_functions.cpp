@@ -7,7 +7,7 @@
 
 namespace
 {
-using namespace framework::math;
+using namespace neutrino::math;
 
 struct PointInfo
 {
@@ -90,7 +90,7 @@ std::size_t next_ear_index(const std::vector<PointInfo>& indices)
 
 } // namespace
 
-namespace framework::math
+namespace neutrino::math
 {
 
 float polygon_area(const Polygon& polygon)
@@ -204,4 +204,4 @@ std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon
     return triangles;
 }
 
-} // namespace framework::math
+} // namespace neutrino::math

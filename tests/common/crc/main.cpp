@@ -1,7 +1,7 @@
 #include <common/crc.hpp>
 #include <unit_test/suite.hpp>
 
-class CrcTest : public framework::unit_test::Suite
+class CrcTest : public neutrino::unit_test::Suite
 {
 public:
     CrcTest()
@@ -15,7 +15,7 @@ public:
 private:
     void crc8()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         std::vector<std::uint8_t> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
@@ -33,7 +33,7 @@ private:
 
     void crc16()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         std::vector<std::uint8_t> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
@@ -64,7 +64,7 @@ private:
 
     void crc32()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         std::vector<std::uint8_t> data = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 

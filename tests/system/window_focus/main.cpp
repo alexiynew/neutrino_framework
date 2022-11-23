@@ -5,9 +5,9 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::system;
+using namespace neutrino::system;
 
-class WindowFocusTest : public framework::unit_test::Suite
+class WindowFocusTest : public neutrino::unit_test::Suite
 {
 public:
     WindowFocusTest()

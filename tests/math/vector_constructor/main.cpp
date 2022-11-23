@@ -1,29 +1,29 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Vector2f;
-using framework::math::Vector3f;
-using framework::math::Vector4f;
+using neutrino::math::Vector2f;
+using neutrino::math::Vector3f;
+using neutrino::math::Vector4f;
 
-using framework::math::Vector2d;
-using framework::math::Vector3d;
-using framework::math::Vector4d;
+using neutrino::math::Vector2d;
+using neutrino::math::Vector3d;
+using neutrino::math::Vector4d;
 
-using framework::math::Vector2i;
-using framework::math::Vector3i;
-using framework::math::Vector4i;
+using neutrino::math::Vector2i;
+using neutrino::math::Vector3i;
+using neutrino::math::Vector4i;
 
-using framework::math::Vector2u;
-using framework::math::Vector3u;
-using framework::math::Vector4u;
+using neutrino::math::Vector2u;
+using neutrino::math::Vector3u;
+using neutrino::math::Vector4u;
 
-using framework::math::Vector2b;
-using framework::math::Vector3b;
-using framework::math::Vector4b;
+using neutrino::math::Vector2b;
+using neutrino::math::Vector3b;
+using neutrino::math::Vector4b;
 
-using framework::math::almost_equal;
+using neutrino::math::almost_equal;
 
-class VectorTest : public framework::unit_test::Suite
+class VectorTest : public neutrino::unit_test::Suite
 {
 public:
     VectorTest()
@@ -245,7 +245,7 @@ private:
     }
 };
 
-class BoolVectorTest : public framework::unit_test::Suite
+class BoolVectorTest : public neutrino::unit_test::Suite
 {
 public:
     BoolVectorTest()

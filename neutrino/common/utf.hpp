@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace framework::utf
+namespace neutrino::utf
 {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,10 +128,20 @@ std::vector<CodePoint> to_codepoints(const std::u32string& str);
 /// @return Vector of code points.
 std::vector<CodePoint> to_codepoints(const std::wstring& str);
 
+/// @brief Hack to support poorly added char8_t (cpp20).
+///
+/// @param buf UTF8 char to convert.
+///
+/// @return Normal std::string.
+inline constexpr std::string to_string(const char8_t* buf)
+{
+    return std::string(reinterpret_cast<const char*>(buf));
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::utf
+} // namespace neutrino::utf
 
 #endif

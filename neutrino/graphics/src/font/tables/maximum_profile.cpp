@@ -2,7 +2,7 @@
 
 #include <graphics/src/font/tables/maximum_profile.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 MaximumProfile::MaximumProfile(const BytesData& data)
@@ -49,4 +49,4 @@ std::uint16_t MaximumProfile::num_glyphs() const
     return m_num_glyphs;
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

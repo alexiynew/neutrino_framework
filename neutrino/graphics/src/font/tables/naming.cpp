@@ -3,7 +3,7 @@
 
 #include <graphics/src/font/tables/naming.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 Naming::Naming(const BytesData& data)
@@ -133,4 +133,4 @@ std::string Naming::read_string(Naming::NameId name_id, const BytesData& data)
     return utf::to_utf8(str);
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

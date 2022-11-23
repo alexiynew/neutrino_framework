@@ -1,7 +1,7 @@
 #include <common/version.hpp>
 #include <unit_test/suite.hpp>
 
-class VersionTest : public framework::unit_test::Suite
+class VersionTest : public neutrino::unit_test::Suite
 {
 public:
     VersionTest()
@@ -16,7 +16,7 @@ public:
 private:
     void constructor()
     {
-        using framework::Version;
+        using neutrino::Version;
 
         Version v1{1, 2, 3, 4};
 
@@ -35,7 +35,7 @@ private:
 
     void from_string()
     {
-        using framework::Version;
+        using neutrino::Version;
 
         Version v1{"1.2.3.4"};
 
@@ -68,7 +68,7 @@ private:
 
     void as_string()
     {
-        using framework::Version;
+        using neutrino::Version;
 
         Version v1(1, 2, 3, 4);
 
@@ -81,7 +81,7 @@ private:
 
     void comparations()
     {
-        using framework::Version;
+        using neutrino::Version;
 
         Version v1{1, 2, 3, 4};
         Version v2{1, 2, 3, 4};

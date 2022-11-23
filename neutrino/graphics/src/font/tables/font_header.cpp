@@ -2,7 +2,7 @@
 
 #include <graphics/src/font/tables/font_header.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 FontHeader::FontHeader(const BytesData& data)
@@ -60,4 +60,4 @@ bool FontHeader::baseline_at_y_zero() const
     return (m_flags & 0x0001u) != 0;
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

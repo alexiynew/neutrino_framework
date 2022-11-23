@@ -7,7 +7,7 @@ namespace
 constexpr size_t log_buffer_size = 64;
 } // namespace
 
-namespace framework::log::log_details
+namespace neutrino::log::log_details
 {
 #pragma region LogBuffer
 
@@ -83,7 +83,7 @@ void LogBuffer::flush_buffer()
         str += '\n';
     }
 
-    framework::log::logger()->add_message(m_level, m_tag, str);
+    neutrino::log::logger()->add_message(m_level, m_tag, str);
 }
 
 #pragma endregion
@@ -111,4 +111,4 @@ LogStream& LogStream::operator=(LogStream&& other) noexcept
     return *this;
 }
 
-} // namespace framework::log::log_details
+} // namespace neutrino::log::log_details

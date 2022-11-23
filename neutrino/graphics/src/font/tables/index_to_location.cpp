@@ -2,7 +2,7 @@
 
 #include <graphics/src/font/tables/index_to_location.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 IndexToLocation::IndexToLocation(std::int16_t index_to_loc_format, std::uint16_t num_glyphs, const BytesData& data)
@@ -30,4 +30,4 @@ const std::vector<Offset32>& IndexToLocation::offsets() const
     return m_offsets;
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

@@ -5,7 +5,7 @@
 
 #include <graphics/src/font/types.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 class HorizontalHeader final
@@ -34,6 +34,6 @@ private:
     std::uint16_t m_number_of_h_metrics = 0;
 };
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font
 
 #endif

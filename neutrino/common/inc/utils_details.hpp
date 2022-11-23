@@ -7,7 +7,7 @@
 
 #include <random>
 
-namespace framework::utils::details
+namespace neutrino::utils::details
 {
 
 #pragma region Random Numbers
@@ -58,6 +58,6 @@ std::string make_string_impl(const std::string& str,
 } // namespace format_details
 
 */
-} // namespace framework::utils::details
+} // namespace neutrino::utils::details
 
 #endif

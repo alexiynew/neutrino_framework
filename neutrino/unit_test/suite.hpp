@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace framework::unit_test
+namespace neutrino::unit_test
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @addtogroup unit_test_module
@@ -95,7 +95,7 @@ std::int32_t run_tests(Arguments&&... tests)
     const std::int32_t count = sizeof...(tests);
     std::int32_t passed      = 0;
 
-    std::vector<framework::unit_test::Suite*> tests_container{&tests...};
+    std::vector<neutrino::unit_test::Suite*> tests_container{&tests...};
 
     for (auto* test : tests_container) {
         test->run();
@@ -120,6 +120,6 @@ std::int32_t run_tests(Arguments&&... tests)
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::unit_test
+} // namespace neutrino::unit_test
 
 #endif

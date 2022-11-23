@@ -6,9 +6,9 @@
 #include <graphics/src/opengl/opengl.hpp>
 #include <graphics/src/render/opengl/opengl_logger.hpp>
 
-using namespace framework::graphics::details::opengl;
+using namespace neutrino::graphics::details::opengl;
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 const std::string tag = "OpenGL";
 
@@ -58,4 +58,4 @@ bool has_opengl_errors(const std::string& file, int line)
     return has_errors;
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

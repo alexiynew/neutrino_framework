@@ -17,9 +17,9 @@
 #include <graphics/src/render/opengl/opengl_shader.hpp>
 #include <graphics/src/render/opengl/opengl_texture.hpp>
 
-using namespace framework;
-using namespace framework::graphics;
-using namespace framework::graphics::details::opengl;
+using namespace neutrino;
+using namespace neutrino::graphics;
+using namespace neutrino::graphics::details::opengl;
 
 namespace
 {
@@ -61,7 +61,7 @@ void check_supported()
 
 } // namespace
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 OpenglRenderer::OpenglRenderer()
 {
@@ -233,4 +233,4 @@ void OpenglRenderer::bind_textures(const OpenglShader& shader, const Renderer::C
     }
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

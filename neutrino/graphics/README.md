@@ -1,7 +1,7 @@
 # Graphics
 
 Contains classes and functions for 3D graphics rendering. For now, only the OpenGL backend is supported. 
-First the `framework::graphics::Rendered` needs to be created with a window as render output.
+First the `neutrino::graphics::Rendered` needs to be created with a window as render output.
 
 ``` cpp
 Window main_window("Window name", {800, 640});

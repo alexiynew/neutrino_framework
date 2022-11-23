@@ -4,10 +4,10 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Polygon;
-using framework::math::Vector2f;
+using neutrino::math::Polygon;
+using neutrino::math::Vector2f;
 
-class PolygonFunctionsTest : public framework::unit_test::Suite
+class PolygonFunctionsTest : public neutrino::unit_test::Suite
 {
 public:
     PolygonFunctionsTest()

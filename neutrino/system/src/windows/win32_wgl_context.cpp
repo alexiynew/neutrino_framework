@@ -14,7 +14,7 @@ using PixelFormatValues = std::tuple<int, int, int>; // <depth_bits, stencil_bit
 
 HWND create_tmp_window()
 {
-    using framework::system::details::Win32Application;
+    using neutrino::system::details::Win32Application;
 
     DWORD style     = WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     HWND tmp_window = CreateWindowEx(WS_EX_APPWINDOW,
@@ -38,7 +38,7 @@ HWND create_tmp_window()
     return tmp_window;
 }
 
-void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
+void init_wgl(const neutrino::system::details::wgl::GetFunction& get_function)
 {
     HWND tmp_window = create_tmp_window();
     HDC hdc         = GetDC(tmp_window);
@@ -78,7 +78,7 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
 
     wglMakeCurrent(hdc, hglrc);
 
-    framework::system::details::wgl::init_wgl(get_function);
+    neutrino::system::details::wgl::init_wgl(get_function);
 
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(hglrc);
@@ -88,7 +88,7 @@ void init_wgl(const framework::system::details::wgl::GetFunction& get_function)
 
 PixelFormatValues get_pixel_format_values(HDC hdc, int pixel_format)
 {
-    using namespace framework::system::details::wgl;
+    using namespace neutrino::system::details::wgl;
 
     constexpr static std::size_t size = std::tuple_size_v<PixelFormatValues>;
 
@@ -102,10 +102,10 @@ PixelFormatValues get_pixel_format_values(HDC hdc, int pixel_format)
     return PixelFormatValues(values[0], values[1], values[2]);
 }
 
-int get_pixel_format(const framework::system::ContextSettings& settings, HDC hdc)
+int get_pixel_format(const neutrino::system::ContextSettings& settings, HDC hdc)
 {
-    using namespace framework::system::details::wgl;
-    using framework::system::ContextSettings;
+    using namespace neutrino::system::details::wgl;
+    using neutrino::system::ContextSettings;
 
     std::vector<int> attribs;
 
@@ -196,10 +196,10 @@ int get_pixel_format(const framework::system::ContextSettings& settings, HDC hdc
     return (best_pixel_format != 0 ? best_pixel_format : pixel_formats[0]);
 }
 
-HGLRC create_gl_context(const framework::system::ContextSettings& settings, HDC hdc)
+HGLRC create_gl_context(const neutrino::system::ContextSettings& settings, HDC hdc)
 {
-    using namespace framework::system::details::wgl;
-    using framework::system::ContextSettings;
+    using namespace neutrino::system::details::wgl;
+    using neutrino::system::ContextSettings;
 
     std::vector<int> contextAttribs;
 
@@ -218,9 +218,9 @@ HGLRC create_gl_context(const framework::system::ContextSettings& settings, HDC 
     return wglCreateContextAttribsARB(hdc, nullptr, contextAttribs.data());
 }
 
-framework::system::ContextSettings get_actual_context_settings(HDC hdc, int pixel_format)
+neutrino::system::ContextSettings get_actual_context_settings(HDC hdc, int pixel_format)
 {
-    using framework::system::ContextSettings;
+    using neutrino::system::ContextSettings;
 
     const auto& [depth_bits, stencil_bits, samples_count] = get_pixel_format_values(hdc, pixel_format);
 
@@ -234,7 +234,7 @@ framework::system::ContextSettings get_actual_context_settings(HDC hdc, int pixe
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
     : Context(settings)
@@ -273,7 +273,7 @@ Win32WglContext::Win32WglContext(HWND window, const ContextSettings& settings)
     }
 
     make_current();
-    framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
+    neutrino::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
 
     ContextSettings actual_settings = get_actual_context_settings(m_hdc, pixel_format);
     actual_settings.version(settings.version()); // Can't get actual OpenGL version, so just copy requested one.
@@ -337,4 +337,4 @@ Win32WglContext::VoidFunctionPtr Win32WglContext::get_function(const char* funct
     return function;
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

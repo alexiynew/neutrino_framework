@@ -5,7 +5,7 @@
 namespace
 {
 
-using namespace framework::graphics::details::opengl;
+using namespace neutrino::graphics::details::opengl;
 
 #pragma region GL_VERSION_1_0
 
@@ -7360,7 +7360,7 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
 
 } // namespace
 
-namespace framework::graphics::details::opengl
+namespace neutrino::graphics::details::opengl
 {
 
 #pragma region GL_VERSION_1_0
@@ -16593,4 +16593,4 @@ bool is_supported(Extension extension)
     return extension_cache[static_cast<int>(extension)];
 }
 
-} // namespace framework::graphics::details::opengl
+} // namespace neutrino::graphics::details::opengl

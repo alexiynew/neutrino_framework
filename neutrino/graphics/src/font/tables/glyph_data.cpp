@@ -8,7 +8,7 @@
 
 namespace
 {
-namespace details = framework::graphics::details::font;
+namespace details = neutrino::graphics::details::font;
 
 using details::BufferReader;
 using details::DataIterator;
@@ -16,8 +16,8 @@ using details::F2Dot14;
 using details::GlyphData;
 using details::GlyphId;
 using details::Offset32;
-using framework::NotImplementedError;
-using framework::ParsingError;
+using neutrino::NotImplementedError;
+using neutrino::ParsingError;
 
 namespace SimpleGlyphFlags
 {
@@ -345,7 +345,7 @@ CompositeGlyph parse_composite_glyph(BufferReader& in)
 
 GlyphData::Contours get_glyph_contours(const SimpleGlyph& glyph)
 {
-    using framework::math::Vector2f;
+    using neutrino::math::Vector2f;
 
     GlyphData::Contours result;
 
@@ -464,7 +464,7 @@ std::optional<SimpleGlyph> convert_composite_glyph(const CompositeGlyph& glyph, 
 
 } // namespace
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 GlyphData::GlyphData(std::uint16_t num_glyphs, const std::vector<Offset32>& offsets, const BytesData& data)
@@ -528,4 +528,4 @@ const GlyphData::Contours& GlyphData::at(GlyphId index) const
     return m_glyphs.at(index);
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

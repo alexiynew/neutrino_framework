@@ -14,8 +14,8 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::math;
-using namespace framework::graphics;
+using namespace neutrino::math;
+using namespace neutrino::graphics;
 
 namespace
 {
@@ -295,7 +295,7 @@ Entity create_entity_12()
 }
 } // namespace
 
-class TextureTest : public framework::unit_test::Suite
+class TextureTest : public neutrino::unit_test::Suite
 {
 public:
     TextureTest()
@@ -307,9 +307,9 @@ public:
 private:
     void main_loop()
     {
-        using namespace framework;
-        using namespace framework::graphics;
-        using namespace framework::system;
+        using namespace neutrino;
+        using namespace neutrino::graphics;
+        using namespace neutrino::system;
 
         Application::set_name("GL renderer Test");
 

@@ -1,8 +1,8 @@
 #include <graphics/mesh.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework;
-using namespace framework::graphics;
+using namespace neutrino;
+using namespace neutrino::graphics;
 
 namespace
 {

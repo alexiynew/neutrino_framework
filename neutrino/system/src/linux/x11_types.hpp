@@ -3,7 +3,7 @@
 
 #include <X11/Xlib.h>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 using XLibWindow = ::Window;
 }

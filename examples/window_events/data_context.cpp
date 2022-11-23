@@ -1,6 +1,6 @@
 ﻿#include "data_context.hpp"
 
-using namespace framework;
+using namespace neutrino;
 using namespace system;
 
 void DataContext::set_window_state(Window::State state)
@@ -46,6 +46,11 @@ void DataContext::set_cursor_visible(bool value)
 void DataContext::set_cursor_hover(bool value)
 {
     m_cursor_hover = value;
+}
+
+void DataContext::set_fps(std::uint32_t fps)
+{
+    m_fps = fps;
 }
 
 void DataContext::add_callback_event(const std::string& event)
@@ -101,6 +106,11 @@ bool DataContext::cursor_visible() const
 bool DataContext::cursor_hover() const
 {
     return m_cursor_hover;
+}
+
+std::uint32_t DataContext::fps() const
+{
+    return m_fps;
 }
 
 const std::vector<std::string>& DataContext::last_callback_events() const

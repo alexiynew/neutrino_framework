@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 
 bool has_opengl_errors(const std::string& file, int line);
@@ -13,6 +13,6 @@ bool has_opengl_errors(const std::string& file, int line);
 ////////////////////////////////////////////////////////////////////////////////
 #define HAS_OPENGL_ERRORS() has_opengl_errors(__FILE__, __LINE__)
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

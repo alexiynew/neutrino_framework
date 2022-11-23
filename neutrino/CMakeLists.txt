@@ -7,7 +7,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 # Set cpp standart
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 
 # Set common options
@@ -71,7 +71,6 @@ message(STATUS "Add modules...")
 
 set(MODULES
     common
-    game_core
     graphics
     log
     math

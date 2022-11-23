@@ -11,9 +11,9 @@
 #include <graphics/src/render/opengl/opengl_shader.hpp>
 #include <graphics/src/render/opengl/opengl_texture.hpp>
 
-using namespace framework;
-using namespace framework::graphics;
-using namespace framework::graphics::details::opengl;
+using namespace neutrino;
+using namespace neutrino::graphics;
+using namespace neutrino::graphics::details::opengl;
 
 namespace
 {
@@ -88,8 +88,8 @@ bool load_shader(std::uint32_t shader_id, int shader_type, const std::string& so
     int compiled = 0;
     glGetShaderiv(shader_id, GL_COMPILE_STATUS, &compiled);
     if (compiled == 0) {
-        framework::log::error(tag) << shader_type_string(shader_type) << " compilation error:\n"
-                                   << shader_info_log(shader_id);
+        neutrino::log::error(tag) << shader_type_string(shader_type) << " compilation error:\n"
+                                  << shader_info_log(shader_id);
         return false;
     }
 
@@ -97,7 +97,7 @@ bool load_shader(std::uint32_t shader_id, int shader_type, const std::string& so
 }
 bool compile_shader_program(std::uint32_t program_id, std::uint32_t vertex_shader_id, std::uint32_t fragment_shader_id)
 {
-    using namespace framework;
+    using namespace neutrino;
 
     if (program_id == 0 || vertex_shader_id == 0 || fragment_shader_id == 0) {
         return false;
@@ -359,7 +359,7 @@ private:
 
 } // namespace
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 OpenglShader::~OpenglShader()
 {
@@ -463,4 +463,4 @@ void OpenglShader::set_texture(const std::string& name, std::size_t index) const
     }
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

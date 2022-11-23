@@ -1,31 +1,31 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-using framework::math::Matrix2x2f;
-using framework::math::Matrix2x3f;
-using framework::math::Matrix2x4f;
-using framework::math::Matrix3x2f;
-using framework::math::Matrix3x3f;
-using framework::math::Matrix3x4f;
-using framework::math::Matrix4x2f;
-using framework::math::Matrix4x3f;
-using framework::math::Matrix4x4f;
+using neutrino::math::Matrix2x2f;
+using neutrino::math::Matrix2x3f;
+using neutrino::math::Matrix2x4f;
+using neutrino::math::Matrix3x2f;
+using neutrino::math::Matrix3x3f;
+using neutrino::math::Matrix3x4f;
+using neutrino::math::Matrix4x2f;
+using neutrino::math::Matrix4x3f;
+using neutrino::math::Matrix4x4f;
 
-using framework::math::Matrix2f;
-using framework::math::Matrix3f;
-using framework::math::Matrix4f;
+using neutrino::math::Matrix2f;
+using neutrino::math::Matrix3f;
+using neutrino::math::Matrix4f;
 
-using framework::math::Vector2d;
-using framework::math::Vector2f;
-using framework::math::Vector2i;
-using framework::math::Vector3d;
-using framework::math::Vector3f;
-using framework::math::Vector3i;
-using framework::math::Vector4d;
-using framework::math::Vector4f;
-using framework::math::Vector4i;
+using neutrino::math::Vector2d;
+using neutrino::math::Vector2f;
+using neutrino::math::Vector2i;
+using neutrino::math::Vector3d;
+using neutrino::math::Vector3f;
+using neutrino::math::Vector3i;
+using neutrino::math::Vector4d;
+using neutrino::math::Vector4f;
+using neutrino::math::Vector4i;
 
-class matrix_test : public framework::unit_test::Suite
+class matrix_test : public neutrino::unit_test::Suite
 {
 public:
     matrix_test()
@@ -693,7 +693,7 @@ private:
     }
 };
 
-class matrix_from_matrix_test : public framework::unit_test::Suite
+class matrix_from_matrix_test : public neutrino::unit_test::Suite
 {
 public:
     matrix_from_matrix_test()

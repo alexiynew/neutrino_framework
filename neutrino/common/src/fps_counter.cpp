@@ -1,8 +1,8 @@
 #include <chrono>
 
-#include <game_core/fps_counter.hpp>
+#include <common/fps_counter.hpp>
 
-namespace framework::game_core
+namespace neutrino
 {
 FpsCounter::FpsCounter()
     : m_fps_thread(&FpsCounter::slice_fps, this)
@@ -32,10 +32,11 @@ std::uint32_t FpsCounter::total_fames() const
 
 void FpsCounter::slice_fps()
 {
+    // TODO: Use condition variables to not to wait until the thread wakes up and completes its work.
     while (!m_should_stop) {
         m_fps = m_frames.exchange(0);
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 
-} // namespace framework::game_core
+} // namespace neutrino

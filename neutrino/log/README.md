@@ -2,10 +2,10 @@
 
 This module provides a simple logging utility that
 can be used to output messages.  
-The messages has associated `framework::log::SeverityLevel` that indicate
+The messages has associated `neutrino::log::SeverityLevel` that indicate
 their importance and **tags** that indicate their domain.
 
-To log message use one of the `framework::log::*` funcitons. This functions
+To log message use one of the `neutrino::log::*` funcitons. This functions
 returns a temporary object that behaves like the `std::ostream`.
 
 ``` cpp
@@ -15,15 +15,15 @@ log::warning("log_tag") << "message_3" << std::endl;
 ```
 
 By default there is no logger implementation, so no messages would be logged.  
-Call the `framework::log::set_logger` function to set logger class that would 
+Call the `neutrino::log::set_logger` function to set logger class that would 
 be processing messages. Provided logger must be derived from the 
-`framework::log::Logger` class.
+`neutrino::log::Logger` class.
 
 ``` cpp
-class MyLogger : public framework::log::Logger
+class MyLogger : public neutrino::log::Logger
 {
 public:
-    void add_message(framework::log::SeverityLevel level,
+    void add_message(neutrino::log::SeverityLevel level,
                      const std::string& tag,
                      const std::string& message) override
     {
@@ -31,13 +31,13 @@ public:
     }
 };
 
-framework::log::set_logger(std::make_unique<MyLogger>());
+neutrino::log::set_logger(std::make_unique<MyLogger>());
 ```
  
 The [Logging](./) module provides an implementation of logger:
-`framework::log::StreamLogger` that can print messages to any output
+`neutrino::log::StreamLogger` that can print messages to any output
 stream.
 
 ``` cpp
-set_logger(std::make_unique<framework::log::StreamLogger>(std::cout));
+set_logger(std::make_unique<neutrino::log::StreamLogger>(std::cout));
 ```

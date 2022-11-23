@@ -6,7 +6,7 @@
 #include <common/utils.hpp>
 #include <unit_test/suite.hpp>
 
-class RandomNumbersTest : public framework::unit_test::Suite
+class RandomNumbersTest : public neutrino::unit_test::Suite
 {
 public:
     RandomNumbersTest()
@@ -18,7 +18,7 @@ public:
 private:
     void generate_random_numbers()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         const auto no_numbers = random_numbers<float>(-1000.0f, 1000.0f, 0);
         TEST_ASSERT(no_numbers.size() == 0, "Wrond numbers count.");
@@ -40,7 +40,7 @@ private:
     }
 };
 
-class ReadValueFromBufferTest : public framework::unit_test::Suite
+class ReadValueFromBufferTest : public neutrino::unit_test::Suite
 {
 public:
     ReadValueFromBufferTest()
@@ -53,7 +53,7 @@ public:
 private:
     void read_big_endian_value_from_buffer()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         char buffer1[] = {0x1};
         char buffer2[] = {0x1, 0x0};
@@ -73,7 +73,7 @@ private:
 
     void read_little_endian_value_from_buffer()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         char buffer1[] = {0x1};
         char buffer2[] = {0x1, 0x0};
@@ -92,7 +92,7 @@ private:
     }
 };
 
-class BufferReaderTest : public framework::unit_test::Suite
+class BufferReaderTest : public neutrino::unit_test::Suite
 {
 public:
     BufferReaderTest()
@@ -106,7 +106,7 @@ public:
 
     void read_big_endian_value_from_buffer()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         char buffer1[] = {0x1};
         char buffer2[] = {0x1, 0x0};
@@ -131,7 +131,7 @@ public:
 
     void read_little_endian_value_from_buffer()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         char buffer1[] = {0x1};
         char buffer2[] = {0x1, 0x0};
@@ -156,7 +156,7 @@ public:
 
     void boundary_checks_big_endian_reader()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         // clang-format off
         const std::vector<char> buffer = {
@@ -208,7 +208,7 @@ public:
 
     void boundary_checks_little_endian_reader()
     {
-        using namespace framework::utils;
+        using namespace neutrino::utils;
 
         // clang-format off
         const std::vector<char> buffer = {
@@ -260,7 +260,7 @@ public:
 };
 
 /*
-class format_string_test : public framework::unit_test::Suite
+class format_string_test : public neutrino::unit_test::Suite
 {
 public:
     format_string_test() : Suite("format_string_test")
@@ -271,7 +271,7 @@ public:
 private:
     void type_foramting()
     {
-        using framework::utils::format;
+        using neutrino::utils::format;
 
         TEST_ASSERT(format("{0}", 1) == "1", "Wrong number formating.");
 

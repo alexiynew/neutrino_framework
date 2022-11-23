@@ -1,7 +1,7 @@
 #include <math/math.hpp>
 #include <unit_test/suite.hpp>
 
-class UtilityHashTest : public framework::unit_test::Suite
+class UtilityHashTest : public neutrino::unit_test::Suite
 {
 public:
     UtilityHashTest()
@@ -15,7 +15,7 @@ private:
     void vector_hash_function()
     {
         {
-            using framework::math::Vector2f;
+            using neutrino::math::Vector2f;
 
             auto h1 = std::hash<Vector2f>{}({9.0f, 1.0f});
             auto h2 = std::hash<Vector2f>{}({9.0f, 1.0f});
@@ -26,7 +26,7 @@ private:
         }
 
         {
-            using framework::math::Vector3i;
+            using neutrino::math::Vector3i;
 
             auto h1 = std::hash<Vector3i>{}({});
             auto h2 = std::hash<Vector3i>{}({1, 0, 0});
@@ -40,7 +40,7 @@ private:
         }
 
         {
-            using framework::math::Vector4b;
+            using neutrino::math::Vector4b;
 
             auto h1 = std::hash<Vector4b>{}({true, false, false, true});
             auto h2 = std::hash<Vector4b>{}({true, false, false, true});
@@ -51,7 +51,7 @@ private:
         }
 
         {
-            using framework::math::Vector4d;
+            using neutrino::math::Vector4d;
 
             auto h1 = std::hash<Vector4d>{}({9, 1, 0, 0});
             auto h2 = std::hash<Vector4d>{}({9, 1, 0, 0});
@@ -65,7 +65,7 @@ private:
     void matrix_hash_function()
     {
         {
-            using framework::math::Matrix2f;
+            using neutrino::math::Matrix2f;
 
             auto h1 = std::hash<Matrix2f>{}({1, 0, 0, 1});
             auto h2 = std::hash<Matrix2f>{}({1, 0, 0, 1});
@@ -76,7 +76,7 @@ private:
         }
 
         {
-            using framework::math::Matrix3d;
+            using neutrino::math::Matrix3d;
 
             auto h1 = std::hash<Matrix3d>{}({1, 0, 0, 1, 0, 0, 1, 0, 4});
             auto h2 = std::hash<Matrix3d>{}({1, 0, 0, 1, 0, 0, 1, 0, 4});
@@ -87,7 +87,7 @@ private:
         }
 
         {
-            using framework::math::Matrix4f;
+            using neutrino::math::Matrix4f;
 
             auto h1 = std::hash<Matrix4f>{}({1, 0, 0, 1, 0, 0, 1, 0, 4, 0, 5, 2, 3, 5, 6, 0});
             auto h2 = std::hash<Matrix4f>{}({1, 0, 0, 1, 0, 0, 1, 0, 4, 0, 5, 2, 3, 5, 6, 0});

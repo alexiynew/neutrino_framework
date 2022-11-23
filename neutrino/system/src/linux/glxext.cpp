@@ -6,7 +6,7 @@
 namespace
 {
 
-using namespace framework::system::details::glx;
+using namespace neutrino::system::details::glx;
 
 #pragma region GLX_VERSION_1_0
 
@@ -1475,7 +1475,7 @@ void init_extensions([[maybe_unused]] const GetFunction& get_function)
 
 } // namespace
 
-namespace framework::system::details::glx
+namespace neutrino::system::details::glx
 {
 
 #pragma region GLX_VERSION_1_0
@@ -2557,4 +2557,4 @@ bool is_supported(Extension extension)
     return extension_cache[static_cast<int>(extension)];
 }
 
-} // namespace framework::system::details::glx
+} // namespace neutrino::system::details::glx

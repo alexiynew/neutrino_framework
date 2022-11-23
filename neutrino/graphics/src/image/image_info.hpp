@@ -5,7 +5,7 @@
 
 #include <graphics/color.hpp>
 
-namespace framework::graphics::details::image
+namespace neutrino::graphics::details::image
 {
 constexpr float default_gamma = 2.2f;
 
@@ -30,6 +30,6 @@ struct ImageInfo
     std::vector<Color> data;
 };
 
-} // namespace framework::graphics::details::image
+} // namespace neutrino::graphics::details::image
 
 #endif

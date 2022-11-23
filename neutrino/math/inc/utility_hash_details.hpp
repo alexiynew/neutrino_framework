@@ -3,7 +3,7 @@
 
 #include <cstddef>
 
-namespace framework::math::unility_hash::details
+namespace neutrino::math::unility_hash::details
 {
 
 constexpr inline std::size_t hash_combine(std::size_t seed, std::size_t hash) noexcept
@@ -13,6 +13,6 @@ constexpr inline std::size_t hash_combine(std::size_t seed, std::size_t hash) no
     return seed;
 }
 
-} // namespace framework::math::unility_hash::details
+} // namespace neutrino::math::unility_hash::details
 
 #endif

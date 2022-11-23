@@ -4,9 +4,9 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::system;
+using namespace neutrino::system;
 
-class WindowOpenTest : public framework::unit_test::Suite
+class WindowOpenTest : public neutrino::unit_test::Suite
 {
 public:
     WindowOpenTest()

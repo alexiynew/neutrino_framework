@@ -1,6 +1,6 @@
 #include <system/keyboard.hpp>
 
-namespace framework::system
+namespace neutrino::system
 {
 Modifiers::operator bool()
 {
@@ -51,4 +51,4 @@ bool Modifiers::operator!=(Modifiers rhs)
     return !(*this == rhs);
 }
 
-} // namespace framework::system
+} // namespace neutrino::system

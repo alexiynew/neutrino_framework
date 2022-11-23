@@ -23,10 +23,10 @@ int get_attribute_value(NSOpenGLPixelFormat* pixel_format, NSOpenGLPixelFormatAt
     return value;
 };
 
-framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelFormat* pixel_format)
+neutrino::system::ContextSettings get_actual_context_settings(NSOpenGLPixelFormat* pixel_format)
 {
-    using framework::system::ContextSettings;
-    using framework::Version;
+    using neutrino::system::ContextSettings;
+    using neutrino::Version;
 
     if (pixel_format == nullptr) {
         return ContextSettings().version(Version(0, 0)).depth_bits(0).stencil_bits(0).samples_count(0);
@@ -55,7 +55,7 @@ framework::system::ContextSettings get_actual_context_settings(NSOpenGLPixelForm
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 
 OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
@@ -132,7 +132,7 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     [m_context setView:m_view];
 
     make_current();
-    framework::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
+    neutrino::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
 
     update_settings(get_actual_context_settings(pixel_format));
 }
@@ -206,6 +206,6 @@ OsxContext::VoidFunctionPtr OsxContext::get_function(const char* function_name) 
 }
 
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #pragma clang diagnostic pop

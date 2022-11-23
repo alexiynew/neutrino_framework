@@ -5,9 +5,9 @@
 #include <system/window.hpp>
 #include <unit_test/suite.hpp>
 
-using namespace framework::system;
+using namespace neutrino::system;
 
-class WindowCursorTest : public framework::unit_test::Suite
+class WindowCursorTest : public neutrino::unit_test::Suite
 {
 public:
     WindowCursorTest()

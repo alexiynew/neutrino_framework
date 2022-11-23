@@ -9,7 +9,7 @@
 
 #include <X11/Xlib.h>
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 class X11GlxContext final : public Context
 {
@@ -46,6 +46,6 @@ private:
     glx::GLXContext m_glx_context = nullptr;
 };
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details
 
 #endif

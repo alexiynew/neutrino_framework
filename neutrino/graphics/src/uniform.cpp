@@ -1,7 +1,7 @@
 #include <graphics/texture.hpp>
 #include <graphics/uniform.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 
 const std::string& Uniform::name() const
@@ -14,4 +14,4 @@ const UniformValue& Uniform::value() const
     return m_value;
 }
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics

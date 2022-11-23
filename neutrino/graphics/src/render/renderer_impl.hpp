@@ -7,7 +7,7 @@
 #include <graphics/renderer.hpp>
 #include <math/math.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 class Mesh;
 class Shader;
@@ -34,6 +34,6 @@ public:
     virtual void end_frame()                              = 0;
 };
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

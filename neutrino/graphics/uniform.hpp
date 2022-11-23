@@ -6,7 +6,7 @@
 
 #include <math/math.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 class Texture;
 
@@ -84,6 +84,6 @@ private:
 /// @}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

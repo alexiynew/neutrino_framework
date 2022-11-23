@@ -9,7 +9,7 @@ To use this module only the `math.hpp` file should be included.
 
 int main()
 {
-    using namespace framework::math;
+    using namespace neutrino::math;
     ... 
 
     Vecotr3f position = {7.0f, 0.0f, 0.0f};

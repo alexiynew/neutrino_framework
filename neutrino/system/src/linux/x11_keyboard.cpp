@@ -9,7 +9,7 @@
 
 namespace
 {
-using framework::system::KeyCode;
+using neutrino::system::KeyCode;
 
 constexpr int key_codes_count = 256;
 
@@ -151,7 +151,7 @@ KeyNamePair key_name_map[] = {
 
 } // namespace
 
-namespace framework::system::details
+namespace neutrino::system::details
 {
 void init_key_code_map(const X11Server* server)
 {
@@ -197,4 +197,4 @@ Modifiers get_modifiers_state(std::uint32_t state)
     return mods;
 }
 
-} // namespace framework::system::details
+} // namespace neutrino::system::details

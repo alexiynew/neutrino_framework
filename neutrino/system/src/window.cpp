@@ -8,8 +8,8 @@
 
 namespace
 {
-using framework::Size;
-using framework::system::CursorPosition;
+using neutrino::Size;
+using neutrino::system::CursorPosition;
 
 bool is_cursor_inside_area(CursorPosition pos, Size size)
 {
@@ -18,7 +18,7 @@ bool is_cursor_inside_area(CursorPosition pos, Size size)
 
 } // namespace
 
-namespace framework::system
+namespace neutrino::system
 {
 Window::Window(const std::string& title, Size size, ContextSettings settings)
     : m_platform_window(details::create_platform_window(title, size, std::move(settings)))
@@ -544,4 +544,4 @@ void swap(Window& lhs, Window& rhs) noexcept
     }
 }
 
-} // namespace framework::system
+} // namespace neutrino::system

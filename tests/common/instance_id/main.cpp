@@ -6,7 +6,7 @@
 #include <common/instance_id.hpp>
 #include <unit_test/suite.hpp>
 
-class InstanceIdTest : public framework::unit_test::Suite
+class InstanceIdTest : public neutrino::unit_test::Suite
 {
 public:
     InstanceIdTest()
@@ -18,7 +18,7 @@ public:
 private:
     void instance_id_threads()
     {
-        using framework::InstanceId;
+        using neutrino::InstanceId;
 
         constexpr static size_t vectors_count = 10;
         constexpr static size_t ids_count     = 100000;

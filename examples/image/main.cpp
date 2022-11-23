@@ -20,10 +20,10 @@
 namespace
 {
 
-using namespace framework;
-using namespace framework::math;
-using namespace framework::graphics;
-using namespace framework::system;
+using namespace neutrino;
+using namespace neutrino::math;
+using namespace neutrino::graphics;
+using namespace neutrino::system;
 
 const std::string vertex_shader =
 "#version 330 core\n\
@@ -354,7 +354,7 @@ ImagesList load_images(Mode image_mode)
         std::vector<Image> group_images;
 
         std::transform(group.begin(), group.end(), std::back_inserter(group_images), [](const std::string& name) {
-            framework::graphics::Image img;
+            neutrino::graphics::Image img;
             if (img.load(name) != Image::LoadResult::Success) {
                 throw std::runtime_error("Can't load file: " + name);
             }
@@ -492,7 +492,7 @@ void Example::setup()
             case KeyCode::key_0: position = {0, 0}; break;
             default: break;
         }
-        gamma = framework::math::clamp(gamma, -4.0f, 4.0f);
+        gamma = neutrino::math::clamp(gamma, -4.0f, 4.0f);
 
         renderer.set_uniform("viewMatrix", scale(Matrix4f(), {image_scale, image_scale, image_scale}));
 

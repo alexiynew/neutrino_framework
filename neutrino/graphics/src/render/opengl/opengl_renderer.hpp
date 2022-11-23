@@ -11,7 +11,7 @@
 #include <graphics/src/render/opengl/opengl_texture.hpp>
 #include <graphics/src/render/renderer_impl.hpp>
 
-namespace framework::graphics
+namespace neutrino::graphics
 {
 class OpenglRenderer final : public RendererImpl
 {
@@ -64,6 +64,6 @@ private:
     Renderer::PolygonMode m_polygon_mode = Renderer::PolygonMode::fill;
 };
 
-} // namespace framework::graphics
+} // namespace neutrino::graphics
 
 #endif

@@ -11,15 +11,15 @@ class DataContext;
 class View
 {
 public:
-    View(framework::system::Window& window);
+    View(neutrino::system::Window& window);
     ~View();
 
     void render(const DataContext& data);
 
-    void on_resize(framework::Size size);
+    void on_resize(neutrino::Size size);
 
 private:
-    enum TextName : framework::graphics::Renderer::ResourceId
+    enum TextName : neutrino::graphics::Renderer::ResourceId
     {
         WindowTitleText = 0,
         WindowSizeText,
@@ -38,6 +38,8 @@ private:
         CatText,
         CatText1,
 
+        FpsText,
+
         LogTextBegin,
     };
 
@@ -45,13 +47,14 @@ private:
     void render_cursor_state(const DataContext& data);
     void render_log(const DataContext& data);
     void render_cat(const DataContext& data);
+    void render_fps(const DataContext& data);
     void render_cursor_marker(const DataContext& data);
 
-    void render_normal_text(TextName id, const std::string& text, framework::math::Vector3f position);
+    void render_normal_text(TextName id, const std::string& text, neutrino::math::Vector3f position);
 
-    framework::graphics::Renderer m_renderer;
-    framework::graphics::Font m_font;
-    framework::graphics::Renderer::ResourceId m_shader_id = 1;
+    neutrino::graphics::Renderer m_renderer;
+    neutrino::graphics::Font m_font;
+    neutrino::graphics::Renderer::ResourceId m_shader_id = 1;
 };
 
 #endif

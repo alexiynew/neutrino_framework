@@ -2,7 +2,7 @@
 
 #include <graphics/src/font/tables/os2.hpp>
 
-namespace framework::graphics::details::font
+namespace neutrino::graphics::details::font
 {
 
 Os2::Os2(const BytesData& data)
@@ -82,4 +82,4 @@ std::uint16_t Os2::default_char() const
     return m_default_char;
 }
 
-} // namespace framework::graphics::details::font
+} // namespace neutrino::graphics::details::font

@@ -1,6 +1,6 @@
 #include <system/application.hpp>
 
-namespace framework::system
+namespace neutrino::system
 {
 
 std::mutex Application::m_data_mutex;
@@ -23,4 +23,4 @@ Application& Application::instance()
     return app;
 }
 
-} // namespace framework::system
+} // namespace neutrino::system
