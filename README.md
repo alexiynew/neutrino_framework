@@ -33,7 +33,7 @@ It is poorly tested. It may not support something that you need.
 
 ## How to build
 
-**Reqired**: cmake v3.18, cpp compiller with cpp 17 support.
+**Reqired**: cmake v3.18, cpp compiller with cpp 20 support.
 
 ### Linux
 

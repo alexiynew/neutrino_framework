@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(neutrino LANGUAGES CXX VERSION 0.0.3)
+project(neutrino LANGUAGES CXX VERSION 0.0.4)
 
 # Settings
 option(BUILD_TESTS "Should tests be inculuded in build." ON)
