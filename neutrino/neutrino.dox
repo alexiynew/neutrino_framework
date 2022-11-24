@@ -1,3 +1,5 @@
+/// @defgroup global_defines_module Global defines
+
 /// @defgroup utils_module Utility
 /// @{
 /// @defgroup utils_types_module Types

@@ -4,6 +4,8 @@
 #include <ostream>
 #include <string>
 
+#include <common/global_defines.hpp>
+
 namespace neutrino
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,12 +23,12 @@ public:
     /// @param minor_v Minor version number.
     /// @param patch_v Patch version number.
     /// @param build_n Build version number.
-    Version(int major_v, int minor_v, int patch_v = 0, int build_n = 0) noexcept;
+    LIBRARY_API Version(int major_v, int minor_v, int patch_v = 0, int build_n = 0) noexcept;
 
     /// @brief Creates Version instance from string.
     ///
     /// @param version_string Version string in the dot-separated format (e.g. "1.2.3.4").
-    explicit Version(const std::string& version_string);
+    LIBRARY_API explicit Version(const std::string& version_string);
 
     Version(const Version&) = default;
     Version(Version&&)      = default;
@@ -39,27 +41,27 @@ public:
     /// @brief Version string.
     ///
     /// @return Version number as string e.g. "1.2.3.4".
-    std::string as_string() const;
+    LIBRARY_API std::string as_string() const;
 
     /// @brief Major version number.
     ///
     /// @return Major version number.
-    int major() const;
+    LIBRARY_API int major() const;
 
     /// @brief Minor version number.
     ///
     /// @return Minor version number.
-    int minor() const;
+    LIBRARY_API int minor() const;
 
     /// @brief Patch version number.
     ///
     /// @return Patch version number.
-    int patch() const;
+    LIBRARY_API int patch() const;
 
     /// @brief Build number.
     ///
     /// @return Build number.
-    int build_number() const;
+    LIBRARY_API int build_number() const;
 
 private:
     int m_major_version = 0;

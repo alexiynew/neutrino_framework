@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <common/global_defines.hpp>
 #include <graphics/color.hpp>
 #include <math/math.hpp>
 
@@ -63,54 +64,54 @@ public:
 
     static constexpr size_t max_texture_coordinates = 8;
 
-    Mesh();
-    Mesh(const Mesh& other);
-    Mesh(Mesh&& other) noexcept;
+    LIBRARY_API Mesh();
+    LIBRARY_API Mesh(const Mesh& other);
+    LIBRARY_API Mesh(Mesh&& other) noexcept;
 
-    ~Mesh();
+    LIBRARY_API ~Mesh();
 
-    Mesh& operator=(const Mesh& other);
-    Mesh& operator=(Mesh&& other) noexcept;
-
-    /// @brief Assign new vertex positions to Mesh.
-    ///
-    /// @param vertices New vertex data.
-    void set_vertices(const VertexData& vertices);
+    LIBRARY_API Mesh& operator=(const Mesh& other);
+    LIBRARY_API Mesh& operator=(Mesh&& other) noexcept;
 
     /// @brief Assign new vertex positions to Mesh.
     ///
     /// @param vertices New vertex data.
-    void set_vertices(VertexData&& vertices);
+    LIBRARY_API void set_vertices(const VertexData& vertices);
+
+    /// @brief Assign new vertex positions to Mesh.
+    ///
+    /// @param vertices New vertex data.
+    LIBRARY_API void set_vertices(VertexData&& vertices);
 
     /// @brief Assign new vertex normals to Mesh.
     ///
     /// @param normals New normals data.
-    void set_normals(const VertexData& normals);
+    LIBRARY_API void set_normals(const VertexData& normals);
 
     /// @brief Assign new vertex normals to Mesh.
     ///
     /// @param normals New normals data.
-    void set_normals(VertexData&& normals);
+    LIBRARY_API void set_normals(VertexData&& normals);
 
     /// @brief Assign new vertex tangents to Mesh.
     ///
     /// @param tangents New tangents data.
-    void set_tangents(const VertexData& tangents);
+    LIBRARY_API void set_tangents(const VertexData& tangents);
 
     /// @brief Assign new vertex tangents to Mesh.
     ///
     /// @param tangents New tangents data.
-    void set_tangents(VertexData&& tangents);
+    LIBRARY_API void set_tangents(VertexData&& tangents);
 
     /// @brief Assign new vertex colors to Mesh.
     ///
     /// @param colors New colors data.
-    void set_colors(const ColorData& colors);
+    LIBRARY_API void set_colors(const ColorData& colors);
 
     /// @brief Assign new vertex colors to Mesh.
     ///
     /// @param colors New colors data.
-    void set_colors(ColorData&& colors);
+    LIBRARY_API void set_colors(ColorData&& colors);
 
     /// @brief Assign new texture coordinates to Mesh.
     ///
@@ -118,7 +119,7 @@ public:
     ///
     /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
-    void set_texture_coordinates(std::size_t index, const TextureCoordinatesData& coordinates);
+    LIBRARY_API void set_texture_coordinates(std::size_t index, const TextureCoordinatesData& coordinates);
 
     /// @brief Assign new texture coordinates to Mesh.
     ///
@@ -126,7 +127,7 @@ public:
     ///
     /// @param index Texture coordinates array index.
     /// @param coordinates New texture coordinates data.
-    void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates);
+    LIBRARY_API void set_texture_coordinates(std::size_t index, TextureCoordinatesData&& coordinates);
 
     /// @brief Set indices data for Mesh.
     ///
@@ -134,7 +135,7 @@ public:
     /// @param type Kind of primitives for sub mesh.
     ///
     /// @return Index of new sub mesh.
-    SubMeshIndexType add_submesh(const IndicesData& indices, PrimitiveType type = PrimitiveType::triangles);
+    LIBRARY_API SubMeshIndexType add_submesh(const IndicesData& indices, PrimitiveType type = PrimitiveType::triangles);
 
     /// @brief Set indices data for Mesh.
     ///
@@ -142,61 +143,61 @@ public:
     /// @param type Kind of primitives for sub mesh.
     ///
     /// @return Index of new sub mesh.
-    SubMeshIndexType add_submesh(IndicesData&& indices, PrimitiveType type = PrimitiveType::triangles);
+    LIBRARY_API SubMeshIndexType add_submesh(IndicesData&& indices, PrimitiveType type = PrimitiveType::triangles);
 
     /// @brief Remove previously created sub mesh.
     ///
     /// @param index Sub mesh to delete.
-    void remove_submesh(SubMeshIndexType index);
+    LIBRARY_API void remove_submesh(SubMeshIndexType index);
 
     /// @brief Remove all data from Mesh.
     ///
     /// If Mesh loaded to Renderer, it's can be freely cleaned.
     ///
     /// @see Renderer::load.
-    void clear();
+    LIBRARY_API void clear();
 
     /// @brief Get vertex positions.
     ///
     /// @return Vertex positions.
-    const VertexData& vertices() const;
+    LIBRARY_API const VertexData& vertices() const;
 
     /// @brief Get vertex normals.
     ///
     /// @return Vertex normals.
-    const VertexData& normals() const;
+    LIBRARY_API const VertexData& normals() const;
 
     /// @brief Get vertex tangents.
     ///
     /// @return Vertex tangents.
-    const VertexData& tangents() const;
+    LIBRARY_API const VertexData& tangents() const;
 
     /// @brief Get vertex colors.
     ///
     /// @return Vertex colors.
-    const ColorData& colors() const;
+    LIBRARY_API const ColorData& colors() const;
 
     /// @brief Get vertex texture coordinates.
     ///
     /// @param index Texture coordinates array.
     ///
     /// @return Texture coordinates.
-    const TextureCoordinatesData& texture_coordinates(std::size_t index) const;
+    LIBRARY_API const TextureCoordinatesData& texture_coordinates(std::size_t index) const;
 
     /// @brief Checks if sub mesh with index exists in Mesh.
     ///
     /// @param index Sub mesh index to check.
     ///
     /// @return `true` if mesh with index exists in the Mesh.
-    bool has_submesh(SubMeshIndexType index) const;
+    LIBRARY_API bool has_submesh(SubMeshIndexType index) const;
 
     /// @brief Get all sub meshes of the Mesh.
     ///
     /// @return Sub meshes.
-    const SubMeshMap& submeshes() const;
+    LIBRARY_API const SubMeshMap& submeshes() const;
 
 private:
-    friend void swap(Mesh& lhs, Mesh& rhs) noexcept;
+    LIBRARY_API friend void swap(Mesh& lhs, Mesh& rhs) noexcept;
 
     VertexData m_vertices;
     VertexData m_normals;
@@ -211,7 +212,7 @@ private:
 ///
 /// @param lhs Mesh to swap.
 /// @param rhs Mesh to swap.
-void swap(Mesh& lhs, Mesh& rhs) noexcept;
+LIBRARY_API void swap(Mesh& lhs, Mesh& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

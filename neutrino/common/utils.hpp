@@ -19,18 +19,6 @@ namespace neutrino::utils
 /// @{
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// @brief Determines if it is the debug build.
-///
-/// @return `true` in debug mode, `false` otherwise.
-inline constexpr bool is_debug() noexcept
-{
-#ifndef NDEBUG
-    return true;
-#else
-    return false;
-#endif
-}
-
 /// @brief Generates bunch of random numbers.
 ///
 /// For integers range is closed, [min. max].

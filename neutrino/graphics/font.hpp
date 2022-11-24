@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <common/utf.hpp>
+#include <graphics/color.hpp>
 #include <graphics/mesh.hpp>
 
 namespace neutrino::graphics
@@ -45,29 +46,29 @@ public:
     /// Value from 1 to 3 is good enough for many cases. Max quality is clumped to 32 points.
     ///
     /// @param quality Mesh quality.
-    explicit Font(QualityType quality = 1);
+    LIBRARY_API explicit Font(QualityType quality = 1);
 
-    Font(const Font& other);
-    Font(Font&& other) noexcept;
+    LIBRARY_API Font(const Font& other);
+    LIBRARY_API Font(Font&& other) noexcept;
 
-    ~Font();
+    LIBRARY_API ~Font();
 
-    Font& operator=(const Font& other);
-    Font& operator=(Font&& other) noexcept;
+    LIBRARY_API Font& operator=(const Font& other);
+    LIBRARY_API Font& operator=(Font&& other) noexcept;
 
     /// @brief Load font from file.
     ///
     /// @param filepath File to load.
     ///
     /// @return LoadResult::Success if loading is successful or error code otherwise.
-    LoadResult load(const std::filesystem::path& filepath);
+    LIBRARY_API LoadResult load(const std::filesystem::path& filepath);
 
-    Mesh create_text_mesh(const std::string& text);
+    LIBRARY_API Mesh create_text_mesh(const std::string& text);
 
 private:
     class FontData;
 
-    friend void swap(Font& lhs, Font& rhs) noexcept;
+    LIBRARY_API friend void swap(Font& lhs, Font& rhs) noexcept;
 
     LoadResult parse(const std::filesystem::path& filepath);
 
@@ -81,7 +82,7 @@ private:
 ///
 /// @param lhs Font to swap.
 /// @param rhs Font to swap.
-void swap(Font& lhs, Font& rhs) noexcept;
+LIBRARY_API void swap(Font& lhs, Font& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

@@ -1,5 +1,7 @@
-#include <common/utils.hpp>
+﻿#include <common/utils.hpp>
 #include <log/log.hpp>
+
+#include <common/global_defines.hpp>
 
 namespace
 {
@@ -36,7 +38,7 @@ namespace neutrino::log
 
 LogStream debug(const std::string& tag)
 {
-    if (utils::is_debug()) {
+    if (is_debug()) {
         return LogStream(std::make_unique<LogBuffer>(SeverityLevel::debug, tag));
     }
     return LogStream(nullptr);

@@ -1,6 +1,8 @@
 set_sources(PUBLIC_SOURCES
     crc.hpp
     exceptions.hpp
+    fps_counter.hpp
+    global_defines.hpp
     instance_id.hpp
     position.hpp
     signal.hpp
@@ -9,7 +11,6 @@ set_sources(PUBLIC_SOURCES
     utils.hpp
     version.hpp
     zlib.hpp
-    fps_counter.hpp
     
     inc/crc_details.hpp
     inc/utils_details.hpp

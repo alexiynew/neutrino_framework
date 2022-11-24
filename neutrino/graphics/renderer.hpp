@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 
+#include <common/global_defines.hpp>
 #include <common/size.hpp>
 #include <graphics/color.hpp>
 #include <graphics/uniform.hpp>
@@ -74,31 +75,31 @@ public:
     /// @brief Creates Renderer and initialize graphic context.
     ///
     /// @param context Context for rendering.
-    explicit Renderer(system::Context& context);
+    LIBRARY_API explicit Renderer(system::Context& context);
 
     Renderer(const Renderer&) = delete;
-    Renderer(Renderer&& other) noexcept;
+    LIBRARY_API Renderer(Renderer&& other) noexcept;
 
-    ~Renderer();
+    LIBRARY_API ~Renderer();
 
     Renderer& operator=(const Renderer&) = delete;
 
-    Renderer& operator=(Renderer&& other) noexcept;
+    LIBRARY_API Renderer& operator=(Renderer&& other) noexcept;
 
     /// @brief Set color to paint window before every frame.
     ///
     /// @param color Clear Color.
-    void set_clear_color(const Color& color);
+    LIBRARY_API void set_clear_color(const Color& color);
 
     /// @brief Specify size of the viewport.
     ///
     /// @param size Viewport size.
-    void set_viewport(Size size);
+    LIBRARY_API void set_viewport(Size size);
 
     /// @brief Set current polygon mode.
     ///
     /// @param mode New mode.
-    void set_polygon_mode(PolygonMode mode);
+    LIBRARY_API void set_polygon_mode(PolygonMode mode);
 
     /// @brief Loads Mesh to renderer.
     ///
@@ -106,7 +107,7 @@ public:
     /// @param mesh Mesh to load.
     ///
     /// @return `true` if loading successful
-    bool load(ResourceId res_id, const Mesh& mesh);
+    LIBRARY_API bool load(ResourceId res_id, const Mesh& mesh);
 
     /// @brief Loads Shader to renderer.
     ///
@@ -114,7 +115,7 @@ public:
     /// @param shader Shader to load.
     ///
     /// @return `true` if loading successful
-    bool load(ResourceId res_id, const Shader& shader);
+    LIBRARY_API bool load(ResourceId res_id, const Shader& shader);
 
     /// @brief Loads Texture to renderer.
     ///
@@ -122,7 +123,7 @@ public:
     /// @param texture Texture to load.
     ///
     /// @return `true` if loading successful
-    bool load(ResourceId res_id, const Texture& texture);
+    LIBRARY_API bool load(ResourceId res_id, const Texture& texture);
 
     /// @brief Assigns a global uniform value for shaders.
     ///
@@ -148,7 +149,7 @@ public:
     ///
     /// @param mesh_id Id of mesh to render.
     /// @param shader_id Id of shader ot use.
-    void render(const ResourceId& mesh_id, const ResourceId& shader);
+    LIBRARY_API void render(const ResourceId& mesh_id, const ResourceId& shader);
 
     /// @brief Renders a mesh with a shader and unforms.
     ///
@@ -158,20 +159,20 @@ public:
     /// @param mesh_id id of mesh to render.
     /// @param shader_id Id of shader ot use.
     /// @param uniforms Uniform values to current shader.
-    void render(const ResourceId& mesh_id, const ResourceId& shader_id, const UniformsList& uniforms);
+    LIBRARY_API void render(const ResourceId& mesh_id, const ResourceId& shader_id, const UniformsList& uniforms);
 
     /// @brief Display on a screen all that been rendered so far.
-    void display();
+    LIBRARY_API void display();
 
     /// @brief Get video card venor name.
     ///
     /// @return Vendor name.
-    std::string vendor_name() const;
+    LIBRARY_API std::string vendor_name() const;
 
     /// @brief Get video card device name.
     ///
     /// @return Device name.
-    std::string device_name() const;
+    LIBRARY_API std::string device_name() const;
 
 private:
     void start_frame();

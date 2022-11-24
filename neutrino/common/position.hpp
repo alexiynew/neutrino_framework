@@ -1,6 +1,8 @@
 #ifndef COMMON_POSITION_HPP
 #define COMMON_POSITION_HPP
 
+#include <common/global_defines.hpp>
+
 namespace neutrino
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +19,7 @@ struct Position
     ///
     /// @param x_value X coordinate.
     /// @param y_value Y coordinate.
-    Position(int x_value, int y_value);
+    LIBRARY_API Position(int x_value, int y_value);
 
     int x = 0; ///< X coordiante.
     int y = 0; ///< Y coordinate.
@@ -34,7 +36,10 @@ struct Position
 /// @param rhs Position to compare.
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
-bool operator==(const Position& lhs, const Position& rhs) noexcept;
+inline constexpr bool operator==(const Position& lhs, const Position& rhs) noexcept
+{
+    return lhs.x == rhs.x && lhs.y == rhs.y;
+}
 
 /// @brief Inequality operator for Position values.
 ///
@@ -42,7 +47,10 @@ bool operator==(const Position& lhs, const Position& rhs) noexcept;
 /// @param rhs Position to compare.
 ///
 /// @return `true` if lhs isn't equals rhs, otherwise `false`.
-bool operator!=(const Position& lhs, const Position& rhs) noexcept;
+inline constexpr bool operator!=(const Position& lhs, const Position& rhs) noexcept
+{
+    return !(lhs == rhs);
+}
 
 /// @brief Stream operator to print the Position value.
 ///

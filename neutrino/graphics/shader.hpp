@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <string>
 
+#include <common/global_defines.hpp>
 #include <math/math.hpp>
 
 namespace neutrino::graphics
@@ -38,57 +39,57 @@ class Shader
 public:
     Shader() = default;
 
-    Shader(const Shader& other);
-    Shader(Shader&& other) noexcept;
+    LIBRARY_API Shader(const Shader& other);
+    LIBRARY_API Shader(Shader&& other) noexcept;
 
     ~Shader() = default;
 
-    Shader& operator=(const Shader& other);
-    Shader& operator=(Shader&& other) noexcept;
+    LIBRARY_API Shader& operator=(const Shader& other);
+    LIBRARY_API Shader& operator=(Shader&& other) noexcept;
 
     /// @brief Load vertex shader source form file.
     ///
     /// @param filepath Path to vertex shader source file.
     ///
     /// @return `true` if loadint successful.
-    bool load_vertex_source(const std::filesystem::path& filepath);
+    LIBRARY_API bool load_vertex_source(const std::filesystem::path& filepath);
 
     /// @brief Set fragment shader source form file.
     ///
     /// @param filepath Path to fragment shader source file.
     ///
     /// @return `true` if loadint successful.
-    bool load_fragment_source(const std::filesystem::path& filepath);
+    LIBRARY_API bool load_fragment_source(const std::filesystem::path& filepath);
 
     /// @brief Set vertex shader source.
     ///
     /// @param source Vertex shader source.
-    void set_vertex_source(const std::string& source);
+    LIBRARY_API void set_vertex_source(const std::string& source);
 
     /// @brief Set fragment shader source.
     ///
     /// @param source Fragment shader source.
-    void set_fragment_source(const std::string& source);
+    LIBRARY_API void set_fragment_source(const std::string& source);
 
     /// @brief Remove all sources from Shader.
     ///
     /// If Shader loaded to Renderer, it's can be freely cleaned.
     ///
     /// @see Renderer::load.
-    void clear();
+    LIBRARY_API void clear();
 
     /// @brief Get vertex shader source.
     ///
     /// @return Vertex shader source.
-    const std::string& vertex_source() const;
+    LIBRARY_API const std::string& vertex_source() const;
 
     /// @brief Get fragment shader source.
     ///
     /// @return Fragment shader source.
-    const std::string& fragment_source() const;
+    LIBRARY_API const std::string& fragment_source() const;
 
 private:
-    friend void swap(Shader& lhs, Shader& rhs) noexcept;
+    LIBRARY_API friend void swap(Shader& lhs, Shader& rhs) noexcept;
 
     std::string m_vertex_source;
     std::string m_fragment_source;
@@ -98,7 +99,7 @@ private:
 ///
 /// @param lhs Shader to swap.
 /// @param rhs Shader to swap.
-void swap(Shader& lhs, Shader& rhs) noexcept;
+LIBRARY_API void swap(Shader& lhs, Shader& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

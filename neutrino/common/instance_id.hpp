@@ -5,6 +5,8 @@
 #include <functional>
 #include <ostream>
 
+#include <common/global_defines.hpp>
+
 namespace neutrino
 {
 class InstanceId;
@@ -32,14 +34,14 @@ public:
     using ValueType = std::uint32_t;
 
     /// @brief Creates InstanceId with unique index.
-    InstanceId();
+    LIBRARY_API InstanceId();
 
 private:
-    friend bool operator==(const InstanceId& lhs, const InstanceId& rhs);
-    friend bool operator==(const InstanceId& lhs, const ValueType& rhs);
-    friend bool operator<(const InstanceId& lhs, const InstanceId& rhs);
-    friend void swap(InstanceId& lhs, InstanceId& rhs) noexcept;
-    friend std::ostream& operator<<(std::ostream& os, const InstanceId& instance_id);
+    LIBRARY_API friend bool operator==(const InstanceId& lhs, const InstanceId& rhs);
+    LIBRARY_API friend bool operator==(const InstanceId& lhs, const ValueType& rhs);
+    LIBRARY_API friend bool operator<(const InstanceId& lhs, const InstanceId& rhs);
+    LIBRARY_API friend void swap(InstanceId& lhs, InstanceId& rhs) noexcept;
+    LIBRARY_API friend std::ostream& operator<<(std::ostream& os, const InstanceId& instance_id);
 
     friend struct std::hash<InstanceId>;
 
@@ -57,7 +59,7 @@ private:
 /// @param rhs Id to compare.
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
-bool operator==(const InstanceId& lhs, const InstanceId& rhs);
+LIBRARY_API bool operator==(const InstanceId& lhs, const InstanceId& rhs);
 
 /// @brief Equality operator for InstanceId and internal type representation.
 ///
@@ -65,7 +67,7 @@ bool operator==(const InstanceId& lhs, const InstanceId& rhs);
 /// @param rhs Value to compare.
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
-bool operator==(const InstanceId& lhs, const InstanceId::ValueType& rhs);
+LIBRARY_API bool operator==(const InstanceId& lhs, const InstanceId::ValueType& rhs);
 
 /// @brief Inequality operator for InstanceId's.
 ///
@@ -73,7 +75,7 @@ bool operator==(const InstanceId& lhs, const InstanceId::ValueType& rhs);
 /// @param rhs Id to compare.
 ///
 /// @return `true` if lhs isn't equals rhs, otherwise `false`.
-bool operator!=(const InstanceId& lhs, const InstanceId& rhs);
+LIBRARY_API bool operator!=(const InstanceId& lhs, const InstanceId& rhs);
 
 /// @brief Inequality operator for InstanceId and internal type representation.
 ///
@@ -81,7 +83,7 @@ bool operator!=(const InstanceId& lhs, const InstanceId& rhs);
 /// @param rhs Value to compare.
 ///
 /// @return `true` if lhs isn't equals rhs, otherwise `false`.
-bool operator!=(const InstanceId& lhs, const InstanceId::ValueType& rhs);
+LIBRARY_API bool operator!=(const InstanceId& lhs, const InstanceId::ValueType& rhs);
 
 /// @brief Less operator for InstanceId's.
 ///
@@ -89,7 +91,7 @@ bool operator!=(const InstanceId& lhs, const InstanceId::ValueType& rhs);
 /// @param rhs Id to compare.
 ///
 /// @return `true` if lhs is less then rhs, otherwise `false`.
-bool operator<(const InstanceId& lhs, const InstanceId& rhs);
+LIBRARY_API bool operator<(const InstanceId& lhs, const InstanceId& rhs);
 
 /// @brief Greater operator for InstanceId's.
 ///
@@ -97,19 +99,19 @@ bool operator<(const InstanceId& lhs, const InstanceId& rhs);
 /// @param rhs Id to compare.
 ///
 /// @return `true` if lhs is greater then rhs, otherwise `false`.
-bool operator>(const InstanceId& lhs, const InstanceId& rhs);
+LIBRARY_API bool operator>(const InstanceId& lhs, const InstanceId& rhs);
 
 /// @brief Swaps two InstanceId's.
 ///
 /// @param lhs Id to swap.
 /// @param rhs Id to swap.
-void swap(InstanceId& lhs, InstanceId& rhs) noexcept;
+LIBRARY_API void swap(InstanceId& lhs, InstanceId& rhs) noexcept;
 
 /// @brief Insert InstanceId to output stream.
 ///
 /// @param os Output stream.
 /// @param instance_id InstanceId to output.
-std::ostream& operator<<(std::ostream& os, const InstanceId& instance_id);
+LIBRARY_API std::ostream& operator<<(std::ostream& os, const InstanceId& instance_id);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

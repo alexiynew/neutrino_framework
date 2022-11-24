@@ -1,6 +1,7 @@
 #ifndef GRAPHICS_TEXTURE_HPP
 #define GRAPHICS_TEXTURE_HPP
 
+#include <common/global_defines.hpp>
 #include <graphics/image.hpp>
 
 namespace neutrino::graphics
@@ -60,90 +61,90 @@ public:
     };
 
     Texture() = default;
-    Texture(const Texture& other);
-    Texture(Texture&& other) noexcept;
+    LIBRARY_API Texture(const Texture& other);
+    LIBRARY_API Texture(Texture&& other) noexcept;
 
     ~Texture() = default;
 
-    Texture& operator=(const Texture& other);
-    Texture& operator=(Texture&& other) noexcept;
+    LIBRARY_API Texture& operator=(const Texture& other);
+    LIBRARY_API Texture& operator=(Texture&& other) noexcept;
 
     /// @brief Set image to Texture.
     ///
     /// @param image New texture image.
-    void set_image(const Image& image);
+    LIBRARY_API void set_image(const Image& image);
 
     /// @brief Set image to Texture.
     ///
     /// @param image New texture image.
-    void set_image(Image&& image);
+    LIBRARY_API void set_image(Image&& image);
 
     /// @brief Set the Texture wrap parameter for the S axis.
     ///
     /// @param wrap New parameter value.
-    void set_wrap_s_parameter(Wrap wrap);
+    LIBRARY_API void set_wrap_s_parameter(Wrap wrap);
 
     /// @brief Set the Texture wrap parameter for the T axis.
     ///
     /// @param wrap New parameter value.
-    void set_wrap_t_parameter(Wrap wrap);
+    LIBRARY_API void set_wrap_t_parameter(Wrap wrap);
 
     /// @brief Set the Texture border color.
     ///
     /// Used with Wrap::clamp_to_border. Default color is black (0x000000).
     ///
     /// @param color New border color.
-    void set_border_color(const Color& color);
+    LIBRARY_API void set_border_color(const Color& color);
 
     /// @brief Set the Texture minifying filter.
     ///
     /// @param min_filter New minifying filter value.
-    void set_min_filter(MinFilter min_filter);
+    LIBRARY_API void set_min_filter(MinFilter min_filter);
 
     /// @brief Set the Texture magnification filter.
     ///
     /// @param mag_filter New magnification filter value.
-    void set_mag_filter(MagFilter mag_filter);
+    LIBRARY_API void set_mag_filter(MagFilter mag_filter);
 
     /// @brief Remove all sources from Texture.
     ///
     /// If Texture loaded to Renderer, it's can be freely cleaned.
     ///
     /// @see Renderer::load.
-    void clear();
+    LIBRARY_API void clear();
 
     /// @brief Get the texture image.
     ///
     /// @return Texture image.
-    const Image& image() const;
+    LIBRARY_API const Image& image() const;
 
     /// @brief Get the Texture wrap parameter for the S axis.
     ///
     /// @return The wrap parametr value.
-    Wrap wrap_s_parameter() const;
+    LIBRARY_API Wrap wrap_s_parameter() const;
 
     /// @brief Get the Texture wrap parameter for the T axis.
     ///
     /// @return The wrap parametr value.
-    Wrap wrap_t_parameter() const;
+    LIBRARY_API Wrap wrap_t_parameter() const;
 
     /// @brief Get the Texture border color.
     ///
     /// @return The texture border color.
-    const Color& border_color() const;
+    LIBRARY_API const Color& border_color() const;
 
     /// @brief Get the Texture minifying filter.
     ///
     /// @return The Texture minifying filter value.
-    MinFilter min_filter() const;
+    LIBRARY_API MinFilter min_filter() const;
 
     /// @brief Get the Texture magnification filter.
     ///
     /// @return The Texture magnification filter value.
-    MagFilter mag_filter() const;
+    LIBRARY_API MagFilter mag_filter() const;
 
 private:
-    friend void swap(Texture& lhs, Texture& rhs) noexcept;
+    LIBRARY_API friend void swap(Texture& lhs, Texture& rhs) noexcept;
 
     Image m_image;
 
@@ -160,7 +161,7 @@ private:
 ///
 /// @param lhs Texture to swap.
 /// @param rhs Texture to swap.
-void swap(Texture& lhs, Texture& rhs) noexcept;
+LIBRARY_API void swap(Texture& lhs, Texture& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

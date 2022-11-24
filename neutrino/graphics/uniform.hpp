@@ -4,6 +4,7 @@
 #include <string>
 #include <variant>
 
+#include <common/global_defines.hpp>
 #include <math/math.hpp>
 
 namespace neutrino::graphics
@@ -68,12 +69,12 @@ public:
     /// @brief Uniform name
     ///
     /// @return Uniform name.
-    const std::string& name() const;
+    LIBRARY_API const std::string& name() const;
 
     /// @brief Uniform value
     ///
     /// @return Uniform value.
-    const UniformValue& value() const;
+    LIBRARY_API const UniformValue& value() const;
 
 private:
     std::string m_name;

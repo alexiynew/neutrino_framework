@@ -1,6 +1,8 @@
 #ifndef COMMON_SIZE_HPP
 #define COMMON_SIZE_HPP
 
+#include <common/global_defines.hpp>
+
 namespace neutrino
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +19,7 @@ struct Size
     ///
     /// @param w Width.
     /// @param h Height.
-    Size(int w, int h);
+    LIBRARY_API constexpr Size(int w, int h) noexcept;
 
     int width  = 0; ///< Width.
     int height = 0; ///< Height.
@@ -34,7 +36,10 @@ struct Size
 /// @param rhs Size to compare.
 ///
 /// @return `true` if lhs equals rhs, otherwise `false`.
-bool operator==(const Size& lhs, const Size& rhs) noexcept;
+inline constexpr bool operator==(const Size& lhs, const Size& rhs) noexcept
+{
+    return lhs.width == rhs.width && lhs.height == rhs.height;
+}
 
 /// @brief Inequality operator for Size values.
 ///
@@ -42,7 +47,10 @@ bool operator==(const Size& lhs, const Size& rhs) noexcept;
 /// @param rhs Size to compare.
 ///
 /// @return `true` if lhs isn't equals rhs, otherwise `false`.
-bool operator!=(const Size& lhs, const Size& rhs) noexcept;
+inline constexpr bool operator!=(const Size& lhs, const Size& rhs) noexcept
+{
+    return !(lhs == rhs);
+}
 
 /// @brief Stream operator to print the Size value.
 ///

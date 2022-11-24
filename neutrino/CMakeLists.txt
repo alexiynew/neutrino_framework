@@ -1,4 +1,4 @@
-add_library(${PROJECT_NAME} STATIC "")
+add_library(${PROJECT_NAME} SHARED "")
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -85,6 +85,8 @@ foreach(MODULE ${MODULES})
     message(STATUS "\t${MODULE}")
     include(${MODULE_SOURCE_DIR}/CMakeLists.txt)
 endforeach()
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_EXPORTS)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 

@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 
+#include <common/global_defines.hpp>
+
 namespace neutrino::zlib
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,7 +20,7 @@ namespace neutrino::zlib
 /// @param data LZ77-compressed data
 ///
 /// @return Raw (uncompressed) data
-std::vector<std::uint8_t> inflate(const std::vector<std::uint8_t>& data);
+LIBRARY_API std::vector<std::uint8_t> inflate(const std::vector<std::uint8_t>& data);
 
 /// @brief Compress byte sequence
 ///
@@ -27,7 +29,7 @@ std::vector<std::uint8_t> inflate(const std::vector<std::uint8_t>& data);
 /// @param data Data to compress
 ///
 /// @return LZ77-compressed data
-std::vector<std::uint8_t> deflate(const std::vector<std::uint8_t>& data);
+LIBRARY_API std::vector<std::uint8_t> deflate(const std::vector<std::uint8_t>& data);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

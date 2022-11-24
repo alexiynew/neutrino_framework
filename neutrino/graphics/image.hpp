@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <vector>
 
+#include <common/global_defines.hpp>
 #include <graphics/color.hpp>
 
 namespace neutrino::graphics
@@ -49,14 +50,14 @@ public:
 
     using ColorDataType = std::vector<Color>;
 
-    Image();
+    LIBRARY_API Image();
 
     /// @brief Creates image with Color data.
     ///
     /// @param data Image color data.
     /// @param width Image width.
     /// @param height Inage height.
-    Image(const ColorDataType& data, std::size_t width, std::size_t height);
+    LIBRARY_API Image(const ColorDataType& data, std::size_t width, std::size_t height);
 
     Image(const Image&)     = default;
     Image(Image&&) noexcept = default;
@@ -69,37 +70,37 @@ public:
     /// @param file File to load.
     ///
     /// @return LoadResult::Success if loading is successful or error code otherwise.
-    LoadResult load(const std::filesystem::path& file);
+    LIBRARY_API LoadResult load(const std::filesystem::path& file);
 
     /// @brief Get image width.
     ///
     /// @return Image width.
-    std::size_t width() const;
+    LIBRARY_API std::size_t width() const;
 
     /// @brief Get image height.
     ///
     /// @return Image height.
-    std::size_t height() const;
+    LIBRARY_API std::size_t height() const;
 
     /// @brief Get image gamma.
     ///
     /// @return Image gamma.
-    float gamma() const;
+    LIBRARY_API float gamma() const;
 
     /// @brief Get image color data.
     ///
     /// @return Const reference to data storage.
-    const ColorDataType& data() const;
+    LIBRARY_API const ColorDataType& data() const;
 
     /// @brief Get image color data.
     ///
     /// @return reference to data storage.
-    ColorDataType& data();
+    LIBRARY_API ColorDataType& data();
 
 private:
     static constexpr float default_gamma = 2.2f;
 
-    friend void swap(Image& lhs, Image& rhs) noexcept;
+    LIBRARY_API friend void swap(Image& lhs, Image& rhs) noexcept;
 
     ColorDataType m_data;
 
@@ -115,7 +116,7 @@ private:
 /// @param lhs Image to compate.
 /// @param rhs Image to compare.
 ////////////////////////////////////////////////////////////////////////////////
-bool operator==(const Image& lhs, const Image& rhs) noexcept;
+LIBRARY_API bool operator==(const Image& lhs, const Image& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Inequality operator for Images.
@@ -123,7 +124,7 @@ bool operator==(const Image& lhs, const Image& rhs) noexcept;
 /// @param lhs Image to compate.
 /// @param rhs Image to compare.
 ////////////////////////////////////////////////////////////////////////////////
-bool operator!=(const Image& lhs, const Image& rhs) noexcept;
+LIBRARY_API bool operator!=(const Image& lhs, const Image& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// @brief Swaps two Images.
@@ -131,7 +132,7 @@ bool operator!=(const Image& lhs, const Image& rhs) noexcept;
 /// @param lhs Image to swap.
 /// @param rhs Image to swap.
 ////////////////////////////////////////////////////////////////////////////////
-void swap(Image& lhs, Image& rhs) noexcept;
+LIBRARY_API void swap(Image& lhs, Image& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

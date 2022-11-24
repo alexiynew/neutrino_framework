@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <common/global_defines.hpp>
+
 namespace neutrino::unit_test
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,20 +21,20 @@ public:
     /// @brief Creates test Suite with provided name.
     ///
     /// @param name Name of the test Suite.
-    explicit Suite(std::string name);
+    LIBRARY_API explicit Suite(std::string name);
 
     /// @brief Function to run all tests in the Suite.
-    void run();
+    LIBRARY_API void run();
 
     /// @brief Checks if all tests finished successfully.
     ///
     /// @return @b true if all tests were successful.
-    bool is_succeeded() const;
+    LIBRARY_API bool is_succeeded() const;
 
     /// @brief Suite name.
     ///
     /// @return The name of this Suite.
-    std::string name() const;
+    LIBRARY_API std::string name() const;
 
 protected:
     /// @brief Function type shortcut, for internal usage.
@@ -42,7 +44,7 @@ protected:
     ///
     /// @param function Test function.
     /// @param name Name of the current test function.
-    void add_test(FunctionType&& function, const std::string& name);
+    LIBRARY_API void add_test(FunctionType&& function, const std::string& name);
 
     /// @brief Fails current test.
     ///
@@ -52,7 +54,7 @@ protected:
     ///
     /// @note You can use @ref TEST_FAIL and @ref TEST_ASSERT macros
     ///       to get @b file path and @b line number.
-    void test_failed(const std::string& file, std::int32_t line, const std::string& message);
+    LIBRARY_API void test_failed(const std::string& file, std::int32_t line, const std::string& message);
 
 private:
     /// @brief Test description.
