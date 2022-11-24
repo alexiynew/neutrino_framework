@@ -7,7 +7,6 @@ script_path = os.getcwd()
 
 pathes = [
     os.path.join(script_path, "neutrino"),
-    os.path.join(script_path, "examples"),
     os.path.join(script_path, "tests"),
 ]
 

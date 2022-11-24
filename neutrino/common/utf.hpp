@@ -133,7 +133,7 @@ std::vector<CodePoint> to_codepoints(const std::wstring& str);
 /// @param buf UTF8 char to convert.
 ///
 /// @return Normal std::string.
-inline constexpr std::string to_string(const char8_t* buf)
+inline std::string to_string(const char8_t* buf)
 {
     return std::string(reinterpret_cast<const char*>(buf));
 }
