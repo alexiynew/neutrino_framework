@@ -3,7 +3,7 @@ find_package(Doxygen)
 if (Doxygen_FOUND)
     set(DOCS_INPUT_HEADERS $<TARGET_PROPERTY:${PROJECT_NAME},INTERFACE_SOURCES>)
 
-    set(DOCS_INPUT_DOX ${CMAKE_SOURCE_DIR}/README.md)
+    set(DOCS_INPUT_DOX ${FRAMEWORK_DIR}/README.md)
 
     configure_file(${DOCS_SOURCE_DIR}/Doxyfile.in ${DOCS_BINARY_DIR}/Doxyfile @ONLY)
 
