@@ -19,7 +19,10 @@ struct Position
     ///
     /// @param x_value X coordinate.
     /// @param y_value Y coordinate.
-    LIBRARY_API Position(int x_value, int y_value);
+    LIBRARY_API constexpr Position(int x_value, int y_value) noexcept
+        : x(x_value)
+        , y(y_value)
+    {}
 
     int x = 0; ///< X coordiante.
     int y = 0; ///< Y coordinate.

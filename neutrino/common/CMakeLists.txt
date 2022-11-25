@@ -18,8 +18,6 @@ set_sources(PUBLIC_SOURCES
 
 set_sources(PRIVATE_SOURCES
     src/instance_id.cpp
-    src/position.cpp
-    src/size.cpp
     src/utf.cpp
     src/version.cpp
     src/zlib.cpp

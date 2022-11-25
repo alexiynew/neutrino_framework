@@ -19,7 +19,10 @@ struct Size
     ///
     /// @param w Width.
     /// @param h Height.
-    LIBRARY_API constexpr Size(int w, int h) noexcept;
+    LIBRARY_API constexpr Size(int w, int h) noexcept
+        : width(w)
+        , height(h)
+    {}
 
     int width  = 0; ///< Width.
     int height = 0; ///< Height.

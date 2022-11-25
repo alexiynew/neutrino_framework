@@ -44,7 +44,7 @@ private:
 
         std::stringstream log_test;
 
-        if (neutrino::utils::is_debug()) {
+        if (neutrino::is_debug()) {
             log_test << "[" << SeverityLevel::debug << "] " << name() << ": message_1" << std::endl;
         }
 

@@ -28,8 +28,6 @@ private:
         const Size size480{480, 320};
         const Size size640{640, 480};
 
-        Size size_in_callback{0, 0};
-
         Window window(name(), {480, 320});
 
         window.set_on_show_callback([&stats]() { stats.show_called++; });
