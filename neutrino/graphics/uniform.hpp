@@ -5,6 +5,7 @@
 #include <variant>
 
 #include <common/global_defines.hpp>
+#include <graphics/color.hpp>
 #include <math/math.hpp>
 
 namespace neutrino::graphics
@@ -31,7 +32,9 @@ using UniformValue = std::variant<float, math::Vector2f, math::Vector3f, math::V
 
                                   math::Matrix2d, math::Matrix3d, math::Matrix4d,
                                   math::Matrix2x3d, math::Matrix2x4d, math::Matrix3x2d,
-                                  math::Matrix3x4d, math::Matrix4x2d, math::Matrix4x3d>;
+                                  math::Matrix3x4d, math::Matrix4x2d, math::Matrix4x3d,
+
+                                  Color, Colorf>;
 // clang-format on
 
 /// @brief Represents uniform value for shaders.

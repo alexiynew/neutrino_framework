@@ -353,6 +353,17 @@ public:
         glUniformMatrix4x3dv(m_location, 1, false, value.data());
     }
 
+    void operator()(const Color& value) const
+    {
+        Colorf tmp(value);
+        glUniform4fv(m_location, 1, tmp.data());
+    }
+
+    void operator()(const Colorf& value) const
+    {
+        glUniform4fv(m_location, 1, value.data());
+    }
+
 private:
     int m_location = 0;
 };
