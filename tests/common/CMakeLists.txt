@@ -1,6 +1,5 @@
 set(TESTS 
     crc
-    fps_counter
     instance_id
     signal
     utf

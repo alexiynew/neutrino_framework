@@ -135,6 +135,10 @@ OsxContext::OsxContext(NSView* view, const ContextSettings& settings)
     neutrino::graphics::details::opengl::init_opengl([this](const char* f) { return get_function(f); });
 
     update_settings(get_actual_context_settings(pixel_format));
+
+    // Disable vertical sync
+    int interval = 0;
+    [m_context setValues:&interval forParameter:NSOpenGLContextParameterSwapInterval];
 }
 
 OsxContext::~OsxContext()

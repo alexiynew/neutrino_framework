@@ -1,7 +1,6 @@
 set_sources(PUBLIC_SOURCES
     crc.hpp
     exceptions.hpp
-    fps_counter.hpp
     global_defines.hpp
     instance_id.hpp
     position.hpp
@@ -21,7 +20,6 @@ set_sources(PRIVATE_SOURCES
     src/utf.cpp
     src/version.cpp
     src/zlib.cpp
-    src/fps_counter.cpp
 )
 
 target_sources(${PROJECT_NAME}
