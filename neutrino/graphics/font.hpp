@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <common/global_defines.hpp>
 #include <common/utf.hpp>
 #include <graphics/color.hpp>
 #include <graphics/mesh.hpp>

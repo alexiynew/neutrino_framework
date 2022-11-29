@@ -5,6 +5,7 @@ project(neutrino LANGUAGES CXX VERSION 0.0.4)
 # Settings
 option(BUILD_TESTS "Should tests be inculuded in build." ON)
 option(BUILD_DOCS "Should generate documentation." ON)
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(TEST_COVERAGE "Include test coverage scan in build." OFF)
 
 # Sanitizers
@@ -37,6 +38,9 @@ endif()
 # Misk settings
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Turn on using solution folders
+set_property( GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Import usefull macros
 set(CMAKE_MODULE_PATH ${FRAMEWORK_DIR}/cmake)

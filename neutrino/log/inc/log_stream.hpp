@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include <common/global_defines.hpp>
+
 namespace neutrino::log
 {
 enum class SeverityLevel;
@@ -14,44 +16,43 @@ enum class SeverityLevel;
 namespace neutrino::log::log_details
 {
 
-class LogBuffer : public std::streambuf
+class LogBuffer final : public std::streambuf
 {
 public:
-    LogBuffer(SeverityLevel level, std::string tag);
+    LIBRARY_API LogBuffer(SeverityLevel level, std::string tag);
 
-    ~LogBuffer() override;
+    LIBRARY_API ~LogBuffer() override;
 
     LogBuffer(const LogBuffer&)            = delete;
     LogBuffer& operator=(const LogBuffer&) = delete;
 
-    LogBuffer(LogBuffer&& other) noexcept;
-    LogBuffer& operator=(LogBuffer&& other) noexcept;
+    LIBRARY_API LogBuffer(LogBuffer&& other) noexcept;
+    LIBRARY_API LogBuffer& operator=(LogBuffer&& other) noexcept;
 
-protected:
+private:
     int overflow(int character) override;
     int sync() override;
 
-private:
+    void reset_pointers();
+    void flush_buffer();
+
     SeverityLevel m_level;
     std::string m_tag;
     std::vector<char_type> m_buffer;
-
-    void reset_pointers();
-    void flush_buffer();
 };
 
-class LogStream : public std::ostream
+class LogStream final : public std::ostream
 {
 public:
-    explicit LogStream(std::unique_ptr<std::streambuf> buffer);
+    LIBRARY_API explicit LogStream(std::unique_ptr<std::streambuf> buffer);
 
-    ~LogStream() override;
+    LIBRARY_API ~LogStream() override;
 
     LogStream(const LogStream&)            = delete;
     LogStream& operator=(const LogStream&) = delete;
 
-    LogStream(LogStream&& other) noexcept;
-    LogStream& operator=(LogStream&& other) noexcept;
+    LIBRARY_API LogStream(LogStream&& other) noexcept;
+    LIBRARY_API LogStream& operator=(LogStream&& other) noexcept;
 
 private:
     std::unique_ptr<std::streambuf> m_buffer;

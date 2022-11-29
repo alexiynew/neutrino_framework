@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include <common/global_defines.hpp>
 #include <log/logger.hpp>
 
 #include <log/inc/log_stream.hpp>
@@ -25,7 +26,7 @@ namespace neutrino::log
 /// @return Output stream to log debug messages.
 ///
 /// @see Logger::add_message
-log_details::LogStream debug(const std::string& tag);
+LIBRARY_API log_details::LogStream debug(const std::string& tag);
 
 /// @brief Logs information messages.
 ///
@@ -34,7 +35,7 @@ log_details::LogStream debug(const std::string& tag);
 /// @return Output stream to log info messages.
 ///
 /// @see Logger::add_message
-log_details::LogStream info(const std::string& tag);
+LIBRARY_API log_details::LogStream info(const std::string& tag);
 
 /// @brief Logs warning messages.
 ///
@@ -43,7 +44,7 @@ log_details::LogStream info(const std::string& tag);
 /// @return Output stream to log warning messages.
 ///
 /// @see Logger::add_message
-log_details::LogStream warning(const std::string& tag);
+LIBRARY_API log_details::LogStream warning(const std::string& tag);
 
 /// @brief Logs error messages.
 ///
@@ -52,7 +53,7 @@ log_details::LogStream warning(const std::string& tag);
 /// @return Output stream to log error messages.
 ///
 /// @see Logger::add_message
-log_details::LogStream error(const std::string& tag);
+LIBRARY_API log_details::LogStream error(const std::string& tag);
 
 /// @brief Logs fatal error messages.
 ///
@@ -61,21 +62,21 @@ log_details::LogStream error(const std::string& tag);
 /// @return Output stream to log fatal error messages.
 ///
 /// @see Logger::add_message
-log_details::LogStream fatal(const std::string& tag);
+LIBRARY_API log_details::LogStream fatal(const std::string& tag);
 
 /// @brief Sets new logger.
 ///
 /// @param implementation Pointer to a new logger.
 ///
 /// @see Logger
-void set_logger(std::unique_ptr<Logger> implementation);
+LIBRARY_API void set_logger(std::unique_ptr<Logger> implementation);
 
 /// @brief Returns current logger instance.
 ///
 /// @return Pointer to current logger instance.
 ///
 /// @see Logger
-Logger* logger();
+LIBRARY_API Logger* logger();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

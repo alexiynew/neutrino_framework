@@ -3,8 +3,8 @@
 
 #include <memory>
 
+#include <common/global_defines.hpp>
 #include <system/context_settings.hpp>
-
 namespace neutrino::system
 {
 
@@ -24,7 +24,7 @@ public:
     };
 
     /// @brief Creates context with provided ContextSettings.
-    explicit Context(ContextSettings settings) noexcept;
+    LIBRARY_API explicit Context(ContextSettings settings) noexcept;
 
     Context(const Context&) = default;
     Context(Context&&)      = default;
@@ -32,7 +32,7 @@ public:
     Context& operator=(const Context&) noexcept = default;
     Context& operator=(Context&&) noexcept      = default;
 
-    virtual ~Context();
+    LIBRARY_API virtual ~Context();
 
     /// @brief Checks if a context is created properly.
     ///
@@ -58,7 +58,7 @@ public:
     /// @brief Current context settings.
     ///
     /// @return Current context settings.
-    const ContextSettings& settings() const;
+    LIBRARY_API const ContextSettings& settings() const;
 
 protected:
     void update_settings(const ContextSettings& settings);

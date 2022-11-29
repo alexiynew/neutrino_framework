@@ -4,6 +4,7 @@
 #include <mutex>
 #include <ostream>
 
+#include <common/global_defines.hpp>
 #include <log/logger.hpp>
 
 namespace neutrino::log
@@ -14,20 +15,20 @@ namespace neutrino::log
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Prints all messages to provided stream.
-class StreamLogger : public Logger
+class StreamLogger final : public Logger
 {
 public:
     /// @brief Creates stream logger.
     ///
     /// @param stream Output stream.
-    explicit StreamLogger(std::ostream& stream);
+    LIBRARY_API explicit StreamLogger(std::ostream& stream);
 
     /// @brief Prints message to the stream.
     ///
     /// @param level The message @ref SeverityLevel
     /// @param tag Message tag. Describes message domain.
     /// @param message Message itself.
-    void add_message(SeverityLevel level, const std::string& tag, const std::string& message) override;
+    LIBRARY_API void add_message(SeverityLevel level, const std::string& tag, const std::string& message) override;
 
 private:
     std::ostream& m_output;

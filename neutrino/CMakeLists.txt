@@ -1,4 +1,4 @@
-add_library(${PROJECT_NAME} STATIC "")
+add_library(${PROJECT_NAME} "")
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -9,7 +9,9 @@ target_include_directories(${PROJECT_NAME}
 # Set cpp standart
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
-set_target_properties(${PROJECT_NAME} PROPERTIES USE_FOLDERS ON)
+
+# Definitions
+target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_EXPORTS)
 
 # Set common options
 set(GCC_OPTIONS "-Wall;-Wextra;-Wpedantic;-Wshadow;-Wunused;-pedantic-errors;-Werror;-Wno-unknown-pragmas;-Wno-language-extension-token;-pthread")
@@ -86,10 +88,6 @@ foreach(MODULE ${MODULES})
     message(STATUS "\t${MODULE}")
     include(${MODULE_SOURCE_DIR}/CMakeLists.txt)
 endforeach()
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_EXPORTS)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 get_target_property(${PROJECT_NAME}_SOURCES ${PROJECT_NAME} SOURCES)
 source_group(TREE ${FRAMEWORK_SOURCE_DIR} FILES ${${PROJECT_NAME}_SOURCES})

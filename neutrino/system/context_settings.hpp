@@ -3,8 +3,8 @@
 
 #include <limits>
 
+#include <common/global_defines.hpp>
 #include <common/version.hpp>
-
 namespace neutrino::system
 {
 
@@ -50,28 +50,28 @@ public:
     /// @param version required version.
     ///
     /// @return Reference to context settings.
-    ContextSettings& version(Version version);
+    LIBRARY_API ContextSettings& version(Version version);
 
     /// @brief Sets depth buffers bits count.
     ///
     /// @param bits Depth buffer bits count.
     ///
     /// @return Reference to context settings.
-    ContextSettings& depth_bits(std::uint32_t bits);
+    LIBRARY_API ContextSettings& depth_bits(std::uint32_t bits);
 
     /// @brief Sets stencil buffer bits count.
     ///
     /// @param bits Stencil buffer bits count.
     ///
     /// @return Reference to context settings.
-    ContextSettings& stencil_bits(std::uint32_t bits);
+    LIBRARY_API ContextSettings& stencil_bits(std::uint32_t bits);
 
     /// @brief Sets the semples count for multisampling (antialiasing).
     ///
     /// @param samples The number of samples per pixel.
     ///
     /// @return Reference to context settings.
-    ContextSettings& samples_count(std::uint32_t samples);
+    LIBRARY_API ContextSettings& samples_count(std::uint32_t samples);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -89,28 +89,28 @@ public:
     ///
     /// @return Required API version.
     ////////////////////////////////////////////////////////////////////////////
-    Version version() const;
+    LIBRARY_API Version version() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Detph buffer bits count.
     ///
     /// @return The detph buffer bits count.
     ////////////////////////////////////////////////////////////////////////////
-    std::uint32_t depth_bits() const;
+    LIBRARY_API std::uint32_t depth_bits() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Stencil buffer bits count.
     ///
     /// @return The stencil buffer bits count.
     ////////////////////////////////////////////////////////////////////////////
-    std::uint32_t stencil_bits() const;
+    LIBRARY_API std::uint32_t stencil_bits() const;
 
     ////////////////////////////////////////////////////////////////////////////
     /// @brief Samples count.
     ///
     /// @return The number of samples per pixel.
     ////////////////////////////////////////////////////////////////////////////
-    std::uint32_t samples_count() const;
+    LIBRARY_API std::uint32_t samples_count() const;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}

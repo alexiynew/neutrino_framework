@@ -1,6 +1,8 @@
 #ifndef SYSTEM_KEYBOARD_HPP
 #define SYSTEM_KEYBOARD_HPP
 
+#include <common/global_defines.hpp>
+
 namespace neutrino::system
 {
 
@@ -164,21 +166,21 @@ public:
     /// @brief True if any state is set.
     operator bool();
 
-    Modifiers& operator&=(int mask);
-    Modifiers& operator|=(int mask);
+    LIBRARY_API Modifiers& operator&=(int mask);
+    LIBRARY_API Modifiers& operator|=(int mask);
 
-    bool operator==(Modifiers rhs);
-    bool operator!=(Modifiers rhs);
+    LIBRARY_API bool operator==(Modifiers rhs);
+    LIBRARY_API bool operator!=(Modifiers rhs);
 
 private:
     ModifiersState m_state = none;
 };
 
-Modifiers operator&(Modifiers modifiers, int mask);
-Modifiers operator|(Modifiers modifiers, int mask);
+LIBRARY_API Modifiers operator&(Modifiers modifiers, int mask);
+LIBRARY_API Modifiers operator|(Modifiers modifiers, int mask);
 
-Modifiers operator&(int mask, Modifiers modifiers);
-Modifiers operator|(int mask, Modifiers modifiers);
+LIBRARY_API Modifiers operator&(int mask, Modifiers modifiers);
+LIBRARY_API Modifiers operator|(int mask, Modifiers modifiers);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}

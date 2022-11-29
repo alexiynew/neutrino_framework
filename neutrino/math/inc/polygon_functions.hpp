@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 
+#include <common/global_defines.hpp>
+
 #include <math/inc/vector_type.hpp>
 
 namespace neutrino::math
@@ -30,7 +32,7 @@ using Polygon = std::vector<Vector<2, float>>;
 /// @param polygon Polygon to get the area.
 ///
 /// @return Area of the polygon.
-float polygon_area(const Polygon& polygon);
+LIBRARY_API float polygon_area(const Polygon& polygon);
 
 /// @brief Check if point is inside a polygon.
 ///
@@ -40,7 +42,7 @@ float polygon_area(const Polygon& polygon);
 /// @param polygon Polygon to check.
 ///
 /// @return `true` if a point is inside a polygon.
-bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon);
+LIBRARY_API bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon);
 
 /// @brief Generates triangulation of a polygon.
 ///
@@ -52,7 +54,7 @@ bool is_point_in_polygon(const Vector<2, float>& point, const Polygon& polygon);
 /// @param polygon Polygon to build triangulation.
 ///
 /// @return Indices of polygon points that form triangles in the triangulation.
-std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon);
+LIBRARY_API std::vector<std::uint32_t> generate_ear_cut_triangulation(const Polygon& polygon);
 
 // DelaunayTriangulation
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

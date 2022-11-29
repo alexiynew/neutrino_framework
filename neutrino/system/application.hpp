@@ -4,6 +4,8 @@
 #include <mutex>
 #include <string>
 
+#include <common/global_defines.hpp>
+
 namespace neutrino::system
 {
 
@@ -21,14 +23,14 @@ public:
     /// @brief Sets the formal name of the application.
     ///
     /// @param name Application name.
-    static void set_name(const std::string& name);
+    LIBRARY_API static void set_name(const std::string& name);
 
     /// @brief The formal name of the application.
     ///
     /// Used in window creation to name window class on some OS.
     ///
     /// @return Application name.
-    static const std::string& name();
+    LIBRARY_API static const std::string& name();
 
     Application(const Application&)            = delete;
     Application& operator=(const Application&) = delete;

@@ -4,6 +4,7 @@
 #include <functional>
 #include <memory>
 
+#include <common/global_defines.hpp>
 #include <common/position.hpp>
 #include <common/signal.hpp>
 #include <common/size.hpp>
@@ -49,15 +50,15 @@ public:
     /// @param settings Gpaphic context settings.
     ///
     /// @thread_safety This function can be called only from main thread.
-    Window(const std::string& title, Size size, ContextSettings settings = ContextSettings());
+    LIBRARY_API Window(const std::string& title, Size size, ContextSettings settings = ContextSettings());
 
-    ~Window();
+    LIBRARY_API ~Window();
 
     Window(const Window&) = delete;
-    Window(Window&& other) noexcept;
+    LIBRARY_API Window(Window&& other) noexcept;
 
     Window& operator=(const Window&) = delete;
-    Window& operator=(Window&& other) noexcept;
+    LIBRARY_API Window& operator=(Window&& other) noexcept;
 
 #pragma region actions
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +80,7 @@ public:
     /// callbacks in the specified order.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void show();
+    LIBRARY_API void show();
 
     /// @brief Removes the window from the screen.
     ///
@@ -87,14 +88,14 @@ public:
     /// At the end of execution, it calls the @ref on_hide callback.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void hide();
+    LIBRARY_API void hide();
 
     /// @brief Close the window
     ///
     /// Essentially sets the @ref should_close flag and call the on_close callback.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void close();
+    LIBRARY_API void close();
 
     /// @brief Bring the window to the front and switch input focus to it.
     ///
@@ -102,7 +103,7 @@ public:
     /// If the window gets input focus the @ref on_focus callback would be called.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void request_input_focus();
+    LIBRARY_API void request_input_focus();
 
     /// @brief Captures the cursor, providing unlimited cursor movement.
     ///
@@ -111,19 +112,19 @@ public:
     /// If window became visible or got input focus, and cursor was previously captured, the cursor would captured again.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void capture_cursor();
+    LIBRARY_API void capture_cursor();
 
     /// @brief Releases the cursor, if it was gabbed.
     ///
     /// Moves cursor to its previous position. And restores mouse tracking to normal mode.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void release_cursor();
+    LIBRARY_API void release_cursor();
 
     /// @brief Pull all system events and process it.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void process_events();
+    LIBRARY_API void process_events();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -141,14 +142,14 @@ public:
     /// Window state can be set before @ref show call.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_state(State state);
+    LIBRARY_API void set_state(State state);
 
     /// @brief Set the size of the window content.
     ///
     /// @param size New window size.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_size(Size size);
+    LIBRARY_API void set_size(Size size);
 
     /// @brief Sets the maximum size of the window content.
     ///
@@ -161,7 +162,7 @@ public:
     /// @param size Maximum window content size.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_max_size(Size size);
+    LIBRARY_API void set_max_size(Size size);
 
     /// @brief Sets the minimum size of the window content.
     ///
@@ -175,7 +176,7 @@ public:
     /// @param size Minimum window content size.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_min_size(Size size);
+    LIBRARY_API void set_min_size(Size size);
 
     /// @brief Forbids/permits window resizing.
     ///
@@ -185,7 +186,7 @@ public:
     /// @param value Is window resizable.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_resizable(bool value);
+    LIBRARY_API void set_resizable(bool value);
 
     /// @brief Move window to new point.
     ///
@@ -196,21 +197,21 @@ public:
     /// @param position New winodw position.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_position(Position position);
+    LIBRARY_API void set_position(Position position);
 
     /// @brief Sets window title.
     ///
     /// @param title New window title.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_title(const std::string& title);
+    LIBRARY_API void set_title(const std::string& title);
 
     /// @brief Makes the cursor invisible when set to `false` if it is over the window.
     ///
     /// @param visible New cursor visibility.
     ///
     /// @thread_safety This function can be called only from main thread.
-    void set_cursor_visible(bool visible);
+    LIBRARY_API void set_cursor_visible(bool visible);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -230,21 +231,21 @@ public:
     /// @return `true` if window is visible.
     ///
     /// @thread_safety This function can be called from any thread.
-    bool is_visible() const;
+    LIBRARY_API bool is_visible() const;
 
     /// @brief Checks if window is should be destoyed.
     ///
     /// @return `true` if on_close signal was emited.
     ///
     /// @thread_safety This function can be called from any thread.
-    bool should_close() const;
+    LIBRARY_API bool should_close() const;
 
     /// @brief Checks if window has input focus.
     ///
     /// @return `true` if window is focused.
     ///
     /// @thread_safety This function can be called from any thread.
-    bool has_input_focus() const;
+    LIBRARY_API bool has_input_focus() const;
 
     /// @brief Checks if cursor captured.
     ///
@@ -253,84 +254,84 @@ public:
     /// @return `true` if cursor is captured.
     ///
     /// @thread_safety This function can be called from any thread.
-    bool is_cursor_captured() const;
+    LIBRARY_API bool is_cursor_captured() const;
 
     /// @brief Checks if cursor visible in the window.
     ///
     /// @return `true` if cursor is visible.
     ///
     /// @thread_safety This function can be called from any thread.
-    bool is_cursor_visible() const;
+    LIBRARY_API bool is_cursor_visible() const;
 
     /// @brief Checks if cursor is inside the window worcking area.
     ///
     /// @return `true` if cursor is inside the window..
     ///
     /// @thread_safety This function can be called from any thread.
-    bool is_cursor_hover() const;
+    LIBRARY_API bool is_cursor_hover() const;
 
     /// @brief Window state.
     ///
     /// @return Current window state.
     ///
     /// @thread_safety This function can be called from any thread.
-    State state() const;
+    LIBRARY_API State state() const;
 
     /// @brief Window size.
     ///
     /// @return Current window size.
     ///
     /// @thread_safety This function can be called from any thread.
-    Size size() const;
+    LIBRARY_API Size size() const;
 
     /// @brief Maximum window size.
     ///
     /// @return Current maximum size.
     ///
     /// @thread_safety This function can be called from any thread.
-    Size max_size() const;
+    LIBRARY_API Size max_size() const;
 
     /// @brief Minimum window size.
     ///
     /// @return Current minimum size.
     ///
     /// @thread_safety This function can be called from any thread.
-    Size min_size() const;
+    LIBRARY_API Size min_size() const;
 
     /// @brief Checks if window resizing is allowed.
     ///
     /// @return `true` if window resizing is allowed.
     ///
     /// @thread_safety This function can be called from any thread.
-    bool is_resizable() const;
+    LIBRARY_API bool is_resizable() const;
 
     /// @brief Window position.
     ///
     /// @return Current window position.
     ///
     /// @thread_safety This function can be called from any thread.
-    Position position() const;
+    LIBRARY_API Position position() const;
 
     /// @brief Window title.
     ///
     /// @return Current window title.
     ///
     /// @thread_safety This function can be called from any thread.
-    std::string title() const;
+    LIBRARY_API std::string title() const;
 
     /// @brief Window context.
     ///
     /// @return Window context.
     ///
     /// @thread_safety This function can be called from any thread.
-    const Context& context() const;
+    LIBRARY_API const Context& context() const;
 
     /// @brief Window context.
     ///
     /// @return Window context.
     ///
     /// @thread_safety This function can be called from any thread.
-    Context& context();
+    LIBRARY_API Context& context();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -344,52 +345,54 @@ public:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /// @brief Set on show callback. Called when window shows after creation.
-    void set_on_show_callback(std::function<void()> callback);
+    LIBRARY_API void set_on_show_callback(std::function<void()> callback);
 
     /// @brief Set on hide callback. Called when window hides from screen.
-    void set_on_hide_callback(std::function<void()> callback);
+    LIBRARY_API void set_on_hide_callback(std::function<void()> callback);
 
     /// @brief Set on close callback. Called when the user clicks on the close window button.
-    void set_on_close_callback(std::function<void()> callback);
+    LIBRARY_API void set_on_close_callback(std::function<void()> callback);
 
     /// @brief Set on focus callback. Called when the window gets input focus.
-    void set_on_focus_callback(std::function<void()> callback);
+    LIBRARY_API void set_on_focus_callback(std::function<void()> callback);
 
     /// @brief Set on focus lost callback. Called when the window loses input focus.
-    void set_on_lost_focus_callback(std::function<void()> callback);
+    LIBRARY_API void set_on_lost_focus_callback(std::function<void()> callback);
 
     /// @brief Set on size callback. Called when window size changes.
-    void set_on_resize_callback(std::function<void(Size)> callback);
+    LIBRARY_API void set_on_resize_callback(std::function<void(Size)> callback);
 
     /// @brief Set on position callback. Called when window position changes.
-    void set_on_move_callback(std::function<void(Position)> callback);
+    LIBRARY_API void set_on_move_callback(std::function<void(Position)> callback);
 
     /// @brief Set on key down callback. Called when key is pressed. Can be called multiple times.
-    void set_on_key_down_callback(std::function<void(KeyCode, Modifiers)> callback);
+    LIBRARY_API void set_on_key_down_callback(std::function<void(KeyCode, Modifiers)> callback);
 
     /// @brief Set on key up callback. Called when key is released.
-    void set_on_key_up_callback(std::function<void(KeyCode, Modifiers)> callback);
+    LIBRARY_API void set_on_key_up_callback(std::function<void(KeyCode, Modifiers)> callback);
 
     /// @brief Set on character callback. Called when user press the char symbol key.
-    void set_on_character_callback(std::function<void(const std::string&)> callback);
+    LIBRARY_API void set_on_character_callback(std::function<void(const std::string&)> callback);
 
     /// @brief Set on mouse move callback. Called when the mouse is moving.
-    void set_on_mouse_move_callback(std::function<void(CursorPosition)> callback);
+    LIBRARY_API void set_on_mouse_move_callback(std::function<void(CursorPosition)> callback);
 
     /// @brief Set on mouse button down callback. Called when the mouse button is pressed.
-    void set_on_mouse_button_down_callback(std::function<void(MouseButton, CursorPosition, Modifiers)> callback);
+    LIBRARY_API void set_on_mouse_button_down_callback(
+    std::function<void(MouseButton, CursorPosition, Modifiers)> callback);
 
     /// @brief Set on mouse button up callback. Called when the mouse button is released.
-    void set_on_mouse_button_up_callback(std::function<void(MouseButton, CursorPosition, Modifiers)> callback);
+    LIBRARY_API void set_on_mouse_button_up_callback(
+    std::function<void(MouseButton, CursorPosition, Modifiers)> callback);
 
     /// @brief Set on mouse scroll callback. Called when the user scrolls.
-    void set_on_mouse_scroll_callback(std::function<void(ScrollOffset)> callback);
+    LIBRARY_API void set_on_mouse_scroll_callback(std::function<void(ScrollOffset)> callback);
 
     /// @brief Set on mouse enter callback. Called when the cursor enters in the window frame.
-    void set_on_mouse_enter_callback(std::function<void()> callback);
+    LIBRARY_API void set_on_mouse_enter_callback(std::function<void()> callback);
 
     /// @brief Set on mouse leave callback. Called when the cursor leaves the window frame.
-    void set_on_mouse_leave_callback(std::function<void()> callback);
+    LIBRARY_API void set_on_mouse_leave_callback(std::function<void()> callback);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// @}
@@ -398,7 +401,7 @@ public:
 
 private:
     friend class details::PlatformWindow;
-    friend void swap(Window& lhs, Window& rhs) noexcept;
+    LIBRARY_API friend void swap(Window& lhs, Window& rhs) noexcept;
 
     void on_close();
 
@@ -426,7 +429,7 @@ private:
 ///
 /// @param lhs Winodw to swap.
 /// @param rhs Window  to swap.
-void swap(Window& lhs, Window& rhs) noexcept;
+LIBRARY_API void swap(Window& lhs, Window& rhs) noexcept;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @}
