@@ -7,8 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// @brief Export definition for windows dll.
-#ifdef _WIN32
-    #ifdef LIBRARY_EXPORTS
+#if defined(_WIN32) && !defined(BUILD_STATIC_LIB)
+    #ifdef BUILD_SHARED_LIB
         #define LIBRARY_API __declspec(dllexport)
     #else
         #define LIBRARY_API __declspec(dllimport)

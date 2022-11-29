@@ -15,6 +15,8 @@ foreach(TEST ${TESTS})
     target_link_libraries(${TEST} ${PROJECT_NAME})
     target_include_directories(${TEST} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
 
+    target_compile_definitions(${TEST} PRIVATE $<TARGET_PROPERTY:${PROJECT_NAME},COMPILE_DEFINITIONS>)
+    
     set_target_properties(${TEST} PROPERTIES FOLDER ${TEST_FOLDER})
     set_target_properties(${TEST} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_BINARY_DIR})
     set_target_properties(${TEST} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY ${TEST_BINARY_DIR})

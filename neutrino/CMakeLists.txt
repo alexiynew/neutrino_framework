@@ -11,7 +11,11 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 
 # Definitions
-target_compile_definitions(${PROJECT_NAME} PRIVATE LIBRARY_EXPORTS)
+if (${BUILD_SHARED_LIBS}) 
+    target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_SHARED_LIB)
+else ()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_STATIC_LIB)
+endif ()
 
 # Set common options
 set(GCC_OPTIONS "-Wall;-Wextra;-Wpedantic;-Wshadow;-Wunused;-pedantic-errors;-Werror;-Wno-unknown-pragmas;-Wno-language-extension-token;-pthread")
