@@ -47,7 +47,7 @@ public:
     bool load(const Mesh& mesh);
     void clear();
 
-    void draw() const;
+    void draw(std::size_t count) const;
     bool is_valid() const;
 
 private:

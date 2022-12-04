@@ -138,16 +138,21 @@ OpenglShader::UniformMap get_active_uniforms(std::uint32_t shader_program, const
         GLenum type                   = GL_NONE;
         glGetActiveUniform(shader_program, static_cast<GLuint>(i), buffer_size, nullptr, &size, &type, name_buffer);
 
-        if (size != 1) {
-            continue; // array uniforms is not supported
-        }
-
         if (std::find(supported_types.begin(), supported_types.end(), type) == supported_types.end()) {
             continue;
         }
 
-        const int location            = glGetUniformLocation(shader_program, name_buffer);
-        res[std::string(name_buffer)] = location;
+        if (size > 1) {
+            auto name = std::string(name_buffer);
+            name      = name.substr(0, name.find("["));
+            res[name] = glGetUniformLocation(shader_program, name.c_str());
+            while (size-- > 0) {
+                const auto n = name + "[" + std::to_string(size) + "]";
+                res[n]       = glGetUniformLocation(shader_program, n.c_str());
+            }
+        } else if (size == 1) {
+            res[std::string(name_buffer)] = glGetUniformLocation(shader_program, name_buffer);
+        }
     }
 
     return res;
@@ -362,6 +367,16 @@ public:
     void operator()(const Colorf& value) const
     {
         glUniform4fv(m_location, 1, value.data());
+    }
+
+    void operator()(const std::vector<math::Vector3f>& value) const
+    {
+        glUniform3fv(m_location, value.size(), value.data()->data());
+    }
+
+    void operator()(const std::vector<Colorf>& value) const
+    {
+        glUniform4fv(m_location, value.size(), value.data()->data());
     }
 
 private:

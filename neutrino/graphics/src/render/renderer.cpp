@@ -37,10 +37,12 @@ namespace neutrino::graphics
 
 Renderer::Command::Command(ResourceId mesh,
                            ResourceId shader,
+                           std::size_t count,
                            const UniformsMap& global_uniforms,
                            const UniformsList& uniforms)
     : m_mesh(mesh)
     , m_shader(shader)
+    , m_instances_count(count)
     , m_global_uniforms(std::cref(global_uniforms))
     , m_uniforms(uniforms)
 {}
@@ -48,6 +50,7 @@ Renderer::Command::Command(ResourceId mesh,
 Renderer::Command::Command(Command&& other)
     : m_mesh(other.m_mesh)
     , m_shader(other.m_shader)
+    , m_instances_count(other.m_instances_count)
     , m_global_uniforms(std::move(other.m_global_uniforms))
     , m_uniforms(std::move(other.m_uniforms))
 {}
@@ -60,6 +63,7 @@ Renderer::Command& Renderer::Command::operator=(Command&& other)
 
     swap(tmp.m_mesh, m_mesh);
     swap(tmp.m_shader, m_shader);
+    swap(tmp.m_instances_count, m_instances_count);
     swap(tmp.m_global_uniforms, m_global_uniforms);
     swap(tmp.m_uniforms, m_uniforms);
 
@@ -74,6 +78,11 @@ Renderer::ResourceId Renderer::Command::mesh() const
 Renderer::ResourceId Renderer::Command::shader() const
 {
     return m_shader;
+}
+
+std::size_t Renderer::Command::instances() const
+{
+    return m_instances_count;
 }
 
 const Renderer::UniformsMap& Renderer::Command::global_uniforms() const
@@ -139,12 +148,20 @@ bool Renderer::load(ResourceId res_id, const Texture& texture)
 
 void Renderer::render(const ResourceId& mesh_id, const ResourceId& shader_id)
 {
-    render(mesh_id, shader_id, {});
+    render(mesh_id, shader_id, 1, {});
 }
 
 void Renderer::render(const ResourceId& mesh_id, const ResourceId& shader_id, const UniformsList& uniforms)
 {
-    m_render_commands.push_back(Command(mesh_id, shader_id, m_global_uniforms, uniforms));
+    m_render_commands.push_back(Command(mesh_id, shader_id, 1, m_global_uniforms, uniforms));
+}
+
+void Renderer::render(const ResourceId& mesh_id,
+                      const ResourceId& shader_id,
+                      std::size_t count,
+                      const UniformsList& uniforms)
+{
+    m_render_commands.push_back(Command(mesh_id, shader_id, count, m_global_uniforms, uniforms));
 }
 
 void Renderer::display()

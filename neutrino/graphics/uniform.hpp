@@ -3,6 +3,7 @@
 
 #include <string>
 #include <variant>
+#include <vector>
 
 #include <common/global_defines.hpp>
 #include <graphics/color.hpp>
@@ -34,7 +35,12 @@ using UniformValue = std::variant<float, math::Vector2f, math::Vector3f, math::V
                                   math::Matrix2x3d, math::Matrix2x4d, math::Matrix3x2d,
                                   math::Matrix3x4d, math::Matrix4x2d, math::Matrix4x3d,
 
-                                  Color, Colorf>;
+                                  Color, Colorf,
+                                  
+                                  std::vector<math::Vector3f>,
+
+                                  std::vector<Colorf>
+                                  >;
 // clang-format on
 
 /// @brief Represents uniform value for shaders.

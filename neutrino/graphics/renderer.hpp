@@ -52,22 +52,27 @@ public:
     class Command
     {
     public:
-        Command(ResourceId mesh, ResourceId shader, const UniformsMap& global_uniforms, const UniformsList& m_uniforms);
+        Command(ResourceId mesh,
+                ResourceId shader,
+                std::size_t count,
+                const UniformsMap& global_uniforms,
+                const UniformsList& m_uniforms);
         Command(const Command& other) = delete;
         Command(Command&& other);
 
         Command& operator=(const Command& other) = delete;
-
         Command& operator=(Command&& other);
 
         ResourceId mesh() const;
         ResourceId shader() const;
+        std::size_t instances() const;
         const UniformsMap& global_uniforms() const;
         const UniformsList& uniforms() const;
 
     private:
-        ResourceId m_mesh;
-        ResourceId m_shader;
+        ResourceId m_mesh             = 0;
+        ResourceId m_shader           = 0;
+        std::size_t m_instances_count = 0;
         std::reference_wrapper<const UniformsMap> m_global_uniforms;
         UniformsList m_uniforms;
     };
@@ -160,6 +165,20 @@ public:
     /// @param shader_id Id of shader ot use.
     /// @param uniforms Uniform values to current shader.
     LIBRARY_API void render(const ResourceId& mesh_id, const ResourceId& shader_id, const UniformsList& uniforms);
+
+    /// @brief Renders a number of instances of a mesh with a shader and unforms.
+    ///
+    /// Global uniforms would pass to the shader as well.
+    /// TODO: Local uniforms must override global ones. Write test on it.
+    ///
+    /// @param mesh_id id of mesh to render.
+    /// @param shader_id Id of shader ot use.
+    /// @param count Number of instances.
+    /// @param uniforms Uniform values to current shader.
+    LIBRARY_API void render(const ResourceId& mesh_id,
+                            const ResourceId& shader_id,
+                            std::size_t count,
+                            const UniformsList& uniforms);
 
     /// @brief Display on a screen all that been rendered so far.
     LIBRARY_API void display();

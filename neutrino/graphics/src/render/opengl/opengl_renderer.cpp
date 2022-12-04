@@ -192,7 +192,7 @@ void OpenglRenderer::render(const Renderer::Command& command)
     shader.set_uniforms(command);
     bind_textures(shader, command);
 
-    mesh.draw();
+    mesh.draw(command.instances());
 
     HAS_OPENGL_ERRORS();
 }

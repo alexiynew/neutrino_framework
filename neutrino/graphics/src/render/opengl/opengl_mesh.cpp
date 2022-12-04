@@ -230,7 +230,7 @@ bool OpenglMesh::load(const Mesh& mesh)
     load_data_buffer(m_vertex_buffers[static_cast<std::size_t>(Attribute::tangent)].buffer,   GL_ARRAY_BUFFER, mesh.tangents());
     load_data_buffer(m_vertex_buffers[static_cast<std::size_t>(Attribute::color)].buffer,     GL_ARRAY_BUFFER, mesh.colors());
     load_data_buffer(m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord0)].buffer, GL_ARRAY_BUFFER, mesh.texture_coordinates(0));
-    load_data_buffer(m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord1)].buffer,  GL_ARRAY_BUFFER, mesh.texture_coordinates(1));
+    load_data_buffer(m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord1)].buffer, GL_ARRAY_BUFFER, mesh.texture_coordinates(1));
     load_data_buffer(m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord2)].buffer, GL_ARRAY_BUFFER, mesh.texture_coordinates(2));
     load_data_buffer(m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord3)].buffer, GL_ARRAY_BUFFER, mesh.texture_coordinates(3));
     load_data_buffer(m_vertex_buffers[static_cast<std::size_t>(Attribute::texcoord4)].buffer, GL_ARRAY_BUFFER, mesh.texture_coordinates(4));
@@ -267,7 +267,7 @@ bool OpenglMesh::load(const Mesh& mesh)
     return is_valid();
 }
 
-void OpenglMesh::draw() const
+void OpenglMesh::draw(std::size_t count) const
 {
     glBindVertexArray(m_vertex_array);
 
@@ -277,10 +277,22 @@ void OpenglMesh::draw() const
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer.buffer);
 
-    std::uint8_t* offset = nullptr;
-    for (const SubMeshInfo& info : m_index_buffer.submeshes) {
-        glDrawElements(info.primitive_type, info.indices_count, m_index_buffer.type, offset);
-        offset += info.indices_count * static_cast<int>(sizeof(Mesh::IndicesData::value_type));
+    if (count == 1) {
+        std::uint8_t* offset = nullptr;
+        for (const SubMeshInfo& info : m_index_buffer.submeshes) {
+            glDrawElements(info.primitive_type, info.indices_count, m_index_buffer.type, offset);
+            offset += info.indices_count * static_cast<int>(sizeof(Mesh::IndicesData::value_type));
+        }
+    } else {
+        std::uint8_t* offset = nullptr;
+        for (const SubMeshInfo& info : m_index_buffer.submeshes) {
+            glDrawElementsInstanced(info.primitive_type,
+                                    info.indices_count,
+                                    m_index_buffer.type,
+                                    offset,
+                                    static_cast<GLsizei>(count));
+            offset += info.indices_count * static_cast<int>(sizeof(Mesh::IndicesData::value_type));
+        }
     }
 }
 
