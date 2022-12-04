@@ -7,9 +7,8 @@
 namespace
 {
 
-using Clock           = std::chrono::high_resolution_clock;
-using TimePoint       = Clock::time_point;
-using FloatMsDuration = std::chrono::duration<double, std::milli>;
+using Clock     = std::chrono::high_resolution_clock;
+using TimePoint = Clock::time_point;
 
 enum class Phase
 {
@@ -50,7 +49,7 @@ public:
         out << "  \"traceEvents\": [\n";
 
         for (auto it = m_records.begin(); it != m_records.end(); ++it) {
-            const auto time = (it->time - m_begin).count();
+            const auto time = duration_cast<std::chrono::microseconds>(it->time - m_begin).count();
             out << "    {";
             out << "\"name\": \"" << it->name << "\"";
             out << ", \"ph\": \"" << (it->phase == Phase::Begin ? "B" : "E") << "\"";
@@ -65,7 +64,6 @@ public:
         }
 
         out << "  ],\n";
-        out << "  \"displayTimeUnit\": \"ns\"\n";
         out << "}\n";
     }
 
