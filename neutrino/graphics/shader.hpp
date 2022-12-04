@@ -52,14 +52,14 @@ public:
     /// @param filepath Path to vertex shader source file.
     ///
     /// @return `true` if loadint successful.
-    LIBRARY_API bool load_vertex_source(const std::filesystem::path& filepath);
+    LIBRARY_API bool set_vertex_source(const std::filesystem::path& filepath);
 
     /// @brief Set fragment shader source form file.
     ///
     /// @param filepath Path to fragment shader source file.
     ///
     /// @return `true` if loadint successful.
-    LIBRARY_API bool load_fragment_source(const std::filesystem::path& filepath);
+    LIBRARY_API bool set_fragment_source(const std::filesystem::path& filepath);
 
     /// @brief Set vertex shader source.
     ///

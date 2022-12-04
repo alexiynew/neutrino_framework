@@ -31,7 +31,7 @@ Shader& Shader::operator=(Shader&& other) noexcept
     return *this;
 }
 
-bool Shader::load_vertex_source(const std::filesystem::path& filepath)
+bool Shader::set_vertex_source(const std::filesystem::path& filepath)
 {
     std::ifstream file(filepath, std::ios::in);
     if (!file) {
@@ -46,7 +46,7 @@ bool Shader::load_vertex_source(const std::filesystem::path& filepath)
     return true;
 }
 
-bool Shader::load_fragment_source(const std::filesystem::path& filepath)
+bool Shader::set_fragment_source(const std::filesystem::path& filepath)
 {
     std::ifstream file(filepath, std::ios::in);
     if (!file) {
