@@ -143,6 +143,7 @@ void Window::capture_cursor()
 
     m_state_data->cursor_captured = true;
 
+    on_mouse_enter();
     m_platform_window->capture_cursor();
     update_cursor_position();
 }

@@ -47,8 +47,12 @@ private:
         TEST_ASSERT(window.has_input_focus(), "Window should has focus.");
         TEST_ASSERT(window.is_cursor_captured(), "Window should capture cursor.");
         TEST_ASSERT(window.is_cursor_visible(), "Cursor should be visible.");
-        TEST_ASSERT(mouse_inside == true && window.is_cursor_hover(), "Grubbed cursor must be inside the window");
-        TEST_ASSERT(last_mouse_pos == CursorPosition(0, 0), "On captured, cursor must be in 0,0 position");
+        TEST_ASSERT(mouse_inside == true && window.is_cursor_hover(),
+                    "Grubbed cursor must be inside the window. mouse_inside: " + std::to_string(mouse_inside) +
+                    " is_cursor_hover: " + std::to_string(window.is_cursor_hover()));
+        TEST_ASSERT(last_mouse_pos == CursorPosition(0, 0),
+                    "On captured, cursor must be in 0,0 position, it is in " + std::to_string(last_mouse_pos.x) + "," +
+                    std::to_string(last_mouse_pos.y));
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
 

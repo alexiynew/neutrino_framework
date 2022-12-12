@@ -639,10 +639,6 @@ void OsxWindow::capture_cursor()
     CGAssociateMouseAndMouseCursorPosition(NO);
     process_events();
     
-    //if (!state_data().cursor_hover) {
-        //on_mouse_enter();
-    //}
-    
     on_mouse_move({0, 0});
 }
 
@@ -650,10 +646,6 @@ void OsxWindow::release_cursor()
 {
     CGAssociateMouseAndMouseCursorPosition(YES);
     process_events();
-    
-    //if (state_data().cursor_hover) {
-        //on_mouse_leave();
-    //}
 }
 
 void OsxWindow::show_cursor()
