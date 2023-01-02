@@ -10,6 +10,7 @@ namespace neutrino::graphics
 {
 class Shader;
 class OpenglTexture;
+class RenderCommand;
 
 class OpenglShader
 {
@@ -35,7 +36,7 @@ public:
 
     bool is_texture(const std::string& name) const;
 
-    void set_uniforms(const Renderer::Command& command) const;
+    void set_uniforms(const RenderCommand& command) const;
     void set_texture(const std::string& name, std::size_t index) const;
 
 private:

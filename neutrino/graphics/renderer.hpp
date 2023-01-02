@@ -12,10 +12,13 @@
 #include <math/math.hpp>
 #include <system/context.hpp>
 
+#include <graphics/inc/types.hpp>
+
 namespace neutrino::graphics
 {
 class Font;
 class Mesh;
+class RenderCommand;
 class RendererImpl;
 class Shader;
 class Texture;
@@ -36,45 +39,12 @@ class Texture;
 class Renderer
 {
 public:
-    using UniformsList = std::vector<Uniform>;
-    using UniformsMap  = std::unordered_map<std::string, Uniform>;
-    using ResourceId   = std::uint32_t;
-
     /// @brief Polygon rasterization mode.
     enum class PolygonMode
     {
         point,
         line,
         fill,
-    };
-
-    /// @brief Internal representation of render call.
-    class Command
-    {
-    public:
-        Command(ResourceId mesh,
-                ResourceId shader,
-                std::size_t count,
-                const UniformsMap& global_uniforms,
-                const UniformsList& m_uniforms);
-        Command(const Command& other) = delete;
-        Command(Command&& other);
-
-        Command& operator=(const Command& other) = delete;
-        Command& operator=(Command&& other);
-
-        ResourceId mesh() const;
-        ResourceId shader() const;
-        std::size_t instances() const;
-        const UniformsMap& global_uniforms() const;
-        const UniformsList& uniforms() const;
-
-    private:
-        ResourceId m_mesh             = 0;
-        ResourceId m_shader           = 0;
-        std::size_t m_instances_count = 0;
-        std::reference_wrapper<const UniformsMap> m_global_uniforms;
-        UniformsList m_uniforms;
     };
 
     /// @brief Creates Renderer and initialize graphic context.
@@ -194,13 +164,10 @@ public:
     LIBRARY_API std::string device_name() const;
 
 private:
-    void start_frame();
-    void end_frame();
-
     std::unique_ptr<RendererImpl> m_impl;
     std::reference_wrapper<system::Context> m_context;
 
-    std::vector<Command> m_render_commands;
+    std::vector<RenderCommand> m_render_commands;
     UniformsMap m_global_uniforms;
 };
 

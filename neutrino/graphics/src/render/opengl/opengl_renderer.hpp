@@ -16,8 +16,6 @@ namespace neutrino::graphics
 class OpenglRenderer final : public RendererImpl
 {
 public:
-    using ResourceId = Renderer::ResourceId;
-
     explicit OpenglRenderer();
 
     OpenglRenderer(const OpenglRenderer& other)            = default;
@@ -37,7 +35,7 @@ public:
     bool load(ResourceId res_id, const Texture& texture) override;
 
     void start_frame() override;
-    void render(const Renderer::Command& command) override;
+    void render(const RenderCommand& command) override;
     void end_frame() override;
 
 private:
@@ -48,7 +46,7 @@ private:
     void init();
 
     void get_info();
-    void bind_textures(const OpenglShader& shader, const Renderer::Command& command) const;
+    void bind_textures(const OpenglShader& shader, const RenderCommand& command) const;
 
     MeshMap m_meshes;
     ShaderMap m_shaders;

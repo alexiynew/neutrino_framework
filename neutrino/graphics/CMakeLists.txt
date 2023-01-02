@@ -7,6 +7,8 @@ set_sources(PUBLIC_SOURCES
     shader.hpp
     texture.hpp
     uniform.hpp
+
+    inc/types.hpp
 )
 
 set_sources(PRIVATE_SOURCES
@@ -46,6 +48,8 @@ set_sources(PRIVATE_SOURCES
     src/opengl/opengl.cpp
     src/opengl/opengl.hpp
 
+    src/render/render_command.hpp
+    src/render/render_command.cpp
     src/render/renderer_impl.hpp
     src/render/renderer.cpp
 

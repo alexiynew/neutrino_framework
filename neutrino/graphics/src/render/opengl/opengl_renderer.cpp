@@ -16,6 +16,7 @@
 #include <graphics/src/render/opengl/opengl_renderer.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
 #include <graphics/src/render/opengl/opengl_texture.hpp>
+#include <graphics/src/render/render_command.hpp>
 
 using namespace neutrino;
 using namespace neutrino::graphics;
@@ -171,7 +172,7 @@ void OpenglRenderer::start_frame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenglRenderer::render(const Renderer::Command& command)
+void OpenglRenderer::render(const RenderCommand& command)
 {
     if (m_meshes.count(command.mesh()) == 0) {
         log::debug(tag) << "OpenglRenderer::render: Trying to render mesh that is not loaded. Mesh id: "
@@ -205,7 +206,7 @@ void OpenglRenderer::end_frame()
     glUseProgram(0);
 }
 
-void OpenglRenderer::bind_textures(const OpenglShader& shader, const Renderer::Command& command) const
+void OpenglRenderer::bind_textures(const OpenglShader& shader, const RenderCommand& command) const
 {
     std::uint32_t texture_unit = 0;
 

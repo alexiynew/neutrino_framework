@@ -10,6 +10,7 @@
 #include <graphics/src/render/opengl/opengl_logger.hpp>
 #include <graphics/src/render/opengl/opengl_shader.hpp>
 #include <graphics/src/render/opengl/opengl_texture.hpp>
+#include <graphics/src/render/render_command.hpp>
 
 using namespace neutrino;
 using namespace neutrino::graphics;
@@ -466,7 +467,7 @@ bool OpenglShader::is_texture(const std::string& name) const
     return m_textures.count(name) > 0;
 }
 
-void OpenglShader::set_uniforms(const Renderer::Command& command) const
+void OpenglShader::set_uniforms(const RenderCommand& command) const
 {
     // TODO: local uniforns should override global ones.
     for (const auto& uniform : command.global_uniforms()) {

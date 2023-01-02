@@ -18,7 +18,7 @@ using namespace neutrino::system;
 namespace
 {
 
-constexpr Renderer::ResourceId shader_id = 1;
+constexpr ResourceId shader_id = 1;
 
 const std::string vertex_shader =
 "#version 330 core\n\
@@ -46,12 +46,12 @@ void main(){\n\
 
 struct TextObject
 {
-    TextObject(Renderer::ResourceId id, math::Vector3f p)
+    TextObject(ResourceId id, math::Vector3f p)
         : mesh_id(id)
         , position(p)
     {}
 
-    Renderer::ResourceId mesh_id;
+    ResourceId mesh_id;
     math::Vector3f position;
 };
 

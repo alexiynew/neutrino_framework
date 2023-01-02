@@ -34,19 +34,9 @@ namespace neutrino::graphics
 /// @endcode
 ///
 /// @see Mesh, Renderer
-class Shader
+class Shader final
 {
 public:
-    Shader() = default;
-
-    LIBRARY_API Shader(const Shader& other);
-    LIBRARY_API Shader(Shader&& other) noexcept;
-
-    ~Shader() = default;
-
-    LIBRARY_API Shader& operator=(const Shader& other);
-    LIBRARY_API Shader& operator=(Shader&& other) noexcept;
-
     /// @brief Load vertex shader source form file.
     ///
     /// @param filepath Path to vertex shader source file.
@@ -54,17 +44,17 @@ public:
     /// @return `true` if loadint successful.
     LIBRARY_API bool set_vertex_source(const std::filesystem::path& filepath);
 
+    /// @brief Set vertex shader source.
+    ///
+    /// @param source Vertex shader source.
+    LIBRARY_API void set_vertex_source(const std::string& source);
+
     /// @brief Set fragment shader source form file.
     ///
     /// @param filepath Path to fragment shader source file.
     ///
     /// @return `true` if loadint successful.
     LIBRARY_API bool set_fragment_source(const std::filesystem::path& filepath);
-
-    /// @brief Set vertex shader source.
-    ///
-    /// @param source Vertex shader source.
-    LIBRARY_API void set_vertex_source(const std::string& source);
 
     /// @brief Set fragment shader source.
     ///
@@ -89,8 +79,6 @@ public:
     LIBRARY_API const std::string& fragment_source() const;
 
 private:
-    LIBRARY_API friend void swap(Shader& lhs, Shader& rhs) noexcept;
-
     std::string m_vertex_source;
     std::string m_fragment_source;
 };
